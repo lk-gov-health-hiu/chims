@@ -5,7 +5,7 @@
  */
 package lk.gov.health.phsp.restful;
 
-import lk.gov.health.phsp.entity.ProjectInstitution;
+import lk.gov.health.phsp.entity.EncounterFormItem;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -26,26 +26,26 @@ import javax.ws.rs.core.MediaType;
  */
 @Stateless
 @Path("entity.projectinstitution")
-public class ProjectInstitutionFacadeREST extends AbstractFacade<ProjectInstitution> {
+public class ProjectInstitutionFacadeREST extends AbstractFacade<EncounterFormItem> {
 
     @PersistenceContext(unitName = "hmisPU")
     private EntityManager em;
 
     public ProjectInstitutionFacadeREST() {
-        super(ProjectInstitution.class);
+        super(EncounterFormItem.class);
     }
 
     @POST
     @Override
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public void create(ProjectInstitution entity) {
+    public void create(EncounterFormItem entity) {
         super.create(entity);
     }
 
     @PUT
     @Path("{id}")
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public void edit(@PathParam("id") Long id, ProjectInstitution entity) {
+    public void edit(@PathParam("id") Long id, EncounterFormItem entity) {
         super.edit(entity);
     }
 
@@ -58,21 +58,21 @@ public class ProjectInstitutionFacadeREST extends AbstractFacade<ProjectInstitut
     @GET
     @Path("{id}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public ProjectInstitution find(@PathParam("id") Long id) {
+    public EncounterFormItem find(@PathParam("id") Long id) {
         return super.find(id);
     }
 
     @GET
     @Override
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public List<ProjectInstitution> findAll() {
+    public List<EncounterFormItem> findAll() {
         return super.findAll();
     }
 
     @GET
     @Path("{from}/{to}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public List<ProjectInstitution> findRange(@PathParam("from") Integer from, @PathParam("to") Integer to) {
+    public List<EncounterFormItem> findRange(@PathParam("from") Integer from, @PathParam("to") Integer to) {
         return super.findRange(new int[]{from, to});
     }
 

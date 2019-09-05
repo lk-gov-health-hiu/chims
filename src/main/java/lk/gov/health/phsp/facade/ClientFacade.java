@@ -1,7 +1,6 @@
 package lk.gov.health.phsp.facade;
 
-import lk.gov.health.phsp.entity.Project;
-import lk.gov.health.phsp.entity.ProjectArea;
+import lk.gov.health.phsp.entity.Client;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -11,7 +10,7 @@ import javax.persistence.PersistenceContext;
  * @author Dr M H B Ariyaratne, buddhika.ari@gmail.com
  */
 @Stateless
-public class ProjectAreaFacade extends AbstractFacade<ProjectArea> {
+public class ClientFacade extends AbstractFacade<Client> {
 
     @PersistenceContext(unitName = "hmisPU")
     private EntityManager em;
@@ -21,8 +20,8 @@ public class ProjectAreaFacade extends AbstractFacade<ProjectArea> {
         return em;
     }
 
-    public ProjectAreaFacade() {
-        super(ProjectArea.class);
+    public ClientFacade() {
+        super(Client.class);
     }
 
 }

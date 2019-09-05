@@ -5,7 +5,7 @@
  */
 package lk.gov.health.phsp.restful;
 
-import lk.gov.health.phsp.entity.ProjectArea;
+import lk.gov.health.phsp.entity.Encounter;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -26,26 +26,26 @@ import javax.ws.rs.core.MediaType;
  */
 @Stateless
 @Path("entity.projectarea")
-public class ProjectAreaFacadeREST extends AbstractFacade<ProjectArea> {
+public class ProjectAreaFacadeREST extends AbstractFacade<Encounter> {
 
     @PersistenceContext(unitName = "hmisPU")
     private EntityManager em;
 
     public ProjectAreaFacadeREST() {
-        super(ProjectArea.class);
+        super(Encounter.class);
     }
 
     @POST
     @Override
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public void create(ProjectArea entity) {
+    public void create(Encounter entity) {
         super.create(entity);
     }
 
     @PUT
     @Path("{id}")
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public void edit(@PathParam("id") Long id, ProjectArea entity) {
+    public void edit(@PathParam("id") Long id, Encounter entity) {
         super.edit(entity);
     }
 
@@ -58,21 +58,21 @@ public class ProjectAreaFacadeREST extends AbstractFacade<ProjectArea> {
     @GET
     @Path("{id}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public ProjectArea find(@PathParam("id") Long id) {
+    public Encounter find(@PathParam("id") Long id) {
         return super.find(id);
     }
 
     @GET
     @Override
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public List<ProjectArea> findAll() {
+    public List<Encounter> findAll() {
         return super.findAll();
     }
 
     @GET
     @Path("{from}/{to}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public List<ProjectArea> findRange(@PathParam("from") Integer from, @PathParam("to") Integer to) {
+    public List<Encounter> findRange(@PathParam("from") Integer from, @PathParam("to") Integer to) {
         return super.findRange(new int[]{from, to});
     }
 

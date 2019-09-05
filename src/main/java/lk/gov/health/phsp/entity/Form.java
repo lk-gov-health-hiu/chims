@@ -1,5 +1,5 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
+ * To change this license header, choose License Headers in Client Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
@@ -20,21 +20,22 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @Entity
 @XmlRootElement
-public class ProjectInstitution implements Serializable {
+public class Form implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     @ManyToOne
-    private Project project;
+    private Client project;
     @ManyToOne
-    private Institution institution;
+    private Item sourceOfFund;
+    private Double fundValue;
+    @ManyToOne
+    private Item fundUnit;
     @Lob
-    private String natureOfIntervention;
-    @Lob
-    private String currentStatusOfIntervention;
-    private Boolean isIncludeDevelopmentActivity;
+    private String comments;
+    
 
     public Long getId() {
         return id;
@@ -57,10 +58,10 @@ public class ProjectInstitution implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof ProjectInstitution)) {
+        if (!(object instanceof Form)) {
             return false;
         }
-        ProjectInstitution other = (ProjectInstitution) object;
+        Form other = (Form) object;
         if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
@@ -72,44 +73,46 @@ public class ProjectInstitution implements Serializable {
         return "entity.ProjectInstitution[ id=" + id + " ]";
     }
 
-    public Project getProject() {
+    public Client getProject() {
         return project;
     }
 
-    public void setProject(Project project) {
+    public void setProject(Client project) {
         this.project = project;
     }
 
-    public Institution getInstitution() {
-        return institution;
+    public Item getFundUnit() {
+        return fundUnit;
     }
 
-    public void setInstitution(Institution institution) {
-        this.institution = institution;
+    public void setFundUnit(Item fundUnit) {
+        this.fundUnit = fundUnit;
     }
 
-    public String getNatureOfIntervention() {
-        return natureOfIntervention;
+    public Item getSourceOfFund() {
+        return sourceOfFund;
     }
 
-    public void setNatureOfIntervention(String natureOfIntervention) {
-        this.natureOfIntervention = natureOfIntervention;
+    public void setSourceOfFund(Item sourceOfFund) {
+        this.sourceOfFund = sourceOfFund;
     }
 
-    public String getCurrentStatusOfIntervention() {
-        return currentStatusOfIntervention;
+    public Double getFundValue() {
+        return fundValue;
     }
 
-    public void setCurrentStatusOfIntervention(String currentStatusOfIntervention) {
-        this.currentStatusOfIntervention = currentStatusOfIntervention;
+    public void setFundValue(Double fundValue) {
+        this.fundValue = fundValue;
     }
 
-    public Boolean getIsIncludeDevelopmentActivity() {
-        return isIncludeDevelopmentActivity;
+    public String getComments() {
+        return comments;
     }
 
-    public void setIsIncludeDevelopmentActivity(Boolean isIncludeDevelopmentActivity) {
-        this.isIncludeDevelopmentActivity = isIncludeDevelopmentActivity;
+    public void setComments(String comments) {
+        this.comments = comments;
     }
+
+   
 
 }

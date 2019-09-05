@@ -22,7 +22,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 @Entity
 @XmlRootElement
-public class Project implements Serializable {
+public class Client implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -39,10 +39,10 @@ public class Project implements Serializable {
     private Area province;
 
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private List<ProjectProvince> projectProvinces;
+    private List<FormSet> projectProvinces;
 
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private List<ProjectDistrict> projectDistricts;
+    private List<FormItem> projectDistricts;
 
     private String fileNumber;
 
@@ -53,7 +53,7 @@ public class Project implements Serializable {
     private Institution projectLocation;
 
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private List<ProjectInstitution> projectLocations;
+    private List<EncounterFormItem> projectLocations;
 
     private String projectTitle;
 
@@ -69,7 +69,7 @@ public class Project implements Serializable {
     private Item sourceOfFunds;
 
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private List<ProjectSourceOfFund> sourcesOfFunds;
+    private List<Form> sourcesOfFunds;
 
     @Temporal(javax.persistence.TemporalType.DATE)
     private Date proposalDate;
@@ -350,10 +350,10 @@ public class Project implements Serializable {
     @Override
     public boolean equals(Object object) {
 
-        if (!(object instanceof Project)) {
+        if (!(object instanceof Client)) {
             return false;
         }
-        Project other = (Project) object;
+        Client other = (Client) object;
         if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
@@ -1286,53 +1286,53 @@ public class Project implements Serializable {
         return canAllocateFunds;
     }
 
-    public List<ProjectProvince> getProjectProvinces() {
+    public List<FormSet> getProjectProvinces() {
         if (projectProvinces == null) {
             projectProvinces = new ArrayList<>();
         }
         return projectProvinces;
     }
 
-    public void setProjectProvinces(List<ProjectProvince> projectProvinces) {
+    public void setProjectProvinces(List<FormSet> projectProvinces) {
         this.projectProvinces = projectProvinces;
     }
 
-    public List<ProjectDistrict> getProjectDistricts() {
+    public List<FormItem> getProjectDistricts() {
         if (projectDistricts == null) {
             projectDistricts = new ArrayList<>();
         }
         return projectDistricts;
     }
 
-    public void setProjectDistricts(List<ProjectDistrict> projectDistricts) {
+    public void setProjectDistricts(List<FormItem> projectDistricts) {
         this.projectDistricts = projectDistricts;
     }
 
-    public List<ProjectInstitution> getProjectLocations() {
+    public List<EncounterFormItem> getProjectLocations() {
         if (projectLocations == null) {
             projectLocations = new ArrayList<>();
         }
         return projectLocations;
     }
 
-    public void setProjectLocations(List<ProjectInstitution> projectLocations) {
+    public void setProjectLocations(List<EncounterFormItem> projectLocations) {
         this.projectLocations = projectLocations;
     }
 
-    public List<ProjectSourceOfFund> getSourcesOfFunds() {
+    public List<Form> getSourcesOfFunds() {
         if (sourcesOfFunds == null) {
             sourcesOfFunds = new ArrayList<>();
         }
         return sourcesOfFunds;
     }
 
-    public void setSourcesOfFunds(List<ProjectSourceOfFund> sourcesOfFunds) {
+    public void setSourcesOfFunds(List<Form> sourcesOfFunds) {
         this.sourcesOfFunds = sourcesOfFunds;
     }
 
     public String getProvincesStr() {
         provincesStr = "";
-        for (ProjectProvince pa : getProjectProvinces()) {
+        for (FormSet pa : getProjectProvinces()) {
             provincesStr += " " + pa.getArea().getName();
         }
         return provincesStr;
@@ -1340,7 +1340,7 @@ public class Project implements Serializable {
 
     public String getDistrictsStr() {
         districtsStr = "";
-        for (ProjectDistrict pa : getProjectDistricts()) {
+        for (FormItem pa : getProjectDistricts()) {
             districtsStr += " " + pa.getArea().getName();
         }
         return districtsStr;
@@ -1348,7 +1348,7 @@ public class Project implements Serializable {
 
     public String getLocationsStr() {
         locationsStr = "";
-        for(ProjectInstitution pi: getProjectLocations()){
+        for(EncounterFormItem pi: getProjectLocations()){
             locationsStr += " " + pi.getInstitution().getName();
         }
         return locationsStr;

@@ -1,11 +1,11 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
+ * To change this license header, choose License Headers in Client Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
 package lk.gov.health.phsp.restful;
 
-import lk.gov.health.phsp.entity.Project;
+import lk.gov.health.phsp.entity.Client;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -26,26 +26,26 @@ import javax.ws.rs.core.MediaType;
  */
 @Stateless
 @Path("entity.project")
-public class ProjectFacadeREST extends AbstractFacade<Project> {
+public class ProjectFacadeREST extends AbstractFacade<Client> {
 
     @PersistenceContext(unitName = "hmisPU")
     private EntityManager em;
 
     public ProjectFacadeREST() {
-        super(Project.class);
+        super(Client.class);
     }
 
     @POST
     @Override
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public void create(Project entity) {
+    public void create(Client entity) {
         super.create(entity);
     }
 
     @PUT
     @Path("{id}")
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public void edit(@PathParam("id") Long id, Project entity) {
+    public void edit(@PathParam("id") Long id, Client entity) {
         super.edit(entity);
     }
 
@@ -58,21 +58,21 @@ public class ProjectFacadeREST extends AbstractFacade<Project> {
     @GET
     @Path("{id}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public Project find(@PathParam("id") Long id) {
+    public Client find(@PathParam("id") Long id) {
         return super.find(id);
     }
 
     @GET
     @Override
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public List<Project> findAll() {
+    public List<Client> findAll() {
         return super.findAll();
     }
 
     @GET
     @Path("{from}/{to}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public List<Project> findRange(@PathParam("from") Integer from, @PathParam("to") Integer to) {
+    public List<Client> findRange(@PathParam("from") Integer from, @PathParam("to") Integer to) {
         return super.findRange(new int[]{from, to});
     }
 

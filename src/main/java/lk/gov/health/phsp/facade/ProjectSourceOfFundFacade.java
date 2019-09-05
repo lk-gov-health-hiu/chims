@@ -1,6 +1,6 @@
 package lk.gov.health.phsp.facade;
 
-import lk.gov.health.phsp.entity.ProjectSourceOfFund;
+import lk.gov.health.phsp.entity.Form;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -10,7 +10,7 @@ import javax.persistence.PersistenceContext;
  * @author Dr M H B Ariyaratne, buddhika.ari@gmail.com
  */
 @Stateless
-public class ProjectSourceOfFundFacade extends AbstractFacade<ProjectSourceOfFund> {
+public class ProjectSourceOfFundFacade extends AbstractFacade<Form> {
 
     @PersistenceContext(unitName = "hmisPU")
     private EntityManager em;
@@ -21,7 +21,7 @@ public class ProjectSourceOfFundFacade extends AbstractFacade<ProjectSourceOfFun
     }
 
     public ProjectSourceOfFundFacade() {
-        super(ProjectSourceOfFund.class);
+        super(Form.class);
     }
 
 }

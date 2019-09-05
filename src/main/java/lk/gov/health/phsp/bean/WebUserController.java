@@ -7,19 +7,19 @@ import lk.gov.health.phsp.entity.Institution;
 import lk.gov.health.phsp.enums.InstitutionType;
 import lk.gov.health.phsp.entity.Item;
 import lk.gov.health.phsp.enums.ItemType;
-import lk.gov.health.phsp.entity.Project;
-import lk.gov.health.phsp.entity.ProjectArea;
-import lk.gov.health.phsp.entity.ProjectDistrict;
-import lk.gov.health.phsp.entity.ProjectInstitution;
-import lk.gov.health.phsp.entity.ProjectProvince;
-import lk.gov.health.phsp.entity.ProjectSourceOfFund;
+import lk.gov.health.phsp.entity.Client;
+import lk.gov.health.phsp.entity.Encounter;
+import lk.gov.health.phsp.entity.FormItem;
+import lk.gov.health.phsp.entity.EncounterFormItem;
+import lk.gov.health.phsp.entity.FormSet;
+import lk.gov.health.phsp.entity.Form;
 import lk.gov.health.phsp.enums.ProjectStageType;
 import lk.gov.health.phsp.entity.Upload;
 import lk.gov.health.phsp.enums.UploadType;
 import lk.gov.health.phsp.enums.WebUserRole;
 import lk.gov.health.phsp.facade.InstitutionFacade;
-import lk.gov.health.phsp.facade.ProjectAreaFacade;
-import lk.gov.health.phsp.facade.ProjectFacade;
+import lk.gov.health.phsp.facade.EncounterFacade;
+import lk.gov.health.phsp.facade.ClientFacade;
 import lk.gov.health.phsp.facade.ProjectInstitutionFacade;
 import lk.gov.health.phsp.facade.ProjectSourceOfFundFacade;
 import lk.gov.health.phsp.facade.UploadFacade;
@@ -75,11 +75,11 @@ public class WebUserController implements Serializable {
     @EJB
     private InstitutionFacade institutionFacade;
     @EJB
-    private ProjectFacade projectFacade;
+    private ClientFacade projectFacade;
     @EJB
     private UploadFacade uploadFacade;
     @EJB
-    private ProjectAreaFacade projectAreaFacade;
+    private EncounterFacade projectAreaFacade;
     @EJB
     private ProjectInstitutionFacade projectInstitutionFacade;
     @EJB
@@ -103,7 +103,7 @@ public class WebUserController implements Serializable {
     private List<Upload> currentProjectUploads;
     private List<Upload> clientUploads;
     private List<Upload> companyUploads;
-    private List<Project> listOfProjects;
+    private List<Client> listOfProjects;
 
     private Area selectedProvince;
     private Area selectedDistrict;
@@ -115,10 +115,10 @@ public class WebUserController implements Serializable {
     private Item selectedFundUnit;
     private String selectedFundComments;
 
-    private ProjectProvince removingProjectProvince;
-    private ProjectDistrict removingProjectDistrict;
-    private ProjectInstitution removingProjectInstitution;
-    private ProjectSourceOfFund removingProjectSourceOfFund;
+    private FormSet removingProjectProvince;
+    private FormItem removingProjectDistrict;
+    private EncounterFormItem removingProjectInstitution;
+    private Form removingProjectSourceOfFund;
 
     private List<Area> districtsAvailableForSelection;
 
@@ -126,10 +126,10 @@ public class WebUserController implements Serializable {
     private List<Area> selectedGnAreas;
     private Area[] selectedProvinces;
 
-    private ProjectArea selectedProjectArea;
+    private Encounter selectedProjectArea;
 
     private WebUser current;
-    private Project currentProject;
+    private Client currentProject;
     private Upload currentUpload;
     private Institution institution;
 
@@ -390,14 +390,14 @@ public class WebUserController implements Serializable {
             return;
         }
         boolean alreadyAdded = false;
-        for (ProjectProvince pa : currentProject.getProjectProvinces()) {
+        for (FormSet pa : currentProject.getProjectProvinces()) {
             if (pa.getArea().equals(selectedProvince)) {
                 alreadyAdded = true;
             }
         }
         System.out.println("alreadyAdded = " + alreadyAdded);
         if (!alreadyAdded) {
-            ProjectProvince pa = new ProjectProvince();
+            FormSet pa = new FormSet();
             pa.setProject(currentProject);
             pa.setArea(selectedProvince);
             projectAreaFacade.create(pa);
@@ -439,14 +439,14 @@ public class WebUserController implements Serializable {
             return;
         }
         boolean alreadyAdded = false;
-        for (ProjectDistrict pa : currentProject.getProjectDistricts()) {
+        for (FormItem pa : currentProject.getProjectDistricts()) {
             if (pa.getArea().equals(selectedDistrict)) {
                 alreadyAdded = true;
             }
         }
         System.out.println("alreadyAdded = " + alreadyAdded);
         if (!alreadyAdded) {
-            ProjectDistrict pa = new ProjectDistrict();
+            FormItem pa = new FormItem();
             pa.setProject(currentProject);
             pa.setArea(selectedDistrict);
             projectAreaFacade.create(pa);
@@ -472,14 +472,14 @@ public class WebUserController implements Serializable {
             return;
         }
         boolean alreadyAdded = false;
-        for (ProjectInstitution pa : currentProject.getProjectLocations()) {
+        for (EncounterFormItem pa : currentProject.getProjectLocations()) {
             if (pa.getInstitution().equals(selectedLocation)) {
                 alreadyAdded = true;
             }
         }
         System.out.println("alreadyAdded = " + alreadyAdded);
         if (!alreadyAdded) {
-            ProjectInstitution pa = new ProjectInstitution();
+            EncounterFormItem pa = new EncounterFormItem();
             pa.setProject(currentProject);
             pa.setInstitution(selectedLocation);
             projectInstitutionFacade.create(pa);
@@ -505,7 +505,7 @@ public class WebUserController implements Serializable {
             return;
         }
 
-        ProjectSourceOfFund pa = new ProjectSourceOfFund();
+        Form pa = new Form();
         pa.setProject(currentProject);
         pa.setSourceOfFund(selectedSourceOfFund);
         pa.setFundUnit(selectedFundUnit);
@@ -547,14 +547,14 @@ public class WebUserController implements Serializable {
         }
         for (Area a : selectedDsAreas) {
             boolean alreadyAdded = false;
-//            for(ProjectArea pa: currentProject.getDsDivisions()){
+//            for(Encounter pa: currentProject.getDsDivisions()){
 //                if(pa.getArea().equals(a)){
 //                    alreadyAdded= true;
 //                }
 //            }
             System.out.println("alreadyAdded = " + alreadyAdded);
             if (!alreadyAdded) {
-                ProjectArea pa = new ProjectArea();
+                Encounter pa = new Encounter();
                 pa.setProject(currentProject);
                 pa.setArea(a);
                 projectAreaFacade.create(pa);
@@ -589,14 +589,14 @@ public class WebUserController implements Serializable {
         }
         for (Area a : selectedGnAreas) {
             boolean alreadyAdded = false;
-//            for(ProjectArea pa: currentProject.getGnDivisions()){
+//            for(Encounter pa: currentProject.getGnDivisions()){
 //                if(pa.getArea().equals(a)){
 //                    alreadyAdded= true;
 //                }
 //            }
             System.out.println("alreadyAdded = " + alreadyAdded);
             if (!alreadyAdded) {
-                ProjectArea pa = new ProjectArea();
+                Encounter pa = new Encounter();
                 pa.setProject(currentProject);
                 pa.setArea(a);
 //                projectAreaFacade.create(pa); 
@@ -613,7 +613,7 @@ public class WebUserController implements Serializable {
     }
 
     public void listProjectsToSubmitBids(Institution provider) {
-        List<Project> ps = listProjects(ProjectStageType.Awaiting_DNP_Approval);
+        List<Client> ps = listProjects(ProjectStageType.Awaiting_DNP_Approval);
         listOfProjects = new ArrayList<>();
     }
 
@@ -760,7 +760,7 @@ public class WebUserController implements Serializable {
         return "/project_search";
     }
 
-    public List<Project> listProjects(ProjectStageType type) {
+    public List<Client> listProjects(ProjectStageType type) {
         Calendar c = Calendar.getInstance();
         c.setTime(getToDate());
         c.add(Calendar.DATE, 2);
@@ -772,12 +772,12 @@ public class WebUserController implements Serializable {
         return getProjectFacade().findBySQL(j, m, TemporalType.DATE);
     }
 
-    public List<Project> listProjects(ProjectStageType type, Integer y, Boolean allIsland, Area province, Area district, String titleSearchQry) {
+    public List<Client> listProjects(ProjectStageType type, Integer y, Boolean allIsland, Area province, Area district, String titleSearchQry) {
         return listProjects(type, y, allIsland, province, district, titleSearchQry, null);
 
     }
 
-    public List<Project> listProjects(ProjectStageType type, Integer y, Boolean allIsland, Area province, Area district, String titleSearchQry, String fileNo) {
+    public List<Client> listProjects(ProjectStageType type, Integer y, Boolean allIsland, Area province, Area district, String titleSearchQry, String fileNo) {
         Calendar c = Calendar.getInstance();
         c.setTime(getToDate());
         c.add(Calendar.DATE, 2);
@@ -830,11 +830,11 @@ public class WebUserController implements Serializable {
         return getProjectFacade().findBySQL(j, m, TemporalType.DATE);
     }
 
-    public List<Project> listProjects(ProjectStageType type, Integer y, Boolean allIsland, Area province, Area district) {
+    public List<Client> listProjects(ProjectStageType type, Integer y, Boolean allIsland, Area province, Area district) {
         return listProjects(type, y, allIsland, province, district, null, null);
     }
 
-    public List<Project> listProjects() {
+    public List<Client> listProjects() {
         Calendar c = Calendar.getInstance();
         c.setTime(getToDate());
         c.add(Calendar.DATE, 2);
@@ -906,7 +906,7 @@ public class WebUserController implements Serializable {
         }
     }
 
-    public Project getLastProject(WebUser webUser) {
+    public Client getLastProject(WebUser webUser) {
         String j = "Select p from Project p "
                 + " where p.client=:ins and p.retired=false "
                 + " order by p.id desc";
@@ -959,7 +959,7 @@ public class WebUserController implements Serializable {
     }
 
     public String addNewProject() {
-        currentProject = new Project();
+        currentProject = new Client();
         currentProject.setProjectTitle("");
         Calendar c = Calendar.getInstance();
         currentProject.setProjectYear(c.get(Calendar.YEAR));
@@ -1478,11 +1478,11 @@ public class WebUserController implements Serializable {
         }
     }
 
-    public Project getCurrentProject() {
+    public Client getCurrentProject() {
         return currentProject;
     }
 
-    public void setCurrentProject(Project currentProject) {
+    public void setCurrentProject(Client currentProject) {
         this.currentProject = currentProject;
     }
 
@@ -1689,7 +1689,7 @@ public class WebUserController implements Serializable {
 
             for (int i = startRow; i < sheet.getRows(); i++) {
 
-                Project np = new Project();
+                Client np = new Client();
                 np.setCreatedAt(new Date());
                 np.setCreater(loggedUser);
                 np.setCurrentStageType(ProjectStageType.Awaiting_PEC_Approval);
@@ -1754,28 +1754,28 @@ public class WebUserController implements Serializable {
                 System.out.println("Added SUccessfully = " + i);
 
                 if (np.getProvince() != null) {
-                    ProjectProvince pp = new ProjectProvince();
+                    FormSet pp = new FormSet();
                     pp.setProject(np);
                     pp.setArea(np.getProvince());
                     getProjectAreaFacade().create(pp);
                     np.getProjectProvinces().add(pp);
                 }
                 if (np.getDistrict() != null) {
-                    ProjectDistrict pp = new ProjectDistrict();
+                    FormItem pp = new FormItem();
                     pp.setProject(np);
                     pp.setArea(np.getDistrict());
                     getProjectAreaFacade().create(pp);
                     np.getProjectDistricts().add(pp);
                 }
                 if (np.getProjectLocation() != null) {
-                    ProjectInstitution pp = new ProjectInstitution();
+                    EncounterFormItem pp = new EncounterFormItem();
                     pp.setProject(np);
                     pp.setInstitution(np.getProjectLocation());
                     getProjectInstitutionFacade().create(pp);
                     np.getProjectLocations().add(pp);
                 }
                 if (np.getSourceOfFunds() != null) {
-                    ProjectSourceOfFund pp = new ProjectSourceOfFund();
+                    Form pp = new Form();
                     pp.setProject(np);
                     pp.setSourceOfFund(np.getSourceOfFunds());
                     getProjectSourceOfFundFacade().create(pp);
@@ -1797,11 +1797,11 @@ public class WebUserController implements Serializable {
         }
     }
 
-    public List<Upload> getUploads(Project p) {
+    public List<Upload> getUploads(Client p) {
         return getUploads(p, null);
     }
 
-    public List<Upload> getUploads(Project p, UploadType type) {
+    public List<Upload> getUploads(Client p, UploadType type) {
         String j = "select u from Upload u "
                 + " where u.project=:p ";
         Map m = new HashMap();
@@ -2045,11 +2045,11 @@ public class WebUserController implements Serializable {
         this.emptyModel = emptyModel;
     }
 
-    public ProjectFacade getProjectFacade() {
+    public ClientFacade getProjectFacade() {
         return projectFacade;
     }
 
-    public void setProjectFacade(ProjectFacade projectFacade) {
+    public void setProjectFacade(ClientFacade projectFacade) {
         this.projectFacade = projectFacade;
     }
 
@@ -2088,11 +2088,11 @@ public class WebUserController implements Serializable {
         this.currentProjectUploads = currentProjectUploads;
     }
 
-    public List<Project> getListOfProjects() {
+    public List<Client> getListOfProjects() {
         return listOfProjects;
     }
 
-    public void setListOfProjects(List<Project> listOfProjects) {
+    public void setListOfProjects(List<Client> listOfProjects) {
         this.listOfProjects = listOfProjects;
     }
 
@@ -2159,22 +2159,22 @@ public class WebUserController implements Serializable {
         this.selectedProvinces = selectedProvinces;
     }
 
-    public ProjectArea getSelectedProjectArea() {
+    public Encounter getSelectedProjectArea() {
         return selectedProjectArea;
     }
 
-    public void setSelectedProjectArea(ProjectArea selectedProjectArea) {
+    public void setSelectedProjectArea(Encounter selectedProjectArea) {
         this.selectedProjectArea = selectedProjectArea;
     }
 
-    public ProjectAreaFacade getProjectAreaFacade() {
+    public EncounterFacade getProjectAreaFacade() {
         return projectAreaFacade;
     }
 
     public List<Area> getDistrictsAvailableForSelection() {
         List<Area> ps = new ArrayList<>();
         if (currentProject != null) {
-            for (ProjectArea pa : currentProject.getProjectProvinces()) {
+            for (Encounter pa : currentProject.getProjectProvinces()) {
                 ps.add(pa.getArea());
             }
         }
@@ -2382,35 +2382,35 @@ public class WebUserController implements Serializable {
         return projectInstitutionFacade;
     }
 
-    public ProjectProvince getRemovingProjectProvince() {
+    public FormSet getRemovingProjectProvince() {
         return removingProjectProvince;
     }
 
-    public void setRemovingProjectProvince(ProjectProvince removingProjectProvince) {
+    public void setRemovingProjectProvince(FormSet removingProjectProvince) {
         this.removingProjectProvince = removingProjectProvince;
     }
 
-    public ProjectDistrict getRemovingProjectDistrict() {
+    public FormItem getRemovingProjectDistrict() {
         return removingProjectDistrict;
     }
 
-    public void setRemovingProjectDistrict(ProjectDistrict removingProjectDistrict) {
+    public void setRemovingProjectDistrict(FormItem removingProjectDistrict) {
         this.removingProjectDistrict = removingProjectDistrict;
     }
 
-    public ProjectInstitution getRemovingProjectInstitution() {
+    public EncounterFormItem getRemovingProjectInstitution() {
         return removingProjectInstitution;
     }
 
-    public void setRemovingProjectInstitution(ProjectInstitution removingProjectInstitution) {
+    public void setRemovingProjectInstitution(EncounterFormItem removingProjectInstitution) {
         this.removingProjectInstitution = removingProjectInstitution;
     }
 
-    public ProjectSourceOfFund getRemovingProjectSourceOfFund() {
+    public Form getRemovingProjectSourceOfFund() {
         return removingProjectSourceOfFund;
     }
 
-    public void setRemovingProjectSourceOfFund(ProjectSourceOfFund removingProjectSourceOfFund) {
+    public void setRemovingProjectSourceOfFund(Form removingProjectSourceOfFund) {
         this.removingProjectSourceOfFund = removingProjectSourceOfFund;
     }
 

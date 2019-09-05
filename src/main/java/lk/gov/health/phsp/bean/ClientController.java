@@ -1,7 +1,7 @@
 package lk.gov.health.phsp.bean;
 
-import lk.gov.health.phsp.entity.Project;
-import lk.gov.health.phsp.facade.ProjectFacade;
+import lk.gov.health.phsp.entity.Client;
+import lk.gov.health.phsp.facade.ClientFacade;
 import lk.gov.health.phsp.facade.util.JsfUtil;
 
 import java.io.Serializable;
@@ -17,17 +17,17 @@ import javax.faces.convert.FacesConverter;
 
 @Named("projectController")
 @SessionScoped
-public class ProjectController implements Serializable {
+public class ClientController implements Serializable {
 
-    private Project current;
-    private List<Project> items = null;
+    private Client current;
+    private List<Client> items = null;
     @EJB
-    private lk.gov.health.phsp.facade.ProjectFacade ejbFacade;
+    private lk.gov.health.phsp.facade.ClientFacade ejbFacade;
 
-    public ProjectController() {
+    public ClientController() {
     }
 
-    private ProjectFacade getFacade() {
+    private ClientFacade getFacade() {
         return ejbFacade;
     }
 
@@ -41,7 +41,7 @@ public class ProjectController implements Serializable {
     }
 
     public String prepareCreate() {
-        current = new Project();
+        current = new Client();
         return "Create";
     }
 
@@ -105,7 +105,7 @@ public class ProjectController implements Serializable {
         }
     }
 
-    public List<Project> getItems() {
+    public List<Client> getItems() {
         if (items == null) {
             items = getFacade().findAll();
         }
@@ -116,19 +116,19 @@ public class ProjectController implements Serializable {
         items = null;
     }
 
-    public Project getProject(java.lang.Long id) {
+    public Client getProject(java.lang.Long id) {
         return ejbFacade.find(id);
     }
 
-    public Project getCurrent() {
+    public Client getCurrent() {
         return current;
     }
 
-    public void setCurrent(Project current) {
+    public void setCurrent(Client current) {
         this.current = current;
     }
 
-    @FacesConverter(forClass = Project.class)
+    @FacesConverter(forClass = Client.class)
     public static class ProjectControllerConverter implements Converter {
 
         @Override
@@ -136,7 +136,7 @@ public class ProjectController implements Serializable {
             if (value == null || value.length() == 0) {
                 return null;
             }
-            ProjectController controller = (ProjectController) facesContext.getApplication().getELResolver().
+            ClientController controller = (ClientController) facesContext.getApplication().getELResolver().
                     getValue(facesContext.getELContext(), null, "projectController");
             return controller.getProject(getKey(value));
         }
@@ -158,11 +158,11 @@ public class ProjectController implements Serializable {
             if (object == null) {
                 return null;
             }
-            if (object instanceof Project) {
-                Project o = (Project) object;
+            if (object instanceof Client) {
+                Client o = (Client) object;
                 return getStringKey(o.getId());
             } else {
-                throw new IllegalArgumentException("object " + object + " is of type " + object.getClass().getName() + "; expected type: " + Project.class.getName());
+                throw new IllegalArgumentException("object " + object + " is of type " + object.getClass().getName() + "; expected type: " + Client.class.getName());
             }
         }
 
