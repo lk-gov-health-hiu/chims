@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:composition template="/template.xhtml">
+        <ui:define name="title">
+            <h:outputText value="#{bundle.ViewProjectTitle}"></h:outputText>
+        </ui:define>
+        <ui:define name="body">
+            <h:panelGroup id="messagePanel" layout="block">
+                <h:messages errorStyle="color: red" infoStyle="color: green" layout="table"/>
+            </h:panelGroup>
+            <h:form>
+                <h:panelGrid columns="2">
+                    <h:outputText value="#{bundle.ViewProjectLabel_id}"/>
+                    <h:outputText value="#{projectController.selected.id}" title="#{bundle.ViewProjectTitle_id}"/>
+                    <h:outputText value="#{bundle.ViewProjectLabel_comments}"/>
+                    <h:outputText value="#{projectController.selected.comments}" title="#{bundle.ViewProjectTitle_comments}"/>
+                    <h:outputText value="#{bundle.ViewProjectLabel_currentStageType}"/>
+                    <h:outputText value="#{projectController.selected.currentStageType}" title="#{bundle.ViewProjectTitle_currentStageType}"/>
+                    <h:outputText value="#{bundle.ViewProjectLabel_client}"/>
+                    <h:outputText value="#{projectController.selected.client}" title="#{bundle.ViewProjectTitle_client}"/>
+                    <h:outputText value="#{bundle.ViewProjectLabel_referenceNo}"/>
+                    <h:outputText value="#{projectController.selected.referenceNo}" title="#{bundle.ViewProjectTitle_referenceNo}"/>
+                    <h:outputText value="#{bundle.ViewProjectLabel_creater}"/>
+                    <h:outputText value="#{projectController.selected.creater}" title="#{bundle.ViewProjectTitle_creater}"/>
+                    <h:outputText value="#{bundle.ViewProjectLabel_createdAt}"/>
+                    <h:outputText value="#{projectController.selected.createdAt}" title="#{bundle.ViewProjectTitle_createdAt}">
+                        <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                    </h:outputText>
+                    <h:outputText value="#{bundle.ViewProjectLabel_retirer}"/>
+                    <h:outputText value="#{projectController.selected.retirer}" title="#{bundle.ViewProjectTitle_retirer}"/>
+                    <h:outputText value="#{bundle.ViewProjectLabel_retiredAt}"/>
+                    <h:outputText value="#{projectController.selected.retiredAt}" title="#{bundle.ViewProjectTitle_retiredAt}">
+                        <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                    </h:outputText>
+                    <h:outputText value="#{bundle.ViewProjectLabel_retireComments}"/>
+                    <h:outputText value="#{projectController.selected.retireComments}" title="#{bundle.ViewProjectTitle_retireComments}"/>
+                    <h:outputText value="#{bundle.ViewProjectLabel_billDate}"/>
+                    <h:outputText value="#{projectController.selected.billDate}" title="#{bundle.ViewProjectTitle_billDate}">
+                        <f:convertDateTime pattern="MM/dd/yyyy" />
+                    </h:outputText>
+                    <h:outputText value="#{bundle.ViewProjectLabel_billTime}"/>
+                    <h:outputText value="#{projectController.selected.billTime}" title="#{bundle.ViewProjectTitle_billTime}">
+                        <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                    </h:outputText>
+                    <h:outputText value="#{bundle.ViewProjectLabel_billClass}"/>
+                    <h:outputText value="#{projectController.selected.billClass}" title="#{bundle.ViewProjectTitle_billClass}"/>
+                    <h:outputText value="#{bundle.ViewProjectLabel_editor}"/>
+                    <h:outputText value="#{projectController.selected.editor}" title="#{bundle.ViewProjectTitle_editor}"/>
+                    <h:outputText value="#{bundle.ViewProjectLabel_editedAt}"/>
+                    <h:outputText value="#{projectController.selected.editedAt}" title="#{bundle.ViewProjectTitle_editedAt}">
+                        <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                    </h:outputText>
+                    <h:outputText value="#{bundle.ViewProjectLabel_checkedBy}"/>
+                    <h:outputText value="#{projectController.selected.checkedBy}" title="#{bundle.ViewProjectTitle_checkedBy}"/>
+                    <h:outputText value="#{bundle.ViewProjectLabel_checkeAt}"/>
+                    <h:outputText value="#{projectController.selected.checkeAt}" title="#{bundle.ViewProjectTitle_checkeAt}">
+                        <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                    </h:outputText>
+                </h:panelGrid>
+                <br />
+                <h:commandLink action="#{projectController.destroyAndView}" value="#{bundle.ViewProjectDestroyLink}"/>
+                <br />
+                <br />
+                <h:link outcome="Edit" value="#{bundle.ViewProjectEditLink}"/>
+                <br />
+                <h:commandLink action="#{projectController.prepareCreate}" value="#{bundle.ViewProjectCreateLink}" />
+                <br />
+                <h:commandLink action="#{projectController.prepareList}" value="#{bundle.ViewProjectShowAllLink}"/>
+                <br />
+                <br />
+                <h:link outcome="/index" value="#{bundle.ViewProjectIndexLink}"/>
+
+            </h:form>
+        </ui:define>
+    </ui:composition>
+
+</html>

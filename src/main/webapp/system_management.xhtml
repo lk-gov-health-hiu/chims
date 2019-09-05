@@ -1,0 +1,101 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      >
+
+
+    <h:head>
+        <h:outputStylesheet library="css" name="main.css" ></h:outputStylesheet>
+    </h:head>
+
+    <h:body>
+
+        <ui:composition template="./template.xhtml">
+
+            <ui:define name="content">
+
+
+                <table style="width: 99%; top: 0px; margin: auto; margin-top: 0px; vertical-align: top; " class="w3-table" >
+                    <tr style="height: 50px;">
+                        <td colspan="2" >
+                            <h3>SYSTEM MANAGEMENT</h3>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td valign="top" style="width: 220px;">
+                            <table   >
+
+                                <tr>
+                                    <td style="text-align: left; width: 210px!important; min-width: 210px!important; max-width: 210px!important;">
+                                        <h:form>
+                                            <h:commandButton  class="w3-btn w3-yellow btn350" 
+                                                              value="#{bundle.AddNewUser}" 
+                                                              action="#{webUserController.prepareCreate()}"></h:commandButton>
+                                        </h:form>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: left;">
+                                        <h:form>
+                                            <h:commandButton  class="w3-btn w3-yellow btn350" value="Manage Users" action="/webUser/manage_users"></h:commandButton>
+                                        </h:form>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: left;">
+                                        <h:form>
+                                            <h:commandButton  class="w3-btn w3-yellow btn350" value="Manage Institutions" action="#{institutionController.prepareListOfProviders()}"></h:commandButton>
+                                        </h:form>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: left;">
+                                        <h:form>
+                                            <h:commandButton  class="w3-btn w3-yellow btn350" value="Manage Areas" action="/area/List"></h:commandButton>
+                                        </h:form>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: left;">
+                                        <h:form>
+                                            <h:commandButton  class="w3-btn w3-yellow btn350" value="Manage Items" action="/item/List"></h:commandButton>
+                                        </h:form>
+                                    </td>
+                                </tr>
+                                 <tr>
+                                    <td style="text-align: left;">
+                                        <h:form>
+                                            <h:commandButton  class="w3-btn w3-yellow btn350" value="Import Projects" action="/project/Upload"></h:commandButton>
+                                        </h:form>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                        <td>
+
+                            <ui:insert name="right">
+
+                            </ui:insert>
+
+                        </td>
+                    </tr>
+                </table>
+
+
+
+
+            </ui:define>
+
+        </ui:composition>
+
+
+    </h:body>
+
+
+
+
+
+
+</html>

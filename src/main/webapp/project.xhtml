@@ -1,0 +1,612 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+
+    <h:head>
+        <h:outputStylesheet library="css" name="tem1.css" ></h:outputStylesheet>
+
+    </h:head>
+
+    <h:body>
+
+        <ui:composition template="./template.xhtml">
+
+            <ui:define name="addProject" >
+                <li>
+                    <h:commandLink value="#{bundle.AddProject}" action="#{webUserController.addNewProject()}"></h:commandLink>
+                </li>
+                <li>
+                    <h:commandLink class="w3-theme-d2" value="#{bundle.ProjectDetails}" action="#{webUserController.addNewProject()}"></h:commandLink>
+                </li>
+            </ui:define>
+
+            <ui:define name="content">
+
+
+
+
+                <div class="w3-row" >
+
+
+
+
+                    <h:form >
+
+
+                        <p:panelGrid columns="2" styleClass="alignTop" style="vertical-align: top;">
+
+                            <p:panelGrid columns="3" styleClass="alignTop" >
+
+                                <h:outputLabel value="Stage" for="projectStage" />
+                                <h:outputLabel id="projectStage" value="#{webUserController.currentProject.currentStageType.label}"  />
+                                <h:panelGroup >
+                                    <h:outputLabel value="Need Additional Details Before Going to PEC" rendered="#{webUserController.currentProject.incompletePcp}"></h:outputLabel>
+                                    <p:spacer></p:spacer>
+                                </h:panelGroup>
+
+
+
+                                <h:outputLabel value="Year" for="projectYear" />
+                                <h:inputText id="projectYear" value="#{webUserController.currentProject.projectYear}" title="Project Year" />
+                                <p:spacer></p:spacer>
+
+
+                                <h:outputLabel value="Proposal Date"  />
+                                <p:calendar value="#{webUserController.currentProject.proposalDate}" pattern="dd MMMM yyyy" >
+                                </p:calendar>
+                                <h:panelGroup>
+                                    <h:inputTextarea id="txtPdComments" value="#{webUserController.currentProject.proposalDateComments}"  ></h:inputTextarea>
+                                    <p:watermark value="Enter Proposal Date Comments" for="txtPdComments" ></p:watermark>
+                                </h:panelGroup>
+
+                                <h:outputLabel value="Title" for="projectTitle" />
+                                <h:inputText style="width:95%;" id="projectTitle" value="#{webUserController.currentProject.projectTitle}" title="ProjectTitle" />
+                                <p:spacer></p:spacer>
+
+
+                                <h:outputLabel value="File Number" for="fileNo" />
+                                <h:inputText id="fileNo"  style="width:55%;"  value="#{webUserController.currentProject.fileNumber}" title="CurrentStageType" />
+                                <p:spacer></p:spacer>
+
+
+                                <h:outputLabel value="Provinces" for="provinces" />
+                                <p:dataTable id="tblPs" emptyMessage="No Province"
+                                             value="#{webUserController.currentProject.projectProvinces}" var="p" >
+                                    <p:column headerText="Provinces">
+                                        <p:outputLabel value="#{p.area.name}" ></p:outputLabel>
+                                        <p:commandLink id="lnkRp" value="x" action="#{webUserController.removeProjectProvince()}"
+                                                       process="@this" update="tblPs" style="float: right;"   >
+                                            <f:setPropertyActionListener value="#{p}" target="#{webUserController.removingProjectProvince}" >
+                                            </f:setPropertyActionListener>
+                                        </p:commandLink>
+                                        <p:tooltip for="lnkRp" value="Remove" ></p:tooltip>
+                                    </p:column>
+                                </p:dataTable>
+                                <h:panelGrid columns="1">
+                                    <h:selectOneMenu id="cmdProvice" 
+                                                     value="#{webUserController.selectedProvince}" >
+                                        <f:selectItem itemLabel="Select Province to add" ></f:selectItem>
+                                        <f:selectItems value="#{areaController.provinces}" var="p" itemLabel="#{p.name}" itemValue="#{p}" ></f:selectItems>
+                                        <f:ajax execute="@this" render="cmbDistrict" ></f:ajax>
+                                    </h:selectOneMenu>
+                                    <p:commandButton id="btnP" value="Add Province" action="#{webUserController.addSelectedProvinceToProject()}" 
+                                                     process="cmdProvice @this" update="tblPs cmbDistrict @this" >
+                                    </p:commandButton>
+                                </h:panelGrid>
+
+
+
+                                <h:outputLabel value="Districts" ></h:outputLabel>
+                                <p:dataTable id="tblDs" emptyMessage="No Districts"
+                                             value="#{webUserController.currentProject.projectDistricts}" var="d" >
+                                    <p:column headerText="District">
+                                        <p:outputLabel value="#{d.area.name}" ></p:outputLabel>
+                                        <p:commandLink id="lnkRd" value="x" action="#{webUserController.removeProjectDistrict()}"
+                                                       process="@this" update="tblDs" style="float: right;"   >
+                                            <f:setPropertyActionListener value="#{d}" target="#{webUserController.removingProjectDistrict}" >
+                                            </f:setPropertyActionListener>
+                                        </p:commandLink>
+                                        <p:tooltip for="lnkRd" value="Remove" ></p:tooltip>
+                                    </p:column>
+                                </p:dataTable>
+                                <h:panelGrid columns="1" >
+                                    <h:selectOneMenu id="cmbDistrict" value="#{webUserController.selectedDistrict}" >
+                                        <f:selectItem itemLabel="Select district to add" ></f:selectItem>
+                                        <f:selectItems value="#{webUserController.districtsAvailableForSelection}" var="d" itemLabel="#{d.name}" itemValue="#{d}" ></f:selectItems>
+                                    </h:selectOneMenu>
+                                    <p:commandButton id="btnD" value="Add District" 
+                                                     action="#{webUserController.addSelectedDistrictToProject()}" 
+                                                     process="cmbDistrict @this" update="tblDs cmbDistrict @this" >
+                                    </p:commandButton>
+                                </h:panelGrid>
+
+
+                                <h:outputLabel value="Project Locations"  />
+                                <p:dataTable id="tblLs" emptyMessage="No Location"
+                                             value="#{webUserController.currentProject.projectLocations}" var="l" >
+                                    <p:column headerText="Location">
+                                        <p:outputLabel value="#{l.institution.name}" ></p:outputLabel>
+
+                                        <p:commandLink id="lnkLd" value="x" action="#{webUserController.removeProjectLocation()}"
+                                                       process="@this" update="tblLs" style="float: right;"   >
+                                            <f:setPropertyActionListener value="#{l}" target="#{webUserController.removingProjectInstitution}" >
+                                            </f:setPropertyActionListener>
+                                        </p:commandLink>
+                                        <p:tooltip for="lnkLd" value="Remove" ></p:tooltip>
+                                    </p:column>
+                                </p:dataTable>
+
+                                <h:panelGrid columns="1" >
+                                    <p:autoComplete value="#{webUserController.selectedLocation}"
+                                                    completeMethod="#{institutionController.completeInstitutions}"
+                                                    var="ins" forceSelection="true" id="acLoc" 
+
+
+                                                    placeholder="Search Location by typing few letters ..."
+                                                    itemLabel="#{ins.name}" inputStyle="width:300px;" style="width: 300px;"
+                                                    itemValue="#{ins}"></p:autoComplete>
+                                    <p:commandButton id="btnL" value="Add Location" 
+                                                     action="#{webUserController.addSelectedLocationToProject()}" 
+                                                     process="acLoc @this" update="tblLs acLoc" >
+                                    </p:commandButton>
+                                </h:panelGrid>
+
+
+
+                                <h:outputLabel value="Project Description" for="pd"  />
+                                <h:inputTextarea  id="pd" 
+                                                  value="#{webUserController.currentProject.projectDescription}" 
+                                                  title="Project Description" 
+                                                  />
+                                <p:spacer></p:spacer>
+
+                                <h:outputLabel value="Project Cost" />
+                                <h:panelGrid columns="3">
+                                    <h:inputText value="#{webUserController.currentProject.projectCost}" 
+                                                 title="Project Cost" style="width: 60%;"
+                                                 />
+                                    <p:spacer height="1" width="15" ></p:spacer>
+                                    <h:selectOneMenu style="width: 30%;" value="#{webUserController.currentProject.projectCostUnit}" >
+                                        <f:selectItem itemLabel="Select Unit" ></f:selectItem>
+                                        <f:selectItems value="#{itemController.costUnits}" ></f:selectItems>
+                                    </h:selectOneMenu>
+                                </h:panelGrid>
+                                <p:spacer></p:spacer>
+
+
+                                <h:outputLabel value="Source of Funds" />
+                                <p:dataTable id="tblFs" emptyMessage="No Fund Sources"
+                                             value="#{webUserController.currentProject.sourcesOfFunds}" var="f" >
+                                    <p:column headerText="Source of Funds">
+                                        <p:outputLabel value="#{f.sourceOfFund.name}" ></p:outputLabel>
+                                        <p:outputLabel value=" " ></p:outputLabel>
+                                        <p:outputLabel value="#{f.fundValue}" ></p:outputLabel>
+                                        <p:outputLabel value=" " ></p:outputLabel>
+                                        <p:outputLabel value="#{f.fundUnit.name}" ></p:outputLabel>
+
+
+                                        <p:commandLink id="lnkRf" value="x" action="#{webUserController.removeProjectSourceOfFunds()}"
+                                                       process="@this" update="tblFs" style="float: right;"   >
+                                            <f:setPropertyActionListener value="#{f}" target="#{webUserController.removingProjectSourceOfFund}" >
+                                            </f:setPropertyActionListener>
+                                        </p:commandLink>
+                                        <p:tooltip for="lnkRf" value="Remove" ></p:tooltip>
+
+
+                                    </p:column>
+                                    <p:column headerText="Comments">
+                                        <p:outputLabel value="#{f.comments}" ></p:outputLabel>
+                                    </p:column>
+                                </p:dataTable>
+
+                                <h:panelGrid id="gridSof" columns="1" >
+                                    <h:selectOneMenu id="cmbSsof" value="#{webUserController.selectedSourceOfFund}" style="max-width: 300px;" >
+                                        <f:selectItem itemLabel="Select Source of Fund" ></f:selectItem>
+                                        <f:selectItems value="#{itemController.sourcesOfFunds}" ></f:selectItems>
+                                    </h:selectOneMenu>
+                                    <p:inputText id="txtSofv" value="#{webUserController.selectedFundValue}" ></p:inputText>
+                                    <h:selectOneMenu id="cmbSsofu" value="#{webUserController.selectedFundUnit}" >
+                                        <f:selectItems value="#{itemController.costUnits}" ></f:selectItems>
+                                    </h:selectOneMenu>
+                                    <p:inputTextarea id="cmbSofCom" value="#{webUserController.selectedFundComments}" placeholder="Add Comments on this fund source"></p:inputTextarea>
+                                    <p:commandButton id="btnF" value="Add Source of Fund" 
+                                                     action="#{webUserController.addSelectedSourceOfFundsToProject()}" 
+                                                     process="cmbSsof txtSofv cmbSsofu cmbSofCom @this" update="gridSof tblFs" >
+                                    </p:commandButton>
+                                </h:panelGrid>
+
+
+                                <h:outputLabel value="PCP received By"  />
+                                <p:autoComplete value="#{webUserController.currentProject.pcpReceivedBy}"
+                                                completeMethod="#{institutionController.completeInstitutions}"
+                                                var="insr" forceSelection="true" id="acLocR" 
+                                                placeholder="Search Location by typing few letters ..."
+                                                itemLabel="#{insr.name}" inputStyle="width:300px;" style="width: 300px;"
+                                                itemValue="#{insr}"></p:autoComplete>
+
+                                <p:spacer></p:spacer>
+
+                                <h:outputLabel value="PCP First Received Date"  />
+                                <p:calendar value="#{webUserController.currentProject.pcpFirstReceivedDate}" pattern="dd MMMM yyyy" >
+                                </p:calendar>
+                                <p:spacer></p:spacer>
+
+
+                                <h:outputLabel value="PCP Last Received Date"  />
+                                <p:calendar value="#{webUserController.currentProject.pcpFinalizedDate}" pattern="dd MMMM yyyy" >
+                                </p:calendar>
+                                <p:spacer></p:spacer>
+
+
+                                <h:outputLabel value="Engineer's Estimate"  />
+                                <p:selectBooleanButton value="#{webUserController.currentProject.engineersEstimateAvailable}" offLabel="NOT Available" onLabel="Available" ></p:selectBooleanButton>
+                                <p:spacer></p:spacer>
+
+                                <h:outputLabel value="Mater Plan"  />
+                                <p:selectBooleanButton value="#{webUserController.currentProject.masterPlanAvailable}" offLabel="NOT Available" onLabel="Available" ></p:selectBooleanButton>
+                                <p:spacer></p:spacer>
+
+                                <h:outputLabel value="Building Plan"  />
+                                <p:selectBooleanButton value="#{webUserController.currentProject.buildingPlanAvailable}" offLabel="NOT Available" onLabel="Available" 
+                                                       ></p:selectBooleanButton>
+                                <p:spacer></p:spacer>
+
+
+                            </p:panelGrid>
+
+
+
+
+
+
+
+                            <p:panelGrid columns="1" styleClass="alignTop" >
+
+                                <h:commandLink  action="#{webUserController.updateProject()}" 
+                                                class="w3-btn w3-green w3-margin btn350"  
+                                                >
+                                    <div>
+                                        <i class='fas fa-save' style='float: left; font-size:24px;color:green;'></i>
+                                        <div style="float: right;">Save</div>
+                                    </div>
+                                </h:commandLink> 
+                                <h:commandLink  action="#{webUserController.deleteProject()}" 
+                                                class="w3-btn w3-deep-orange w3-margin btn350" 
+                                                onclick="if (!confirm('Really want to do Delete?'))
+                                                            return false">
+                                    <div>
+                                        <i class='fas fa-trash' style='float: left; font-size:24px;color:green;'></i>
+                                        <div style="float: right;">Delete</div>
+                                    </div>
+                                </h:commandLink> 
+                                <h:commandLink 
+                                    class="w3-btn w3-purple w3-margin  btn350" 
+                                    action="/upload_files_to_project_proposal" 
+                                    >
+                                    <div>
+                                        <i class='far fa-file' style='float: left; font-size:24px;color:green;'></i>
+                                        <div style="float: right;">File Uploads</div>
+                                    </div>  
+                                </h:commandLink>
+
+
+
+                                <p:commandLink action="#{webUserController.toPecApproval()}" oncomplete="PF('dlg1').show();"
+                                               rendered="#{webUserController.currentProject.canApproveAtPec}"
+                                               process="@this" update="dlg1"    
+                                               class="w3-btn w3-amber w3-margin  btn350" 
+                                               >
+
+                                    <div>
+                                        <i class="fas far fa-thumbs-up" style='float: left; font-size:24px;color:yellow;'></i>
+                                        <div style="float: right;">PEC Recommendation</div>
+                                    </div>
+                                </p:commandLink> 
+
+
+                                <p:commandLink action="#{webUserController.toPecRejection()}"  oncomplete="PF('dlg1').show();"
+                                               process="@this" update="dlg1"    
+                                               rendered="#{webUserController.currentProject.canRejectAtPec}"
+                                               class="w3-btn w3-amber w3-margin  btn350" >
+
+                                    <div>
+                                        <i class="fas far fa-thumbs-down" style='float: left; font-size:24px;color:yellow;'></i>
+                                        <div style="float: right;">Reject at PEC</div>
+                                    </div>
+                                </p:commandLink> 
+
+                                <p:commandLink action="#{webUserController.toDnpSubmission()}"  oncomplete="PF('dlg1').show();"
+                                               process="@this" update="dlg1"     rendered="#{webUserController.currentProject.canSubmitToNdp}"
+                                               class="w3-btn w3-amber w3-margin  btn350 " >
+                                    <div>
+                                        <i class="fa fa-arrow-right" style='float: left; font-size:24px;color:blueviolet ;'></i>
+                                        <div style="float: right;">To DNP Submission</div>
+                                    </div>
+                                </p:commandLink> 
+                                <p:commandLink action="#{webUserController.toDnpApproval()}"   oncomplete="PF('dlg1').show();"
+                                               rendered="#{webUserController.currentProject.canApproveAtNdp}"
+                                               process="@this" update="dlg1"    
+                                               class="w3-btn w3-amber w3-margin  btn350" >
+
+                                    <div>
+                                        <i class="fas far fa-thumbs-up" style='float: left; font-size:24px;color:blueviolet;'></i>
+                                        <div style="float: right;">To Approve at DNP</div>
+                                    </div>
+                                </p:commandLink> 
+                                <p:commandLink action="#{webUserController.toDnpRejection()}"   oncomplete="PF('dlg1').show();"
+                                               rendered="#{webUserController.currentProject.canRejectAtNdp}"
+                                               process="@this" update="dlg1"    
+                                               class="w3-btn w3-amber w3-margin  btn350" >
+                                    <div>
+                                        <i class="fas far fa-thumbs-down" style='float: left; font-size:24px;color:blueviolet;'></i>
+                                        <div style="float: right;">To Reject at DNP</div>
+                                    </div>
+                                </p:commandLink> 
+                                <p:commandLink action="#{webUserController.toCabinetSubmission()}"   oncomplete="PF('dlg1').show();"
+                                               rendered="#{webUserController.currentProject.canSubmitToCabinet}"
+                                               process="@this" update="dlg1"    
+                                               class="w3-btn w3-amber w3-margin  btn350" >
+
+                                    <div>
+                                        <i class="fa fa-arrow-right" style='float: left; font-size:24px;color:blueviolet ;'></i>
+                                        <div style="float: right;">To Cabinet Submission</div>
+                                    </div>
+                                </p:commandLink> 
+
+                                <p:commandLink action="#{webUserController.toCabinetApproval()}"   oncomplete="PF('dlg1').show();"
+                                               rendered="#{webUserController.currentProject.canApproveAtCabinet}"
+                                               process="@this" update="dlg1"    
+                                               class="w3-btn w3-amber w3-margin  btn350" >
+                                    <div>
+                                        <i class="fas far fa-thumbs-up" style='float: left; font-size:24px;color:blueviolet;'></i>
+                                        <div style="float: right;">To Approve at Cabinet</div>
+                                    </div>
+                                </p:commandLink> 
+                                <p:commandLink action="#{webUserController.toCabinetRejection()}"  oncomplete="PF('dlg1').show();"
+                                               process="@this" update="dlg1"
+                                               rendered="#{webUserController.currentProject.canRejectAtCabinet}"
+                                               class="w3-btn w3-amber w3-margin  btn350" >
+                                    <div>
+                                        <i class="fas far fa-thumbs-down" style='float: left; font-size:24px;color:blueviolet;'></i>
+                                        <div style="float: right;">Reject at Cabinet</div>
+                                    </div>
+                                </p:commandLink> 
+
+                                <p:commandLink action="#{webUserController.toAllocateFunds()}"  oncomplete="PF('dlg1').show();"
+                                               process="@this" update="dlg1"
+                                               rendered="#{webUserController.currentProject.canAllocateFunds}"
+                                               class="w3-btn w3-amber w3-margin  btn350" >
+                                    <div>
+                                        <i class="fas far fa-thumbs-down" style='float: left; font-size:24px;color:blueviolet;'></i>
+                                        <div style="float: right;">Allocate Funds</div>
+                                    </div>
+                                </p:commandLink> 
+
+
+                                <p:commandLink action="#{webUserController.toMarkOngoing()}"  oncomplete="PF('dlg1').show();"
+                                               rendered="#{webUserController.currentProject.canMarkAsOngoing}"
+                                               process="@this" update="dlg1"
+                                               class="w3-btn w3-amber w3-margin  btn350" >
+                                    <div>
+                                        <i class="fas far fa-thumbs-down" style='float: left; font-size:24px;color:blueviolet;'></i>
+                                        <div style="float: right;">Mark as Ongoing</div>
+                                    </div>
+                                </p:commandLink> 
+
+                                <p:commandLink action="#{webUserController.toMarkAsCompleted()}"  oncomplete="PF('dlg1').show();"
+                                               rendered="#{webUserController.currentProject.canMarkAsCompleted}"
+                                               class="w3-btn w3-amber w3-margin  btn350" >
+                                    <div>
+                                        <i class="fas far fa-thumbs-down" style='float: left; font-size:24px;color:blueviolet;'></i>
+                                        <div style="float: right;">To Mark as Completed</div>
+                                    </div>
+                                </p:commandLink> 
+
+
+                                <h:commandLink 
+                                               class="w3-btn w3-blue w3-margin  btn350">
+                                    <p:printer target="details" ></p:printer>
+                                    <div>
+                                        <i class='fa fa-print' style='float: left; font-size:24px;color:green;'></i>
+                                        <div style="float: right;">Print</div>
+                                    </div>  
+                                </h:commandLink>
+
+                            </p:panelGrid>
+
+
+
+                            <p:panel header="Project Submission to DNP" id="details" >
+
+                                <p:panelGrid columns="2">
+
+                                    <h:outputText value="Project Stage"/>
+                                    <h:outputText value="#{webUserController.currentProject.currentStageType}"/>
+
+                                    <h:outputText value="Project Year:"/>
+                                    <h:outputText value="#{webUserController.currentProject.projectYear}" title="ProjectYear"/>
+
+                                    <h:outputText value="File Number:"/>
+                                    <h:outputText value="#{webUserController.currentProject.fileNumber}" title="FileNumber"/>
+
+
+                                    <h:outputText value="Title:"/>
+                                    <h:outputText value="#{webUserController.currentProject.projectTitle}" title="ProjectTitle"/>
+
+                                    <h:outputText value="Province:"/>
+                                    <h:panelGroup >
+                                        <h:outputText value="#{webUserController.currentProject.province.name}" title="Province"/>
+                                        <h:outputText value="#{webUserController.currentProject.allIsland?'All Island':''}" title="AllIsland"/>
+                                    </h:panelGroup>
+
+
+                                    <h:outputText value="District:"/>
+                                    <h:outputText value="#{webUserController.currentProject.district.name}" title="District"/>
+
+
+                                    <h:outputText value="Project Location:"/>
+                                    <h:outputText value="#{webUserController.currentProject.projectLocation.name}" title="ProjectLocation"/>
+
+                                    <h:outputText value="Engineer's Estimate Available:"/>
+                                    <h:outputText value="#{webUserController.currentProject.engineersEstimateAvailable?'Yes':'No'}" title="EngineersEstimateAvailable"/>
+                                    <h:outputText value="Master Plan Available:"/>
+                                    <h:outputText value="#{webUserController.currentProject.masterPlanAvailable?'Yes':'No'}" title="MasterPlanAvailable"/>
+                                    <h:outputText value="Building Plan Available:"/>
+                                    <h:outputText value="#{webUserController.currentProject.buildingPlanAvailable?'Yes':'No'}" title="BuildingPlanAvailable"/>
+
+
+
+                                    <h:outputText value="Description:"/>
+                                    <h:outputText value="#{webUserController.currentProject.projectDescription}" title="ProjectDescription"/>
+
+                                    <h:outputText value="Project Cost:"/>
+                                    <h:panelGroup>
+                                        <h:outputText value="#{webUserController.currentProject.projectCost}" title="ProjectCost">
+                                            <f:convertNumber pattern="#,##0.00" ></f:convertNumber>
+                                        </h:outputText>
+                                        <h:outputText value=" "/>
+                                        <h:outputText value="#{webUserController.currentProject.projectCostUnit.name}" title="ProjectCostUnit"/>
+                                    </h:panelGroup>
+
+                                    <h:outputText value="Source Of Funds:"/>
+                                    <h:outputText value="#{webUserController.currentProject.sourceOfFunds.name}" title="SourceOfFunds"/>
+
+                                    <h:outputText value="Proposal Date:"/>
+                                    <h:outputText value="#{webUserController.currentProject.proposalDate}" title="ProposalDate">
+                                        <f:convertDateTime pattern="dd/MMMM/yyyy" />
+                                    </h:outputText>
+
+
+
+
+                                    <h:outputText value="Initial Data Entry:"/>
+                                    <h:panelGroup >
+                                        <h:outputText value="By "/>
+                                        <h:outputText value="#{webUserController.currentProject.creater.webUserPerson.nameWithTitle}" title="Creater"/>
+                                        <h:outputText value=" at "/>
+                                        <h:outputText value="#{webUserController.currentProject.createdAt}" title="CreatedAt">
+                                            <f:convertDateTime pattern="HH:mm a" />
+                                        </h:outputText>
+                                        <h:outputText value=" on "/>
+                                        <h:outputText value="#{webUserController.currentProject.createdAt}" title="CreatedAt">
+                                            <f:convertDateTime pattern="dd/MMMM/yyyy" />
+                                        </h:outputText>
+                                        <h:outputText value="."/>
+                                    </h:panelGroup>
+
+                                    <h:outputText value="Last Edit:"/>
+                                    <h:panelGroup >
+                                        <h:outputText value="By "/>
+                                        <h:outputText value="#{webUserController.currentProject.lastEditor.webUserPerson.nameWithTitle}" title="Creater"/>
+                                        <h:outputText value=" at "/>
+                                        <h:outputText value="#{webUserController.currentProject.lastEditAt}" title="CreatedAt">
+                                            <f:convertDateTime pattern="HH:mm a" />
+                                        </h:outputText>
+                                        <h:outputText value=" on "/>
+                                        <h:outputText value="#{webUserController.currentProject.lastEditAt}" title="CreatedAt">
+                                            <f:convertDateTime pattern="dd/MMMM/yyyy" />
+                                        </h:outputText>
+                                        <h:outputText value="."/>
+                                    </h:panelGroup>
+
+                                    <h:outputText value="PEC Approval Comments"/>
+                                    <h:outputText value="#{webUserController.currentProject.pecRecommendationComments}" title="ProjectComments"/>
+
+
+                                    <h:outputText value="PEC Approval Documentation:"/>
+                                    <h:panelGroup >
+                                        <h:outputText value="By "/>
+                                        <h:outputText value="#{webUserController.currentProject.pecRecommendationRecordedBy.webUserPerson.nameWithTitle}" title="Creater"/>
+                                        <h:outputText value=" at "/>
+                                        <h:outputText value="#{webUserController.currentProject.pecRecommendationRecordedAt}" title="CreatedAt">
+                                            <f:convertDateTime pattern="HH:mm a" />
+                                        </h:outputText>
+                                        <h:outputText value=" on "/>
+                                        <h:outputText value="#{webUserController.currentProject.pecRecommendationRecordedAt}" title="CreatedAt">
+                                            <f:convertDateTime pattern="dd/MMMM/yyyy" />
+                                        </h:outputText>
+                                        <h:outputText value="."/>
+                                    </h:panelGroup>
+
+
+                                    <h:outputText value="PEC Approval Comments"/>
+                                    <h:outputText value="#{webUserController.currentProject.pecRecommendationComments}" title="ProjectComments"/>
+
+
+                                    <h:outputText value="PEC Approval Documentation:"/>
+                                    <h:panelGroup >
+                                        <h:outputText value="By "/>
+                                        <h:outputText value="#{webUserController.currentProject.pecRecommendationRecordedBy.webUserPerson.nameWithTitle}" title="Creater"/>
+                                        <h:outputText value=" at "/>
+                                        <h:outputText value="#{webUserController.currentProject.pecRecommendationRecordedBy}" title="CreatedAt">
+                                        </h:outputText>
+                                        <h:outputText value=" on "/>
+                                        <h:outputText value="#{webUserController.currentProject.pecRecommendationRecordedAt}" title="CreatedAt">
+                                            <f:convertDateTime pattern="dd/MMMM/yyyy" />
+                                        </h:outputText>
+                                        <h:outputText value="."/>
+                                    </h:panelGroup>
+
+                                </p:panelGrid>
+
+                            </p:panel>
+
+                            <p:dialog id="dlg1" header="#{webUserController.projectStageWorkingOnTitle}" widgetVar="dlg1" minHeight="40">
+                                <p:panel header="#{webUserController.projectStageWorkingOnTitle}" >
+                                    <p:panelGrid columns="2" >
+
+                                        <p:outputLabel value="#{webUserController.projectStageWorkingOnDateTitle}" >
+                                        </p:outputLabel>
+                                        <p:calendar pattern="dd MMMM yyyy" value="#{webUserController.projectStageWorkingOnDate}" >
+                                        </p:calendar>
+
+                                        <p:outputLabel value="#{webUserController.projectStageWorkingOnCommentTitle}" >
+                                        </p:outputLabel>
+                                        <p:inputTextarea value="#{webUserController.projectStageWorkingOnComments}" >
+                                        </p:inputTextarea>
+
+                                        <p:spacer ></p:spacer>
+                                        <p:commandButton ajax="false" action="#{webUserController.markAsCompleted()}" 
+                                                         value="#{webUserController.projectStageWorkingOnButtonTitle}">
+                                        </p:commandButton>
+
+
+                                    </p:panelGrid>
+
+                                </p:panel>
+
+
+
+                            </p:dialog>
+
+                        </p:panelGrid>
+
+
+
+
+                    </h:form>
+                </div>
+
+                <div style="height: 100px;">
+                </div>
+
+
+            </ui:define>
+
+        </ui:composition>
+
+
+    </h:body>
+
+
+
+
+
+
+</html>

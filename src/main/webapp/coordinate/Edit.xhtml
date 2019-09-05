@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:composition template="/template.xhtml">
+        <ui:define name="title">
+            <h:outputText value="#{bundle.EditCoordinateTitle}"></h:outputText>
+        </ui:define>
+        <ui:define name="body">
+            <h:panelGroup id="messagePanel" layout="block">
+                <h:messages errorStyle="color: red" infoStyle="color: green" layout="table"/>
+            </h:panelGroup>
+            <h:form>
+                <h:panelGrid columns="2">
+                    <h:outputLabel value="#{bundle.EditCoordinateLabel_institution}" for="institution" />
+                    <h:selectOneMenu id="institution" value="#{coordinateController.selected.institution}" title="#{bundle.EditCoordinateTitle_institution}" >
+                        <f:selectItems value="#{institutionController.itemsAvailableSelectOne}"/>
+                    </h:selectOneMenu>
+                    <h:outputLabel value="#{bundle.EditCoordinateLabel_longitude}" for="longitude" />
+                    <h:inputText id="longitude" value="#{coordinateController.selected.longitude}" title="#{bundle.EditCoordinateTitle_longitude}" />
+                    <h:outputLabel value="#{bundle.EditCoordinateLabel_latitude}" for="latitude" />
+                    <h:inputText id="latitude" value="#{coordinateController.selected.latitude}" title="#{bundle.EditCoordinateTitle_latitude}" />
+                    <h:outputLabel value="#{bundle.EditCoordinateLabel_elevation}" for="elevation" />
+                    <h:inputText id="elevation" value="#{coordinateController.selected.elevation}" title="#{bundle.EditCoordinateTitle_elevation}" />
+                    <h:outputLabel value="#{bundle.EditCoordinateLabel_id}" for="id" />
+                    <h:inputText id="id" value="#{coordinateController.selected.id}" title="#{bundle.EditCoordinateTitle_id}" />
+                </h:panelGrid>
+                <h:commandLink action="#{coordinateController.update}" value="#{bundle.EditCoordinateSaveLink}"/>
+                <br />
+                <br />
+                <h:link outcome="View" value="#{bundle.EditCoordinateViewLink}"/>
+                <br />
+                <h:commandLink action="#{coordinateController.prepareList}" value="#{bundle.EditCoordinateShowAllLink}" immediate="true"/>
+                <br />
+                <br />
+                <h:link outcome="/index" value="#{bundle.EditCoordinateIndexLink}" />
+            </h:form>
+        </ui:define>
+    </ui:composition>
+
+</html>

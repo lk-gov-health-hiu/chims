@@ -1,0 +1,119 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+
+    <h:head>
+        <h:outputStylesheet library="css" name="main.css" ></h:outputStylesheet>
+    </h:head>
+
+    <h:body>
+
+        <ui:composition template="./template.xhtml">
+
+
+            <ui:define name="content">
+
+
+
+                <table >
+                    <tr>
+                        <td colspan="2">
+                            <h1>Client Projects</h1>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="width: 400px;vertical-align: top;">
+                            <h:form >
+
+                                <p:panelGrid columns="1" class="alignLeft" >
+                                    
+                                    <p:commandButton ajax="false" action="#{webUserController.listProjectsToSubmitBids()}" 
+                                                     value="List Projects to Subtmit Bids" ></p:commandButton>
+                                    
+                                    <p:commandButton ajax="false" action="#{webUserController.listProjectsAwaitingCustomerApproval() }" 
+                                                     value="List Currently Active Bids" ></p:commandButton>
+                                    
+                                    <p:commandButton ajax="false" action="#{webUserController.listProjectsAwaitingBidding()}" 
+                                                     value="List Accepted Bids" ></p:commandButton>
+                                    
+                                    <p:commandButton ajax="false" action="#{webUserController.listProjectsAwaitingBidSelection() }" 
+                                                     value="List Rejected Bids" ></p:commandButton>
+                                    
+                                </p:panelGrid>
+
+                            </h:form>
+                        </td>
+                        <td style="vertical-align: top;">
+                            <h:form >
+                                <p:dataTable value="#{webUserController.listOfProjects}" var="p" rowKey="#{p.id}"
+
+                                             >
+                                    <p:column headerText="Submitted Date" >
+                                        <h:outputLabel value="#{p.requestSubmittedAt}" >
+                                            <f:convertDateTime pattern="MMM/dd/yyyy" ></f:convertDateTime>
+                                        </h:outputLabel>
+                                    </p:column>
+                                    <p:column headerText="Client" >
+                                        <h:outputLabel value="#{p.client.name}" >
+                                        </h:outputLabel>
+                                    </p:column>
+                                    <p:column headerText="Email" >
+                                        <h:outputLabel value="#{p.client.email}" >
+                                        </h:outputLabel>
+                                    </p:column>
+                                    <p:column headerText="Phone" >
+                                        <h:outputLabel value="#{p.client.phone}" >
+                                        </h:outputLabel>
+                                    </p:column>
+                                    <p:column headerText="Address" >
+                                        <h:outputLabel value="#{p.client.address}" >
+                                        </h:outputLabel>
+                                    </p:column>
+                                    <p:column headerText="Electricity Consumption" >
+                                        <h:outputLabel value="#{p.twelveMonthsElectricityUsage}" >
+                                        </h:outputLabel>
+                                    </p:column>
+                                    <p:column headerText="Special Notes" >
+                                        <h:outputLabel value="#{p.specialNotes}" >
+                                        </h:outputLabel>
+                                    </p:column>
+                                    <p:column headerText="Actions" >
+                                        <p:commandButton value="Manage" ajax="false" action="#{webUserController.viewProjectToSubmitProposalsByCompany()}" >
+                                            <f:setPropertyActionListener value="#{p}" target="#{webUserController.currentProject}" ></f:setPropertyActionListener>
+                                        </p:commandButton>
+                                        <h:outputLabel value="#{p.specialNotes}" >
+                                        </h:outputLabel>
+                                    </p:column>
+                                </p:dataTable>
+                            </h:form>
+                        </td>
+                    </tr>
+                </table>
+
+
+
+
+
+
+
+
+
+
+            </ui:define>
+
+        </ui:composition>
+
+
+    </h:body>
+
+
+
+
+
+
+</html>

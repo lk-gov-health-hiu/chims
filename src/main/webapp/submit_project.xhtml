@@ -1,0 +1,179 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+
+    <h:head>
+        <h:outputStylesheet library="css" name="main.css" ></h:outputStylesheet>
+    </h:head>
+
+    <h:body>
+
+        <ui:composition template="./template.xhtml">
+
+            <ui:define name="content">
+
+
+                <table style="width: 99%; top: 0px; margin: auto; margin-top: 0px; vertical-align: top; " >
+                    <tr >
+                        <td colspan="3" >
+                            <h3>Add Project</h3>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" valign="top" style="width: 220px;">
+                            <f:view>
+                                <h:form>
+                                    <p:panelGrid columns="2">
+                                        <p:outputLabel value="ProjectTitle:" for="projectTitle" />
+                                        <p:inputText id="projectTitle" value="#{webUserController.currentProject.projectTitle}" title="ProjectTitle" />
+
+
+                                        <p:outputLabel value="Sector:" for="sector" />
+                                        <h:selectOneMenu id="sector" value="#{webUserController.currentProject.sector}" >
+                                            <f:selectItem itemLabel="Select Sector" ></f:selectItem>
+                                            <f:selectItems value="#{itemController.items}" var="i" itemLabel="#{i.name}" itemValue="#{i}"/>
+                                        </h:selectOneMenu>
+
+                                        <p:outputLabel value="Location" ></p:outputLabel>
+                                        <hr/>
+
+                                        <p:outputLabel value="AllIsland:" for="allIsland" />
+                                        <h:selectBooleanCheckbox id="allIsland" value="#{webUserController.currentProject.allIsland}" title="AllIsland" />
+
+                                        <p:outputLabel value="Provinces" ></p:outputLabel>
+                                        <h:panelGroup >
+                                            <h:dataTable id="tblP" value="#{webUserController.currentProject.provinces}" var="p">
+                                                <h:column >
+                                                    <h:outputLabel value="#{p.area.name}" ></h:outputLabel>
+                                                    <p:spacer height="1" width="10" ></p:spacer>
+                                                    <p:commandLink id="btnRemoveP" value="x" action="#{webUserController.removeSelectedProvince()}" 
+                                                                   update="tblP" process="@this tblP" ajax="false"
+                                                                   >
+                                                        <f:setPropertyActionListener value="#{p}" target="#{webUserController.selectedProjectArea}" ></f:setPropertyActionListener>
+                                                    </p:commandLink>
+                                                </h:column>
+                                            </h:dataTable>
+                                            <p:commandButton value="Add Province" type="button" onclick="PF('dlgProvinces').show();" />
+                                            <p:dialog header="Add Province" widgetVar="dlgProvinces" modal="true" height="500" style="background-color: yellow;">
+
+                                                <h:selectManyListbox id="lstPs" value="#{webUserController.selectedProvinces}" >
+                                                    <f:selectItems value="#{areaController.items}" var="p1" itemLabel="#{p1.name}" itemValue="#{p1}" ></f:selectItems>
+                                                </h:selectManyListbox>
+                                                <h:outputText value="This is a Modal Dialog." />
+                                                <p:commandButton oncomplete="PF('dlgProvinces').hide();" value="Add" 
+                                                                 action="#{webUserController.addSelectedProvinceToProject()}"
+                                                                 process="lstPs" update="tblP" ajax="false"
+                                                                 ></p:commandButton>
+                                            </p:dialog> 
+                                        </h:panelGroup>
+
+
+
+
+                                        <p:outputLabel value="Districts" ></p:outputLabel>
+                                        <h:panelGroup >
+                                            <h:dataTable id="tblD" value="#{webUserController.currentProject.districts}" var="d">
+                                                <h:column >
+                                                    <h:outputLabel value="#{d.area.name}" ></h:outputLabel>
+                                                    <p:spacer height="1" width="10" ></p:spacer>
+                                                    <p:commandLink id="btnRemoveP" value="x" action="#{webUserController.removeSelectedProvince()}" 
+                                                                   update="tblD" process="@this tblD" ajax="false"
+                                                                   >
+                                                        <f:setPropertyActionListener value="#{d}" target="#{webUserController.selectedProjectArea}" ></f:setPropertyActionListener>
+                                                    </p:commandLink>
+                                                </h:column>
+                                            </h:dataTable>
+                                            <p:commandButton value="Add District" type="button" onclick="PF('dlgDis').show();" />
+                                            <p:dialog header="Add District" widgetVar="dlgDis" modal="true" height="500" style="background-color: yellow;">
+
+                                                <p:autoComplete id="lstDs" value="#{webUserController.districtsAvailableForSelection}" completeMethod="#{areaController.completeDistricts}"
+                                                                var="d1" itemLabel="#{d1.name}" itemValue="#{d1}" multiple="true" converter="areaConverter" >
+                                                </p:autoComplete>
+
+
+
+                                                <p:commandButton oncomplete="PF('dlgDis').hide();" value="Add" 
+                                                                 action="#{webUserController.addSelectedDistrictToProject() }"
+                                                                 process="lstDs" update="tblD" ajax="false"
+                                                                 ></p:commandButton>
+                                            </p:dialog> 
+                                        </h:panelGroup>
+
+
+
+
+
+
+                                        <p:outputLabel value="Comments:" for="comments" />
+                                        <p:inputTextarea rows="4" cols="30" id="comments" value="#{webUserController.currentProject.comments}" title="Comments" />
+                                        <p:outputLabel value="CurrentStageType:" for="currentStageType" />
+                                        <p:inputText id="currentStageType" value="#{webUserController.currentProject.currentStageType}" title="CurrentStageType" />
+                                        <p:outputLabel value="OriginatingInstitution:" for="originatingInstitution" />
+                                        <p:selectOneMenu id="originatingInstitution" value="#{webUserController.currentProject.originatingInstitution}" >
+                                            <!-- TODO: update below reference to list of available items-->
+                                            <f:selectItems value="#{fixme}"/>
+                                        </p:selectOneMenu>
+                                        <p:outputLabel value="ReferenceNo:" for="referenceNo" />
+                                        <p:inputText id="referenceNo" value="#{webUserController.currentProject.referenceNo}" title="ReferenceNo" />
+
+
+                                        <p:outputLabel value="Notes:" for="notes" />
+                                        <p:inputTextarea rows="4" cols="30" id="notes" value="#{webUserController.currentProject.notes}" title="Notes" />
+                                        <p:outputLabel value="SpecialNotes:" for="specialNotes" />
+                                        <p:inputTextarea rows="4" cols="30" id="specialNotes" value="#{webUserController.currentProject.specialNotes}" title="SpecialNotes" />
+
+
+                                        <p:outputLabel value="Proposal:" for="proposal" />
+                                        <p:inputTextarea rows="4" cols="30" id="proposal" value="#{webUserController.currentProject.proposal}" title="Proposal" />
+
+
+                                    </p:panelGrid>
+                                </h:form>
+                            </f:view>
+
+
+
+
+                        </td>
+
+                        <td style="vertical-align: top;">
+                            <h:form >
+                                <h:panelGrid columns="1" >
+
+                                    <h:commandButton value="Submit" action="#{webUserController.update()}" class="w3-btn w3-yellow btn350" ></h:commandButton> 
+
+                                    <h:commandButton value="File Uploads" class="w3-btn w3-yellow btn350"
+                                                      action="/upload_files_to_project_proposal" ></h:commandButton>
+
+
+
+
+                                </h:panelGrid>
+                            </h:form>
+                        </td>
+
+                    </tr>
+                </table>
+
+
+
+
+            </ui:define>
+
+        </ui:composition>
+
+
+    </h:body>
+
+
+
+
+
+
+</html>

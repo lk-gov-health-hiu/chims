@@ -1,0 +1,480 @@
+@import url(https://netdna.bootstrapcdn.com/font-awesome/2.0/css/font-awesome.css);
+@import url(https://fonts.googleapis.com/css?family=Open+Sans:400,300);
+
+* { -webkit-font-smoothing:antialiased; -moz-font-smoothing:antialiased; -ms-font-smoothing:antialiased; -o-font-smoothing:antialiased; font-smoothing:antialiased; }
+
+body{
+    width: 100%;
+    overflow-x: scroll;
+    margin:0px auto;
+    padding:0px;
+    border: 0px;
+    font-family: "Open Sans", arial;
+    background:#0f6d39;
+    color:#fff;
+    font-weight:300;
+}
+
+.fillPageTable{
+    width: 100%;
+    overflow-x: scroll;
+    height: 90vh;
+    text-align: center;
+    margin: 0px auto;
+}
+
+.headerRow{
+    height: 5vh;
+}
+
+.headerSpace{
+    width: 5vh;
+}
+
+.spacer2x{
+    margin-left: 20vh;
+    display: inline-block;
+}
+
+.spacer5x{
+    margin-left: 20vh;
+    display: inline-block;
+}
+
+.spacer1x{
+    margin-left: 8vh;
+}
+
+.boldedText{
+    font-weight: bold;
+    text-decoration: none;
+    color:#fff;
+    padding: 10px;
+    margin: 5px;
+
+}
+
+.normalButton{
+    font-weight: bold;
+    text-decoration: none;
+    color:#fff;
+    padding: 10px;
+    margin: 5px;
+    border: 2px solid white;
+    width: 250px;
+}
+
+.normalButton:hover { 
+    font-weight: 900;
+    text-decoration: none;
+    color:#fff;
+    padding: 10px;
+    margin: 5px;
+    border: 2px solid white;
+    min-width: 250px;
+    margin-top: 3px;
+    margin-bottom: 7px;
+}
+
+.largeButton{
+    font-weight: bold;
+    text-decoration: none;
+    color:#fff;
+    padding: 10px;
+    margin: 5px;
+    border: 2px solid white;
+    width: 350px;
+}
+
+.largeButton:hover { 
+    font-weight: 900;
+    text-decoration: none;
+    color:#fff;
+    padding: 10px;
+    margin: 5px;
+    border: 2px solid white;
+    width: 350px;
+    margin-top: 3px;
+    margin-bottom: 7px;
+}
+
+
+.footerMargin{
+    text-align: center;
+    margin-top: 16vh;
+    display: inline-block;
+}
+
+
+.headerText{
+    font-family: "Open Sans", arial;
+    font-weight:300;
+    float: left;
+    width: 55%;
+    margin-left: 5px;
+    font-size: 40px;
+    margin-bottom: 1vh;
+}
+
+
+
+
+h1{
+    font-family: "Open Sans", arial;
+    font-weight:300;
+    float: left;
+    width: 55%;
+    margin-left: 5px;
+    font-size: 40px;
+    margin-bottom: 40px;
+}
+
+
+h2{
+    margin:0px;
+    font-family: "Open Sans", arial;
+    font-weight:200;
+    font-size: 30px;
+}
+
+h3{
+    margin:0px;
+    font-family: "Open Sans", arial;
+    font-weight:100;
+    font-size: 20px;
+}
+
+h4{
+    margin:0px;
+    font-family: "Open Sans", arial;
+    font-weight:100;
+    font-size: 10px;
+}
+
+.container{
+    margin:50px;
+    width: 1251px;
+    margin-top: -30px;
+    margin-left:10px;
+    -webkit-transform:scale(0.9);
+}
+
+a.wide, a.box{
+    text-decoration:none;
+    color:#fff;
+    -webkit-transition: -webkit-transform 0.1s;
+    position:relative;
+    overflow:hidden;
+}
+
+a.wide h2, a.box h2{
+    position:absolute;
+    bottom:5px;
+    font-size:14px;
+}
+
+a.wide h2.top, a.box h2.top{
+    position:static;
+
+    font-size:14px;
+}
+a.wide i, a.box i{
+    font-size: 60px;
+    text-align: center;
+    display: block;
+    margin-top: 10px; /* outside Codepen is actually 30px */
+}
+a.wide:hover, a.box:hover{
+    -webkit-transform: scale(1.05);
+}
+
+a.wide:active, a.box:active{
+    -webkit-transform: scale(1);
+}
+.wide{
+    width:270px;
+    height:120px;
+    overflow:hidden;
+    font-size:13px;
+    padding:10px;
+    display:block;
+    float:left;
+    margin:5px;
+}
+
+.box{
+    width:120px;
+    height:120px;
+    overflow:hidden;
+    font-size:13px;
+    padding:10px;
+    display:block;
+    float:left;
+    margin:5px;
+}
+.lime{background:#61b812;}
+.orange{background:#e76022;}
+.blue{background:#1E90FF;}
+.redgay{background:#DA312E;}
+.yellow{background:#dbb701;}
+.bluefish{background:#02b9e3;}
+.magenta{background:#d22a4e;}
+.spacer{
+    width:770px;
+    margin-right: 50px;
+    float:left;
+}
+.spacer3x{
+    width:300px;
+}
+
+@-webkit-keyframes galeri
+{
+    1% {background-position: 0px 0px;}
+    10%{background-position: 0px 140px;}
+    20%{background-position: 0px 140px;}
+    30%{background-position: 0px 280px;}
+    40%{background-position: 0px 280px;}
+    50%{background-position: 0px 420px;}
+    60%{background-position: 0px 420px;}
+    70%{background-position: 0px 560px;}
+    80%{background-position: 0px 560px;}
+    100% {background-position: 0px 560px;}
+}
+
+.gallery{
+    background: url(https://dl.dropbox.com/u/39272011/image_metro.png);
+    -webkit-animation: galeri 15s infinite;
+}
+.right{
+    float:right;
+    text-align:right;
+    margin-top: 30px;
+}
+.right p{
+    margin: 5px 0px;
+}
+img.prof{
+    float: right;
+    margin: 10px;
+    margin-top: 40px;
+}
+.i_bot{
+    font-size: 30px;
+    text-align: left;
+    position: absolute;
+    bottom: 0px;
+}
+.cal_i{
+    margin-top: 20px;
+    margin-left: 15px;
+    width: 155px;
+}
+.cal_e h1{
+    position: absolute;
+    right: 0px;
+    width: 115px;
+    text-align: center;
+    margin: 0px;
+    font-size: 60px;
+}
+.cal_e p{
+    position: absolute;
+    right: 0px;
+    width: 115px;
+    text-align: center;
+    margin-top: 75px;
+    text-transform: uppercase;
+}
+.cal_e i{
+    text-align: left;
+    font-size: 25px !important;
+    position: absolute;
+    bottom: 0px;
+}
+
+
+
+
+
+
+
+
+
+.logo{
+    height: 100px;
+}
+
+
+
+
+/*https://divtable.com/table-styler/*/
+
+table.greenTable {
+    background-color: #D4EED1;
+    width: 100%;
+    text-align: center;
+}
+table.greenTable td, table.greenTable th {
+    padding: 3px 2px;
+}
+table.greenTable tbody td {
+    font-size: 13px;
+    color: #1E90FF;
+    font-family: "Open Sans", arial;
+    font-weight:300;
+    font-size: 20px;
+}
+
+table.greenTable thead {
+    background: #1E90FF;
+    background: -moz-linear-gradient(top, #56acff 0%, #349bff 66%, #1E90FF 100%);
+    background: -webkit-linear-gradient(top, #56acff 0%, #349bff 66%, #1E90FF 100%);
+    background: linear-gradient(to bottom, #56acff 0%, #349bff 66%, #1E90FF 100%);
+    border-bottom: 0px solid #444444;
+}
+table.greenTable thead th {
+    font-weight: bold;
+    color: #F0F0F0;
+    text-align: left;
+    border-left: 2px solid #1E90FF;
+}
+table.greenTable thead th:first-child {
+    border-left: none;
+}
+
+table.greenTable tfoot {
+    font-weight: bold;
+    color: #F0F0F0;
+    background: #1E90FF;
+    background: -moz-linear-gradient(top, #56acff 0%, #349bff 66%, #1E90FF 100%);
+    background: -webkit-linear-gradient(top, #56acff 0%, #349bff 66%, #1E90FF 100%);
+    background: linear-gradient(to bottom, #56acff 0%, #349bff 66%, #1E90FF 100%);
+    border-top: 1px solid #1E90FF;
+}
+table.greenTable tfoot .links {
+    text-align: right;
+}
+table.greenTable tfoot .links a{
+    display: inline-block;
+    background: #FFFFFF;
+    padding: 2px 8px;
+    border-radius: 5px;
+}
+
+
+
+table.greyGridTable {
+    width: 300%;
+    text-align: center;
+    border-collapse: collapse;
+}
+
+table.greyGridTable td, table.greyGridTable th {
+    padding: 3px 4px;
+}
+table.greyGridTable tr:nth-child(even) {
+    height: 100px;
+    min-height: 100px;
+}
+
+table.greyGridTable tr:nth-child(odd) {
+    height: 100px;
+    min-height: 100px;
+}
+
+table.greyGridTable thead {
+}
+table.greyGridTable thead th {
+    font-weight: bold;
+    text-align: center;
+}
+table.greyGridTable tfoot td {
+    font-size: 14px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.pageCenter {
+    top: 20vh;
+    margin: 0 auto;
+    max-width: 500px;
+    position: relative;
+}
+
+.absoluteContainer {
+    position: absolute;
+    left: 50%;
+    top: 10px;
+    width: 200px;
+    margin-left: -100px;
+    background: #FFF;
+}
+
+.blueButton {
+    width: 200px;
+    height: 40px;
+    padding: 10px;
+    margin: 10px;
+    -webkit-box-shadow: 0px 10px 13px -7px #000000, 5px 5px 15px 5px rgba(0,0,0,0); 
+    box-shadow: 0px 10px 13px -7px #000000, 5px 5px 15px 5px rgba(0,0,0,0);
+}
+
+.alignLeft{
+    text-align: left;
+}
+
+.alignRight{
+    text-align: right;
+}
+
+.alignCenter{
+    text-align: center;
+}
+
+.indexImage{
+    width: 99%;
+    margin: 0px auto;
+}
+
+
+.indexImageContainer{
+    text-align: center;
+    width: 99%;
+    margin: 0px auto;
+}
+
+.content{
+    text-align: center;
+    margin: auto;
+}
+
+.whiteTextInOrangeRedBackground{
+    color: white;
+    background-color:orangered;
+    font-family: "Open Sans", arial;
+    font-weight:400;
+    font-size: 30px;
+    
+}
+
+.orangeRedInWhiteBackground{
+    color: orangered;
+    background-color:whitesmoke;
+    font-family: "Open Sans", arial;
+    font-weight:400;
+    font-size: 30px;
+}

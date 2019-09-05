@@ -1,0 +1,129 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ez="http://xmlns.jcp.org/jsf/composite/ezcomp">
+
+    <body>
+
+        <ui:composition template="./index.xhtml">
+
+            <ui:define name="mcontent">
+                <table >
+                    <tr>
+                        <td colspan="2">
+                            <h1>List Proposals</h1>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="width: 400px;vertical-align: top;">
+                            <h:form >
+
+
+                                <table class="w3-table" >
+                                    <tr>
+                                        <td>
+                                            <h:commandButton class="w3-btn w3-yellow btn350"  action="#{webUserController.listAllProjects()}" 
+                                                             value="List All Projects" ></h:commandButton>
+
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <h:commandButton class="w3-btn w3-yellow btn350"  action="#{webUserController.listProjectsAwaitingPecApproval()}" 
+                                                             value="List Projects waiting PEC Approval" ></h:commandButton>
+
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <h:commandButton class="w3-btn w3-yellow btn350" action="#{webUserController.listProjectsPecRejected()}" 
+                                                             value="List PEC Rejected Projects" ></h:commandButton>
+
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <h:commandButton class="w3-btn w3-yellow btn350" action="#{webUserController.listProjectsAwaitingDnpSubmission()}" 
+                                                             value="List Projects Awaiting DNP Submission" ></h:commandButton>
+
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <h:commandButton class="w3-btn w3-yellow btn350" action="#{webUserController.listProjectsAwaitingDnpApproval()}" 
+                                                             value="List Projects awaiting DNP Approval" ></h:commandButton>
+
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td>
+                                            <h:commandButton class="w3-btn w3-yellow btn350" action="#{webUserController.listProjectsDnpRejected()}" 
+                                                             value="List DNP rejected projects" ></h:commandButton>
+
+                                        </td>
+                                    </tr>
+
+
+                                    <tr>
+                                        <td>
+                                            <h:commandButton class="w3-btn w3-yellow btn350" action="#{webUserController.listProjectsAwaitingCabinetSubmission()}" 
+                                                             value="List Projects awaiting Cabinet Submission" ></h:commandButton>
+
+                                        </td>
+                                    </tr>
+
+
+                                    <tr>
+                                        <td>
+                                            <h:commandButton class="w3-btn w3-yellow btn350" action="#{webUserController.listProjectsAwaitingCabinetApproval()}" 
+                                                             value="List Projects awaiting Cabinet Approval" ></h:commandButton>
+
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td>
+                                            <h:commandButton class="w3-btn w3-yellow btn350" action="#{webUserController.listProjectsCabinetApproved()}" 
+                                                             value="List Cabinet approved projects to start" ></h:commandButton>
+
+                                        </td>
+                                    </tr>
+
+
+                                    <tr>
+                                        <td>
+                                            <h:commandButton class="w3-btn w3-yellow btn350" action="#{webUserController.listProjectsOngoing()}" 
+                                                             value="List ongoing projects" ></h:commandButton>
+
+                                        </td>
+                                    </tr>
+
+
+                                    <tr>
+                                        <td>
+                                            <h:commandButton class="w3-btn w3-yellow btn350" action="#{webUserController.listProjectsCompleted()}" 
+                                                             value="List completed" ></h:commandButton>
+
+                                        </td>
+                                    </tr>
+                                </table>
+                            </h:form>
+                        </td>
+                        <td style="vertical-align: top;">
+
+                            <ez:projectList/>
+
+                        </td>
+                    </tr>
+                </table>
+
+
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

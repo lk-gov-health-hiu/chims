@@ -1,0 +1,89 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ez="http://xmlns.jcp.org/jsf/composite/ezcomp"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+
+    <h:head>
+
+    </h:head>
+
+    <h:body>
+
+        <ui:composition template="./template.xhtml">
+
+            <ui:define name="content">
+
+                <style>
+                    input[type=text], select, textarea, checkbox, text {
+                        padding: 12px;
+                        border: 1px solid #ccc;
+                        border-radius: 4px;
+                        resize: vertical;
+                    }
+
+                </style>
+
+
+                <div class="w3-row w3-container w3-padding-16" >
+                    <h:panelGroup >
+
+                        <p:panel header="Search Projects By File Number" >
+                            <h:form >
+                                <table >
+                                    <tr>
+                                        <td>
+
+                                            <p:outputLabel value="File Number" ></p:outputLabel>
+                                        </td>
+                                        <td>
+                                            <h:inputText value="#{webUserController.searchKeyword}" >
+                                                <f:ajax event="blur" execute="@this" ></f:ajax>
+                                            </h:inputText>
+                                        </td>
+                                        <td>
+                                            <p:spacer height="1" width="20" ></p:spacer>
+                                        </td>
+                                        <td>
+                                            <h:commandLink class="w3-btn w3-amber w3-margin  btn150" 
+                                                           action="#{webUserController.searchProjectsByFileNumber()}" 
+                                                           >
+                                                <div>
+                                                    <i class='fa fa-refresh' style='float: left; font-size:24px;color:green;'></i>
+                                                    <div style="float: right;">Refresh</div>
+                                                </div>  
+                                            </h:commandLink>
+                                        </td>
+                                        <td>
+                                            <h:commandLink class="w3-btn w3-amber w3-margin  btn150" 
+                                                           action="#{webUserController.searchProjects()}" 
+                                                           >
+                                                <div>
+                                                    <i class='fa fa-arrow-left' style='float: left; font-size:24px;color:green;'></i>
+                                                    <div style="float: right;">Back</div>
+                                                </div>  
+                                            </h:commandLink>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </h:form>
+
+                            <ez:projectList/>
+
+                        </p:panel>
+
+                    </h:panelGroup>
+                </div>
+                <div style="height: 100px;" >
+
+                </div>
+            </ui:define>
+
+        </ui:composition>
+
+    </h:body>
+</html>

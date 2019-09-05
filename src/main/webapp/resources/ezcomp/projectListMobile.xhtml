@@ -1,0 +1,537 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:cc="http://xmlns.jcp.org/jsf/composite"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+
+    <!-- INTERFACE -->
+    <cc:interface>
+    </cc:interface>
+
+    <!-- IMPLEMENTATION -->
+    <cc:implementation>
+
+
+        <h:form >
+            <h:panelGrid columns="1" >
+                <h:panelGrid columns="3" >
+                    <h:commandLink class="w3-btn w3-amber w3-margin  btn150" >
+                        <div>
+                            <i class='fa fa-file-excel-o' style='float: left; font-size:24px;color:green;'></i>
+                            <div style="float: right;">Download</div>
+                        </div>  
+                        <p:dataExporter target="tblDetails" type="xls" fileName="list of projects" ></p:dataExporter>
+                    </h:commandLink>
+                </h:panelGrid>
+            </h:panelGrid>
+
+            <p:dataTable id="tblSummery" class="w3-table-all w3-striped redTable" value="#{webUserController.listOfProjects}" var="p" 
+                         rowKey="#{p.id}"
+                         rows="10" reflow="true"
+                         paginator="false"
+                         paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                         rowsPerPageTemplate="10,20,25"
+                         >
+
+                <p:column headerText="Year" style="width: 70px;" >
+                    <h:outputLabel value="#{p.projectYear}" >
+                    </h:outputLabel>
+                </p:column>
+
+                <p:column headerText="Title" >
+                    <h:outputLabel value="#{p.projectTitle}" >
+                        <f:convertDateTime pattern="MMM/dd/yyyy" ></f:convertDateTime>
+                    </h:outputLabel>
+                </p:column>
+                <p:column headerText="File No" >
+                    <h:outputLabel value="#{p.fileNumber}" >
+                    </h:outputLabel>
+                </p:column>
+                 <p:column headerText="Stage" >
+                     <h:outputLabel value="#{p.currentStageType.label}" >
+                    </h:outputLabel>
+                </p:column>
+                <p:column headerText="Cost" >
+                    <h:outputLabel value="#{p.projectCost}" >
+                        <f:convertNumber pattern="#,##0.00" ></f:convertNumber>
+                    </h:outputLabel>
+                    <h:outputLabel value=" #{p.projectCostUnit.name}" ></h:outputLabel>
+                </p:column>
+                <p:column headerText="Province" rendered="#{webUserController.allIslandProjects ne true}" >
+                    <h:outputLabel value="#{p.province.name}" >
+                    </h:outputLabel>
+                    <h:outputLabel value="#{p.allIsland?'All Island':''}" >
+                    </h:outputLabel>
+                </p:column>
+                <p:column headerText="District"  rendered="#{webUserController.allIslandProjects ne true}" >
+                    <h:outputLabel value="#{p.district.name}" >
+                    </h:outputLabel>
+                </p:column>
+                <p:column headerText="Submitted Date" >
+                    <h:outputLabel value="#{p.proposalDate}" >
+                        <f:convertDateTime pattern="MMM/dd/yyyy" ></f:convertDateTime>
+                    </h:outputLabel>
+                </p:column>
+
+                <p:column headerText="Actions" exportable="false" >
+                    <p:commandButton class="w3-btn w3-teal" value="Manage" ajax="false" action="#{webUserController.viewProject()}" >
+                        <f:setPropertyActionListener value="#{p}" target="#{webUserController.currentProject}" ></f:setPropertyActionListener>
+                    </p:commandButton>
+                </p:column>
+            </p:dataTable>
+
+            <div style="display: none;">
+
+                <p:dataTable id="tblDetails" value="#{webUserController.listProjects()}" var="item">
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="ProjectYear"/>
+                        </f:facet>
+                        <h:outputText value="#{item.projectYear}"/>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="ProjectLocation"/>
+                        </f:facet>
+                        <h:outputText value="#{item.projectLocation}"/>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="PcpFirstReceivedDate"/>
+                        </f:facet>
+                        <h:outputText value="#{item.pcpFirstReceivedDate}">
+                            <f:convertDateTime pattern="MM/dd/yyyy" />
+                        </h:outputText>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="PcpLastReceivedDate"/>
+                        </f:facet>
+                        <h:outputText value="#{item.pcpLastReceivedDate}">
+                            <f:convertDateTime pattern="MM/dd/yyyy" />
+                        </h:outputText>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="EngineersEstimateAvailable"/>
+                        </f:facet>
+                        <h:outputText value="#{item.engineersEstimateAvailable}"/>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="MasterPlanAvailable"/>
+                        </f:facet>
+                        <h:outputText value="#{item.masterPlanAvailable}"/>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="BuildingPlanAvailable"/>
+                        </f:facet>
+                        <h:outputText value="#{item.buildingPlanAvailable}"/>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="PecRecommendation"/>
+                        </f:facet>
+                        <h:outputText value="#{item.pecRecommendation}"/>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="PcpFirstSendToNdpDate"/>
+                        </f:facet>
+                        <h:outputText value="#{item.pcpFirstSendToNdpDate}">
+                            <f:convertDateTime pattern="MM/dd/yyyy" />
+                        </h:outputText>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="PcpLastSendToNdpDate"/>
+                        </f:facet>
+                        <h:outputText value="#{item.pcpLastSendToNdpDate}">
+                            <f:convertDateTime pattern="MM/dd/yyyy" />
+                        </h:outputText>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="DnpApproved"/>
+                        </f:facet>
+                        <h:outputText value="#{item.dnpApproved}"/>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="DnpApprovedDate"/>
+                        </f:facet>
+                        <h:outputText value="#{item.dnpApprovedDate}">
+                            <f:convertDateTime pattern="MM/dd/yyyy" />
+                        </h:outputText>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="CabinetApproved"/>
+                        </f:facet>
+                        <h:outputText value="#{item.cabinetApproved}"/>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="CabinetApprovalDate"/>
+                        </f:facet>
+                        <h:outputText value="#{item.cabinetApprovalDate}">
+                            <f:convertDateTime pattern="MM/dd/yyyy" />
+                        </h:outputText>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="Remarks"/>
+                        </f:facet>
+                        <h:outputText value="#{item.remarks}"/>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="Id"/>
+                        </f:facet>
+                        <h:outputText value="#{item.id}"/>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="Province"/>
+                        </f:facet>
+                        <h:outputText value="#{item.province}"/>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="FileNumber"/>
+                        </f:facet>
+                        <h:outputText value="#{item.fileNumber}"/>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="District"/>
+                        </f:facet>
+                        <h:outputText value="#{item.district}"/>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="ProjectTitle"/>
+                        </f:facet>
+                        <h:outputText value="#{item.projectTitle}"/>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="ProjectDescription"/>
+                        </f:facet>
+                        <h:outputText value="#{item.projectDescription}"/>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="ProjectCost"/>
+                        </f:facet>
+                        <h:outputText value="#{item.projectCost}"/>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="ProjectCostUnit"/>
+                        </f:facet>
+                        <h:outputText value="#{item.projectCostUnit}"/>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="SourceOfFunds"/>
+                        </f:facet>
+                        <h:outputText value="#{item.sourceOfFunds}"/>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="ProposalDate"/>
+                        </f:facet>
+                        <h:outputText value="#{item.proposalDate}">
+                            <f:convertDateTime pattern="MM/dd/yyyy" />
+                        </h:outputText>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="Sector"/>
+                        </f:facet>
+                        <h:outputText value="#{item.sector}"/>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="AllIsland"/>
+                        </f:facet>
+                        <h:outputText value="#{item.allIsland}"/>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="CurrentStageType"/>
+                        </f:facet>
+                        <h:outputText value="#{item.currentStageType}"/>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="Creater"/>
+                        </f:facet>
+                        <h:outputText value="#{item.creater}"/>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="CreatedAt"/>
+                        </f:facet>
+                        <h:outputText value="#{item.createdAt}">
+                            <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                        </h:outputText>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="Retirer"/>
+                        </f:facet>
+                        <h:outputText value="#{item.retirer}"/>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="RetiredAt"/>
+                        </f:facet>
+                        <h:outputText value="#{item.retiredAt}">
+                            <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                        </h:outputText>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="RetireComments"/>
+                        </f:facet>
+                        <h:outputText value="#{item.retireComments}"/>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="LastEditor"/>
+                        </f:facet>
+                        <h:outputText value="#{item.lastEditor}"/>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="LastEditAt"/>
+                        </f:facet>
+                        <h:outputText value="#{item.lastEditAt}">
+                            <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                        </h:outputText>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="PecApprovedAt"/>
+                        </f:facet>
+                        <h:outputText value="#{item.pecApprovedAt}">
+                            <f:convertDateTime pattern="MM/dd/yyyy" />
+                        </h:outputText>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="PecApprovalRecommendation"/>
+                        </f:facet>
+                        <h:outputText value="#{item.pecApprovalRecommendation}"/>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="PecRejectedUser"/>
+                        </f:facet>
+                        <h:outputText value="#{item.pecRejectedUser}"/>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="PecRejectedAt"/>
+                        </f:facet>
+                        <h:outputText value="#{item.pecRejectedAt}">
+                            <f:convertDateTime pattern="MM/dd/yyyy" />
+                        </h:outputText>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="PecRejectRecommendation"/>
+                        </f:facet>
+                        <h:outputText value="#{item.pecRejectRecommendation}"/>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="DnpSubmissionUser"/>
+                        </f:facet>
+                        <h:outputText value="#{item.dnpSubmissionUser}"/>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="DnpSubmissionAt"/>
+                        </f:facet>
+                        <h:outputText value="#{item.dnpSubmissionAt}">
+                            <f:convertDateTime pattern="MM/dd/yyyy" />
+                        </h:outputText>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="DnpSubmissionRecommendation"/>
+                        </f:facet>
+                        <h:outputText value="#{item.dnpSubmissionRecommendation}"/>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="DnpApprovedUser"/>
+                        </f:facet>
+                        <h:outputText value="#{item.dnpApprovedUser}"/>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="DnpApprovedAt"/>
+                        </f:facet>
+                        <h:outputText value="#{item.dnpApprovedAt}">
+                            <f:convertDateTime pattern="MM/dd/yyyy" />
+                        </h:outputText>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="DnpApprovalRecommendation"/>
+                        </f:facet>
+                        <h:outputText value="#{item.dnpApprovalRecommendation}"/>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="DnpRejectedUser"/>
+                        </f:facet>
+                        <h:outputText value="#{item.dnpRejectedUser}"/>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="DnpRejectedAt"/>
+                        </f:facet>
+                        <h:outputText value="#{item.dnpRejectedAt}">
+                            <f:convertDateTime pattern="MM/dd/yyyy" />
+                        </h:outputText>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="DnpRejectRecommendation"/>
+                        </f:facet>
+                        <h:outputText value="#{item.dnpRejectRecommendation}"/>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="CabinetSubmissionUser"/>
+                        </f:facet>
+                        <h:outputText value="#{item.cabinetSubmissionUser}"/>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="CabinetSubmissionAt"/>
+                        </f:facet>
+                        <h:outputText value="#{item.cabinetSubmissionAt}">
+                            <f:convertDateTime pattern="MM/dd/yyyy" />
+                        </h:outputText>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="CabinetSubmissionRecommendation"/>
+                        </f:facet>
+                        <h:outputText value="#{item.cabinetSubmissionRecommendation}"/>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="CabinetApprovedUser"/>
+                        </f:facet>
+                        <h:outputText value="#{item.cabinetApprovedUser}"/>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="CabinetApprovedAt"/>
+                        </f:facet>
+                        <h:outputText value="#{item.cabinetApprovedAt}">
+                            <f:convertDateTime pattern="MM/dd/yyyy" />
+                        </h:outputText>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="CabinetApprovalRecommendation"/>
+                        </f:facet>
+                        <h:outputText value="#{item.cabinetApprovalRecommendation}"/>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="PecApproved"/>
+                        </f:facet>
+                        <h:outputText value="#{item.pecApproved}"/>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="PecApprovedDate"/>
+                        </f:facet>
+                        <h:outputText value="#{item.pecApprovedDate}">
+                            <f:convertDateTime pattern="MM/dd/yyyy" />
+                        </h:outputText>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="PecRejected"/>
+                        </f:facet>
+                        <h:outputText value="#{item.pecRejected}"/>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="PecRejectedDate"/>
+                        </f:facet>
+                        <h:outputText value="#{item.pecRejectedDate}">
+                            <f:convertDateTime pattern="MM/dd/yyyy" />
+                        </h:outputText>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="DnpRejected"/>
+                        </f:facet>
+                        <h:outputText value="#{item.dnpRejected}"/>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="DnpRejectedDate"/>
+                        </f:facet>
+                        <h:outputText value="#{item.dnpRejectedDate}">
+                            <f:convertDateTime pattern="MM/dd/yyyy" />
+                        </h:outputText>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="DnpSubmitted"/>
+                        </f:facet>
+                        <h:outputText value="#{item.dnpSubmitted}"/>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="DnpSubmittedDate"/>
+                        </f:facet>
+                        <h:outputText value="#{item.dnpSubmittedDate}">
+                            <f:convertDateTime pattern="MM/dd/yyyy" />
+                        </h:outputText>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="PecApprovedUser"/>
+                        </f:facet>
+                        <h:outputText value="#{item.pecApprovedUser}"/>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="CabinetSubmitted"/>
+                        </f:facet>
+                        <h:outputText value="#{item.cabinetSubmitted}"/>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="CabinetSubmittedDate"/>
+                        </f:facet>
+                        <h:outputText value="#{item.cabinetSubmittedDate}">
+                            <f:convertDateTime pattern="MM/dd/yyyy" />
+                        </h:outputText>
+                    </p:column>
+                </p:dataTable>
+
+            </div>
+
+
+        </h:form>
+
+
+    </cc:implementation>
+</html>

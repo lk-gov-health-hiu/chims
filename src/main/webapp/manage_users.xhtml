@@ -1,0 +1,111 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+
+    <h:head>
+        <h:outputStylesheet library="css" name="main.css" ></h:outputStylesheet>
+    </h:head>
+
+    <h:body>
+
+        <ui:composition template="/system_management.xhtml">
+
+
+            <ui:define name="right">
+
+
+                <h:form styleClass="jsfcrud_list_form">
+                    <h:panelGroup id="messagePanel" layout="block">
+                        <h:messages errorStyle="color: red" infoStyle="color: green" layout="table"/>
+                    </h:panelGroup>
+                    <h:outputText escape="false" value="#{bundle.ListWebUserEmpty}" rendered="#{webUserController.items.rowCount == 0}"/>
+                    <h:panelGroup rendered="#{webUserController.items.rowCount > 0}">
+                        <h:outputText value="#{webUserController.pagination.pageFirstItem + 1}..#{webUserController.pagination.pageLastItem + 1}/#{webUserController.pagination.itemsCount}"/>&nbsp;
+                        <h:commandLink action="#{webUserController.previous}" value="#{bundle.Previous} #{webUserController.pagination.pageSize}" rendered="#{webUserController.pagination.hasPreviousPage}"/>&nbsp;
+                        <h:commandLink action="#{webUserController.next}" value="#{bundle.Next} #{webUserController.pagination.pageSize}" rendered="#{webUserController.pagination.hasNextPage}"/>&nbsp;
+                        <h:dataTable value="#{webUserController.items}" 
+                                     var="item" border="0" cellpadding="2" cellspacing="0" 
+                                     rowClasses="jsfcrud_odd_row,jsfcrud_even_row" class="greenTable"
+                                     rules="all" style="border:solid 1px">
+
+
+                            <h:column>
+                                <f:facet name="header">
+                                    <h:outputText value="#{bundle.ListWebUserTitle_name}"/>
+                                </f:facet>
+                                <h:outputText value="#{item.name}"/>
+                            </h:column>
+
+                            <h:column>
+                                <f:facet name="header">
+                                    <h:outputText value="#{bundle.ListWebUserTitle_webUserPerson}"/>
+                                </f:facet>
+                                <h:outputText value="#{item.webUserPerson.name}"/>
+                            </h:column>
+
+
+                            <h:column>
+                                <f:facet name="header">
+                                    <h:outputText value="#{bundle.ListWebUserTitle_institution}"/>
+                                </f:facet>
+                                <h:outputText value="#{item.institution.name}"/>
+                            </h:column>
+                            <h:column>
+                                <f:facet name="header">
+                                    <h:outputText value="#{bundle.ListWebUserTitle_email}"/>
+                                </f:facet>
+                                <h:outputText value="#{item.email}"/>
+                            </h:column>
+                            <h:column>
+                                <f:facet name="header">
+                                    <h:outputText value="#{bundle.ListWebUserTitle_telNo}"/>
+                                </f:facet>
+                                <h:outputText value="#{item.telNo}"/>
+                            </h:column>
+
+
+                            <h:column>
+                                <f:facet name="header">
+                                    <h:outputText value="#{bundle.ListWebUserTitle_webUserRole}"/>
+                                </f:facet>
+                                <h:outputText value="#{item.webUserRole}"/>
+                            </h:column>
+
+                            <h:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Actions"/>
+                                </f:facet>
+                                <h:commandLink action="#{webUserController.prepareView}" value="#{bundle.ListWebUserViewLink}"/>
+                                <h:outputText value=" "/>
+                                <h:commandLink action="#{webUserController.prepareEdit}" value="#{bundle.ListWebUserEditLink}"/>
+                                <h:outputText value=" "/>
+                                <h:commandLink action="#{webUserController.destroy}" value="#{bundle.ListWebUserDestroyLink}"/>
+                            </h:column>
+                        </h:dataTable>
+                    </h:panelGroup>
+                    <br />
+                    <h:commandLink action="#{webUserController.prepareCreate}" value="#{bundle.ListWebUserCreateLink}"/>
+                    <br />
+                    <br />
+                    <h:link outcome="/index" value="#{bundle.ListWebUserIndexLink}"/>
+                </h:form>
+
+
+            </ui:define>
+
+        </ui:composition>
+
+
+    </h:body>
+
+
+
+
+
+
+</html>

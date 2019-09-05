@@ -1,0 +1,68 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+
+    <h:head>
+        <h:outputStylesheet library="css" name="main.css" ></h:outputStylesheet>
+    </h:head>
+
+    <h:body>
+
+        <ui:composition template="/system_management.xhtml">
+
+
+            <ui:define name="right">
+                <h:panelGroup id="messagePanel" layout="block">
+                    <h:messages errorStyle="color: red" infoStyle="color: green" layout="table"/>
+                </h:panelGroup>
+                <h:form>
+                    <p:panelGrid columns="2" columnClasses="alignLeft alignLeft" class="pageCenter">
+
+                        <f:facet name="header" >
+                            View User Details
+                        </f:facet>
+
+
+                        <h:outputLabel value="#{bundle.EditWebUserLabel_name}" for="name" />
+                        <h:outputLabel id="name" value="#{webUserController.selected.name}" title="#{bundle.EditWebUserTitle_name}" 
+                                       />
+
+                        <h:outputLabel value="#{bundle.EditWebUserLabel_webUserPerson}" for="webUserPerson" />
+                        <h:outputLabel id="webUserPerson" value="#{webUserController.selected.webUserPerson.name}" title="#{bundle.EditWebUserTitle_webUserPerson}" />
+
+
+                        <h:outputLabel value="#{bundle.EditWebUserLabel_email}" for="email" />
+                        <h:outputLabel id="email" value="#{webUserController.selected.email}" title="#{bundle.EditWebUserTitle_email}" />
+                        <h:outputLabel value="#{bundle.EditWebUserLabel_telNo}" for="telNo" />
+                        <h:outputLabel id="telNo" value="#{webUserController.selected.telNo}" title="#{bundle.EditWebUserTitle_telNo}" />
+
+
+                        <h:outputLabel value="#{bundle.EditWebUserLabel_institution}" for="institution" />
+                        <h:outputLabel id="institution" value="#{webUserController.selected.institution}" title="#{bundle.EditWebUserTitle_institution}" />
+
+
+
+                        <h:outputLabel value="#{bundle.EditWebUserLabel_webUserRole}" for="webUserRole" />
+                        <h:outputLabel value="#{webUserController.selected.webUserRole}" />
+
+                    </p:panelGrid>
+
+                </h:form>
+            </ui:define>
+        </ui:composition>
+
+
+
+    </h:body>
+
+
+
+
+
+
+</html>

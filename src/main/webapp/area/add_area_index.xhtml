@@ -1,0 +1,57 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+
+    <body>
+
+        <ui:composition template="./../template.xhtml">
+
+            <ui:define name="title">
+                Add Areas
+            </ui:define>
+
+            <ui:define name="body">
+
+                <h:form >
+                    <p:panel header="Manage Areas" >
+                        <h:panelGrid columns="1" >
+                            <p:commandButton styleClass="defaultButton" ajax="false" value="Add Province" action="#{areaController.toAddProvince}" disabled="#{!webUserController.capableOfAddingProvinces}" ></p:commandButton>
+                            <p:commandButton styleClass="defaultButton"  ajax="false" value="Add Districts" action="#{areaController.toAddDistrict()}" disabled="#{!webUserController.capableOfAddingRdhsAreas}" ></p:commandButton>
+                            <p:commandButton styleClass="defaultButton"  ajax="false" value="Add MOH Areas" action="#{areaController.toAddMhoArea()}" disabled="#{!webUserController.capableOfAddingMohAreas}" ></p:commandButton>
+                            <p:commandButton styleClass="defaultButton"  ajax="false" value="Add Educational Zones" action="#{areaController.toEducationalZones()}" disabled="#{!webUserController.capableOfAddingMohAreas}" ></p:commandButton>
+                            <p:commandButton styleClass="defaultButton"  ajax="false" value="Add PHI Areas" action="#{areaController.toAddPhiArea()}" disabled="#{!webUserController.capableOfAddingPhiAreas}" ></p:commandButton>
+                            <p:commandButton styleClass="defaultButton"  ajax="false" value="Add PHI Areas" action="#{areaController.toAddPhiArea()}" disabled="#{!webUserController.capableOfAddingPhiAreas}" ></p:commandButton>
+                            <p:commandButton styleClass="defaultButton"  ajax="false" value="View/Edit/Delete PHI Areas" action="#{areaController.toAddPhiArea()}" disabled="#{!webUserController.capableOfAddingPhiAreas}" ></p:commandButton>
+                            <p:commandButton styleClass="defaultButton"  ajax="false" value="Manage All Areas" action="/area/List" disabled="#{!webUserController.capableOfManagingAnyArea}" ></p:commandButton>
+
+
+
+                        </h:panelGrid>
+                    </p:panel>
+
+
+                </h:form>
+
+
+
+                <h:form enctype="multipart/form-data" >
+                    <p:fileUpload value="#{areaController.file}" mode="simple"/>
+                    <p:commandButton ajax="false" value="Upload All MOH Areas at once" action="#{areaController.saveMohCoordinates()}" disabled="#{!webUserController.admin}" ></p:commandButton>
+                </h:form>
+
+
+                <h:form enctype="multipart/form-data" >
+                    <p:fileUpload value="#{areaController.file}" mode="simple"/>
+                    <p:commandButton ajax="false" value="Upload All GN Areas at once" action="#{areaController.saveGnCoordinates()}" disabled="#{!webUserController.admin}" ></p:commandButton>
+                </h:form>
+
+
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

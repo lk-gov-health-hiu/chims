@@ -1,0 +1,231 @@
+<?xml version='1.0' encoding='UTF-8' ?> 
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ez="http://xmlns.jcp.org/jsf/composite/ezcomp">
+
+    <h:head id="headt">
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <h:outputStylesheet library="css" name="main.css"/>
+        <title>The best way for Solar Solutions</title>
+    </h:head>
+
+    <h:body>
+
+        <p:growl autoUpdate="true" ></p:growl>
+
+        <table  class="fillPageTable">
+            <tr class="headerRow">
+                <td  class="blue">
+
+                    <table >
+                        <h:panelGroup rendered="#{webUserController.loggedUser ne null}" >
+
+                            <h:panelGroup rendered="#{webUserController.loggedUser.companyAdmin}" >
+                                <tr> 
+
+                                    <td>
+                                        <h:outputLabel class="spacer2x"></h:outputLabel>
+                                    </td>
+                                    <td > 
+                                        <ez:logi/>
+                                    </td>
+                                    <td>
+                                        <h:outputLabel class="spacer5x"></h:outputLabel>
+                                    </td>
+                                    <td>
+                                        <h:form>
+                                            <h:commandLink  class="spacer1x boldedText" value="CLIENT REQUESTS" action="#{webUserController.listProjectsToSubmitProposals}"></h:commandLink>
+                                        </h:form>
+                                    </td>
+                                    <td>
+
+                                        <h:form>
+                                            <h:commandLink  class="spacer1x boldedText" value="ADVERTISEMENT MANAGEMENT" action="/advertisement_management"></h:commandLink>
+                                        </h:form>
+                                    </td>
+
+                                    <td>
+                                        <h:form>
+                                            <h:commandLink  class="spacer1x boldedText" value="SYSTEM MANAGEMENT" action="/system_management"></h:commandLink>
+                                        </h:form>
+                                    </td>
+                                    <td>
+                                        <h:form>
+                                            <h:commandLink  class="spacer1x boldedText" value="LOG OUT" action="#{webUserController.logOut()}"></h:commandLink>
+                                        </h:form>
+                                    </td>
+                                </tr>
+                            </h:panelGroup>
+
+                            <h:panelGroup rendered="#{webUserController.loggedUser.client}" >
+
+                                <tr> 
+
+                                    <td>
+                                        <h:outputLabel class="spacer1x"></h:outputLabel>
+                                    </td>
+                                    <td > 
+                                        <ez:logi/>
+                                    </td>
+                                    <td>
+                                        <h:outputLabel class="spacer5x"></h:outputLabel>
+                                    </td>
+                                    <td>
+                                        <h:form>
+                                            <h:commandLink  class="spacer1x boldedText" value="VIEW PROJECT" action="#{webUserController.viewMyProject()}"></h:commandLink>
+                                        </h:form>
+                                    </td>
+                                    <td>
+
+                                        <h:form>
+                                            <h:commandLink  class="spacer1x boldedText" value="CHANGE PASSWORD" action="/advertisement_management"></h:commandLink>
+                                        </h:form>
+                                    </td>
+
+                                    <td>
+                                        <h:form>
+                                            <h:commandLink  class="spacer1x boldedText" value="CHANGE MY DETAILS" action="/system_management"></h:commandLink>
+                                        </h:form>
+                                    </td>
+                                    <td>
+                                        <h:form>
+                                            <h:commandLink  class="spacer1x boldedText" value="LOG OUT" action="#{webUserController.logOut()}"></h:commandLink>
+                                        </h:form>
+                                    </td>
+                                </tr>
+
+                            </h:panelGroup>
+
+                            <h:panelGroup rendered="#{webUserController.loggedUser.providerAdmin}" >
+
+                                <tr> 
+
+                                    <td>
+                                        <h:outputLabel class="spacer2x"></h:outputLabel>
+                                    </td>
+                                    <td > 
+                                        <ez:logi/>
+                                    </td>
+                                    <td>
+                                        <h:outputLabel class="spacer5x"></h:outputLabel>
+                                    </td>
+                                    <td>
+                                        <h:form>
+                                            <h:commandLink  class="spacer1x boldedText" value="BIDDING" action="#{webUserController.listProjectsToSubmitBids()}"></h:commandLink>
+                                        </h:form>
+                                    </td>
+                                    <td>
+
+                                        <h:form>
+                                            <h:commandLink  class="spacer1x boldedText" value="ADVERTISEMENT MANAGEMENT" action="/advertisement_management"></h:commandLink>
+                                        </h:form>
+                                    </td>
+
+                                    <td>
+                                        <h:form>
+                                            <h:commandLink  class="spacer1x boldedText" value="SYSTEM MANAGEMENT" action="/system_management"></h:commandLink>
+                                        </h:form>
+                                    </td>
+                                    <td>
+                                        <h:form>
+                                            <h:commandLink  class="spacer1x boldedText" value="LOG OUT" action="#{webUserController.logOut()}"></h:commandLink>
+                                        </h:form>
+                                    </td>
+                                </tr>
+
+
+
+                            </h:panelGroup>
+
+                            <h:panelGroup rendered="#{webUserController.loggedUser.providerSuperUser}" >
+
+                            </h:panelGroup>
+
+                            <h:panelGroup rendered="#{webUserController.loggedUser.providerUser}" >
+
+                            </h:panelGroup>
+
+                        </h:panelGroup>
+
+
+                        <h:panelGroup rendered="#{webUserController.loggedUser eq null}" >
+
+                            <tr> 
+
+                                <td>
+                                    <h:outputLabel class="spacer1x"></h:outputLabel>
+                                </td>
+                                <td > 
+                                    <ez:logi/>
+                                </td>
+                                <td>
+                                    <h:outputLabel class="spacer5x"></h:outputLabel>
+                                </td>
+                                <td>
+                                    <h:form>
+                                        <h:commandLink  class="spacer1x boldedText" value="HOME" 
+                                                        action="/index"></h:commandLink>
+                                    </h:form>
+                                </td>
+                                <td>
+                                    <h:form>
+                                        <h:commandLink  class="spacer1x boldedText" value="ABOUT" 
+                                                        action="/about_us"></h:commandLink>
+                                    </h:form>
+                                </td>
+                                <td>
+                                    <h:form>
+                                        <h:commandLink  class="spacer1x boldedText" value="SERVICES" 
+                                                        action="/services"></h:commandLink>
+                                    </h:form>
+                                </td>
+                                <td>
+                                    <h:form>
+                                        <h:commandLink  class="spacer1x boldedText" value="REGISTER" 
+                                                        action="#{webUserController.prepareRegisterAsClient()}"></h:commandLink>
+                                    </h:form>
+                                </td>
+                                <td>
+                                    <h:form>
+                                        <h:commandLink  class="spacer1x boldedText" value="CONTACT" 
+                                                        action="/contact"></h:commandLink>
+                                    </h:form>
+                                </td>
+                                <td>
+                                    <h:form>
+                                        <h:commandLink  class="spacer1x boldedText" value="LOGIN" action="#{webUserController.toLogin()}"></h:commandLink>
+                                    </h:form>
+                                </td>
+                            </tr>
+
+                        </h:panelGroup>
+
+
+                    </table>
+
+                    <ui:insert name="top">
+
+                    </ui:insert>
+                </td>
+            </tr>
+            <tr valign="top">
+                <td class="content">
+                    <ui:insert name="content">
+                        The best way to explore solar solutions !!!
+                    </ui:insert>
+                </td>
+            </tr>
+            <tr>
+                <td id="bottom" style="height: 50px;">
+                    <ui:insert name="bottom">
+                        &copy; Solar Bid, Inc.
+                    </ui:insert>
+                </td>
+            </tr>
+        </table>
+    </h:body>
+
+</html>

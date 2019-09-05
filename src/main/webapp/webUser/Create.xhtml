@@ -1,0 +1,96 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+
+    <h:head>
+        <h:outputStylesheet library="css" name="main.css" ></h:outputStylesheet>
+    </h:head>
+
+    <h:body>
+
+        <ui:composition template="/system_management.xhtml">
+
+
+            <ui:define name="right">
+                <h:panelGroup id="messagePanel" layout="block">
+                    <h:messages errorStyle="color: red" infoStyle="color: green" layout="table"/>
+                </h:panelGroup>
+                <h:form>
+                    <p:panelGrid columns="2" columnClasses="alignLeft alignLeft" class="pageCenter">
+
+                        <f:facet name="header" >
+                            Add New User
+                        </f:facet>
+
+                        <h:outputLabel value="Name" for="webUserPerson" />
+                        <p:inputText id="webUserPerson" value="#{webUserController.selected.webUserPerson.name}" title="#{bundle.EditWebUserTitle_webUserPerson}" >
+                        </p:inputText>
+
+                        <h:outputLabel value="Username" for="name" />
+                        <p:inputText id="name" value="#{webUserController.selected.name}" 
+                                     title="Username" 
+                                     required="true" 
+                                     requiredMessage="Username Required"
+                                     autocomplete="off" />
+
+                        <h:outputLabel value="Password"  />
+                        <p:password value="#{webUserController.selected.webUserPassword}" ></p:password>
+
+
+                        <h:outputLabel value="Re-enter Password"  />
+                        <p:password value="#{webUserController.password}" ></p:password>
+
+
+                        <h:outputLabel value="Email" for="email" />
+                        <p:inputText id="email" value="#{webUserController.selected.email}" title="Email" />
+                        
+                        <h:outputLabel value="Phone" for="telNo" />
+                        <p:inputText id="telNo" value="#{webUserController.selected.telNo}" title="Phone" />
+
+
+                        <h:outputLabel value="Institution" for="acIns" />
+                        <p:autoComplete id="acIns" value="#{webUserController.selected.institution}"
+                                        completeMethod="#{institutionController.completeInstitutions}"
+                                        var="ins" itemLabel="#{ins.name}" itemValue="#{ins}"
+                                        required="true"
+                                        requiredMessage="Please select your institution"
+                                        ></p:autoComplete>
+
+
+                        <h:outputLabel value="Role" for="webUserRole" />
+                        <h:selectOneMenu value="#{webUserController.selected.webUserRole}" >
+                            <f:selectItems value="#{commonController.webUserRoles}" ></f:selectItems>
+                        </h:selectOneMenu>
+
+
+                        <h:outputLabel value="Language"  />
+                        <h:selectOneMenu value="#{webUserController.selected.defLocale}" >
+                            <f:selectItem itemLabel="Sinhala" itemValue="si" ></f:selectItem>
+                            <f:selectItem itemLabel="Tamil" itemValue="ta" ></f:selectItem>
+                            <f:selectItem itemLabel="English" itemValue="en" ></f:selectItem>
+                        </h:selectOneMenu>
+
+                        <p:spacer></p:spacer>
+                        <p:commandButton ajax="false" action="#{webUserController.create()}" value="Save" ></p:commandButton>
+
+                    </p:panelGrid>
+
+                </h:form>
+            </ui:define>
+        </ui:composition>
+
+
+
+    </h:body>
+
+
+
+
+
+
+</html>

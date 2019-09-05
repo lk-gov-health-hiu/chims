@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="AreaCreateDlg" widgetVar="AreaCreateDialog" modal="true" resizable="false" appendTo="@(body)" header="Create New Area"
+                  style="background-color: yellow;">
+            <h:form id="AreaCreateForm">
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" rendered="#{areaController.selected != null}">
+                        <p:outputLabel value="Type" for="type" />
+                        <h:selectOneMenu id="type" value="#{areaController.selected.type}" > \
+                            <f:selectItems value="#{commonController.areaTypes}" ></f:selectItems>
+                        </h:selectOneMenu>
+
+                        <p:outputLabel value="Name" for="name" />
+                        <p:inputText id="name" value="#{areaController.selected.name}" title="#{bundle.CreateAreaTitle_name}" />
+                        
+                        <p:outputLabel value="Code" for="code" />
+                        <p:inputText id="code" value="#{areaController.selected.code}" title="#{bundle.CreateAreaTitle_code}" />
+
+
+                        <p:outputLabel value="Parent Area" for="parentArea" />
+                        <h:selectOneMenu id="parentArea" value="#{areaController.selected.parentArea}" >
+                            <f:selectItems value="#{areaController.itemsAvailableSelectOne}"
+                                           var="parentAreaItem" itemLabel="#{parentAreaItem.name}"
+                                           itemValue="#{parentAreaItem}"/>
+                        </h:selectOneMenu>
+
+                        
+
+                    </p:panelGrid>
+                    <p:commandButton ajax="false" actionListener="#{areaController.create}" value="Save" update="display,:AreaListForm:datalist" oncomplete="handleSubmit(args,'AreaCreateDialog');"/>
+                    <p:commandButton value="Cancel" onclick="AreaCreateDialog.hide()"/>
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+
+    </ui:composition>
+</html>

@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:composition template="/template.xhtml">
+        <ui:define name="title">
+            <h:outputText value="#{bundle.ListProjectTitle}"></h:outputText>
+        </ui:define>
+        <ui:define name="body">
+            <h:form styleClass="jsfcrud_list_form">
+                <h:panelGroup id="messagePanel" layout="block">
+                    <h:messages errorStyle="color: red" infoStyle="color: green" layout="table"/>
+                </h:panelGroup>
+                <h:outputText escape="false" value="#{bundle.ListProjectEmpty}" rendered="#{projectController.items.rowCount == 0}"/>
+                <h:panelGroup rendered="#{projectController.items.rowCount > 0}">
+                    <h:outputText value="#{projectController.pagination.pageFirstItem + 1}..#{projectController.pagination.pageLastItem + 1}/#{projectController.pagination.itemsCount}"/>&nbsp;
+                    <h:commandLink action="#{projectController.previous}" value="#{bundle.Previous} #{projectController.pagination.pageSize}" rendered="#{projectController.pagination.hasPreviousPage}"/>&nbsp;
+                    <h:commandLink action="#{projectController.next}" value="#{bundle.Next} #{projectController.pagination.pageSize}" rendered="#{projectController.pagination.hasNextPage}"/>&nbsp;
+                    <h:dataTable value="#{projectController.items}" var="item" border="0" cellpadding="2" cellspacing="0" rowClasses="jsfcrud_odd_row,jsfcrud_even_row" rules="all" style="border:solid 1px">
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListProjectTitle_id}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.id}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListProjectTitle_comments}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.comments}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListProjectTitle_currentStageType}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.currentStageType}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListProjectTitle_client}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.client}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListProjectTitle_referenceNo}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.referenceNo}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListProjectTitle_creater}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.creater}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListProjectTitle_createdAt}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.createdAt}">
+                                <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                            </h:outputText>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListProjectTitle_retirer}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.retirer}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListProjectTitle_retiredAt}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.retiredAt}">
+                                <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                            </h:outputText>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListProjectTitle_retireComments}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.retireComments}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListProjectTitle_billDate}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.billDate}">
+                                <f:convertDateTime pattern="MM/dd/yyyy" />
+                            </h:outputText>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListProjectTitle_billTime}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.billTime}">
+                                <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                            </h:outputText>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListProjectTitle_billClass}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.billClass}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListProjectTitle_editor}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.editor}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListProjectTitle_editedAt}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.editedAt}">
+                                <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                            </h:outputText>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListProjectTitle_checkedBy}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.checkedBy}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundle.ListProjectTitle_checkeAt}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.checkeAt}">
+                                <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                            </h:outputText>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="&nbsp;"/>
+                            </f:facet>
+                            <h:commandLink action="#{projectController.prepareView}" value="#{bundle.ListProjectViewLink}"/>
+                            <h:outputText value=" "/>
+                            <h:commandLink action="#{projectController.prepareEdit}" value="#{bundle.ListProjectEditLink}"/>
+                            <h:outputText value=" "/>
+                            <h:commandLink action="#{projectController.destroy}" value="#{bundle.ListProjectDestroyLink}"/>
+                        </h:column>
+                    </h:dataTable>
+                </h:panelGroup>
+                <br />
+                <h:commandLink action="#{projectController.prepareCreate}" value="#{bundle.ListProjectCreateLink}"/>
+                <br />
+                <br />
+                <h:link outcome="/index" value="#{bundle.ListProjectIndexLink}"/>
+            </h:form>
+        </ui:define>
+    </ui:composition>
+
+</html>

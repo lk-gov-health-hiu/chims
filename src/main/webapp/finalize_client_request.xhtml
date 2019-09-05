@@ -1,0 +1,76 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+
+    <h:head>
+        <h:outputStylesheet library="css" name="main.css" ></h:outputStylesheet>
+    </h:head>
+
+    <h:body>
+
+        <ui:composition template="./template.xhtml">
+
+            <ui:define name="content">
+
+
+                <table style="width: 99%; top: 0px; margin: auto; margin-top: 0px; vertical-align: top; " >
+                    <tr style="height: 50px;">
+                        <td colspan="2" >
+                            <h3>Add Photos to Project</h3>
+                        </td>
+                    </tr>
+
+                    <tr >
+                        <td colspan="2" >
+                            <p>
+                                Now you can click the button and submit your requirements. You can also upload more photos if you need.
+                            </p>
+                            <p>
+                                After your submit, you will get a confirmation email. You can use the username and password to log to the system and view the progress and submit more details.
+                            </p>
+                            <p>
+                                We will make a design and give you a proposal. You can communicate with us and make alterations.
+                            </p>
+                            <p>
+                                When you are satisfied with our proposal, we will submit it to a set of very experienced solar solution providers. The solution providers will submit bids for the proposal. 
+                            </p>   
+                            <p>
+                                You can select any bid to finalize.
+                            </p>
+                            <h:form>
+                                <h:panelGrid columns="2" >
+                                    <h:outputLabel value="12 Months Electricity Usage" ></h:outputLabel>
+                                    <h:inputText value="#{webUserController.currentProject.twelveMonthsElectricityUsage}" ></h:inputText>
+
+                                    <h:outputLabel value="Special Instructions" ></h:outputLabel>
+                                    <h:inputTextarea value="#{webUserController.currentProject.specialNotes}" ></h:inputTextarea>
+                                    <h:commandButton  class="spacer1x normalButton lime" value="SUBMIT" 
+                                                      action="#{webUserController.submitClientRequest()}"></h:commandButton>
+                                </h:panelGrid>
+                            </h:form>
+                        </td>
+                    </tr>
+                </table>
+
+
+
+
+            </ui:define>
+
+        </ui:composition>
+
+
+    </h:body>
+
+
+
+
+
+
+</html>

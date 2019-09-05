@@ -1,0 +1,186 @@
+<?xml version='1.0' encoding='UTF-8' ?> 
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ez="http://xmlns.jcp.org/jsf/composite/ezcomp"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <h:head id="headt">
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1"/>
+        <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css"></link>
+        <link rel="stylesheet" href="https://www.w3schools.com/lib/w3-theme-amber.css"></link>
+        <link href="https://fonts.googleapis.com/css?family=Poppins" rel="stylesheet"></link>
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+              rel="stylesheet"></link>
+        <link rel='stylesheet' href='https://use.fontawesome.com/releases/v5.7.0/css/all.css' 
+              integrity='sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ' 
+              crossorigin='anonymous'></link>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"></link>
+        <h:outputStylesheet library="css" name="tem1.css"/>
+        <title>Management Development and Planning Unit</title>
+        <h:outputStylesheet library="css" name="tem1.css" ></h:outputStylesheet>
+        <style>
+            ul {
+                list-style-type: none;
+                margin: 0;
+                padding: 0;
+                overflow: hidden;
+                border: 1px solid #e7e7e7;
+                background-color: #f3f3f3;
+            }
+
+            li {
+                float: left;
+            }
+
+            li a {
+                display: block;
+                color: #666;
+                text-align: center;
+                padding: 14px 16px;
+                text-decoration: none;
+            }
+
+            li a:hover:not(.active) {
+                background-color: #ffbf00;
+            }
+
+            li a.active {
+                color: white;
+                background-color: #4CAF50;
+            }
+        </style>
+    </h:head>
+
+    <h:body class="w3-theme-l5">
+
+        <f:view locale="#{webUserController.locale}" >
+
+
+
+
+
+
+            <div class="w3-row w3-center w3-amber">
+                <h3 class="w3-opacity">
+                    #{bundle.Title}
+                </h3>
+            </div>
+
+
+
+
+            <div class="w3-row" >
+                <h:form>
+                    <ul>
+                        <li>
+                            <h:commandLink class="nonUnderline"  value="#{bundle.Home}" action="/index" ></h:commandLink>
+                        </li>
+                        <h:panelGroup rendered="#{webUserController.loggedUser.systemAdministrator or webUserController.loggedUser.superUser or webUserController.loggedUser.user}" >
+                            <ui:insert name="addProject">
+                                <li>
+                                    <h:commandLink value="#{bundle.AddProject}" action="#{webUserController.addNewProject()}"></h:commandLink>
+                                </li>
+                            </ui:insert>
+
+                            <li>
+                                <h:commandLink value="#{bundle.ListProjects}" action="#{webUserController.tolistProjects()}"></h:commandLink>
+                            </li>
+
+                            <li>
+                                <h:commandLink value="#{bundle.SearchProjects}" action="#{webUserController.searchProjects()}"></h:commandLink>
+                            </li>
+                        </h:panelGroup>
+
+
+                        <h:panelGroup rendered="#{webUserController.loggedUser.systemAdministrator}" >
+                            <li>
+                                <h:commandLink  value="#{bundle.SystemManagement}" action="/system_management"></h:commandLink>
+                            </li>
+                        </h:panelGroup>
+
+                        <h:panelGroup rendered="#{webUserController.loggedUser ne null}" >
+                            <li>
+                                <h:commandLink  class="spacer1x boldedText" value="#{bundle.ChangePassword}" action="#{webUserController.toChangeMyPassword()}"></h:commandLink>
+                            </li>
+                            <li>
+                                <h:commandLink  class="spacer1x boldedText" value="#{bundle.ChangeMyDetails}" action="#{webUserController.toChangeMyDetails()}"></h:commandLink>
+                            </li>
+                            <li>
+                                <h:commandLink  value="#{bundle.SignOut}" action="#{webUserController.logOut()}"></h:commandLink>
+                            </li>
+                        </h:panelGroup>
+
+                        <h:panelGroup rendered="#{webUserController.loggedUser eq null}" >
+                            <li>
+                                <h:commandLink class="nonUnderline"  value="#{bundle.Help}" action="#{webUserController.logOut()}"></h:commandLink>
+                            </li>
+                            <li>
+                                <h:commandLink class="nonUnderline" value="#{bundle.SingIn}" action="#{webUserController.toLogin()}"></h:commandLink>
+                            </li>
+                            <li>
+                                <h:commandLink class="nonUnderline"  value="#{bundle.SingUp}" action="#{webUserController.prepareRegisterAsClient()}"></h:commandLink>
+                            </li>
+                        </h:panelGroup>
+                    </ul>
+                </h:form>
+            </div>
+
+
+
+            <p:growl autoUpdate="true"  ></p:growl>
+
+
+            <ui:insert name="content">
+
+                <div class="w3-row w3-theme-l5" >
+
+                </div>
+
+
+            </ui:insert>
+
+
+
+
+            <div class="footer w3-amber">
+                <p>
+                    <ui:insert name="bottom">
+                        <table style="width: 98%; margin: auto;">
+                            <tr>
+                                <td>
+                                    &copy; #{bundle.Hiu}, 2019
+                                </td>
+                                <td>
+
+                                </td>
+                                <td>
+
+                                </td>
+                                <td>
+                                    <h:panelGroup rendered="#{webUserController.loggedUser ne null and false}" >
+                                        <h:outputLabel value="Language"  />
+                                        <h:selectOneMenu value="#{webUserController.loggedUser.defLocale}" >
+                                            <f:selectItem itemLabel="Sinhala" itemValue="si" ></f:selectItem>
+                                            <f:selectItem itemLabel="Tamil" itemValue="ta" ></f:selectItem>
+                                            <f:selectItem itemLabel="English" itemValue="en" ></f:selectItem>
+                                            <f:ajax execute="@this" render="@all" listener="#{webUserController.updateLoggedUser()}" ></f:ajax>
+                                        </h:selectOneMenu>
+                                    </h:panelGroup>
+                                </td>
+                            </tr>
+                        </table>
+
+
+                    </ui:insert>
+                </p>
+            </div>
+
+        </f:view>
+
+    </h:body>
+
+</html>

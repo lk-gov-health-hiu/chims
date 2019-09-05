@@ -1,0 +1,119 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+
+    <h:head>
+        <h:outputStylesheet library="css" name="main.css" ></h:outputStylesheet>
+    </h:head>
+
+    <h:body>
+
+        <ui:composition template="/system_management.xhtml">
+
+
+            <ui:define name="right">
+
+                <table >
+                    <tr>
+                        <td>
+                            <h3>Manage Institutions</h3>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <h:form styleClass="jsfcrud_list_form">
+                                
+                                
+                                <p:commandButton value="Add New Institution" ajax="false" action="#{institutionController.prepareCreate()}" >
+                                    
+                                </p:commandButton>
+                                
+                                <p:dataTable value="#{institutionController.items}" var="item"  
+
+                                             rowKey="#{item.id}" 
+
+                                             selection="#{webUserController.current}" 
+
+                                             rows="10"
+                                             paginator="true"
+                                             paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                             rowsPerPageTemplate="10,20,25"
+
+                                             style="border:solid 1px">
+
+
+                                    <p:column sortBy="#{item.name}">
+                                        <f:facet name="header">
+                                            <h:outputText value="Name"/>
+                                        </f:facet>
+                                        <h:outputText value="#{item.name}"/>
+                                    </p:column>
+
+
+                                    <p:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="Address"/>
+                                        </f:facet>
+                                        <h:outputText value="#{item.address}"/>
+                                    </p:column>
+                                    <p:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="Email"/>
+                                        </f:facet>
+                                        <h:outputText value="#{item.email}"/>
+                                    </p:column>
+                                    <p:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="Phone"/>
+                                        </f:facet>
+                                        <h:outputText value="#{item.phone}"/>
+                                    </p:column>
+
+
+                                    <p:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="Actions"/>
+                                        </f:facet>
+                                        <p:commandButton  value="Edit" ajax="false"
+                                                          action="#{institutionController.prepareEdit()}" >
+                                            <f:setPropertyActionListener value="#{item}" target="#{institutionController.current}" ></f:setPropertyActionListener>
+                                        </p:commandButton>
+                                        <p:commandButton  value="View" ajax="false"
+                                                          action="#{institutionController.prepareView()}" >
+                                            <f:setPropertyActionListener value="#{item}" target="#{institutionController.current}" ></f:setPropertyActionListener>
+                                        </p:commandButton>
+                                    </p:column>
+                                </p:dataTable>
+                            </h:form>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <h:form>
+                                <p:commandButton ajax="false" value="Add New" action="#{institutionController.prepareCreate()}" ></p:commandButton>
+                            </h:form>
+                        </td>
+                    </tr>
+                </table>
+
+
+
+
+            </ui:define>
+
+        </ui:composition>
+
+
+    </h:body>
+
+
+
+
+
+
+</html>

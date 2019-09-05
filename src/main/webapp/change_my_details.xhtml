@@ -1,0 +1,66 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <body>
+
+        <ui:composition template="./template.xhtml">
+
+            <ui:define name="content">
+                
+                   <h:form>
+                    <p:panelGrid columns="2" columnClasses="alignLeft alignLeft" class="pageCenter">
+
+                        <f:facet name="header" >
+                            Change My Details
+                        </f:facet>
+
+
+                        <h:outputLabel value="Name" for="webUserPerson" />
+                        <h:inputText id="webUserPerson" value="#{webUserController.selected.webUserPerson.name}" title="#{bundle.EditWebUserTitle_webUserPerson}" >
+                        </h:inputText>
+
+                        
+                        <h:outputLabel value="Username" for="name" />
+                        <h:inputText disabled="true" id="name" value="#{webUserController.selected.name}" title="#{bundle.EditWebUserTitle_name}" required="true" requiredMessage="#{bundle.EditWebUserRequiredMessage_name}"/>
+
+
+                        <h:outputLabel value="Email" for="email" />
+                        <h:inputText id="email" value="#{webUserController.selected.email}" title="#{bundle.EditWebUserTitle_email}" />
+                        
+                        <h:outputLabel value="Phone" for="telNo" />
+                        <h:inputText id="telNo" value="#{webUserController.selected.telNo}" title="#{bundle.EditWebUserTitle_telNo}" />
+
+
+                        <h:outputLabel value="Institution" for="institution" />
+                        <h:selectOneMenu id="institution" value="#{webUserController.selected.institution}" title="#{bundle.EditWebUserTitle_institution}" >
+                            <f:selectItem itemLabel="Select" ></f:selectItem>
+                            <f:selectItems value="#{institutionController.items}"/>
+                        </h:selectOneMenu>
+
+                        <h:outputLabel value="Language"  />
+                        <h:selectOneMenu value="#{webUserController.selected.defLocale}" >
+                            <f:selectItem itemLabel="Sinhala" itemValue="si" ></f:selectItem>
+                            <f:selectItem itemLabel="Tamil" itemValue="ta" ></f:selectItem>
+                            <f:selectItem itemLabel="English" itemValue="en" ></f:selectItem>
+                        </h:selectOneMenu>
+
+
+                        <p:spacer></p:spacer>
+                        <p:commandButton ajax="false" action="#{webUserController.updateMyDetails()}" value="Save" ></p:commandButton>
+
+                    </p:panelGrid>
+
+                </h:form>
+                
+                
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

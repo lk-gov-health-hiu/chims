@@ -1,0 +1,30 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:cc="http://xmlns.jcp.org/jsf/composite"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+    <!-- INTERFACE -->
+    <cc:interface>
+    </cc:interface>
+
+    <!-- IMPLEMENTATION -->
+    <cc:implementation>
+        <h:selectOneMenu  style="width:125px" id="y" value="#{webUserController.year}" >
+            <f:selectItem itemLabel="Any" ></f:selectItem>
+            <f:selectItem itemValue="2010" itemLabel="2010"></f:selectItem>
+            <f:selectItem itemValue="2011" itemLabel="2011"></f:selectItem>
+            <f:selectItem itemValue="2012" itemLabel="2012"></f:selectItem>
+            <f:selectItem itemValue="2013" itemLabel="2013"></f:selectItem>
+            <f:selectItem itemValue="2014" itemLabel="2014"></f:selectItem>
+            <f:selectItem itemValue="2015" itemLabel="2015"></f:selectItem>
+            <f:selectItem itemValue="2016" itemLabel="2016"></f:selectItem>
+            <f:selectItem itemValue="2017" itemLabel="2017"></f:selectItem>
+            <f:selectItem itemValue="2018" itemLabel="2018"></f:selectItem>
+            <f:selectItem itemValue="2019" itemLabel="2019"></f:selectItem>
+            <f:selectItem itemValue="2020" itemLabel="2020"></f:selectItem>
+            <f:ajax event="blur" execute="@this" ></f:ajax>
+        </h:selectOneMenu>
+    </cc:implementation>
+</html>

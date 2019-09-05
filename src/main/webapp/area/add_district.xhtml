@@ -1,0 +1,53 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+    <body>
+
+        <ui:composition template="/template.xhtml">
+
+            <ui:define name="title">
+                Add Province
+            </ui:define>
+
+            <ui:define name="content">
+
+                <h:panelGrid columns="2" styleClass="alignTop" >
+                    <p:panel header="Current Districts" >
+                        <p:dataTable value="#{areaController.rdhsAreas}" var="d" rowIndexVar="i" style="max-width: 300px;">
+                            <p:column headerText="No" width="20" >
+                                <p:outputLabel value="#{i+1}" ></p:outputLabel>
+                            </p:column>
+                            <p:column headerText="District" width="100">
+                                <p:outputLabel value="#{d.name}" ></p:outputLabel>
+                            </p:column>
+                        </p:dataTable>
+                    </p:panel>
+                    <p:panel header="Add New District" >
+                        <h:form >
+                            <p:panelGrid columns="2" rendered="#{areaController.selected ne null}" >
+                                <p:outputLabel value="Type:" for="type" />
+                                <p:outputLabel id="type" value="#{areaController.selected.type}" title="Type" />
+                                <p:outputLabel value="Province"  />
+                                <h:selectOneMenu value="#{areaController.selected.parentArea}" required="true">
+                                    <f:selectItems value="#{areaController.items}" var="p" itemLabel="#{p.name}" itemValue="#{p}" ></f:selectItems>
+                                </h:selectOneMenu>
+                                <p:outputLabel value="Name:" for="name" />
+                                <p:inputText id="name" value="#{areaController.selected.name}" title="Name" />
+                            </p:panelGrid>
+                            <p:commandButton ajax="false" value="Save" action="#{areaController.saveNewDistrict()}" ></p:commandButton>
+                        </h:form>
+
+                    </p:panel>
+                </h:panelGrid>
+
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

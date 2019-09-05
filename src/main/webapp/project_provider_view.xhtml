@@ -1,0 +1,255 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+
+    <h:head>
+        <h:outputStylesheet library="css" name="main.css" ></h:outputStylesheet>
+
+    </h:head>
+
+    <h:body>
+
+        <ui:composition template="./template.xhtml">
+
+            <ui:define name="content">
+
+                <script src="http://maps.google.com/maps/api/js?key=AIzaSyAjDYTd-0IMG4d6cecod9pIfopXZ4C7mzA" type="text/javascript" ></script> 
+
+                <table style="width: 99%; top: 0px; margin: auto; margin-top: 0px; vertical-align: top; " >
+                    <tr style="height: 50px;">
+                        <td colspan="2" >
+                            <h3>Project Details -  #{webUserController.currentProject.currentStageType}</h3>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" valign="top" style="width: 220px;">
+
+
+                            <p:tabView style="width: 98%;height: 600px;text-align: center;" >
+                                <p:tab title="Submission Details"  >
+                                    <h:form>
+                                        <p:panelGrid columns="2" columnClasses="alignLeft alignLeft" style="width: 50%;">
+                                            <f:facet name="header" >
+                                                Details
+                                            </f:facet>
+
+                                            <h:outputLabel value="stage" for="stage" />
+                                            <h:outputLabel id="stage" value="#{webUserController.currentProject.currentStageType}" >
+                                            </h:outputLabel>
+
+                                            <h:outputLabel value="Name" for="webUserPerson" />
+                                            <h:outputLabel id="webUserPerson" value="#{webUserController.currentProject.client.lastPartOfName}" >
+                                            </h:outputLabel>
+
+                                            <h:outputLabel value="Address" for="address" />
+                                            <h:outputLabel id="address" value="#{webUserController.currentProject.client.lastPartOfAddress}">
+                                            </h:outputLabel>
+
+                                            <h:outputLabel value="12 Months Electricity Usage" for="ele" />
+                                            <h:outputLabel id="ele" value="#{webUserController.currentProject.twelveMonthsElectricityUsage}" >
+                                            </h:outputLabel>
+
+                                            <h:outputLabel value="Special Notes" for="sn" />
+                                            <h:outputLabel id="sn" value="#{webUserController.currentProject.specialNotes}" />
+
+                                            <h:outputLabel value="Client Request Completed at"  />
+                                            <h:outputLabel value="#{webUserController.currentProject.requestSubmittedAt}" >
+                                                <f:convertDateTime pattern="MMMM dd, yyyy hh:mm a" ></f:convertDateTime>
+                                            </h:outputLabel>
+
+                                            <h:outputLabel value="Proposal Submitted at"  />
+                                            <h:outputLabel value="#{webUserController.currentProject.proposalSubmittedAt}" >
+                                                <f:convertDateTime pattern="MMMM dd, yyyy hh:mm a" ></f:convertDateTime>
+                                            </h:outputLabel>
+
+                                            <h:outputLabel value="Client Accepted Proposal at"  />
+                                            <h:outputLabel value="#{webUserController.currentProject.proposalAcceptedAt}" >
+                                                <f:convertDateTime pattern="MMMM dd, yyyy hh:mm a" ></f:convertDateTime>
+                                            </h:outputLabel>
+
+
+
+                                        </p:panelGrid>
+
+
+
+
+
+                                    </h:form>
+                                </p:tab>
+                                <p:tab title="Files by Client" >
+
+                                    <h:form >
+                                        <p:dataTable value="#{webUserController.clientUploads}" var="u" style="width: 50%; ">
+                                            <f:facet name="header" >
+                                                Client Uploads
+                                            </f:facet>
+                                            <p:column headerText="Date/Time" >
+                                                <p:outputLabel value="#{u.createdAt}" >
+                                                    <f:convertDateTime pattern="dd/MMM/yyyy hh:mm a" ></f:convertDateTime>
+                                                </p:outputLabel>
+                                            </p:column>
+                                            <p:column headerText="File Name" >
+                                                <p:commandLink action="#{webUserController.viewMedia()}" value="#{u.fileName}" ajax="false"  target="_blank" >
+                                                    <f:setPropertyActionListener value="#{u}" target="#{webUserController.currentUpload}" ></f:setPropertyActionListener>
+                                                </p:commandLink>
+                                            </p:column>
+                                            <p:column headerText="File Type" >
+                                                <p:outputLabel value="#{u.fileType}" >
+                                                </p:outputLabel>
+                                            </p:column>
+                                            <p:column headerText="Comments" >
+                                                <p:outputLabel value="#{u.comments}" >
+                                                </p:outputLabel>
+                                            </p:column>
+                                            <p:column headerText="Actions" >
+                                                <p:commandButton value="Download" ajax="false" 
+                                                                 onclick="PrimeFaces.monitorDownload(start, stop);" icon="ui-icon-arrowthick-1-s">
+                                                    <f:setPropertyActionListener value="#{u}" target="#{webUserController.currentUpload}" ></f:setPropertyActionListener>
+                                                    <p:fileDownload value="#{webUserController.downloadingFile}" />
+                                                </p:commandButton>
+
+
+                                                <p:spacer height="1" width="5" ></p:spacer>
+
+
+                                            </p:column>
+
+                                        </p:dataTable>
+                                    </h:form>
+
+                                </p:tab>
+                                <p:tab title="Location" >
+                                    <p:gmap id="gmap" 
+                                            center="#{webUserController.current.institution.coordinate.latitude},#{webUserController.current.institution.coordinate.longitude}" 
+                                            zoom="12" type="roadmap" style="height: 30vh; min-height: 520px;width: 100%; min-width: 300px; margin: auto;" model="#{webUserController.emptyModel}"
+                                            widgetVar="map" />
+
+
+                                </p:tab>
+
+                                <p:tab title="Proposal" >
+                                    <table border="1">
+                                        <tr>
+                                            <td rowspan="5" style="vertical-align: top;" >
+                                                <h:form >
+                                                    <h:panelGrid columns="2" >
+                                                        <p:commandButton process="@this editor" action="#{webUserController.updateProject()}"  
+                                                                         value="Update"></p:commandButton>
+                                                        <p:commandButton ajax="false" action="#{webUserController.finalizeProposal()}"  
+                                                                         value="Finalize Proposal"></p:commandButton>
+                                                    </h:panelGrid>
+                                                    <p:editor id="editor" value="#{webUserController.currentProject.proposal}" 
+                                                              style="width: 50vw;"
+                                                              height="550">
+                                                    </p:editor>
+
+                                                </h:form>
+
+                                            </td>
+                                            <td style="vertical-align: top;" >
+                                                <h:form enctype="multipart/form-data">
+                                                    <p:panel header="Upload Proposal Files" >
+                                                        <p:panelGrid columns="2" >
+                                                            <p:outputLabel value="Details" ></p:outputLabel>
+                                                            <p:inputTextarea value="#{webUserController.comments}" ></p:inputTextarea>
+
+                                                            <p:outputLabel value="Select File" ></p:outputLabel>
+                                                            <p:fileUpload value="#{webUserController.file}" mode="simple"  />
+
+                                                            <p:spacer ></p:spacer>
+                                                            <p:commandButton value="Submit" ajax="false"
+                                                                             action="#{webUserController.uploadByCompanyAsProposal()}"  />
+                                                        </p:panelGrid>
+
+                                                    </p:panel>
+                                                </h:form>
+                                            </td>
+                                        </tr>
+                                        <tr style="vertical-align: top;" >
+                                            <td style="vertical-align: top;" >
+                                                <h:form >
+                                                    <p:dataTable value="#{webUserController.companyUploads}" var="u" style="width: 100%; ">
+                                                        <f:facet name="header" >
+                                                            Company Uploads
+                                                        </f:facet>
+                                                        <p:column headerText="Date/Time" >
+                                                            <p:outputLabel value="#{u.createdAt}" >
+                                                                <f:convertDateTime pattern="dd/MMM/yyyy hh:mm a" ></f:convertDateTime>
+                                                            </p:outputLabel>
+                                                        </p:column>
+                                                        <p:column headerText="File Name" >
+                                                            <p:commandLink action="#{webUserController.viewMedia()}" value="#{u.fileName}" ajax="false"  target="_blank" >
+                                                                <f:setPropertyActionListener value="#{u}" target="#{webUserController.currentUpload}" ></f:setPropertyActionListener>
+                                                            </p:commandLink>
+                                                        </p:column>
+                                                        <p:column headerText="File Type" >
+                                                            <p:outputLabel value="#{u.fileType}" >
+                                                            </p:outputLabel>
+                                                        </p:column>
+                                                        <p:column headerText="Comments" >
+                                                            <p:outputLabel value="#{u.comments}" >
+                                                            </p:outputLabel>
+                                                        </p:column>
+                                                        <p:column headerText="Actions" >
+                                                            <p:commandButton value="Download" ajax="false" 
+                                                                             onclick="PrimeFaces.monitorDownload(start, stop);" icon="ui-icon-arrowthick-1-s">
+                                                                <f:setPropertyActionListener value="#{u}" target="#{webUserController.currentUpload}" ></f:setPropertyActionListener>
+                                                                <p:fileDownload value="#{webUserController.downloadingFile}" />
+                                                            </p:commandButton>
+
+
+                                                            <p:spacer height="1" width="5" ></p:spacer>
+
+
+                                                        </p:column>
+
+                                                    </p:dataTable>
+                                                </h:form>
+                                            </td>
+                                        </tr>
+                                    </table>
+
+
+
+                                </p:tab>
+
+                                <p:tab title="Bids" >
+
+                                </p:tab>
+
+                            </p:tabView>
+
+
+
+
+                        </td>
+
+                    </tr>
+
+
+
+                </table>
+
+
+
+
+            </ui:define>
+
+        </ui:composition>
+
+
+    </h:body>
+
+
+
+
+
+
+</html>
