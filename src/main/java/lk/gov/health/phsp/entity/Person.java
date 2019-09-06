@@ -65,10 +65,7 @@ public class Person implements Serializable {
     String website;
     String drivingLicenseNumber;
 
-    String initials;
-    String surName;
-    String lastName;
-    String zoneCode;
+    
 
     //Created Properties
     @ManyToOne
@@ -240,29 +237,7 @@ public class Person implements Serializable {
         this.name = name.toUpperCase();
     }
 
-    public String getInitials() {
-        return initials;
-    }
-
-    public void setInitials(String initials) {
-        this.initials = initials;
-    }
-
-    public String getSurName() {
-        return surName;
-    }
-
-    public void setSurName(String surName) {
-        this.surName = surName;
-    }
-
-    public String getZoneCode() {
-        return zoneCode;
-    }
-
-    public void setZoneCode(String zoneCode) {
-        this.zoneCode = zoneCode;
-    }
+   
 
     public boolean isRetired() {
         return retired;
@@ -389,13 +364,6 @@ public class Person implements Serializable {
         this.nic = nic;
     }
 
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
 
     public int getSerealNumber() {
         return serealNumber;

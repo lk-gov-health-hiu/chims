@@ -35,8 +35,25 @@ public class Client implements Serializable {
     private Long id;
     
     @OneToOne(cascade = CascadeType.ALL)
-    Person person;
+    private Person person;
     
+      //Created Properties
+    @ManyToOne
+    private WebUser createdBy;
+    @Temporal(javax.persistence.TemporalType.TIMESTAMP)
+    private Date createdAt;
+    @ManyToOne
+    private WebUser editer;
+    @Temporal(javax.persistence.TemporalType.TIMESTAMP)
+    private Date editedAt;
+
+    //Retairing properties
+    private boolean retired;
+    @ManyToOne
+    private WebUser retiredBy;
+    @Temporal(javax.persistence.TemporalType.TIMESTAMP)
+    private Date retiredAt;
+    private String retireComments;
 
     public Long getId() {
         return id;
@@ -69,6 +86,78 @@ public class Client implements Serializable {
             return false;
         }
         return true;
+    }
+
+    public Person getPerson() {
+        return person;
+    }
+
+    public void setPerson(Person person) {
+        this.person = person;
+    }
+
+    public WebUser getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(WebUser createdBy) {
+        this.createdBy = createdBy;
+    }
+
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public WebUser getEditer() {
+        return editer;
+    }
+
+    public void setEditer(WebUser editer) {
+        this.editer = editer;
+    }
+
+    public Date getEditedAt() {
+        return editedAt;
+    }
+
+    public void setEditedAt(Date editedAt) {
+        this.editedAt = editedAt;
+    }
+
+    public boolean isRetired() {
+        return retired;
+    }
+
+    public void setRetired(boolean retired) {
+        this.retired = retired;
+    }
+
+    public WebUser getRetiredBy() {
+        return retiredBy;
+    }
+
+    public void setRetiredBy(WebUser retiredBy) {
+        this.retiredBy = retiredBy;
+    }
+
+    public Date getRetiredAt() {
+        return retiredAt;
+    }
+
+    public void setRetiredAt(Date retiredAt) {
+        this.retiredAt = retiredAt;
+    }
+
+    public String getRetireComments() {
+        return retireComments;
+    }
+
+    public void setRetireComments(String retireComments) {
+        this.retireComments = retireComments;
     }
 
     
