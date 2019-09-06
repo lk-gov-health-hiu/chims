@@ -18,6 +18,7 @@ public class Coordinate implements Serializable {
     private Long id;
     @ManyToOne
     Institution institution;
+    @ManyToOne
     private Area area;
 
     double longitude;
@@ -67,6 +68,8 @@ public class Coordinate implements Serializable {
         this.id = id;
     }
 
+    
+    
     @Override
     public int hashCode() {
         int hash = 0;

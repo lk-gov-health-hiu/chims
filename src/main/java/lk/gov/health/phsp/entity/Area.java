@@ -7,7 +7,9 @@ package lk.gov.health.phsp.entity;
 
 import lk.gov.health.phsp.enums.AreaType;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -15,6 +17,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -25,6 +28,9 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Entity
 @XmlRootElement
 public class Area implements Serializable {
+
+    @OneToMany(mappedBy = "area")
+    private List<Coordinate> coordinates;
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -212,6 +218,17 @@ public class Area implements Serializable {
 
     public void setRetiredReversedAt(Date retiredReversedAt) {
         this.retiredReversedAt = retiredReversedAt;
+    }
+
+    public List<Coordinate> getCoordinates() {
+        if(coordinates==null){
+            coordinates = new ArrayList<>();
+        }
+        return coordinates;
+    }
+
+    public void setCoordinates(List<Coordinate> coordinates) {
+        this.coordinates = coordinates;
     }
 
 }
