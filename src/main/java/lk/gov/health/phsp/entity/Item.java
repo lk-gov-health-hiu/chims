@@ -31,32 +31,31 @@ public class Item implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     @Enumerated(EnumType.STRING)
-    ItemType type;
+    ItemType itemType;
     String name;
-    
-    
-     @ManyToOne
+
+    @ManyToOne
     private WebUser creater;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date createdAt;
     @ManyToOne
-    private WebUser editer;
+    private WebUser editedBy;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date editedAt;
     //Retairing properties
     private boolean retired;
     @ManyToOne
-    private WebUser retirer;
+    private WebUser retiredBy;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date retiredAt;
     private String retireComments;
 
-    public ItemType getType() {
-        return type;
+    public ItemType getItemType() {
+        return itemType;
     }
 
-    public void setType(ItemType type) {
-        this.type = type;
+    public void setItemType(ItemType itemType) {
+        this.itemType = itemType;
     }
 
     public String getName() {
@@ -91,12 +90,12 @@ public class Item implements Serializable {
         this.createdAt = createdAt;
     }
 
-    public WebUser getEditer() {
-        return editer;
+    public WebUser getEditedBy() {
+        return editedBy;
     }
 
-    public void setEditer(WebUser editer) {
-        this.editer = editer;
+    public void setEditedBy(WebUser editedBy) {
+        this.editedBy = editedBy;
     }
 
     public Date getEditedAt() {
@@ -115,12 +114,12 @@ public class Item implements Serializable {
         this.retired = retired;
     }
 
-    public WebUser getRetirer() {
-        return retirer;
+    public WebUser getRetiredBy() {
+        return retiredBy;
     }
 
-    public void setRetirer(WebUser retirer) {
-        this.retirer = retirer;
+    public void setRetiredBy(WebUser retiredBy) {
+        this.retiredBy = retiredBy;
     }
 
     public Date getRetiredAt() {
@@ -138,10 +137,6 @@ public class Item implements Serializable {
     public void setRetireComments(String retireComments) {
         this.retireComments = retireComments;
     }
-    
-    
-    
-    
 
     @Override
     public int hashCode() {

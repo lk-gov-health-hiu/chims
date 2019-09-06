@@ -1,11 +1,13 @@
 package lk.gov.health.phsp.entity;
 
 import java.io.Serializable;
+import java.util.Date;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.Temporal;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @Entity
@@ -25,6 +27,23 @@ public class Coordinate implements Serializable {
     double latitude;
     double elevation;
 
+    
+    @ManyToOne
+    private WebUser createdBy;
+    @Temporal(javax.persistence.TemporalType.TIMESTAMP)
+    private Date createAt;
+    
+    private boolean retired;
+    @ManyToOne
+    private WebUser retiredBy;
+    @Temporal(javax.persistence.TemporalType.TIMESTAMP)
+    private Date retiredAt;
+    
+    @ManyToOne
+    private WebUser retiredReversedBy;
+    @Temporal(javax.persistence.TemporalType.TIMESTAMP)
+    private Date retiredReversedAt;
+    
     
     
     
@@ -101,6 +120,62 @@ public class Coordinate implements Serializable {
 
     public void setArea(Area area) {
         this.area = area;
+    }
+
+    public WebUser getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(WebUser createdBy) {
+        this.createdBy = createdBy;
+    }
+
+    public Date getCreateAt() {
+        return createAt;
+    }
+
+    public void setCreateAt(Date createAt) {
+        this.createAt = createAt;
+    }
+
+    public boolean isRetired() {
+        return retired;
+    }
+
+    public void setRetired(boolean retired) {
+        this.retired = retired;
+    }
+
+    public WebUser getRetiredBy() {
+        return retiredBy;
+    }
+
+    public void setRetiredBy(WebUser retiredBy) {
+        this.retiredBy = retiredBy;
+    }
+
+    public Date getRetiredAt() {
+        return retiredAt;
+    }
+
+    public void setRetiredAt(Date retiredAt) {
+        this.retiredAt = retiredAt;
+    }
+
+    public WebUser getRetiredReversedBy() {
+        return retiredReversedBy;
+    }
+
+    public void setRetiredReversedBy(WebUser retiredReversedBy) {
+        this.retiredReversedBy = retiredReversedBy;
+    }
+
+    public Date getRetiredReversedAt() {
+        return retiredReversedAt;
+    }
+
+    public void setRetiredReversedAt(Date retiredReversedAt) {
+        this.retiredReversedAt = retiredReversedAt;
     }
 
 }

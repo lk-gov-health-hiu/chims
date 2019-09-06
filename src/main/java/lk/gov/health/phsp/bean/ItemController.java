@@ -154,7 +154,7 @@ public class ItemController implements Serializable {
             ti = new Item();
             ti.setName(name);
             ti.setCreatedAt(new Date());
-            ti.setType(type);
+            ti.setItemType(type);
             getFacade().create(ti);
         }
         return ti ;
