@@ -30,6 +30,7 @@ public class Area implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+    
     @Enumerated(EnumType.STRING)
     private AreaType type;
     private String name;
@@ -37,14 +38,31 @@ public class Area implements Serializable {
     @ManyToOne
     private Area parentArea;
 
-    @ManyToOne
-    private WebUser creater;
-    @Temporal(javax.persistence.TemporalType.TIMESTAMP)
-    private Date createAt;
+    
+      
     private double centreLongitude;
     private double centreLatitude;
     private double zoomLavel;
     
+    
+    
+    @ManyToOne
+    private WebUser createdBy;
+    @Temporal(javax.persistence.TemporalType.TIMESTAMP)
+    private Date createAt;
+    
+    private boolean retired;
+    @ManyToOne
+    private WebUser retiredBy;
+    @Temporal(javax.persistence.TemporalType.TIMESTAMP)
+    private Date retiredAt;
+    
+    @ManyToOne
+    private WebUser retiredReversedBy;
+    @Temporal(javax.persistence.TemporalType.TIMESTAMP)
+    private Date retiredReversedAt;
+    
+  
 
     
    
@@ -59,7 +77,6 @@ public class Area implements Serializable {
 
     @Override
     public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
         if (!(object instanceof Area)) {
             return false;
         }
@@ -70,6 +87,8 @@ public class Area implements Serializable {
         return true;
     }
 
+    
+    
     @Override
     public String toString() {
         return name;
@@ -107,12 +126,12 @@ public class Area implements Serializable {
         this.parentArea = parentArea;
     }
 
-    public WebUser getCreater() {
-        return creater;
+    public WebUser getCreatedBy() {
+        return createdBy;
     }
 
-    public void setCreater(WebUser creater) {
-        this.creater = creater;
+    public void setCreatedBy(WebUser createdBy) {
+        this.createdBy = createdBy;
     }
 
     public Date getCreateAt() {
@@ -153,6 +172,30 @@ public class Area implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public boolean isRetired() {
+        return retired;
+    }
+
+    public void setRetired(boolean retired) {
+        this.retired = retired;
+    }
+
+    public WebUser getRetiredBy() {
+        return retiredBy;
+    }
+
+    public void setRetiredBy(WebUser retiredBy) {
+        this.retiredBy = retiredBy;
+    }
+
+    public Date getRetiredAt() {
+        return retiredAt;
+    }
+
+    public void setRetiredAt(Date retiredAt) {
+        this.retiredAt = retiredAt;
     }
 
 }

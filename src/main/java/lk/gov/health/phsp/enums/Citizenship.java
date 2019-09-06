@@ -9,8 +9,7 @@ package lk.gov.health.phsp.enums;
  *
  * @author User
  */
-public enum ItemType {
-    Dictionary_Item,
-    Dictionary_Category,
-    Other,
+public enum Citizenship {
+    Sri_Lankan,
+    Non_Sri_Lankan,
 }

@@ -170,7 +170,7 @@ public class ItemController implements Serializable {
 
     public List<Item> getSectors() {
         if(sectors==null){
-            sectors = getItems(ItemType.Sector);
+            sectors = getItems(ItemType.Dictionary_Item);
         }
         return sectors;
     }
@@ -181,7 +181,7 @@ public class ItemController implements Serializable {
 
     public List<Item> getCostUnits() {
         if(costUnits==null){
-            costUnits = getItems(ItemType.Cost_Unit);
+            costUnits = getItems(ItemType.Dictionary_Category);
         }
         return costUnits;
     }
@@ -192,7 +192,7 @@ public class ItemController implements Serializable {
 
     public List<Item> getSourcesOfFunds() {
         if(sourcesOfFunds==null){
-            sourcesOfFunds = getItems(ItemType.Source_of_Funds);
+            sourcesOfFunds = getItems(ItemType.Other);
         }
         return sourcesOfFunds;
     }

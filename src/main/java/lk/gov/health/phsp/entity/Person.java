@@ -2,7 +2,6 @@ package lk.gov.health.phsp.entity;
 
 import java.io.Serializable;
 import java.util.Date;
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -13,6 +12,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlRootElement;
+import lk.gov.health.phsp.enums.Citizenship;
 import org.joda.time.LocalDate;
 import org.joda.time.Period;
 import org.joda.time.PeriodType;
@@ -30,51 +30,63 @@ public class Person implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
+
+    @Enumerated(EnumType.STRING)
+    Title title;
     String name;
-    String description;
-    String nic;
+    String phn;
+    @Enumerated(EnumType.STRING)
+    Sex sex;
+
+    @Enumerated(EnumType.STRING)
+    Citizenship citizenship;
+
+    @ManyToOne
+    Item ethinicGroup;
+
+    @ManyToOne
+    Item religion;
+
+    @ManyToOne
+    Item mariatalStatus;
+    @Temporal(javax.persistence.TemporalType.TIMESTAMP)
+    Date dateOfBirth;
+
     String address;
-    String fax;
+
+    String phone1;
+    String phone2;
     String email;
+
+    String nic;
+
+    String passportNumber;
+
     String website;
-    String mobile;
-    @Column(name = "TNAME")
-    String fullName;
-    @Column(name = "SNAME")
-    String nameWithInitials;
-    String phone;
+    String drivingLicenseNumber;
+
     String initials;
     String surName;
     String lastName;
     String zoneCode;
 
-    @Temporal(javax.persistence.TemporalType.TIMESTAMP)
-    Date dob;
-
     //Created Properties
     @ManyToOne
-    WebUser creater;
+    WebUser createdBy;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     Date createdAt;
     @ManyToOne
     WebUser editer;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     Date editedAt;
+
     //Retairing properties
     boolean retired;
     @ManyToOne
-    WebUser retirer;
+    WebUser retiredBy;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     Date retiredAt;
     String retireComments;
-    @ManyToOne
-    Institution institution;
-    @Enumerated(EnumType.STRING)
-    Title title;
-    @Enumerated(EnumType.STRING)
-    Sex sex;
-    @Transient
-    String nameWithTitle;
 
     @Transient
     int ageMonths;
@@ -95,11 +107,11 @@ public class Person implements Serializable {
         ageMonths = 0;
         ageDays = 0;
         ageYears = 0;
-        if (getDob() == null) {
+        if (getDateOfBirth() == null) {
             return;
         }
 
-        LocalDate dob = new LocalDate(getDob());
+        LocalDate dob = new LocalDate(getDateOfBirth());
         LocalDate date = new LocalDate(new Date());
 
         Period period = new Period(dob, date, PeriodType.yearMonthDay());
@@ -150,17 +162,11 @@ public class Person implements Serializable {
         } else {
             temT = "";
         }
-        if (temT.trim().equals("")) {
-            nameWithTitle = getName();
-        } else {
-            nameWithTitle = temT + " " + getName();
-        }
-        return nameWithTitle;
+       
+        return temT;
     }
 
-    public void setNameWithTitle(String nameWithTitle) {
-        this.nameWithTitle = nameWithTitle.toUpperCase();
-    }
+  
 
     public Sex getSex() {
         return sex;
@@ -210,20 +216,20 @@ public class Person implements Serializable {
         this.editedAt = editedAt;
     }
 
-    public WebUser getCreater() {
-        return creater;
+    public WebUser getCreatedBy() {
+        return createdBy;
     }
 
-    public void setCreater(WebUser creater) {
-        this.creater = creater;
+    public void setCreatedBy(WebUser createdBy) {
+        this.createdBy = createdBy;
     }
 
-    public String getDescription() {
-        return description;
+    public String getPhone2() {
+        return phone2;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setPhone2(String phone2) {
+        this.phone2 = phone2;
     }
 
     public String getName() {
@@ -274,12 +280,12 @@ public class Person implements Serializable {
         this.retiredAt = retiredAt;
     }
 
-    public WebUser getRetirer() {
-        return retirer;
+    public WebUser getRetiredBy() {
+        return retiredBy;
     }
 
-    public void setRetirer(WebUser retirer) {
-        this.retirer = retirer;
+    public void setRetiredBy(WebUser retiredBy) {
+        this.retiredBy = retiredBy;
     }
 
     @Override
@@ -314,12 +320,12 @@ public class Person implements Serializable {
         this.address = address.toUpperCase();
     }
 
-    public String getFax() {
-        return fax;
+    public String getPassportNumber() {
+        return passportNumber;
     }
 
-    public void setFax(String fax) {
-        this.fax = fax;
+    public void setPassportNumber(String passportNumber) {
+        this.passportNumber = passportNumber;
     }
 
     public String getEmail() {
@@ -338,21 +344,15 @@ public class Person implements Serializable {
         this.website = website;
     }
 
-    public String getMobile() {
-        return mobile;
+    public String getDrivingLicenseNumber() {
+        return drivingLicenseNumber;
     }
 
-    public void setMobile(String mobile) {
-        this.mobile = mobile;
+    public void setDrivingLicenseNumber(String drivingLicenseNumber) {
+        this.drivingLicenseNumber = drivingLicenseNumber;
     }
 
-    public Institution getInstitution() {
-        return institution;
-    }
-
-    public void setInstitution(Institution institution) {
-        this.institution = institution;
-    }
+   
 
     public Title getTitle() {
         return title;
@@ -362,36 +362,23 @@ public class Person implements Serializable {
         this.title = title;
     }
 
-    public Date getDob() {
-        return dob;
+    public Date getDateOfBirth() {
+        return dateOfBirth;
     }
 
-    public void setDob(Date dob) {
-        this.dob = dob;
+    public void setDateOfBirth(Date dateOfBirth) {
+        this.dateOfBirth = dateOfBirth;
     }
 
-    public String getFullName() {
-        return fullName;
+   
+
+
+    public String getPhone1() {
+        return phone1;
     }
 
-    public void setFullName(String fullName) {
-        this.fullName = fullName;
-    }
-
-    public String getNameWithInitials() {
-        return nameWithInitials;
-    }
-
-    public void setNameWithInitials(String nameWithInitials) {
-        this.nameWithInitials = nameWithInitials;
-    }
-
-    public String getPhone() {
-        return phone;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
+    public void setPhone1(String phone1) {
+        this.phone1 = phone1;
     }
 
     public String getNic() {

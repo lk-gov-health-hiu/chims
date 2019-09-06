@@ -44,7 +44,7 @@ public class WebUser implements Serializable {
 
     String webUserPassword;
     @OneToOne(cascade = CascadeType.ALL)
-    Person webUserPerson;
+    Person person;
     //Main Properties
     @Column(unique = true, nullable = false)
     String name;
@@ -218,15 +218,15 @@ public class WebUser implements Serializable {
         this.webUserPassword = webUserPassword;
     }
 
-    public Person getWebUserPerson() {
-        if (webUserPerson == null) {
-            webUserPerson = new Person();
+    public Person getPerson() {
+        if (person == null) {
+            person = new Person();
         }
-        return webUserPerson;
+        return person;
     }
 
-    public void setWebUserPerson(Person webUserPerson) {
-        this.webUserPerson = webUserPerson;
+    public void setPerson(Person person) {
+        this.person = person;
     }
 
     public String getActivateComments() {
@@ -291,10 +291,10 @@ public class WebUser implements Serializable {
     @Override
     public String toString() {
         System.out.println("WebUserToString");
-        System.out.println("webUserPerson = " + webUserPerson);
-        if (webUserPerson != null) {
+        System.out.println("webUserPerson = " + person);
+        if (person != null) {
             System.out.println("Name with Title" );
-            return webUserPerson.getNameWithTitle();
+            return person.getNameWithTitle();
         } else {
             System.out.println("Name only" );
             return name;
