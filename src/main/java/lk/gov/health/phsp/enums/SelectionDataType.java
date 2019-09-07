@@ -9,7 +9,7 @@ package lk.gov.health.phsp.enums;
  *
  * @author User
  */
-public enum DataStorageType {
+public enum SelectionDataType {
     Short_Text,
     Long_Text,
     Byte_Array,

@@ -5,19 +5,15 @@
  */
 package lk.gov.health.phsp.entity;
 
-import java.io.Serializable;
 import javax.persistence.Entity;
-import javax.persistence.ManyToOne;
 
 /**
  *
  * @author sunila_soft
  */
 @Entity
-public class FormSet extends Encounter  implements Serializable {
-
-    @ManyToOne
-    private Client project;
+public class DesignComponentFormItem extends DesignComponent   {
+    
 
     
 }

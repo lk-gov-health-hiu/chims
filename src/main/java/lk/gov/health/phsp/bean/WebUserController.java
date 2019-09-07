@@ -9,10 +9,10 @@ import lk.gov.health.phsp.entity.Item;
 import lk.gov.health.phsp.enums.ItemType;
 import lk.gov.health.phsp.entity.Client;
 import lk.gov.health.phsp.entity.Encounter;
-import lk.gov.health.phsp.entity.FormItem;
+import lk.gov.health.phsp.entity.DesignComponent;
 import lk.gov.health.phsp.entity.ClientEncounterComponent;
-import lk.gov.health.phsp.entity.FormSet;
-import lk.gov.health.phsp.entity.Form;
+import lk.gov.health.phsp.entity.DesignComponentFormSet;
+import lk.gov.health.phsp.entity.DesignComponentForm;
 import lk.gov.health.phsp.enums.ProjectStageType;
 import lk.gov.health.phsp.entity.Upload;
 import lk.gov.health.phsp.enums.UploadType;
@@ -115,10 +115,10 @@ public class WebUserController implements Serializable {
     private Item selectedFundUnit;
     private String selectedFundComments;
 
-    private FormSet removingProjectProvince;
-    private FormItem removingProjectDistrict;
+    private DesignComponentFormSet removingProjectProvince;
+    private DesignComponent removingProjectDistrict;
     private ClientEncounterComponent removingProjectInstitution;
-    private Form removingProjectSourceOfFund;
+    private DesignComponentForm removingProjectSourceOfFund;
 
     private List<Area> districtsAvailableForSelection;
 
@@ -606,14 +606,14 @@ public class WebUserController implements Serializable {
                 System.out.println("Added SUccessfully = " + i);
 
 //                if (np.getProvince() != null) {
-//                    FormSet pp = new FormSet();
+//                    DesignComponentFormSet pp = new DesignComponentFormSet();
 //                    pp.setProject(np);
 //                    pp.setArea(np.getProvince());
 //                    getProjectAreaFacade().create(pp);
 //                    np.getProjectProvinces().add(pp);
 //                }
 //                if (np.getDistrict() != null) {
-//                    FormItem pp = new FormItem();
+//                    DesignComponent pp = new DesignComponent();
 //                    pp.setProject(np);
 //                    pp.setArea(np.getDistrict());
 //                    getProjectAreaFacade().create(pp);
@@ -627,7 +627,7 @@ public class WebUserController implements Serializable {
 //                    np.getProjectLocations().add(pp);
 //                }
 //                if (np.getSourceOfFunds() != null) {
-//                    Form pp = new Form();
+//                    DesignComponentForm pp = new DesignComponentForm();
 //                    pp.setProject(np);
 //                    pp.setSourceOfFund(np.getSourceOfFunds());
 //                    getProjectSourceOfFundFacade().create(pp);
@@ -1220,19 +1220,19 @@ public class WebUserController implements Serializable {
         return projectInstitutionFacade;
     }
 
-    public FormSet getRemovingProjectProvince() {
+    public DesignComponentFormSet getRemovingProjectProvince() {
         return removingProjectProvince;
     }
 
-    public void setRemovingProjectProvince(FormSet removingProjectProvince) {
+    public void setRemovingProjectProvince(DesignComponentFormSet removingProjectProvince) {
         this.removingProjectProvince = removingProjectProvince;
     }
 
-    public FormItem getRemovingProjectDistrict() {
+    public DesignComponent getRemovingProjectDistrict() {
         return removingProjectDistrict;
     }
 
-    public void setRemovingProjectDistrict(FormItem removingProjectDistrict) {
+    public void setRemovingProjectDistrict(DesignComponent removingProjectDistrict) {
         this.removingProjectDistrict = removingProjectDistrict;
     }
 
@@ -1244,11 +1244,11 @@ public class WebUserController implements Serializable {
         this.removingProjectInstitution = removingProjectInstitution;
     }
 
-    public Form getRemovingProjectSourceOfFund() {
+    public DesignComponentForm getRemovingProjectSourceOfFund() {
         return removingProjectSourceOfFund;
     }
 
-    public void setRemovingProjectSourceOfFund(Form removingProjectSourceOfFund) {
+    public void setRemovingProjectSourceOfFund(DesignComponentForm removingProjectSourceOfFund) {
         this.removingProjectSourceOfFund = removingProjectSourceOfFund;
     }
 

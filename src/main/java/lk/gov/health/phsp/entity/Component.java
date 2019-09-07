@@ -17,7 +17,8 @@ import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.Transient;
-import lk.gov.health.phsp.enums.DataStorageType;
+import lk.gov.health.phsp.enums.AvailableDataType;
+import lk.gov.health.phsp.enums.SelectionDataType;
 import lk.gov.health.phsp.enums.RenderType;
 
 /**
@@ -44,7 +45,10 @@ public class Component implements Serializable {
     private Item mimeType;
 
     @Enumerated(EnumType.STRING)
-    private DataStorageType dataStorageType;
+    private SelectionDataType selectionDataType;
+    
+    @Enumerated(EnumType.STRING)
+    AvailableDataType availableDataType;
 
     private Double topPercent;
     private Double leftPercent;
@@ -158,12 +162,12 @@ public class Component implements Serializable {
         this.mimeType = mimeType;
     }
 
-    public DataStorageType getDataStorageType() {
-        return dataStorageType;
+    public SelectionDataType getSelectionDataType() {
+        return selectionDataType;
     }
 
-    public void setDataStorageType(DataStorageType dataStorageType) {
-        this.dataStorageType = dataStorageType;
+    public void setSelectionDataType(SelectionDataType selectionDataType) {
+        this.selectionDataType = selectionDataType;
     }
 
     public Double getTopPercent() {
