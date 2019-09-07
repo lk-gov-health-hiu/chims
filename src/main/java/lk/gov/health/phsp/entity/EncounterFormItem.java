@@ -26,16 +26,7 @@ public class EncounterFormItem implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    @ManyToOne
-    private Client project;
-    @ManyToOne
-    private Institution institution;
-    @Lob
-    private String natureOfIntervention;
-    @Lob
-    private String currentStatusOfIntervention;
-    private Boolean isIncludeDevelopmentActivity;
-
+    
     public Long getId() {
         return id;
     }
@@ -72,44 +63,5 @@ public class EncounterFormItem implements Serializable {
         return "entity.ProjectInstitution[ id=" + id + " ]";
     }
 
-    public Client getProject() {
-        return project;
-    }
-
-    public void setProject(Client project) {
-        this.project = project;
-    }
-
-    public Institution getInstitution() {
-        return institution;
-    }
-
-    public void setInstitution(Institution institution) {
-        this.institution = institution;
-    }
-
-    public String getNatureOfIntervention() {
-        return natureOfIntervention;
-    }
-
-    public void setNatureOfIntervention(String natureOfIntervention) {
-        this.natureOfIntervention = natureOfIntervention;
-    }
-
-    public String getCurrentStatusOfIntervention() {
-        return currentStatusOfIntervention;
-    }
-
-    public void setCurrentStatusOfIntervention(String currentStatusOfIntervention) {
-        this.currentStatusOfIntervention = currentStatusOfIntervention;
-    }
-
-    public Boolean getIsIncludeDevelopmentActivity() {
-        return isIncludeDevelopmentActivity;
-    }
-
-    public void setIsIncludeDevelopmentActivity(Boolean isIncludeDevelopmentActivity) {
-        this.isIncludeDevelopmentActivity = isIncludeDevelopmentActivity;
-    }
-
+   
 }
