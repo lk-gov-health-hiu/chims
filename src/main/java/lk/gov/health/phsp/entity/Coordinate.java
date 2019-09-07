@@ -27,26 +27,37 @@ public class Coordinate implements Serializable {
     double latitude;
     double elevation;
 
-    
+    /*
+    Create Properties
+     */
     @ManyToOne
     private WebUser createdBy;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
-    private Date createAt;
-    
+    private Date createdAt;
+    /*
+    Last Edit Properties
+     */
+    @ManyToOne
+    private WebUser lastEditBy;
+    @Temporal(javax.persistence.TemporalType.TIMESTAMP)
+    private Date lastEditeAt;
+    /*
+    Retire Reversal Properties
+     */
+    @ManyToOne
+    private WebUser retiredReversedBy;
+    @Temporal(javax.persistence.TemporalType.TIMESTAMP)
+    private Date retiredReversedAt;
+    /*
+    Retire Properties
+     */
     private boolean retired;
     @ManyToOne
     private WebUser retiredBy;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date retiredAt;
-    
-    @ManyToOne
-    private WebUser retiredReversedBy;
-    @Temporal(javax.persistence.TemporalType.TIMESTAMP)
-    private Date retiredReversedAt;
-    
-    
-    
-    
+    private String retireComments;
+
     public Institution getInstitution() {
         return institution;
     }
@@ -87,8 +98,6 @@ public class Coordinate implements Serializable {
         this.id = id;
     }
 
-    
-    
     @Override
     public int hashCode() {
         int hash = 0;
@@ -130,14 +139,6 @@ public class Coordinate implements Serializable {
         this.createdBy = createdBy;
     }
 
-    public Date getCreateAt() {
-        return createAt;
-    }
-
-    public void setCreateAt(Date createAt) {
-        this.createAt = createAt;
-    }
-
     public boolean isRetired() {
         return retired;
     }
@@ -176,6 +177,38 @@ public class Coordinate implements Serializable {
 
     public void setRetiredReversedAt(Date retiredReversedAt) {
         this.retiredReversedAt = retiredReversedAt;
+    }
+
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public WebUser getLastEditBy() {
+        return lastEditBy;
+    }
+
+    public void setLastEditBy(WebUser lastEditBy) {
+        this.lastEditBy = lastEditBy;
+    }
+
+    public Date getLastEditeAt() {
+        return lastEditeAt;
+    }
+
+    public void setLastEditeAt(Date lastEditeAt) {
+        this.lastEditeAt = lastEditeAt;
+    }
+
+    public String getRetireComments() {
+        return retireComments;
+    }
+
+    public void setRetireComments(String retireComments) {
+        this.retireComments = retireComments;
     }
 
 }

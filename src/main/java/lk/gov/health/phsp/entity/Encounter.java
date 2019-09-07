@@ -30,46 +30,52 @@ public class Encounter implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    
+
     @ManyToOne
     private Client project;
     @ManyToOne
     private Area area;
-    
+
     @Temporal(javax.persistence.TemporalType.DATE)
     private Date encounterDate;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date encounterFrom;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date encounterTo;
-    
+
     @Enumerated(EnumType.STRING)
     private EncounterType encounterType;
-    
+
     @ManyToOne
     private Encounter parentEncounter;
+
+    @ManyToOne
+    Institution institution;
     
-    private Boolean encounterCompleted;
-    
-    
-    
+    @ManyToOne
+    Institution referalInstitution;
+
     @ManyToOne
     private WebUser createdBy;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date createAt;
-    
+
     private boolean retired;
     @ManyToOne
     private WebUser retiredBy;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date retiredAt;
-    
+
     @ManyToOne
     private WebUser retiredReversedBy;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date retiredReversedAt;
-    
-    
+
+    private Boolean completed;
+    @ManyToOne
+    private WebUser completedBy;
+    @Temporal(javax.persistence.TemporalType.TIMESTAMP)
+    private Date completedAt;
 
     public Long getId() {
         return id;
@@ -101,7 +107,7 @@ public class Encounter implements Serializable {
 
     @Override
     public String toString() {
-        return "entity.ProjectArea[ id=" + id + " ]";
+        return "id=" + id + "";
     }
 
     public Client getProject() {
@@ -160,12 +166,12 @@ public class Encounter implements Serializable {
         this.parentEncounter = parentEncounter;
     }
 
-    public Boolean getEncounterCompleted() {
-        return encounterCompleted;
+    public Boolean getCompleted() {
+        return completed;
     }
 
-    public void setEncounterCompleted(Boolean encounterCompleted) {
-        this.encounterCompleted = encounterCompleted;
+    public void setCompleted(Boolean completed) {
+        this.completed = completed;
     }
 
     public WebUser getCreatedBy() {
@@ -223,5 +229,39 @@ public class Encounter implements Serializable {
     public void setRetiredReversedAt(Date retiredReversedAt) {
         this.retiredReversedAt = retiredReversedAt;
     }
+
+    public Institution getInstitution() {
+        return institution;
+    }
+
+    public void setInstitution(Institution institution) {
+        this.institution = institution;
+    }
+
+    public Institution getReferalInstitution() {
+        return referalInstitution;
+    }
+
+    public void setReferalInstitution(Institution referalInstitution) {
+        this.referalInstitution = referalInstitution;
+    }
+
+    public WebUser getCompletedBy() {
+        return completedBy;
+    }
+
+    public void setCompletedBy(WebUser completedBy) {
+        this.completedBy = completedBy;
+    }
+
+    public Date getCompletedAt() {
+        return completedAt;
+    }
+
+    public void setCompletedAt(Date completedAt) {
+        this.completedAt = completedAt;
+    }
     
+    
+
 }

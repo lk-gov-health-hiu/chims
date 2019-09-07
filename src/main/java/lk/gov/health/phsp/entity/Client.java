@@ -24,21 +24,34 @@ public class Client implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    
+
     @OneToOne(cascade = CascadeType.ALL)
     private Person person;
-    
-      //Created Properties
+
+    /*
+    Create Properties
+     */
     @ManyToOne
     private WebUser createdBy;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date createdAt;
+    /*
+    Last Edit Properties
+     */
     @ManyToOne
-    private WebUser editer;
+    private WebUser lastEditBy;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
-    private Date editedAt;
-
-    //Retairing properties
+    private Date lastEditeAt;
+    /*
+    Retire Reversal Properties
+     */
+    @ManyToOne
+    private WebUser retiredReversedBy;
+    @Temporal(javax.persistence.TemporalType.TIMESTAMP)
+    private Date retiredReversedAt;
+    /*
+    Retire Properties
+     */
     private boolean retired;
     @ManyToOne
     private WebUser retiredBy;
@@ -53,11 +66,6 @@ public class Client implements Serializable {
     public void setId(Long id) {
         this.id = id;
     }
-
-    
-    
-    
-    
 
     @Override
     public int hashCode() {
@@ -79,6 +87,8 @@ public class Client implements Serializable {
         return true;
     }
 
+    
+    
     public Person getPerson() {
         return person;
     }
@@ -103,20 +113,20 @@ public class Client implements Serializable {
         this.createdAt = createdAt;
     }
 
-    public WebUser getEditer() {
-        return editer;
+    public WebUser getLastEditBy() {
+        return lastEditBy;
     }
 
-    public void setEditer(WebUser editer) {
-        this.editer = editer;
+    public void setLastEditBy(WebUser lastEditBy) {
+        this.lastEditBy = lastEditBy;
     }
 
-    public Date getEditedAt() {
-        return editedAt;
+    public Date getLastEditeAt() {
+        return lastEditeAt;
     }
 
-    public void setEditedAt(Date editedAt) {
-        this.editedAt = editedAt;
+    public void setLastEditeAt(Date lastEditeAt) {
+        this.lastEditeAt = lastEditeAt;
     }
 
     public boolean isRetired() {
@@ -151,9 +161,20 @@ public class Client implements Serializable {
         this.retireComments = retireComments;
     }
 
-    
-    
+    public WebUser getRetiredReversedBy() {
+        return retiredReversedBy;
+    }
 
-    
-    
+    public void setRetiredReversedBy(WebUser retiredReversedBy) {
+        this.retiredReversedBy = retiredReversedBy;
+    }
+
+    public Date getRetiredReversedAt() {
+        return retiredReversedAt;
+    }
+
+    public void setRetiredReversedAt(Date retiredReversedAt) {
+        this.retiredReversedAt = retiredReversedAt;
+    }
+
 }

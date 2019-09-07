@@ -9,9 +9,12 @@ package lk.gov.health.phsp.enums;
  *
  * @author User
  */
-public enum ItemType {
-    Dictionary_Item,
-    Dictionary_Category,
-    Mime_Type,
-    Other,
+public enum DataStorageType {
+    Short_Text,
+    Long_Text,
+    Byte_Array,
+    Integer_Number,
+    Real_Number,
+    Boolean,
+    Item_Reference,
 }

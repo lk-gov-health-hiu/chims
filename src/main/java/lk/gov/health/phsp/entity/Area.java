@@ -36,7 +36,7 @@ public class Area implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    
+
     @Enumerated(EnumType.STRING)
     private AreaType type;
     private String name;
@@ -44,36 +44,42 @@ public class Area implements Serializable {
     @ManyToOne
     private Area parentArea;
 
-    
-      
     private double centreLongitude;
     private double centreLatitude;
     private double zoomLavel;
-    
-    
-    
+
+    /*
+    Create Properties
+     */
     @ManyToOne
     private WebUser createdBy;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
-    private Date createAt;
-    
+    private Date createdAt;
+    /*
+    Last Edit Properties
+     */
+    @ManyToOne
+    private WebUser lastEditBy;
+    @Temporal(javax.persistence.TemporalType.TIMESTAMP)
+    private Date lastEditeAt;
+    /*
+    Retire Reversal Properties
+     */
+    @ManyToOne
+    private WebUser retiredReversedBy;
+    @Temporal(javax.persistence.TemporalType.TIMESTAMP)
+    private Date retiredReversedAt;
+    /*
+    Retire Properties
+     */
     private boolean retired;
     @ManyToOne
     private WebUser retiredBy;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date retiredAt;
+    private String retireComments;
     
-    @ManyToOne
-    private WebUser retiredReversedBy;
-    @Temporal(javax.persistence.TemporalType.TIMESTAMP)
-    private Date retiredReversedAt;
-    
-  
 
-    
-   
-    
-    
     @Override
     public int hashCode() {
         int hash = 0;
@@ -93,12 +99,12 @@ public class Area implements Serializable {
         return true;
     }
 
-    
-    
     @Override
     public String toString() {
         return name;
     }
+    
+    
 
     public AreaType getType() {
         return type;
@@ -140,14 +146,8 @@ public class Area implements Serializable {
         this.createdBy = createdBy;
     }
 
-    public Date getCreateAt() {
-        return createAt;
-    }
-
-    public void setCreateAt(Date createAt) {
-        this.createAt = createAt;
-    }
-
+    
+   
     public double getCentreLongitude() {
         return centreLongitude;
     }
@@ -221,7 +221,7 @@ public class Area implements Serializable {
     }
 
     public List<Coordinate> getCoordinates() {
-        if(coordinates==null){
+        if (coordinates == null) {
             coordinates = new ArrayList<>();
         }
         return coordinates;
@@ -230,5 +230,39 @@ public class Area implements Serializable {
     public void setCoordinates(List<Coordinate> coordinates) {
         this.coordinates = coordinates;
     }
+
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public WebUser getLastEditBy() {
+        return lastEditBy;
+    }
+
+    public void setLastEditBy(WebUser lastEditBy) {
+        this.lastEditBy = lastEditBy;
+    }
+
+    public Date getLastEditeAt() {
+        return lastEditeAt;
+    }
+
+    public void setLastEditeAt(Date lastEditeAt) {
+        this.lastEditeAt = lastEditeAt;
+    }
+
+    public String getRetireComments() {
+        return retireComments;
+    }
+
+    public void setRetireComments(String retireComments) {
+        this.retireComments = retireComments;
+    }
+
+    
 
 }

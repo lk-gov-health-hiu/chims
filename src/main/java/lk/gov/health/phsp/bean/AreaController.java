@@ -722,7 +722,7 @@ public class AreaController implements Serializable {
     }
 
     public String saveNewProvince() {
-        selected.setCreateAt(new Date());
+        selected.setCreatedAt(new Date());
         getFacade().create(selected);
         selected = null;
         items = null;
@@ -731,7 +731,7 @@ public class AreaController implements Serializable {
     }
 
     public String saveNewDistrict() {
-        selected.setCreateAt(new Date());
+        selected.setCreatedAt(new Date());
         getFacade().create(selected);
         selected = null;
         items = null;
@@ -740,7 +740,7 @@ public class AreaController implements Serializable {
     }
 
     public String saveNewMoh() {
-        selected.setCreateAt(new Date());
+        selected.setCreatedAt(new Date());
         getFacade().create(selected);
         selected = null;
         items = null;
@@ -750,7 +750,7 @@ public class AreaController implements Serializable {
     }
 
     public String saveNewEducationalZone() {
-        selected.setCreateAt(new Date());
+        selected.setCreatedAt(new Date());
         getFacade().create(selected);
         selected = null;
         items = null;
@@ -759,7 +759,7 @@ public class AreaController implements Serializable {
     }
 
     public String saveNewPhi() {
-        selected.setCreateAt(new Date());
+        selected.setCreatedAt(new Date());
         getFacade().create(selected);
         selected = null;
         items = null;
@@ -768,7 +768,7 @@ public class AreaController implements Serializable {
     }
 
     public String saveNewGn() {
-        selected.setCreateAt(new Date());
+        selected.setCreatedAt(new Date());
         getFacade().create(selected);
         selected = null;
         items = null;
@@ -853,7 +853,7 @@ public class AreaController implements Serializable {
             ta = new Area();
             ta.setName(nameOrCode);
             ta.setType(areaType);
-            ta.setCreateAt(new Date());
+            ta.setCreatedAt(new Date());
             ta.setParentArea(parentArea);
             getFacade().create(ta);
         }
