@@ -32,12 +32,12 @@ public class Component implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    
+
     String name;
 
     @ManyToOne
     private Component parentComponent;
-    
+
     @Enumerated(EnumType.STRING)
     RenderType renderType;
 
@@ -46,9 +46,16 @@ public class Component implements Serializable {
 
     @Enumerated(EnumType.STRING)
     private SelectionDataType selectionDataType;
-    
+
     @Enumerated(EnumType.STRING)
-    AvailableDataType availableDataType;
+    private AvailableDataType availableDataType;
+
+    @ManyToOne
+    private Area parentAreaOfAvailableAreas;
+    @ManyToOne
+    private Item categoryOfAvailableItems;
+    @ManyToOne
+    private Institution parentInstitutionOfAvailableInstitutions;
 
     private Double topPercent;
     private Double leftPercent;
@@ -58,6 +65,8 @@ public class Component implements Serializable {
     private Integer intHtmlColor;
     @Transient
     private String hexHtmlColour;
+    @Lob
+    private String html;
     /*
     Create Properties
      */
@@ -88,9 +97,6 @@ public class Component implements Serializable {
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date retiredAt;
     private String retireComments;
-    @Lob
-    private String html;
-    
 
     public Long getId() {
         return id;
@@ -100,9 +106,6 @@ public class Component implements Serializable {
         this.id = id;
     }
 
-    
-    
-    
     @Override
     public int hashCode() {
         int hash = 0;
@@ -144,8 +147,6 @@ public class Component implements Serializable {
         this.renderType = renderType;
     }
 
-    
-    
     public Component getParentComponent() {
         return parentComponent;
     }
@@ -304,6 +305,38 @@ public class Component implements Serializable {
 
     public void setHtml(String html) {
         this.html = html;
+    }
+
+    public AvailableDataType getAvailableDataType() {
+        return availableDataType;
+    }
+
+    public void setAvailableDataType(AvailableDataType availableDataType) {
+        this.availableDataType = availableDataType;
+    }
+
+    public Area getParentAreaOfAvailableAreas() {
+        return parentAreaOfAvailableAreas;
+    }
+
+    public void setParentAreaOfAvailableAreas(Area parentAreaOfAvailableAreas) {
+        this.parentAreaOfAvailableAreas = parentAreaOfAvailableAreas;
+    }
+
+    public Item getCategoryOfAvailableItems() {
+        return categoryOfAvailableItems;
+    }
+
+    public void setCategoryOfAvailableItems(Item categoryOfAvailableItems) {
+        this.categoryOfAvailableItems = categoryOfAvailableItems;
+    }
+
+    public Institution getParentInstitutionOfAvailableInstitutions() {
+        return parentInstitutionOfAvailableInstitutions;
+    }
+
+    public void setParentInstitutionOfAvailableInstitutions(Institution parentInstitutionOfAvailableInstitutions) {
+        this.parentInstitutionOfAvailableInstitutions = parentInstitutionOfAvailableInstitutions;
     }
     
     
