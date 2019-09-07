@@ -18,6 +18,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.Transient;
 import lk.gov.health.phsp.enums.DataStorageType;
+import lk.gov.health.phsp.enums.RenderType;
 
 /**
  *
@@ -30,9 +31,14 @@ public class Component implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+    
+    String name;
 
     @ManyToOne
     private Component parentComponent;
+    
+    @Enumerated(EnumType.STRING)
+    RenderType renderType;
 
     @ManyToOne
     private Item mimeType;
@@ -118,6 +124,24 @@ public class Component implements Serializable {
         return "lk.gov.health.phsp.entity.EncounterItem[ id=" + id + " ]";
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public RenderType getRenderType() {
+        return renderType;
+    }
+
+    public void setRenderType(RenderType renderType) {
+        this.renderType = renderType;
+    }
+
+    
+    
     public Component getParentComponent() {
         return parentComponent;
     }

@@ -10,7 +10,7 @@ import lk.gov.health.phsp.enums.ItemType;
 import lk.gov.health.phsp.entity.Client;
 import lk.gov.health.phsp.entity.Encounter;
 import lk.gov.health.phsp.entity.FormItem;
-import lk.gov.health.phsp.entity.EncounterFormItem;
+import lk.gov.health.phsp.entity.ClientEncounterComponent;
 import lk.gov.health.phsp.entity.FormSet;
 import lk.gov.health.phsp.entity.Form;
 import lk.gov.health.phsp.enums.ProjectStageType;
@@ -117,7 +117,7 @@ public class WebUserController implements Serializable {
 
     private FormSet removingProjectProvince;
     private FormItem removingProjectDistrict;
-    private EncounterFormItem removingProjectInstitution;
+    private ClientEncounterComponent removingProjectInstitution;
     private Form removingProjectSourceOfFund;
 
     private List<Area> districtsAvailableForSelection;
@@ -620,7 +620,7 @@ public class WebUserController implements Serializable {
 //                    np.getProjectDistricts().add(pp);
 //                }
 //                if (np.getProjectLocation() != null) {
-//                    EncounterFormItem pp = new EncounterFormItem();
+//                    ClientEncounterComponent pp = new ClientEncounterComponent();
 //                    pp.setProject(np);
 //                    pp.setInstitution(np.getProjectLocation());
 //                    getProjectInstitutionFacade().create(pp);
@@ -1236,11 +1236,11 @@ public class WebUserController implements Serializable {
         this.removingProjectDistrict = removingProjectDistrict;
     }
 
-    public EncounterFormItem getRemovingProjectInstitution() {
+    public ClientEncounterComponent getRemovingProjectInstitution() {
         return removingProjectInstitution;
     }
 
-    public void setRemovingProjectInstitution(EncounterFormItem removingProjectInstitution) {
+    public void setRemovingProjectInstitution(ClientEncounterComponent removingProjectInstitution) {
         this.removingProjectInstitution = removingProjectInstitution;
     }
 
