@@ -21,17 +21,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-
-package lk.gov.health.phsp.entity;
-
-import javax.persistence.Entity;
+package lk.gov.health.phsp.enums;
 
 /**
  *
- * @author buddhika
+ * @author Dr M H B Ariyaratne<buddhika.ari@gmail.com>
  */
-@Entity
-public class ClientEncounterComponentItem extends ClientEncounterComponent {
-
+public enum DataPopulationStrategy {
     
 }

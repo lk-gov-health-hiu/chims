@@ -28,17 +28,13 @@ package lk.gov.health.phsp.enums;
  *
  * @author User
  */
-public enum AvailableDataType {
-    Free_Text,
-    
-    Long_Text,
-    Byte_Array,
-    Date,
-    Time,
-    Date_and_Time,
-    Months,
-    Item_List,
-    Client_List,
-    Area_List,
-    Institution_List,
+public enum RelationshipType {
+    GN,
+    PHM,
+    PHI,
+    MOH,
+    DsArea,
+    District,
+    Province,
+    National,
 }

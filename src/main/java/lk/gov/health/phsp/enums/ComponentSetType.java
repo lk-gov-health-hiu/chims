@@ -28,17 +28,9 @@ package lk.gov.health.phsp.enums;
  *
  * @author User
  */
-public enum AvailableDataType {
-    Free_Text,
-    
-    Long_Text,
-    Byte_Array,
-    Date,
-    Time,
-    Date_and_Time,
-    Months,
-    Item_List,
-    Client_List,
-    Area_List,
-    Institution_List,
+public enum ComponentSetType {
+    Patient_Pages,
+    Encounter_Pages,
+    Encounters_Arranged_Horizontally,
+    Encounters_Arranged_Vertically,
 }

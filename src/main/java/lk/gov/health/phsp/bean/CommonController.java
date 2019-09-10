@@ -8,7 +8,6 @@
 package lk.gov.health.phsp.bean;
 
 import lk.gov.health.phsp.enums.AreaType;
-import lk.gov.health.phsp.entity.Institution;
 import lk.gov.health.phsp.enums.InstitutionType;
 import lk.gov.health.phsp.enums.ItemType;
 import lk.gov.health.phsp.enums.WebUserRole;
@@ -60,6 +59,16 @@ public class CommonController implements Serializable {
     }
 
     public String decrypt(String word) {
+        BasicTextEncryptor en = new BasicTextEncryptor();
+        en.setPassword("health");
+        try {
+            return en.decrypt(word);
+        } catch (Exception ex) {
+            return null;
+        }
+    }
+    
+    public String decrypt(String word, String encryptKey) {
         BasicTextEncryptor en = new BasicTextEncryptor();
         en.setPassword("health");
         try {
