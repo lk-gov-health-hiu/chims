@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="UploadCreateDlg" widgetVar="UploadCreateDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundleClinical.CreateUploadTitle}">
+            <h:form id="UploadCreateForm">
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" rendered="#{uploadController.selected != null}">
+                        <p:outputLabel value="#{bundleClinical.CreateUploadLabel_institution}" for="institution" />
+                        <p:selectOneMenu id="institution" value="#{uploadController.selected.institution}" >
+                            <f:selectItems value="#{institutionController.itemsAvailableSelectOne}"
+                                           var="institutionItem"
+                                           itemValue="#{institutionItem}"/>
+                        </p:selectOneMenu>
+                        <p:outputLabel value="#{bundleClinical.CreateUploadLabel_serialVersionUID}" for="serialVersionUID" />
+                        <p:inputText id="serialVersionUID" value="#{uploadController.selected.serialVersionUID}" title="#{bundleClinical.CreateUploadTitle_serialVersionUID}" />
+                        <p:outputLabel value="#{bundleClinical.CreateUploadLabel_id}" for="id" />
+                        <p:inputText id="id" value="#{uploadController.selected.id}" title="#{bundleClinical.CreateUploadTitle_id}" />
+                        <p:outputLabel value="#{bundleClinical.CreateUploadLabel_creater}" for="creater" />
+                        <p:selectOneMenu id="creater" value="#{uploadController.selected.creater}" >
+                            <f:selectItems value="#{webUserController.itemsAvailableSelectOne}"
+                                           var="createrItem"
+                                           itemValue="#{createrItem}"/>
+                        </p:selectOneMenu>
+                        <p:outputLabel value="#{bundleClinical.CreateUploadLabel_createdAt}" for="createdAt" />
+                        <p:calendar id="createdAt" pattern="MM/dd/yyyy HH:mm:ss" value="#{uploadController.selected.createdAt}" title="#{bundleClinical.EditUploadTitle_createdAt}"  showOn="button"/>
+                        <p:outputLabel value="#{bundleClinical.CreateUploadLabel_retirer}" for="retirer" />
+                        <p:selectOneMenu id="retirer" value="#{uploadController.selected.retirer}" >
+                            <f:selectItems value="#{webUserController.itemsAvailableSelectOne}"
+                                           var="retirerItem"
+                                           itemValue="#{retirerItem}"/>
+                        </p:selectOneMenu>
+                        <p:outputLabel value="#{bundleClinical.CreateUploadLabel_retiredAt}" for="retiredAt" />
+                        <p:calendar id="retiredAt" pattern="MM/dd/yyyy HH:mm:ss" value="#{uploadController.selected.retiredAt}" title="#{bundleClinical.EditUploadTitle_retiredAt}"  showOn="button"/>
+                        <p:outputLabel value="#{bundleClinical.CreateUploadLabel_retireComments}" for="retireComments" />
+                        <p:inputText id="retireComments" value="#{uploadController.selected.retireComments}" title="#{bundleClinical.CreateUploadTitle_retireComments}" />
+                        <p:outputLabel value="#{bundleClinical.CreateUploadLabel_baImage}" for="baImage" />
+                        <p:inputTextarea rows="4" cols="30" id="baImage" value="#{uploadController.selected.baImage}" title="#{bundleClinical.CreateUploadTitle_baImage}" />
+                        <p:outputLabel value="#{bundleClinical.CreateUploadLabel_fileName}" for="fileName" />
+                        <p:inputText id="fileName" value="#{uploadController.selected.fileName}" title="#{bundleClinical.CreateUploadTitle_fileName}" />
+                        <p:outputLabel value="#{bundleClinical.CreateUploadLabel_fileType}" for="fileType" />
+                        <p:inputText id="fileType" value="#{uploadController.selected.fileType}" title="#{bundleClinical.CreateUploadTitle_fileType}" />
+                        <p:outputLabel value="#{bundleClinical.CreateUploadLabel_comments}" for="comments" />
+                        <p:inputTextarea rows="4" cols="30" id="comments" value="#{uploadController.selected.comments}" title="#{bundleClinical.CreateUploadTitle_comments}" />
+                        <p:outputLabel value="#{bundleClinical.CreateUploadLabel_project}" for="project" />
+                        <p:selectOneMenu id="project" value="#{uploadController.selected.project}" >
+                            <f:selectItems value="#{clientController.itemsAvailableSelectOne}"
+                                           var="projectItem"
+                                           itemValue="#{projectItem}"/>
+                        </p:selectOneMenu>
+                        <p:outputLabel value="#{bundleClinical.CreateUploadLabel_uploadType}" for="uploadType" />
+                        <p:inputText id="uploadType" value="#{uploadController.selected.uploadType}" title="#{bundleClinical.CreateUploadTitle_uploadType}" />
+                    </p:panelGrid>
+                    <p:commandButton actionListener="#{uploadController.create}" value="#{bundleClinical.Save}" update="display,:UploadListForm:datalist,:growl" oncomplete="handleSubmit(args,'UploadCreateDialog');"/>
+                    <p:commandButton value="#{bundleClinical.Cancel}" onclick="UploadCreateDialog.hide()"/>
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+
+    </ui:composition>
+</html>

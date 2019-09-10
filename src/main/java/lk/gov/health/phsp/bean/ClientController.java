@@ -1,36 +1,17 @@
-/*
- * The MIT License
- *
- * Copyright 2019 Dr M H B Ariyaratne<buddhika.ari@gmail.com>.
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
- */
 package lk.gov.health.phsp.bean;
 
 import lk.gov.health.phsp.entity.Client;
+import lk.gov.health.phsp.bean.util.JsfUtil;
+import lk.gov.health.phsp.bean.util.JsfUtil.PersistAction;
 import lk.gov.health.phsp.facade.ClientFacade;
-import lk.gov.health.phsp.facade.util.JsfUtil;
 
 import java.io.Serializable;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.ejb.EJB;
+import javax.ejb.EJBException;
 import javax.inject.Named;
 import javax.enterprise.context.SessionScoped;
 import javax.faces.component.UIComponent;
@@ -38,93 +19,58 @@ import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
 
-@Named("projectController")
+@Named("clientController")
 @SessionScoped
 public class ClientController implements Serializable {
 
-    private Client current;
-    private List<Client> items = null;
     @EJB
     private lk.gov.health.phsp.facade.ClientFacade ejbFacade;
+    private List<Client> items = null;
+    private Client selected;
 
     public ClientController() {
+    }
+
+    public Client getSelected() {
+        return selected;
+    }
+
+    public void setSelected(Client selected) {
+        this.selected = selected;
+    }
+
+    protected void setEmbeddableKeys() {
+    }
+
+    protected void initializeEmbeddableKey() {
     }
 
     private ClientFacade getFacade() {
         return ejbFacade;
     }
 
-    public String prepareList() {
-        recreateModel();
-        return "List";
+    public Client prepareCreate() {
+        selected = new Client();
+        initializeEmbeddableKey();
+        return selected;
     }
 
-    public String prepareView() {
-        return "View";
-    }
-
-    public String prepareCreate() {
-        current = new Client();
-        return "Create";
-    }
-
-    public String create() {
-        try {
-            getFacade().create(current);
-            JsfUtil.addSuccessMessage(("ProjectCreated"));
-            return prepareCreate();
-        } catch (Exception e) {
-            JsfUtil.addErrorMessage(e, ("PersistenceErrorOccured"));
-            return null;
+    public void create() {
+        persist(PersistAction.CREATE, ResourceBundle.getBundle("/BundleClinical").getString("ClientCreated"));
+        if (!JsfUtil.isValidationFailed()) {
+            items = null;    // Invalidate list of items to trigger re-query.
         }
     }
 
-    public String prepareEdit() {
-        return "Edit";
+    public void update() {
+        persist(PersistAction.UPDATE, ResourceBundle.getBundle("/BundleClinical").getString("ClientUpdated"));
     }
 
-    public String update() {
-        try {
-            getFacade().edit(current);
-            JsfUtil.addSuccessMessage(("ProjectUpdated"));
-            return "View";
-        } catch (Exception e) {
-            JsfUtil.addErrorMessage(e, ("PersistenceErrorOccured"));
-            return null;
-        }
-    }
-
-    public String destroy() {
-        performDestroy();
-        recreateModel();
-        return "List";
-    }
-
-    public String destroyAndView() {
-        performDestroy();
-        recreateModel();
-        updateCurrentItem();
-        if (current != null) {
-            return "View";
-        } else {
-            // all items were removed - go back to list
-            recreateModel();
-            return "List";
-        }
-    }
-
-    private void performDestroy() {
-        try {
-            getFacade().remove(current);
-            JsfUtil.addSuccessMessage(("ProjectDeleted"));
-        } catch (Exception e) {
-            JsfUtil.addErrorMessage(e, ("PersistenceErrorOccured"));
-        }
-    }
-
-    private void updateCurrentItem() {
-        if (current != null) {
-            getFacade().edit(current);
+    public void destroy() {
+        persist(PersistAction.DELETE, ResourceBundle.getBundle("/BundleClinical").getString("ClientDeleted"));
+        if (!JsfUtil.isValidationFailed()) {
+            selected = null; // Remove selection
+            items = null;    // Invalidate list of items to trigger re-query.
         }
     }
 
@@ -135,24 +81,48 @@ public class ClientController implements Serializable {
         return items;
     }
 
-    private void recreateModel() {
-        items = null;
+    private void persist(PersistAction persistAction, String successMessage) {
+        if (selected != null) {
+            setEmbeddableKeys();
+            try {
+                if (persistAction != PersistAction.DELETE) {
+                    getFacade().edit(selected);
+                } else {
+                    getFacade().remove(selected);
+                }
+                JsfUtil.addSuccessMessage(successMessage);
+            } catch (EJBException ex) {
+                String msg = "";
+                Throwable cause = ex.getCause();
+                if (cause != null) {
+                    msg = cause.getLocalizedMessage();
+                }
+                if (msg.length() > 0) {
+                    JsfUtil.addErrorMessage(msg);
+                } else {
+                    JsfUtil.addErrorMessage(ex, ResourceBundle.getBundle("/BundleClinical").getString("PersistenceErrorOccured"));
+                }
+            } catch (Exception ex) {
+                Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);
+                JsfUtil.addErrorMessage(ex, ResourceBundle.getBundle("/BundleClinical").getString("PersistenceErrorOccured"));
+            }
+        }
     }
 
-    public Client getProject(java.lang.Long id) {
-        return ejbFacade.find(id);
+    public Client getClient(java.lang.Long id) {
+        return getFacade().find(id);
     }
 
-    public Client getCurrent() {
-        return current;
+    public List<Client> getItemsAvailableSelectMany() {
+        return getFacade().findAll();
     }
 
-    public void setCurrent(Client current) {
-        this.current = current;
+    public List<Client> getItemsAvailableSelectOne() {
+        return getFacade().findAll();
     }
 
     @FacesConverter(forClass = Client.class)
-    public static class ProjectControllerConverter implements Converter {
+    public static class ClientControllerConverter implements Converter {
 
         @Override
         public Object getAsObject(FacesContext facesContext, UIComponent component, String value) {
@@ -160,8 +130,8 @@ public class ClientController implements Serializable {
                 return null;
             }
             ClientController controller = (ClientController) facesContext.getApplication().getELResolver().
-                    getValue(facesContext.getELContext(), null, "projectController");
-            return controller.getProject(getKey(value));
+                    getValue(facesContext.getELContext(), null, "clientController");
+            return controller.getClient(getKey(value));
         }
 
         java.lang.Long getKey(String value) {
@@ -185,7 +155,8 @@ public class ClientController implements Serializable {
                 Client o = (Client) object;
                 return getStringKey(o.getId());
             } else {
-                throw new IllegalArgumentException("object " + object + " is of type " + object.getClass().getName() + "; expected type: " + Client.class.getName());
+                Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, "object {0} is of type {1}; expected type: {2}", new Object[]{object, object.getClass().getName(), Client.class.getName()});
+                return null;
             }
         }
 

@@ -1,108 +1,124 @@
-/*
- * The MIT License
- *
- * Copyright 2019 Dr M H B Ariyaratne<buddhika.ari@gmail.com>.
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
- */
 package lk.gov.health.phsp.bean;
 
 import lk.gov.health.phsp.entity.Upload;
+import lk.gov.health.phsp.bean.util.JsfUtil;
+import lk.gov.health.phsp.bean.util.JsfUtil.PersistAction;
 import lk.gov.health.phsp.facade.UploadFacade;
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.ejb.EJB;
-import javax.enterprise.context.RequestScoped;
+import javax.ejb.EJBException;
 import javax.inject.Named;
 import javax.enterprise.context.SessionScoped;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
-import javax.inject.Inject;
-import org.primefaces.model.DefaultStreamedContent;
-import org.primefaces.model.StreamedContent;
 
 @Named("uploadController")
-@RequestScoped
+@SessionScoped
 public class UploadController implements Serializable {
 
-    private Upload current;
-    private List<Upload> items = null;
     @EJB
     private lk.gov.health.phsp.facade.UploadFacade ejbFacade;
-
-    @Inject
-    private WebUserController webUserController;
-
-    private StreamedContent downloadingFile;
-
-    public void downloadCurrentFile() {
-
-    }
-
-    public StreamedContent getDownloadingFile() {
-        current = getWebUserController().getCurrentUpload();
-        if (current == null) {
-            return null;
-        }
-        InputStream stream = new ByteArrayInputStream(current.getBaImage());
-        downloadingFile = new DefaultStreamedContent(stream, current.getFileType(), current.getFileName());
-        return downloadingFile;
-    }
+    private List<Upload> items = null;
+    private Upload selected;
 
     public UploadController() {
+    }
+
+    public Upload getSelected() {
+        return selected;
+    }
+
+    public void setSelected(Upload selected) {
+        this.selected = selected;
+    }
+
+    protected void setEmbeddableKeys() {
+    }
+
+    protected void initializeEmbeddableKey() {
     }
 
     private UploadFacade getFacade() {
         return ejbFacade;
     }
 
-    public Upload getUpload(java.lang.Long id) {
-        return ejbFacade.find(id);
+    public Upload prepareCreate() {
+        selected = new Upload();
+        initializeEmbeddableKey();
+        return selected;
     }
 
-    public Upload getCurrent() {
-        return current;
+    public void create() {
+        persist(PersistAction.CREATE, ResourceBundle.getBundle("/BundleClinical").getString("UploadCreated"));
+        if (!JsfUtil.isValidationFailed()) {
+            items = null;    // Invalidate list of items to trigger re-query.
+        }
     }
 
-    public void setCurrent(Upload current) {
-        this.current = current;
+    public void update() {
+        persist(PersistAction.UPDATE, ResourceBundle.getBundle("/BundleClinical").getString("UploadUpdated"));
+    }
+
+    public void destroy() {
+        persist(PersistAction.DELETE, ResourceBundle.getBundle("/BundleClinical").getString("UploadDeleted"));
+        if (!JsfUtil.isValidationFailed()) {
+            selected = null; // Remove selection
+            items = null;    // Invalidate list of items to trigger re-query.
+        }
     }
 
     public List<Upload> getItems() {
+        if (items == null) {
+            items = getFacade().findAll();
+        }
         return items;
     }
 
-    public void setItems(List<Upload> items) {
-        this.items = items;
+    private void persist(PersistAction persistAction, String successMessage) {
+        if (selected != null) {
+            setEmbeddableKeys();
+            try {
+                if (persistAction != PersistAction.DELETE) {
+                    getFacade().edit(selected);
+                } else {
+                    getFacade().remove(selected);
+                }
+                JsfUtil.addSuccessMessage(successMessage);
+            } catch (EJBException ex) {
+                String msg = "";
+                Throwable cause = ex.getCause();
+                if (cause != null) {
+                    msg = cause.getLocalizedMessage();
+                }
+                if (msg.length() > 0) {
+                    JsfUtil.addErrorMessage(msg);
+                } else {
+                    JsfUtil.addErrorMessage(ex, ResourceBundle.getBundle("/BundleClinical").getString("PersistenceErrorOccured"));
+                }
+            } catch (Exception ex) {
+                Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);
+                JsfUtil.addErrorMessage(ex, ResourceBundle.getBundle("/BundleClinical").getString("PersistenceErrorOccured"));
+            }
+        }
     }
 
-    public WebUserController getWebUserController() {
-        return webUserController;
+    public Upload getUpload(java.lang.Long id) {
+        return getFacade().find(id);
     }
 
-    public void setWebUserController(WebUserController webUserController) {
-        this.webUserController = webUserController;
+    public List<Upload> getItemsAvailableSelectMany() {
+        return getFacade().findAll();
+    }
+
+    public List<Upload> getItemsAvailableSelectOne() {
+        return getFacade().findAll();
     }
 
     @FacesConverter(forClass = Upload.class)
@@ -139,7 +155,8 @@ public class UploadController implements Serializable {
                 Upload o = (Upload) object;
                 return getStringKey(o.getId());
             } else {
-                throw new IllegalArgumentException("object " + object + " is of type " + object.getClass().getName() + "; expected type: " + Upload.class.getName());
+                Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, "object {0} is of type {1}; expected type: {2}", new Object[]{object, object.getClass().getName(), Upload.class.getName()});
+                return null;
             }
         }
 

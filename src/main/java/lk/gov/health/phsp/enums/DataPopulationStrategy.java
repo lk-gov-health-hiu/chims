@@ -28,5 +28,8 @@ package lk.gov.health.phsp.enums;
  * @author Dr M H B Ariyaratne<buddhika.ari@gmail.com>
  */
 public enum DataPopulationStrategy {
-    
+    None,
+    From_Last_Encounter,
+    From_Last_Data_Entered_Encounter,
+    From_Client_Value,
 }

@@ -1,37 +1,17 @@
-/*
- * The MIT License
- *
- * Copyright 2019 Dr M H B Ariyaratne<buddhika.ari@gmail.com>.
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
- */
 package lk.gov.health.phsp.bean;
 
 import lk.gov.health.phsp.entity.Coordinate;
-
-
+import lk.gov.health.phsp.bean.util.JsfUtil;
+import lk.gov.health.phsp.bean.util.JsfUtil.PersistAction;
 import lk.gov.health.phsp.facade.CoordinateFacade;
-import lk.gov.health.phsp.facade.util.JsfUtil;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.ejb.EJB;
+import javax.ejb.EJBException;
 import javax.inject.Named;
 import javax.enterprise.context.SessionScoped;
 import javax.faces.component.UIComponent;
@@ -43,90 +23,55 @@ import javax.faces.convert.FacesConverter;
 @SessionScoped
 public class CoordinateController implements Serializable {
 
-    private Coordinate current;
-    private List<Coordinate> items = null;
     @EJB
     private lk.gov.health.phsp.facade.CoordinateFacade ejbFacade;
+    private List<Coordinate> items = null;
+    private Coordinate selected;
 
     public CoordinateController() {
-        
     }
 
-    
-    
+    public Coordinate getSelected() {
+        return selected;
+    }
+
+    public void setSelected(Coordinate selected) {
+        this.selected = selected;
+    }
+
+    protected void setEmbeddableKeys() {
+    }
+
+    protected void initializeEmbeddableKey() {
+    }
+
     private CoordinateFacade getFacade() {
         return ejbFacade;
     }
 
-    public String prepareList() {
-        recreateModel();
-        return "List";
+    public Coordinate prepareCreate() {
+        selected = new Coordinate();
+        initializeEmbeddableKey();
+        return selected;
     }
 
-    public String prepareView() {
-        return "View";
-    }
-
-    public String prepareCreate() {
-        current = new Coordinate();
-        return "Create";
-    }
-
-    public String create() {
-        try {
-            getFacade().create(current);
-            JsfUtil.addSuccessMessage(("CoordinateCreated"));
-            return prepareCreate();
-        } catch (Exception e) {
-            JsfUtil.addErrorMessage(e, ("PersistenceErrorOccured"));
-            return null;
+    public void create() {
+        persist(PersistAction.CREATE, ResourceBundle.getBundle("/BundleClinical").getString("CoordinateCreated"));
+        if (!JsfUtil.isValidationFailed()) {
+            items = null;    // Invalidate list of items to trigger re-query.
         }
     }
 
-    public String prepareEdit() {
-        return "Edit";
+    public void update() {
+        persist(PersistAction.UPDATE, ResourceBundle.getBundle("/BundleClinical").getString("CoordinateUpdated"));
     }
 
-    public String update() {
-        try {
-            getFacade().edit(current);
-            JsfUtil.addSuccessMessage(("CoordinateUpdated"));
-            return "View";
-        } catch (Exception e) {
-            JsfUtil.addErrorMessage(e, ("PersistenceErrorOccured"));
-            return null;
+    public void destroy() {
+        persist(PersistAction.DELETE, ResourceBundle.getBundle("/BundleClinical").getString("CoordinateDeleted"));
+        if (!JsfUtil.isValidationFailed()) {
+            selected = null; // Remove selection
+            items = null;    // Invalidate list of items to trigger re-query.
         }
-    }
-
-    public String destroy() {
-        performDestroy();
-        recreateModel();
-        return "List";
-    }
-
-    public String destroyAndView() {
-        performDestroy();
-        recreateModel();
-        updateCurrentItem();
-        if (current != null) {
-            return "View";
-        } else {
-            recreateModel();
-            return "List";
-        }
-    }
-
-    private void performDestroy() {
-        try {
-            getFacade().remove(current);
-            JsfUtil.addSuccessMessage(("CoordinateDeleted"));
-        } catch (Exception e) {
-            JsfUtil.addErrorMessage(e, ("PersistenceErrorOccured"));
-        }
-    }
-
-    private void updateCurrentItem() {
-        getFacade().edit(current);
     }
 
     public List<Coordinate> getItems() {
@@ -136,28 +81,44 @@ public class CoordinateController implements Serializable {
         return items;
     }
 
-    private void recreateModel() {
-        items = null;
-    }
-
-    public List<Coordinate> getItemsAvailableSelectMany() {
-        return getItems();
-    }
-
-    public List<Coordinate> getItemsAvailableSelectOne() {
-        return getItems();
+    private void persist(PersistAction persistAction, String successMessage) {
+        if (selected != null) {
+            setEmbeddableKeys();
+            try {
+                if (persistAction != PersistAction.DELETE) {
+                    getFacade().edit(selected);
+                } else {
+                    getFacade().remove(selected);
+                }
+                JsfUtil.addSuccessMessage(successMessage);
+            } catch (EJBException ex) {
+                String msg = "";
+                Throwable cause = ex.getCause();
+                if (cause != null) {
+                    msg = cause.getLocalizedMessage();
+                }
+                if (msg.length() > 0) {
+                    JsfUtil.addErrorMessage(msg);
+                } else {
+                    JsfUtil.addErrorMessage(ex, ResourceBundle.getBundle("/BundleClinical").getString("PersistenceErrorOccured"));
+                }
+            } catch (Exception ex) {
+                Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);
+                JsfUtil.addErrorMessage(ex, ResourceBundle.getBundle("/BundleClinical").getString("PersistenceErrorOccured"));
+            }
+        }
     }
 
     public Coordinate getCoordinate(java.lang.Long id) {
-        return ejbFacade.find(id);
+        return getFacade().find(id);
     }
 
-    public Coordinate getCurrent() {
-        return current;
+    public List<Coordinate> getItemsAvailableSelectMany() {
+        return getFacade().findAll();
     }
 
-    public void setCurrent(Coordinate current) {
-        this.current = current;
+    public List<Coordinate> getItemsAvailableSelectOne() {
+        return getFacade().findAll();
     }
 
     @FacesConverter(forClass = Coordinate.class)
@@ -194,7 +155,8 @@ public class CoordinateController implements Serializable {
                 Coordinate o = (Coordinate) object;
                 return getStringKey(o.getId());
             } else {
-                throw new IllegalArgumentException("object " + object + " is of type " + object.getClass().getName() + "; expected type: " + Coordinate.class.getName());
+                Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, "object {0} is of type {1}; expected type: {2}", new Object[]{object, object.getClass().getName(), Coordinate.class.getName()});
+                return null;
             }
         }
 

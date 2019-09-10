@@ -37,6 +37,9 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.Transient;
 import lk.gov.health.phsp.enums.AvailableDataType;
+import lk.gov.health.phsp.enums.DataCompletionStrategy;
+import lk.gov.health.phsp.enums.DataModificationStrategy;
+import lk.gov.health.phsp.enums.DataPopulationStrategy;
 import lk.gov.health.phsp.enums.SelectionDataType;
 import lk.gov.health.phsp.enums.RenderType;
 
@@ -68,6 +71,15 @@ public class Component implements Serializable {
 
     @Enumerated(EnumType.STRING)
     private AvailableDataType availableDataType;
+    
+    @Enumerated(EnumType.STRING)
+    DataPopulationStrategy dataPopulationStrategy;
+    
+    @Enumerated(EnumType.STRING)
+    DataCompletionStrategy dataCompletionStrategy;
+    
+    @Enumerated(EnumType.STRING)
+    DataModificationStrategy dataModificationStrategy;
 
     @ManyToOne
     private Area parentAreaOfAvailableAreas;
@@ -144,6 +156,8 @@ public class Component implements Serializable {
         }
         return true;
     }
+    
+    
 
     @Override
     public String toString() {

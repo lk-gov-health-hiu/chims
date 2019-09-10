@@ -1,32 +1,10 @@
-/*
- * The MIT License
- *
- * Copyright 2019 Dr M H B Ariyaratne<buddhika.ari@gmail.com>.
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
- */
 package lk.gov.health.phsp.bean;
 
 import lk.gov.health.phsp.entity.Item;
-import lk.gov.health.phsp.enums.ItemType;
+import lk.gov.health.phsp.bean.util.JsfUtil;
+import lk.gov.health.phsp.bean.util.JsfUtil.PersistAction;
 import lk.gov.health.phsp.facade.ItemFacade;
-import lk.gov.health.phsp.facade.util.JsfUtil;
+
 import java.io.Serializable;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -40,22 +18,15 @@ import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
-import lk.gov.health.phsp.facade.util.JsfUtil.PersistAction;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 @Named("itemController")
 @SessionScoped
 public class ItemController implements Serializable {
 
     @EJB
-    private ItemFacade ejbFacade;
+    private lk.gov.health.phsp.facade.ItemFacade ejbFacade;
     private List<Item> items = null;
     private Item selected;
-    private List<Item> sectors = null;
-    private List<Item> costUnits = null;
-    private List<Item> sourcesOfFunds = null;
 
     public ItemController() {
     }
@@ -85,40 +56,22 @@ public class ItemController implements Serializable {
     }
 
     public void create() {
-        persist(JsfUtil.PersistAction.CREATE, "Item Created");
+        persist(PersistAction.CREATE, ResourceBundle.getBundle("/BundleClinical").getString("ItemCreated"));
         if (!JsfUtil.isValidationFailed()) {
-            items = null;
-            sourcesOfFunds = null;
-            costUnits = null;
-            sectors = null;
-
+            items = null;    // Invalidate list of items to trigger re-query.
         }
     }
 
     public void update() {
-        persist(JsfUtil.PersistAction.UPDATE, "Updated");
+        persist(PersistAction.UPDATE, ResourceBundle.getBundle("/BundleClinical").getString("ItemUpdated"));
     }
 
     public void destroy() {
-        persist(JsfUtil.PersistAction.DELETE, "Deleted");
+        persist(PersistAction.DELETE, ResourceBundle.getBundle("/BundleClinical").getString("ItemDeleted"));
         if (!JsfUtil.isValidationFailed()) {
             selected = null; // Remove selection
-            items = null;  
-            sourcesOfFunds = null;
-            costUnits = null;
-            sectors = null;
-// Invalidate list of items to trigger re-query.
+            items = null;    // Invalidate list of items to trigger re-query.
         }
-    }
-
-    public List<Item> getItems(ItemType type) {
-        String j;
-        j = "select i from Item i "
-                + " where i.type=:t "
-                + " order by i.name";
-        Map m = new HashMap();
-        m.put("t", type);
-        return getFacade().findBySQL(j, m);
     }
 
     public List<Item> getItems() {
@@ -128,7 +81,7 @@ public class ItemController implements Serializable {
         return items;
     }
 
-    private void persist(JsfUtil.PersistAction persistAction, String successMessage) {
+    private void persist(PersistAction persistAction, String successMessage) {
         if (selected != null) {
             setEmbeddableKeys();
             try {
@@ -147,40 +100,17 @@ public class ItemController implements Serializable {
                 if (msg.length() > 0) {
                     JsfUtil.addErrorMessage(msg);
                 } else {
-                    JsfUtil.addErrorMessage(ex, "Error");
+                    JsfUtil.addErrorMessage(ex, ResourceBundle.getBundle("/BundleClinical").getString("PersistenceErrorOccured"));
                 }
             } catch (Exception ex) {
                 Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);
-                JsfUtil.addErrorMessage(ex, "Error");
+                JsfUtil.addErrorMessage(ex, ResourceBundle.getBundle("/BundleClinical").getString("PersistenceErrorOccured"));
             }
         }
     }
 
     public Item getItem(java.lang.Long id) {
         return getFacade().find(id);
-    }
-    
-    
-    public Item getItem(String name, ItemType type, boolean createNew){
-         String j;
-        Map m = new HashMap();
-        j = "select a "
-                + " from Item a "
-                + " where (upper(a.name) =:n)  ";
-        if(type!=null){
-            j+= " and a.type=:t ";
-            m.put("t", type);
-        }
-        m.put("n", name.toUpperCase());
-        Item ti = getFacade().findFirstBySQL(j, m);
-        if(createNew==true && ti==null){
-            ti = new Item();
-            ti.setName(name);
-            ti.setCreatedAt(new Date());
-            ti.setItemType(type);
-            getFacade().create(ti);
-        }
-        return ti ;
     }
 
     public List<Item> getItemsAvailableSelectMany() {
@@ -191,52 +121,6 @@ public class ItemController implements Serializable {
         return getFacade().findAll();
     }
 
-    public List<Item> getSectors() {
-        if(sectors==null){
-            sectors = getItems(ItemType.Dictionary_Item);
-        }
-        return sectors;
-    }
-
-    public void setSectors(List<Item> sectors) {
-        this.sectors = sectors;
-    }
-
-    public List<Item> getCostUnits() {
-        if(costUnits==null){
-            costUnits = getItems(ItemType.Dictionary_Category);
-        }
-        return costUnits;
-    }
-
-    public void setCostUnits(List<Item> costUnits) {
-        this.costUnits = costUnits;
-    }
-
-    public List<Item> getSourcesOfFunds() {
-        if(sourcesOfFunds==null){
-            sourcesOfFunds = getItems(ItemType.Other);
-        }
-        return sourcesOfFunds;
-    }
-
-    public void setSourcesOfFunds(List<Item> sourcesOfFunds) {
-        this.sourcesOfFunds = sourcesOfFunds;
-    }
-
-    public ItemFacade getEjbFacade() {
-        return ejbFacade;
-    }
-
-    public void setEjbFacade(ItemFacade ejbFacade) {
-        this.ejbFacade = ejbFacade;
-    }
-
-    
-    
-    
-    
-    
     @FacesConverter(forClass = Item.class)
     public static class ItemControllerConverter implements Converter {
 

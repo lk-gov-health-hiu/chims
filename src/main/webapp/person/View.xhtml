@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="PersonViewDlg" widgetVar="PersonViewDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundleClinical.ViewPersonTitle}">
+            <h:form id="PersonViewForm">
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" rendered="#{personController.selected != null}">
+                        <h:outputText value="#{bundleClinical.ViewPersonLabel_age}"/>
+                        <h:outputText value="#{personController.selected.age}" title="#{bundleClinical.ViewPersonTitle_age}"/>
+                        <h:outputText value="#{bundleClinical.ViewPersonLabel_ageInDays}"/>
+                        <h:outputText value="#{personController.selected.ageInDays}" title="#{bundleClinical.ViewPersonTitle_ageInDays}"/>
+                        <h:outputText value="#{bundleClinical.ViewPersonLabel_ageMonths}"/>
+                        <h:outputText value="#{personController.selected.ageMonths}" title="#{bundleClinical.ViewPersonTitle_ageMonths}"/>
+                        <h:outputText value="#{bundleClinical.ViewPersonLabel_ageDays}"/>
+                        <h:outputText value="#{personController.selected.ageDays}" title="#{bundleClinical.ViewPersonTitle_ageDays}"/>
+                        <h:outputText value="#{bundleClinical.ViewPersonLabel_ageYears}"/>
+                        <h:outputText value="#{personController.selected.ageYears}" title="#{bundleClinical.ViewPersonTitle_ageYears}"/>
+                        <h:outputText value="#{bundleClinical.ViewPersonLabel_nameWithTitle}"/>
+                        <h:outputText value="#{personController.selected.nameWithTitle}" title="#{bundleClinical.ViewPersonTitle_nameWithTitle}"/>
+                        <h:outputText value="#{bundleClinical.ViewPersonLabel_sex}"/>
+                        <h:outputText value="#{personController.selected.sex}" title="#{bundleClinical.ViewPersonTitle_sex}"/>
+                        <h:outputText value="#{bundleClinical.ViewPersonLabel_retireComments}"/>
+                        <h:outputText value="#{personController.selected.retireComments}" title="#{bundleClinical.ViewPersonTitle_retireComments}"/>
+                        <h:outputText value="#{bundleClinical.ViewPersonLabel_id}"/>
+                        <h:outputText value="#{personController.selected.id}" title="#{bundleClinical.ViewPersonTitle_id}"/>
+                        <h:outputText value="#{bundleClinical.ViewPersonLabel_createdAt}"/>
+                        <h:outputText value="#{personController.selected.createdAt}" title="#{bundleClinical.ViewPersonTitle_createdAt}">
+                            <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                        </h:outputText>
+                        <h:outputText value="#{bundleClinical.ViewPersonLabel_editer}"/>
+                        <h:outputText value="#{personController.selected.editer}" title="#{bundleClinical.ViewPersonTitle_editer}"/>
+                        <h:outputText value="#{bundleClinical.ViewPersonLabel_editedAt}"/>
+                        <h:outputText value="#{personController.selected.editedAt}" title="#{bundleClinical.ViewPersonTitle_editedAt}">
+                            <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                        </h:outputText>
+                        <h:outputText value="#{bundleClinical.ViewPersonLabel_createdBy}"/>
+                        <h:outputText value="#{personController.selected.createdBy}" title="#{bundleClinical.ViewPersonTitle_createdBy}"/>
+                        <h:outputText value="#{bundleClinical.ViewPersonLabel_phone2}"/>
+                        <h:outputText value="#{personController.selected.phone2}" title="#{bundleClinical.ViewPersonTitle_phone2}"/>
+                        <h:outputText value="#{bundleClinical.ViewPersonLabel_name}"/>
+                        <h:outputText value="#{personController.selected.name}" title="#{bundleClinical.ViewPersonTitle_name}"/>
+                        <h:outputText value="#{bundleClinical.ViewPersonLabel_retiredAt}"/>
+                        <h:outputText value="#{personController.selected.retiredAt}" title="#{bundleClinical.ViewPersonTitle_retiredAt}">
+                            <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                        </h:outputText>
+                        <h:outputText value="#{bundleClinical.ViewPersonLabel_retiredBy}"/>
+                        <h:outputText value="#{personController.selected.retiredBy}" title="#{bundleClinical.ViewPersonTitle_retiredBy}"/>
+                        <h:outputText value="#{bundleClinical.ViewPersonLabel_address}"/>
+                        <h:outputText value="#{personController.selected.address}" title="#{bundleClinical.ViewPersonTitle_address}"/>
+                        <h:outputText value="#{bundleClinical.ViewPersonLabel_passportNumber}"/>
+                        <h:outputText value="#{personController.selected.passportNumber}" title="#{bundleClinical.ViewPersonTitle_passportNumber}"/>
+                        <h:outputText value="#{bundleClinical.ViewPersonLabel_email}"/>
+                        <h:outputText value="#{personController.selected.email}" title="#{bundleClinical.ViewPersonTitle_email}"/>
+                        <h:outputText value="#{bundleClinical.ViewPersonLabel_website}"/>
+                        <h:outputText value="#{personController.selected.website}" title="#{bundleClinical.ViewPersonTitle_website}"/>
+                        <h:outputText value="#{bundleClinical.ViewPersonLabel_drivingLicenseNumber}"/>
+                        <h:outputText value="#{personController.selected.drivingLicenseNumber}" title="#{bundleClinical.ViewPersonTitle_drivingLicenseNumber}"/>
+                        <h:outputText value="#{bundleClinical.ViewPersonLabel_title}"/>
+                        <h:outputText value="#{personController.selected.title}" title="#{bundleClinical.ViewPersonTitle_title}"/>
+                        <h:outputText value="#{bundleClinical.ViewPersonLabel_dateOfBirth}"/>
+                        <h:outputText value="#{personController.selected.dateOfBirth}" title="#{bundleClinical.ViewPersonTitle_dateOfBirth}">
+                            <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                        </h:outputText>
+                        <h:outputText value="#{bundleClinical.ViewPersonLabel_phone1}"/>
+                        <h:outputText value="#{personController.selected.phone1}" title="#{bundleClinical.ViewPersonTitle_phone1}"/>
+                        <h:outputText value="#{bundleClinical.ViewPersonLabel_nic}"/>
+                        <h:outputText value="#{personController.selected.nic}" title="#{bundleClinical.ViewPersonTitle_nic}"/>
+                        <h:outputText value="#{bundleClinical.ViewPersonLabel_serealNumber}"/>
+                        <h:outputText value="#{personController.selected.serealNumber}" title="#{bundleClinical.ViewPersonTitle_serealNumber}"/>
+                    </p:panelGrid>
+                    <p:commandButton value="#{bundleClinical.Close}" onclick="PersonViewDialog.hide()"/>
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+
+    </ui:composition>
+</html>

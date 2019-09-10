@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="UploadViewDlg" widgetVar="UploadViewDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundleClinical.ViewUploadTitle}">
+            <h:form id="UploadViewForm">
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" rendered="#{uploadController.selected != null}">
+                        <h:outputText value="#{bundleClinical.ViewUploadLabel_institution}"/>
+                        <h:outputText value="#{uploadController.selected.institution}" title="#{bundleClinical.ViewUploadTitle_institution}"/>
+                        <h:outputText value="#{bundleClinical.ViewUploadLabel_serialVersionUID}"/>
+                        <h:outputText value="#{uploadController.selected.serialVersionUID}" title="#{bundleClinical.ViewUploadTitle_serialVersionUID}"/>
+                        <h:outputText value="#{bundleClinical.ViewUploadLabel_id}"/>
+                        <h:outputText value="#{uploadController.selected.id}" title="#{bundleClinical.ViewUploadTitle_id}"/>
+                        <h:outputText value="#{bundleClinical.ViewUploadLabel_creater}"/>
+                        <h:outputText value="#{uploadController.selected.creater}" title="#{bundleClinical.ViewUploadTitle_creater}"/>
+                        <h:outputText value="#{bundleClinical.ViewUploadLabel_createdAt}"/>
+                        <h:outputText value="#{uploadController.selected.createdAt}" title="#{bundleClinical.ViewUploadTitle_createdAt}">
+                            <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                        </h:outputText>
+                        <h:outputText value="#{bundleClinical.ViewUploadLabel_retirer}"/>
+                        <h:outputText value="#{uploadController.selected.retirer}" title="#{bundleClinical.ViewUploadTitle_retirer}"/>
+                        <h:outputText value="#{bundleClinical.ViewUploadLabel_retiredAt}"/>
+                        <h:outputText value="#{uploadController.selected.retiredAt}" title="#{bundleClinical.ViewUploadTitle_retiredAt}">
+                            <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                        </h:outputText>
+                        <h:outputText value="#{bundleClinical.ViewUploadLabel_retireComments}"/>
+                        <h:outputText value="#{uploadController.selected.retireComments}" title="#{bundleClinical.ViewUploadTitle_retireComments}"/>
+                        <h:outputText value="#{bundleClinical.ViewUploadLabel_baImage}"/>
+                        <h:outputText value="#{uploadController.selected.baImage}" title="#{bundleClinical.ViewUploadTitle_baImage}"/>
+                        <h:outputText value="#{bundleClinical.ViewUploadLabel_fileName}"/>
+                        <h:outputText value="#{uploadController.selected.fileName}" title="#{bundleClinical.ViewUploadTitle_fileName}"/>
+                        <h:outputText value="#{bundleClinical.ViewUploadLabel_fileType}"/>
+                        <h:outputText value="#{uploadController.selected.fileType}" title="#{bundleClinical.ViewUploadTitle_fileType}"/>
+                        <h:outputText value="#{bundleClinical.ViewUploadLabel_comments}"/>
+                        <h:outputText value="#{uploadController.selected.comments}" title="#{bundleClinical.ViewUploadTitle_comments}"/>
+                        <h:outputText value="#{bundleClinical.ViewUploadLabel_project}"/>
+                        <h:outputText value="#{uploadController.selected.project}" title="#{bundleClinical.ViewUploadTitle_project}"/>
+                        <h:outputText value="#{bundleClinical.ViewUploadLabel_uploadType}"/>
+                        <h:outputText value="#{uploadController.selected.uploadType}" title="#{bundleClinical.ViewUploadTitle_uploadType}"/>
+                    </p:panelGrid>
+                    <p:commandButton value="#{bundleClinical.Close}" onclick="UploadViewDialog.hide()"/>
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+
+    </ui:composition>
+</html>

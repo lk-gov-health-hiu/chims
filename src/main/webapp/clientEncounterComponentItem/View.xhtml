@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="ClientEncounterComponentItemViewDlg" widgetVar="ClientEncounterComponentItemViewDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundleClinical.ViewClientEncounterComponentItemTitle}">
+            <h:form id="ClientEncounterComponentItemViewForm">
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" rendered="#{clientEncounterComponentItemController.selected != null}">
+                        <h:outputText value="#{bundleClinical.ViewClientEncounterComponentItemLabel_encounter}"/>
+                        <h:outputText value="#{clientEncounterComponentItemController.selected.encounter}" title="#{bundleClinical.ViewClientEncounterComponentItemTitle_encounter}"/>
+                        <h:outputText value="#{bundleClinical.ViewClientEncounterComponentItemLabel_client}"/>
+                        <h:outputText value="#{clientEncounterComponentItemController.selected.client}" title="#{bundleClinical.ViewClientEncounterComponentItemTitle_client}"/>
+                        <h:outputText value="#{bundleClinical.ViewClientEncounterComponentItemLabel_longTextValue}"/>
+                        <h:outputText value="#{clientEncounterComponentItemController.selected.longTextValue}" title="#{bundleClinical.ViewClientEncounterComponentItemTitle_longTextValue}"/>
+                        <h:outputText value="#{bundleClinical.ViewClientEncounterComponentItemLabel_shortTextValue}"/>
+                        <h:outputText value="#{clientEncounterComponentItemController.selected.shortTextValue}" title="#{bundleClinical.ViewClientEncounterComponentItemTitle_shortTextValue}"/>
+                        <h:outputText value="#{bundleClinical.ViewClientEncounterComponentItemLabel_byteArrayValue}"/>
+                        <h:outputText value="#{clientEncounterComponentItemController.selected.byteArrayValue}" title="#{bundleClinical.ViewClientEncounterComponentItemTitle_byteArrayValue}"/>
+                        <h:outputText value="#{bundleClinical.ViewClientEncounterComponentItemLabel_integerNumberValue}"/>
+                        <h:outputText value="#{clientEncounterComponentItemController.selected.integerNumberValue}" title="#{bundleClinical.ViewClientEncounterComponentItemTitle_integerNumberValue}"/>
+                        <h:outputText value="#{bundleClinical.ViewClientEncounterComponentItemLabel_realNumberValue}"/>
+                        <h:outputText value="#{clientEncounterComponentItemController.selected.realNumberValue}" title="#{bundleClinical.ViewClientEncounterComponentItemTitle_realNumberValue}"/>
+                        <h:outputText value="#{bundleClinical.ViewClientEncounterComponentItemLabel_booleanValue}"/>
+                        <p:selectBooleanCheckbox value="#{clientEncounterComponentItemController.selected.booleanValue}" disabled="true"/>
+                        <h:outputText value="#{bundleClinical.ViewClientEncounterComponentItemLabel_itemValue}"/>
+                        <h:outputText value="#{clientEncounterComponentItemController.selected.itemValue}" title="#{bundleClinical.ViewClientEncounterComponentItemTitle_itemValue}"/>
+                        <h:outputText value="#{bundleClinical.ViewClientEncounterComponentItemLabel_areaValue}"/>
+                        <h:outputText value="#{clientEncounterComponentItemController.selected.areaValue}" title="#{bundleClinical.ViewClientEncounterComponentItemTitle_areaValue}"/>
+                        <h:outputText value="#{bundleClinical.ViewClientEncounterComponentItemLabel_institutionValue}"/>
+                        <h:outputText value="#{clientEncounterComponentItemController.selected.institutionValue}" title="#{bundleClinical.ViewClientEncounterComponentItemTitle_institutionValue}"/>
+                        <h:outputText value="#{bundleClinical.ViewClientEncounterComponentItemLabel_clientValue}"/>
+                        <h:outputText value="#{clientEncounterComponentItemController.selected.clientValue}" title="#{bundleClinical.ViewClientEncounterComponentItemTitle_clientValue}"/>
+                        <h:outputText value="#{bundleClinical.ViewClientEncounterComponentItemLabel_id}"/>
+                        <h:outputText value="#{clientEncounterComponentItemController.selected.id}" title="#{bundleClinical.ViewClientEncounterComponentItemTitle_id}"/>
+                        <h:outputText value="#{bundleClinical.ViewClientEncounterComponentItemLabel_name}"/>
+                        <h:outputText value="#{clientEncounterComponentItemController.selected.name}" title="#{bundleClinical.ViewClientEncounterComponentItemTitle_name}"/>
+                        <h:outputText value="#{bundleClinical.ViewClientEncounterComponentItemLabel_renderType}"/>
+                        <h:outputText value="#{clientEncounterComponentItemController.selected.renderType}" title="#{bundleClinical.ViewClientEncounterComponentItemTitle_renderType}"/>
+                        <h:outputText value="#{bundleClinical.ViewClientEncounterComponentItemLabel_parentComponent}"/>
+                        <h:outputText value="#{clientEncounterComponentItemController.selected.parentComponent}" title="#{bundleClinical.ViewClientEncounterComponentItemTitle_parentComponent}"/>
+                        <h:outputText value="#{bundleClinical.ViewClientEncounterComponentItemLabel_mimeType}"/>
+                        <h:outputText value="#{clientEncounterComponentItemController.selected.mimeType}" title="#{bundleClinical.ViewClientEncounterComponentItemTitle_mimeType}"/>
+                        <h:outputText value="#{bundleClinical.ViewClientEncounterComponentItemLabel_selectionDataType}"/>
+                        <h:outputText value="#{clientEncounterComponentItemController.selected.selectionDataType}" title="#{bundleClinical.ViewClientEncounterComponentItemTitle_selectionDataType}"/>
+                        <h:outputText value="#{bundleClinical.ViewClientEncounterComponentItemLabel_topPercent}"/>
+                        <h:outputText value="#{clientEncounterComponentItemController.selected.topPercent}" title="#{bundleClinical.ViewClientEncounterComponentItemTitle_topPercent}"/>
+                        <h:outputText value="#{bundleClinical.ViewClientEncounterComponentItemLabel_leftPercent}"/>
+                        <h:outputText value="#{clientEncounterComponentItemController.selected.leftPercent}" title="#{bundleClinical.ViewClientEncounterComponentItemTitle_leftPercent}"/>
+                        <h:outputText value="#{bundleClinical.ViewClientEncounterComponentItemLabel_widthPercent}"/>
+                        <h:outputText value="#{clientEncounterComponentItemController.selected.widthPercent}" title="#{bundleClinical.ViewClientEncounterComponentItemTitle_widthPercent}"/>
+                        <h:outputText value="#{bundleClinical.ViewClientEncounterComponentItemLabel_heightPercent}"/>
+                        <h:outputText value="#{clientEncounterComponentItemController.selected.heightPercent}" title="#{bundleClinical.ViewClientEncounterComponentItemTitle_heightPercent}"/>
+                        <h:outputText value="#{bundleClinical.ViewClientEncounterComponentItemLabel_intHtmlColor}"/>
+                        <h:outputText value="#{clientEncounterComponentItemController.selected.intHtmlColor}" title="#{bundleClinical.ViewClientEncounterComponentItemTitle_intHtmlColor}"/>
+                        <h:outputText value="#{bundleClinical.ViewClientEncounterComponentItemLabel_hexHtmlColour}"/>
+                        <h:outputText value="#{clientEncounterComponentItemController.selected.hexHtmlColour}" title="#{bundleClinical.ViewClientEncounterComponentItemTitle_hexHtmlColour}"/>
+                        <h:outputText value="#{bundleClinical.ViewClientEncounterComponentItemLabel_createdBy}"/>
+                        <h:outputText value="#{clientEncounterComponentItemController.selected.createdBy}" title="#{bundleClinical.ViewClientEncounterComponentItemTitle_createdBy}"/>
+                        <h:outputText value="#{bundleClinical.ViewClientEncounterComponentItemLabel_createdAt}"/>
+                        <h:outputText value="#{clientEncounterComponentItemController.selected.createdAt}" title="#{bundleClinical.ViewClientEncounterComponentItemTitle_createdAt}">
+                            <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                        </h:outputText>
+                        <h:outputText value="#{bundleClinical.ViewClientEncounterComponentItemLabel_lastEditBy}"/>
+                        <h:outputText value="#{clientEncounterComponentItemController.selected.lastEditBy}" title="#{bundleClinical.ViewClientEncounterComponentItemTitle_lastEditBy}"/>
+                        <h:outputText value="#{bundleClinical.ViewClientEncounterComponentItemLabel_lastEditeAt}"/>
+                        <h:outputText value="#{clientEncounterComponentItemController.selected.lastEditeAt}" title="#{bundleClinical.ViewClientEncounterComponentItemTitle_lastEditeAt}">
+                            <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                        </h:outputText>
+                        <h:outputText value="#{bundleClinical.ViewClientEncounterComponentItemLabel_retiredReversedBy}"/>
+                        <h:outputText value="#{clientEncounterComponentItemController.selected.retiredReversedBy}" title="#{bundleClinical.ViewClientEncounterComponentItemTitle_retiredReversedBy}"/>
+                        <h:outputText value="#{bundleClinical.ViewClientEncounterComponentItemLabel_retiredReversedAt}"/>
+                        <h:outputText value="#{clientEncounterComponentItemController.selected.retiredReversedAt}" title="#{bundleClinical.ViewClientEncounterComponentItemTitle_retiredReversedAt}">
+                            <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                        </h:outputText>
+                        <h:outputText value="#{bundleClinical.ViewClientEncounterComponentItemLabel_retiredBy}"/>
+                        <h:outputText value="#{clientEncounterComponentItemController.selected.retiredBy}" title="#{bundleClinical.ViewClientEncounterComponentItemTitle_retiredBy}"/>
+                        <h:outputText value="#{bundleClinical.ViewClientEncounterComponentItemLabel_retiredAt}"/>
+                        <h:outputText value="#{clientEncounterComponentItemController.selected.retiredAt}" title="#{bundleClinical.ViewClientEncounterComponentItemTitle_retiredAt}">
+                            <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                        </h:outputText>
+                        <h:outputText value="#{bundleClinical.ViewClientEncounterComponentItemLabel_retireComments}"/>
+                        <h:outputText value="#{clientEncounterComponentItemController.selected.retireComments}" title="#{bundleClinical.ViewClientEncounterComponentItemTitle_retireComments}"/>
+                        <h:outputText value="#{bundleClinical.ViewClientEncounterComponentItemLabel_html}"/>
+                        <h:outputText value="#{clientEncounterComponentItemController.selected.html}" title="#{bundleClinical.ViewClientEncounterComponentItemTitle_html}"/>
+                        <h:outputText value="#{bundleClinical.ViewClientEncounterComponentItemLabel_availableDataType}"/>
+                        <h:outputText value="#{clientEncounterComponentItemController.selected.availableDataType}" title="#{bundleClinical.ViewClientEncounterComponentItemTitle_availableDataType}"/>
+                        <h:outputText value="#{bundleClinical.ViewClientEncounterComponentItemLabel_parentAreaOfAvailableAreas}"/>
+                        <h:outputText value="#{clientEncounterComponentItemController.selected.parentAreaOfAvailableAreas}" title="#{bundleClinical.ViewClientEncounterComponentItemTitle_parentAreaOfAvailableAreas}"/>
+                        <h:outputText value="#{bundleClinical.ViewClientEncounterComponentItemLabel_categoryOfAvailableItems}"/>
+                        <h:outputText value="#{clientEncounterComponentItemController.selected.categoryOfAvailableItems}" title="#{bundleClinical.ViewClientEncounterComponentItemTitle_categoryOfAvailableItems}"/>
+                        <h:outputText value="#{bundleClinical.ViewClientEncounterComponentItemLabel_parentInstitutionOfAvailableInstitutions}"/>
+                        <h:outputText value="#{clientEncounterComponentItemController.selected.parentInstitutionOfAvailableInstitutions}" title="#{bundleClinical.ViewClientEncounterComponentItemTitle_parentInstitutionOfAvailableInstitutions}"/>
+                    </p:panelGrid>
+                    <p:commandButton value="#{bundleClinical.Close}" onclick="ClientEncounterComponentItemViewDialog.hide()"/>
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+
+    </ui:composition>
+</html>

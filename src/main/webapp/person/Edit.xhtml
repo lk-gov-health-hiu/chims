@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="PersonEditDlg" widgetVar="PersonEditDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundleClinical.EditPersonTitle}">
+            <h:form id="PersonEditForm">
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" rendered="#{personController.selected != null}">
+                        <p:outputLabel value="#{bundleClinical.EditPersonLabel_age}" for="age" />
+                        <p:inputText id="age" value="#{personController.selected.age}" title="#{bundleClinical.EditPersonTitle_age}" />
+                        <p:outputLabel value="#{bundleClinical.EditPersonLabel_ageInDays}" for="ageInDays" />
+                        <p:inputText id="ageInDays" value="#{personController.selected.ageInDays}" title="#{bundleClinical.EditPersonTitle_ageInDays}" />
+                        <p:outputLabel value="#{bundleClinical.EditPersonLabel_ageMonths}" for="ageMonths" />
+                        <p:inputText id="ageMonths" value="#{personController.selected.ageMonths}" title="#{bundleClinical.EditPersonTitle_ageMonths}" />
+                        <p:outputLabel value="#{bundleClinical.EditPersonLabel_ageDays}" for="ageDays" />
+                        <p:inputText id="ageDays" value="#{personController.selected.ageDays}" title="#{bundleClinical.EditPersonTitle_ageDays}" />
+                        <p:outputLabel value="#{bundleClinical.EditPersonLabel_ageYears}" for="ageYears" />
+                        <p:inputText id="ageYears" value="#{personController.selected.ageYears}" title="#{bundleClinical.EditPersonTitle_ageYears}" />
+                        <p:outputLabel value="#{bundleClinical.EditPersonLabel_nameWithTitle}" for="nameWithTitle" />
+                        <p:inputText id="nameWithTitle" value="#{personController.selected.nameWithTitle}" title="#{bundleClinical.EditPersonTitle_nameWithTitle}" />
+                        <p:outputLabel value="#{bundleClinical.EditPersonLabel_sex}" for="sex" />
+                        <p:inputText id="sex" value="#{personController.selected.sex}" title="#{bundleClinical.EditPersonTitle_sex}" />
+                        <p:outputLabel value="#{bundleClinical.EditPersonLabel_retireComments}" for="retireComments" />
+                        <p:inputText id="retireComments" value="#{personController.selected.retireComments}" title="#{bundleClinical.EditPersonTitle_retireComments}" />
+                        <p:outputLabel value="#{bundleClinical.EditPersonLabel_id}" for="id" />
+                        <p:inputText id="id" value="#{personController.selected.id}" title="#{bundleClinical.EditPersonTitle_id}" />
+                        <p:outputLabel value="#{bundleClinical.EditPersonLabel_createdAt}" for="createdAt" />
+                        <p:calendar id="createdAt" pattern="MM/dd/yyyy HH:mm:ss" value="#{personController.selected.createdAt}" title="#{bundleClinical.EditPersonTitle_createdAt}"  showOn="button"/>
+                        <p:outputLabel value="#{bundleClinical.EditPersonLabel_editer}" for="editer" />
+                        <p:selectOneMenu id="editer" value="#{personController.selected.editer}" >
+                            <f:selectItem itemLabel="#{bundleClinical.SelectOneMessage}"/>
+                            <f:selectItems value="#{webUserController.itemsAvailableSelectOne}"
+                                           var="editerItem"
+                                           itemValue="#{editerItem}"/>
+                        </p:selectOneMenu>
+                        <p:outputLabel value="#{bundleClinical.EditPersonLabel_editedAt}" for="editedAt" />
+                        <p:calendar id="editedAt" pattern="MM/dd/yyyy HH:mm:ss" value="#{personController.selected.editedAt}" title="#{bundleClinical.EditPersonTitle_editedAt}"  showOn="button"/>
+                        <p:outputLabel value="#{bundleClinical.EditPersonLabel_createdBy}" for="createdBy" />
+                        <p:selectOneMenu id="createdBy" value="#{personController.selected.createdBy}" >
+                            <f:selectItem itemLabel="#{bundleClinical.SelectOneMessage}"/>
+                            <f:selectItems value="#{webUserController.itemsAvailableSelectOne}"
+                                           var="createdByItem"
+                                           itemValue="#{createdByItem}"/>
+                        </p:selectOneMenu>
+                        <p:outputLabel value="#{bundleClinical.EditPersonLabel_phone2}" for="phone2" />
+                        <p:inputText id="phone2" value="#{personController.selected.phone2}" title="#{bundleClinical.EditPersonTitle_phone2}" />
+                        <p:outputLabel value="#{bundleClinical.EditPersonLabel_name}" for="name" />
+                        <p:inputText id="name" value="#{personController.selected.name}" title="#{bundleClinical.EditPersonTitle_name}" />
+                        <p:outputLabel value="#{bundleClinical.EditPersonLabel_retiredAt}" for="retiredAt" />
+                        <p:calendar id="retiredAt" pattern="MM/dd/yyyy HH:mm:ss" value="#{personController.selected.retiredAt}" title="#{bundleClinical.EditPersonTitle_retiredAt}"  showOn="button"/>
+                        <p:outputLabel value="#{bundleClinical.EditPersonLabel_retiredBy}" for="retiredBy" />
+                        <p:selectOneMenu id="retiredBy" value="#{personController.selected.retiredBy}" >
+                            <f:selectItem itemLabel="#{bundleClinical.SelectOneMessage}"/>
+                            <f:selectItems value="#{webUserController.itemsAvailableSelectOne}"
+                                           var="retiredByItem"
+                                           itemValue="#{retiredByItem}"/>
+                        </p:selectOneMenu>
+                        <p:outputLabel value="#{bundleClinical.EditPersonLabel_address}" for="address" />
+                        <p:inputText id="address" value="#{personController.selected.address}" title="#{bundleClinical.EditPersonTitle_address}" />
+                        <p:outputLabel value="#{bundleClinical.EditPersonLabel_passportNumber}" for="passportNumber" />
+                        <p:inputText id="passportNumber" value="#{personController.selected.passportNumber}" title="#{bundleClinical.EditPersonTitle_passportNumber}" />
+                        <p:outputLabel value="#{bundleClinical.EditPersonLabel_email}" for="email" />
+                        <p:inputText id="email" value="#{personController.selected.email}" title="#{bundleClinical.EditPersonTitle_email}" />
+                        <p:outputLabel value="#{bundleClinical.EditPersonLabel_website}" for="website" />
+                        <p:inputText id="website" value="#{personController.selected.website}" title="#{bundleClinical.EditPersonTitle_website}" />
+                        <p:outputLabel value="#{bundleClinical.EditPersonLabel_drivingLicenseNumber}" for="drivingLicenseNumber" />
+                        <p:inputText id="drivingLicenseNumber" value="#{personController.selected.drivingLicenseNumber}" title="#{bundleClinical.EditPersonTitle_drivingLicenseNumber}" />
+                        <p:outputLabel value="#{bundleClinical.EditPersonLabel_title}" for="title" />
+                        <p:inputText id="title" value="#{personController.selected.title}" title="#{bundleClinical.EditPersonTitle_title}" />
+                        <p:outputLabel value="#{bundleClinical.EditPersonLabel_dateOfBirth}" for="dateOfBirth" />
+                        <p:calendar id="dateOfBirth" pattern="MM/dd/yyyy HH:mm:ss" value="#{personController.selected.dateOfBirth}" title="#{bundleClinical.EditPersonTitle_dateOfBirth}"  showOn="button"/>
+                        <p:outputLabel value="#{bundleClinical.EditPersonLabel_phone1}" for="phone1" />
+                        <p:inputText id="phone1" value="#{personController.selected.phone1}" title="#{bundleClinical.EditPersonTitle_phone1}" />
+                        <p:outputLabel value="#{bundleClinical.EditPersonLabel_nic}" for="nic" />
+                        <p:inputText id="nic" value="#{personController.selected.nic}" title="#{bundleClinical.EditPersonTitle_nic}" />
+                        <p:outputLabel value="#{bundleClinical.EditPersonLabel_serealNumber}" for="serealNumber" />
+                        <p:inputText id="serealNumber" value="#{personController.selected.serealNumber}" title="#{bundleClinical.EditPersonTitle_serealNumber}" />
+                    </p:panelGrid>
+                    <p:commandButton actionListener="#{personController.update}" value="#{bundleClinical.Save}" update="display,:PersonListForm:datalist,:growl" oncomplete="handleSubmit(args, 'PersonEditDialog');"/>
+                    <p:commandButton value="#{bundleClinical.Cancel}" onclick="PersonEditDialog.hide()"/>
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+
+    </ui:composition>
+</html>

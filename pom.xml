@@ -191,6 +191,15 @@
             <version>2.0</version>
         </dependency>
         
+<!--         https://mvnrepository.com/artifact/org.primefaces.themes/sunny 
+        <dependency>
+            <groupId>org.primefaces.themes</groupId>
+            <artifactId>sunny</artifactId>
+            <version>1.0.8</version>
+        </dependency>-->
+
+
+        
     </dependencies>
 
     <build>

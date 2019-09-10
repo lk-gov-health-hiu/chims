@@ -1,35 +1,61 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:ui="http://java.sun.com/jsf/facelets"
-      xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:p="http://primefaces.org/ui">
 
     <ui:composition>
 
-        <p:dialog id="AreaViewDlg" widgetVar="AreaViewDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundle.ViewAreaTitle}">
+        <p:dialog id="AreaViewDlg" widgetVar="AreaViewDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundleClinical.ViewAreaTitle}">
             <h:form id="AreaViewForm">
                 <h:panelGroup id="display">
                     <p:panelGrid columns="2" rendered="#{areaController.selected != null}">
-                        <h:outputText value="#{bundle.ViewAreaLabel_id}"/>
-                        <h:outputText value="#{areaController.selected.id}" title="#{bundle.ViewAreaTitle_id}"/>
-                        <h:outputText value="#{bundle.ViewAreaLabel_type}"/>
-                        <h:outputText value="#{areaController.selected.type}" title="#{bundle.ViewAreaTitle_type}"/>
-                        <h:outputText value="#{bundle.ViewAreaLabel_name}"/>
-                        <h:outputText value="#{areaController.selected.name}" title="#{bundle.ViewAreaTitle_name}"/>
-                        <h:outputText value="#{bundle.ViewAreaLabel_code}"/>
-                        <h:outputText value="#{areaController.selected.code}" title="#{bundle.ViewAreaTitle_code}"/>
-                        <h:outputText value="#{bundle.ViewAreaLabel_parentArea}"/>
-                        <h:outputText value="#{areaController.selected.parentArea}" title="#{bundle.ViewAreaTitle_parentArea}"/>
-                        <h:outputText value="#{bundle.ViewAreaLabel_creater}"/>
-                        <h:outputText value="#{areaController.selected.creater}" title="#{bundle.ViewAreaTitle_creater}"/>
-                        <h:outputText value="#{bundle.ViewAreaLabel_createAt}"/>
-                        <h:outputText value="#{areaController.selected.createAt}" title="#{bundle.ViewAreaTitle_createAt}">
+                        <h:outputText value="#{bundleClinical.ViewAreaLabel_type}"/>
+                        <h:outputText value="#{areaController.selected.type}" title="#{bundleClinical.ViewAreaTitle_type}"/>
+                        <h:outputText value="#{bundleClinical.ViewAreaLabel_name}"/>
+                        <h:outputText value="#{areaController.selected.name}" title="#{bundleClinical.ViewAreaTitle_name}"/>
+                        <h:outputText value="#{bundleClinical.ViewAreaLabel_code}"/>
+                        <h:outputText value="#{areaController.selected.code}" title="#{bundleClinical.ViewAreaTitle_code}"/>
+                        <h:outputText value="#{bundleClinical.ViewAreaLabel_parentArea}"/>
+                        <h:outputText value="#{areaController.selected.parentArea}" title="#{bundleClinical.ViewAreaTitle_parentArea}"/>
+                        <h:outputText value="#{bundleClinical.ViewAreaLabel_createdBy}"/>
+                        <h:outputText value="#{areaController.selected.createdBy}" title="#{bundleClinical.ViewAreaTitle_createdBy}"/>
+                        <h:outputText value="#{bundleClinical.ViewAreaLabel_centreLongitude}"/>
+                        <h:outputText value="#{areaController.selected.centreLongitude}" title="#{bundleClinical.ViewAreaTitle_centreLongitude}"/>
+                        <h:outputText value="#{bundleClinical.ViewAreaLabel_centreLatitude}"/>
+                        <h:outputText value="#{areaController.selected.centreLatitude}" title="#{bundleClinical.ViewAreaTitle_centreLatitude}"/>
+                        <h:outputText value="#{bundleClinical.ViewAreaLabel_zoomLavel}"/>
+                        <h:outputText value="#{areaController.selected.zoomLavel}" title="#{bundleClinical.ViewAreaTitle_zoomLavel}"/>
+                        <h:outputText value="#{bundleClinical.ViewAreaLabel_id}"/>
+                        <h:outputText value="#{areaController.selected.id}" title="#{bundleClinical.ViewAreaTitle_id}"/>
+                        <h:outputText value="#{bundleClinical.ViewAreaLabel_retiredBy}"/>
+                        <h:outputText value="#{areaController.selected.retiredBy}" title="#{bundleClinical.ViewAreaTitle_retiredBy}"/>
+                        <h:outputText value="#{bundleClinical.ViewAreaLabel_retiredAt}"/>
+                        <h:outputText value="#{areaController.selected.retiredAt}" title="#{bundleClinical.ViewAreaTitle_retiredAt}">
                             <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
                         </h:outputText>
+                        <h:outputText value="#{bundleClinical.ViewAreaLabel_retiredReversedBy}"/>
+                        <h:outputText value="#{areaController.selected.retiredReversedBy}" title="#{bundleClinical.ViewAreaTitle_retiredReversedBy}"/>
+                        <h:outputText value="#{bundleClinical.ViewAreaLabel_retiredReversedAt}"/>
+                        <h:outputText value="#{areaController.selected.retiredReversedAt}" title="#{bundleClinical.ViewAreaTitle_retiredReversedAt}">
+                            <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                        </h:outputText>
+                        <h:outputText value="#{bundleClinical.ViewAreaLabel_createdAt}"/>
+                        <h:outputText value="#{areaController.selected.createdAt}" title="#{bundleClinical.ViewAreaTitle_createdAt}">
+                            <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                        </h:outputText>
+                        <h:outputText value="#{bundleClinical.ViewAreaLabel_lastEditBy}"/>
+                        <h:outputText value="#{areaController.selected.lastEditBy}" title="#{bundleClinical.ViewAreaTitle_lastEditBy}"/>
+                        <h:outputText value="#{bundleClinical.ViewAreaLabel_lastEditeAt}"/>
+                        <h:outputText value="#{areaController.selected.lastEditeAt}" title="#{bundleClinical.ViewAreaTitle_lastEditeAt}">
+                            <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                        </h:outputText>
+                        <h:outputText value="#{bundleClinical.ViewAreaLabel_retireComments}"/>
+                        <h:outputText value="#{areaController.selected.retireComments}" title="#{bundleClinical.ViewAreaTitle_retireComments}"/>
                     </p:panelGrid>
-                    <p:commandButton value="#{bundle.Close}" onclick="AreaViewDialog.hide()"/>
+                    <p:commandButton value="#{bundleClinical.Close}" onclick="AreaViewDialog.hide()"/>
                 </h:panelGroup>
             </h:form>
         </p:dialog>

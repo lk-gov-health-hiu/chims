@@ -4,8 +4,8 @@
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:p="http://primefaces.org/ui"
-      xmlns:ez="http://xmlns.jcp.org/jsf/composite/ezcomp"
-      xmlns:f="http://xmlns.jcp.org/jsf/core">
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ez="http://xmlns.jcp.org/jsf/composite/ezcomp">
 
     <h:head id="headt">
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
@@ -19,129 +19,94 @@
               integrity='sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ' 
               crossorigin='anonymous'></link>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"></link>
-        <h:outputStylesheet library="css" name="tem1.css"/>
+
         <title>Management Development and Planning Unit</title>
-        <h:outputStylesheet library="css" name="tem1.css" ></h:outputStylesheet>
-        <style>
-            ul {
-                list-style-type: none;
-                margin: 0;
-                padding: 0;
-                overflow: hidden;
-                border: 1px solid #e7e7e7;
-                background-color: #f3f3f3;
-            }
-
-            li {
-                float: left;
-            }
-
-            li a {
-                display: block;
-                color: #666;
-                text-align: center;
-                padding: 14px 16px;
-                text-decoration: none;
-            }
-
-            li a:hover:not(.active) {
-                background-color: #ffbf00;
-            }
-
-            li a.active {
-                color: white;
-                background-color: #4CAF50;
-            }
-        </style>
+        <h:outputStylesheet library="css" name="tem1.css"/>
+        <h:outputStylesheet library="css" name="template.css" ></h:outputStylesheet>
     </h:head>
 
-    <h:body class="w3-theme-l5">
+    <h:body class="w3-theme-l5" style="font-family: 'Roboto', sans-serif!important;">
 
         <f:view locale="#{webUserController.locale}" >
 
-
-
-
-
-
-            <div class="w3-row w3-center w3-amber">
-                <h3 class="w3-opacity">
-                    #{bundle.Title}
-                </h3>
-            </div>
-
-
-
-
-            <div class="w3-row" >
-                <h:form>
-                    <ul>
-                        <li>
-                            <h:commandLink class="nonUnderline"  value="#{bundle.Home}" action="/index" ></h:commandLink>
-                        </li>
-                        <h:panelGroup rendered="#{webUserController.loggedUser.systemAdministrator or webUserController.loggedUser.superUser or webUserController.loggedUser.user}" >
-                            <ui:insert name="addProject">
-                                <li>
-                                    <h:commandLink value="#{bundle.AddProject}" action="#{webUserController.addNewProject()}"></h:commandLink>
-                                </li>
-                            </ui:insert>
-
-                            <li>
-                                <h:commandLink value="#{bundle.ListProjects}" action="#{webUserController.tolistProjects()}"></h:commandLink>
-                            </li>
-
-                            <li>
-                                <h:commandLink value="#{bundle.SearchProjects}" action="#{webUserController.searchProjects()}"></h:commandLink>
-                            </li>
-                        </h:panelGroup>
-
-
-                        <h:panelGroup rendered="#{webUserController.loggedUser.systemAdministrator}" >
-                            <li>
-                                <h:commandLink  value="#{bundle.SystemManagement}" action="/system_management"></h:commandLink>
-                            </li>
-                        </h:panelGroup>
-
-                        <h:panelGroup rendered="#{webUserController.loggedUser ne null}" >
-                            <li>
-                                <h:commandLink  class="spacer1x boldedText" value="#{bundle.ChangePassword}" action="#{webUserController.toChangeMyPassword()}"></h:commandLink>
-                            </li>
-                            <li>
-                                <h:commandLink  class="spacer1x boldedText" value="#{bundle.ChangeMyDetails}" action="#{webUserController.toChangeMyDetails()}"></h:commandLink>
-                            </li>
-                            <li>
-                                <h:commandLink  value="#{bundle.SignOut}" action="#{webUserController.logOut()}"></h:commandLink>
-                            </li>
-                        </h:panelGroup>
-
-                        <h:panelGroup rendered="#{webUserController.loggedUser eq null}" >
-                            <li>
-                                <h:commandLink class="nonUnderline"  value="#{bundle.Help}" action="#{webUserController.logOut()}"></h:commandLink>
-                            </li>
-                            <li>
-                                <h:commandLink class="nonUnderline" value="#{bundle.SingIn}" action="#{webUserController.toLogin()}"></h:commandLink>
-                            </li>
-                            <li>
-                                <h:commandLink class="nonUnderline"  value="#{bundle.SingUp}" action="#{webUserController.prepareRegisterAsClient()}"></h:commandLink>
-                            </li>
-                        </h:panelGroup>
-                    </ul>
-                </h:form>
-            </div>
-
-
-
             <p:growl autoUpdate="true"  ></p:growl>
 
+            <div class="w3-row w3-theme-l5" >
+                <h:panelGroup rendered="#{webUserController.loggedUser ne null}">
+                    <div class="w3-row" >
+                        <ez:menu/>
+                    </div>
+                </h:panelGroup>
+            </div>
 
-            <ui:insert name="content">
-
-                <div class="w3-row w3-theme-l5" >
-
-                </div>
 
 
-            </ui:insert>
+
+
+
+
+            <div class="w3-row w3-theme-l5" >
+
+                <h:panelGroup rendered="#{webUserController.loggedUser ne null}">
+                    <ui:insert name="content">
+
+                    </ui:insert>
+                </h:panelGroup>
+
+                <h:panelGroup rendered="#{webUserController.loggedUser eq null}">
+                    <h:form >
+                        <div class="w3-display-container" style="height: 75vh;" >
+                            <div class="w3-display-middle" >
+
+                                <table class="w3-table w3-border" style="width: 600px; margin: auto;">
+                                    <thead class="w3-amber">
+                                        <tr>
+                                            <th colspan="3" style="text-align: center;">Login</th>
+                                        </tr>
+                                    </thead>
+                                    <tfoot>
+                                        <tr>
+                                            <td colspan="3" style="text-align: center;" >
+                                                <h:commandButton class="w3-btn w3-amber btn200"   value="Login" action="#{webUserController.login()}" ></h:commandButton>
+                                            </td>
+                                        </tr>
+                                    </tfoot>
+                                    <tbody>
+                                        <tr>
+                                            <td rowspan="2">
+                                                <h:graphicImage library="image" name="login.png" style="height: 160px;" ></h:graphicImage>
+
+                                            </td>
+                                            <td>Username</td>
+                                            <td>
+                                                <p:inputText autocomplete="off" value="#{webUserController.userName}" ></p:inputText>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Password</td>
+                                            <td>
+                                                <p:password autocomplete="off" value="#{webUserController.password}" ></p:password>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+
+                                </table>
+                            </div>
+
+                        </div>
+
+
+
+                    </h:form>
+
+                </h:panelGroup>
+
+
+
+            </div>
+
+
+
 
 
 

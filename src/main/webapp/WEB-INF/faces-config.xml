@@ -11,6 +11,10 @@
         <locale-config>
             <default-locale>en</default-locale>
         </locale-config>
+        <resource-bundle>
+            <base-name>/BundleClinical</base-name>
+            <var>bundleClinical</var>
+        </resource-bundle>
     </application>
     <navigation-rule>
         <from-view-id>*</from-view-id>

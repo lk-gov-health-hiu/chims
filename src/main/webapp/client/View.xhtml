@@ -1,63 +1,54 @@
-<?xml version='1.0' encoding='UTF-8' ?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:p="http://primefaces.org/ui"
-      xmlns:f="http://xmlns.jcp.org/jsf/core">
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
 
+    <ui:composition>
 
-    <h:head>
-        <h:outputStylesheet library="css" name="main.css" ></h:outputStylesheet>
-    </h:head>
-
-    <h:body>
-
-        <ui:composition template="/system_management.xhtml">
-
-
-            <ui:define name="right">
-                <h:form>
-                    <p:panelGrid columns="2" columnClasses="alignLeft alignLeft" class="pageCenter">
-
-                        <f:facet name="header" >
-                            Edit Client Details
-                        </f:facet>
-
-
-                        <h:outputLabel value="#{bundle.EditWebUserLabel_name}" for="name" />
-                        <h:outputLabel id="name" value="#{institutionController.current.name}" title="#{bundle.EditWebUserTitle_name}" />
-
-
-                        <h:outputLabel value="#{bundle.EditWebUserLabel_email}" for="email" />
-                        <h:outputLabel id="email" value="#{institutionController.current.email}" title="#{bundle.EditWebUserTitle_email}" />
-
-                        <h:outputLabel value="#{bundle.EditWebUserLabel_telNo}" for="telNo" />
-                        <h:outputLabel id="telNo" value="#{institutionController.current.phone}" title="#{bundle.EditWebUserTitle_telNo}" />
-
-
-                        <h:outputLabel value="Address" for="addresse" />
-                        <h:outputLabel id="address" value="#{institutionController.current.address}" title="#{bundle.EditWebUserTitle_name}" />
-
-
-                        <h:outputLabel value="Type" for="type" />
-                        <h:outputLabel id="type" value="#{institutionController.current.institutionType}" >
-                        </h:outputLabel>
-
-
+        <p:dialog id="ClientViewDlg" widgetVar="ClientViewDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundleClinical.ViewClientTitle}">
+            <h:form id="ClientViewForm">
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" rendered="#{clientController.selected != null}">
+                        <h:outputText value="#{bundleClinical.ViewClientLabel_serialVersionUID}"/>
+                        <h:outputText value="#{clientController.selected.serialVersionUID}" title="#{bundleClinical.ViewClientTitle_serialVersionUID}"/>
+                        <h:outputText value="#{bundleClinical.ViewClientLabel_id}"/>
+                        <h:outputText value="#{clientController.selected.id}" title="#{bundleClinical.ViewClientTitle_id}"/>
+                        <h:outputText value="#{bundleClinical.ViewClientLabel_person}"/>
+                        <h:outputText value="#{clientController.selected.person}" title="#{bundleClinical.ViewClientTitle_person}"/>
+                        <h:outputText value="#{bundleClinical.ViewClientLabel_createdBy}"/>
+                        <h:outputText value="#{clientController.selected.createdBy}" title="#{bundleClinical.ViewClientTitle_createdBy}"/>
+                        <h:outputText value="#{bundleClinical.ViewClientLabel_createdAt}"/>
+                        <h:outputText value="#{clientController.selected.createdAt}" title="#{bundleClinical.ViewClientTitle_createdAt}">
+                            <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                        </h:outputText>
+                        <h:outputText value="#{bundleClinical.ViewClientLabel_lastEditBy}"/>
+                        <h:outputText value="#{clientController.selected.lastEditBy}" title="#{bundleClinical.ViewClientTitle_lastEditBy}"/>
+                        <h:outputText value="#{bundleClinical.ViewClientLabel_lastEditeAt}"/>
+                        <h:outputText value="#{clientController.selected.lastEditeAt}" title="#{bundleClinical.ViewClientTitle_lastEditeAt}">
+                            <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                        </h:outputText>
+                        <h:outputText value="#{bundleClinical.ViewClientLabel_retiredBy}"/>
+                        <h:outputText value="#{clientController.selected.retiredBy}" title="#{bundleClinical.ViewClientTitle_retiredBy}"/>
+                        <h:outputText value="#{bundleClinical.ViewClientLabel_retiredAt}"/>
+                        <h:outputText value="#{clientController.selected.retiredAt}" title="#{bundleClinical.ViewClientTitle_retiredAt}">
+                            <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                        </h:outputText>
+                        <h:outputText value="#{bundleClinical.ViewClientLabel_retireComments}"/>
+                        <h:outputText value="#{clientController.selected.retireComments}" title="#{bundleClinical.ViewClientTitle_retireComments}"/>
+                        <h:outputText value="#{bundleClinical.ViewClientLabel_retiredReversedBy}"/>
+                        <h:outputText value="#{clientController.selected.retiredReversedBy}" title="#{bundleClinical.ViewClientTitle_retiredReversedBy}"/>
+                        <h:outputText value="#{bundleClinical.ViewClientLabel_retiredReversedAt}"/>
+                        <h:outputText value="#{clientController.selected.retiredReversedAt}" title="#{bundleClinical.ViewClientTitle_retiredReversedAt}">
+                            <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                        </h:outputText>
                     </p:panelGrid>
+                    <p:commandButton value="#{bundleClinical.Close}" onclick="ClientViewDialog.hide()"/>
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
 
-                </h:form>
-            </ui:define>
-        </ui:composition>
-
-
-
-    </h:body>
-
-
-
-
-
-
+    </ui:composition>
 </html>

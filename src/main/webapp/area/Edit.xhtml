@@ -1,64 +1,81 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:ui="http://java.sun.com/jsf/facelets"
-      xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:p="http://primefaces.org/ui">
 
     <ui:composition>
 
-        <p:dialog id="AreaEditDlg" widgetVar="AreaEditDialog" modal="true" resizable="false" appendTo="@(body)" header="Edit" style="background-color: yellow;">
+        <p:dialog id="AreaEditDlg" widgetVar="AreaEditDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundleClinical.EditAreaTitle}">
             <h:form id="AreaEditForm">
                 <h:panelGroup id="display">
                     <p:panelGrid columns="2" rendered="#{areaController.selected != null}">
-                        <p:outputLabel value="Type" for="type" />
-                        <h:selectOneMenu id="type" value="#{areaController.selected.type}" > \
-                            <f:selectItems value="#{commonController.areaTypes}" ></f:selectItems>
-                        </h:selectOneMenu>
-
-                        <p:outputLabel value="Name" for="name" />
-                        <p:inputText id="name" value="#{areaController.selected.name}" title="#{bundle.CreateAreaTitle_name}" />
-
-                        <p:outputLabel value="Code" for="code" />
-                        <p:inputText id="code" value="#{areaController.selected.code}" title="#{bundle.CreateAreaTitle_code}" />
-
-
-                        <p:outputLabel value="Parent Area" for="parentArea" />
-                        <h:selectOneMenu id="parentArea" value="#{areaController.selected.parentArea}" >
+                        <p:outputLabel value="#{bundleClinical.EditAreaLabel_type}" for="type" />
+                        <p:inputText id="type" value="#{areaController.selected.type}" title="#{bundleClinical.EditAreaTitle_type}" />
+                        <p:outputLabel value="#{bundleClinical.EditAreaLabel_name}" for="name" />
+                        <p:inputText id="name" value="#{areaController.selected.name}" title="#{bundleClinical.EditAreaTitle_name}" />
+                        <p:outputLabel value="#{bundleClinical.EditAreaLabel_code}" for="code" />
+                        <p:inputText id="code" value="#{areaController.selected.code}" title="#{bundleClinical.EditAreaTitle_code}" />
+                        <p:outputLabel value="#{bundleClinical.EditAreaLabel_parentArea}" for="parentArea" />
+                        <p:selectOneMenu id="parentArea" value="#{areaController.selected.parentArea}" >
+                            <f:selectItem itemLabel="#{bundleClinical.SelectOneMessage}"/>
                             <f:selectItems value="#{areaController.itemsAvailableSelectOne}"
-                                           var="parentAreaItem" itemLabel="#{parentAreaItem.name}"
+                                           var="parentAreaItem"
                                            itemValue="#{parentAreaItem}"/>
-                        </h:selectOneMenu>
-
-                        <p:outputLabel value="Centre Longitude"  />
-                        <p:inputText value="#{areaController.selected.centreLongitude}" />
-
-                        <p:outputLabel value="Centre Latitude"  />
-                        <p:inputText value="#{areaController.selected.centreLatitude}" />
-
-                        <p:outputLabel value="Default Zoom"  />
-                        <p:inputText value="#{areaController.selected.zoomLavel}" />
-
-
+                        </p:selectOneMenu>
+                        <p:outputLabel value="#{bundleClinical.EditAreaLabel_createdBy}" for="createdBy" />
+                        <p:selectOneMenu id="createdBy" value="#{areaController.selected.createdBy}" >
+                            <f:selectItem itemLabel="#{bundleClinical.SelectOneMessage}"/>
+                            <f:selectItems value="#{webUserController.itemsAvailableSelectOne}"
+                                           var="createdByItem"
+                                           itemValue="#{createdByItem}"/>
+                        </p:selectOneMenu>
+                        <p:outputLabel value="#{bundleClinical.EditAreaLabel_centreLongitude}" for="centreLongitude" />
+                        <p:inputText id="centreLongitude" value="#{areaController.selected.centreLongitude}" title="#{bundleClinical.EditAreaTitle_centreLongitude}" />
+                        <p:outputLabel value="#{bundleClinical.EditAreaLabel_centreLatitude}" for="centreLatitude" />
+                        <p:inputText id="centreLatitude" value="#{areaController.selected.centreLatitude}" title="#{bundleClinical.EditAreaTitle_centreLatitude}" />
+                        <p:outputLabel value="#{bundleClinical.EditAreaLabel_zoomLavel}" for="zoomLavel" />
+                        <p:inputText id="zoomLavel" value="#{areaController.selected.zoomLavel}" title="#{bundleClinical.EditAreaTitle_zoomLavel}" />
+                        <p:outputLabel value="#{bundleClinical.EditAreaLabel_id}" for="id" />
+                        <p:inputText id="id" value="#{areaController.selected.id}" title="#{bundleClinical.EditAreaTitle_id}" />
+                        <p:outputLabel value="#{bundleClinical.EditAreaLabel_retiredBy}" for="retiredBy" />
+                        <p:selectOneMenu id="retiredBy" value="#{areaController.selected.retiredBy}" >
+                            <f:selectItem itemLabel="#{bundleClinical.SelectOneMessage}"/>
+                            <f:selectItems value="#{webUserController.itemsAvailableSelectOne}"
+                                           var="retiredByItem"
+                                           itemValue="#{retiredByItem}"/>
+                        </p:selectOneMenu>
+                        <p:outputLabel value="#{bundleClinical.EditAreaLabel_retiredAt}" for="retiredAt" />
+                        <p:calendar id="retiredAt" pattern="MM/dd/yyyy HH:mm:ss" value="#{areaController.selected.retiredAt}" title="#{bundleClinical.EditAreaTitle_retiredAt}"  showOn="button"/>
+                        <p:outputLabel value="#{bundleClinical.EditAreaLabel_retiredReversedBy}" for="retiredReversedBy" />
+                        <p:selectOneMenu id="retiredReversedBy" value="#{areaController.selected.retiredReversedBy}" >
+                            <f:selectItem itemLabel="#{bundleClinical.SelectOneMessage}"/>
+                            <f:selectItems value="#{webUserController.itemsAvailableSelectOne}"
+                                           var="retiredReversedByItem"
+                                           itemValue="#{retiredReversedByItem}"/>
+                        </p:selectOneMenu>
+                        <p:outputLabel value="#{bundleClinical.EditAreaLabel_retiredReversedAt}" for="retiredReversedAt" />
+                        <p:calendar id="retiredReversedAt" pattern="MM/dd/yyyy HH:mm:ss" value="#{areaController.selected.retiredReversedAt}" title="#{bundleClinical.EditAreaTitle_retiredReversedAt}"  showOn="button"/>
+                        <p:outputLabel value="#{bundleClinical.EditAreaLabel_createdAt}" for="createdAt" />
+                        <p:calendar id="createdAt" pattern="MM/dd/yyyy HH:mm:ss" value="#{areaController.selected.createdAt}" title="#{bundleClinical.EditAreaTitle_createdAt}"  showOn="button"/>
+                        <p:outputLabel value="#{bundleClinical.EditAreaLabel_lastEditBy}" for="lastEditBy" />
+                        <p:selectOneMenu id="lastEditBy" value="#{areaController.selected.lastEditBy}" >
+                            <f:selectItem itemLabel="#{bundleClinical.SelectOneMessage}"/>
+                            <f:selectItems value="#{webUserController.itemsAvailableSelectOne}"
+                                           var="lastEditByItem"
+                                           itemValue="#{lastEditByItem}"/>
+                        </p:selectOneMenu>
+                        <p:outputLabel value="#{bundleClinical.EditAreaLabel_lastEditeAt}" for="lastEditeAt" />
+                        <p:calendar id="lastEditeAt" pattern="MM/dd/yyyy HH:mm:ss" value="#{areaController.selected.lastEditeAt}" title="#{bundleClinical.EditAreaTitle_lastEditeAt}"  showOn="button"/>
+                        <p:outputLabel value="#{bundleClinical.EditAreaLabel_retireComments}" for="retireComments" />
+                        <p:inputText id="retireComments" value="#{areaController.selected.retireComments}" title="#{bundleClinical.EditAreaTitle_retireComments}" />
                     </p:panelGrid>
-                    <p:commandButton actionListener="#{areaController.update}" value="Save" update="display,:AreaListForm:datalist" oncomplete="handleSubmit(args, 'AreaEditDialog');"/>
-
-                    <p:commandButton ajax="false" action="#{areaController.drawArea()}" value="Map" />
-
-                    <p:commandButton value="Cancel" onclick="AreaEditDialog.hide()"/>
+                    <p:commandButton actionListener="#{areaController.update}" value="#{bundleClinical.Save}" update="display,:AreaListForm:datalist,:growl" oncomplete="handleSubmit(args, 'AreaEditDialog');"/>
+                    <p:commandButton value="#{bundleClinical.Cancel}" onclick="AreaEditDialog.hide()"/>
                 </h:panelGroup>
             </h:form>
-
-            <h:form enctype="multipart/form-data" >
-                <p:fileUpload value="#{areaController.file}" mode="simple"/>
-
-                <h:commandButton id="btnSave" value="Save" action="#{areaController.saveCoordinates()}"/>
-
-            </h:form>
-
-
-
         </p:dialog>
 
     </ui:composition>

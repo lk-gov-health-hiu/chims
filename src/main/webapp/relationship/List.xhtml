@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition template="/template.xhtml">
+
+
+        <ui:define name="title">
+            <h:outputText value="#{bundleClinical.ListRelationshipTitle}"></h:outputText>
+        </ui:define>
+
+        <ui:define name="body">
+            <h:form id="RelationshipListForm">
+                <p:panel header="#{bundleClinical.ListRelationshipTitle}">
+                    <p:dataTable id="datalist" value="#{relationshipController.items}" var="item"
+                                 selectionMode="single" selection="#{relationshipController.selected}"
+                                 paginator="true"
+                                 rowKey="#{item.id}"
+                                 rows="10"
+                                 rowsPerPageTemplate="10,20,30,40,50"
+                                 >
+
+                        <p:ajax event="rowSelect"   update="createButton viewButton editButton deleteButton"/>
+                        <p:ajax event="rowUnselect" update="createButton viewButton editButton deleteButton"/>
+
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundleClinical.ListRelationshipTitle_id}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.id}"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundleClinical.ListRelationshipTitle_fromInstitution}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.fromInstitution}"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundleClinical.ListRelationshipTitle_toInstitution}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.toInstitution}"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundleClinical.ListRelationshipTitle_institution}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.institution}"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundleClinical.ListRelationshipTitle_fromItem}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.fromItem}"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundleClinical.ListRelationshipTitle_toItem}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.toItem}"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundleClinical.ListRelationshipTitle_item}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.item}"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundleClinical.ListRelationshipTitle_fromArea}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.fromArea}"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundleClinical.ListRelationshipTitle_toArea}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.toArea}"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundleClinical.ListRelationshipTitle_area}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.area}"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundleClinical.ListRelationshipTitle_relationshipType}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.relationshipType}"/>
+                        </p:column>
+                        <f:facet name="footer">
+                            <p:commandButton id="createButton" icon="ui-icon-plus"   value="#{bundleClinical.Create}" actionListener="#{relationshipController.prepareCreate}" update=":RelationshipCreateForm" oncomplete="PF('RelationshipCreateDialog').show()"/>
+                            <p:commandButton id="viewButton"   icon="ui-icon-search" value="#{bundleClinical.View}" update=":RelationshipViewForm" oncomplete="PF('RelationshipViewDialog').show()" disabled="#{empty relationshipController.selected}"/>
+                            <p:commandButton id="editButton"   icon="ui-icon-pencil" value="#{bundleClinical.Edit}" update=":RelationshipEditForm" oncomplete="PF('RelationshipEditDialog').show()" disabled="#{empty relationshipController.selected}"/>
+                            <p:commandButton id="deleteButton" icon="ui-icon-trash"  value="#{bundleClinical.Delete}" actionListener="#{relationshipController.destroy}" update=":growl,datalist" disabled="#{empty relationshipController.selected}"/>
+                        </f:facet>
+                    </p:dataTable>
+                </p:panel>
+            </h:form>
+
+            <ui:include src="Create.xhtml"/>
+            <ui:include src="Edit.xhtml"/>
+            <ui:include src="View.xhtml"/>
+        </ui:define>
+    </ui:composition>
+
+</html>

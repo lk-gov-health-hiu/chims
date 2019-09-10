@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="RelationshipCreateDlg" widgetVar="RelationshipCreateDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundleClinical.CreateRelationshipTitle}">
+            <h:form id="RelationshipCreateForm">
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" rendered="#{relationshipController.selected != null}">
+                        <p:outputLabel value="#{bundleClinical.CreateRelationshipLabel_id}" for="id" />
+                        <p:inputText id="id" value="#{relationshipController.selected.id}" title="#{bundleClinical.CreateRelationshipTitle_id}" />
+                        <p:outputLabel value="#{bundleClinical.CreateRelationshipLabel_fromInstitution}" for="fromInstitution" />
+                        <p:selectOneMenu id="fromInstitution" value="#{relationshipController.selected.fromInstitution}" >
+                            <f:selectItems value="#{institutionController.itemsAvailableSelectOne}"
+                                           var="fromInstitutionItem"
+                                           itemValue="#{fromInstitutionItem}"/>
+                        </p:selectOneMenu>
+                        <p:outputLabel value="#{bundleClinical.CreateRelationshipLabel_toInstitution}" for="toInstitution" />
+                        <p:selectOneMenu id="toInstitution" value="#{relationshipController.selected.toInstitution}" >
+                            <f:selectItems value="#{institutionController.itemsAvailableSelectOne}"
+                                           var="toInstitutionItem"
+                                           itemValue="#{toInstitutionItem}"/>
+                        </p:selectOneMenu>
+                        <p:outputLabel value="#{bundleClinical.CreateRelationshipLabel_institution}" for="institution" />
+                        <p:selectOneMenu id="institution" value="#{relationshipController.selected.institution}" >
+                            <f:selectItems value="#{institutionController.itemsAvailableSelectOne}"
+                                           var="institutionItem"
+                                           itemValue="#{institutionItem}"/>
+                        </p:selectOneMenu>
+                        <p:outputLabel value="#{bundleClinical.CreateRelationshipLabel_fromItem}" for="fromItem" />
+                        <p:selectOneMenu id="fromItem" value="#{relationshipController.selected.fromItem}" >
+                            <f:selectItems value="#{itemController.itemsAvailableSelectOne}"
+                                           var="fromItemItem"
+                                           itemValue="#{fromItemItem}"/>
+                        </p:selectOneMenu>
+                        <p:outputLabel value="#{bundleClinical.CreateRelationshipLabel_toItem}" for="toItem" />
+                        <p:selectOneMenu id="toItem" value="#{relationshipController.selected.toItem}" >
+                            <f:selectItems value="#{itemController.itemsAvailableSelectOne}"
+                                           var="toItemItem"
+                                           itemValue="#{toItemItem}"/>
+                        </p:selectOneMenu>
+                        <p:outputLabel value="#{bundleClinical.CreateRelationshipLabel_item}" for="item" />
+                        <p:selectOneMenu id="item" value="#{relationshipController.selected.item}" >
+                            <f:selectItems value="#{itemController.itemsAvailableSelectOne}"
+                                           var="itemItem"
+                                           itemValue="#{itemItem}"/>
+                        </p:selectOneMenu>
+                        <p:outputLabel value="#{bundleClinical.CreateRelationshipLabel_fromArea}" for="fromArea" />
+                        <p:selectOneMenu id="fromArea" value="#{relationshipController.selected.fromArea}" >
+                            <f:selectItems value="#{areaController.itemsAvailableSelectOne}"
+                                           var="fromAreaItem"
+                                           itemValue="#{fromAreaItem}"/>
+                        </p:selectOneMenu>
+                        <p:outputLabel value="#{bundleClinical.CreateRelationshipLabel_toArea}" for="toArea" />
+                        <p:selectOneMenu id="toArea" value="#{relationshipController.selected.toArea}" >
+                            <f:selectItems value="#{areaController.itemsAvailableSelectOne}"
+                                           var="toAreaItem"
+                                           itemValue="#{toAreaItem}"/>
+                        </p:selectOneMenu>
+                        <p:outputLabel value="#{bundleClinical.CreateRelationshipLabel_area}" for="area" />
+                        <p:selectOneMenu id="area" value="#{relationshipController.selected.area}" >
+                            <f:selectItems value="#{areaController.itemsAvailableSelectOne}"
+                                           var="areaItem"
+                                           itemValue="#{areaItem}"/>
+                        </p:selectOneMenu>
+                        <p:outputLabel value="#{bundleClinical.CreateRelationshipLabel_relationshipType}" for="relationshipType" />
+                        <p:inputText id="relationshipType" value="#{relationshipController.selected.relationshipType}" title="#{bundleClinical.CreateRelationshipTitle_relationshipType}" />
+                    </p:panelGrid>
+                    <p:commandButton actionListener="#{relationshipController.create}" value="#{bundleClinical.Save}" update="display,:RelationshipListForm:datalist,:growl" oncomplete="handleSubmit(args,'RelationshipCreateDialog');"/>
+                    <p:commandButton value="#{bundleClinical.Cancel}" onclick="RelationshipCreateDialog.hide()"/>
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+
+    </ui:composition>
+</html>

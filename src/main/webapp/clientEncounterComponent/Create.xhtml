@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="ClientEncounterComponentCreateDlg" widgetVar="ClientEncounterComponentCreateDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundleClinical.CreateClientEncounterComponentTitle}">
+            <h:form id="ClientEncounterComponentCreateForm">
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" rendered="#{clientEncounterComponentController.selected != null}">
+                        <p:outputLabel value="#{bundleClinical.CreateClientEncounterComponentLabel_encounter}" for="encounter" />
+                        <p:selectOneMenu id="encounter" value="#{clientEncounterComponentController.selected.encounter}" >
+                            <f:selectItems value="#{encounterController.itemsAvailableSelectOne}"
+                                           var="encounterItem"
+                                           itemValue="#{encounterItem}"/>
+                        </p:selectOneMenu>
+                        <p:outputLabel value="#{bundleClinical.CreateClientEncounterComponentLabel_client}" for="client" />
+                        <p:selectOneMenu id="client" value="#{clientEncounterComponentController.selected.client}" >
+                            <f:selectItems value="#{clientController.itemsAvailableSelectOne}"
+                                           var="clientItem"
+                                           itemValue="#{clientItem}"/>
+                        </p:selectOneMenu>
+                        <p:outputLabel value="#{bundleClinical.CreateClientEncounterComponentLabel_longTextValue}" for="longTextValue" />
+                        <p:inputTextarea rows="4" cols="30" id="longTextValue" value="#{clientEncounterComponentController.selected.longTextValue}" title="#{bundleClinical.CreateClientEncounterComponentTitle_longTextValue}" />
+                        <p:outputLabel value="#{bundleClinical.CreateClientEncounterComponentLabel_shortTextValue}" for="shortTextValue" />
+                        <p:inputText id="shortTextValue" value="#{clientEncounterComponentController.selected.shortTextValue}" title="#{bundleClinical.CreateClientEncounterComponentTitle_shortTextValue}" />
+                        <p:outputLabel value="#{bundleClinical.CreateClientEncounterComponentLabel_byteArrayValue}" for="byteArrayValue" />
+                        <p:inputText id="byteArrayValue" value="#{clientEncounterComponentController.selected.byteArrayValue}" title="#{bundleClinical.CreateClientEncounterComponentTitle_byteArrayValue}" />
+                        <p:outputLabel value="#{bundleClinical.CreateClientEncounterComponentLabel_integerNumberValue}" for="integerNumberValue" />
+                        <p:inputText id="integerNumberValue" value="#{clientEncounterComponentController.selected.integerNumberValue}" title="#{bundleClinical.CreateClientEncounterComponentTitle_integerNumberValue}" />
+                        <p:outputLabel value="#{bundleClinical.CreateClientEncounterComponentLabel_realNumberValue}" for="realNumberValue" />
+                        <p:inputText id="realNumberValue" value="#{clientEncounterComponentController.selected.realNumberValue}" title="#{bundleClinical.CreateClientEncounterComponentTitle_realNumberValue}" />
+                        <p:outputLabel value="#{bundleClinical.CreateClientEncounterComponentLabel_booleanValue}" for="booleanValue" />
+                        <p:selectBooleanCheckbox id="booleanValue" value="#{clientEncounterComponentController.selected.booleanValue}" />
+                        <p:outputLabel value="#{bundleClinical.CreateClientEncounterComponentLabel_itemValue}" for="itemValue" />
+                        <p:selectOneMenu id="itemValue" value="#{clientEncounterComponentController.selected.itemValue}" >
+                            <f:selectItems value="#{itemController.itemsAvailableSelectOne}"
+                                           var="itemValueItem"
+                                           itemValue="#{itemValueItem}"/>
+                        </p:selectOneMenu>
+                        <p:outputLabel value="#{bundleClinical.CreateClientEncounterComponentLabel_areaValue}" for="areaValue" />
+                        <p:selectOneMenu id="areaValue" value="#{clientEncounterComponentController.selected.areaValue}" >
+                            <f:selectItems value="#{areaController.itemsAvailableSelectOne}"
+                                           var="areaValueItem"
+                                           itemValue="#{areaValueItem}"/>
+                        </p:selectOneMenu>
+                        <p:outputLabel value="#{bundleClinical.CreateClientEncounterComponentLabel_institutionValue}" for="institutionValue" />
+                        <p:selectOneMenu id="institutionValue" value="#{clientEncounterComponentController.selected.institutionValue}" >
+                            <f:selectItems value="#{institutionController.itemsAvailableSelectOne}"
+                                           var="institutionValueItem"
+                                           itemValue="#{institutionValueItem}"/>
+                        </p:selectOneMenu>
+                        <p:outputLabel value="#{bundleClinical.CreateClientEncounterComponentLabel_clientValue}" for="clientValue" />
+                        <p:selectOneMenu id="clientValue" value="#{clientEncounterComponentController.selected.clientValue}" >
+                            <f:selectItems value="#{clientController.itemsAvailableSelectOne}"
+                                           var="clientValueItem"
+                                           itemValue="#{clientValueItem}"/>
+                        </p:selectOneMenu>
+                        <p:outputLabel value="#{bundleClinical.CreateClientEncounterComponentLabel_id}" for="id" />
+                        <p:inputText id="id" value="#{clientEncounterComponentController.selected.id}" title="#{bundleClinical.CreateClientEncounterComponentTitle_id}" />
+                        <p:outputLabel value="#{bundleClinical.CreateClientEncounterComponentLabel_name}" for="name" />
+                        <p:inputText id="name" value="#{clientEncounterComponentController.selected.name}" title="#{bundleClinical.CreateClientEncounterComponentTitle_name}" />
+                        <p:outputLabel value="#{bundleClinical.CreateClientEncounterComponentLabel_renderType}" for="renderType" />
+                        <p:inputText id="renderType" value="#{clientEncounterComponentController.selected.renderType}" title="#{bundleClinical.CreateClientEncounterComponentTitle_renderType}" />
+                        <p:outputLabel value="#{bundleClinical.CreateClientEncounterComponentLabel_parentComponent}" for="parentComponent" />
+                        <p:selectOneMenu id="parentComponent" value="#{clientEncounterComponentController.selected.parentComponent}" >
+                            <f:selectItems value="#{componentController.itemsAvailableSelectOne}"
+                                           var="parentComponentItem"
+                                           itemValue="#{parentComponentItem}"/>
+                        </p:selectOneMenu>
+                        <p:outputLabel value="#{bundleClinical.CreateClientEncounterComponentLabel_mimeType}" for="mimeType" />
+                        <p:selectOneMenu id="mimeType" value="#{clientEncounterComponentController.selected.mimeType}" >
+                            <f:selectItems value="#{itemController.itemsAvailableSelectOne}"
+                                           var="mimeTypeItem"
+                                           itemValue="#{mimeTypeItem}"/>
+                        </p:selectOneMenu>
+                        <p:outputLabel value="#{bundleClinical.CreateClientEncounterComponentLabel_selectionDataType}" for="selectionDataType" />
+                        <p:inputText id="selectionDataType" value="#{clientEncounterComponentController.selected.selectionDataType}" title="#{bundleClinical.CreateClientEncounterComponentTitle_selectionDataType}" />
+                        <p:outputLabel value="#{bundleClinical.CreateClientEncounterComponentLabel_topPercent}" for="topPercent" />
+                        <p:inputText id="topPercent" value="#{clientEncounterComponentController.selected.topPercent}" title="#{bundleClinical.CreateClientEncounterComponentTitle_topPercent}" />
+                        <p:outputLabel value="#{bundleClinical.CreateClientEncounterComponentLabel_leftPercent}" for="leftPercent" />
+                        <p:inputText id="leftPercent" value="#{clientEncounterComponentController.selected.leftPercent}" title="#{bundleClinical.CreateClientEncounterComponentTitle_leftPercent}" />
+                        <p:outputLabel value="#{bundleClinical.CreateClientEncounterComponentLabel_widthPercent}" for="widthPercent" />
+                        <p:inputText id="widthPercent" value="#{clientEncounterComponentController.selected.widthPercent}" title="#{bundleClinical.CreateClientEncounterComponentTitle_widthPercent}" />
+                        <p:outputLabel value="#{bundleClinical.CreateClientEncounterComponentLabel_heightPercent}" for="heightPercent" />
+                        <p:inputText id="heightPercent" value="#{clientEncounterComponentController.selected.heightPercent}" title="#{bundleClinical.CreateClientEncounterComponentTitle_heightPercent}" />
+                        <p:outputLabel value="#{bundleClinical.CreateClientEncounterComponentLabel_intHtmlColor}" for="intHtmlColor" />
+                        <p:inputText id="intHtmlColor" value="#{clientEncounterComponentController.selected.intHtmlColor}" title="#{bundleClinical.CreateClientEncounterComponentTitle_intHtmlColor}" />
+                        <p:outputLabel value="#{bundleClinical.CreateClientEncounterComponentLabel_hexHtmlColour}" for="hexHtmlColour" />
+                        <p:inputText id="hexHtmlColour" value="#{clientEncounterComponentController.selected.hexHtmlColour}" title="#{bundleClinical.CreateClientEncounterComponentTitle_hexHtmlColour}" />
+                        <p:outputLabel value="#{bundleClinical.CreateClientEncounterComponentLabel_createdBy}" for="createdBy" />
+                        <p:selectOneMenu id="createdBy" value="#{clientEncounterComponentController.selected.createdBy}" >
+                            <f:selectItems value="#{webUserController.itemsAvailableSelectOne}"
+                                           var="createdByItem"
+                                           itemValue="#{createdByItem}"/>
+                        </p:selectOneMenu>
+                        <p:outputLabel value="#{bundleClinical.CreateClientEncounterComponentLabel_createdAt}" for="createdAt" />
+                        <p:calendar id="createdAt" pattern="MM/dd/yyyy HH:mm:ss" value="#{clientEncounterComponentController.selected.createdAt}" title="#{bundleClinical.EditClientEncounterComponentTitle_createdAt}"  showOn="button"/>
+                        <p:outputLabel value="#{bundleClinical.CreateClientEncounterComponentLabel_lastEditBy}" for="lastEditBy" />
+                        <p:selectOneMenu id="lastEditBy" value="#{clientEncounterComponentController.selected.lastEditBy}" >
+                            <f:selectItems value="#{webUserController.itemsAvailableSelectOne}"
+                                           var="lastEditByItem"
+                                           itemValue="#{lastEditByItem}"/>
+                        </p:selectOneMenu>
+                        <p:outputLabel value="#{bundleClinical.CreateClientEncounterComponentLabel_lastEditeAt}" for="lastEditeAt" />
+                        <p:calendar id="lastEditeAt" pattern="MM/dd/yyyy HH:mm:ss" value="#{clientEncounterComponentController.selected.lastEditeAt}" title="#{bundleClinical.EditClientEncounterComponentTitle_lastEditeAt}"  showOn="button"/>
+                        <p:outputLabel value="#{bundleClinical.CreateClientEncounterComponentLabel_retiredReversedBy}" for="retiredReversedBy" />
+                        <p:selectOneMenu id="retiredReversedBy" value="#{clientEncounterComponentController.selected.retiredReversedBy}" >
+                            <f:selectItems value="#{webUserController.itemsAvailableSelectOne}"
+                                           var="retiredReversedByItem"
+                                           itemValue="#{retiredReversedByItem}"/>
+                        </p:selectOneMenu>
+                        <p:outputLabel value="#{bundleClinical.CreateClientEncounterComponentLabel_retiredReversedAt}" for="retiredReversedAt" />
+                        <p:calendar id="retiredReversedAt" pattern="MM/dd/yyyy HH:mm:ss" value="#{clientEncounterComponentController.selected.retiredReversedAt}" title="#{bundleClinical.EditClientEncounterComponentTitle_retiredReversedAt}"  showOn="button"/>
+                        <p:outputLabel value="#{bundleClinical.CreateClientEncounterComponentLabel_retiredBy}" for="retiredBy" />
+                        <p:selectOneMenu id="retiredBy" value="#{clientEncounterComponentController.selected.retiredBy}" >
+                            <f:selectItems value="#{webUserController.itemsAvailableSelectOne}"
+                                           var="retiredByItem"
+                                           itemValue="#{retiredByItem}"/>
+                        </p:selectOneMenu>
+                        <p:outputLabel value="#{bundleClinical.CreateClientEncounterComponentLabel_retiredAt}" for="retiredAt" />
+                        <p:calendar id="retiredAt" pattern="MM/dd/yyyy HH:mm:ss" value="#{clientEncounterComponentController.selected.retiredAt}" title="#{bundleClinical.EditClientEncounterComponentTitle_retiredAt}"  showOn="button"/>
+                        <p:outputLabel value="#{bundleClinical.CreateClientEncounterComponentLabel_retireComments}" for="retireComments" />
+                        <p:inputText id="retireComments" value="#{clientEncounterComponentController.selected.retireComments}" title="#{bundleClinical.CreateClientEncounterComponentTitle_retireComments}" />
+                        <p:outputLabel value="#{bundleClinical.CreateClientEncounterComponentLabel_html}" for="html" />
+                        <p:inputTextarea rows="4" cols="30" id="html" value="#{clientEncounterComponentController.selected.html}" title="#{bundleClinical.CreateClientEncounterComponentTitle_html}" />
+                        <p:outputLabel value="#{bundleClinical.CreateClientEncounterComponentLabel_availableDataType}" for="availableDataType" />
+                        <p:inputText id="availableDataType" value="#{clientEncounterComponentController.selected.availableDataType}" title="#{bundleClinical.CreateClientEncounterComponentTitle_availableDataType}" />
+                        <p:outputLabel value="#{bundleClinical.CreateClientEncounterComponentLabel_parentAreaOfAvailableAreas}" for="parentAreaOfAvailableAreas" />
+                        <p:selectOneMenu id="parentAreaOfAvailableAreas" value="#{clientEncounterComponentController.selected.parentAreaOfAvailableAreas}" >
+                            <f:selectItems value="#{areaController.itemsAvailableSelectOne}"
+                                           var="parentAreaOfAvailableAreasItem"
+                                           itemValue="#{parentAreaOfAvailableAreasItem}"/>
+                        </p:selectOneMenu>
+                        <p:outputLabel value="#{bundleClinical.CreateClientEncounterComponentLabel_categoryOfAvailableItems}" for="categoryOfAvailableItems" />
+                        <p:selectOneMenu id="categoryOfAvailableItems" value="#{clientEncounterComponentController.selected.categoryOfAvailableItems}" >
+                            <f:selectItems value="#{itemController.itemsAvailableSelectOne}"
+                                           var="categoryOfAvailableItemsItem"
+                                           itemValue="#{categoryOfAvailableItemsItem}"/>
+                        </p:selectOneMenu>
+                        <p:outputLabel value="#{bundleClinical.CreateClientEncounterComponentLabel_parentInstitutionOfAvailableInstitutions}" for="parentInstitutionOfAvailableInstitutions" />
+                        <p:selectOneMenu id="parentInstitutionOfAvailableInstitutions" value="#{clientEncounterComponentController.selected.parentInstitutionOfAvailableInstitutions}" >
+                            <f:selectItems value="#{institutionController.itemsAvailableSelectOne}"
+                                           var="parentInstitutionOfAvailableInstitutionsItem"
+                                           itemValue="#{parentInstitutionOfAvailableInstitutionsItem}"/>
+                        </p:selectOneMenu>
+                    </p:panelGrid>
+                    <p:commandButton actionListener="#{clientEncounterComponentController.create}" value="#{bundleClinical.Save}" update="display,:ClientEncounterComponentListForm:datalist,:growl" oncomplete="handleSubmit(args,'ClientEncounterComponentCreateDialog');"/>
+                    <p:commandButton value="#{bundleClinical.Cancel}" onclick="ClientEncounterComponentCreateDialog.hide()"/>
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+
+    </ui:composition>
+</html>

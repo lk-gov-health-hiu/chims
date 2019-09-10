@@ -1,26 +1,3 @@
-/*
- * The MIT License
- *
- * Copyright 2019 Dr M H B Ariyaratne<buddhika.ari@gmail.com>.
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
- */
 package lk.gov.health.phsp.bean;
 
 import lk.gov.health.phsp.entity.Area;
@@ -30,19 +7,11 @@ import lk.gov.health.phsp.entity.Institution;
 import lk.gov.health.phsp.enums.InstitutionType;
 import lk.gov.health.phsp.entity.Item;
 import lk.gov.health.phsp.enums.ItemType;
-import lk.gov.health.phsp.entity.Client;
-import lk.gov.health.phsp.entity.Encounter;
-import lk.gov.health.phsp.entity.DesignComponent;
-import lk.gov.health.phsp.entity.ClientEncounterComponent;
-import lk.gov.health.phsp.entity.DesignComponentFormSet;
-import lk.gov.health.phsp.entity.DesignComponentForm;
 import lk.gov.health.phsp.enums.ProjectStageType;
 import lk.gov.health.phsp.entity.Upload;
 import lk.gov.health.phsp.enums.UploadType;
 import lk.gov.health.phsp.enums.WebUserRole;
 import lk.gov.health.phsp.facade.InstitutionFacade;
-import lk.gov.health.phsp.facade.EncounterFacade;
-import lk.gov.health.phsp.facade.ClientFacade;
 import lk.gov.health.phsp.facade.ProjectInstitutionFacade;
 import lk.gov.health.phsp.facade.ProjectSourceOfFundFacade;
 import lk.gov.health.phsp.facade.UploadFacade;
@@ -98,11 +67,7 @@ public class WebUserController implements Serializable {
     @EJB
     private InstitutionFacade institutionFacade;
     @EJB
-    private ClientFacade projectFacade;
-    @EJB
     private UploadFacade uploadFacade;
-    @EJB
-    private EncounterFacade projectAreaFacade;
     @EJB
     private ProjectInstitutionFacade projectInstitutionFacade;
     @EJB
@@ -126,7 +91,6 @@ public class WebUserController implements Serializable {
     private List<Upload> currentProjectUploads;
     private List<Upload> clientUploads;
     private List<Upload> companyUploads;
-    private List<Client> listOfProjects;
 
     private Area selectedProvince;
     private Area selectedDistrict;
@@ -138,21 +102,14 @@ public class WebUserController implements Serializable {
     private Item selectedFundUnit;
     private String selectedFundComments;
 
-    private DesignComponentFormSet removingProjectProvince;
-    private DesignComponent removingProjectDistrict;
-    private ClientEncounterComponent removingProjectInstitution;
-    private DesignComponentForm removingProjectSourceOfFund;
-
     private List<Area> districtsAvailableForSelection;
 
     private List<Area> selectedDsAreas;
     private List<Area> selectedGnAreas;
     private Area[] selectedProvinces;
 
-    private Encounter selectedProjectArea;
 
     private WebUser current;
-    private Client currentProject;
     private Upload currentUpload;
     private Institution institution;
 
@@ -195,28 +152,7 @@ public class WebUserController implements Serializable {
         emptyModel = new DefaultMapModel();
     }
 
-    public List<Area> getAreas(AreaType areaType, List<Area> superAreas) {
-        String j;
-        Map m = new HashMap();
-        j = "select a "
-                + " from Area a "
-                + " where a.name is not null ";
-        if (areaType != null) {
-            j += " and a.type=:t";
-            m.put("t", areaType);
-        }
-        if (superAreas != null) {
-            j += " and a.parentArea in :pa ";
-            m.put("pa", superAreas);
-        }
-        j += " order by a.name";
-        System.out.println("m = " + m);
-        System.out.println("j = " + j);
-        List<Area> areas = getFacade().findBySQL(j, m);
-        System.out.println("areas = " + areas);
-        return areas;
-    }
-
+   
     public String toChangeMyDetails() {
         if (loggedUser == null) {
             return "";
@@ -236,6 +172,7 @@ public class WebUserController implements Serializable {
     }
 
    
+
     public void markLocationOnMap() {
         emptyModel = new DefaultMapModel();
         if (current == null) {
@@ -269,7 +206,15 @@ public class WebUserController implements Serializable {
         }
     }
 
- 
+    
+    public String toSubmitClientRequest() {
+        return "/finalize_client_request";
+    }
+
+    
+    public void sendSubmitClientRequestConfirmationEmail() {
+
+    }
 
     public void downloadCurrentFile() {
         if (currentUpload == null) {
@@ -293,12 +238,11 @@ public class WebUserController implements Serializable {
     }
 
   
- 
 
-   
-   
-
-
+    
+    
+    
+    
 
     /**
      *
@@ -309,16 +253,13 @@ public class WebUserController implements Serializable {
      *
      */
     public void uploadFiles() {
-        if (getCurrentProject() == null) {
-            lk.gov.health.phsp.facade.util.JsfUtil.addErrorMessage("No Project");
-            return;
-        }
+        
 
         InputStream in;
 
         Upload u = new Upload();
 
-        u.setProject(currentProject);
+     
         u.setComments(comments);
         u.setCreatedAt(new Date());
         u.setUploadType(UploadType.Client_Upload_Prior_To_Proposal);
@@ -333,7 +274,7 @@ public class WebUserController implements Serializable {
         if (file != null) {
             try {
                 in = getFile().getInputstream();
-                File f = new File("P" + currentProject.getId() + "U" + u.getId());
+                File f = new File("P" +  "U" + u.getId());
                 FileOutputStream out = new FileOutputStream(f);
 
                 //            OutputStream out = new FileOutputStream(new File(fileName));
@@ -364,14 +305,19 @@ public class WebUserController implements Serializable {
         }
     }
 
-    public Client getCurrentProject() {
-        return currentProject;
-    }
+  
 
-    public void setCurrentProject(Client currentProject) {
-        this.currentProject = currentProject;
-    }
+    public String prepareRegisterAsClient() {
+        current = new WebUser();
+        current.setWebUserRole(WebUserRole.Institution_User);
+      
+        currentProjectUploads = null;
+        companyUploads = null;
+        clientUploads = null;
+        currentUpload = null;
 
+        return "/register";
+    }
 
     public String updateWebUserAndToMarkLocation() {
         try {
@@ -387,7 +333,7 @@ public class WebUserController implements Serializable {
             ins.setName(current.getName());
             ins.setEmail(current.getEmail());
             ins.setPhone(current.getTelNo());
-            ins.setAddress(current.getPerson().getAddress());
+        
             ins.setInstitutionType(InstitutionType.Regional_Department_of_Health_Department);
             getInstitutionFacade().create(ins);
             current.setInstitution(ins);
@@ -564,10 +510,7 @@ public class WebUserController implements Serializable {
 
             for (int i = startRow; i < sheet.getRows(); i++) {
 
-                Client np = new Client();
-//                np.setCreatedAt(new Date());
-//                np.setCreater(loggedUser);
-//                np.setCurrentStageType(ProjectStageType.Awaiting_PEC_Approval);
+               
 
                 Map m = new HashMap();
 
@@ -576,7 +519,7 @@ public class WebUserController implements Serializable {
                 strYear = cell.getContents();
                 try {
                     intYear = Integer.parseInt(strYear);
-//                    np.setProjectYear(intYear);
+                    
                 } catch (Exception e) {
                     System.out.println("e = " + i + " in " + e);
                 }
@@ -587,77 +530,41 @@ public class WebUserController implements Serializable {
                 cell = sheet.getCell(3, i);
                 strDistrict = cell.getContents();
 
-                areaProvince = areaController.getArea(strProvince, AreaType.Province, true, null);
-
-                areaDistrict = areaController.getArea(strDistrict, AreaType.District, true, areaProvince);
-
-//                np.setProvince(areaProvince);
-//                np.setDistrict(areaDistrict);
+              
 
                 cell = sheet.getCell(2, i);
                 strFileNumber = cell.getContents();
-//                np.setFileNumber(strFileNumber);
+               
 
                 cell = sheet.getCell(4, i);
                 strLocation = cell.getContents();
-                insLocation = institutionController.getInstitution(strLocation, InstitutionType.Other, true);
-//                np.setProjectLocation(insLocation);
+               
 
                 cell = sheet.getCell(5, i);
                 strTile = cell.getContents();
-//                np.setProjectTitle(strTile);
+               
 
                 cell = sheet.getCell(6, i);
                 strDiscription = cell.getContents();
-//                np.setProjectDescription(strDiscription);
+               
 
                 cell = sheet.getCell(7, i);
                 strCost = cell.getContents();
                 try {
                     dblCost = Double.parseDouble(strCost);
-//                    np.setProjectCost(dblCost);
+                   
                 } catch (Exception e) {
                     System.out.println(i + ". e = " + e);
                 }
 
                 cell = sheet.getCell(8, i);
                 strFundSource = cell.getContents();
-                itemFundSource = itemController.getItem(strFundSource, ItemType.Other, true);
-//                np.setSourceOfFunds(itemFundSource);
-
-                getProjectFacade().create(np);
+               
                 System.out.println("Added SUccessfully = " + i);
 
-//                if (np.getProvince() != null) {
-//                    DesignComponentFormSet pp = new DesignComponentFormSet();
-//                    pp.setProject(np);
-//                    pp.setArea(np.getProvince());
-//                    getProjectAreaFacade().create(pp);
-//                    np.getProjectProvinces().add(pp);
-//                }
-//                if (np.getDistrict() != null) {
-//                    DesignComponent pp = new DesignComponent();
-//                    pp.setProject(np);
-//                    pp.setArea(np.getDistrict());
-//                    getProjectAreaFacade().create(pp);
-//                    np.getProjectDistricts().add(pp);
-//                }
-//                if (np.getProjectLocation() != null) {
-//                    ClientEncounterComponent pp = new ClientEncounterComponent();
-//                    pp.setProject(np);
-//                    pp.setInstitution(np.getProjectLocation());
-//                    getProjectInstitutionFacade().create(pp);
-//                    np.getProjectLocations().add(pp);
-//                }
-//                if (np.getSourceOfFunds() != null) {
-//                    DesignComponentForm pp = new DesignComponentForm();
-//                    pp.setProject(np);
-//                    pp.setSourceOfFund(np.getSourceOfFunds());
-//                    getProjectSourceOfFundFacade().create(pp);
-//                    np.getSourcesOfFunds().add(pp);
-//                }
+               
 
-                getProjectFacade().edit(np);
+          
 
             }
 
@@ -672,22 +579,6 @@ public class WebUserController implements Serializable {
         }
     }
 
-    public List<Upload> getUploads(Client p) {
-        return getUploads(p, null);
-    }
-
-    public List<Upload> getUploads(Client p, UploadType type) {
-        String j = "select u from Upload u "
-                + " where u.project=:p ";
-        Map m = new HashMap();
-        m.put("p", currentProject);
-        if (type != null) {
-            j += " and u.uploadType=:t ";
-            m.put("t", type);
-        }
-        return getUploadFacade().findBySQL(j, m);
-
-    }
 
     public UploadedFile getFile() {
         return file;
@@ -920,13 +811,7 @@ public class WebUserController implements Serializable {
         this.emptyModel = emptyModel;
     }
 
-    public ClientFacade getProjectFacade() {
-        return projectFacade;
-    }
-
-    public void setProjectFacade(ClientFacade projectFacade) {
-        this.projectFacade = projectFacade;
-    }
+   
 
     public UploadFacade getUploadFacade() {
         return uploadFacade;
@@ -952,24 +837,13 @@ public class WebUserController implements Serializable {
         this.currentUpload = currentUpload;
     }
 
-    public List<Upload> getCurrentProjectUploads() {
-        if (currentProjectUploads == null) {
-            currentProjectUploads = getUploads(currentProject);
-        }
-        return currentProjectUploads;
-    }
+   
 
     public void setCurrentProjectUploads(List<Upload> currentProjectUploads) {
         this.currentProjectUploads = currentProjectUploads;
     }
 
-    public List<Client> getListOfProjects() {
-        return listOfProjects;
-    }
-
-    public void setListOfProjects(List<Client> listOfProjects) {
-        this.listOfProjects = listOfProjects;
-    }
+ 
 
     public Date getFromDate() {
         if (fromDate == null) {
@@ -996,27 +870,13 @@ public class WebUserController implements Serializable {
         this.toDate = toDate;
     }
 
-    public List<Upload> getClientUploads() {
-        if (clientUploads == null) {
-            clientUploads = getUploads(currentProject, UploadType.Client_Upload_Prior_To_Proposal);
-        }
-        return clientUploads;
-    }
+ 
 
     public void setClientUploads(List<Upload> clientUploads) {
         this.clientUploads = clientUploads;
     }
 
-    public List<Upload> getCompanyUploads() {
-        if (companyUploads == null) {
-            companyUploads = getUploads(currentProject, UploadType.Company_Design_Upload);
-        }
-        return companyUploads;
-    }
-
-    public void setCompanyUploads(List<Upload> companyUploads) {
-        this.companyUploads = companyUploads;
-    }
+   
 
     public Institution getInstitution() {
         return institution;
@@ -1034,30 +894,8 @@ public class WebUserController implements Serializable {
         this.selectedProvinces = selectedProvinces;
     }
 
-    public Encounter getSelectedProjectArea() {
-        return selectedProjectArea;
-    }
-
-    public void setSelectedProjectArea(Encounter selectedProjectArea) {
-        this.selectedProjectArea = selectedProjectArea;
-    }
-
-    public EncounterFacade getProjectAreaFacade() {
-        return projectAreaFacade;
-    }
-
   
 
-    public void setDistrictsAvailableForSelection(List<Area> districtsAvailableForSelection) {
-        this.districtsAvailableForSelection = districtsAvailableForSelection;
-    }
-
-    public List<Area> getSelectedDsAreas() {
-        if (selectedDsAreas == null) {
-            selectedDsAreas = new ArrayList<>();
-        }
-        return selectedDsAreas;
-    }
 
     public void setSelectedDsAreas(List<Area> selectedDsAreas) {
         this.selectedDsAreas = selectedDsAreas;
@@ -1243,62 +1081,7 @@ public class WebUserController implements Serializable {
         return projectInstitutionFacade;
     }
 
-    public DesignComponentFormSet getRemovingProjectProvince() {
-        return removingProjectProvince;
-    }
-
-    public void setRemovingProjectProvince(DesignComponentFormSet removingProjectProvince) {
-        this.removingProjectProvince = removingProjectProvince;
-    }
-
-    public DesignComponent getRemovingProjectDistrict() {
-        return removingProjectDistrict;
-    }
-
-    public void setRemovingProjectDistrict(DesignComponent removingProjectDistrict) {
-        this.removingProjectDistrict = removingProjectDistrict;
-    }
-
-    public ClientEncounterComponent getRemovingProjectInstitution() {
-        return removingProjectInstitution;
-    }
-
-    public void setRemovingProjectInstitution(ClientEncounterComponent removingProjectInstitution) {
-        this.removingProjectInstitution = removingProjectInstitution;
-    }
-
-    public DesignComponentForm getRemovingProjectSourceOfFund() {
-        return removingProjectSourceOfFund;
-    }
-
-    public void setRemovingProjectSourceOfFund(DesignComponentForm removingProjectSourceOfFund) {
-        this.removingProjectSourceOfFund = removingProjectSourceOfFund;
-    }
-
-    public ProjectStageType getProjectStageWorkingOn() {
-        return projectStageWorkingOn;
-    }
-
-    public void setProjectStageWorkingOn(ProjectStageType projectStageWorkingOn) {
-        this.projectStageWorkingOn = projectStageWorkingOn;
-    }
-
-    public String getProjectStageWorkingOnComments() {
-        return projectStageWorkingOnComments;
-    }
-
-    public void setProjectStageWorkingOnComments(String projectStageWorkingOnComments) {
-        this.projectStageWorkingOnComments = projectStageWorkingOnComments;
-    }
-
-    public Date getProjectStageWorkingOnDate() {
-        return projectStageWorkingOnDate;
-    }
-
-    public void setProjectStageWorkingOnDate(Date projectStageWorkingOnDate) {
-        this.projectStageWorkingOnDate = projectStageWorkingOnDate;
-    }
-
+   
    
     @FacesConverter(forClass = WebUser.class)
     public static class WebUserControllerConverter implements Converter {

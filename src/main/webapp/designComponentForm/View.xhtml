@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="DesignComponentFormViewDlg" widgetVar="DesignComponentFormViewDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundleClinical.ViewDesignComponentFormTitle}">
+            <h:form id="DesignComponentFormViewForm">
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" rendered="#{designComponentFormController.selected != null}">
+                        <h:outputText value="#{bundleClinical.ViewDesignComponentFormLabel_id}"/>
+                        <h:outputText value="#{designComponentFormController.selected.id}" title="#{bundleClinical.ViewDesignComponentFormTitle_id}"/>
+                        <h:outputText value="#{bundleClinical.ViewDesignComponentFormLabel_name}"/>
+                        <h:outputText value="#{designComponentFormController.selected.name}" title="#{bundleClinical.ViewDesignComponentFormTitle_name}"/>
+                        <h:outputText value="#{bundleClinical.ViewDesignComponentFormLabel_renderType}"/>
+                        <h:outputText value="#{designComponentFormController.selected.renderType}" title="#{bundleClinical.ViewDesignComponentFormTitle_renderType}"/>
+                        <h:outputText value="#{bundleClinical.ViewDesignComponentFormLabel_parentComponent}"/>
+                        <h:outputText value="#{designComponentFormController.selected.parentComponent}" title="#{bundleClinical.ViewDesignComponentFormTitle_parentComponent}"/>
+                        <h:outputText value="#{bundleClinical.ViewDesignComponentFormLabel_mimeType}"/>
+                        <h:outputText value="#{designComponentFormController.selected.mimeType}" title="#{bundleClinical.ViewDesignComponentFormTitle_mimeType}"/>
+                        <h:outputText value="#{bundleClinical.ViewDesignComponentFormLabel_selectionDataType}"/>
+                        <h:outputText value="#{designComponentFormController.selected.selectionDataType}" title="#{bundleClinical.ViewDesignComponentFormTitle_selectionDataType}"/>
+                        <h:outputText value="#{bundleClinical.ViewDesignComponentFormLabel_topPercent}"/>
+                        <h:outputText value="#{designComponentFormController.selected.topPercent}" title="#{bundleClinical.ViewDesignComponentFormTitle_topPercent}"/>
+                        <h:outputText value="#{bundleClinical.ViewDesignComponentFormLabel_leftPercent}"/>
+                        <h:outputText value="#{designComponentFormController.selected.leftPercent}" title="#{bundleClinical.ViewDesignComponentFormTitle_leftPercent}"/>
+                        <h:outputText value="#{bundleClinical.ViewDesignComponentFormLabel_widthPercent}"/>
+                        <h:outputText value="#{designComponentFormController.selected.widthPercent}" title="#{bundleClinical.ViewDesignComponentFormTitle_widthPercent}"/>
+                        <h:outputText value="#{bundleClinical.ViewDesignComponentFormLabel_heightPercent}"/>
+                        <h:outputText value="#{designComponentFormController.selected.heightPercent}" title="#{bundleClinical.ViewDesignComponentFormTitle_heightPercent}"/>
+                        <h:outputText value="#{bundleClinical.ViewDesignComponentFormLabel_intHtmlColor}"/>
+                        <h:outputText value="#{designComponentFormController.selected.intHtmlColor}" title="#{bundleClinical.ViewDesignComponentFormTitle_intHtmlColor}"/>
+                        <h:outputText value="#{bundleClinical.ViewDesignComponentFormLabel_hexHtmlColour}"/>
+                        <h:outputText value="#{designComponentFormController.selected.hexHtmlColour}" title="#{bundleClinical.ViewDesignComponentFormTitle_hexHtmlColour}"/>
+                        <h:outputText value="#{bundleClinical.ViewDesignComponentFormLabel_createdBy}"/>
+                        <h:outputText value="#{designComponentFormController.selected.createdBy}" title="#{bundleClinical.ViewDesignComponentFormTitle_createdBy}"/>
+                        <h:outputText value="#{bundleClinical.ViewDesignComponentFormLabel_createdAt}"/>
+                        <h:outputText value="#{designComponentFormController.selected.createdAt}" title="#{bundleClinical.ViewDesignComponentFormTitle_createdAt}">
+                            <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                        </h:outputText>
+                        <h:outputText value="#{bundleClinical.ViewDesignComponentFormLabel_lastEditBy}"/>
+                        <h:outputText value="#{designComponentFormController.selected.lastEditBy}" title="#{bundleClinical.ViewDesignComponentFormTitle_lastEditBy}"/>
+                        <h:outputText value="#{bundleClinical.ViewDesignComponentFormLabel_lastEditeAt}"/>
+                        <h:outputText value="#{designComponentFormController.selected.lastEditeAt}" title="#{bundleClinical.ViewDesignComponentFormTitle_lastEditeAt}">
+                            <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                        </h:outputText>
+                        <h:outputText value="#{bundleClinical.ViewDesignComponentFormLabel_retiredReversedBy}"/>
+                        <h:outputText value="#{designComponentFormController.selected.retiredReversedBy}" title="#{bundleClinical.ViewDesignComponentFormTitle_retiredReversedBy}"/>
+                        <h:outputText value="#{bundleClinical.ViewDesignComponentFormLabel_retiredReversedAt}"/>
+                        <h:outputText value="#{designComponentFormController.selected.retiredReversedAt}" title="#{bundleClinical.ViewDesignComponentFormTitle_retiredReversedAt}">
+                            <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                        </h:outputText>
+                        <h:outputText value="#{bundleClinical.ViewDesignComponentFormLabel_retiredBy}"/>
+                        <h:outputText value="#{designComponentFormController.selected.retiredBy}" title="#{bundleClinical.ViewDesignComponentFormTitle_retiredBy}"/>
+                        <h:outputText value="#{bundleClinical.ViewDesignComponentFormLabel_retiredAt}"/>
+                        <h:outputText value="#{designComponentFormController.selected.retiredAt}" title="#{bundleClinical.ViewDesignComponentFormTitle_retiredAt}">
+                            <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                        </h:outputText>
+                        <h:outputText value="#{bundleClinical.ViewDesignComponentFormLabel_retireComments}"/>
+                        <h:outputText value="#{designComponentFormController.selected.retireComments}" title="#{bundleClinical.ViewDesignComponentFormTitle_retireComments}"/>
+                        <h:outputText value="#{bundleClinical.ViewDesignComponentFormLabel_html}"/>
+                        <h:outputText value="#{designComponentFormController.selected.html}" title="#{bundleClinical.ViewDesignComponentFormTitle_html}"/>
+                        <h:outputText value="#{bundleClinical.ViewDesignComponentFormLabel_availableDataType}"/>
+                        <h:outputText value="#{designComponentFormController.selected.availableDataType}" title="#{bundleClinical.ViewDesignComponentFormTitle_availableDataType}"/>
+                        <h:outputText value="#{bundleClinical.ViewDesignComponentFormLabel_parentAreaOfAvailableAreas}"/>
+                        <h:outputText value="#{designComponentFormController.selected.parentAreaOfAvailableAreas}" title="#{bundleClinical.ViewDesignComponentFormTitle_parentAreaOfAvailableAreas}"/>
+                        <h:outputText value="#{bundleClinical.ViewDesignComponentFormLabel_categoryOfAvailableItems}"/>
+                        <h:outputText value="#{designComponentFormController.selected.categoryOfAvailableItems}" title="#{bundleClinical.ViewDesignComponentFormTitle_categoryOfAvailableItems}"/>
+                        <h:outputText value="#{bundleClinical.ViewDesignComponentFormLabel_parentInstitutionOfAvailableInstitutions}"/>
+                        <h:outputText value="#{designComponentFormController.selected.parentInstitutionOfAvailableInstitutions}" title="#{bundleClinical.ViewDesignComponentFormTitle_parentInstitutionOfAvailableInstitutions}"/>
+                    </p:panelGrid>
+                    <p:commandButton value="#{bundleClinical.Close}" onclick="DesignComponentFormViewDialog.hide()"/>
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+
+    </ui:composition>
+</html>

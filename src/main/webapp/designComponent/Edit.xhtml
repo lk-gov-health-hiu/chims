@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="DesignComponentEditDlg" widgetVar="DesignComponentEditDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundleClinical.EditDesignComponentTitle}">
+            <h:form id="DesignComponentEditForm">
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" rendered="#{designComponentController.selected != null}">
+                        <p:outputLabel value="#{bundleClinical.EditDesignComponentLabel_id}" for="id" />
+                        <p:inputText id="id" value="#{designComponentController.selected.id}" title="#{bundleClinical.EditDesignComponentTitle_id}" />
+                        <p:outputLabel value="#{bundleClinical.EditDesignComponentLabel_name}" for="name" />
+                        <p:inputText id="name" value="#{designComponentController.selected.name}" title="#{bundleClinical.EditDesignComponentTitle_name}" />
+                        <p:outputLabel value="#{bundleClinical.EditDesignComponentLabel_renderType}" for="renderType" />
+                        <p:inputText id="renderType" value="#{designComponentController.selected.renderType}" title="#{bundleClinical.EditDesignComponentTitle_renderType}" />
+                        <p:outputLabel value="#{bundleClinical.EditDesignComponentLabel_parentComponent}" for="parentComponent" />
+                        <p:selectOneMenu id="parentComponent" value="#{designComponentController.selected.parentComponent}" >
+                            <f:selectItem itemLabel="#{bundleClinical.SelectOneMessage}"/>
+                            <f:selectItems value="#{componentController.itemsAvailableSelectOne}"
+                                           var="parentComponentItem"
+                                           itemValue="#{parentComponentItem}"/>
+                        </p:selectOneMenu>
+                        <p:outputLabel value="#{bundleClinical.EditDesignComponentLabel_mimeType}" for="mimeType" />
+                        <p:selectOneMenu id="mimeType" value="#{designComponentController.selected.mimeType}" >
+                            <f:selectItem itemLabel="#{bundleClinical.SelectOneMessage}"/>
+                            <f:selectItems value="#{itemController.itemsAvailableSelectOne}"
+                                           var="mimeTypeItem"
+                                           itemValue="#{mimeTypeItem}"/>
+                        </p:selectOneMenu>
+                        <p:outputLabel value="#{bundleClinical.EditDesignComponentLabel_selectionDataType}" for="selectionDataType" />
+                        <p:inputText id="selectionDataType" value="#{designComponentController.selected.selectionDataType}" title="#{bundleClinical.EditDesignComponentTitle_selectionDataType}" />
+                        <p:outputLabel value="#{bundleClinical.EditDesignComponentLabel_topPercent}" for="topPercent" />
+                        <p:inputText id="topPercent" value="#{designComponentController.selected.topPercent}" title="#{bundleClinical.EditDesignComponentTitle_topPercent}" />
+                        <p:outputLabel value="#{bundleClinical.EditDesignComponentLabel_leftPercent}" for="leftPercent" />
+                        <p:inputText id="leftPercent" value="#{designComponentController.selected.leftPercent}" title="#{bundleClinical.EditDesignComponentTitle_leftPercent}" />
+                        <p:outputLabel value="#{bundleClinical.EditDesignComponentLabel_widthPercent}" for="widthPercent" />
+                        <p:inputText id="widthPercent" value="#{designComponentController.selected.widthPercent}" title="#{bundleClinical.EditDesignComponentTitle_widthPercent}" />
+                        <p:outputLabel value="#{bundleClinical.EditDesignComponentLabel_heightPercent}" for="heightPercent" />
+                        <p:inputText id="heightPercent" value="#{designComponentController.selected.heightPercent}" title="#{bundleClinical.EditDesignComponentTitle_heightPercent}" />
+                        <p:outputLabel value="#{bundleClinical.EditDesignComponentLabel_intHtmlColor}" for="intHtmlColor" />
+                        <p:inputText id="intHtmlColor" value="#{designComponentController.selected.intHtmlColor}" title="#{bundleClinical.EditDesignComponentTitle_intHtmlColor}" />
+                        <p:outputLabel value="#{bundleClinical.EditDesignComponentLabel_hexHtmlColour}" for="hexHtmlColour" />
+                        <p:inputText id="hexHtmlColour" value="#{designComponentController.selected.hexHtmlColour}" title="#{bundleClinical.EditDesignComponentTitle_hexHtmlColour}" />
+                        <p:outputLabel value="#{bundleClinical.EditDesignComponentLabel_createdBy}" for="createdBy" />
+                        <p:selectOneMenu id="createdBy" value="#{designComponentController.selected.createdBy}" >
+                            <f:selectItem itemLabel="#{bundleClinical.SelectOneMessage}"/>
+                            <f:selectItems value="#{webUserController.itemsAvailableSelectOne}"
+                                           var="createdByItem"
+                                           itemValue="#{createdByItem}"/>
+                        </p:selectOneMenu>
+                        <p:outputLabel value="#{bundleClinical.EditDesignComponentLabel_createdAt}" for="createdAt" />
+                        <p:calendar id="createdAt" pattern="MM/dd/yyyy HH:mm:ss" value="#{designComponentController.selected.createdAt}" title="#{bundleClinical.EditDesignComponentTitle_createdAt}"  showOn="button"/>
+                        <p:outputLabel value="#{bundleClinical.EditDesignComponentLabel_lastEditBy}" for="lastEditBy" />
+                        <p:selectOneMenu id="lastEditBy" value="#{designComponentController.selected.lastEditBy}" >
+                            <f:selectItem itemLabel="#{bundleClinical.SelectOneMessage}"/>
+                            <f:selectItems value="#{webUserController.itemsAvailableSelectOne}"
+                                           var="lastEditByItem"
+                                           itemValue="#{lastEditByItem}"/>
+                        </p:selectOneMenu>
+                        <p:outputLabel value="#{bundleClinical.EditDesignComponentLabel_lastEditeAt}" for="lastEditeAt" />
+                        <p:calendar id="lastEditeAt" pattern="MM/dd/yyyy HH:mm:ss" value="#{designComponentController.selected.lastEditeAt}" title="#{bundleClinical.EditDesignComponentTitle_lastEditeAt}"  showOn="button"/>
+                        <p:outputLabel value="#{bundleClinical.EditDesignComponentLabel_retiredReversedBy}" for="retiredReversedBy" />
+                        <p:selectOneMenu id="retiredReversedBy" value="#{designComponentController.selected.retiredReversedBy}" >
+                            <f:selectItem itemLabel="#{bundleClinical.SelectOneMessage}"/>
+                            <f:selectItems value="#{webUserController.itemsAvailableSelectOne}"
+                                           var="retiredReversedByItem"
+                                           itemValue="#{retiredReversedByItem}"/>
+                        </p:selectOneMenu>
+                        <p:outputLabel value="#{bundleClinical.EditDesignComponentLabel_retiredReversedAt}" for="retiredReversedAt" />
+                        <p:calendar id="retiredReversedAt" pattern="MM/dd/yyyy HH:mm:ss" value="#{designComponentController.selected.retiredReversedAt}" title="#{bundleClinical.EditDesignComponentTitle_retiredReversedAt}"  showOn="button"/>
+                        <p:outputLabel value="#{bundleClinical.EditDesignComponentLabel_retiredBy}" for="retiredBy" />
+                        <p:selectOneMenu id="retiredBy" value="#{designComponentController.selected.retiredBy}" >
+                            <f:selectItem itemLabel="#{bundleClinical.SelectOneMessage}"/>
+                            <f:selectItems value="#{webUserController.itemsAvailableSelectOne}"
+                                           var="retiredByItem"
+                                           itemValue="#{retiredByItem}"/>
+                        </p:selectOneMenu>
+                        <p:outputLabel value="#{bundleClinical.EditDesignComponentLabel_retiredAt}" for="retiredAt" />
+                        <p:calendar id="retiredAt" pattern="MM/dd/yyyy HH:mm:ss" value="#{designComponentController.selected.retiredAt}" title="#{bundleClinical.EditDesignComponentTitle_retiredAt}"  showOn="button"/>
+                        <p:outputLabel value="#{bundleClinical.EditDesignComponentLabel_retireComments}" for="retireComments" />
+                        <p:inputText id="retireComments" value="#{designComponentController.selected.retireComments}" title="#{bundleClinical.EditDesignComponentTitle_retireComments}" />
+                        <p:outputLabel value="#{bundleClinical.EditDesignComponentLabel_html}" for="html" />
+                        <p:inputTextarea rows="4" cols="30" id="html" value="#{designComponentController.selected.html}" title="#{bundleClinical.EditDesignComponentTitle_html}" />
+                        <p:outputLabel value="#{bundleClinical.EditDesignComponentLabel_availableDataType}" for="availableDataType" />
+                        <p:inputText id="availableDataType" value="#{designComponentController.selected.availableDataType}" title="#{bundleClinical.EditDesignComponentTitle_availableDataType}" />
+                        <p:outputLabel value="#{bundleClinical.EditDesignComponentLabel_parentAreaOfAvailableAreas}" for="parentAreaOfAvailableAreas" />
+                        <p:selectOneMenu id="parentAreaOfAvailableAreas" value="#{designComponentController.selected.parentAreaOfAvailableAreas}" >
+                            <f:selectItem itemLabel="#{bundleClinical.SelectOneMessage}"/>
+                            <f:selectItems value="#{areaController.itemsAvailableSelectOne}"
+                                           var="parentAreaOfAvailableAreasItem"
+                                           itemValue="#{parentAreaOfAvailableAreasItem}"/>
+                        </p:selectOneMenu>
+                        <p:outputLabel value="#{bundleClinical.EditDesignComponentLabel_categoryOfAvailableItems}" for="categoryOfAvailableItems" />
+                        <p:selectOneMenu id="categoryOfAvailableItems" value="#{designComponentController.selected.categoryOfAvailableItems}" >
+                            <f:selectItem itemLabel="#{bundleClinical.SelectOneMessage}"/>
+                            <f:selectItems value="#{itemController.itemsAvailableSelectOne}"
+                                           var="categoryOfAvailableItemsItem"
+                                           itemValue="#{categoryOfAvailableItemsItem}"/>
+                        </p:selectOneMenu>
+                        <p:outputLabel value="#{bundleClinical.EditDesignComponentLabel_parentInstitutionOfAvailableInstitutions}" for="parentInstitutionOfAvailableInstitutions" />
+                        <p:selectOneMenu id="parentInstitutionOfAvailableInstitutions" value="#{designComponentController.selected.parentInstitutionOfAvailableInstitutions}" >
+                            <f:selectItem itemLabel="#{bundleClinical.SelectOneMessage}"/>
+                            <f:selectItems value="#{institutionController.itemsAvailableSelectOne}"
+                                           var="parentInstitutionOfAvailableInstitutionsItem"
+                                           itemValue="#{parentInstitutionOfAvailableInstitutionsItem}"/>
+                        </p:selectOneMenu>
+                    </p:panelGrid>
+                    <p:commandButton actionListener="#{designComponentController.update}" value="#{bundleClinical.Save}" update="display,:DesignComponentListForm:datalist,:growl" oncomplete="handleSubmit(args, 'DesignComponentEditDialog');"/>
+                    <p:commandButton value="#{bundleClinical.Cancel}" onclick="DesignComponentEditDialog.hide()"/>
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+
+    </ui:composition>
+</html>

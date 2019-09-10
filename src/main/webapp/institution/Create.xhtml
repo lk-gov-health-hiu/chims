@@ -1,69 +1,77 @@
-<?xml version='1.0' encoding='UTF-8' ?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:p="http://primefaces.org/ui"
-      xmlns:f="http://xmlns.jcp.org/jsf/core">
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
 
+    <ui:composition>
 
-    <h:head>
-        <h:outputStylesheet library="css" name="main.css" ></h:outputStylesheet>
-    </h:head>
-
-    <h:body>
-
-        <ui:composition template="/system_management.xhtml">
-
-
-            <ui:define name="right">
-                <h:form>
-                    <p:panelGrid columns="2" columnClasses="alignLeft alignLeft" class="pageCenter">
-
-                        <f:facet name="header" >
-                            Create New Institution
-                        </f:facet>
-
-
-                        <h:outputLabel value="Name" for="name" />
-                        <h:inputText id="name" value="#{institutionController.current.name}" 
-                                     title="Name" required="true" 
-                                     requiredMessage="Name is required"/>
-
-
-                        <h:outputLabel value="Email" for="email" />
-                        <h:inputText id="email" value="#{institutionController.current.email}" 
-                                     title="Email" />
-
-                        <h:outputLabel value="Telephone No" for="telNo" />
-                        <h:inputText id="telNo" value="#{institutionController.current.phone}"
-                                     title="Telephone Number" />
-
-
-                        <h:outputLabel value="Address" for="addresse" />
-                        <h:inputText id="address" value="#{institutionController.current.address}" 
-                                     title="Address" required="true" requiredMessage="#{bundle.EditWebUserRequiredMessage_name}"/>
-
-                        <p:spacer></p:spacer>
-                        
-                        
-
-                        <p:commandButton ajax="false" action="#{institutionController.createProvider()}" 
-                                         value="Save" ></p:commandButton>
-
+        <p:dialog id="InstitutionCreateDlg" widgetVar="InstitutionCreateDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundleClinical.CreateInstitutionTitle}">
+            <h:form id="InstitutionCreateForm">
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" rendered="#{institutionController.selected != null}">
+                        <p:outputLabel value="#{bundleClinical.CreateInstitutionLabel_id}" for="id" />
+                        <p:inputText id="id" value="#{institutionController.selected.id}" title="#{bundleClinical.CreateInstitutionTitle_id}" />
+                        <p:outputLabel value="#{bundleClinical.CreateInstitutionLabel_institutionType}" for="institutionType" />
+                        <p:inputText id="institutionType" value="#{institutionController.selected.institutionType}" title="#{bundleClinical.CreateInstitutionTitle_institutionType}" />
+                        <p:outputLabel value="#{bundleClinical.CreateInstitutionLabel_name}" for="name" />
+                        <p:inputText id="name" value="#{institutionController.selected.name}" title="#{bundleClinical.CreateInstitutionTitle_name}" />
+                        <p:outputLabel value="#{bundleClinical.CreateInstitutionLabel_address}" for="address" />
+                        <p:inputText id="address" value="#{institutionController.selected.address}" title="#{bundleClinical.CreateInstitutionTitle_address}" />
+                        <p:outputLabel value="#{bundleClinical.CreateInstitutionLabel_fax}" for="fax" />
+                        <p:inputText id="fax" value="#{institutionController.selected.fax}" title="#{bundleClinical.CreateInstitutionTitle_fax}" />
+                        <p:outputLabel value="#{bundleClinical.CreateInstitutionLabel_email}" for="email" />
+                        <p:inputText id="email" value="#{institutionController.selected.email}" title="#{bundleClinical.CreateInstitutionTitle_email}" />
+                        <p:outputLabel value="#{bundleClinical.CreateInstitutionLabel_phone}" for="phone" />
+                        <p:inputText id="phone" value="#{institutionController.selected.phone}" title="#{bundleClinical.CreateInstitutionTitle_phone}" />
+                        <p:outputLabel value="#{bundleClinical.CreateInstitutionLabel_mobile}" for="mobile" />
+                        <p:inputText id="mobile" value="#{institutionController.selected.mobile}" title="#{bundleClinical.CreateInstitutionTitle_mobile}" />
+                        <p:outputLabel value="#{bundleClinical.CreateInstitutionLabel_web}" for="web" />
+                        <p:inputText id="web" value="#{institutionController.selected.web}" title="#{bundleClinical.CreateInstitutionTitle_web}" />
+                        <p:outputLabel value="#{bundleClinical.CreateInstitutionLabel_coordinate}" for="coordinate" />
+                        <p:selectOneMenu id="coordinate" value="#{institutionController.selected.coordinate}" >
+                            <f:selectItems value="#{coordinateController.itemsAvailableSelectOne}"
+                                           var="coordinateItem"
+                                           itemValue="#{coordinateItem}"/>
+                        </p:selectOneMenu>
+                        <p:outputLabel value="#{bundleClinical.CreateInstitutionLabel_code}" for="code" />
+                        <p:inputText id="code" value="#{institutionController.selected.code}" title="#{bundleClinical.CreateInstitutionTitle_code}" />
+                        <p:outputLabel value="#{bundleClinical.CreateInstitutionLabel_creater}" for="creater" />
+                        <p:selectOneMenu id="creater" value="#{institutionController.selected.creater}" >
+                            <f:selectItems value="#{webUserController.itemsAvailableSelectOne}"
+                                           var="createrItem"
+                                           itemValue="#{createrItem}"/>
+                        </p:selectOneMenu>
+                        <p:outputLabel value="#{bundleClinical.CreateInstitutionLabel_createdAt}" for="createdAt" />
+                        <p:calendar id="createdAt" pattern="MM/dd/yyyy HH:mm:ss" value="#{institutionController.selected.createdAt}" title="#{bundleClinical.EditInstitutionTitle_createdAt}"  showOn="button"/>
+                        <p:outputLabel value="#{bundleClinical.CreateInstitutionLabel_editer}" for="editer" />
+                        <p:selectOneMenu id="editer" value="#{institutionController.selected.editer}" >
+                            <f:selectItems value="#{webUserController.itemsAvailableSelectOne}"
+                                           var="editerItem"
+                                           itemValue="#{editerItem}"/>
+                        </p:selectOneMenu>
+                        <p:outputLabel value="#{bundleClinical.CreateInstitutionLabel_editedAt}" for="editedAt" />
+                        <p:calendar id="editedAt" pattern="MM/dd/yyyy HH:mm:ss" value="#{institutionController.selected.editedAt}" title="#{bundleClinical.EditInstitutionTitle_editedAt}"  showOn="button"/>
+                        <p:outputLabel value="#{bundleClinical.CreateInstitutionLabel_retirer}" for="retirer" />
+                        <p:selectOneMenu id="retirer" value="#{institutionController.selected.retirer}" >
+                            <f:selectItems value="#{webUserController.itemsAvailableSelectOne}"
+                                           var="retirerItem"
+                                           itemValue="#{retirerItem}"/>
+                        </p:selectOneMenu>
+                        <p:outputLabel value="#{bundleClinical.CreateInstitutionLabel_retiredAt}" for="retiredAt" />
+                        <p:calendar id="retiredAt" pattern="MM/dd/yyyy HH:mm:ss" value="#{institutionController.selected.retiredAt}" title="#{bundleClinical.EditInstitutionTitle_retiredAt}"  showOn="button"/>
+                        <p:outputLabel value="#{bundleClinical.CreateInstitutionLabel_retireComments}" for="retireComments" />
+                        <p:inputText id="retireComments" value="#{institutionController.selected.retireComments}" title="#{bundleClinical.CreateInstitutionTitle_retireComments}" />
+                        <p:outputLabel value="#{bundleClinical.CreateInstitutionLabel_lastPartOfName}" for="lastPartOfName" />
+                        <p:inputText id="lastPartOfName" value="#{institutionController.selected.lastPartOfName}" title="#{bundleClinical.CreateInstitutionTitle_lastPartOfName}" />
                     </p:panelGrid>
+                    <p:commandButton actionListener="#{institutionController.create}" value="#{bundleClinical.Save}" update="display,:InstitutionListForm:datalist,:growl" oncomplete="handleSubmit(args,'InstitutionCreateDialog');"/>
+                    <p:commandButton value="#{bundleClinical.Cancel}" onclick="InstitutionCreateDialog.hide()"/>
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
 
-                </h:form>
-            </ui:define>
-        </ui:composition>
-
-
-
-    </h:body>
-
-
-
-
-
-
+    </ui:composition>
 </html>

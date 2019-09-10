@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="UploadEditDlg" widgetVar="UploadEditDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundleClinical.EditUploadTitle}">
+            <h:form id="UploadEditForm">
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" rendered="#{uploadController.selected != null}">
+                        <p:outputLabel value="#{bundleClinical.EditUploadLabel_institution}" for="institution" />
+                        <p:selectOneMenu id="institution" value="#{uploadController.selected.institution}" >
+                            <f:selectItem itemLabel="#{bundleClinical.SelectOneMessage}"/>
+                            <f:selectItems value="#{institutionController.itemsAvailableSelectOne}"
+                                           var="institutionItem"
+                                           itemValue="#{institutionItem}"/>
+                        </p:selectOneMenu>
+                        <p:outputLabel value="#{bundleClinical.EditUploadLabel_serialVersionUID}" for="serialVersionUID" />
+                        <p:inputText id="serialVersionUID" value="#{uploadController.selected.serialVersionUID}" title="#{bundleClinical.EditUploadTitle_serialVersionUID}" />
+                        <p:outputLabel value="#{bundleClinical.EditUploadLabel_id}" for="id" />
+                        <p:inputText id="id" value="#{uploadController.selected.id}" title="#{bundleClinical.EditUploadTitle_id}" />
+                        <p:outputLabel value="#{bundleClinical.EditUploadLabel_creater}" for="creater" />
+                        <p:selectOneMenu id="creater" value="#{uploadController.selected.creater}" >
+                            <f:selectItem itemLabel="#{bundleClinical.SelectOneMessage}"/>
+                            <f:selectItems value="#{webUserController.itemsAvailableSelectOne}"
+                                           var="createrItem"
+                                           itemValue="#{createrItem}"/>
+                        </p:selectOneMenu>
+                        <p:outputLabel value="#{bundleClinical.EditUploadLabel_createdAt}" for="createdAt" />
+                        <p:calendar id="createdAt" pattern="MM/dd/yyyy HH:mm:ss" value="#{uploadController.selected.createdAt}" title="#{bundleClinical.EditUploadTitle_createdAt}"  showOn="button"/>
+                        <p:outputLabel value="#{bundleClinical.EditUploadLabel_retirer}" for="retirer" />
+                        <p:selectOneMenu id="retirer" value="#{uploadController.selected.retirer}" >
+                            <f:selectItem itemLabel="#{bundleClinical.SelectOneMessage}"/>
+                            <f:selectItems value="#{webUserController.itemsAvailableSelectOne}"
+                                           var="retirerItem"
+                                           itemValue="#{retirerItem}"/>
+                        </p:selectOneMenu>
+                        <p:outputLabel value="#{bundleClinical.EditUploadLabel_retiredAt}" for="retiredAt" />
+                        <p:calendar id="retiredAt" pattern="MM/dd/yyyy HH:mm:ss" value="#{uploadController.selected.retiredAt}" title="#{bundleClinical.EditUploadTitle_retiredAt}"  showOn="button"/>
+                        <p:outputLabel value="#{bundleClinical.EditUploadLabel_retireComments}" for="retireComments" />
+                        <p:inputText id="retireComments" value="#{uploadController.selected.retireComments}" title="#{bundleClinical.EditUploadTitle_retireComments}" />
+                        <p:outputLabel value="#{bundleClinical.EditUploadLabel_baImage}" for="baImage" />
+                        <p:inputTextarea rows="4" cols="30" id="baImage" value="#{uploadController.selected.baImage}" title="#{bundleClinical.EditUploadTitle_baImage}" />
+                        <p:outputLabel value="#{bundleClinical.EditUploadLabel_fileName}" for="fileName" />
+                        <p:inputText id="fileName" value="#{uploadController.selected.fileName}" title="#{bundleClinical.EditUploadTitle_fileName}" />
+                        <p:outputLabel value="#{bundleClinical.EditUploadLabel_fileType}" for="fileType" />
+                        <p:inputText id="fileType" value="#{uploadController.selected.fileType}" title="#{bundleClinical.EditUploadTitle_fileType}" />
+                        <p:outputLabel value="#{bundleClinical.EditUploadLabel_comments}" for="comments" />
+                        <p:inputTextarea rows="4" cols="30" id="comments" value="#{uploadController.selected.comments}" title="#{bundleClinical.EditUploadTitle_comments}" />
+                        <p:outputLabel value="#{bundleClinical.EditUploadLabel_project}" for="project" />
+                        <p:selectOneMenu id="project" value="#{uploadController.selected.project}" >
+                            <f:selectItem itemLabel="#{bundleClinical.SelectOneMessage}"/>
+                            <f:selectItems value="#{clientController.itemsAvailableSelectOne}"
+                                           var="projectItem"
+                                           itemValue="#{projectItem}"/>
+                        </p:selectOneMenu>
+                        <p:outputLabel value="#{bundleClinical.EditUploadLabel_uploadType}" for="uploadType" />
+                        <p:inputText id="uploadType" value="#{uploadController.selected.uploadType}" title="#{bundleClinical.EditUploadTitle_uploadType}" />
+                    </p:panelGrid>
+                    <p:commandButton actionListener="#{uploadController.update}" value="#{bundleClinical.Save}" update="display,:UploadListForm:datalist,:growl" oncomplete="handleSubmit(args, 'UploadEditDialog');"/>
+                    <p:commandButton value="#{bundleClinical.Cancel}" onclick="UploadEditDialog.hide()"/>
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+
+    </ui:composition>
+</html>

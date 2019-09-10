@@ -1,23 +1,45 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:ui="http://java.sun.com/jsf/facelets"
-      xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:p="http://primefaces.org/ui">
 
     <ui:composition>
 
-        <p:dialog id="ItemViewDlg" widgetVar="ItemViewDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundleItems.ViewItemTitle}">
+        <p:dialog id="ItemViewDlg" widgetVar="ItemViewDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundleClinical.ViewItemTitle}">
             <h:form id="ItemViewForm">
                 <h:panelGroup id="display">
                     <p:panelGrid columns="2" rendered="#{itemController.selected != null}">
-                        <h:outputText value="#{bundleItems.ViewItemLabel_name}"/>
-                        <h:outputText value="#{itemController.selected.name}" title="#{bundleItems.ViewItemTitle_name}"/>
-                        <h:outputText value="#{bundleItems.ViewItemLabel_type}"/>
-                        <h:outputText value="#{itemController.selected.type}" title="#{bundleItems.ViewItemTitle_type}"/>
+                        <h:outputText value="#{bundleClinical.ViewItemLabel_itemType}"/>
+                        <h:outputText value="#{itemController.selected.itemType}" title="#{bundleClinical.ViewItemTitle_itemType}"/>
+                        <h:outputText value="#{bundleClinical.ViewItemLabel_name}"/>
+                        <h:outputText value="#{itemController.selected.name}" title="#{bundleClinical.ViewItemTitle_name}"/>
+                        <h:outputText value="#{bundleClinical.ViewItemLabel_id}"/>
+                        <h:outputText value="#{itemController.selected.id}" title="#{bundleClinical.ViewItemTitle_id}"/>
+                        <h:outputText value="#{bundleClinical.ViewItemLabel_creater}"/>
+                        <h:outputText value="#{itemController.selected.creater}" title="#{bundleClinical.ViewItemTitle_creater}"/>
+                        <h:outputText value="#{bundleClinical.ViewItemLabel_createdAt}"/>
+                        <h:outputText value="#{itemController.selected.createdAt}" title="#{bundleClinical.ViewItemTitle_createdAt}">
+                            <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                        </h:outputText>
+                        <h:outputText value="#{bundleClinical.ViewItemLabel_editedBy}"/>
+                        <h:outputText value="#{itemController.selected.editedBy}" title="#{bundleClinical.ViewItemTitle_editedBy}"/>
+                        <h:outputText value="#{bundleClinical.ViewItemLabel_editedAt}"/>
+                        <h:outputText value="#{itemController.selected.editedAt}" title="#{bundleClinical.ViewItemTitle_editedAt}">
+                            <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                        </h:outputText>
+                        <h:outputText value="#{bundleClinical.ViewItemLabel_retiredBy}"/>
+                        <h:outputText value="#{itemController.selected.retiredBy}" title="#{bundleClinical.ViewItemTitle_retiredBy}"/>
+                        <h:outputText value="#{bundleClinical.ViewItemLabel_retiredAt}"/>
+                        <h:outputText value="#{itemController.selected.retiredAt}" title="#{bundleClinical.ViewItemTitle_retiredAt}">
+                            <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                        </h:outputText>
+                        <h:outputText value="#{bundleClinical.ViewItemLabel_retireComments}"/>
+                        <h:outputText value="#{itemController.selected.retireComments}" title="#{bundleClinical.ViewItemTitle_retireComments}"/>
                     </p:panelGrid>
-                    <p:commandButton value="#{bundleItems.Close}" onclick="ItemViewDialog.hide()"/>
+                    <p:commandButton value="#{bundleClinical.Close}" onclick="ItemViewDialog.hide()"/>
                 </h:panelGroup>
             </h:form>
         </p:dialog>
