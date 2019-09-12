@@ -1,3 +1,24 @@
+.ui-widget {
+    font-family: 'Chilanka',Arial,sans-serif;
+    font-size: 1.0em;
+}
+.ui-widget input,
+.ui-widget select,
+.ui-widget textarea,
+.ui-widget button {
+  font-family: 'Chilanka',Arial,sans-serif;
+}
+
+
+.ui-menubar .ui-widget  {
+    font-family: cursive;
+    border: 1px solid #aed0ea !important;
+    color: #ffffff !important;
+    font-weight: bolder !important;
+}
+
+
+
 .logoFont1, .logoFont2, .logoFont3{
     font-family: 'Poppins', sans-serif;
     font-size:1.5vw;

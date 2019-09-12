@@ -12,26 +12,32 @@
         <meta name="viewport" content="width=device-width, initial-scale=1"/>
         <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css"></link>
         <link rel="stylesheet" href="https://www.w3schools.com/lib/w3-theme-amber.css"></link>
-        <link href="https://fonts.googleapis.com/css?family=Poppins" rel="stylesheet"></link>
-        <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
-              rel="stylesheet"></link>
+        <link href="https://fonts.googleapis.com/css?family=Chilanka|Roboto&amp;display=swap" rel="stylesheet"></link>
         <link rel='stylesheet' href='https://use.fontawesome.com/releases/v5.7.0/css/all.css' 
               integrity='sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ' 
               crossorigin='anonymous'></link>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"></link>
-
-        <title>Management Development and Planning Unit</title>
+        <title>#{bundle.Title}</title>
         <h:outputStylesheet library="css" name="tem1.css"/>
-        <h:outputStylesheet library="css" name="template.css" ></h:outputStylesheet>
     </h:head>
 
-    <h:body class="w3-theme-l5" style="font-family: 'Roboto', sans-serif!important;">
+    <h:body class="w3-theme-l5" style="font-family: 'Chilanka', sans-serif!important;">
+        <style>
+            .ui-widget {
+                font-family: 'Chilanka',Arial,sans-serif;
+                font-size: 1.0em;
+            }
+            .ui-widget input,
+            .ui-widget select,
+            .ui-widget textarea,
+            .ui-widget button {
+                font-family: 'Chilanka',Arial,sans-serif;
+            }
 
+        </style>
         <f:view locale="#{webUserController.locale}" >
-
             <p:growl autoUpdate="true"  ></p:growl>
-
-            <div class="w3-row w3-theme-l5" >
+            <div class="w3-row w3-theme-l5" style="font-family: 'Chilanka', sans-serif!important;">
                 <h:panelGroup rendered="#{webUserController.loggedUser ne null}">
                     <div class="w3-row" >
                         <ez:menu/>
@@ -39,109 +45,44 @@
                 </h:panelGroup>
             </div>
 
-
-
-
-
-
-
             <div class="w3-row w3-theme-l5" >
-
                 <h:panelGroup rendered="#{webUserController.loggedUser ne null}">
                     <ui:insert name="content">
-
                     </ui:insert>
                 </h:panelGroup>
 
                 <h:panelGroup rendered="#{webUserController.loggedUser eq null}">
-                    <h:form >
-                        <div class="w3-display-container" style="height: 75vh;" >
-                            <div class="w3-display-middle" >
-
-                                <table class="w3-table w3-border" style="width: 600px; margin: auto;">
-                                    <thead class="w3-amber">
-                                        <tr>
-                                            <th colspan="3" style="text-align: center;">Login</th>
-                                        </tr>
-                                    </thead>
-                                    <tfoot>
-                                        <tr>
-                                            <td colspan="3" style="text-align: center;" >
-                                                <h:commandButton class="w3-btn w3-amber btn200"   value="Login" action="#{webUserController.login()}" ></h:commandButton>
-                                            </td>
-                                        </tr>
-                                    </tfoot>
-                                    <tbody>
-                                        <tr>
-                                            <td rowspan="2">
-                                                <h:graphicImage library="image" name="login.png" style="height: 160px;" ></h:graphicImage>
-
-                                            </td>
-                                            <td>Username</td>
-                                            <td>
-                                                <p:inputText autocomplete="off" value="#{webUserController.userName}" ></p:inputText>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>Password</td>
-                                            <td>
-                                                <p:password autocomplete="off" value="#{webUserController.password}" ></p:password>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-
-                                </table>
-                            </div>
-
-                        </div>
-
-
-
-                    </h:form>
-
+                    <ez:login/>
                 </h:panelGroup>
-
-
-
             </div>
 
-
-
-
-
-
-
             <div class="footer w3-amber">
-                <p>
-                    <ui:insert name="bottom">
-                        <table style="width: 98%; margin: auto;">
-                            <tr>
-                                <td>
-                                    &copy; #{bundle.Hiu}, 2019
-                                </td>
-                                <td>
+                <ui:insert name="bottom">
+                    <table style="width: 98%; margin: auto;">
+                        <tr>
+                            <td>
+                                &copy; #{bundle.Hiu}, 2019
+                            </td>
+                            <td>
 
-                                </td>
-                                <td>
+                            </td>
+                            <td>
 
-                                </td>
-                                <td>
-                                    <h:panelGroup rendered="#{webUserController.loggedUser ne null and false}" >
-                                        <h:outputLabel value="Language"  />
-                                        <h:selectOneMenu value="#{webUserController.loggedUser.defLocale}" >
-                                            <f:selectItem itemLabel="Sinhala" itemValue="si" ></f:selectItem>
-                                            <f:selectItem itemLabel="Tamil" itemValue="ta" ></f:selectItem>
-                                            <f:selectItem itemLabel="English" itemValue="en" ></f:selectItem>
-                                            <f:ajax execute="@this" render="@all" listener="#{webUserController.updateLoggedUser()}" ></f:ajax>
-                                        </h:selectOneMenu>
-                                    </h:panelGroup>
-                                </td>
-                            </tr>
-                        </table>
-
-
-                    </ui:insert>
-                </p>
+                            </td>
+                            <td>
+                                <h:panelGroup rendered="#{webUserController.loggedUser ne null and false}" >
+                                    <h:outputLabel value="Language"  />
+                                    <h:selectOneMenu value="#{webUserController.loggedUser.defLocale}" >
+                                        <f:selectItem itemLabel="Sinhala" itemValue="si" ></f:selectItem>
+                                        <f:selectItem itemLabel="Tamil" itemValue="ta" ></f:selectItem>
+                                        <f:selectItem itemLabel="English" itemValue="en" ></f:selectItem>
+                                        <f:ajax execute="@this" render="@all" listener="#{webUserController.updateLoggedUser()}" ></f:ajax>
+                                    </h:selectOneMenu>
+                                </h:panelGroup>
+                            </td>
+                        </tr>
+                    </table>
+                </ui:insert>
             </div>
 
         </f:view>
