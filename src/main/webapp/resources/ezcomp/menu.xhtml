@@ -23,7 +23,7 @@
 
             <p:menubar style="border: 0px; margin: 0px; padding: 0px;"  styleClass="Chilanka"  rendered="#{webUserController.loggedUser ne null}">
                 <p:submenu label="Clients" rendered="#{webUserController.hasPrivilege('Client_Management')}" >
-                    <p:menuitem ajax="false" value="Search" action="#{clientController.toSearchClientById()}" />
+                    <p:menuitem ajax="false" value="Search by IDs" action="#{clientController.toSearchClientById()}" />
                     <p:menuitem ajax="false" value="Register New" action="#{clientController.toAddNewClient()}"  />
                 </p:submenu>
 

@@ -20,7 +20,7 @@
                         <p:panelGrid columns="4">
                             
                             <p:spacer ></p:spacer>
-                            <p:commandButton ajax="false" action="#{clientController.create()}" value="Save" ></p:commandButton>
+                            <p:commandButton ajax="false" action="#{clientController.saveClient()}" value="Save" ></p:commandButton>
 
                             <p:outputLabel value="Title:" for="title" />
                             <p:selectOneMenu id="title"  value="#{clientController.selected.person.title}"  >

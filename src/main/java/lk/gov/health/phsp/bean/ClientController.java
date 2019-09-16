@@ -100,9 +100,9 @@ public class ClientController implements Serializable {
         if (searchingPhn != null && !searchingPhn.trim().equals("")) {
             selectedClients = listPatientsByPhn(searchingPhn);
         } else if (searchingNicNo != null && !searchingNicNo.trim().equals("")) {
-            selectedClients = listPatientsByPhn(searchingNicNo);
+            selectedClients = listPatientsByNic(searchingNicNo);
         } else if (searchingPhoneNumber != null && !searchingPhoneNumber.trim().equals("")) {
-            selectedClients = listPatientsByPhn(searchingPhoneNumber);
+            selectedClients = listPatientsByPhone(searchingPhoneNumber);
         }
         if (selectedClients == null || selectedClients.isEmpty()) {
             JsfUtil.addErrorMessage("No Results Found. Try different search criteria.");
@@ -112,7 +112,7 @@ public class ClientController implements Serializable {
             selected = selectedClients.get(0);
             selectedClients= null;
             clearSearchById();
-            return toClient();
+            return toClientProfile();
         } else {
             selected = null;
             clearSearchById();
@@ -156,7 +156,7 @@ public class ClientController implements Serializable {
         return selected;
     }
 
-    public String SaveClient() {
+    public String saveClient() {
         if (selected == null) {
             JsfUtil.addErrorMessage("No Client Selected to save.");
             return "";
@@ -172,7 +172,7 @@ public class ClientController implements Serializable {
             getFacade().edit(selected);
             JsfUtil.addSuccessMessage("Client Details Updated.");
         }
-        return "/client/client_dashboard";
+        return toClientProfile();
     }
 
     public void create() {

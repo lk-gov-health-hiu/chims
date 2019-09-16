@@ -16,22 +16,22 @@
                     <p:panel header="Search by IDs" >
                         <h:panelGrid columns="2" >
                             <p:outputLabel value="PHN No" ></p:outputLabel>
-                            <p:outputLabel value="#{clientController.searchingPhn}" ></p:outputLabel>
+                            <p:inputText value="#{clientController.searchingPhn}"  autocomplete="off"  ></p:inputText>
                             
                             <p:outputLabel value="NIC No" ></p:outputLabel>
-                            <p:outputLabel value="#{clientController.searchingNicNo}" ></p:outputLabel>
+                            <p:inputText value="#{clientController.searchingNicNo}"  autocomplete="off" ></p:inputText>
                             
                             <p:outputLabel value="Telephone No" ></p:outputLabel>
-                            <p:outputLabel value="#{clientController.searchingPhoneNumber}" ></p:outputLabel>
+                            <p:inputText value="#{clientController.searchingPhoneNumber}"  autocomplete="off"  ></p:inputText>
                             
                             <p:outputLabel value="Driving License No" ></p:outputLabel>
-                            <p:outputLabel value="#{clientController.searchingDrivingLicenceNo}" ></p:outputLabel>
+                            <p:inputText value="#{clientController.searchingDrivingLicenceNo}"  autocomplete="off" ></p:inputText>
                             
                             <p:outputLabel value="Passport No" ></p:outputLabel>
-                            <p:outputLabel value="#{clientController.searchingPassportNo}" ></p:outputLabel>
+                            <p:inputText value="#{clientController.searchingPassportNo}"  autocomplete="off" ></p:inputText>
                             
                             <p:commandButton ajax="false" value="Search" action="#{clientController.searchById()}" ></p:commandButton>
-                            <p:commandButton ajax="false" value="Search" action="#{clientController.clearSearchById()}" ></p:commandButton>
+                            <p:commandButton ajax="false" value="Clear" action="#{clientController.clearSearchById()}" ></p:commandButton>
                             
                             
                         </h:panelGrid>
