@@ -30,12 +30,12 @@ public class ItemController implements Serializable {
     private lk.gov.health.phsp.facade.ItemFacade ejbFacade;
     private List<Item> items = null;
     private Item selected;
-    List<Item> titles;
-    List<Item> ethinicities;
-    List<Item> religions;
-    List<Item> sexes;
-    List<Item> marietalStatus;
-    
+    private List<Item> titles;
+    private List<Item> ethinicities;
+    private List<Item> religions;
+    private List<Item> sexes;
+    private List<Item> marietalStatus;
+    private List<Item> citizenships;
 
     public ItemController() {
     }
@@ -43,15 +43,15 @@ public class ItemController implements Serializable {
     // <editor-fold defaultstate="collapsed" desc="Navigation">
     // </editor-fold>    
     // <editor-fold defaultstate="collapsed" desc="Functions">
-    
     public void addInitialMetadata() {
         addTitles();
         addMarietalStatus();
         addReligions();
         addEthinicGroups();
         addSexes();
+        addCitizenship();
     }
-    
+
     public void addSexes() {
         String initialData = "Dictionary_Category::Sex:sex:0" + System.lineSeparator()
                 + "Dictionary_Item:sex:Male:sex_male:0" + System.lineSeparator()
@@ -60,18 +60,26 @@ public class ItemController implements Serializable {
                 + "Dictionary_Item:sex:Unknown:sex_unknown:3" + System.lineSeparator();
         addInitialMetadata(initialData);
     }
-    
+
+    public void addCitizenship() {
+        String initialData = "Dictionary_Category::Citizenship:citizenship:0" + System.lineSeparator()
+                + "Dictionary_Item:citizenship:Local:citizenship_local:0" + System.lineSeparator()
+                + "Dictionary_Item:citizenship:Foreign:citizenship_foreign:1" + System.lineSeparator()
+                + "Dictionary_Item:citizenship:Unknown:citizenship_other:2" + System.lineSeparator();
+        addInitialMetadata(initialData);
+    }
+
     public void addEthinicGroups() {
         String initialData = "Dictionary_Category::Ethnic Group:ethnic_group:0" + System.lineSeparator()
                 + "Dictionary_Item:ethnic_group:Sinhalese:sinhalese:0" + System.lineSeparator()
                 + "Dictionary_Item:ethnic_group:Tamil:tamil:1" + System.lineSeparator()
                 + "Dictionary_Item:ethnic_group:Moors:moors:2" + System.lineSeparator()
-                + "Dictionary_Item:ethnic_group:Malays:malays:2" + System.lineSeparator()
-                + "Dictionary_Item:ethnic_group:Burghers:burghers:3" + System.lineSeparator()
-                + "Dictionary_Item:ethnic_group:Other:ethnic_group_other:4" + System.lineSeparator();
+                + "Dictionary_Item:ethnic_group:Malays:malays:3" + System.lineSeparator()
+                + "Dictionary_Item:ethnic_group:Burghers:burghers:4" + System.lineSeparator()
+                + "Dictionary_Item:ethnic_group:Other:ethnic_group_other:5" + System.lineSeparator();
         addInitialMetadata(initialData);
     }
-    
+
     public void addReligions() {
         String initialData = "Dictionary_Category::Religion:religion:0" + System.lineSeparator()
                 + "Dictionary_Item:religion:Buddhist:buddhist:0" + System.lineSeparator()
@@ -81,27 +89,18 @@ public class ItemController implements Serializable {
                 + "Dictionary_Item:religion:Other:religion_other:4" + System.lineSeparator();
         addInitialMetadata(initialData);
     }
-    
+
     public void addMarietalStatus() {
         String initialData = "Dictionary_Category::Marital Status:marital_status:0" + System.lineSeparator()
-                + "Dictionary_Category:title:Title used for Males:male_title:0" + System.lineSeparator()
-                + "Dictionary_Category:title:Title used for Females:female_title:1" + System.lineSeparator()
-                + "Dictionary_Category:title:Title used for Males or Females:male_or_female_title:2" + System.lineSeparator()
-                + "Dictionary_Item:male_title:Mr:mr:0" + System.lineSeparator()
-                + "Dictionary_Item:female_title:Mrs:mrs:1" + System.lineSeparator()
-                + "Dictionary_Item:female_title:Miss:miss:2" + System.lineSeparator()
-                + "Dictionary_Item:male_or_female_title:Rev:rev:3" + System.lineSeparator()
-                + "Dictionary_Item:female_title:Ms:ms:4" + System.lineSeparator()
-                + "Dictionary_Item:male_or_female_title:Dr:dr:5" + System.lineSeparator()
-                + "Dictionary_Item:female_title:Dr(Mrs):drmrs:6" + System.lineSeparator()
-                + "Dictionary_Item:female_title:Dr(Miss):drmiss:7" + System.lineSeparator()
-                + "Dictionary_Item:female_title:Dr(Ms):drms:8" + System.lineSeparator()
-                + "Dictionary_Item:male_or_female_title:Rt Rev:rtrev:9" + System.lineSeparator()
-                + "Dictionary_Item:male_or_female_title:Baby of:bany_of:10" + System.lineSeparator()
-                + "Dictionary_Item:male_or_female_title:Other:title_other:11" + System.lineSeparator();
+                + "Dictionary_Item:marital_status:Married:married:0" + System.lineSeparator()
+                + "Dictionary_Item:marital_status:Unmarried:unmarried:1" + System.lineSeparator()
+                + "Dictionary_Item:marital_status:Widowed:widowed:2" + System.lineSeparator()
+                + "Dictionary_Item:marital_status:Divorsed:divorsed:3" + System.lineSeparator()
+                + "Dictionary_Item:marital_status:Seperated:seperated:4" + System.lineSeparator()
+                + "Dictionary_Item:marital_status:Other:marital_status_other:4" + System.lineSeparator();
         addInitialMetadata(initialData);
     }
-    
+
     public void addTitles() {
         String initialData = "Dictionary_Category::Title:title:0" + System.lineSeparator()
                 + "Dictionary_Category:title:Title used for Males:male_title:0" + System.lineSeparator()
@@ -110,19 +109,19 @@ public class ItemController implements Serializable {
                 + "Dictionary_Item:male_title:Mr:mr:0" + System.lineSeparator()
                 + "Dictionary_Item:female_title:Mrs:mrs:1" + System.lineSeparator()
                 + "Dictionary_Item:female_title:Miss:miss:2" + System.lineSeparator()
-                + "Dictionary_Item:male_or_female_title:Rev:rev:3" + System.lineSeparator()
-                + "Dictionary_Item:female_title:Ms:ms:4" + System.lineSeparator()
-                + "Dictionary_Item:male_or_female_title:Dr:dr:5" + System.lineSeparator()
-                + "Dictionary_Item:female_title:Dr(Mrs):drmrs:6" + System.lineSeparator()
-                + "Dictionary_Item:female_title:Dr(Miss):drmiss:7" + System.lineSeparator()
-                + "Dictionary_Item:female_title:Dr(Ms):drms:8" + System.lineSeparator()
-                + "Dictionary_Item:male_or_female_title:Rt Rev:rtrev:9" + System.lineSeparator()
-                + "Dictionary_Item:male_or_female_title:Baby of:bany_of:10" + System.lineSeparator()
-                + "Dictionary_Item:male_or_female_title:Other:title_other:11" + System.lineSeparator();
+                + "Dictionary_Item:male_title:Master:master:3" + System.lineSeparator()
+                + "Dictionary_Item:male_or_female_title:Baby:baby:4" + System.lineSeparator()
+                + "Dictionary_Item:male_or_female_title:Rev:rev:5" + System.lineSeparator()
+                + "Dictionary_Item:female_title:Ms:ms:6" + System.lineSeparator()
+                + "Dictionary_Item:male_or_female_title:Dr:dr:7" + System.lineSeparator()
+                + "Dictionary_Item:female_title:Dr(Mrs):drmrs:8" + System.lineSeparator()
+                + "Dictionary_Item:female_title:Dr(Miss):drmiss:9" + System.lineSeparator()
+                + "Dictionary_Item:female_title:Dr(Ms):drms:10" + System.lineSeparator()
+                + "Dictionary_Item:male_or_female_title:Rt Rev:rtrev:11" + System.lineSeparator()
+                + "Dictionary_Item:male_or_female_title:Baby of:bany_of:12" + System.lineSeparator()
+                + "Dictionary_Item:male_or_female_title:Other:title_other:13" + System.lineSeparator();
         addInitialMetadata(initialData);
     }
-    
-    
 
     public void addInitialMetadata(String str) {
         System.out.println("Adding initial metadata for " + str);
@@ -286,6 +285,86 @@ public class ItemController implements Serializable {
 
     public List<Item> getItemsAvailableSelectOne() {
         return getFacade().findAll();
+    }
+
+    public List<Item> getTitles() {
+        if (titles == null) {
+            String j = "select t from Item t where t.retired=false and t.parent.parent=:p order by t.orderNo";
+            Map m = new HashMap();
+            m.put("p", findItemByCode("title"));
+            titles = getFacade().findByJpql(j, m);
+        }
+        return titles;
+    }
+
+    public List<Item> findItemList(String parentCode, ItemType t) {
+        String j = "select t from Item t where t.retired=false "
+                + " and t.parent=:p "
+                + " and t.itemType=:t "
+                + " order by t.orderNo";
+        Map m = new HashMap();
+        m.put("p", findItemByCode(parentCode));
+        m.put("t", t);
+        return getFacade().findByJpql(j, m);
+    }
+
+    public void setTitles(List<Item> titles) {
+        this.titles = titles;
+    }
+
+    public List<Item> getEthinicities() {
+        if (ethinicities == null) {
+            ethinicities = findItemList("ethnic_group", ItemType.Dictionary_Item);
+        }
+        return ethinicities;
+    }
+
+    public void setEthinicities(List<Item> ethinicities) {
+        this.ethinicities = ethinicities;
+    }
+
+    public List<Item> getReligions() {
+        if (religions == null) {
+            religions = findItemList("religion", ItemType.Dictionary_Item);
+        }
+        return religions;
+    }
+
+    public void setReligions(List<Item> religions) {
+        this.religions = religions;
+    }
+
+    public List<Item> getSexes() {
+        if (sexes == null) {
+            sexes = findItemList("sex", ItemType.Dictionary_Item);
+        }
+        return sexes;
+    }
+
+    public void setSexes(List<Item> sexes) {
+        this.sexes = sexes;
+    }
+
+    public List<Item> getMarietalStatus() {
+        if (marietalStatus == null) {
+            marietalStatus = findItemList("marital_status", ItemType.Dictionary_Item);
+        }
+        return marietalStatus;
+    }
+
+    public void setMarietalStatus(List<Item> marietalStatus) {
+        this.marietalStatus = marietalStatus;
+    }
+
+    public List<Item> getCitizenships() {
+        if (citizenships == null) {
+            citizenships = findItemList("citizenship", ItemType.Dictionary_Item);
+        }
+        return citizenships;
+    }
+
+    public void setCitizenships(List<Item> citizenships) {
+        this.citizenships = citizenships;
     }
 
     @FacesConverter(forClass = Item.class)

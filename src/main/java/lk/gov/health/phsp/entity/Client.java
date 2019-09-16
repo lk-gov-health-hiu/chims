@@ -95,6 +95,9 @@ public class Client implements Serializable {
     }
 
     public Person getPerson() {
+        if(person==null){
+            person = new Person();
+        }
         return person;
     }
 

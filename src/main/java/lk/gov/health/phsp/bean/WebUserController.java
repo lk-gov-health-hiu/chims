@@ -479,6 +479,7 @@ public class WebUserController implements Serializable {
             getFacade().create(wu);
             loggedUser = wu;
             addAllWebUserPrivileges(wu);
+            itemController.addInitialMetadata();
             return true;
         } else {
             System.out.println("NOT First Visit");

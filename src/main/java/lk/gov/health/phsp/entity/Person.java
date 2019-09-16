@@ -26,8 +26,6 @@ package lk.gov.health.phsp.entity;
 import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -35,7 +33,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlRootElement;
-import lk.gov.health.phsp.enums.Citizenship;
 import org.joda.time.LocalDate;
 import org.joda.time.Period;
 import org.joda.time.PeriodType;
@@ -55,15 +52,18 @@ public class Person implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
-    @Enumerated(EnumType.STRING)
-    Title title;
+   
+    @ManyToOne
+    Item title;
     String name;
 
-    @Enumerated(EnumType.STRING)
-    Sex sex;
+ 
+    @ManyToOne
+    Item sex;
 
-    @Enumerated(EnumType.STRING)
-    private Citizenship citizenship;
+
+    @ManyToOne
+    private Item citizenship;
 
     @ManyToOne
     private Item ethinicGroup;
@@ -73,6 +73,7 @@ public class Person implements Serializable {
 
     @ManyToOne
     private Item mariatalStatus;
+    
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     Date dateOfBirth;
 
@@ -177,24 +178,17 @@ public class Person implements Serializable {
     }
 
     public String getNameWithTitle() {
-        String temT;
-        Title t = getTitle();
-        if (t != null) {
-            temT = t.getLabel();
-        } else {
-            temT = "";
-        }
-
+        String temT = title.name + " " + name;
         return temT;
     }
 // </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="Getters & Setters">
 
-    public Sex getSex() {
+    public Item getSex() {
         return sex;
     }
 
-    public void setSex(Sex sex) {
+    public void setSex(Item sex) {
         this.sex = sex;
     }
 
@@ -326,11 +320,11 @@ public class Person implements Serializable {
         this.drivingLicenseNumber = drivingLicenseNumber;
     }
 
-    public Title getTitle() {
+    public Item getTitle() {
         return title;
     }
 
-    public void setTitle(Title title) {
+    public void setTitle(Item title) {
         this.title = title;
     }
 
@@ -366,11 +360,11 @@ public class Person implements Serializable {
         this.serealNumber = serealNumber;
     }
 
-    public Citizenship getCitizenship() {
+    public Item getCitizenship() {
         return citizenship;
     }
 
-    public void setCitizenship(Citizenship citizenship) {
+    public void setCitizenship(Item citizenship) {
         this.citizenship = citizenship;
     }
 
