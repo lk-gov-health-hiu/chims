@@ -169,10 +169,10 @@ public class ClientController implements Serializable {
         } else {
             selected.setLastEditBy(webUserController.getLoggedUser());
             selected.setLastEditeAt(new Date());
-            JsfUtil.addSuccessMessage("Client Details Updated.");
             getFacade().edit(selected);
+            JsfUtil.addSuccessMessage("Client Details Updated.");
         }
-        return "client_dashboard";
+        return "/client/client_dashboard";
     }
 
     public void create() {
