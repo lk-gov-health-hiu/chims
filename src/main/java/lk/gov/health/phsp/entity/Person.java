@@ -49,6 +49,7 @@ import org.joda.time.PeriodType;
 @XmlRootElement
 public class Person implements Serializable {
 
+// <editor-fold defaultstate="collapsed" desc="Persistant Attributes">
     static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -57,21 +58,21 @@ public class Person implements Serializable {
     @Enumerated(EnumType.STRING)
     Title title;
     String name;
-    String phn;
+
     @Enumerated(EnumType.STRING)
     Sex sex;
 
     @Enumerated(EnumType.STRING)
-    Citizenship citizenship;
+    private Citizenship citizenship;
 
     @ManyToOne
-    Item ethinicGroup;
+    private Item ethinicGroup;
 
     @ManyToOne
-    Item religion;
+    private Item religion;
 
     @ManyToOne
-    Item mariatalStatus;
+    private Item mariatalStatus;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     Date dateOfBirth;
 
@@ -87,8 +88,6 @@ public class Person implements Serializable {
 
     String website;
     String drivingLicenseNumber;
-
-    
 
     //Created Properties
     @ManyToOne
@@ -108,6 +107,8 @@ public class Person implements Serializable {
     Date retiredAt;
     String retireComments;
 
+// </editor-fold>
+// <editor-fold defaultstate="collapsed" desc="Transient Attributes">
     @Transient
     int ageMonths;
     @Transient
@@ -120,7 +121,8 @@ public class Person implements Serializable {
     long ageInDays;
     @Transient
     int serealNumber;
-
+// </editor-fold>
+// <editor-fold defaultstate="collapsed" desc="Functions">
     public void calAgeFromDob() {
         age = "";
         ageInDays = 0l;
@@ -182,11 +184,11 @@ public class Person implements Serializable {
         } else {
             temT = "";
         }
-       
+
         return temT;
     }
-
-  
+// </editor-fold>
+// <editor-fold defaultstate="collapsed" desc="Getters & Setters">
 
     public Sex getSex() {
         return sex;
@@ -260,8 +262,6 @@ public class Person implements Serializable {
         this.name = name.toUpperCase();
     }
 
-   
-
     public boolean isRetired() {
         return retired;
     }
@@ -284,30 +284,6 @@ public class Person implements Serializable {
 
     public void setRetiredBy(WebUser retiredBy) {
         this.retiredBy = retiredBy;
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 0;
-        hash += (id != null ? id.hashCode() : 0);
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object object) {
-        if (!(object instanceof Person)) {
-            return false;
-        }
-        Person other = (Person) object;
-        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
-            return false;
-        }
-        return true;
-    }
-
-    @Override
-    public String toString() {
-        return name;
     }
 
     public String getAddress() {
@@ -350,8 +326,6 @@ public class Person implements Serializable {
         this.drivingLicenseNumber = drivingLicenseNumber;
     }
 
-   
-
     public Title getTitle() {
         return title;
     }
@@ -367,9 +341,6 @@ public class Person implements Serializable {
     public void setDateOfBirth(Date dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
     }
-
-   
-
 
     public String getPhone1() {
         return phone1;
@@ -387,7 +358,6 @@ public class Person implements Serializable {
         this.nic = nic;
     }
 
-
     public int getSerealNumber() {
         return serealNumber;
     }
@@ -395,4 +365,64 @@ public class Person implements Serializable {
     public void setSerealNumber(int serealNumber) {
         this.serealNumber = serealNumber;
     }
+
+    public Citizenship getCitizenship() {
+        return citizenship;
+    }
+
+    public void setCitizenship(Citizenship citizenship) {
+        this.citizenship = citizenship;
+    }
+
+    public Item getEthinicGroup() {
+        return ethinicGroup;
+    }
+
+    public void setEthinicGroup(Item ethinicGroup) {
+        this.ethinicGroup = ethinicGroup;
+    }
+
+    public Item getReligion() {
+        return religion;
+    }
+
+    public void setReligion(Item religion) {
+        this.religion = religion;
+    }
+
+    public Item getMariatalStatus() {
+        return mariatalStatus;
+    }
+
+    public void setMariatalStatus(Item mariatalStatus) {
+        this.mariatalStatus = mariatalStatus;
+    }
+
+// </editor-fold>
+// <editor-fold defaultstate="collapsed" desc="Over-rides">
+    @Override
+    public int hashCode() {
+        int hash = 0;
+        hash += (id != null ? id.hashCode() : 0);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (!(object instanceof Person)) {
+            return false;
+        }
+        Person other = (Person) object;
+        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public String toString() {
+        return name;
+    }
+// </editor-fold>
+
 }

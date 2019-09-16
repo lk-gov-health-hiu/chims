@@ -12,40 +12,16 @@
             <h:form id="ItemCreateForm">
                 <h:panelGroup id="display">
                     <p:panelGrid columns="2" rendered="#{itemController.selected != null}">
-                        <p:outputLabel value="#{bundleClinical.CreateItemLabel_itemType}" for="itemType" />
-                        <p:inputText id="itemType" value="#{itemController.selected.itemType}" title="#{bundleClinical.CreateItemTitle_itemType}" />
-                        <p:outputLabel value="#{bundleClinical.CreateItemLabel_name}" for="name" />
-                        <p:inputText id="name" value="#{itemController.selected.name}" title="#{bundleClinical.CreateItemTitle_name}" />
-                        <p:outputLabel value="#{bundleClinical.CreateItemLabel_id}" for="id" />
-                        <p:inputText id="id" value="#{itemController.selected.id}" title="#{bundleClinical.CreateItemTitle_id}" />
-                        <p:outputLabel value="#{bundleClinical.CreateItemLabel_creater}" for="creater" />
-                        <p:selectOneMenu id="creater" value="#{itemController.selected.creater}" >
-                            <f:selectItems value="#{webUserController.itemsAvailableSelectOne}"
-                                           var="createrItem"
-                                           itemValue="#{createrItem}"/>
-                        </p:selectOneMenu>
-                        <p:outputLabel value="#{bundleClinical.CreateItemLabel_createdAt}" for="createdAt" />
-                        <p:calendar id="createdAt" pattern="MM/dd/yyyy HH:mm:ss" value="#{itemController.selected.createdAt}" title="#{bundleClinical.EditItemTitle_createdAt}"  showOn="button"/>
-                        <p:outputLabel value="#{bundleClinical.CreateItemLabel_editedBy}" for="editedBy" />
-                        <p:selectOneMenu id="editedBy" value="#{itemController.selected.editedBy}" >
-                            <f:selectItems value="#{webUserController.itemsAvailableSelectOne}"
-                                           var="editedByItem"
-                                           itemValue="#{editedByItem}"/>
-                        </p:selectOneMenu>
-                        <p:outputLabel value="#{bundleClinical.CreateItemLabel_editedAt}" for="editedAt" />
-                        <p:calendar id="editedAt" pattern="MM/dd/yyyy HH:mm:ss" value="#{itemController.selected.editedAt}" title="#{bundleClinical.EditItemTitle_editedAt}"  showOn="button"/>
-                        <p:outputLabel value="#{bundleClinical.CreateItemLabel_retiredBy}" for="retiredBy" />
-                        <p:selectOneMenu id="retiredBy" value="#{itemController.selected.retiredBy}" >
-                            <f:selectItems value="#{webUserController.itemsAvailableSelectOne}"
-                                           var="retiredByItem"
-                                           itemValue="#{retiredByItem}"/>
-                        </p:selectOneMenu>
-                        <p:outputLabel value="#{bundleClinical.CreateItemLabel_retiredAt}" for="retiredAt" />
-                        <p:calendar id="retiredAt" pattern="MM/dd/yyyy HH:mm:ss" value="#{itemController.selected.retiredAt}" title="#{bundleClinical.EditItemTitle_retiredAt}"  showOn="button"/>
-                        <p:outputLabel value="#{bundleClinical.CreateItemLabel_retireComments}" for="retireComments" />
-                        <p:inputText id="retireComments" value="#{itemController.selected.retireComments}" title="#{bundleClinical.CreateItemTitle_retireComments}" />
+                        <p:outputLabel value="#{bundleClinical.EditItemLabel_itemType}" for="itemType" />
+                        <p:inputText id="itemType" value="#{itemController.selected.itemType}" title="#{bundleClinical.EditItemTitle_itemType}" />
+                        <p:outputLabel value="#{bundleClinical.EditItemLabel_name}" for="name" />
+                        <p:inputText id="name" value="#{itemController.selected.name}" title="#{bundleClinical.EditItemTitle_name}" />
+                        <p:outputLabel value="Code" for="code" />
+                        <p:inputText id="code" value="#{itemController.selected.code}" title="#{bundleClinical.EditItemTitle_id}" />
+                        <p:outputLabel value="Parent"  />
+                        <p:outputLabel value="#{itemController.selected.parent.name}" />
                     </p:panelGrid>
-                    <p:commandButton actionListener="#{itemController.create}" value="#{bundleClinical.Save}" update="display,:ItemListForm:datalist,:growl" oncomplete="handleSubmit(args,'ItemCreateDialog');"/>
+                    <p:commandButton actionListener="#{itemController.create}" value="#{bundleClinical.Save}" update="display,:ItemListForm:datalist" oncomplete="handleSubmit(args,'ItemCreateDialog');"/>
                     <p:commandButton value="#{bundleClinical.Cancel}" onclick="ItemCreateDialog.hide()"/>
                 </h:panelGroup>
             </h:form>

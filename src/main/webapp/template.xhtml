@@ -37,6 +37,7 @@
         </style>
         <f:view locale="#{webUserController.locale}" >
             <p:growl autoUpdate="true"  ></p:growl>
+            
             <div class="w3-row w3-theme-l5" style="font-family: 'Chilanka', sans-serif!important;">
                 <h:panelGroup rendered="#{webUserController.loggedUser ne null}">
                     <div class="w3-row" >
@@ -44,7 +45,8 @@
                     </div>
                 </h:panelGroup>
             </div>
-
+            
+          
             <div class="w3-row w3-theme-l5" >
                 <h:panelGroup rendered="#{webUserController.loggedUser ne null}">
                     <ui:insert name="content">
@@ -58,30 +60,7 @@
 
             <div class="footer w3-amber">
                 <ui:insert name="bottom">
-                    <table style="width: 98%; margin: auto;">
-                        <tr>
-                            <td>
-                                &copy; #{bundle.Hiu}, 2019
-                            </td>
-                            <td>
-
-                            </td>
-                            <td>
-
-                            </td>
-                            <td>
-                                <h:panelGroup rendered="#{webUserController.loggedUser ne null and false}" >
-                                    <h:outputLabel value="Language"  />
-                                    <h:selectOneMenu value="#{webUserController.loggedUser.defLocale}" >
-                                        <f:selectItem itemLabel="Sinhala" itemValue="si" ></f:selectItem>
-                                        <f:selectItem itemLabel="Tamil" itemValue="ta" ></f:selectItem>
-                                        <f:selectItem itemLabel="English" itemValue="en" ></f:selectItem>
-                                        <f:ajax execute="@this" render="@all" listener="#{webUserController.updateLoggedUser()}" ></f:ajax>
-                                    </h:selectOneMenu>
-                                </h:panelGroup>
-                            </td>
-                        </tr>
-                    </table>
+                    <ez:footer/>
                 </ui:insert>
             </div>
 

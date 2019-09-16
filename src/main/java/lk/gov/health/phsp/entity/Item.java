@@ -52,9 +52,13 @@ public class Item implements Serializable {
     @Enumerated(EnumType.STRING)
     ItemType itemType;
     String name;
+    private String code;
+    @ManyToOne
+    private Item parent;
+    private int orderNo;
 
     @ManyToOne
-    private WebUser creater;
+    private WebUser createdBy;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date createdAt;
     @ManyToOne
@@ -93,12 +97,12 @@ public class Item implements Serializable {
         this.id = id;
     }
 
-    public WebUser getCreater() {
-        return creater;
+    public WebUser getCreatedBy() {
+        return createdBy;
     }
 
-    public void setCreater(WebUser creater) {
-        this.creater = creater;
+    public void setCreatedBy(WebUser createdBy) {
+        this.createdBy = createdBy;
     }
 
     public Date getCreatedAt() {
@@ -157,6 +161,9 @@ public class Item implements Serializable {
         this.retireComments = retireComments;
     }
 
+
+    
+    
     @Override
     public int hashCode() {
         int hash = 0;
@@ -182,4 +189,29 @@ public class Item implements Serializable {
         return name;
     }
 
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    public Item getParent() {
+        return parent;
+    }
+
+    public void setParent(Item parent) {
+        this.parent = parent;
+    }
+
+    public int getOrderNo() {
+        return orderNo;
+    }
+
+    public void setOrderNo(int orderNo) {
+        this.orderNo = orderNo;
+    }
+
+    
 }

@@ -10,35 +10,52 @@
 
         <p:dialog id="ItemViewDlg" widgetVar="ItemViewDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundleClinical.ViewItemTitle}">
             <h:form id="ItemViewForm">
+
+
                 <h:panelGroup id="display">
-                    <p:panelGrid columns="2" rendered="#{itemController.selected != null}">
-                        <h:outputText value="#{bundleClinical.ViewItemLabel_itemType}"/>
-                        <h:outputText value="#{itemController.selected.itemType}" title="#{bundleClinical.ViewItemTitle_itemType}"/>
-                        <h:outputText value="#{bundleClinical.ViewItemLabel_name}"/>
-                        <h:outputText value="#{itemController.selected.name}" title="#{bundleClinical.ViewItemTitle_name}"/>
-                        <h:outputText value="#{bundleClinical.ViewItemLabel_id}"/>
-                        <h:outputText value="#{itemController.selected.id}" title="#{bundleClinical.ViewItemTitle_id}"/>
-                        <h:outputText value="#{bundleClinical.ViewItemLabel_creater}"/>
-                        <h:outputText value="#{itemController.selected.creater}" title="#{bundleClinical.ViewItemTitle_creater}"/>
-                        <h:outputText value="#{bundleClinical.ViewItemLabel_createdAt}"/>
-                        <h:outputText value="#{itemController.selected.createdAt}" title="#{bundleClinical.ViewItemTitle_createdAt}">
+
+
+
+
+                    <p:panelGrid columns="2">
+                        <h:outputText value="ItemType:"/>
+                        <h:outputText value="#{itemController.selected.itemType}" title="ItemType"/>
+                        <h:outputText value="Name:"/>
+                        <h:outputText value="#{itemController.selected.name}" title="Name"/>
+                        <h:outputText value="Id:"/>
+                        <h:outputText value="#{itemController.selected.id}" title="Id"/>
+                        <h:outputText value="CreatedBy:"/>
+                        <h:outputText value="#{itemController.selected.createdBy}" title="CreatedBy"/>
+                        <h:outputText value="CreatedAt:"/>
+                        <h:outputText value="#{itemController.selected.createdAt}" title="CreatedAt">
                             <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
                         </h:outputText>
-                        <h:outputText value="#{bundleClinical.ViewItemLabel_editedBy}"/>
-                        <h:outputText value="#{itemController.selected.editedBy}" title="#{bundleClinical.ViewItemTitle_editedBy}"/>
-                        <h:outputText value="#{bundleClinical.ViewItemLabel_editedAt}"/>
-                        <h:outputText value="#{itemController.selected.editedAt}" title="#{bundleClinical.ViewItemTitle_editedAt}">
+                        <h:outputText value="EditedBy:"/>
+                        <h:outputText value="#{itemController.selected.editedBy}" title="EditedBy"/>
+                        <h:outputText value="EditedAt:"/>
+                        <h:outputText value="#{itemController.selected.editedAt}" title="EditedAt">
                             <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
                         </h:outputText>
-                        <h:outputText value="#{bundleClinical.ViewItemLabel_retiredBy}"/>
-                        <h:outputText value="#{itemController.selected.retiredBy}" title="#{bundleClinical.ViewItemTitle_retiredBy}"/>
-                        <h:outputText value="#{bundleClinical.ViewItemLabel_retiredAt}"/>
-                        <h:outputText value="#{itemController.selected.retiredAt}" title="#{bundleClinical.ViewItemTitle_retiredAt}">
+                        <h:outputText value="RetiredBy:"/>
+                        <h:outputText value="#{itemController.selected.retiredBy}" title="RetiredBy"/>
+                        <h:outputText value="RetiredAt:"/>
+                        <h:outputText value="#{itemController.selected.retiredAt}" title="RetiredAt">
                             <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
                         </h:outputText>
-                        <h:outputText value="#{bundleClinical.ViewItemLabel_retireComments}"/>
-                        <h:outputText value="#{itemController.selected.retireComments}" title="#{bundleClinical.ViewItemTitle_retireComments}"/>
+                        <h:outputText value="RetireComments:"/>
+                        <h:outputText value="#{itemController.selected.retireComments}" title="RetireComments"/>
+                        <h:outputText value="Code:"/>
+                        <h:outputText value="#{itemController.selected.code}" title="Code"/>
+                        <h:outputText value="Parent:"/>
+                        <h:outputText value="#{itemController.selected.parent}" title="Parent"/>
+                        <h:outputText value="OrderNo:"/>
+                        <h:outputText value="#{itemController.selected.orderNo}" title="OrderNo"/>
                     </p:panelGrid>
+
+
+
+
+
                     <p:commandButton value="#{bundleClinical.Close}" onclick="ItemViewDialog.hide()"/>
                 </h:panelGroup>
             </h:form>

@@ -16,18 +16,17 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class Client implements Serializable {
 
-    private static final long serialVersionUID = 1L;
-
-    public static long getSerialVersionUID() {
-        return serialVersionUID;
-    }
+// <editor-fold defaultstate="collapsed" desc="Attributes">
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    private static final long serialVersionUID = 1L;
+
     @OneToOne(cascade = CascadeType.ALL)
     private Person person;
 
+    private String phn;
     /*
     Create Properties
      */
@@ -59,14 +58,8 @@ public class Client implements Serializable {
     private Date retiredAt;
     private String retireComments;
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
+    // </editor-fold>   
+// <editor-fold defaultstate="collapsed" desc="Overrides">
     @Override
     public int hashCode() {
         int hash = 0;
@@ -87,8 +80,20 @@ public class Client implements Serializable {
         return true;
     }
 
-    
-    
+// </editor-fold>
+// <editor-fold defaultstate="collapsed" desc="Getters & Setters">
+    public static long getSerialVersionUID() {
+        return serialVersionUID;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     public Person getPerson() {
         return person;
     }
@@ -177,4 +182,14 @@ public class Client implements Serializable {
         this.retiredReversedAt = retiredReversedAt;
     }
 
+    public String getPhn() {
+        return phn;
+    }
+
+    public void setPhn(String phn) {
+        this.phn = phn;
+    }
+
+// </editor-fold>
+    
 }

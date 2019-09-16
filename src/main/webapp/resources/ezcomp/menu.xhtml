@@ -21,10 +21,10 @@
 
             <h:outputStylesheet library="css" name="tem1.css"/>
 
-            <p:menubar style="border: 0px; margin: 0px; padding: 0px;"  styleClass="Chilanka" >
-                <p:submenu label="Clients" >
-                    <p:menuitem value="Open" url="#" style="font-family: 'Chilanka', sans-serif!important;"/>
-                    <p:menuitem value="Register" url="#" styleClass="Chilanka" />
+            <p:menubar style="border: 0px; margin: 0px; padding: 0px;"  styleClass="Chilanka"  rendered="#{webUserController.loggedUser ne null}">
+                <p:submenu label="Clients" rendered="#{webUserController.hasPrivilege('Client_Management')}" >
+                    <p:menuitem value="Search" action="#{clientController.toSearchClientById()}" />
+                    <p:menuitem value="Register New" action="#{clientController.toAddNewClient()}"  />
                 </p:submenu>
 
                 <p:submenu label="Settings" >
@@ -33,10 +33,10 @@
                 </p:submenu>
 
                 <p:submenu label="Administration" >
-                    <p:menuitem value="Manage Users" url="#"  />
+                    <p:menuitem value="Manage Users" action="manage_users"  />
                     <p:menuitem value="Manage Institutions" url="#"  />
                     <p:menuitem value="Manage Areas" url="#"  />
-                    <p:menuitem value="Manage Metadata" url="#" />
+                    <p:menuitem value="Manage Metadata" action="/systemAdmin/index" rendered="#{webUserController.hasPrivilege('System_Administration')}" />
                 </p:submenu>
 
                 <p:submenu label="Help" >
@@ -55,6 +55,7 @@
                                      rendered="#{webUserController.loggedUser ne null}" value="Logout" />
                 </f:facet>
             </p:menubar>
+        
         </h:form>
 
     </cc:implementation>

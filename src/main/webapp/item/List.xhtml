@@ -9,11 +9,7 @@
     <ui:composition template="/template.xhtml">
 
 
-        <ui:define name="title">
-            <h:outputText value="#{bundleClinical.ListItemTitle}"></h:outputText>
-        </ui:define>
-
-        <ui:define name="body">
+        <ui:define name="content">
             <h:form id="ItemListForm">
                 <p:panel header="#{bundleClinical.ListItemTitle}">
                     <p:dataTable id="datalist" value="#{itemController.items}" var="item"
@@ -41,63 +37,21 @@
                         </p:column>
                         <p:column>
                             <f:facet name="header">
-                                <h:outputText value="#{bundleClinical.ListItemTitle_id}"/>
+                                <h:outputText value="Code"/>
                             </f:facet>
-                            <h:outputText value="#{item.id}"/>
+                            <h:outputText value="#{item.code}"/>
                         </p:column>
                         <p:column>
                             <f:facet name="header">
-                                <h:outputText value="#{bundleClinical.ListItemTitle_creater}"/>
+                                <h:outputText value="Parent"/>
                             </f:facet>
-                            <h:outputText value="#{item.creater}"/>
-                        </p:column>
-                        <p:column>
-                            <f:facet name="header">
-                                <h:outputText value="#{bundleClinical.ListItemTitle_createdAt}"/>
-                            </f:facet>
-                            <h:outputText value="#{item.createdAt}">
-                                <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
-                            </h:outputText>
-                        </p:column>
-                        <p:column>
-                            <f:facet name="header">
-                                <h:outputText value="#{bundleClinical.ListItemTitle_editedBy}"/>
-                            </f:facet>
-                            <h:outputText value="#{item.editedBy}"/>
-                        </p:column>
-                        <p:column>
-                            <f:facet name="header">
-                                <h:outputText value="#{bundleClinical.ListItemTitle_editedAt}"/>
-                            </f:facet>
-                            <h:outputText value="#{item.editedAt}">
-                                <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
-                            </h:outputText>
-                        </p:column>
-                        <p:column>
-                            <f:facet name="header">
-                                <h:outputText value="#{bundleClinical.ListItemTitle_retiredBy}"/>
-                            </f:facet>
-                            <h:outputText value="#{item.retiredBy}"/>
-                        </p:column>
-                        <p:column>
-                            <f:facet name="header">
-                                <h:outputText value="#{bundleClinical.ListItemTitle_retiredAt}"/>
-                            </f:facet>
-                            <h:outputText value="#{item.retiredAt}">
-                                <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
-                            </h:outputText>
-                        </p:column>
-                        <p:column>
-                            <f:facet name="header">
-                                <h:outputText value="#{bundleClinical.ListItemTitle_retireComments}"/>
-                            </f:facet>
-                            <h:outputText value="#{item.retireComments}"/>
+                            <h:outputText value="#{item.parent.name}"/>
                         </p:column>
                         <f:facet name="footer">
                             <p:commandButton id="createButton" icon="ui-icon-plus"   value="#{bundleClinical.Create}" actionListener="#{itemController.prepareCreate}" update=":ItemCreateForm" oncomplete="PF('ItemCreateDialog').show()"/>
                             <p:commandButton id="viewButton"   icon="ui-icon-search" value="#{bundleClinical.View}" update=":ItemViewForm" oncomplete="PF('ItemViewDialog').show()" disabled="#{empty itemController.selected}"/>
                             <p:commandButton id="editButton"   icon="ui-icon-pencil" value="#{bundleClinical.Edit}" update=":ItemEditForm" oncomplete="PF('ItemEditDialog').show()" disabled="#{empty itemController.selected}"/>
-                            <p:commandButton id="deleteButton" icon="ui-icon-trash"  value="#{bundleClinical.Delete}" actionListener="#{itemController.destroy}" update=":growl,datalist" disabled="#{empty itemController.selected}"/>
+                            <p:commandButton id="deleteButton" icon="ui-icon-trash"  value="#{bundleClinical.Delete}" actionListener="#{itemController.destroy}" update="datalist" disabled="#{empty itemController.selected}"/>
                         </f:facet>
                     </p:dataTable>
                 </p:panel>

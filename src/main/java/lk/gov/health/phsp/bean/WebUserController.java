@@ -1,13 +1,10 @@
 package lk.gov.health.phsp.bean;
 
 import lk.gov.health.phsp.entity.Area;
-import lk.gov.health.phsp.enums.AreaType;
 import lk.gov.health.phsp.entity.WebUser;
 import lk.gov.health.phsp.entity.Institution;
 import lk.gov.health.phsp.enums.InstitutionType;
 import lk.gov.health.phsp.entity.Item;
-import lk.gov.health.phsp.enums.ItemType;
-import lk.gov.health.phsp.enums.ProjectStageType;
 import lk.gov.health.phsp.entity.Upload;
 import lk.gov.health.phsp.enums.UploadType;
 import lk.gov.health.phsp.enums.WebUserRole;
@@ -25,7 +22,9 @@ import java.io.InputStream;
 
 import java.io.Serializable;
 import java.io.StringWriter;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -41,14 +40,18 @@ import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
 import javax.faces.model.SelectItem;
 import javax.inject.Inject;
-import javax.persistence.TemporalType;
 import jxl.Cell;
 import jxl.Sheet;
 import jxl.Workbook;
 import jxl.read.biff.BiffException;
+import lk.gov.health.phsp.entity.UserPrivilege;
+import lk.gov.health.phsp.enums.Privilege;
+import lk.gov.health.phsp.enums.PrivilegeTreeNode;
+import lk.gov.health.phsp.facade.UserPrivilegeFacade;
 import org.apache.commons.io.IOUtils;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
+import org.primefaces.model.TreeNode;
 import org.primefaces.model.UploadedFile;
 import org.primefaces.model.map.DefaultMapModel;
 import org.primefaces.model.map.LatLng;
@@ -72,6 +75,8 @@ public class WebUserController implements Serializable {
     private ProjectInstitutionFacade projectInstitutionFacade;
     @EJB
     private ProjectSourceOfFundFacade projectSourceOfFundFacade;
+    @EJB
+    private UserPrivilegeFacade userPrivilegeFacade;
     /*
     Controllers
      */
@@ -91,6 +96,8 @@ public class WebUserController implements Serializable {
     private List<Upload> currentProjectUploads;
     private List<Upload> clientUploads;
     private List<Upload> companyUploads;
+    
+
 
     private Area selectedProvince;
     private Area selectedDistrict;
@@ -108,7 +115,6 @@ public class WebUserController implements Serializable {
     private List<Area> selectedGnAreas;
     private Area[] selectedProvinces;
 
-
     private WebUser current;
     private Upload currentUpload;
     private Institution institution;
@@ -118,6 +124,7 @@ public class WebUserController implements Serializable {
     private String password;
     private String passwordReenter;
     private MapModel emptyModel;
+    List<UserPrivilege> loggedUserPrivileges;
 
     private UploadedFile file;
     private String comments;
@@ -138,21 +145,56 @@ public class WebUserController implements Serializable {
 
     private String locale;
 
-    private ProjectStageType projectStageWorkingOn;
-    private String projectStageWorkingOnComments;
-    private Date projectStageWorkingOnDate;
-    private String projectStageWorkingOnTitle;
-    private String projectStageWorkingOnButtonTitle;
-    private String projectStageWorkingOnDateTitle;
-    private String projectStageWorkingOnCommentTitle;
-    private String projectStageWorkingOnPeriodTitle;
+    /**
+     *
+     * Privileges
+     *
+     */
+    private TreeNode allPrivilegeRoot;
+    private TreeNode myPrivilegeRoot;
+    private TreeNode[] selectedNodes;
 
     @PostConstruct
     public void init() {
         emptyModel = new DefaultMapModel();
+        createAllPrivilege();
     }
 
-   
+    private void createAllPrivilege() {
+        allPrivilegeRoot = new PrivilegeTreeNode("Root", null);
+
+        TreeNode clientManagement = new PrivilegeTreeNode("Client Management", allPrivilegeRoot);
+        TreeNode encounterManagement = new PrivilegeTreeNode("Encounter Management", allPrivilegeRoot);
+        TreeNode appointmentManagement = new PrivilegeTreeNode("Appointment Management", allPrivilegeRoot);
+        TreeNode labManagement = new PrivilegeTreeNode("Lab Management", allPrivilegeRoot);
+        TreeNode pharmacyManagement = new PrivilegeTreeNode("Pharmacy Management", allPrivilegeRoot);
+        TreeNode user = new PrivilegeTreeNode("User", allPrivilegeRoot);
+        TreeNode institutionAdministration = new PrivilegeTreeNode("Institution Administration", allPrivilegeRoot);
+        TreeNode systemAdministration = new PrivilegeTreeNode("System Administration", allPrivilegeRoot);
+        //Client Management
+
+        TreeNode add_Client = new PrivilegeTreeNode("Add_Client", clientManagement, Privilege.Add_Client);
+        TreeNode search_any_Client_by_IDs = new PrivilegeTreeNode("Search any Client by IDs", clientManagement, Privilege.Search_any_Client_by_IDs);
+        TreeNode search_any_Client_by_Details = new PrivilegeTreeNode("Search any Client by Details", clientManagement, Privilege.Search_any_Client_by_Details);
+        TreeNode search_any_client_by_ID_of_Authorised_Areas = new PrivilegeTreeNode("Search any client by ID of Authorised Areas", clientManagement, Privilege.Search_any_client_by_ID_of_Authorised_Areas);
+        TreeNode search_any_client_by_Details_of_Authorised_Areas = new PrivilegeTreeNode("Search any client by Details of Authorised Areas", clientManagement, Privilege.Search_any_client_by_Details_of_Authorised_Areas);
+        TreeNode search_any_client_by_ID_of_Authorised_Institutions = new PrivilegeTreeNode("Search any client by ID of Authorised Institutions", clientManagement, Privilege.Search_any_client_by_ID_of_Authorised_Institutions);
+        TreeNode search_any_client_by_Details_of_Authorised_Institutions = new PrivilegeTreeNode("Search any client by Details of Authorised Institutions", clientManagement, Privilege.Search_any_client_by_Details_of_Authorised_Institutions);
+
+        //Institution Administration
+        TreeNode manage_Institution_Users = new PrivilegeTreeNode("Manage Institution Users", institutionAdministration, Privilege.Manage_Institution_Users);
+        TreeNode manage_Institution_Metadata = new PrivilegeTreeNode("Manage Institution Metadata", institutionAdministration, Privilege.Manage_Institution_Metadata);
+        TreeNode manage_Authorised_Areas = new PrivilegeTreeNode("Manage Authorised Areas", institutionAdministration, Privilege.Manage_Authorised_Areas);
+        TreeNode manage_Authorised_Institutions = new PrivilegeTreeNode("Manage Authorised Institutions", institutionAdministration, Privilege.Manage_Authorised_Institutions);
+        //System Administration
+        TreeNode manage_Users = new PrivilegeTreeNode("Manage Users", systemAdministration, Privilege.Add_Client);
+        TreeNode manage_Metadata = new PrivilegeTreeNode("Manage Metadata", systemAdministration, Privilege.Search_any_Client_by_IDs);
+        TreeNode manage_Area = new PrivilegeTreeNode("Manage Area", systemAdministration, Privilege.Search_any_Client_by_Details);
+        TreeNode manage_Institutions = new PrivilegeTreeNode("Manage Institutions", systemAdministration, Privilege.Search_any_client_by_ID_of_Authorised_Areas);
+        TreeNode manage_Forms = new PrivilegeTreeNode("Manage Forms", systemAdministration, Privilege.Search_any_client_by_Details_of_Authorised_Areas);
+
+    }
+
     public String toChangeMyDetails() {
         if (loggedUser == null) {
             return "";
@@ -170,8 +212,6 @@ public class WebUserController implements Serializable {
         current = loggedUser;
         return "/change_my_password";
     }
-
-   
 
     public void markLocationOnMap() {
         emptyModel = new DefaultMapModel();
@@ -206,12 +246,10 @@ public class WebUserController implements Serializable {
         }
     }
 
-    
     public String toSubmitClientRequest() {
         return "/finalize_client_request";
     }
 
-    
     public void sendSubmitClientRequestConfirmationEmail() {
 
     }
@@ -237,13 +275,6 @@ public class WebUserController implements Serializable {
         return "";
     }
 
-  
-
-    
-    
-    
-    
-
     /**
      *
      *
@@ -253,13 +284,11 @@ public class WebUserController implements Serializable {
      *
      */
     public void uploadFiles() {
-        
 
         InputStream in;
 
         Upload u = new Upload();
 
-     
         u.setComments(comments);
         u.setCreatedAt(new Date());
         u.setUploadType(UploadType.Client_Upload_Prior_To_Proposal);
@@ -274,7 +303,7 @@ public class WebUserController implements Serializable {
         if (file != null) {
             try {
                 in = getFile().getInputstream();
-                File f = new File("P" +  "U" + u.getId());
+                File f = new File("P" + "U" + u.getId());
                 FileOutputStream out = new FileOutputStream(f);
 
                 //            OutputStream out = new FileOutputStream(new File(fileName));
@@ -305,12 +334,10 @@ public class WebUserController implements Serializable {
         }
     }
 
-  
-
     public String prepareRegisterAsClient() {
         current = new WebUser();
         current.setWebUserRole(WebUserRole.Institution_User);
-      
+
         currentProjectUploads = null;
         companyUploads = null;
         clientUploads = null;
@@ -333,7 +360,7 @@ public class WebUserController implements Serializable {
             ins.setName(current.getName());
             ins.setEmail(current.getEmail());
             ins.setPhone(current.getTelNo());
-        
+
             ins.setInstitutionType(InstitutionType.Regional_Department_of_Health_Department);
             getInstitutionFacade().create(ins);
             current.setInstitution(ins);
@@ -374,10 +401,6 @@ public class WebUserController implements Serializable {
         return "/index";
     }
 
-    public String toLogin() {
-        return "/login";
-    }
-
     public String login() {
         if (userName == null || userName.trim().equals("")) {
             JsfUtil.addErrorMessage("Please enter a Username");
@@ -393,6 +416,7 @@ public class WebUserController implements Serializable {
                 return "";
             }
         }
+        loggedUserPrivileges = userPrivilegeList(loggedUser);
         JsfUtil.addSuccessMessage("Successfully Logged");
         return "index";
     }
@@ -421,11 +445,11 @@ public class WebUserController implements Serializable {
         Map m = new HashMap();
         m.put("userName", userName.trim().toLowerCase());
         m.put("ret", false);
-        loggedUser = getFacade().findFirstBySQL(temSQL, m);
+        loggedUser = getFacade().findFirstByJpql(temSQL, m);
         if (loggedUser == null) {
             return false;
         }
-        if (password.equals(loggedUser.getWebUserPassword())) {
+        if (commonController.matchPassword(password, loggedUser.getWebUserPassword())) {
             System.out.println("Correct");
             return true;
         } else {
@@ -440,24 +464,110 @@ public class WebUserController implements Serializable {
         System.out.println("is First Visit Check " + this);
         if (getFacade().count() <= 0) {
             JsfUtil.addSuccessMessage("First Visit");
+
             Institution ins = new Institution();
-            ins.setName("Solar Bid, Inc");
+            ins.setName("Institution");
             ins.setInstitutionType(InstitutionType.Ministry_of_Health);
             getInstitutionFacade().create(ins);
             WebUser wu = new WebUser();
             wu.getPerson().setName(userName);
             wu.setName(userName);
-            wu.setWebUserPassword(password);
+            String tp = commonController.hash(password);
+            wu.setWebUserPassword(tp);
             wu.setInstitution(ins);
             wu.setWebUserRole(WebUserRole.System_Administrator);
             getFacade().create(wu);
             loggedUser = wu;
+            addAllWebUserPrivileges(wu);
             return true;
         } else {
             System.out.println("NOT First Visit");
             return false;
         }
 
+    }
+    
+    public void addAllWebUserPrivileges(WebUser u){
+        List<Privilege> ps = Arrays.asList(Privilege.values());
+        addWebUserPrivileges(u, ps);
+    }
+    
+    public void addWebUserPrivileges(WebUser u, List<Privilege> ps){
+        for(Privilege p:ps){
+            addWebUserPrivileges(u, p);
+        }
+    }
+    
+    public void addWebUserPrivileges(WebUser u, Privilege p){
+        String j = "Select up from UserPrivilege up where up.retired=false"
+                + " and up.webUser=:u and up.privilege=:p";
+        Map m = new HashMap();
+        m.put("u", u);
+        m.put("p", p);
+        UserPrivilege up = getUserPrivilegeFacade().findFirstByJpql(j, m);
+        if(up==null){
+            up = new UserPrivilege();
+            up.setCreatedAt(new Date());
+            up.setCreatedBy(loggedUser);
+            up.setWebUser(u);
+            up.setPrivilege(p);
+            getUserPrivilegeFacade().create(up);
+        }
+    }
+
+    public boolean hasPrivilege(String privilege) {
+        System.out.println("hasPrivilege = " + privilege);
+        Privilege p;
+        try {
+            p = Privilege.valueOf(privilege);
+            System.out.println("p = " + p);
+            if(p!=null){
+                return hasPrivilege(p);
+            }else{
+                return false;
+            }
+        } catch (Exception e) {
+            System.out.println("e = " + e);
+            System.out.println("privilege = " + privilege);
+            return false;
+        }
+    }
+
+    public boolean hasPrivilege(Privilege p) {
+        return hasPrivilege(loggedUserPrivileges, p);
+    }
+
+    public boolean hasPrivilege(List<UserPrivilege> ups, Privilege p) {
+        boolean f = false;
+        for (UserPrivilege up : ups) {
+            if (up.getPrivilege().equals(p)) {
+                f = true;
+            }
+        }
+        return f;
+    }
+
+    public List<UserPrivilege> userPrivilegeList(WebUser u) {
+        return userPrivilegeList(u, null);
+    }
+
+    public List<UserPrivilege> userPrivilegeList(Item i) {
+        return userPrivilegeList(null, i);
+    }
+
+    public List<UserPrivilege> userPrivilegeList(WebUser u, Item i) {
+        String j = "select p from UserPrivilege p "
+                + " where p.retired=false ";
+        Map m = new HashMap();
+        if (u != null) {
+            j += " and p.webUser=:u ";
+            m.put("u", u);
+        }
+        if (i != null) {
+            j += " and p.item=:i ";
+            m.put("i", i);
+        }
+        return getUserPrivilegeFacade().findByJpql(j, m);
     }
 
     public String importProjectsFromExcel() {
@@ -510,8 +620,6 @@ public class WebUserController implements Serializable {
 
             for (int i = startRow; i < sheet.getRows(); i++) {
 
-               
-
                 Map m = new HashMap();
 
                 //Year
@@ -519,7 +627,7 @@ public class WebUserController implements Serializable {
                 strYear = cell.getContents();
                 try {
                     intYear = Integer.parseInt(strYear);
-                    
+
                 } catch (Exception e) {
                     System.out.println("e = " + i + " in " + e);
                 }
@@ -530,41 +638,31 @@ public class WebUserController implements Serializable {
                 cell = sheet.getCell(3, i);
                 strDistrict = cell.getContents();
 
-              
-
                 cell = sheet.getCell(2, i);
                 strFileNumber = cell.getContents();
-               
 
                 cell = sheet.getCell(4, i);
                 strLocation = cell.getContents();
-               
 
                 cell = sheet.getCell(5, i);
                 strTile = cell.getContents();
-               
 
                 cell = sheet.getCell(6, i);
                 strDiscription = cell.getContents();
-               
 
                 cell = sheet.getCell(7, i);
                 strCost = cell.getContents();
                 try {
                     dblCost = Double.parseDouble(strCost);
-                   
+
                 } catch (Exception e) {
                     System.out.println(i + ". e = " + e);
                 }
 
                 cell = sheet.getCell(8, i);
                 strFundSource = cell.getContents();
-               
+
                 System.out.println("Added SUccessfully = " + i);
-
-               
-
-          
 
             }
 
@@ -578,7 +676,6 @@ public class WebUserController implements Serializable {
             return "";
         }
     }
-
 
     public UploadedFile getFile() {
         return file;
@@ -811,8 +908,6 @@ public class WebUserController implements Serializable {
         this.emptyModel = emptyModel;
     }
 
-   
-
     public UploadFacade getUploadFacade() {
         return uploadFacade;
     }
@@ -837,13 +932,9 @@ public class WebUserController implements Serializable {
         this.currentUpload = currentUpload;
     }
 
-   
-
     public void setCurrentProjectUploads(List<Upload> currentProjectUploads) {
         this.currentProjectUploads = currentProjectUploads;
     }
-
- 
 
     public Date getFromDate() {
         if (fromDate == null) {
@@ -870,13 +961,9 @@ public class WebUserController implements Serializable {
         this.toDate = toDate;
     }
 
- 
-
     public void setClientUploads(List<Upload> clientUploads) {
         this.clientUploads = clientUploads;
     }
-
-   
 
     public Institution getInstitution() {
         return institution;
@@ -893,9 +980,6 @@ public class WebUserController implements Serializable {
     public void setSelectedProvinces(Area[] selectedProvinces) {
         this.selectedProvinces = selectedProvinces;
     }
-
-  
-
 
     public void setSelectedDsAreas(List<Area> selectedDsAreas) {
         this.selectedDsAreas = selectedDsAreas;
@@ -971,7 +1055,8 @@ public class WebUserController implements Serializable {
     public String getLocale() {
         if (loggedUser != null) {
             locale = loggedUser.getDefLocale();
-        } else {
+        }
+        if (locale == null || locale.trim().equals("")) {
             locale = "en";
         }
         return locale;
@@ -1081,8 +1166,60 @@ public class WebUserController implements Serializable {
         return projectInstitutionFacade;
     }
 
-   
-   
+    public TreeNode getAllPrivilegeRoot() {
+        return allPrivilegeRoot;
+    }
+
+    public void setAllPrivilegeRoot(TreeNode allPrivilegeRoot) {
+        this.allPrivilegeRoot = allPrivilegeRoot;
+    }
+
+    public TreeNode[] getSelectedNodes() {
+        return selectedNodes;
+    }
+
+    public void setSelectedNodes(TreeNode[] selectedNodes) {
+        this.selectedNodes = selectedNodes;
+    }
+
+    public TreeNode getMyPrivilegeRoot() {
+        return myPrivilegeRoot;
+    }
+
+    public void setMyPrivilegeRoot(TreeNode myPrivilegeRoot) {
+        this.myPrivilegeRoot = myPrivilegeRoot;
+    }
+
+    public UserPrivilegeFacade getUserPrivilegeFacade() {
+        return userPrivilegeFacade;
+    }
+
+    public List<Upload> getCompanyUploads() {
+        return companyUploads;
+    }
+
+    public void setCompanyUploads(List<Upload> companyUploads) {
+        this.companyUploads = companyUploads;
+    }
+
+    public List<Area> getDistrictsAvailableForSelection() {
+        return districtsAvailableForSelection;
+    }
+
+    public void setDistrictsAvailableForSelection(List<Area> districtsAvailableForSelection) {
+        this.districtsAvailableForSelection = districtsAvailableForSelection;
+    }
+
+    public List<UserPrivilege> getLoggedUserPrivileges() {
+        return loggedUserPrivileges;
+    }
+
+    public void setLoggedUserPrivileges(List<UserPrivilege> loggedUserPrivileges) {
+        this.loggedUserPrivileges = loggedUserPrivileges;
+    }
+
+    
+    
     @FacesConverter(forClass = WebUser.class)
     public static class WebUserControllerConverter implements Converter {
 

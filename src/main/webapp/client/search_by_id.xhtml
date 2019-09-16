@@ -1,0 +1,49 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+
+    <body>
+
+        <ui:composition template="./../template.xhtml">
+
+            <ui:define name="content">
+                
+                <h:form >
+                    
+                    <p:panel header="Search by IDs" >
+                        <h:panelGrid columns="2" >
+                            <p:outputLabel value="PHN No" ></p:outputLabel>
+                            <p:outputLabel value="#{clientController.searchingPhn}" ></p:outputLabel>
+                            
+                            <p:outputLabel value="NIC No" ></p:outputLabel>
+                            <p:outputLabel value="#{clientController.searchingNicNo}" ></p:outputLabel>
+                            
+                            <p:outputLabel value="Telephone No" ></p:outputLabel>
+                            <p:outputLabel value="#{clientController.searchingPhoneNumber}" ></p:outputLabel>
+                            
+                            <p:outputLabel value="Driving License No" ></p:outputLabel>
+                            <p:outputLabel value="#{clientController.searchingDrivingLicenceNo}" ></p:outputLabel>
+                            
+                            <p:outputLabel value="Passport No" ></p:outputLabel>
+                            <p:outputLabel value="#{clientController.searchingPassportNo}" ></p:outputLabel>
+                            
+                            <p:commandButton ajax="false" value="Search" action="#{clientController.searchById()}" ></p:commandButton>
+                            <p:commandButton ajax="false" value="Search" action="#{clientController.clearSearchById()}" ></p:commandButton>
+                            
+                            
+                        </h:panelGrid>
+                        
+                        
+                    </p:panel>
+                    
+                </h:form>
+                
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

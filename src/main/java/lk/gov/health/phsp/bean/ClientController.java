@@ -1,12 +1,16 @@
 package lk.gov.health.phsp.bean;
 
+// <editor-fold defaultstate="collapsed" desc="Import">
 import lk.gov.health.phsp.entity.Client;
 import lk.gov.health.phsp.bean.util.JsfUtil;
 import lk.gov.health.phsp.bean.util.JsfUtil.PersistAction;
 import lk.gov.health.phsp.facade.ClientFacade;
-
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -18,41 +22,157 @@ import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
+import javax.inject.Inject;
+import lk.gov.health.phsp.entity.Institution;
+import org.bouncycastle.jcajce.provider.digest.GOST3411;
+// </editor-fold>
 
 @Named("clientController")
 @SessionScoped
 public class ClientController implements Serializable {
 
+    // <editor-fold defaultstate="collapsed" desc="EJBs">
     @EJB
     private lk.gov.health.phsp.facade.ClientFacade ejbFacade;
+    // </editor-fold>
+    // <editor-fold defaultstate="collapsed" desc="Controllers">
+    @Inject
+    ApplicationController applicationController;
+    @Inject
+    private WebUserController webUserController;
+    // </editor-fold>
+    // <editor-fold defaultstate="collapsed" desc="Variables">
     private List<Client> items = null;
+    private List<Client> selectedClients = null;
     private Client selected;
+    private String searchingId;
+    private String searchingPhn;
+    private String searchingPassportNo;
+    private String searchingDrivingLicenceNo;
+    private String searchingNicNo;
+    private String searchingName;
+    private String searchingPhoneNumber;
 
+    // </editor-fold>
+    // <editor-fold defaultstate="collapsed" desc="Constructors">
     public ClientController() {
     }
 
-    public Client getSelected() {
-        return selected;
+    // </editor-fold>
+    // <editor-fold defaultstate="collapsed" desc="Navigation">
+    public String toSearchClientById() {
+        return "/client/search_by_id";
     }
 
-    public void setSelected(Client selected) {
-        this.selected = selected;
+    public String toSearchClientByDetails() {
+        return "/client/search_by_details";
+
     }
 
-    protected void setEmbeddableKeys() {
+    public String toSelectClient() {
+        return "/client/select";
     }
 
-    protected void initializeEmbeddableKey() {
+    public String toClient() {
+        return "/client/client";
     }
 
-    private ClientFacade getFacade() {
-        return ejbFacade;
+    public String toClientProfile() {
+        return "/client/profile";
+    }
+
+    public String toAddNewClient() {
+        selected = new Client();
+        return "/client/client";
+    }
+
+    // </editor-fold>
+    // <editor-fold defaultstate="collapsed" desc="Functions">
+    public void addNewPhnNumberToSelectedClient() {
+        if (selected == null) {
+            JsfUtil.addErrorMessage("No Client is Selected");
+            return;
+        }
+        selected.setPhn(applicationController.createNewPersonalHealthNumber(webUserController.getLoggedUser().getInstitution()));
+    }
+
+    public String searchById() {
+        if (searchingPhn != null && !searchingPhn.trim().equals("")) {
+            selectedClients = listPatientsByPhn(searchingPhn);
+        } else if (searchingNicNo != null && !searchingNicNo.trim().equals("")) {
+            selectedClients = listPatientsByPhn(searchingNicNo);
+        } else if (searchingPhoneNumber != null && !searchingPhoneNumber.trim().equals("")) {
+            selectedClients = listPatientsByPhn(searchingPhoneNumber);
+        }
+        if (selectedClients == null || selectedClients.isEmpty()) {
+            JsfUtil.addErrorMessage("No Results Found. Try different search criteria.");
+            return "";
+        }
+        if (selectedClients.size() == 1) {
+            selected = selectedClients.get(0);
+            selectedClients= null;
+            clearSearchById();
+            return toClient();
+        } else {
+            selected = null;
+            clearSearchById();
+            return toSelectClient();
+        }
+    }
+
+    public void clearSearchById() {
+        searchingId = "";
+        searchingPhn = "";
+        searchingPassportNo = "";
+        searchingDrivingLicenceNo = "";
+        searchingNicNo = "";
+        searchingName = "";
+        searchingPhoneNumber = "";
+    }
+
+    public List<Client> listPatientsByPhn(String phn) {
+        String j = "select c from Client c where c.retired=false and upper(c.phn)=:q order by c.phn";
+        Map m = new HashMap();
+        m.put("q", phn.trim().toUpperCase());
+        return getFacade().findByJpql(j, m);
+    }
+
+    public List<Client> listPatientsByNic(String phn) {
+        String j = "select c from Client c where c.retired=false and upper(c.person.nic)=:q order by c.phn";
+        Map m = new HashMap();
+        m.put("q", phn.trim().toUpperCase());
+        return getFacade().findByJpql(j, m);
+    }
+
+    public List<Client> listPatientsByPhone(String phn) {
+        String j = "select c from Client c where c.retired=false and (upper(c.person.phone1)=:q or upper(c.person.phone2)=:q) order by c.phn";
+        Map m = new HashMap();
+        m.put("q", phn.trim().toUpperCase());
+        return getFacade().findByJpql(j, m);
     }
 
     public Client prepareCreate() {
         selected = new Client();
-        initializeEmbeddableKey();
         return selected;
+    }
+
+    public String SaveClient() {
+        if (selected == null) {
+            JsfUtil.addErrorMessage("No Client Selected to save.");
+            return "";
+        }
+        if (selected.getId() == null) {
+            selected.setCreatedBy(webUserController.getLoggedUser());
+            selected.setCreatedAt(new Date());
+            getFacade().create(selected);
+            JsfUtil.addSuccessMessage("New Client Saved.");
+        } else {
+            selected.setLastEditBy(webUserController.getLoggedUser());
+            selected.setLastEditeAt(new Date());
+            JsfUtil.addSuccessMessage("Client Details Updated.");
+            getFacade().edit(selected);
+        }
+        return "client_dashboard";
     }
 
     public void create() {
@@ -74,16 +194,8 @@ public class ClientController implements Serializable {
         }
     }
 
-    public List<Client> getItems() {
-        if (items == null) {
-            items = getFacade().findAll();
-        }
-        return items;
-    }
-
     private void persist(PersistAction persistAction, String successMessage) {
         if (selected != null) {
-            setEmbeddableKeys();
             try {
                 if (persistAction != PersistAction.DELETE) {
                     getFacade().edit(selected);
@@ -109,6 +221,85 @@ public class ClientController implements Serializable {
         }
     }
 
+    // </editor-fold>
+    // <editor-fold defaultstate="collapsed" desc="Getters & Setters">
+    
+    
+    public String getSearchingId() {
+        return searchingId;
+    }
+
+    public void setSearchingId(String searchingId) {
+        this.searchingId = searchingId;
+    }
+
+    public String getSearchingPhn() {
+        return searchingPhn;
+    }
+
+    public void setSearchingPhn(String searchingPhn) {
+        this.searchingPhn = searchingPhn;
+    }
+
+    public String getSearchingPassportNo() {
+        return searchingPassportNo;
+    }
+
+    public void setSearchingPassportNo(String searchingPassportNo) {
+        this.searchingPassportNo = searchingPassportNo;
+    }
+
+    public String getSearchingDrivingLicenceNo() {
+        return searchingDrivingLicenceNo;
+    }
+
+    public void setSearchingDrivingLicenceNo(String searchingDrivingLicenceNo) {
+        this.searchingDrivingLicenceNo = searchingDrivingLicenceNo;
+    }
+
+    public String getSearchingNicNo() {
+        return searchingNicNo;
+    }
+
+    public void setSearchingNicNo(String searchingNicNo) {
+        this.searchingNicNo = searchingNicNo;
+    }
+
+    public String getSearchingName() {
+        return searchingName;
+    }
+
+    public void setSearchingName(String searchingName) {
+        this.searchingName = searchingName;
+    }
+
+    public ClientFacade getEjbFacade() {
+        return ejbFacade;
+    }
+
+    public ApplicationController getApplicationController() {
+        return applicationController;
+    }
+
+    public Client getSelected() {
+        return selected;
+    }
+
+    public void setSelected(Client selected) {
+        this.selected = selected;
+    }
+
+    private ClientFacade getFacade() {
+        return ejbFacade;
+    }
+
+    public List<Client> getItems() {
+        if (items == null) {
+            items = getFacade().findAll();
+        }
+        return items;
+    }
+
     public Client getClient(java.lang.Long id) {
         return getFacade().find(id);
     }
@@ -121,6 +312,30 @@ public class ClientController implements Serializable {
         return getFacade().findAll();
     }
 
+    public WebUserController getWebUserController() {
+        return webUserController;
+    }
+
+    public String getSearchingPhoneNumber() {
+        return searchingPhoneNumber;
+    }
+
+    public void setSearchingPhoneNumber(String searchingPhoneNumber) {
+        this.searchingPhoneNumber = searchingPhoneNumber;
+    }
+
+    public List<Client> getSelectedClients() {
+        return selectedClients;
+    }
+
+    public void setSelectedClients(List<Client> selectedClients) {
+        this.selectedClients = selectedClients;
+    }
+
+    // </editor-fold>
+    // <editor-fold defaultstate="collapsed" desc="Inner Classes">
+    // </editor-fold>
+    // <editor-fold defaultstate="collapsed" desc="Converters">
     @FacesConverter(forClass = Client.class)
     public static class ClientControllerConverter implements Converter {
 
@@ -162,4 +377,5 @@ public class ClientController implements Serializable {
 
     }
 
+    // </editor-fold>
 }

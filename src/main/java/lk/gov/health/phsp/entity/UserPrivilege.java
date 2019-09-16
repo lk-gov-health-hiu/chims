@@ -23,10 +23,8 @@
  */
 package lk.gov.health.phsp.entity;
 
-import lk.gov.health.phsp.enums.InstitutionType;
 import java.io.Serializable;
 import java.util.Date;
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -34,58 +32,57 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
 import javax.persistence.Temporal;
-import javax.xml.bind.annotation.XmlRootElement;
+import lk.gov.health.phsp.enums.Privilege;
 
 /**
  *
- * @author Dr M H B Ariyaratne, buddhika.ari@gmail.com
+ * @author Dr M H B Ariyaratne<buddhika.ari@gmail.com>
  */
 @Entity
-@XmlRootElement
-public class Institution implements Serializable {
+public class UserPrivilege implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @Enumerated(EnumType.STRING)
-    private InstitutionType institutionType;
-
-    private String name;
-    private String code;
-    private String address;
-    private String fax;
-    private String email;
-    private String phone;
-    private String mobile;
-    private String web;
-    private String poiNumber;
-    private Long lastHin;
-    
-
-    @OneToOne(cascade = CascadeType.ALL)
-    private Coordinate coordinate;
-
     @ManyToOne
-    private WebUser creater;
+    private WebUser webUser;
+    @ManyToOne
+    private Item item;
+    @Enumerated(EnumType.STRING)
+    private Privilege privilege;
+    
+    
+    
+    /*
+    Create Properties
+     */
+    @ManyToOne
+    private WebUser createdBy;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date createdAt;
+    /*
+    Retire Reversal Properties
+     */
     @ManyToOne
-    private WebUser editer;
+    private WebUser retiredReversedBy;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
-    private Date editedAt;
-    //Retairing properties
+    private Date retiredReversedAt;
+    /*
+    Retire Properties
+     */
     private boolean retired;
     @ManyToOne
-    private WebUser retirer;
+    private WebUser retiredBy;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date retiredAt;
     private String retireComments;
-
-
+    
+    
+    
+    
     public Long getId() {
         return id;
     }
@@ -104,10 +101,10 @@ public class Institution implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Institution)) {
+        if (!(object instanceof UserPrivilege)) {
             return false;
         }
-        Institution other = (Institution) object;
+        UserPrivilege other = (UserPrivilege) object;
         if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
@@ -116,98 +113,39 @@ public class Institution implements Serializable {
 
     @Override
     public String toString() {
-        return name;
+        return "lk.gov.health.phsp.entity.UserPrivilege[ id=" + id + " ]";
     }
 
-    public InstitutionType getInstitutionType() {
-        return institutionType;
+    public WebUser getWebUser() {
+        return webUser;
     }
 
-    public void setInstitutionType(InstitutionType institutionType) {
-        this.institutionType = institutionType;
+    public void setWebUser(WebUser webUser) {
+        this.webUser = webUser;
     }
 
-    public String getName() {
-        return name;
+    public Item getItem() {
+        return item;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setItem(Item item) {
+        this.item = item;
     }
 
-    public String getAddress() {
-        return address;
+    public Privilege getPrivilege() {
+        return privilege;
     }
 
-    public void setAddress(String address) {
-        this.address = address;
+    public void setPrivilege(Privilege privilege) {
+        this.privilege = privilege;
     }
 
-    public String getFax() {
-        return fax;
+    public WebUser getCreatedBy() {
+        return createdBy;
     }
 
-    public void setFax(String fax) {
-        this.fax = fax;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getPhone() {
-        return phone;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
-
-    public String getMobile() {
-        return mobile;
-    }
-
-    public void setMobile(String mobile) {
-        this.mobile = mobile;
-    }
-
-    public String getWeb() {
-        return web;
-    }
-
-    public void setWeb(String web) {
-        this.web = web;
-    }
-
-    public Coordinate getCoordinate() {
-        if (coordinate == null) {
-            coordinate = new Coordinate();
-        }
-        return coordinate;
-    }
-
-    public void setCoordinate(Coordinate coordinate) {
-        this.coordinate = coordinate;
-    }
-
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
-    }
-
-    public WebUser getCreater() {
-        return creater;
-    }
-
-    public void setCreater(WebUser creater) {
-        this.creater = creater;
+    public void setCreatedBy(WebUser createdBy) {
+        this.createdBy = createdBy;
     }
 
     public Date getCreatedAt() {
@@ -218,20 +156,20 @@ public class Institution implements Serializable {
         this.createdAt = createdAt;
     }
 
-    public WebUser getEditer() {
-        return editer;
+    public WebUser getRetiredReversedBy() {
+        return retiredReversedBy;
     }
 
-    public void setEditer(WebUser editer) {
-        this.editer = editer;
+    public void setRetiredReversedBy(WebUser retiredReversedBy) {
+        this.retiredReversedBy = retiredReversedBy;
     }
 
-    public Date getEditedAt() {
-        return editedAt;
+    public Date getRetiredReversedAt() {
+        return retiredReversedAt;
     }
 
-    public void setEditedAt(Date editedAt) {
-        this.editedAt = editedAt;
+    public void setRetiredReversedAt(Date retiredReversedAt) {
+        this.retiredReversedAt = retiredReversedAt;
     }
 
     public boolean isRetired() {
@@ -242,12 +180,12 @@ public class Institution implements Serializable {
         this.retired = retired;
     }
 
-    public WebUser getRetirer() {
-        return retirer;
+    public WebUser getRetiredBy() {
+        return retiredBy;
     }
 
-    public void setRetirer(WebUser retirer) {
-        this.retirer = retirer;
+    public void setRetiredBy(WebUser retiredBy) {
+        this.retiredBy = retiredBy;
     }
 
     public Date getRetiredAt() {
@@ -265,30 +203,5 @@ public class Institution implements Serializable {
     public void setRetireComments(String retireComments) {
         this.retireComments = retireComments;
     }
-
-    public String getLastPartOfName() {
-        if (name == null) {
-            return "";
-        }
-        return name.substring(name.lastIndexOf(" ") + 1);
-    }
-
-    public Long getLastHin() {
-        return lastHin;
-    }
-
-    public void setLastHin(Long lastHin) {
-        this.lastHin = lastHin;
-    }
-
-    public String getPoiNumber() {
-        return poiNumber;
-    }
-
-    public void setPoiNumber(String poiNumber) {
-        this.poiNumber = poiNumber;
-    }
-
-    
     
 }
