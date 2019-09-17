@@ -72,7 +72,7 @@
                         <p:outputLabel value="#{bundleClinical.EditAreaLabel_retireComments}" for="retireComments" />
                         <p:inputText id="retireComments" value="#{areaController.selected.retireComments}" title="#{bundleClinical.EditAreaTitle_retireComments}" />
                     </p:panelGrid>
-                    <p:commandButton actionListener="#{areaController.update}" value="#{bundleClinical.Save}" update="display,:AreaListForm:datalist,:growl" oncomplete="handleSubmit(args, 'AreaEditDialog');"/>
+                    <p:commandButton actionListener="#{areaController.update}" value="#{bundleClinical.Save}" update="display,:AreaListForm:datalist" oncomplete="handleSubmit(args, 'AreaEditDialog');"/>
                     <p:commandButton value="#{bundleClinical.Cancel}" onclick="AreaEditDialog.hide()"/>
                 </h:panelGroup>
             </h:form>

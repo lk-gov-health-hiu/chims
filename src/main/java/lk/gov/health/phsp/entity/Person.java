@@ -50,17 +50,14 @@ public class Person implements Serializable {
     static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
+    private Long id;
 
-   
     @ManyToOne
-    Item title;
-    String name;
+    private Item title;
+    private String name;
 
- 
     @ManyToOne
-    Item sex;
-
+    private Item sex;
 
     @ManyToOne
     private Item citizenship;
@@ -73,63 +70,77 @@ public class Person implements Serializable {
 
     @ManyToOne
     private Item mariatalStatus;
-    
+
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
-    Date dateOfBirth;
+    private Date dateOfBirth;
 
-    String address;
+    private String address;
 
-    String phone1;
-    String phone2;
-    String email;
+    private String phone1;
+    private String phone2;
+    private String email;
 
-    String nic;
+    private String nic;
 
-    String passportNumber;
+    private String passportNumber;
 
-    String website;
-    String drivingLicenseNumber;
+    private String website;
+    private String drivingLicenseNumber;
+
+    @ManyToOne
+    private Area gnArea;
+    @ManyToOne
+    private Area dsArea;
+    @ManyToOne
+    private Area phmArea;
+    @ManyToOne
+    private Area mohArea;
+    @ManyToOne
+    private Area district;
+    @ManyToOne
+    private Area province;
 
     //Created Properties
     @ManyToOne
-    WebUser createdBy;
+    private WebUser createdBy;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
-    Date createdAt;
+    private Date createdAt;
     @ManyToOne
-    WebUser editer;
+    private WebUser editer;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
-    Date editedAt;
+    private Date editedAt;
 
     //Retairing properties
-    boolean retired;
+    private boolean retired;
     @ManyToOne
-    WebUser retiredBy;
+    private WebUser retiredBy;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
-    Date retiredAt;
-    String retireComments;
+    private Date retiredAt;
+    private String retireComments;
 
 // </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="Transient Attributes">
     @Transient
-    int ageMonths;
+    private int ageMonths;
     @Transient
-    int ageDays;
+    private int ageDays;
     @Transient
-    int ageYears;
+    private int ageYears;
     @Transient
-    String age;
+    private String age;
     @Transient
-    long ageInDays;
+    private long ageInDays;
     @Transient
-    int serealNumber;
+    private int serealNumber;
 // </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="Functions">
+
     public void calAgeFromDob() {
-        age = "";
-        ageInDays = 0l;
-        ageMonths = 0;
-        ageDays = 0;
-        ageYears = 0;
+        setAge("");
+        setAgeInDays(0l);
+        setAgeMonths(0);
+        setAgeDays(0);
+        setAgeYears(0);
         if (getDateOfBirth() == null) {
             return;
         }
@@ -138,18 +149,18 @@ public class Person implements Serializable {
         LocalDate date = new LocalDate(new Date());
 
         Period period = new Period(dob, date, PeriodType.yearMonthDay());
-        ageYears = period.getYears();
-        ageMonths = period.getMonths();
-        ageDays = period.getDays();
-        if (ageYears > 12) {
-            age = period.getYears() + " years.";
-        } else if (ageYears > 0) {
-            age = period.getYears() + " years and " + period.getMonths() + " months.";
+        setAgeYears(period.getYears());
+        setAgeMonths(period.getMonths());
+        setAgeDays(period.getDays());
+        if (getAgeYears() > 12) {
+            setAge(period.getYears() + " years.");
+        } else if (getAgeYears() > 0) {
+            setAge(period.getYears() + " years and " + period.getMonths() + " months.");
         } else {
-            age = period.getMonths() + " months and " + period.getDays() + " days.";
+            setAge(period.getMonths() + " months and " + period.getDays() + " days.");
         }
         period = new Period(dob, date, PeriodType.days());
-        ageInDays = (long) period.getDays();
+        setAgeInDays((long) period.getDays());
     }
 
     public String getAge() {
@@ -178,11 +189,130 @@ public class Person implements Serializable {
     }
 
     public String getNameWithTitle() {
-        String temT = title.name + " " + name;
+        String temT = getTitle().name + " " + getName();
         return temT;
     }
 // </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="Getters & Setters">
+
+    /**
+     * @return the gnArea
+     */
+    public Area getGnArea() {
+        return gnArea;
+    }
+
+    /**
+     * @param gnArea the gnArea to set
+     */
+    public void setGnArea(Area gnArea) {
+        this.gnArea = gnArea;
+    }
+
+    /**
+     * @return the dsArea
+     */
+    public Area getDsArea() {
+        return dsArea;
+    }
+
+    /**
+     * @param dsArea the dsArea to set
+     */
+    public void setDsArea(Area dsArea) {
+        this.dsArea = dsArea;
+    }
+
+    /**
+     * @return the phmArea
+     */
+    public Area getPhmArea() {
+        return phmArea;
+    }
+
+    /**
+     * @param phmArea the phmArea to set
+     */
+    public void setPhmArea(Area phmArea) {
+        this.phmArea = phmArea;
+    }
+
+    /**
+     * @return the mohArea
+     */
+    public Area getMohArea() {
+        return mohArea;
+    }
+
+    /**
+     * @param mohArea the mohArea to set
+     */
+    public void setMohArea(Area mohArea) {
+        this.mohArea = mohArea;
+    }
+
+    /**
+     * @return the district
+     */
+    public Area getDistrict() {
+        return district;
+    }
+
+    /**
+     * @param district the district to set
+     */
+    public void setDistrict(Area district) {
+        this.district = district;
+    }
+
+    /**
+     * @return the province
+     */
+    public Area getProvince() {
+        return province;
+    }
+
+    /**
+     * @param province the province to set
+     */
+    public void setProvince(Area province) {
+        this.province = province;
+    }
+
+    /**
+     * @param ageMonths the ageMonths to set
+     */
+    public void setAgeMonths(int ageMonths) {
+        this.ageMonths = ageMonths;
+    }
+
+    /**
+     * @param ageDays the ageDays to set
+     */
+    public void setAgeDays(int ageDays) {
+        this.ageDays = ageDays;
+    }
+
+    /**
+     * @param ageYears the ageYears to set
+     */
+    public void setAgeYears(int ageYears) {
+        this.ageYears = ageYears;
+    }
+
+    /**
+     * @param age the age to set
+     */
+    public void setAge(String age) {
+        this.age = age;
+    }
+
+    /**
+     * @param ageInDays the ageInDays to set
+     */
+    public void setAgeInDays(long ageInDays) {
+        this.ageInDays = ageInDays;
+    }
 
     public Item getSex() {
         return sex;
@@ -397,7 +527,7 @@ public class Person implements Serializable {
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (id != null ? id.hashCode() : 0);
+        hash += (getId() != null ? getId().hashCode() : 0);
         return hash;
     }
 
@@ -407,7 +537,7 @@ public class Person implements Serializable {
             return false;
         }
         Person other = (Person) object;
-        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
+        if ((this.getId() == null && other.getId() != null) || (this.getId() != null && !this.id.equals(other.id))) {
             return false;
         }
         return true;
@@ -415,7 +545,7 @@ public class Person implements Serializable {
 
     @Override
     public String toString() {
-        return name;
+        return getName();
     }
 // </editor-fold>
 

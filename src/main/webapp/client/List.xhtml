@@ -111,7 +111,7 @@
                             <p:commandButton id="createButton" icon="ui-icon-plus"   value="#{bundleClinical.Create}" actionListener="#{clientController.prepareCreate}" update=":ClientCreateForm" oncomplete="PF('ClientCreateDialog').show()"/>
                             <p:commandButton id="viewButton"   icon="ui-icon-search" value="#{bundleClinical.View}" update=":ClientViewForm" oncomplete="PF('ClientViewDialog').show()" disabled="#{empty clientController.selected}"/>
                             <p:commandButton id="editButton"   icon="ui-icon-pencil" value="#{bundleClinical.Edit}" update=":ClientEditForm" oncomplete="PF('ClientEditDialog').show()" disabled="#{empty clientController.selected}"/>
-                            <p:commandButton id="deleteButton" icon="ui-icon-trash"  value="#{bundleClinical.Delete}" actionListener="#{clientController.destroy}" update=":growl,datalist" disabled="#{empty clientController.selected}"/>
+                            <p:commandButton id="deleteButton" icon="ui-icon-trash"  value="#{bundleClinical.Delete}" actionListener="#{clientController.destroy}" update="datalist" disabled="#{empty clientController.selected}"/>
                         </f:facet>
                     </p:dataTable>
                 </p:panel>

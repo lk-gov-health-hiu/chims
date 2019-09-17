@@ -57,7 +57,7 @@
                         <p:outputLabel value="#{bundleClinical.CreateClientLabel_retiredReversedAt}" for="retiredReversedAt" />
                         <p:calendar id="retiredReversedAt" pattern="MM/dd/yyyy HH:mm:ss" value="#{clientController.selected.retiredReversedAt}" title="#{bundleClinical.EditClientTitle_retiredReversedAt}"  showOn="button"/>
                     </p:panelGrid>
-                    <p:commandButton actionListener="#{clientController.create}" value="#{bundleClinical.Save}" update="display,:ClientListForm:datalist,:growl" oncomplete="handleSubmit(args,'ClientCreateDialog');"/>
+                    <p:commandButton actionListener="#{clientController.create}" value="#{bundleClinical.Save}" update="display,:ClientListForm:datalist" oncomplete="handleSubmit(args,'ClientCreateDialog');"/>
                     <p:commandButton value="#{bundleClinical.Cancel}" onclick="ClientCreateDialog.hide()"/>
                 </h:panelGroup>
             </h:form>
