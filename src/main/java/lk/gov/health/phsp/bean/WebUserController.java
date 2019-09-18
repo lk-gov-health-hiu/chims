@@ -782,14 +782,16 @@ public class WebUserController implements Serializable {
     }
 
     public String updatePassword() {
-        if (!password.equals(current.getWebUserPassword())) {
-            JsfUtil.addErrorMessage("Passwords do NOT match");
+        if (!password.equals(passwordReenter)) {
+            JsfUtil.addErrorMessage("Passwords do NOT match.");
             return "";
         }
         try {
+            String hashedPassword = commonController.hash(password);
+            current.setWebUserPassword(hashedPassword);
             getFacade().edit(current);
-            JsfUtil.addSuccessMessage(("WebUserUpdated"));
-            return "manage_users";
+            JsfUtil.addSuccessMessage(("Password Changed."));
+            return "index";
         } catch (Exception e) {
             JsfUtil.addErrorMessage(e, ("PersistenceErrorOccured"));
             return null;

@@ -831,7 +831,7 @@ public class AreaController implements Serializable {
         selected = null;
         items = null;
         JsfUtil.addSuccessMessage("New Province Saved");
-        return "/area/add_area_index";
+        return "/area/index";
     }
 
     public String saveNewDistrict() {
@@ -840,7 +840,7 @@ public class AreaController implements Serializable {
         selected = null;
         items = null;
         JsfUtil.addSuccessMessage("New District Saved");
-        return "/area/add_area_index";
+        return "/area/index";
     }
 
     public String saveNewMoh() {
@@ -850,7 +850,7 @@ public class AreaController implements Serializable {
         items = null;
 
         JsfUtil.addSuccessMessage("New MOH Area Saved");
-        return "/area/add_area_index";
+        return "/area/index";
     }
 
     public String saveNewEducationalZone() {
@@ -859,7 +859,7 @@ public class AreaController implements Serializable {
         selected = null;
         items = null;
         JsfUtil.addSuccessMessage("New Educational Zone Saved");
-        return "/area/add_area_index";
+        return "/area/index";
     }
 
     public String saveNewPhi() {
@@ -868,7 +868,7 @@ public class AreaController implements Serializable {
         selected = null;
         items = null;
         JsfUtil.addSuccessMessage("New PHI Area Saved");
-        return "/area/add_area_index";
+        return "/area/index";
     }
 
     public String saveNewGn() {
@@ -877,7 +877,7 @@ public class AreaController implements Serializable {
         selected = null;
         items = null;
         JsfUtil.addSuccessMessage("New GN Area Saved");
-        return "/area/add_area_index";
+        return "/area/index";
     }
 
     public List<Area> getAreas(AreaType areaType, Area superArea) {

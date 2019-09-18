@@ -93,6 +93,13 @@ public class ClientController implements Serializable {
     // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="Functions">
     
+    public void generateAndAssignNewPhn(){
+         if (selected == null) {
+            return;
+        }
+         selected.setPhn(applicationController.createNewPersonalHealthNumber(webUserController.getLoggedUser().getInstitution()));
+    }
+    
     public void gnAreaChanged(){
          if (selected == null) {
             return;

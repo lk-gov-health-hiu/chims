@@ -24,11 +24,13 @@
 package lk.gov.health.phsp.bean;
 
 // <editor-fold defaultstate="collapsed" desc="Import">
+import java.util.List;
 import javax.ejb.EJB;
 import javax.inject.Named;
 import javax.enterprise.context.ApplicationScoped;
 import lk.gov.health.phsp.entity.Institution;
 import lk.gov.health.phsp.enums.InstitutionType;
+import lk.gov.health.phsp.enums.WebUserRole;
 import lk.gov.health.phsp.facade.InstitutionFacade;
 // </editor-fold>
 
@@ -46,12 +48,17 @@ public class ApplicationController {
 // </editor-fold>    
 
 // <editor-fold defaultstate="collapsed" desc="Class Variables">
+    private List<InstitutionLastPhn> insPhns;
+
 // </editor-fold>
     public ApplicationController() {
     }
 
     // <editor-fold defaultstate="collapsed" desc="Functions">
     public String createNewPersonalHealthNumber(Institution ins) {
+        if (ins == null) {
+            return null;
+        }
         Institution ti = getInstitutionFacade().find(ins.getId());
         if (ti == null) {
             return null;
@@ -113,10 +120,29 @@ public class ApplicationController {
 
     // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="Enums">
-    public InstitutionType[] getInstitutionTypes(){
+    public InstitutionType[] getInstitutionTypes() {
         return InstitutionType.values();
     }
+
+    public WebUserRole[] getWebUserRoles() {
+        return WebUserRole.values();
+    }
+
+    public List<InstitutionLastPhn> getInsPhns() {
+        return insPhns;
+    }
+
+    public void setInsPhns(List<InstitutionLastPhn> insPhns) {
+        this.insPhns = insPhns;
+    }
+
     // <editor-fold>
+    class InstitutionLastPhn {
+
+        Institution institution;
+        Long patientCount;
+    }
+
     // <editor-fold defaultstate="collapsed" desc="Getters & Setters">
     public InstitutionFacade getInstitutionFacade() {
         return institutionFacade;
