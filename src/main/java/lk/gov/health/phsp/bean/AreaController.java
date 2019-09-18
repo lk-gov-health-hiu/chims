@@ -83,128 +83,127 @@ public class AreaController implements Serializable {
     private int malePopulationColumnNumber;
     private int femalePopulationColumnNumber;
     private int areaColumnNumber;
-     private int startRow = 1;
+    private int startRow = 1;
 
     public String importAreasFromExcel() {
-        String strGnName;
-        String strGNCode;
-        String strDsName;
-        String strDistrictName;
-        String strProvinceName;
-        String strTotalPopulationNumber;
-        String strMalePopulationNumber;
-        String strFemalePopulationNumber;
-        String strArea;
-        Long totalPopulation=null;
-        Long malePopulation=null;
-        Long femalePopulation=null;
-        Double area=null;
-
-        Area province;
-        Area district;
-        Area dsd;
-        Area moh;
-        Area phm;
-        Area phi;
-        Area gn;
-
-        File inputWorkbook;
-        Workbook w;
-        Cell cell;
-        InputStream in;
-
-       
-
-        JsfUtil.addSuccessMessage(file.getFileName());
-
         try {
+            String strGnName;
+            String strGNCode;
+            String strDsName;
+            String strDistrictName;
+            String strProvinceName;
+            String strTotalPopulationNumber;
+            String strMalePopulationNumber;
+            String strFemalePopulationNumber;
+            String strArea;
+            Long totalPopulation = null;
+            Long malePopulation = null;
+            Long femalePopulation = null;
+            Double area = null;
+
+            Area province;
+            Area district;
+            Area dsd;
+            Area moh;
+            Area phm;
+            Area phi;
+            Area gn;
+
+            File inputWorkbook;
+            Workbook w;
+            Cell cell;
+            InputStream in;
+
             JsfUtil.addSuccessMessage(file.getFileName());
-            in = file.getInputstream();
-            File f;
-            f = new File(Calendar.getInstance().getTimeInMillis() + file.getFileName());
-            FileOutputStream out = new FileOutputStream(f);
-            int read = 0;
-            byte[] bytes = new byte[1024];
-            while ((read = in.read(bytes)) != -1) {
-                out.write(bytes, 0, read);
-            }
-            in.close();
-            out.flush();
-            out.close();
 
-            inputWorkbook = new File(f.getAbsolutePath());
+            try {
+                JsfUtil.addSuccessMessage(file.getFileName());
+                in = file.getInputstream();
+                File f;
+                f = new File(Calendar.getInstance().getTimeInMillis() + file.getFileName());
+                FileOutputStream out = new FileOutputStream(f);
+                int read = 0;
+                byte[] bytes = new byte[1024];
+                while ((read = in.read(bytes)) != -1) {
+                    out.write(bytes, 0, read);
+                }
+                in.close();
+                out.flush();
+                out.close();
 
-            JsfUtil.addSuccessMessage("Excel File Opened");
-            w = Workbook.getWorkbook(inputWorkbook);
-            Sheet sheet = w.getSheet(0);
+                inputWorkbook = new File(f.getAbsolutePath());
 
-            for (int i = startRow; i < sheet.getRows(); i++) {
+                JsfUtil.addSuccessMessage("Excel File Opened");
+                w = Workbook.getWorkbook(inputWorkbook);
+                Sheet sheet = w.getSheet(0);
 
-                Map m = new HashMap();
+                for (int i = startRow; i < sheet.getRows(); i++) {
 
-                cell = sheet.getCell(gnCodeColumnNumber, i);
-                strGNCode = cell.getContents();
+                    Map m = new HashMap();
 
-                cell = sheet.getCell(gnNameColumnNumber, i);
-                strGnName = cell.getContents();
+                    cell = sheet.getCell(gnCodeColumnNumber, i);
+                    strGNCode = cell.getContents();
 
-                cell = sheet.getCell(districtNameColumnNumber, i);
-                strDistrictName = cell.getContents();
+                    cell = sheet.getCell(gnNameColumnNumber, i);
+                    strGnName = cell.getContents();
 
-                cell = sheet.getCell(provinceNameColumnNumber, i);
-                strProvinceName = cell.getContents();
+                    cell = sheet.getCell(districtNameColumnNumber, i);
+                    strDistrictName = cell.getContents();
 
-                cell = sheet.getCell(dsdNameColumnNumber, i);
-                strDsName = cell.getContents();
+                    cell = sheet.getCell(provinceNameColumnNumber, i);
+                    strProvinceName = cell.getContents();
 
-                cell = sheet.getCell(totalPopulationColumnNumber, i);
-                strTotalPopulationNumber = cell.getContents();
+                    cell = sheet.getCell(dsdNameColumnNumber, i);
+                    strDsName = cell.getContents();
 
-                cell = sheet.getCell(malePopulationColumnNumber, i);
-                strMalePopulationNumber = cell.getContents();
+                    cell = sheet.getCell(totalPopulationColumnNumber, i);
+                    strTotalPopulationNumber = cell.getContents();
 
-                cell = sheet.getCell(femalePopulationColumnNumber, i);
-                strFemalePopulationNumber = cell.getContents();
+                    cell = sheet.getCell(malePopulationColumnNumber, i);
+                    strMalePopulationNumber = cell.getContents();
 
-                cell = sheet.getCell(areaColumnNumber, i);
-                strArea = cell.getContents();
+                    cell = sheet.getCell(femalePopulationColumnNumber, i);
+                    strFemalePopulationNumber = cell.getContents();
 
-                province = getArea(strProvinceName, AreaType.Province, true, null);
-                district = getArea(strDistrictName, AreaType.District, true, province);
-                dsd = getArea(strDsName, AreaType.DsArea, true, district);
-                gn = getArea(strGNCode, AreaType.GN, true, dsd);
+                    cell = sheet.getCell(areaColumnNumber, i);
+                    strArea = cell.getContents();
 
-                try {
-                    totalPopulation = Long.parseLong(strTotalPopulationNumber);
-                    malePopulation = Long.parseLong(strMalePopulationNumber);
-                    femalePopulation = Long.parseLong(strFemalePopulationNumber);
-                    area = Double.parseDouble(strArea);
-                } catch (Exception e) {
+                    province = getAreaByName(strProvinceName, AreaType.Province, true, null);
+                    district = getAreaByName(strDistrictName, AreaType.District, true, province);
+                    dsd = getAreaByName(strDsName, AreaType.DsArea, true, district);
+                    gn = getAreaByCodeAndName(strGNCode, strGnName, AreaType.GN, true, dsd);
+
+                    try {
+                        totalPopulation = Long.parseLong(strTotalPopulationNumber);
+                        malePopulation = Long.parseLong(strMalePopulationNumber);
+                        femalePopulation = Long.parseLong(strFemalePopulationNumber);
+                        area = Double.parseDouble(strArea);
+                    } catch (Exception e) {
+                    }
+
+                    gn.setName(strGnName);
+                    gn.setProvince(province);
+                    gn.setDistrict(district);
+                    gn.setDsd(dsd);
+                    gn.setTotalPopulation(totalPopulation);
+                    gn.setMalePopulation(malePopulation);
+                    gn.setFemalePopulation(femalePopulation);
+                    gn.setSurfaceArea(area);
+                    getFacade().edit(gn);
+
                 }
 
-                gn.setName(strGnName);
-                gn.setProvince(province);
-                gn.setDistrict(district);
-                gn.setDsd(dsd);
-                gn.setTotalPopulation(totalPopulation);
-                gn.setMalePopulation(malePopulation);
-                gn.setFemalePopulation(femalePopulation);
-                gn.setSurfaceArea(area);
-                getFacade().edit(gn);
-                
-                
-                
-
-
+                JsfUtil.addSuccessMessage("Succesful. All the data in Excel File Impoted to the database");
+                return "";
+            } catch (IOException ex) {
+                JsfUtil.addErrorMessage(ex.getMessage());
+                return "";
+            } catch (BiffException e) {
+                JsfUtil.addErrorMessage(e.getMessage());
+                return "";
             }
-
-            JsfUtil.addSuccessMessage("Succesful. All the data in Excel File Impoted to the database");
-            return "";
-        } catch (IOException ex) {
-            JsfUtil.addErrorMessage(ex.getMessage());
-            return "";
-        } catch (BiffException e) {
-            JsfUtil.addErrorMessage(e.getMessage());
+        } catch (Exception e) {
+            System.out.println("e = " + e);
             return "";
         }
     }
@@ -426,19 +425,19 @@ public class AreaController implements Serializable {
 
                 }
 
-                province = getArea(provinceName, AreaType.Province, false, null);
+                province = getAreaByName(provinceName, AreaType.Province, false, null);
                 if (province == null) {
                     JsfUtil.addErrorMessage("Add " + provinceName);
                     return "";
                 }
 
-                district = getArea(districtName, AreaType.District, false, null);
+                district = getAreaByName(districtName, AreaType.District, false, null);
                 if (district == null) {
                     JsfUtil.addErrorMessage("Add " + districtName);
                     return "";
                 }
 
-                moh = getArea(mohAreaName, AreaType.MOH, false, null);
+                moh = getAreaByName(mohAreaName, AreaType.MOH, false, null);
                 if (moh == null) {
                     System.out.println("moh = " + moh);
                     moh = new Area();
@@ -597,25 +596,25 @@ public class AreaController implements Serializable {
 
                 }
 
-                province = getArea(provinceName, AreaType.Province, false, null);
+                province = getAreaByName(provinceName, AreaType.Province, false, null);
                 if (province == null) {
                     JsfUtil.addErrorMessage("Add " + provinceName);
                     return "";
                 }
 
-                district = getArea(districtName, AreaType.District, false, null);
+                district = getAreaByName(districtName, AreaType.District, false, null);
                 if (district == null) {
                     JsfUtil.addErrorMessage("Add " + districtName);
                     return "";
                 }
 
-                moh = getArea(mohAreaName, AreaType.MOH, false, null);
+                moh = getAreaByName(mohAreaName, AreaType.MOH, false, null);
                 if (moh == null) {
                     JsfUtil.addErrorMessage("Add " + mohAreaName);
                     return "";
                 }
 
-                gn = getArea(gnAreaCode, AreaType.GN, false, null);
+                gn = getAreaByName(gnAreaCode, AreaType.GN, false, null);
                 System.out.println("gnAreaCode = " + gnAreaCode);
                 if (gn == null) {
                     System.out.println("GN = " + gn);
@@ -918,6 +917,14 @@ public class AreaController implements Serializable {
         return getAreas(qry, AreaType.GN);
     }
 
+    public List<Area> completeMohAreas(String qry) {
+        return getAreas(qry, AreaType.MOH);
+    }
+
+    public List<Area> completePhmAreas(String qry) {
+        return getAreas(qry, AreaType.PHM);
+    }
+
     public List<Area> getAreas(String qry, AreaType areaType) {
         String j;
         Map m = new HashMap();
@@ -934,7 +941,7 @@ public class AreaController implements Serializable {
         return getFacade().findByJpql(j, m);
     }
 
-    public Area getArea(String nameOrCode, AreaType areaType, boolean createNew, Area parentArea) {
+    public Area getAreaByName(String nameOrCode, AreaType areaType, boolean createNew, Area parentArea) {
         if (nameOrCode.trim().equals("")) {
             return null;
         }
@@ -942,14 +949,14 @@ public class AreaController implements Serializable {
         Map m = new HashMap();
         j = "select a "
                 + " from Area a "
-                + " where (upper(a.name) =:n or upper(a.code) =:n)  ";
+                + " where upper(a.name)=:n  ";
         m.put("n", nameOrCode.toUpperCase());
         if (areaType != null) {
             j += " and a.type=:t";
             m.put("t", areaType);
         }
         j += " order by a.code";
-        System.out.println("m = " + m);
+//        System.out.println("m = " + m);
         Area ta = getFacade().findFirstByJpql(j, m);
         if (ta == null && createNew) {
             ta = new Area();
@@ -961,6 +968,43 @@ public class AreaController implements Serializable {
             getFacade().create(ta);
         }
         return ta;
+    }
+
+    public Area getAreaByCodeAndName(String code, String name, AreaType areaType, boolean createNew, Area parentArea) {
+        try {
+            if (code.trim().equals("")) {
+                return null;
+            }
+            String j;
+            Map m = new HashMap();
+            j = "select a "
+                    + " from Area a "
+                    + " where upper(a.name) =:n and upper(a.code) =:c ";
+            m.put("c", code.toUpperCase());
+            m.put("n", name.toUpperCase());
+            if (areaType != null) {
+                j += " and a.type=:t";
+                m.put("t", areaType);
+            }
+            j += " order by a.code";
+//            System.out.println("m = " + m);
+            Area ta = getFacade().findFirstByJpql(j, m);
+            if (ta == null && createNew) {
+                ta = new Area();
+                ta.setCode(code);
+                ta.setType(areaType);
+                ta.setCreatedAt(new Date());
+                ta.setCreatedBy(webUserController.getLoggedUser());
+                ta.setParentArea(parentArea);
+                getFacade().create(ta);
+            }
+            return ta;
+        } catch (Exception e) {
+            System.out.println("e = " + e);
+            System.out.println("code = " + code);
+            System.out.println("name = " + name);
+            return null;
+        }
     }
 
     public AreaController() {
@@ -1188,8 +1232,6 @@ public class AreaController implements Serializable {
     public void setStartRow(int startRow) {
         this.startRow = startRow;
     }
-    
-    
 
     // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="Converters">

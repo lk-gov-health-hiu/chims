@@ -17,10 +17,16 @@
 
                     <h:form>
 
-                        <p:panel header="Edit Client Details" >
-                            <p:spacer ></p:spacer>
+                        <p:panel style="text-align: center;" >
 
-                            <p:panelGrid columns="4">
+                            <f:facet name="header" >
+                                <p:outputLabel value="Add Client Details" rendered="#{clientController.selected.id eq null}"></p:outputLabel>
+                                <p:outputLabel value="Edit Client Details" rendered="#{clientController.selected.id ne null}"></p:outputLabel>
+                            </f:facet>
+
+
+
+                            <p:panelGrid columns="4" style="text-align: left;margin: auto;">
                                 <f:facet name="header" >
                                     <p:commandButton ajax="false" action="#{clientController.saveClient()}" value="Save" ></p:commandButton>
 
@@ -67,12 +73,6 @@
                                 <p:inputText id="drivingLicenseNumber"  autocomplete="off"  value="#{clientController.selected.person.drivingLicenseNumber}" title="DrivingLicenseNumber" />
 
 
-                                <p:outputLabel value="DateOfBirth:" for="dateOfBirth" />
-                                <p:calendar id="dateOfBirth" value="#{clientController.selected.person.dateOfBirth}"
-                                            pattern="dd MMMM yyyy" title="DateOfBirth" 
-                                            navigator="true">
-                                </p:calendar>
-
                                 <p:outputLabel value="Nic:" for="nic" />
                                 <p:inputText id="nic"  autocomplete="off" value="#{clientController.selected.person.nic}" title="Nic" />
 
@@ -101,79 +101,130 @@
                                 </p:selectOneMenu>
 
 
+                                <p:outputLabel value="Age:"  />
+                                <h:panelGroup >
+                                    <p:inputText autocomplete="off"  id="year"  
+                                                 value="#{clientController.yearMonthDay.year}" 
+                                                 style="width: 90px; ">
+                                        <f:ajax event="keyup" execute="@this month day" render="calDob" 
+                                                listener="#{clientController.yearMonthDateChanged()}"  />
+                                    </p:inputText>
+                                    <p:inputText autocomplete="off" id="month"
+                                                 style="width: 90px; " 
+                                                 value="#{clientController.yearMonthDay.month}">
+                                        <f:ajax event="keyup" execute="@this year day" 
+                                                render="calDob" 
+                                                listener="#{clientController.yearMonthDateChanged()}"  />
+                                    </p:inputText>
+                                    <p:inputText autocomplete="off" id="day" 
+                                                 style="width: 90px;" 
+                                                 value="#{clientController.yearMonthDay.day}">
+                                        <f:ajax event="keyup" execute="@this year month" render="calDob" 
+                                                listener="#{clientController.yearMonthDateChanged()}" />
+                                    </p:inputText>
 
-                                <p:inputText autocomplete="off"  id="year"  
-                                             value="#{billController.yearMonthDay.year}" 
-                                             style="width: 90px; ">
-                                    <f:ajax event="keyup" execute="@this month day" render="calNewPtDob" 
+                                </h:panelGroup>
 
-                                            listener="#{billController.dateChangeListen()}"  />
-                                </p:inputText>
-                                <p:inputText autocomplete="off" id="month"
-                                             style="width: 90px; " value="#{billController.yearMonthDay.month}">
-                                    <f:ajax event="keyup" execute="@this year day" render="calNewPtDob" listener="#{billController.dateChangeListen()}"  />
-                                </p:inputText>
-                                <p:inputText autocomplete="off" id="day" 
-                                             style="width: 90px;" value="#{billController.yearMonthDay.day}">
-                                    <f:ajax event="keyup" execute="@this year month" render="calNewPtDob" listener="#{billController.dateChangeListen()}" />
-                                </p:inputText>
-                                <p:calendar  value="#{billController.newPatient.person.dob}" 
-                                             id="calNewPtDob"  navigator="true" pattern="dd/MM/yyyy" 
+                                <p:outputLabel value="Date of Birth:"  />
+                                <p:calendar  value="#{clientController.selected.person.dateOfBirth}" 
+                                             id="calDob"  navigator="true" pattern="dd/MM/yyyy" 
                                              inputStyle="width: 124px!important;"
                                              styleClass="shortinput">
-                                    <f:ajax event="dateSelect" />
+                                    <f:ajax event="dateSelect" listener="#{clientController.updateYearDateMonth}"
+                                            render="year month day" execute="@this"/>
                                 </p:calendar>
-                                
-                                <p:outputLabel value="Religion:" for="religion" />
-                                <p:autoComplete value="#{clientController.selected.person}"
+
+                                <p:outputLabel value="GN Area" for="gn" />
+                                <p:autoComplete id="gn" value="#{clientController.selected.person.gnArea}"
+                                                completeMethod="#{areaController.completeGnAreas}"
+                                                var="gn" itemLabel="#{gn.name}" itemValue="#{gn}">
+                                    <f:ajax event="itemSelect" execute="@this" render="phm moh dsd district province" 
+                                            listener="#{clientController.gnAreaChanged()}"></f:ajax>
+                                </p:autoComplete>
+
+                                <p:outputLabel value="PHM Area" for="phm" />
+                                <p:autoComplete id="phm" value="#{clientController.selected.person.phmArea}"
+                                                completeMethod="#{areaController.completePhmAreas}"
+                                                var="phm" itemLabel="#{phm.name}" itemValue="#{phm}">
+                                </p:autoComplete>
+
+                                <p:outputLabel value="MOH Area" for="moh" />
+                                <p:autoComplete id="moh" value="#{clientController.selected.person.mohArea}"
+                                                completeMethod="#{areaController.completeMohAreas}"
+                                                var="m" itemLabel="#{m.name}" itemValue="#{m}">
+                                </p:autoComplete>
+
+                                <p:outputLabel value="DS Divisional Area" for="dsd" />
+                                <p:autoComplete id="dsd" value="#{clientController.selected.person.dsArea}"
+                                                completeMethod="#{areaController.completeDsAreas}"
+                                                var="ds" itemLabel="#{ds.name}" itemValue="#{ds}">
+                                </p:autoComplete>
+
+                                <p:outputLabel value="District" for="district" />
+                                <p:autoComplete id="district" value="#{clientController.selected.person.district}"
+                                                completeMethod="#{areaController.completeDistricts}"
+                                                var="d" itemLabel="#{d.name}" itemValue="#{d}">
+                                </p:autoComplete>
+
+                                <p:outputLabel value="Province" for="province" />
+                                <p:autoComplete id="province" value="#{clientController.selected.person.province}"
+                                                completeMethod="#{areaController.completeProvinces}"
+                                                var="p" itemLabel="#{p.name}" itemValue="#{p}">
+                                </p:autoComplete>
 
 
-                                <p:watermark value="Age(Years)*" for="year" class="w3-red" />
-                                <p:watermark value="Age(Months)" for="month" />
-                                <p:watermark value="Age(Days)" for="day" />
-                                <p:watermark for="calNewPtDob" value="Birthday" ></p:watermark>
-                                <p:tooltip for="year" >
-                                    You can enter the age in years here. The system will calculate the approximate date of birth.
-                                </p:tooltip>
-                                <p:tooltip for="month" >
-                                    In children below five years, you may enter the age in months here. The system will use this data to calculate the approximate date of birth.
-                                </p:tooltip>
-                                <p:tooltip for="day" >
-                                    In children below one month, you may enter the age in days here. The system will use this to calculate the approximate date of birth.
-                                </p:tooltip>
-                                <p:tooltip for="calNewPtDob" >
-                                    Select Gender
-                                </p:tooltip>
-                                <p:tooltip for="title" >
-                                    Select Title
-                                </p:tooltip>
-                                <p:tooltip for="phone2" >
-                                    Enter home number
-                                </p:tooltip>
-                                <p:tooltip for="phone1" >
-                                    Enter mobile number
-                                </p:tooltip>
-                                <p:tooltip for="gn" >
-                                    Search GN Area
-                                </p:tooltip>
-                                <p:tooltip for="district" >
-                                    Search District
-                                </p:tooltip>
 
-                                <p:tooltip for="dob" >
-                                    You can also enter the Date of Birth
-                                </p:tooltip>
-                                <p:tooltip for="email" >
-                                    Enter the email
-                                </p:tooltip>
-                                <p:tooltip for="sex" >
-                                    Select Sex
-                                </p:tooltip>
-                                <p:tooltip for="phn" >
-                                    Generate a new PHN for new registrations of enter existing PHN if already registered.
-                                </p:tooltip>
+
 
                             </p:panelGrid>
+                            <p:tooltip for="year" >
+                                You can enter the age in years here. The system will calculate the approximate date of birth.
+                            </p:tooltip>
+                            <p:tooltip for="month" >
+                                In children below five years, you may enter the age in months here. The system will use this data to calculate the approximate date of birth.
+                            </p:tooltip>
+                            <p:tooltip for="day" >
+                                In children below one month, you may enter the age in days here. The system will use this to calculate the approximate date of birth.
+                            </p:tooltip>
+
+                            <p:tooltip for="sex" >
+                                Select Gender
+                            </p:tooltip>
+                            <p:tooltip for="title" >
+                                Select Title
+                            </p:tooltip>
+                            <p:tooltip for="phone2" >
+                                Enter home number
+                            </p:tooltip>
+                            <p:tooltip for="phone1" >
+                                Enter mobile number
+                            </p:tooltip>
+                            <p:tooltip for="gn" >
+                                Search GN Area
+                            </p:tooltip>
+                            <p:tooltip for="district" >
+                                Search District
+                            </p:tooltip>
+
+                            <p:tooltip for="calDob" >
+                                You can also enter the Date of Birth
+                            </p:tooltip>
+                            <p:tooltip for="email" >
+                                Enter the email
+                            </p:tooltip>
+
+                            <p:tooltip for="phn" >
+                                Generate a new PHN for new registrations of enter existing PHN if already registered.
+                            </p:tooltip>
+
+
+
+
+                            <p:watermark value="Years" for="year" class="w3-red" />
+                            <p:watermark value="Months" for="month" />
+                            <p:watermark value="Days" for="day" />
+                            <p:watermark for="calDob" value="Birthday" ></p:watermark>
+
                         </p:panel>
 
 

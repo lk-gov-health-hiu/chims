@@ -7,11 +7,13 @@ import lk.gov.health.phsp.bean.util.JsfUtil.PersistAction;
 import lk.gov.health.phsp.facade.ClientFacade;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.TimeZone;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
@@ -24,6 +26,7 @@ import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
 import javax.inject.Inject;
 import lk.gov.health.phsp.entity.Institution;
+import lk.gov.health.phsp.pojcs.YearMonthDay;
 import org.bouncycastle.jcajce.provider.digest.GOST3411;
 // </editor-fold>
 
@@ -52,6 +55,7 @@ public class ClientController implements Serializable {
     private String searchingNicNo;
     private String searchingName;
     private String searchingPhoneNumber;
+    private YearMonthDay yearMonthDay;
 
     // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="Constructors">
@@ -88,6 +92,68 @@ public class ClientController implements Serializable {
 
     // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="Functions">
+    
+    public void gnAreaChanged(){
+         if (selected == null) {
+            return;
+        }
+        if(selected.getPerson().getGnArea()!=null){
+            selected.getPerson().setDsArea(selected.getPerson().getGnArea().getDsd());
+            selected.getPerson().setMohArea(selected.getPerson().getGnArea().getMoh());
+            selected.getPerson().setPhmArea(selected.getPerson().getGnArea().getPhm());
+            selected.getPerson().setDistrict(selected.getPerson().getGnArea().getDistrict());
+            selected.getPerson().setProvince(selected.getPerson().getGnArea().getProvince());
+        }
+    }
+    
+    private void updateYearDateMonth() {
+        getYearMonthDay();
+        if(selected!=null){
+            yearMonthDay.setYear(selected.getPerson().getAgeYears()+"");
+            yearMonthDay.setMonth(selected.getPerson().getAgeMonths()+"");
+            yearMonthDay.setDay(selected.getPerson().getAgeDays()+"");
+        }else{
+            yearMonthDay = new YearMonthDay();
+        }
+    }
+
+    public void yearMonthDateChanged() {
+        if (selected == null) {
+            return;
+        }
+        selected.getPerson().setDateOfBirth(guessDob(yearMonthDay));
+    }
+
+    public Date guessDob(YearMonthDay yearMonthDay) {
+        // ////System.out.println("year string is " + docStr);
+        int years = 0;
+        int month = 0;
+        int day = 0;
+        Calendar now = Calendar.getInstance(TimeZone.getTimeZone("IST"));
+        try {
+            if (yearMonthDay.getYear() != null && !yearMonthDay.getYear().isEmpty()) {
+                years = Integer.valueOf(yearMonthDay.getYear());
+                now.add(Calendar.YEAR, -years);
+            }
+
+            if (yearMonthDay.getMonth() != null && !yearMonthDay.getMonth().isEmpty()) {
+                month = Integer.valueOf(yearMonthDay.getMonth());
+                now.add(Calendar.MONTH, -month);
+            }
+
+            if (yearMonthDay.getDay() != null && !yearMonthDay.getDay().isEmpty()) {
+                day = Integer.valueOf(yearMonthDay.getDay());
+                now.add(Calendar.DATE, -day);
+            }
+
+            return now.getTime();
+        } catch (Exception e) {
+            ////System.out.println("Error is " + e.getMessage());
+            return new Date();
+
+        }
+    }
+
     public void addNewPhnNumberToSelectedClient() {
         if (selected == null) {
             JsfUtil.addErrorMessage("No Client is Selected");
@@ -110,7 +176,7 @@ public class ClientController implements Serializable {
         }
         if (selectedClients.size() == 1) {
             selected = selectedClients.get(0);
-            selectedClients= null;
+            selectedClients = null;
             clearSearchById();
             return toClientProfile();
         } else {
@@ -223,8 +289,6 @@ public class ClientController implements Serializable {
 
     // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="Getters & Setters">
-    
-    
     public String getSearchingId() {
         return searchingId;
     }
@@ -287,6 +351,7 @@ public class ClientController implements Serializable {
 
     public void setSelected(Client selected) {
         this.selected = selected;
+        updateYearDateMonth();
     }
 
     private ClientFacade getFacade() {
@@ -330,6 +395,17 @@ public class ClientController implements Serializable {
 
     public void setSelectedClients(List<Client> selectedClients) {
         this.selectedClients = selectedClients;
+    }
+
+    public YearMonthDay getYearMonthDay() {
+        if (yearMonthDay == null) {
+            yearMonthDay = new YearMonthDay();
+        }
+        return yearMonthDay;
+    }
+
+    public void setYearMonthDay(YearMonthDay yearMonthDay) {
+        this.yearMonthDay = yearMonthDay;
     }
 
     // </editor-fold>

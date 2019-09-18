@@ -94,27 +94,32 @@ public abstract class AbstractFacade<T> {
     }
 
     public T findFirstByJpql(String jpql, Map<String, Object> parameters) {
-        TypedQuery<T> qry = getEntityManager().createQuery(jpql, entityClass);
-        Set s = parameters.entrySet();
-        Iterator it = s.iterator();
-        qry.setMaxResults(1);
-        while (it.hasNext()) {
-            Map.Entry m = (Map.Entry) it.next();
-            String pPara = (String) m.getKey();
-            if (m.getValue() instanceof Date) {
-                Date pVal = (Date) m.getValue();
-                qry.setParameter(pPara, pVal, TemporalType.DATE);
+        try {
+            TypedQuery<T> qry = getEntityManager().createQuery(jpql, entityClass);
+            Set s = parameters.entrySet();
+            Iterator it = s.iterator();
+            qry.setMaxResults(1);
+            while (it.hasNext()) {
+                Map.Entry m = (Map.Entry) it.next();
+                String pPara = (String) m.getKey();
+                if (m.getValue() instanceof Date) {
+                    Date pVal = (Date) m.getValue();
+                    qry.setParameter(pPara, pVal, TemporalType.DATE);
 //                ////System.out.println("Parameter " + pPara + "\tVal" + pVal);
-            } else {
-                Object pVal = (Object) m.getValue();
-                qry.setParameter(pPara, pVal);
+                } else {
+                    Object pVal = (Object) m.getValue();
+                    qry.setParameter(pPara, pVal);
 //                ////System.out.println("Parameter " + pPara + "\tVal" + pVal);
+                }
             }
-        }
-        List<T> l = qry.getResultList();
-        if (l != null && l.isEmpty() == false) {
-            return l.get(0);
-        } else {
+            List<T> l = qry.getResultList();
+            if (l != null && l.isEmpty() == false) {
+                return l.get(0);
+            } else {
+                return null;
+            }
+        } catch (Exception e) {
+            System.out.println("e = " + e);
             return null;
         }
     }
