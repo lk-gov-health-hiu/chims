@@ -916,6 +916,18 @@ public class AreaController implements Serializable {
     public List<Area> completeGnAreas(String qry) {
         return getAreas(qry, AreaType.GN);
     }
+    
+    public List<Area> completePdhsAreas(String qry) {
+        return getAreas(qry, AreaType.PdhsArea);
+    }
+    
+    public List<Area> completeRdhsAreas(String qry) {
+        return getAreas(qry, AreaType.RdhsAra);
+    }
+    
+    public List<Area> completePhiAreas(String qry) {
+        return getAreas(qry, AreaType.PHI);
+    }
 
     public List<Area> completeMohAreas(String qry) {
         return getAreas(qry, AreaType.MOH);

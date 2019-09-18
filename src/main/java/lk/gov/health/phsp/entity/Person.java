@@ -189,7 +189,12 @@ public class Person implements Serializable {
     }
 
     public String getNameWithTitle() {
-        String temT = getTitle().name + " " + getName();
+        String temT;
+        if (getTitle() != null) {
+            temT = getTitle().name + " " + getName();
+        }else{
+            temT = getName();
+        }
         return temT;
     }
 // </editor-fold>

@@ -65,6 +65,24 @@ public class Institution implements Serializable {
     private String poiNumber;
     private Long lastHin;
     
+    @ManyToOne
+    private Institution parent;
+    @ManyToOne
+    private Area gnArea;
+    @ManyToOne
+    private Area phmArea;
+    @ManyToOne
+    private Area phiArea;
+    @ManyToOne
+    private Area dsDivision;
+    @ManyToOne
+    private Area district;
+    @ManyToOne
+    private Area rdhsArea;
+    @ManyToOne
+    private Area province;
+    @ManyToOne
+    private Area pdhsArea;
 
     @OneToOne(cascade = CascadeType.ALL)
     private Coordinate coordinate;
@@ -118,6 +136,8 @@ public class Institution implements Serializable {
     public String toString() {
         return name;
     }
+    
+    
 
     public InstitutionType getInstitutionType() {
         return institutionType;
@@ -287,6 +307,78 @@ public class Institution implements Serializable {
 
     public void setPoiNumber(String poiNumber) {
         this.poiNumber = poiNumber;
+    }
+
+    public Institution getParent() {
+        return parent;
+    }
+
+    public void setParent(Institution parent) {
+        this.parent = parent;
+    }
+
+    public Area getGnArea() {
+        return gnArea;
+    }
+
+    public void setGnArea(Area gnArea) {
+        this.gnArea = gnArea;
+    }
+
+    public Area getPhmArea() {
+        return phmArea;
+    }
+
+    public void setPhmArea(Area phmArea) {
+        this.phmArea = phmArea;
+    }
+
+    public Area getPhiArea() {
+        return phiArea;
+    }
+
+    public void setPhiArea(Area phiArea) {
+        this.phiArea = phiArea;
+    }
+
+    public Area getDsDivision() {
+        return dsDivision;
+    }
+
+    public void setDsDivision(Area dsDivision) {
+        this.dsDivision = dsDivision;
+    }
+
+    public Area getDistrict() {
+        return district;
+    }
+
+    public void setDistrict(Area district) {
+        this.district = district;
+    }
+
+    public Area getRdhsArea() {
+        return rdhsArea;
+    }
+
+    public void setRdhsArea(Area rdhsArea) {
+        this.rdhsArea = rdhsArea;
+    }
+
+    public Area getProvince() {
+        return province;
+    }
+
+    public void setProvince(Area province) {
+        this.province = province;
+    }
+
+    public Area getPdhsArea() {
+        return pdhsArea;
+    }
+
+    public void setPdhsArea(Area pdhsArea) {
+        this.pdhsArea = pdhsArea;
     }
 
     

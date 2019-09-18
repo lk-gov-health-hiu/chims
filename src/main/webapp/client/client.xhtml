@@ -137,7 +137,9 @@
                                 <p:outputLabel value="GN Area" for="gn" />
                                 <p:autoComplete id="gn" value="#{clientController.selected.person.gnArea}"
                                                 completeMethod="#{areaController.completeGnAreas}"
-                                                var="gn" itemLabel="#{gn.name}" itemValue="#{gn}">
+                                                var="gn" itemLabel="#{gn.name}" itemValue="#{gn}"
+                                                maxResults="15" forceSelection="true"
+                                                minQueryLength="3">
                                     <f:ajax event="itemSelect" execute="@this" render="phm moh dsd district province" 
                                             listener="#{clientController.gnAreaChanged()}"></f:ajax>
                                 </p:autoComplete>
@@ -145,31 +147,41 @@
                                 <p:outputLabel value="PHM Area" for="phm" />
                                 <p:autoComplete id="phm" value="#{clientController.selected.person.phmArea}"
                                                 completeMethod="#{areaController.completePhmAreas}"
-                                                var="phm" itemLabel="#{phm.name}" itemValue="#{phm}">
+                                                var="phm" itemLabel="#{phm.name}" itemValue="#{phm}"
+                                                maxResults="15" forceSelection="true"
+                                                minQueryLength="3">
                                 </p:autoComplete>
 
                                 <p:outputLabel value="MOH Area" for="moh" />
                                 <p:autoComplete id="moh" value="#{clientController.selected.person.mohArea}"
                                                 completeMethod="#{areaController.completeMohAreas}"
-                                                var="m" itemLabel="#{m.name}" itemValue="#{m}">
+                                                var="m" itemLabel="#{m.name}" itemValue="#{m}"
+                                                maxResults="15" forceSelection="true"
+                                                minQueryLength="3">
                                 </p:autoComplete>
 
                                 <p:outputLabel value="DS Divisional Area" for="dsd" />
                                 <p:autoComplete id="dsd" value="#{clientController.selected.person.dsArea}"
                                                 completeMethod="#{areaController.completeDsAreas}"
-                                                var="ds" itemLabel="#{ds.name}" itemValue="#{ds}">
+                                                var="ds" itemLabel="#{ds.name}" itemValue="#{ds}"
+                                                maxResults="15" forceSelection="true"
+                                                minQueryLength="3">
                                 </p:autoComplete>
 
                                 <p:outputLabel value="District" for="district" />
                                 <p:autoComplete id="district" value="#{clientController.selected.person.district}"
                                                 completeMethod="#{areaController.completeDistricts}"
-                                                var="d" itemLabel="#{d.name}" itemValue="#{d}">
+                                                var="d" itemLabel="#{d.name}" itemValue="#{d}"
+                                                maxResults="15" forceSelection="true"
+                                                minQueryLength="3">
                                 </p:autoComplete>
 
                                 <p:outputLabel value="Province" for="province" />
                                 <p:autoComplete id="province" value="#{clientController.selected.person.province}"
                                                 completeMethod="#{areaController.completeProvinces}"
-                                                var="p" itemLabel="#{p.name}" itemValue="#{p}">
+                                                var="p" itemLabel="#{p.name}" itemValue="#{p}"
+                                                maxResults="15" forceSelection="true"
+                                                minQueryLength="3">
                                 </p:autoComplete>
 
 

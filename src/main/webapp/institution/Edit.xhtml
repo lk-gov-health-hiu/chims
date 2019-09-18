@@ -11,68 +11,113 @@
         <p:dialog id="InstitutionEditDlg" widgetVar="InstitutionEditDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundleClinical.EditInstitutionTitle}">
             <h:form id="InstitutionEditForm">
                 <h:panelGroup id="display">
-                    <p:panelGrid columns="2" rendered="#{institutionController.selected != null}">
-                        <p:outputLabel value="#{bundleClinical.EditInstitutionLabel_id}" for="id" />
-                        <p:inputText id="id" value="#{institutionController.selected.id}" title="#{bundleClinical.EditInstitutionTitle_id}" />
-                        <p:outputLabel value="#{bundleClinical.EditInstitutionLabel_institutionType}" for="institutionType" />
-                        <p:inputText id="institutionType" value="#{institutionController.selected.institutionType}" title="#{bundleClinical.EditInstitutionTitle_institutionType}" />
-                        <p:outputLabel value="#{bundleClinical.EditInstitutionLabel_name}" for="name" />
-                        <p:inputText id="name" value="#{institutionController.selected.name}" title="#{bundleClinical.EditInstitutionTitle_name}" />
-                        <p:outputLabel value="#{bundleClinical.EditInstitutionLabel_address}" for="address" />
-                        <p:inputText id="address" value="#{institutionController.selected.address}" title="#{bundleClinical.EditInstitutionTitle_address}" />
-                        <p:outputLabel value="#{bundleClinical.EditInstitutionLabel_fax}" for="fax" />
-                        <p:inputText id="fax" value="#{institutionController.selected.fax}" title="#{bundleClinical.EditInstitutionTitle_fax}" />
-                        <p:outputLabel value="#{bundleClinical.EditInstitutionLabel_email}" for="email" />
-                        <p:inputText id="email" value="#{institutionController.selected.email}" title="#{bundleClinical.EditInstitutionTitle_email}" />
-                        <p:outputLabel value="#{bundleClinical.EditInstitutionLabel_phone}" for="phone" />
-                        <p:inputText id="phone" value="#{institutionController.selected.phone}" title="#{bundleClinical.EditInstitutionTitle_phone}" />
-                        <p:outputLabel value="#{bundleClinical.EditInstitutionLabel_mobile}" for="mobile" />
-                        <p:inputText id="mobile" value="#{institutionController.selected.mobile}" title="#{bundleClinical.EditInstitutionTitle_mobile}" />
-                        <p:outputLabel value="#{bundleClinical.EditInstitutionLabel_web}" for="web" />
-                        <p:inputText id="web" value="#{institutionController.selected.web}" title="#{bundleClinical.EditInstitutionTitle_web}" />
-                        <p:outputLabel value="#{bundleClinical.EditInstitutionLabel_coordinate}" for="coordinate" />
-                        <p:selectOneMenu id="coordinate" value="#{institutionController.selected.coordinate}" >
-                            <f:selectItem itemLabel="#{bundleClinical.SelectOneMessage}"/>
-                            <f:selectItems value="#{coordinateController.itemsAvailableSelectOne}"
-                                           var="coordinateItem"
-                                           itemValue="#{coordinateItem}"/>
+                    <p:panelGrid columns="4" rendered="#{institutionController.selected != null}">
+
+                        <p:outputLabel value="Type:" for="institutionType" />
+                        <p:selectOneMenu id="institutionType" 
+                                         value="#{institutionController.selected.institutionType}" title="InstitutionType" 
+                                         >
+                            <f:selectItems value="#{applicationController.institutionTypes}" ></f:selectItems>
                         </p:selectOneMenu>
-                        <p:outputLabel value="#{bundleClinical.EditInstitutionLabel_code}" for="code" />
-                        <p:inputText id="code" value="#{institutionController.selected.code}" title="#{bundleClinical.EditInstitutionTitle_code}" />
-                        <p:outputLabel value="#{bundleClinical.EditInstitutionLabel_creater}" for="creater" />
-                        <p:selectOneMenu id="creater" value="#{institutionController.selected.creater}" >
-                            <f:selectItem itemLabel="#{bundleClinical.SelectOneMessage}"/>
-                            <f:selectItems value="#{webUserController.itemsAvailableSelectOne}"
-                                           var="createrItem"
-                                           itemValue="#{createrItem}"/>
-                        </p:selectOneMenu>
-                        <p:outputLabel value="#{bundleClinical.EditInstitutionLabel_createdAt}" for="createdAt" />
-                        <p:calendar id="createdAt" pattern="MM/dd/yyyy HH:mm:ss" value="#{institutionController.selected.createdAt}" title="#{bundleClinical.EditInstitutionTitle_createdAt}"  showOn="button"/>
-                        <p:outputLabel value="#{bundleClinical.EditInstitutionLabel_editer}" for="editer" />
-                        <p:selectOneMenu id="editer" value="#{institutionController.selected.editer}" >
-                            <f:selectItem itemLabel="#{bundleClinical.SelectOneMessage}"/>
-                            <f:selectItems value="#{webUserController.itemsAvailableSelectOne}"
-                                           var="editerItem"
-                                           itemValue="#{editerItem}"/>
-                        </p:selectOneMenu>
-                        <p:outputLabel value="#{bundleClinical.EditInstitutionLabel_editedAt}" for="editedAt" />
-                        <p:calendar id="editedAt" pattern="MM/dd/yyyy HH:mm:ss" value="#{institutionController.selected.editedAt}" title="#{bundleClinical.EditInstitutionTitle_editedAt}"  showOn="button"/>
-                        <p:outputLabel value="#{bundleClinical.EditInstitutionLabel_retirer}" for="retirer" />
-                        <p:selectOneMenu id="retirer" value="#{institutionController.selected.retirer}" >
-                            <f:selectItem itemLabel="#{bundleClinical.SelectOneMessage}"/>
-                            <f:selectItems value="#{webUserController.itemsAvailableSelectOne}"
-                                           var="retirerItem"
-                                           itemValue="#{retirerItem}"/>
-                        </p:selectOneMenu>
-                        <p:outputLabel value="#{bundleClinical.EditInstitutionLabel_retiredAt}" for="retiredAt" />
-                        <p:calendar id="retiredAt" pattern="MM/dd/yyyy HH:mm:ss" value="#{institutionController.selected.retiredAt}" title="#{bundleClinical.EditInstitutionTitle_retiredAt}"  showOn="button"/>
-                        <p:outputLabel value="#{bundleClinical.EditInstitutionLabel_retireComments}" for="retireComments" />
-                        <p:inputText id="retireComments" value="#{institutionController.selected.retireComments}" title="#{bundleClinical.EditInstitutionTitle_retireComments}" />
-                        <p:outputLabel value="#{bundleClinical.EditInstitutionLabel_lastPartOfName}" for="lastPartOfName" />
-                        <p:inputText id="lastPartOfName" value="#{institutionController.selected.lastPartOfName}" title="#{bundleClinical.EditInstitutionTitle_lastPartOfName}" />
+
+                        <p:outputLabel value="Name:" for="name" />
+                        <p:inputText id="name" value="#{institutionController.selected.name}" title="Name" />
+                        <p:outputLabel value="Address:" for="address" />
+                        <p:inputText id="address" value="#{institutionController.selected.address}" title="Address" />
+                        <p:outputLabel value="Fax:" for="fax" />
+                        <p:inputText id="fax" value="#{institutionController.selected.fax}" title="Fax" />
+                        <p:outputLabel value="Email:" for="email" />
+                        <p:inputText id="email" value="#{institutionController.selected.email}" title="Email" />
+                        <p:outputLabel value="Phone:" for="phone" />
+                        <p:inputText id="phone" value="#{institutionController.selected.phone}" title="Phone" />
+                        <p:outputLabel value="Mobile:" for="mobile" />
+                        <p:inputText id="mobile" value="#{institutionController.selected.mobile}" title="Mobile" />
+                        <p:outputLabel value="Web:" for="web" />
+                        <p:inputText id="web" value="#{institutionController.selected.web}" title="Web" />
+
+                        <p:outputLabel value="Code:" for="code" />
+                        <p:inputText id="code" value="#{institutionController.selected.code}" title="Code" />
+                        <p:outputLabel value="LastHin:" for="lastHin" />
+                        <p:inputText id="lastHin" value="#{institutionController.selected.lastHin}" title="LastHin" />
+                        <p:outputLabel value="PoiNumber:" for="poiNumber" />
+                        <p:inputText id="poiNumber" value="#{institutionController.selected.poiNumber}" title="PoiNumber" />
+                        <p:outputLabel value="Parent:" for="parent" />
+                        <p:autoComplete  id="parent" value="#{institutionController.selected.parent}" 
+                                         completeMethod="#{institutionController.completeInstitutions}"
+                                         var="i" itemLabel="#{i.name}" itemValue="#{i}">
+                        </p:autoComplete >
+
+                        <p:outputLabel value="GnArea:" for="gnArea" />
+                        <p:autoComplete id="gnArea" value="#{institutionController.selected.gnArea}"
+                                        completeMethod="#{areaController.completeGnAreas}"
+                                        var="gn" itemLabel="#{gn.name}" itemValue="#{gn}"
+                                        maxResults="15" forceSelection="true"
+                                        minQueryLength="3">
+                        </p:autoComplete>
+
+
+                        <p:outputLabel value="PhmArea:" for="phmArea" />
+                        <p:autoComplete id="phmArea" value="#{institutionController.selected.phmArea}"
+                                        completeMethod="#{areaController.completeGnAreas}"
+                                        var="phm" itemLabel="#{phm.name}" itemValue="#{phm}"
+                                        maxResults="15" forceSelection="true"
+                                        minQueryLength="3">
+                        </p:autoComplete>
+
+                        <p:outputLabel value="PhiArea:" for="phiArea" />
+                        <p:autoComplete id="phiArea" value="#{institutionController.selected.phiArea}"
+                                        completeMethod="#{areaController.completePhiAreas}"
+                                        var="phiArea" itemLabel="#{phiArea.name}" itemValue="#{phiArea}"
+                                        maxResults="15" forceSelection="true"
+                                        minQueryLength="3">
+                        </p:autoComplete>
+
+
+                        <p:outputLabel value="DsDivision:" for="dsDivision" />
+                        <p:autoComplete id="dsDivision" value="#{institutionController.selected.dsDivision}"
+                                        completeMethod="#{areaController.completeDsAreas}"
+                                        var="dsDivision" itemLabel="#{phiArea.dsDivision}" itemValue="#{dsDivision}"
+                                        maxResults="15" forceSelection="true"
+                                        minQueryLength="3">
+                        </p:autoComplete>
+
+
+                        <p:outputLabel value="District:" for="district" />
+                        <p:autoComplete id="district" value="#{institutionController.selected.district}"
+                                        completeMethod="#{areaController.completeDistricts}"
+                                        var="district" itemLabel="#{district.name}" itemValue="#{district}"
+                                        maxResults="15" forceSelection="true"
+                                        minQueryLength="3">
+                        </p:autoComplete>
+
+                        <p:outputLabel value="RdhsArea:" for="rdhsArea" />
+                        <p:autoComplete id="rdhsArea" value="#{institutionController.selected.rdhsArea}"
+                                        completeMethod="#{areaController.completeRdhsAreas}"
+                                        var="rdhsArea" itemLabel="#{rdhsArea.name}" itemValue="#{rdhsArea}"
+                                        maxResults="15" forceSelection="true"
+                                        minQueryLength="3">
+                        </p:autoComplete>
+
+                        <p:outputLabel value="Province:" for="province" />
+                        <p:autoComplete id="province" value="#{institutionController.selected.province}"
+                                        completeMethod="#{areaController.completeProvinces}"
+                                        var="province" itemLabel="#{province.name}" itemValue="#{province}"
+                                        maxResults="15" forceSelection="true"
+                                        minQueryLength="3">
+                        </p:autoComplete>
+
+                        <p:outputLabel value="PdhsArea:" for="pdhsArea" />
+                        <p:autoComplete id="pdhsArea" value="#{institutionController.selected.pdhsArea}"
+                                        completeMethod="#{areaController.completePdhsAreas}"
+                                        var="pdhsArea" itemLabel="#{pdhsArea.name}" itemValue="#{pdhsArea}"
+                                        maxResults="15" forceSelection="true"
+                                        minQueryLength="3">
+                        </p:autoComplete>
+
+
                     </p:panelGrid>
-                    <p:commandButton actionListener="#{institutionController.update}" value="#{bundleClinical.Save}" update="display,:InstitutionListForm:datalist,:growl" oncomplete="handleSubmit(args, 'InstitutionEditDialog');"/>
-                    <p:commandButton value="#{bundleClinical.Cancel}" onclick="InstitutionEditDialog.hide()"/>
+                    <p:commandButton ajax="false" actionListener="#{institutionController.update}" value="#{bundleClinical.Save}" update="display,:InstitutionListForm:datalist" oncomplete="handleSubmit(args, 'InstitutionEditDialog');"/>
+                    <p:commandButton ajax="false" value="#{bundleClinical.Cancel}" onclick="InstitutionEditDialog.hide()"/>
                 </h:panelGroup>
             </h:form>
         </p:dialog>

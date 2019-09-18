@@ -37,4 +37,6 @@ public enum AreaType {
     District,
     Province,
     National,
+    RdhsAra,
+    PdhsArea,
 }

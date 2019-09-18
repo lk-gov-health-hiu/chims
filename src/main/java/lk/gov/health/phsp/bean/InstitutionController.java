@@ -6,7 +6,9 @@ import lk.gov.health.phsp.bean.util.JsfUtil.PersistAction;
 import lk.gov.health.phsp.facade.InstitutionFacade;
 
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -18,6 +20,7 @@ import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
+import lk.gov.health.phsp.enums.InstitutionType;
 
 @Named("institutionController")
 @SessionScoped
@@ -47,6 +50,29 @@ public class InstitutionController implements Serializable {
 
     private InstitutionFacade getFacade() {
         return ejbFacade;
+    }
+
+    public List<Institution> completeInstitutions(String nameQry) {
+        return fillInstitutions(null, nameQry, null);
+    }
+    
+    public List<Institution> fillInstitutions(InstitutionType type, String nameQry, Institution parent) {
+        String j = "Select i from Institution i where i.retired=false ";
+        Map m = new HashMap();
+        if (nameQry != null) {
+            j += " and lower(i.name) like :n ";
+            m.put("n", "%" + nameQry.trim().toLowerCase() + "%");
+        }
+        if (type != null) {
+            j += " and i.institutionType =:t ";
+            m.put("t", type);
+        }
+        if (parent != null) {
+            j += " and i.parent =:p ";
+            m.put("p", parent);
+        }
+        j += " order by i.name";
+        return getFacade().findByJpql(j, m);
     }
 
     public Institution prepareCreate() {

@@ -28,6 +28,7 @@ import javax.ejb.EJB;
 import javax.inject.Named;
 import javax.enterprise.context.ApplicationScoped;
 import lk.gov.health.phsp.entity.Institution;
+import lk.gov.health.phsp.enums.InstitutionType;
 import lk.gov.health.phsp.facade.InstitutionFacade;
 // </editor-fold>
 
@@ -43,8 +44,7 @@ public class ApplicationController {
     @EJB
     private InstitutionFacade institutionFacade;
 // </editor-fold>    
-    
-    
+
 // <editor-fold defaultstate="collapsed" desc="Class Variables">
 // </editor-fold>
     public ApplicationController() {
@@ -53,12 +53,14 @@ public class ApplicationController {
     // <editor-fold defaultstate="collapsed" desc="Functions">
     public String createNewPersonalHealthNumber(Institution ins) {
         Institution ti = getInstitutionFacade().find(ins.getId());
-        if(ti==null) return null;
-        Long lastHinIssued = ti.getLastHin();
-        if(lastHinIssued==null){
-            lastHinIssued=0l;
+        if (ti == null) {
+            return null;
         }
-        Long thisHin = lastHinIssued +1;
+        Long lastHinIssued = ti.getLastHin();
+        if (lastHinIssued == null) {
+            lastHinIssued = 0l;
+        }
+        Long thisHin = lastHinIssued + 1;
         String poi = ins.getPoiNumber();
         String num = String.format("%05d", thisHin);
         String checkDigit = calculateCheckDigit(poi + num);
@@ -110,12 +112,15 @@ public class ApplicationController {
     }
 
     // </editor-fold>
-    
- // <editor-fold defaultstate="collapsed" desc="Getters & Setters">
-     public InstitutionFacade getInstitutionFacade() {
+    // <editor-fold defaultstate="collapsed" desc="Enums">
+    public InstitutionType[] getInstitutionTypes(){
+        return InstitutionType.values();
+    }
+    // <editor-fold>
+    // <editor-fold defaultstate="collapsed" desc="Getters & Setters">
+    public InstitutionFacade getInstitutionFacade() {
         return institutionFacade;
     }
 // </editor-fold>
 
-   
 }

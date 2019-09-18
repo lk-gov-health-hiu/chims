@@ -21,7 +21,6 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-
 package lk.gov.health.phsp.entity;
 
 import lk.gov.health.phsp.enums.AreaType;
@@ -62,19 +61,23 @@ public class Area implements Serializable {
     private String code;
     @ManyToOne
     private Area parentArea;
-    
+
     @ManyToOne
-    Area phm;
+    private Area phm;
     @ManyToOne
-    Area phi;
+    private Area phi;
     @ManyToOne
-    Area dsd;
+    private Area dsd;
     @ManyToOne
-    Area moh;
+    private Area moh;
     @ManyToOne
-    Area district;
+    private Area district;
     @ManyToOne
-    Area province;
+    private Area province;
+    @ManyToOne
+    private Area rdhsArea;
+    @ManyToOne
+    private Area pdhsArea;
 
     private double centreLongitude;
     private double centreLatitude;
@@ -84,7 +87,7 @@ public class Area implements Serializable {
     private Long totalPopulation;
     private Long malePopulation;
     private Long femalePopulation;
-    
+
     /*
     Create Properties
      */
@@ -115,7 +118,6 @@ public class Area implements Serializable {
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date retiredAt;
     private String retireComments;
-    
 
     @Override
     public int hashCode() {
@@ -140,8 +142,6 @@ public class Area implements Serializable {
     public String toString() {
         return name;
     }
-    
-    
 
     public AreaType getType() {
         return type;
@@ -183,8 +183,6 @@ public class Area implements Serializable {
         this.createdBy = createdBy;
     }
 
-    
-   
     public double getCentreLongitude() {
         return centreLongitude;
     }
@@ -215,6 +213,22 @@ public class Area implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Area getRdhsArea() {
+        return rdhsArea;
+    }
+
+    public void setRdhsArea(Area rdhsArea) {
+        this.rdhsArea = rdhsArea;
+    }
+
+    public Area getPdhsArea() {
+        return pdhsArea;
+    }
+
+    public void setPdhsArea(Area pdhsArea) {
+        this.pdhsArea = pdhsArea;
     }
 
     public boolean isRetired() {
@@ -379,7 +393,5 @@ public class Area implements Serializable {
     public void setFemalePopulation(Long femalePopulation) {
         this.femalePopulation = femalePopulation;
     }
-
-    
 
 }

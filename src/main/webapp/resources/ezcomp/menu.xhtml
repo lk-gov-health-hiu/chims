@@ -34,7 +34,7 @@
 
                 <p:submenu label="Administration" >
                     <p:menuitem value="Manage Users" action="manage_users"  />
-                    <p:menuitem value="Manage Institutions" url="#"  />
+                    <p:menuitem value="Manage Institutions" action="/institution/List"  />
                     <p:menuitem value="Manage Areas" action="/area/add_area_index" ajax="false"  />
                     <p:menuitem value="Manage Metadata" action="/systemAdmin/index" rendered="#{webUserController.hasPrivilege('System_Administration')}" />
                 </p:submenu>
