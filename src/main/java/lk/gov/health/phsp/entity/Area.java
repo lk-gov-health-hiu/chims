@@ -62,11 +62,29 @@ public class Area implements Serializable {
     private String code;
     @ManyToOne
     private Area parentArea;
+    
+    @ManyToOne
+    Area phm;
+    @ManyToOne
+    Area phi;
+    @ManyToOne
+    Area dsd;
+    @ManyToOne
+    Area moh;
+    @ManyToOne
+    Area district;
+    @ManyToOne
+    Area province;
 
     private double centreLongitude;
     private double centreLatitude;
     private double zoomLavel;
 
+    private Double surfaceArea;
+    private Long totalPopulation;
+    private Long malePopulation;
+    private Long femalePopulation;
+    
     /*
     Create Properties
      */
@@ -280,6 +298,86 @@ public class Area implements Serializable {
 
     public void setRetireComments(String retireComments) {
         this.retireComments = retireComments;
+    }
+
+    public Area getPhm() {
+        return phm;
+    }
+
+    public void setPhm(Area phm) {
+        this.phm = phm;
+    }
+
+    public Area getPhi() {
+        return phi;
+    }
+
+    public void setPhi(Area phi) {
+        this.phi = phi;
+    }
+
+    public Area getDsd() {
+        return dsd;
+    }
+
+    public void setDsd(Area dsd) {
+        this.dsd = dsd;
+    }
+
+    public Area getMoh() {
+        return moh;
+    }
+
+    public void setMoh(Area moh) {
+        this.moh = moh;
+    }
+
+    public Area getDistrict() {
+        return district;
+    }
+
+    public void setDistrict(Area district) {
+        this.district = district;
+    }
+
+    public Area getProvince() {
+        return province;
+    }
+
+    public void setProvince(Area province) {
+        this.province = province;
+    }
+
+    public Double getSurfaceArea() {
+        return surfaceArea;
+    }
+
+    public void setSurfaceArea(Double surfaceArea) {
+        this.surfaceArea = surfaceArea;
+    }
+
+    public Long getTotalPopulation() {
+        return totalPopulation;
+    }
+
+    public void setTotalPopulation(Long totalPopulation) {
+        this.totalPopulation = totalPopulation;
+    }
+
+    public Long getMalePopulation() {
+        return malePopulation;
+    }
+
+    public void setMalePopulation(Long malePopulation) {
+        this.malePopulation = malePopulation;
+    }
+
+    public Long getFemalePopulation() {
+        return femalePopulation;
+    }
+
+    public void setFemalePopulation(Long femalePopulation) {
+        this.femalePopulation = femalePopulation;
     }
 
     

@@ -14,17 +14,11 @@
                 <h:form >
                     <p:panel header="Manage Areas" >
                         <h:panelGrid columns="1" >
-                            <p:commandButton styleClass="defaultButton" ajax="false" value="Add Province" action="#{areaController.toAddProvince}"  ></p:commandButton>
-                            <p:commandButton styleClass="defaultButton"  ajax="false" value="Add Districts" action="#{areaController.toAddDistrict()}"  ></p:commandButton>
+                            <p:commandButton styleClass="defaultButton"  ajax="false" value="Upload GN Areas" action="/area/import_gn_areas"  ></p:commandButton>
                             <p:commandButton styleClass="defaultButton"  ajax="false" value="Add MOH Areas" action="#{areaController.toAddMhoArea()}"  ></p:commandButton>
-                            <p:commandButton styleClass="defaultButton"  ajax="false" value="Add Educational Zones" action="#{areaController.toEducationalZones()}"  ></p:commandButton>
                             <p:commandButton styleClass="defaultButton"  ajax="false" value="Add PHI Areas" action="#{areaController.toAddPhiArea()}"  ></p:commandButton>
                             <p:commandButton styleClass="defaultButton"  ajax="false" value="Add PHI Areas" action="#{areaController.toAddPhiArea()}"  ></p:commandButton>
-                            <p:commandButton styleClass="defaultButton"  ajax="false" value="View/Edit/Delete PHI Areas" action="#{areaController.toAddPhiArea()}"  ></p:commandButton>
                             <p:commandButton styleClass="defaultButton"  ajax="false" value="Manage All Areas" action="/area/List"  ></p:commandButton>
-
-
-
                         </h:panelGrid>
                     </p:panel>
 
@@ -39,10 +33,7 @@
                 </h:form>
 
 
-                <h:form enctype="multipart/form-data" >
-                    <p:fileUpload value="#{areaController.file}" mode="simple"/>
-                    <p:commandButton ajax="false" value="Upload All GN Areas at once" action="#{areaController.saveGnCoordinates()}"  ></p:commandButton>
-                </h:form>
+
 
 
             </ui:define>

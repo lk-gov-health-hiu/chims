@@ -20,7 +20,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
@@ -35,6 +34,12 @@ import javax.inject.Named;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import jxl.Cell;
+import jxl.Sheet;
+import jxl.Workbook;
+import jxl.read.biff.BiffException;
+import lk.gov.health.phsp.entity.Institution;
+import lk.gov.health.phsp.entity.Item;
 import org.primefaces.model.UploadedFile;
 import org.primefaces.event.map.OverlaySelectEvent;
 import org.primefaces.model.map.DefaultMapModel;
@@ -53,7 +58,7 @@ public class AreaController implements Serializable {
     @EJB
     private AreaFacade ejbFacade;
     @EJB
-    CoordinateFacade coordinateFacade;
+    private CoordinateFacade coordinateFacade;
     private List<Area> items = null;
     List<Area> mohAreas = null;
     List<Area> phiAreas = null;
@@ -62,11 +67,149 @@ public class AreaController implements Serializable {
     private List<Area> dsAreas = null;
     private List<Area> provinces = null;
     private Area selected;
+    private UploadedFile file;
 
     @Inject
-    WebUserController webUserController;
+    private WebUserController webUserController;
 
     private MapModel polygonModel;
+
+    private int gnNameColumnNumber;
+    private int gnCodeColumnNumber;
+    private int dsdNameColumnNumber;
+    private int districtNameColumnNumber;
+    private int provinceNameColumnNumber;
+    private int totalPopulationColumnNumber;
+    private int malePopulationColumnNumber;
+    private int femalePopulationColumnNumber;
+    private int areaColumnNumber;
+     private int startRow = 1;
+
+    public String importAreasFromExcel() {
+        String strGnName;
+        String strGNCode;
+        String strDsName;
+        String strDistrictName;
+        String strProvinceName;
+        String strTotalPopulationNumber;
+        String strMalePopulationNumber;
+        String strFemalePopulationNumber;
+        String strArea;
+        Long totalPopulation=null;
+        Long malePopulation=null;
+        Long femalePopulation=null;
+        Double area=null;
+
+        Area province;
+        Area district;
+        Area dsd;
+        Area moh;
+        Area phm;
+        Area phi;
+        Area gn;
+
+        File inputWorkbook;
+        Workbook w;
+        Cell cell;
+        InputStream in;
+
+       
+
+        JsfUtil.addSuccessMessage(file.getFileName());
+
+        try {
+            JsfUtil.addSuccessMessage(file.getFileName());
+            in = file.getInputstream();
+            File f;
+            f = new File(Calendar.getInstance().getTimeInMillis() + file.getFileName());
+            FileOutputStream out = new FileOutputStream(f);
+            int read = 0;
+            byte[] bytes = new byte[1024];
+            while ((read = in.read(bytes)) != -1) {
+                out.write(bytes, 0, read);
+            }
+            in.close();
+            out.flush();
+            out.close();
+
+            inputWorkbook = new File(f.getAbsolutePath());
+
+            JsfUtil.addSuccessMessage("Excel File Opened");
+            w = Workbook.getWorkbook(inputWorkbook);
+            Sheet sheet = w.getSheet(0);
+
+            for (int i = startRow; i < sheet.getRows(); i++) {
+
+                Map m = new HashMap();
+
+                cell = sheet.getCell(gnCodeColumnNumber, i);
+                strGNCode = cell.getContents();
+
+                cell = sheet.getCell(gnNameColumnNumber, i);
+                strGnName = cell.getContents();
+
+                cell = sheet.getCell(districtNameColumnNumber, i);
+                strDistrictName = cell.getContents();
+
+                cell = sheet.getCell(provinceNameColumnNumber, i);
+                strProvinceName = cell.getContents();
+
+                cell = sheet.getCell(dsdNameColumnNumber, i);
+                strDsName = cell.getContents();
+
+                cell = sheet.getCell(totalPopulationColumnNumber, i);
+                strTotalPopulationNumber = cell.getContents();
+
+                cell = sheet.getCell(malePopulationColumnNumber, i);
+                strMalePopulationNumber = cell.getContents();
+
+                cell = sheet.getCell(femalePopulationColumnNumber, i);
+                strFemalePopulationNumber = cell.getContents();
+
+                cell = sheet.getCell(areaColumnNumber, i);
+                strArea = cell.getContents();
+
+                province = getArea(strProvinceName, AreaType.Province, true, null);
+                district = getArea(strDistrictName, AreaType.District, true, province);
+                dsd = getArea(strDsName, AreaType.DsArea, true, district);
+                gn = getArea(strGNCode, AreaType.GN, true, dsd);
+
+                try {
+                    totalPopulation = Long.parseLong(strTotalPopulationNumber);
+                    malePopulation = Long.parseLong(strMalePopulationNumber);
+                    femalePopulation = Long.parseLong(strFemalePopulationNumber);
+                    area = Double.parseDouble(strArea);
+                } catch (Exception e) {
+                    System.out.println("e = " + i + " in " + e);
+                }
+
+                gn.setName(strGnName);
+                gn.setProvince(province);
+                gn.setDistrict(district);
+                gn.setDsd(dsd);
+                gn.setTotalPopulation(totalPopulation);
+                gn.setMalePopulation(malePopulation);
+                gn.setFemalePopulation(femalePopulation);
+                gn.setSurfaceArea(area);
+                getFacade().edit(gn);
+                
+                
+                
+
+                System.out.println("Added SUccessfully = " + gn.getName());
+
+            }
+
+            JsfUtil.addSuccessMessage("Succesful. All the data in Excel File Impoted to the database");
+            return "";
+        } catch (IOException ex) {
+            JsfUtil.addErrorMessage(ex.getMessage());
+            return "";
+        } catch (BiffException e) {
+            JsfUtil.addErrorMessage(e.getMessage());
+            return "";
+        }
+    }
 
     public List<Area> getMohAreas() {
         if (mohAreas == null) {
@@ -164,8 +307,6 @@ public class AreaController implements Serializable {
 
         return "/area/area_map";
     }
-
-    private UploadedFile file;
 
     public UploadedFile getFile() {
         return file;
@@ -290,21 +431,21 @@ public class AreaController implements Serializable {
 
                 }
 
-                province = getArea(provinceName, AreaType.Province,false,null);
+                province = getArea(provinceName, AreaType.Province, false, null);
                 if (province == null) {
                     System.out.println("province = " + province);
                     JsfUtil.addErrorMessage("Add " + provinceName);
                     return "";
                 }
 
-                district = getArea(districtName, AreaType.District,false,null);
+                district = getArea(districtName, AreaType.District, false, null);
                 if (district == null) {
                     System.out.println("district = " + district);
                     JsfUtil.addErrorMessage("Add " + districtName);
                     return "";
                 }
 
-                moh = getArea(mohAreaName, AreaType.MOH,false,null);
+                moh = getArea(mohAreaName, AreaType.MOH, false, null);
                 if (moh == null) {
                     System.out.println("moh = " + moh);
                     moh = new Area();
@@ -473,28 +614,28 @@ public class AreaController implements Serializable {
 
                 }
 
-                province = getArea(provinceName, AreaType.Province, false , null);
+                province = getArea(provinceName, AreaType.Province, false, null);
                 if (province == null) {
                     System.out.println("province = " + province);
                     JsfUtil.addErrorMessage("Add " + provinceName);
                     return "";
                 }
 
-                district = getArea(districtName, AreaType.District, false , null);
+                district = getArea(districtName, AreaType.District, false, null);
                 if (district == null) {
                     System.out.println("district = " + district);
                     JsfUtil.addErrorMessage("Add " + districtName);
                     return "";
                 }
 
-                moh = getArea(mohAreaName, AreaType.MOH, false , null);
+                moh = getArea(mohAreaName, AreaType.MOH, false, null);
                 if (moh == null) {
                     System.out.println("MOH = " + mohAreaName);
                     JsfUtil.addErrorMessage("Add " + mohAreaName);
                     return "";
                 }
 
-                gn = getArea(gnAreaCode, AreaType.GN, false , null);
+                gn = getArea(gnAreaCode, AreaType.GN, false, null);
                 System.out.println("gnAreaCode = " + gnAreaCode);
                 System.out.println("gnAreaName = " + gnAreaName);
                 if (gn == null) {
@@ -832,7 +973,7 @@ public class AreaController implements Serializable {
     }
 
     public Area getArea(String nameOrCode, AreaType areaType, boolean createNew, Area parentArea) {
-        if(nameOrCode.trim().equals("")){
+        if (nameOrCode.trim().equals("")) {
             return null;
         }
         String j;
@@ -849,11 +990,12 @@ public class AreaController implements Serializable {
         System.out.println("m = " + m);
         System.out.println("j = " + j);
         Area ta = getFacade().findFirstByJpql(j, m);
-        if(ta==null && createNew){
+        if (ta == null && createNew) {
             ta = new Area();
             ta.setName(nameOrCode);
             ta.setType(areaType);
             ta.setCreatedAt(new Date());
+            ta.setCreatedBy(webUserController.getLoggedUser());
             ta.setParentArea(parentArea);
             getFacade().create(ta);
         }
@@ -959,6 +1101,7 @@ public class AreaController implements Serializable {
         JsfUtil.addSuccessMessage("Selected");
     }
 
+    // <editor-fold defaultstate="collapsed" desc="Getters and Setters">
     public List<Area> getProvinces() {
         if (provinces == null) {
             provinces = getAreas(AreaType.Province, null);
@@ -981,6 +1124,114 @@ public class AreaController implements Serializable {
         this.dsAreas = dsAreas;
     }
 
+    public CoordinateFacade getCoordinateFacade() {
+        return coordinateFacade;
+    }
+
+    public void setCoordinateFacade(CoordinateFacade coordinateFacade) {
+        this.coordinateFacade = coordinateFacade;
+    }
+
+    public WebUserController getWebUserController() {
+        return webUserController;
+    }
+
+    public void setWebUserController(WebUserController webUserController) {
+        this.webUserController = webUserController;
+    }
+
+    public int getGnNameColumnNumber() {
+        return gnNameColumnNumber;
+    }
+
+    public void setGnNameColumnNumber(int gnNameColumnNumber) {
+        this.gnNameColumnNumber = gnNameColumnNumber;
+    }
+
+    public int getGnCodeColumnNumber() {
+        return gnCodeColumnNumber;
+    }
+
+    public void setGnCodeColumnNumber(int gnCodeColumnNumber) {
+        this.gnCodeColumnNumber = gnCodeColumnNumber;
+    }
+
+    public int getDsdNameColumnNumber() {
+        return dsdNameColumnNumber;
+    }
+
+    public void setDsdNameColumnNumber(int dsdNameColumnNumber) {
+        this.dsdNameColumnNumber = dsdNameColumnNumber;
+    }
+
+    public int getDistrictNameColumnNumber() {
+        return districtNameColumnNumber;
+    }
+
+    public void setDistrictNameColumnNumber(int districtNameColumnNumber) {
+        this.districtNameColumnNumber = districtNameColumnNumber;
+    }
+
+    public int getProvinceNameColumnNumber() {
+        return provinceNameColumnNumber;
+    }
+
+    public void setProvinceNameColumnNumber(int provinceNameColumnNumber) {
+        this.provinceNameColumnNumber = provinceNameColumnNumber;
+    }
+
+    public int getTotalPopulationColumnNumber() {
+        return totalPopulationColumnNumber;
+    }
+
+    public void setTotalPopulationColumnNumber(int totalPopulationColumnNumber) {
+        this.totalPopulationColumnNumber = totalPopulationColumnNumber;
+    }
+
+    public int getMalePopulationColumnNumber() {
+        return malePopulationColumnNumber;
+    }
+
+    public void setMalePopulationColumnNumber(int malePopulationColumnNumber) {
+        this.malePopulationColumnNumber = malePopulationColumnNumber;
+    }
+
+    public int getFemalePopulationColumnNumber() {
+        return femalePopulationColumnNumber;
+    }
+
+    public void setFemalePopulationColumnNumber(int femalePopulationColumnNumber) {
+        this.femalePopulationColumnNumber = femalePopulationColumnNumber;
+    }
+
+    public int getAreaColumnNumber() {
+        return areaColumnNumber;
+    }
+
+    public void setAreaColumnNumber(int areaColumnNumber) {
+        this.areaColumnNumber = areaColumnNumber;
+    }
+
+    public AreaFacade getEjbFacade() {
+        return ejbFacade;
+    }
+
+    public void setEjbFacade(AreaFacade ejbFacade) {
+        this.ejbFacade = ejbFacade;
+    }
+
+    public int getStartRow() {
+        return startRow;
+    }
+
+    public void setStartRow(int startRow) {
+        this.startRow = startRow;
+    }
+    
+    
+
+    // </editor-fold>
+    // <editor-fold defaultstate="collapsed" desc="Converters">
     @FacesConverter(forClass = Area.class)
     public static class AreaControllerConverter implements Converter {
 
@@ -1063,4 +1314,5 @@ public class AreaController implements Serializable {
 
     }
 
+    // </editor-fold>
 }
