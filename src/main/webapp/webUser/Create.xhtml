@@ -1,85 +1,89 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-      xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:f="http://xmlns.jcp.org/jsf/core"
-      xmlns:p="http://primefaces.org/ui">
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
 
-    <ui:composition>
+    <body>
 
-        <p:dialog id="WebUserCreateDlg" widgetVar="WebUserCreateDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundleClinical.CreateWebUserTitle}">
-            <h:form id="WebUserCreateForm">
-                <h:panelGroup id="display">
-                    <p:panelGrid columns="2" rendered="#{webUserController.selected != null}">
-                        <p:outputLabel value="#{bundleClinical.CreateWebUserLabel_serialVersionUID}" for="serialVersionUID" />
-                        <p:inputText id="serialVersionUID" value="#{webUserController.selected.serialVersionUID}" title="#{bundleClinical.CreateWebUserTitle_serialVersionUID}" />
-                        <p:outputLabel value="#{bundleClinical.CreateWebUserLabel_institution}" for="institution" />
-                        <p:selectOneMenu id="institution" value="#{webUserController.selected.institution}" >
-                            <f:selectItems value="#{institutionController.itemsAvailableSelectOne}"
-                                           var="institutionItem"
-                                           itemValue="#{institutionItem}"/>
-                        </p:selectOneMenu>
-                        <p:outputLabel value="#{bundleClinical.CreateWebUserLabel_email}" for="email" />
-                        <p:inputText id="email" value="#{webUserController.selected.email}" title="#{bundleClinical.CreateWebUserTitle_email}" />
-                        <p:outputLabel value="#{bundleClinical.CreateWebUserLabel_telNo}" for="telNo" />
-                        <p:inputText id="telNo" value="#{webUserController.selected.telNo}" title="#{bundleClinical.CreateWebUserTitle_telNo}" />
-                        <p:outputLabel value="#{bundleClinical.CreateWebUserLabel_defLocale}" for="defLocale" />
-                        <p:inputText id="defLocale" value="#{webUserController.selected.defLocale}" title="#{bundleClinical.CreateWebUserTitle_defLocale}" />
-                        <p:outputLabel value="#{bundleClinical.CreateWebUserLabel_primeTheme}" for="primeTheme" />
-                        <p:inputText id="primeTheme" value="#{webUserController.selected.primeTheme}" title="#{bundleClinical.CreateWebUserTitle_primeTheme}" />
-                        <p:outputLabel value="#{bundleClinical.CreateWebUserLabel_createdAt}" for="createdAt" />
-                        <p:calendar id="createdAt" pattern="MM/dd/yyyy HH:mm:ss" value="#{webUserController.selected.createdAt}" title="#{bundleClinical.EditWebUserTitle_createdAt}"  showOn="button"/>
-                        <p:outputLabel value="#{bundleClinical.CreateWebUserLabel_creater}" for="creater" />
-                        <p:selectOneMenu id="creater" value="#{webUserController.selected.creater}" >
-                            <f:selectItems value="#{webUserController.itemsAvailableSelectOne}"
-                                           var="createrItem"
-                                           itemValue="#{createrItem}"/>
-                        </p:selectOneMenu>
-                        <p:outputLabel value="#{bundleClinical.CreateWebUserLabel_description}" for="description" />
-                        <p:inputText id="description" value="#{webUserController.selected.description}" title="#{bundleClinical.CreateWebUserTitle_description}" />
-                        <p:outputLabel value="#{bundleClinical.CreateWebUserLabel_name}" for="name" />
-                        <p:inputText id="name" value="#{webUserController.selected.name}" title="#{bundleClinical.CreateWebUserTitle_name}" required="true" requiredMessage="#{bundleClinical.CreateWebUserRequiredMessage_name}"/>
-                        <p:outputLabel value="#{bundleClinical.CreateWebUserLabel_retireComments}" for="retireComments" />
-                        <p:inputText id="retireComments" value="#{webUserController.selected.retireComments}" title="#{bundleClinical.CreateWebUserTitle_retireComments}" />
-                        <p:outputLabel value="#{bundleClinical.CreateWebUserLabel_retiredAt}" for="retiredAt" />
-                        <p:calendar id="retiredAt" pattern="MM/dd/yyyy HH:mm:ss" value="#{webUserController.selected.retiredAt}" title="#{bundleClinical.EditWebUserTitle_retiredAt}"  showOn="button"/>
-                        <p:outputLabel value="#{bundleClinical.CreateWebUserLabel_retirer}" for="retirer" />
-                        <p:selectOneMenu id="retirer" value="#{webUserController.selected.retirer}" >
-                            <f:selectItems value="#{webUserController.itemsAvailableSelectOne}"
-                                           var="retirerItem"
-                                           itemValue="#{retirerItem}"/>
-                        </p:selectOneMenu>
-                        <p:outputLabel value="#{bundleClinical.CreateWebUserLabel_id}" for="id" />
-                        <p:inputText id="id" value="#{webUserController.selected.id}" title="#{bundleClinical.CreateWebUserTitle_id}" />
-                        <p:outputLabel value="#{bundleClinical.CreateWebUserLabel_webUserPassword}" for="webUserPassword" />
-                        <p:inputText id="webUserPassword" value="#{webUserController.selected.webUserPassword}" title="#{bundleClinical.CreateWebUserTitle_webUserPassword}" />
-                        <p:outputLabel value="#{bundleClinical.CreateWebUserLabel_person}" for="person" />
-                        <p:selectOneMenu id="person" value="#{webUserController.selected.person}" >
-                            <f:selectItems value="#{personController.itemsAvailableSelectOne}"
-                                           var="personItem"
-                                           itemValue="#{personItem}"/>
-                        </p:selectOneMenu>
-                        <p:outputLabel value="#{bundleClinical.CreateWebUserLabel_activateComments}" for="activateComments" />
-                        <p:inputText id="activateComments" value="#{webUserController.selected.activateComments}" title="#{bundleClinical.CreateWebUserTitle_activateComments}" />
-                        <p:outputLabel value="#{bundleClinical.CreateWebUserLabel_activatedAt}" for="activatedAt" />
-                        <p:calendar id="activatedAt" pattern="MM/dd/yyyy HH:mm:ss" value="#{webUserController.selected.activatedAt}" title="#{bundleClinical.EditWebUserTitle_activatedAt}"  showOn="button"/>
-                        <p:outputLabel value="#{bundleClinical.CreateWebUserLabel_activator}" for="activator" />
-                        <p:selectOneMenu id="activator" value="#{webUserController.selected.activator}" >
-                            <f:selectItems value="#{webUserController.itemsAvailableSelectOne}"
-                                           var="activatorItem"
-                                           itemValue="#{activatorItem}"/>
-                        </p:selectOneMenu>
-                        <p:outputLabel value="#{bundleClinical.CreateWebUserLabel_webUserRole}" for="webUserRole" />
-                        <p:inputText id="webUserRole" value="#{webUserController.selected.webUserRole}" title="#{bundleClinical.CreateWebUserTitle_webUserRole}" />
-                        <p:outputLabel value="#{bundleClinical.CreateWebUserLabel_code}" for="code" />
-                        <p:inputText id="code" value="#{webUserController.selected.code}" title="#{bundleClinical.CreateWebUserTitle_code}" />
-                    </p:panelGrid>
-                    <p:commandButton actionListener="#{webUserController.create}" value="#{bundleClinical.Save}" update="display,:WebUserListForm:datalist,:growl" oncomplete="handleSubmit(args,'WebUserCreateDialog');"/>
-                    <p:commandButton value="#{bundleClinical.Cancel}" onclick="WebUserCreateDialog.hide()"/>
-                </h:panelGroup>
-            </h:form>
-        </p:dialog>
+        <ui:composition template="/template.xhtml">
 
-    </ui:composition>
+            <ui:define name="content">
+                <p:panel id="WebUserEditDlg" header="Edit User Detais" style="text-align: center; height: 100%;">
+                    <h:form id="WebUserEditForm">
+
+                        <p:panelGrid columns="2" rendered="#{webUserController.selected != null}" style="margin: auto; text-align: left;">
+                            <f:facet name="header" >
+                                <p:commandButton action="#{webUserController.create()}" value="#{bundleClinical.Save}" />
+                                <p:commandButton value="Back" action="index"/>
+                            </f:facet>
+
+
+                            <p:outputLabel value="Username" for="username" />
+                            <p:inputText  id="username" value="#{webUserController.selected.name}" title="#{bundleClinical.EditWebUserTitle_name}"
+                                          required="true" requiredMessage="#{bundleClinical.EditWebUserRequiredMessage_name}"/>
+
+
+                            <p:outputLabel value="Password" for="password" />
+                            <p:inputText  id="password" value="#{webUserController.password}" title="Password"
+                                          required="true" requiredMessage="Password is required."/>
+
+                            
+                            
+                            <p:outputLabel value="Re-enter Password" for="passwordReenter" />
+                            <p:inputText  id="passwordReenter" value="#{webUserController.passwordReenter}" title="Re-enter Password"
+                                          required="true" requiredMessage="Password is required."/>
+
+
+                            <p:outputLabel value="Title" for="title" />
+                            <p:selectOneMenu id="title"  value="#{webUserController.selected.person.title}"  >
+                                <f:selectItems value="#{itemController.titles}" var="t" itemLabel="#{t.name}"
+                                               itemValue="#{t}" ></f:selectItems>
+                            </p:selectOneMenu>
+
+                            <p:outputLabel value="Name" for="name" />
+                            <p:inputText 
+                                autocomplete="off" 
+                                id="name" 
+                                value="#{webUserController.selected.person.name}"
+                                title="Name" />
+
+
+
+
+                            <p:outputLabel value="#{bundleClinical.EditWebUserLabel_institution}" for="institution" />
+                            <p:autoComplete  id="institution" value="#{webUserController.selected.institution}" 
+                                             completeMethod="#{institutionController.completeInstitutions}"
+                                             var="i" itemLabel="#{i.name}" itemValue="#{i}">
+                            </p:autoComplete >
+
+
+
+
+
+                            <p:outputLabel value="#{bundleClinical.EditWebUserLabel_email}" for="email" />
+                            <p:inputText id="email" value="#{webUserController.selected.email}" title="#{bundleClinical.EditWebUserTitle_email}" />
+
+                            <p:outputLabel value="#{bundleClinical.EditWebUserLabel_telNo}" for="telNo" />
+                            <p:inputText id="telNo" value="#{webUserController.selected.telNo}" title="#{bundleClinical.EditWebUserTitle_telNo}" />
+
+
+                            <p:outputLabel value="#{bundleClinical.EditWebUserLabel_webUserRole}" for="webUserRole" />
+                            <p:selectOneMenu  id="webUserRole" value="#{webUserController.selected.webUserRole}"  >
+                                <f:selectItems value="#{applicationController.webUserRoles}" ></f:selectItems>
+                            </p:selectOneMenu>
+
+                        </p:panelGrid>
+
+
+                    </h:form>
+                </p:panel>
+
+            </ui:define>
+        </ui:composition>
+
+    </body>
 </html>
+

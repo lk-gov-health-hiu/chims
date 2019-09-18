@@ -48,7 +48,7 @@ public class ApplicationController {
 // </editor-fold>    
 
 // <editor-fold defaultstate="collapsed" desc="Class Variables">
-    private List<InstitutionLastPhn> insPhns;
+
 
 // </editor-fold>
     public ApplicationController() {
@@ -59,21 +59,24 @@ public class ApplicationController {
         if (ins == null) {
             return null;
         }
-        Institution ti = getInstitutionFacade().find(ins.getId());
-        if (ti == null) {
-            return null;
-        }
-        Long lastHinIssued = ti.getLastHin();
+        Long lastHinIssued = ins.getLastHin();
+        System.out.println("lastHinIssued = " + lastHinIssued);
         if (lastHinIssued == null) {
             lastHinIssued = 0l;
         }
         Long thisHin = lastHinIssued + 1;
+        System.out.println("thisHin = " + thisHin);
         String poi = ins.getPoiNumber();
+        System.out.println("poi = " + poi);
         String num = String.format("%05d", thisHin);
+        System.out.println("num = " + num);
         String checkDigit = calculateCheckDigit(poi + num);
         String phn = poi + num + checkDigit;
-        ti.setLastHin(thisHin);
-        getInstitutionFacade().edit(ti);
+        System.out.println("phn = " + phn);
+        ins.setLastHin(thisHin);
+        System.out.println("thisHin = " + thisHin);
+        getInstitutionFacade().edit(ins);
+        System.out.println("ins.getLastHin() = " + ins.getLastHin());
         return phn;
     }
 
@@ -128,20 +131,10 @@ public class ApplicationController {
         return WebUserRole.values();
     }
 
-    public List<InstitutionLastPhn> getInsPhns() {
-        return insPhns;
-    }
-
-    public void setInsPhns(List<InstitutionLastPhn> insPhns) {
-        this.insPhns = insPhns;
-    }
+   
 
     // <editor-fold>
-    class InstitutionLastPhn {
-
-        Institution institution;
-        Long patientCount;
-    }
+   
 
     // <editor-fold defaultstate="collapsed" desc="Getters & Setters">
     public InstitutionFacade getInstitutionFacade() {

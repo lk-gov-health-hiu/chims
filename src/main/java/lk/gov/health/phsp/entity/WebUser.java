@@ -46,7 +46,7 @@ public class WebUser implements Serializable {
     @OneToOne(cascade = CascadeType.ALL)
     Person person;
     //Main Properties
-    @Column(unique = true, nullable = false)
+    @Column(length = 50, nullable = false, unique = true)
     String name;
     String description;
     //Created Properties

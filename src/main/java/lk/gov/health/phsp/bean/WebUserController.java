@@ -701,18 +701,21 @@ public class WebUserController implements Serializable {
     }
 
     public String create() {
-        if (!password.equals(current.getWebUserPassword())) {
+        if (!password.equals(passwordReenter)) {
             JsfUtil.addErrorMessage("Passwords do NOT match");
             return "";
         }
         try {
+            current.setWebUserPassword(commonController.hash(password));
+            current.setCreatedAt(new Date());
+            current.setCreater(loggedUser);
             getFacade().create(current);
-            JsfUtil.addSuccessMessage(("WebUserCreated"));
+            JsfUtil.addSuccessMessage(("A new User Created Successfully."));
         } catch (Exception e) {
-            JsfUtil.addErrorMessage(e, ("PersistenceErrorOccured"));
+            JsfUtil.addErrorMessage(e, ("Error Occured. Please change username and try again."));
             return "";
         }
-        return prepareCreate();
+        return "index";
     }
 
     public String prepareEdit() {
@@ -756,10 +759,10 @@ public class WebUserController implements Serializable {
             JsfUtil.addSuccessMessage(("Password Mismatch."));
             return "";
         }
-        current.setWebUserPassword(password);
+        current.setWebUserPassword(commonController.hash(password));
         try {
             getFacade().edit(current);
-            JsfUtil.addSuccessMessage(("Updated"));
+            JsfUtil.addSuccessMessage(("Password Updated"));
             password = "";
             passwordReenter = "";
             return "/index";

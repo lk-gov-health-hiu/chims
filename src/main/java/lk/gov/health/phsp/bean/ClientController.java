@@ -166,6 +166,10 @@ public class ClientController implements Serializable {
             JsfUtil.addErrorMessage("No Client is Selected");
             return;
         }
+        if(webUserController.getLoggedUser().getInstitution().getPoiNumber().trim().equals("")){
+            JsfUtil.addErrorMessage("No POI is configured for your institution. Please contact support.");
+            return;
+        }
         selected.setPhn(applicationController.createNewPersonalHealthNumber(webUserController.getLoggedUser().getInstitution()));
     }
 
