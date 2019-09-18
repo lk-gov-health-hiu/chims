@@ -180,7 +180,6 @@ public class AreaController implements Serializable {
                     femalePopulation = Long.parseLong(strFemalePopulationNumber);
                     area = Double.parseDouble(strArea);
                 } catch (Exception e) {
-                    System.out.println("e = " + i + " in " + e);
                 }
 
                 gn.setName(strGnName);
@@ -196,7 +195,6 @@ public class AreaController implements Serializable {
                 
                 
 
-                System.out.println("Added SUccessfully = " + gn.getName());
 
             }
 
@@ -279,7 +277,6 @@ public class AreaController implements Serializable {
         System.out.println("m = " + m);
         System.out.println("j = " + j);
         List<Area> areas = getFacade().findByJpql(j, m);
-        System.out.println("areas = " + areas);
         return areas;
     }
 
@@ -317,7 +314,6 @@ public class AreaController implements Serializable {
     }
 
     public String saveMohCoordinates() {
-        System.out.println("saveMohCoordinates");
         if (file == null || "".equals(file.getFileName())) {
             return "";
         }
@@ -426,21 +422,18 @@ public class AreaController implements Serializable {
                     }
 
                     if (gnElemantCount == 8) {
-                        System.out.println("gnDataNode = " + gnDataNode.getTextContent());
                     }
 
                 }
 
                 province = getArea(provinceName, AreaType.Province, false, null);
                 if (province == null) {
-                    System.out.println("province = " + province);
                     JsfUtil.addErrorMessage("Add " + provinceName);
                     return "";
                 }
 
                 district = getArea(districtName, AreaType.District, false, null);
                 if (district == null) {
-                    System.out.println("district = " + district);
                     JsfUtil.addErrorMessage("Add " + districtName);
                     return "";
                 }
@@ -456,7 +449,6 @@ public class AreaController implements Serializable {
                     moh.setName(mohAreaName);
                     moh.setParentArea(district);
                     getFacade().create(moh);
-                    System.out.println("moh = " + moh);
                     coordinatesText = coordinatesText.replaceAll("[\\t\\n\\r]", " ");
                     addCoordinates(moh, coordinatesText);
                 } else {
@@ -464,23 +456,18 @@ public class AreaController implements Serializable {
                 }
             }
         } catch (IOException ex) {
-            System.out.println("ex.getMessage() = " + ex.getMessage());
             JsfUtil.addErrorMessage(ex.getMessage());
             return "";
         } catch (ParserConfigurationException ex) {
-            System.out.println("ex.getMessage() = " + ex.getMessage());
             Logger.getLogger(AreaController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (SAXException ex) {
-            System.out.println("ex.getMessage() = " + ex.getMessage());
             Logger.getLogger(AreaController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (Exception ex) {
-            System.out.println("ex.getMessage() = " + ex.getMessage());
         }
         return "";
     }
 
     public String saveGnCoordinates() {
-        System.out.println("saveMohCoordinates");
         if (file == null || "".equals(file.getFileName())) {
             return "";
         }
@@ -593,15 +580,12 @@ public class AreaController implements Serializable {
                                 }
                                 if (gnEdNode.getFirstChild().getTextContent().equals("MOH_N")) {
                                     mohAreaName = gnEdNode.getLastChild().getTextContent();
-                                    System.out.println("mohAreaName = " + mohAreaName);
                                 }
                                 if (gnEdNode.getFirstChild().getTextContent().equals("GND_NO")) {
                                     gnAreaCode = gnEdNode.getLastChild().getTextContent();
-                                    System.out.println("gnAreaCode = " + gnAreaCode);
                                 }
                                 if (gnEdNode.getFirstChild().getTextContent().equals("GND_N")) {
                                     gnAreaName = gnEdNode.getLastChild().getTextContent();
-                                    System.out.println("gnAreaName = " + gnAreaName);
                                 }
 
                             }
@@ -609,35 +593,30 @@ public class AreaController implements Serializable {
                     }
 
                     if (gnElemantCount == 8) {
-                        System.out.println("gnDataNode = " + gnDataNode.getTextContent());
                     }
 
                 }
 
                 province = getArea(provinceName, AreaType.Province, false, null);
                 if (province == null) {
-                    System.out.println("province = " + province);
                     JsfUtil.addErrorMessage("Add " + provinceName);
                     return "";
                 }
 
                 district = getArea(districtName, AreaType.District, false, null);
                 if (district == null) {
-                    System.out.println("district = " + district);
                     JsfUtil.addErrorMessage("Add " + districtName);
                     return "";
                 }
 
                 moh = getArea(mohAreaName, AreaType.MOH, false, null);
                 if (moh == null) {
-                    System.out.println("MOH = " + mohAreaName);
                     JsfUtil.addErrorMessage("Add " + mohAreaName);
                     return "";
                 }
 
                 gn = getArea(gnAreaCode, AreaType.GN, false, null);
                 System.out.println("gnAreaCode = " + gnAreaCode);
-                System.out.println("gnAreaName = " + gnAreaName);
                 if (gn == null) {
                     System.out.println("GN = " + gn);
                     gn = new Area();
@@ -653,30 +632,24 @@ public class AreaController implements Serializable {
                     System.out.println("to add coords");
                     coordinatesText = coordinatesText.replaceAll("[\\t\\n\\r]", " ");
                     addCoordinates(gn, coordinatesText);
-                    System.out.println("adter add codes = ");
                 } else {
                     JsfUtil.addErrorMessage("GN Exists");
                 }
             }
 
         } catch (IOException ex) {
-            System.out.println("ex.getMessage() = " + ex.getMessage());
             JsfUtil.addErrorMessage(ex.getMessage());
             return "";
         } catch (ParserConfigurationException ex) {
-            System.out.println("ex.getMessage() = " + ex.getMessage());
             Logger.getLogger(AreaController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (SAXException ex) {
-            System.out.println("ex.getMessage() = " + ex.getMessage());
             Logger.getLogger(AreaController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (Exception ex) {
-            System.out.println("ex.getMessage() = " + ex.getMessage());
         }
         return "";
     }
 
     public void addCoordinates(Area area, String s) {
-        System.out.println("adding codes = ");
         String j = "select c from Coordinate c where c.area=:a";
         Map m = new HashMap();
         m.put("a", area);
@@ -687,10 +660,8 @@ public class AreaController implements Serializable {
         String cvsSplitBy = ",";
         String[] coords = s.split(" ");
         for (String a : coords) {
-            System.out.println("a = " + a);
             String[] country = a.split(cvsSplitBy);
             if (country.length > 1) {
-                System.out.println("Coordinates [Longitude= " + country[0] + " , Latitude=" + country[1] + "]");
                 Coordinate c = new Coordinate();
                 c.setArea(area);
                 String strLon = country[0].replace("\"", "");
@@ -744,7 +715,6 @@ public class AreaController implements Serializable {
                         String strLat = country[2].replace("\"", "");
 
                         double lon = Double.parseDouble(strLon);
-                        System.out.println("lon = " + lon);
 
                         double lat = Double.parseDouble(strLat);
 
@@ -758,14 +728,12 @@ public class AreaController implements Serializable {
             }
             return "";
         } catch (IOException e) {
-            System.out.println("e = " + e);
             return "";
         }
 
     }
 
     public String saveCentreCoordinates() {
-        System.out.println("saveCentreCoordinates = ");
         if (file == null || "".equals(file.getFileName())) {
             return "";
         }
@@ -782,9 +750,7 @@ public class AreaController implements Serializable {
             int i = 0;
             while ((line = br.readLine()) != null) {
                 String[] country = line.split(cvsSplitBy);
-                System.out.println("i = " + i);
                 if (i > 0) {
-                    System.out.println("country.length = " + country.length);
                     if (country.length > 3) {
                         System.out.println(country[3] + "Coordinates [Longitude= " + country[1] + " , Latitude=" + country[2] + "]");
 
@@ -806,7 +772,6 @@ public class AreaController implements Serializable {
                         String strLat = country[2].replace("\"", "");
 
                         double lon = Double.parseDouble(strLon);
-                        System.out.println("lon = " + lon);
 
                         double lat = Double.parseDouble(strLat);
 
@@ -821,7 +786,6 @@ public class AreaController implements Serializable {
             }
             return "";
         } catch (IOException e) {
-            System.out.println("e = " + e);
             return "";
         }
 
@@ -935,7 +899,6 @@ public class AreaController implements Serializable {
         System.out.println("m = " + m);
         System.out.println("j = " + j);
         List<Area> areas = getFacade().findByJpql(j, m);
-        System.out.println("areas = " + areas);
         return areas;
     }
 
@@ -968,7 +931,6 @@ public class AreaController implements Serializable {
         }
         j += " order by a.code";
         System.out.println("m = " + m);
-        System.out.println("j = " + j);
         return getFacade().findByJpql(j, m);
     }
 
@@ -988,7 +950,6 @@ public class AreaController implements Serializable {
         }
         j += " order by a.code";
         System.out.println("m = " + m);
-        System.out.println("j = " + j);
         Area ta = getFacade().findFirstByJpql(j, m);
         if (ta == null && createNew) {
             ta = new Area();

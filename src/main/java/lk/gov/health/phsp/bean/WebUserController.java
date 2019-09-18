@@ -324,10 +324,8 @@ public class WebUserController implements Serializable {
                 getUploadFacade().edit(u);
                 JsfUtil.addSuccessMessage("File Uploaded");
             } catch (IOException io) {
-                System.out.println("io = " + io);
                 JsfUtil.addErrorMessage("Error in Uploading. " + io.getMessage());
             } catch (Exception e) {
-                System.out.println("e = " + e);
                 JsfUtil.addErrorMessage("Error in Uploading. " + e.getMessage());
             }
 
@@ -350,7 +348,6 @@ public class WebUserController implements Serializable {
         try {
             getFacade().edit(current);
         } catch (Exception e) {
-            System.out.println("e = " + e);
             JsfUtil.addErrorMessage("Username already taken. Please enter a different username");
             return "";
         }
@@ -386,7 +383,6 @@ public class WebUserController implements Serializable {
         try {
             getFacade().create(current);
         } catch (Exception e) {
-            System.out.println("e = " + e);
             JsfUtil.addErrorMessage("Username already taken. Please enter a different username");
             return "";
         }
@@ -439,7 +435,6 @@ public class WebUserController implements Serializable {
     }
 
     private boolean checkLogin() {
-        System.out.println("Check Login");
         String temSQL;
         temSQL = "SELECT u FROM WebUser u WHERE lower(u.name)=:userName and u.retired =:ret";
         Map m = new HashMap();
@@ -450,10 +445,8 @@ public class WebUserController implements Serializable {
             return false;
         }
         if (commonController.matchPassword(password, loggedUser.getWebUserPassword())) {
-            System.out.println("Correct");
             return true;
         } else {
-            System.out.println("wrong");
             loggedUser = null;
             return false;
         }
@@ -461,7 +454,6 @@ public class WebUserController implements Serializable {
     }
 
     private boolean isFirstVisit() {
-        System.out.println("is First Visit Check " + this);
         if (getFacade().count() <= 0) {
             JsfUtil.addSuccessMessage("First Visit");
 
@@ -482,7 +474,6 @@ public class WebUserController implements Serializable {
             itemController.addInitialMetadata();
             return true;
         } else {
-            System.out.println("NOT First Visit");
             return false;
         }
 
@@ -517,11 +508,9 @@ public class WebUserController implements Serializable {
     }
 
     public boolean hasPrivilege(String privilege) {
-        System.out.println("hasPrivilege = " + privilege);
         Privilege p;
         try {
             p = Privilege.valueOf(privilege);
-            System.out.println("p = " + p);
             if(p!=null){
                 return hasPrivilege(p);
             }else{
@@ -529,7 +518,6 @@ public class WebUserController implements Serializable {
             }
         } catch (Exception e) {
             System.out.println("e = " + e);
-            System.out.println("privilege = " + privilege);
             return false;
         }
     }
@@ -630,7 +618,6 @@ public class WebUserController implements Serializable {
                     intYear = Integer.parseInt(strYear);
 
                 } catch (Exception e) {
-                    System.out.println("e = " + i + " in " + e);
                 }
 
                 cell = sheet.getCell(1, i);
@@ -657,13 +644,11 @@ public class WebUserController implements Serializable {
                     dblCost = Double.parseDouble(strCost);
 
                 } catch (Exception e) {
-                    System.out.println(i + ". e = " + e);
                 }
 
                 cell = sheet.getCell(8, i);
                 strFundSource = cell.getContents();
 
-                System.out.println("Added SUccessfully = " + i);
 
             }
 

@@ -124,7 +124,6 @@ public class ItemController implements Serializable {
     }
 
     public void addInitialMetadata(String str) {
-        System.out.println("Adding initial metadata for " + str);
         String[] lines = str.split("\\r?\\n|\\r");
         for (String oneLines : lines) {
             String[] components = oneLines.split("\\:", -1);
@@ -134,7 +133,6 @@ public class ItemController implements Serializable {
                 try {
                     itemType = ItemType.valueOf(itemTypeStr);
                 } catch (Exception e) {
-                    System.out.println("Wrong Item Type = " + itemTypeStr);
                     continue;
                 }
                 String itemCategory = components[1];
@@ -145,14 +143,11 @@ public class ItemController implements Serializable {
                 try {
                     itemOrderNo = Integer.parseInt(itemOrderNoStr);
                 } catch (Exception e) {
-                    System.out.println("Wrong Item Type = " + itemTypeStr);
                     continue;
                 }
                 Item parent = findItemByCode(itemCategory);
                 Item item = createItem(itemType, parent, itemName, itemCode, itemOrderNo);
-                System.out.println("item Created " + item.getName());
             } else {
-                System.out.println("Format mismatch in components = " + components.toString());
             }
         }
     }
