@@ -12,98 +12,148 @@
 
             <ui:define name="content">
 
-                <f:view>
+                <p:panel style="height: 100%;" rendered="#{clientController.selected ne null}">
+                    <f:facet name="header" >
+                        <p:outputLabel value="#{clientController.selected.person.nameWithTitle}" ></p:outputLabel>
+                        <p:spacer height="0" width="10" ></p:spacer>
+                        <p:outputLabel value="#{clientController.selected.person.age}" ></p:outputLabel>
+                    </f:facet>
+
+                    <p:panelGrid styleClass="alignTop">
+
+                        <p:row >
+
+                            <p:column rowspan="4" >
+
+                                <h:form>
+
+                                    <p:panelGrid columns="2" >
+
+                                        <f:facet name="header" >
+                                            <p:outputLabel value="Demographic Details" style="float: left;" ></p:outputLabel>
+                                            <p:commandLink value="Edit" ajax="false" action="client" style="float: right;" ></p:commandLink>
+                                        </f:facet>
+
+                                        <p:outputLabel value="Name:" for="name" />
+                                        <p:outputLabel id="name" value="#{clientController.selected.person.nameWithTitle}" title="Name" />
+
+                                        <p:outputLabel value="Sex:" for="sex" />
+                                        <p:outputLabel id="sex"  value="#{clientController.selected.person.sex.name}"  />
+
+                                        <p:outputLabel value="Phn:" for="phn" />
+                                        <p:outputLabel id="phn"  value="#{clientController.selected.phn}" title="Phn" />
 
 
-                    <h:form>
+                                        <p:outputLabel value="Phone:" for="phone1" />
+                                        <p:outputLabel id="phone1"  
+                                                       value="#{clientController.selected.person.phone1}, #{clientController.selected.person.phone2}" title="Phone1" />
 
-                        <p:panelGrid columns="4">
+
+                                        <p:outputLabel value="Area" for="address" />
+                                        <p:outputLabel id="address" 
+                                                       value="#{clientController.selected.person.gnArea.name}" title="Address" />
+
+
+                                        <p:outputLabel value="DateOfBirth:" for="dateOfBirth" />
+                                        <p:outputLabel id="dateOfBirth" value="#{clientController.selected.person.dateOfBirth}"
+                                                       >
+                                            <f:convertDateTime pattern="dd MMMM yyyy" ></f:convertDateTime>
+                                        </p:outputLabel>
+
+                                        <p:outputLabel value="Age" />
+                                        <p:outputLabel value="#{clientController.selected.person.age}"/>
+
+
+                                    </p:panelGrid>
+
+                                </h:form>
+
+
+
+                            </p:column>
+
+                            <p:column >
+                                <h:form>
+                                    <p:panelGrid columns="1"  style="width: 100%" >
+                                        <f:facet name="header" >
+                                            <p:outputLabel value="Current Medications" style="float: left;"></p:outputLabel>
+                                            <p:spacer height="1" width="5" ></p:spacer>
+                                            <p:commandLink ajax="false" value="View Details" action="#"></p:commandLink>
+                                        </f:facet>
+                                    </p:panelGrid>
+                                </h:form>
+                            </p:column>
                             
-                            <p:spacer ></p:spacer>
-                            <p:commandButton ajax="false" action="#{clientController.saveClient()}" value="Save" ></p:commandButton>
+                            <p:column >
+                                <h:form>
+                                    <p:panelGrid columns="1" style="width: 100%" >
+                                        <f:facet name="header" >
+                                            <p:outputLabel value="Recent HLS Clinics" style="float: left;"></p:outputLabel>
+                                            <p:spacer height="1" width="5" ></p:spacer>
+                                            <p:commandLink ajax="false" value="View Details" action="#"></p:commandLink>
+                                        </f:facet>
+                                    </p:panelGrid>
+                                </h:form>
+                            </p:column>
+                            
+                        </p:row>
 
-                            <p:outputLabel value="Title:" for="title" />
-                            <p:selectOneMenu id="title"  value="#{clientController.selected.person.title}"  >
-                                <f:selectItems value="#{itemController.titles}" var="t" itemLabel="#{t.name}"
-                                               itemValue="#{t}" ></f:selectItems>
-                            </p:selectOneMenu>
+                        <p:row >
+                            <p:column >
+                                <h:form>
+                                    <p:panelGrid columns="1" style="width: 100%" >
+                                        <f:facet name="header" >
+                                            <p:outputLabel value="Recent Tests" style="float: left;"></p:outputLabel>
+                                            <p:spacer height="1" width="5" ></p:spacer>
+                                            <p:commandLink ajax="false" value="View Details" action="#"></p:commandLink>
+                                        </f:facet>
+                                    </p:panelGrid>
+                                </h:form>
+                            </p:column>
+                            
+                            <p:column >
+                                <h:form>
+                                    <p:panelGrid columns="1" style="width: 100%" >
+                                        <f:facet name="header" >
+                                            <p:outputLabel value="Recent Other Clinics Visits" style="float: left;"></p:outputLabel>
+                                            <p:spacer height="1" width="5" ></p:spacer>
+                                            <p:commandLink ajax="false" value="View Details" action="#"></p:commandLink>
+                                        </f:facet>
+                                    </p:panelGrid>
+                                </h:form>
+                            </p:column>
+                        </p:row>
+                        
+                         <p:row >
+                            <p:column >
+                                <h:form>
+                                    <p:panelGrid columns="1" style="width: 100%" >
+                                        <f:facet name="header" >
+                                            <p:outputLabel value="Recent HLS Clinics" style="float: left;"></p:outputLabel>
+                                            <p:spacer height="1" width="5" ></p:spacer>
+                                            <p:commandLink ajax="false" value="View Details" action="#"></p:commandLink>
+                                        </f:facet>
+                                    </p:panelGrid>
+                                </h:form>
+                            </p:column>
+                             
+                             <p:column >
+                                <h:form>
+                                    <p:panelGrid columns="1" style="width: 100%" >
+                                        <f:facet name="header" >
+                                            <p:outputLabel value="Recent OPD Visits" style="float: left;"></p:outputLabel>
+                                            <p:spacer height="1" width="5" ></p:spacer>
+                                            <p:commandLink ajax="false" value="View Details" action="#"></p:commandLink>
+                                        </f:facet>
+                                    </p:panelGrid>
+                                </h:form>
+                            </p:column>
+                        </p:row>
 
-                            <p:outputLabel value="Name:" for="name" />
-                            <p:inputText autocomplete="off" id="name" value="#{clientController.selected.person.name}" title="Name" />
-
-                            <p:outputLabel value="Sex:" for="sex" />
-                            <p:selectOneMenu id="sex"  value="#{clientController.selected.person.sex}"  >
-                                <f:selectItems value="#{itemController.sexes}" var="s" itemLabel="#{s.name}"
-                                               itemValue="#{s}" ></f:selectItems>
-                            </p:selectOneMenu>
-
-                            <p:outputLabel value="Phn:" for="phn" />
-                            <p:inputText id="phn"  autocomplete="off" value="#{clientController.selected.phn}" title="Phn" />
-
-
-                            <p:outputLabel value="Phone1:" for="phone1" />
-                            <p:inputText id="phone1"  autocomplete="off" value="#{clientController.selected.person.phone1}" title="Phone1" />
-
-
-                            <p:outputLabel value="Phone2:" for="phone2" />
-                            <p:inputText id="phone2"  autocomplete="off" value="#{clientController.selected.person.phone2}" title="Phone2" />
-
-
-                            <p:outputLabel value="Address:" for="address" />
-                            <p:inputText id="address"  autocomplete="off" value="#{clientController.selected.person.address}" title="Address" />
-
-                            <p:outputLabel value="PassportNumber:" for="passportNumber" />
-                            <p:inputText id="passportNumber"  autocomplete="off" value="#{clientController.selected.person.passportNumber}" title="PassportNumber" />
-
-                            <p:outputLabel value="Email:" for="email" />
-                            <p:inputText id="email"  autocomplete="off" value="#{clientController.selected.person.email}" title="Email" />
-
-
-                            <p:outputLabel value="DrivingLicenseNumber:" for="drivingLicenseNumber" />
-                            <p:inputText id="drivingLicenseNumber"  autocomplete="off"  value="#{clientController.selected.person.drivingLicenseNumber}" title="DrivingLicenseNumber" />
-
-
-                            <p:outputLabel value="DateOfBirth:" for="dateOfBirth" />
-                            <p:calendar id="dateOfBirth" value="#{clientController.selected.person.dateOfBirth}"
-                                        pattern="dd MMMM yyyy" title="DateOfBirth" 
-                                        navigator="true">
-                            </p:calendar>
-
-                            <p:outputLabel value="Nic:" for="nic" />
-                            <p:inputText id="nic"  autocomplete="off" value="#{clientController.selected.person.nic}" title="Nic" />
-
-                            <p:outputLabel value="Citizenship:" for="citizenship" />
-                            <p:selectOneMenu id="citizenship" value="#{clientController.selected.person.citizenship}" >
-                                <f:selectItems value="#{itemController.citizenships}" var="c" itemLabel="#{c.name}"
-                                               itemValue="#{c}" ></f:selectItems>
-                            </p:selectOneMenu>
-
-                            <p:outputLabel value="EthinicGroup:" for="ethinicGroup" />
-                            <p:selectOneMenu id="ethinicGroup" value="#{clientController.selected.person.ethinicGroup}" >
-                                <f:selectItems value="#{itemController.ethinicities}" var="e" itemLabel="#{e.name}"
-                                               itemValue="#{e}" ></f:selectItems>
-                            </p:selectOneMenu>
-
-                            <p:outputLabel value="Religion:" for="religion" />
-                            <p:selectOneMenu id="religion" value="#{clientController.selected.person.religion}" >
-                                <f:selectItems value="#{itemController.religions}" var="r" itemLabel="#{r.name}"
-                                               itemValue="#{r}" ></f:selectItems>
-                            </p:selectOneMenu>
-
-                            <p:outputLabel value="MariatalStatus:" for="mariatalStatus" />
-                            <p:selectOneMenu id="mariatalStatus" value="#{clientController.selected.person.mariatalStatus}" >
-                                <f:selectItems value="#{itemController.marietalStatus}" var="m" itemLabel="#{m.name}"
-                                               itemValue="#{m}" ></f:selectItems>
-                            </p:selectOneMenu>
+                    </p:panelGrid>
 
 
-                        </p:panelGrid>
-                    </h:form>
-                </f:view>
-
-
-
-
+                </p:panel>
 
 
 

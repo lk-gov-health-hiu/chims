@@ -740,8 +740,8 @@ public class WebUserController implements Serializable {
     public String updateMyDetails() {
         try {
             getFacade().edit(current);
-            JsfUtil.addSuccessMessage(("Updated"));
-            return "index";
+            JsfUtil.addSuccessMessage(("Your details Updated."));
+            return "/index";
         } catch (Exception e) {
             JsfUtil.addErrorMessage(e, e.getMessage());
             return null;
