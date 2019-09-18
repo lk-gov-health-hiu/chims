@@ -121,6 +121,8 @@ public class Person implements Serializable {
 // </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="Transient Attributes">
     @Transient
+    boolean ageCalculated = false;
+    @Transient
     private int ageMonths;
     @Transient
     private int ageDays;
@@ -136,6 +138,7 @@ public class Person implements Serializable {
 // <editor-fold defaultstate="collapsed" desc="Functions">
 
     public void calAgeFromDob() {
+        ageCalculated=true;
         setAge("");
         setAgeInDays(0l);
         setAgeMonths(0);
@@ -164,27 +167,37 @@ public class Person implements Serializable {
     }
 
     public String getAge() {
-        calAgeFromDob();
+        if (!ageCalculated) {
+            calAgeFromDob();
+        }
         return age;
     }
 
     public Long getAgeInDays() {
-        calAgeFromDob();
+        if (!ageCalculated) {
+            calAgeFromDob();
+        }
         return ageInDays;
     }
 
     public int getAgeMonths() {
-        calAgeFromDob();
+        if (!ageCalculated) {
+            calAgeFromDob();
+        }
         return ageMonths;
     }
 
     public int getAgeDays() {
-        calAgeFromDob();
+        if (!ageCalculated) {
+            calAgeFromDob();
+        }
         return ageDays;
     }
 
     public int getAgeYears() {
-        calAgeFromDob();
+       if (!ageCalculated) {
+            calAgeFromDob();
+        }
         return ageYears;
     }
 
@@ -192,7 +205,7 @@ public class Person implements Serializable {
         String temT;
         if (getTitle() != null) {
             temT = getTitle().name + " " + getName();
-        }else{
+        } else {
             temT = getName();
         }
         return temT;
@@ -468,6 +481,7 @@ public class Person implements Serializable {
     }
 
     public void setDateOfBirth(Date dateOfBirth) {
+        ageCalculated=false;
         this.dateOfBirth = dateOfBirth;
     }
 
