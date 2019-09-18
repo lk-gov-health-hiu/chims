@@ -32,6 +32,8 @@ public enum EncounterType {
     OPD_Visit,
     Clinic_Visit,
     HLC_Visit,
+    Clinic_Enroll,
+    Clinic_Discharge,
     Admission,
     Pharmacy_Issue,
     Testing,

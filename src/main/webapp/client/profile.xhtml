@@ -68,8 +68,6 @@
 
                                 </h:form>
 
-
-
                             </p:column>
 
                             <p:column >
@@ -83,7 +81,7 @@
                                     </p:panelGrid>
                                 </h:form>
                             </p:column>
-                            
+
                             <p:column >
                                 <h:form>
                                     <p:panelGrid columns="1" style="width: 100%" >
@@ -95,7 +93,32 @@
                                     </p:panelGrid>
                                 </h:form>
                             </p:column>
-                            
+
+                            <p:column >
+                                <h:form >
+                                    <p:panelGrid  columns="3" style="width: 100%" >
+                                        <f:facet name="header">
+                                            <p:outputLabel value="Enroll in an HLC Clinic" ></p:outputLabel>
+                                        </f:facet>
+
+                                        <p:outputLabel value="Clinic" ></p:outputLabel>
+                                        <p:selectOneMenu value="#{clientController.selectedHlcClinic}" >
+                                            <f:selectItems value="#{institutionController.myHlcClinics}" 
+                                                           var="shlc" itemValue="#{shlc}" itemLabel="#{shlc.name}"></f:selectItems>
+                                        </p:selectOneMenu>
+                                        <p:spacer/>
+
+                                        <p:outputLabel value="Clinic No" ></p:outputLabel>
+                                        <p:inputText autocomplete="off" value="#{clientController.hlcEnrollNumberStr}" ></p:inputText>
+                                        <p:commandLink value="Generate" ></p:commandLink>
+
+                                        <p:spacer></p:spacer>
+                                        <p:commandButton value="Enroll" ajax="false" action="#{clientController.enrollInHlcClinic()}" ></p:commandButton>
+                                        <p:spacer></p:spacer>
+
+                                    </p:panelGrid>
+                                </h:form>
+                            </p:column>
                         </p:row>
 
                         <p:row >
@@ -110,7 +133,7 @@
                                     </p:panelGrid>
                                 </h:form>
                             </p:column>
-                            
+
                             <p:column >
                                 <h:form>
                                     <p:panelGrid columns="1" style="width: 100%" >
@@ -122,9 +145,32 @@
                                     </p:panelGrid>
                                 </h:form>
                             </p:column>
+
+
+                            <p:column >
+                                <h:form >
+                                    <p:dataTable value="#{clientController.selectedClientsHlcs}" var="chlce" >
+                                        <f:facet name="header" >
+                                            <p:outputLabel value="Current Clinics" ></p:outputLabel>
+                                        </f:facet>
+                                        <p:column headerText="Clinic" >
+                                            <p:outputLabel value="#{chlce.institution.name}" ></p:outputLabel>
+                                        </p:column>
+                                        <p:column headerText="Number" >
+                                            <p:outputLabel value="#{chlce.institution.name}" ></p:outputLabel>
+                                        </p:column>
+                                        <p:column headerText="New Encounter" >
+                                            <p:commandButton value="New " ></p:commandButton>
+                                        </p:column>
+                                    </p:dataTable>
+                                    
+                                    
+                                </h:form>
+                            </p:column>
+
                         </p:row>
-                        
-                         <p:row >
+
+                        <p:row >
                             <p:column >
                                 <h:form>
                                     <p:panelGrid columns="1" style="width: 100%" >
@@ -136,7 +182,7 @@
                                     </p:panelGrid>
                                 </h:form>
                             </p:column>
-                             <p:column >
+                            <p:column >
                                 <h:form>
                                     <p:panelGrid columns="1" style="width: 100%" >
                                         <f:facet name="header" >

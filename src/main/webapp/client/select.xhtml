@@ -12,13 +12,13 @@
 
             <ui:define name="content">
                 
-                <f:view>
-
-
+                <p:panel header="Select Client" style="height: 100%; text-align: center;" >
+                    
+                    
                     <h:form>
-                        <h1><h:outputText value="List"/></h1>
+
                         <p:dataTable value="#{clientController.selectedClients}" var="item">
-                            
+
                             <p:column>
                                 <f:facet name="header">
                                     <h:outputText value="Name"/>
@@ -88,20 +88,24 @@
                                 </f:facet>
                                 <h:outputText value="#{item.phn}"/>
                             </p:column>
-                             <p:column>
+                            <p:column>
                                 <f:facet name="header">
                                     <h:outputText value="Actions"/>
                                 </f:facet>
-                                 <p:commandButton ajax="false" action="#{clientController.toClientProfile()}" value="View Profile" >
-                                     <f:setPropertyActionListener target="#{clientController.selected}" value="#{item}" ></f:setPropertyActionListener>
-                                 </p:commandButton>
+                                <p:commandButton ajax="false" action="#{clientController.toClientProfile()}" value="View Profile" >
+                                    <f:setPropertyActionListener target="#{clientController.selected}" value="#{item}" ></f:setPropertyActionListener>
+                                </p:commandButton>
                             </p:column>
-                            
+
                         </p:dataTable>
                     </h:form>
-                </f:view>
 
-                
+
+                    
+                </p:panel>
+
+
+              
                 
             </ui:define>
 

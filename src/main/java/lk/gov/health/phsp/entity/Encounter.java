@@ -50,7 +50,7 @@ public class Encounter implements Serializable {
     private Long id;
 
     @ManyToOne
-    private Client project;
+    private Client client;
     @ManyToOne
     private Area area;
 
@@ -64,6 +64,8 @@ public class Encounter implements Serializable {
     @Enumerated(EnumType.STRING)
     private EncounterType encounterType;
 
+    private String encounterNumber;
+    
     @ManyToOne
     private Encounter parentEncounter;
 
@@ -89,7 +91,7 @@ public class Encounter implements Serializable {
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date retiredReversedAt;
 
-    private Boolean completed;
+    private boolean completed;
     @ManyToOne
     private WebUser completedBy;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
@@ -128,12 +130,12 @@ public class Encounter implements Serializable {
         return "id=" + id + "";
     }
 
-    public Client getProject() {
-        return project;
+    public Client getClient() {
+        return client;
     }
 
-    public void setProject(Client project) {
-        this.project = project;
+    public void setClient(Client client) {
+        this.client = client;
     }
 
     public Area getArea() {
@@ -184,11 +186,11 @@ public class Encounter implements Serializable {
         this.parentEncounter = parentEncounter;
     }
 
-    public Boolean getCompleted() {
+    public boolean getCompleted() {
         return completed;
     }
 
-    public void setCompleted(Boolean completed) {
+    public void setCompleted(boolean completed) {
         this.completed = completed;
     }
 
@@ -279,6 +281,15 @@ public class Encounter implements Serializable {
     public void setCompletedAt(Date completedAt) {
         this.completedAt = completedAt;
     }
+
+    public String getEncounterNumber() {
+        return encounterNumber;
+    }
+
+    public void setEncounterNumber(String encounterNumber) {
+        this.encounterNumber = encounterNumber;
+    }
+    
     
     
 

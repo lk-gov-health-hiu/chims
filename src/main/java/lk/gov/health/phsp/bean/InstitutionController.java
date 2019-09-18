@@ -20,6 +20,7 @@ import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
+import javax.inject.Inject;
 import lk.gov.health.phsp.enums.InstitutionType;
 
 @Named("institutionController")
@@ -28,8 +29,17 @@ public class InstitutionController implements Serializable {
 
     @EJB
     private lk.gov.health.phsp.facade.InstitutionFacade ejbFacade;
+    
+    
+    @Inject
+    WebUserController webUserController;
+    
+    
     private List<Institution> items = null;
     private Institution selected;
+    private List<Institution> myClinics;
+    private List<Institution> myHlcClinics;
+    
 
     public InstitutionController() {
     }
@@ -52,6 +62,8 @@ public class InstitutionController implements Serializable {
         return ejbFacade;
     }
 
+    
+    
     public List<Institution> completeInstitutions(String nameQry) {
         return fillInstitutions(null, nameQry, null);
     }
@@ -100,6 +112,8 @@ public class InstitutionController implements Serializable {
         }
     }
 
+    
+    
     public List<Institution> getItems() {
         if (items == null) {
             items = getFacade().findAll();
@@ -145,6 +159,28 @@ public class InstitutionController implements Serializable {
 
     public List<Institution> getItemsAvailableSelectOne() {
         return getFacade().findAll();
+    }
+
+    public List<Institution> getMyClinics() {
+        if(myClinics==null){
+            myClinics = fillInstitutions(InstitutionType.Clinic, null, webUserController.getLoggedUser().getInstitution());
+        }
+        return myClinics;
+    }
+
+    public void setMyClinics(List<Institution> myClinics) {
+        this.myClinics = myClinics;
+    }
+
+    public List<Institution> getMyHlcClinics() {
+        if(myHlcClinics==null){
+            myHlcClinics = fillInstitutions(InstitutionType.HLC_Clinic, null, webUserController.getLoggedUser().getInstitution());
+        }
+        return myHlcClinics;
+    }
+
+    public void setMyHlcClinics(List<Institution> myHlcClinics) {
+        this.myHlcClinics = myHlcClinics;
     }
 
     @FacesConverter(forClass = Institution.class)

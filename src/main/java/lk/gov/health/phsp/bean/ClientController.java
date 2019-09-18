@@ -25,7 +25,11 @@ import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
 import javax.inject.Inject;
+import lk.gov.health.phsp.entity.Encounter;
 import lk.gov.health.phsp.entity.Institution;
+import lk.gov.health.phsp.enums.EncounterType;
+import lk.gov.health.phsp.enums.InstitutionType;
+import lk.gov.health.phsp.facade.EncounterFacade;
 import lk.gov.health.phsp.pojcs.YearMonthDay;
 import org.bouncycastle.jcajce.provider.digest.GOST3411;
 // </editor-fold>
@@ -37,6 +41,8 @@ public class ClientController implements Serializable {
     // <editor-fold defaultstate="collapsed" desc="EJBs">
     @EJB
     private lk.gov.health.phsp.facade.ClientFacade ejbFacade;
+    @EJB
+    EncounterFacade encounterFacade;
     // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="Controllers">
     @Inject
@@ -48,6 +54,7 @@ public class ClientController implements Serializable {
     private List<Client> items = null;
     private List<Client> selectedClients = null;
     private Client selected;
+    private List<Encounter> selectedClientsHlcs;
     private String searchingId;
     private String searchingPhn;
     private String searchingPassportNo;
@@ -56,6 +63,9 @@ public class ClientController implements Serializable {
     private String searchingName;
     private String searchingPhoneNumber;
     private YearMonthDay yearMonthDay;
+    private Institution selectedClinic;
+    private Institution selectedHlcClinic;
+    private String hlcEnrollNumberStr;
 
     // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="Constructors">
@@ -92,19 +102,71 @@ public class ClientController implements Serializable {
 
     // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="Functions">
-    
-    public void generateAndAssignNewPhn(){
-         if (selected == null) {
-            return;
+    public List<Encounter> fillEncounters(Client client, InstitutionType insType, EncounterType encType, boolean excludeCompleted) {
+        System.out.println("fillEncounters");
+        String j = "select e from Encounter e where e.retired=false ";
+        Map m = new HashMap();
+        if (client != null) {
+            j += " and e.client=:c ";
+            m.put("c", client);
         }
-         selected.setPhn(applicationController.createNewPersonalHealthNumber(webUserController.getLoggedUser().getInstitution()));
+        if (insType != null) {
+            j += " and e.institution.institutionType=:it ";
+            m.put("it", insType);
+        }
+        if (insType != null) {
+            j += " and e.encounterType=:et ";
+            m.put("et", encType);
+        }
+        if (excludeCompleted) {
+            j += " and e.completed=:com ";
+            m.put("com", false);
+        }
+        System.out.println("m = " + m);
+        System.out.println("j = " + j);
+        return encounterFacade.findByJpql(j, m);
     }
-    
-    public void gnAreaChanged(){
-         if (selected == null) {
+
+    public void enrollInHlcClinic() {
+        if (selectedHlcClinic == null) {
+            JsfUtil.addErrorMessage("Please select an HLC clinic to enroll.");
             return;
         }
-        if(selected.getPerson().getGnArea()!=null){
+        if (selected == null) {
+            JsfUtil.addErrorMessage("Please select a client to enroll.");
+            return;
+        }
+        if (hlcEnrollNumberStr == null || hlcEnrollNumberStr.trim().equals("")) {
+            JsfUtil.addErrorMessage("Please enter an enrollement number.");
+            return;
+        }
+        Encounter encounter = new Encounter();
+        encounter.setClient(selected);
+        encounter.setEncounterType(EncounterType.Clinic_Enroll);
+        encounter.setCreateAt(new Date());
+        encounter.setCreatedBy(webUserController.getLoggedUser());
+        encounter.setInstitution(selectedHlcClinic);
+        encounter.setEncounterDate(new Date());
+        encounter.setEncounterNumber(hlcEnrollNumberStr);
+        encounter.setCompleted(false);
+        encounterFacade.create(encounter);
+        JsfUtil.addSuccessMessage(selected.getPerson().getNameWithTitle() + " was Successfully Enrolled in " + selectedHlcClinic.getName());
+        hlcEnrollNumberStr = "";
+        selectedClientsHlcs = null;
+    }
+
+    public void generateAndAssignNewPhn() {
+        if (selected == null) {
+            return;
+        }
+        selected.setPhn(applicationController.createNewPersonalHealthNumber(webUserController.getLoggedUser().getInstitution()));
+    }
+
+    public void gnAreaChanged() {
+        if (selected == null) {
+            return;
+        }
+        if (selected.getPerson().getGnArea() != null) {
             selected.getPerson().setDsArea(selected.getPerson().getGnArea().getDsd());
             selected.getPerson().setMohArea(selected.getPerson().getGnArea().getMoh());
             selected.getPerson().setPhmArea(selected.getPerson().getGnArea().getPhm());
@@ -112,14 +174,14 @@ public class ClientController implements Serializable {
             selected.getPerson().setProvince(selected.getPerson().getGnArea().getProvince());
         }
     }
-    
+
     private void updateYearDateMonth() {
         getYearMonthDay();
-        if(selected!=null){
-            yearMonthDay.setYear(selected.getPerson().getAgeYears()+"");
-            yearMonthDay.setMonth(selected.getPerson().getAgeMonths()+"");
-            yearMonthDay.setDay(selected.getPerson().getAgeDays()+"");
-        }else{
+        if (selected != null) {
+            yearMonthDay.setYear(selected.getPerson().getAgeYears() + "");
+            yearMonthDay.setMonth(selected.getPerson().getAgeMonths() + "");
+            yearMonthDay.setDay(selected.getPerson().getAgeDays() + "");
+        } else {
             yearMonthDay = new YearMonthDay();
         }
     }
@@ -166,7 +228,7 @@ public class ClientController implements Serializable {
             JsfUtil.addErrorMessage("No Client is Selected");
             return;
         }
-        if(webUserController.getLoggedUser().getInstitution().getPoiNumber().trim().equals("")){
+        if (webUserController.getLoggedUser().getInstitution().getPoiNumber().trim().equals("")) {
             JsfUtil.addErrorMessage("No POI is configured for your institution. Please contact support.");
             return;
         }
@@ -363,6 +425,7 @@ public class ClientController implements Serializable {
     public void setSelected(Client selected) {
         this.selected = selected;
         updateYearDateMonth();
+        selectedClientsHlcs = null;
     }
 
     private ClientFacade getFacade() {
@@ -417,6 +480,41 @@ public class ClientController implements Serializable {
 
     public void setYearMonthDay(YearMonthDay yearMonthDay) {
         this.yearMonthDay = yearMonthDay;
+    }
+
+    public Institution getSelectedClinic() {
+        return selectedClinic;
+    }
+
+    public void setSelectedClinic(Institution selectedClinic) {
+        this.selectedClinic = selectedClinic;
+    }
+
+    public Institution getSelectedHlcClinic() {
+        return selectedHlcClinic;
+    }
+
+    public void setSelectedHlcClinic(Institution selectedHlcClinic) {
+        this.selectedHlcClinic = selectedHlcClinic;
+    }
+
+    public String getHlcEnrollNumberStr() {
+        return hlcEnrollNumberStr;
+    }
+
+    public void setHlcEnrollNumberStr(String hlcEnrollNumberStr) {
+        this.hlcEnrollNumberStr = hlcEnrollNumberStr;
+    }
+
+    public List<Encounter> getSelectedClientsHlcs() {
+        if (selectedClientsHlcs == null) {
+            selectedClientsHlcs = fillEncounters(selected, InstitutionType.HLC_Clinic, EncounterType.Clinic_Enroll, true);
+        }
+        return selectedClientsHlcs;
+    }
+
+    public void setSelectedClientsHlcs(List<Encounter> selectedClientsHlcs) {
+        this.selectedClientsHlcs = selectedClientsHlcs;
     }
 
     // </editor-fold>
