@@ -3,54 +3,65 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:p="http://primefaces.org/ui"
-      xmlns:h="http://xmlns.jcp.org/jsf/html">
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
 
     <body>
 
         <ui:composition template="./../template.xhtml">
 
             <ui:define name="content">
-                
-                <p:panel header="Manage Forms of Form Set" style="width: 100%; text-align: center;" >
-                    
+
+                <p:panel style="width: 100%; text-align: center;" >
+                    <f:facet name="header" >
+                        <h:outputLabel value="Manage Forms of Form Set" ></h:outputLabel>
+                        <h:outputLabel value=" - " ></h:outputLabel>
+                        <h:outputLabel value="#{designComponentFormController.designComponentFormSet.name}" ></h:outputLabel>
+                    </f:facet>
+
                     <h:form >
-                        
-                        <p:panelGrid columns="2" >
-                            
+
+                        <p:panelGrid columns="2" styleClass="alignTop" >
+
                             <p:panel header="Existing Forms" >
                                 <p:dataTable value="#{designComponentFormController.formsOfTheSelectedSet}" var="f" >
                                     <p:column >
                                         <p:outputLabel value="#{f.name}" ></p:outputLabel>
                                     </p:column>
-                                
+
                                 </p:dataTable>
-                                
+
                             </p:panel>
-                            
+
                             <p:panel header="Add New Form" >
                                 <p:panelGrid columns="2" >
                                     <p:outputLabel value="Name" ></p:outputLabel>
-                                    <p:inputText value="#{designComponentFormController.addingForm.name}" ></p:inputText>
-                                    
-                                     <p:outputLabel value="Order No" ></p:outputLabel>
-                                     <p:inputText value="#{designComponentFormController.addingForm.orderNo}" ></p:inputText>
-                                    
-                                     <p:spacer ></p:spacer>
-                                     <p:commandButton ajax="false" value="Add" action="#{designComponentFormController.addingForm.orderNo}" ></p:commandButton>
+                                    <p:inputText id="name" value="#{designComponentFormController.addingForm.name}" ></p:inputText>
+
+                                    <p:outputLabel value="Order No" ></p:outputLabel>
+                                    <p:inputText id="orderNo" value="#{designComponentFormController.addingForm.orderNo}" ></p:inputText>
+
+                                    <p:selectOneMenu id="sex" value="#{designComponentFormController.addingForm.componentSex}" 
+                                                     title="Sex" >
+                                        <f:selectItems value="#{commonController.componentSex}" ></f:selectItems>
+                                    </p:selectOneMenu>
+
+                                    <p:spacer ></p:spacer>
+                                    <p:commandButton ajax="false" value="Add" action="#{designComponentFormController.addingForm.orderNo}" ></p:commandButton>
                                 </p:panelGrid>
-                                
+
                             </p:panel>
-                            
-                            
+
+
                         </p:panelGrid>
-                        
-                        
+
+
                     </h:form>
-                    
-                    
+
+
                 </p:panel>
-                
-                
+
+
             </ui:define>
 
         </ui:composition>

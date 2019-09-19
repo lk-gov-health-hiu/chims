@@ -21,31 +21,14 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package lk.gov.health.phsp.entity;
-
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import lk.gov.health.phsp.enums.ComponentSex;
+package lk.gov.health.phsp.enums;
 
 /**
  *
- * @author sunila_soft
+ * @author Dr M H B Ariyaratne<buddhika.ari@gmail.com>
  */
-@Entity
-public class DesignComponent extends Component {
-    @Enumerated(EnumType.STRING)
-    protected ComponentSex componentSex;
-
-    public ComponentSex getComponentSex() {
-        return componentSex;
-    }
-
-    public void setComponentSex(ComponentSex componentSex) {
-        this.componentSex = componentSex;
-    }
-    
-    
- 
-    
+public enum ComponentSex {
+    For_Males,
+    For_Females,
+    For_Both,
 }

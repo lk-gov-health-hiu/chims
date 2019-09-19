@@ -22,6 +22,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
 import lk.gov.health.phsp.entity.DesignComponentFormSet;
+import lk.gov.health.phsp.enums.ComponentSex;
 
 @Named("designComponentFormController")
 @SessionScoped
@@ -36,21 +37,21 @@ public class DesignComponentFormController implements Serializable {
     private DesignComponentForm removingForm;
 
     private DesignComponentFormSet designComponentFormSet;
-    
-    private void fillFormsofTheSelectedSet(){
-        if(designComponentFormSet==null){
-            formsOfTheSelectedSet= new ArrayList<>();
+
+    private void fillFormsofTheSelectedSet() {
+        if (designComponentFormSet == null) {
+            formsOfTheSelectedSet = new ArrayList<>();
             return;
         }
         String j = "Select f from DesignComponentForm f "
                 + "where f.retired=false "
                 + " and f.parentComponent=:pc "
                 + " order by f.id";
-        Map m =new HashMap();
+        Map m = new HashMap();
         m.put("pc", designComponentFormSet);
-        
+
     }
-    
+
     public DesignComponentFormController() {
     }
 
@@ -61,8 +62,6 @@ public class DesignComponentFormController implements Serializable {
     public void setSelected(DesignComponentForm selected) {
         this.selected = selected;
     }
-    
-    
 
     protected void setEmbeddableKeys() {
     }
@@ -105,8 +104,6 @@ public class DesignComponentFormController implements Serializable {
         }
         return items;
     }
-    
-    
 
     private void persist(PersistAction persistAction, String successMessage) {
         if (selected != null) {
@@ -148,8 +145,6 @@ public class DesignComponentFormController implements Serializable {
         return getFacade().findAll();
     }
 
-    
-    
     public DesignComponentFormSet getDesignComponentFormSet() {
         return designComponentFormSet;
     }
@@ -167,14 +162,16 @@ public class DesignComponentFormController implements Serializable {
     }
 
     public DesignComponentForm getAddingForm() {
+        if (addingForm == null && designComponentFormSet != null) {
+            addingForm = new DesignComponentForm();
+            addingForm.setParentComponent(designComponentFormSet);
+            addingForm.setComponentSex(designComponentFormSet.getComponentSex());
+            addingForm.setOrderNo(Double.valueOf(getFormsOfTheSelectedSet().size() + 1));
+        }
         return addingForm;
     }
 
     public void setAddingForm(DesignComponentForm addingForm) {
-        if(addingForm==null){
-            addingForm = new DesignComponentForm();
-            addingForm.setParentComponent(selected);
-        }
         this.addingForm = addingForm;
     }
 

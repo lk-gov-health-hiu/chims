@@ -21,6 +21,12 @@
                                          title="#{bundleClinical.CreateDesignComponentFormSetTitle_renderType}" >
                             <f:selectItems value="#{commonController.componentSetTypes}" ></f:selectItems>
                         </p:selectOneMenu>
+                        
+                         <p:outputLabel value="Sex" for="sex" />
+                         <p:selectOneMenu id="sex" value="#{designComponentFormSetController.selected.componentSex}" 
+                                         title="Sex" >
+                             <f:selectItems value="#{commonController.componentSex}" ></f:selectItems>
+                        </p:selectOneMenu>
 
                     </p:panelGrid>
                     <p:commandButton ajax="false" action="#{designComponentFormSetController.create}"

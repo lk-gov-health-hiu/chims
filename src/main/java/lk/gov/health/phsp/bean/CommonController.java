@@ -15,6 +15,7 @@ import java.io.Serializable;
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Named;
 import lk.gov.health.phsp.enums.ComponentSetType;
+import lk.gov.health.phsp.enums.ComponentSex;
 import org.jasypt.util.password.BasicPasswordEncryptor;
 import org.jasypt.util.text.BasicTextEncryptor;
 
@@ -93,6 +94,10 @@ public class CommonController implements Serializable {
     
     public ComponentSetType[] getComponentSetTypes(){
         return ComponentSetType.values();
+    }
+    
+    public ComponentSex[] getComponentSex(){
+        return ComponentSex.values();
     }
     
     
