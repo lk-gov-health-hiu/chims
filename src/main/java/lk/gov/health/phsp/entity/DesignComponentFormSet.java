@@ -25,6 +25,9 @@
 package lk.gov.health.phsp.entity;
 
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import lk.gov.health.phsp.enums.ComponentSetType;
 
 /**
  *
@@ -32,8 +35,15 @@ import javax.persistence.Entity;
  */
 @Entity
 public class DesignComponentFormSet extends DesignComponent  {
+    @Enumerated(EnumType.STRING)
+    ComponentSetType componentSetType;
 
-    
+    public ComponentSetType getComponentSetType() {
+        return componentSetType;
+    }
 
+    public void setComponentSetType(ComponentSetType componentSetType) {
+        this.componentSetType = componentSetType;
+    }
     
 }

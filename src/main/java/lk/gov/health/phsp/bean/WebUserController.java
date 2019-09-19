@@ -160,6 +160,12 @@ public class WebUserController implements Serializable {
         createAllPrivilege();
     }
 
+
+public String toManagePrivileges(){
+    
+    return "/webUser/privilegesF";
+}
+
     private void createAllPrivilege() {
         allPrivilegeRoot = new PrivilegeTreeNode("Root", null);
 
@@ -275,62 +281,7 @@ public class WebUserController implements Serializable {
         return "";
     }
 
-    /**
-     *
-     *
-     *
-     * Other Functions
-     *
-     *
-     */
-    public void uploadFiles() {
-
-        InputStream in;
-
-        Upload u = new Upload();
-
-        u.setComments(comments);
-        u.setCreatedAt(new Date());
-        u.setUploadType(UploadType.Client_Upload_Prior_To_Proposal);
-        currentProjectUploads = null;
-        clientUploads = null;
-        companyUploads = null;
-
-        getUploadFacade().create(u);
-        comments = "";
-
-        StringWriter writer = new StringWriter();
-        if (file != null) {
-            try {
-                in = getFile().getInputstream();
-                File f = new File("P" + "U" + u.getId());
-                FileOutputStream out = new FileOutputStream(f);
-
-                //            OutputStream out = new FileOutputStream(new File(fileName));
-                int read = 0;
-                byte[] bytes = new byte[1024];
-                while ((read = in.read(bytes)) != -1) {
-                    out.write(bytes, 0, read);
-                }
-                in.close();
-                out.flush();
-                out.close();
-
-                u.setRetireComments(f.getAbsolutePath());
-                u.setFileName(file.getFileName());
-                u.setFileType(file.getContentType());
-                in = file.getInputstream();
-                u.setBaImage(IOUtils.toByteArray(in));
-                getUploadFacade().edit(u);
-                JsfUtil.addSuccessMessage("File Uploaded");
-            } catch (IOException io) {
-                JsfUtil.addErrorMessage("Error in Uploading. " + io.getMessage());
-            } catch (Exception e) {
-                JsfUtil.addErrorMessage("Error in Uploading. " + e.getMessage());
-            }
-
-        }
-    }
+  
 
     public String prepareRegisterAsClient() {
         current = new WebUser();
@@ -344,35 +295,7 @@ public class WebUserController implements Serializable {
         return "/register";
     }
 
-    public String updateWebUserAndToMarkLocation() {
-        try {
-            getFacade().edit(current);
-        } catch (Exception e) {
-            JsfUtil.addErrorMessage("Username already taken. Please enter a different username");
-            return "";
-        }
-        Institution ins = current.getInstitution();
-        if (ins == null) {
-            ins = new Institution();
-            ins.setName(current.getName());
-            ins.setEmail(current.getEmail());
-            ins.setPhone(current.getTelNo());
-
-            ins.setInstitutionType(InstitutionType.Regional_Department_of_Health_Department);
-            getInstitutionFacade().create(ins);
-            current.setInstitution(ins);
-        } else {
-            ins.setName(current.getName());
-            ins.setEmail(current.getEmail());
-            ins.setPhone(current.getTelNo());
-            ins.setAddress(current.getPerson().getAddress());
-            ins.setInstitutionType(InstitutionType.Regional_Department_of_Health_Department);
-            getInstitutionFacade().edit(ins);
-        }
-        getFacade().edit(current);
-        JsfUtil.addSuccessMessage("Your Details Updated. Please add Your Location Details.");
-        return "/location_of_a_client";
-    }
+    
 
     public String registerUser() {
         if (!current.getWebUserPassword().equals(password)) {
@@ -559,118 +482,7 @@ public class WebUserController implements Serializable {
         return getUserPrivilegeFacade().findByJpql(j, m);
     }
 
-    public String importProjectsFromExcel() {
-        String strYear;
-        String strProvince;
-        String strFileNumber;
-        String strDistrict;
-        String strLocation;
-        String strTile;
-        String strDiscription;
-        String strCost;
-        String strFundSource;
-
-        Double dblCost;
-        Integer intYear;
-        Institution insLocation;
-        Area areaProvince;
-        Area areaDistrict;
-        Item itemFundSource;
-
-        File inputWorkbook;
-        Workbook w;
-        Cell cell;
-        InputStream in;
-
-        int startRow = 1;
-
-        JsfUtil.addSuccessMessage(file.getFileName());
-
-        try {
-            JsfUtil.addSuccessMessage(file.getFileName());
-            in = file.getInputstream();
-            File f;
-            f = new File(Calendar.getInstance().getTimeInMillis() + file.getFileName());
-            FileOutputStream out = new FileOutputStream(f);
-            int read = 0;
-            byte[] bytes = new byte[1024];
-            while ((read = in.read(bytes)) != -1) {
-                out.write(bytes, 0, read);
-            }
-            in.close();
-            out.flush();
-            out.close();
-
-            inputWorkbook = new File(f.getAbsolutePath());
-
-            JsfUtil.addSuccessMessage("Excel File Opened");
-            w = Workbook.getWorkbook(inputWorkbook);
-            Sheet sheet = w.getSheet(0);
-
-            for (int i = startRow; i < sheet.getRows(); i++) {
-
-                Map m = new HashMap();
-
-                //Year
-                cell = sheet.getCell(0, i);
-                strYear = cell.getContents();
-                try {
-                    intYear = Integer.parseInt(strYear);
-
-                } catch (Exception e) {
-                }
-
-                cell = sheet.getCell(1, i);
-                strProvince = cell.getContents();
-
-                cell = sheet.getCell(3, i);
-                strDistrict = cell.getContents();
-
-                cell = sheet.getCell(2, i);
-                strFileNumber = cell.getContents();
-
-                cell = sheet.getCell(4, i);
-                strLocation = cell.getContents();
-
-                cell = sheet.getCell(5, i);
-                strTile = cell.getContents();
-
-                cell = sheet.getCell(6, i);
-                strDiscription = cell.getContents();
-
-                cell = sheet.getCell(7, i);
-                strCost = cell.getContents();
-                try {
-                    dblCost = Double.parseDouble(strCost);
-
-                } catch (Exception e) {
-                }
-
-                cell = sheet.getCell(8, i);
-                strFundSource = cell.getContents();
-
-
-            }
-
-            JsfUtil.addSuccessMessage("Succesful. All the data in Excel File Impoted to the database");
-            return "";
-        } catch (IOException ex) {
-            JsfUtil.addErrorMessage(ex.getMessage());
-            return "";
-        } catch (BiffException e) {
-            JsfUtil.addErrorMessage(e.getMessage());
-            return "";
-        }
-    }
-
-    public UploadedFile getFile() {
-        return file;
-    }
-
-    public void setFile(UploadedFile file) {
-        this.file = file;
-    }
-
+  
     public WebUserController() {
     }
 

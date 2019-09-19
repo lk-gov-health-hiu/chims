@@ -14,6 +14,7 @@ import lk.gov.health.phsp.enums.WebUserRole;
 import java.io.Serializable;
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Named;
+import lk.gov.health.phsp.enums.ComponentSetType;
 import org.jasypt.util.password.BasicPasswordEncryptor;
 import org.jasypt.util.text.BasicTextEncryptor;
 
@@ -88,6 +89,10 @@ public class CommonController implements Serializable {
     
     public AreaType[] getAreaTypes(){
         return AreaType.values();
+    }
+    
+    public ComponentSetType[] getComponentSetTypes(){
+        return ComponentSetType.values();
     }
     
     

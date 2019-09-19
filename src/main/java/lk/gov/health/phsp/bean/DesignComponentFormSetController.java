@@ -18,6 +18,8 @@ import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
+import javax.inject.Inject;
+import lk.gov.health.phsp.entity.DesignComponentForm;
 
 @Named("designComponentFormSetController")
 @SessionScoped
@@ -28,6 +30,14 @@ public class DesignComponentFormSetController implements Serializable {
     private List<DesignComponentFormSet> items = null;
     private DesignComponentFormSet selected;
 
+    @Inject
+    DesignComponentFormController  designComponentFormController;
+    
+    public String toAddFormsForTheSelectedSet(){
+        designComponentFormController.setDesignComponentFormSet(selected);
+        return "/designComponentFormSet/manage_forms";
+    }
+    
     public DesignComponentFormSetController() {
     }
 

@@ -70,13 +70,17 @@
                                 <h:outputText value="#{item.webUserRole}"/>
                             </p:column>
 
-                            <p:column width="300">
+                            <p:column width="500">
                                 <f:facet name="header">
                                     <h:outputText value="Actions"/>
                                 </f:facet>
-                                <h:panelGrid columns="2" >
+                                <h:panelGrid columns="3" >
                                     <p:commandButton  value="Edit" ajax="false"
                                                       action="#{webUserController.prepareEdit()}" >
+                                        <f:setPropertyActionListener value="#{item}" target="#{webUserController.current}" ></f:setPropertyActionListener>
+                                    </p:commandButton>
+                                     <p:commandButton  value="Privileges" ajax="false"
+                                                      action="privileges" >
                                         <f:setPropertyActionListener value="#{item}" target="#{webUserController.current}" ></f:setPropertyActionListener>
                                     </p:commandButton>
                                     <p:commandButton  value="Password" ajax="false"

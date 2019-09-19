@@ -6,7 +6,10 @@ import lk.gov.health.phsp.bean.util.JsfUtil.PersistAction;
 import lk.gov.health.phsp.facade.DesignComponentFormFacade;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -18,6 +21,7 @@ import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
+import lk.gov.health.phsp.entity.DesignComponentFormSet;
 
 @Named("designComponentFormController")
 @SessionScoped
@@ -27,7 +31,26 @@ public class DesignComponentFormController implements Serializable {
     private lk.gov.health.phsp.facade.DesignComponentFormFacade ejbFacade;
     private List<DesignComponentForm> items = null;
     private DesignComponentForm selected;
+    private List<DesignComponentForm> formsOfTheSelectedSet = null;
+    private DesignComponentForm addingForm;
+    private DesignComponentForm removingForm;
 
+    private DesignComponentFormSet designComponentFormSet;
+    
+    private void fillFormsofTheSelectedSet(){
+        if(designComponentFormSet==null){
+            formsOfTheSelectedSet= new ArrayList<>();
+            return;
+        }
+        String j = "Select f from DesignComponentForm f "
+                + "where f.retired=false "
+                + " and f.parentComponent=:pc "
+                + " order by f.id";
+        Map m =new HashMap();
+        m.put("pc", designComponentFormSet);
+        
+    }
+    
     public DesignComponentFormController() {
     }
 
@@ -38,6 +61,8 @@ public class DesignComponentFormController implements Serializable {
     public void setSelected(DesignComponentForm selected) {
         this.selected = selected;
     }
+    
+    
 
     protected void setEmbeddableKeys() {
     }
@@ -80,6 +105,8 @@ public class DesignComponentFormController implements Serializable {
         }
         return items;
     }
+    
+    
 
     private void persist(PersistAction persistAction, String successMessage) {
         if (selected != null) {
@@ -119,6 +146,44 @@ public class DesignComponentFormController implements Serializable {
 
     public List<DesignComponentForm> getItemsAvailableSelectOne() {
         return getFacade().findAll();
+    }
+
+    
+    
+    public DesignComponentFormSet getDesignComponentFormSet() {
+        return designComponentFormSet;
+    }
+
+    public void setDesignComponentFormSet(DesignComponentFormSet designComponentFormSet) {
+        this.designComponentFormSet = designComponentFormSet;
+    }
+
+    public List<DesignComponentForm> getFormsOfTheSelectedSet() {
+        return formsOfTheSelectedSet;
+    }
+
+    public void setFormsOfTheSelectedSet(List<DesignComponentForm> formsOfTheSelectedSet) {
+        this.formsOfTheSelectedSet = formsOfTheSelectedSet;
+    }
+
+    public DesignComponentForm getAddingForm() {
+        return addingForm;
+    }
+
+    public void setAddingForm(DesignComponentForm addingForm) {
+        if(addingForm==null){
+            addingForm = new DesignComponentForm();
+            addingForm.setParentComponent(selected);
+        }
+        this.addingForm = addingForm;
+    }
+
+    public DesignComponentForm getRemovingForm() {
+        return removingForm;
+    }
+
+    public void setRemovingForm(DesignComponentForm removingForm) {
+        this.removingForm = removingForm;
     }
 
     @FacesConverter(forClass = DesignComponentForm.class)

@@ -33,4 +33,7 @@ public enum ComponentSetType {
     Encounter_Pages,
     Encounters_Arranged_Horizontally,
     Encounters_Arranged_Vertically,
+    Encounters_Annual_Summery_page,
+    Encounters_Annual_summery_Arranged_Horizontally,
+    Encounters_Annual_summery_Arranged_Vertically,
 }

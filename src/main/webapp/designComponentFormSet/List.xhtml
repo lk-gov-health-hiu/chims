@@ -13,7 +13,7 @@
             <h:outputText value="#{bundleClinical.ListDesignComponentFormSetTitle}"></h:outputText>
         </ui:define>
 
-        <ui:define name="body">
+        <ui:define name="content">
             <h:form id="DesignComponentFormSetListForm">
                 <p:panel header="#{bundleClinical.ListDesignComponentFormSetTitle}">
                     <p:dataTable id="datalist" value="#{designComponentFormSetController.items}" var="item"
@@ -26,13 +26,6 @@
 
                         <p:ajax event="rowSelect"   update="createButton viewButton editButton deleteButton"/>
                         <p:ajax event="rowUnselect" update="createButton viewButton editButton deleteButton"/>
-
-                        <p:column>
-                            <f:facet name="header">
-                                <h:outputText value="#{bundleClinical.ListDesignComponentFormSetTitle_id}"/>
-                            </f:facet>
-                            <h:outputText value="#{item.id}"/>
-                        </p:column>
                         <p:column>
                             <f:facet name="header">
                                 <h:outputText value="#{bundleClinical.ListDesignComponentFormSetTitle_name}"/>
@@ -41,161 +34,18 @@
                         </p:column>
                         <p:column>
                             <f:facet name="header">
-                                <h:outputText value="#{bundleClinical.ListDesignComponentFormSetTitle_renderType}"/>
+                                <h:outputText value="Type"/>
                             </f:facet>
-                            <h:outputText value="#{item.renderType}"/>
-                        </p:column>
-                        <p:column>
-                            <f:facet name="header">
-                                <h:outputText value="#{bundleClinical.ListDesignComponentFormSetTitle_parentComponent}"/>
-                            </f:facet>
-                            <h:outputText value="#{item.parentComponent}"/>
-                        </p:column>
-                        <p:column>
-                            <f:facet name="header">
-                                <h:outputText value="#{bundleClinical.ListDesignComponentFormSetTitle_mimeType}"/>
-                            </f:facet>
-                            <h:outputText value="#{item.mimeType}"/>
-                        </p:column>
-                        <p:column>
-                            <f:facet name="header">
-                                <h:outputText value="#{bundleClinical.ListDesignComponentFormSetTitle_selectionDataType}"/>
-                            </f:facet>
-                            <h:outputText value="#{item.selectionDataType}"/>
-                        </p:column>
-                        <p:column>
-                            <f:facet name="header">
-                                <h:outputText value="#{bundleClinical.ListDesignComponentFormSetTitle_topPercent}"/>
-                            </f:facet>
-                            <h:outputText value="#{item.topPercent}"/>
-                        </p:column>
-                        <p:column>
-                            <f:facet name="header">
-                                <h:outputText value="#{bundleClinical.ListDesignComponentFormSetTitle_leftPercent}"/>
-                            </f:facet>
-                            <h:outputText value="#{item.leftPercent}"/>
-                        </p:column>
-                        <p:column>
-                            <f:facet name="header">
-                                <h:outputText value="#{bundleClinical.ListDesignComponentFormSetTitle_widthPercent}"/>
-                            </f:facet>
-                            <h:outputText value="#{item.widthPercent}"/>
-                        </p:column>
-                        <p:column>
-                            <f:facet name="header">
-                                <h:outputText value="#{bundleClinical.ListDesignComponentFormSetTitle_heightPercent}"/>
-                            </f:facet>
-                            <h:outputText value="#{item.heightPercent}"/>
-                        </p:column>
-                        <p:column>
-                            <f:facet name="header">
-                                <h:outputText value="#{bundleClinical.ListDesignComponentFormSetTitle_intHtmlColor}"/>
-                            </f:facet>
-                            <h:outputText value="#{item.intHtmlColor}"/>
-                        </p:column>
-                        <p:column>
-                            <f:facet name="header">
-                                <h:outputText value="#{bundleClinical.ListDesignComponentFormSetTitle_hexHtmlColour}"/>
-                            </f:facet>
-                            <h:outputText value="#{item.hexHtmlColour}"/>
-                        </p:column>
-                        <p:column>
-                            <f:facet name="header">
-                                <h:outputText value="#{bundleClinical.ListDesignComponentFormSetTitle_createdBy}"/>
-                            </f:facet>
-                            <h:outputText value="#{item.createdBy}"/>
-                        </p:column>
-                        <p:column>
-                            <f:facet name="header">
-                                <h:outputText value="#{bundleClinical.ListDesignComponentFormSetTitle_createdAt}"/>
-                            </f:facet>
-                            <h:outputText value="#{item.createdAt}">
-                                <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
-                            </h:outputText>
-                        </p:column>
-                        <p:column>
-                            <f:facet name="header">
-                                <h:outputText value="#{bundleClinical.ListDesignComponentFormSetTitle_lastEditBy}"/>
-                            </f:facet>
-                            <h:outputText value="#{item.lastEditBy}"/>
-                        </p:column>
-                        <p:column>
-                            <f:facet name="header">
-                                <h:outputText value="#{bundleClinical.ListDesignComponentFormSetTitle_lastEditeAt}"/>
-                            </f:facet>
-                            <h:outputText value="#{item.lastEditeAt}">
-                                <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
-                            </h:outputText>
-                        </p:column>
-                        <p:column>
-                            <f:facet name="header">
-                                <h:outputText value="#{bundleClinical.ListDesignComponentFormSetTitle_retiredReversedBy}"/>
-                            </f:facet>
-                            <h:outputText value="#{item.retiredReversedBy}"/>
-                        </p:column>
-                        <p:column>
-                            <f:facet name="header">
-                                <h:outputText value="#{bundleClinical.ListDesignComponentFormSetTitle_retiredReversedAt}"/>
-                            </f:facet>
-                            <h:outputText value="#{item.retiredReversedAt}">
-                                <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
-                            </h:outputText>
-                        </p:column>
-                        <p:column>
-                            <f:facet name="header">
-                                <h:outputText value="#{bundleClinical.ListDesignComponentFormSetTitle_retiredBy}"/>
-                            </f:facet>
-                            <h:outputText value="#{item.retiredBy}"/>
-                        </p:column>
-                        <p:column>
-                            <f:facet name="header">
-                                <h:outputText value="#{bundleClinical.ListDesignComponentFormSetTitle_retiredAt}"/>
-                            </f:facet>
-                            <h:outputText value="#{item.retiredAt}">
-                                <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
-                            </h:outputText>
-                        </p:column>
-                        <p:column>
-                            <f:facet name="header">
-                                <h:outputText value="#{bundleClinical.ListDesignComponentFormSetTitle_retireComments}"/>
-                            </f:facet>
-                            <h:outputText value="#{item.retireComments}"/>
-                        </p:column>
-                        <p:column>
-                            <f:facet name="header">
-                                <h:outputText value="#{bundleClinical.ListDesignComponentFormSetTitle_html}"/>
-                            </f:facet>
-                            <h:outputText value="#{item.html}"/>
-                        </p:column>
-                        <p:column>
-                            <f:facet name="header">
-                                <h:outputText value="#{bundleClinical.ListDesignComponentFormSetTitle_availableDataType}"/>
-                            </f:facet>
-                            <h:outputText value="#{item.availableDataType}"/>
-                        </p:column>
-                        <p:column>
-                            <f:facet name="header">
-                                <h:outputText value="#{bundleClinical.ListDesignComponentFormSetTitle_parentAreaOfAvailableAreas}"/>
-                            </f:facet>
-                            <h:outputText value="#{item.parentAreaOfAvailableAreas}"/>
-                        </p:column>
-                        <p:column>
-                            <f:facet name="header">
-                                <h:outputText value="#{bundleClinical.ListDesignComponentFormSetTitle_categoryOfAvailableItems}"/>
-                            </f:facet>
-                            <h:outputText value="#{item.categoryOfAvailableItems}"/>
-                        </p:column>
-                        <p:column>
-                            <f:facet name="header">
-                                <h:outputText value="#{bundleClinical.ListDesignComponentFormSetTitle_parentInstitutionOfAvailableInstitutions}"/>
-                            </f:facet>
-                            <h:outputText value="#{item.parentInstitutionOfAvailableInstitutions}"/>
+                            <h:outputText value="#{item.componentSetType}"/>
                         </p:column>
                         <f:facet name="footer">
                             <p:commandButton id="createButton" icon="ui-icon-plus"   value="#{bundleClinical.Create}" actionListener="#{designComponentFormSetController.prepareCreate}" update=":DesignComponentFormSetCreateForm" oncomplete="PF('DesignComponentFormSetCreateDialog').show()"/>
                             <p:commandButton id="viewButton"   icon="ui-icon-search" value="#{bundleClinical.View}" update=":DesignComponentFormSetViewForm" oncomplete="PF('DesignComponentFormSetViewDialog').show()" disabled="#{empty designComponentFormSetController.selected}"/>
                             <p:commandButton id="editButton"   icon="ui-icon-pencil" value="#{bundleClinical.Edit}" update=":DesignComponentFormSetEditForm" oncomplete="PF('DesignComponentFormSetEditDialog').show()" disabled="#{empty designComponentFormSetController.selected}"/>
-                            <p:commandButton id="deleteButton" icon="ui-icon-trash"  value="#{bundleClinical.Delete}" actionListener="#{designComponentFormSetController.destroy}" update=":growl,datalist" disabled="#{empty designComponentFormSetController.selected}"/>
+                            <p:commandButton id="addForm"   icon="ui-icon-pencil" value="Add Pages" ajax="false" action="#{designComponentFormSetController.toAddFormsForTheSelectedSet()}"
+                                              disabled="#{empty designComponentFormSetController.selected}"/>
+                            
+                            <p:commandButton id="deleteButton" icon="ui-icon-trash"  value="#{bundleClinical.Delete}" actionListener="#{designComponentFormSetController.destroy}" update="datalist" disabled="#{empty designComponentFormSetController.selected}"/>
                         </f:facet>
                     </p:dataTable>
                 </p:panel>

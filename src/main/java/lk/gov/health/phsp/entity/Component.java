@@ -57,6 +57,11 @@ public class Component implements Serializable {
 
     String name;
 
+    private Double orderNo;
+    
+    @ManyToOne
+    private Institution institution;
+    
     @ManyToOne
     private Component parentComponent;
 
@@ -73,13 +78,13 @@ public class Component implements Serializable {
     private AvailableDataType availableDataType;
     
     @Enumerated(EnumType.STRING)
-    DataPopulationStrategy dataPopulationStrategy;
+    private DataPopulationStrategy dataPopulationStrategy;
     
     @Enumerated(EnumType.STRING)
-    DataCompletionStrategy dataCompletionStrategy;
+    private DataCompletionStrategy dataCompletionStrategy;
     
     @Enumerated(EnumType.STRING)
-    DataModificationStrategy dataModificationStrategy;
+    private DataModificationStrategy dataModificationStrategy;
 
     @ManyToOne
     private Area parentAreaOfAvailableAreas;
@@ -371,6 +376,47 @@ public class Component implements Serializable {
     public void setParentInstitutionOfAvailableInstitutions(Institution parentInstitutionOfAvailableInstitutions) {
         this.parentInstitutionOfAvailableInstitutions = parentInstitutionOfAvailableInstitutions;
     }
+
+    public Double getOrderNo() {
+        return orderNo;
+    }
+
+    public void setOrderNo(Double orderNo) {
+        this.orderNo = orderNo;
+    }
+
+    public Institution getInstitution() {
+        return institution;
+    }
+
+    public void setInstitution(Institution institution) {
+        this.institution = institution;
+    }
+
+    public DataPopulationStrategy getDataPopulationStrategy() {
+        return dataPopulationStrategy;
+    }
+
+    public void setDataPopulationStrategy(DataPopulationStrategy dataPopulationStrategy) {
+        this.dataPopulationStrategy = dataPopulationStrategy;
+    }
+
+    public DataCompletionStrategy getDataCompletionStrategy() {
+        return dataCompletionStrategy;
+    }
+
+    public void setDataCompletionStrategy(DataCompletionStrategy dataCompletionStrategy) {
+        this.dataCompletionStrategy = dataCompletionStrategy;
+    }
+
+    public DataModificationStrategy getDataModificationStrategy() {
+        return dataModificationStrategy;
+    }
+
+    public void setDataModificationStrategy(DataModificationStrategy dataModificationStrategy) {
+        this.dataModificationStrategy = dataModificationStrategy;
+    }
+    
     
     
 

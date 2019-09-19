@@ -8,14 +8,10 @@
 
     <h:body>
 
-        <ui:composition template="./template.xhtml">
+        <ui:composition template="/template.xhtml">
 
             <ui:define name="content">
-
-
                 <p:panel header="Manage Users" >
-
-                    a
 
                     <p:tree value="#{webUserController.allPrivilegeRoot}" var="node"  
                             selectionMode="checkbox" 
@@ -24,8 +20,8 @@
                             <h:outputText value="#{node}" />  
                         </p:treeNode>  
                     </p:tree>  
-                    b
-
+              
+                    
                 </p:panel>
 
 
