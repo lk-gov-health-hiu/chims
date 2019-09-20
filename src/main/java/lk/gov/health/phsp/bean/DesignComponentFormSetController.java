@@ -36,6 +36,7 @@ public class DesignComponentFormSetController implements Serializable {
     // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="Class Variables">
     private List<DesignComponentFormSet> items = null;
+    private List<DesignComponentFormSet> insItems = null;
     private DesignComponentFormSet selected;
 
     // </editor-fold>
@@ -51,6 +52,14 @@ public class DesignComponentFormSetController implements Serializable {
         designComponentFormController.getAddingForm();
         return "/designComponentFormSet/manage_forms";
     }
+    
+    public List<DesignComponentFormSet> fillInsItems(){
+        fill
+    }
+    
+    public List<DesignComponentFormSet> fillInsItems(List insLst){
+        return null;
+    } 
 
     // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="Default Functions">
@@ -109,6 +118,8 @@ public class DesignComponentFormSetController implements Serializable {
 
     // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="Getters & Setters">
+    
+    
     public DesignComponentFormSet getSelected() {
         return selected;
     }

@@ -24,6 +24,7 @@ import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
 import javax.inject.Inject;
 import lk.gov.health.phsp.entity.DesignComponentForm;
+import org.apache.commons.lang3.SerializationUtils;
 // </editor-fold>
 
 @Named("designComponentFormItemController")
@@ -53,9 +54,41 @@ public class DesignComponentFormItemController implements Serializable {
     }
 // </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="Navigation Functions">
-
+    public String toEditDesignComponentFromItem(){
+        if(selected==null){
+            JsfUtil.addErrorMessage("No item selected.");
+            return "";
+        }
+        return "/designComponentFormItem/item";
+    }
+    public String toDesignDesignComponentFromItem(){
+        if(selected==null){
+            JsfUtil.addErrorMessage("No item selected.");
+            return "";
+        }
+        return "/designComponentFormItem/design";
+    }
+    
 // </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="Main Functions">
+    public void saveItem(){
+        if(selected==null){
+            JsfUtil.addErrorMessage("No item selected.");
+            return ;
+        }
+        if(selected.getId()==null){
+            selected.setCreatedAt(new Date());
+            selected.setCreatedBy(webUserController.getLoggedUser());
+            getFacade().create(selected);
+            JsfUtil.addSuccessMessage("Saved Successfully.");
+        }else{
+            selected.setLastEditBy(webUserController.getLoggedUser());
+            selected.setLastEditeAt(new Date());
+            getFacade().edit(selected);
+            JsfUtil.addSuccessMessage("Updated Successfully.");
+        }
+    }
+
     public void fillItemsOfTheForm() {
         if (designComponentForm == null) {
             designComponentFormItems = new ArrayList<>();
@@ -101,7 +134,7 @@ public class DesignComponentFormItemController implements Serializable {
         removingItem.setRetired(true);
         removingItem.setRetiredAt(new Date());
         removingItem.setRetiredBy(webUserController.getLoggedUser());
-        removingItem = null;
+        getFacade().edit(removingItem);
         fillItemsOfTheForm();
         JsfUtil.addSuccessMessage("Item removed.");
     }
@@ -155,10 +188,9 @@ public class DesignComponentFormItemController implements Serializable {
         }
         addingItem = new DesignComponentFormItem();
         addingItem.setParentComponent(designComponentForm);
+        addingItem.setComponentSex(designComponentForm.getComponentSex());
         addingItem.setOrderNo(getDesignComponentFormItems().size()+1.0);
-        addingItem.setCreatedAt(new Date());
-        addingItem.setCreatedBy(webUserController.getLoggedUser());
-        getFacade().create(addingItem);
+        
     }
     
     public void saveSelectedItem(){

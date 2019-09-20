@@ -54,7 +54,7 @@ public class DesignComponentFormController implements Serializable {
     public DesignComponentFormController() {
     }
 // </editor-fold>    
-    // <editor-fold defaultstate="collapsed" desc="Navigation Functions">
+// <editor-fold defaultstate="collapsed" desc="Navigation Functions">
 
     public String toEditDesignComponentFrom() {
         if (selected == null) {
@@ -62,7 +62,7 @@ public class DesignComponentFormController implements Serializable {
             return "";
         }
 
-        return "/designComponentFormItem/item";
+        return "/designComponentForm/form";
     }
 
     public String toManageDesignComponentItems() {
@@ -73,11 +73,31 @@ public class DesignComponentFormController implements Serializable {
         designComponentFormItemController.setDesignComponentForm(selected);
         designComponentFormItemController.fillItemsOfTheForm();
         designComponentFormItemController.createNewAddingItem();
-        return "/designComponentFormItem/";
+        return "/designComponentFormItem/manage_items";
     }
 
     // </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="Main Functions">
+    
+    public void saveSelected(){
+        if(selected==null){
+            JsfUtil.addErrorMessage("Nothing to save");
+            return;
+        }
+        if(selected.getId()==null){
+            selected.setCreatedAt(new Date());
+            selected.setCreatedBy(webUserController.getLoggedUser());
+            getFacade().create(selected);
+            JsfUtil.addSuccessMessage("Saved Successfully");
+        }else{
+            selected.setLastEditBy(webUserController.getLoggedUser());
+            selected.setLastEditeAt(new Date());
+            getFacade().edit(selected);
+            JsfUtil.addSuccessMessage("Updated Successfully");
+        }
+    }
+    
+    
     public void fillFormsofTheSelectedSet() {
 //        System.out.println("fillFormsofTheSelectedSet");
         if (designComponentFormSet == null) {

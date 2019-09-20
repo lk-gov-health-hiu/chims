@@ -18,72 +18,57 @@
 
                     <p:panel header="Form Item Details" style="width: 100%; text-align: center;" >
 
-                        <f:facet name="header" >
-                            
-                        </f:facet>
-                        
                         <h:form>
 
-                            <p:panelGrid columns="2" rendered="#{designComponentFormItemController.selected ne null}"
-                                         style="margin: auto; text-align: left;">
-                                <f:facet name="header" >
-                                    <p:commandButton action="/designComponentFormItem/manage_items" value="Save" actionListener="#{designComponentFormItemController.saveItem()}" ajax="false" >
-                                    </p:commandButton>
-                                    <p:commandButton ajax="false" action="/designComponentFormItem/manage_items" value="Back" style="float: right;" ></p:commandButton>
-                                </f:facet>
-
-                                <p:outputLabel value="Form" for="parentComponent" />
+                            <p:panelGrid columns="2" rendered="#{designComponentFormItemController.designComponentForm ne null}">
+                                <p:outputLabel value="Form Set" for="parentComponent" />
                                 <p:outputLabel id="parentComponent" 
-                                               value="#{designComponentFormItemController.selected.parentComponent.name}" >
+                                               value="#{designComponentFormItemController.designComponentForm.parentComponent.name}" >
                                 </p:outputLabel>
 
                                 <p:outputLabel value="Name:" for="name" />
-                                <p:inputText id="name" value="#{designComponentFormItemController.selected.name}" title="Name" />
+                                <p:inputText id="name" value="#{designComponentFormItemController.designComponentForm.name}" title="Name" />
 
                                 <p:outputLabel value="ComponentSex:" for="componentSex" />
-                                <p:selectOneMenu id="componentSex" 
-                                                 value="#{designComponentFormItemController.selected.componentSex}" 
-                                                 title="ComponentSex" >
-                                    <f:selectItems value="#{commonController.componentSex}" ></f:selectItems>
-                                </p:selectOneMenu>
+                                <p:inputText id="componentSex" value="#{designComponentFormItemController.designComponentForm.componentSex}" title="ComponentSex" />
 
                                 <p:outputLabel value="RenderType:" for="renderType" />
                                 <p:selectOneMenu id="renderType" 
-                                                 value="#{designComponentFormItemController.selected.renderType}" 
+                                                 value="#{designComponentFormItemController.designComponentForm.renderType}" 
                                                  title="RenderType" >
                                     <f:selectItems value="#{commonController.renderTypes}" ></f:selectItems>
                                 </p:selectOneMenu>
 
                                 <p:outputLabel value="MimeType:" for="mimeType" />
                                 <p:selectOneMenu id="mimeType" 
-                                                 value="#{designComponentFormItemController.selected.mimeType}" >
+                                                 value="#{designComponentFormItemController.designComponentForm.mimeType}" >
                                     <f:selectItem itemLabel="Select" ></f:selectItem>
                                     <f:selectItems value="#{itemController.mimeTypes}" var="m" itemLabel="#{m.name}" itemLabelEscaped="#{m}" ></f:selectItems>
                                 </p:selectOneMenu>
 
                                 <p:outputLabel value="SelectionDataType:" for="selectionDataType" />
                                 <p:selectOneMenu id="selectionDataType" 
-                                                 value="#{designComponentFormItemController.selected.selectionDataType}" title="SelectionDataType" >
+                                                 value="#{designComponentFormItemController.designComponentForm.selectionDataType}" title="SelectionDataType" >
                                     <f:selectItems value="#{commonController.selectionDataTypes}" ></f:selectItems>
                                 </p:selectOneMenu>
 
                                 <p:outputLabel value="Top Percent:" for="topPercent" />
-                                <p:inputText id="topPercent" value="#{designComponentFormItemController.selected.topPercent}" title="TopPercent" />
+                                <p:inputText id="topPercent" value="#{designComponentFormItemController.designComponentForm.topPercent}" title="TopPercent" />
                                 <p:outputLabel value="Left Percent:" for="leftPercent" />
-                                <p:inputText id="leftPercent" value="#{designComponentFormItemController.selected.leftPercent}" title="LeftPercent" />
+                                <p:inputText id="leftPercent" value="#{designComponentFormItemController.designComponentForm.leftPercent}" title="LeftPercent" />
                                 <p:outputLabel value="Width Percent:" for="widthPercent" />
-                                <p:inputText id="widthPercent" value="#{designComponentFormItemController.selected.widthPercent}" title="WidthPercent" />
+                                <p:inputText id="widthPercent" value="#{designComponentFormItemController.designComponentForm.widthPercent}" title="WidthPercent" />
                                 <p:outputLabel value="Height Percent:" for="heightPercent" />
-                                <p:inputText id="heightPercent" value="#{designComponentFormItemController.selected.heightPercent}" title="HeightPercent" />
+                                <p:inputText id="heightPercent" value="#{designComponentFormItemController.designComponentForm.heightPercent}" title="HeightPercent" />
 
                                 <p:outputLabel value="Color as Integer:" for="intHtmlColor" />
-                                <p:inputText id="intHtmlColor" value="#{designComponentFormItemController.selected.intHtmlColor}" title="IntHtmlColor" />
+                                <p:inputText id="intHtmlColor" value="#{designComponentFormItemController.designComponentForm.intHtmlColor}" title="IntHtmlColor" />
 
                                 <p:outputLabel value="Colour as Hexadecimal:" for="hexHtmlColour" />
-                                <p:inputText id="hexHtmlColour" value="#{designComponentFormItemController.selected.hexHtmlColour}" title="HexHtmlColour" />
+                                <p:inputText id="hexHtmlColour" value="#{designComponentFormItemController.designComponentForm.hexHtmlColour}" title="HexHtmlColour" />
 
                                 <p:outputLabel value="Category of Available Items:" for="categoryOfAvailableItems" />
-                                <p:selectOneMenu id="categoryOfAvailableItems" value="#{designComponentFormItemController.selected.categoryOfAvailableItems}" >
+                                <p:selectOneMenu id="categoryOfAvailableItems" value="#{designComponentFormItemController.designComponentForm.categoryOfAvailableItems}" >
                                     <f:selectItem itemLabel="Select" ></f:selectItem>
                                     <f:selectItems value="#{itemController.categories}" var="ic" itemLabel="#{ic.name}" itemLabelEscaped="#{ic}" ></f:selectItems>
 
@@ -92,26 +77,26 @@
 
 
                                 <p:outputLabel value="Order No:" for="orderNo" />
-                                <p:inputText id="orderNo" value="#{designComponentFormItemController.selected.orderNo}" title="OrderNo" />
+                                <p:inputText id="orderNo" value="#{designComponentFormItemController.designComponentForm.orderNo}" title="OrderNo" />
 
 
                                 <p:outputLabel value="Data Population Strategy:" for="dataPopulationStrategy" />
                                 <p:selectOneMenu id="dataPopulationStrategy" 
-                                                 value="#{designComponentFormItemController.selected.dataPopulationStrategy}" 
+                                                 value="#{designComponentFormItemController.designComponentForm.dataPopulationStrategy}" 
                                                  title="DataPopulationStrategy" >
                                     <f:selectItems value="#{commonController.dataPopulationStrategies}" ></f:selectItems>
                                 </p:selectOneMenu>
 
                                 <p:outputLabel value="Data Completion Strategy:" for="dataCompletionStrategy" />
                                 <p:selectOneMenu id="dataCompletionStrategy" 
-                                                 value="#{designComponentFormItemController.selected.dataCompletionStrategy}" 
+                                                 value="#{designComponentFormItemController.designComponentForm.dataCompletionStrategy}" 
                                                  title="DataCompletionStrategy" >
                                     <f:selectItems value="#{commonController.dataCompletionStrategies}" ></f:selectItems>
                                 </p:selectOneMenu>
 
                                 <p:outputLabel value="Data Modification Strategy:" for="dataModificationStrategy" />
                                 <p:inputText id="dataModificationStrategy" 
-                                             value="#{designComponentFormItemController.selected.dataModificationStrategy}" 
+                                             value="#{designComponentFormItemController.designComponentForm.dataModificationStrategy}" 
                                              title="DataModificationStrategy" >
                                     <f:selectItems value="#{commonController.dataModificationStrategies}" ></f:selectItems>
                                 </p:inputText>

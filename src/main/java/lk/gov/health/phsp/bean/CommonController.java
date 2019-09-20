@@ -16,6 +16,11 @@ import javax.enterprise.context.SessionScoped;
 import javax.inject.Named;
 import lk.gov.health.phsp.enums.ComponentSetType;
 import lk.gov.health.phsp.enums.ComponentSex;
+import lk.gov.health.phsp.enums.DataCompletionStrategy;
+import lk.gov.health.phsp.enums.DataModificationStrategy;
+import lk.gov.health.phsp.enums.DataPopulationStrategy;
+import lk.gov.health.phsp.enums.ItemArrangementStrategy;
+import lk.gov.health.phsp.enums.PanelType;
 import lk.gov.health.phsp.enums.RenderType;
 import lk.gov.health.phsp.enums.SelectionDataType;
 import org.jasypt.util.password.BasicPasswordEncryptor;
@@ -110,8 +115,28 @@ public class CommonController implements Serializable {
         return SelectionDataType.values();
     }
 
+    public DataPopulationStrategy[] getDataPopulationStrategies() {
+        return DataPopulationStrategy.values();
+    }
+
+    public DataCompletionStrategy[] getDataCompletionStrategies() {
+        return DataCompletionStrategy.values();
+    }
+
+    public DataModificationStrategy[] getDataModificationStrategies() {
+        return DataModificationStrategy.values();
+    }
+    
+    public ItemArrangementStrategy[] getItemArrangementStrategies() {
+        return ItemArrangementStrategy.values();
+    }
+
     public ItemType[] getItemTypes() {
         return ItemType.values();
     }
 
+    public PanelType[] getPanelTypes(){
+        return PanelType.values();
+    }
+    
 }

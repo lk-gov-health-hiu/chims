@@ -37,7 +37,8 @@ public class ItemController implements Serializable {
     private List<Item> marietalStatus;
     private List<Item> citizenships;
     private List<Item> mimeTypes;
-    
+    private List<Item> categories;
+
     public ItemController() {
     }
 
@@ -199,13 +200,19 @@ public class ItemController implements Serializable {
 
     public Item findItemByCode(String code) {
         Item item;
-        String j = "select i from Item i "
-                + " where i.retired=false "
-                + " and lower(i.code)=:code "
-                + " order by i.id";
+        String j;
         Map m = new HashMap();
-        m.put("code", code.trim().toLowerCase());
-        item = getFacade().findFirstByJpql(j, m);
+        if (code != null) {
+            j = "select i from Item i "
+                    + " where i.retired=false "
+                    + " and lower(i.code)=:code "
+                    + " order by i.id";
+            m = new HashMap();
+            m.put("code", code.trim().toLowerCase());
+            item = getFacade().findFirstByJpql(j, m);
+        } else {
+           item = null;
+        }
         return item;
     }
 
@@ -312,12 +319,15 @@ public class ItemController implements Serializable {
 
     public List<Item> findItemList(String parentCode, ItemType t) {
         String j = "select t from Item t where t.retired=false "
-                + " and t.parent=:p "
-                + " and t.itemType=:t "
-                + " order by t.orderNo";
+                + " and t.itemType=:t ";
         Map m = new HashMap();
-        m.put("p", findItemByCode(parentCode));
         m.put("t", t);
+        Item parent = findItemByCode(parentCode);
+        if (parent != null) {
+            m.put("p", parent);
+            j += " and t.parent=:p ";
+        }
+        j += " order by t.orderNo";
         return getFacade().findByJpql(j, m);
     }
 
@@ -381,7 +391,7 @@ public class ItemController implements Serializable {
     }
 
     public List<Item> getMimeTypes() {
-        if(mimeTypes==null){
+        if (mimeTypes == null) {
             mimeTypes = findItemList("mime_type", ItemType.Dictionary_Item);
         }
         return mimeTypes;
@@ -390,8 +400,21 @@ public class ItemController implements Serializable {
     public void setMimeTypes(List<Item> mimeTypes) {
         this.mimeTypes = mimeTypes;
     }
-    
-    
+
+    public List<Item> getCategories() {
+        if (categories == null) {
+            categories = findItemList(null, ItemType.Dictionary_Category);
+        }
+        return categories;
+    }
+
+    public void setCategories(List<Item> categories) {
+        this.categories = categories;
+    }
+
+    public lk.gov.health.phsp.facade.ItemFacade getEjbFacade() {
+        return ejbFacade;
+    }
 
     @FacesConverter(forClass = Item.class)
     public static class ItemControllerConverter implements Converter {

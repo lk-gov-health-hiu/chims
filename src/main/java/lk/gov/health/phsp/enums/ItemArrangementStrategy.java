@@ -1,4 +1,3 @@
-
 /*
  * The MIT License
  *
@@ -22,41 +21,14 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package lk.gov.health.phsp.entity;
-
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import lk.gov.health.phsp.enums.ComponentSetType;
-import lk.gov.health.phsp.enums.PanelType;
+package lk.gov.health.phsp.enums;
 
 /**
  *
- * @author sunila_soft
+ * @author Dr M H B Ariyaratne<buddhika.ari@gmail.com>
  */
-@Entity
-public class DesignComponentFormSet extends DesignComponent  {
-    @Enumerated(EnumType.STRING)
-    private ComponentSetType componentSetType;
-    @Enumerated(EnumType.STRING)
-    private PanelType panelType;
-
-    public ComponentSetType getComponentSetType() {
-        return componentSetType;
-    }
-
-    public void setComponentSetType(ComponentSetType componentSetType) {
-        this.componentSetType = componentSetType;
-    }
-
-    public PanelType getPanelType() {
-        return panelType;
-    }
-
-    public void setPanelType(PanelType panelType) {
-        this.panelType = panelType;
-    }
-    
-    
-    
+public enum ItemArrangementStrategy {
+    Label_Value_Unit_Sets,
+    Absolute_Positioning,
+    Relavite_Positioning,
 }

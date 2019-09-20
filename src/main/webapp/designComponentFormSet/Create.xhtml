@@ -22,6 +22,12 @@
                             <f:selectItems value="#{commonController.componentSetTypes}" ></f:selectItems>
                         </p:selectOneMenu>
                         
+                        <p:outputLabel value="Panel" for="panel" />
+                        <p:selectOneMenu id="panel" value="#{designComponentFormSetController.selected.panelType}" 
+                                         title="Panel" >
+                            <f:selectItems value="#{commonController.panelTypes}" ></f:selectItems>
+                        </p:selectOneMenu>
+                        
                          <p:outputLabel value="Sex" for="sex" />
                          <p:selectOneMenu id="sex" value="#{designComponentFormSetController.selected.componentSex}" 
                                          title="Sex" >

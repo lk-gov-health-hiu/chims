@@ -21,7 +21,6 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-
 package lk.gov.health.phsp.entity;
 
 import java.io.Serializable;
@@ -40,6 +39,7 @@ import lk.gov.health.phsp.enums.AvailableDataType;
 import lk.gov.health.phsp.enums.DataCompletionStrategy;
 import lk.gov.health.phsp.enums.DataModificationStrategy;
 import lk.gov.health.phsp.enums.DataPopulationStrategy;
+import lk.gov.health.phsp.enums.ItemArrangementStrategy;
 import lk.gov.health.phsp.enums.SelectionDataType;
 import lk.gov.health.phsp.enums.RenderType;
 
@@ -58,10 +58,10 @@ public class Component implements Serializable {
     String name;
 
     private Double orderNo;
-    
+
     @ManyToOne
     private Institution institution;
-    
+
     @ManyToOne
     private Component parentComponent;
 
@@ -76,15 +76,18 @@ public class Component implements Serializable {
 
     @Enumerated(EnumType.STRING)
     private AvailableDataType availableDataType;
-    
+
     @Enumerated(EnumType.STRING)
     private DataPopulationStrategy dataPopulationStrategy;
-    
+
     @Enumerated(EnumType.STRING)
     private DataCompletionStrategy dataCompletionStrategy;
-    
+
     @Enumerated(EnumType.STRING)
     private DataModificationStrategy dataModificationStrategy;
+
+    @Enumerated(EnumType.STRING)
+    private ItemArrangementStrategy itemArrangementStrategy;
 
     @ManyToOne
     private Area parentAreaOfAvailableAreas;
@@ -161,8 +164,6 @@ public class Component implements Serializable {
         }
         return true;
     }
-    
-    
 
     @Override
     public String toString() {
@@ -416,7 +417,14 @@ public class Component implements Serializable {
     public void setDataModificationStrategy(DataModificationStrategy dataModificationStrategy) {
         this.dataModificationStrategy = dataModificationStrategy;
     }
-    
+
+    public ItemArrangementStrategy getItemArrangementStrategy() {
+        return itemArrangementStrategy;
+    }
+
+    public void setItemArrangementStrategy(ItemArrangementStrategy itemArrangementStrategy) {
+        this.itemArrangementStrategy = itemArrangementStrategy;
+    }
     
     
 
