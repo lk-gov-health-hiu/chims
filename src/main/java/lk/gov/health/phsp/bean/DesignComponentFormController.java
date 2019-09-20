@@ -1,12 +1,13 @@
 package lk.gov.health.phsp.bean;
 
+// <editor-fold defaultstate="collapsed" desc="Imports">
 import lk.gov.health.phsp.entity.DesignComponentForm;
 import lk.gov.health.phsp.bean.util.JsfUtil;
 import lk.gov.health.phsp.bean.util.JsfUtil.PersistAction;
 import lk.gov.health.phsp.facade.DesignComponentFormFacade;
-
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,24 +22,64 @@ import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
+import javax.inject.Inject;
 import lk.gov.health.phsp.entity.DesignComponentFormSet;
-import lk.gov.health.phsp.enums.ComponentSex;
+// </editor-fold>
 
 @Named("designComponentFormController")
 @SessionScoped
 public class DesignComponentFormController implements Serializable {
 
+// <editor-fold defaultstate="collapsed" desc="EJBs">
     @EJB
     private lk.gov.health.phsp.facade.DesignComponentFormFacade ejbFacade;
+// </editor-fold>
+// <editor-fold defaultstate="collapsed" desc="Controllers">
+    @Inject
+    WebUserController webUserController;
+    @Inject
+    DesignComponentFormItemController designComponentFormItemController;
+// </editor-fold>
+// <editor-fold defaultstate="collapsed" desc="Class Variables">
     private List<DesignComponentForm> items = null;
     private DesignComponentForm selected;
     private List<DesignComponentForm> formsOfTheSelectedSet = null;
     private DesignComponentForm addingForm;
     private DesignComponentForm removingForm;
-
+    private DesignComponentForm movingForm;
     private DesignComponentFormSet designComponentFormSet;
+// </editor-fold>
+// <editor-fold defaultstate="collapsed" desc="Constructor">
 
-    private void fillFormsofTheSelectedSet() {
+    public DesignComponentFormController() {
+    }
+// </editor-fold>    
+    // <editor-fold defaultstate="collapsed" desc="Navigation Functions">
+
+    public String toEditDesignComponentFrom() {
+        if (selected == null) {
+            JsfUtil.addErrorMessage("Nothing to Edit");
+            return "";
+        }
+
+        return "/designComponentFormItem/item";
+    }
+
+    public String toManageDesignComponentItems() {
+        if (selected == null) {
+            JsfUtil.addErrorMessage("Nothing to Manage");
+            return "";
+        }
+        designComponentFormItemController.setDesignComponentForm(selected);
+        designComponentFormItemController.fillItemsOfTheForm();
+        designComponentFormItemController.createNewAddingItem();
+        return "/designComponentFormItem/";
+    }
+
+    // </editor-fold>
+// <editor-fold defaultstate="collapsed" desc="Main Functions">
+    public void fillFormsofTheSelectedSet() {
+//        System.out.println("fillFormsofTheSelectedSet");
         if (designComponentFormSet == null) {
             formsOfTheSelectedSet = new ArrayList<>();
             return;
@@ -46,33 +87,85 @@ public class DesignComponentFormController implements Serializable {
         String j = "Select f from DesignComponentForm f "
                 + "where f.retired=false "
                 + " and f.parentComponent=:pc "
-                + " order by f.id";
+                + " order by f.orderNo";
         Map m = new HashMap();
         m.put("pc", designComponentFormSet);
-
+        formsOfTheSelectedSet = getFacade().findByJpql(j, m);
     }
 
-    public DesignComponentFormController() {
+    public void addFormToTheSelectedSet() {
+//        System.out.println("addFormToTheSelectedSet");
+//        System.out.println("designComponentFormSet = " + designComponentFormSet);
+//        System.out.println("addingForm = " + addingForm);
+        if (designComponentFormSet == null) {
+            JsfUtil.addErrorMessage("No Formset");
+            return;
+        }
+        if (addingForm == null) {
+            JsfUtil.addErrorMessage("No Form");
+            return;
+        }
+        addingForm.setParentComponent(designComponentFormSet);
+        addingForm.setCreatedAt(new Date());
+        addingForm.setCreatedBy(webUserController.getLoggedUser());
+        getFacade().create(addingForm);
+
+        fillFormsofTheSelectedSet();
+        addingForm = null;
     }
 
-    public DesignComponentForm getSelected() {
-        return selected;
+    public void removeFromFromTheSelectedSet() {
+        if (removingForm == null) {
+            JsfUtil.addErrorMessage("No form to remove.");
+            return;
+        }
+        removingForm.setRetired(true);
+        removingForm.setRetiredAt(new Date());
+        removingForm.setRetiredBy(webUserController.getLoggedUser());
+        getFacade().edit(removingForm);
+        fillFormsofTheSelectedSet();
+        JsfUtil.addSuccessMessage("Item Removed");
     }
 
-    public void setSelected(DesignComponentForm selected) {
-        this.selected = selected;
+    public void moveUpTheSelectedSet() {
+        if (movingForm == null) {
+            JsfUtil.addErrorMessage("No form to move.");
+            return;
+        }
+        movingForm.setOrderNo(movingForm.getOrderNo() - 1.5);
+        getFacade().edit(movingForm);
+        fillFormsofTheSelectedSet();
+        Double o = 0.0;
+        for (DesignComponentForm f : getFormsOfTheSelectedSet()) {
+            o = o + 1;
+            f.setOrderNo(o);
+            getFacade().edit(f);
+        }
+        fillFormsofTheSelectedSet();
+        movingForm = null;
+        JsfUtil.addSuccessMessage("Item Moved Up");
     }
 
-    protected void setEmbeddableKeys() {
+    public void moveDownTheSelectedSet() {
+        if (movingForm == null) {
+            JsfUtil.addErrorMessage("No form to move.");
+            return;
+        }
+        movingForm.setOrderNo(movingForm.getOrderNo() + 1.5);
+        getFacade().edit(movingForm);
+        fillFormsofTheSelectedSet();
+        Double o = 0.0;
+        for (DesignComponentForm f : getFormsOfTheSelectedSet()) {
+            o = o + 1;
+            f.setOrderNo(o);
+            getFacade().edit(f);
+        }
+        fillFormsofTheSelectedSet();
+        JsfUtil.addSuccessMessage("Item Moved Down");
     }
 
-    protected void initializeEmbeddableKey() {
-    }
-
-    private DesignComponentFormFacade getFacade() {
-        return ejbFacade;
-    }
-
+// </editor-fold>
+// <editor-fold defaultstate="collapsed" desc="Default Functions">
     public DesignComponentForm prepareCreate() {
         selected = new DesignComponentForm();
         initializeEmbeddableKey();
@@ -96,13 +189,6 @@ public class DesignComponentFormController implements Serializable {
             selected = null; // Remove selection
             items = null;    // Invalidate list of items to trigger re-query.
         }
-    }
-
-    public List<DesignComponentForm> getItems() {
-        if (items == null) {
-            items = getFacade().findAll();
-        }
-        return items;
     }
 
     private void persist(PersistAction persistAction, String successMessage) {
@@ -131,6 +217,41 @@ public class DesignComponentFormController implements Serializable {
                 JsfUtil.addErrorMessage(ex, ResourceBundle.getBundle("/BundleClinical").getString("PersistenceErrorOccured"));
             }
         }
+    }
+// </editor-fold>
+// <editor-fold defaultstate="collapsed" desc="Getters & Setters">
+
+    public void setEjbFacade(DesignComponentFormFacade ejbFacade) {
+        this.ejbFacade = ejbFacade;
+    }
+
+    public void setWebUserController(WebUserController webUserController) {
+        this.webUserController = webUserController;
+    }
+
+    public DesignComponentForm getSelected() {
+        return selected;
+    }
+
+    public void setSelected(DesignComponentForm selected) {
+        this.selected = selected;
+    }
+
+    protected void setEmbeddableKeys() {
+    }
+
+    protected void initializeEmbeddableKey() {
+    }
+
+    private DesignComponentFormFacade getFacade() {
+        return ejbFacade;
+    }
+
+    public List<DesignComponentForm> getItems() {
+        if (items == null) {
+            items = getFacade().findAll();
+        }
+        return items;
     }
 
     public DesignComponentForm getDesignComponentForm(java.lang.Long id) {
@@ -166,7 +287,11 @@ public class DesignComponentFormController implements Serializable {
             addingForm = new DesignComponentForm();
             addingForm.setParentComponent(designComponentFormSet);
             addingForm.setComponentSex(designComponentFormSet.getComponentSex());
-            addingForm.setOrderNo(Double.valueOf(getFormsOfTheSelectedSet().size() + 1));
+            if (getFormsOfTheSelectedSet() != null) {
+                addingForm.setOrderNo(Double.valueOf(getFormsOfTheSelectedSet().size() + 1));
+            } else {
+                addingForm.setOrderNo(1.0);
+            }
         }
         return addingForm;
     }
@@ -182,6 +307,16 @@ public class DesignComponentFormController implements Serializable {
     public void setRemovingForm(DesignComponentForm removingForm) {
         this.removingForm = removingForm;
     }
+
+    public DesignComponentForm getMovingForm() {
+        return movingForm;
+    }
+
+    public void setMovingForm(DesignComponentForm movingForm) {
+        this.movingForm = movingForm;
+    }
+// </editor-fold>
+// <editor-fold defaultstate="collapsed" desc="Converter">
 
     @FacesConverter(forClass = DesignComponentForm.class)
     public static class DesignComponentFormControllerConverter implements Converter {
@@ -224,4 +359,5 @@ public class DesignComponentFormController implements Serializable {
 
     }
 
+// </editor-fold>
 }

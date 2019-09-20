@@ -16,6 +16,8 @@ import javax.enterprise.context.SessionScoped;
 import javax.inject.Named;
 import lk.gov.health.phsp.enums.ComponentSetType;
 import lk.gov.health.phsp.enums.ComponentSex;
+import lk.gov.health.phsp.enums.RenderType;
+import lk.gov.health.phsp.enums.SelectionDataType;
 import org.jasypt.util.password.BasicPasswordEncryptor;
 import org.jasypt.util.text.BasicTextEncryptor;
 
@@ -69,7 +71,7 @@ public class CommonController implements Serializable {
             return null;
         }
     }
-    
+
     public String decrypt(String word, String encryptKey) {
         BasicTextEncryptor en = new BasicTextEncryptor();
         en.setPassword("health");
@@ -87,21 +89,28 @@ public class CommonController implements Serializable {
     public InstitutionType[] getInstitutionTypes() {
         return InstitutionType.values();
     }
-    
-    public AreaType[] getAreaTypes(){
+
+    public AreaType[] getAreaTypes() {
         return AreaType.values();
     }
-    
-    public ComponentSetType[] getComponentSetTypes(){
+
+    public ComponentSetType[] getComponentSetTypes() {
         return ComponentSetType.values();
     }
-    
-    public ComponentSex[] getComponentSex(){
+
+    public ComponentSex[] getComponentSex() {
         return ComponentSex.values();
     }
-    
-    
-    public ItemType[] getItemTypes(){
+
+    public RenderType[] getRenderTypes() {
+        return RenderType.values();
+    }
+
+    public SelectionDataType[] getSelectionDataTypes() {
+        return SelectionDataType.values();
+    }
+
+    public ItemType[] getItemTypes() {
         return ItemType.values();
     }
 

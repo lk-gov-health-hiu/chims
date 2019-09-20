@@ -36,7 +36,8 @@ public class ItemController implements Serializable {
     private List<Item> sexes;
     private List<Item> marietalStatus;
     private List<Item> citizenships;
-
+    private List<Item> mimeTypes;
+    
     public ItemController() {
     }
 
@@ -50,6 +51,23 @@ public class ItemController implements Serializable {
         addEthinicGroups();
         addSexes();
         addCitizenship();
+
+    }
+
+    public void addMimeTypes() {
+        String initialData = "Dictionary_Category::MIME type:mime_type:0" + System.lineSeparator()
+                + "Dictionary_Item:mime_type:Plain Text:text/plain:2" + System.lineSeparator()
+                + "Dictionary_Item:mime_type:CSS:text/css:1" + System.lineSeparator()
+                + "Dictionary_Item:mime_type:CSV:text/csv:2" + System.lineSeparator()
+                + "Dictionary_Item:mime_type:HTML:text/html:0" + System.lineSeparator()
+                + "Dictionary_Item:mime_type:javascript:text/javascript:2" + System.lineSeparator()
+                + "Dictionary_Item:mime_type:BMP Image:image/bmp:0" + System.lineSeparator()
+                + "Dictionary_Item:mime_type:JPEG:image/jpeg:1" + System.lineSeparator()
+                + "Dictionary_Item:mime_type:GIF:image/gif:3" + System.lineSeparator()
+                + "Dictionary_Item:mime_type:SVG:image/svg+xml:1" + System.lineSeparator()
+                + "Dictionary_Item:mime_type:PNG:image/png:3" + System.lineSeparator()
+                + "Dictionary_Item:mime_type:PDF Document:application/pdf:0" + System.lineSeparator();
+        addInitialMetadata(initialData);
     }
 
     public void addSexes() {
@@ -361,6 +379,19 @@ public class ItemController implements Serializable {
     public void setCitizenships(List<Item> citizenships) {
         this.citizenships = citizenships;
     }
+
+    public List<Item> getMimeTypes() {
+        if(mimeTypes==null){
+            mimeTypes = findItemList("mime_type", ItemType.Dictionary_Item);
+        }
+        return mimeTypes;
+    }
+
+    public void setMimeTypes(List<Item> mimeTypes) {
+        this.mimeTypes = mimeTypes;
+    }
+    
+    
 
     @FacesConverter(forClass = Item.class)
     public static class ItemControllerConverter implements Converter {

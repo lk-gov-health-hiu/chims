@@ -1,12 +1,16 @@
 package lk.gov.health.phsp.bean;
 
+// <editor-fold defaultstate="collapsed" desc="Imports">
 import lk.gov.health.phsp.entity.DesignComponentFormItem;
 import lk.gov.health.phsp.bean.util.JsfUtil;
 import lk.gov.health.phsp.bean.util.JsfUtil.PersistAction;
 import lk.gov.health.phsp.facade.DesignComponentFormItemFacade;
-
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -18,35 +22,171 @@ import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
+import javax.inject.Inject;
+import lk.gov.health.phsp.entity.DesignComponentForm;
+// </editor-fold>
 
 @Named("designComponentFormItemController")
 @SessionScoped
 public class DesignComponentFormItemController implements Serializable {
+// <editor-fold defaultstate="collapsed" desc="EJBs">
 
     @EJB
     private lk.gov.health.phsp.facade.DesignComponentFormItemFacade ejbFacade;
+// </editor-fold>
+// <editor-fold defaultstate="collapsed" desc="Main Functions">
+    @Inject
+    private WebUserController webUserController;
+// </editor-fold>    
+// <editor-fold defaultstate="collapsed" desc="Class Variables">
     private List<DesignComponentFormItem> items = null;
     private DesignComponentFormItem selected;
+    private DesignComponentForm designComponentForm;
+    private List<DesignComponentFormItem> designComponentFormItems = null;
+    private DesignComponentFormItem addingItem;
+    private DesignComponentFormItem removingItem;
+    private DesignComponentFormItem movingItem;
+// </editor-fold>
+// <editor-fold defaultstate="collapsed" desc="Constructors">
 
     public DesignComponentFormItemController() {
     }
+// </editor-fold>
+// <editor-fold defaultstate="collapsed" desc="Navigation Functions">
 
-    public DesignComponentFormItem getSelected() {
-        return selected;
+// </editor-fold>
+// <editor-fold defaultstate="collapsed" desc="Main Functions">
+    public void fillItemsOfTheForm() {
+        if (designComponentForm == null) {
+            designComponentFormItems = new ArrayList<>();
+            return;
+        }
+        String j = "Select i from DesignComponentFormItem i where i.retired=false "
+                + " and i.parentComponent=:p "
+                + " order by i.orderNo";
+        Map m = new HashMap();
+        m.put("p", designComponentForm);
+        designComponentFormItems = getFacade().findByJpql(j, m);
     }
 
-    public void setSelected(DesignComponentFormItem selected) {
-        this.selected = selected;
+    public void addNewItemToForm() {
+        if (designComponentForm == null) {
+            JsfUtil.addErrorMessage("No Form Selected");
+            return;
+        }
+        if (addingItem == null) {
+            JsfUtil.addErrorMessage("No item to add");
+            return;
+        }
+        addingItem.setParentComponent(designComponentForm);
+        addingItem.setCreatedAt(new Date());
+        addingItem.setCreatedBy(webUserController.getLoggedUser());
+        getFacade().create(addingItem);
+        addingItem = null;
+        getAddingItem();
+        fillItemsOfTheForm();
+        createNewAddingItem();
+        JsfUtil.addSuccessMessage("New Item added.");
     }
+
+    public void removeItemFromFrom() {
+        if (designComponentForm == null) {
+            JsfUtil.addErrorMessage("No Form Selected");
+            return;
+        }
+        if (removingItem == null) {
+            JsfUtil.addErrorMessage("No item to remove");
+            return;
+        }
+        removingItem.setRetired(true);
+        removingItem.setRetiredAt(new Date());
+        removingItem.setRetiredBy(webUserController.getLoggedUser());
+        removingItem = null;
+        fillItemsOfTheForm();
+        JsfUtil.addSuccessMessage("Item removed.");
+    }
+
+    public void moveItemUpInForm() {
+        if (designComponentForm == null) {
+            JsfUtil.addErrorMessage("No Form Selected");
+            return;
+        }
+        if (movingItem == null) {
+            JsfUtil.addErrorMessage("No item to move");
+            return;
+        }
+        movingItem.setOrderNo(movingItem.getOrderNo()-1.5);
+        getFacade().edit(movingItem);
+        double d = 0.0;
+        fillItemsOfTheForm();
+        for(DesignComponentFormItem i:designComponentFormItems){
+            d=d+1.0;
+            i.setOrderNo(d);
+            getFacade().edit(i);
+        }
+        fillItemsOfTheForm();
+    }
+
+    public void moveItemDownInForm() {
+        if (designComponentForm == null) {
+            JsfUtil.addErrorMessage("No Form Selected");
+            return;
+        }
+        if (movingItem == null) {
+            JsfUtil.addErrorMessage("No item to move");
+            return;
+        }
+        movingItem.setOrderNo(movingItem.getOrderNo()+1.5);
+        getFacade().edit(movingItem);
+        double d = 0.0;
+        fillItemsOfTheForm();
+        for(DesignComponentFormItem i:designComponentFormItems){
+            d=d+1.0;
+            i.setOrderNo(d);
+            getFacade().edit(i);
+        }
+        fillItemsOfTheForm();
+    }
+    
+    public void createNewAddingItem(){
+        if (designComponentForm == null) {
+            JsfUtil.addErrorMessage("No Form Selected");
+            return;
+        }
+        addingItem = new DesignComponentFormItem();
+        addingItem.setParentComponent(designComponentForm);
+        addingItem.setOrderNo(getDesignComponentFormItems().size()+1.0);
+        addingItem.setCreatedAt(new Date());
+        addingItem.setCreatedBy(webUserController.getLoggedUser());
+        getFacade().create(addingItem);
+    }
+    
+    public void saveSelectedItem(){
+        if(selected==null){
+            JsfUtil.addErrorMessage("Nothing Selected");
+            return;
+        }
+        if(selected.getId()==null){
+            selected.setCreatedAt(new Date());
+            selected.setCreatedBy(webUserController.getLoggedUser());
+            getFacade().create(selected);
+            JsfUtil.addSuccessMessage("Saved Successfully.");
+        }else{
+            selected.setLastEditBy(webUserController.getLoggedUser());
+            selected.setLastEditeAt(new Date());
+            getFacade().edit(selected);
+            JsfUtil.addSuccessMessage("Updated Successfully.");
+        }
+        
+    }
+    
+// </editor-fold>
+// <editor-fold defaultstate="collapsed" desc="Default Functions">
 
     protected void setEmbeddableKeys() {
     }
 
     protected void initializeEmbeddableKey() {
-    }
-
-    private DesignComponentFormItemFacade getFacade() {
-        return ejbFacade;
     }
 
     public DesignComponentFormItem prepareCreate() {
@@ -72,13 +212,6 @@ public class DesignComponentFormItemController implements Serializable {
             selected = null; // Remove selection
             items = null;    // Invalidate list of items to trigger re-query.
         }
-    }
-
-    public List<DesignComponentFormItem> getItems() {
-        if (items == null) {
-            items = getFacade().findAll();
-        }
-        return items;
     }
 
     private void persist(PersistAction persistAction, String successMessage) {
@@ -108,6 +241,29 @@ public class DesignComponentFormItemController implements Serializable {
             }
         }
     }
+// </editor-fold>
+// <editor-fold defaultstate="collapsed" desc="Getters & Setters">
+
+    
+    
+    public DesignComponentFormItem getSelected() {
+        return selected;
+    }
+
+    public void setSelected(DesignComponentFormItem selected) {
+        this.selected = selected;
+    }
+
+    private DesignComponentFormItemFacade getFacade() {
+        return ejbFacade;
+    }
+
+    public List<DesignComponentFormItem> getItems() {
+        if (items == null) {
+            items = getFacade().findAll();
+        }
+        return items;
+    }
 
     public DesignComponentFormItem getDesignComponentFormItem(java.lang.Long id) {
         return getFacade().find(id);
@@ -119,6 +275,62 @@ public class DesignComponentFormItemController implements Serializable {
 
     public List<DesignComponentFormItem> getItemsAvailableSelectOne() {
         return getFacade().findAll();
+    }
+
+    public lk.gov.health.phsp.facade.DesignComponentFormItemFacade getEjbFacade() {
+        return ejbFacade;
+    }
+
+    public DesignComponentForm getDesignComponentForm() {
+        return designComponentForm;
+    }
+
+    public void setDesignComponentForm(DesignComponentForm designComponentForm) {
+        this.designComponentForm = designComponentForm;
+    }
+
+    public List<DesignComponentFormItem> getDesignComponentFormItems() {
+        if(designComponentFormItems==null){
+            fillItemsOfTheForm();
+        }
+        return designComponentFormItems;
+    }
+
+    public void setDesignComponentFormItems(List<DesignComponentFormItem> designComponentFormItems) {
+        this.designComponentFormItems = designComponentFormItems;
+    }
+
+    public DesignComponentFormItem getAddingItem() {
+        if(addingItem==null){
+            createNewAddingItem();
+        }
+        return addingItem;
+    }
+
+    public void setAddingItem(DesignComponentFormItem addingItem) {
+        this.addingItem = addingItem;
+    }
+
+    public DesignComponentFormItem getRemovingItem() {
+        return removingItem;
+    }
+
+    public void setRemovingItem(DesignComponentFormItem removingItem) {
+        this.removingItem = removingItem;
+    }
+
+    public DesignComponentFormItem getMovingItem() {
+        return movingItem;
+    }
+
+    public void setMovingItem(DesignComponentFormItem movingItem) {
+        this.movingItem = movingItem;
+    }
+// </editor-fold>
+// <editor-fold defaultstate="collapsed" desc="Converters">
+
+    public WebUserController getWebUserController() {
+        return webUserController;
     }
 
     @FacesConverter(forClass = DesignComponentFormItem.class)
@@ -161,5 +373,6 @@ public class DesignComponentFormItemController implements Serializable {
         }
 
     }
+// </editor-fold>
 
 }

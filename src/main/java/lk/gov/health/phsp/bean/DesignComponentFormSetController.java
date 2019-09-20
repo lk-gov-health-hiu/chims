@@ -1,5 +1,6 @@
 package lk.gov.health.phsp.bean;
 
+// <editor-fold defaultstate="collapsed" desc="Imports">
 import lk.gov.health.phsp.entity.DesignComponentFormSet;
 import lk.gov.health.phsp.bean.util.JsfUtil;
 import lk.gov.health.phsp.bean.util.JsfUtil.PersistAction;
@@ -19,46 +20,40 @@ import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
 import javax.inject.Inject;
-import lk.gov.health.phsp.entity.DesignComponentForm;
+// </editor-fold>
 
 @Named("designComponentFormSetController")
 @SessionScoped
 public class DesignComponentFormSetController implements Serializable {
 
+    // <editor-fold defaultstate="collapsed" desc="EJBs">
     @EJB
     private lk.gov.health.phsp.facade.DesignComponentFormSetFacade ejbFacade;
+    // </editor-fold>
+    // <editor-fold defaultstate="collapsed" desc="Controllers">
+    @Inject
+    DesignComponentFormController designComponentFormController;
+    // </editor-fold>
+    // <editor-fold defaultstate="collapsed" desc="Class Variables">
     private List<DesignComponentFormSet> items = null;
     private DesignComponentFormSet selected;
 
-    @Inject
-    DesignComponentFormController  designComponentFormController;
-    
-    public String toAddFormsForTheSelectedSet(){
-        designComponentFormController.setDesignComponentFormSet(selected);
-        return "/designComponentFormSet/manage_forms";
-    }
-    
+    // </editor-fold>
+    // <editor-fold defaultstate="collapsed" desc="Constructors">
     public DesignComponentFormSetController() {
     }
 
-    public DesignComponentFormSet getSelected() {
-        return selected;
+    // </editor-fold>
+    // <editor-fold defaultstate="collapsed" desc="Main Functions">
+    public String toAddFormsForTheSelectedSet() {
+        designComponentFormController.setDesignComponentFormSet(selected);
+        designComponentFormController.fillFormsofTheSelectedSet();
+        designComponentFormController.getAddingForm();
+        return "/designComponentFormSet/manage_forms";
     }
 
-    public void setSelected(DesignComponentFormSet selected) {
-        this.selected = selected;
-    }
-
-    protected void setEmbeddableKeys() {
-    }
-
-    protected void initializeEmbeddableKey() {
-    }
-
-    private DesignComponentFormSetFacade getFacade() {
-        return ejbFacade;
-    }
-
+    // </editor-fold>
+    // <editor-fold defaultstate="collapsed" desc="Default Functions">
     public DesignComponentFormSet prepareCreate() {
         selected = new DesignComponentFormSet();
         initializeEmbeddableKey();
@@ -82,13 +77,6 @@ public class DesignComponentFormSetController implements Serializable {
             selected = null; // Remove selection
             items = null;    // Invalidate list of items to trigger re-query.
         }
-    }
-
-    public List<DesignComponentFormSet> getItems() {
-        if (items == null) {
-            items = getFacade().findAll();
-        }
-        return items;
     }
 
     private void persist(PersistAction persistAction, String successMessage) {
@@ -119,6 +107,33 @@ public class DesignComponentFormSetController implements Serializable {
         }
     }
 
+    // </editor-fold>
+    // <editor-fold defaultstate="collapsed" desc="Getters & Setters">
+    public DesignComponentFormSet getSelected() {
+        return selected;
+    }
+
+    public void setSelected(DesignComponentFormSet selected) {
+        this.selected = selected;
+    }
+
+    protected void setEmbeddableKeys() {
+    }
+
+    protected void initializeEmbeddableKey() {
+    }
+
+    private DesignComponentFormSetFacade getFacade() {
+        return ejbFacade;
+    }
+
+    public List<DesignComponentFormSet> getItems() {
+        if (items == null) {
+            items = getFacade().findAll();
+        }
+        return items;
+    }
+
     public DesignComponentFormSet getDesignComponentFormSet(java.lang.Long id) {
         return getFacade().find(id);
     }
@@ -130,6 +145,8 @@ public class DesignComponentFormSetController implements Serializable {
     public List<DesignComponentFormSet> getItemsAvailableSelectOne() {
         return getFacade().findAll();
     }
+    // </editor-fold>
+    // <editor-fold defaultstate="collapsed" desc="Converter">
 
     @FacesConverter(forClass = DesignComponentFormSet.class)
     public static class DesignComponentFormSetControllerConverter implements Converter {
@@ -171,5 +188,6 @@ public class DesignComponentFormSetController implements Serializable {
         }
 
     }
+    // </editor-fold>
 
 }
