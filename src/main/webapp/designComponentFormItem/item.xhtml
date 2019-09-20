@@ -72,24 +72,27 @@
                                     <f:selectItems value="#{fixme}"/>
                                 </p:selectOneMenu>
                                 
-                                <p:outputLabel value="ParentInstitutionOfAvailableInstitutions:" for="parentInstitutionOfAvailableInstitutions" />
+                                <p:outputLabel value="Parent Institution of Available Institutions:" for="parentInstitutionOfAvailableInstitutions" />
                                 <p:selectOneMenu id="parentInstitutionOfAvailableInstitutions" value="#{designComponentFormItemController.designComponentForm.parentInstitutionOfAvailableInstitutions}" >
                                     <!-- TODO: update below reference to list of available items-->
                                     <f:selectItems value="#{fixme}"/>
                                 </p:selectOneMenu>
 
-                                <p:outputLabel value="OrderNo:" for="orderNo" />
+                                <p:outputLabel value="Order No:" for="orderNo" />
                                 <p:inputText id="orderNo" value="#{designComponentFormItemController.designComponentForm.orderNo}" title="OrderNo" />
 
 
-                                <p:outputLabel value="DataPopulationStrategy:" for="dataPopulationStrategy" />
-                                <p:inputText id="dataPopulationStrategy" value="#{designComponentFormItemController.designComponentForm.dataPopulationStrategy}" title="DataPopulationStrategy" />
+                                <p:outputLabel value="Data Population Strategy:" for="dataPopulationStrategy" />
+                                <p:inputText id="dataPopulationStrategy" 
+                                             value="#{designComponentFormItemController.designComponentForm.dataPopulationStrategy}" title="DataPopulationStrategy" />
 
-                                <p:outputLabel value="DataCompletionStrategy:" for="dataCompletionStrategy" />
-                                <p:inputText id="dataCompletionStrategy" value="#{designComponentFormItemController.designComponentForm.dataCompletionStrategy}" title="DataCompletionStrategy" />
+                                <p:outputLabel value="Data Completion Strategy:" for="dataCompletionStrategy" />
+                                <p:inputText id="dataCompletionStrategy" 
+                                             value="#{designComponentFormItemController.designComponentForm.dataCompletionStrategy}" title="DataCompletionStrategy" />
 
-                                <p:outputLabel value="DataModificationStrategy:" for="dataModificationStrategy" />
-                                <p:inputText id="dataModificationStrategy" value="#{designComponentFormItemController.designComponentForm.dataModificationStrategy}" title="DataModificationStrategy" />
+                                <p:outputLabel value="Data Modification Strategy:" for="dataModificationStrategy" />
+                                <p:inputText id="dataModificationStrategy" 
+                                             value="#{designComponentFormItemController.designComponentForm.dataModificationStrategy}" title="DataModificationStrategy" />
                             </p:panelGrid>
                         </h:form>
 
