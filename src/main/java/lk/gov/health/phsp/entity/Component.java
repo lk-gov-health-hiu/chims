@@ -36,10 +36,12 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.Transient;
 import lk.gov.health.phsp.enums.AvailableDataType;
+import lk.gov.health.phsp.enums.ComponentSetType;
 import lk.gov.health.phsp.enums.DataCompletionStrategy;
 import lk.gov.health.phsp.enums.DataModificationStrategy;
 import lk.gov.health.phsp.enums.DataPopulationStrategy;
 import lk.gov.health.phsp.enums.ItemArrangementStrategy;
+import lk.gov.health.phsp.enums.PanelType;
 import lk.gov.health.phsp.enums.SelectionDataType;
 import lk.gov.health.phsp.enums.RenderType;
 
@@ -64,16 +66,21 @@ public class Component implements Serializable {
 
     @ManyToOne
     private Component parentComponent;
-    
+
     @ManyToOne
     private Component referenceComponent;
-    
 
     @Enumerated(EnumType.STRING)
     RenderType renderType;
 
     @ManyToOne
     private Item mimeType;
+
+    @Enumerated(EnumType.STRING)
+    private ComponentSetType componentSetType;
+    
+    @Enumerated(EnumType.STRING)
+    private PanelType panelType;
 
     @Enumerated(EnumType.STRING)
     private SelectionDataType selectionDataType;
@@ -140,6 +147,22 @@ public class Component implements Serializable {
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date retiredAt;
     private String retireComments;
+
+    public ComponentSetType getComponentSetType() {
+        return componentSetType;
+    }
+
+    public void setComponentSetType(ComponentSetType componentSetType) {
+        this.componentSetType = componentSetType;
+    }
+
+    public PanelType getPanelType() {
+        return panelType;
+    }
+
+    public void setPanelType(PanelType panelType) {
+        this.panelType = panelType;
+    }
 
     public Long getId() {
         return id;
@@ -437,7 +460,5 @@ public class Component implements Serializable {
     public void setReferenceComponent(Component referenceComponent) {
         this.referenceComponent = referenceComponent;
     }
-    
-    
 
 }

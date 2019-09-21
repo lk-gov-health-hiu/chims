@@ -6,6 +6,7 @@ import lk.gov.health.phsp.bean.util.JsfUtil;
 import lk.gov.health.phsp.bean.util.JsfUtil.PersistAction;
 import lk.gov.health.phsp.facade.ClientEncounterComponentFormSetFacade;
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
@@ -24,6 +25,9 @@ import lk.gov.health.phsp.entity.ClientEncounterComponentItem;
 import lk.gov.health.phsp.entity.DesignComponentForm;
 import lk.gov.health.phsp.entity.DesignComponentFormItem;
 import lk.gov.health.phsp.entity.DesignComponentFormSet;
+import lk.gov.health.phsp.entity.Encounter;
+import lk.gov.health.phsp.enums.ComponentSex;
+import lk.gov.health.phsp.enums.EncounterType;
 // </editor-fold>
 
 @Named("clientEncounterComponentFormSetController")
@@ -35,16 +39,22 @@ public class ClientEncounterComponentFormSetController implements Serializable {
     private lk.gov.health.phsp.facade.ClientEncounterComponentFormSetFacade ejbFacade;
 // </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="Controllers">
-@Inject
-private DesignComponentFormSetController designComponentFormSetController;
-@Inject 
-private DesignComponentFormController designComponentFormController;
-@Inject
-private DesignComponentFormItemController designComponentFormItemController;
-@Inject
-private ClientEncounterComponentFormController clientEncounterComponentFormController;
-@Inject
-private ClientEncounterComponentItemController clientEncounterComponentItemController;
+    @Inject
+    private DesignComponentFormSetController designComponentFormSetController;
+    @Inject
+    private DesignComponentFormController designComponentFormController;
+    @Inject
+    private DesignComponentFormItemController designComponentFormItemController;
+    @Inject
+    private ClientEncounterComponentFormController clientEncounterComponentFormController;
+    @Inject
+    private ClientEncounterComponentItemController clientEncounterComponentItemController;
+    @Inject
+    private ClientController clientController;
+    @Inject
+    private WebUserController webUserController;
+    @Inject
+    private EncounterController encounterController;
 
 // </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="Class Variables">
@@ -60,43 +70,74 @@ private ClientEncounterComponentItemController clientEncounterComponentItemContr
 // <editor-fold defaultstate="collapsed" desc="User Functions">
 
     public String createAndNavigateToClinicalEncounterComponentFormSetFromDesignComponentFormSet() {
-        return createAndNavigateToClinicalEncounterComponentFormSetFromDesignComponentFormSet(designFormSet);
+        return createAndNavigateToClinicalEncounterComponentFormSetFromDesignComponentFormSetForClinicVisit(designFormSet);
     }
 
-    public String createAndNavigateToClinicalEncounterComponentFormSetFromDesignComponentFormSet(DesignComponentFormSet dfs) {
+    public String createAndNavigateToClinicalEncounterComponentFormSetFromDesignComponentFormSetForClinicVisit(DesignComponentFormSet dfs) {
         String navigationLink = "";
-        
+
+        Encounter e = new Encounter();
+        e.setClient(clientController.getSelected());
+        e.setInstitution(dfs.getInstitution());
+        e.setEncounterDate(new Date());
+        e.setEncounterFrom(new Date());
+        e.setEncounterType(EncounterType.Clinic_Visit);
+        encounterController.save(e);
+
         ClientEncounterComponentFormSet cfs = new ClientEncounterComponentFormSet();
+        cfs.setEncounter(e);
+        cfs.setInstitution(dfs.getInstitution());
         cfs.setReferenceComponent(dfs);
-        
+        cfs.setComponentSetType(dfs.getComponentSetType());
+        cfs.setPanelType(dfs.getPanelType());
+        cfs.setName(dfs.getName());
         getFacade().create(cfs);
-        
+
         List<DesignComponentForm> dfList = designComponentFormController.fillFormsofTheSelectedSet(dfs);
-        
-        
-        
-        for(DesignComponentForm df: dfList){
-            
-            ClientEncounterComponentForm cf = new ClientEncounterComponentForm();
-            cf.setReferenceComponent(df);
-            clientEncounterComponentFormController.save(cf);
-            
-            List<DesignComponentFormItem> diList = designComponentFormItemController.fillItemsOfTheForm(df);
-            
-            
-            for(DesignComponentFormItem di:diList){
-                
-                ClientEncounterComponentItem ci = new ClientEncounterComponentItem();
-                ci.setReferenceComponent(di);
-                clientEncounterComponentItemController.save(ci);
-                
-                
+
+        for (DesignComponentForm df : dfList) {
+            boolean skipThisForm = false;
+            if (df.getComponentSex() == ComponentSex.For_Females && clientController.getSelected().getPerson().getSex().getCode().equalsIgnoreCase("male")) {
+                skipThisForm = true;
             }
-            
+            if (df.getComponentSex() == ComponentSex.For_Males && clientController.getSelected().getPerson().getSex().getCode().equalsIgnoreCase("female")) {
+                skipThisForm = true;
+            }
+            if (!skipThisForm) {
+
+                ClientEncounterComponentForm cf = new ClientEncounterComponentForm();
+                cf.setReferenceComponent(df);
+                cf.setName(df.getName());
+                cf.setOrderNo(df.getOrderNo());
+                cf.setItemArrangementStrategy(df.getItemArrangementStrategy());
+                cf.setParentComponent(cfs);
+                cf.setEncounter(e);
+                cf.setInstitution(dfs.getInstitution());
+                clientEncounterComponentFormController.save(cf);
+
+                List<DesignComponentFormItem> diList = designComponentFormItemController.fillItemsOfTheForm(df);
+
+                for (DesignComponentFormItem di : diList) {
+
+                    boolean skipThisItem = false;
+                    if (di.getComponentSex() == ComponentSex.For_Females && clientController.getSelected().getPerson().getSex().getCode().equalsIgnoreCase("male")) {
+                        skipThisItem = true;
+                    }
+                    if (di.getComponentSex() == ComponentSex.For_Males && clientController.getSelected().getPerson().getSex().getCode().equalsIgnoreCase("female")) {
+                        skipThisItem = true;
+                    }
+                    if (!skipThisItem) {
+                        ClientEncounterComponentItem ci = new ClientEncounterComponentItem();
+                        ci.setReferenceComponent(di);
+                        ci.setParentComponent(cf);
+                        
+                        clientEncounterComponentItemController.save(ci);
+                    }
+                }
+
+            }
         }
-        
-        
-        
+
         return navigationLink;
     }
 
@@ -163,8 +204,6 @@ private ClientEncounterComponentItemController clientEncounterComponentItemContr
 
 // </editor-fold>    
 // <editor-fold defaultstate="collapsed" desc="Getters & Setters">
-    
-    
     public ClientEncounterComponentFormSet getSelected() {
         return selected;
     }
@@ -226,6 +265,30 @@ private ClientEncounterComponentItemController clientEncounterComponentItemContr
 
     public ClientEncounterComponentItemController getClientEncounterComponentItemController() {
         return clientEncounterComponentItemController;
+    }
+
+    public ClientController getClientController() {
+        return clientController;
+    }
+
+    public void setClientController(ClientController clientController) {
+        this.clientController = clientController;
+    }
+
+    public WebUserController getWebUserController() {
+        return webUserController;
+    }
+
+    public void setWebUserController(WebUserController webUserController) {
+        this.webUserController = webUserController;
+    }
+
+    public EncounterController getEncounterController() {
+        return encounterController;
+    }
+
+    public void setEncounterController(EncounterController encounterController) {
+        this.encounterController = encounterController;
     }
 
 // </editor-fold>    

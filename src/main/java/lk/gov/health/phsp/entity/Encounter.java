@@ -91,6 +91,14 @@ public class Encounter implements Serializable {
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date retiredReversedAt;
 
+/*
+    Last Edit Properties
+     */
+    @ManyToOne
+    private WebUser lastEditBy;
+    @Temporal(javax.persistence.TemporalType.TIMESTAMP)
+    private Date lastEditeAt;    
+    
     private boolean completed;
     @ManyToOne
     private WebUser completedBy;
@@ -288,6 +296,22 @@ public class Encounter implements Serializable {
 
     public void setEncounterNumber(String encounterNumber) {
         this.encounterNumber = encounterNumber;
+    }
+
+    public WebUser getLastEditBy() {
+        return lastEditBy;
+    }
+
+    public void setLastEditBy(WebUser lastEditBy) {
+        this.lastEditBy = lastEditBy;
+    }
+
+    public Date getLastEditeAt() {
+        return lastEditeAt;
+    }
+
+    public void setLastEditeAt(Date lastEditeAt) {
+        this.lastEditeAt = lastEditeAt;
     }
     
     

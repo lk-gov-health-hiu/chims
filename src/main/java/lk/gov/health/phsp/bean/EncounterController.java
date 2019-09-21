@@ -6,6 +6,7 @@ import lk.gov.health.phsp.bean.util.JsfUtil.PersistAction;
 import lk.gov.health.phsp.facade.EncounterFacade;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
@@ -18,6 +19,7 @@ import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
+import javax.inject.Inject;
 
 @Named("encounterController")
 @SessionScoped
@@ -27,6 +29,8 @@ public class EncounterController implements Serializable {
     private lk.gov.health.phsp.facade.EncounterFacade ejbFacade;
     private List<Encounter> items = null;
     private Encounter selected;
+    @Inject
+    private WebUserController webUserController;
 
     public EncounterController() {
     }
@@ -53,6 +57,25 @@ public class EncounterController implements Serializable {
         selected = new Encounter();
         initializeEmbeddableKey();
         return selected;
+    }
+    
+    public void save() {
+        save(selected);
+    }
+
+    public void save(Encounter e) {
+        if (e == null) {
+            return;
+        }
+        if (e.getId() == null) {
+            e.setCreateAt(new Date());
+            e.setCreatedBy(webUserController.getLoggedUser());
+            getFacade().create(e);
+        }else{
+            e.setLastEditBy(webUserController.getLoggedUser());
+            e.setLastEditeAt(new Date());
+            getFacade().edit(e);
+        }
     }
 
     public void create() {
@@ -120,6 +143,16 @@ public class EncounterController implements Serializable {
     public List<Encounter> getItemsAvailableSelectOne() {
         return getFacade().findAll();
     }
+
+    public WebUserController getWebUserController() {
+        return webUserController;
+    }
+
+    public lk.gov.health.phsp.facade.EncounterFacade getEjbFacade() {
+        return ejbFacade;
+    }
+    
+    
 
     @FacesConverter(forClass = Encounter.class)
     public static class EncounterControllerConverter implements Converter {
