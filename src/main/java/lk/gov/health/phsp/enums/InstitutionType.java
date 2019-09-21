@@ -16,7 +16,6 @@ public enum InstitutionType {
     Primary_Medical_Care_Unit,
     MOH_Office,
     Clinic,
-    HLC_Clinic,
     Unit,
     Ward,
     Ward_Clinic,

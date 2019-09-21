@@ -40,7 +40,6 @@ public class InstitutionController implements Serializable {
     private List<Institution> items = null;
     private Institution selected;
     private List<Institution> myClinics;
-    private List<Institution> myHlcClinics;
     
 
     public InstitutionController() {
@@ -187,24 +186,13 @@ public class InstitutionController implements Serializable {
 
     public List<Institution> getMyClinics() {
         if(myClinics==null){
-            myClinics = fillInstitutions(InstitutionType.Clinic, null, webUserController.getLoggedUser().getInstitution());
+            myClinics = fillInstitutions(InstitutionType.Ward_Clinic, null, webUserController.getLoggedUser().getInstitution());
         }
         return myClinics;
     }
 
     public void setMyClinics(List<Institution> myClinics) {
         this.myClinics = myClinics;
-    }
-
-    public List<Institution> getMyHlcClinics() {
-        if(myHlcClinics==null){
-            myHlcClinics = fillInstitutions(InstitutionType.HLC_Clinic, null, webUserController.getLoggedUser().getInstitution());
-        }
-        return myHlcClinics;
-    }
-
-    public void setMyHlcClinics(List<Institution> myHlcClinics) {
-        this.myHlcClinics = myHlcClinics;
     }
 
     @FacesConverter(forClass = Institution.class)

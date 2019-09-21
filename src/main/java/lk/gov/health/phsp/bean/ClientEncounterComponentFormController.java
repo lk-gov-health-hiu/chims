@@ -6,6 +6,7 @@ import lk.gov.health.phsp.bean.util.JsfUtil.PersistAction;
 import lk.gov.health.phsp.facade.ClientEncounterComponentFormFacade;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
@@ -18,6 +19,7 @@ import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
+import javax.inject.Inject;
 
 @Named("clientEncounterComponentFormController")
 @SessionScoped
@@ -25,8 +27,31 @@ public class ClientEncounterComponentFormController implements Serializable {
 
     @EJB
     private lk.gov.health.phsp.facade.ClientEncounterComponentFormFacade ejbFacade;
+
+    @Inject
+    private WebUserController webUserController;
+
     private List<ClientEncounterComponentForm> items = null;
     private ClientEncounterComponentForm selected;
+
+    public void save() {
+        save(selected);
+    }
+
+    public void save(ClientEncounterComponentForm f) {
+        if (f == null) {
+            return;
+        }
+        if (f.getId() == null) {
+            f.setCreatedAt(new Date());
+            f.setCreatedBy(webUserController.getLoggedUser());
+            getFacade().create(f);
+        } else {
+            f.setLastEditBy(webUserController.getLoggedUser());
+            f.setLastEditeAt(new Date());
+            getFacade().edit(f);
+        }
+    }
 
     public ClientEncounterComponentFormController() {
     }
@@ -119,6 +144,14 @@ public class ClientEncounterComponentFormController implements Serializable {
 
     public List<ClientEncounterComponentForm> getItemsAvailableSelectOne() {
         return getFacade().findAll();
+    }
+
+    public WebUserController getWebUserController() {
+        return webUserController;
+    }
+
+    public lk.gov.health.phsp.facade.ClientEncounterComponentFormFacade getEjbFacade() {
+        return ejbFacade;
     }
 
     @FacesConverter(forClass = ClientEncounterComponentForm.class)

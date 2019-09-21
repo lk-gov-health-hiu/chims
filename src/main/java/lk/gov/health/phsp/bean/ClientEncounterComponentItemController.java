@@ -6,6 +6,7 @@ import lk.gov.health.phsp.bean.util.JsfUtil.PersistAction;
 import lk.gov.health.phsp.facade.ClientEncounterComponentItemFacade;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
@@ -18,6 +19,7 @@ import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
+import javax.inject.Inject;
 
 @Named("clientEncounterComponentItemController")
 @SessionScoped
@@ -25,6 +27,8 @@ public class ClientEncounterComponentItemController implements Serializable {
 
     @EJB
     private lk.gov.health.phsp.facade.ClientEncounterComponentItemFacade ejbFacade;
+    @Inject
+    private WebUserController webUserController;
     private List<ClientEncounterComponentItem> items = null;
     private ClientEncounterComponentItem selected;
 
@@ -53,6 +57,25 @@ public class ClientEncounterComponentItemController implements Serializable {
         selected = new ClientEncounterComponentItem();
         initializeEmbeddableKey();
         return selected;
+    }
+    
+     public void save(){
+         save(selected);
+     }
+    
+    public void save(ClientEncounterComponentItem i){
+        if(i==null){
+            return;
+        }
+        if(i.getId()==null){
+            i.setCreatedAt(new Date());
+            i.setCreatedBy(webUserController.getLoggedUser());
+            getFacade().create(i);
+        }else{
+            i.setLastEditBy(webUserController.getLoggedUser());
+            i.setLastEditeAt(new Date());
+            getFacade().edit(i);
+        }
     }
 
     public void create() {
@@ -121,6 +144,16 @@ public class ClientEncounterComponentItemController implements Serializable {
         return getFacade().findAll();
     }
 
+    public WebUserController getWebUserController() {
+        return webUserController;
+    }
+
+    public lk.gov.health.phsp.facade.ClientEncounterComponentItemFacade getEjbFacade() {
+        return ejbFacade;
+    }
+
+    
+    
     @FacesConverter(forClass = ClientEncounterComponentItem.class)
     public static class ClientEncounterComponentItemControllerConverter implements Converter {
 

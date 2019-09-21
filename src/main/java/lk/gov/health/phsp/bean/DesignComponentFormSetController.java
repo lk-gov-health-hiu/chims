@@ -152,6 +152,24 @@ public class DesignComponentFormSetController implements Serializable {
         }
         return ss;
     }
+    
+    
+    
+    
+    public List<DesignComponentFormSet> getClinicFormSets(Institution clinic) {
+        String j = "Select s from DesignComponentFormSet s "
+                + " where s.retired=false "
+                + " and s.institution = :inss "
+                + " order by s.name";
+        Map m = new HashMap();
+        m.put("inss", clinic);
+        List<DesignComponentFormSet> ss = getFacade().findByJpql(j, m);
+        if (ss == null) {
+            ss = new ArrayList<>();
+        }
+        return ss;
+    }
+
 
     public List<DesignComponentFormSet> fillInsItems(List<Institution> insLst) {
         String j = "Select s from DesignComponentFormSet s "

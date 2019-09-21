@@ -1,10 +1,10 @@
 package lk.gov.health.phsp.bean;
 
+// <editor-fold defaultstate="collapsed" desc="Import">
 import lk.gov.health.phsp.entity.ClientEncounterComponentFormSet;
 import lk.gov.health.phsp.bean.util.JsfUtil;
 import lk.gov.health.phsp.bean.util.JsfUtil.PersistAction;
 import lk.gov.health.phsp.facade.ClientEncounterComponentFormSetFacade;
-
 import java.io.Serializable;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -18,35 +18,94 @@ import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
+import javax.inject.Inject;
+import lk.gov.health.phsp.entity.ClientEncounterComponentForm;
+import lk.gov.health.phsp.entity.ClientEncounterComponentItem;
+import lk.gov.health.phsp.entity.DesignComponentForm;
+import lk.gov.health.phsp.entity.DesignComponentFormItem;
+import lk.gov.health.phsp.entity.DesignComponentFormSet;
+// </editor-fold>
 
 @Named("clientEncounterComponentFormSetController")
 @SessionScoped
 public class ClientEncounterComponentFormSetController implements Serializable {
+// <editor-fold defaultstate="collapsed" desc="EJBs">
 
     @EJB
     private lk.gov.health.phsp.facade.ClientEncounterComponentFormSetFacade ejbFacade;
+// </editor-fold>
+// <editor-fold defaultstate="collapsed" desc="Controllers">
+@Inject
+private DesignComponentFormSetController designComponentFormSetController;
+@Inject 
+private DesignComponentFormController designComponentFormController;
+@Inject
+private DesignComponentFormItemController designComponentFormItemController;
+@Inject
+private ClientEncounterComponentFormController clientEncounterComponentFormController;
+@Inject
+private ClientEncounterComponentItemController clientEncounterComponentItemController;
+
+// </editor-fold>
+// <editor-fold defaultstate="collapsed" desc="Class Variables">
     private List<ClientEncounterComponentFormSet> items = null;
     private ClientEncounterComponentFormSet selected;
+    private DesignComponentFormSet designFormSet;
+// </editor-fold>
+// <editor-fold defaultstate="collapsed" desc="Constructors">
 
     public ClientEncounterComponentFormSetController() {
     }
+// </editor-fold>    
+// <editor-fold defaultstate="collapsed" desc="User Functions">
 
-    public ClientEncounterComponentFormSet getSelected() {
-        return selected;
+    public String createAndNavigateToClinicalEncounterComponentFormSetFromDesignComponentFormSet() {
+        return createAndNavigateToClinicalEncounterComponentFormSetFromDesignComponentFormSet(designFormSet);
     }
 
-    public void setSelected(ClientEncounterComponentFormSet selected) {
-        this.selected = selected;
+    public String createAndNavigateToClinicalEncounterComponentFormSetFromDesignComponentFormSet(DesignComponentFormSet dfs) {
+        String navigationLink = "";
+        
+        ClientEncounterComponentFormSet cfs = new ClientEncounterComponentFormSet();
+        cfs.setReferenceComponent(dfs);
+        
+        getFacade().create(cfs);
+        
+        List<DesignComponentForm> dfList = designComponentFormController.fillFormsofTheSelectedSet(dfs);
+        
+        
+        
+        for(DesignComponentForm df: dfList){
+            
+            ClientEncounterComponentForm cf = new ClientEncounterComponentForm();
+            cf.setReferenceComponent(df);
+            clientEncounterComponentFormController.save(cf);
+            
+            List<DesignComponentFormItem> diList = designComponentFormItemController.fillItemsOfTheForm(df);
+            
+            
+            for(DesignComponentFormItem di:diList){
+                
+                ClientEncounterComponentItem ci = new ClientEncounterComponentItem();
+                ci.setReferenceComponent(di);
+                clientEncounterComponentItemController.save(ci);
+                
+                
+            }
+            
+        }
+        
+        
+        
+        return navigationLink;
     }
 
+// </editor-fold>    
+// <editor-fold defaultstate="collapsed" desc="Default Functions">
     protected void setEmbeddableKeys() {
     }
 
     protected void initializeEmbeddableKey() {
-    }
-
-    private ClientEncounterComponentFormSetFacade getFacade() {
-        return ejbFacade;
     }
 
     public ClientEncounterComponentFormSet prepareCreate() {
@@ -72,13 +131,6 @@ public class ClientEncounterComponentFormSetController implements Serializable {
             selected = null; // Remove selection
             items = null;    // Invalidate list of items to trigger re-query.
         }
-    }
-
-    public List<ClientEncounterComponentFormSet> getItems() {
-        if (items == null) {
-            items = getFacade().findAll();
-        }
-        return items;
     }
 
     private void persist(PersistAction persistAction, String successMessage) {
@@ -109,6 +161,29 @@ public class ClientEncounterComponentFormSetController implements Serializable {
         }
     }
 
+// </editor-fold>    
+// <editor-fold defaultstate="collapsed" desc="Getters & Setters">
+    
+    
+    public ClientEncounterComponentFormSet getSelected() {
+        return selected;
+    }
+
+    public void setSelected(ClientEncounterComponentFormSet selected) {
+        this.selected = selected;
+    }
+
+    private ClientEncounterComponentFormSetFacade getFacade() {
+        return ejbFacade;
+    }
+
+    public List<ClientEncounterComponentFormSet> getItems() {
+        if (items == null) {
+            items = getFacade().findAll();
+        }
+        return items;
+    }
+
     public ClientEncounterComponentFormSet getClientEncounterComponentFormSet(java.lang.Long id) {
         return getFacade().find(id);
     }
@@ -121,6 +196,40 @@ public class ClientEncounterComponentFormSetController implements Serializable {
         return getFacade().findAll();
     }
 
+    public DesignComponentFormSet getDesignFormSet() {
+        return designFormSet;
+    }
+
+    public void setDesignFormSet(DesignComponentFormSet designFormSet) {
+        this.designFormSet = designFormSet;
+    }
+
+    public lk.gov.health.phsp.facade.ClientEncounterComponentFormSetFacade getEjbFacade() {
+        return ejbFacade;
+    }
+
+    public DesignComponentFormSetController getDesignComponentFormSetController() {
+        return designComponentFormSetController;
+    }
+
+    public DesignComponentFormController getDesignComponentFormController() {
+        return designComponentFormController;
+    }
+
+    public DesignComponentFormItemController getDesignComponentFormItemController() {
+        return designComponentFormItemController;
+    }
+
+    public ClientEncounterComponentFormController getClientEncounterComponentFormController() {
+        return clientEncounterComponentFormController;
+    }
+
+    public ClientEncounterComponentItemController getClientEncounterComponentItemController() {
+        return clientEncounterComponentItemController;
+    }
+
+// </editor-fold>    
+// <editor-fold defaultstate="collapsed" desc="Converter">
     @FacesConverter(forClass = ClientEncounterComponentFormSet.class)
     public static class ClientEncounterComponentFormSetControllerConverter implements Converter {
 
@@ -162,4 +271,5 @@ public class ClientEncounterComponentFormSetController implements Serializable {
 
     }
 
+// </editor-fold>    
 }

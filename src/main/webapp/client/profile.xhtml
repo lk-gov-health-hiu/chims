@@ -23,7 +23,7 @@
 
                         <p:row >
 
-                            <p:column rowspan="4" >
+                            <p:column  >
 
                                 <h:form>
 
@@ -70,129 +70,132 @@
 
                             </p:column>
 
-                            <p:column >
-                                <h:form>
-                                    <p:panelGrid columns="1"  style="width: 100%" >
-                                        <f:facet name="header" >
-                                            <p:outputLabel value="Current Medications" style="float: left;"></p:outputLabel>
-                                            <p:spacer height="1" width="5" ></p:spacer>
-                                            <p:commandLink ajax="false" value="View Details" action="#"></p:commandLink>
-                                        </f:facet>
-                                    </p:panelGrid>
-                                </h:form>
-                            </p:column>
+                            <p:column style="width: 80%" >
 
-                            <p:column >
-                                <h:form>
-                                    <p:panelGrid columns="1" style="width: 100%" >
-                                        <f:facet name="header" >
-                                            <p:outputLabel value="Recent HLS Clinic Visits" style="float: left;"></p:outputLabel>
-                                            <p:spacer height="1" width="5" ></p:spacer>
-                                            <p:commandLink ajax="false" value="View Details" action="#"></p:commandLink>
-                                        </f:facet>
-                                    </p:panelGrid>
-                                </h:form>
-                            </p:column>
-
-                            <p:column >
-                                <h:form >
-                                    <p:panelGrid  columns="3" style="width: 100%" >
-                                        <f:facet name="header">
-                                            <p:outputLabel value="Enroll in an HLC Clinic" ></p:outputLabel>
-                                        </f:facet>
-
-                                        <p:outputLabel value="Clinic" ></p:outputLabel>
-                                        <p:selectOneMenu value="#{clientController.selectedHlcClinic}" >
-                                            <f:selectItems value="#{institutionController.myHlcClinics}" 
-                                                           var="shlc" itemValue="#{shlc}" itemLabel="#{shlc.name}"></f:selectItems>
-                                        </p:selectOneMenu>
-                                        <p:spacer/>
-
-                                        <p:outputLabel value="Clinic No" ></p:outputLabel>
-                                        <p:inputText autocomplete="off" value="#{clientController.hlcEnrollNumberStr}" ></p:inputText>
-                                        <p:commandLink value="Generate" ></p:commandLink>
-
-                                        <p:spacer></p:spacer>
-                                        <p:commandButton value="Enroll" ajax="false" action="#{clientController.enrollInHlcClinic()}" ></p:commandButton>
-                                        <p:spacer></p:spacer>
-
-                                    </p:panelGrid>
-                                </h:form>
-                            </p:column>
-                        </p:row>
-
-                        <p:row >
-                            <p:column >
-                                <h:form>
-                                    <p:panelGrid columns="1" style="width: 100%" >
-                                        <f:facet name="header" >
-                                            <p:outputLabel value="Recent Tests" style="float: left;"></p:outputLabel>
-                                            <p:spacer height="1" width="5" ></p:spacer>
-                                            <p:commandLink ajax="false" value="View Details" action="#"></p:commandLink>
-                                        </f:facet>
-                                    </p:panelGrid>
-                                </h:form>
-                            </p:column>
-
-                            <p:column >
-                                <h:form>
-                                    <p:panelGrid columns="1" style="width: 100%" >
-                                        <f:facet name="header" >
-                                            <p:outputLabel value="Recent Other Clinics Visits" style="float: left;"></p:outputLabel>
-                                            <p:spacer height="1" width="5" ></p:spacer>
-                                            <p:commandLink ajax="false" value="View Details" action="#"></p:commandLink>
-                                        </f:facet>
-                                    </p:panelGrid>
-                                </h:form>
-                            </p:column>
-
-
-                            <p:column >
-                                <h:form >
-                                    <p:dataTable value="#{clientController.selectedClientsHlcs}" var="chlce" >
-                                        <f:facet name="header" >
-                                            <p:outputLabel value="Current Clinics" ></p:outputLabel>
-                                        </f:facet>
-                                        <p:column headerText="Clinic" >
-                                            <p:outputLabel value="#{chlce.institution.name}" ></p:outputLabel>
-                                        </p:column>
-                                        <p:column headerText="Number" >
-                                            <p:outputLabel value="#{chlce.institution.name}" ></p:outputLabel>
-                                        </p:column>
-                                        <p:column headerText="New Encounter" >
-                                            <p:commandButton value="New " ></p:commandButton>
-                                        </p:column>
-                                    </p:dataTable>
+                                
+                                <p:tabView id="tvProfile" activeIndex="#{clientController.profileTabActiveIndex}" >
                                     
+                                    <p:ajax event="tabChange" process="tvProfile" listener="#{clientController.onTabChange}"/>
                                     
-                                </h:form>
+                                    <p:tab title="Medications" >
+                                        <h:form>
+                                            <p:panelGrid columns="1"  style="width: 100%" >
+                                                <f:facet name="header" >
+                                                    <p:outputLabel value="Current Medications" style="float: left;"></p:outputLabel>
+                                                    <p:spacer height="1" width="5" ></p:spacer>
+                                                    <p:commandLink ajax="false" value="View Details" action="#"></p:commandLink>
+                                                </f:facet>
+                                            </p:panelGrid>
+                                        </h:form>
+                                    </p:tab>
+
+                                    <p:tab title="Admissions" >
+
+                                        <h:form>
+                                            <p:panelGrid columns="1" style="width: 100%" >
+                                                <f:facet name="header" >
+                                                    <p:outputLabel value="Recent Admissions" style="float: left;"></p:outputLabel>
+                                                    <p:spacer height="1" width="5" ></p:spacer>
+                                                    <p:commandLink ajax="false" value="View Details" action="#"></p:commandLink>
+                                                </f:facet>
+                                            </p:panelGrid>
+                                        </h:form>
+
+                                    </p:tab>                                    
+
+                                    <p:tab title="OPD Visits">
+                                        <h:form>
+                                            <p:panelGrid columns="1" style="width: 100%" >
+                                                <f:facet name="header" >
+                                                    <p:outputLabel value="Recent OPD Visits" style="float: left;"></p:outputLabel>
+                                                    <p:spacer height="1" width="5" ></p:spacer>
+                                                    <p:commandLink ajax="false" value="View Details" action="#"></p:commandLink>
+                                                </f:facet>
+                                            </p:panelGrid>
+                                        </h:form>
+                                    </p:tab>
+
+                                    <p:tab title="Clinic Visits" >
+                                        <h:form>
+                                            <p:panelGrid columns="1" style="width: 100%" >
+                                                <f:facet name="header" >
+                                                    <p:outputLabel value="Recent Clinic Visits" style="float: left;"></p:outputLabel>
+                                                    <p:spacer height="1" width="5" ></p:spacer>
+                                                    <p:commandLink ajax="false" value="View Details" action="#"></p:commandLink>
+                                                </f:facet>
+                                            </p:panelGrid>
+                                        </h:form>
+                                    </p:tab>
+
+                                    <p:tab title="Test Results" >
+                                        <h:form>
+                                            <p:panelGrid columns="1" style="width: 100%" >
+                                                <f:facet name="header" >
+                                                    <p:outputLabel value="Recent Tests" style="float: left;"></p:outputLabel>
+                                                    <p:spacer height="1" width="5" ></p:spacer>
+                                                    <p:commandLink ajax="false" value="View Details" action="#"></p:commandLink>
+                                                </f:facet>
+                                            </p:panelGrid>
+                                        </h:form>
+                                    </p:tab>
+
+                                    <p:tab title="Clinics" >
+                                        <h:form >
+                                            <p:dataTable value="#{clientController.selectedClientsClinics}" var="chlce" >
+                                                <f:facet name="header" >
+                                                    <p:outputLabel value="Current Clinics" ></p:outputLabel>
+                                                </f:facet>
+                                                <p:column headerText="Clinic" >
+                                                    <p:outputLabel value="#{chlce.institution.name}" ></p:outputLabel>
+                                                </p:column>
+                                                <p:column headerText="Number" >
+                                                    <p:outputLabel value="#{chlce.encounterNumber}" ></p:outputLabel>
+                                                </p:column>
+                                                <p:column headerText="New Encounter" >
+                                                    <h:dataTable value="#{designComponentFormSetController.getClinicFormSets(chlce.institution)}"
+                                                                 var="cfs"  border="0" >
+                                                        <h:column >
+                                                            <p:commandLink value="New #{cfs.name}" action="#{clientEncounterComponentFormSetController}" ></p:commandLink>
+                                                        </h:column>
+                                                    </h:dataTable>
+                                                </p:column>
+                                            </p:dataTable>
+                                        </h:form>
+                                    </p:tab>
+
+                                    <p:tab title="Actions">
+                                        <h:form >
+                                            <p:panelGrid  columns="3" style="width: 100%" >
+                                                <f:facet name="header">
+                                                    <p:outputLabel value="Enroll in an Clinic" ></p:outputLabel>
+                                                </f:facet>
+
+                                                <p:outputLabel value="Clinic" ></p:outputLabel>
+                                                <p:selectOneMenu value="#{clientController.selectedClinic}" >
+                                                    <f:selectItems value="#{institutionController.myClinics}" 
+                                                                   var="shlc" itemValue="#{shlc}" itemLabel="#{shlc.name}"></f:selectItems>
+                                                </p:selectOneMenu>
+                                                <p:spacer/>
+
+                                                <p:outputLabel value="Clinic No" ></p:outputLabel>
+                                                <p:inputText autocomplete="off" value="#{clientController.hlcEnrollNumberStr}" ></p:inputText>
+                                                <p:commandLink value="Generate" ></p:commandLink>
+
+                                                <p:spacer></p:spacer>
+                                                <p:commandButton value="Enroll" ajax="false" action="#{clientController.enrollInHlcClinic()}" ></p:commandButton>
+                                                <p:spacer></p:spacer>
+
+                                            </p:panelGrid>
+                                        </h:form>
+                                    </p:tab>
+
+
+
+                                </p:tabView>
+
+
                             </p:column>
 
-                        </p:row>
-
-                        <p:row >
-                            <p:column >
-                                <h:form>
-                                    <p:panelGrid columns="1" style="width: 100%" >
-                                        <f:facet name="header" >
-                                            <p:outputLabel value="Recent OPD Visits" style="float: left;"></p:outputLabel>
-                                            <p:spacer height="1" width="5" ></p:spacer>
-                                            <p:commandLink ajax="false" value="View Details" action="#"></p:commandLink>
-                                        </f:facet>
-                                    </p:panelGrid>
-                                </h:form>
-                            </p:column>
-                            <p:column >
-                                <h:form>
-                                    <p:panelGrid columns="1" style="width: 100%" >
-                                        <f:facet name="header" >
-                                            <p:outputLabel value="Recent Admissions" style="float: left;"></p:outputLabel>
-                                            <p:spacer height="1" width="5" ></p:spacer>
-                                            <p:commandLink ajax="false" value="View Details" action="#"></p:commandLink>
-                                        </f:facet>
-                                    </p:panelGrid>
-                                </h:form>
-                            </p:column>
                         </p:row>
 
                     </p:panelGrid>

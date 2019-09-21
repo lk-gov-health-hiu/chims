@@ -32,6 +32,8 @@ import lk.gov.health.phsp.enums.InstitutionType;
 import lk.gov.health.phsp.facade.EncounterFacade;
 import lk.gov.health.phsp.pojcs.YearMonthDay;
 import org.bouncycastle.jcajce.provider.digest.GOST3411;
+import org.primefaces.component.tabview.TabView;
+import org.primefaces.event.TabChangeEvent;
 // </editor-fold>
 
 @Named("clientController")
@@ -54,7 +56,7 @@ public class ClientController implements Serializable {
     private List<Client> items = null;
     private List<Client> selectedClients = null;
     private Client selected;
-    private List<Encounter> selectedClientsHlcs;
+    private List<Encounter> selectedClientsClinics;
     private String searchingId;
     private String searchingPhn;
     private String searchingPassportNo;
@@ -64,8 +66,8 @@ public class ClientController implements Serializable {
     private String searchingPhoneNumber;
     private YearMonthDay yearMonthDay;
     private Institution selectedClinic;
-    private Institution selectedHlcClinic;
     private String hlcEnrollNumberStr;
+    private int profileTabActiveIndex;
 
     // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="Constructors">
@@ -102,6 +104,18 @@ public class ClientController implements Serializable {
 
     // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="Functions">
+    public void onTabChange(TabChangeEvent event) {
+
+        System.out.println("profileTabActiveIndex = " + profileTabActiveIndex);
+
+        TabView tabView = (TabView) event.getComponent();
+
+        profileTabActiveIndex = tabView.getChildren().indexOf(event.getTab());
+
+        System.out.println("profileTabActiveIndex = " + profileTabActiveIndex);
+
+    }
+
     public List<Encounter> fillEncounters(Client client, InstitutionType insType, EncounterType encType, boolean excludeCompleted) {
         System.out.println("fillEncounters");
         String j = "select e from Encounter e where e.retired=false ";
@@ -128,7 +142,7 @@ public class ClientController implements Serializable {
     }
 
     public void enrollInHlcClinic() {
-        if (selectedHlcClinic == null) {
+        if (selectedClinic == null) {
             JsfUtil.addErrorMessage("Please select an HLC clinic to enroll.");
             return;
         }
@@ -145,21 +159,21 @@ public class ClientController implements Serializable {
         encounter.setEncounterType(EncounterType.Clinic_Enroll);
         encounter.setCreateAt(new Date());
         encounter.setCreatedBy(webUserController.getLoggedUser());
-        encounter.setInstitution(selectedHlcClinic);
+        encounter.setInstitution(selectedClinic);
         encounter.setEncounterDate(new Date());
         encounter.setEncounterNumber(hlcEnrollNumberStr);
         encounter.setCompleted(false);
         encounterFacade.create(encounter);
-        JsfUtil.addSuccessMessage(selected.getPerson().getNameWithTitle() + " was Successfully Enrolled in " + selectedHlcClinic.getName());
+        JsfUtil.addSuccessMessage(selected.getPerson().getNameWithTitle() + " was Successfully Enrolled in " + selectedClinic.getName());
         hlcEnrollNumberStr = "";
-        selectedClientsHlcs = null;
+        selectedClientsClinics = null;
     }
 
     public void generateAndAssignNewPhn() {
         if (selected == null) {
             return;
         }
-        if(webUserController.getLoggedUser().getInstitution().getPoiNumber()==null||webUserController.getLoggedUser().getInstitution().getPoiNumber().trim().equals("")){
+        if (webUserController.getLoggedUser().getInstitution().getPoiNumber() == null || webUserController.getLoggedUser().getInstitution().getPoiNumber().trim().equals("")) {
             JsfUtil.addErrorMessage("A Point of Issue is NOT assigned to your Institution. Please discuss with the System Administrator.");
             return;
         }
@@ -429,7 +443,7 @@ public class ClientController implements Serializable {
     public void setSelected(Client selected) {
         this.selected = selected;
         updateYearDateMonth();
-        selectedClientsHlcs = null;
+        selectedClientsClinics = null;
     }
 
     private ClientFacade getFacade() {
@@ -494,14 +508,6 @@ public class ClientController implements Serializable {
         this.selectedClinic = selectedClinic;
     }
 
-    public Institution getSelectedHlcClinic() {
-        return selectedHlcClinic;
-    }
-
-    public void setSelectedHlcClinic(Institution selectedHlcClinic) {
-        this.selectedHlcClinic = selectedHlcClinic;
-    }
-
     public String getHlcEnrollNumberStr() {
         return hlcEnrollNumberStr;
     }
@@ -510,15 +516,23 @@ public class ClientController implements Serializable {
         this.hlcEnrollNumberStr = hlcEnrollNumberStr;
     }
 
-    public List<Encounter> getSelectedClientsHlcs() {
-        if (selectedClientsHlcs == null) {
-            selectedClientsHlcs = fillEncounters(selected, InstitutionType.HLC_Clinic, EncounterType.Clinic_Enroll, true);
+    public List<Encounter> getSelectedClientsClinics() {
+        if (selectedClientsClinics == null) {
+            selectedClientsClinics = fillEncounters(selected, InstitutionType.Ward_Clinic, EncounterType.Clinic_Enroll, true);
         }
-        return selectedClientsHlcs;
+        return selectedClientsClinics;
     }
 
-    public void setSelectedClientsHlcs(List<Encounter> selectedClientsHlcs) {
-        this.selectedClientsHlcs = selectedClientsHlcs;
+    public void setSelectedClientsClinics(List<Encounter> selectedClientsClinics) {
+        this.selectedClientsClinics = selectedClientsClinics;
+    }
+
+    public int getProfileTabActiveIndex() {
+        return profileTabActiveIndex;
+    }
+
+    public void setProfileTabActiveIndex(int profileTabActiveIndex) {
+        this.profileTabActiveIndex = profileTabActiveIndex;
     }
 
     // </editor-fold>
