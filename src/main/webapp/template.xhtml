@@ -10,36 +10,42 @@
     <h:head id="headt">
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
         <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css"></link>
-        <link rel="stylesheet" href="https://www.w3schools.com/lib/w3-theme-amber.css"></link>
-        <link href="https://fonts.googleapis.com/css?family=Chilanka|Roboto&amp;display=swap" rel="stylesheet"></link>
+
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans&amp;display=swap" rel="stylesheet"></link>
+
         <link rel='stylesheet' href='https://use.fontawesome.com/releases/v5.7.0/css/all.css' 
               integrity='sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ' 
               crossorigin='anonymous'></link>
+
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"></link>
+
         <title>#{bundle.Title}</title>
+
         <h:outputStylesheet library="css" name="tem1.css"/>
     </h:head>
 
-    <h:body class="w3-theme-l5" style="font-family: 'Chilanka', sans-serif!important;">
+    <h:body style="font-family: 'Open Sans', sans-serif!important;">
         <style>
             html,body { height: 100%; margin: 0px; padding: 0px; }
             .ui-widget {
-                font-family: 'Chilanka',Arial,sans-serif;
+                font-family: 'Open Sans',Arial,sans-serif;
                 font-size: 1.0em;
             }
             .ui-widget input,
             .ui-widget select,
             .ui-widget textarea,
             .ui-widget button {
-                font-family: 'Chilanka',Arial,sans-serif;
+                font-family: 'Open Sans',Arial,sans-serif;
             }
 
         </style>
         <f:view locale="#{webUserController.locale}" >
-            <p:growl autoUpdate="true"  ></p:growl>
-
-            <div class="w3-row w3-theme-l5" style="font-family: 'Chilanka', sans-serif!important;">
+            <p:growl   >
+                <p:autoUpdate />
+            </p:growl>
+            <div class="w3-row w3-theme-l5" style="font-family: 'Open Sans', sans-serif!important;">
                 <h:panelGroup rendered="#{webUserController.loggedUser ne null}">
                     <div class="w3-row" >
                         <ez:menu/>
@@ -52,22 +58,14 @@
                 <h:panelGroup rendered="#{webUserController.loggedUser ne null}">
                     <ui:insert name="content">
                     </ui:insert>
-                    <div>
-                        <h:panelGrid columns="2" >
-                            <p:outputLabel value="Institution" ></p:outputLabel>
-                            <p:outputLabel value="#{webUserController.loggedUser.institution.name}" ></p:outputLabel>
-                            <p:outputLabel value="Loggable Institutions" ></p:outputLabel>
-                            <p:outputLabel value="#{webUserController.loggableInstitutions}" ></p:outputLabel>
-                        </h:panelGrid>
-                    </div>
                 </h:panelGroup>
-
                 <h:panelGroup rendered="#{webUserController.loggedUser eq null}">
                     <ez:login/>
+                    <div style="width: 50%; margin: auto;">
+                        <ez:demo_login/>
+                    </div>
                 </h:panelGroup>
             </div>
-
-
 
             <div class="footer w3-amber">
                 <ui:insert name="bottom">

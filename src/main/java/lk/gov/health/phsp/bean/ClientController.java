@@ -159,6 +159,10 @@ public class ClientController implements Serializable {
         if (selected == null) {
             return;
         }
+        if(webUserController.getLoggedUser().getInstitution().getPoiNumber()==null||webUserController.getLoggedUser().getInstitution().getPoiNumber().trim().equals("")){
+            JsfUtil.addErrorMessage("A Point of Issue is NOT assigned to your Institution. Please discuss with the System Administrator.");
+            return;
+        }
         selected.setPhn(applicationController.createNewPersonalHealthNumber(webUserController.getLoggedUser().getInstitution()));
     }
 
@@ -175,7 +179,7 @@ public class ClientController implements Serializable {
         }
     }
 
-    private void updateYearDateMonth() {
+    public void updateYearDateMonth() {
         getYearMonthDay();
         if (selected != null) {
             yearMonthDay.setYear(selected.getPerson().getAgeYears() + "");

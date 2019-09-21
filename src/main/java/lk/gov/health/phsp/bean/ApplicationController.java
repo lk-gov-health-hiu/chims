@@ -48,7 +48,7 @@ public class ApplicationController {
 // </editor-fold>    
 
 // <editor-fold defaultstate="collapsed" desc="Class Variables">
-
+    private boolean demoSetup = true;
 
 // </editor-fold>
     public ApplicationController() {
@@ -131,15 +131,20 @@ public class ApplicationController {
         return WebUserRole.values();
     }
 
-   
-
     // <editor-fold>
-   
-
     // <editor-fold defaultstate="collapsed" desc="Getters & Setters">
     public InstitutionFacade getInstitutionFacade() {
         return institutionFacade;
     }
+    
 // </editor-fold>
+
+    public boolean isDemoSetup() {
+        return demoSetup;
+    }
+
+    public void setDemoSetup(boolean demoSetup) {
+        this.demoSetup = demoSetup;
+    }
 
 }
