@@ -78,18 +78,17 @@ public class DesignComponentFormController implements Serializable {
 
     // </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="Main Functions">
-    
-    public void saveSelected(){
-        if(selected==null){
+    public void saveSelected() {
+        if (selected == null) {
             JsfUtil.addErrorMessage("Nothing to save");
             return;
         }
-        if(selected.getId()==null){
+        if (selected.getId() == null) {
             selected.setCreatedAt(new Date());
             selected.setCreatedBy(webUserController.getLoggedUser());
             getFacade().create(selected);
             JsfUtil.addSuccessMessage("Saved Successfully");
-        }else{
+        } else {
             selected.setLastEditBy(webUserController.getLoggedUser());
             selected.setLastEditeAt(new Date());
             getFacade().edit(selected);
@@ -97,20 +96,36 @@ public class DesignComponentFormController implements Serializable {
         }
     }
     
-    
-    public void fillFormsofTheSelectedSet() {
-//        System.out.println("fillFormsofTheSelectedSet");
-        if (designComponentFormSet == null) {
-            formsOfTheSelectedSet = new ArrayList<>();
+    public void save(DesignComponentForm f) {
+        if (f == null) {
             return;
+        }
+        if (f.getId() == null) {
+            f.setCreatedAt(new Date());
+            f.setCreatedBy(webUserController.getLoggedUser());
+            getFacade().create(f);
+        } else {
+            f.setLastEditBy(webUserController.getLoggedUser());
+            f.setLastEditeAt(new Date());
+            getFacade().edit(f);
+        }
+    }
+
+    public void fillFormsofTheSelectedSet() {
+        formsOfTheSelectedSet = fillFormsofTheSelectedSet(designComponentFormSet);
+    }
+
+    public List<DesignComponentForm> fillFormsofTheSelectedSet(DesignComponentFormSet set) {
+        if (set == null) {
+            return new ArrayList<>();
         }
         String j = "Select f from DesignComponentForm f "
                 + "where f.retired=false "
                 + " and f.parentComponent=:pc "
                 + " order by f.orderNo";
         Map m = new HashMap();
-        m.put("pc", designComponentFormSet);
-        formsOfTheSelectedSet = getFacade().findByJpql(j, m);
+        m.put("pc", set);
+        return getFacade().findByJpql(j, m);
     }
 
     public void addFormToTheSelectedSet() {

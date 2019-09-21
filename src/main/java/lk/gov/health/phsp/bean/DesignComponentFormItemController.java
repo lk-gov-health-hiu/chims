@@ -54,34 +54,36 @@ public class DesignComponentFormItemController implements Serializable {
     }
 // </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="Navigation Functions">
-    public String toEditDesignComponentFromItem(){
-        if(selected==null){
+
+    public String toEditDesignComponentFromItem() {
+        if (selected == null) {
             JsfUtil.addErrorMessage("No item selected.");
             return "";
         }
         return "/designComponentFormItem/item";
     }
-    public String toDesignDesignComponentFromItem(){
-        if(selected==null){
+
+    public String toDesignDesignComponentFromItem() {
+        if (selected == null) {
             JsfUtil.addErrorMessage("No item selected.");
             return "";
         }
         return "/designComponentFormItem/design";
     }
-    
+
 // </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="Main Functions">
-    public void saveItem(){
-        if(selected==null){
+    public void saveItem() {
+        if (selected == null) {
             JsfUtil.addErrorMessage("No item selected.");
-            return ;
+            return;
         }
-        if(selected.getId()==null){
+        if (selected.getId() == null) {
             selected.setCreatedAt(new Date());
             selected.setCreatedBy(webUserController.getLoggedUser());
             getFacade().create(selected);
             JsfUtil.addSuccessMessage("Saved Successfully.");
-        }else{
+        } else {
             selected.setLastEditBy(webUserController.getLoggedUser());
             selected.setLastEditeAt(new Date());
             getFacade().edit(selected);
@@ -89,17 +91,37 @@ public class DesignComponentFormItemController implements Serializable {
         }
     }
 
-    public void fillItemsOfTheForm() {
-        if (designComponentForm == null) {
-            designComponentFormItems = new ArrayList<>();
+    public void saveItem(DesignComponentFormItem i) {
+        if (i == null) {
             return;
+        }
+        if (i.getId() == null) {
+            i.setCreatedAt(new Date());
+            i.setCreatedBy(webUserController.getLoggedUser());
+            getFacade().create(i);
+        } else {
+            i.setLastEditBy(webUserController.getLoggedUser());
+            i.setLastEditeAt(new Date());
+            getFacade().edit(i);
+        }
+    }
+
+    public void fillItemsOfTheForm() {
+        designComponentFormItems = fillItemsOfTheForm(designComponentForm);
+    }
+
+    public List<DesignComponentFormItem> fillItemsOfTheForm(DesignComponentForm form) {
+        List<DesignComponentFormItem> is;
+        if (form == null) {
+            is = new ArrayList<>();
+            return is;
         }
         String j = "Select i from DesignComponentFormItem i where i.retired=false "
                 + " and i.parentComponent=:p "
                 + " order by i.orderNo";
         Map m = new HashMap();
-        m.put("p", designComponentForm);
-        designComponentFormItems = getFacade().findByJpql(j, m);
+        m.put("p", form);
+        return getFacade().findByJpql(j, m);
     }
 
     public void addNewItemToForm() {
@@ -148,12 +170,12 @@ public class DesignComponentFormItemController implements Serializable {
             JsfUtil.addErrorMessage("No item to move");
             return;
         }
-        movingItem.setOrderNo(movingItem.getOrderNo()-1.5);
+        movingItem.setOrderNo(movingItem.getOrderNo() - 1.5);
         getFacade().edit(movingItem);
         double d = 0.0;
         fillItemsOfTheForm();
-        for(DesignComponentFormItem i:designComponentFormItems){
-            d=d+1.0;
+        for (DesignComponentFormItem i : designComponentFormItems) {
+            d = d + 1.0;
             i.setOrderNo(d);
             getFacade().edit(i);
         }
@@ -169,19 +191,19 @@ public class DesignComponentFormItemController implements Serializable {
             JsfUtil.addErrorMessage("No item to move");
             return;
         }
-        movingItem.setOrderNo(movingItem.getOrderNo()+1.5);
+        movingItem.setOrderNo(movingItem.getOrderNo() + 1.5);
         getFacade().edit(movingItem);
         double d = 0.0;
         fillItemsOfTheForm();
-        for(DesignComponentFormItem i:designComponentFormItems){
-            d=d+1.0;
+        for (DesignComponentFormItem i : designComponentFormItems) {
+            d = d + 1.0;
             i.setOrderNo(d);
             getFacade().edit(i);
         }
         fillItemsOfTheForm();
     }
-    
-    public void createNewAddingItem(){
+
+    public void createNewAddingItem() {
         if (designComponentForm == null) {
             JsfUtil.addErrorMessage("No Form Selected");
             return;
@@ -189,32 +211,31 @@ public class DesignComponentFormItemController implements Serializable {
         addingItem = new DesignComponentFormItem();
         addingItem.setParentComponent(designComponentForm);
         addingItem.setComponentSex(designComponentForm.getComponentSex());
-        addingItem.setOrderNo(getDesignComponentFormItems().size()+1.0);
-        
+        addingItem.setOrderNo(getDesignComponentFormItems().size() + 1.0);
+
     }
-    
-    public void saveSelectedItem(){
-        if(selected==null){
+
+    public void saveSelectedItem() {
+        if (selected == null) {
             JsfUtil.addErrorMessage("Nothing Selected");
             return;
         }
-        if(selected.getId()==null){
+        if (selected.getId() == null) {
             selected.setCreatedAt(new Date());
             selected.setCreatedBy(webUserController.getLoggedUser());
             getFacade().create(selected);
             JsfUtil.addSuccessMessage("Saved Successfully.");
-        }else{
+        } else {
             selected.setLastEditBy(webUserController.getLoggedUser());
             selected.setLastEditeAt(new Date());
             getFacade().edit(selected);
             JsfUtil.addSuccessMessage("Updated Successfully.");
         }
-        
+
     }
-    
+
 // </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="Default Functions">
-
     protected void setEmbeddableKeys() {
     }
 
@@ -276,8 +297,6 @@ public class DesignComponentFormItemController implements Serializable {
 // </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="Getters & Setters">
 
-    
-    
     public DesignComponentFormItem getSelected() {
         return selected;
     }
@@ -322,7 +341,7 @@ public class DesignComponentFormItemController implements Serializable {
     }
 
     public List<DesignComponentFormItem> getDesignComponentFormItems() {
-        if(designComponentFormItems==null){
+        if (designComponentFormItems == null) {
             fillItemsOfTheForm();
         }
         return designComponentFormItems;
@@ -333,7 +352,7 @@ public class DesignComponentFormItemController implements Serializable {
     }
 
     public DesignComponentFormItem getAddingItem() {
-        if(addingItem==null){
+        if (addingItem == null) {
             createNewAddingItem();
         }
         return addingItem;

@@ -53,9 +53,12 @@
                     <ui:insert name="content">
                     </ui:insert>
                     <div>
-                        <p>&nbsp;</p>
-                        <p>&nbsp;</p>
-                        <p>&nbsp;</p>
+                        <h:panelGrid columns="2" >
+                            <p:outputLabel value="Institution" ></p:outputLabel>
+                            <p:outputLabel value="#{webUserController.loggedUser.institution.name}" ></p:outputLabel>
+                            <p:outputLabel value="Loggable Institutions" ></p:outputLabel>
+                            <p:outputLabel value="#{webUserController.loggableInstitutions}" ></p:outputLabel>
+                        </h:panelGrid>
                     </div>
                 </h:panelGroup>
 

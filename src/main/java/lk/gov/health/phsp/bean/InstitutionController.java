@@ -6,6 +6,7 @@ import lk.gov.health.phsp.bean.util.JsfUtil.PersistAction;
 import lk.gov.health.phsp.facade.InstitutionFacade;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,6 +23,7 @@ import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
 import javax.inject.Inject;
 import lk.gov.health.phsp.enums.InstitutionType;
+
 
 @Named("institutionController")
 @SessionScoped
@@ -62,7 +64,29 @@ public class InstitutionController implements Serializable {
         return ejbFacade;
     }
 
-    
+    public List<Institution> findChildrenInstitutions(Institution ins){
+        System.out.println("findChildrenInstitutions for " + ins.getName());
+        String j ;
+        Map m= new HashMap();
+        j = "select i from Institution i where i.retired=false "
+                + " and i.parent=:p ";
+        m.put("p", ins);
+        List<Institution> cins = getFacade().findByJpql(j, m);
+        List<Institution> tins = new ArrayList<>();
+        tins.addAll(cins);
+        if(cins.isEmpty()){
+            return tins;
+        }else{
+            for(Institution i:cins){
+                System.out.println("i = " + i);
+                System.out.println("tins before finding children " + tins);
+                tins.addAll(findChildrenInstitutions(i));
+                System.out.println("tins after finding children " + tins);
+            }
+        }
+        System.out.println("tins = " + tins);
+        return tins;
+    }
     
     public List<Institution> completeInstitutions(String nameQry) {
         return fillInstitutions(null, nameQry, null);

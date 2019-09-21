@@ -23,6 +23,7 @@
  */
 package lk.gov.health.phsp.facade;
 
+import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -46,5 +47,6 @@ public class DesignComponentFormSetFacade extends AbstractFacade<DesignComponent
     public DesignComponentFormSetFacade() {
         super(DesignComponentFormSet.class);
     }
+
     
 }

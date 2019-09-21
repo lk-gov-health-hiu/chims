@@ -134,6 +134,16 @@
    text-align: center;
 }
 
+.pageRootPanel{
+    width: 100%;
+    text-align: center;
+}
+
+.pageInnerPanel{
+    margin: auto!important;
+    text-align: left;
+}
+
 .alignTop{
     vertical-align: top;
 }

@@ -96,8 +96,8 @@ public class WebUserController implements Serializable {
     private List<Upload> currentProjectUploads;
     private List<Upload> clientUploads;
     private List<Upload> companyUploads;
-    
 
+    private List<Institution> loggableInstitutions;
 
     private Area selectedProvince;
     private Area selectedDistrict;
@@ -160,11 +160,23 @@ public class WebUserController implements Serializable {
         createAllPrivilege();
     }
 
+    public List<Institution> findAutherizedInstitutions() {
+        List<Institution> ins = new ArrayList<>();
+        if(loggedUser==null){
+            return ins;
+        }
+        if(loggedUser.getInstitution()==null){
+            return ins;
+        }
+        ins.add(loggedUser.getInstitution());
+        ins.addAll(institutionController.findChildrenInstitutions(loggedUser.getInstitution()));
+        return ins;
+    }
 
-public String toManagePrivileges(){
-    
-    return "/webUser/privilegesF";
-}
+    public String toManagePrivileges() {
+
+        return "/webUser/privilegesF";
+    }
 
     private void createAllPrivilege() {
         allPrivilegeRoot = new PrivilegeTreeNode("Root", null);
@@ -281,8 +293,6 @@ public String toManagePrivileges(){
         return "";
     }
 
-  
-
     public String prepareRegisterAsClient() {
         current = new WebUser();
         current.setWebUserRole(WebUserRole.Institution_User);
@@ -294,8 +304,6 @@ public String toManagePrivileges(){
 
         return "/register";
     }
-
-    
 
     public String registerUser() {
         if (!current.getWebUserPassword().equals(password)) {
@@ -321,6 +329,7 @@ public String toManagePrivileges(){
     }
 
     public String login() {
+        loggableInstitutions = null;
         if (userName == null || userName.trim().equals("")) {
             JsfUtil.addErrorMessage("Please enter a Username");
             return "";
@@ -401,26 +410,26 @@ public String toManagePrivileges(){
         }
 
     }
-    
-    public void addAllWebUserPrivileges(WebUser u){
+
+    public void addAllWebUserPrivileges(WebUser u) {
         List<Privilege> ps = Arrays.asList(Privilege.values());
         addWebUserPrivileges(u, ps);
     }
-    
-    public void addWebUserPrivileges(WebUser u, List<Privilege> ps){
-        for(Privilege p:ps){
+
+    public void addWebUserPrivileges(WebUser u, List<Privilege> ps) {
+        for (Privilege p : ps) {
             addWebUserPrivileges(u, p);
         }
     }
-    
-    public void addWebUserPrivileges(WebUser u, Privilege p){
+
+    public void addWebUserPrivileges(WebUser u, Privilege p) {
         String j = "Select up from UserPrivilege up where up.retired=false"
                 + " and up.webUser=:u and up.privilege=:p";
         Map m = new HashMap();
         m.put("u", u);
         m.put("p", p);
         UserPrivilege up = getUserPrivilegeFacade().findFirstByJpql(j, m);
-        if(up==null){
+        if (up == null) {
             up = new UserPrivilege();
             up.setCreatedAt(new Date());
             up.setCreatedBy(loggedUser);
@@ -434,9 +443,9 @@ public String toManagePrivileges(){
         Privilege p;
         try {
             p = Privilege.valueOf(privilege);
-            if(p!=null){
+            if (p != null) {
                 return hasPrivilege(p);
-            }else{
+            } else {
                 return false;
             }
         } catch (Exception e) {
@@ -482,7 +491,6 @@ public String toManagePrivileges(){
         return getUserPrivilegeFacade().findByJpql(j, m);
     }
 
-  
     public WebUserController() {
     }
 
@@ -1021,8 +1029,27 @@ public String toManagePrivileges(){
         this.loggedUserPrivileges = loggedUserPrivileges;
     }
 
+    public List<Institution> getLoggableInstitutions() {
+        if(loggableInstitutions==null){
+            loggableInstitutions = findAutherizedInstitutions();
+        }
+        return loggableInstitutions;
+    }
+
+    public void setLoggableInstitutions(List<Institution> loggableInstitutions) {
+        this.loggableInstitutions = loggableInstitutions;
+    }
+
+    public UploadedFile getFile() {
+        return file;
+    }
+
+    public void setFile(UploadedFile file) {
+        this.file = file;
+    }
     
     
+
     @FacesConverter(forClass = WebUser.class)
     public static class WebUserControllerConverter implements Converter {
 

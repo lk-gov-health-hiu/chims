@@ -64,6 +64,10 @@ public class Component implements Serializable {
 
     @ManyToOne
     private Component parentComponent;
+    
+    @ManyToOne
+    private Component referenceComponent;
+    
 
     @Enumerated(EnumType.STRING)
     RenderType renderType;
@@ -424,6 +428,14 @@ public class Component implements Serializable {
 
     public void setItemArrangementStrategy(ItemArrangementStrategy itemArrangementStrategy) {
         this.itemArrangementStrategy = itemArrangementStrategy;
+    }
+
+    public Component getReferenceComponent() {
+        return referenceComponent;
+    }
+
+    public void setReferenceComponent(Component referenceComponent) {
+        this.referenceComponent = referenceComponent;
     }
     
     

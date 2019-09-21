@@ -22,11 +22,11 @@
                     <p:panelGrid columns="1" >
                         <f:facet name="header" >
                             <p:commandButton ajax="false" value="Back to Manage Metadata"
-                                             action="/systemAdmin/index" style="float: right;" ></p:commandButton>
+                                             action="/insAdmin/index" style="float: right;" ></p:commandButton>
                         </f:facet>
 
 
-                        <p:dataTable id="datalist" value="#{designComponentFormSetController.items}" var="item"
+                        <p:dataTable id="datalist" value="#{designComponentFormSetController.insItems}" var="item"
                                      selectionMode="single" selection="#{designComponentFormSetController.selected}"
                                      paginator="true"
                                      rowKey="#{item.id}"
@@ -55,10 +55,12 @@
                                 <h:outputText value="#{item.componentSex}"/>
                             </p:column>
                             <f:facet name="footer">
+                               
                                 <p:commandButton id="createButton" icon="ui-icon-plus"   value="#{bundleClinical.Create}" actionListener="#{designComponentFormSetController.prepareCreate}" update=":DesignComponentFormSetCreateForm" oncomplete="PF('DesignComponentFormSetCreateDialog').show()"/>
                                 <p:commandButton id="viewButton"   icon="ui-icon-search" value="#{bundleClinical.View}" update=":DesignComponentFormSetViewForm" oncomplete="PF('DesignComponentFormSetViewDialog').show()" disabled="#{empty designComponentFormSetController.selected}"/>
                                 <p:commandButton id="editButton"   icon="ui-icon-pencil" value="#{bundleClinical.Edit}" update=":DesignComponentFormSetEditForm" oncomplete="PF('DesignComponentFormSetEditDialog').show()" disabled="#{empty designComponentFormSetController.selected}"/>
                                 <p:commandButton id="addForm"   icon="ui-icon-cart" value="Manage Pages" ajax="false" action="#{designComponentFormSetController.toAddFormsForTheSelectedSet()}"
+                                                 actionListener="#{designComponentFormSetController.setBackStringToInsAdmin()}"
                                                  disabled="#{empty designComponentFormSetController.selected}"/>
                                 <p:commandButton id="deleteButton" icon="ui-icon-trash"  value="#{bundleClinical.Delete}" actionListener="#{designComponentFormSetController.destroy}" update="datalist" disabled="#{empty designComponentFormSetController.selected}"/>
                             </f:facet>
