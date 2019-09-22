@@ -6,8 +6,11 @@ import lk.gov.health.phsp.bean.util.JsfUtil;
 import lk.gov.health.phsp.bean.util.JsfUtil.PersistAction;
 import lk.gov.health.phsp.facade.ClientEncounterComponentFormSetFacade;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -20,6 +23,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
 import javax.inject.Inject;
+import lk.gov.health.phsp.entity.Client;
 import lk.gov.health.phsp.entity.ClientEncounterComponentForm;
 import lk.gov.health.phsp.entity.ClientEncounterComponentItem;
 import lk.gov.health.phsp.entity.DesignComponentForm;
@@ -62,21 +66,171 @@ public class ClientEncounterComponentFormSetController implements Serializable {
     private List<ClientEncounterComponentFormSet> items = null;
     private ClientEncounterComponentFormSet selected;
     private DesignComponentFormSet designFormSet;
+    boolean formEditable;
 // </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="Constructors">
 
     public ClientEncounterComponentFormSetController() {
     }
 // </editor-fold>    
+// <editor-fold defaultstate="collapsed" desc="Navigation Functions">
+    public String toViewFormset(){
+        if(selected==null){
+            JsfUtil.addErrorMessage("Nothing selected.");
+            return "";
+        }
+        String navigationLink = "/clientEncounterComponentFormSet/Formset";
+        formEditable= false;
+        return navigationLink;
+    }
+    public String toEditFormset(){
+         if(selected==null){
+            JsfUtil.addErrorMessage("Nothing selected.");
+            return "";
+        }
+        String navigationLink = "/clientEncounterComponentFormSet/Formset";
+        
+        formEditable= !selected.isCompleted();
+        return navigationLink;
+    }
+// </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="User Functions">
-
+    public void completeFormset(){
+        if(selected==null){
+            JsfUtil.addErrorMessage("Nothing to Complete.");
+            return ;
+        }
+        save(selected);
+        selected.setCompleted(true);
+        selected.setCompletedAt(new Date());
+        selected.setCompletedBy(webUserController.getLoggedUser());
+        getFacade().edit(selected);
+        JsfUtil.addSuccessMessage("Completed");
+    }
+    
+    public void executePostCompletionStrategies(ClientEncounterComponentFormSet s){
+        // TODO: Need to add Logic !        
+    }
+    
+    public void save(){
+        save(selected);
+    }
+    
+    public void save(ClientEncounterComponentFormSet s){
+        if(s==null) return;
+        if(s.getId()==null){
+            s.setCreatedAt(new Date());
+            s.setCreatedBy(webUserController.getLoggedUser());
+            getFacade().create(s);
+        }else{
+            s.setLastEditBy(webUserController.getLoggedUser());
+            s.setLastEditeAt(new Date());
+            getFacade().edit(s);
+        }
+    }
+    
     public String createAndNavigateToClinicalEncounterComponentFormSetFromDesignComponentFormSet() {
         return createAndNavigateToClinicalEncounterComponentFormSetFromDesignComponentFormSetForClinicVisit(designFormSet);
     }
 
+    public List<ClientEncounterComponentFormSet> fillEncountersFormSets(EncounterType type) {
+        Client c = getClientController().getSelected();
+        if (c == null) {
+            return new ArrayList<>();
+        }
+        return ClientEncounterComponentFormSetController.this.fillEncountersFormSets(c, type);
+    }
+
+    
+    public List<ClientEncounterComponentFormSet> fillEncountersFormSets(String type) {
+        return fillEncountersFormSets(type, true);
+    }
+    
+    public List<ClientEncounterComponentFormSet> fillEncountersFormSets(String type, boolean completedOnly) {
+        EncounterType ec = null;
+        try {
+            ec = EncounterType.valueOf(type);
+            Client c = getClientController().getSelected();
+            if (c == null) {
+                return new ArrayList<>();
+            }
+            return ClientEncounterComponentFormSetController.this.fillEncountersFormSets(c, ec, 0, completedOnly);
+        } catch (Exception e) {
+            System.out.println("e = " + e);
+            return new ArrayList<>();
+        }
+    }
+
+    public List<ClientEncounterComponentFormSet> fillEncountersFormSets(String type, int count) {
+        return fillEncountersFormSets(type, count, true);
+    }
+    
+    public List<ClientEncounterComponentFormSet> fillEncountersFormSets(String type, int count, boolean completedOnly) {
+        System.out.println("fillEncountersFormSets");
+        System.out.println("count = " + count);
+        System.out.println("type = " + type);
+        EncounterType ec = null;
+        try {
+            ec = EncounterType.valueOf(type);
+            Client c = getClientController().getSelected();
+            if (c == null) {
+                return new ArrayList<>();
+            }
+            return ClientEncounterComponentFormSetController.this.fillEncountersFormSets(c, ec, count, completedOnly);
+        } catch (Exception e) {
+            System.out.println("e = " + e);
+            return new ArrayList<>();
+        }
+    }
+
+    public List<ClientEncounterComponentFormSet> fillEncountersFormSets(Client c, String type) {
+        EncounterType ec = null;
+        try {
+            ec = EncounterType.valueOf(type);
+            return ClientEncounterComponentFormSetController.this.fillEncountersFormSets(c, ec);
+        } catch (Exception e) {
+            System.out.println("e = " + e);
+            return new ArrayList<>();
+        }
+    }
+
+    public List<ClientEncounterComponentFormSet> fillEncountersFormSets(Client c, EncounterType type) {
+        return ClientEncounterComponentFormSetController.this.fillEncountersFormSets(c, type, 0);
+    }
+
+    public List<ClientEncounterComponentFormSet> fillEncountersFormSets(Client c, EncounterType type, int count) {
+        return fillEncountersFormSets(c, type, count, true);
+    }
+    
+    public List<ClientEncounterComponentFormSet> fillEncountersFormSets(Client c, EncounterType type, int count, boolean completeOnly) {
+        System.out.println("fillEncountersFormSets");
+        System.out.println("count = " + count);
+        System.out.println("type = " + type);
+        System.out.println("c = " + c);
+        List<ClientEncounterComponentFormSet> fs;
+        String j = "select s from ClientEncounterComponentFormSet s where "
+                + " s.retired=false "
+                + " and s.encounter.encounterType=:t "
+                + " and s.encounter.client=:c "
+                + " order by s.encounter.encounterFrom desc";
+        Map m = new HashMap();
+        m.put("c", c);
+        m.put("t", type);
+        if (count == 0) {
+            fs = getFacade().findByJpql(j, m);
+        } else {
+            fs = getFacade().findByJpql(j, m, count);
+        }
+        if (fs == null) {
+            fs = new ArrayList<>();
+        }
+        return fs;
+    }
+
     public String createAndNavigateToClinicalEncounterComponentFormSetFromDesignComponentFormSetForClinicVisit(DesignComponentFormSet dfs) {
         String navigationLink = "/clientEncounterComponentFormSet/Formset";
-
+        formEditable=true;
+        
         Encounter e = new Encounter();
         e.setClient(clientController.getSelected());
         e.setInstitution(dfs.getInstitution());

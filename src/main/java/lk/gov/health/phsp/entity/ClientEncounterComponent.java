@@ -5,11 +5,13 @@
  */
 package lk.gov.health.phsp.entity;
 
+import java.util.Date;
 import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.Temporal;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -50,6 +52,15 @@ public class ClientEncounterComponent extends Component {
     private List<Institution> institutionValues;
     @OneToMany
     private List<Client> clientValues;
+    
+    
+    private boolean completed;
+    @Temporal(javax.persistence.TemporalType.TIMESTAMP)
+    private Date completedAt;
+    @ManyToOne
+    private WebUser completedBy;
+    
+    
 
     public Encounter getEncounter() {
         return encounter;
@@ -178,6 +189,30 @@ public class ClientEncounterComponent extends Component {
 
     public void setClientValues(List<Client> clientValues) {
         this.clientValues = clientValues;
+    }
+
+    public boolean isCompleted() {
+        return completed;
+    }
+
+    public void setCompleted(boolean completed) {
+        this.completed = completed;
+    }
+
+    public Date getCompletedAt() {
+        return completedAt;
+    }
+
+    public void setCompletedAt(Date completedAt) {
+        this.completedAt = completedAt;
+    }
+
+    public WebUser getCompletedBy() {
+        return completedBy;
+    }
+
+    public void setCompletedBy(WebUser completedBy) {
+        this.completedBy = completedBy;
     }
     
 
