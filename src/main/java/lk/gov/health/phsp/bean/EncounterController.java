@@ -48,7 +48,9 @@ public class EncounterController implements Serializable {
         m.put("d", CommonController.startOfTheYear());
         Long c = getFacade().findLongByJpql(j, m);
         if (c == null) {
-            c = 0l;
+            c = 1l;
+        }else{
+            c+=1;
         }
         SimpleDateFormat format = new SimpleDateFormat("yy");
         String yy = format.format(new Date());

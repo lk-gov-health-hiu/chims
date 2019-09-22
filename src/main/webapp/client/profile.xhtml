@@ -199,7 +199,8 @@
                                                     <h:dataTable value="#{designComponentFormSetController.getClinicFormSets(chlce.institution)}"
                                                                  var="cfs"  border="0" >
                                                         <h:column >
-                                                            <p:commandLink value="New #{cfs.name}" action="#{clientEncounterComponentFormSetController.createAndNavigateToClinicalEncounterComponentFormSetFromDesignComponentFormSetForClinicVisit(cfs)}" ></p:commandLink>
+                                                            <p:commandLink value="New #{cfs.name}" 
+                                                                           action="#{clientEncounterComponentFormSetController.createAndNavigateToClinicalEncounterComponentFormSetFromDesignComponentFormSetForClinicVisit(cfs)}" ></p:commandLink>
                                                         </h:column>
                                                     </h:dataTable>
                                                 </p:column>
@@ -215,11 +216,14 @@
                                                 </f:facet>
 
                                                 <p:outputLabel value="Clinic" ></p:outputLabel>
+                                                
                                                 <p:selectOneMenu value="#{clientController.selectedClinic}" >
                                                     <f:selectItems value="#{institutionController.myClinics}" 
                                                                    var="shlc" itemValue="#{shlc}" itemLabel="#{shlc.name}"></f:selectItems>
                                                 </p:selectOneMenu>
-                                                <p:spacer/>
+                                                    
+                                                <p:commandButton action="#{institutionController.refreshMyInstitutions()}" ajax="false" 
+                                                                 icon="ui-icon-arrowrefresh-1-n" ></p:commandButton>
 
                                                 <p:spacer></p:spacer>
                                                 <p:commandButton value="Enroll" ajax="false" action="#{clientController.enrollInClinic()}" ></p:commandButton>

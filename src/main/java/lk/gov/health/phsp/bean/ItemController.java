@@ -45,6 +45,10 @@ public class ItemController implements Serializable {
     // <editor-fold defaultstate="collapsed" desc="Navigation">
     // </editor-fold>    
     // <editor-fold defaultstate="collapsed" desc="Functions">
+    public List<Item> completeDictionaryItems(String qry) {
+        return findItemList(null, ItemType.Dictionary_Item, qry);
+    }
+
     public void addInitialMetadata() {
         addTitles();
         addMarietalStatus();
@@ -211,7 +215,7 @@ public class ItemController implements Serializable {
             m.put("code", code.trim().toLowerCase());
             item = getFacade().findFirstByJpql(j, m);
         } else {
-           item = null;
+            item = null;
         }
         return item;
     }
@@ -316,8 +320,12 @@ public class ItemController implements Serializable {
         }
         return titles;
     }
-
+    
     public List<Item> findItemList(String parentCode, ItemType t) {
+        return findItemList(parentCode, t, null);
+    }
+
+    public List<Item> findItemList(String parentCode, ItemType t, String qry) {
         String j = "select t from Item t where t.retired=false "
                 + " and t.itemType=:t ";
         Map m = new HashMap();
@@ -326,6 +334,10 @@ public class ItemController implements Serializable {
         if (parent != null) {
             m.put("p", parent);
             j += " and t.parent=:p ";
+        }
+        if(qry!=null){
+            m.put("n", "%" + qry.trim().toLowerCase() + "%");
+            j += " and lower(t.name) like :n ";
         }
         j += " order by t.orderNo";
         return getFacade().findByJpql(j, m);
