@@ -171,8 +171,6 @@ public class ClientController implements Serializable {
         selectedClientsClinics = null;
     }
 
-    
-
     public void generateAndAssignNewPhn() {
         if (selected == null) {
             return;
@@ -291,6 +289,29 @@ public class ClientController implements Serializable {
         }
     }
 
+    public String searchByAnyId() {
+        if (searchingId == null) {
+            searchingId = "";
+        }
+        
+        selectedClients = listPatientsByIDs(searchingId.trim().toUpperCase());
+
+        if (selectedClients == null || selectedClients.isEmpty()) {
+            JsfUtil.addErrorMessage("No Results Found. Try different search criteria.");
+            return "/client/search_by_id";
+        }
+        if (selectedClients.size() == 1) {
+            selected = selectedClients.get(0);
+            selectedClients = null;
+            searchingId = "";
+            return toClientProfile();
+        } else {
+            selected = null;
+            searchingId = "";
+            return toSelectClient();
+        }
+    }
+
     public void clearSearchById() {
         searchingId = "";
         searchingPhn = "";
@@ -319,6 +340,24 @@ public class ClientController implements Serializable {
         String j = "select c from Client c where c.retired=false and (upper(c.person.phone1)=:q or upper(c.person.phone2)=:q) order by c.phn";
         Map m = new HashMap();
         m.put("q", phn.trim().toUpperCase());
+        return getFacade().findByJpql(j, m);
+    }
+
+    public List<Client> listPatientsByIDs(String ids) {
+        String j = "select c from Client c "
+                + " where c.retired=false "
+                + " and ("
+                + " upper(c.person.phone1)=:q "
+                + " or "
+                + " upper(c.person.phone2)=:q "
+                + " or "
+                + " upper(c.person.nic)=:q "
+                + " or "
+                + " upper(c.phn)=:q "
+                + " ) "
+                + " order by c.phn";
+        Map m = new HashMap();
+        m.put("q", ids.trim().toUpperCase());
         return getFacade().findByJpql(j, m);
     }
 

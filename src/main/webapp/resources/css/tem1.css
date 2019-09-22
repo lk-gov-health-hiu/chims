@@ -1,19 +1,17 @@
 .ui-widget {
-    font-family: 'Open Sans',Arial,sans-serif;
+    font-family: 'Poppins',Arial,sans-serif;
     font-size: 1.0em;
 }
 .ui-widget input,
 .ui-widget select,
 .ui-widget textarea,
 .ui-widget button {
-  font-family: 'Open Sans',Arial,sans-serif;
+  font-family: 'Poppins',Arial,sans-serif;
 }
 
 
 .ui-menubar .ui-widget  {
-    font-family: cursive;
-    color: #ffffff !important;
-    font-weight: bolder !important;
+    font-family: 'Poppins', sans-serif;
 }
 
 

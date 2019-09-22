@@ -59,7 +59,12 @@
 
 
                 <f:facet name="options">
-                    <p:inputText style="margin:1px 10px 1px 1px;" placeholder="Search"/>
+                    <p:inputText 
+                                 value="#{clientController.searchingId}"/>
+                    <p:commandButton ajax="false" action="#{clientController.searchByAnyId()}" icon="ui-icon-search" ></p:commandButton>
+                    <p:spacer height="1" width="5" ></p:spacer>
+                    <p:outputLabel value="|"></p:outputLabel>
+                    <p:spacer height="1" width="5" ></p:spacer>
                     <p:commandButton action="#{webUserController.logOut()}" ajax="false"
                                      rendered="#{webUserController.loggedUser ne null}" value="Logout" />
                 </f:facet>
