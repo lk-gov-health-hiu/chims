@@ -78,7 +78,7 @@ public class Encounter implements Serializable {
     @ManyToOne
     private WebUser createdBy;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
-    private Date createAt;
+    private Date createdAt;
 
     private boolean retired;
     @ManyToOne
@@ -210,12 +210,12 @@ public class Encounter implements Serializable {
         this.createdBy = createdBy;
     }
 
-    public Date getCreateAt() {
-        return createAt;
+    public Date getCreatedAt() {
+        return createdAt;
     }
 
-    public void setCreateAt(Date createAt) {
-        this.createAt = createAt;
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
     }
 
     public boolean isRetired() {

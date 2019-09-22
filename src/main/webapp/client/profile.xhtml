@@ -221,12 +221,8 @@
                                                 </p:selectOneMenu>
                                                 <p:spacer/>
 
-                                                <p:outputLabel value="Clinic No" ></p:outputLabel>
-                                                <p:inputText autocomplete="off" value="#{clientController.hlcEnrollNumberStr}" ></p:inputText>
-                                                <p:commandLink value="Generate" ></p:commandLink>
-
                                                 <p:spacer></p:spacer>
-                                                <p:commandButton value="Enroll" ajax="false" action="#{clientController.enrollInHlcClinic()}" ></p:commandButton>
+                                                <p:commandButton value="Enroll" ajax="false" action="#{clientController.enrollInClinic()}" ></p:commandButton>
                                                 <p:spacer></p:spacer>
 
                                             </p:panelGrid>
