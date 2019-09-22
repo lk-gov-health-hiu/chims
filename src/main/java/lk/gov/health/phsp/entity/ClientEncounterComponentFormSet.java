@@ -25,9 +25,6 @@
 package lk.gov.health.phsp.entity;
 
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import lk.gov.health.phsp.enums.ComponentSetType;
 
 /**
  *

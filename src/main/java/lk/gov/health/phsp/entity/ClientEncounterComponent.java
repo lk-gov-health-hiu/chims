@@ -80,6 +80,7 @@ public class ClientEncounterComponent extends Component {
     }
 
     public void setShortTextValue(String shortTextValue) {
+        System.out.println("shortTextValue = " + shortTextValue);
         this.shortTextValue = shortTextValue;
     }
 

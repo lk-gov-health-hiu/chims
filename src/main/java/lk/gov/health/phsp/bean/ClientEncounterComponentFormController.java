@@ -6,8 +6,11 @@ import lk.gov.health.phsp.bean.util.JsfUtil.PersistAction;
 import lk.gov.health.phsp.facade.ClientEncounterComponentFormFacade;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -20,6 +23,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
 import javax.inject.Inject;
+import lk.gov.health.phsp.entity.ClientEncounterComponentFormSet;
 
 @Named("clientEncounterComponentFormController")
 @SessionScoped
@@ -56,6 +60,21 @@ public class ClientEncounterComponentFormController implements Serializable {
     public ClientEncounterComponentFormController() {
     }
 
+    
+    public List<ClientEncounterComponentForm> findClientEncounterComponentFormOfAFormset(ClientEncounterComponentFormSet fs){
+        String j = "select f from ClientEncounterComponentForm f "
+                + " where f.retired=false "
+                + " and f.parentComponent=:p "
+                + " order by f.orderNo";
+        Map m = new HashMap();
+        m.put("p", fs);
+        List<ClientEncounterComponentForm> t= getFacade().findByJpql(j, m);
+        if(t ==null){
+           t = new ArrayList<>();
+        }
+        return t;
+    }
+    
     public ClientEncounterComponentForm getSelected() {
         return selected;
     }

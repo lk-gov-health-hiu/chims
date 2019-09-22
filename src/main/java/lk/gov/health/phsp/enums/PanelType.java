@@ -30,12 +30,6 @@ package lk.gov.health.phsp.enums;
 public enum PanelType {
     Accordion_Basic,
     Accordion_Multiple,
-    Panels_Toggleable,
-    Panels_Vertical,
-    Panel_Horizontal,
-    Ribbon,
-    TabView_Basic,
-    TabView_Scrollable,
     Tabview_Top_Oriented,
     TabView_Bottom_Oriented,
     TabView_Left_Oriented,

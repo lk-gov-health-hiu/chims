@@ -30,5 +30,5 @@ package lk.gov.health.phsp.enums;
 public enum ItemArrangementStrategy {
     Label_Value_Unit_Sets,
     Absolute_Positioning,
-    Relavite_Positioning,
+    Relative_Positioning,
 }

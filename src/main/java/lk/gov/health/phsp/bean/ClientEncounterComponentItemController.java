@@ -6,8 +6,11 @@ import lk.gov.health.phsp.bean.util.JsfUtil.PersistAction;
 import lk.gov.health.phsp.facade.ClientEncounterComponentItemFacade;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -20,6 +23,8 @@ import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
 import javax.inject.Inject;
+import lk.gov.health.phsp.entity.ClientEncounterComponentForm;
+import lk.gov.health.phsp.entity.ClientEncounterComponentFormSet;
 
 @Named("clientEncounterComponentItemController")
 @SessionScoped
@@ -31,6 +36,20 @@ public class ClientEncounterComponentItemController implements Serializable {
     private WebUserController webUserController;
     private List<ClientEncounterComponentItem> items = null;
     private ClientEncounterComponentItem selected;
+
+    public List<ClientEncounterComponentItem> findClientEncounterComponentItemOfAForm(ClientEncounterComponentForm fs) {
+        String j = "select f from ClientEncounterComponentItem f "
+                + " where f.retired=false "
+                + " and f.parentComponent=:p "
+                + " order by f.orderNo";
+        Map m = new HashMap();
+        m.put("p", fs);
+        List<ClientEncounterComponentItem> t = getFacade().findByJpql(j, m);
+        if (t == null) {
+            t = new ArrayList<>();
+        }
+        return t;
+    }
 
     public ClientEncounterComponentItemController() {
     }
@@ -58,20 +77,24 @@ public class ClientEncounterComponentItemController implements Serializable {
         initializeEmbeddableKey();
         return selected;
     }
-    
-     public void save(){
-         save(selected);
-     }
-    
-    public void save(ClientEncounterComponentItem i){
-        if(i==null){
+
+    public void save() {
+        save(selected);
+    }
+
+    public void save(ClientEncounterComponentItem i) {
+        System.out.println("save");
+        System.out.println("i = " + i);
+        if (i == null) {
             return;
         }
-        if(i.getId()==null){
+        System.out.println("i.getId() = " + i.getId());
+        System.out.println("i.getShortTextValue() = " + i.getShortTextValue());
+        if (i.getId() == null) {
             i.setCreatedAt(new Date());
             i.setCreatedBy(webUserController.getLoggedUser());
             getFacade().create(i);
-        }else{
+        } else {
             i.setLastEditBy(webUserController.getLoggedUser());
             i.setLastEditeAt(new Date());
             getFacade().edit(i);
@@ -152,8 +175,6 @@ public class ClientEncounterComponentItemController implements Serializable {
         return ejbFacade;
     }
 
-    
-    
     @FacesConverter(forClass = ClientEncounterComponentItem.class)
     public static class ClientEncounterComponentItemControllerConverter implements Converter {
 

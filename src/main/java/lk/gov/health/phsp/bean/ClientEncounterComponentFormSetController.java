@@ -26,6 +26,7 @@ import lk.gov.health.phsp.entity.DesignComponentForm;
 import lk.gov.health.phsp.entity.DesignComponentFormItem;
 import lk.gov.health.phsp.entity.DesignComponentFormSet;
 import lk.gov.health.phsp.entity.Encounter;
+import lk.gov.health.phsp.enums.ComponentSetType;
 import lk.gov.health.phsp.enums.ComponentSex;
 import lk.gov.health.phsp.enums.EncounterType;
 // </editor-fold>
@@ -74,7 +75,7 @@ public class ClientEncounterComponentFormSetController implements Serializable {
     }
 
     public String createAndNavigateToClinicalEncounterComponentFormSetFromDesignComponentFormSetForClinicVisit(DesignComponentFormSet dfs) {
-        String navigationLink = "";
+        String navigationLink = "/clientEncounterComponentFormSet/Formset";
 
         Encounter e = new Encounter();
         e.setClient(clientController.getSelected());
@@ -85,12 +86,15 @@ public class ClientEncounterComponentFormSetController implements Serializable {
         encounterController.save(e);
 
         ClientEncounterComponentFormSet cfs = new ClientEncounterComponentFormSet();
+
         cfs.setEncounter(e);
         cfs.setInstitution(dfs.getInstitution());
+
         cfs.setReferenceComponent(dfs);
         cfs.setComponentSetType(dfs.getComponentSetType());
         cfs.setPanelType(dfs.getPanelType());
         cfs.setName(dfs.getName());
+
         getFacade().create(cfs);
 
         List<DesignComponentForm> dfList = designComponentFormController.fillFormsofTheSelectedSet(dfs);
@@ -106,13 +110,16 @@ public class ClientEncounterComponentFormSetController implements Serializable {
             if (!skipThisForm) {
 
                 ClientEncounterComponentForm cf = new ClientEncounterComponentForm();
+
+                cf.setEncounter(e);
+                cf.setInstitution(dfs.getInstitution());
+
                 cf.setReferenceComponent(df);
                 cf.setName(df.getName());
                 cf.setOrderNo(df.getOrderNo());
                 cf.setItemArrangementStrategy(df.getItemArrangementStrategy());
                 cf.setParentComponent(cfs);
-                cf.setEncounter(e);
-                cf.setInstitution(dfs.getInstitution());
+
                 clientEncounterComponentFormController.save(cf);
 
                 List<DesignComponentFormItem> diList = designComponentFormItemController.fillItemsOfTheForm(df);
@@ -128,9 +135,28 @@ public class ClientEncounterComponentFormSetController implements Serializable {
                     }
                     if (!skipThisItem) {
                         ClientEncounterComponentItem ci = new ClientEncounterComponentItem();
+
+                        ci.setEncounter(e);
+                        ci.setInstitution(dfs.getInstitution());
+
                         ci.setReferenceComponent(di);
                         ci.setParentComponent(cf);
-                        
+                        ci.setName(di.getName());
+                        ci.setRenderType(di.getRenderType());
+                        ci.setMimeType(di.getMimeType());
+                        ci.setSelectionDataType(di.getSelectionDataType());
+                        ci.setTopPercent(di.getTopPercent());
+                        ci.setLeftPercent(di.getLeftPercent());
+                        ci.setWidthPercent(di.getWidthPercent());
+                        ci.setHeightPercent(di.getHeightPercent());
+                        ci.setCategoryOfAvailableItems(di.getCategoryOfAvailableItems());
+                        ci.setOrderNo(di.getOrderNo());
+                        ci.setDataPopulationStrategy(di.getDataPopulationStrategy());
+                        ci.setDataModificationStrategy(di.getDataModificationStrategy());
+                        ci.setDataCompletionStrategy(di.getDataCompletionStrategy());
+                        ci.setIntHtmlColor(di.getIntHtmlColor());
+                        ci.setHexHtmlColour(di.getHexHtmlColour());
+
                         clientEncounterComponentItemController.save(ci);
                     }
                 }
@@ -138,6 +164,7 @@ public class ClientEncounterComponentFormSetController implements Serializable {
             }
         }
 
+        selected = cfs;
         return navigationLink;
     }
 

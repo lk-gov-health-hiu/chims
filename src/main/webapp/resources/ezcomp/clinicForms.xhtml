@@ -1,0 +1,60 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:cc="http://xmlns.jcp.org/jsf/composite"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+    <!-- INTERFACE -->
+    <cc:interface>
+        <cc:attribute  name="form" type="lk.gov.health.phsp.entity.ClientEncounterComponentForm" />
+    </cc:interface>
+
+    <!-- IMPLEMENTATION -->
+    <cc:implementation>
+
+        <h:panelGroup rendered="#{cc.attrs.form.itemArrangementStrategy eq 'Label_Value_Unit_Sets'}" >
+            <table border="0" >
+                <ui:repeat value="#{clientEncounterComponentItemController.findClientEncounterComponentItemOfAForm(cc.attrs.form)}" 
+                           var="ii" >
+                    <tr>
+                        <td>
+                            <p:outputLabel value="#{ii.name}" ></p:outputLabel>
+                        </td>
+                        <td>
+                            <h:panelGroup rendered="#{ii.renderType eq 'Input_Text'}" >
+                                <h:inputText id="txtSt" value="#{ii.shortTextValue}" >
+                                    <p:ajax  event="blur" process="@this" listener="#{clientEncounterComponentItemController.save(ii)}" ></p:ajax>
+                                </h:inputText>
+                            </h:panelGroup>
+                            <h:panelGroup rendered="#{ii.renderType eq 'Input_Text_Area'}" >
+                                <h:inputTextarea id="txtSt" value="#{ii.longTextValue}" >
+                                    <p:ajax  event="blur" process="@this" listener="#{clientEncounterComponentItemController.save(ii)}" ></p:ajax>
+                                </h:inputTextarea>
+                            </h:panelGroup>
+                            
+
+                        </td>
+                        <td>
+                            <p:outputLabel value="#{ii.id}" ></p:outputLabel>
+                        </td>
+                    </tr>
+                </ui:repeat>
+                <ui:repeat   value="#{clientEncounterComponentItemController.findClientEncounterComponentItemOfAForm(cc.attrs.form)}" 
+                             var="i" >
+                    <p:outputLabel title="#{i.name}" ></p:outputLabel>
+                </ui:repeat>
+            </table>                
+        </h:panelGroup>
+
+        <h:panelGroup rendered="#{cc.attrs.form.itemArrangementStrategy eq 'Absolute_Positioning'}" >
+            <p:outputLabel value="Still Under Construction. Please contact Development Team" ></p:outputLabel>
+        </h:panelGroup>
+
+        <h:panelGroup rendered="#{cc.attrs.form.itemArrangementStrategy eq 'Relative_Positioning'}" >
+            <p:outputLabel value="Still Under Construction. Please contact Development Team" ></p:outputLabel>
+        </h:panelGroup>
+
+    </cc:implementation>
+</html>

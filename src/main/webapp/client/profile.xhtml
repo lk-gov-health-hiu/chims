@@ -155,7 +155,7 @@
                                                     <h:dataTable value="#{designComponentFormSetController.getClinicFormSets(chlce.institution)}"
                                                                  var="cfs"  border="0" >
                                                         <h:column >
-                                                            <p:commandLink value="New #{cfs.name}" action="#{clientEncounterComponentFormSetController}" ></p:commandLink>
+                                                            <p:commandLink value="New #{cfs.name}" action="#{clientEncounterComponentFormSetController.createAndNavigateToClinicalEncounterComponentFormSetFromDesignComponentFormSetForClinicVisit(cfs)}" ></p:commandLink>
                                                         </h:column>
                                                     </h:dataTable>
                                                 </p:column>
