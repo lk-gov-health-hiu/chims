@@ -110,7 +110,7 @@ public class CommonController implements Serializable {
     public RenderType[] getRenderTypes() {
         return RenderType.values();
     }
-
+    
     public SelectionDataType[] getSelectionDataTypes() {
         return SelectionDataType.values();
     }

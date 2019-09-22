@@ -21,6 +21,7 @@
                     <tr>
                         <td>
                             <p:outputLabel value="#{ii.name}" ></p:outputLabel>
+                            <p:outputLabel value="#{ii.renderType}" ></p:outputLabel>
                         </td>
                         <td>
                             <h:panelGroup rendered="#{ii.renderType eq 'Input_Text'}" >
@@ -29,15 +30,10 @@
                                 </h:inputText>
                             </h:panelGroup>
                             <h:panelGroup rendered="#{ii.renderType eq 'Input_Text_Area'}" >
-                                <h:inputTextarea id="txtSt" value="#{ii.longTextValue}" >
+                                <h:inputTextarea id="txtLt" value="#{ii.longTextValue}" >
                                     <p:ajax  event="blur" process="@this" listener="#{clientEncounterComponentItemController.save(ii)}" ></p:ajax>
                                 </h:inputTextarea>
                             </h:panelGroup>
-                            
-
-                        </td>
-                        <td>
-                            <p:outputLabel value="#{ii.id}" ></p:outputLabel>
                         </td>
                     </tr>
                 </ui:repeat>

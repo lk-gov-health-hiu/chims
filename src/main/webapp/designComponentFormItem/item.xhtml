@@ -19,9 +19,9 @@
                     <p:panel header="Form Item Details" style="width: 100%; text-align: center;" >
 
                         <f:facet name="header" >
-                            
+
                         </f:facet>
-                        
+
                         <h:form>
 
                             <p:panelGrid columns="2" rendered="#{designComponentFormItemController.selected ne null}"
@@ -54,17 +54,17 @@
                                     <f:selectItems value="#{commonController.renderTypes}" ></f:selectItems>
                                 </p:selectOneMenu>
 
-                                <p:outputLabel value="MimeType:" for="mimeType" />
-                                <p:selectOneMenu id="mimeType" 
-                                                 value="#{designComponentFormItemController.selected.mimeType}" >
-                                    <f:selectItem itemLabel="Select" ></f:selectItem>
-                                    <f:selectItems value="#{itemController.mimeTypes}" var="m" itemLabel="#{m.name}" itemLabelEscaped="#{m}" ></f:selectItems>
-                                </p:selectOneMenu>
-
                                 <p:outputLabel value="SelectionDataType:" for="selectionDataType" />
                                 <p:selectOneMenu id="selectionDataType" 
                                                  value="#{designComponentFormItemController.selected.selectionDataType}" title="SelectionDataType" >
                                     <f:selectItems value="#{commonController.selectionDataTypes}" ></f:selectItems>
+                                </p:selectOneMenu>
+
+                                <p:outputLabel value="MimeType:" for="mimeType" rendered="false"/>
+                                <p:selectOneMenu id="mimeType" rendered="false"
+                                                 value="#{designComponentFormItemController.selected.mimeType}" >
+                                    <f:selectItem itemLabel="Select" ></f:selectItem>
+                                    <f:selectItems value="#{itemController.mimeTypes}" var="m" itemLabel="#{m.name}" itemLabelEscaped="#{m}" ></f:selectItems>
                                 </p:selectOneMenu>
 
                                 <p:outputLabel value="Top Percent:" for="topPercent" />
@@ -119,7 +119,7 @@
                         </h:form>
 
                         <p:spacer height="10" ></p:spacer>
-                        
+
                     </p:panel>
 
 

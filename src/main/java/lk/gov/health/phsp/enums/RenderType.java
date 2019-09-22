@@ -29,8 +29,15 @@ package lk.gov.health.phsp.enums;
  * @author User
  */
 public enum RenderType {
+    Short_text_input,
+    Long_text_input,
+    Real_number_input,
+    Integer_number_input,
     Label,
     HTML,
+    Autocomplete_to_select_one_item,
+    Autocomplete_to_select_many_items,
+    Prescreption_pad,
     Table,
     Grid,
     Row,
@@ -39,6 +46,7 @@ public enum RenderType {
     Panel,
     Panel_Tab,
     Autocomplete,
+    @Deprecated
     Input_Text_Area,
     Select_Boolean_Button,
     Select_Boolean_Checkbox,
@@ -46,18 +54,15 @@ public enum RenderType {
     Select_One_Radio,
     Select_Checkbox_Menu,
     Select_One_Menu,
-    Tri_State_Checkbox,
-    Input_Group,
-    Input_Number,
     Select_One_Listbox,
     Select_Many_Button,
     Select_Many_Menu,
     Select_Many_Checkbox,
-    Multi_Select_List_Box,
-    Toggle_Switch,
+    Select_Many_List_Box,
     Date_Picker,
     Calendar,
     Signature,
+    @Deprecated
     Input_Text,
     Input_Switch,
     Password,
@@ -71,4 +76,7 @@ public enum RenderType {
     Chips,
     Button,
     Link,
+    @Deprecated
+    Item_select_and_add_to_List,
+    Prescreption,
 }
