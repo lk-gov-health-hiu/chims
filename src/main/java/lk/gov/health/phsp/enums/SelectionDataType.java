@@ -21,7 +21,6 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-
 package lk.gov.health.phsp.enums;
 
 /**
@@ -29,12 +28,8 @@ package lk.gov.health.phsp.enums;
  * @author User
  */
 public enum SelectionDataType {
-    Short_Text,
-    Long_Text,
-    Byte_Array,
-    Integer_Number,
-    Real_Number,
-    Boolean,
+    Free_Entry,
+    Calculation,
     Item_Reference,
     Client_Reference,
     Area_Reference,
@@ -43,4 +38,10 @@ public enum SelectionDataType {
     Client_List_Reference,
     Area_List_Reference,
     Institution_List_Reference,
+    Short_Text,
+    Long_Text,
+    Byte_Array,
+    Integer_Number,
+    Real_Number,
+    Boolean,
 }

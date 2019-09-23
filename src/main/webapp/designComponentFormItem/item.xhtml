@@ -74,7 +74,7 @@
 
                                         <p:panelGrid columns="2" >
 
-                                            <p:outputLabel value="SelectionDataType:" for="selectionDataType" />
+                                            <p:outputLabel value="Data Type Available:" for="selectionDataType" />
                                             <p:selectOneMenu id="selectionDataType" 
                                                              value="#{designComponentFormItemController.selected.selectionDataType}" title="SelectionDataType" >
                                                 <f:selectItems value="#{commonController.selectionDataTypes}" ></f:selectItems>
@@ -95,20 +95,21 @@
                                             </p:selectOneMenu>
 
                                             <p:outputLabel value="Data Modification Strategy:" for="dataModificationStrategy" />
-                                            <p:inputText id="dataModificationStrategy" 
+                                            <p:selectOneMenu id="dataModificationStrategy" 
                                                          value="#{designComponentFormItemController.selected.dataModificationStrategy}" 
                                                          title="DataModificationStrategy" >
                                                 <f:selectItems value="#{commonController.dataModificationStrategies}" ></f:selectItems>
-                                            </p:inputText>
+                                            </p:selectOneMenu>
 
 
 
                                             <p:outputLabel value="Category of Available Items:" for="categoryOfAvailableItems" />
-                                            <p:selectOneMenu id="categoryOfAvailableItems" value="#{designComponentFormItemController.selected.categoryOfAvailableItems}" >
-                                                <f:selectItem itemLabel="Select" ></f:selectItem>
-                                                <f:selectItems value="#{itemController.categories}" var="ic" itemLabel="#{ic.name}" itemLabelEscaped="#{ic}" ></f:selectItems>
-
-                                            </p:selectOneMenu>
+                                            <p:autoComplete id="categoryOfAvailableItems"
+                                                            value="#{designComponentFormItemController.selected.categoryOfAvailableItems}"
+                                                            completeMethod="#{itemController.completeItems}" 
+                                                            var="ic" itemLabel="#{ic.name}" forceSelection="true"
+                                                            itemValue="#{ic}" >
+                                            </p:autoComplete>
 
                                         </p:panelGrid>
 

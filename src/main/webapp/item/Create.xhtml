@@ -13,16 +13,23 @@
                 <h:panelGroup id="display">
                     <p:panelGrid columns="2" rendered="#{itemController.selected != null}">
                         <p:outputLabel value="#{bundleClinical.EditItemLabel_itemType}" for="itemType" />
-                        <p:inputText id="itemType" value="#{itemController.selected.itemType}" title="#{bundleClinical.EditItemTitle_itemType}" />
+                        <p:selectOneMenu
+                            id="itemType" value="#{itemController.selected.itemType}" title="#{bundleClinical.EditItemTitle_itemType}" >
+                            <f:selectItems value="#{commonController.itemTypes}" ></f:selectItems>
+                        </p:selectOneMenu>
+                        
                         <p:outputLabel value="#{bundleClinical.EditItemLabel_name}" for="name" />
-                        <p:inputText id="name" value="#{itemController.selected.name}" title="#{bundleClinical.EditItemTitle_name}" />
+                        <p:inputText autocomplete="off" id="name" value="#{itemController.selected.name}" title="#{bundleClinical.EditItemTitle_name}" />
                         <p:outputLabel value="Code" for="code" />
-                        <p:inputText id="code" value="#{itemController.selected.code}" title="#{bundleClinical.EditItemTitle_id}" />
+                        <p:inputText  autocomplete="off"  id="code" value="#{itemController.selected.code}" title="#{bundleClinical.EditItemTitle_id}" />
                         <p:outputLabel value="Parent"  />
-                        <p:outputLabel value="#{itemController.selected.parent.name}" />
+                        <p:autoComplete completeMethod="#{itemController.completeItems}" 
+                                        value="#{itemController.selected.parent}" var="di"  itemLabel="#{di.name}" 
+                                        itemValue="#{di}" forceSelection="true"/>
                     </p:panelGrid>
-                    <p:commandButton actionListener="#{itemController.create}" value="#{bundleClinical.Save}" update="display,:ItemListForm:datalist" oncomplete="handleSubmit(args,'ItemCreateDialog');"/>
-                    <p:commandButton value="#{bundleClinical.Cancel}" onclick="ItemCreateDialog.hide()"/>
+                    <p:commandButton action="#{itemController.create}" value="#{bundleClinical.Save}"
+                                     ajax="false"/>
+                    <p:commandButton value="#{bundleClinical.Cancel}" ajax="false"/>
                 </h:panelGroup>
             </h:form>
         </p:dialog>

@@ -22,35 +22,29 @@
                     <tr>
                         <td>
                             <p:outputLabel value="#{ii.name}" ></p:outputLabel>
-                            <!--<p:outputLabel value="#{ii.renderType}" ></p:outputLabel>-->
                         </td>
                         <td>
                             <h:panelGroup rendered="#{ii.renderType eq 'Short_text_input'}" >
-                                
-                                
                                 <h:inputText id="txtSt" value="#{ii.shortTextValue}" 
                                              required="#{ii.required}" 
                                              requiredMessage="#{ii.requiredErrorMessage}" >
-                                    <!--<f:validateRegex pattern="#{ii.regexValidationString}" rendered="#{ii.regexValidationString ne null}" ></f:validateRegex>-->
                                     <p:ajax  event="blur" process="@this" listener="#{clientEncounterComponentItemController.save(ii)}" ></p:ajax>
                                 </h:inputText>
-                                
                             </h:panelGroup>
                             <h:panelGroup rendered="#{ii.renderType eq 'Long_text_input'}" >
                                 <h:inputTextarea id="txtLt" value="#{ii.longTextValue}" >
                                     <p:ajax  event="blur" process="@this" listener="#{clientEncounterComponentItemController.save(ii)}" ></p:ajax>
                                 </h:inputTextarea>
                             </h:panelGroup>
-                        </td>
-                        <td>
-                            <p:spacer height="1" width="40" ></p:spacer>
-                        </td>
-                         <td>
-                             <p:outputLabel value="Type : #{ii.renderType}" ></p:outputLabel>
-                             <p:outputLabel value="Required : #{ii.required}" ></p:outputLabel>
-                             <p:outputLabel value="Reguired Message : #{ii.requiredErrorMessage}" ></p:outputLabel>
-                             <p:outputLabel value="Regex Pattern : #{ii.regexValidationString}" ></p:outputLabel>
-                             <p:outputLabel value="Regex Disabled : #{ii.regexValidationString eq null or ii.regexValidationString eq ''}" ></p:outputLabel>
+                            
+                             <h:panelGroup rendered="#{ii.renderType eq 'Select_One_Menu'}" >
+                                 <h:selectOneMenu id="som" value="#{ii.item}" >
+                                     <f:selectItems value="#{itemController.findItemList(ii.categoryOfAvailableItems)}" var="li"
+                                                    itemLabel="#{li}" itemValue="#{li.name}" ></f:selectItems>
+                                    <p:ajax  event="blur" process="@this" listener="#{clientEncounterComponentItemController.save(ii)}" ></p:ajax>
+                                </h:selectOneMenu>
+                            </h:panelGroup>
+                            
                         </td>
                     </tr>
                 </ui:repeat>
