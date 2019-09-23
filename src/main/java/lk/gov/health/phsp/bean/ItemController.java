@@ -49,6 +49,10 @@ public class ItemController implements Serializable {
         return findItemList(null, ItemType.Dictionary_Item, qry);
     }
 
+    public List<Item> completeItems(String qry) {
+        return findItemList(null, null, qry);
+    }
+
     public void addInitialMetadata() {
         addTitles();
         addMarietalStatus();
@@ -320,28 +324,46 @@ public class ItemController implements Serializable {
         }
         return titles;
     }
-    
+
     public List<Item> findItemList(String parentCode, ItemType t) {
         return findItemList(parentCode, t, null);
     }
 
     public List<Item> findItemList(String parentCode, ItemType t, String qry) {
-        String j = "select t from Item t where t.retired=false "
-                + " and t.itemType=:t ";
+        String j = "select t from Item t where t.retired=false ";
         Map m = new HashMap();
-        m.put("t", t);
+
         Item parent = findItemByCode(parentCode);
+        if (parentCode != null) {
+            m.put("t", t);
+            j += " and t.itemType=:t  ";
+        }
         if (parent != null) {
             m.put("p", parent);
             j += " and t.parent=:p ";
         }
-        if(qry!=null){
+        if (qry != null) {
             m.put("n", "%" + qry.trim().toLowerCase() + "%");
             j += " and lower(t.name) like :n ";
         }
         j += " order by t.orderNo";
         return getFacade().findByJpql(j, m);
     }
+
+
+        public List<Item> findItemList(Item parent) {
+        String j = "select t from Item t where t.retired=false ";
+        Map m = new HashMap();
+
+        if (parent != null) {
+            m.put("p", parent);
+            j += " and t.parent=:p ";
+        }
+        j += " order by t.name";
+        return getFacade().findByJpql(j, m);
+    }
+
+
 
     public void setTitles(List<Item> titles) {
         this.titles = titles;

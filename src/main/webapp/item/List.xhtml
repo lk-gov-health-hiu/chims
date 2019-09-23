@@ -23,19 +23,19 @@
                         <p:ajax event="rowSelect"   update="createButton viewButton editButton deleteButton"/>
                         <p:ajax event="rowUnselect" update="createButton viewButton editButton deleteButton"/>
 
-                        <p:column>
+                        <p:column filterBy="#{item.itemType}" filterMatchMode="contains" sortBy="#{item.itemType}">
                             <f:facet name="header">
                                 <h:outputText value="#{bundleClinical.ListItemTitle_itemType}"/>
                             </f:facet>
                             <h:outputText value="#{item.itemType}"/>
                         </p:column>
-                        <p:column>
+                        <p:column  filterBy="#{item.name}" filterMatchMode="contains" sortBy="#{item.name}">
                             <f:facet name="header">
                                 <h:outputText value="#{bundleClinical.ListItemTitle_name}"/>
                             </f:facet>
                             <h:outputText value="#{item.name}"/>
                         </p:column>
-                        <p:column>
+                        <p:column  filterBy="#{item.code}" filterMatchMode="contains" sortBy="#{item.code}">
                             <f:facet name="header">
                                 <h:outputText value="Code"/>
                             </f:facet>

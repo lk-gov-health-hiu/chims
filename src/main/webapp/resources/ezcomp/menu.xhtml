@@ -67,6 +67,32 @@
                     <p:spacer height="1" width="5" ></p:spacer>
                     <p:commandButton action="#{webUserController.logOut()}" ajax="false"
                                      rendered="#{webUserController.loggedUser ne null}" value="Logout" />
+                    
+<!--                    
+                     <p:remoteCommand name="menubarSearch" action="#{searchController.menuBarSearch()}"/>
+                                    <p:inputText style="margin-right:10px" placeholder="Search"
+                                                 id="txtMenuBar"  
+                                                 value="#{searchController.menuBarSearchText}"
+                                                 onkeypress="if (event.keyCode == 13) {
+                                                             menubarSearch();
+                                                             return false;
+                                                         }"/>
+                                    <p:commandButton id="btnLogout" ajax="false" icon="ui-icon-extlink" action="#{sessionController.logout}" />
+                                    <p:tooltip for="btnLogout" value="df"  >
+                                        <h:panelGrid columns="3" >
+                                            <h:outputText value="Institution" ></h:outputText>
+                                            <p:spacer width="10" height="1" ></p:spacer>
+                                            <h:outputText value="#{sessionController.loggedUser.institution.name}" ></h:outputText>
+                                            <h:outputText value="Department" ></h:outputText>
+                                            <p:spacer width="10" height="1" ></p:spacer>
+                                            <h:outputText value="#{sessionController.loggedUser.department.name} " ></h:outputText>
+                                            <h:outputText value="User" ></h:outputText>
+                                            <p:spacer width="10" height="1" ></p:spacer>
+                                            <h:outputText value="#{sessionController.loggedUser.webUserPerson.name}" ></h:outputText>
+                                        </h:panelGrid>
+                                    </p:tooltip>
+                               -->
+                    
                 </f:facet>
             </p:menubar>
         
