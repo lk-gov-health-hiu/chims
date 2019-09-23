@@ -39,39 +39,21 @@
                             </p:column>
                             <p:column>
                                 <f:facet name="header">
-                                    <h:outputText value="Email"/>
-                                </f:facet>
-                                <h:outputText value="#{item.email}"/>
-                            </p:column>
-                            <p:column>
-                                <f:facet name="header">
                                     <h:outputText value="Phone"/>
                                 </f:facet>
                                 <h:outputText value="#{item.phone}"/>
                             </p:column>
                             <p:column>
                                 <f:facet name="header">
-                                    <h:outputText value="Last HIN Issued"/>
+                                    <h:outputText value="POI Issued By"/>
                                 </f:facet>
-                                <h:outputText value="#{item.lastHin}"/>
-                            </p:column>
-                            <p:column>
-                                <f:facet name="header">
-                                    <h:outputText value="POI Number"/>
-                                </f:facet>
-                                <h:outputText value="#{item.poiNumber}"/>
+                                <h:outputText value="#{item.poiInstitution.name}"/>
                             </p:column>
                             <p:column>
                                 <f:facet name="header">
                                     <h:outputText value="Governed By"/>
                                 </f:facet>
                                 <h:outputText value="#{item.parent.name}"/>
-                            </p:column>
-                            <p:column>
-                                <f:facet name="header">
-                                    <h:outputText value="GN Area"/>
-                                </f:facet>
-                                <h:outputText value="#{item.gnArea.name}"/>
                             </p:column>
                             <p:column>
                                 <f:facet name="header">

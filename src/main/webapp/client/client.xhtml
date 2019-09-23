@@ -117,6 +117,7 @@
                                     <f:ajax event="keyup" execute="@this month day" render="calDob" 
                                             listener="#{clientController.yearMonthDateChanged()}"  />
                                 </p:inputText>
+                                
                                 <p:inputText autocomplete="off" id="month"
                                              style="width: 90px; " 
                                              value="#{clientController.yearMonthDay.month}">
@@ -124,6 +125,7 @@
                                             render="calDob" 
                                             listener="#{clientController.yearMonthDateChanged()}"  />
                                 </p:inputText>
+                                
                                 <p:inputText autocomplete="off" id="day" 
                                              style="width: 90px;" 
                                              value="#{clientController.yearMonthDay.day}">
@@ -139,7 +141,8 @@
                                          inputStyle="width: 124px!important;"
                                          styleClass="shortinput">
                                 <f:ajax event="dateSelect" listener="#{clientController.updateYearDateMonth}"
-                                        render="year month day" execute="@this"/>
+                                        render="year month day" 
+                                        execute="@this"/>
                             </p:calendar>
 
                             <p:outputLabel value="GN Area" for="gn" />

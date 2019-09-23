@@ -6,8 +6,11 @@ import lk.gov.health.phsp.bean.util.JsfUtil.PersistAction;
 import lk.gov.health.phsp.facade.EncounterFacade;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -20,6 +23,8 @@ import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
 import javax.inject.Inject;
+import lk.gov.health.phsp.entity.Client;
+import lk.gov.health.phsp.entity.Institution;
 
 @Named("encounterController")
 @SessionScoped
@@ -33,6 +38,41 @@ public class EncounterController implements Serializable {
     private WebUserController webUserController;
 
     public EncounterController() {
+    }
+    
+    public String createClinicEnrollNumber(Institution clinic) {
+        String j = "select count(e) from Encounter e "
+                + " where e.institution=:ins "
+                + " and e.createdAt > :d";
+        Map m = new HashMap();
+        m.put("d", CommonController.startOfTheYear());
+        Long c = getFacade().findLongByJpql(j, m);
+        if (c == null) {
+            c = 1l;
+        }else{
+            c+=1;
+        }
+        SimpleDateFormat format = new SimpleDateFormat("yy");
+        String yy = format.format(new Date());
+        return clinic.getCode() + "/" + yy + "/" + c;
+    }
+    
+    public boolean clinicEnrolmentExists(Institution i, Client c){
+        String j = "select e from Encounter e "
+                + " where e.institution=:i "
+                + " and e.client=:c";
+        Map m = new HashMap();
+        m.put("i", i);
+        m.put("c", c);
+        Encounter e = getFacade().findFirstByJpql(j, m);
+        if(e==null){
+            return false;
+        }
+        if(e.getCompleted()){
+            return false;
+        }else{
+            return true;
+        }
     }
 
     public Encounter getSelected() {
@@ -68,7 +108,7 @@ public class EncounterController implements Serializable {
             return;
         }
         if (e.getId() == null) {
-            e.setCreateAt(new Date());
+            e.setCreatedAt(new Date());
             e.setCreatedBy(webUserController.getLoggedUser());
             getFacade().create(e);
         }else{

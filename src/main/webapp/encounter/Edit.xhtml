@@ -52,8 +52,8 @@
                                            var="createdByItem"
                                            itemValue="#{createdByItem}"/>
                         </p:selectOneMenu>
-                        <p:outputLabel value="#{bundleClinical.EditEncounterLabel_createAt}" for="createAt" />
-                        <p:calendar id="createAt" pattern="MM/dd/yyyy HH:mm:ss" value="#{encounterController.selected.createAt}" title="#{bundleClinical.EditEncounterTitle_createAt}"  showOn="button"/>
+                        <p:outputLabel value="#{bundleClinical.EditEncounterLabel_createdAt}" for="createdAt" />
+                        <p:calendar id="createdAt" pattern="MM/dd/yyyy HH:mm:ss" value="#{encounterController.selected.createdAt}" title="#{bundleClinical.EditEncounterTitle_createdAt}"  showOn="button"/>
                         <p:outputLabel value="#{bundleClinical.EditEncounterLabel_retiredBy}" for="retiredBy" />
                         <p:selectOneMenu id="retiredBy" value="#{encounterController.selected.retiredBy}" >
                             <f:selectItem itemLabel="#{bundleClinical.SelectOneMessage}"/>

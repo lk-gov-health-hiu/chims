@@ -63,8 +63,10 @@ public class Institution implements Serializable {
     private String mobile;
     private String web;
     private String poiNumber;
+    @ManyToOne
+    private Institution poiInstitution;
     private Long lastHin;
-    
+
     @ManyToOne
     private Institution parent;
     @ManyToOne
@@ -103,7 +105,6 @@ public class Institution implements Serializable {
     private Date retiredAt;
     private String retireComments;
 
-
     public Long getId() {
         return id;
     }
@@ -136,8 +137,6 @@ public class Institution implements Serializable {
     public String toString() {
         return name;
     }
-    
-    
 
     public InstitutionType getInstitutionType() {
         return institutionType;
@@ -379,6 +378,14 @@ public class Institution implements Serializable {
 
     public void setPdhsArea(Area pdhsArea) {
         this.pdhsArea = pdhsArea;
+    }
+
+    public Institution getPoiInstitution() {
+        return poiInstitution;
+    }
+
+    public void setPoiInstitution(Institution poiInstitution) {
+        this.poiInstitution = poiInstitution;
     }
 
     

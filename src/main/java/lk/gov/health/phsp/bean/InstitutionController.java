@@ -184,9 +184,18 @@ public class InstitutionController implements Serializable {
         return getFacade().findAll();
     }
 
+    public void refreshMyInstitutions(){
+        myClinics = null;
+    }
+    
     public List<Institution> getMyClinics() {
         if(myClinics==null){
-            myClinics = fillInstitutions(InstitutionType.Ward_Clinic, null, webUserController.getLoggedUser().getInstitution());
+            myClinics= new ArrayList<>();
+            for(Institution i:webUserController.getLoggableInstitutions()){
+                if(i.getInstitutionType().equals(InstitutionType.Ward_Clinic)){
+                    myClinics.add(i);
+                }
+            }
         }
         return myClinics;
     }

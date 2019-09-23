@@ -58,6 +58,7 @@ public class Component implements Serializable {
     private Long id;
 
     String name;
+    private Item item;
 
     private Double orderNo;
 
@@ -72,6 +73,15 @@ public class Component implements Serializable {
 
     @Enumerated(EnumType.STRING)
     RenderType renderType;
+    
+    private boolean required;
+    @Lob
+    private String requiredErrorMessage;
+    
+    private String regexValidationString;
+    
+    @Lob
+    private String regexValidationFailedMessage;
 
     @ManyToOne
     private Item mimeType;
@@ -461,4 +471,46 @@ public class Component implements Serializable {
         this.referenceComponent = referenceComponent;
     }
 
+    public boolean isRequired() {
+        return required;
+    }
+
+    public void setRequired(boolean required) {
+        this.required = required;
+    }
+
+    public String getRegexValidationString() {
+        return regexValidationString;
+    }
+
+    public void setRegexValidationString(String regexValidationString) {
+        this.regexValidationString = regexValidationString;
+    }
+
+    public String getRegexValidationFailedMessage() {
+        return regexValidationFailedMessage;
+    }
+
+    public void setRegexValidationFailedMessage(String regexValidationFailedMessage) {
+        this.regexValidationFailedMessage = regexValidationFailedMessage;
+    }
+
+    public String getRequiredErrorMessage() {
+        return requiredErrorMessage;
+    }
+
+    public void setRequiredErrorMessage(String requiredErrorMessage) {
+        this.requiredErrorMessage = requiredErrorMessage;
+    }
+
+    public Item getItem() {
+        return item;
+    }
+
+    public void setItem(Item item) {
+        this.item = item;
+    }
+
+    
+    
 }

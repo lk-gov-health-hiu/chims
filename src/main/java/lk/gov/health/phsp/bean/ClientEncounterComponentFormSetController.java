@@ -142,7 +142,7 @@ public class ClientEncounterComponentFormSetController implements Serializable {
     public List<ClientEncounterComponentFormSet> fillLastFiveCompletedEncountersFormSets(String type) {
         return fillEncountersFormSets(type, 5);
     }
-    
+
     public List<ClientEncounterComponentFormSet> filluncompletedEncountersFormSets(String type) {
         return fillEncountersFormSets(type, false);
     }
@@ -237,9 +237,9 @@ public class ClientEncounterComponentFormSetController implements Serializable {
                 + " s.retired=false "
                 + " and s.encounter.encounterType=:t "
                 + " and s.encounter.client=:c ";
-        if(completeOnly){
+        if (completeOnly) {
             j += " and s.completed=true ";
-        }else{
+        } else {
             j += " and s.completed=false ";
         }
         j += " order by s.encounter.encounterFrom desc";
@@ -297,6 +297,7 @@ public class ClientEncounterComponentFormSetController implements Serializable {
 
                 cf.setEncounter(e);
                 cf.setInstitution(dfs.getInstitution());
+                cf.setItem(df.getItem());
 
                 cf.setReferenceComponent(df);
                 cf.setName(df.getName());
@@ -322,6 +323,13 @@ public class ClientEncounterComponentFormSetController implements Serializable {
 
                         ci.setEncounter(e);
                         ci.setInstitution(dfs.getInstitution());
+
+                        ci.setItem(di.getItem());
+
+                        ci.setRequired(di.isRequired());
+                        ci.setRequiredErrorMessage(di.getRequiredErrorMessage());
+                        ci.setRegexValidationString(di.getRegexValidationString());
+                        ci.setRegexValidationFailedMessage(di.getRegexValidationFailedMessage());
 
                         ci.setReferenceComponent(di);
                         ci.setParentComponent(cf);

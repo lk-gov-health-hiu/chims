@@ -12,6 +12,8 @@ import lk.gov.health.phsp.enums.InstitutionType;
 import lk.gov.health.phsp.enums.ItemType;
 import lk.gov.health.phsp.enums.WebUserRole;
 import java.io.Serializable;
+import java.util.Calendar;
+import java.util.Date;
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Named;
 import lk.gov.health.phsp.enums.ComponentSetType;
@@ -110,7 +112,7 @@ public class CommonController implements Serializable {
     public RenderType[] getRenderTypes() {
         return RenderType.values();
     }
-    
+
     public SelectionDataType[] getSelectionDataTypes() {
         return SelectionDataType.values();
     }
@@ -126,7 +128,7 @@ public class CommonController implements Serializable {
     public DataModificationStrategy[] getDataModificationStrategies() {
         return DataModificationStrategy.values();
     }
-    
+
     public ItemArrangementStrategy[] getItemArrangementStrategies() {
         return ItemArrangementStrategy.values();
     }
@@ -135,8 +137,22 @@ public class CommonController implements Serializable {
         return ItemType.values();
     }
 
-    public PanelType[] getPanelTypes(){
+    public PanelType[] getPanelTypes() {
         return PanelType.values();
     }
-    
+
+    public static Date startOfTheYear() {
+        return startOfTheYear(new Date());
+    }
+
+    public static Date startOfTheYear(Date d) {
+        Calendar c = Calendar.getInstance();
+        c.setTime(d);
+        c.set(Calendar.MONTH, 0);
+        c.set(Calendar.DAY_OF_MONTH, Calendar.JANUARY);
+        c.set(Calendar.HOUR, 0);
+        c.set(Calendar.MINUTE, 0);
+        c.set(Calendar.MILLISECOND, 0);
+        return c.getTime();
+    }
 }

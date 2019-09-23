@@ -6,6 +6,7 @@ import lk.gov.health.phsp.bean.util.JsfUtil;
 import lk.gov.health.phsp.bean.util.JsfUtil.PersistAction;
 import lk.gov.health.phsp.facade.ClientFacade;
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -44,13 +45,15 @@ public class ClientController implements Serializable {
     @EJB
     private lk.gov.health.phsp.facade.ClientFacade ejbFacade;
     @EJB
-    EncounterFacade encounterFacade;
+    private EncounterFacade encounterFacade;
     // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="Controllers">
     @Inject
     ApplicationController applicationController;
     @Inject
     private WebUserController webUserController;
+    @Inject
+    private EncounterController encounterController;
     // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="Variables">
     private List<Client> items = null;
@@ -66,7 +69,6 @@ public class ClientController implements Serializable {
     private String searchingPhoneNumber;
     private YearMonthDay yearMonthDay;
     private Institution selectedClinic;
-    private String hlcEnrollNumberStr;
     private int profileTabActiveIndex;
 
     // </editor-fold>
@@ -99,6 +101,7 @@ public class ClientController implements Serializable {
 
     public String toAddNewClient() {
         selected = new Client();
+        yearMonthDay = new YearMonthDay();
         return "/client/client";
     }
 
@@ -141,7 +144,7 @@ public class ClientController implements Serializable {
         return encounterFacade.findByJpql(j, m);
     }
 
-    public void enrollInHlcClinic() {
+    public void enrollInClinic() {
         if (selectedClinic == null) {
             JsfUtil.addErrorMessage("Please select an HLC clinic to enroll.");
             return;
@@ -150,22 +153,21 @@ public class ClientController implements Serializable {
             JsfUtil.addErrorMessage("Please select a client to enroll.");
             return;
         }
-        if (hlcEnrollNumberStr == null || hlcEnrollNumberStr.trim().equals("")) {
-            JsfUtil.addErrorMessage("Please enter an enrollement number.");
+        if (encounterController.clinicEnrolmentExists(selectedClinic, selected)) {
+            JsfUtil.addErrorMessage("This client is already enrolled.");
             return;
         }
         Encounter encounter = new Encounter();
         encounter.setClient(selected);
         encounter.setEncounterType(EncounterType.Clinic_Enroll);
-        encounter.setCreateAt(new Date());
+        encounter.setCreatedAt(new Date());
         encounter.setCreatedBy(webUserController.getLoggedUser());
         encounter.setInstitution(selectedClinic);
         encounter.setEncounterDate(new Date());
-        encounter.setEncounterNumber(hlcEnrollNumberStr);
+        encounter.setEncounterNumber(encounterController.createClinicEnrollNumber(selectedClinic));
         encounter.setCompleted(false);
         encounterFacade.create(encounter);
-        JsfUtil.addSuccessMessage(selected.getPerson().getNameWithTitle() + " was Successfully Enrolled in " + selectedClinic.getName());
-        hlcEnrollNumberStr = "";
+        JsfUtil.addSuccessMessage(selected.getPerson().getNameWithTitle() + " was Successfully Enrolled in " + selectedClinic.getName() + "\nThe Clinic number is " + encounter.getEncounterNumber());
         selectedClientsClinics = null;
     }
 
@@ -173,7 +175,17 @@ public class ClientController implements Serializable {
         if (selected == null) {
             return;
         }
-        if (webUserController.getLoggedUser().getInstitution().getPoiNumber() == null || webUserController.getLoggedUser().getInstitution().getPoiNumber().trim().equals("")) {
+        Institution poiIns;
+        if (webUserController.getLoggedUser().getInstitution() == null) {
+            JsfUtil.addErrorMessage("You do not have an Institution. Please contact support.");
+            return;
+        }
+        if (webUserController.getLoggedUser().getInstitution().getPoiInstitution() != null) {
+            poiIns = webUserController.getLoggedUser().getInstitution().getPoiInstitution();
+        } else {
+            poiIns = webUserController.getLoggedUser().getInstitution();
+        }
+        if (poiIns.getPoiNumber() == null || poiIns.getPoiNumber().trim().equals("")) {
             JsfUtil.addErrorMessage("A Point of Issue is NOT assigned to your Institution. Please discuss with the System Administrator.");
             return;
         }
@@ -277,6 +289,29 @@ public class ClientController implements Serializable {
         }
     }
 
+    public String searchByAnyId() {
+        if (searchingId == null) {
+            searchingId = "";
+        }
+        
+        selectedClients = listPatientsByIDs(searchingId.trim().toUpperCase());
+
+        if (selectedClients == null || selectedClients.isEmpty()) {
+            JsfUtil.addErrorMessage("No Results Found. Try different search criteria.");
+            return "/client/search_by_id";
+        }
+        if (selectedClients.size() == 1) {
+            selected = selectedClients.get(0);
+            selectedClients = null;
+            searchingId = "";
+            return toClientProfile();
+        } else {
+            selected = null;
+            searchingId = "";
+            return toSelectClient();
+        }
+    }
+
     public void clearSearchById() {
         searchingId = "";
         searchingPhn = "";
@@ -305,6 +340,24 @@ public class ClientController implements Serializable {
         String j = "select c from Client c where c.retired=false and (upper(c.person.phone1)=:q or upper(c.person.phone2)=:q) order by c.phn";
         Map m = new HashMap();
         m.put("q", phn.trim().toUpperCase());
+        return getFacade().findByJpql(j, m);
+    }
+
+    public List<Client> listPatientsByIDs(String ids) {
+        String j = "select c from Client c "
+                + " where c.retired=false "
+                + " and ("
+                + " upper(c.person.phone1)=:q "
+                + " or "
+                + " upper(c.person.phone2)=:q "
+                + " or "
+                + " upper(c.person.nic)=:q "
+                + " or "
+                + " upper(c.phn)=:q "
+                + " ) "
+                + " order by c.phn";
+        Map m = new HashMap();
+        m.put("q", ids.trim().toUpperCase());
         return getFacade().findByJpql(j, m);
     }
 
@@ -508,14 +561,6 @@ public class ClientController implements Serializable {
         this.selectedClinic = selectedClinic;
     }
 
-    public String getHlcEnrollNumberStr() {
-        return hlcEnrollNumberStr;
-    }
-
-    public void setHlcEnrollNumberStr(String hlcEnrollNumberStr) {
-        this.hlcEnrollNumberStr = hlcEnrollNumberStr;
-    }
-
     public List<Encounter> getSelectedClientsClinics() {
         if (selectedClientsClinics == null) {
             selectedClientsClinics = fillEncounters(selected, InstitutionType.Ward_Clinic, EncounterType.Clinic_Enroll, true);
@@ -533,6 +578,14 @@ public class ClientController implements Serializable {
 
     public void setProfileTabActiveIndex(int profileTabActiveIndex) {
         this.profileTabActiveIndex = profileTabActiveIndex;
+    }
+
+    public EncounterFacade getEncounterFacade() {
+        return encounterFacade;
+    }
+
+    public EncounterController getEncounterController() {
+        return encounterController;
     }
 
     // </editor-fold>
