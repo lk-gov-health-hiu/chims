@@ -1,11 +1,17 @@
 package lk.gov.health.phsp.bean;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import lk.gov.health.phsp.entity.Item;
 import lk.gov.health.phsp.bean.util.JsfUtil;
 import lk.gov.health.phsp.bean.util.JsfUtil.PersistAction;
 import lk.gov.health.phsp.facade.ItemFacade;
 
 import java.io.Serializable;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,7 +26,15 @@ import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
+import javax.inject.Inject;
+import jxl.Cell;
+import jxl.Sheet;
+import jxl.Workbook;
+import jxl.read.biff.BiffException;
+import lk.gov.health.phsp.entity.Item;
+import lk.gov.health.phsp.enums.AreaType;
 import lk.gov.health.phsp.enums.ItemType;
+import org.primefaces.model.UploadedFile;
 
 @Named("itemController")
 @SessionScoped
@@ -28,6 +42,10 @@ public class ItemController implements Serializable {
 
     @EJB
     private lk.gov.health.phsp.facade.ItemFacade ejbFacade;
+
+    @Inject
+    private WebUserController webUserController;
+
     private List<Item> items = null;
     private Item selected;
     private List<Item> titles;
@@ -38,6 +56,13 @@ public class ItemController implements Serializable {
     private List<Item> citizenships;
     private List<Item> mimeTypes;
     private List<Item> categories;
+    private UploadedFile file;
+
+    private int itemTypeColumnNumber;
+    private int itemNameColumnNumber;
+    private int itemCodeColumnNumber;
+    private int parentCodeColumnNumber;
+    private int startRow = 1;
 
     public ItemController() {
     }
@@ -45,6 +70,91 @@ public class ItemController implements Serializable {
     // <editor-fold defaultstate="collapsed" desc="Navigation">
     // </editor-fold>    
     // <editor-fold defaultstate="collapsed" desc="Functions">
+    public String importItemsFromExcel() {
+        try {
+            String strParentCode;
+            String strItemName;
+            String strItemType;
+            String strItemCode;
+
+            Item parent = null;
+
+            File inputWorkbook;
+            Workbook w;
+            Cell cell;
+            InputStream in;
+
+            lk.gov.health.phsp.facade.util.JsfUtil.addSuccessMessage(file.getFileName());
+
+            try {
+                lk.gov.health.phsp.facade.util.JsfUtil.addSuccessMessage(file.getFileName());
+                in = file.getInputstream();
+                File f;
+                f = new File(Calendar.getInstance().getTimeInMillis() + file.getFileName());
+                FileOutputStream out = new FileOutputStream(f);
+                int read = 0;
+                byte[] bytes = new byte[1024];
+                while ((read = in.read(bytes)) != -1) {
+                    out.write(bytes, 0, read);
+                }
+                in.close();
+                out.flush();
+                out.close();
+
+                inputWorkbook = new File(f.getAbsolutePath());
+
+                lk.gov.health.phsp.facade.util.JsfUtil.addSuccessMessage("Excel File Opened");
+                w = Workbook.getWorkbook(inputWorkbook);
+                Sheet sheet = w.getSheet(0);
+
+                for (int i = startRow; i < sheet.getRows(); i++) {
+
+                    Map m = new HashMap();
+
+                    cell = sheet.getCell(parentCodeColumnNumber, i);
+                    strParentCode = cell.getContents();
+
+                    parent = findItemByCode(strParentCode);
+                    System.out.println("parent = " + parent);
+
+                    cell = sheet.getCell(itemNameColumnNumber, i);
+                    strItemName = cell.getContents();
+
+                    cell = sheet.getCell(itemCodeColumnNumber, i);
+                    strItemCode = cell.getContents();
+                    strItemCode = strItemCode.trim().toLowerCase().replaceAll(" ", "_");
+
+                    cell = sheet.getCell(itemTypeColumnNumber, i);
+                    strItemType = cell.getContents();
+
+                    ItemType itemType;
+                    try {
+                        itemType = ItemType.valueOf(strItemType);
+                    } catch (Exception e) {
+                        continue;
+                    }
+
+                    Item item = createItem(itemType, parent, strItemName, strItemCode, i);
+
+                    getFacade().edit(item);
+
+                }
+
+                lk.gov.health.phsp.facade.util.JsfUtil.addSuccessMessage("Succesful. All the data in Excel File Impoted to the database");
+                return "";
+            } catch (IOException ex) {
+                lk.gov.health.phsp.facade.util.JsfUtil.addErrorMessage(ex.getMessage());
+                return "";
+            } catch (BiffException e) {
+                lk.gov.health.phsp.facade.util.JsfUtil.addErrorMessage(e.getMessage());
+                return "";
+            }
+        } catch (Exception e) {
+            System.out.println("e = " + e);
+            return "";
+        }
+    }
+
     public List<Item> completeDictionaryItems(String qry) {
         return findItemList(null, ItemType.Dictionary_Item, qry);
     }
@@ -201,12 +311,15 @@ public class ItemController implements Serializable {
             item.setCode(code.trim().toLowerCase());
             item.setParent(parent);
             item.setOrderNo(orderNo);
+            item.setCreatedAt(new Date());
+            item.setCreatedBy(webUserController.getLoggedUser());
             getFacade().create(item);
         }
         return item;
     }
 
     public Item findItemByCode(String code) {
+        System.out.println("code = " + code);
         Item item;
         String j;
         Map m = new HashMap();
@@ -217,7 +330,10 @@ public class ItemController implements Serializable {
                     + " order by i.id";
             m = new HashMap();
             m.put("code", code.trim().toLowerCase());
+            System.out.println("m = " + m);
+            System.out.println("j = " + j);
             item = getFacade().findFirstByJpql(j, m);
+            System.out.println("item = " + item);
         } else {
             item = null;
         }
@@ -328,13 +444,55 @@ public class ItemController implements Serializable {
     public List<Item> findItemList(String parentCode, ItemType t) {
         return findItemList(parentCode, t, null);
     }
+    
+    public List<Item> completeItemWithoutParent(String qry) {
+        return findChildrenAndGrandchildrenItemList(null, ItemType.Dictionary_Item, qry);
+    }
+
+    public List<Item> completeItem(String qry) {
+        FacesContext context = FacesContext.getCurrentInstance();
+        Item parent = (Item) UIComponent.getCurrentComponent(context).getAttributes().get("parent");
+        return findChildrenAndGrandchildrenItemList(parent, ItemType.Dictionary_Item, qry);
+    }
+
+    public List<Item> findChildrenAndGrandchildrenItemList(Item parent) {
+        return findChildrenAndGrandchildrenItemList(parent, ItemType.Dictionary_Item, null);
+    }
+
+    public List<Item> findChildrenAndGrandchildrenItemList(Item parent, String qry) {
+        return findChildrenAndGrandchildrenItemList(parent, ItemType.Dictionary_Item, qry);
+    }
+
+    public List<Item> findChildrenAndGrandchildrenItemList(Item parent, ItemType t) {
+        return findChildrenAndGrandchildrenItemList(parent, t, null);
+    }
+
+    public List<Item> findChildrenAndGrandchildrenItemList(Item parent, ItemType t, String qry) {
+        String j = "select t from Item t where t.retired=false ";
+        Map m = new HashMap();
+
+        if (t != null) {
+            m.put("t", t);
+            j += " and t.itemType=:t  ";
+        }
+        if (parent != null) {
+            m.put("p", parent);
+            j += " and (t.parent=:p or t.parent.parent=:p or t.parent.parent.parent=:p  or t.parent.parent.parent.parent=:p)";
+        }
+        if (qry != null) {
+            m.put("n", "%" + qry.trim().toLowerCase() + "%");
+            j += " and lower(t.name) like :n ";
+        }
+        j += " order by t.orderNo";
+        return getFacade().findByJpql(j, m);
+    }
 
     public List<Item> findItemList(String parentCode, ItemType t, String qry) {
         String j = "select t from Item t where t.retired=false ";
         Map m = new HashMap();
 
         Item parent = findItemByCode(parentCode);
-        if (parentCode != null) {
+        if (t != null) {
             m.put("t", t);
             j += " and t.itemType=:t  ";
         }
@@ -350,8 +508,7 @@ public class ItemController implements Serializable {
         return getFacade().findByJpql(j, m);
     }
 
-
-        public List<Item> findItemList(Item parent) {
+    public List<Item> findItemList(Item parent) {
         String j = "select t from Item t where t.retired=false ";
         Map m = new HashMap();
 
@@ -362,8 +519,6 @@ public class ItemController implements Serializable {
         j += " order by t.name";
         return getFacade().findByJpql(j, m);
     }
-
-
 
     public void setTitles(List<Item> titles) {
         this.titles = titles;
@@ -448,6 +603,58 @@ public class ItemController implements Serializable {
 
     public lk.gov.health.phsp.facade.ItemFacade getEjbFacade() {
         return ejbFacade;
+    }
+
+    public UploadedFile getFile() {
+        return file;
+    }
+
+    public void setFile(UploadedFile file) {
+        this.file = file;
+    }
+
+    public WebUserController getWebUserController() {
+        return webUserController;
+    }
+
+    public int getItemTypeColumnNumber() {
+        return itemTypeColumnNumber;
+    }
+
+    public void setItemTypeColumnNumber(int itemTypeColumnNumber) {
+        this.itemTypeColumnNumber = itemTypeColumnNumber;
+    }
+
+    public int getItemNameColumnNumber() {
+        return itemNameColumnNumber;
+    }
+
+    public void setItemNameColumnNumber(int itemNameColumnNumber) {
+        this.itemNameColumnNumber = itemNameColumnNumber;
+    }
+
+    public int getItemCodeColumnNumber() {
+        return itemCodeColumnNumber;
+    }
+
+    public void setItemCodeColumnNumber(int itemCodeColumnNumber) {
+        this.itemCodeColumnNumber = itemCodeColumnNumber;
+    }
+
+    public int getParentCodeColumnNumber() {
+        return parentCodeColumnNumber;
+    }
+
+    public void setParentCodeColumnNumber(int parentCodeColumnNumber) {
+        this.parentCodeColumnNumber = parentCodeColumnNumber;
+    }
+
+    public int getStartRow() {
+        return startRow;
+    }
+
+    public void setStartRow(int startRow) {
+        this.startRow = startRow;
     }
 
     @FacesConverter(forClass = Item.class)

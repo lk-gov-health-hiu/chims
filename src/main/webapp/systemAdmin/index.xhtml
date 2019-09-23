@@ -15,15 +15,17 @@
                         <p:tabView orientation="left" >
                             <p:tab title="Metadata" >
                                 <p:panelGrid columns="1" >
-                                    <p:commandButton ajax="false" action="/designComponentFormSet/List" value="From Sets" ></p:commandButton>
-
-                                    <p:commandButton ajax="false" action="#{itemController.addInitialMetadata()}" value="Add Initial Metadata" ></p:commandButton>
+                                    <p:commandButton ajax="false" action="/designComponentFormSet/List" value="Fromsets Management" ></p:commandButton>
                                     <p:commandButton ajax="false" action="/item/List" value="Manage Items" ></p:commandButton>
+                                    <p:commandButton ajax="false" action="/item/import" value="Import Items" ></p:commandButton>
+
+
 
                                 </p:panelGrid>
                             </p:tab> 
                             <p:tab title="Development" >
                                 <p:panelGrid columns="1" >
+                                    <p:commandButton ajax="false" action="#{itemController.addInitialMetadata()}" value="Add Initial Metadata" ></p:commandButton>
                                     <p:commandButton ajax="false" action="/demoAccount/List" value="Demo Accounts" ></p:commandButton>
                                 </p:panelGrid>
                             </p:tab> 
