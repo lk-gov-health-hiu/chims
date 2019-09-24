@@ -66,6 +66,9 @@ public class Relationship implements Serializable {
     @ManyToOne
     private Area area;
     Double dblValue;
+    Long longValue1;
+    Long longValue2;
+    Long longValue3;
     String strValue;
     @Lob
     String textValue;

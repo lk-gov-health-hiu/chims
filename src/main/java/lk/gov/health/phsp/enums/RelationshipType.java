@@ -29,6 +29,7 @@ package lk.gov.health.phsp.enums;
  * @author User
  */
 public enum RelationshipType {
+    Primary_Care_Institute,
     GN,
     PHM,
     PHI,
