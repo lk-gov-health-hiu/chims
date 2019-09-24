@@ -52,10 +52,31 @@
                                                 itemLabel="#{aci.name}" 
                                                 itemValue="#{aci}" 
                                                 forceSelection="true" >
-                                    <!--<f:attribute name="parent" value="#{ii.categoryOfAvailableItems}" />-->
                                     <p:ajax  event="blur" process="@this" listener="#{clientEncounterComponentItemController.save(ii)}" ></p:ajax>
                                 </p:autoComplete>
                             </h:panelGroup>
+                            
+                            
+                            <h:panelGroup rendered="#{ii.renderType eq 'Autocomplete_to_select_many_items'}" >
+                                <p:autoComplete completeMethod="#{itemController.completeItemWithoutParent}" 
+                                                var="acim"
+                                                value="#{ii.item}" 
+                                                itemLabel="#{acim.name}" 
+                                                itemValue="#{acim}" 
+                                                forceSelection="true" >
+                                    <p:ajax  event="blur" process="@this" listener="#{clientEncounterComponentItemController.save(ii)}" ></p:ajax>
+                                </p:autoComplete>
+                                <p:commandButton icon="ui-icon-add" action="#" ></p:commandButton>
+                            </h:panelGroup>
+
+                            <h:panelGroup rendered="#{ii.renderType eq 'Select_Boolean_Checkbox'}" >
+                                <p:selectBooleanCheckbox id="chkItem"
+                                    value="#{ii.booleanValue}" 
+                                    >
+                                    <p:ajax  event="blur" process="@this" listener="#{clientEncounterComponentItemController.save(ii)}" ></p:ajax>
+                                </p:selectBooleanCheckbox>
+                            </h:panelGroup>
+
 
                         </td>
                     </tr>
