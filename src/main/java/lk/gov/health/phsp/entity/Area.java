@@ -87,6 +87,9 @@ public class Area implements Serializable {
     private Long totalPopulation;
     private Long malePopulation;
     private Long femalePopulation;
+    
+    @ManyToOne
+    private Institution pmci;
 
     /*
     Create Properties
@@ -142,6 +145,8 @@ public class Area implements Serializable {
     public String toString() {
         return name;
     }
+    
+    
 
     public AreaType getType() {
         return type;
@@ -392,6 +397,14 @@ public class Area implements Serializable {
 
     public void setFemalePopulation(Long femalePopulation) {
         this.femalePopulation = femalePopulation;
+    }
+
+    public Institution getPmci() {
+        return pmci;
+    }
+
+    public void setPmci(Institution pmci) {
+        this.pmci = pmci;
     }
 
 }

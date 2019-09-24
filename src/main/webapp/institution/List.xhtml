@@ -37,6 +37,14 @@
                                 </f:facet>
                                 <h:outputText value="#{item.name}"/>
                             </p:column>
+                            
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="PMCI"/>
+                                </f:facet>
+                                <h:outputText value="#{item.pmci?'Yes':'No'}"/>
+                            </p:column>
+                            
                             <p:column>
                                 <f:facet name="header">
                                     <h:outputText value="Phone"/>

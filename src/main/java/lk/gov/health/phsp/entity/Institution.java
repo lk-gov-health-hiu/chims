@@ -104,6 +104,10 @@ public class Institution implements Serializable {
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date retiredAt;
     private String retireComments;
+    
+    private boolean pmci;
+    
+    
 
     public Long getId() {
         return id;
@@ -386,6 +390,14 @@ public class Institution implements Serializable {
 
     public void setPoiInstitution(Institution poiInstitution) {
         this.poiInstitution = poiInstitution;
+    }
+
+    public boolean isPmci() {
+        return pmci;
+    }
+
+    public void setPmci(boolean pmci) {
+        this.pmci = pmci;
     }
 
     

@@ -15,6 +15,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -64,6 +65,7 @@ public class AreaController implements Serializable {
     List<Area> phiAreas = null;
     List<Area> rdhsAreas = null;
     List<Area> pdhsAreas = null;
+    private List<Area> gnAreas = null;
     private List<Area> dsAreas = null;
     private List<Area> provinces = null;
     private Area selected;
@@ -208,6 +210,8 @@ public class AreaController implements Serializable {
         }
     }
 
+    
+    
     public List<Area> getMohAreas() {
         if (mohAreas == null) {
             mohAreas = getAreas(AreaType.MOH, null);
@@ -908,6 +912,10 @@ public class AreaController implements Serializable {
     public List<Area> completeDistricts(String qry) {
         return getAreas(qry, AreaType.District);
     }
+    
+    public List<Area> completeAreas(String qry) {
+        return getAreas(qry, null);
+    }
 
     public List<Area> completeDsAreas(String qry) {
         return getAreas(qry, AreaType.DsArea);
@@ -1243,6 +1251,17 @@ public class AreaController implements Serializable {
 
     public void setStartRow(int startRow) {
         this.startRow = startRow;
+    }
+
+    public List<Area> getGnAreas() {
+        if(gnAreas==null){
+            gnAreas = new  ArrayList<>();
+        }
+        return gnAreas;
+    }
+
+    public void setGnAreas(List<Area> gnAreas) {
+        this.gnAreas = gnAreas;
     }
 
     // </editor-fold>

@@ -23,6 +23,7 @@ import lk.gov.health.phsp.enums.DataModificationStrategy;
 import lk.gov.health.phsp.enums.DataPopulationStrategy;
 import lk.gov.health.phsp.enums.ItemArrangementStrategy;
 import lk.gov.health.phsp.enums.PanelType;
+import lk.gov.health.phsp.enums.RelationshipType;
 import lk.gov.health.phsp.enums.RenderType;
 import lk.gov.health.phsp.enums.SelectionDataType;
 import org.jasypt.util.password.BasicPasswordEncryptor;
@@ -113,6 +114,10 @@ public class CommonController implements Serializable {
         return RenderType.values();
     }
 
+    public RelationshipType[] getRelationshipTypes() {
+        return RelationshipType.values();
+    }
+    
     public SelectionDataType[] getSelectionDataTypes() {
         return SelectionDataType.values();
     }

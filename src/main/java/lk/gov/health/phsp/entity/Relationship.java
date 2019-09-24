@@ -25,6 +25,8 @@
 package lk.gov.health.phsp.entity;
 
 import java.io.Serializable;
+import java.util.Calendar;
+import java.util.Date;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -33,6 +35,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
+import javax.persistence.Temporal;
 import lk.gov.health.phsp.enums.RelationshipType;
 
 /**
@@ -65,14 +68,16 @@ public class Relationship implements Serializable {
     private Area toArea;
     @ManyToOne
     private Area area;
-    Double dblValue;
-    Long longValue1;
-    Long longValue2;
-    Long longValue3;
-    String strValue;
+    private Double dblValue;
+    private Long longValue1;
+    private Long longValue2;
+    private Long longValue3;
+    private String strValue;
     @Lob
-    String textValue;
-    
+    private String textValue;
+    private int yearInt;
+    private int monthInt;
+    private int dataInt;
 
     @Enumerated(EnumType.STRING)
     private RelationshipType relationshipType;
@@ -85,7 +90,36 @@ public class Relationship implements Serializable {
         this.id = id;
     }
 
-    
+    /*
+    Create Properties
+     */
+    @ManyToOne
+    private WebUser createdBy;
+    @Temporal(javax.persistence.TemporalType.TIMESTAMP)
+    private Date createdAt;
+    /*
+    Last Edit Properties
+     */
+    @ManyToOne
+    private WebUser lastEditBy;
+    @Temporal(javax.persistence.TemporalType.TIMESTAMP)
+    private Date lastEditeAt;
+    /*
+    Retire Reversal Properties
+     */
+    @ManyToOne
+    private WebUser retiredReversedBy;
+    @Temporal(javax.persistence.TemporalType.TIMESTAMP)
+    private Date retiredReversedAt;
+    /*
+    Retire Properties
+     */
+    private boolean retired;
+    @ManyToOne
+    private WebUser retiredBy;
+    @Temporal(javax.persistence.TemporalType.TIMESTAMP)
+    private Date retiredAt;
+    private String retireComments;
     
     @Override
     public int hashCode() {
@@ -111,6 +145,8 @@ public class Relationship implements Serializable {
     public String toString() {
         return "lk.gov.health.phsp.entity.Relationship[ id=" + id + " ]";
     }
+    
+    
 
     public Institution getFromInstitution() {
         return fromInstitution;
@@ -190,6 +226,162 @@ public class Relationship implements Serializable {
 
     public void setRelationshipType(RelationshipType relationshipType) {
         this.relationshipType = relationshipType;
+    }
+
+    public Double getDblValue() {
+        return dblValue;
+    }
+
+    public void setDblValue(Double dblValue) {
+        this.dblValue = dblValue;
+    }
+
+    public Long getLongValue1() {
+        return longValue1;
+    }
+
+    public void setLongValue1(Long longValue1) {
+        this.longValue1 = longValue1;
+    }
+
+    public Long getLongValue2() {
+        return longValue2;
+    }
+
+    public void setLongValue2(Long longValue2) {
+        this.longValue2 = longValue2;
+    }
+
+    public Long getLongValue3() {
+        return longValue3;
+    }
+
+    public void setLongValue3(Long longValue3) {
+        this.longValue3 = longValue3;
+    }
+
+    public String getStrValue() {
+        return strValue;
+    }
+
+    public void setStrValue(String strValue) {
+        this.strValue = strValue;
+    }
+
+    public String getTextValue() {
+        return textValue;
+    }
+
+    public void setTextValue(String textValue) {
+        this.textValue = textValue;
+    }
+
+    public int getYearInt() {
+        if(yearInt==0){
+            Calendar c = Calendar.getInstance();
+            yearInt = c.get(Calendar.YEAR);
+        }
+        return yearInt;
+    }
+
+    public void setYearInt(int yearInt) {
+        this.yearInt = yearInt;
+    }
+
+    public int getMonthInt() {
+        return monthInt;
+    }
+
+    public void setMonthInt(int monthInt) {
+        this.monthInt = monthInt;
+    }
+
+    public int getDataInt() {
+        return dataInt;
+    }
+
+    public void setDataInt(int dataInt) {
+        this.dataInt = dataInt;
+    }
+
+    public WebUser getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(WebUser createdBy) {
+        this.createdBy = createdBy;
+    }
+
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public WebUser getLastEditBy() {
+        return lastEditBy;
+    }
+
+    public void setLastEditBy(WebUser lastEditBy) {
+        this.lastEditBy = lastEditBy;
+    }
+
+    public Date getLastEditeAt() {
+        return lastEditeAt;
+    }
+
+    public void setLastEditeAt(Date lastEditeAt) {
+        this.lastEditeAt = lastEditeAt;
+    }
+
+    public WebUser getRetiredReversedBy() {
+        return retiredReversedBy;
+    }
+
+    public void setRetiredReversedBy(WebUser retiredReversedBy) {
+        this.retiredReversedBy = retiredReversedBy;
+    }
+
+    public Date getRetiredReversedAt() {
+        return retiredReversedAt;
+    }
+
+    public void setRetiredReversedAt(Date retiredReversedAt) {
+        this.retiredReversedAt = retiredReversedAt;
+    }
+
+    public boolean isRetired() {
+        return retired;
+    }
+
+    public void setRetired(boolean retired) {
+        this.retired = retired;
+    }
+
+    public WebUser getRetiredBy() {
+        return retiredBy;
+    }
+
+    public void setRetiredBy(WebUser retiredBy) {
+        this.retiredBy = retiredBy;
+    }
+
+    public Date getRetiredAt() {
+        return retiredAt;
+    }
+
+    public void setRetiredAt(Date retiredAt) {
+        this.retiredAt = retiredAt;
+    }
+
+    public String getRetireComments() {
+        return retireComments;
+    }
+
+    public void setRetireComments(String retireComments) {
+        this.retireComments = retireComments;
     }
 
 }

@@ -24,6 +24,7 @@
             <p:menubar  rendered="#{webUserController.loggedUser ne null}">
                 
                 <!--//rendered="#{webUserController.hasPrivilege('Client_Management')}"-->
+                <p:menuitem ajax="false" value="Home" icon="ui-icon-home" action="/index" />
                 <p:submenu label="Clients"  >
                     <p:menuitem ajax="false" value="Search by IDs" action="#{clientController.toSearchClientById()}" />
                     <p:menuitem ajax="false" value="Register New" action="#{clientController.toAddNewClient()}"  />

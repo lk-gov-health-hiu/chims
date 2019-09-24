@@ -22,8 +22,10 @@ import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
 import javax.inject.Inject;
+import lk.gov.health.phsp.entity.Area;
+import lk.gov.health.phsp.enums.AreaType;
 import lk.gov.health.phsp.enums.InstitutionType;
-
+import lk.gov.health.phsp.facade.AreaFacade;
 
 @Named("institutionController")
 @SessionScoped
@@ -31,16 +33,64 @@ public class InstitutionController implements Serializable {
 
     @EJB
     private lk.gov.health.phsp.facade.InstitutionFacade ejbFacade;
-    
-    
+
+    @EJB
+    private AreaFacade areaFacade;
+
     @Inject
-    WebUserController webUserController;
-    
-    
+    private WebUserController webUserController;
+
     private List<Institution> items = null;
     private Institution selected;
     private List<Institution> myClinics;
+    private List<Area> gnAreasOfSelected;
+    private Area area;
+    private Area removingArea;
+
     
+    
+    public void addGnToPmc() {
+        if (selected == null) {
+            JsfUtil.addErrorMessage("No PMC is selected");
+            return;
+        }
+        if (area == null) {
+            JsfUtil.addErrorMessage("No GN is selected");
+            return;
+        }
+        area.setPmci(selected);
+        getAreaFacade().edit(area);
+        area = null;
+        fillGnAreasOfSelected();
+        JsfUtil.addSuccessMessage("Successfully added.");
+    }
+    
+    
+    
+    public void removeGnFromPmc(){
+        if(removingArea==null){
+             JsfUtil.addErrorMessage("Nothing to remove");
+            return;
+        }
+        removingArea.setPmci(null);
+        fillGnAreasOfSelected();
+        removingArea =null;
+    }
+
+    public void fillGnAreasOfSelected() {
+        if (selected == null) {
+            gnAreasOfSelected = new ArrayList<>();
+            return;
+        }
+        String j = "select a from Area a where a.retired=false "
+                + " and a.type=:t "
+                + " and a.pmci=:p "
+                + " order by a.name";
+        Map m = new HashMap();
+        m.put("t", AreaType.GN);
+        m.put("p", selected);
+        gnAreasOfSelected = areaFacade.findByJpql(j, m);
+    }
 
     public InstitutionController() {
     }
@@ -63,20 +113,20 @@ public class InstitutionController implements Serializable {
         return ejbFacade;
     }
 
-    public List<Institution> findChildrenInstitutions(Institution ins){
+    public List<Institution> findChildrenInstitutions(Institution ins) {
         System.out.println("findChildrenInstitutions for " + ins.getName());
-        String j ;
-        Map m= new HashMap();
+        String j;
+        Map m = new HashMap();
         j = "select i from Institution i where i.retired=false "
                 + " and i.parent=:p ";
         m.put("p", ins);
         List<Institution> cins = getFacade().findByJpql(j, m);
         List<Institution> tins = new ArrayList<>();
         tins.addAll(cins);
-        if(cins.isEmpty()){
+        if (cins.isEmpty()) {
             return tins;
-        }else{
-            for(Institution i:cins){
+        } else {
+            for (Institution i : cins) {
                 System.out.println("i = " + i);
                 System.out.println("tins before finding children " + tins);
                 tins.addAll(findChildrenInstitutions(i));
@@ -86,11 +136,22 @@ public class InstitutionController implements Serializable {
         System.out.println("tins = " + tins);
         return tins;
     }
-    
+
     public List<Institution> completeInstitutions(String nameQry) {
         return fillInstitutions(null, nameQry, null);
     }
-    
+
+    public List<Institution> completePmcis(String nameQry) {
+        String j = "Select i from Institution i where i.retired=false and i.pmci=true ";
+        Map m = new HashMap();
+        if (nameQry != null) {
+            j += " and lower(i.name) like :n ";
+            m.put("n", "%" + nameQry.trim().toLowerCase() + "%");
+        }
+        j += " order by i.name";
+        return getFacade().findByJpql(j, m);
+    }
+
     public List<Institution> fillInstitutions(InstitutionType type, String nameQry, Institution parent) {
         String j = "Select i from Institution i where i.retired=false ";
         Map m = new HashMap();
@@ -135,8 +196,6 @@ public class InstitutionController implements Serializable {
         }
     }
 
-    
-    
     public List<Institution> getItems() {
         if (items == null) {
             items = getFacade().findAll();
@@ -184,15 +243,15 @@ public class InstitutionController implements Serializable {
         return getFacade().findAll();
     }
 
-    public void refreshMyInstitutions(){
+    public void refreshMyInstitutions() {
         myClinics = null;
     }
-    
+
     public List<Institution> getMyClinics() {
-        if(myClinics==null){
-            myClinics= new ArrayList<>();
-            for(Institution i:webUserController.getLoggableInstitutions()){
-                if(i.getInstitutionType().equals(InstitutionType.Ward_Clinic)){
+        if (myClinics == null) {
+            myClinics = new ArrayList<>();
+            for (Institution i : webUserController.getLoggableInstitutions()) {
+                if (i.getInstitutionType().equals(InstitutionType.Ward_Clinic)) {
                     myClinics.add(i);
                 }
             }
@@ -200,8 +259,44 @@ public class InstitutionController implements Serializable {
         return myClinics;
     }
 
-    public void setMyClinics(List<Institution> myClinics) {
-        this.myClinics = myClinics;
+    public lk.gov.health.phsp.facade.InstitutionFacade getEjbFacade() {
+        return ejbFacade;
+    }
+
+    public AreaFacade getAreaFacade() {
+        return areaFacade;
+    }
+
+    public WebUserController getWebUserController() {
+        return webUserController;
+    }
+
+    public List<Area> getGnAreasOfSelected() {
+        if (gnAreasOfSelected == null) {
+            gnAreasOfSelected = new ArrayList<>();
+        }
+        return gnAreasOfSelected;
+    }
+
+    public void setGnAreasOfSelected(List<Area> gnAreasOfSelected) {
+        this.gnAreasOfSelected = gnAreasOfSelected;
+    }
+
+    public Area getArea() {
+        return area;
+    }
+
+    public void setArea(Area area) {
+        this.area = area;
+    }
+
+    public Area getRemovingArea() {
+        return removingArea;
+    }
+
+    public void setRemovingArea(Area removingArea) {
+        this.removingArea = removingArea;
+
     }
 
     @FacesConverter(forClass = Institution.class)

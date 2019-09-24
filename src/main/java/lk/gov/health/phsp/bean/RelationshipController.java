@@ -6,7 +6,12 @@ import lk.gov.health.phsp.bean.util.JsfUtil.PersistAction;
 import lk.gov.health.phsp.facade.RelationshipFacade;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -18,6 +23,9 @@ import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
+import javax.inject.Inject;
+import lk.gov.health.phsp.entity.Area;
+import lk.gov.health.phsp.enums.RelationshipType;
 
 @Named("relationshipController")
 @SessionScoped
@@ -25,8 +33,114 @@ public class RelationshipController implements Serializable {
 
     @EJB
     private lk.gov.health.phsp.facade.RelationshipFacade ejbFacade;
+
+    @Inject
+    private WebUserController webUserController;
+
     private List<Relationship> items = null;
     private Relationship selected;
+
+    private Area area;
+    private int year;
+    private int month;
+
+    private Relationship adding;
+    private Relationship removing;
+
+    public void addEmpowerementData() {
+        if (adding == null) {
+            JsfUtil.addErrorMessage("Select");
+            return;
+        }
+        if (adding.getArea() == null) {
+            JsfUtil.addErrorMessage("Select GN Area");
+            return;
+        }
+        if (adding.getLongValue1() == null) {
+            JsfUtil.addErrorMessage("Please enter the number empanelled");
+            return;
+        }
+        if (adding.getYearInt() == 0) {
+            JsfUtil.addErrorMessage("Please enter the nyear");
+            return;
+        }
+        if (findRelationship(adding.getArea(), adding.getRelationshipType(), adding.getYearInt()) != null) {
+            JsfUtil.addErrorMessage("Already data added.");
+            return;
+        }
+        if(adding.getRelationshipType()==null){
+            JsfUtil.addErrorMessage("Type ?");
+            return;
+        }
+        save(adding);
+        fillRelationshipData();
+        adding = null;
+        JsfUtil.addSuccessMessage("Updated");
+    }
+
+    public void removeRelationship() {
+        if (removing == null) {
+            JsfUtil.addErrorMessage("Nothing to remove");
+            return;
+        }
+        removing.setRetired(true);
+        removing.setRetiredAt(new Date());
+        removing.setRetiredBy(webUserController.getLoggedUser());
+        getFacade().edit(removing);
+        removing = null;
+        items = null;
+    }
+
+    public void save() {
+        save(selected);
+        JsfUtil.addSuccessMessage("Saved");
+    }
+
+    public void save(Relationship r) {
+        if (r == null) {
+            JsfUtil.addErrorMessage("Nothing selected");
+            return;
+        }
+        if (r.getId() == null) {
+            r.setCreatedAt(new Date());
+            r.setCreatedBy(webUserController.getLoggedUser());
+            getFacade().edit(r);
+        } else {
+            r.setLastEditBy(webUserController.getLoggedUser());
+            r.setLastEditeAt(new Date());
+            getFacade().edit(r);
+        }
+    }
+
+    public void fillRelationshipData() {
+        if (area == null) {
+            return;
+        }
+       String j = "select r from Relationship r "
+                + " where (r.area=:a or r.area.parentArea=:a or r.area.parentArea.parentArea=:a or r.area.parentArea.parentArea.parentArea=:a "
+                + " or r.area.phm=:a or r.area.phi=:a or r.area.dsd=:a  or r.area.moh=:a  or  r.area.district=:a  or  r.area.province=:a  or r.area.rdhsArea=:a  or r.area.pdhsArea=:a)  "
+                + " and r.retired=false "
+                + " and r.yearInt=:y";
+        
+        Map m = new HashMap();
+        m.put("a", area);
+        m.put("y", year);
+        items = getFacade().findByJpql(j, m);
+    }
+
+    public Relationship findRelationship(Area a, RelationshipType type, int year) {
+        String j = "select r from Relationship r "
+                + " where r.area=:a "
+                + " and r.elationshipType=:t "
+                + " and r.retired=false "
+                + " and r.yearInt=:y";
+
+        Map m = new HashMap();
+        m.put("a", a);
+        m.put("t", type);
+        m.put("y", year);
+        return getFacade().findFirstByJpql(j, m);
+    }
 
     public RelationshipController() {
     }
@@ -76,7 +190,7 @@ public class RelationshipController implements Serializable {
 
     public List<Relationship> getItems() {
         if (items == null) {
-            items = getFacade().findAll();
+            items = new ArrayList<>();
         }
         return items;
     }
@@ -119,6 +233,61 @@ public class RelationshipController implements Serializable {
 
     public List<Relationship> getItemsAvailableSelectOne() {
         return getFacade().findAll();
+    }
+
+    public WebUserController getWebUserController() {
+        return webUserController;
+    }
+
+    public lk.gov.health.phsp.facade.RelationshipFacade getEjbFacade() {
+        return ejbFacade;
+    }
+
+    public Area getArea() {
+        return area;
+    }
+
+    public void setArea(Area area) {
+        this.area = area;
+    }
+
+    public Relationship getAdding() {
+        if (adding == null) {
+            adding = new Relationship();
+        }
+        return adding;
+    }
+
+    public void setAdding(Relationship adding) {
+        this.adding = adding;
+    }
+
+    public Relationship getRemoving() {
+        return removing;
+    }
+
+    public void setRemoving(Relationship removing) {
+        this.removing = removing;
+    }
+
+    public int getYear() {
+        if (year == 0) {
+            Calendar c = Calendar.getInstance();
+            year = c.get(Calendar.YEAR);
+        }
+        return year;
+    }
+
+    public void setYear(int year) {
+        this.year = year;
+    }
+
+    public int getMonth() {
+        return month;
+    }
+
+    public void setMonth(int month) {
+        this.month = month;
     }
 
     @FacesConverter(forClass = Relationship.class)
