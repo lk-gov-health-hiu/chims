@@ -28,6 +28,8 @@ import javax.inject.Inject;
 import lk.gov.health.phsp.entity.ClientEncounterComponentForm;
 import lk.gov.health.phsp.entity.ClientEncounterComponentFormSet;
 import lk.gov.health.phsp.pojcs.Replaceable;
+ import javax.script.ScriptEngineManager;
+import javax.script.ScriptEngine;
 
 @Named("clientEncounterComponentItemController")
 @SessionScoped
@@ -148,6 +150,13 @@ public class ClientEncounterComponentItemController implements Serializable {
 
     }
 
+    public String evaluateScript(String script){
+        ScriptEngineManager mgr = new ScriptEngineManager();
+  ScriptEngine engine = mgr.getEngineByName("JavaScript");
+  String foo = "40+2";
+  System.out.println(engine.eval(foo));
+    }
+    
     public ClientEncounterComponentItem findFormsetValue(ClientEncounterComponentItem i, String code) {
         System.out.println("findFormsetValue = ");
         if (i == null) {
