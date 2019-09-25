@@ -41,12 +41,18 @@
 
 
                                             <p:outputLabel value="Name:" for="name" />
-                                            <p:inputText id="name" value="#{designComponentFormItemController.selected.name}" title="Name" />
+                                            <p:inputText id="name" required="true"
+                                                         value="#{designComponentFormItemController.selected.name}" title="Name" />
+
+                                            <p:outputLabel value="Descreption:" for="descreption" />
+                                            <p:inputTextarea id="descreption"
+                                                             value="#{designComponentFormItemController.selected.descreption}" title="Name" />
+
 
                                             <p:outputLabel value="Item:" for="item" />
                                             <p:autoComplete id="item" value="#{designComponentFormItemController.selected.item}"
                                                             completeMethod="#{itemController.completeDictionaryItems}"
-                                                            var="dic" itemLabel="#{dic.name}" itemValue="#{dic}">
+                                                            required="true"   var="dic" itemLabel="#{dic.name}" itemValue="#{dic}">
                                             </p:autoComplete>
 
                                             <p:outputLabel value="Order No:" for="orderNo" />
@@ -74,6 +80,15 @@
 
                                         <p:panelGrid columns="2" >
 
+                                            <p:outputLabel value="Calculate on Focus:" for="calculateOnFocus" />
+                                            <p:selectBooleanCheckbox id="calculateOnFocus" value="#{designComponentFormItemController.selected.calculateOnFocus}" ></p:selectBooleanCheckbox>
+
+
+                                            <p:outputLabel value="Calculation Script:" for="calculationScript" />
+                                            <p:inputTextarea id="calculationScript"
+                                                             value="#{designComponentFormItemController.selected.calculationScript}" title="Name" />
+
+
                                             <p:outputLabel value="Data Type Available:" for="selectionDataType" />
                                             <p:selectOneMenu id="selectionDataType" 
                                                              value="#{designComponentFormItemController.selected.selectionDataType}" title="SelectionDataType" >
@@ -96,8 +111,8 @@
 
                                             <p:outputLabel value="Data Modification Strategy:" for="dataModificationStrategy" />
                                             <p:selectOneMenu id="dataModificationStrategy" 
-                                                         value="#{designComponentFormItemController.selected.dataModificationStrategy}" 
-                                                         title="DataModificationStrategy" >
+                                                             value="#{designComponentFormItemController.selected.dataModificationStrategy}" 
+                                                             title="DataModificationStrategy" >
                                                 <f:selectItems value="#{commonController.dataModificationStrategies}" ></f:selectItems>
                                             </p:selectOneMenu>
 
@@ -128,7 +143,7 @@
                                             <p:inputTextarea id="regexErrorMesage" value="#{designComponentFormItemController.selected.regexValidationFailedMessage}" title="Name" />
                                         </p:panelGrid>
                                     </p:tab>
-                                    <p:tab title="Position" >
+                                    <p:tab title="CSS" >
                                         <p:panelGrid columns="2" >
                                             <p:outputLabel value="Top Percent:" for="topPercent" />
                                             <p:inputText id="topPercent" value="#{designComponentFormItemController.selected.topPercent}" title="TopPercent" />
@@ -138,6 +153,17 @@
                                             <p:inputText id="widthPercent" value="#{designComponentFormItemController.selected.widthPercent}" title="WidthPercent" />
                                             <p:outputLabel value="Height Percent:" for="heightPercent" />
                                             <p:inputText id="heightPercent" value="#{designComponentFormItemController.selected.heightPercent}" title="HeightPercent" />
+
+                                            <p:outputLabel value="Background Color:" />
+                                            <p:colorPicker value="#{designComponentFormItemController.selected.backgroundColour}" ></p:colorPicker>
+
+                                            <p:outputLabel value="Foreground Color:" />
+                                            <p:colorPicker value="#{designComponentFormItemController.selected.foregroundColour}" ></p:colorPicker>
+
+                                            <p:outputLabel value="Border Color:" />
+                                            <p:colorPicker value="#{designComponentFormItemController.selected.borderColour}" ></p:colorPicker>
+
+
                                         </p:panelGrid>
                                     </p:tab>
                                     <p:tab title="Other" >

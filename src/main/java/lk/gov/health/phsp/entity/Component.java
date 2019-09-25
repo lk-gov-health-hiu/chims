@@ -58,7 +58,11 @@ public class Component implements Serializable {
     private Long id;
 
     String name;
+    @ManyToOne
     private Item item;
+
+    @Lob
+    private String descreption;
 
     private Double orderNo;
 
@@ -73,13 +77,19 @@ public class Component implements Serializable {
 
     @Enumerated(EnumType.STRING)
     RenderType renderType;
-    
+
     private boolean required;
+
+    private boolean calculateOnFocus;
+
+    @Lob
+    private String calculationScript;
+
     @Lob
     private String requiredErrorMessage;
-    
+
     private String regexValidationString;
-    
+
     @Lob
     private String regexValidationFailedMessage;
 
@@ -88,7 +98,7 @@ public class Component implements Serializable {
 
     @Enumerated(EnumType.STRING)
     private ComponentSetType componentSetType;
-    
+
     @Enumerated(EnumType.STRING)
     private PanelType panelType;
 
@@ -127,6 +137,17 @@ public class Component implements Serializable {
     private String hexHtmlColour;
     @Lob
     private String html;
+
+    private String backgroundColour;
+    private String foregroundColour;
+    private String borderColour;
+
+    @Lob
+    private String css;
+
+    @Transient
+    private String generatedCss;
+
     /*
     Create Properties
      */
@@ -511,6 +532,95 @@ public class Component implements Serializable {
         this.item = item;
     }
 
-    
+    public String getDescreption() {
+        return descreption;
+    }
+
+    public void setDescreption(String descreption) {
+        this.descreption = descreption;
+    }
+
+    public boolean isCalculateOnFocus() {
+        return calculateOnFocus;
+    }
+
+    public void setCalculateOnFocus(boolean calculateOnFocus) {
+        this.calculateOnFocus = calculateOnFocus;
+    }
+
+    public String getCalculationScript() {
+        return calculationScript;
+    }
+
+    public void setCalculationScript(String calculationScript) {
+        this.calculationScript = calculationScript;
+    }
+
+    public String getBackgroundColour() {
+        return backgroundColour;
+    }
+
+    public void setBackgroundColour(String backgroundColour) {
+        this.backgroundColour = backgroundColour;
+    }
+
+    public String getForegroundColour() {
+        return foregroundColour;
+    }
+
+    public void setForegroundColour(String foregroundColour) {
+        this.foregroundColour = foregroundColour;
+    }
+
+    public String getGeneratedCss() {
+        generatedCss = "";
+        if (css != null) {
+            generatedCss += css;
+        }
+        if (heightPercent != null) {
+            generatedCss += "; height:" + heightPercent + "%; ";
+        }
+        if (leftPercent != null) {
+            generatedCss += "; left:" + leftPercent + "%; ";
+        }
+        if (widthPercent != null) {
+            generatedCss += "; width:" + widthPercent + "%; ";
+        }
+        if (heightPercent != null) {
+            generatedCss += "; height:" + heightPercent + "%; ";
+        }
+        if (backgroundColour != null && !backgroundColour.equals("")) {
+            generatedCss += "; background-color:#" + backgroundColour + "; ";
+        }
+        if (foregroundColour != null && !foregroundColour.equals("")) {
+            generatedCss += "; color:#" + foregroundColour + "; ";
+        }
+        if(borderColour != null && !borderColour.equals("")){
+            generatedCss += "; border-color: #" + foregroundColour + "; ";
+        }
+        return generatedCss;
+    }
+
+    public void setGeneratedCss(String generatedCss) {
+
+        this.generatedCss = generatedCss;
+    }
+
+    public String getCss() {
+        return css;
+    }
+
+    public void setCss(String css) {
+        this.css = css;
+    }
+
+    public String getBorderColour() {
+        return borderColour;
+    }
+
+    public void setBorderColour(String borderColour) {
+        this.borderColour = borderColour;
+    }
+
     
 }

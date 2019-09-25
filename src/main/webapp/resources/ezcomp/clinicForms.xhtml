@@ -16,7 +16,8 @@
     <cc:implementation>
 
         <h:panelGroup rendered="#{cc.attrs.form.itemArrangementStrategy eq 'Label_Value_Unit_Sets'}" >
-            <table border="0" >
+           
+            <table style="#{cc.attrs.form.generatedCss}" >
                 <ui:repeat value="#{clientEncounterComponentItemController.findClientEncounterComponentItemOfAForm(cc.attrs.form)}" 
                            var="ii" >
                     <tr>
@@ -31,8 +32,23 @@
                                     <p:ajax  event="blur" process="@this" listener="#{clientEncounterComponentItemController.save(ii)}" ></p:ajax>
                                 </h:inputText>
                             </h:panelGroup>
+                            
+                            <h:panelGroup rendered="#{ii.renderType eq 'Real_number_input'}" >
+                                <h:inputText id="txtRn" value="#{ii.realNumberValue}" 
+                                             required="#{ii.required}" 
+                                             requiredMessage="#{ii.requiredErrorMessage}" >
+                                    <p:ajax  event="blur" process="@this" listener="#{clientEncounterComponentItemController.save(ii)}" ></p:ajax>
+                                    <p:ajax  event="focus" process="@this" 
+                                             listener="#{clientEncounterComponentItemController.calculate(ii)}" 
+                                             update="lbl"></p:ajax>
+                                </h:inputText>
+                                <p:outputLabel id="lbl" value="#{ii.hexHtmlColour}" ></p:outputLabel>
+                            </h:panelGroup>
+                            
+                            
                             <h:panelGroup rendered="#{ii.renderType eq 'Long_text_input'}" >
                                 <h:inputTextarea id="txtLt" value="#{ii.longTextValue}" >
+                                    
                                     <p:ajax  event="blur" process="@this" listener="#{clientEncounterComponentItemController.save(ii)}" ></p:ajax>
                                 </h:inputTextarea>
                             </h:panelGroup>
