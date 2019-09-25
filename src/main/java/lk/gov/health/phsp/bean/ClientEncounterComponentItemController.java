@@ -28,8 +28,10 @@ import javax.inject.Inject;
 import lk.gov.health.phsp.entity.ClientEncounterComponentForm;
 import lk.gov.health.phsp.entity.ClientEncounterComponentFormSet;
 import lk.gov.health.phsp.pojcs.Replaceable;
- import javax.script.ScriptEngineManager;
+import javax.script.ScriptEngineManager;
 import javax.script.ScriptEngine;
+import javax.script.ScriptException;
+import lk.gov.health.phsp.enums.SelectionDataType;
 
 @Named("clientEncounterComponentItemController")
 @SessionScoped
@@ -39,9 +41,13 @@ public class ClientEncounterComponentItemController implements Serializable {
     private lk.gov.health.phsp.facade.ClientEncounterComponentItemFacade ejbFacade;
     @Inject
     private WebUserController webUserController;
+    
+    @Inject
+    private CommonController commonController;
+    
     private List<ClientEncounterComponentItem> items = null;
     private ClientEncounterComponentItem selected;
-    List<Replaceable> selectables;
+
 
     public List<ClientEncounterComponentItem> findClientEncounterComponentItemOfAForm(ClientEncounterComponentForm fs) {
         String j = "select f from ClientEncounterComponentItem f "
@@ -144,19 +150,46 @@ public class ClientEncounterComponentItemController implements Serializable {
         }
 
         String javaStringToEvaluate = addTemplateToReport(i.getCalculationScript().trim(), replacingBlocks);
-        i.setHexHtmlColour(javaStringToEvaluate);
+        System.out.println("javaStringToEvaluate = " + javaStringToEvaluate);
+        
+        
+        String result = evaluateScript(javaStringToEvaluate);
+        System.out.println("result = " + result);
+        System.out.println("i.getSelectionDataType() = " + i.getSelectionDataType());
+        
+        if(null==i.getSelectionDataType()){
+            i.setShortTextValue(result);
+        }else switch (i.getSelectionDataType()) {
+            case Real_Number:
+                i.setRealNumberValue(commonController.getDoubleValue(result));
+                System.out.println("i.getRealNumberValue() = " + i.getRealNumberValue());
+                getFacade().edit(i);
+                break;
+            case Integer_Number:
+                i.setIntegerNumberValue(commonController.getIntegerValue(result));
+                getFacade().edit(i);
+                break;
+            default:
+                i.setShortTextValue(result);
+                getFacade().edit(i);
+                break;
+        }
 
         System.out.println("javaStringToEvaluate = " + javaStringToEvaluate);
 
     }
 
-    public String evaluateScript(String script){
+    public String evaluateScript(String script) {
         ScriptEngineManager mgr = new ScriptEngineManager();
-  ScriptEngine engine = mgr.getEngineByName("JavaScript");
-  String foo = "40+2";
-  System.out.println(engine.eval(foo));
+        ScriptEngine engine = mgr.getEngineByName("JavaScript");
+        try {
+            return engine.eval(script) + "";
+        } catch (ScriptException ex) {
+            Logger.getLogger(ClientEncounterComponentItemController.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }
     }
-    
+
     public ClientEncounterComponentItem findFormsetValue(ClientEncounterComponentItem i, String code) {
         System.out.println("findFormsetValue = ");
         if (i == null) {
@@ -332,6 +365,12 @@ public class ClientEncounterComponentItemController implements Serializable {
     public lk.gov.health.phsp.facade.ClientEncounterComponentItemFacade getEjbFacade() {
         return ejbFacade;
     }
+
+    public CommonController getCommonController() {
+        return commonController;
+    }
+    
+    
 
     @FacesConverter(forClass = ClientEncounterComponentItem.class)
     public static class ClientEncounterComponentItemControllerConverter implements Converter {
