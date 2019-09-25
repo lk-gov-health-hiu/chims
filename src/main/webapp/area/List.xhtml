@@ -45,7 +45,7 @@
                                 </f:facet>
                                 <h:outputText value="#{item.code}"/>
                             </p:column>
-                            <p:column>
+                            <p:column  sortBy="#{item.parentArea.name}" filterBy="#{item.parentArea.name}" filterMatchMode="contains">
                                 <f:facet name="header">
                                     <h:outputText value="#{bundleClinical.ListAreaTitle_parentArea}"/>
                                 </f:facet>

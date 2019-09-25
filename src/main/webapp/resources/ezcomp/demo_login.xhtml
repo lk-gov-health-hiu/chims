@@ -20,6 +20,9 @@
                 <p:dataTable id="datalist" value="#{demoAccountController.items}" var="item"
                              rowKey="#{item.id}"
                              >
+                    <f:facet name="header" >
+                        Demo Version Only.
+                    </f:facet>
                     <p:column>
                         <f:facet name="header">
                             <h:outputText value="#{bundleDemo.ListDemoAccountTitle_name}"/>
@@ -52,6 +55,17 @@
                     </p:column>
                 </p:dataTable>
 
+                <div>
+                    <br/>
+                    &nbsp;
+                     <br/>
+                    &nbsp;
+                     <br/>
+                    &nbsp;
+                     <br/>
+                    &nbsp;
+                </div>
+                
 
             </h:panelGroup>
 
