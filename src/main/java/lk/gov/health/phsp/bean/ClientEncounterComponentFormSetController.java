@@ -32,6 +32,7 @@ import lk.gov.health.phsp.entity.DesignComponentFormSet;
 import lk.gov.health.phsp.entity.Encounter;
 import lk.gov.health.phsp.enums.ComponentSetType;
 import lk.gov.health.phsp.enums.ComponentSex;
+import lk.gov.health.phsp.enums.DataCompletionStrategy;
 import lk.gov.health.phsp.enums.DataPopulationStrategy;
 import lk.gov.health.phsp.enums.EncounterType;
 import lk.gov.health.phsp.facade.ClientEncounterComponentItemFacade;
@@ -114,12 +115,55 @@ public class ClientEncounterComponentFormSetController implements Serializable {
         selected.setCompletedAt(new Date());
         selected.setCompletedBy(webUserController.getLoggedUser());
         getFacade().edit(selected);
+        executePostCompletionStrategies(selected);
         formEditable = false;
         JsfUtil.addSuccessMessage("Completed");
     }
 
     public void executePostCompletionStrategies(ClientEncounterComponentFormSet s) {
-        // TODO: Need to add Logic !        
+        String j ="select f ClientEncounterComponentItem f "
+                + " where f.retired=false "
+                + " and f.parentComponent.parentComponent=:s ";
+        Map m = new HashMap();
+        m.put("s", s);
+        List<ClientEncounterComponentItem> is = getItemFacade().findByJpql(j, m);
+        for(ClientEncounterComponentItem i:is){
+            if(i.getDataCompletionStrategy()==DataCompletionStrategy.Replace_Values_of_client){
+                updateToClientValue(i);
+            }
+        }
+                
+    }
+    
+    public void updateToClientValue(ClientEncounterComponentItem vi){
+        ClientEncounterComponentItem ti;
+        String j = "select vi from ClientEncounterComponentItem vi where vi.retired=false "
+                + " and vi.client=:c order by vi.id desc";
+        Map m = new HashMap();
+        m.put("c", vi.getEncounter().getClient());
+        ti = getItemFacade().findFirstByJpql(j, m);
+
+        if (ti == null) {
+            ti = new ClientEncounterComponentItem();
+            ti.setCreatedAt(new Date());
+            ti.setCreatedBy(webUserController.getLoggedUser());
+            ti.setClient(ti.getEncounter().getClient());
+            getItemFacade().create(ti);
+        }else{
+            ti.setLastEditBy(webUserController.getLoggedUser());
+            ti.setLastEditeAt(new Date());
+        }
+        
+        ti.setDateValue(vi.getDateValue());
+        ti.setShortTextValue(vi.getShortTextValue());
+        ti.setLongTextValue(vi.getLongTextValue());
+        ti.setItemValue(vi.getItemValue());
+        ti.setAreaValue(vi.getAreaValue());
+        ti.setItemValue(vi.getItemValue());
+        ti.setInstitution(vi.getInstitutionValue());
+        ti.setPrescriptionValue(vi.getPrescriptionValue());
+        
+        getItemFacade().edit(ti);
     }
 
     public void save() {
@@ -380,9 +424,9 @@ public class ClientEncounterComponentFormSetController implements Serializable {
                         ci.setMultipleEntiesPerForm(di.isMultipleEntiesPerForm());
 
                         if (ci.getDataPopulationStrategy() == DataPopulationStrategy.From_Client_Value) {
-
+                            updateFromClientValue(ci);
                         } else if (ci.getDataPopulationStrategy() == DataPopulationStrategy.From_Last_Encounter) {
-
+                            updateFromLastEncounter(ci);
                         }
 
                         clientEncounterComponentItemController.save(ci);
@@ -423,8 +467,8 @@ public class ClientEncounterComponentFormSetController implements Serializable {
             case "client_data_of_birth": ti.setDateValue(c.getPerson().getDateOfBirth());return;
             case "client_current_age": ti.setShortTextValue(c.getPerson().getAge());return;
             case "client_age_at_encounter": ti.setShortTextValue(c.getPerson().getAge());return;
-            case "client_permanent_address": ti.setShortTextValue(c.getPerson().getAddress());return;
-            case "client_current_address": ti.setShortTextValue(c.getPerson().getAddress());return;
+            case "client_permanent_address": ti.setLongTextValue(c.getPerson().getAddress());return;
+            case "client_current_address": ti.setLongTextValue(c.getPerson().getAddress());return;
             case "client_mobile_number": ti.setShortTextValue(c.getPerson().getPhone1());return;
             case "client_home_number": ti.setShortTextValue(c.getPerson().getPhone2());return;
             case "client_permanent_moh_area": ti.setAreaValue(c.getPerson().getGnArea());return;
@@ -453,9 +497,54 @@ public class ClientEncounterComponentFormSetController implements Serializable {
         ti.setAreaValue(vi.getAreaValue());
         ti.setItemValue(vi.getItemValue());
         ti.setInstitution(vi.getInstitutionValue());
-        
+        ti.setPrescriptionValue(vi.getPrescriptionValue());
 
     }
+    
+    
+    
+    public void updateFromLastEncounter(ClientEncounterComponentItem ti) {
+        if (ti == null) {
+            return;
+        }
+        Client c ;
+        if(ti.getEncounter()==null && ti.getClient()==null){
+            return;
+        } else if(ti.getEncounter()!=null && ti.getClient()==null){
+            if(ti.getEncounter().getClient()==null){
+                return;
+            }else{
+                c=ti.getEncounter().getClient();
+            }
+        }else{
+            c=ti.getClient();
+        }
+        
+        
+                
+        
+        ClientEncounterComponentItem vi;
+        String j = "select vi from ClientEncounterComponentItem vi where vi.retired=false "
+                + " and vi.encounter.client=:c order by vi.id desc";
+        Map m = new HashMap();
+        m.put("c", ti.getEncounter().getClient());
+        vi = getItemFacade().findFirstByJpql(j, m);
+
+        if (vi == null) {
+            return;
+        }
+        
+        ti.setDateValue(vi.getDateValue());
+        ti.setShortTextValue(vi.getShortTextValue());
+        ti.setLongTextValue(vi.getLongTextValue());
+        ti.setItemValue(vi.getItemValue());
+        ti.setAreaValue(vi.getAreaValue());
+        ti.setItemValue(vi.getItemValue());
+        ti.setInstitution(vi.getInstitutionValue());
+        ti.setPrescriptionValue(vi.getPrescriptionValue());
+
+    }
+    
 
 // </editor-fold>    
 // <editor-fold defaultstate="collapsed" desc="Default Functions">

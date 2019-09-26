@@ -30,6 +30,8 @@ public class ClientEncounterComponent extends Component {
 
     @Lob
     private String longTextValue;
+    @Lob
+    private String descreptionValue;
     private String shortTextValue;
     private byte[] byteArrayValue;
     private Integer integerNumberValue;
@@ -48,7 +50,7 @@ public class ClientEncounterComponent extends Component {
     private Client clientValue;
     @ManyToOne
     private Prescription prescriptionValue;
-    
+
     @OneToMany
     private List<Item> itemValues;
     @OneToMany
@@ -57,15 +59,12 @@ public class ClientEncounterComponent extends Component {
     private List<Institution> institutionValues;
     @OneToMany
     private List<Client> clientValues;
-    
-    
+
     private boolean completed;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date completedAt;
     @ManyToOne
     private WebUser completedBy;
-    
-    
 
     public Encounter getEncounter() {
         return encounter;
@@ -243,7 +242,14 @@ public class ClientEncounterComponent extends Component {
     public void setPrescriptionValue(Prescription prescriptionValue) {
         this.prescriptionValue = prescriptionValue;
     }
-    
+
+    public String getDescreptionValue() {
+        return descreptionValue;
+    }
+
+    public void setDescreptionValue(String descreptionValue) {
+        this.descreptionValue = descreptionValue;
+    }
 
     
     

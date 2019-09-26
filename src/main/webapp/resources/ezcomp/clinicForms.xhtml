@@ -17,7 +17,7 @@
 
         <h:panelGroup rendered="#{cc.attrs.form.itemArrangementStrategy eq 'Label_Value_Unit_Sets'}" >
 
-            <table style="#{cc.attrs.form.generatedCss}" >
+            <table style="#{cc.attrs.form.generatedCss}" class="alignTop" >
                 <ui:repeat value="#{clientEncounterComponentItemController.findClientEncounterComponentItemOfAForm(cc.attrs.form)}" 
                            var="ii" >
                     <tr>
@@ -25,6 +25,46 @@
                             <p:outputLabel value="#{ii.name}" ></p:outputLabel>
                         </td>
                         <td>
+                           
+                            <h:panelGroup rendered="#{ii.renderType eq 'Input_Text' and  !ii.calculateOnFocus}" >
+                                <p:inputText id="txtItS" value="#{ii.shortTextValue}" 
+                                             required="#{ii.required}" 
+                                             requiredMessage="#{ii.requiredErrorMessage}" >
+                                    <p:ajax  event="blur" process="@this" listener="#{clientEncounterComponentItemController.save(ii)}" ></p:ajax>
+                                </p:inputText>
+                            </h:panelGroup>
+                            
+                            <h:panelGroup rendered="#{ii.renderType eq 'Input_Text_Area' and  !ii.calculateOnFocus}" >
+                                <p:inputTextarea id="txtItaL" value="#{ii.longTextValue}" 
+                                             required="#{ii.required}" 
+                                             requiredMessage="#{ii.requiredErrorMessage}" >
+                                    <p:ajax  event="blur" process="@this" listener="#{clientEncounterComponentItemController.save(ii)}" ></p:ajax>
+                                </p:inputTextarea>
+                            </h:panelGroup>
+                            
+                             <h:panelGroup rendered="#{ii.renderType eq 'Date_Picker' and  !ii.calculateOnFocus}" >
+                                 <p:calendar id="calDp" value="#{ii.dateValue}" 
+                                             required="#{ii.required}" navigator="true"
+                                             requiredMessage="#{ii.requiredErrorMessage}" 
+                                             pattern="dd MMMM yyyy">
+                                    <p:ajax  event="blur" process="@this" listener="#{clientEncounterComponentItemController.save(ii)}" ></p:ajax>
+                                </p:calendar>
+                            </h:panelGroup>
+                            
+                             <h:panelGroup rendered="#{ii.renderType eq 'Calendar' and  !ii.calculateOnFocus}" >
+                                 <p:calendar id="calC" value="#{ii.dateValue}" 
+                                             required="#{ii.required}" 
+                                             requiredMessage="#{ii.requiredErrorMessage}" pattern="dd MMMM yyyy">
+                                    <p:ajax  event="blur" process="@this" listener="#{clientEncounterComponentItemController.save(ii)}" ></p:ajax>
+                                </p:calendar>
+                            </h:panelGroup>
+                            
+                            
+                            
+                            
+                            
+                            
+                            
                             <h:panelGroup rendered="#{ii.renderType eq 'Short_text_input' and  !ii.calculateOnFocus}" >
                                 <h:inputText id="txtSt" value="#{ii.shortTextValue}" 
                                              required="#{ii.required}" 

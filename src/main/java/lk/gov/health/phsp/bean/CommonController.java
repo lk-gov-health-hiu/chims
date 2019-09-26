@@ -111,13 +111,23 @@ public class CommonController implements Serializable {
     }
 
     public RenderType[] getRenderTypes() {
-        return RenderType.values();
+        RenderType[] rts = new RenderType[]{
+            RenderType.Autocomplete,
+            RenderType.Calendar,
+            RenderType.Date_Picker ,
+            RenderType.Input_Text ,
+            RenderType.Input_Text_Area,
+            RenderType.List_Box,
+            RenderType.Prescreption,
+            RenderType.Boolean_Button,
+            RenderType.Boolean_Checkbox,};
+        return rts;
     }
 
     public RelationshipType[] getRelationshipTypes() {
         return RelationshipType.values();
     }
-    
+
     public SelectionDataType[] getSelectionDataTypes() {
         return SelectionDataType.values();
     }
@@ -163,21 +173,21 @@ public class CommonController implements Serializable {
     }
 
     public Double getDoubleValue(String result) {
-        Double d= null;
-        try{
-            d=Double.parseDouble(result);
-        }catch(Exception e){
-            d=null;
+        Double d = null;
+        try {
+            d = Double.parseDouble(result);
+        } catch (Exception e) {
+            d = null;
         }
         return d;
     }
 
     Integer getIntegerValue(String result) {
-        Integer d= null;
-        try{
-            d=Integer.parseInt(result);
-        }catch(Exception e){
-            d=null;
+        Integer d = null;
+        try {
+            d = Integer.parseInt(result);
+        } catch (Exception e) {
+            d = null;
         }
         return d;//To change body of generated methods, choose Tools | Templates.
     }

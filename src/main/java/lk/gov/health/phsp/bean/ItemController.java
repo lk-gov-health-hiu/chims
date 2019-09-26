@@ -164,6 +164,8 @@ public class ItemController implements Serializable {
     }
 
     public void addInitialMetadata() {
+        System.out.println("addInitialMetadata"
+                + "");
         addTitles();
         addMarietalStatus();
         addReligions();
@@ -175,6 +177,7 @@ public class ItemController implements Serializable {
     }
 
     public void addClientData() {
+        System.out.println("addClientData");
         String initialData = "Dictionary_Item::Name:client_name:0" + System.lineSeparator()
                 + "Dictionary_Item::Sex:client_sex:0" + System.lineSeparator()
                 + "Dictionary_Item::PHN Number:client_phn_number:0" + System.lineSeparator()
@@ -315,6 +318,7 @@ public class ItemController implements Serializable {
                 }
                 Item parent = findItemByCode(itemCategory);
                 Item item = createItem(itemType, parent, itemName, itemCode, itemOrderNo);
+                System.out.println("item = " + item.getId() + " " + item.getName() + " " + item.getCode());
             } else {
             }
         }

@@ -29,6 +29,12 @@ package lk.gov.health.phsp.enums;
  * @author User
  */
 public enum RenderType {
+    Input_Text,
+    Input_Text_Area,
+    Drop_Down_Menu,
+    List_Box,
+    Boolean_Button,
+    Boolean_Checkbox,
     Short_text_input,
     Long_text_input,
     Real_number_input,
@@ -46,8 +52,6 @@ public enum RenderType {
     Panel,
     Panel_Tab,
     Autocomplete,
-    @Deprecated
-    Input_Text_Area,
     Select_Boolean_Button,
     Select_Boolean_Checkbox,
     Select_One_Button,
@@ -62,8 +66,7 @@ public enum RenderType {
     Date_Picker,
     Calendar,
     Signature,
-    @Deprecated
-    Input_Text,
+    
     Input_Switch,
     Password,
     Keyboard,
