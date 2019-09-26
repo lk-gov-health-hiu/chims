@@ -33,6 +33,7 @@ public class ClientEncounterComponent extends Component {
     private String shortTextValue;
     private byte[] byteArrayValue;
     private Integer integerNumberValue;
+    private Long longNumberValue;
     private Double realNumberValue;
     private Boolean booleanValue;
     @ManyToOne
@@ -213,6 +214,14 @@ public class ClientEncounterComponent extends Component {
 
     public void setCompletedBy(WebUser completedBy) {
         this.completedBy = completedBy;
+    }
+
+    public Long getLongNumberValue() {
+        return longNumberValue;
+    }
+
+    public void setLongNumberValue(Long longNumberValue) {
+        this.longNumberValue = longNumberValue;
     }
     
 

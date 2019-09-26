@@ -278,6 +278,10 @@ public class ClientEncounterComponentFormSetController implements Serializable {
         cfs.setComponentSetType(dfs.getComponentSetType());
         cfs.setPanelType(dfs.getPanelType());
         cfs.setName(dfs.getName());
+        cfs.setDescreption(dfs.getDescreption());
+        cfs.setForegroundColour(dfs.getForegroundColour());
+        cfs.setBackgroundColour(dfs.getBackgroundColour());
+        cfs.setBorderColour(dfs.getBorderColour());
 
         getFacade().create(cfs);
 
@@ -304,6 +308,10 @@ public class ClientEncounterComponentFormSetController implements Serializable {
                 cf.setOrderNo(df.getOrderNo());
                 cf.setItemArrangementStrategy(df.getItemArrangementStrategy());
                 cf.setParentComponent(cfs);
+                
+                cf.setBackgroundColour(df.getBackgroundColour());
+                cf.setForegroundColour(df.getForegroundColour());
+                cf.setBorderColour(df.getBorderColour());
 
                 clientEncounterComponentFormController.save(cf);
 
@@ -325,7 +333,8 @@ public class ClientEncounterComponentFormSetController implements Serializable {
                         ci.setInstitution(dfs.getInstitution());
 
                         ci.setItem(di.getItem());
-
+                        ci.setDescreption(di.getDescreption());
+                        
                         ci.setRequired(di.isRequired());
                         ci.setRequiredErrorMessage(di.getRequiredErrorMessage());
                         ci.setRegexValidationString(di.getRegexValidationString());
@@ -348,6 +357,13 @@ public class ClientEncounterComponentFormSetController implements Serializable {
                         ci.setDataCompletionStrategy(di.getDataCompletionStrategy());
                         ci.setIntHtmlColor(di.getIntHtmlColor());
                         ci.setHexHtmlColour(di.getHexHtmlColour());
+                        
+                        ci.setForegroundColour(di.getForegroundColour());
+                        ci.setBackgroundColour(di.getBackgroundColour());
+                        ci.setBorderColour(di.getBorderColour());
+                        
+                        ci.setCalculateOnFocus(di.isCalculateOnFocus());
+                        ci.setCalculationScript(di.getCalculationScript());
 
                         clientEncounterComponentItemController.save(ci);
                     }

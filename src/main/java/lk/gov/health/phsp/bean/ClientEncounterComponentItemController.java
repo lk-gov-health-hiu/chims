@@ -14,6 +14,8 @@ import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.ejb.EJB;
 import javax.ejb.EJBException;
 import javax.inject.Named;
@@ -25,6 +27,11 @@ import javax.faces.convert.FacesConverter;
 import javax.inject.Inject;
 import lk.gov.health.phsp.entity.ClientEncounterComponentForm;
 import lk.gov.health.phsp.entity.ClientEncounterComponentFormSet;
+import lk.gov.health.phsp.pojcs.Replaceable;
+import javax.script.ScriptEngineManager;
+import javax.script.ScriptEngine;
+import javax.script.ScriptException;
+import lk.gov.health.phsp.enums.SelectionDataType;
 
 @Named("clientEncounterComponentItemController")
 @SessionScoped
@@ -34,8 +41,13 @@ public class ClientEncounterComponentItemController implements Serializable {
     private lk.gov.health.phsp.facade.ClientEncounterComponentItemFacade ejbFacade;
     @Inject
     private WebUserController webUserController;
+    
+    @Inject
+    private CommonController commonController;
+    
     private List<ClientEncounterComponentItem> items = null;
     private ClientEncounterComponentItem selected;
+
 
     public List<ClientEncounterComponentItem> findClientEncounterComponentItemOfAForm(ClientEncounterComponentForm fs) {
         String j = "select f from ClientEncounterComponentItem f "
@@ -80,6 +92,185 @@ public class ClientEncounterComponentItemController implements Serializable {
 
     public void save() {
         save(selected);
+    }
+
+    public void calculate(ClientEncounterComponentItem i) {
+        System.out.println("calculate");
+        System.out.println("i.isCalculateOnFocus() = " + i.isCalculateOnFocus());
+        System.out.println("i.getCalculationScript() = " + i.getCalculationScript());
+        if (!i.isCalculateOnFocus()) {
+            return;
+        }
+        if (i.getCalculationScript() == null || i.getCalculationScript().trim().equals("")) {
+            return;
+        }
+
+        List<Replaceable> replacingBlocks = findReplaceblesInCalculationString(i.getCalculationScript());
+
+        System.out.println("replacingBlocks = " + replacingBlocks);
+
+        for (Replaceable r : replacingBlocks) {
+            if (r.getPef().toLowerCase().equals("f")) {
+                r.setClientEncounterComponentItem(findFormsetValue(i, r.getCode()));
+            }
+            // TODO: Need to add Logic for Encounter values and patient values (p and e)!   
+
+            if (r.getClientEncounterComponentItem() != null) {
+                ClientEncounterComponentItem c = r.getClientEncounterComponentItem();
+                System.out.println("c = " + c);
+                switch (c.getSelectionDataType()) {
+                    case Boolean:
+                        if (c.getBooleanValue() != null) {
+                            r.setSelectedValue(c.getBooleanValue().toString());
+                        }
+
+                        break;
+                    case Real_Number:
+                        System.out.println("c.getRealNumberValue() = " + c.getRealNumberValue());
+                        System.out.println("c.getName() = " + c.getName());
+                        System.out.println("c.getId() = " + c.getId());
+                        if (c.getRealNumberValue() != null) {
+                            r.setSelectedValue(c.getRealNumberValue().toString());
+                        }
+                        break;
+                    case Integer_Number:
+                        if (c.getLongNumberValue() != null) {
+                            r.setSelectedValue(c.getLongNumberValue().toString());
+                        }
+                        break;
+                    case Item_Reference:
+                        if (c.getItem() != null) {
+                            r.setSelectedValue(c.getItem().getCode());
+                        }
+                        break;
+                    // TODO: Need to add Logic for Encounter values and patient values (p and e)!   
+                }
+            }
+
+        }
+
+        String javaStringToEvaluate = addTemplateToReport(i.getCalculationScript().trim(), replacingBlocks);
+        System.out.println("javaStringToEvaluate = " + javaStringToEvaluate);
+        
+        
+        String result = evaluateScript(javaStringToEvaluate);
+        System.out.println("result = " + result);
+        System.out.println("i.getSelectionDataType() = " + i.getSelectionDataType());
+        
+        if(null==i.getSelectionDataType()){
+            i.setShortTextValue(result);
+        }else switch (i.getSelectionDataType()) {
+            case Real_Number:
+                i.setRealNumberValue(commonController.getDoubleValue(result));
+                System.out.println("i.getRealNumberValue() = " + i.getRealNumberValue());
+                getFacade().edit(i);
+                break;
+            case Integer_Number:
+                i.setIntegerNumberValue(commonController.getIntegerValue(result));
+                getFacade().edit(i);
+                break;
+            default:
+                i.setShortTextValue(result);
+                getFacade().edit(i);
+                break;
+        }
+
+        System.out.println("javaStringToEvaluate = " + javaStringToEvaluate);
+
+    }
+
+    public String evaluateScript(String script) {
+        ScriptEngineManager mgr = new ScriptEngineManager();
+        ScriptEngine engine = mgr.getEngineByName("JavaScript");
+        try {
+            return engine.eval(script) + "";
+        } catch (ScriptException ex) {
+            Logger.getLogger(ClientEncounterComponentItemController.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }
+    }
+
+    public ClientEncounterComponentItem findFormsetValue(ClientEncounterComponentItem i, String code) {
+        System.out.println("findFormsetValue = ");
+        if (i == null) {
+            return null;
+        }
+        if (i.getParentComponent() == null) {
+            return null;
+        }
+        if (i.getParentComponent().getParentComponent() == null) {
+            return null;
+        }
+        if (code == null) {
+            return null;
+        }
+        if (code.trim().equals("")) {
+            return null;
+        }
+        String j = "select i from ClientEncounterComponentItem i where i.retired=false "
+                + " and i.parentComponent.parentComponent=:pc "
+                + " and lower(i.item.code)=:c";
+        Map m = new HashMap();
+        m.put("pc", i.getParentComponent().getParentComponent());
+        m.put("c", code.toLowerCase());
+        System.out.println("m = " + m);
+        System.out.println("j = " + j);
+        return getFacade().findFirstByJpql(j, m);
+    }
+
+    public String addTemplateToReport(String calculationScript, List<Replaceable> selectables) {
+        for (Replaceable s : selectables) {
+            String patternStart = "#{";
+            String patternEnd = "}";
+            String toBeReplaced;
+            toBeReplaced = patternStart + s.getFullText() + patternEnd;
+            calculationScript = calculationScript.replace(toBeReplaced, s.getSelectedValue());
+        }
+        return calculationScript;
+    }
+
+    public List<Replaceable> findReplaceblesInCalculationString(String text) {
+        System.out.println("findReplaceblesInCalculationString");
+        System.out.println("text = " + text);
+
+        List<Replaceable> ss = new ArrayList<>();
+
+        String patternStart = "#{";
+        String patternEnd = "}";
+        String regexString = Pattern.quote(patternStart) + "(.*?)" + Pattern.quote(patternEnd);
+
+        Pattern p = Pattern.compile(regexString);
+        Matcher m = p.matcher(text);
+
+        while (m.find()) {
+            String block = m.group(1);
+            if (!block.trim().equals("")) {
+                Replaceable s = new Replaceable();
+                s.setFullText(block);
+                if (block.contains("|")) {
+                    String[] blockParts = block.split("\\|");
+                    for (int i = 0; i < blockParts.length; i++) {
+                        if (i == 0) {
+                            s.setPef(blockParts[0]);
+                        } else if (i == 1) {
+                            s.setFl(blockParts[1]);
+                        } else if (i == 2) {
+                            s.setCode(blockParts[2]);
+                        } else if (i == 3) {
+                            s.setDefaultValue(blockParts[3]);
+                        }
+                    }
+                    s.setInputText(false);
+                    s.setSelectOneMenu(true);
+                } else {
+                    return ss;
+                }
+                ss.add(s);
+            }
+        }
+
+        return ss;
+
     }
 
     public void save(ClientEncounterComponentItem i) {
@@ -174,6 +365,12 @@ public class ClientEncounterComponentItemController implements Serializable {
     public lk.gov.health.phsp.facade.ClientEncounterComponentItemFacade getEjbFacade() {
         return ejbFacade;
     }
+
+    public CommonController getCommonController() {
+        return commonController;
+    }
+    
+    
 
     @FacesConverter(forClass = ClientEncounterComponentItem.class)
     public static class ClientEncounterComponentItemControllerConverter implements Converter {

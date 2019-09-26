@@ -160,4 +160,24 @@ public class CommonController implements Serializable {
         c.set(Calendar.MILLISECOND, 0);
         return c.getTime();
     }
+
+    public Double getDoubleValue(String result) {
+        Double d= null;
+        try{
+            d=Double.parseDouble(result);
+        }catch(Exception e){
+            d=null;
+        }
+        return d;
+    }
+
+    Integer getIntegerValue(String result) {
+        Integer d= null;
+        try{
+            d=Integer.parseInt(result);
+        }catch(Exception e){
+            d=null;
+        }
+        return d;//To change body of generated methods, choose Tools | Templates.
+    }
 }
