@@ -62,7 +62,11 @@
                                 <p:commandButton id="addForm"   icon="ui-icon-cart" value="Manage Pages" ajax="false" action="#{designComponentFormSetController.toAddFormsForTheSelectedSet()}"
                                                  actionListener="#{designComponentFormSetController.setBackStringToInsAdmin()}"
                                                  disabled="#{empty designComponentFormSetController.selected}"/>
-                                <p:commandButton id="deleteButton" icon="ui-icon-trash"  value="#{bundleClinical.Delete}" actionListener="#{designComponentFormSetController.destroy}" update="datalist" disabled="#{empty designComponentFormSetController.selected}"/>
+                                <p:commandButton id="deleteButton" icon="ui-icon-trash"  ajax="false"
+                                                 value="#{bundleClinical.Delete}" 
+                                                   onclick="if (!confirm('Really want to do that?')) return false"
+                                                 action="#{designComponentFormSetController.destroy}" 
+                                                 disabled="#{empty designComponentFormSetController.selected}"/>
                             </f:facet>
                         </p:dataTable>
 

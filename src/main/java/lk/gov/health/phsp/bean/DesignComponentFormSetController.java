@@ -219,6 +219,9 @@ public class DesignComponentFormSetController implements Serializable {
         persist(PersistAction.UPDATE, ResourceBundle.getBundle("/BundleClinical").getString("DesignComponentFormSetUpdated"));
     }
 
+    
+    
+    
     public void destroy() {
         if(selected==null){
             JsfUtil.addErrorMessage("Nothing to Delete");

@@ -1,1 +1,0 @@
-select id,`PHN`,`CREATEDINSTITUTION_ID` from Patient order by id desc limit 10;

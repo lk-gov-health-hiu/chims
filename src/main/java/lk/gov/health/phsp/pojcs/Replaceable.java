@@ -14,7 +14,8 @@ import lk.gov.health.phsp.entity.ClientEncounterComponentItem;
  * @author buddhika_ari
  */
 public class Replaceable {
-    String code;
+    String variableCode;
+    private String valueCode;
     private String pef;
     private String fl;
     private String defaultValue;
@@ -22,16 +23,16 @@ public class Replaceable {
     List<String> options;
     String selectedOption;
     boolean inputText;
-    boolean selectOneMenu;
+    boolean formulaEvaluation;
     String selectedValue;
     String fullText;
 
-    public String getCode() {
-        return code;
+    public String getVariableCode() {
+        return variableCode;
     }
 
-    public void setCode(String code) {
-        this.code = code;
+    public void setVariableCode(String variableCode) {
+        this.variableCode = variableCode;
     }
 
     public List<String> getOptions() {
@@ -61,12 +62,12 @@ public class Replaceable {
         this.inputText = inputText;
     }
 
-    public boolean isSelectOneMenu() {
-        return selectOneMenu;
+    public boolean isFormulaEvaluation() {
+        return formulaEvaluation;
     }
 
-    public void setSelectOneMenu(boolean selectOneMenu) {
-        this.selectOneMenu = selectOneMenu;
+    public void setFormulaEvaluation(boolean formulaEvaluation) {
+        this.formulaEvaluation = formulaEvaluation;
     }
 
     public String getSelectedValue() {
@@ -118,6 +119,14 @@ public class Replaceable {
 
     public void setClientEncounterComponentItem(ClientEncounterComponentItem clientEncounterComponentItem) {
         this.clientEncounterComponentItem = clientEncounterComponentItem;
+    }
+
+    public String getValueCode() {
+        return valueCode;
+    }
+
+    public void setValueCode(String valueCode) {
+        this.valueCode = valueCode;
     }
     
     

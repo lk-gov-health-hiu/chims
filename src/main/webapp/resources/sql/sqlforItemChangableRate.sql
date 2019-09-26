@@ -1,1 +1,0 @@
-UPDATE item SET `USERCHANGABLE` = 1;

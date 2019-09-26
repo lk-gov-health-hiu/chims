@@ -25,22 +25,34 @@
                             <p:outputLabel value="#{ii.name}" ></p:outputLabel>
                         </td>
                         <td>
-                            <h:panelGroup rendered="#{ii.renderType eq 'Short_text_input'}" >
+                            <h:panelGroup rendered="#{ii.renderType eq 'Short_text_input' and  !ii.calculateOnFocus}" >
                                 <h:inputText id="txtSt" value="#{ii.shortTextValue}" 
                                              required="#{ii.required}" 
                                              requiredMessage="#{ii.requiredErrorMessage}" >
                                     <p:ajax  event="blur" process="@this" listener="#{clientEncounterComponentItemController.save(ii)}" ></p:ajax>
                                 </h:inputText>
                             </h:panelGroup>
-                            
-                              <h:panelGroup rendered="#{ii.renderType eq 'Integer_number_input'  and !ii.calculateOnFocus}" >
-                                  <h:inputText id="txtIn" value="#{ii.integerNumberValue}" 
+
+                            <h:panelGroup rendered="#{ii.renderType eq 'Short_text_input' and  ii.calculateOnFocus}" >
+                                <h:inputText id="txtStC" value="#{ii.shortTextValue}" 
+                                             required="#{ii.required}" 
+                                             requiredMessage="#{ii.requiredErrorMessage}" >
+                                    <p:ajax  event="focus" process="@this" 
+                                             listener="#{clientEncounterComponentItemController.calculate(ii)}" 
+                                             update="@this"></p:ajax>
+                                    <p:ajax  event="blur" process="@this" listener="#{clientEncounterComponentItemController.save(ii)}" ></p:ajax>
+                                </h:inputText>
+                            </h:panelGroup>
+
+
+                            <h:panelGroup rendered="#{ii.renderType eq 'Integer_number_input'  and !ii.calculateOnFocus}" >
+                                <h:inputText id="txtIn" value="#{ii.integerNumberValue}" 
                                              required="#{ii.required}" 
                                              requiredMessage="#{ii.requiredErrorMessage}" >
                                     <p:ajax  event="blur" process="@this" listener="#{clientEncounterComponentItemController.save(ii)}" ></p:ajax>
                                 </h:inputText>
                             </h:panelGroup>
-                            
+
                             <h:panelGroup rendered="#{ii.renderType eq 'Real_number_input'}" >
                                 <h:inputText id="txtRn" value="#{ii.realNumberValue}" 
                                              required="#{ii.required}" 
@@ -53,7 +65,8 @@
                                 <h:inputText id="txtRnc" value="#{ii.realNumberValue}" 
                                              required="#{ii.required}" 
                                              requiredMessage="#{ii.requiredErrorMessage}" >
-                                    <p:ajax  event="blur" process="@this" listener="#{clientEncounterComponentItemController.save(ii)}" ></p:ajax>
+                                    <p:ajax  event="blur" process="@this" 
+                                             listener="#{clientEncounterComponentItemController.save(ii)}" ></p:ajax>
                                     <p:ajax  event="focus" process="@this" 
                                              listener="#{clientEncounterComponentItemController.calculate(ii)}" 
                                              update="@this"></p:ajax>
@@ -70,11 +83,13 @@
                             </h:panelGroup>
 
                             <h:panelGroup rendered="#{ii.renderType eq 'Select_One_Menu'}" >
-                                <h:selectOneMenu id="som" value="#{ii.item}" >
+                                
+                                <h:selectOneMenu id="som" value="#{ii.itemValue}" >
                                     <f:selectItem itemLabel="Please select" ></f:selectItem>
                                     <f:selectItems value="#{itemController.findItemList(ii.categoryOfAvailableItems)}" var="li"
                                                    itemLabel="#{li.name}" itemValue="#{li}" ></f:selectItems>
                                     <p:ajax  event="blur" process="@this" listener="#{clientEncounterComponentItemController.save(ii)}" ></p:ajax>
+                                    <p:ajax  event="change" process="@this" listener="#{clientEncounterComponentItemController.save(ii)}" ></p:ajax>
                                 </h:selectOneMenu>
                             </h:panelGroup>
 

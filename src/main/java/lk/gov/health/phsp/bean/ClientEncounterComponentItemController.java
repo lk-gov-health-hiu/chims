@@ -41,13 +41,12 @@ public class ClientEncounterComponentItemController implements Serializable {
     private lk.gov.health.phsp.facade.ClientEncounterComponentItemFacade ejbFacade;
     @Inject
     private WebUserController webUserController;
-    
+
     @Inject
     private CommonController commonController;
-    
+
     private List<ClientEncounterComponentItem> items = null;
     private ClientEncounterComponentItem selected;
-
 
     public List<ClientEncounterComponentItem> findClientEncounterComponentItemOfAForm(ClientEncounterComponentForm fs) {
         String j = "select f from ClientEncounterComponentItem f "
@@ -111,7 +110,11 @@ public class ClientEncounterComponentItemController implements Serializable {
 
         for (Replaceable r : replacingBlocks) {
             if (r.getPef().toLowerCase().equals("f")) {
-                r.setClientEncounterComponentItem(findFormsetValue(i, r.getCode()));
+                if (r.getValueCode() == null) {
+                    r.setClientEncounterComponentItem(findFormsetValue(i, r.getVariableCode()));
+                } else {
+                    r.setFormulaEvaluation(findFormsetValueEqulesSelectedValue(i,r.getVariableCode(),r.getValueCode()));
+                }
             }
             // TODO: Need to add Logic for Encounter values and patient values (p and e)!   
 
@@ -145,34 +148,37 @@ public class ClientEncounterComponentItemController implements Serializable {
                         break;
                     // TODO: Need to add Logic for Encounter values and patient values (p and e)!   
                 }
+            }else{
+                r.setSelectedValue(r.isFormulaEvaluation()+"");
             }
 
         }
 
         String javaStringToEvaluate = addTemplateToReport(i.getCalculationScript().trim(), replacingBlocks);
         System.out.println("javaStringToEvaluate = " + javaStringToEvaluate);
-        
-        
+
         String result = evaluateScript(javaStringToEvaluate);
         System.out.println("result = " + result);
         System.out.println("i.getSelectionDataType() = " + i.getSelectionDataType());
-        
-        if(null==i.getSelectionDataType()){
+
+        if (null == i.getSelectionDataType()) {
             i.setShortTextValue(result);
-        }else switch (i.getSelectionDataType()) {
-            case Real_Number:
-                i.setRealNumberValue(commonController.getDoubleValue(result));
-                System.out.println("i.getRealNumberValue() = " + i.getRealNumberValue());
-                getFacade().edit(i);
-                break;
-            case Integer_Number:
-                i.setIntegerNumberValue(commonController.getIntegerValue(result));
-                getFacade().edit(i);
-                break;
-            default:
-                i.setShortTextValue(result);
-                getFacade().edit(i);
-                break;
+        } else {
+            switch (i.getSelectionDataType()) {
+                case Real_Number:
+                    i.setRealNumberValue(commonController.getDoubleValue(result));
+                    System.out.println("i.getRealNumberValue() = " + i.getRealNumberValue());
+                    getFacade().edit(i);
+                    break;
+                case Integer_Number:
+                    i.setIntegerNumberValue(commonController.getIntegerValue(result));
+                    getFacade().edit(i);
+                    break;
+                default:
+                    i.setShortTextValue(result);
+                    getFacade().edit(i);
+                    break;
+            }
         }
 
         System.out.println("javaStringToEvaluate = " + javaStringToEvaluate);
@@ -217,6 +223,38 @@ public class ClientEncounterComponentItemController implements Serializable {
         System.out.println("j = " + j);
         return getFacade().findFirstByJpql(j, m);
     }
+    
+    
+    public boolean findFormsetValueEqulesSelectedValue(ClientEncounterComponentItem i, String variableCode, String valueCode) {
+        System.out.println("findFormsetValue = ");
+        if (i == null) {
+            return false;
+        }
+        if (i.getParentComponent() == null) {
+            return false;
+        }
+        if (i.getParentComponent().getParentComponent() == null) {
+            return false;
+        }
+        if (variableCode == null) {
+            return false;
+        }
+        if (variableCode.trim().equals("")) {
+            return false;
+        }
+        String j = "select i from ClientEncounterComponentItem i where i.retired=false "
+                + " and i.parentComponent.parentComponent=:pc "
+                + " and lower(i.item.code)=:c "
+                + " and lower(i.itemValue.code)=:vc";
+        Map m = new HashMap();
+        m.put("pc", i.getParentComponent().getParentComponent());
+        m.put("c", variableCode.toLowerCase());
+        m.put("vc", valueCode.toLowerCase());
+        System.out.println("m = " + m);
+        System.out.println("j = " + j);
+        return getFacade().findFirstByJpql(j, m)!=null;
+    }
+    
 
     public String addTemplateToReport(String calculationScript, List<Replaceable> selectables) {
         for (Replaceable s : selectables) {
@@ -255,13 +293,21 @@ public class ClientEncounterComponentItemController implements Serializable {
                         } else if (i == 1) {
                             s.setFl(blockParts[1]);
                         } else if (i == 2) {
-                            s.setCode(blockParts[2]);
+                            String vv = blockParts[2];
+                            if (vv.contains("=")) {
+                                String[] vvs = vv.split("=");
+                                s.setVariableCode(vvs[0]);
+                                s.setValueCode(vvs[1]);
+                            } else {
+                                s.setVariableCode(blockParts[2]);
+                                s.setValueCode(null);
+                            }
                         } else if (i == 3) {
                             s.setDefaultValue(blockParts[3]);
                         }
                     }
                     s.setInputText(false);
-                    s.setSelectOneMenu(true);
+                    s.setFormulaEvaluation(true);
                 } else {
                     return ss;
                 }
@@ -369,8 +415,6 @@ public class ClientEncounterComponentItemController implements Serializable {
     public CommonController getCommonController() {
         return commonController;
     }
-    
-    
 
     @FacesConverter(forClass = ClientEncounterComponentItem.class)
     public static class ClientEncounterComponentItemControllerConverter implements Converter {

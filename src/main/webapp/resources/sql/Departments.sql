@@ -1,1 +1,0 @@
-select * from item where name like '%ezumi 40mg%';
