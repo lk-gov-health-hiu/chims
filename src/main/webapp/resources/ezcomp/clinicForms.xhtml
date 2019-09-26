@@ -16,7 +16,7 @@
     <cc:implementation>
 
         <h:panelGroup rendered="#{cc.attrs.form.itemArrangementStrategy eq 'Label_Value_Unit_Sets'}" >
-           
+
             <table style="#{cc.attrs.form.generatedCss}" >
                 <ui:repeat value="#{clientEncounterComponentItemController.findClientEncounterComponentItemOfAForm(cc.attrs.form)}" 
                            var="ii" >
@@ -48,7 +48,7 @@
                                     <p:ajax  event="blur" process="@this" listener="#{clientEncounterComponentItemController.save(ii)}" ></p:ajax>
                                 </h:inputText>
                             </h:panelGroup>
-                            
+
                             <h:panelGroup rendered="#{ii.renderType eq 'Real_number_input' and ii.calculateOnFocus}" >
                                 <h:inputText id="txtRnc" value="#{ii.realNumberValue}" 
                                              required="#{ii.required}" 
@@ -59,18 +59,19 @@
                                              update="@this"></p:ajax>
                                 </h:inputText>
                             </h:panelGroup>
-                            
-                            
-                            
+
+
+
                             <h:panelGroup rendered="#{ii.renderType eq 'Long_text_input'}" >
                                 <h:inputTextarea id="txtLt" value="#{ii.longTextValue}" >
-                                    
+
                                     <p:ajax  event="blur" process="@this" listener="#{clientEncounterComponentItemController.save(ii)}" ></p:ajax>
                                 </h:inputTextarea>
                             </h:panelGroup>
 
                             <h:panelGroup rendered="#{ii.renderType eq 'Select_One_Menu'}" >
                                 <h:selectOneMenu id="som" value="#{ii.item}" >
+                                    <f:selectItem itemLabel="Please select" ></f:selectItem>
                                     <f:selectItems value="#{itemController.findItemList(ii.categoryOfAvailableItems)}" var="li"
                                                    itemLabel="#{li.name}" itemValue="#{li}" ></f:selectItems>
                                     <p:ajax  event="blur" process="@this" listener="#{clientEncounterComponentItemController.save(ii)}" ></p:ajax>
@@ -87,8 +88,8 @@
                                     <p:ajax  event="blur" process="@this" listener="#{clientEncounterComponentItemController.save(ii)}" ></p:ajax>
                                 </p:autoComplete>
                             </h:panelGroup>
-                            
-                            
+
+
                             <h:panelGroup rendered="#{ii.renderType eq 'Autocomplete_to_select_many_items'}" >
                                 <p:autoComplete completeMethod="#{itemController.completeItemWithoutParent}" 
                                                 var="acim"
@@ -103,12 +104,24 @@
 
                             <h:panelGroup rendered="#{ii.renderType eq 'Select_Boolean_Checkbox'}" >
                                 <p:selectBooleanCheckbox id="chkItem"
-                                    value="#{ii.booleanValue}" 
-                                    >
+                                                         value="#{ii.booleanValue}" 
+                                                         >
                                     <p:ajax  event="blur" process="@this" listener="#{clientEncounterComponentItemController.save(ii)}" ></p:ajax>
                                 </p:selectBooleanCheckbox>
                             </h:panelGroup>
 
+
+                        </td>
+                        <td>
+                            <p:outputLabel value="#{ii.descreption}" ></p:outputLabel>
+                            <p:tooltip for="som" >
+                                sdds
+                                #{i.descreption}
+                            </p:tooltip>
+
+                            <p:tooltip for="som" >
+                                #{i.descreption}
+                            </p:tooltip>
 
                         </td>
                     </tr>
