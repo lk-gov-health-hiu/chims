@@ -52,7 +52,7 @@
                                             <p:outputLabel value="Item:" for="item" />
                                             <p:autoComplete id="item" value="#{designComponentFormItemController.selected.item}"
                                                             completeMethod="#{itemController.completeDictionaryItems}"
-                                                            required="true"   var="dic" itemLabel="#{dic.name}" itemValue="#{dic}">
+                                                            required="true"   var="dic" itemLabel="#{dic.code}" itemValue="#{dic}">
                                             </p:autoComplete>
 
                                             <p:outputLabel value="Order No:" for="orderNo" />
