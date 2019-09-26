@@ -170,7 +170,38 @@ public class ItemController implements Serializable {
         addEthinicGroups();
         addSexes();
         addCitizenship();
+        addClientData();
 
+    }
+
+    public void addClientData() {
+        String initialData = "Dictionary_Item::Name:client_name:0" + System.lineSeparator()
+                + "Dictionary_Item::Sex:client_sex:0" + System.lineSeparator()
+                + "Dictionary_Item::PHN Number:client_phn_number:0" + System.lineSeparator()
+                + "Dictionary_Item::NIC No.:client_nic_number:1" + System.lineSeparator()
+                + "Dictionary_Item::Date of Birth:client_data_of_birth:2" + System.lineSeparator()
+                + "Dictionary_Item::Age:client_current_age:3" + System.lineSeparator()
+                + "Dictionary_Item::Age in days:client_current_age_days:3" + System.lineSeparator()
+                + "Dictionary_Item::Age at Encounter:client_age_at_encounter:3" + System.lineSeparator()
+                + "Dictionary_Item::Age at Encounter (Days):client_age_at_encounter_days:3" + System.lineSeparator()
+                + "Dictionary_Item::Permanent Age:client_permanent_address:3" + System.lineSeparator()
+                + "Dictionary_Item::Current Address:client_current_address:3" + System.lineSeparator()
+                + "Dictionary_Item::Mobile Number:client_mobile_number:3" + System.lineSeparator()
+                + "Dictionary_Item::Home Number:client_home_number:3" + System.lineSeparator()
+                + "Dictionary_Item::Guardian Details:guardian_details:3" + System.lineSeparator()
+                + "Dictionary_Item::MOH Area:client_current_moh_area:3" + System.lineSeparator()
+                + "Dictionary_Item::PHM Area:client_current_phm_area:3" + System.lineSeparator()
+                + "Dictionary_Item::PHI Area:client_current_phi_area:3" + System.lineSeparator()
+                + "Dictionary_Item::MOH Area:client_permanent_moh_area:3" + System.lineSeparator()
+                + "Dictionary_Item::PHM Area:client_permanent_phm_area:3" + System.lineSeparator()
+                + "Dictionary_Item::PHI Area:client_permanent_phi_area:3" + System.lineSeparator()
+                + "Dictionary_Item::GN Division:client_gn_area:3" + System.lineSeparator()
+                + "Dictionary_Item::DS Division:client_ds_division:3" + System.lineSeparator()
+                + "Dictionary_Item::Date of Registration:client_date_of_first_phc_registration:3" + System.lineSeparator()
+                + "Dictionary_Item::Person to be contact in an Emergency:next_of_kin_name:3" + System.lineSeparator()
+                + "Dictionary_Item::Details of Person to contact in Emergency:next_of_kin_contact_details:3" + System.lineSeparator();
+
+        addInitialMetadata(initialData);
     }
 
     public void addMimeTypes() {
@@ -444,7 +475,7 @@ public class ItemController implements Serializable {
     public List<Item> findItemList(String parentCode, ItemType t) {
         return findItemList(parentCode, t, null);
     }
-    
+
     public List<Item> completeItemWithoutParent(String qry) {
         return findChildrenAndGrandchildrenItemList(null, ItemType.Dictionary_Item, qry);
     }

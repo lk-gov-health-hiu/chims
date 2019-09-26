@@ -36,6 +36,8 @@ public class ClientEncounterComponent extends Component {
     private Long longNumberValue;
     private Double realNumberValue;
     private Boolean booleanValue;
+    @Temporal(javax.persistence.TemporalType.DATE)
+    private Date dateValue;
     @ManyToOne
     private Item itemValue;
     @ManyToOne
@@ -44,6 +46,8 @@ public class ClientEncounterComponent extends Component {
     private Institution institutionValue;
     @ManyToOne
     private Client clientValue;
+    @ManyToOne
+    private Prescription prescriptionValue;
     
     @OneToMany
     private List<Item> itemValues;
@@ -222,6 +226,22 @@ public class ClientEncounterComponent extends Component {
 
     public void setLongNumberValue(Long longNumberValue) {
         this.longNumberValue = longNumberValue;
+    }
+
+    public Date getDateValue() {
+        return dateValue;
+    }
+
+    public void setDateValue(Date dateValue) {
+        this.dateValue = dateValue;
+    }
+
+    public Prescription getPrescriptionValue() {
+        return prescriptionValue;
+    }
+
+    public void setPrescriptionValue(Prescription prescriptionValue) {
+        this.prescriptionValue = prescriptionValue;
     }
     
 

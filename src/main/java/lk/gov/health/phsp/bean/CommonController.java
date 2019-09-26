@@ -123,7 +123,8 @@ public class CommonController implements Serializable {
     }
 
     public DataPopulationStrategy[] getDataPopulationStrategies() {
-        return DataPopulationStrategy.values();
+        DataPopulationStrategy[] d = new DataPopulationStrategy[]{DataPopulationStrategy.None, DataPopulationStrategy.From_Client_Value, DataPopulationStrategy.From_Last_Encounter};
+        return d;
     }
 
     public DataCompletionStrategy[] getDataCompletionStrategies() {
