@@ -22,12 +22,6 @@
 
                     <h:form>
 
-
-
-
-
-
-
                         <p:panelGrid columns="4" style="text-align: left;margin: auto;">
                             <f:facet name="header" >
                                 <p:commandButton ajax="false" action="#{clientController.saveClient()}" value="Save" ></p:commandButton>
@@ -51,7 +45,7 @@
 
                             <p:outputLabel value="Phn:" for="phn" />
                             <h:panelGroup >
-                                <p:inputText id="phn"  autocomplete="off" value="#{clientController.selected.phn}" title="Phn" />
+                                <p:inputText id="phn" required="true"  autocomplete="off" value="#{clientController.selected.phn}" title="Phn" />
                                 <p:commandLink value="Generate" 
                                                action="#{clientController.generateAndAssignNewPhn}" 
                                                process="@this" 
@@ -149,7 +143,7 @@
                             <p:autoComplete id="gn" value="#{clientController.selected.person.gnArea}"
                                             completeMethod="#{areaController.completeGnAreas}"
                                             var="gn" itemLabel="#{gn.name}" itemValue="#{gn}"
-                                            maxResults="15" forceSelection="true"
+                                            maxResults="15" forceSelection="true" required="true"
                                             minQueryLength="3">
                                 <f:ajax event="itemSelect" execute="@this" render="phm moh dsd district province" 
                                         listener="#{clientController.gnAreaChanged()}"></f:ajax>

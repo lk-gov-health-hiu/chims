@@ -10,5 +10,5 @@
         <property name="URL" value="jdbc:mysql://localhost:3306/phsp?zeroDateTimeBehavior=convertToNull"/>
         <property name="driverClass" value="com.mysql.jdbc.Driver"/>
     </jdbc-connection-pool>
-    <jdbc-resource enabled="true" jndi-name="java:app/dsC" object-type="user" pool-name="mysql_phsp_rootPool"/>
+    <jdbc-resource enabled="true" jndi-name="java:app/dsR" object-type="user" pool-name="mysql_phsp_rootPool"/>
 </resources>
