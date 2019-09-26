@@ -33,7 +33,15 @@
                                 </h:inputText>
                             </h:panelGroup>
                             
-                            <h:panelGroup rendered="#{ii.renderType eq 'Real_number_input'  and !ii.calculateOnFocus}" >
+                              <h:panelGroup rendered="#{ii.renderType eq 'Integer_number_input'  and !ii.calculateOnFocus}" >
+                                  <h:inputText id="txtIn" value="#{ii.integerNumberValue}" 
+                                             required="#{ii.required}" 
+                                             requiredMessage="#{ii.requiredErrorMessage}" >
+                                    <p:ajax  event="blur" process="@this" listener="#{clientEncounterComponentItemController.save(ii)}" ></p:ajax>
+                                </h:inputText>
+                            </h:panelGroup>
+                            
+                            <h:panelGroup rendered="#{ii.renderType eq 'Real_number_input'}" >
                                 <h:inputText id="txtRn" value="#{ii.realNumberValue}" 
                                              required="#{ii.required}" 
                                              requiredMessage="#{ii.requiredErrorMessage}" >
