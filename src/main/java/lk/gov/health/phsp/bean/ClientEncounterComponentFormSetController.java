@@ -308,7 +308,7 @@ public class ClientEncounterComponentFormSetController implements Serializable {
                 cf.setOrderNo(df.getOrderNo());
                 cf.setItemArrangementStrategy(df.getItemArrangementStrategy());
                 cf.setParentComponent(cfs);
-                
+
                 cf.setBackgroundColour(df.getBackgroundColour());
                 cf.setForegroundColour(df.getForegroundColour());
                 cf.setBorderColour(df.getBorderColour());
@@ -334,7 +334,7 @@ public class ClientEncounterComponentFormSetController implements Serializable {
 
                         ci.setItem(di.getItem());
                         ci.setDescreption(di.getDescreption());
-                        
+
                         ci.setRequired(di.isRequired());
                         ci.setRequiredErrorMessage(di.getRequiredErrorMessage());
                         ci.setRegexValidationString(di.getRegexValidationString());
@@ -357,13 +357,21 @@ public class ClientEncounterComponentFormSetController implements Serializable {
                         ci.setDataCompletionStrategy(di.getDataCompletionStrategy());
                         ci.setIntHtmlColor(di.getIntHtmlColor());
                         ci.setHexHtmlColour(di.getHexHtmlColour());
-                        
+
                         ci.setForegroundColour(di.getForegroundColour());
                         ci.setBackgroundColour(di.getBackgroundColour());
                         ci.setBorderColour(di.getBorderColour());
-                        
+
                         ci.setCalculateOnFocus(di.isCalculateOnFocus());
                         ci.setCalculationScript(di.getCalculationScript());
+
+                        ci.setCalculateButton(di.isCalculateButton());
+                        ci.setCalculationScriptForColour(di.getCalculationScriptForColour());
+                        ci.setDisplayDetailsBox(di.isDisplayDetailsBox());
+                        ci.setDiscreptionAsAToolTip(di.isDiscreptionAsAToolTip());
+                        ci.setDiscreptionAsASideLabel(di.isDiscreptionAsASideLabel());
+                        ci.setCalculationScriptForBackgroundColour(di.getCalculationScriptForBackgroundColour());
+                        ci.setMultipleEntiesPerForm(di.isMultipleEntiesPerForm());
 
                         clientEncounterComponentItemController.save(ci);
                     }

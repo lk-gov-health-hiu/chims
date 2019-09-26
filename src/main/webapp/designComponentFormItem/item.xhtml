@@ -58,6 +58,9 @@
                                             <p:outputLabel value="Order No:" for="orderNo" />
                                             <p:inputText id="orderNo" value="#{designComponentFormItemController.selected.orderNo}" title="OrderNo" />
 
+                                            <p:outputLabel value="Multiple Enties Per Form" for="multipleEntiesPerForm" />
+                                            <p:selectBooleanCheckbox id="multipleEntiesPerForm" value="#{designComponentFormItemController.selected.multipleEntiesPerForm}" ></p:selectBooleanCheckbox>
+
 
                                             <p:outputLabel value="ComponentSex:" for="componentSex" />
                                             <p:selectOneMenu id="componentSex" 
@@ -73,6 +76,18 @@
                                                 <f:selectItems value="#{commonController.renderTypes}" ></f:selectItems>
                                             </p:selectOneMenu>
 
+                                            <p:outputLabel value="Enable a Details Box" for="displayDetailsBox" />
+                                            <p:selectBooleanCheckbox id="displayDetailsBox" value="#{designComponentFormItemController.selected.displayDetailsBox}" ></p:selectBooleanCheckbox>
+
+
+                                            <p:outputLabel value="Discreption as a Tooltip" for="discreptionAsAToolTip" />
+                                            <p:selectBooleanCheckbox id="discreptionAsAToolTip" value="#{designComponentFormItemController.selected.discreptionAsAToolTip}" ></p:selectBooleanCheckbox>
+
+
+                                            <p:outputLabel value="Discreption as a Side Label" for="discreptionAsASideLabel" />
+                                            <p:selectBooleanCheckbox id="discreptionAsASideLabel" value="#{designComponentFormItemController.selected.discreptionAsASideLabel}" ></p:selectBooleanCheckbox>
+
+
                                         </p:panelGrid>
 
                                     </p:tab>
@@ -83,10 +98,23 @@
                                             <p:outputLabel value="Calculate on Focus:" for="calculateOnFocus" />
                                             <p:selectBooleanCheckbox id="calculateOnFocus" value="#{designComponentFormItemController.selected.calculateOnFocus}" ></p:selectBooleanCheckbox>
 
+                                            <p:outputLabel value="Calculate button:" for="calculateButton" />
+                                            <p:selectBooleanCheckbox id="calculateButton" value="#{designComponentFormItemController.selected.calculateButton}" ></p:selectBooleanCheckbox>
 
                                             <p:outputLabel value="Calculation Script:" for="calculationScript" />
                                             <p:inputTextarea id="calculationScript"
                                                              value="#{designComponentFormItemController.selected.calculationScript}" title="Name" />
+
+
+                                            <p:outputLabel value="Calculation Script - Colour:" for="calculationScriptForColour" />
+                                            <p:inputTextarea id="calculationScriptForColour"
+                                                             value="#{designComponentFormItemController.selected.calculationScriptForColour}"  />
+
+                                            <p:outputLabel value="Calculation Script - Background Colour:" for="calculationScriptForBackgroundColour" />
+                                            <p:inputTextarea id="calculationScriptForBackgroundColour"
+                                                             value="#{designComponentFormItemController.selected.calculationScriptForBackgroundColour}"  />
+
+
 
 
                                             <p:outputLabel value="Data Type Available:" for="selectionDataType" />

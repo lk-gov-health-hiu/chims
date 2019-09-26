@@ -67,6 +67,34 @@ public class DesignComponentFormSetController implements Serializable {
 
     // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="Main Functions">
+    
+    
+    public void reloadSet(){
+        if(selected==null){
+            JsfUtil.addErrorMessage("Noting is Selected");
+            return;
+        }
+        referanceSet = (DesignComponentFormSet) selected.getReferenceComponent();
+        institution = selected.getInstitution();
+        retire();
+        importFormSet();
+    }
+    
+    public void retire(){
+        retire(selected);
+    }
+    
+    public void retire(DesignComponentFormSet set){
+        if(set==null){
+            JsfUtil.addErrorMessage("Nothing is selected");
+            return;
+        }
+        set.setRetired(true);
+        set.setRetiredAt(new Date());
+        set.setRetiredBy(webUserController.getLoggedUser());
+        getFacade().edit(set);
+    }
+    
     public void importFormSet() {
         if (referanceSet == null) {
             JsfUtil.addErrorMessage("Formset to Import is NOT selected");

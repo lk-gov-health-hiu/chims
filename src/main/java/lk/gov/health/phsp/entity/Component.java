@@ -81,9 +81,25 @@ public class Component implements Serializable {
     private boolean required;
 
     private boolean calculateOnFocus;
+    
+    private boolean calculateButton;
+    @Lob
+    private String calculationScriptForColour;
+    
+    @Lob
+    private String calculationScriptForBackgroundColour;
+    
+    
+    private boolean displayDetailsBox;
+    private boolean discreptionAsAToolTip;
+    private boolean discreptionAsASideLabel;
+
+    private boolean multipleEntiesPerForm;
 
     @Lob
     private String calculationScript;
+
+    
 
     @Lob
     private String requiredErrorMessage;
@@ -179,6 +195,8 @@ public class Component implements Serializable {
     private Date retiredAt;
     private String retireComments;
 
+    
+    
     public ComponentSetType getComponentSetType() {
         return componentSetType;
     }
@@ -595,7 +613,7 @@ public class Component implements Serializable {
         if (foregroundColour != null && !foregroundColour.equals("")) {
             generatedCss += "; color:#" + foregroundColour + "; ";
         }
-        if(borderColour != null && !borderColour.equals("")){
+        if (borderColour != null && !borderColour.equals("")) {
             generatedCss += "; border-color: #" + foregroundColour + "; ";
         }
         return generatedCss;
@@ -622,5 +640,62 @@ public class Component implements Serializable {
         this.borderColour = borderColour;
     }
 
+    public boolean isCalculateButton() {
+        return calculateButton;
+    }
+
+    public void setCalculateButton(boolean calculateButton) {
+        this.calculateButton = calculateButton;
+    }
+
+    public String getCalculationScriptForColour() {
+        return calculationScriptForColour;
+    }
+
+    public void setCalculationScriptForColour(String calculationScriptForColour) {
+        this.calculationScriptForColour = calculationScriptForColour;
+    }
+
+    public boolean isDisplayDetailsBox() {
+        return displayDetailsBox;
+    }
+
+    public void setDisplayDetailsBox(boolean displayDetailsBox) {
+        this.displayDetailsBox = displayDetailsBox;
+    }
+
+    public boolean isDiscreptionAsAToolTip() {
+        return discreptionAsAToolTip;
+    }
+
+    public void setDiscreptionAsAToolTip(boolean discreptionAsAToolTip) {
+        this.discreptionAsAToolTip = discreptionAsAToolTip;
+    }
+
+    public boolean isDiscreptionAsASideLabel() {
+        return discreptionAsASideLabel;
+    }
+
+    public void setDiscreptionAsASideLabel(boolean discreptionAsASideLabel) {
+        this.discreptionAsASideLabel = discreptionAsASideLabel;
+    }
+
+    public String getCalculationScriptForBackgroundColour() {
+        return calculationScriptForBackgroundColour;
+    }
+
+    public void setCalculationScriptForBackgroundColour(String calculationScriptForBackgroundColour) {
+        this.calculationScriptForBackgroundColour = calculationScriptForBackgroundColour;
+    }
+
+    public boolean isMultipleEntiesPerForm() {
+        return multipleEntiesPerForm;
+    }
+
+    public void setMultipleEntiesPerForm(boolean multipleEntiesPerForm) {
+        this.multipleEntiesPerForm = multipleEntiesPerForm;
+    }
+
+    
     
 }

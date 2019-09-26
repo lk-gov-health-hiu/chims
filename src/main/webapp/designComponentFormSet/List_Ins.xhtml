@@ -34,8 +34,8 @@
                                      rowsPerPageTemplate="10,20,30,40,50"
                                      >
 
-                            <p:ajax event="rowSelect"   update="createButton viewButton editButton deleteButton addForm"/>
-                            <p:ajax event="rowUnselect" update="createButton viewButton editButton deleteButton addForm"/>
+                            <p:ajax event="rowSelect"   update="createButton viewButton editButton deleteButton addForm reloadButton"/>
+                            <p:ajax event="rowUnselect" update="createButton viewButton editButton deleteButton addForm reloadButton"/>
                             <p:column>
                                 <f:facet name="header">
                                     <h:outputText value="#{bundleClinical.ListDesignComponentFormSetTitle_name}"/>
@@ -56,6 +56,9 @@
                             </p:column>
                             <f:facet name="footer">
                                
+                                <p:commandButton id="reloadButton"   icon="ui-icon-arrowrefresh-1-n" value="Reload" ajax="false"
+                                                 disabled="#{empty designComponentFormSetController.selected}"
+                                                 action="#{designComponentFormSetController.reloadSet()}"/>
                                 <p:commandButton id="createButton" icon="ui-icon-plus"   value="#{bundleClinical.Create}" actionListener="#{designComponentFormSetController.prepareCreate}" update=":DesignComponentFormSetCreateForm" oncomplete="PF('DesignComponentFormSetCreateDialog').show()"/>
                                 <p:commandButton id="viewButton"   icon="ui-icon-search" value="#{bundleClinical.View}" update=":DesignComponentFormSetViewForm" oncomplete="PF('DesignComponentFormSetViewDialog').show()" disabled="#{empty designComponentFormSetController.selected}"/>
                                 <p:commandButton id="editButton"   icon="ui-icon-pencil" value="#{bundleClinical.Edit}" update=":DesignComponentFormSetEditForm" oncomplete="PF('DesignComponentFormSetEditDialog').show()" disabled="#{empty designComponentFormSetController.selected}"/>
