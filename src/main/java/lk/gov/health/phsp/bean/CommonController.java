@@ -137,6 +137,7 @@ public class CommonController implements Serializable {
             SelectionDataType.Integer_Number,
             SelectionDataType.Real_Number,
             SelectionDataType.Boolean,
+            SelectionDataType.DateTime,
             SelectionDataType.Item_Reference,
             SelectionDataType.Client_Reference,
             SelectionDataType.Area_Reference,};

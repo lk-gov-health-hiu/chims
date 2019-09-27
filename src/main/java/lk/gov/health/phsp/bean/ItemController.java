@@ -371,8 +371,8 @@ public class ItemController implements Serializable {
                     + " order by i.id";
             m = new HashMap();
             m.put("code", code.trim().toLowerCase());
-            System.out.println("m = " + m);
-            System.out.println("j = " + j);
+            // System.out.println("m = " + m);
+            // System.out.println("j = " + j);
             item = getFacade().findFirstByJpql(j, m);
         } else {
             item = null;
@@ -542,7 +542,7 @@ public class ItemController implements Serializable {
         }
         if (qry != null) {
             m.put("n", "%" + qry.trim().toLowerCase() + "%");
-            j += " and lower(t.name) like :n ";
+            j += " and (lower(t.name) like :n or lower(t.code) like :n) ";
         }
         j += " order by t.orderNo";
         return getFacade().findByJpql(j, m);

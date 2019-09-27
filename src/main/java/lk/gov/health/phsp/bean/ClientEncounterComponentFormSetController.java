@@ -35,8 +35,11 @@ import lk.gov.health.phsp.enums.ComponentSex;
 import lk.gov.health.phsp.enums.DataCompletionStrategy;
 import lk.gov.health.phsp.enums.DataPopulationStrategy;
 import lk.gov.health.phsp.enums.EncounterType;
+import lk.gov.health.phsp.enums.SelectionDataType;
 import lk.gov.health.phsp.facade.ClientEncounterComponentItemFacade;
+import lk.gov.health.phsp.facade.ClientFacade;
 import lk.gov.health.phsp.facade.DesignComponentFormItemFacade;
+import lk.gov.health.phsp.facade.PersonFacade;
 // </editor-fold>
 
 @Named("clientEncounterComponentFormSetController")
@@ -48,6 +51,10 @@ public class ClientEncounterComponentFormSetController implements Serializable {
     private lk.gov.health.phsp.facade.ClientEncounterComponentFormSetFacade ejbFacade;
     @EJB
     private ClientEncounterComponentItemFacade itemFacade;
+    @EJB
+    private ClientFacade clientFacade;
+    @EJB
+    private PersonFacade personFacade;
 
 // </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="Controllers">
@@ -136,20 +143,27 @@ public class ClientEncounterComponentFormSetController implements Serializable {
     }
 
     public void updateToClientValue(ClientEncounterComponentItem vi) {
+        // System.out.println("updateToClientValue");
+        // System.out.println("vi = " + vi);
         if (vi == null) {
+            // System.out.println("vi null");
             return;
         }
         if (vi.getParentComponent() == null) {
+            // System.out.println("vi.getParentComponent() is null = " + vi.getParentComponent());
             return;
         }
         if (vi.getParentComponent().getParentComponent() == null) {
+            // System.out.println("vi.getParentComponent().getParentComponent() is null");
             return;
         }
         ClientEncounterComponentFormSet s;
         Client c;
         if (vi.getParentComponent().getParentComponent() instanceof ClientEncounterComponentFormSet) {
             s = (ClientEncounterComponentFormSet) vi.getParentComponent().getParentComponent();
+            // System.out.println("s = " + s);
         } else {
+            // System.out.println("not a set");
             return;
         }
 
@@ -157,25 +171,35 @@ public class ClientEncounterComponentFormSetController implements Serializable {
 
         ClientEncounterComponentItem ti;
         String j = "select vi from ClientEncounterComponentItem vi where vi.retired=false "
-                + " and vi.client=:c order by vi.id desc";
+                + " and vi.client=:c "
+                + " and vi.item=:i "
+                + " order by vi.id desc";
         Map m = new HashMap();
 
-        m.put("c", s.getEncounter().getClient());
+        m.put("c", c);
+        m.put("i", vi.getItem());
 
         ti = getItemFacade().findFirstByJpql(j, m);
+        // System.out.println("ti = " + ti);
 
         if (ti == null) {
             ti = new ClientEncounterComponentItem();
+            ti.setItem(vi.getItem());
             ti.setCreatedAt(new Date());
             ti.setCreatedBy(webUserController.getLoggedUser());
             ti.setClient(c);
+            ti.setSelectionDataType(vi.getSelectionDataType());
             getItemFacade().create(ti);
         } else {
             ti.setLastEditBy(webUserController.getLoggedUser());
             ti.setLastEditeAt(new Date());
         }
 
-        ti.setClient(s.getEncounter().getClient());
+        if(ti.getSelectionDataType()==null){
+            ti.setSelectionDataType(vi.getSelectionDataType());
+        }
+        
+        ti.setClient(c);
 
         ti.setDateValue(vi.getDateValue());
         ti.setShortTextValue(vi.getShortTextValue());
@@ -193,6 +217,7 @@ public class ClientEncounterComponentFormSetController implements Serializable {
         }
 
         String code = ti.getItem().getCode();
+        // System.out.println("code = " + code);
 
         switch (code) {
             case "client_name":
@@ -238,6 +263,9 @@ public class ClientEncounterComponentFormSetController implements Serializable {
                 c.getPerson().getGnArea().setDsd(ti.getAreaValue());
                 return;
         }
+
+        getPersonFacade().edit(c.getPerson());
+        getClientFacade().edit(c);
 
     }
 
@@ -303,8 +331,8 @@ public class ClientEncounterComponentFormSetController implements Serializable {
     }
 
     public List<ClientEncounterComponentFormSet> fillEncountersFormSets(String type, int count, boolean completedOnly) {
-        System.out.println("fillEncountersFormSets");
-        System.out.println("count = " + count);
+        // System.out.println("fillEncountersFormSets");
+        // System.out.println("count = " + count);
         EncounterType ec = null;
         try {
             ec = EncounterType.valueOf(type);
@@ -348,9 +376,9 @@ public class ClientEncounterComponentFormSetController implements Serializable {
     }
 
     public List<ClientEncounterComponentFormSet> fillEncountersFormSets(Client c, EncounterType type, int count, boolean completeOnly) {
-        System.out.println("fillEncountersFormSets");
-        System.out.println("count = " + count);
-        System.out.println("type = " + type);
+        // System.out.println("fillEncountersFormSets");
+        // System.out.println("count = " + count);
+        // System.out.println("type = " + type);
         List<ClientEncounterComponentFormSet> fs;
         String j = "select s from ClientEncounterComponentFormSet s where "
                 + " s.retired=false "
@@ -494,6 +522,7 @@ public class ClientEncounterComponentFormSetController implements Serializable {
 
                         if (ci.getDataPopulationStrategy() == DataPopulationStrategy.From_Client_Value) {
                             updateFromClientValue(ci);
+                            updateToClientValue(ci);
                         } else if (ci.getDataPopulationStrategy() == DataPopulationStrategy.From_Last_Encounter) {
                             updateFromLastEncounter(ci);
                         }
@@ -527,7 +556,6 @@ public class ClientEncounterComponentFormSetController implements Serializable {
         }
 
         String code = ti.getItem().getCode();
-        String val = "";
         switch (code) {
             case "client_name":
                 ti.setShortTextValue(c.getPerson().getName());
@@ -581,9 +609,12 @@ public class ClientEncounterComponentFormSetController implements Serializable {
 
         ClientEncounterComponentItem vi;
         String j = "select vi from ClientEncounterComponentItem vi where vi.retired=false "
-                + " and vi.client=:c order by vi.id desc";
+                + " and vi.client=:c "
+                + " and vi.item=:i "
+                + " order by vi.id desc";
         Map m = new HashMap();
         m.put("c", ti.getEncounter().getClient());
+        m.put("i", ti.getItem());
         vi = getItemFacade().findFirstByJpql(j, m);
 
         if (vi == null) {
@@ -800,6 +831,14 @@ public class ClientEncounterComponentFormSetController implements Serializable {
 
     public void setFormEditable(boolean formEditable) {
         this.formEditable = formEditable;
+    }
+
+    public ClientFacade getClientFacade() {
+        return clientFacade;
+    }
+
+    public PersonFacade getPersonFacade() {
+        return personFacade;
     }
 
 // </editor-fold>    

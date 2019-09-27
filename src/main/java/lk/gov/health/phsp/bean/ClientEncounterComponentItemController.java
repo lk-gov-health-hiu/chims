@@ -32,6 +32,8 @@ import lk.gov.health.phsp.pojcs.Replaceable;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptEngine;
 import javax.script.ScriptException;
+import lk.gov.health.phsp.entity.Client;
+import lk.gov.health.phsp.entity.Component;
 import lk.gov.health.phsp.enums.SelectionDataType;
 import org.apache.commons.lang3.SerializationUtils;
 
@@ -51,8 +53,8 @@ public class ClientEncounterComponentItemController implements Serializable {
     private ClientEncounterComponentItem selected;
 
     public List<ClientEncounterComponentItem> findClientEncounterComponentItemOfAForm(ClientEncounterComponentForm fs) {
-        System.out.println("findClientEncounterComponentItemOfAForm = ");
-        System.out.println("fs = " + fs);
+        // System.out.println("findClientEncounterComponentItemOfAForm = ");
+        // System.out.println("fs = " + fs);
         String j = "select f from ClientEncounterComponentItem f "
                 + " where f.retired=false "
                 + " and f.parentComponent=:p "
@@ -60,7 +62,7 @@ public class ClientEncounterComponentItemController implements Serializable {
         Map m = new HashMap();
         m.put("p", fs);
         List<ClientEncounterComponentItem> t = getFacade().findByJpql(j, m);
-        System.out.println("t = " + t);
+        // System.out.println("t = " + t);
         if (t == null) {
             t = new ArrayList<>();
         }
@@ -99,20 +101,19 @@ public class ClientEncounterComponentItemController implements Serializable {
     }
 
     public void calculate(ClientEncounterComponentItem i) {
-        System.out.println("calculate");
-        System.out.println("i.isCalculateOnFocus() = " + i.isCalculateOnFocus());
-        System.out.println("i.getCalculationScript() = " + i.getCalculationScript());
-        if (!i.isCalculateOnFocus()) {
-            return;
-        }
+        // System.out.println("calculate");
+        // System.out.println("i.isCalculateOnFocus() = " + i.isCalculateOnFocus());
+        // System.out.println("i.getCalculationScript() = " + i.getCalculationScript());
+//        if (!i.isCalculateOnFocus()) {
+//            return;
+//        }
         if (i.getCalculationScript() == null || i.getCalculationScript().trim().equals("")) {
             return;
         }
 
         List<Replaceable> replacingBlocks = findReplaceblesInCalculationString(i.getCalculationScript());
 
-        System.out.println("replacingBlocks = " + replacingBlocks);
-
+        // System.out.println("replacingBlocks = " + replacingBlocks);
         for (Replaceable r : replacingBlocks) {
             if (r.getPef().toLowerCase().equals("f")) {
                 if (r.getValueCode() == null) {
@@ -120,8 +121,8 @@ public class ClientEncounterComponentItemController implements Serializable {
                 } else {
                     r.setFormulaEvaluation(findFormsetValueEqulesSelectedValue(i, r.getVariableCode(), r.getValueCode()));
                 }
-            }else if(r.getPef().toLowerCase().equals("p")){
-                
+            } else if (r.getPef().toLowerCase().equals("p")) {
+                r.setClientEncounterComponentItem(findClientValue(i, r.getVariableCode()));
             }
             // TODO: Need to add Logic for Encounter values and patient values (p and e)!   
 
@@ -130,6 +131,10 @@ public class ClientEncounterComponentItemController implements Serializable {
                 System.out.println("c = " + c);
                 System.out.println("c.getSelectionDataType() = " + c.getSelectionDataType());
                 switch (c.getSelectionDataType()) {
+                    case Short_Text:
+                        if (c.getShortTextValue() != null) {
+                            r.setSelectedValue(c.getShortTextValue());
+                        }
                     case Boolean:
                         if (c.getBooleanValue() != null) {
                             r.setSelectedValue(c.getBooleanValue().toString());
@@ -137,9 +142,9 @@ public class ClientEncounterComponentItemController implements Serializable {
 
                         break;
                     case Real_Number:
-                        System.out.println("c.getRealNumberValue() = " + c.getRealNumberValue());
-                        System.out.println("c.getName() = " + c.getName());
-                        System.out.println("c.getId() = " + c.getId());
+                        // System.out.println("c.getRealNumberValue() = " + c.getRealNumberValue());
+                        // System.out.println("c.getName() = " + c.getName());
+                        // System.out.println("c.getId() = " + c.getId());
                         if (c.getRealNumberValue() != null) {
                             r.setSelectedValue(c.getRealNumberValue().toString());
                         }
@@ -154,10 +159,12 @@ public class ClientEncounterComponentItemController implements Serializable {
                             r.setSelectedValue(c.getItem().getCode());
                         }
                         break;
+
                     // TODO: Need to add Logic for Encounter values and patient values (p and e)!   
                 }
+                System.out.println("r.getSelectedValue() = " + r.getSelectedValue());
             } else {
-                r.setSelectedValue(r.isFormulaEvaluation() + "===true");
+                r.setSelectedValue(r.isFormulaEvaluation() + "");
             }
 
         }
@@ -175,22 +182,28 @@ public class ClientEncounterComponentItemController implements Serializable {
             switch (i.getSelectionDataType()) {
                 case Real_Number:
                     i.setRealNumberValue(commonController.getDoubleValue(result));
-                    System.out.println("i.getRealNumberValue() = " + i.getRealNumberValue());
+                    // System.out.println("i.getRealNumberValue() = " + i.getRealNumberValue());
                     getFacade().edit(i);
                     break;
                 case Integer_Number:
                     i.setIntegerNumberValue(commonController.getIntegerValue(result));
                     getFacade().edit(i);
                     break;
+                case Short_Text:
+                    i.setShortTextValue(result);
+                    break;
+                case Long_Text:
+                    i.setLongTextValue(result);
+                    break;
+
                 default:
                     i.setShortTextValue(result);
-                    getFacade().edit(i);
                     break;
             }
+            getFacade().edit(i);
         }
 
-        System.out.println("javaStringToEvaluate = " + javaStringToEvaluate);
-
+        // System.out.println("javaStringToEvaluate = " + javaStringToEvaluate);
     }
 
     public String evaluateScript(String script) {
@@ -205,7 +218,7 @@ public class ClientEncounterComponentItemController implements Serializable {
     }
 
     public ClientEncounterComponentItem findFormsetValue(ClientEncounterComponentItem i, String code) {
-        System.out.println("findFormsetValue = ");
+        // System.out.println("findFormsetValue = ");
         if (i == null) {
             return null;
         }
@@ -227,13 +240,13 @@ public class ClientEncounterComponentItemController implements Serializable {
         Map m = new HashMap();
         m.put("pc", i.getParentComponent().getParentComponent());
         m.put("c", code.toLowerCase());
-        System.out.println("m = " + m);
-        System.out.println("j = " + j);
+        // System.out.println("m = " + m);
+        // System.out.println("j = " + j);
         return getFacade().findFirstByJpql(j, m);
     }
 
     public boolean findFormsetValueEqulesSelectedValue(ClientEncounterComponentItem i, String variableCode, String valueCode) {
-        System.out.println("findFormsetValue = ");
+        // System.out.println("findFormsetValue = ");
         if (i == null) {
             return false;
         }
@@ -257,10 +270,10 @@ public class ClientEncounterComponentItemController implements Serializable {
         m.put("pc", i.getParentComponent().getParentComponent());
         m.put("c", variableCode.toLowerCase());
         m.put("vc", valueCode.toLowerCase());
-        System.out.println("m = " + m);
-        System.out.println("j = " + j);
+        // System.out.println("m = " + m);
+        // System.out.println("j = " + j);
         boolean found = getFacade().findFirstByJpql(j, m) != null;
-        System.out.println("found = " + found);
+        // System.out.println("found = " + found);
         return found;
     }
 
@@ -276,8 +289,8 @@ public class ClientEncounterComponentItemController implements Serializable {
     }
 
     public List<Replaceable> findReplaceblesInCalculationString(String text) {
-        System.out.println("findReplaceblesInCalculationString");
-        System.out.println("text = " + text);
+        // System.out.println("findReplaceblesInCalculationString");
+        // System.out.println("text = " + text);
 
         List<Replaceable> ss = new ArrayList<>();
 
@@ -328,13 +341,13 @@ public class ClientEncounterComponentItemController implements Serializable {
     }
 
     public void save(ClientEncounterComponentItem i) {
-        System.out.println("save");
-        System.out.println("i = " + i);
+        // System.out.println("save");
+        // System.out.println("i = " + i);
         if (i == null) {
             return;
         }
-        System.out.println("i.getId() = " + i.getId());
-        System.out.println("i.getShortTextValue() = " + i.getShortTextValue());
+        // System.out.println("i.getId() = " + i.getId());
+        // System.out.println("i.getShortTextValue() = " + i.getShortTextValue());
         if (i.getId() == null) {
             i.setCreatedAt(new Date());
             i.setCreatedBy(webUserController.getLoggedUser());
@@ -347,8 +360,8 @@ public class ClientEncounterComponentItemController implements Serializable {
     }
 
     public void addAnother(ClientEncounterComponentItem i) {
-        System.out.println("addAnother");
-        System.out.println("i = " + i);
+        // System.out.println("addAnother");
+        // System.out.println("i = " + i);
         if (i == null) {
             return;
         }
@@ -409,31 +422,31 @@ public class ClientEncounterComponentItemController implements Serializable {
         ci.setCalculationScriptForBackgroundColour(i.getCalculationScriptForBackgroundColour());
         ci.setMultipleEntiesPerForm(i.isMultipleEntiesPerForm());
 
-        System.out.println("getParentComponent = " + ci.getParentComponent());
-        System.out.println("getReferenceComponent = " + ci.getReferenceComponent());
+        // System.out.println("getParentComponent = " + ci.getParentComponent());
+        // System.out.println("getReferenceComponent = " + ci.getReferenceComponent());
         ci.setParentComponent(i.getParentComponent());
         ci.setReferenceComponent(i.getReferenceComponent());
-        System.out.println("ni = " + ci);
-        System.out.println("ni = " + ci.getBackgroundColour());
-        System.out.println("ni = " + ci.getDescreption());
-        System.out.println("ni = " + ci.getAreaValue());
-        System.out.println("ni = " + ci.getRealNumberValue());
-        System.out.println("ni = " + ci.getLongNumberValue());
-        System.out.println("ni = " + ci.getIntegerNumberValue());
-        System.out.println("ni = " + ci.getItemValue());
-        System.out.println("ni = " + ci.getPrescriptionValue());
-        System.out.println("ni = " + ci.getInstitutionValue());
-        System.out.println("getParentComponent = " + ci.getParentComponent());
-        System.out.println("getReferenceComponent = " + ci.getReferenceComponent());
+        // System.out.println("ni = " + ci);
+        // System.out.println("ni = " + ci.getBackgroundColour());
+        // System.out.println("ni = " + ci.getDescreption());
+        // System.out.println("ni = " + ci.getAreaValue());
+        // System.out.println("ni = " + ci.getRealNumberValue());
+        // System.out.println("ni = " + ci.getLongNumberValue());
+        // System.out.println("ni = " + ci.getIntegerNumberValue());
+        // System.out.println("ni = " + ci.getItemValue());
+        // System.out.println("ni = " + ci.getPrescriptionValue());
+        // System.out.println("ni = " + ci.getInstitutionValue());
+        // System.out.println("getParentComponent = " + ci.getParentComponent());
+        // System.out.println("getReferenceComponent = " + ci.getReferenceComponent());
 
         ci.setOrderNo(i.getOrderNo() + (i.getOrderNo() / 0.001));
         ci.setCreatedAt(new Date());
         ci.setCreatedBy(webUserController.getLoggedUser());
 
         getFacade().create(ci);
-        System.out.println("ni = " + ci);
-        System.out.println("ni = " + ci.getId());
-        
+        // System.out.println("ni = " + ci);
+        // System.out.println("ni = " + ci.getId());
+
         findClientEncounterComponentItemOfAForm((ClientEncounterComponentForm) i.getParentComponent());
 
     }
@@ -514,6 +527,55 @@ public class ClientEncounterComponentItemController implements Serializable {
 
     public CommonController getCommonController() {
         return commonController;
+    }
+
+    private ClientEncounterComponentItem findClientValue(ClientEncounterComponentItem i, String code) {
+        System.out.println("findClientValue = ");
+        if (i == null) {
+            return null;
+        }
+        if (i.getParentComponent() == null) {
+            return null;
+        }
+        if (i.getParentComponent().getParentComponent() == null) {
+            return null;
+        }
+        Component c = i.getParentComponent().getParentComponent();
+        ClientEncounterComponentFormSet s;
+        if (c instanceof ClientEncounterComponentFormSet) {
+            s = (ClientEncounterComponentFormSet) c;
+        } else {
+            return null;
+        }
+        Client client;
+        if (s.getEncounter() == null && s.getClient() == null) {
+            return null;
+        } else if (s.getClient() != null) {
+            client = s.getClient();
+        } else if (s.getEncounter().getClient() != null) {
+            client = s.getEncounter().getClient();
+        } else {
+            return null;
+        }
+
+        if (code == null) {
+            return null;
+        }
+        if (code.trim().equals("")) {
+            return null;
+        }
+        String j = "select i from ClientEncounterComponentItem i where i.retired=false "
+                + " and i.client=:client "
+                + " and lower(i.item.code)=:c";
+        Map m = new HashMap();
+        m.put("client", client);
+        m.put("c", code.toLowerCase());
+        System.out.println("m = " + m);
+        System.out.println("j = " + j);
+        ClientEncounterComponentItem fountVal = getFacade().findFirstByJpql(j, m);
+        System.out.println("fountVal = " + fountVal);
+        return fountVal;
+
     }
 
     @FacesConverter(forClass = ClientEncounterComponentItem.class)

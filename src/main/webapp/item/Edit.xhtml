@@ -24,8 +24,19 @@
                         <p:inputText  autocomplete="off"  id="code" value="#{itemController.selected.code}" title="#{bundleClinical.EditItemTitle_id}" />
                         <p:outputLabel value="Parent"  />
                         <p:autoComplete completeMethod="#{itemController.completeItems}" 
-                                        value="#{itemController.selected.parent}" var="di"  itemLabel="#{di.name}" 
-                                        itemValue="#{di}" forceSelection="true"/>
+                                        value="#{itemController.selected.parent}" var="di" 
+                                        itemLabel="#{di.name}" 
+                                        itemValue="#{di}" forceSelection="true">
+                            <p:column headerText="Name">
+                                <p:outputLabel value="#{di.name}" ></p:outputLabel>
+                            </p:column>
+                            <p:column headerText="Code">
+                                <p:outputLabel value="#{di.code}" ></p:outputLabel>
+                            </p:column>
+                            <p:column headerText="Parent">
+                                <p:outputLabel value="#{di.parent.name}" ></p:outputLabel>
+                            </p:column>
+                        </p:autoComplete>
                     </p:panelGrid>
                     <p:commandButton action="#{itemController.update}" value="#{bundleClinical.Save}" ajax="false" />
                                    </h:panelGroup>

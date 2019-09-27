@@ -61,7 +61,7 @@
     
     <error-page>
         <exception-type>javax.faces.application.ViewExpiredException</exception-type>
-        <location>/faces/login.xhtml</location>
+        <location>/faces/timeout.xhtml</location>
     </error-page>    
     
 </web-app>

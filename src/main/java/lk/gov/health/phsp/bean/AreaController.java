@@ -276,7 +276,7 @@ public class AreaController implements Serializable {
         j += " and a.mohArea=:moh ";
         m.put("moh", mohArea);
         j += " order by a.name";
-        System.out.println("m = " + m);
+        // System.out.println("m = " + m);
         List<Area> areas = getFacade().findByJpql(j, m);
         return areas;
     }
@@ -395,7 +395,7 @@ public class AreaController implements Serializable {
 
                             if (gnEdCount == 2) {
                                 coordinatesText = gnEdNode.getTextContent().trim();
-//                                System.out.println("coordinatesText = " + coordinatesText);
+//                                // System.out.println("coordinatesText = " + coordinatesText);
                             }
 
                             if (gnEdNode.hasChildNodes()) {
@@ -559,7 +559,7 @@ public class AreaController implements Serializable {
 
                             if (gnEdCount == 2) {
                                 coordinatesText = gnEdNode.getTextContent().trim();
-//                                System.out.println("coordinatesText = " + coordinatesText);
+//                                // System.out.println("coordinatesText = " + coordinatesText);
                             }
 
                             if (gnEdNode.hasChildNodes()) {
@@ -617,7 +617,7 @@ public class AreaController implements Serializable {
 
                 gn = getAreaByName(gnAreaCode, AreaType.GN, false, null);
                 if (gn == null) {
-                    System.out.println("GN = " + gn);
+                    // System.out.println("GN = " + gn);
                     gn = new Area();
                     gn.setType(AreaType.GN);
                     gn.setCentreLatitude(Double.parseDouble(centreLat));
@@ -627,7 +627,7 @@ public class AreaController implements Serializable {
                     gn.setCode(gnAreaCode);
                     gn.setParentArea(moh);
                     getFacade().create(gn);
-                    System.out.println("gn = " + gn);
+                    // System.out.println("gn = " + gn);
                     coordinatesText = coordinatesText.replaceAll("[\\t\\n\\r]", " ");
                     addCoordinates(gn, coordinatesText);
                 } else {
@@ -892,7 +892,7 @@ public class AreaController implements Serializable {
             m.put("pa", superArea);
         }
         j += " order by a.name";
-        System.out.println("m = " + m);
+        // System.out.println("m = " + m);
         List<Area> areas = getFacade().findByJpql(j, m);
         return areas;
     }
@@ -967,7 +967,7 @@ public class AreaController implements Serializable {
             m.put("t", areaType);
         }
         j += " order by a.code";
-//        System.out.println("m = " + m);
+//        // System.out.println("m = " + m);
         Area ta = getFacade().findFirstByJpql(j, m);
         if (ta == null && createNew) {
             ta = new Area();
@@ -998,7 +998,7 @@ public class AreaController implements Serializable {
                 m.put("t", areaType);
             }
             j += " order by a.code";
-//            System.out.println("m = " + m);
+//            // System.out.println("m = " + m);
             Area ta = getFacade().findFirstByJpql(j, m);
             if (ta == null && createNew) {
                 ta = new Area();
@@ -1011,8 +1011,8 @@ public class AreaController implements Serializable {
             }
             return ta;
         } catch (Exception e) {
-            System.out.println("e = " + e);
-            System.out.println("code = " + code);
+            // System.out.println("e = " + e);
+            // System.out.println("code = " + code);
             return null;
         }
     }

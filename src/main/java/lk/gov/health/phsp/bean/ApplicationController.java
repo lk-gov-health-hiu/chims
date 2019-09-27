@@ -60,21 +60,21 @@ public class ApplicationController {
             return null;
         }
         Long lastHinIssued = ins.getLastHin();
-        System.out.println("lastHinIssued = " + lastHinIssued);
+        // System.out.println("lastHinIssued = " + lastHinIssued);
         if (lastHinIssued == null) {
             lastHinIssued = 0l;
         }
         Long thisHin = lastHinIssued + 1;
-        System.out.println("thisHin = " + thisHin);
+        // System.out.println("thisHin = " + thisHin);
         String poi = ins.getPoiNumber();
-        System.out.println("poi = " + poi);
+        // System.out.println("poi = " + poi);
         String num = String.format("%05d", thisHin);
-        System.out.println("num = " + num);
+        // System.out.println("num = " + num);
         String checkDigit = calculateCheckDigit(poi + num);
         String phn = poi + num + checkDigit;
-        System.out.println("phn = " + phn);
+        // System.out.println("phn = " + phn);
         ins.setLastHin(thisHin);
-        System.out.println("thisHin = " + thisHin);
+        // System.out.println("thisHin = " + thisHin);
         getInstitutionFacade().edit(ins);
         return phn;
     }

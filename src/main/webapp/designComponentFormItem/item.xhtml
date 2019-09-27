@@ -135,6 +135,12 @@
                                                             completeMethod="#{itemController.completeItems}" 
                                                             var="ic" itemLabel="#{ic.name}" forceSelection="true"
                                                             itemValue="#{ic}" >
+                                                <p:column headerText="Name">
+                                                    <p:outputLabel value="#{ic.name}" ></p:outputLabel>
+                                                </p:column>
+                                                <p:column headerText="Code">
+                                                    <p:outputLabel value="#{ic.code}" ></p:outputLabel>
+                                                </p:column>
                                             </p:autoComplete>
 
                                         </p:panelGrid>

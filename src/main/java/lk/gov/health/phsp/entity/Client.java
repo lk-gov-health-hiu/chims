@@ -80,6 +80,13 @@ public class Client implements Serializable {
         return true;
     }
 
+    @Override
+    public String toString() {
+        return "Client{" + "phn=" + phn + '}';
+    }
+
+    
+    
 // </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="Getters & Setters">
     public static long getSerialVersionUID() {

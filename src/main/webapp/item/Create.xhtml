@@ -17,7 +17,7 @@
                             id="itemType" value="#{itemController.selected.itemType}" title="#{bundleClinical.EditItemTitle_itemType}" >
                             <f:selectItems value="#{commonController.itemTypes}" ></f:selectItems>
                         </p:selectOneMenu>
-                        
+
                         <p:outputLabel value="#{bundleClinical.EditItemLabel_name}" for="name" />
                         <p:inputText autocomplete="off" id="name" value="#{itemController.selected.name}" title="#{bundleClinical.EditItemTitle_name}" />
                         <p:outputLabel value="Code" for="code" />
@@ -25,7 +25,17 @@
                         <p:outputLabel value="Parent"  />
                         <p:autoComplete completeMethod="#{itemController.completeItems}" 
                                         value="#{itemController.selected.parent}" var="di"  itemLabel="#{di.name}" 
-                                        itemValue="#{di}" forceSelection="true"/>
+                                        itemValue="#{di}" forceSelection="true">
+                            <p:column headerText="Name">
+                                <p:outputLabel value="#{di.name}" ></p:outputLabel>
+                            </p:column>
+                            <p:column headerText="Code">
+                                <p:outputLabel value="#{di.code}" ></p:outputLabel>
+                            </p:column>
+                            <p:column headerText="Parent">
+                                <p:outputLabel value="#{di.parent.name}" ></p:outputLabel>
+                            </p:column>
+                        </p:autoComplete>
                     </p:panelGrid>
                     <p:commandButton action="#{itemController.create}" value="#{bundleClinical.Save}"
                                      ajax="false"/>
