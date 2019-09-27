@@ -120,6 +120,8 @@ public class ClientEncounterComponentItemController implements Serializable {
                 } else {
                     r.setFormulaEvaluation(findFormsetValueEqulesSelectedValue(i, r.getVariableCode(), r.getValueCode()));
                 }
+            }else if(r.getPef().toLowerCase().equals("p")){
+                
             }
             // TODO: Need to add Logic for Encounter values and patient values (p and e)!   
 
