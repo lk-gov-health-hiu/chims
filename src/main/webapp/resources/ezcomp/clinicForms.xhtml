@@ -32,9 +32,6 @@
                                                  required="#{ii.required}" 
                                                  requiredMessage="#{ii.requiredErrorMessage}" >
                                         <p:ajax  event="blur" process="@this" listener="#{clientEncounterComponentItemController.save(ii)}" ></p:ajax>
-                                        <p:ajax  event="focus" process="@this" 
-                                                 listener="#{clientEncounterComponentItemController.calculate(ii)}" 
-                                                 update="@this"></p:ajax>
                                     </p:inputText>
                                 </h:panelGroup>
                                 <h:panelGroup rendered="#{ii.selectionDataType eq 'Integer_Number'}" >
@@ -42,9 +39,7 @@
                                                  required="#{ii.required}" 
                                                  requiredMessage="#{ii.requiredErrorMessage}" >
                                         <p:ajax  event="blur" process="@this" listener="#{clientEncounterComponentItemController.save(ii)}" ></p:ajax>
-                                        <p:ajax  event="focus" process="@this" 
-                                                 listener="#{clientEncounterComponentItemController.calculate(ii)}" 
-                                                 update="@this"></p:ajax>
+
                                     </p:inputText>
                                 </h:panelGroup>
                                 <h:panelGroup rendered="#{ii.selectionDataType eq 'Real_Number'}" >
@@ -52,9 +47,6 @@
                                                  required="#{ii.required}" 
                                                  requiredMessage="#{ii.requiredErrorMessage}" >
                                         <p:ajax  event="blur" process="@this" listener="#{clientEncounterComponentItemController.save(ii)}" ></p:ajax>
-                                        <p:ajax  event="focus" process="@this" 
-                                                 listener="#{clientEncounterComponentItemController.calculate(ii)}" 
-                                                 update="@this"></p:ajax>
                                     </p:inputText>
                                 </h:panelGroup>
                                 <h:panelGroup rendered="#{ii.selectionDataType eq 'Long_Number'}" >
@@ -62,9 +54,6 @@
                                                  required="#{ii.required}" 
                                                  requiredMessage="#{ii.requiredErrorMessage}" >
                                         <p:ajax  event="blur" process="@this" listener="#{clientEncounterComponentItemController.save(ii)}" ></p:ajax>
-                                        <p:ajax  event="focus" process="@this" 
-                                                 listener="#{clientEncounterComponentItemController.calculate(ii)}" 
-                                                 update="@this"></p:ajax>
                                     </p:inputText>
                                 </h:panelGroup>
                             </h:panelGroup>
@@ -111,13 +100,10 @@
                                         <f:selectItems value="#{itemController.findItemList(ii.categoryOfAvailableItems)}" var="li"
                                                        itemLabel="#{li.name}" itemValue="#{li}" ></f:selectItems>
                                         <p:ajax  event="blur" process="@this" listener="#{clientEncounterComponentItemController.save(ii)}" ></p:ajax>
-                                        <p:ajax  event="focus" process="@this" 
-                                                 listener="#{clientEncounterComponentItemController.calculate(ii)}" 
-                                                 update="@this"></p:ajax>
                                     </p:selectOneMenu>
-                                    
+
                                 </h:panelGroup>
-                                
+
                             </h:panelGroup>
 
 

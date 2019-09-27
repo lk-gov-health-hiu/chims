@@ -70,6 +70,20 @@ public class ItemController implements Serializable {
     // <editor-fold defaultstate="collapsed" desc="Navigation">
     // </editor-fold>    
     // <editor-fold defaultstate="collapsed" desc="Functions">
+    
+    
+     public List<String> completeItemCodes(String qry) {
+         System.out.println("qry = " + qry);
+         String j = "select i.code from Item i "
+                 + " where lower(i.code) like :q "
+                 + "  and i.retired=false "
+                 + " order by i.code" ;
+         Map m = new HashMap();
+         m.put("q", "%" + qry.trim().toLowerCase() + "%");
+         List<String> ss =getFacade().findString(j, m);
+         return ss;
+     }
+    
     public String importItemsFromExcel() {
         try {
             String strParentCode;
