@@ -188,6 +188,15 @@
                                 
                             </h:panelGroup>
                         </td>
+                        
+                        <td>
+                            <h:panelGroup rendered="#{ii.calculateButton}" >
+                                <p:commandButton id="btnCalculate"  value="Calculate" process="@this" update="rptItems"
+                                                 action="#{clientEncounterComponentItemController.calculate(ii)}"></p:commandButton>
+                                
+                            </h:panelGroup>
+                        </td>
+                        
                         <td>
                             <p:outputLabel value="#{ii.descreption}" ></p:outputLabel>
                             <p:tooltip for="som" >
