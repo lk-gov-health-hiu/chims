@@ -115,7 +115,6 @@ public class ClientController implements Serializable {
 
         profileTabActiveIndex = tabView.getChildren().indexOf(event.getTab());
 
-        System.out.println("profileTabActiveIndex = " + profileTabActiveIndex);
 
     }
 
@@ -140,7 +139,6 @@ public class ClientController implements Serializable {
             m.put("com", false);
         }
         System.out.println("m = " + m);
-        System.out.println("j = " + j);
         return encounterFacade.findByJpql(j, m);
     }
 

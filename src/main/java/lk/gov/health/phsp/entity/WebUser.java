@@ -290,7 +290,6 @@ public class WebUser implements Serializable {
 
     @Override
     public String toString() {
-        System.out.println("WebUserToString");
         if (person != null) {
             return person.getNameWithTitle();
         } else {

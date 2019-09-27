@@ -205,7 +205,6 @@ public class AreaController implements Serializable {
                 return "";
             }
         } catch (Exception e) {
-            System.out.println("e = " + e);
             return "";
         }
     }
@@ -278,7 +277,6 @@ public class AreaController implements Serializable {
         m.put("moh", mohArea);
         j += " order by a.name";
         System.out.println("m = " + m);
-        System.out.println("j = " + j);
         List<Area> areas = getFacade().findByJpql(j, m);
         return areas;
     }
@@ -443,7 +441,6 @@ public class AreaController implements Serializable {
 
                 moh = getAreaByName(mohAreaName, AreaType.MOH, false, null);
                 if (moh == null) {
-                    System.out.println("moh = " + moh);
                     moh = new Area();
                     moh.setType(AreaType.MOH);
                     moh.setCentreLatitude(Double.parseDouble(centreLat));
@@ -619,7 +616,6 @@ public class AreaController implements Serializable {
                 }
 
                 gn = getAreaByName(gnAreaCode, AreaType.GN, false, null);
-                System.out.println("gnAreaCode = " + gnAreaCode);
                 if (gn == null) {
                     System.out.println("GN = " + gn);
                     gn = new Area();
@@ -632,7 +628,6 @@ public class AreaController implements Serializable {
                     gn.setParentArea(moh);
                     getFacade().create(gn);
                     System.out.println("gn = " + gn);
-                    System.out.println("to add coords");
                     coordinatesText = coordinatesText.replaceAll("[\\t\\n\\r]", " ");
                     addCoordinates(gn, coordinatesText);
                 } else {
@@ -710,7 +705,6 @@ public class AreaController implements Serializable {
 
                 if (i > 0) {
                     if (country.length > 2) {
-                        System.out.println("Coordinates [Longitude= " + country[1] + " , Latitude=" + country[2] + "]");
                         Coordinate c = new Coordinate();
                         c.setArea(selected);
 
@@ -755,7 +749,6 @@ public class AreaController implements Serializable {
                 String[] country = line.split(cvsSplitBy);
                 if (i > 0) {
                     if (country.length > 3) {
-                        System.out.println(country[3] + "Coordinates [Longitude= " + country[1] + " , Latitude=" + country[2] + "]");
 
                         String areName = country[3].replace("\"", "");
                         String j = "select c from Area c where upper(c.name) like :a order by c.id desc";
@@ -900,7 +893,6 @@ public class AreaController implements Serializable {
         }
         j += " order by a.name";
         System.out.println("m = " + m);
-        System.out.println("j = " + j);
         List<Area> areas = getFacade().findByJpql(j, m);
         return areas;
     }
@@ -957,7 +949,6 @@ public class AreaController implements Serializable {
             m.put("t", areaType);
         }
         j += " order by a.code";
-        System.out.println("m = " + m);
         return getFacade().findByJpql(j, m);
     }
 
@@ -1022,7 +1013,6 @@ public class AreaController implements Serializable {
         } catch (Exception e) {
             System.out.println("e = " + e);
             System.out.println("code = " + code);
-            System.out.println("name = " + name);
             return null;
         }
     }

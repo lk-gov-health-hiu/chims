@@ -76,7 +76,6 @@ public class ApplicationController {
         ins.setLastHin(thisHin);
         System.out.println("thisHin = " + thisHin);
         getInstitutionFacade().edit(ins);
-        System.out.println("ins.getLastHin() = " + ins.getLastHin());
         return phn;
     }
 

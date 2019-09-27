@@ -449,7 +449,6 @@ public class WebUserController implements Serializable {
                 return false;
             }
         } catch (Exception e) {
-            System.out.println("e = " + e);
             return false;
         }
     }

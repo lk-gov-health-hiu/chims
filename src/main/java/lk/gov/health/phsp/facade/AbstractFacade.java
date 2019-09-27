@@ -119,7 +119,6 @@ public abstract class AbstractFacade<T> {
                 return null;
             }
         } catch (Exception e) {
-            System.out.println("e = " + e);
             return null;
         }
     }

@@ -73,7 +73,6 @@ public class ItemController implements Serializable {
     
     
      public List<String> completeItemCodes(String qry) {
-         System.out.println("qry = " + qry);
          String j = "select i.code from Item i "
                  + " where lower(i.code) like :q "
                  + "  and i.retired=false "
@@ -129,7 +128,6 @@ public class ItemController implements Serializable {
                     strParentCode = cell.getContents();
 
                     parent = findItemByCode(strParentCode);
-                    System.out.println("parent = " + parent);
 
                     cell = sheet.getCell(itemNameColumnNumber, i);
                     strItemName = cell.getContents();
@@ -164,7 +162,6 @@ public class ItemController implements Serializable {
                 return "";
             }
         } catch (Exception e) {
-            System.out.println("e = " + e);
             return "";
         }
     }
@@ -178,8 +175,6 @@ public class ItemController implements Serializable {
     }
 
     public void addInitialMetadata() {
-        System.out.println("addInitialMetadata"
-                + "");
         addTitles();
         addMarietalStatus();
         addReligions();
@@ -191,7 +186,6 @@ public class ItemController implements Serializable {
     }
 
     public void addClientData() {
-        System.out.println("addClientData");
         String initialData = "Dictionary_Item::Name:client_name:0" + System.lineSeparator()
                 + "Dictionary_Item::Sex:client_sex:0" + System.lineSeparator()
                 + "Dictionary_Item::PHN Number:client_phn_number:0" + System.lineSeparator()
@@ -332,7 +326,6 @@ public class ItemController implements Serializable {
                 }
                 Item parent = findItemByCode(itemCategory);
                 Item item = createItem(itemType, parent, itemName, itemCode, itemOrderNo);
-                System.out.println("item = " + item.getId() + " " + item.getName() + " " + item.getCode());
             } else {
             }
         }
@@ -368,7 +361,6 @@ public class ItemController implements Serializable {
     }
 
     public Item findItemByCode(String code) {
-        System.out.println("code = " + code);
         Item item;
         String j;
         Map m = new HashMap();
@@ -382,7 +374,6 @@ public class ItemController implements Serializable {
             System.out.println("m = " + m);
             System.out.println("j = " + j);
             item = getFacade().findFirstByJpql(j, m);
-            System.out.println("item = " + item);
         } else {
             item = null;
         }

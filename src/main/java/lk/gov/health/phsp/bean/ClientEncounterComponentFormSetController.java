@@ -294,7 +294,6 @@ public class ClientEncounterComponentFormSetController implements Serializable {
             }
             return ClientEncounterComponentFormSetController.this.fillEncountersFormSets(c, ec, 0, completedOnly);
         } catch (Exception e) {
-            System.out.println("e = " + e);
             return new ArrayList<>();
         }
     }
@@ -306,7 +305,6 @@ public class ClientEncounterComponentFormSetController implements Serializable {
     public List<ClientEncounterComponentFormSet> fillEncountersFormSets(String type, int count, boolean completedOnly) {
         System.out.println("fillEncountersFormSets");
         System.out.println("count = " + count);
-        System.out.println("type = " + type);
         EncounterType ec = null;
         try {
             ec = EncounterType.valueOf(type);
@@ -316,7 +314,6 @@ public class ClientEncounterComponentFormSetController implements Serializable {
             }
             return fillEncountersFormSets(c, ec, count, completedOnly);
         } catch (Exception e) {
-            System.out.println("e = " + e);
             return new ArrayList<>();
         }
     }
@@ -327,7 +324,6 @@ public class ClientEncounterComponentFormSetController implements Serializable {
             ec = EncounterType.valueOf(type);
             return ClientEncounterComponentFormSetController.this.fillEncountersFormSets(c, ec);
         } catch (Exception e) {
-            System.out.println("e = " + e);
             return new ArrayList<>();
         }
     }
@@ -346,7 +342,6 @@ public class ClientEncounterComponentFormSetController implements Serializable {
             ec = EncounterType.valueOf(type);
             return fillEncountersFormSets(c, ec, count, true);
         } catch (Exception e) {
-            System.out.println("e = " + e);
             return new ArrayList<>();
         }
 
@@ -356,7 +351,6 @@ public class ClientEncounterComponentFormSetController implements Serializable {
         System.out.println("fillEncountersFormSets");
         System.out.println("count = " + count);
         System.out.println("type = " + type);
-        System.out.println("c = " + c);
         List<ClientEncounterComponentFormSet> fs;
         String j = "select s from ClientEncounterComponentFormSet s where "
                 + " s.retired=false "
