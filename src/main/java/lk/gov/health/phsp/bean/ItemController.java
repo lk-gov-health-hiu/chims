@@ -186,15 +186,26 @@ public class ItemController implements Serializable {
     }
 
     public void addClientData() {
+//        client_age_at_encounter_as_string
+//client_age_at_encounter_in_days
+//client_age_at_encounter_in_years
+
         String initialData = "Dictionary_Item::Name:client_name:0" + System.lineSeparator()
                 + "Dictionary_Item::Sex:client_sex:0" + System.lineSeparator()
                 + "Dictionary_Item::PHN Number:client_phn_number:0" + System.lineSeparator()
                 + "Dictionary_Item::NIC No.:client_nic_number:1" + System.lineSeparator()
                 + "Dictionary_Item::Date of Birth:client_data_of_birth:2" + System.lineSeparator()
-                + "Dictionary_Item::Age:client_current_age:3" + System.lineSeparator()
-                + "Dictionary_Item::Age in days:client_current_age_days:3" + System.lineSeparator()
-                + "Dictionary_Item::Age at Encounter:client_age_at_encounter:3" + System.lineSeparator()
-                + "Dictionary_Item::Age at Encounter (Days):client_age_at_encounter_days:3" + System.lineSeparator()
+                
+                + "Dictionary_Item::Age:client_current_age_as_string:3" + System.lineSeparator()
+                + "Dictionary_Item::Age in days:client_current_age_in_days:3" + System.lineSeparator()
+                + "Dictionary_Item::Age in years:client_current_age_in_years:3" + System.lineSeparator()
+                
+               
+                
+                + "Dictionary_Item::Age at Encounter:client_age_at_encounter_as_string:3" + System.lineSeparator()
+                + "Dictionary_Item::Age at Encounter (Days):client_age_at_encounter_in_days:3" + System.lineSeparator()
+                + "Dictionary_Item::Age at Encounter (Years):client_age_at_encounter_in_years:3" + System.lineSeparator()
+                
                 + "Dictionary_Item::Permanent Age:client_permanent_address:3" + System.lineSeparator()
                 + "Dictionary_Item::Current Address:client_current_address:3" + System.lineSeparator()
                 + "Dictionary_Item::Mobile Number:client_mobile_number:3" + System.lineSeparator()
