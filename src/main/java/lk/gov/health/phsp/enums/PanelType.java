@@ -34,5 +34,4 @@ public enum PanelType {
     TabView_Bottom_Oriented,
     TabView_Left_Oriented,
     TabView_Right_Oriented,
-    Wizard,
 }

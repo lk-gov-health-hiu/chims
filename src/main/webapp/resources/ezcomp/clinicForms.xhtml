@@ -17,7 +17,7 @@
 
         <h:panelGroup id="gpFormItems" rendered="#{cc.attrs.form.itemArrangementStrategy eq 'Label_Value_Unit_Sets'}" >
 
-            <table style="#{cc.attrs.form.generatedCss}" class="alignTop" >
+            <table style="#{cc.attrs.form.generatedCss}" class="alignTop w3-table w3-bordered w3-border">
                 <ui:repeat id="rptItems" value="#{clientEncounterComponentItemController.findClientEncounterComponentItemOfAForm(cc.attrs.form)}" 
                            var="ii" >
                     <tr>
@@ -25,60 +25,133 @@
                             <p:outputLabel value="#{ii.name}" ></p:outputLabel>
                         </td>
                         <td>
-                           
-                            <h:panelGroup rendered="#{ii.renderType eq 'Input_Text' and  !ii.calculateOnFocus}" >
-                                <p:inputText id="txtItS" value="#{ii.shortTextValue}" 
-                                             required="#{ii.required}" 
-                                             requiredMessage="#{ii.requiredErrorMessage}" >
-                                    <p:ajax  event="blur" process="@this" listener="#{clientEncounterComponentItemController.save(ii)}" ></p:ajax>
-                                </p:inputText>
+
+                            <h:panelGroup rendered="#{ii.renderType eq 'Input_Text'}" >
+                                <h:panelGroup rendered="#{ii.selectionDataType eq'Short_Text'}" >
+                                    <p:inputText id="itStC" value="#{ii.shortTextValue}" 
+                                                 required="#{ii.required}" 
+                                                 requiredMessage="#{ii.requiredErrorMessage}" >
+                                        <p:ajax  event="blur" process="@this" listener="#{clientEncounterComponentItemController.save(ii)}" ></p:ajax>
+                                        <p:ajax  event="focus" process="@this" 
+                                                 listener="#{clientEncounterComponentItemController.calculate(ii)}" 
+                                                 update="@this"></p:ajax>
+                                    </p:inputText>
+                                </h:panelGroup>
+                                <h:panelGroup rendered="#{ii.selectionDataType eq 'Integer_Number'}" >
+                                    <p:inputText id="itIntC" value="#{ii.integerNumberValue}" 
+                                                 required="#{ii.required}" 
+                                                 requiredMessage="#{ii.requiredErrorMessage}" >
+                                        <p:ajax  event="blur" process="@this" listener="#{clientEncounterComponentItemController.save(ii)}" ></p:ajax>
+                                        <p:ajax  event="focus" process="@this" 
+                                                 listener="#{clientEncounterComponentItemController.calculate(ii)}" 
+                                                 update="@this"></p:ajax>
+                                    </p:inputText>
+                                </h:panelGroup>
+                                <h:panelGroup rendered="#{ii.selectionDataType eq 'Real_Number'}" >
+                                    <p:inputText id="itRnC" value="#{ii.realNumberValue}" 
+                                                 required="#{ii.required}" 
+                                                 requiredMessage="#{ii.requiredErrorMessage}" >
+                                        <p:ajax  event="blur" process="@this" listener="#{clientEncounterComponentItemController.save(ii)}" ></p:ajax>
+                                        <p:ajax  event="focus" process="@this" 
+                                                 listener="#{clientEncounterComponentItemController.calculate(ii)}" 
+                                                 update="@this"></p:ajax>
+                                    </p:inputText>
+                                </h:panelGroup>
+                                <h:panelGroup rendered="#{ii.selectionDataType eq 'Long_Number'}" >
+                                    <p:inputText id="itLongC" value="#{ii.longNumberValue}" 
+                                                 required="#{ii.required}" 
+                                                 requiredMessage="#{ii.requiredErrorMessage}" >
+                                        <p:ajax  event="blur" process="@this" listener="#{clientEncounterComponentItemController.save(ii)}" ></p:ajax>
+                                        <p:ajax  event="focus" process="@this" 
+                                                 listener="#{clientEncounterComponentItemController.calculate(ii)}" 
+                                                 update="@this"></p:ajax>
+                                    </p:inputText>
+                                </h:panelGroup>
                             </h:panelGroup>
-                            
-                            <h:panelGroup rendered="#{ii.renderType eq 'Input_Text_Area' and  !ii.calculateOnFocus}" >
+
+                            <h:panelGroup rendered="#{ii.renderType eq 'Input_Text_Area'}" >
                                 <p:inputTextarea id="txtItaL" value="#{ii.longTextValue}" 
-                                             required="#{ii.required}" 
-                                             requiredMessage="#{ii.requiredErrorMessage}" >
+                                                 required="#{ii.required}" 
+                                                 requiredMessage="#{ii.requiredErrorMessage}" >
                                     <p:ajax  event="blur" process="@this" listener="#{clientEncounterComponentItemController.save(ii)}" ></p:ajax>
+                                    <p:ajax  event="focus" process="@this" 
+                                             listener="#{clientEncounterComponentItemController.calculate(ii)}" 
+                                             update="@this"></p:ajax>
                                 </p:inputTextarea>
                             </h:panelGroup>
-                            
-                             <h:panelGroup rendered="#{ii.renderType eq 'Date_Picker' and  !ii.calculateOnFocus}" >
-                                 <p:calendar id="calDp" value="#{ii.dateValue}" 
-                                             required="#{ii.required}" navigator="true"
-                                             requiredMessage="#{ii.requiredErrorMessage}" 
-                                             pattern="dd MMMM yyyy">
-                                    <p:ajax  event="blur" process="@this" listener="#{clientEncounterComponentItemController.save(ii)}" ></p:ajax>
-                                </p:calendar>
+
+                            <h:panelGroup rendered="#{ii.selectionDataType eq 'DateTime'}" >
+                                <h:panelGroup rendered="#{ii.renderType eq 'Date_Picker'}" >
+                                    <p:calendar id="calDp" value="#{ii.dateValue}" 
+                                                required="#{ii.required}" navigator="true"
+                                                requiredMessage="#{ii.requiredErrorMessage}" 
+                                                pattern="dd MMMM yyyy">
+                                        <p:ajax  event="blur" process="@this" listener="#{clientEncounterComponentItemController.save(ii)}" ></p:ajax>
+                                        <p:ajax  event="focus" process="@this" 
+                                                 listener="#{clientEncounterComponentItemController.calculate(ii)}" 
+                                                 update="@this"></p:ajax>
+                                    </p:calendar>
+                                </h:panelGroup>
+                                <h:panelGroup rendered="#{ii.renderType eq 'Calendar'}" >
+                                    <p:calendar id="calC" value="#{ii.dateValue}" 
+                                                required="#{ii.required}" 
+                                                requiredMessage="#{ii.requiredErrorMessage}" pattern="dd MMMM yyyy">
+                                        <p:ajax  event="blur" process="@this" listener="#{clientEncounterComponentItemController.save(ii)}" ></p:ajax>
+                                        <p:ajax  event="focus" process="@this" 
+                                                 listener="#{clientEncounterComponentItemController.calculate(ii)}" 
+                                                 update="@this"></p:ajax>
+                                    </p:calendar>
+                                </h:panelGroup>
                             </h:panelGroup>
-                            
-                             <h:panelGroup rendered="#{ii.renderType eq 'Calendar' and  !ii.calculateOnFocus}" >
-                                 <p:calendar id="calC" value="#{ii.dateValue}" 
-                                             required="#{ii.required}" 
-                                             requiredMessage="#{ii.requiredErrorMessage}" pattern="dd MMMM yyyy">
-                                    <p:ajax  event="blur" process="@this" listener="#{clientEncounterComponentItemController.save(ii)}" ></p:ajax>
-                                </p:calendar>
+
+                            <h:panelGroup rendered="#{ii.selectionDataType eq 'Item_Reference'}" >
+                                <h:panelGroup rendered="#{ii.renderType eq 'Drop_Down_Menu'}" >
+                                    <p:selectOneMenu id="domIc" value="#{ii.itemValue}" >
+                                        <f:selectItem itemLabel="Please select" ></f:selectItem>
+                                        <f:selectItems value="#{itemController.findItemList(ii.categoryOfAvailableItems)}" var="li"
+                                                       itemLabel="#{li.name}" itemValue="#{li}" ></f:selectItems>
+                                        <p:ajax  event="blur" process="@this" listener="#{clientEncounterComponentItemController.save(ii)}" ></p:ajax>
+                                        <p:ajax  event="focus" process="@this" 
+                                                 listener="#{clientEncounterComponentItemController.calculate(ii)}" 
+                                                 update="@this"></p:ajax>
+                                    </p:selectOneMenu>
+                                    
+                                </h:panelGroup>
+                                
                             </h:panelGroup>
-                            
-                            
-                             <h:panelGroup rendered="#{ii.renderType eq 'Drop_Down_Menu' and  !ii.calculateOnFocus}" >
-                                  <h:selectOneMenu id="domIc" value="#{ii.itemValue}" >
-                                    <f:selectItem itemLabel="Please select" ></f:selectItem>
-                                    <f:selectItems value="#{itemController.findItemList(ii.categoryOfAvailableItems)}" var="li"
-                                                   itemLabel="#{li.name}" itemValue="#{li}" ></f:selectItems>
-                                    <p:ajax  event="blur" process="@this" listener="#{clientEncounterComponentItemController.save(ii)}" ></p:ajax>
-                                </h:selectOneMenu>
+
+
+
+                            <h:panelGroup rendered="#{ii.renderType eq 'Boolean_Checkbox' and  !ii.calculateOnFocus}" >
+                                <p:selectBooleanCheckbox id="bcNc" value="#{ii.dateValue}" 
+                                                         required="#{ii.required}" 
+                                                         requiredMessage="#{ii.requiredErrorMessage}" >
+                                    <p:ajax  event="blur" process="@this" 
+                                             listener="#{clientEncounterComponentItemController.save(ii)}" >
+                                    </p:ajax>
+                                </p:selectBooleanCheckbox>
                             </h:panelGroup>
-                            
-                            
-                            
-                            
-                            
-                            
-                            
-                            
-                            
-                            
-                            
+                            <h:panelGroup rendered="#{ii.renderType eq 'Boolean_Checkbox' and  ii.calculateOnFocus}" >
+                                <p:selectBooleanCheckbox id="bcC" value="#{ii.dateValue}" 
+                                                         required="#{ii.required}" 
+                                                         requiredMessage="#{ii.requiredErrorMessage}" >
+                                    <p:ajax  event="blur" process="@this" 
+                                             listener="#{clientEncounterComponentItemController.save(ii)}" >
+                                    </p:ajax>
+                                    <p:ajax  event="focus" process="@this" 
+                                             listener="#{clientEncounterComponentItemController.calculate(ii)}" 
+                                             update="@this"></p:ajax>
+                                </p:selectBooleanCheckbox>
+                            </h:panelGroup>
+
+
+
+
+
+
+
+
+
                             <h:panelGroup rendered="#{ii.renderType eq 'Short_text_input' and  !ii.calculateOnFocus}" >
                                 <h:inputText id="txtSt" value="#{ii.shortTextValue}" 
                                              required="#{ii.required}" 
@@ -137,13 +210,12 @@
                             </h:panelGroup>
 
                             <h:panelGroup rendered="#{ii.renderType eq 'Select_One_Menu'}" >
-                                
+
                                 <h:selectOneMenu id="som" value="#{ii.itemValue}" >
                                     <f:selectItem itemLabel="Please select" ></f:selectItem>
                                     <f:selectItems value="#{itemController.findItemList(ii.categoryOfAvailableItems)}" var="li"
                                                    itemLabel="#{li.name}" itemValue="#{li}" ></f:selectItems>
                                     <p:ajax  event="blur" process="@this" listener="#{clientEncounterComponentItemController.save(ii)}" ></p:ajax>
-                                    <p:ajax  event="change" process="@this" listener="#{clientEncounterComponentItemController.save(ii)}" ></p:ajax>
                                 </h:selectOneMenu>
                             </h:panelGroup>
 
@@ -185,31 +257,59 @@
                             <h:panelGroup rendered="#{ii.multipleEntiesPerForm}" >
                                 <p:commandButton id="btnAdd"  value="Add Another" process="@this" update="@form :#{p:component('gpFormItems')}"
                                                  action="#{clientEncounterComponentItemController.addAnother(ii)}"></p:commandButton>
-                                
+
                             </h:panelGroup>
                         </td>
-                        
+
                         <td>
                             <h:panelGroup rendered="#{ii.calculateButton}" >
                                 <p:commandButton id="btnCalculate"  value="Calculate" process="@this" update="rptItems"
                                                  action="#{clientEncounterComponentItemController.calculate(ii)}"></p:commandButton>
-                                
+                                <p:tooltip for="btnCalculate" >
+                                    <p:outputLabel value="#{ii.calculationScript}" escape="true" ></p:outputLabel>
+                                </p:tooltip>
                             </h:panelGroup>
                         </td>
-                        
-                        <td>
-                            <p:outputLabel value="#{ii.descreption}" ></p:outputLabel>
-                            <p:tooltip for="som" >
-                                sdds
-                                #{i.descreption}
-                            </p:tooltip>
 
-                            <p:tooltip for="som" >
-                                #{i.descreption}
-                            </p:tooltip>
+                        <td>
+                            <table >
+                                <tr>
+                                    <td>
+                                        <p:outputLabel value="Descreption" ></p:outputLabel>
+                                    </td>
+                                    <td>
+                                        <p:outputLabel value="#{ii.descreption}" ></p:outputLabel>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <p:outputLabel value="Multiple Entries" ></p:outputLabel>
+                                    </td>
+                                    <td>
+                                        <p:outputLabel value="#{ii.multipleEntiesPerForm?'Can have multiple entries':'Only One Entry Allowed'}" ></p:outputLabel>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <p:outputLabel value="Rendered As" ></p:outputLabel>
+                                    </td>
+                                    <td>
+                                        <p:outputLabel value="#{ii.renderType}" ></p:outputLabel>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <p:outputLabel value="Data Type" ></p:outputLabel>
+                                    </td>
+                                    <td>
+                                        <p:outputLabel value="#{ii.selectionDataType}" ></p:outputLabel>
+                                    </td>
+                                </tr>
+                            </table>
+
 
                         </td>
-                        
+
                     </tr>
                 </ui:repeat>
                 <ui:repeat   value="#{clientEncounterComponentItemController.findClientEncounterComponentItemOfAForm(cc.attrs.form)}" 

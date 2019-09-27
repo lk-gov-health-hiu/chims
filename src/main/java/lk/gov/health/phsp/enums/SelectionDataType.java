@@ -28,20 +28,30 @@ package lk.gov.health.phsp.enums;
  * @author User
  */
 public enum SelectionDataType {
-    Free_Entry,
-    Calculation,
-    Item_Reference,
-    Client_Reference,
-    Area_Reference,
-    Institution_Reference,
-    Item_List_Reference,
-    Client_List_Reference,
-    Area_List_Reference,
-    Institution_List_Reference,
     Short_Text,
     Long_Text,
     Byte_Array,
     Integer_Number,
     Real_Number,
+    Long_Number,
+    DateTime,
     Boolean,
+    Item_Reference,
+    Client_Reference,
+    Area_Reference,
+    Prescreption_Reference,
+    @Deprecated
+    Institution_Reference,
+    @Deprecated
+    Item_List_Reference,
+    @Deprecated
+    Client_List_Reference,
+    @Deprecated
+    Area_List_Reference,
+    @Deprecated
+    Institution_List_Reference,
+    @Deprecated
+    Free_Entry,
+    @Deprecated
+    Calculation,
 }

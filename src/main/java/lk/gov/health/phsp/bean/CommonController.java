@@ -114,8 +114,8 @@ public class CommonController implements Serializable {
         RenderType[] rts = new RenderType[]{
             RenderType.Autocomplete,
             RenderType.Calendar,
-            RenderType.Date_Picker ,
-            RenderType.Input_Text ,
+            RenderType.Date_Picker,
+            RenderType.Input_Text,
             RenderType.Input_Text_Area,
             RenderType.List_Box,
             RenderType.Prescreption,
@@ -130,7 +130,17 @@ public class CommonController implements Serializable {
     }
 
     public SelectionDataType[] getSelectionDataTypes() {
-        return SelectionDataType.values();
+        SelectionDataType[] sdts = new SelectionDataType[]{
+            SelectionDataType.Short_Text,
+            SelectionDataType.Long_Text,
+            SelectionDataType.Byte_Array,
+            SelectionDataType.Integer_Number,
+            SelectionDataType.Real_Number,
+            SelectionDataType.Boolean,
+            SelectionDataType.Item_Reference,
+            SelectionDataType.Client_Reference,
+            SelectionDataType.Area_Reference,};
+        return sdts;
     }
 
     public DataPopulationStrategy[] getDataPopulationStrategies() {

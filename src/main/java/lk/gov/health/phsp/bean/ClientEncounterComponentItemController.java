@@ -126,6 +126,7 @@ public class ClientEncounterComponentItemController implements Serializable {
             if (r.getClientEncounterComponentItem() != null) {
                 ClientEncounterComponentItem c = r.getClientEncounterComponentItem();
                 System.out.println("c = " + c);
+                System.out.println("c.getSelectionDataType() = " + c.getSelectionDataType());
                 switch (c.getSelectionDataType()) {
                     case Boolean:
                         if (c.getBooleanValue() != null) {
@@ -256,7 +257,9 @@ public class ClientEncounterComponentItemController implements Serializable {
         m.put("vc", valueCode.toLowerCase());
         System.out.println("m = " + m);
         System.out.println("j = " + j);
-        return getFacade().findFirstByJpql(j, m) != null;
+        boolean found = getFacade().findFirstByJpql(j, m) != null;
+        System.out.println("found = " + found);
+        return found;
     }
 
     public String addTemplateToReport(String calculationScript, List<Replaceable> selectables) {

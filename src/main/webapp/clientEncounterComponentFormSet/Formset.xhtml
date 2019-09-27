@@ -12,15 +12,15 @@
         <ui:composition template="./../template.xhtml">
 
             <ui:define name="content">
-
-
-
-
-                <table >
-                    <tr>
-                        <td>
+                <h:form>
+                    <p:panelGrid columns="1" style="width: 100%;" >
+                        <f:facet name="header" >
                             <div style="float: left;">
                                 <p:outputLabel value="#{clientEncounterComponentFormSetController.selected.encounter.client.person.nameWithTitle}" ></p:outputLabel>
+                                <p:outputLabel value=", " ></p:outputLabel>
+                                <p:outputLabel value="#{clientEncounterComponentFormSetController.selected.encounter.client.person.age}" ></p:outputLabel>
+                                <p:outputLabel value=", " ></p:outputLabel>
+                                <p:outputLabel value="#{clientEncounterComponentFormSetController.selected.encounter.client.person.sex.name}" ></p:outputLabel>
                                 <p:outputLabel value=", " ></p:outputLabel>
                                 <p:outputLabel value="#{clientEncounterComponentFormSetController.selected.name}" ></p:outputLabel>
                                 <p:outputLabel value=" at " ></p:outputLabel>
@@ -34,91 +34,84 @@
                             </div>
 
                             <div style="float: right;">
-                                <h:form>
-                                    <p:commandButton style="float: right;" rendered="#{!clientEncounterComponentFormSetController.selected.completed}" value="Complete" action="#{clientEncounterComponentFormSetController.completeFormset()}" ajax="false" ></p:commandButton>
-                                    <p:commandButton style="float: right;" value="Client Profile" action="#{clientController.toClientProfile()}" ajax="false" ></p:commandButton>
-                                </h:form>
+
+                                <p:commandButton style="float: right;" rendered="#{!clientEncounterComponentFormSetController.selected.completed}" value="Complete" action="#{clientEncounterComponentFormSetController.completeFormset()}" ajax="false" ></p:commandButton>
+                                <p:commandButton style="float: right;" value="Client Profile" action="#{clientController.toClientProfile()}" ajax="false" ></p:commandButton>
+
                             </div>
+                        </f:facet>
 
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <h:form>
-                                <p:panelGrid columns="2">
-                                    <h:panelGroup rendered="#{clientEncounterComponentFormSetController.selected.panelType eq 'TabView_Bottom_Oriented'}" >
-                                        <p:tabView orientation="bottom" style="width: 100%;" value="#{clientEncounterComponentFormController.findClientEncounterComponentFormOfAFormset(clientEncounterComponentFormSetController.selected)}" var="f">
-                                            <p:tab title="#{f.name}" >
-                                                <div style="#{f.generatedCss}" >
-                                                    <ez:clinicForms form="#{f}" ></ez:clinicForms>
-                                                </div>
-                                            </p:tab>
-                                        </p:tabView>
-                                    </h:panelGroup>
-                                    <h:panelGroup rendered="#{clientEncounterComponentFormSetController.selected.panelType eq 'TabView_Left_Oriented'}" >
-                                        <p:tabView orientation="left" style="width: 100%;" value="#{clientEncounterComponentFormController.findClientEncounterComponentFormOfAFormset(clientEncounterComponentFormSetController.selected)}" var="f">
-                                            <p:tab title="#{f.name}" >
-                                                <div style="#{f.generatedCss}" >
-                                                    <ez:clinicForms form="#{f}" ></ez:clinicForms>
-                                                </div>
-                                            </p:tab>
-                                        </p:tabView>
-                                    </h:panelGroup>
-                                    <h:panelGroup rendered="#{clientEncounterComponentFormSetController.selected.panelType eq 'Tabview_Top_Oriented'}" >
-                                        <p:tabView orientation="top" style="width: 100%;" value="#{clientEncounterComponentFormController.findClientEncounterComponentFormOfAFormset(clientEncounterComponentFormSetController.selected)}" var="f">
-                                            <p:tab title="#{f.name}" >
-                                                <div style="#{f.generatedCss}" >
-                                                    <ez:clinicForms form="#{f}" ></ez:clinicForms>
-                                                </div>
-                                            </p:tab>
-                                        </p:tabView>
-                                    </h:panelGroup>
-                                    <h:panelGroup rendered="#{clientEncounterComponentFormSetController.selected.panelType eq 'TabView_Right_Oriented'}" >
-                                        <p:tabView orientation="right" style="width: 100%;" value="#{clientEncounterComponentFormController.findClientEncounterComponentFormOfAFormset(clientEncounterComponentFormSetController.selected)}" var="f">
-                                            <p:tab title="#{f.name}" >
-                                                <div style="#{f.generatedCss}" >
-                                                    <ez:clinicForms form="#{f}" ></ez:clinicForms>
-                                                </div>
-                                            </p:tab>
-                                        </p:tabView>
-                                    </h:panelGroup>
-                                    <h:panelGroup rendered="#{clientEncounterComponentFormSetController.selected.panelType eq 'Wizard'}" >
-                                        <p:tabView orientation="left" style="width: 100%;" value="#{clientEncounterComponentFormController.findClientEncounterComponentFormOfAFormset(clientEncounterComponentFormSetController.selected)}" var="f">
-                                            <p:tab title="#{f.name}" >
-
-                                                <div style="#{f.generatedCss}" >
-                                                    <ez:clinicForms form="#{f}" ></ez:clinicForms>
-                                                </div>
-                                            </p:tab>
-                                        </p:tabView>
-                                    </h:panelGroup>
-                                    <h:panelGroup rendered="#{clientEncounterComponentFormSetController.selected.panelType eq 'Accordion_Basic'}" >
-                                        <p:tabView orientation="left" style="width: 100%;" value="#{clientEncounterComponentFormController.findClientEncounterComponentFormOfAFormset(clientEncounterComponentFormSetController.selected)}" var="f">
-                                            <p:tab title="#{f.name}" >
-                                                <div style="#{f.generatedCss}" >
-                                                    <ez:clinicForms form="#{f}" ></ez:clinicForms>
-                                                </div>
-                                            </p:tab>
-                                        </p:tabView>
-                                    </h:panelGroup>
-                                    <h:panelGroup rendered="#{clientEncounterComponentFormSetController.selected.panelType eq 'Accordion_Multiple'}" >
-                                        <p:tabView orientation="left" style="width: 100%;" value="#{clientEncounterComponentFormController.findClientEncounterComponentFormOfAFormset(clientEncounterComponentFormSetController.selected)}" var="f">
-                                            <p:tab title="#{f.name}" >
-                                                <div style="#{f.generatedCss}" >
-                                                    <ez:clinicForms form="#{f}" ></ez:clinicForms>
-                                                </div>
-                                            </p:tab>
-                                        </p:tabView>
-                                    </h:panelGroup>
-                                </p:panelGrid>
-                            </h:form>
-                        </td>
-                    </tr>
-                </table>
+                        <h:panelGroup rendered="#{clientEncounterComponentFormSetController.selected.panelType eq 'TabView_Bottom_Oriented'}" >
+                            <p:tabView orientation="bottom" style="width: 100%;" value="#{clientEncounterComponentFormController.findClientEncounterComponentFormOfAFormset(clientEncounterComponentFormSetController.selected)}" var="f">
+                                <p:tab title="#{f.name}" >
+                                    <div style="#{f.generatedCss}" >
+                                        <ez:clinicForms form="#{f}" ></ez:clinicForms>
+                                    </div>
+                                </p:tab>
+                            </p:tabView>
+                        </h:panelGroup>
+                        <h:panelGroup rendered="#{clientEncounterComponentFormSetController.selected.panelType eq 'TabView_Left_Oriented'}" >
+                            <p:tabView orientation="left" style="width: 100%;" value="#{clientEncounterComponentFormController.findClientEncounterComponentFormOfAFormset(clientEncounterComponentFormSetController.selected)}" var="f">
+                                <p:tab title="#{f.name}" >
+                                    <div style="#{f.generatedCss}" >
+                                        <ez:clinicForms form="#{f}" ></ez:clinicForms>
+                                    </div>
+                                </p:tab>
+                            </p:tabView>
+                        </h:panelGroup>
+                        <h:panelGroup rendered="#{clientEncounterComponentFormSetController.selected.panelType eq 'Tabview_Top_Oriented'}" >
+                            <p:tabView orientation="top" style="width: 100%;" value="#{clientEncounterComponentFormController.findClientEncounterComponentFormOfAFormset(clientEncounterComponentFormSetController.selected)}" var="f">
+                                <p:tab title="#{f.name}" >
+                                    <div style="#{f.generatedCss}" >
+                                        <ez:clinicForms form="#{f}" ></ez:clinicForms>
+                                    </div>
+                                </p:tab>
+                            </p:tabView>
+                        </h:panelGroup>
+                        <h:panelGroup rendered="#{clientEncounterComponentFormSetController.selected.panelType eq 'TabView_Right_Oriented'}" >
+                            <p:tabView orientation="right" style="width: 100%;" value="#{clientEncounterComponentFormController.findClientEncounterComponentFormOfAFormset(clientEncounterComponentFormSetController.selected)}" var="f">
+                                <p:tab title="#{f.name}" >
+                                    <div style="#{f.generatedCss}" >
+                                        <ez:clinicForms form="#{f}" ></ez:clinicForms>
+                                    </div>
+                                </p:tab>
+                            </p:tabView>
+                        </h:panelGroup>
+                        <h:panelGroup rendered="#{clientEncounterComponentFormSetController.selected.panelType eq 'Accordion_Basic'}" >
+                            <p:accordionPanel  style="width: 100%;" value="#{clientEncounterComponentFormController.findClientEncounterComponentFormOfAFormset(clientEncounterComponentFormSetController.selected)}" var="f">
+                                <p:tab title="#{f.name}" >
+                                    <div style="#{f.generatedCss}" >
+                                        <ez:clinicForms form="#{f}" ></ez:clinicForms>
+                                    </div>
+                                </p:tab>
+                            </p:accordionPanel>
+                        </h:panelGroup>
+                        <h:panelGroup rendered="#{clientEncounterComponentFormSetController.selected.panelType eq 'Accordion_Multiple'}" >
+                            <p:accordionPanel multiple="true" style="width: 100%;" value="#{clientEncounterComponentFormController.findClientEncounterComponentFormOfAFormset(clientEncounterComponentFormSetController.selected)}" var="f">
+                                <p:tab title="#{f.name}" >
+                                    <div style="#{f.generatedCss}" >
+                                        <ez:clinicForms form="#{f}" ></ez:clinicForms>
+                                    </div>
+                                </p:tab>
+                            </p:accordionPanel>
+                        </h:panelGroup>
 
 
 
+                    </p:panelGrid>
 
+                </h:form>
+
+
+                <div>
+                    <br/>
+                    <br/>
+                    <br/><br/><br/>
+                    <br/>
+                    <br/>
+                    
+                    
+                </div>
 
 
 

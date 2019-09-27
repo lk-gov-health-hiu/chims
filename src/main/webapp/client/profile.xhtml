@@ -143,14 +143,15 @@
                                                 <p:dataTable value="#{clientEncounterComponentFormSetController.fillLastFiveCompletedEncountersFormSets('Clinic_Visit') }" 
                                                              var="cv"
                                                              >
+                                                    <f:facet name="header" >
+                                                        <p:outputLabel value="Recent Completed Visits" ></p:outputLabel>
+                                                    </f:facet>
                                                     <p:column headerText="Date" >
                                                         <p:outputLabel value="#{cv.encounter.encounterDate}" >
                                                             <f:convertDateTime pattern="dd MMMM yyyy" ></f:convertDateTime>
                                                         </p:outputLabel>
                                                     </p:column>
                                                     <p:column headerText="Visit" >
-                                                        <p:outputLabel value="#{cv.name}" >
-                                                        </p:outputLabel>
                                                         <p:commandLink value="#{cv.name}" ajax="false" 
                                                                        action="#{clientEncounterComponentFormSetController.toViewFormset()}" >
                                                             <f:setPropertyActionListener value="#{cv}" target="#{clientEncounterComponentFormSetController.selected}" ></f:setPropertyActionListener>
@@ -166,9 +167,14 @@
                                                 <p:dataTable value="#{clientEncounterComponentFormSetController.filluncompletedEncountersFormSets('Clinic_Visit')}" 
                                                              var="cv"
                                                              >
+
+                                                    <f:facet name="header">
+                                                        <p:outputLabel value="Ongoing Visits" ></p:outputLabel>
+                                                    </f:facet>
+
                                                     <p:column headerText="Date" >
                                                         <p:outputLabel value="#{cv.encounter.encounterDate}" >
-                                                            <f:convertDateTime pattern="dd MMMM yyyy" ></f:convertDateTime>
+                                                            <f:convertDateTime pattern="dd MMMM yyyy hh:mm s" ></f:convertDateTime>
                                                         </p:outputLabel>
                                                     </p:column>
                                                     <p:column headerText="Visit" >
