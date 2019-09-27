@@ -99,27 +99,38 @@ public class ClientEncounterComponentItemController implements Serializable {
     }
 
     public void calculate(ClientEncounterComponentItem i) {
+        System.out.println("calculate");
         if (i == null) {
+            System.out.println("i is null. NOT calculating " + i);
             return;
         }
 
         if (i.getCalculationScript() == null || i.getCalculationScript().trim().equals("")) {
+            System.out.println("No Cript. Not calculating " );
             return;
         }
         if (i.getParentComponent() == null || i.getParentComponent().getParentComponent() == null) {
+            System.out.println("No Formset. Not calculating " );
             return;
         }
-        if (i.getParentComponent().getParentComponent() instanceof ClientEncounterComponentFormSet) {
+        if (!(i.getParentComponent().getParentComponent() instanceof ClientEncounterComponentFormSet)) {
+            System.out.println("Not a Formset. Not calculating " );
+            System.out.println("i.getParentComponent().getParentComponent() = " + i.getParentComponent().getParentComponent());
             return;
         }
 
         if (i.getCalculationScript().equalsIgnoreCase("client_current_age_in_years")) {
             ClientEncounterComponentFormSet s = (ClientEncounterComponentFormSet) i.getParentComponent().getParentComponent();
+            System.out.println("s = " + s);
             Person p = s.getEncounter().getClient().getPerson();
+            System.out.println("p = " + p);
+            System.out.println("p.getAgeYears() = " + p.getAgeYears());
             i.setShortTextValue(p.getAgeYears() + "");
             i.setIntegerNumberValue(p.getAgeYears());
             getFacade().edit(i);
             return;
+        }else{
+            System.out.println("No age is to calculate. Proceeding to normal calculation.");
         }
 
         List<Replaceable> replacingBlocks = findReplaceblesInCalculationString(i.getCalculationScript());
