@@ -107,7 +107,7 @@
                                 </h:inputText>
                             </h:panelGroup>
 
-                            <h:panelGroup rendered="#{ii.renderType eq 'Real_number_input'}" >
+                            <h:panelGroup rendered="#{ii.renderType eq 'Real_number_input' and !ii.calculateOnFocus}" >
                                 <h:inputText id="txtRn" value="#{ii.realNumberValue}" 
                                              required="#{ii.required}" 
                                              requiredMessage="#{ii.requiredErrorMessage}" >
