@@ -183,7 +183,7 @@
                         </td>
                         <td>
                             <h:panelGroup rendered="#{ii.multipleEntiesPerForm}" >
-                                <p:commandButton id="btnAdd"  value="Add Another" process="@this" update="rptItems gpFormItems"
+                                <p:commandButton id="btnAdd"  value="Add Another" process="@this" update="@form :#{p:component('gpFormItems')}"
                                                  action="#{clientEncounterComponentItemController.addAnother(ii)}"></p:commandButton>
                                 
                             </h:panelGroup>
