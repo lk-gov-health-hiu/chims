@@ -28,6 +28,7 @@ import java.util.Date;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -58,7 +59,7 @@ public class Component implements Serializable {
     private Long id;
 
     String name;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     private Item item;
 
     @Lob
@@ -69,10 +70,10 @@ public class Component implements Serializable {
     @ManyToOne
     private Institution institution;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     private Component parentComponent;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     private Component referenceComponent;
 
     @Enumerated(EnumType.STRING)

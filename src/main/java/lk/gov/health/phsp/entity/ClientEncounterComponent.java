@@ -8,6 +8,7 @@ package lk.gov.health.phsp.entity;
 import java.util.Date;
 import java.util.List;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
@@ -22,10 +23,10 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class ClientEncounterComponent extends Component {
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     private Encounter encounter;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     private Client client;
 
     @Lob
@@ -40,30 +41,23 @@ public class ClientEncounterComponent extends Component {
     private Boolean booleanValue;
     @Temporal(javax.persistence.TemporalType.DATE)
     private Date dateValue;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     private Item itemValue;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     private Area areaValue;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     private Institution institutionValue;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     private Client clientValue;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     private Prescription prescriptionValue;
 
-    @OneToMany
-    private List<Item> itemValues;
-    @OneToMany
-    private List<Area> areaValues;
-    @OneToMany
-    private List<Institution> institutionValues;
-    @OneToMany
-    private List<Client> clientValues;
+   
 
     private boolean completed;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date completedAt;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     private WebUser completedBy;
 
     public Encounter getEncounter() {
@@ -95,7 +89,6 @@ public class ClientEncounterComponent extends Component {
     }
 
     public void setShortTextValue(String shortTextValue) {
-        System.out.println("shortTextValue = " + shortTextValue);
         this.shortTextValue = shortTextValue;
     }
 
@@ -161,38 +154,6 @@ public class ClientEncounterComponent extends Component {
 
     public void setClientValue(Client clientValue) {
         this.clientValue = clientValue;
-    }
-
-    public List<Item> getItemValues() {
-        return itemValues;
-    }
-
-    public void setItemValues(List<Item> itemValues) {
-        this.itemValues = itemValues;
-    }
-
-    public List<Area> getAreaValues() {
-        return areaValues;
-    }
-
-    public void setAreaValues(List<Area> areaValues) {
-        this.areaValues = areaValues;
-    }
-
-    public List<Institution> getInstitutionValues() {
-        return institutionValues;
-    }
-
-    public void setInstitutionValues(List<Institution> institutionValues) {
-        this.institutionValues = institutionValues;
-    }
-
-    public List<Client> getClientValues() {
-        return clientValues;
-    }
-
-    public void setClientValues(List<Client> clientValues) {
-        this.clientValues = clientValues;
     }
 
     public boolean isCompleted() {

@@ -188,7 +188,12 @@ public class ClientEncounterComponentFormSetController implements Serializable {
 
         getItemFacade().edit(ti);
 
+        if (ti.getItem() == null || ti.getItem().getCode() == null) {
+            return;
+        }
+
         String code = ti.getItem().getCode();
+
         switch (code) {
             case "client_name":
                 c.getPerson().setName(ti.getShortTextValue());

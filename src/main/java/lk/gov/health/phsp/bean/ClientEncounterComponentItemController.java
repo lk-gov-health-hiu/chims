@@ -1,5 +1,6 @@
 package lk.gov.health.phsp.bean;
 
+import com.rits.cloning.Cloner;
 import lk.gov.health.phsp.entity.ClientEncounterComponentItem;
 import lk.gov.health.phsp.bean.util.JsfUtil;
 import lk.gov.health.phsp.bean.util.JsfUtil.PersistAction;
@@ -50,6 +51,8 @@ public class ClientEncounterComponentItemController implements Serializable {
     private ClientEncounterComponentItem selected;
 
     public List<ClientEncounterComponentItem> findClientEncounterComponentItemOfAForm(ClientEncounterComponentForm fs) {
+        System.out.println("findClientEncounterComponentItemOfAForm = ");
+        System.out.println("fs = " + fs);
         String j = "select f from ClientEncounterComponentItem f "
                 + " where f.retired=false "
                 + " and f.parentComponent=:p "
@@ -57,6 +60,7 @@ public class ClientEncounterComponentItemController implements Serializable {
         Map m = new HashMap();
         m.put("p", fs);
         List<ClientEncounterComponentItem> t = getFacade().findByJpql(j, m);
+        System.out.println("t = " + t);
         if (t == null) {
             t = new ArrayList<>();
         }
@@ -352,34 +356,80 @@ public class ClientEncounterComponentItemController implements Serializable {
             i.setLastEditeAt(new Date());
             getFacade().edit(i);
         }
-        
-        ClientEncounterComponentItem ni = SerializationUtils.clone(i);
-        ni.setId(null);
-        System.out.println("ni = " + ni);
-        System.out.println("ni = " + ni.getBackgroundColour());
-        System.out.println("ni = " + ni.getDescreption());
-        System.out.println("ni = " + ni.getAreaValue());
-        System.out.println("ni = " + ni.getRealNumberValue());
-        System.out.println("ni = " + ni.getLongNumberValue());
-        System.out.println("ni = " + ni.getIntegerNumberValue());
-        System.out.println("ni = " + ni.getItemValue());
-        System.out.println("ni = " + ni.getPrescriptionValue());
-        System.out.println("ni = " + ni.getInstitutionValue());
-        ni.setOrderNo(i.getOrderNo() + (i.getOrderNo() / 0.001));
-        ni.setCreatedAt(new Date());
-        ni.setCreatedBy(webUserController.getLoggedUser());
-       
 
-        ni.setItemValue(null);
-        ni.setAreaValue(null);
-        ni.setInstitutionValue(null);
-        ni.setShortTextValue(null);
-        ni.setLongTextValue(null);
-        ni.setRealNumberValue(null);
-        ni.setIntegerNumberValue(null);
-        ni.setLongNumberValue(null);
-        ni.setPrescriptionValue(null);
-       
+        ClientEncounterComponentItem ci = new ClientEncounterComponentItem();
+
+        ci.setParentComponent(i.getParentComponent());
+        ci.setReferenceComponent(i.getReferenceComponent());
+
+        ci.setEncounter(i.getEncounter());
+        ci.setInstitution(i.getInstitution());
+
+        ci.setItem(i.getItem());
+        ci.setDescreption(i.getDescreption());
+
+        ci.setRequired(i.isRequired());
+        ci.setRequiredErrorMessage(i.getRequiredErrorMessage());
+        ci.setRegexValidationString(i.getRegexValidationString());
+        ci.setRegexValidationFailedMessage(i.getRegexValidationFailedMessage());
+
+        ci.setName(i.getName());
+        ci.setRenderType(i.getRenderType());
+        ci.setMimeType(i.getMimeType());
+        ci.setSelectionDataType(i.getSelectionDataType());
+        ci.setTopPercent(i.getTopPercent());
+        ci.setLeftPercent(i.getLeftPercent());
+        ci.setWidthPercent(i.getWidthPercent());
+        ci.setHeightPercent(i.getHeightPercent());
+        ci.setCategoryOfAvailableItems(i.getCategoryOfAvailableItems());
+
+        ci.setDataPopulationStrategy(i.getDataPopulationStrategy());
+        ci.setDataModificationStrategy(i.getDataModificationStrategy());
+        ci.setDataCompletionStrategy(i.getDataCompletionStrategy());
+        ci.setIntHtmlColor(i.getIntHtmlColor());
+        ci.setHexHtmlColour(i.getHexHtmlColour());
+
+        ci.setForegroundColour(i.getForegroundColour());
+        ci.setBackgroundColour(i.getBackgroundColour());
+        ci.setBorderColour(i.getBorderColour());
+
+        ci.setCalculateOnFocus(i.isCalculateOnFocus());
+        ci.setCalculationScript(i.getCalculationScript());
+
+        ci.setCalculateButton(i.isCalculateButton());
+        ci.setCalculationScriptForColour(i.getCalculationScriptForColour());
+        ci.setDisplayDetailsBox(i.isDisplayDetailsBox());
+        ci.setDiscreptionAsAToolTip(i.isDiscreptionAsAToolTip());
+        ci.setDiscreptionAsASideLabel(i.isDiscreptionAsASideLabel());
+        ci.setCalculationScriptForBackgroundColour(i.getCalculationScriptForBackgroundColour());
+        ci.setMultipleEntiesPerForm(i.isMultipleEntiesPerForm());
+
+        System.out.println("getParentComponent = " + ci.getParentComponent());
+        System.out.println("getReferenceComponent = " + ci.getReferenceComponent());
+        ci.setParentComponent(i.getParentComponent());
+        ci.setReferenceComponent(i.getReferenceComponent());
+        System.out.println("ni = " + ci);
+        System.out.println("ni = " + ci.getBackgroundColour());
+        System.out.println("ni = " + ci.getDescreption());
+        System.out.println("ni = " + ci.getAreaValue());
+        System.out.println("ni = " + ci.getRealNumberValue());
+        System.out.println("ni = " + ci.getLongNumberValue());
+        System.out.println("ni = " + ci.getIntegerNumberValue());
+        System.out.println("ni = " + ci.getItemValue());
+        System.out.println("ni = " + ci.getPrescriptionValue());
+        System.out.println("ni = " + ci.getInstitutionValue());
+        System.out.println("getParentComponent = " + ci.getParentComponent());
+        System.out.println("getReferenceComponent = " + ci.getReferenceComponent());
+
+        ci.setOrderNo(i.getOrderNo() + (i.getOrderNo() / 0.001));
+        ci.setCreatedAt(new Date());
+        ci.setCreatedBy(webUserController.getLoggedUser());
+
+        getFacade().create(ci);
+        System.out.println("ni = " + ci);
+        System.out.println("ni = " + ci.getId());
+        
+        findClientEncounterComponentItemOfAForm((ClientEncounterComponentForm) i.getParentComponent());
 
     }
 

@@ -16,6 +16,16 @@
     </properties>
     
     <dependencies>
+        
+        <!-- https://mvnrepository.com/artifact/uk.com.robust-it/cloning -->
+<dependency>
+    <groupId>uk.com.robust-it</groupId>
+    <artifactId>cloning</artifactId>
+    <version>1.9.12</version>
+</dependency>
+
+
+        
         <dependency>
             <groupId>commons-beanutils</groupId>
             <artifactId>commons-beanutils</artifactId>
@@ -191,7 +201,7 @@
             <version>2.0</version>
         </dependency>
         
-<!--         https://mvnrepository.com/artifact/org.primefaces.themes/sunny 
+        <!--         https://mvnrepository.com/artifact/org.primefaces.themes/sunny 
         <dependency>
             <groupId>org.primefaces.themes</groupId>
             <artifactId>sunny</artifactId>
