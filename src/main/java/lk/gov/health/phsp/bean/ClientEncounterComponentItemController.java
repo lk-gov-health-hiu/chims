@@ -1,6 +1,5 @@
 package lk.gov.health.phsp.bean;
 
-import com.rits.cloning.Cloner;
 import lk.gov.health.phsp.entity.ClientEncounterComponentItem;
 import lk.gov.health.phsp.bean.util.JsfUtil;
 import lk.gov.health.phsp.bean.util.JsfUtil.PersistAction;
@@ -34,8 +33,7 @@ import javax.script.ScriptEngine;
 import javax.script.ScriptException;
 import lk.gov.health.phsp.entity.Client;
 import lk.gov.health.phsp.entity.Component;
-import lk.gov.health.phsp.enums.SelectionDataType;
-import org.apache.commons.lang3.SerializationUtils;
+import lk.gov.health.phsp.entity.Person;
 
 @Named("clientEncounterComponentItemController")
 @SessionScoped
@@ -101,13 +99,26 @@ public class ClientEncounterComponentItemController implements Serializable {
     }
 
     public void calculate(ClientEncounterComponentItem i) {
-        // System.out.println("calculate");
-        // System.out.println("i.isCalculateOnFocus() = " + i.isCalculateOnFocus());
-        // System.out.println("i.getCalculationScript() = " + i.getCalculationScript());
-//        if (!i.isCalculateOnFocus()) {
-//            return;
-//        }
+        if (i == null) {
+            return;
+        }
+
         if (i.getCalculationScript() == null || i.getCalculationScript().trim().equals("")) {
+            return;
+        }
+        if (i.getParentComponent() == null || i.getParentComponent().getParentComponent() == null) {
+            return;
+        }
+        if (i.getParentComponent().getParentComponent() instanceof ClientEncounterComponentFormSet) {
+            return;
+        }
+
+        if (i.getCalculationScript().equalsIgnoreCase("client_current_age_in_years")) {
+            ClientEncounterComponentFormSet s = (ClientEncounterComponentFormSet) i.getParentComponent().getParentComponent();
+            Person p = s.getEncounter().getClient().getPerson();
+            i.setShortTextValue(p.getAgeYears() + "");
+            i.setIntegerNumberValue(p.getAgeYears());
+            getFacade().edit(i);
             return;
         }
 

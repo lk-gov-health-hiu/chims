@@ -147,6 +147,11 @@
 
                             </td>
                             <td>
+                                <h:panelGroup rendered="#{ii.discreptionAsASideLabel}" >
+                                    <p:outputLabel value="#{ii.descreption}" ></p:outputLabel>
+                                </h:panelGroup>
+                            </td>
+                            <td>
                                 <h:panelGroup rendered="#{ii.multipleEntiesPerForm}" >
                                     <p:commandButton id="btnAdd"  value="Add Another" process="@this" update="@form :#{p:component('gpFormItems')}"
                                                      action="#{clientEncounterComponentItemController.addAnother(ii)}"></p:commandButton>
