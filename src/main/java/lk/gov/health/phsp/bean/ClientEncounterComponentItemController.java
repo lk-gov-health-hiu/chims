@@ -155,7 +155,7 @@ public class ClientEncounterComponentItemController implements Serializable {
                     // TODO: Need to add Logic for Encounter values and patient values (p and e)!   
                 }
             } else {
-                r.setSelectedValue(r.isFormulaEvaluation() + "");
+                r.setSelectedValue(r.isFormulaEvaluation() + "===true");
             }
 
         }
