@@ -60,6 +60,20 @@
                             </h:panelGroup>
                             
                             
+                             <h:panelGroup rendered="#{ii.renderType eq 'Drop_Down_Menu' and  !ii.calculateOnFocus}" >
+                                  <h:selectOneMenu id="domIc" value="#{ii.itemValue}" >
+                                    <f:selectItem itemLabel="Please select" ></f:selectItem>
+                                    <f:selectItems value="#{itemController.findItemList(ii.categoryOfAvailableItems)}" var="li"
+                                                   itemLabel="#{li.name}" itemValue="#{li}" ></f:selectItems>
+                                    <p:ajax  event="blur" process="@this" listener="#{clientEncounterComponentItemController.save(ii)}" ></p:ajax>
+                                </h:selectOneMenu>
+                            </h:panelGroup>
+                            
+                            
+                            
+                            
+                            
+                            
                             
                             
                             
@@ -168,6 +182,13 @@
 
                         </td>
                         <td>
+                            <h:panelGroup rendered="#{ii.multipleEntiesPerForm}" >
+                                <p:commandButton value="Add Another" ajax="false"
+                                                 action="#{clientEncounterComponentItemController.addAnother(ii)}"></p:commandButton>
+                                
+                            </h:panelGroup>
+                        </td>
+                        <td>
                             <p:outputLabel value="#{ii.descreption}" ></p:outputLabel>
                             <p:tooltip for="som" >
                                 sdds
@@ -179,6 +200,7 @@
                             </p:tooltip>
 
                         </td>
+                        
                     </tr>
                 </ui:repeat>
                 <ui:repeat   value="#{clientEncounterComponentItemController.findClientEncounterComponentItemOfAForm(cc.attrs.form)}" 

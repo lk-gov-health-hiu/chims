@@ -32,6 +32,7 @@ import javax.script.ScriptEngineManager;
 import javax.script.ScriptEngine;
 import javax.script.ScriptException;
 import lk.gov.health.phsp.enums.SelectionDataType;
+import org.apache.commons.lang3.SerializationUtils;
 
 @Named("clientEncounterComponentItemController")
 @SessionScoped
@@ -113,7 +114,7 @@ public class ClientEncounterComponentItemController implements Serializable {
                 if (r.getValueCode() == null) {
                     r.setClientEncounterComponentItem(findFormsetValue(i, r.getVariableCode()));
                 } else {
-                    r.setFormulaEvaluation(findFormsetValueEqulesSelectedValue(i,r.getVariableCode(),r.getValueCode()));
+                    r.setFormulaEvaluation(findFormsetValueEqulesSelectedValue(i, r.getVariableCode(), r.getValueCode()));
                 }
             }
             // TODO: Need to add Logic for Encounter values and patient values (p and e)!   
@@ -148,8 +149,8 @@ public class ClientEncounterComponentItemController implements Serializable {
                         break;
                     // TODO: Need to add Logic for Encounter values and patient values (p and e)!   
                 }
-            }else{
-                r.setSelectedValue(r.isFormulaEvaluation()+"");
+            } else {
+                r.setSelectedValue(r.isFormulaEvaluation() + "");
             }
 
         }
@@ -223,8 +224,7 @@ public class ClientEncounterComponentItemController implements Serializable {
         System.out.println("j = " + j);
         return getFacade().findFirstByJpql(j, m);
     }
-    
-    
+
     public boolean findFormsetValueEqulesSelectedValue(ClientEncounterComponentItem i, String variableCode, String valueCode) {
         System.out.println("findFormsetValue = ");
         if (i == null) {
@@ -252,9 +252,8 @@ public class ClientEncounterComponentItemController implements Serializable {
         m.put("vc", valueCode.toLowerCase());
         System.out.println("m = " + m);
         System.out.println("j = " + j);
-        return getFacade().findFirstByJpql(j, m)!=null;
+        return getFacade().findFirstByJpql(j, m) != null;
     }
-    
 
     public String addTemplateToReport(String calculationScript, List<Replaceable> selectables) {
         for (Replaceable s : selectables) {
@@ -336,6 +335,52 @@ public class ClientEncounterComponentItemController implements Serializable {
             i.setLastEditeAt(new Date());
             getFacade().edit(i);
         }
+    }
+
+    public void addAnother(ClientEncounterComponentItem i) {
+        System.out.println("addAnother");
+        System.out.println("i = " + i);
+        if (i == null) {
+            return;
+        }
+        if (i.getId() == null) {
+            i.setCreatedAt(new Date());
+            i.setCreatedBy(webUserController.getLoggedUser());
+            getFacade().create(i);
+        } else {
+            i.setLastEditBy(webUserController.getLoggedUser());
+            i.setLastEditeAt(new Date());
+            getFacade().edit(i);
+        }
+        
+        ClientEncounterComponentItem ni = SerializationUtils.clone(i);
+        ni.setId(null);
+        System.out.println("ni = " + ni);
+        System.out.println("ni = " + ni.getBackgroundColour());
+        System.out.println("ni = " + ni.getDescreption());
+        System.out.println("ni = " + ni.getAreaValue());
+        System.out.println("ni = " + ni.getRealNumberValue());
+        System.out.println("ni = " + ni.getLongNumberValue());
+        System.out.println("ni = " + ni.getIntegerNumberValue());
+        System.out.println("ni = " + ni.getItemValue());
+        System.out.println("ni = " + ni.getPrescriptionValue());
+        System.out.println("ni = " + ni.getInstitutionValue());
+        ni.setOrderNo(i.getOrderNo() + (i.getOrderNo() / 0.001));
+        ni.setCreatedAt(new Date());
+        ni.setCreatedBy(webUserController.getLoggedUser());
+       
+
+        ni.setItemValue(null);
+        ni.setAreaValue(null);
+        ni.setInstitutionValue(null);
+        ni.setShortTextValue(null);
+        ni.setLongTextValue(null);
+        ni.setRealNumberValue(null);
+        ni.setIntegerNumberValue(null);
+        ni.setLongNumberValue(null);
+        ni.setPrescriptionValue(null);
+       
+
     }
 
     public void create() {

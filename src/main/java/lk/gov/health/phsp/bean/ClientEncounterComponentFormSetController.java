@@ -121,39 +121,62 @@ public class ClientEncounterComponentFormSetController implements Serializable {
     }
 
     public void executePostCompletionStrategies(ClientEncounterComponentFormSet s) {
-        String j ="select f ClientEncounterComponentItem f "
+        String j = "select f from ClientEncounterComponentItem f "
                 + " where f.retired=false "
                 + " and f.parentComponent.parentComponent=:s ";
         Map m = new HashMap();
         m.put("s", s);
         List<ClientEncounterComponentItem> is = getItemFacade().findByJpql(j, m);
-        for(ClientEncounterComponentItem i:is){
-            if(i.getDataCompletionStrategy()==DataCompletionStrategy.Replace_Values_of_client){
+        for (ClientEncounterComponentItem i : is) {
+            if (i.getDataCompletionStrategy() == DataCompletionStrategy.Replace_Values_of_client) {
                 updateToClientValue(i);
             }
         }
-                
+
     }
-    
-    public void updateToClientValue(ClientEncounterComponentItem vi){
+
+    public void updateToClientValue(ClientEncounterComponentItem vi) {
+        if (vi == null) {
+            return;
+        }
+        if (vi.getParentComponent() == null) {
+            return;
+        }
+        if (vi.getParentComponent().getParentComponent() == null) {
+            return;
+        }
+        ClientEncounterComponentFormSet s;
+        Client c;
+        if (vi.getParentComponent().getParentComponent() instanceof ClientEncounterComponentFormSet) {
+            s = (ClientEncounterComponentFormSet) vi.getParentComponent().getParentComponent();
+        } else {
+            return;
+        }
+
+        c = s.getEncounter().getClient();
+
         ClientEncounterComponentItem ti;
         String j = "select vi from ClientEncounterComponentItem vi where vi.retired=false "
                 + " and vi.client=:c order by vi.id desc";
         Map m = new HashMap();
-        m.put("c", vi.getEncounter().getClient());
+
+        m.put("c", s.getEncounter().getClient());
+
         ti = getItemFacade().findFirstByJpql(j, m);
 
         if (ti == null) {
             ti = new ClientEncounterComponentItem();
             ti.setCreatedAt(new Date());
             ti.setCreatedBy(webUserController.getLoggedUser());
-            ti.setClient(ti.getEncounter().getClient());
+            ti.setClient(c);
             getItemFacade().create(ti);
-        }else{
+        } else {
             ti.setLastEditBy(webUserController.getLoggedUser());
             ti.setLastEditeAt(new Date());
         }
-        
+
+        ti.setClient(s.getEncounter().getClient());
+
         ti.setDateValue(vi.getDateValue());
         ti.setShortTextValue(vi.getShortTextValue());
         ti.setLongTextValue(vi.getLongTextValue());
@@ -162,8 +185,55 @@ public class ClientEncounterComponentFormSetController implements Serializable {
         ti.setItemValue(vi.getItemValue());
         ti.setInstitution(vi.getInstitutionValue());
         ti.setPrescriptionValue(vi.getPrescriptionValue());
-        
+
         getItemFacade().edit(ti);
+
+        String code = ti.getItem().getCode();
+        switch (code) {
+            case "client_name":
+                c.getPerson().setName(ti.getShortTextValue());
+                return;
+            case "client_phn_number":
+                c.setPhn(ti.getShortTextValue());
+                return;
+            case "client_sex":
+                c.getPerson().setSex(ti.getItemValue());
+                return;
+            case "client_nic_number":
+                c.getPerson().setNic(ti.getShortTextValue());
+                return;
+            case "client_data_of_birth":
+                c.getPerson().setDateOfBirth(ti.getDateValue());
+                return;
+            case "client_permanent_address":
+                c.getPerson().setAddress(ti.getLongTextValue());
+                return;
+            case "client_current_address":
+                ti.setLongTextValue(c.getPerson().getAddress());
+                return;
+            case "client_mobile_number":
+                c.getPerson().setPhone1(ti.getShortTextValue());
+                return;
+            case "client_home_number":
+                c.getPerson().setPhone2(ti.getShortTextValue());
+                return;
+            case "client_permanent_moh_area":
+                c.getPerson().setGnArea(ti.getAreaValue());
+                return;
+            case "client_permanent_phm_area":
+                c.getPerson().getGnArea().setPhm(ti.getAreaValue());
+                return;
+            case "client_permanent_phi_area":
+                c.getPerson().getGnArea().setPhi(ti.getAreaValue());
+                return;
+            case "client_gn_area":
+                c.getPerson().setGnArea(ti.getAreaValue());
+                return;
+            case "client_ds_division":
+                c.getPerson().getGnArea().setDsd(ti.getAreaValue());
+                return;
+        }
+
     }
 
     public void save() {
@@ -444,41 +514,72 @@ public class ClientEncounterComponentFormSetController implements Serializable {
         if (ti == null) {
             return;
         }
-        Client c ;
-        if(ti.getEncounter()==null && ti.getClient()==null){
+        Client c;
+        if (ti.getEncounter() == null && ti.getClient() == null) {
             return;
-        } else if(ti.getEncounter()!=null && ti.getClient()==null){
-            if(ti.getEncounter().getClient()==null){
+        } else if (ti.getEncounter() != null && ti.getClient() == null) {
+            if (ti.getEncounter().getClient() == null) {
                 return;
-            }else{
-                c=ti.getEncounter().getClient();
+            } else {
+                c = ti.getEncounter().getClient();
             }
-        }else{
-            c=ti.getClient();
+        } else {
+            c = ti.getClient();
         }
-        
+
         String code = ti.getItem().getCode();
         String val = "";
-        switch(code){
-            case "client_name": ti.setShortTextValue(c.getPerson().getName());return;
-            case "client_phn_number": ti.setShortTextValue(c.getPhn());return;
-            case "client_sex": ti.setItemValue(c.getPerson().getSex());return;
-            case "client_nic_number": ti.setShortTextValue(c.getPerson().getNic());return;
-            case "client_data_of_birth": ti.setDateValue(c.getPerson().getDateOfBirth());return;
-            case "client_current_age": ti.setShortTextValue(c.getPerson().getAge());return;
-            case "client_age_at_encounter": ti.setShortTextValue(c.getPerson().getAge());return;
-            case "client_permanent_address": ti.setLongTextValue(c.getPerson().getAddress());return;
-            case "client_current_address": ti.setLongTextValue(c.getPerson().getAddress());return;
-            case "client_mobile_number": ti.setShortTextValue(c.getPerson().getPhone1());return;
-            case "client_home_number": ti.setShortTextValue(c.getPerson().getPhone2());return;
-            case "client_permanent_moh_area": ti.setAreaValue(c.getPerson().getGnArea());return;
-            case "client_permanent_phm_area": ti.setAreaValue(c.getPerson().getGnArea().getPhm());return;
-            case "client_permanent_phi_area": ti.setAreaValue(c.getPerson().getGnArea().getPhi());return;
-            case "client_gn_area": ti.setAreaValue(c.getPerson().getGnArea());return;
-            case "client_ds_division": ti.setAreaValue(c.getPerson().getGnArea().getDsd());return;
+        switch (code) {
+            case "client_name":
+                ti.setShortTextValue(c.getPerson().getName());
+                return;
+            case "client_phn_number":
+                ti.setShortTextValue(c.getPhn());
+                return;
+            case "client_sex":
+                ti.setItemValue(c.getPerson().getSex());
+                return;
+            case "client_nic_number":
+                ti.setShortTextValue(c.getPerson().getNic());
+                return;
+            case "client_data_of_birth":
+                ti.setDateValue(c.getPerson().getDateOfBirth());
+                return;
+            case "client_current_age":
+                ti.setShortTextValue(c.getPerson().getAge());
+                return;
+            case "client_age_at_encounter":
+                ti.setShortTextValue(c.getPerson().getAge());
+                return;
+            case "client_permanent_address":
+                ti.setLongTextValue(c.getPerson().getAddress());
+                return;
+            case "client_current_address":
+                ti.setLongTextValue(c.getPerson().getAddress());
+                return;
+            case "client_mobile_number":
+                ti.setShortTextValue(c.getPerson().getPhone1());
+                return;
+            case "client_home_number":
+                ti.setShortTextValue(c.getPerson().getPhone2());
+                return;
+            case "client_permanent_moh_area":
+                ti.setAreaValue(c.getPerson().getGnArea());
+                return;
+            case "client_permanent_phm_area":
+                ti.setAreaValue(c.getPerson().getGnArea().getPhm());
+                return;
+            case "client_permanent_phi_area":
+                ti.setAreaValue(c.getPerson().getGnArea().getPhi());
+                return;
+            case "client_gn_area":
+                ti.setAreaValue(c.getPerson().getGnArea());
+                return;
+            case "client_ds_division":
+                ti.setAreaValue(c.getPerson().getGnArea().getDsd());
+                return;
         }
-                
-        
+
         ClientEncounterComponentItem vi;
         String j = "select vi from ClientEncounterComponentItem vi where vi.retired=false "
                 + " and vi.client=:c order by vi.id desc";
@@ -489,7 +590,7 @@ public class ClientEncounterComponentFormSetController implements Serializable {
         if (vi == null) {
             return;
         }
-        
+
         ti.setDateValue(vi.getDateValue());
         ti.setShortTextValue(vi.getShortTextValue());
         ti.setLongTextValue(vi.getLongTextValue());
@@ -500,29 +601,24 @@ public class ClientEncounterComponentFormSetController implements Serializable {
         ti.setPrescriptionValue(vi.getPrescriptionValue());
 
     }
-    
-    
-    
+
     public void updateFromLastEncounter(ClientEncounterComponentItem ti) {
         if (ti == null) {
             return;
         }
-        Client c ;
-        if(ti.getEncounter()==null && ti.getClient()==null){
+        Client c;
+        if (ti.getEncounter() == null && ti.getClient() == null) {
             return;
-        } else if(ti.getEncounter()!=null && ti.getClient()==null){
-            if(ti.getEncounter().getClient()==null){
+        } else if (ti.getEncounter() != null && ti.getClient() == null) {
+            if (ti.getEncounter().getClient() == null) {
                 return;
-            }else{
-                c=ti.getEncounter().getClient();
+            } else {
+                c = ti.getEncounter().getClient();
             }
-        }else{
-            c=ti.getClient();
+        } else {
+            c = ti.getClient();
         }
-        
-        
-                
-        
+
         ClientEncounterComponentItem vi;
         String j = "select vi from ClientEncounterComponentItem vi where vi.retired=false "
                 + " and vi.encounter.client=:c order by vi.id desc";
@@ -533,7 +629,7 @@ public class ClientEncounterComponentFormSetController implements Serializable {
         if (vi == null) {
             return;
         }
-        
+
         ti.setDateValue(vi.getDateValue());
         ti.setShortTextValue(vi.getShortTextValue());
         ti.setLongTextValue(vi.getLongTextValue());
@@ -544,7 +640,6 @@ public class ClientEncounterComponentFormSetController implements Serializable {
         ti.setPrescriptionValue(vi.getPrescriptionValue());
 
     }
-    
 
 // </editor-fold>    
 // <editor-fold defaultstate="collapsed" desc="Default Functions">

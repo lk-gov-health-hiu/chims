@@ -120,7 +120,8 @@ public class CommonController implements Serializable {
             RenderType.List_Box,
             RenderType.Prescreption,
             RenderType.Boolean_Button,
-            RenderType.Boolean_Checkbox,};
+            RenderType.Boolean_Checkbox,
+            RenderType.Drop_Down_Menu};
         return rts;
     }
 
