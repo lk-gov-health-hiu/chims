@@ -31,6 +31,7 @@ import jxl.Cell;
 import jxl.Sheet;
 import jxl.Workbook;
 import jxl.read.biff.BiffException;
+import lk.gov.health.phsp.entity.DesignComponentFormSet;
 import lk.gov.health.phsp.entity.Item;
 import lk.gov.health.phsp.enums.AreaType;
 import lk.gov.health.phsp.enums.ItemType;
@@ -70,19 +71,29 @@ public class ItemController implements Serializable {
     // <editor-fold defaultstate="collapsed" desc="Navigation">
     // </editor-fold>    
     // <editor-fold defaultstate="collapsed" desc="Functions">
-    
-    
-     public List<String> completeItemCodes(String qry) {
-         String j = "select i.code from Item i "
-                 + " where lower(i.code) like :q "
-                 + "  and i.retired=false "
-                 + " order by i.code" ;
-         Map m = new HashMap();
-         m.put("q", "%" + qry.trim().toLowerCase() + "%");
-         List<String> ss =getFacade().findString(j, m);
-         return ss;
-     }
-    
+    public void fillDuplicateItemsInAFormSet(DesignComponentFormSet s) {
+        String j = "select di.item from DesignComponentFormItem di "
+                + "  where di.retired=false "
+                + "  and di.parentComponent.parentComponent=:s "
+                + "  group by di.item "
+                + " having count(*)>1 "
+                + "  ";
+        Map m = new HashMap();
+        m.put("s", s);
+        items = getFacade().findByJpql(j, m);
+    }
+
+    public List<String> completeItemCodes(String qry) {
+        String j = "select i.code from Item i "
+                + " where lower(i.code) like :q "
+                + "  and i.retired=false "
+                + " order by i.code";
+        Map m = new HashMap();
+        m.put("q", "%" + qry.trim().toLowerCase() + "%");
+        List<String> ss = getFacade().findString(j, m);
+        return ss;
+    }
+
     public String importItemsFromExcel() {
         try {
             String strParentCode;
@@ -195,17 +206,12 @@ public class ItemController implements Serializable {
                 + "Dictionary_Item::PHN Number:client_phn_number:0" + System.lineSeparator()
                 + "Dictionary_Item::NIC No.:client_nic_number:1" + System.lineSeparator()
                 + "Dictionary_Item::Date of Birth:client_data_of_birth:2" + System.lineSeparator()
-                
                 + "Dictionary_Item::Age:client_current_age_as_string:3" + System.lineSeparator()
                 + "Dictionary_Item::Age in days:client_current_age_in_days:3" + System.lineSeparator()
                 + "Dictionary_Item::Age in years:client_current_age_in_years:3" + System.lineSeparator()
-                
-               
-                
                 + "Dictionary_Item::Age at Encounter:client_age_at_encounter_as_string:3" + System.lineSeparator()
                 + "Dictionary_Item::Age at Encounter (Days):client_age_at_encounter_in_days:3" + System.lineSeparator()
                 + "Dictionary_Item::Age at Encounter (Years):client_age_at_encounter_in_years:3" + System.lineSeparator()
-                
                 + "Dictionary_Item::Permanent Age:client_permanent_address:3" + System.lineSeparator()
                 + "Dictionary_Item::Current Address:client_current_address:3" + System.lineSeparator()
                 + "Dictionary_Item::Mobile Number:client_mobile_number:3" + System.lineSeparator()

@@ -69,6 +69,11 @@ public class DesignComponentFormSetController implements Serializable {
     // <editor-fold defaultstate="collapsed" desc="Main Functions">
     
     
+    
+    public String toErrorCheckingOfFormsets(){
+        return "/designComponentFormSet/errors";
+    }
+    
     public void reloadSet(){
         if(selected==null){
             JsfUtil.addErrorMessage("Noting is Selected");

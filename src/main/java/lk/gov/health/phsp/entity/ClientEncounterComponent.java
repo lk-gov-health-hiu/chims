@@ -6,12 +6,10 @@
 package lk.gov.health.phsp.entity;
 
 import java.util.Date;
-import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -211,6 +209,7 @@ public class ClientEncounterComponent extends Component {
     public void setDescreptionValue(String descreptionValue) {
         this.descreptionValue = descreptionValue;
     }
+
 
     
     
