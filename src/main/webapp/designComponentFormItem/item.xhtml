@@ -150,28 +150,48 @@
                                     <p:tab title="Calculation" >
                                         <p:panelGrid columns="2" >
                                             <p:outputLabel value="Calculate on Focus:" for="calculateOnFocus" />
-                                            <p:selectBooleanCheckbox id="calculateOnFocus" value="#{designComponentFormItemController.selected.calculateOnFocus}" ></p:selectBooleanCheckbox>
+                                            <p:selectBooleanCheckbox  id="calculateOnFocus" value="#{designComponentFormItemController.selected.calculateOnFocus}" ></p:selectBooleanCheckbox>
 
                                             <p:outputLabel value="Calculate button:" for="calculateButton" />
                                             <p:selectBooleanCheckbox id="calculateButton" value="#{designComponentFormItemController.selected.calculateButton}" ></p:selectBooleanCheckbox>
 
                                             <p:outputLabel value="Calculation Script:" for="calculationScript" />
-                                            <p:inputTextarea id="calculationScript" style="width: 400px;"
+                                            <p:inputTextarea id="calculationScript" 
                                                              value="#{designComponentFormItemController.selected.calculationScript}" title="Name"
-                                                             completeMethod="#{itemController.completeItemCodes}" minQueryLength="2"/>
+                                                             autoResize="true"
+                                                             cols="100"
+                                                             rows="10"/>
 
 
                                             <p:outputLabel value="Calculation Script - Colour:" for="calculationScriptForColour" />
                                             <p:inputTextarea id="calculationScriptForColour"
                                                              value="#{designComponentFormItemController.selected.calculationScriptForColour}" 
-                                                             completeMethod="#{itemController.completeItemCodes}" minQueryLength="2"/>
+                                                             autoResize="true"
+                                                             cols="100"
+                                                             rows="10"
+                                                             />
 
                                             <p:outputLabel value="Calculation Script - Background Colour:" for="calculationScriptForBackgroundColour" />
                                             <p:inputTextarea id="calculationScriptForBackgroundColour"
                                                              value="#{designComponentFormItemController.selected.calculationScriptForBackgroundColour}" 
-                                                             completeMethod="#{itemController.completeItemCodes}" minQueryLength="2"/>
+                                                             autoResize="true"
+                                                             cols="100"
+                                                             rows="10"/>
 
 
+                                            <p:outputLabel value="Available Codes:" for="availableCode" />
+                                             <p:autoComplete id="availableCode"
+                                                            completeMethod="#{itemController.completeItems}" 
+                                                            var="ic" itemLabel="#{ic.name}" forceSelection="true"
+                                                            itemValue="#{ic}" >
+                                                <p:column headerText="Name">
+                                                    <p:outputLabel value="#{ic.name}" ></p:outputLabel>
+                                                </p:column>
+                                                <p:column headerText="Code">
+                                                    <p:outputLabel value="#{ic.code}" ></p:outputLabel>
+                                                </p:column>
+                                            </p:autoComplete>
+                                            
                                         </p:panelGrid>
 
                                     </p:tab>
