@@ -167,6 +167,11 @@ public class ClientEncounterComponentItemController implements Serializable {
                         }
                         break;
                     case Integer_Number:
+                        if (c.getIntegerNumberValue() != null) {
+                            r.setSelectedValue(c.getIntegerNumberValue().toString());
+                        }
+                        break;
+                    case Long_Number:
                         if (c.getLongNumberValue() != null) {
                             r.setSelectedValue(c.getLongNumberValue().toString());
                         }
@@ -260,7 +265,7 @@ public class ClientEncounterComponentItemController implements Serializable {
     }
 
     public ClientEncounterComponentItem findFormsetValue(ClientEncounterComponentItem i, String variableCode, String valueCode) {
-         System.out.println("findFormsetValue = ");
+        System.out.println("findFormsetValue = ");
         if (i == null) {
             return null;
         }
