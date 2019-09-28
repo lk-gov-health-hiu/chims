@@ -244,8 +244,11 @@ public class Component implements Serializable {
 
     @Override
     public String toString() {
-        return "Component{" + "id=" + id + ", name=" + name + ", item=" + item + ", descreption=" + descreption + ", orderNo=" + orderNo + ", institution=" + institution + ", parentComponent=" + parentComponent + ", referenceComponent=" + referenceComponent + ", renderType=" + renderType + ", required=" + required + ", calculateOnFocus=" + calculateOnFocus + ", calculateButton=" + calculateButton + ", displayDetailsBox=" + displayDetailsBox + ", discreptionAsAToolTip=" + discreptionAsAToolTip + ", discreptionAsASideLabel=" + discreptionAsASideLabel + ", multipleEntiesPerForm=" + multipleEntiesPerForm + '}';
+        return "Component{" + "id=" + id + ", name=" + name + ", item=" + item + " , class= " +  "}";
     }
+
+    
+    
 
     
 

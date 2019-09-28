@@ -64,9 +64,6 @@
                                                          required="#{ii.required}" 
                                                          requiredMessage="#{ii.requiredErrorMessage}" >
                                             <p:ajax  event="blur" process="@this" listener="#{clientEncounterComponentItemController.save(ii)}" ></p:ajax>
-                                            <p:ajax  event="focus" process="@this" 
-                                                     listener="#{clientEncounterComponentItemController.calculate(ii)}" 
-                                                     update="@this"></p:ajax>
                                         </p:inputTextarea>
                                     </h:panelGroup>
                                     <h:panelGroup rendered="#{ii.selectionDataType eq 'DateTime'}" >
@@ -76,9 +73,6 @@
                                                         requiredMessage="#{ii.requiredErrorMessage}" 
                                                         pattern="dd MMMM yyyy">
                                                 <p:ajax  event="blur" process="@this" listener="#{clientEncounterComponentItemController.save(ii)}" ></p:ajax>
-                                                <p:ajax  event="focus" process="@this" 
-                                                         listener="#{clientEncounterComponentItemController.calculate(ii)}" 
-                                                         update="@this"></p:ajax>
                                             </p:calendar>
                                         </h:panelGroup>
                                         <h:panelGroup rendered="#{ii.renderType eq 'Calendar'}" >
@@ -86,9 +80,6 @@
                                                         required="#{ii.required}" 
                                                         requiredMessage="#{ii.requiredErrorMessage}" pattern="dd MMMM yyyy">
                                                 <p:ajax  event="blur" process="@this" listener="#{clientEncounterComponentItemController.save(ii)}" ></p:ajax>
-                                                <p:ajax  event="focus" process="@this" 
-                                                         listener="#{clientEncounterComponentItemController.calculate(ii)}" 
-                                                         update="@this"></p:ajax>
                                             </p:calendar>
                                         </h:panelGroup>
                                     </h:panelGroup>

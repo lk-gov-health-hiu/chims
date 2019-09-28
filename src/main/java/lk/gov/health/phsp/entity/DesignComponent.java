@@ -44,8 +44,7 @@ public class DesignComponent extends Component {
     public void setComponentSex(ComponentSex componentSex) {
         this.componentSex = componentSex;
     }
-    
-    
+
  
     
 }

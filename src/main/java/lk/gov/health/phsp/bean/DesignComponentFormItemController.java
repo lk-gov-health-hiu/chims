@@ -23,7 +23,9 @@ import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
 import javax.inject.Inject;
+import lk.gov.health.phsp.entity.Component;
 import lk.gov.health.phsp.entity.DesignComponentForm;
+import lk.gov.health.phsp.entity.DesignComponentFormSet;
 import org.apache.commons.lang3.SerializationUtils;
 // </editor-fold>
 
@@ -38,6 +40,18 @@ public class DesignComponentFormItemController implements Serializable {
 // <editor-fold defaultstate="collapsed" desc="Main Functions">
     @Inject
     private WebUserController webUserController;
+
+    public void fillDuplicateItemsInAFormSet(DesignComponentFormSet s) {
+        System.out.println("fillDuplicateItemsInAFormSet");
+        System.out.println("s = " + s);
+        String j = "select di from DesignComponentFormItem di "
+                + "  where di.retired=false "
+                + "  and di.parentComponent.parentComponent=:s ";
+        Map m = new HashMap();
+        m.put("s", s);
+        items = getFacade().findByJpql(j, m);
+    }
+
 // </editor-fold>    
 // <editor-fold defaultstate="collapsed" desc="Class Variables">
     private List<DesignComponentFormItem> items = null;
@@ -47,6 +61,11 @@ public class DesignComponentFormItemController implements Serializable {
     private DesignComponentFormItem addingItem;
     private DesignComponentFormItem removingItem;
     private DesignComponentFormItem movingItem;
+    private Long searchId;
+    
+    Component searchComponent;
+    
+    
 // </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="Constructors">
 
@@ -73,6 +92,13 @@ public class DesignComponentFormItemController implements Serializable {
 
 // </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="Main Functions">
+    
+    public void searchById(){
+        System.out.println("searchById");
+        System.out.println("searchId = " + searchId);
+        selected = getFacade().find(searchId);
+    }
+    
     public void saveItem() {
         if (selected == null) {
             JsfUtil.addErrorMessage("No item selected.");
@@ -297,6 +323,8 @@ public class DesignComponentFormItemController implements Serializable {
 // </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="Getters & Setters">
 
+    
+    
     public DesignComponentFormItem getSelected() {
         return selected;
     }
@@ -310,9 +338,9 @@ public class DesignComponentFormItemController implements Serializable {
     }
 
     public List<DesignComponentFormItem> getItems() {
-        if (items == null) {
-            items = getFacade().findAll();
-        }
+//        if (items == null) {
+//            items = getFacade().findAll();
+//        }
         return items;
     }
 
@@ -382,6 +410,14 @@ public class DesignComponentFormItemController implements Serializable {
 
     public WebUserController getWebUserController() {
         return webUserController;
+    }
+
+    public Long getSearchId() {
+        return searchId;
+    }
+
+    public void setSearchId(Long searchId) {
+        this.searchId = searchId;
     }
 
     @FacesConverter(forClass = DesignComponentFormItem.class)
