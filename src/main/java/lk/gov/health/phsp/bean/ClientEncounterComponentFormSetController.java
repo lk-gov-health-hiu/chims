@@ -516,7 +516,13 @@ public class ClientEncounterComponentFormSetController implements Serializable {
                         ci.setCalculationScriptForColour(di.getCalculationScriptForColour());
                         ci.setDisplayDetailsBox(di.isDisplayDetailsBox());
                         ci.setDiscreptionAsAToolTip(di.isDiscreptionAsAToolTip());
+                        
+                        System.out.println("di.isDiscreptionAsASideLabel() = " + di.isDiscreptionAsASideLabel());
+                        
                         ci.setDiscreptionAsASideLabel(di.isDiscreptionAsASideLabel());
+                        
+                        System.out.println("ci.isDiscreptionAsASideLabel() = " + ci.isDiscreptionAsASideLabel());
+                        
                         ci.setCalculationScriptForBackgroundColour(di.getCalculationScriptForBackgroundColour());
                         ci.setMultipleEntiesPerForm(di.isMultipleEntiesPerForm());
 
@@ -528,6 +534,8 @@ public class ClientEncounterComponentFormSetController implements Serializable {
                         }
 
                         clientEncounterComponentItemController.save(ci);
+                        
+                        System.out.println("ci.isDiscreptionAsASideLabel() = " + ci.isDiscreptionAsASideLabel());
                     }
                 }
 
