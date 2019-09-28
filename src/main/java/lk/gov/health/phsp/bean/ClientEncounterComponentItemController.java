@@ -203,7 +203,7 @@ public class ClientEncounterComponentItemController implements Serializable {
                         }
                         break;
                     case Item_Reference:
-                        if (c.getItem() != null) {
+                        if (c.getItemValue()!= null) {
                             r.setSelectedValue(c.getItemValue().getCode());
                         }
                         break;
