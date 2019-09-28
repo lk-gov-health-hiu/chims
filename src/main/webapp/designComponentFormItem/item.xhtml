@@ -182,7 +182,7 @@
                                             <p:outputLabel value="Available Codes:" for="availableCode" />
                                              <p:autoComplete id="availableCode"
                                                             completeMethod="#{itemController.completeItems}" 
-                                                            var="ic" itemLabel="#{ic.name}" forceSelection="true"
+                                                            var="ic" itemLabel="#{ic.code}" forceSelection="true"
                                                             itemValue="#{ic}" >
                                                 <p:column headerText="Name">
                                                     <p:outputLabel value="#{ic.name}" ></p:outputLabel>

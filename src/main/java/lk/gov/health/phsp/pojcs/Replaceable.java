@@ -18,6 +18,7 @@ public class Replaceable {
     private String valueCode;
     private String pef;
     private String fl;
+    private String sm;
     private String defaultValue;
     private ClientEncounterComponentItem clientEncounterComponentItem;
     List<String> options;
@@ -27,6 +28,8 @@ public class Replaceable {
     String selectedValue;
     String fullText;
 
+    
+    
     public String getVariableCode() {
         return variableCode;
     }
@@ -127,6 +130,14 @@ public class Replaceable {
 
     public void setValueCode(String valueCode) {
         this.valueCode = valueCode;
+    }
+
+    public String getSm() {
+        return sm;
+    }
+
+    public void setSm(String sm) {
+        this.sm = sm;
     }
     
     
