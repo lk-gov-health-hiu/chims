@@ -106,15 +106,15 @@ public class ClientEncounterComponentItemController implements Serializable {
         }
 
         if (i.getCalculationScript() == null || i.getCalculationScript().trim().equals("")) {
-            System.out.println("No Cript. Not calculating " );
+            System.out.println("No Cript. Not calculating ");
             return;
         }
         if (i.getParentComponent() == null || i.getParentComponent().getParentComponent() == null) {
-            System.out.println("No Formset. Not calculating " );
+            System.out.println("No Formset. Not calculating ");
             return;
         }
         if (!(i.getParentComponent().getParentComponent() instanceof ClientEncounterComponentFormSet)) {
-            System.out.println("Not a Formset. Not calculating " );
+            System.out.println("Not a Formset. Not calculating ");
             System.out.println("i.getParentComponent().getParentComponent() = " + i.getParentComponent().getParentComponent());
             return;
         }
@@ -129,7 +129,7 @@ public class ClientEncounterComponentItemController implements Serializable {
             i.setIntegerNumberValue(p.getAgeYears());
             getFacade().edit(i);
             return;
-        }else{
+        } else {
             System.out.println("No age is to calculate. Proceeding to normal calculation.");
         }
 
@@ -138,16 +138,14 @@ public class ClientEncounterComponentItemController implements Serializable {
         // System.out.println("replacingBlocks = " + replacingBlocks);
         for (Replaceable r : replacingBlocks) {
             if (r.getPef().toLowerCase().equals("f")) {
-                if (r.getValueCode() == null) {
-                    r.setClientEncounterComponentItem(findFormsetValue(i, r.getVariableCode()));
+                if (r.getSm().equalsIgnoreCase("s")) {
+                    r.setClientEncounterComponentItem(ClientEncounterComponentItemController.this.findFormsetValue(i, r.getVariableCode()));
                 } else {
-                    r.setFormulaEvaluation(findFormsetValueEqulesSelectedValue(i, r.getVariableCode(), r.getValueCode()));
+                    r.setClientEncounterComponentItem(findFormsetValue(i, r.getVariableCode(), r.getValueCode()));
                 }
             } else if (r.getPef().toLowerCase().equals("p")) {
                 r.setClientEncounterComponentItem(findClientValue(i, r.getVariableCode()));
             }
-            // TODO: Need to add Logic for Encounter values and patient values (p and e)!   
-
             if (r.getClientEncounterComponentItem() != null) {
                 ClientEncounterComponentItem c = r.getClientEncounterComponentItem();
                 System.out.println("c = " + c);
@@ -161,12 +159,8 @@ public class ClientEncounterComponentItemController implements Serializable {
                         if (c.getBooleanValue() != null) {
                             r.setSelectedValue(c.getBooleanValue().toString());
                         }
-
                         break;
                     case Real_Number:
-                        // System.out.println("c.getRealNumberValue() = " + c.getRealNumberValue());
-                        // System.out.println("c.getName() = " + c.getName());
-                        // System.out.println("c.getId() = " + c.getId());
                         if (c.getRealNumberValue() != null) {
                             r.setSelectedValue(c.getRealNumberValue().toString());
                         }
@@ -181,14 +175,11 @@ public class ClientEncounterComponentItemController implements Serializable {
                             r.setSelectedValue(c.getItem().getCode());
                         }
                         break;
-
-                    // TODO: Need to add Logic for Encounter values and patient values (p and e)!   
                 }
                 System.out.println("r.getSelectedValue() = " + r.getSelectedValue());
             } else {
-                r.setSelectedValue(r.isFormulaEvaluation() + "");
+                r.setSelectedValue(r.getDefaultValue());
             }
-
         }
 
         String javaStringToEvaluate = addTemplateToReport(i.getCalculationScript().trim(), replacingBlocks);
@@ -267,22 +258,22 @@ public class ClientEncounterComponentItemController implements Serializable {
         return getFacade().findFirstByJpql(j, m);
     }
 
-    public boolean findFormsetValueEqulesSelectedValue(ClientEncounterComponentItem i, String variableCode, String valueCode) {
+    public ClientEncounterComponentItem findFormsetValue(ClientEncounterComponentItem i, String variableCode, String valueCode) {
         // System.out.println("findFormsetValue = ");
         if (i == null) {
-            return false;
+            return null;
         }
         if (i.getParentComponent() == null) {
-            return false;
+            return null;
         }
         if (i.getParentComponent().getParentComponent() == null) {
-            return false;
+            return null;
         }
         if (variableCode == null) {
-            return false;
+            return null;
         }
         if (variableCode.trim().equals("")) {
-            return false;
+            return null;
         }
         String j = "select i from ClientEncounterComponentItem i where i.retired=false "
                 + " and i.parentComponent.parentComponent=:pc "
@@ -292,11 +283,7 @@ public class ClientEncounterComponentItemController implements Serializable {
         m.put("pc", i.getParentComponent().getParentComponent());
         m.put("c", variableCode.toLowerCase());
         m.put("vc", valueCode.toLowerCase());
-        // System.out.println("m = " + m);
-        // System.out.println("j = " + j);
-        boolean found = getFacade().findFirstByJpql(j, m) != null;
-        // System.out.println("found = " + found);
-        return found;
+        return getFacade().findFirstByJpql(j, m);
     }
 
     public String addTemplateToReport(String calculationScript, List<Replaceable> selectables) {
@@ -331,22 +318,27 @@ public class ClientEncounterComponentItemController implements Serializable {
                 if (block.contains("|")) {
                     String[] blockParts = block.split("\\|");
                     for (int i = 0; i < blockParts.length; i++) {
-                        if (i == 0) {
-                            s.setPef(blockParts[0]);
-                        } else if (i == 1) {
-                            s.setFl(blockParts[1]);
-                        } else if (i == 2) {
-                            String vv = blockParts[2];
-                            if (vv.contains("=")) {
-                                String[] vvs = vv.split("=");
-                                s.setVariableCode(vvs[0]);
-                                s.setValueCode(vvs[1]);
-                            } else {
-                                s.setVariableCode(blockParts[2]);
-                                s.setValueCode(null);
-                            }
-                        } else if (i == 3) {
-                            s.setDefaultValue(blockParts[3]);
+                        switch (i) {
+                            case 0:
+                                s.setPef(blockParts[0]);
+                                break;
+                            case 1:
+                                s.setFl(blockParts[1]);
+                                break;
+                            case 2:
+                                s.setSm(blockParts[2]);
+                                break;
+                            case 3:
+                                s.setVariableCode(blockParts[3]);
+                                break;
+                            case 4:
+                                s.setValueCode(blockParts[4]);
+                                break;
+                            case 5:
+                                s.setDefaultValue(blockParts[5]);
+                                break;
+                            default:
+                                break;
                         }
                     }
                     s.setInputText(false);
