@@ -119,7 +119,7 @@ public class ClientEncounterComponentItemController implements Serializable {
             return;
         }
 
-        if (i.getCalculationScript().equalsIgnoreCase("client_current_age_in_years")) {
+        if (i.getCalculationScript().trim().equalsIgnoreCase("client_current_age_in_years")) {
             ClientEncounterComponentFormSet s = (ClientEncounterComponentFormSet) i.getParentComponent().getParentComponent();
             System.out.println("s = " + s);
             Person p = s.getEncounter().getClient().getPerson();
