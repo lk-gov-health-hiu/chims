@@ -104,8 +104,8 @@
                                         </h:panelGroup>
 
                                     </h:panelGroup>
-                                    <h:panelGroup rendered="#{ii.renderType eq 'Boolean_Checkbox' and  !ii.calculateOnFocus}" >
-                                        <p:selectBooleanCheckbox id="bcNc" value="#{ii.dateValue}" 
+                                    <h:panelGroup rendered="#{ii.renderType eq 'Boolean_Checkbox'}" >
+                                        <p:selectBooleanCheckbox id="bcNc" value="#{ii.booleanValue}" 
                                                                  required="#{ii.required}" 
                                                                  requiredMessage="#{ii.requiredErrorMessage}" >
                                             <p:ajax  event="blur" process="@this" 
@@ -113,43 +113,15 @@
                                             </p:ajax>
                                         </p:selectBooleanCheckbox>
                                     </h:panelGroup>
-                                    <h:panelGroup rendered="#{ii.renderType eq 'Boolean_Checkbox' and  ii.calculateOnFocus}" >
-                                        <p:selectBooleanCheckbox id="bcC" value="#{ii.dateValue}" 
-                                                                 required="#{ii.required}" 
-                                                                 requiredMessage="#{ii.requiredErrorMessage}" >
-                                            <p:ajax  event="blur" process="@this" 
-                                                     listener="#{clientEncounterComponentItemController.save(ii)}" >
-                                            </p:ajax>
-                                            <p:ajax  event="focus" process="@this" 
-                                                     listener="#{clientEncounterComponentItemController.calculate(ii)}" 
-                                                     update="@this"></p:ajax>
-                                        </p:selectBooleanCheckbox>
-                                    </h:panelGroup>
-                                    <h:panelGroup rendered="#{ii.renderType eq 'Short_text_input' and  !ii.calculateOnFocus}" >
-                                        <h:inputText id="txtSt" value="#{ii.shortTextValue}" 
-                                                     required="#{ii.required}" 
-                                                     requiredMessage="#{ii.requiredErrorMessage}" >
-                                            <p:ajax  event="blur" process="@this" listener="#{clientEncounterComponentItemController.save(ii)}" ></p:ajax>
-                                        </h:inputText>
-                                    </h:panelGroup>
-                                    <h:panelGroup rendered="#{ii.renderType eq 'Short_text_input' and  ii.calculateOnFocus}" >
-                                        <h:inputText id="txtStC" value="#{ii.shortTextValue}" 
-                                                     required="#{ii.required}" 
-                                                     requiredMessage="#{ii.requiredErrorMessage}" >
-                                            <p:ajax  event="focus" process="@this" 
-                                                     listener="#{clientEncounterComponentItemController.calculate(ii)}" 
-                                                     update="@this"></p:ajax>
-                                            <p:ajax  event="blur" process="@this" listener="#{clientEncounterComponentItemController.save(ii)}" ></p:ajax>
-                                        </h:inputText>
-                                    </h:panelGroup>
+
                                 </h:panelGroup>
 
 
                             </td>
                             <td>
-                               
-                                    <p:outputLabel value="#{ii.descreption}" ></p:outputLabel>
-                               
+
+                                <p:outputLabel value="#{ii.descreption}" ></p:outputLabel>
+
                             </td>
                             <td>
                                 <h:panelGroup rendered="#{ii.multipleEntiesPerForm}" >
