@@ -68,6 +68,7 @@ public class AreaController implements Serializable {
     private List<Area> gnAreas = null;
     private List<Area> dsAreas = null;
     private List<Area> provinces = null;
+    private List<Area> districts = null;
     private Area selected;
     private UploadedFile file;
 
@@ -1117,6 +1118,9 @@ public class AreaController implements Serializable {
     }
 
     // <editor-fold defaultstate="collapsed" desc="Getters and Setters">
+    
+    
+    
     public List<Area> getProvinces() {
         if (provinces == null) {
             provinces = getAreas(AreaType.Province, null);
@@ -1252,6 +1256,17 @@ public class AreaController implements Serializable {
 
     public void setGnAreas(List<Area> gnAreas) {
         this.gnAreas = gnAreas;
+    }
+
+    public List<Area> getDistricts() {
+        if (districts == null) {
+            districts = getAreas(AreaType.District, null);
+        }
+        return districts;
+    }
+
+    public void setDistricts(List<Area> districts) {
+        this.districts = districts;
     }
 
     // </editor-fold>

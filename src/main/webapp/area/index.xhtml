@@ -20,8 +20,10 @@
                 <p:panel header="Manage Areas" style="height: 100%;" >
                     <h:form >
                         <h:panelGrid columns="1"  style="margin: auto; text-align: center;" >
+                            <p:commandButton styleClass="defaultButton"  ajax="false" value="District Details" action="/area/districts"  ></p:commandButton>
                             <p:commandButton styleClass="defaultButton"  ajax="false" value="Upload GN Areas" action="/area/import_gn_areas"  ></p:commandButton>
                             <p:commandButton styleClass="defaultButton"  ajax="false" value="Manage All Areas" action="/area/List"  ></p:commandButton>
+                            <p:commandButton styleClass="defaultButton"  ajax="false" value="Import District Data" action="/area/import_district_population"  ></p:commandButton>                        
                         </h:panelGrid>
                     </h:form>  
                 </p:panel>

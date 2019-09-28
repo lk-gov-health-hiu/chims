@@ -1,0 +1,68 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <body>
+
+        <ui:composition template="./../template.xhtml">
+
+            <ui:define name="content">
+
+
+                <p:panel header="Imoport Items" style="width: 100%; text-align: center;">
+
+                    <h:form enctype="multipart/form-data" >
+                        <p:panelGrid columns="3" >
+
+                            <f:facet name="header" >
+                                <p:outputLabel value="Upload Distirct Population by xls file. Column Numbers are Zero Based." ></p:outputLabel>
+                            </f:facet>
+
+                            <p:outputLabel value="Year" ></p:outputLabel>
+                            <p:spacer height="1" width="10"></p:spacer>
+                            <p:inputText value="#{relationshipController.year}" ></p:inputText>
+
+                            <p:outputLabel value="Start Row" ></p:outputLabel>
+                            <p:spacer height="1" width="10"></p:spacer>
+                            <p:inputText value="#{relationshipController.startRow}" ></p:inputText>
+
+                            <p:outputLabel value="District Column" ></p:outputLabel>
+                            <p:spacer height="1" width="10"></p:spacer>
+                            <p:inputText value="#{relationshipController.districtColumnNumber}" ></p:inputText>
+
+                            <p:outputLabel value="Midyear Population" ></p:outputLabel>
+                            <p:spacer height="1" width="10"></p:spacer>
+                            <p:inputText value="#{relationshipController.estimatedMidyearPopulationColumnNumber}" ></p:inputText>
+
+                            <p:outputLabel value="Target Population" ></p:outputLabel>
+                            <p:spacer height="1" width="10"></p:spacer>
+                            <p:inputText value="#{relationshipController.targetPopulationColumnNumber}" ></p:inputText>
+
+
+
+                            <p:fileUpload value="#{relationshipController.file}" mode="simple"/>
+                            <p:spacer></p:spacer>
+                            <p:commandButton ajax="false" value="Import Items" 
+                                             action="#{relationshipController.importDistrictPopulationDataFromExcel()}"  ></p:commandButton>
+                       
+                            
+                        </p:panelGrid>
+                        <p:outputLabel value="#{relationshipController.errorCode}" ></p:outputLabel>
+                    </h:form>
+
+
+
+
+                </p:panel>
+
+
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

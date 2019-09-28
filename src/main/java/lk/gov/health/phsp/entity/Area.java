@@ -88,6 +88,11 @@ public class Area implements Serializable {
     private Long malePopulation;
     private Long femalePopulation;
     
+    private Long totalTargetPopulation;
+    private Long maleTargetPopulation;
+    private Long femaleTargePopulation;
+    
+    
     @ManyToOne
     private Institution pmci;
 
@@ -145,6 +150,7 @@ public class Area implements Serializable {
     public String toString() {
         return name;
     }
+    
     
     
 
@@ -405,6 +411,30 @@ public class Area implements Serializable {
 
     public void setPmci(Institution pmci) {
         this.pmci = pmci;
+    }
+
+    public Long getTotalTargetPopulation() {
+        return totalTargetPopulation;
+    }
+
+    public void setTotalTargetPopulation(Long totalTargetPopulation) {
+        this.totalTargetPopulation = totalTargetPopulation;
+    }
+
+    public Long getMaleTargetPopulation() {
+        return maleTargetPopulation;
+    }
+
+    public void setMaleTargetPopulation(Long maleTargetPopulation) {
+        this.maleTargetPopulation = maleTargetPopulation;
+    }
+
+    public Long getFemaleTargePopulation() {
+        return femaleTargePopulation;
+    }
+
+    public void setFemaleTargePopulation(Long femaleTargePopulation) {
+        this.femaleTargePopulation = femaleTargePopulation;
     }
 
 }

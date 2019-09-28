@@ -184,7 +184,7 @@ public class CommonController implements Serializable {
         return c.getTime();
     }
 
-    public Double getDoubleValue(String result) {
+    public static Double getDoubleValue(String result) {
         Double d = null;
         try {
             d = Double.parseDouble(result);
@@ -193,8 +193,18 @@ public class CommonController implements Serializable {
         }
         return d;
     }
+    
+    public static Long getLongValue(String result) {
+        Long l = null;
+        try {
+            l = Long.parseLong(result);
+        } catch (Exception e) {
+            l = null;
+        }
+        return l;
+    }
 
-    Integer getIntegerValue(String result) {
+    public static Integer getIntegerValue(String result) {
         Integer d = null;
         try {
             d = Integer.parseInt(result);

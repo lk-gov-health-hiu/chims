@@ -1,5 +1,9 @@
 package lk.gov.health.phsp.bean;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import lk.gov.health.phsp.entity.Relationship;
 import lk.gov.health.phsp.bean.util.JsfUtil;
 import lk.gov.health.phsp.bean.util.JsfUtil.PersistAction;
@@ -24,8 +28,17 @@ import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
 import javax.inject.Inject;
+import jxl.Cell;
+import jxl.Sheet;
+import jxl.Workbook;
+import jxl.read.biff.BiffException;
 import lk.gov.health.phsp.entity.Area;
+import lk.gov.health.phsp.entity.Item;
+import lk.gov.health.phsp.enums.AreaType;
+import lk.gov.health.phsp.enums.ItemType;
 import lk.gov.health.phsp.enums.RelationshipType;
+import lk.gov.health.phsp.facade.AreaFacade;
+import org.primefaces.model.UploadedFile;
 
 @Named("relationshipController")
 @SessionScoped
@@ -33,9 +46,13 @@ public class RelationshipController implements Serializable {
 
     @EJB
     private lk.gov.health.phsp.facade.RelationshipFacade ejbFacade;
+    @EJB
+    private AreaFacade areaFacade;
 
     @Inject
     private WebUserController webUserController;
+    @Inject
+    private AreaController areaController;
 
     private List<Relationship> items = null;
     private Relationship selected;
@@ -46,6 +63,132 @@ public class RelationshipController implements Serializable {
 
     private Relationship adding;
     private Relationship removing;
+
+    private int districtColumnNumber;
+    private int estimatedMidyearPopulationColumnNumber;
+    private int targetPopulationColumnNumber;
+    private int parentCodeColumnNumber;
+    private int startRow = 1;
+
+    private UploadedFile file;
+    private String errorCode;
+
+    public String importDistrictPopulationDataFromExcel() {
+        try {
+            String strDistrict;
+            String strEstimatedMidYearPopulation;
+            String strEstimatedTargetPopulation;
+            Long midyearPopulation;
+            Long targetPopulation;
+
+            Area district = null;
+
+            File inputWorkbook;
+            Workbook w;
+            Cell cell;
+            InputStream in;
+
+            lk.gov.health.phsp.facade.util.JsfUtil.addSuccessMessage(file.getFileName());
+
+            try {
+                lk.gov.health.phsp.facade.util.JsfUtil.addSuccessMessage(file.getFileName());
+                in = file.getInputstream();
+                File f;
+                f = new File(Calendar.getInstance().getTimeInMillis() + file.getFileName());
+                FileOutputStream out = new FileOutputStream(f);
+                int read = 0;
+                byte[] bytes = new byte[1024];
+                while ((read = in.read(bytes)) != -1) {
+                    out.write(bytes, 0, read);
+                }
+                in.close();
+                out.flush();
+                out.close();
+
+                inputWorkbook = new File(f.getAbsolutePath());
+
+                lk.gov.health.phsp.facade.util.JsfUtil.addSuccessMessage("Excel File Opened");
+                w = Workbook.getWorkbook(inputWorkbook);
+                Sheet sheet = w.getSheet(0);
+
+                errorCode = "";
+
+                for (int i = startRow; i < sheet.getRows(); i++) {
+
+                    Map m = new HashMap();
+
+                    cell = sheet.getCell(districtColumnNumber, i);
+                    strDistrict = cell.getContents();
+
+                    district = areaController.getAreaByName(strDistrict, AreaType.District, false, null);
+
+                    if (district == null) {
+                        errorCode += strDistrict + " NOT Found";
+                        continue;
+                    }
+
+                    cell = sheet.getCell(estimatedMidyearPopulationColumnNumber, i);
+                    strEstimatedMidYearPopulation = cell.getContents();
+                    midyearPopulation = CommonController.getLongValue(strEstimatedMidYearPopulation);
+
+                    cell = sheet.getCell(targetPopulationColumnNumber, i);
+                    strEstimatedTargetPopulation = cell.getContents();
+                    targetPopulation = CommonController.getLongValue(strEstimatedTargetPopulation);
+
+                   
+
+                    Relationship myp = findRelationship(district, RelationshipType.Estimated_Midyear_Population, year);
+                    if (myp == null) {
+                        myp = new Relationship();
+                        myp.setArea(district);
+                        myp.setRelationshipType(RelationshipType.Estimated_Midyear_Population);
+                        myp.setYearInt(year);
+                        myp.setCreatedAt(new Date());
+                        myp.setCreatedBy(webUserController.getLoggedUser());
+                        getFacade().create(myp);
+                    } else {
+                        myp.setLastEditBy(webUserController.getLoggedUser());
+                        myp.setLastEditeAt(new Date());
+                    }
+                    myp.setLongValue1(midyearPopulation);
+                    getFacade().edit(myp);
+
+                    Relationship tp = findRelationship(district, RelationshipType.Over_35_Population, year);
+                    if (tp == null) {
+                        tp = new Relationship();
+                        tp.setArea(district);
+                        tp.setRelationshipType(RelationshipType.Over_35_Population);
+                        tp.setYearInt(year);
+                        tp.setCreatedAt(new Date());
+                        tp.setCreatedBy(webUserController.getLoggedUser());
+                        getFacade().create(tp);
+                    } else {
+                        tp.setLastEditBy(webUserController.getLoggedUser());
+                        tp.setLastEditeAt(new Date());
+                    }
+                    tp.setLongValue1(targetPopulation);
+                    getFacade().edit(tp);
+
+                    district.setTotalPopulation(midyearPopulation);
+                    district.setTotalTargetPopulation(targetPopulation);
+                    getAreaFacade().edit(district);
+                    
+                    
+                }
+
+                lk.gov.health.phsp.facade.util.JsfUtil.addSuccessMessage("Succesful. All the data in Excel File Impoted to the database");
+                return "";
+            } catch (IOException ex) {
+                lk.gov.health.phsp.facade.util.JsfUtil.addErrorMessage(ex.getMessage());
+                return "";
+            } catch (BiffException e) {
+                lk.gov.health.phsp.facade.util.JsfUtil.addErrorMessage(e.getMessage());
+                return "";
+            }
+        } catch (Exception e) {
+            return "";
+        }
+    }
 
     public void addEmpowerementData() {
         if (adding == null) {
@@ -68,7 +211,7 @@ public class RelationshipController implements Serializable {
             JsfUtil.addErrorMessage("Already data added.");
             return;
         }
-        if(adding.getRelationshipType()==null){
+        if (adding.getRelationshipType() == null) {
             JsfUtil.addErrorMessage("Type ?");
             return;
         }
@@ -116,12 +259,12 @@ public class RelationshipController implements Serializable {
         if (area == null) {
             return;
         }
-       String j = "select r from Relationship r "
+        String j = "select r from Relationship r "
                 + " where (r.area=:a or r.area.parentArea=:a or r.area.parentArea.parentArea=:a or r.area.parentArea.parentArea.parentArea=:a "
                 + " or r.area.phm=:a or r.area.phi=:a or r.area.dsd=:a  or r.area.moh=:a  or  r.area.district=:a  or  r.area.province=:a  or r.area.rdhsArea=:a  or r.area.pdhsArea=:a)  "
                 + " and r.retired=false "
                 + " and r.yearInt=:y";
-        
+
         Map m = new HashMap();
         m.put("a", area);
         m.put("y", year);
@@ -289,6 +432,72 @@ public class RelationshipController implements Serializable {
     public void setMonth(int month) {
         this.month = month;
     }
+
+    public int getDistrictColumnNumber() {
+        return districtColumnNumber;
+    }
+
+    public void setDistrictColumnNumber(int districtColumnNumber) {
+        this.districtColumnNumber = districtColumnNumber;
+    }
+
+    public int getEstimatedMidyearPopulationColumnNumber() {
+        return estimatedMidyearPopulationColumnNumber;
+    }
+
+    public void setEstimatedMidyearPopulationColumnNumber(int estimatedMidyearPopulationColumnNumber) {
+        this.estimatedMidyearPopulationColumnNumber = estimatedMidyearPopulationColumnNumber;
+    }
+
+    public int getTargetPopulationColumnNumber() {
+        return targetPopulationColumnNumber;
+    }
+
+    public void setTargetPopulationColumnNumber(int targetPopulationColumnNumber) {
+        this.targetPopulationColumnNumber = targetPopulationColumnNumber;
+    }
+
+    public int getParentCodeColumnNumber() {
+        return parentCodeColumnNumber;
+    }
+
+    public void setParentCodeColumnNumber(int parentCodeColumnNumber) {
+        this.parentCodeColumnNumber = parentCodeColumnNumber;
+    }
+
+    public int getStartRow() {
+        return startRow;
+    }
+
+    public void setStartRow(int startRow) {
+        this.startRow = startRow;
+    }
+
+    public UploadedFile getFile() {
+        return file;
+    }
+
+    public void setFile(UploadedFile file) {
+        this.file = file;
+    }
+
+    public AreaController getAreaController() {
+        return areaController;
+    }
+
+    public AreaFacade getAreaFacade() {
+        return areaFacade;
+    }
+
+    public String getErrorCode() {
+        return errorCode;
+    }
+
+    public void setErrorCode(String errorCode) {
+        this.errorCode = errorCode;
+    }
+    
+    
 
     @FacesConverter(forClass = Relationship.class)
     public static class RelationshipControllerConverter implements Converter {
