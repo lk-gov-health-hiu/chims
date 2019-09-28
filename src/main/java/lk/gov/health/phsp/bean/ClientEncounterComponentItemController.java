@@ -137,6 +137,7 @@ public class ClientEncounterComponentItemController implements Serializable {
 
         // System.out.println("replacingBlocks = " + replacingBlocks);
         for (Replaceable r : replacingBlocks) {
+            System.out.println("r.getPef() = " + r.getPef());
             if (r.getPef().toLowerCase().equals("f")) {
                 if (r.getSm().equalsIgnoreCase("s")) {
                     r.setClientEncounterComponentItem(ClientEncounterComponentItemController.this.findFormsetValue(i, r.getVariableCode()));
@@ -172,7 +173,7 @@ public class ClientEncounterComponentItemController implements Serializable {
                         break;
                     case Item_Reference:
                         if (c.getItem() != null) {
-                            r.setSelectedValue(c.getItem().getCode());
+                            r.setSelectedValue(c.getItemValue().getCode());
                         }
                         break;
                 }
@@ -259,7 +260,7 @@ public class ClientEncounterComponentItemController implements Serializable {
     }
 
     public ClientEncounterComponentItem findFormsetValue(ClientEncounterComponentItem i, String variableCode, String valueCode) {
-        // System.out.println("findFormsetValue = ");
+         System.out.println("findFormsetValue = ");
         if (i == null) {
             return null;
         }
