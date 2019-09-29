@@ -4,7 +4,8 @@
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:p="http://primefaces.org/ui"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:f="http://xmlns.jcp.org/jsf/core">
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ez="http://xmlns.jcp.org/jsf/composite/ezcomp">
 
     <body>
 
@@ -14,7 +15,7 @@
 
                 <p:panel header="Execute Query" >
                     <h:form >
-                        <p:panelGrid columns="2" >
+                        <p:panelGrid columns="2" styleClass="alignTop" >
                             <p:panelGrid columns="1" >
                                 <p:panelGrid columns="2" >
                                     <p:outputLabel value="Query" ></p:outputLabel>
@@ -28,13 +29,15 @@
                                         <p:column headerText="Name" >
                                             <p:outputLabel value="#{q.name}" ></p:outputLabel>
                                         </p:column>
-                                        <f:ajax event="itemSelect" execute="@this" render="filters" ></f:ajax>
+                                        <p:ajax event="itemSelect"  process="@this" update=":#{p:component('filters')}" ></p:ajax>
                                     </p:autoComplete>
-
-
 
                                     <p:commandButton value="Execute" ajax="false" action="#{queryComponentController.processQuery()}" >
                                     </p:commandButton>
+
+                                    <p:outputLabel value="#{queryComponentController.selectedForQuery.descreption}" >
+                                    </p:outputLabel>
+
                                 </p:panelGrid>
 
                                 <h:panelGroup id="filters" >
@@ -77,7 +80,7 @@
 
                                         <p:outputLabel value="Year" for="ins" rendered="#{queryComponentController.filterYear}" >
                                         </p:outputLabel>
-                                        <p:inputText value="#{queryComponentController.year}" required="true" ></p:inputText>
+                                        <p:inputText value="#{queryComponentController.year}" required="true"  rendered="#{queryComponentController.filterYear}" ></p:inputText>
 
                                     </p:panelGrid>
 
@@ -85,81 +88,36 @@
 
                             </p:panelGrid>
 
-                            <p:panel header="Results" >
-                                <p:outputLabel value="#{queryComponentController.resultString}" rendered="#{queryComponentController.resultString ne null}" ></p:outputLabel>
-                                <p:panel header="Client List" rendered="#{queryComponentController.resultClientList ne null}" >
+                            <h:panelGroup >
 
-                                    <p:commandButton ajax="false" value="Excel"  >
-                                        <p:dataExporter target="tblClients" type="xls" fileName="clients.xls" >
-                                        </p:dataExporter>
-                                    </p:commandButton>
-                                    
-                                    <p:dataTable value="#{queryComponentController.resultClientList}" var="item"
-                                                 rows="10"
-                                                 paginator="true"
-                                                 paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-                                                 rowsPerPageTemplate="5,10,15"
-                                                 rowKey="#{item.id}"
-                                                 rowIndexVar="n"
-                                                 >
-                                        <p:column width="50">
-                                            <f:facet name="header">
-                                                <h:outputText value="No"/>
-                                            </f:facet>
-                                            <h:outputText value="#{n+1}"/>
-                                        </p:column>
-                                         <p:column>
-                                            <f:facet name="header">
-                                                <h:outputText value="PHN"/>
-                                            </f:facet>
-                                            <h:outputText value="#{item.phn}"/>
-                                        </p:column>
-                                        <p:column>
-                                            <f:facet name="header">
-                                                <h:outputText value="Name"/>
-                                            </f:facet>
-                                            <h:outputText value="#{item.person.nameWithTitle}"/>
-                                        </p:column>
-                                        <p:column>
-                                            <f:facet name="header">
-                                                <h:outputText value="Sex"/>
-                                            </f:facet>
-                                            <h:outputText value="#{item.person.sex.name}"/>
-                                        </p:column>
-                                        <p:column>
-                                            <f:facet name="header">
-                                                <h:outputText value="Age"/>
-                                            </f:facet>
-                                            <h:outputText value="#{item.person.age}"/>
-                                        </p:column>
-                                        <p:column>
-                                            <f:facet name="header">
-                                                <h:outputText value="GN"/>
-                                            </f:facet>
-                                            <h:outputText value="#{item.person.gnArea.name}">
-                                            </h:outputText>
-                                        </p:column>
-                                        <p:column>
-                                            <f:facet name="header">
-                                                <h:outputText value="Phone"/>
-                                            </f:facet>
-                                            <h:outputText value="#{item.person.phone1} / #{item.person.phone1}"/>
-                                        </p:column>
-                                        <p:column>
-                                            <f:facet name="header">
-                                                <h:outputText value="Actions"/>
-                                            </f:facet>
-                                            <p:commandButton value="View" ajax="false" action="#{clientController.toClientProfile()}" >
-                                                <f:setPropertyActionListener value="#{item}" target="#{clientController.selected}" ></f:setPropertyActionListener>
-                                            </p:commandButton>
-                                        </p:column>
-                                    </p:dataTable>
-
-
+                                <p:panel header="Results" rendered="#{queryComponentController.resultString ne null}" >
+                                    <p:outputLabel value="#{queryComponentController.resultString}" ></p:outputLabel>
                                 </p:panel>
 
+                                <h:panelGroup rendered="#{queryComponentController.resultClientList ne null}" >
+                                    <ez:clientsTable/>
+                                </h:panelGroup>
 
-                            </p:panel>
+                                <h:panelGroup rendered="#{queryComponentController.resultEncounterList ne null}" >
+                                    <p:dataTable value="#{queryComponentController.resultEncounterList}" 
+                                                 var="cv"
+                                                 >
+                                        <f:facet name="header" >
+                                            <p:outputLabel value="Recent Completed Visits" ></p:outputLabel>
+                                        </f:facet>
+                                        <p:column headerText="Date" >
+                                            <p:outputLabel value="#{cv.encounterDate}" >
+                                                <f:convertDateTime pattern="dd MMMM yyyy" ></f:convertDateTime>
+                                            </p:outputLabel>
+                                        </p:column>
+                                        <p:column headerText="Institution" >
+                                            <p:outputLabel value="#{cv.institution.name}" ></p:outputLabel>
+                                        </p:column>
+                                    </p:dataTable>
+                                </h:panelGroup>
+
+                            </h:panelGroup>
+
 
                         </p:panelGrid>
                     </h:form>

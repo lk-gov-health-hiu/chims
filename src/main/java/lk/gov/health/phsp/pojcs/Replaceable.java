@@ -32,6 +32,11 @@ public class Replaceable {
     private String defaultValue;
     private String strEvaluation;
     private String strQueryDataType;
+    
+    
+    private String qryCode;
+    
+    
     private ClientEncounterComponentItem clientEncounterComponentItem;
     List<String> options;
     String selectedOption;
@@ -274,4 +279,14 @@ public class Replaceable {
         this.queryDataType = queryDataType;
     }
 
+    public String getQryCode() {
+        return qryCode;
+    }
+
+    public void setQryCode(String qryCode) {
+        this.qryCode = qryCode;
+    }
+
+    
+    
 }

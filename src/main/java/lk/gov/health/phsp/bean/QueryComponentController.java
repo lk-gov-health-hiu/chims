@@ -25,6 +25,9 @@ import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
 import javax.inject.Inject;
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
+import javax.script.ScriptException;
 import lk.gov.health.phsp.entity.Area;
 import lk.gov.health.phsp.entity.Client;
 import lk.gov.health.phsp.entity.ClientEncounterComponentForm;
@@ -179,9 +182,21 @@ public class QueryComponentController implements Serializable {
         return getFacade().findByJpql(j, m);
     }
 
+    public QueryComponent findLastQuery(String qry) {
+        String j = "select q from QueryComponent q "
+                + " where q.retired=false "
+                + " and lower(q.name) like :q or lower(q.code) like :q "
+                + " order by q.name";
+        Map m = new HashMap();
+        m.put("q", "%" + qry.toLowerCase() + "%");
+        return getFacade().findFirstByJpql(j, m);
+    }
+
     public void processQuery() {
         System.out.println("processQuery");
+        System.out.println("selectedForQuery = " + selectedForQuery);
         if (selectedForQuery == null) {
+            JsfUtil.addErrorMessage("Nothing selected");
             return;
         }
 
@@ -190,7 +205,7 @@ public class QueryComponentController implements Serializable {
         resultFormList = null;
         resultEncounterList = null;
 
-        if (selectedForQuery.getIndicatorQuery() != null && selectedForQuery.getIndicatorQuery().trim().equals("")) {
+        if (selectedForQuery.getIndicatorQuery() != null && !selectedForQuery.getIndicatorQuery().trim().equals("")) {
             resultString = handleIndicatorQuery(selectedForQuery);
         } else if (selectedForQuery.getSelectQuery().trim().equalsIgnoreCase("#{client_count}")) {
             Jpq j = createAClientCountQuery(selectedForQuery);
@@ -204,15 +219,64 @@ public class QueryComponentController implements Serializable {
         } else if (selectedForQuery.getFromQuery().trim().equalsIgnoreCase("#{pop}")) {
             Jpq j = createAPopulationCountQuery(selectedForQuery);
             resultString = j.getQc().getName() + " = " + j.getLongResult();
+        } else {
+            JsfUtil.addSuccessMessage("Feature NOT yet Supported");
         }
-        selectedForQuery = null;
 
     }
 
     public String handleIndicatorQuery(QueryComponent qc) {
-        String r = "Nothing Calculated.";
+        String rs = "Nothing Calculated.";
+        List<Replaceable> replaceables = findReplaceblesInIndicatorQuery(qc.getIndicatorQuery());
+        for (Replaceable r : replaceables) {
+            QueryComponent temqc = findLastQuery(r.getQryCode());
+            System.out.println("r.getQryCode() = " + r.getQryCode());
+            System.out.println("temqc.getName() = " + temqc.getName());
+            if (temqc == null) {
+                JsfUtil.addErrorMessage("Wrong Query. Check the names of queries");
+                return rs;
+            }
 
-        return r;
+            Jpq j;
+            if (temqc.getSelectQuery().trim().equalsIgnoreCase("#{client_count}")) {
+                j = createAClientCountQuery(temqc);
+            } else if (temqc.getFromQuery().trim().equalsIgnoreCase("#{pop}")) {
+                j = createAPopulationCountQuery(temqc);
+            }else{
+                JsfUtil.addErrorMessage("Wrong Query. Check the names of queries");
+                return rs;
+            }
+            System.out.println("j.getLongResult() = " + j.getLongResult());
+            r.setSelectedValue(j.getLongResult() + "");
+        }
+        String javaStringToEvaluate = addTemplateToReport(qc.getIndicatorQuery().trim(), replaceables);
+        System.out.println("javaString To Evaluate = \n" + javaStringToEvaluate);
+        rs = "Formula \t" + javaStringToEvaluate + "\n";
+        String res = evaluateScript(javaStringToEvaluate);
+        rs += "Result : " + res;
+        return rs;
+    }
+
+    public String evaluateScript(String script) {
+        ScriptEngineManager mgr = new ScriptEngineManager();
+        ScriptEngine engine = mgr.getEngineByName("JavaScript");
+        try {
+            return engine.eval(script) + "";
+        } catch (ScriptException ex) {
+            System.out.println("ex = " + ex.getMessage());
+            return null;
+        }
+    }
+
+    public String addTemplateToReport(String calculationScript, List<Replaceable> selectables) {
+        for (Replaceable s : selectables) {
+            String patternStart = "#{";
+            String patternEnd = "}";
+            String toBeReplaced;
+            toBeReplaced = patternStart + s.getFullText() + patternEnd;
+            calculationScript = calculationScript.replace(toBeReplaced, s.getSelectedValue());
+        }
+        return calculationScript;
     }
 
     public void duplicate() {
@@ -492,6 +556,7 @@ public class QueryComponentController implements Serializable {
         System.out.println("j.getJpql() = " + j.getJpql());
         System.out.println("j.getM() = " + j.getM());
         j.setEncounterList(getEncounterFacade().findByJpql(j.getJpql(), j.getM()));
+        System.out.println("j.getEncounterList() = " + j.getEncounterList());
         return j;
     }
 
@@ -590,6 +655,33 @@ public class QueryComponentController implements Serializable {
                 } else {
                     return ss;
                 }
+                ss.add(s);
+            }
+        }
+
+        return ss;
+
+    }
+
+    public List<Replaceable> findReplaceblesInIndicatorQuery(String text) {
+        // System.out.println("findReplaceblesInWhereQuery");
+        // System.out.println("text = " + text);
+
+        List<Replaceable> ss = new ArrayList<>();
+
+        String patternStart = "#{";
+        String patternEnd = "}";
+        String regexString = Pattern.quote(patternStart) + "(.*?)" + Pattern.quote(patternEnd);
+
+        Pattern p = Pattern.compile(regexString);
+        Matcher m = p.matcher(text);
+
+        while (m.find()) {
+            String block = m.group(1);
+            if (!block.trim().equals("")) {
+                Replaceable s = new Replaceable();
+                s.setFullText(block);
+                s.setQryCode(block);
                 ss.add(s);
             }
         }
