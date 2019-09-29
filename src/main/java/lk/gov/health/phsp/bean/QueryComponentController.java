@@ -52,7 +52,7 @@ public class QueryComponentController implements Serializable {
     private ClientFacade clientFacade;
     @EJB
     private EncounterFacade encounterFacade;
-    
+
     @Inject
     private WebUserController webUserController;
     @Inject
@@ -60,7 +60,7 @@ public class QueryComponentController implements Serializable {
 
     private List<QueryComponent> items = null;
     private QueryComponent selected;
-    
+
     private QueryComponent selectedForQuery;
 
     private String resultString;
@@ -186,13 +186,13 @@ public class QueryComponentController implements Serializable {
         }
 
         resultString = null;
-        resultClientList=null;
-        resultFormList=null;
-        resultEncounterList=null;
+        resultClientList = null;
+        resultFormList = null;
+        resultEncounterList = null;
 
-        if(selectedForQuery.getIndicatorQuery()!=null && selectedForQuery.getIndicatorQuery().trim().equals("")){
+        if (selectedForQuery.getIndicatorQuery() != null && selectedForQuery.getIndicatorQuery().trim().equals("")) {
             resultString = handleIndicatorQuery(selectedForQuery);
-        }else if (selectedForQuery.getSelectQuery().trim().equalsIgnoreCase("#{client_count}")) {
+        } else if (selectedForQuery.getSelectQuery().trim().equalsIgnoreCase("#{client_count}")) {
             Jpq j = createAClientCountQuery(selectedForQuery);
             resultString = j.getQc().getName() + " = " + j.getLongResult();
         } else if (selectedForQuery.getSelectQuery().trim().equalsIgnoreCase("#{client_list}")) {
@@ -205,36 +205,33 @@ public class QueryComponentController implements Serializable {
             Jpq j = createAPopulationCountQuery(selectedForQuery);
             resultString = j.getQc().getName() + " = " + j.getLongResult();
         }
-        selectedForQuery =null;
-        
+        selectedForQuery = null;
+
     }
-    
-    
-    public String handleIndicatorQuery(QueryComponent qc){
+
+    public String handleIndicatorQuery(QueryComponent qc) {
         String r = "Nothing Calculated.";
-        
-        
+
         return r;
     }
-    
-    
-    public void duplicate(){
-        if(selected==null){
+
+    public void duplicate() {
+        if (selected == null) {
             JsfUtil.addErrorMessage("Noting selected.");
             return;
         }
-        QueryComponent q= SerializationUtils.clone(selected);
+        QueryComponent q = SerializationUtils.clone(selected);
         q.setId(null);
         q.setCreatedAt(new Date());
         q.setCreatedBy(webUserController.getLoggedUser());
         getFacade().create(q);
         items = null;
-        selected =q;
+        selected = q;
         JsfUtil.addSuccessMessage("Duplicated");
     }
 
-    public void retire(){
-        if(selected==null){
+    public void retire() {
+        if (selected == null) {
             JsfUtil.addErrorMessage("Nothing Selected");
             return;
         }
@@ -242,11 +239,11 @@ public class QueryComponentController implements Serializable {
         selected.setRetiredAt(new Date());
         selected.setRetiredBy(webUserController.getLoggedUser());
         getFacade().edit(selected);
-        selected= null;
-        items=null;
+        selected = null;
+        items = null;
         JsfUtil.addSuccessMessage("Removed");
     }
-    
+
     public Jpq createAPopulationCountQuery(QueryComponent qc) {
         System.out.println("createAPopulationCountQuery");
         Jpq jpql = new Jpq();
@@ -254,40 +251,40 @@ public class QueryComponentController implements Serializable {
         jpql.setJselect("select r.longValue1  ");
         jpql.setJfrom(" from Relationship r ");
         jpql.setJwhere(" where r.area=:a and r.relationshipType=:t and r.retired=:f ");
-        if (year!=null && year != 0) {
+        if (year != null && year != 0) {
             jpql.setJwhere(jpql.getJwhere() + " and r.yearInt=:y");
             jpql.getM().put("y", year);
         }
         String w = qc.getSelectQuery().trim().toLowerCase();
         RelationshipType t = RelationshipType.Estimated_Midyear_Population;
-        if(w.equals("myp")){
+        if (w.equals("myp")) {
             t = RelationshipType.Estimated_Midyear_Population;
-        }else if(w.equals("mypf")){
+        } else if (w.equals("mypf")) {
             t = RelationshipType.Estimated_Midyear_Female_Population;
-        }else if(w.equals("mypm")){
+        } else if (w.equals("mypm")) {
             t = RelationshipType.Estimated_Midyear_Male_Population;
-        }else if(w.equals("tp")){
+        } else if (w.equals("tp")) {
             t = RelationshipType.Over_35_Population;
-        }else if(w.equals("tpm")){
+        } else if (w.equals("tpm")) {
             t = RelationshipType.Over_35_Male_Population;
-        }else if(w.equals("tpf")){
+        } else if (w.equals("tpf")) {
             t = RelationshipType.Over_35_Female_Population;
         }
-        
+
         jpql.setJorderBy(" order by r.id desc");
         jpql.getM().put("f", false);
         //TODO: Remove District and select the required area in the below line
         jpql.getM().put("a", district);
         jpql.getM().put("t", t);
-      
+
         jpql.setJgroupby("");
         System.out.println("j.getJpql() = " + jpql.getJpql());
         System.out.println("j.getM() = " + jpql.getM());
-        jpql.setLongResult(getItemFacade().findLongByJpql(jpql.getJpql(), jpql.getM(),1));
-        
+        jpql.setLongResult(getItemFacade().findLongByJpql(jpql.getJpql(), jpql.getM(), 1));
+
         return jpql;
     }
-    
+
     public Jpq createAClientCountQuery(QueryComponent qc) {
         System.out.println("createAClientCountQuery");
         Jpq j = new Jpq();
@@ -427,9 +424,8 @@ public class QueryComponentController implements Serializable {
         j.setClientList(getClientFacade().findByJpql(j.getJpql(), j.getM()));
         return j;
     }
-    
-    
-     public Jpq createAnEncounterListQuery(QueryComponent qc) {
+
+    public Jpq createAnEncounterListQuery(QueryComponent qc) {
         System.out.println("createAClientListQuery");
         Jpq j = new Jpq();
         j.setQc(qc);
@@ -607,7 +603,6 @@ public class QueryComponentController implements Serializable {
     }
 
     public void setSelected(QueryComponent selected) {
-        querySelectAction();
         this.selected = selected;
     }
 
@@ -926,6 +921,7 @@ public class QueryComponentController implements Serializable {
     }
 
     public void setSelectedForQuery(QueryComponent selectedForQuery) {
+        querySelectAction();
         this.selectedForQuery = selectedForQuery;
     }
 
@@ -937,10 +933,6 @@ public class QueryComponentController implements Serializable {
         this.encounterFacade = encounterFacade;
     }
 
-
-    
-    
-    
     @FacesConverter(forClass = QueryComponent.class)
     public static class QueryComponentControllerConverter implements Converter {
 

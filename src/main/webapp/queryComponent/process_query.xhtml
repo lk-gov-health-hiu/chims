@@ -18,7 +18,7 @@
                             <p:panelGrid columns="1" >
                                 <p:panelGrid columns="2" >
                                     <p:outputLabel value="Query" ></p:outputLabel>
-                                    <p:autoComplete value="#{queryComponentController.selected}" 
+                                    <p:autoComplete value="#{queryComponentController.selectedForQuery}" 
                                                     completeMethod="#{queryComponentController.completeQueries}" 
                                                     var="q" itemLabel="#{q.code}" itemValue="#{q}" forceSelection="true"
                                                     >
@@ -88,12 +88,77 @@
                             <p:panel header="Results" >
                                 <p:outputLabel value="#{queryComponentController.resultString}" rendered="#{queryComponentController.resultString ne null}" ></p:outputLabel>
                                 <p:panel header="Client List" rendered="#{queryComponentController.resultClientList ne null}" >
-                                
+
+                                    <p:commandButton ajax="false" value="Excel"  >
+                                        <p:dataExporter target="tblClients" type="xls" fileName="clients.xls" >
+                                        </p:dataExporter>
+                                    </p:commandButton>
                                     
-                                
+                                    <p:dataTable value="#{queryComponentController.resultClientList}" var="item"
+                                                 rows="10"
+                                                 paginator="true"
+                                                 paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                                 rowsPerPageTemplate="5,10,15"
+                                                 rowKey="#{item.id}"
+                                                 rowIndexVar="n"
+                                                 >
+                                        <p:column width="50">
+                                            <f:facet name="header">
+                                                <h:outputText value="No"/>
+                                            </f:facet>
+                                            <h:outputText value="#{n+1}"/>
+                                        </p:column>
+                                         <p:column>
+                                            <f:facet name="header">
+                                                <h:outputText value="PHN"/>
+                                            </f:facet>
+                                            <h:outputText value="#{item.phn}"/>
+                                        </p:column>
+                                        <p:column>
+                                            <f:facet name="header">
+                                                <h:outputText value="Name"/>
+                                            </f:facet>
+                                            <h:outputText value="#{item.person.nameWithTitle}"/>
+                                        </p:column>
+                                        <p:column>
+                                            <f:facet name="header">
+                                                <h:outputText value="Sex"/>
+                                            </f:facet>
+                                            <h:outputText value="#{item.person.sex.name}"/>
+                                        </p:column>
+                                        <p:column>
+                                            <f:facet name="header">
+                                                <h:outputText value="Age"/>
+                                            </f:facet>
+                                            <h:outputText value="#{item.person.age}"/>
+                                        </p:column>
+                                        <p:column>
+                                            <f:facet name="header">
+                                                <h:outputText value="GN"/>
+                                            </f:facet>
+                                            <h:outputText value="#{item.person.gnArea.name}">
+                                            </h:outputText>
+                                        </p:column>
+                                        <p:column>
+                                            <f:facet name="header">
+                                                <h:outputText value="Phone"/>
+                                            </f:facet>
+                                            <h:outputText value="#{item.person.phone1} / #{item.person.phone1}"/>
+                                        </p:column>
+                                        <p:column>
+                                            <f:facet name="header">
+                                                <h:outputText value="Actions"/>
+                                            </f:facet>
+                                            <p:commandButton value="View" ajax="false" action="#{clientController.toClientProfile()}" >
+                                                <f:setPropertyActionListener value="#{item}" target="#{clientController.selected}" ></f:setPropertyActionListener>
+                                            </p:commandButton>
+                                        </p:column>
+                                    </p:dataTable>
+
+
                                 </p:panel>
-                                
-                                
+
+
                             </p:panel>
 
                         </p:panelGrid>
