@@ -26,10 +26,12 @@ import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
 import lk.gov.health.phsp.entity.Area;
 import lk.gov.health.phsp.entity.Client;
+import lk.gov.health.phsp.entity.ClientEncounterComponentForm;
 import lk.gov.health.phsp.entity.Encounter;
 import lk.gov.health.phsp.entity.Institution;
 import lk.gov.health.phsp.enums.Evaluation;
 import lk.gov.health.phsp.facade.ClientEncounterComponentItemFacade;
+import lk.gov.health.phsp.facade.ClientFacade;
 import lk.gov.health.phsp.pojcs.Jpq;
 import lk.gov.health.phsp.pojcs.Replaceable;
 
@@ -41,21 +43,28 @@ public class QueryComponentController implements Serializable {
     private lk.gov.health.phsp.facade.QueryComponentFacade ejbFacade;
     @EJB
     private ClientEncounterComponentItemFacade itemFacade;
+    @EJB
+    private ClientFacade clientFacade;
+
     private List<QueryComponent> items = null;
     private QueryComponent selected;
-    private String resultValue;
 
-    Area province;
-    Area district;
-    Area gn;
-    Area moh;
-    Institution institution;
-    Date from;
-    Date to;
-    Date date;
-    Integer year;
-    Integer quarter;
-    Integer month;
+    private String resultString;
+    private List<Client> resultClientList;
+    private List<Encounter> resultEncounterList;
+    private List<ClientEncounterComponentForm> resultFormList;
+
+    private Area province;
+    private Area district;
+    private Area gn;
+    private Area moh;
+    private Institution institution;
+    private Date from;
+    private Date to;
+    private Date date;
+    private Integer year;
+    private Integer quarter;
+    private Integer month;
 
     private boolean filterInstitutions;
     private boolean filterDistricts;
@@ -161,9 +170,18 @@ public class QueryComponentController implements Serializable {
         if (selected == null) {
             return;
         }
+
+        resultString = null;
+        resultClientList=null;
+        resultFormList=null;
+        resultEncounterList=null;
+
         if (selected.getSelectQuery().trim().equalsIgnoreCase("#{client_count}")) {
             Jpq j = createAClientCountQuery(selected);
-            resultValue = j.getQc().getName() + " = " + j.getLongResult();
+            resultString = j.getQc().getName() + " = " + j.getLongResult();
+        } else if (selected.getSelectQuery().trim().equalsIgnoreCase("#{client_list}")) {
+            Jpq j = createAClientListQuery(selected);
+            resultString = j.getQc().getName() + " = " + j.getLongResult();
         }
     }
 
@@ -172,6 +190,76 @@ public class QueryComponentController implements Serializable {
         Jpq j = new Jpq();
         j.setQc(qc);
         j.setJselect("select count(distinct i.parentComponent.parentComponent.encounter.client)  ");
+        j.setJfrom(" from ClientEncounterComponentItem i ");
+        j.setJwhere(" where i.retired=:f ");
+        j.getM().put("f", false);
+        List<Replaceable> replaceblesInWhereQuery = findReplaceblesInWhereQuery(qc.getWhereQuery());
+        int count = 0;
+        for (Replaceable r : replaceblesInWhereQuery) {
+            count++;
+            String qs = "";
+            if (r.isForForm()) {
+                switch (r.getQueryDataType()) {
+                    case it:
+                        if (r.getEvaluation() == Evaluation.eq) {
+                            qs += " and (i.item.code=:varc" + count + " and i.itemValue.code=:valc" + count + ")";
+                            j.getM().put("varc" + count, r.getVariableCode());
+                            j.getM().put("valc" + count, r.getValueCode());
+                        }
+                        break;
+                    case in:
+                        String e = "";
+                        switch (r.getEvaluation()) {
+                            case eq:
+                                e = "==";
+                                break;
+                            case ge:
+                                e = ">=";
+                                break;
+                            case gt:
+                                e = ">";
+                                break;
+                            case in:
+                                e = " is null ";
+                                break;
+                            case le:
+                                e = "<=";
+                                break;
+                            case lt:
+                                e = "<";
+                                break;
+                            case ne:
+                                e = "!=";
+                                break;
+                            case nn:
+                                e = " is not null ";
+                                break;
+                        }
+                        qs += " and (i.item.code=:varc" + count
+                                + " and (i.integerNumberValue" + e + ":val" + count + " ))";
+                        j.getM().put("val" + count, CommonController.getIntegerValue(r.getValueCode()));
+                        j.getM().put("varc" + count, r.getVariableCode());
+                        break;
+
+                }
+
+            }
+            j.setJwhere(j.getJwhere() + qs + addFilterString(j.getM()));
+
+        }
+
+        j.setJgroupby("");
+        System.out.println("j.getJpql() = " + j.getJpql());
+        System.out.println("j.getM() = " + j.getM());
+        j.setLongResult(getItemFacade().countByJpql(j.getJpql(), j.getM()));
+        return j;
+    }
+
+    public Jpq createAClientListQuery(QueryComponent qc) {
+        System.out.println("createAClientCountQuery");
+        Jpq j = new Jpq();
+        j.setQc(qc);
+        j.setJselect("select distinct i.parentComponent.parentComponent.encounter.client  ");
         j.setJfrom(" from ClientEncounterComponentItem i ");
         j.setJwhere(" where i.retired=:f ");
         j.getM().put("f", false);
@@ -250,35 +338,39 @@ public class QueryComponentController implements Serializable {
         } else if (from != null) {
             f += " and i.parentComponent.parentComponent.encounter.encounterDate > :from ";
             m.put("from", from);
-        }else if (to != null) {
+        } else if (to != null) {
             f += " and i.parentComponent.parentComponent.encounter.encounterDate < :to ";
             m.put("to", to);
         }
-        if(province!=null){
-            f +=" i.parentComponent.parentComponent.encounter.client.person.gnArea.province =:province ";
+        if (province != null) {
+            f += " and i.parentComponent.parentComponent.encounter.client.person.gnArea.province =:province ";
             m.put("province", province);
         }
-        if(district!=null){
-            f +=" i.parentComponent.parentComponent.encounter.client.person.gnArea.district =:district ";
+        if (district != null) {
+            f += " and i.parentComponent.parentComponent.encounter.client.person.gnArea.district =:district ";
             m.put("district", district);
         }
-        if(moh!=null){
-            f +=" i.parentComponent.parentComponent.encounter.client.person.gnArea.moh =:moh ";
+        if (moh != null) {
+            f += " and i.parentComponent.parentComponent.encounter.client.person.gnArea.moh =:moh ";
             m.put("moh", moh);
         }
-        if(gn!=null){
-            f +=" i.parentComponent.parentComponent.encounter.client.person.gnArea =:moh ";
+        if (gn != null) {
+            f += " and i.parentComponent.parentComponent.encounter.client.person.gnArea =:moh ";
             m.put("gn", gn);
         }
-        if(institution!=null){
-            f +=" i.parentComponent.parentComponent.encounter.institution =:institution ";
+        if (institution != null) {
+            f += " and (i.parentComponent.parentComponent.encounter.institution =:institution "
+                    + " or  i.parentComponent.parentComponent.encounter.institution.parent =:institution "
+                    + " or i.parentComponent.parentComponent.encounter.institution.parent.parent =:institution "
+                    + " or i.parentComponent.parentComponent.encounter.institution.parent.parent.parent =:institution "
+                    + " or i.parentComponent.parentComponent.encounter.institution.parent.parent.parent.parent =:institution ) ";
             m.put("institution", institution);
         }
 
         Encounter e;
         Client c;
-        
-        
+        Institution i;
+
         return f;
     }
 
@@ -435,12 +527,12 @@ public class QueryComponentController implements Serializable {
         return ejbFacade;
     }
 
-    public String getResultValue() {
-        return resultValue;
+    public String getResultString() {
+        return resultString;
     }
 
-    public void setResultValue(String resultValue) {
-        this.resultValue = resultValue;
+    public void setResultString(String resultString) {
+        this.resultString = resultString;
     }
 
     public boolean isFilterInstitutions() {
@@ -531,6 +623,124 @@ public class QueryComponentController implements Serializable {
         this.filterQuarter = filterQuarter;
     }
 
+    public Area getProvince() {
+        return province;
+    }
+
+    public void setProvince(Area province) {
+        this.province = province;
+    }
+
+    public Area getDistrict() {
+        return district;
+    }
+
+    public void setDistrict(Area district) {
+        this.district = district;
+    }
+
+    public Area getGn() {
+        return gn;
+    }
+
+    public void setGn(Area gn) {
+        this.gn = gn;
+    }
+
+    public Area getMoh() {
+        return moh;
+    }
+
+    public void setMoh(Area moh) {
+        this.moh = moh;
+    }
+
+    public Institution getInstitution() {
+        return institution;
+    }
+
+    public void setInstitution(Institution institution) {
+        this.institution = institution;
+    }
+
+    public Date getFrom() {
+        return from;
+    }
+
+    public void setFrom(Date from) {
+        this.from = from;
+    }
+
+    public Date getTo() {
+        return to;
+    }
+
+    public void setTo(Date to) {
+        this.to = to;
+    }
+
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
+    }
+
+    public Integer getYear() {
+        return year;
+    }
+
+    public void setYear(Integer year) {
+        this.year = year;
+    }
+
+    public Integer getQuarter() {
+        return quarter;
+    }
+
+    public void setQuarter(Integer quarter) {
+        this.quarter = quarter;
+    }
+
+    public Integer getMonth() {
+        return month;
+    }
+
+    public void setMonth(Integer month) {
+        this.month = month;
+    }
+
+    public ClientFacade getClientFacade() {
+        return clientFacade;
+    }
+
+    public List<Client> getResultClientList() {
+        return resultClientList;
+    }
+
+    public void setResultClientList(List<Client> resultClientList) {
+        this.resultClientList = resultClientList;
+    }
+
+    public List<Encounter> getResultEncounterList() {
+        return resultEncounterList;
+    }
+
+    public void setResultEncounterList(List<Encounter> resultEncounterList) {
+        this.resultEncounterList = resultEncounterList;
+    }
+
+    public List<ClientEncounterComponentForm> getResultFormList() {
+        return resultFormList;
+    }
+
+    public void setResultFormList(List<ClientEncounterComponentForm> resultFormList) {
+        this.resultFormList = resultFormList;
+    }
+
+    
+    
     @FacesConverter(forClass = QueryComponent.class)
     public static class QueryComponentControllerConverter implements Converter {
 

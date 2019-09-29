@@ -105,9 +105,7 @@ public class QueryComponent extends Component {
         return filterQuery;
     }
 
-    public void setFilterQuery(String filterQuery) {
-        
-    }
+    
 
     public String getOrderQuery() {
         return orderQuery;
@@ -115,6 +113,10 @@ public class QueryComponent extends Component {
 
     public void setOrderQuery(String orderQuery) {
         this.orderQuery = orderQuery;
+    }
+
+    public void setFilterQuery(String filterQuery) {
+        this.filterQuery = filterQuery;
     }
 
 }

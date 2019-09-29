@@ -53,6 +53,8 @@ public class Encounter implements Serializable {
     private Client client;
     @ManyToOne
     private Area area;
+    
+    private boolean firstEncounter ;
 
     @Temporal(javax.persistence.TemporalType.DATE)
     private Date encounterDate;
@@ -340,6 +342,14 @@ public class Encounter implements Serializable {
 
     public void setEncounterQuarter(Integer encounterQuarter) {
         this.encounterQuarter = encounterQuarter;
+    }
+
+    public boolean isFirstEncounter() {
+        return firstEncounter;
+    }
+
+    public void setFirstEncounter(boolean firstEncounter) {
+        this.firstEncounter = firstEncounter;
     }
     
     

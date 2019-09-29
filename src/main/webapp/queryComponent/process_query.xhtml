@@ -46,15 +46,34 @@
                                             </p:commandLink>
                                         </f:facet>
 
-                                        <p:outputLabel value="District" rendered="#{queryComponentController.filterDistricts}" >
+                                        <p:outputLabel value="Province" for="province" rendered="#{queryComponentController.filterProvices}" >
+                                        </p:outputLabel>
+
+                                        <p:autoComplete id="province" value="#{queryComponentController.province}"
+                                                        completeMethod="#{areaController.completeProvinces}"
+                                                        var="p" itemLabel="#{p.name}" itemValue="#{p}" required="true"
+                                                        maxResults="15" forceSelection="true"  rendered="#{queryComponentController.filterProvices}" 
+                                                        minQueryLength="3">
+                                        </p:autoComplete>
+
+                                        <p:outputLabel value="District" rendered="#{queryComponentController.filterDistricts}" for="district" >
                                         </p:outputLabel>
 
                                         <p:autoComplete id="district" value="#{queryComponentController.district}"
                                                         completeMethod="#{areaController.completeDistricts}"
-                                                        var="d" itemLabel="#{d.name}" itemValue="#{d}"
-                                                        maxResults="15" forceSelection="true"
+                                                        var="d" itemLabel="#{d.name}" itemValue="#{d}" required="true"
+                                                        maxResults="15" forceSelection="true" 
+                                                        rendered="#{queryComponentController.filterDistricts}" 
                                                         minQueryLength="3">
                                         </p:autoComplete>
+
+
+                                        <p:outputLabel value="Institution" for="ins" rendered="#{queryComponentController.filterInstitutions}" >
+                                        </p:outputLabel>
+                                        <p:selectOneMenu id="ins" value="#{queryComponentController.institution}" rendered="#{queryComponentController.filterInstitutions}" >
+                                            <f:selectItems value="#{institutionController.myClinics}" var="c" itemLabel="#{c.name}" itemValue="#{c}" ></f:selectItems>
+                                        </p:selectOneMenu>
+                                        
 
                                     </p:panelGrid>
 
@@ -63,7 +82,7 @@
                             </p:panelGrid>
 
                             <p:panel header="Results" >
-                                <p:outputLabel value="#{queryComponentController.resultValue}" ></p:outputLabel>
+                                <p:outputLabel value="#{queryComponentController.resultString}" ></p:outputLabel>
                             </p:panel>
 
                         </p:panelGrid>

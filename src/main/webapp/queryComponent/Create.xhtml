@@ -53,7 +53,7 @@
 
 
                     </p:panelGrid>
-                    <p:commandButton actionListener="#{queryComponentController.create}" value="#{bundleQuery.Save}" update="display,:QueryComponentListForm:datalist,:growl" oncomplete="handleSubmit(args,'QueryComponentCreateDialog');"/>
+                    <p:commandButton action="#{queryComponentController.create}" value="#{bundleQuery.Save}" ajax="false"/>
                     <p:commandButton value="#{bundleQuery.Cancel}" onclick="QueryComponentCreateDialog.hide()"/>
                 </h:panelGroup>
             </h:form>

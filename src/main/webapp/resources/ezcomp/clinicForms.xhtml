@@ -173,7 +173,7 @@
                                     </td>
                                 </h:panelGroup>
 
-                                <h:panelGroup rendered="#{ii.renderType eq 'Boolean_Checkbox'}" >
+                                <h:panelGroup rendered="#{ii.renderType eq 'Autocomplete' and ii.selectionDataType eq 'Area_Reference'}" >
                                     <td>
                                         <p:outputLabel for="acA" value="#{ii.name}" ></p:outputLabel>
                                     </td>
@@ -182,7 +182,9 @@
                                                         completeMethod="#{areaController.completeAreas}"
                                                         var="a" itemLabel="#{a.name}" itemValue="#{a}"
                                                         maxResults="15" forceSelection="true" 
-                                                        minQueryLength="3">
+                                                        minQueryLength="3"
+                                                        required="#{ii.required}" 
+                                                        requiredMessage="#{ii.requiredErrorMessage}">
                                             <p:ajax  event="blur" process="@this" 
                                                      listener="#{clientEncounterComponentItemController.save(ii)}" >
                                             </p:ajax>

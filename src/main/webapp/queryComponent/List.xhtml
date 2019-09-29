@@ -83,13 +83,13 @@
                             <f:facet name="header">
                                 <h:outputText value="From Query"/>
                             </f:facet>
-                            <h:outputText value="#{item.calculationScriptForBackgroundColour}"/>
+                            <h:outputText value="#{item.fromQuery}"/>
                         </p:column>
                         <p:column>
                             <f:facet name="header">
                                 <h:outputText value="Filter Query"/>
                             </f:facet>
-                            <h:outputText value="#{item.calculationScriptForBackgroundColour}"/>
+                            <h:outputText value="#{item.filterQuery}"/>
                         </p:column>
                         <f:facet name="footer">
                             <p:commandButton id="createButton" icon="ui-icon-plus"   value="#{bundleQuery.Create}" actionListener="#{queryComponentController.prepareCreate}" update=":QueryComponentCreateForm" oncomplete="PF('QueryComponentCreateDialog').show()"/>

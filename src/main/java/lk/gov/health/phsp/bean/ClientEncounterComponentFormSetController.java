@@ -30,6 +30,7 @@ import lk.gov.health.phsp.entity.DesignComponentForm;
 import lk.gov.health.phsp.entity.DesignComponentFormItem;
 import lk.gov.health.phsp.entity.DesignComponentFormSet;
 import lk.gov.health.phsp.entity.Encounter;
+import lk.gov.health.phsp.entity.Institution;
 import lk.gov.health.phsp.enums.ComponentSetType;
 import lk.gov.health.phsp.enums.ComponentSex;
 import lk.gov.health.phsp.enums.DataCompletionStrategy;
@@ -40,6 +41,7 @@ import lk.gov.health.phsp.facade.ClientEncounterComponentItemFacade;
 import lk.gov.health.phsp.facade.ClientFacade;
 import lk.gov.health.phsp.facade.DesignComponentFormItemFacade;
 import lk.gov.health.phsp.facade.PersonFacade;
+import org.apache.commons.compress.utils.Sets;
 // </editor-fold>
 
 @Named("clientEncounterComponentFormSetController")
@@ -195,10 +197,10 @@ public class ClientEncounterComponentFormSetController implements Serializable {
             ti.setLastEditeAt(new Date());
         }
 
-        if(ti.getSelectionDataType()==null){
+        if (ti.getSelectionDataType() == null) {
             ti.setSelectionDataType(vi.getSelectionDataType());
         }
-        
+
         ti.setClient(c);
 
         ti.setDateValue(vi.getDateValue());
@@ -404,6 +406,27 @@ public class ClientEncounterComponentFormSetController implements Serializable {
         return fs;
     }
 
+    public boolean isFirstEncounterOfThatType(Client c, Institution i, EncounterType t) {
+        String j = "select count(e) from Encounter e where "
+                + " e.retired=false "
+                + " and e.client=:c "
+                + " and e.institution=:i "
+                + " and e.encounterType=:t";
+        Map m = new HashMap();
+        m.put("c", c);
+        m.put("i", i);
+        m.put("t", t);
+        
+        Long count = getFacade().countByJpql(j, m);
+        if (count == null) {
+            return true;
+        }
+        if (count == 0) {
+            return true;
+        }
+        return false;
+    }
+
     public String createAndNavigateToClinicalEncounterComponentFormSetFromDesignComponentFormSetForClinicVisit(DesignComponentFormSet dfs) {
         String navigationLink = "/clientEncounterComponentFormSet/Formset";
         formEditable = true;
@@ -414,6 +437,7 @@ public class ClientEncounterComponentFormSetController implements Serializable {
         e.setEncounterDate(new Date());
         e.setEncounterFrom(new Date());
         e.setEncounterType(EncounterType.Clinic_Visit);
+        e.setFirstEncounter(isFirstEncounterOfThatType(clientController.getSelected(),dfs.getInstitution(), EncounterType.Clinic_Visit));
         encounterController.save(e);
 
         ClientEncounterComponentFormSet cfs = new ClientEncounterComponentFormSet();
@@ -516,13 +540,13 @@ public class ClientEncounterComponentFormSetController implements Serializable {
                         ci.setCalculationScriptForColour(di.getCalculationScriptForColour());
                         ci.setDisplayDetailsBox(di.isDisplayDetailsBox());
                         ci.setDiscreptionAsAToolTip(di.isDiscreptionAsAToolTip());
-                        
+
                         System.out.println("di.isDiscreptionAsASideLabel() = " + di.isDiscreptionAsASideLabel());
-                        
+
                         ci.setDiscreptionAsASideLabel(di.isDiscreptionAsASideLabel());
-                        
+
                         System.out.println("ci.isDiscreptionAsASideLabel() = " + ci.isDiscreptionAsASideLabel());
-                        
+
                         ci.setCalculationScriptForBackgroundColour(di.getCalculationScriptForBackgroundColour());
                         ci.setMultipleEntiesPerForm(di.isMultipleEntiesPerForm());
 
@@ -534,7 +558,7 @@ public class ClientEncounterComponentFormSetController implements Serializable {
                         }
 
                         clientEncounterComponentItemController.save(ci);
-                        
+
                         System.out.println("ci.isDiscreptionAsASideLabel() = " + ci.isDiscreptionAsASideLabel());
                     }
                 }
