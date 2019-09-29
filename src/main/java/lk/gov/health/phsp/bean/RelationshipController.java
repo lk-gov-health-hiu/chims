@@ -135,8 +135,6 @@ public class RelationshipController implements Serializable {
                     strEstimatedTargetPopulation = cell.getContents();
                     targetPopulation = CommonController.getLongValue(strEstimatedTargetPopulation);
 
-                   
-
                     Relationship myp = findRelationship(district, RelationshipType.Estimated_Midyear_Population, year);
                     if (myp == null) {
                         myp = new Relationship();
@@ -172,8 +170,7 @@ public class RelationshipController implements Serializable {
                     district.setTotalPopulation(midyearPopulation);
                     district.setTotalTargetPopulation(targetPopulation);
                     getAreaFacade().edit(district);
-                    
-                    
+
                 }
 
                 lk.gov.health.phsp.facade.util.JsfUtil.addSuccessMessage("Succesful. All the data in Excel File Impoted to the database");
@@ -271,18 +268,24 @@ public class RelationshipController implements Serializable {
         items = getFacade().findByJpql(j, m);
     }
 
-    public Relationship findRelationship(Area a, RelationshipType type, int year) {
+    public Relationship findRelationship(Area a, RelationshipType type, Integer year) {
         String j = "select r from Relationship r "
                 + " where r.area=:a "
                 + " and r.elationshipType=:t "
-                + " and r.retired=false "
-                + " and r.yearInt=:y";
-
+                + " and r.retired=false ";
         Map m = new HashMap();
+        if (year!=null && year != 0) {
+            j += " and r.yearInt=:y";
+            m.put("y", year);
+        }
         m.put("a", a);
         m.put("t", type);
-        m.put("y", year);
+        j += " order by r.id desc";
         return getFacade().findFirstByJpql(j, m);
+    }
+
+    public Relationship findRelationship(Area a, RelationshipType type) {
+        return findRelationship(a, type, 0);
     }
 
     public RelationshipController() {
@@ -496,8 +499,6 @@ public class RelationshipController implements Serializable {
     public void setErrorCode(String errorCode) {
         this.errorCode = errorCode;
     }
-    
-    
 
     @FacesConverter(forClass = Relationship.class)
     public static class RelationshipControllerConverter implements Converter {
