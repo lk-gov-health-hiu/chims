@@ -7,6 +7,7 @@ import lk.gov.health.phsp.facade.QueryComponentFacade;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,6 +24,10 @@ import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
+import lk.gov.health.phsp.entity.Area;
+import lk.gov.health.phsp.entity.Client;
+import lk.gov.health.phsp.entity.Encounter;
+import lk.gov.health.phsp.entity.Institution;
 import lk.gov.health.phsp.enums.Evaluation;
 import lk.gov.health.phsp.facade.ClientEncounterComponentItemFacade;
 import lk.gov.health.phsp.pojcs.Jpq;
@@ -40,12 +45,105 @@ public class QueryComponentController implements Serializable {
     private QueryComponent selected;
     private String resultValue;
 
+    Area province;
+    Area district;
+    Area gn;
+    Area moh;
+    Institution institution;
+    Date from;
+    Date to;
+    Date date;
+    Integer year;
+    Integer quarter;
+    Integer month;
+
+    private boolean filterInstitutions;
+    private boolean filterDistricts;
+    private boolean filterProvices;
+    private boolean filterMoh;
+    private boolean filterGn;
+    private boolean filterFrom;
+    private boolean filterTo;
+    private boolean filterYear;
+    private boolean filterMonth;
+    private boolean filterDate;
+    private boolean filterQuarter;
+
     public QueryComponentController() {
     }
 
     public String toProcessQuery() {
 
         return "/queryComponent/process_query";
+    }
+
+    public void clearFilters() {
+        province = null;
+        district = null;
+        gn = null;
+        moh = null;
+        institution = null;
+        from = null;
+        to = null;
+        date = null;
+        year = null;
+        quarter = null;
+        month = null;
+    }
+
+    private void querySelectAction() {
+        if (selected == null) {
+            return;
+        }
+        String filterQuery = selected.getFilterQuery();
+        filterDistricts = false;
+        filterFrom = false;
+        filterGn = false;
+        filterInstitutions = false;
+        filterMoh = false;
+        filterProvices = false;
+        filterTo = false;
+        filterYear = false;
+        filterMonth = false;
+        filterDate = false;
+        filterQuarter = false;
+        if (filterQuery == null) {
+            return;
+        }
+        if (filterQuery.toLowerCase().contains("pro")) {
+            filterProvices = true;
+        }
+        if (filterQuery.toLowerCase().contains("dis")) {
+            filterDistricts = true;
+        }
+        if (filterQuery.toLowerCase().contains("moh")) {
+            filterMoh = true;
+        }
+        if (filterQuery.toLowerCase().contains("gn")) {
+            filterGn = true;
+        }
+        if (filterQuery.toLowerCase().contains("ins")) {
+            filterInstitutions = true;
+        }
+        if (filterQuery.toLowerCase().contains("date")) {
+            filterDate = true;
+        }
+        if (filterQuery.toLowerCase().contains("frm")) {
+            filterFrom = true;
+        }
+        if (filterQuery.toLowerCase().contains("to")) {
+            filterTo = true;
+        }
+        if (filterQuery.toLowerCase().contains("year")) {
+            filterYear = true;
+        }
+        if (filterQuery.toLowerCase().contains("qtr")) {
+            filterQuarter = true;
+        }
+        if (filterQuery.toLowerCase().contains("month")) {
+            filterMonth = true;
+        }
+
     }
 
     public List<QueryComponent> completeQueries(String qry) {
@@ -119,22 +217,69 @@ public class QueryComponentController implements Serializable {
                                 e = " is not null ";
                                 break;
                         }
-                        qs += " and (i.item.code=:varc" + count +
-                                " and (i.integerNumberValue" + e + ":val" + count + " ))";
-                        j.getM().put("val"+count, CommonController.getIntegerValue(r.getValueCode()));
-                        j.getM().put("varc"+count, r.getVariableCode());
+                        qs += " and (i.item.code=:varc" + count
+                                + " and (i.integerNumberValue" + e + ":val" + count + " ))";
+                        j.getM().put("val" + count, CommonController.getIntegerValue(r.getValueCode()));
+                        j.getM().put("varc" + count, r.getVariableCode());
                         break;
 
                 }
 
             }
-            j.setJwhere(j.getJwhere() + qs);
+            j.setJwhere(j.getJwhere() + qs + addFilterString(j.getM()));
+
         }
+
         j.setJgroupby("");
         System.out.println("j.getJpql() = " + j.getJpql());
         System.out.println("j.getM() = " + j.getM());
         j.setLongResult(getItemFacade().countByJpql(j.getJpql(), j.getM()));
         return j;
+    }
+
+    public String addFilterString(Map m) {
+        String f = "";
+        if (date != null) {
+            f += " and i.parentComponent.parentComponent.encounter.encounterDate=:encounterDate ";
+            m.put("encounterDate", date);
+        }
+        if (from != null && to != null) {
+            f += " and i.parentComponent.parentComponent.encounter.encounterDate between :from and :to ";
+            m.put("from", from);
+            m.put("to", to);
+        } else if (from != null) {
+            f += " and i.parentComponent.parentComponent.encounter.encounterDate > :from ";
+            m.put("from", from);
+        }else if (to != null) {
+            f += " and i.parentComponent.parentComponent.encounter.encounterDate < :to ";
+            m.put("to", to);
+        }
+        if(province!=null){
+            f +=" i.parentComponent.parentComponent.encounter.client.person.gnArea.province =:province ";
+            m.put("province", province);
+        }
+        if(district!=null){
+            f +=" i.parentComponent.parentComponent.encounter.client.person.gnArea.district =:district ";
+            m.put("district", district);
+        }
+        if(moh!=null){
+            f +=" i.parentComponent.parentComponent.encounter.client.person.gnArea.moh =:moh ";
+            m.put("moh", moh);
+        }
+        if(gn!=null){
+            f +=" i.parentComponent.parentComponent.encounter.client.person.gnArea =:moh ";
+            m.put("gn", gn);
+        }
+        if(institution!=null){
+            f +=" i.parentComponent.parentComponent.encounter.institution =:institution ";
+            m.put("institution", institution);
+        }
+
+        Encounter e;
+        Client c;
+        
+        
+        return f;
     }
 
     public List<Replaceable> findReplaceblesInWhereQuery(String text) {
@@ -196,6 +341,7 @@ public class QueryComponentController implements Serializable {
     }
 
     public void setSelected(QueryComponent selected) {
+        querySelectAction();
         this.selected = selected;
     }
 
@@ -295,6 +441,94 @@ public class QueryComponentController implements Serializable {
 
     public void setResultValue(String resultValue) {
         this.resultValue = resultValue;
+    }
+
+    public boolean isFilterInstitutions() {
+        return filterInstitutions;
+    }
+
+    public void setFilterInstitutions(boolean filterInstitutions) {
+        this.filterInstitutions = filterInstitutions;
+    }
+
+    public boolean isFilterDistricts() {
+        return filterDistricts;
+    }
+
+    public void setFilterDistricts(boolean filterDistricts) {
+        this.filterDistricts = filterDistricts;
+    }
+
+    public boolean isFilterProvices() {
+        return filterProvices;
+    }
+
+    public void setFilterProvices(boolean filterProvices) {
+        this.filterProvices = filterProvices;
+    }
+
+    public boolean isFilterMoh() {
+        return filterMoh;
+    }
+
+    public void setFilterMoh(boolean filterMoh) {
+        this.filterMoh = filterMoh;
+    }
+
+    public boolean isFilterGn() {
+        return filterGn;
+    }
+
+    public void setFilterGn(boolean filterGn) {
+        this.filterGn = filterGn;
+    }
+
+    public boolean isFilterFrom() {
+        return filterFrom;
+    }
+
+    public void setFilterFrom(boolean filterFrom) {
+        this.filterFrom = filterFrom;
+    }
+
+    public boolean isFilterTo() {
+        return filterTo;
+    }
+
+    public void setFilterTo(boolean filterTo) {
+        this.filterTo = filterTo;
+    }
+
+    public boolean isFilterYear() {
+        return filterYear;
+    }
+
+    public void setFilterYear(boolean filterYear) {
+        this.filterYear = filterYear;
+    }
+
+    public boolean isFilterMonth() {
+        return filterMonth;
+    }
+
+    public void setFilterMonth(boolean filterMonth) {
+        this.filterMonth = filterMonth;
+    }
+
+    public boolean isFilterDate() {
+        return filterDate;
+    }
+
+    public void setFilterDate(boolean filterDate) {
+        this.filterDate = filterDate;
+    }
+
+    public boolean isFilterQuarter() {
+        return filterQuarter;
+    }
+
+    public void setFilterQuarter(boolean filterQuarter) {
+        this.filterQuarter = filterQuarter;
     }
 
     @FacesConverter(forClass = QueryComponent.class)

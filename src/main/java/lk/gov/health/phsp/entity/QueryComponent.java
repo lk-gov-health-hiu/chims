@@ -25,6 +25,7 @@ package lk.gov.health.phsp.entity;
 
 import javax.persistence.Entity;
 import javax.persistence.Lob;
+import javax.persistence.Transient;
 
 /**
  *
@@ -49,6 +50,8 @@ public class QueryComponent extends Component {
     private String filterQuery;
     @Lob
     private String orderQuery;
+
+
 
     public String getIndicatorQuery() {
         return indicatorQuery;
@@ -103,7 +106,7 @@ public class QueryComponent extends Component {
     }
 
     public void setFilterQuery(String filterQuery) {
-        this.filterQuery = filterQuery;
+        
     }
 
     public String getOrderQuery() {

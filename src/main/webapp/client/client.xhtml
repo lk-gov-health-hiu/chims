@@ -35,10 +35,10 @@
                             </p:selectOneMenu>
 
                             <p:outputLabel value="Name:" for="name" />
-                            <p:inputText autocomplete="off" id="name" value="#{clientController.selected.person.name}" title="Name" />
+                            <p:inputText autocomplete="off" id="name" required="true" value="#{clientController.selected.person.name}" title="Name" />
 
                             <p:outputLabel value="Sex:" for="sex" />
-                            <p:selectOneMenu id="sex"  value="#{clientController.selected.person.sex}"  >
+                            <p:selectOneMenu id="sex"  value="#{clientController.selected.person.sex}" required="true" >
                                 <f:selectItems value="#{itemController.sexes}" var="s" itemLabel="#{s.name}"
                                                itemValue="#{s}" ></f:selectItems>
                             </p:selectOneMenu>
@@ -132,7 +132,7 @@
                             <p:outputLabel value="Date of Birth:"  />
                             <p:calendar  value="#{clientController.selected.person.dateOfBirth}" 
                                          id="calDob"  navigator="true" pattern="dd/MM/yyyy" 
-                                         inputStyle="width: 124px!important;"
+                                         inputStyle="width: 124px!important;" required="true"
                                          styleClass="shortinput">
                                 <f:ajax event="dateSelect" listener="#{clientController.updateYearDateMonth}"
                                         render="year month day" 

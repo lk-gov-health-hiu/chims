@@ -3,7 +3,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:p="http://primefaces.org/ui"
-      xmlns:h="http://xmlns.jcp.org/jsf/html">
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
 
     <body>
 
@@ -14,30 +15,59 @@
                 <p:panel header="Execute Query" >
                     <h:form >
                         <p:panelGrid columns="2" >
-                            <p:outputLabel value="Query" ></p:outputLabel>
-                            <p:autoComplete value="#{queryComponentController.selected}" 
-                                            completeMethod="#{queryComponentController.completeQueries}" 
-                                            var="q" itemLabel="#{q.code}" itemValue="#{q}"
-                                            >
-                                <p:column headerText="Code" >
-                                    <p:outputLabel value="#{q.code}" ></p:outputLabel>
-                                </p:column>
-                                <p:column headerText="Name" >
-                                    <p:outputLabel value="#{q.name}" ></p:outputLabel>
-                                </p:column>
+                            <p:panelGrid columns="1" >
+                                <p:panelGrid columns="2" >
+                                    <p:outputLabel value="Query" ></p:outputLabel>
+                                    <p:autoComplete value="#{queryComponentController.selected}" 
+                                                    completeMethod="#{queryComponentController.completeQueries}" 
+                                                    var="q" itemLabel="#{q.code}" itemValue="#{q}" forceSelection="true"
+                                                    >
+                                        <p:column headerText="Code" >
+                                            <p:outputLabel value="#{q.code}" ></p:outputLabel>
+                                        </p:column>
+                                        <p:column headerText="Name" >
+                                            <p:outputLabel value="#{q.name}" ></p:outputLabel>
+                                        </p:column>
+                                        <f:ajax event="itemSelect" execute="@this" render="filters" ></f:ajax>
+                                    </p:autoComplete>
 
-                            </p:autoComplete>
-                            <p:commandButton value="Execute" ajax="false" action="#{queryComponentController.processQuery()}" >
-                            </p:commandButton>
+
+
+                                    <p:commandButton value="Execute" ajax="false" action="#{queryComponentController.processQuery()}" >
+                                    </p:commandButton>
+                                </p:panelGrid>
+
+                                <h:panelGroup id="filters" >
+                                    <p:panelGrid columns="2" >
+                                        <f:facet name="header" >
+                                            <p:outputLabel value="Filters" ></p:outputLabel>
+                                            <p:commandLink value="Clear" ajax="false" action="#{queryComponentController.clearFilters()}" 
+                                                           style="float: right;">
+                                            </p:commandLink>
+                                        </f:facet>
+
+                                        <p:outputLabel value="District" rendered="#{queryComponentController.filterDistricts}" >
+                                        </p:outputLabel>
+
+                                        <p:autoComplete id="district" value="#{queryComponentController.district}"
+                                                        completeMethod="#{areaController.completeDistricts}"
+                                                        var="d" itemLabel="#{d.name}" itemValue="#{d}"
+                                                        maxResults="15" forceSelection="true"
+                                                        minQueryLength="3">
+                                        </p:autoComplete>
+
+                                    </p:panelGrid>
+
+                                </h:panelGroup>
+
+                            </p:panelGrid>
+
+                            <p:panel header="Results" >
+                                <p:outputLabel value="#{queryComponentController.resultValue}" ></p:outputLabel>
+                            </p:panel>
+
                         </p:panelGrid>
-                        
-                        <p:outputLabel value="#{queryComponentController.resultValue}" ></p:outputLabel>
-
-
                     </h:form>
-
-
-
                 </p:panel>
 
 
