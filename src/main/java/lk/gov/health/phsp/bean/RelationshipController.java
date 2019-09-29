@@ -73,6 +73,10 @@ public class RelationshipController implements Serializable {
     private UploadedFile file;
     private String errorCode;
 
+    public void fillAll(){
+        items = getFacade().findAll();
+    }
+    
     public String importDistrictPopulationDataFromExcel() {
         try {
             String strDistrict;

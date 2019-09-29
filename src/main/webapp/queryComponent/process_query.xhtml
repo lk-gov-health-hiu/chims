@@ -70,10 +70,14 @@
 
                                         <p:outputLabel value="Institution" for="ins" rendered="#{queryComponentController.filterInstitutions}" >
                                         </p:outputLabel>
-                                        <p:selectOneMenu id="ins" value="#{queryComponentController.institution}" rendered="#{queryComponentController.filterInstitutions}" >
+                                        <p:selectOneMenu id="ins" value="#{queryComponentController.institution}" rendered="#{queryComponentController.filterInstitutions}" required="true" >
                                             <f:selectItems value="#{institutionController.myClinics}" var="c" itemLabel="#{c.name}" itemValue="#{c}" ></f:selectItems>
                                         </p:selectOneMenu>
-                                        
+
+
+                                        <p:outputLabel value="Year" for="ins" rendered="#{queryComponentController.filterYear}" >
+                                        </p:outputLabel>
+                                        <p:inputText value="#{queryComponentController.year}" required="true" ></p:inputText>
 
                                     </p:panelGrid>
 
@@ -82,7 +86,14 @@
                             </p:panelGrid>
 
                             <p:panel header="Results" >
-                                <p:outputLabel value="#{queryComponentController.resultString}" ></p:outputLabel>
+                                <p:outputLabel value="#{queryComponentController.resultString}" rendered="#{queryComponentController.resultString ne null}" ></p:outputLabel>
+                                <p:panel header="Client List" rendered="#{queryComponentController.resultClientList ne null}" >
+                                
+                                    
+                                
+                                </p:panel>
+                                
+                                
                             </p:panel>
 
                         </p:panelGrid>

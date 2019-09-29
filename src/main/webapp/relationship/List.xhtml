@@ -13,9 +13,14 @@
             <h:outputText value="#{bundleClinical.ListRelationshipTitle}"></h:outputText>
         </ui:define>
 
-        <ui:define name="body">
+        <ui:define name="content">
+            <p:growl id="growl" ></p:growl>
             <h:form id="RelationshipListForm">
+                <p:commandButton ajax="false" value="Fill" action="#{relationshipController.fillAll()}" ></p:commandButton>
                 <p:panel header="#{bundleClinical.ListRelationshipTitle}">
+                    
+                    
+                    
                     <p:dataTable id="datalist" value="#{relationshipController.items}" var="item"
                                  selectionMode="single" selection="#{relationshipController.selected}"
                                  paginator="true"
@@ -27,71 +32,23 @@
                         <p:ajax event="rowSelect"   update="createButton viewButton editButton deleteButton"/>
                         <p:ajax event="rowUnselect" update="createButton viewButton editButton deleteButton"/>
 
-                        <p:column>
-                            <f:facet name="header">
-                                <h:outputText value="#{bundleClinical.ListRelationshipTitle_id}"/>
-                            </f:facet>
-                            <h:outputText value="#{item.id}"/>
-                        </p:column>
-                        <p:column>
-                            <f:facet name="header">
-                                <h:outputText value="#{bundleClinical.ListRelationshipTitle_fromInstitution}"/>
-                            </f:facet>
-                            <h:outputText value="#{item.fromInstitution}"/>
-                        </p:column>
-                        <p:column>
-                            <f:facet name="header">
-                                <h:outputText value="#{bundleClinical.ListRelationshipTitle_toInstitution}"/>
-                            </f:facet>
-                            <h:outputText value="#{item.toInstitution}"/>
-                        </p:column>
-                        <p:column>
-                            <f:facet name="header">
-                                <h:outputText value="#{bundleClinical.ListRelationshipTitle_institution}"/>
-                            </f:facet>
-                            <h:outputText value="#{item.institution}"/>
-                        </p:column>
-                        <p:column>
-                            <f:facet name="header">
-                                <h:outputText value="#{bundleClinical.ListRelationshipTitle_fromItem}"/>
-                            </f:facet>
-                            <h:outputText value="#{item.fromItem}"/>
-                        </p:column>
-                        <p:column>
-                            <f:facet name="header">
-                                <h:outputText value="#{bundleClinical.ListRelationshipTitle_toItem}"/>
-                            </f:facet>
-                            <h:outputText value="#{item.toItem}"/>
-                        </p:column>
-                        <p:column>
-                            <f:facet name="header">
-                                <h:outputText value="#{bundleClinical.ListRelationshipTitle_item}"/>
-                            </f:facet>
-                            <h:outputText value="#{item.item}"/>
-                        </p:column>
-                        <p:column>
-                            <f:facet name="header">
-                                <h:outputText value="#{bundleClinical.ListRelationshipTitle_fromArea}"/>
-                            </f:facet>
-                            <h:outputText value="#{item.fromArea}"/>
-                        </p:column>
-                        <p:column>
-                            <f:facet name="header">
-                                <h:outputText value="#{bundleClinical.ListRelationshipTitle_toArea}"/>
-                            </f:facet>
-                            <h:outputText value="#{item.toArea}"/>
-                        </p:column>
-                        <p:column>
+                        <p:column  filterBy="#{item.area.name}" filterMatchMode="contains">
                             <f:facet name="header">
                                 <h:outputText value="#{bundleClinical.ListRelationshipTitle_area}"/>
                             </f:facet>
-                            <h:outputText value="#{item.area}"/>
+                            <h:outputText value="#{item.area.name}"/>
                         </p:column>
                         <p:column>
                             <f:facet name="header">
                                 <h:outputText value="#{bundleClinical.ListRelationshipTitle_relationshipType}"/>
                             </f:facet>
                             <h:outputText value="#{item.relationshipType}"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundleClinical.ListRelationshipTitle_area}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.longValue1}"/>
                         </p:column>
                         <f:facet name="footer">
                             <p:commandButton id="createButton" icon="ui-icon-plus"   value="#{bundleClinical.Create}" actionListener="#{relationshipController.prepareCreate}" update=":RelationshipCreateForm" oncomplete="PF('RelationshipCreateDialog').show()"/>

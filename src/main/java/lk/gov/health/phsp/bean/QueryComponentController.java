@@ -34,6 +34,7 @@ import lk.gov.health.phsp.enums.Evaluation;
 import lk.gov.health.phsp.enums.RelationshipType;
 import lk.gov.health.phsp.facade.ClientEncounterComponentItemFacade;
 import lk.gov.health.phsp.facade.ClientFacade;
+import lk.gov.health.phsp.facade.EncounterFacade;
 import lk.gov.health.phsp.pojcs.Jpq;
 import lk.gov.health.phsp.pojcs.Replaceable;
 import org.apache.commons.lang3.SerializationUtils;
@@ -49,6 +50,8 @@ public class QueryComponentController implements Serializable {
     private ClientEncounterComponentItemFacade itemFacade;
     @EJB
     private ClientFacade clientFacade;
+    @EJB
+    private EncounterFacade encounterFacade;
     
     @Inject
     private WebUserController webUserController;
@@ -57,6 +60,8 @@ public class QueryComponentController implements Serializable {
 
     private List<QueryComponent> items = null;
     private QueryComponent selected;
+    
+    private QueryComponent selectedForQuery;
 
     private String resultString;
     private List<Client> resultClientList;
@@ -176,7 +181,7 @@ public class QueryComponentController implements Serializable {
 
     public void processQuery() {
         System.out.println("processQuery");
-        if (selected == null) {
+        if (selectedForQuery == null) {
             return;
         }
 
@@ -185,19 +190,32 @@ public class QueryComponentController implements Serializable {
         resultFormList=null;
         resultEncounterList=null;
 
-        if (selected.getSelectQuery().trim().equalsIgnoreCase("#{client_count}")) {
-            Jpq j = createAClientCountQuery(selected);
+        if(selectedForQuery.getIndicatorQuery()!=null && selectedForQuery.getIndicatorQuery().trim().equals("")){
+            resultString = handleIndicatorQuery(selectedForQuery);
+        }else if (selectedForQuery.getSelectQuery().trim().equalsIgnoreCase("#{client_count}")) {
+            Jpq j = createAClientCountQuery(selectedForQuery);
             resultString = j.getQc().getName() + " = " + j.getLongResult();
-        } else if (selected.getSelectQuery().trim().equalsIgnoreCase("#{client_list}")) {
-            Jpq j = createAClientListQuery(selected);
-            resultString = j.getQc().getName() + " = " + j.getLongResult();
-        } else if (selected.getFromQuery().trim().equalsIgnoreCase("#{pop}")) {
-            Jpq j = createAPopulationCountQuery(selected);
+        } else if (selectedForQuery.getSelectQuery().trim().equalsIgnoreCase("#{client_list}")) {
+            Jpq j = createAClientListQuery(selectedForQuery);
+            resultClientList = j.getClientList();
+        } else if (selectedForQuery.getSelectQuery().trim().equalsIgnoreCase("#{encounter_list}")) {
+            Jpq j = createAnEncounterListQuery(selectedForQuery);
+            resultClientList = j.getClientList();
+        } else if (selectedForQuery.getFromQuery().trim().equalsIgnoreCase("#{pop}")) {
+            Jpq j = createAPopulationCountQuery(selectedForQuery);
             resultString = j.getQc().getName() + " = " + j.getLongResult();
         }
+        selectedForQuery =null;
         
     }
     
+    
+    public String handleIndicatorQuery(QueryComponent qc){
+        String r = "Nothing Calculated.";
+        
+        
+        return r;
+    }
     
     
     public void duplicate(){
@@ -235,7 +253,7 @@ public class QueryComponentController implements Serializable {
         jpql.setQc(qc);
         jpql.setJselect("select r.longValue1  ");
         jpql.setJfrom(" from Relationship r ");
-        jpql.setJwhere(" where r.area=:a and r.relationshipType=:t and r.retired=false ");
+        jpql.setJwhere(" where r.area=:a and r.relationshipType=:t and r.retired=:f ");
         if (year!=null && year != 0) {
             jpql.setJwhere(jpql.getJwhere() + " and r.yearInt=:y");
             jpql.getM().put("y", year);
@@ -265,7 +283,8 @@ public class QueryComponentController implements Serializable {
         jpql.setJgroupby("");
         System.out.println("j.getJpql() = " + jpql.getJpql());
         System.out.println("j.getM() = " + jpql.getM());
-        jpql.setLongResult(getItemFacade().countByJpql(jpql.getJpql(), jpql.getM()));
+        jpql.setLongResult(getItemFacade().findLongByJpql(jpql.getJpql(), jpql.getM(),1));
+        
         return jpql;
     }
     
@@ -405,7 +424,78 @@ public class QueryComponentController implements Serializable {
         j.setJgroupby("");
         System.out.println("j.getJpql() = " + j.getJpql());
         System.out.println("j.getM() = " + j.getM());
-        j.setLongResult(getItemFacade().countByJpql(j.getJpql(), j.getM()));
+        j.setClientList(getClientFacade().findByJpql(j.getJpql(), j.getM()));
+        return j;
+    }
+    
+    
+     public Jpq createAnEncounterListQuery(QueryComponent qc) {
+        System.out.println("createAClientListQuery");
+        Jpq j = new Jpq();
+        j.setQc(qc);
+        j.setJselect("select distinct i.parentComponent.parentComponent.encounter  ");
+        j.setJfrom(" from ClientEncounterComponentItem i ");
+        j.setJwhere(" where i.retired=:f ");
+        j.getM().put("f", false);
+        List<Replaceable> replaceblesInWhereQuery = findReplaceblesInWhereQuery(qc.getWhereQuery());
+        int count = 0;
+        for (Replaceable r : replaceblesInWhereQuery) {
+            count++;
+            String qs = "";
+            if (r.isForForm()) {
+                switch (r.getQueryDataType()) {
+                    case it:
+                        if (r.getEvaluation() == Evaluation.eq) {
+                            qs += " and (i.item.code=:varc" + count + " and i.itemValue.code=:valc" + count + ")";
+                            j.getM().put("varc" + count, r.getVariableCode());
+                            j.getM().put("valc" + count, r.getValueCode());
+                        }
+                        break;
+                    case in:
+                        String e = "";
+                        switch (r.getEvaluation()) {
+                            case eq:
+                                e = "==";
+                                break;
+                            case ge:
+                                e = ">=";
+                                break;
+                            case gt:
+                                e = ">";
+                                break;
+                            case in:
+                                e = " is null ";
+                                break;
+                            case le:
+                                e = "<=";
+                                break;
+                            case lt:
+                                e = "<";
+                                break;
+                            case ne:
+                                e = "!=";
+                                break;
+                            case nn:
+                                e = " is not null ";
+                                break;
+                        }
+                        qs += " and (i.item.code=:varc" + count
+                                + " and (i.integerNumberValue" + e + ":val" + count + " ))";
+                        j.getM().put("val" + count, CommonController.getIntegerValue(r.getValueCode()));
+                        j.getM().put("varc" + count, r.getVariableCode());
+                        break;
+
+                }
+
+            }
+            j.setJwhere(j.getJwhere() + qs + addFilterString(j.getM()));
+
+        }
+
+        j.setJgroupby("");
+        System.out.println("j.getJpql() = " + j.getJpql());
+        System.out.println("j.getM() = " + j.getM());
+        j.setEncounterList(getEncounterFacade().findByJpql(j.getJpql(), j.getM()));
         return j;
     }
 
@@ -830,6 +920,23 @@ public class QueryComponentController implements Serializable {
     public RelationshipController getRelationshipController() {
         return relationshipController;
     }
+
+    public QueryComponent getSelectedForQuery() {
+        return selectedForQuery;
+    }
+
+    public void setSelectedForQuery(QueryComponent selectedForQuery) {
+        this.selectedForQuery = selectedForQuery;
+    }
+
+    public EncounterFacade getEncounterFacade() {
+        return encounterFacade;
+    }
+
+    public void setEncounterFacade(EncounterFacade encounterFacade) {
+        this.encounterFacade = encounterFacade;
+    }
+
 
     
     

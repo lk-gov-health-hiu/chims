@@ -14,9 +14,9 @@
         </ui:define>
 
         <ui:define name="content">
-            
-             <p:growl id="growl" showDetail="true" sticky="true" /> 
-            
+
+            <p:growl id="growl" showDetail="true" sticky="true" /> 
+
             <h:form id="QueryComponentListForm">
                 <p:panel header="#{bundleQuery.ListQueryComponentTitle}">
                     <p:dataTable id="datalist" value="#{queryComponentController.items}" var="item"
@@ -36,7 +36,7 @@
                             </f:facet>
                             <h:outputText value="#{item.name}"/>
                         </p:column>
-                         <p:column>
+                        <p:column>
                             <f:facet name="header">
                                 <h:outputText value="Code"/>
                             </f:facet>
@@ -66,7 +66,7 @@
                             </f:facet>
                             <h:outputText value="#{item.institution}"/>
                         </p:column>
-                        
+
                         <p:column>
                             <f:facet name="header">
                                 <h:outputText value="Indicator Query"/>

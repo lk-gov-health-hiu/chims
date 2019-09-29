@@ -430,6 +430,31 @@ public abstract class AbstractFacade<T> {
     public long findLongByJpql(String jpql, Map<String, Object> parameters) {
         return findLongByJpql(jpql, parameters, TemporalType.DATE);
     }
+    
+    public long findLongByJpql(String jpql, Map<String, Object> parameters, int maxResults) {
+        TypedQuery<Long> qry = (TypedQuery<Long>) getEntityManager().createQuery(jpql);
+        Set s = parameters.entrySet();
+        Iterator it = s.iterator();
+        while (it.hasNext()) {
+            Map.Entry m = (Map.Entry) it.next();
+            Object pVal = m.getValue();
+            String pPara = (String) m.getKey();
+            if (pVal instanceof Date) {
+                Date d = (Date) pVal;
+                qry.setParameter(pPara, d, TemporalType.TIMESTAMP);
+            } else {
+                qry.setParameter(pPara, pVal);
+            }
+            qry.setMaxResults(maxResults);
+        }
+        try {
+            return (long) qry.getSingleResult();
+        } catch (Exception e) {
+            //   //// System.out.println("e = " + e);
+            return 0l;
+        }
+    }
+    
 
     public long findLongByJpql(String jpql, Map<String, Object> parameters, TemporalType tt) {
         TypedQuery<Long> qry = (TypedQuery<Long>) getEntityManager().createQuery(jpql);
