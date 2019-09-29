@@ -321,17 +321,17 @@ public class QueryComponentController implements Serializable {
         }
         String w = qc.getSelectQuery().trim().toLowerCase();
         RelationshipType t = RelationshipType.Estimated_Midyear_Population;
-        if (w.equals("myp")) {
+        if (w.contains("mypt")) {
             t = RelationshipType.Estimated_Midyear_Population;
-        } else if (w.equals("mypf")) {
+        } else if (w.contains("mypf")) {
             t = RelationshipType.Estimated_Midyear_Female_Population;
-        } else if (w.equals("mypm")) {
+        } else if (w.contains("mypm")) {
             t = RelationshipType.Estimated_Midyear_Male_Population;
-        } else if (w.equals("tp")) {
+        } else if (w.contains("tpt")) {
             t = RelationshipType.Over_35_Population;
-        } else if (w.equals("tpm")) {
+        } else if (w.contains("tpm")) {
             t = RelationshipType.Over_35_Male_Population;
-        } else if (w.equals("tpf")) {
+        } else if (w.contains("tpf")) {
             t = RelationshipType.Over_35_Female_Population;
         }
 
