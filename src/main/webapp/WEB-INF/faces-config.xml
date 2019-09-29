@@ -19,6 +19,10 @@
             <base-name>/BundleDemo</base-name>
             <var>bundleDemo</var>
         </resource-bundle>
+        <resource-bundle>
+            <base-name>/BundleQuery</base-name>
+            <var>bundleQuery</var>
+        </resource-bundle>
     </application>
     <navigation-rule>
         <from-view-id>*</from-view-id>

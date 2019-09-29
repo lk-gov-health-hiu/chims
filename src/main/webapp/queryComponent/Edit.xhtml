@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="QueryComponentEditDlg" widgetVar="QueryComponentEditDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundleQuery.EditQueryComponentTitle}">
+            <h:form id="QueryComponentEditForm">
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="4" rendered="#{queryComponentController.selected != null}">
+                        <p:outputLabel value="#{bundleQuery.CreateQueryComponentLabel_name}" for="name" />
+                        <p:inputText id="name" value="#{queryComponentController.selected.name}" title="#{bundleQuery.CreateQueryComponentTitle_name}" />
+
+                        <p:outputLabel value="Code" for="code" />
+                        <p:inputText id="code" value="#{queryComponentController.selected.code}" title="Code" />
+
+                        <p:outputLabel value="#{bundleQuery.CreateQueryComponentLabel_descreption}" for="descreption" />
+                        <p:inputTextarea rows="4" cols="30" id="descreption" value="#{queryComponentController.selected.descreption}" 
+                                         title="#{bundleQuery.CreateQueryComponentTitle_descreption}" />
+
+                        <p:outputLabel value="Indicator Query" for="indicatorQuery" />
+                        <p:inputTextarea rows="4" cols="30" id="indicatorQuery" value="#{queryComponentController.selected.indicatorQuery}" 
+                                         title="Indicator Query" />
+
+                        <p:outputLabel value="Select Query" for="selectQuery" />
+                        <p:inputTextarea rows="4" cols="30" id="selectQuery" value="#{queryComponentController.selected.selectQuery}" 
+                                         title="Select Query" />
+
+
+                        <p:outputLabel value="From Query" for="fromQuery" />
+                        <p:inputTextarea rows="4" cols="30" id="fromQuery" value="#{queryComponentController.selected.fromQuery}"
+                                         title="fromQuery" />
+
+                        <p:outputLabel value="Where Query" for="whereQuery" />
+                        <p:inputTextarea rows="4" cols="30" id="whereQuery" value="#{queryComponentController.selected.whereQuery}" 
+                                         title="Where Query" />
+
+                        <p:outputLabel value="Group by Query" for="groupQuery" />
+                        <p:inputTextarea rows="4" cols="30" id="groupQuery" value="#{queryComponentController.selected.groupQuery}" 
+                                         title="Where Query" />
+
+                        <p:outputLabel value="Having Query" for="havingQuery" />
+                        <p:inputTextarea rows="4" cols="30" id="havingQuery" value="#{queryComponentController.selected.havingQuery}" 
+                                         title="Where Query" />
+
+                        <p:outputLabel value="Filter Query" for="filterQuery" />
+                        <p:inputTextarea rows="4" cols="30" id="filterQuery" value="#{queryComponentController.selected.filterQuery}" 
+                                         title="Where Query" />
+
+
+                    </p:panelGrid>
+                    <p:commandButton actionListener="#{queryComponentController.update}" value="#{bundleQuery.Save}" update="display,:QueryComponentListForm:datalist,:growl" oncomplete="handleSubmit(args, 'QueryComponentEditDialog');"/>
+                    <p:commandButton value="#{bundleQuery.Cancel}" onclick="QueryComponentEditDialog.hide()"/>
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+
+    </ui:composition>
+</html>

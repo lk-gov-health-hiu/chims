@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition template="/template.xhtml">
+
+
+        <ui:define name="title">
+            <h:outputText value="#{bundleQuery.ListQueryComponentTitle}"></h:outputText>
+        </ui:define>
+
+        <ui:define name="content">
+            
+             <p:growl id="growl" showDetail="true" sticky="true" /> 
+            
+            <h:form id="QueryComponentListForm">
+                <p:panel header="#{bundleQuery.ListQueryComponentTitle}">
+                    <p:dataTable id="datalist" value="#{queryComponentController.items}" var="item"
+                                 selectionMode="single" selection="#{queryComponentController.selected}"
+                                 paginator="true"
+                                 rowKey="#{item.id}"
+                                 rows="10"
+                                 rowsPerPageTemplate="10,20,30,40,50"
+                                 >
+
+                        <p:ajax event="rowSelect"   update="createButton viewButton editButton deleteButton"/>
+                        <p:ajax event="rowUnselect" update="createButton viewButton editButton deleteButton"/>
+
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundleQuery.ListQueryComponentTitle_name}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.name}"/>
+                        </p:column>
+                         <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="Code"/>
+                            </f:facet>
+                            <h:outputText value="#{item.code}"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundleQuery.ListQueryComponentTitle_descreption}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.descreption}"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundleQuery.ListQueryComponentTitle_parentComponent}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.parentComponent}"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundleQuery.ListQueryComponentTitle_orderNo}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.orderNo}"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundleQuery.ListQueryComponentTitle_institution}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.institution}"/>
+                        </p:column>
+                        
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="Indicator Query"/>
+                            </f:facet>
+                            <h:outputText value="#{item.indicatorQuery}"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="Select Query"/>
+                            </f:facet>
+                            <h:outputText value="#{item.selectQuery}"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="From Query"/>
+                            </f:facet>
+                            <h:outputText value="#{item.calculationScriptForBackgroundColour}"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="Filter Query"/>
+                            </f:facet>
+                            <h:outputText value="#{item.calculationScriptForBackgroundColour}"/>
+                        </p:column>
+                        <f:facet name="footer">
+                            <p:commandButton id="createButton" icon="ui-icon-plus"   value="#{bundleQuery.Create}" actionListener="#{queryComponentController.prepareCreate}" update=":QueryComponentCreateForm" oncomplete="PF('QueryComponentCreateDialog').show()"/>
+                            <p:commandButton id="viewButton"   icon="ui-icon-search" value="#{bundleQuery.View}" update=":QueryComponentViewForm" oncomplete="PF('QueryComponentViewDialog').show()" disabled="#{empty queryComponentController.selected}"/>
+                            <p:commandButton id="editButton"   icon="ui-icon-pencil" value="#{bundleQuery.Edit}" update=":QueryComponentEditForm" oncomplete="PF('QueryComponentEditDialog').show()" disabled="#{empty queryComponentController.selected}"/>
+                            <p:commandButton id="deleteButton" icon="ui-icon-trash"  value="#{bundleQuery.Delete}" actionListener="#{queryComponentController.destroy}" update=":growl,datalist" disabled="#{empty queryComponentController.selected}"/>
+                        </f:facet>
+                    </p:dataTable>
+                </p:panel>
+            </h:form>
+
+            <ui:include src="Create.xhtml"/>
+            <ui:include src="Edit.xhtml"/>
+            <ui:include src="View.xhtml"/>
+        </ui:define>
+    </ui:composition>
+
+</html>

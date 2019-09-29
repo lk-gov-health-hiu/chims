@@ -59,6 +59,9 @@ public class Component implements Serializable {
     private Long id;
 
     String name;
+    
+    private String code;
+    
     @ManyToOne(fetch = FetchType.EAGER)
     private Item item;
 
@@ -195,6 +198,196 @@ public class Component implements Serializable {
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date retiredAt;
     private String retireComments;
+
+     @ManyToOne(fetch = FetchType.EAGER)
+    private Encounter encounter;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    private Client client;
+
+    @Lob
+    private String longTextValue;
+    @Lob
+    private String descreptionValue;
+    private String shortTextValue;
+    private byte[] byteArrayValue;
+    private Integer integerNumberValue;
+    private Long longNumberValue;
+    private Double realNumberValue;
+    private Boolean booleanValue;
+    @Temporal(javax.persistence.TemporalType.DATE)
+    private Date dateValue;
+    @ManyToOne(fetch = FetchType.EAGER)
+    private Item itemValue;
+    @ManyToOne(fetch = FetchType.EAGER)
+    private Area areaValue;
+    @ManyToOne(fetch = FetchType.EAGER)
+    private Institution institutionValue;
+    @ManyToOne(fetch = FetchType.EAGER)
+    private Client clientValue;
+    @ManyToOne(fetch = FetchType.EAGER)
+    private Prescription prescriptionValue;
+
+   
+
+    private boolean completed;
+    @Temporal(javax.persistence.TemporalType.TIMESTAMP)
+    private Date completedAt;
+    @ManyToOne(fetch = FetchType.EAGER)
+    private WebUser completedBy;
+
+    public Encounter getEncounter() {
+        return encounter;
+    }
+
+    public void setEncounter(Encounter encounter) {
+        this.encounter = encounter;
+    }
+
+    public Client getClient() {
+        return client;
+    }
+
+    public void setClient(Client client) {
+        this.client = client;
+    }
+
+    public String getLongTextValue() {
+        return longTextValue;
+    }
+
+    public void setLongTextValue(String longTextValue) {
+        this.longTextValue = longTextValue;
+    }
+
+    public String getShortTextValue() {
+        return shortTextValue;
+    }
+
+    public void setShortTextValue(String shortTextValue) {
+        this.shortTextValue = shortTextValue;
+    }
+
+    public byte[] getByteArrayValue() {
+        return byteArrayValue;
+    }
+
+    public void setByteArrayValue(byte[] byteArrayValue) {
+        this.byteArrayValue = byteArrayValue;
+    }
+
+    public Integer getIntegerNumberValue() {
+        return integerNumberValue;
+    }
+
+    public void setIntegerNumberValue(Integer integerNumberValue) {
+        this.integerNumberValue = integerNumberValue;
+    }
+
+    public Double getRealNumberValue() {
+        return realNumberValue;
+    }
+
+    public void setRealNumberValue(Double realNumberValue) {
+        this.realNumberValue = realNumberValue;
+    }
+
+    public Boolean getBooleanValue() {
+        return booleanValue;
+    }
+
+    public void setBooleanValue(Boolean booleanValue) {
+        this.booleanValue = booleanValue;
+    }
+
+    public Item getItemValue() {
+        return itemValue;
+    }
+
+    public void setItemValue(Item itemValue) {
+        this.itemValue = itemValue;
+    }
+
+    public Area getAreaValue() {
+        return areaValue;
+    }
+
+    public void setAreaValue(Area areaValue) {
+        this.areaValue = areaValue;
+    }
+
+    public Institution getInstitutionValue() {
+        return institutionValue;
+    }
+
+    public void setInstitutionValue(Institution institutionValue) {
+        this.institutionValue = institutionValue;
+    }
+
+    public Client getClientValue() {
+        return clientValue;
+    }
+
+    public void setClientValue(Client clientValue) {
+        this.clientValue = clientValue;
+    }
+
+    public boolean isCompleted() {
+        return completed;
+    }
+
+    public void setCompleted(boolean completed) {
+        this.completed = completed;
+    }
+
+    public Date getCompletedAt() {
+        return completedAt;
+    }
+
+    public void setCompletedAt(Date completedAt) {
+        this.completedAt = completedAt;
+    }
+
+    public WebUser getCompletedBy() {
+        return completedBy;
+    }
+
+    public void setCompletedBy(WebUser completedBy) {
+        this.completedBy = completedBy;
+    }
+
+    public Long getLongNumberValue() {
+        return longNumberValue;
+    }
+
+    public void setLongNumberValue(Long longNumberValue) {
+        this.longNumberValue = longNumberValue;
+    }
+
+    public Date getDateValue() {
+        return dateValue;
+    }
+
+    public void setDateValue(Date dateValue) {
+        this.dateValue = dateValue;
+    }
+
+    public Prescription getPrescriptionValue() {
+        return prescriptionValue;
+    }
+
+    public void setPrescriptionValue(Prescription prescriptionValue) {
+        this.prescriptionValue = prescriptionValue;
+    }
+
+    public String getDescreptionValue() {
+        return descreptionValue;
+    }
+
+    public void setDescreptionValue(String descreptionValue) {
+        this.descreptionValue = descreptionValue;
+    }
+
 
     
     
@@ -700,6 +893,14 @@ public class Component implements Serializable {
 
     public void setMultipleEntiesPerForm(boolean multipleEntiesPerForm) {
         this.multipleEntiesPerForm = multipleEntiesPerForm;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
     }
 
     

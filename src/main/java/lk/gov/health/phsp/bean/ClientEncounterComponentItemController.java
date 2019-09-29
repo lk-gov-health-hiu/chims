@@ -143,7 +143,7 @@ public class ClientEncounterComponentItemController implements Serializable {
             return;
         }
 
-        if (i.getCalculationScript().trim().equalsIgnoreCase("client_current_age_in_years")) {
+        if (i.getCalculationScript().trim().equalsIgnoreCase("#{client_current_age_in_years}")) {
             ClientEncounterComponentFormSet s = (ClientEncounterComponentFormSet) i.getParentComponent().getParentComponent();
             System.out.println("s = " + s);
             Person p = s.getEncounter().getClient().getPerson();
@@ -162,14 +162,14 @@ public class ClientEncounterComponentItemController implements Serializable {
         // System.out.println("replacingBlocks = " + replacingBlocks);
         for (Replaceable r : replacingBlocks) {
             System.out.println("r.getPef() = " + r.getPef());
-            if (r.getPef().toLowerCase().equals("f")) {
+            if (r.getPef().equalsIgnoreCase("f")) {
                 if (r.getSm().equalsIgnoreCase("s")) {
                     System.out.println("Single Value Search");
                     r.setClientEncounterComponentItem(findFormsetValue(i, r.getVariableCode()));
                 } else {
                     r.setClientEncounterComponentItem(findFormsetValue(i, r.getVariableCode(), r.getValueCode()));
                 }
-            } else if (r.getPef().toLowerCase().equals("p")) {
+            } else if (r.getPef().equalsIgnoreCase("p")) {
                 r.setClientEncounterComponentItem(findClientValue(i, r.getVariableCode()));
             }
             if (r.getClientEncounterComponentItem() != null) {

@@ -17,15 +17,15 @@
                 <h:outputStylesheet library="css" name="adminlte.min.css"></h:outputStylesheet>
                 <h:outputScript library="js" name="Chart.min.js"></h:outputScript>
                 <h:outputScript library="js" name="dashboard2.js" ></h:outputScript>
-                <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet"></link>
+                    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet"></link>
 
-                <div class="wrapper">
+                    <div class="wrapper">
 
-                    <div class="content-header">
-                        <div class="container-fluid">
-                            <div class="row mb-2">
-                                <div class="col-sm-6">
-                                    <h1 class="m-0 text-dark">#{webUserController.loggedUser.institution.name}</h1>
+                        <div class="content-header">
+                            <div class="container-fluid">
+                                <div class="row mb-2">
+                                    <div class="col-sm-6">
+                                        <h1 class="m-0 text-dark">#{webUserController.loggedUser.institution.name}</h1>
                                 </div><!-- /.col -->
                                 <div class="col-sm-6">
                                     <ol class="breadcrumb float-sm-right">
@@ -228,7 +228,10 @@
         </ui:composition>
 
 
+        <br />
+        <h:link outcome="/queryComponent/List" value="Show All QueryComponent Items"/>
     </h:body>
+
 
 
 </html>

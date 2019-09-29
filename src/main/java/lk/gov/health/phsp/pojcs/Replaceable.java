@@ -8,18 +8,30 @@ package lk.gov.health.phsp.pojcs;
 import java.util.ArrayList;
 import java.util.List;
 import lk.gov.health.phsp.entity.ClientEncounterComponentItem;
+import lk.gov.health.phsp.enums.Evaluation;
+import lk.gov.health.phsp.enums.QueryDataType;
 
 /**
  *
  * @author buddhika_ari
  */
 public class Replaceable {
-    String variableCode;
+
+    private String variableCode;
     private String valueCode;
+    private Evaluation evaluation;
+    private QueryDataType queryDataType;
+
+    private boolean forClient;
+    private boolean forEncounter;
+    private boolean forForm;
+
     private String pef;
     private String fl;
     private String sm;
     private String defaultValue;
+    private String strEvaluation;
+    private String strQueryDataType;
     private ClientEncounterComponentItem clientEncounterComponentItem;
     List<String> options;
     String selectedOption;
@@ -28,8 +40,6 @@ public class Replaceable {
     String selectedValue;
     String fullText;
 
-    
-    
     public String getVariableCode() {
         return variableCode;
     }
@@ -74,7 +84,7 @@ public class Replaceable {
     }
 
     public String getSelectedValue() {
-        if(selectedValue==null){
+        if (selectedValue == null) {
             selectedValue = "";
         }
         return selectedValue;
@@ -98,6 +108,16 @@ public class Replaceable {
 
     public void setPef(String pef) {
         this.pef = pef;
+        forClient = false;
+        forEncounter = false;
+        forForm = false;
+        if (pef.equalsIgnoreCase("p")) {
+            forClient = true;
+        } else if (pef.equalsIgnoreCase("f")) {
+            forForm = true;
+        } else if (pef.equalsIgnoreCase("e")) {
+            forEncounter = true;
+        }
     }
 
     public String getFl() {
@@ -139,8 +159,119 @@ public class Replaceable {
     public void setSm(String sm) {
         this.sm = sm;
     }
-    
-    
-    
-    
+
+    public Evaluation getEvaluation() {
+        return evaluation;
+    }
+
+    public void setEvaluation(Evaluation evaluation) {
+        this.evaluation = evaluation;
+    }
+
+    public boolean isForClient() {
+        return forClient;
+    }
+
+    public void setForClient(boolean forClient) {
+        this.forClient = forClient;
+    }
+
+    public boolean isForEncounter() {
+        return forEncounter;
+    }
+
+    public void setForEncounter(boolean forEncounter) {
+        this.forEncounter = forEncounter;
+    }
+
+    public boolean isForForm() {
+        return forForm;
+    }
+
+    public void setForForm(boolean forForm) {
+        this.forForm = forForm;
+    }
+
+    public String getStrEvaluation() {
+        return strEvaluation;
+    }
+
+    public void setStrEvaluation(String strEvaluation) {
+        this.strEvaluation = strEvaluation.trim().toLowerCase();
+        switch (this.strEvaluation) {
+            case "":
+                evaluation = null;
+                break;
+            case "eq":
+                evaluation = Evaluation.eq;
+                break;
+            case "ne":
+                evaluation = Evaluation.ne;
+                break;
+            case "gt":
+                evaluation = Evaluation.gt;
+                break;
+            case "lt":
+                evaluation = Evaluation.lt;
+                break;
+            case "ge":
+                evaluation = Evaluation.ge;
+                break;
+            case "le":
+                evaluation = Evaluation.le;
+                break;
+            case "in":
+                evaluation = Evaluation.in;
+                break;
+            case "nn":
+                evaluation = Evaluation.nn;
+                break;
+        }
+    }
+
+    public String getStrQueryDataType() {
+        return strQueryDataType;
+    }
+
+    public void setStrQueryDataType(String strQueryDataType) {
+        this.strQueryDataType = strQueryDataType.trim().toLowerCase();
+        switch (this.strQueryDataType) {
+            case "":
+                queryDataType = null;
+                break;
+            case "it":
+                queryDataType = QueryDataType.it;
+                break;
+            case "db":
+                queryDataType = QueryDataType.db;
+                break;
+            case "in":
+                queryDataType = QueryDataType.in;
+                break;
+            case "ac":
+                queryDataType = QueryDataType.ac;
+                break;
+            case "ic":
+                queryDataType = QueryDataType.ic;
+                break;
+            case "sr":
+                queryDataType = QueryDataType.sr;
+                break;
+            case "bo":
+                queryDataType = QueryDataType.bo;
+                break;
+            case "dt":
+                queryDataType = QueryDataType.dt;
+                break;
+        }
+    }
+
+    public QueryDataType getQueryDataType() {
+        return queryDataType;
+    }
+
+    public void setQueryDataType(QueryDataType queryDataType) {
+        this.queryDataType = queryDataType;
+    }
+
 }
