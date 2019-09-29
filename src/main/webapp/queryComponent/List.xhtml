@@ -14,9 +14,9 @@
         </ui:define>
 
         <ui:define name="content">
-            
-             <p:growl id="growl" showDetail="true" sticky="true" /> 
-            
+
+            <p:growl id="growl" showDetail="true" sticky="true" /> 
+
             <h:form id="QueryComponentListForm">
                 <p:panel header="#{bundleQuery.ListQueryComponentTitle}">
                     <p:dataTable id="datalist" value="#{queryComponentController.items}" var="item"
@@ -27,8 +27,8 @@
                                  rowsPerPageTemplate="10,20,30,40,50"
                                  >
 
-                        <p:ajax event="rowSelect"   update="createButton viewButton editButton deleteButton"/>
-                        <p:ajax event="rowUnselect" update="createButton viewButton editButton deleteButton"/>
+                        <p:ajax event="rowSelect"   update="createButton viewButton editButton deleteButton duplicateButton"/>
+                        <p:ajax event="rowUnselect" update="createButton viewButton editButton deleteButton duplicateButton"/>
 
                         <p:column>
                             <f:facet name="header">
@@ -36,7 +36,7 @@
                             </f:facet>
                             <h:outputText value="#{item.name}"/>
                         </p:column>
-                         <p:column>
+                        <p:column>
                             <f:facet name="header">
                                 <h:outputText value="Code"/>
                             </f:facet>
@@ -66,7 +66,7 @@
                             </f:facet>
                             <h:outputText value="#{item.institution}"/>
                         </p:column>
-                        
+
                         <p:column>
                             <f:facet name="header">
                                 <h:outputText value="Indicator Query"/>
@@ -83,19 +83,20 @@
                             <f:facet name="header">
                                 <h:outputText value="From Query"/>
                             </f:facet>
-                            <h:outputText value="#{item.calculationScriptForBackgroundColour}"/>
+                            <h:outputText value="#{item.fromQuery}"/>
                         </p:column>
                         <p:column>
                             <f:facet name="header">
                                 <h:outputText value="Filter Query"/>
                             </f:facet>
-                            <h:outputText value="#{item.calculationScriptForBackgroundColour}"/>
+                            <h:outputText value="#{item.filterQuery}"/>
                         </p:column>
                         <f:facet name="footer">
                             <p:commandButton id="createButton" icon="ui-icon-plus"   value="#{bundleQuery.Create}" actionListener="#{queryComponentController.prepareCreate}" update=":QueryComponentCreateForm" oncomplete="PF('QueryComponentCreateDialog').show()"/>
                             <p:commandButton id="viewButton"   icon="ui-icon-search" value="#{bundleQuery.View}" update=":QueryComponentViewForm" oncomplete="PF('QueryComponentViewDialog').show()" disabled="#{empty queryComponentController.selected}"/>
                             <p:commandButton id="editButton"   icon="ui-icon-pencil" value="#{bundleQuery.Edit}" update=":QueryComponentEditForm" oncomplete="PF('QueryComponentEditDialog').show()" disabled="#{empty queryComponentController.selected}"/>
-                            <p:commandButton id="deleteButton" icon="ui-icon-trash"  value="#{bundleQuery.Delete}" actionListener="#{queryComponentController.destroy}" update=":growl,datalist" disabled="#{empty queryComponentController.selected}"/>
+                            <p:commandButton id="duplicateButton" icon="ui-icon-arrowrefresh-1-n"  value="Duplicate" action="#{queryComponentController.duplicate()}" ajax="false" disabled="#{empty queryComponentController.selected}"/>
+                            <p:commandButton id="deleteButton" icon="ui-icon-trash"  value="#{bundleQuery.Delete}" actionListener="#{queryComponentController.retire()}" ajax="false" disabled="#{empty queryComponentController.selected}"/>
                         </f:facet>
                     </p:dataTable>
                 </p:panel>

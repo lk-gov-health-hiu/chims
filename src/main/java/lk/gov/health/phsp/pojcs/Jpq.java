@@ -24,7 +24,11 @@
 package lk.gov.health.phsp.pojcs;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import lk.gov.health.phsp.entity.Client;
+import lk.gov.health.phsp.entity.ClientEncounterComponentForm;
+import lk.gov.health.phsp.entity.Encounter;
 import lk.gov.health.phsp.entity.QueryComponent;
 
 /**
@@ -44,6 +48,9 @@ public class Jpq {
     
     private Long longResult;
     private QueryComponent qc;
+    private List<Client> clientList;
+    private List<Encounter> encounterList;
+    private List<ClientEncounterComponentForm> formList;
     
     /**
      * 
@@ -153,9 +160,34 @@ ORDER BY c.currency
         this.qc = qc;
     }
 
+
     @Override
     public String toString() {
         return "Jpq{" + "jpql=" + getJpql() + ", m=" + getM() + '}';
+    }
+
+    public List<Client> getClientList() {
+        return clientList;
+    }
+
+    public void setClientList(List<Client> clientList) {
+        this.clientList = clientList;
+    }
+
+    public List<Encounter> getEncounterList() {
+        return encounterList;
+    }
+
+    public void setEncounterList(List<Encounter> encounterList) {
+        this.encounterList = encounterList;
+    }
+
+    public List<ClientEncounterComponentForm> getFormList() {
+        return formList;
+    }
+
+    public void setFormList(List<ClientEncounterComponentForm> formList) {
+        this.formList = formList;
     }
     
     

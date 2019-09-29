@@ -23,79 +23,146 @@
 
                     <h:panelGroup id="gpDataAndButtons" >
                         <tr>
-                            <td>
-                                <p:outputLabel value="#{ii.name}" ></p:outputLabel>
-                            </td>
-                            <td>
-                                <h:panelGroup id="gpData" >
-                                    <h:panelGroup rendered="#{ii.renderType eq 'Input_Text'}" >
-                                        <h:panelGroup rendered="#{ii.selectionDataType eq'Short_Text'}" >
+
+                            <h:panelGroup id="gpData" >
+                                <h:panelGroup rendered="#{ii.renderType eq 'Input_Text'}" >
+                                    <h:panelGroup rendered="#{ii.selectionDataType eq'Short_Text'}" >
+                                        <td>
+                                            <p:outputLabel for="itStC" value="#{ii.name}" ></p:outputLabel>
+                                        </td>
+                                        <td>
                                             <p:inputText id="itStC" value="#{ii.shortTextValue}" 
                                                          required="#{ii.required}" 
                                                          requiredMessage="#{ii.requiredErrorMessage}" >
                                                 <p:ajax  event="blur" process="@this" listener="#{clientEncounterComponentItemController.save(ii)}" ></p:ajax>
                                             </p:inputText>
-                                        </h:panelGroup>
-                                        <h:panelGroup rendered="#{ii.selectionDataType eq 'Integer_Number'}" >
+                                        </td>
+                                        <td>
+                                            <h:panelGroup rendered="#{ii.calculateButton}" >
+                                                <p:commandButton id="btnCalculateitStC"  value="Calculate" process="@this" update="itStC"
+                                                                 action="#{clientEncounterComponentItemController.calculate(ii)}"></p:commandButton>
+                                            </h:panelGroup>
+                                        </td>
+                                    </h:panelGroup>
+                                    <h:panelGroup rendered="#{ii.selectionDataType eq 'Integer_Number'}" >
+                                        <td>
+                                            <p:outputLabel for="itIntC" value="#{ii.name}" ></p:outputLabel>
+                                        </td>
+                                        <td>
                                             <p:inputText id="itIntC" value="#{ii.integerNumberValue}" 
                                                          required="#{ii.required}" 
                                                          requiredMessage="#{ii.requiredErrorMessage}" >
                                                 <p:ajax  event="blur" process="@this" listener="#{clientEncounterComponentItemController.save(ii)}" ></p:ajax>
 
                                             </p:inputText>
-                                        </h:panelGroup>
-                                        <h:panelGroup rendered="#{ii.selectionDataType eq 'Real_Number'}" >
+                                        </td>
+                                        <td>
+                                            <h:panelGroup rendered="#{ii.calculateButton}" >
+                                                <p:commandButton id="btnCalculateitIntC"  value="Calculate" process="@this" update="itIntC"
+                                                                 action="#{clientEncounterComponentItemController.calculate(ii)}"></p:commandButton>
+                                            </h:panelGroup>
+                                        </td>
+
+                                    </h:panelGroup>
+                                    <h:panelGroup rendered="#{ii.selectionDataType eq 'Real_Number'}" >
+                                        <td>
+                                            <p:outputLabel for="itRnC" value="#{ii.name}" ></p:outputLabel>
+                                        </td>
+                                        <td>
                                             <p:inputText id="itRnC" value="#{ii.realNumberValue}" 
                                                          required="#{ii.required}" 
                                                          requiredMessage="#{ii.requiredErrorMessage}" >
                                                 <p:ajax  event="blur" process="@this" listener="#{clientEncounterComponentItemController.save(ii)}" ></p:ajax>
                                             </p:inputText>
-                                        </h:panelGroup>
-                                        <h:panelGroup rendered="#{ii.selectionDataType eq 'Long_Number'}" >
+                                        </td>
+                                        <td>
+                                            <h:panelGroup rendered="#{ii.calculateButton}" >
+                                                <p:commandButton id="btnCalculate_it_RnC"  value="Calculate" process="@this" update="itRnC"
+                                                                 action="#{clientEncounterComponentItemController.calculate(ii)}"></p:commandButton>
+                                            </h:panelGroup>
+                                        </td>
+                                    </h:panelGroup>
+                                    <h:panelGroup rendered="#{ii.selectionDataType eq 'Long_Number'}" >
+                                        <td>
+                                            <p:outputLabel for="itLongC" value="#{ii.name}" ></p:outputLabel>
+                                        </td>
+                                        <td>
                                             <p:inputText id="itLongC" value="#{ii.longNumberValue}" 
                                                          required="#{ii.required}" 
                                                          requiredMessage="#{ii.requiredErrorMessage}" >
                                                 <p:ajax  event="blur" process="@this" listener="#{clientEncounterComponentItemController.save(ii)}" ></p:ajax>
                                             </p:inputText>
-                                        </h:panelGroup>
+                                        </td>
+                                        <td>
+                                            <h:panelGroup rendered="#{ii.calculateButton}" >
+                                                <p:commandButton id="btnCalculate_itLongC"  value="Calculate" process="@this"
+                                                                 update="itLongC"
+                                                                 action="#{clientEncounterComponentItemController.calculate(ii)}"></p:commandButton>
+                                            </h:panelGroup>
+                                        </td>
                                     </h:panelGroup>
-                                    <h:panelGroup rendered="#{ii.renderType eq 'Input_Text_Area'}" >
+                                </h:panelGroup>
+                                <h:panelGroup rendered="#{ii.renderType eq 'Input_Text_Area'}" >
+                                    <td>
+                                        <p:outputLabel for="txtItaL" value="#{ii.name}" ></p:outputLabel>
+                                    </td>
+                                    <td>
                                         <p:inputTextarea id="txtItaL" value="#{ii.longTextValue}" 
                                                          required="#{ii.required}" 
                                                          requiredMessage="#{ii.requiredErrorMessage}" >
                                             <p:ajax  event="blur" process="@this" listener="#{clientEncounterComponentItemController.save(ii)}" ></p:ajax>
                                         </p:inputTextarea>
-                                    </h:panelGroup>
-                                    <h:panelGroup rendered="#{ii.selectionDataType eq 'DateTime'}" >
-                                        <h:panelGroup rendered="#{ii.renderType eq 'Date_Picker'}" >
+                                    </td>
+                                </h:panelGroup>
+                                <h:panelGroup rendered="#{ii.selectionDataType eq 'DateTime'}" >
+                                    <h:panelGroup rendered="#{ii.renderType eq 'Date_Picker'}" >
+                                        <td>
+                                            <p:outputLabel for="calDp" value="#{ii.name}" ></p:outputLabel>
+                                        </td>
+                                        <td>
                                             <p:calendar id="calDp" value="#{ii.dateValue}" 
                                                         required="#{ii.required}" navigator="true"
                                                         requiredMessage="#{ii.requiredErrorMessage}" 
                                                         pattern="dd MMMM yyyy">
                                                 <p:ajax  event="blur" process="@this" listener="#{clientEncounterComponentItemController.save(ii)}" ></p:ajax>
                                             </p:calendar>
-                                        </h:panelGroup>
-                                        <h:panelGroup rendered="#{ii.renderType eq 'Calendar'}" >
+                                        </td>
+
+                                    </h:panelGroup>
+                                    <h:panelGroup rendered="#{ii.renderType eq 'Calendar'}" >
+                                        <td>
+                                            <p:outputLabel for="calC" value="#{ii.name}" ></p:outputLabel>
+                                        </td>
+                                        <td>
                                             <p:calendar id="calC" value="#{ii.dateValue}" 
                                                         required="#{ii.required}" 
                                                         requiredMessage="#{ii.requiredErrorMessage}" pattern="dd MMMM yyyy">
                                                 <p:ajax  event="blur" process="@this" listener="#{clientEncounterComponentItemController.save(ii)}" ></p:ajax>
                                             </p:calendar>
-                                        </h:panelGroup>
+                                        </td>
+
                                     </h:panelGroup>
-                                    <h:panelGroup rendered="#{ii.selectionDataType eq 'Item_Reference'}" >
-                                        <h:panelGroup rendered="#{ii.renderType eq 'Drop_Down_Menu'}" >
+                                </h:panelGroup>
+                                <h:panelGroup rendered="#{ii.selectionDataType eq 'Item_Reference'}" >
+                                    <h:panelGroup rendered="#{ii.renderType eq 'Drop_Down_Menu'}" >
+                                        <td>
+                                            <p:outputLabel for="domIc" value="#{ii.name}" ></p:outputLabel>
+                                        </td>
+                                        <td>
                                             <p:selectOneMenu id="domIc" value="#{ii.itemValue}" >
                                                 <f:selectItem itemLabel="Please select" ></f:selectItem>
                                                 <f:selectItems value="#{itemController.findItemList(ii.categoryOfAvailableItems)}" var="li"
                                                                itemLabel="#{li.name}" itemValue="#{li}" ></f:selectItems>
                                                 <p:ajax  event="blur" process="@this" listener="#{clientEncounterComponentItemController.save(ii)}" ></p:ajax>
                                             </p:selectOneMenu>
-
-                                        </h:panelGroup>
-
+                                        </td>
                                     </h:panelGroup>
-                                    <h:panelGroup rendered="#{ii.renderType eq 'Boolean_Checkbox'}" >
+                                </h:panelGroup>
+                                <h:panelGroup rendered="#{ii.renderType eq 'Boolean_Checkbox'}" >
+                                    <td>
+                                        <p:outputLabel for="bcNc" value="#{ii.name}" ></p:outputLabel>
+                                    </td>
+                                    <td>
                                         <p:selectBooleanCheckbox id="bcNc" value="#{ii.booleanValue}" 
                                                                  required="#{ii.required}" 
                                                                  requiredMessage="#{ii.requiredErrorMessage}" >
@@ -103,16 +170,34 @@
                                                      listener="#{clientEncounterComponentItemController.save(ii)}" >
                                             </p:ajax>
                                         </p:selectBooleanCheckbox>
-                                    </h:panelGroup>
+                                    </td>
+                                </h:panelGroup>
+
+                                <h:panelGroup rendered="#{ii.renderType eq 'Autocomplete' and ii.selectionDataType eq 'Area_Reference'}" >
+                                    <td>
+                                        <p:outputLabel for="acA" value="#{ii.name}" ></p:outputLabel>
+                                    </td>
+                                    <td>
+                                        <p:autoComplete id="acA" value="#{ii.areaValue}"
+                                                        completeMethod="#{areaController.completeAreas}"
+                                                        var="a" itemLabel="#{a.name}" itemValue="#{a}"
+                                                        maxResults="15" forceSelection="true" 
+                                                        minQueryLength="3"
+                                                        required="#{ii.required}" 
+                                                        requiredMessage="#{ii.requiredErrorMessage}">
+                                            <p:ajax  event="blur" process="@this" 
+                                                     listener="#{clientEncounterComponentItemController.save(ii)}" >
+                                            </p:ajax>
+                                        </p:autoComplete>
+                                    </td>
 
                                 </h:panelGroup>
 
 
-                            </td>
+                            </h:panelGroup>
+
                             <td>
-
                                 <p:outputLabel value="#{ii.descreption}" ></p:outputLabel>
-
                             </td>
                             <td>
                                 <h:panelGroup rendered="#{ii.multipleEntiesPerForm}" >
@@ -122,12 +207,7 @@
                                 </h:panelGroup>
                             </td>
 
-                            <td>
-                                <h:panelGroup rendered="#{ii.calculateButton}" >
-                                    <p:commandButton id="btnCalculate"  value="Calculate" process="@this" update="gpData"
-                                                     action="#{clientEncounterComponentItemController.calculate(ii)}"></p:commandButton>
-                                </h:panelGroup>
-                            </td>
+
 
                         </tr>
 

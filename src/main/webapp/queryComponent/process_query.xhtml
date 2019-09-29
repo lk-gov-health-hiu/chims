@@ -3,7 +3,9 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:p="http://primefaces.org/ui"
-      xmlns:h="http://xmlns.jcp.org/jsf/html">
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ez="http://xmlns.jcp.org/jsf/composite/ezcomp">
 
     <body>
 
@@ -13,31 +15,112 @@
 
                 <p:panel header="Execute Query" >
                     <h:form >
-                        <p:panelGrid columns="2" >
-                            <p:outputLabel value="Query" ></p:outputLabel>
-                            <p:autoComplete value="#{queryComponentController.selected}" forceSelection="true"
-                                            completeMethod="#{queryComponentController.completeQueries}" 
-                                            var="q" itemLabel="#{q.code}" itemValue="#{q}"
-                                            >
-                                <p:column headerText="Code" >
-                                    <p:outputLabel value="#{q.code}" ></p:outputLabel>
-                                </p:column>
-                                <p:column headerText="Name" >
-                                    <p:outputLabel value="#{q.name}" ></p:outputLabel>
-                                </p:column>
+                        <p:panelGrid columns="2" styleClass="alignTop" >
+                            <p:panelGrid columns="1" >
+                                <p:panelGrid columns="2" >
+                                    <p:outputLabel value="Query" ></p:outputLabel>
+                                    <p:autoComplete value="#{queryComponentController.selectedForQuery}" 
+                                                    completeMethod="#{queryComponentController.completeQueries}" 
+                                                    var="q" itemLabel="#{q.code}" itemValue="#{q}" forceSelection="true"
+                                                    >
+                                        <p:column headerText="Code" >
+                                            <p:outputLabel value="#{q.code}" ></p:outputLabel>
+                                        </p:column>
+                                        <p:column headerText="Name" >
+                                            <p:outputLabel value="#{q.name}" ></p:outputLabel>
+                                        </p:column>
+                                        <p:ajax event="itemSelect"  process="@this" update=":#{p:component('filters')}" ></p:ajax>
+                                    </p:autoComplete>
 
-                            </p:autoComplete>
-                            <p:commandButton value="Execute" ajax="false" action="#{queryComponentController.processQuery()}" >
-                            </p:commandButton>
+                                    <p:commandButton value="Execute" ajax="false" action="#{queryComponentController.processQuery()}" >
+                                    </p:commandButton>
+
+                                    <p:outputLabel value="#{queryComponentController.selectedForQuery.descreption}" >
+                                    </p:outputLabel>
+
+                                </p:panelGrid>
+
+                                <h:panelGroup id="filters" >
+                                    <p:panelGrid columns="2" >
+                                        <f:facet name="header" >
+                                            <p:outputLabel value="Filters" ></p:outputLabel>
+                                            <p:commandLink value="Clear" ajax="false" action="#{queryComponentController.clearFilters()}" 
+                                                           style="float: right;">
+                                            </p:commandLink>
+                                        </f:facet>
+
+                                        <p:outputLabel value="Province" for="province" rendered="#{queryComponentController.filterProvices}" >
+                                        </p:outputLabel>
+
+                                        <p:autoComplete id="province" value="#{queryComponentController.province}"
+                                                        completeMethod="#{areaController.completeProvinces}"
+                                                        var="p" itemLabel="#{p.name}" itemValue="#{p}" required="true"
+                                                        maxResults="15" forceSelection="true"  rendered="#{queryComponentController.filterProvices}" 
+                                                        minQueryLength="3">
+                                        </p:autoComplete>
+
+                                        <p:outputLabel value="District" rendered="#{queryComponentController.filterDistricts}" for="district" >
+                                        </p:outputLabel>
+
+                                        <p:autoComplete id="district" value="#{queryComponentController.district}"
+                                                        completeMethod="#{areaController.completeDistricts}"
+                                                        var="d" itemLabel="#{d.name}" itemValue="#{d}" required="true"
+                                                        maxResults="15" forceSelection="true" 
+                                                        rendered="#{queryComponentController.filterDistricts}" 
+                                                        minQueryLength="3">
+                                        </p:autoComplete>
+
+
+                                        <p:outputLabel value="Institution" for="ins" rendered="#{queryComponentController.filterInstitutions}" >
+                                        </p:outputLabel>
+                                        <p:selectOneMenu id="ins" value="#{queryComponentController.institution}" rendered="#{queryComponentController.filterInstitutions}" required="true" >
+                                            <f:selectItems value="#{institutionController.myClinics}" var="c" itemLabel="#{c.name}" itemValue="#{c}" ></f:selectItems>
+                                        </p:selectOneMenu>
+
+
+                                        <p:outputLabel value="Year" for="ins" rendered="#{queryComponentController.filterYear}" >
+                                        </p:outputLabel>
+                                        <p:inputText value="#{queryComponentController.year}" required="true"  rendered="#{queryComponentController.filterYear}" ></p:inputText>
+
+                                    </p:panelGrid>
+
+                                </h:panelGroup>
+
+                            </p:panelGrid>
+
+                            <h:panelGroup >
+
+                                <p:panel header="Results" rendered="#{queryComponentController.resultString ne null}" >
+                                    <p:outputLabel value="#{queryComponentController.resultString}" ></p:outputLabel>
+                                </p:panel>
+
+                                <h:panelGroup rendered="#{queryComponentController.resultClientList ne null}" >
+                                    <ez:clientsTable/>
+                                </h:panelGroup>
+
+                                <h:panelGroup rendered="#{queryComponentController.resultEncounterList ne null}" >
+                                    <p:dataTable value="#{queryComponentController.resultEncounterList}" 
+                                                 var="cv"
+                                                 >
+                                        <f:facet name="header" >
+                                            <p:outputLabel value="Recent Completed Visits" ></p:outputLabel>
+                                        </f:facet>
+                                        <p:column headerText="Date" >
+                                            <p:outputLabel value="#{cv.encounterDate}" >
+                                                <f:convertDateTime pattern="dd MMMM yyyy" ></f:convertDateTime>
+                                            </p:outputLabel>
+                                        </p:column>
+                                        <p:column headerText="Institution" >
+                                            <p:outputLabel value="#{cv.institution.name}" ></p:outputLabel>
+                                        </p:column>
+                                    </p:dataTable>
+                                </h:panelGroup>
+
+                            </h:panelGroup>
+
+
                         </p:panelGrid>
-                        
-                        <p:outputLabel value="#{queryComponentController.resultValue}" ></p:outputLabel>
-
-
                     </h:form>
-
-
-
                 </p:panel>
 
 

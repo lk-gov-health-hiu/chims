@@ -53,6 +53,8 @@ public class Encounter implements Serializable {
     private Client client;
     @ManyToOne
     private Area area;
+    
+    private boolean firstEncounter ;
 
     @Temporal(javax.persistence.TemporalType.DATE)
     private Date encounterDate;
@@ -60,6 +62,10 @@ public class Encounter implements Serializable {
     private Date encounterFrom;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date encounterTo;
+    
+    private Integer encounterYear;
+    private Integer encounterMonth;
+    private Integer encounterQuarter;
 
     @Enumerated(EnumType.STRING)
     private EncounterType encounterType;
@@ -312,6 +318,38 @@ public class Encounter implements Serializable {
 
     public void setLastEditeAt(Date lastEditeAt) {
         this.lastEditeAt = lastEditeAt;
+    }
+
+    public Integer getEncounterYear() {
+        return encounterYear;
+    }
+
+    public void setEncounterYear(Integer encounterYear) {
+        this.encounterYear = encounterYear;
+    }
+
+    public Integer getEncounterMonth() {
+        return encounterMonth;
+    }
+
+    public void setEncounterMonth(Integer encounterMonth) {
+        this.encounterMonth = encounterMonth;
+    }
+
+    public Integer getEncounterQuarter() {
+        return encounterQuarter;
+    }
+
+    public void setEncounterQuarter(Integer encounterQuarter) {
+        this.encounterQuarter = encounterQuarter;
+    }
+
+    public boolean isFirstEncounter() {
+        return firstEncounter;
+    }
+
+    public void setFirstEncounter(boolean firstEncounter) {
+        this.firstEncounter = firstEncounter;
     }
     
     
