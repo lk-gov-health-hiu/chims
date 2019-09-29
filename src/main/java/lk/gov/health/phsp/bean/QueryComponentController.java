@@ -115,10 +115,10 @@ public class QueryComponentController implements Serializable {
     }
 
     private void querySelectAction() {
-        if (selected == null) {
+        if (selectedForQuery == null) {
             return;
         }
-        String filterQuery = selected.getFilterQuery();
+        String filterQuery = selectedForQuery.getFilterQuery();
         filterDistricts = false;
         filterFrom = false;
         filterGn = false;
