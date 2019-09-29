@@ -15,7 +15,7 @@
                     <h:form >
                         <p:panelGrid columns="2" >
                             <p:outputLabel value="Query" ></p:outputLabel>
-                            <p:autoComplete value="#{queryComponentController.selected}" 
+                            <p:autoComplete value="#{queryComponentController.selected}" forceSelection="true"
                                             completeMethod="#{queryComponentController.completeQueries}" 
                                             var="q" itemLabel="#{q.code}" itemValue="#{q}"
                                             >
