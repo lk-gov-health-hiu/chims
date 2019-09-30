@@ -242,7 +242,7 @@ public class QueryComponentController implements Serializable {
                 j = createAClientCountQuery(temqc);
             } else if (temqc.getFromQuery().trim().equalsIgnoreCase("#{pop}")) {
                 j = createAPopulationCountQuery(temqc);
-            }else{
+            } else {
                 JsfUtil.addErrorMessage("Wrong Query. Check the names of queries");
                 return rs;
             }
@@ -362,7 +362,7 @@ public class QueryComponentController implements Serializable {
         for (Replaceable r : replaceblesInWhereQuery) {
             count++;
             String qs = "";
-            if (r.isForForm()) {
+            if (r.isForForm()||r.isForClient()) {
                 switch (r.getQueryDataType()) {
                     case it:
                         if (r.getEvaluation() == Evaluation.eq) {
@@ -407,7 +407,7 @@ public class QueryComponentController implements Serializable {
 
                 }
 
-            }
+            } 
             j.setJwhere(j.getJwhere() + qs + addFilterString(j.getM()));
 
         }
