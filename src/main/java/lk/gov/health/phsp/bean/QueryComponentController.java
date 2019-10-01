@@ -37,6 +37,7 @@ import lk.gov.health.phsp.entity.Encounter;
 import lk.gov.health.phsp.entity.Institution;
 import lk.gov.health.phsp.entity.Relationship;
 import lk.gov.health.phsp.enums.Evaluation;
+import lk.gov.health.phsp.enums.QueryCriteriaMatchType;
 import lk.gov.health.phsp.enums.QueryLevel;
 import lk.gov.health.phsp.enums.QueryOutputType;
 import lk.gov.health.phsp.enums.RelationshipType;
@@ -509,11 +510,24 @@ public class QueryComponentController implements Serializable {
             JsfUtil.addErrorMessage("Noting selected.");
             return;
         }
+        List<QueryComponent> cs = criteria(selected);
         QueryComponent q = SerializationUtils.clone(selected);
         q.setId(null);
         q.setCreatedAt(new Date());
+        q.setName(q.getName() + "1");
         q.setCreatedBy(webUserController.getLoggedUser());
         getFacade().create(q);
+        
+        for(QueryComponent c:cs){
+            QueryComponent newC = SerializationUtils.clone(c);
+            newC.setId(null);
+            newC.setName(newC.getName()+ "1");
+            newC.setParentComponent(q);
+            newC.setCreatedAt(new Date());
+            newC.setCreatedBy(webUserController.getLoggedUser());
+            getFacade().create(newC);
+        }
+        
         items = null;
         selected = q;
         JsfUtil.addSuccessMessage("Duplicated");
@@ -590,89 +604,112 @@ public class QueryComponentController implements Serializable {
         List<QueryComponent> criterias = criteria(qc);
 
         jpql.getM().put("f", false);
-        jpql.setJfrom(" from ClientEncounterComponentItem i ");
-        jpql.setJwhere(" where i.retired=:f ");
-        jpql.setJwhere(jpql.getJwhere() + addFilterStringForClient(jpql.getM()));
 
         if (criterias == null || criterias.isEmpty()) {
+            jpql.setJwhere(" where c.retired=:f ");
+            jpql.setJfrom("  from Client c ");
             if (qc.getOutputType() == QueryOutputType.Count) {
-                jpql.setJselect("select c from Client c  ");
+                jpql.setJselect("select count(c) ");
             } else if (qc.getOutputType() == QueryOutputType.List) {
-                jpql.setJselect("select distinct(i)  ");
+                jpql.setJselect("select c ");
             }
             System.out.println("j.getJpql() = " + jpql.getJpql());
             System.out.println("j.getM() = " + jpql.getM());
-           
+            jpql.setJwhere(jpql.getJwhere() + addFilterStringForClient(jpql.getM()));
             if (qc.getOutputType() == QueryOutputType.Count) {
                 jpql.setLongResult(getItemFacade().findLongByJpql(jpql.getJpql(), jpql.getM(), 1));
             } else if (qc.getOutputType() == QueryOutputType.List) {
-                jpql.setRelationshipList(getRelationshipFacade().findByJpql(jpql.getJpql(), jpql.getM()));
+                jpql.setClientList(getClientFacade().findByJpql(jpql.getJpql(), jpql.getM()));
             }
 
             return jpql;
 
-        } else {
+        } else if (criterias.size() == 1) {
 
             if (qc.getOutputType() == QueryOutputType.Count) {
-                jpql.setJselect("select count(distinct i.parentComponent.parentComponent.encounter.client)  ");
+                jpql.setJselect("select count(distinct i.itemClient)  ");
             } else if (qc.getOutputType() == QueryOutputType.List) {
-                jpql.setJselect("select distinct(i)  ");
+                jpql.setJselect("select distinct(i.itemClient)  ");
             }
 
-        }
+            jpql.setJfrom(" from ClientEncounterComponentItem i ");
+            jpql.setJwhere(" where i.retired=:f ");
 
-        List<Replaceable> replaceblesInWhereQuery = findReplaceblesInWhereQuery(qc.getWhereQuery());
-        int count = 0;
-        for (Replaceable r : replaceblesInWhereQuery) {
-            count++;
-            String qs = "";
-            if (r.isForForm() || r.isForClient()) {
-                switch (r.getQueryDataType()) {
-                    case it:
-                        if (r.getEvaluation() == Evaluation.eq) {
-                            qs += " and (i.item.code=:varc" + count + " and i.itemValue.code=:valc" + count + ")";
-                            jpql.getM().put("varc" + count, r.getVariableCode());
-                            jpql.getM().put("valc" + count, r.getValueCode());
-                        }
+            QueryComponent c = criterias.get(0);
+
+            if (c.getMatchType() == QueryCriteriaMatchType.Variable_Value_Check) {
+                jpql.setJwhere(jpql.getJwhere() + " and i.item=:v1 and i.itemValue=:d1 ");
+                jpql.getM().put("v1", c.getItem());
+                jpql.getM().put("d1", c.getItemValue());
+            } else if (c.getMatchType() == QueryCriteriaMatchType.Variable_Value_Check) {
+                String eval = "";
+                switch (c.getEvaluationType()) {
+                    case Equal:
+                        eval = "=";
                         break;
-                    case in:
-                        String e = "";
-                        switch (r.getEvaluation()) {
-                            case eq:
-                                e = "==";
-                                break;
-                            case ge:
-                                e = ">=";
-                                break;
-                            case gt:
-                                e = ">";
-                                break;
-                            case in:
-                                e = " is null ";
-                                break;
-                            case le:
-                                e = "<=";
-                                break;
-                            case lt:
-                                e = "<";
-                                break;
-                            case ne:
-                                e = "!=";
-                                break;
-                            case nn:
-                                e = " is not null ";
-                                break;
-                        }
-                        qs += " and (i.item.code=:varc" + count
-                                + " and (i.integerNumberValue" + e + ":val" + count + " ))";
-                        jpql.getM().put("val" + count, CommonController.getIntegerValue(r.getValueCode()));
-                        jpql.getM().put("varc" + count, r.getVariableCode());
+                    case Grater_than_or_equal:
+                        eval = ">=";
                         break;
+                    case Grater_than:
+                        eval = ">";
+                        break;
+                    case Less_than:
+                        eval = "<";
+                        break;
+                    case Less_than_or_equal:
+                        eval = "<=";
+                        break;
+                }
+                switch (c.getEvaluationType()) {
+                    case Equal:
+                    case Grater_than_or_equal:
+                    case Grater_than:
+                    case Less_than:
+                    case Less_than_or_equal:
+                        switch (c.getQueryDataType()) {
+                            case Boolean:
+                                jpql.setJwhere(jpql.getJwhere() + " and i.item.booleanValue" + eval + ":v1");
+                                jpql.getM().put("v1", c.getBooleanValue());
+                                break;
+                            case DateTime:
+                                jpql.setJwhere(jpql.getJwhere() + " and i.item.dateValue" + eval + ":v1");
+                                jpql.getM().put("v1", c.getDateValue());
+                                break;
+                            case String:
+                                jpql.setJwhere(jpql.getJwhere() + " and i.item.shortTextValue" + eval + ":v1");
+                                jpql.getM().put("v1", c.getShortTextValue());
+                                break;
+                            case area:
+                                jpql.setJwhere(jpql.getJwhere() + " and i.item.areaValue" + eval + ":v1");
+                                jpql.getM().put("v1", c.getAreaValue());
+                                break;
+                            case institution:
+                                jpql.setJwhere(jpql.getJwhere() + " and i.item.institutionValue" + eval + ":v1");
+                                jpql.getM().put("v1", c.getInstitutionValue());
+                                break;
+                            case integer:
+                                jpql.setJwhere(jpql.getJwhere() + " and i.item.integerNumberValue" + eval + ":v1");
+                                jpql.getM().put("v1", c.getIntegerNumberValue());
+                                break;
+                            case item:
+                                jpql.setJwhere(jpql.getJwhere() + " and i.item.itemValue" + eval + ":v1");
+                                jpql.getM().put("v1", c.getItem());
+                                break;
+                            case real:
+                                jpql.setJwhere(jpql.getJwhere() + " and i.item.realNumberValue" + eval + ":v1");
+                                jpql.getM().put("v1", c.getRealNumberValue());
+                                break;
+                            case longNumber:
+                                jpql.setJwhere(jpql.getJwhere() + " and i.item.longNumberValue" + eval + ":v1");
+                                jpql.getM().put("v1", c.getLongNumberValue());
+                                break;
+
+                        }
 
                 }
 
+               
             }
-            jpql.setJwhere(jpql.getJwhere() + qs + addFilterString(jpql.getM()));
 
         }
 
@@ -698,14 +735,14 @@ public class QueryComponentController implements Serializable {
             String qs = "";
             if (r.isForForm()) {
                 switch (r.getQueryDataType()) {
-                    case it:
+                    case integer:
                         if (r.getEvaluation() == Evaluation.eq) {
                             qs += " and (i.item.code=:varc" + count + " and i.itemValue.code=:valc" + count + ")";
                             j.getM().put("varc" + count, r.getVariableCode());
                             j.getM().put("valc" + count, r.getValueCode());
                         }
                         break;
-                    case in:
+                    case institution:
                         String e = "";
                         switch (r.getEvaluation()) {
                             case eq:
@@ -768,14 +805,14 @@ public class QueryComponentController implements Serializable {
             String qs = "";
             if (r.isForForm()) {
                 switch (r.getQueryDataType()) {
-                    case it:
+                    case integer:
                         if (r.getEvaluation() == Evaluation.eq) {
                             qs += " and (i.item.code=:varc" + count + " and i.itemValue.code=:valc" + count + ")";
                             j.getM().put("varc" + count, r.getVariableCode());
                             j.getM().put("valc" + count, r.getValueCode());
                         }
                         break;
-                    case in:
+                    case institution:
                         String e = "";
                         switch (r.getEvaluation()) {
                             case eq:

@@ -26,6 +26,7 @@ import lk.gov.health.phsp.enums.Month;
 import lk.gov.health.phsp.enums.PanelType;
 import lk.gov.health.phsp.enums.Quarter;
 import lk.gov.health.phsp.enums.QueryCriteriaMatchType;
+import lk.gov.health.phsp.enums.QueryDataType;
 import lk.gov.health.phsp.enums.QueryLevel;
 import lk.gov.health.phsp.enums.QueryOutputType;
 import lk.gov.health.phsp.enums.QueryType;
@@ -276,6 +277,11 @@ public class CommonController implements Serializable {
     
     public QueryLevel[] getQueryLevels() {
         return QueryLevel.values();
+    }
+    
+     
+    public QueryDataType[] getQueryDataTypes() {
+        return QueryDataType.values();
     }
 
     public QueryVariableEvaluationType[] getQueryVariableEvaluationType() {

@@ -30,10 +30,10 @@ package lk.gov.health.phsp.enums;
 public enum QueryVariableEvaluationType {
     Equal,
     Between,
-    Grater_thea,
+    Grater_than,
     Grater_than_or_equal,
     Less_than,
-    Less_then_or_equal,
+    Less_than_or_equal,
     Not_null,
     Is_null,
 }

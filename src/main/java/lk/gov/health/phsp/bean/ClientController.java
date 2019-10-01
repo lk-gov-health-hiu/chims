@@ -96,11 +96,14 @@ public class ClientController implements Serializable {
     }
 
     public String toClientProfile() {
+        selectedClientsClinics = null;
         return "/client/profile";
     }
 
     public String toAddNewClient() {
         selected = new Client();
+        selectedClientsClinics = null;
+        selectedClinic = null;
         yearMonthDay = new YearMonthDay();
         return "/client/client";
     }

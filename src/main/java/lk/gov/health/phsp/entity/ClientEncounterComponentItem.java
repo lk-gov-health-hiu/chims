@@ -34,10 +34,36 @@ import javax.persistence.ManyToOne;
 public class ClientEncounterComponentItem extends ClientEncounterComponent {
 
     @ManyToOne
-    Client itemClient;
+    private Client itemClient;
     @ManyToOne
-    Encounter itemEncounter;
+    private Encounter itemEncounter;
     @ManyToOne
-    ClientEncounterComponentFormSet itemFormse;
+    private ClientEncounterComponentFormSet itemFormset;
 
+    public Client getItemClient() {
+        return itemClient;
+    }
+
+    public void setItemClient(Client itemClient) {
+        this.itemClient = itemClient;
+    }
+
+    public Encounter getItemEncounter() {
+        return itemEncounter;
+    }
+
+    public void setItemEncounter(Encounter itemEncounter) {
+        this.itemEncounter = itemEncounter;
+    }
+
+    public ClientEncounterComponentFormSet getItemFormset() {
+        return itemFormset;
+    }
+
+    public void setItemFormset(ClientEncounterComponentFormSet itemFormset) {
+        this.itemFormset = itemFormset;
+    }
+
+    
+    
 }

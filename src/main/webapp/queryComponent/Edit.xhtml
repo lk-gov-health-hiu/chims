@@ -124,11 +124,17 @@
                                     <p:column headerText="Name" >
                                         <p:outputLabel value="#{i.name}" ></p:outputLabel>
                                     </p:column>
-                                    <p:column headerText="Name" >
+                                    <p:column headerText="Code" >
                                         <p:outputLabel value="#{i.code}" ></p:outputLabel>
                                     </p:column>
                                 </p:autoComplete>
 
+
+                                <p:outputLabel value="Data Type:" for="queryDataType" />
+                                <p:selectOneMenu id="queryDataType"  value="#{queryComponentController.selected.queryDataType}" >
+                                    <f:selectItem itemLabel="Select" ></f:selectItem>
+                                    <f:selectItems value="#{commonController.queryDataTypes}" ></f:selectItems>
+                                </p:selectOneMenu>
 
                                 <p:outputLabel value="Item Value:" for="itemValue" />
                                 <p:autoComplete  id="itemValue" completeMethod="#{itemController.completeDictionaryItems}" 
@@ -175,10 +181,8 @@
                         </p:tab>
                     </p:tabView>
 
-
-
                     <p:commandButton action="#{queryComponentController.update}" value="#{bundleQuery.Save}" ajax="false"/>
-                    <p:commandButton value="#{bundleQuery.Cancel}" onclick="QueryComponentEditDialog.hide()"/>
+                    
                 </h:panelGroup>
             </h:form>
         </p:dialog>

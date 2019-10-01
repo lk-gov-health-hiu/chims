@@ -509,6 +509,10 @@ public class ClientEncounterComponentFormSetController implements Serializable {
 
                         ci.setEncounter(e);
                         ci.setInstitution(dfs.getInstitution());
+                        
+                        ci.setItemFormset(cfs);
+                        ci.setItemEncounter(e);
+                        ci.setItemClient(e.getClient());
 
                         ci.setItem(di.getItem());
                         ci.setDescreption(di.getDescreption());

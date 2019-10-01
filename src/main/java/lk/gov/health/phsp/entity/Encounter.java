@@ -356,6 +356,14 @@ public class Encounter implements Serializable {
     public void setFirstEncounter(boolean firstEncounter) {
         this.firstEncounter = firstEncounter;
     }
+
+    public List<ClientEncounterComponentItem> getClientEncounterComponentItems() {
+        return clientEncounterComponentItems;
+    }
+
+    public void setClientEncounterComponentItems(List<ClientEncounterComponentItem> clientEncounterComponentItems) {
+        this.clientEncounterComponentItems = clientEncounterComponentItems;
+    }
     
     
     

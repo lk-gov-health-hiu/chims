@@ -35,7 +35,7 @@ import javax.persistence.OneToMany;
 @Entity
 public class ClientEncounterComponentFormSet extends ClientEncounterComponent {
 
-    @OneToMany(mappedBy = "itemFormse")
+    @OneToMany(mappedBy = "itemFormset")
     private List<ClientEncounterComponentItem> clientEncounterComponentItems;
 
     public List<ClientEncounterComponentItem> getClientEncounterComponentItems() {

@@ -47,7 +47,7 @@
                                     <p:selectOneMenu id="cmbQry" value="#{queryComponentController.selectedForQuery}" >
                                         <f:selectItem itemLabel="Select a query" ></f:selectItem>
                                         <f:selectItems 
-                                            value="#{queryComponentController.subcategories(queryComponentController.selectedSubcategory)}" 
+                                            value="#{queryComponentController.queries(queryComponentController.selectedSubcategory)}" 
                                             var="q" itemLabel="#{q.name}" itemValue="#{q}"></f:selectItems>
                                         <p:ajax event="change" process="@this" update="lblDes :#{p:component('filters')}" ></p:ajax>
                                     </p:selectOneMenu>

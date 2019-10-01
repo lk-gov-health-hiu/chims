@@ -1,7 +1,7 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
+ * To change this license header, choose License Headers institution Project Properties.
  * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * and open the template institution the editor.
  */
 package lk.gov.health.phsp.pojcs;
 
@@ -245,28 +245,28 @@ public class Replaceable {
                 queryDataType = null;
                 break;
             case "it":
-                queryDataType = QueryDataType.it;
+                queryDataType = QueryDataType.integer;
                 break;
             case "db":
-                queryDataType = QueryDataType.db;
+                queryDataType = QueryDataType.real;
                 break;
             case "in":
-                queryDataType = QueryDataType.in;
+                queryDataType = QueryDataType.institution;
                 break;
             case "ac":
-                queryDataType = QueryDataType.ac;
+                queryDataType = QueryDataType.area;
                 break;
             case "ic":
-                queryDataType = QueryDataType.ic;
+                queryDataType = QueryDataType.item;
                 break;
             case "sr":
-                queryDataType = QueryDataType.sr;
+                queryDataType = QueryDataType.String;
                 break;
             case "bo":
-                queryDataType = QueryDataType.bo;
+                queryDataType = QueryDataType.Boolean;
                 break;
             case "dt":
-                queryDataType = QueryDataType.dt;
+                queryDataType = QueryDataType.DateTime;
                 break;
         }
     }
