@@ -30,8 +30,10 @@ import javax.persistence.Lob;
 import javax.persistence.Transient;
 import lk.gov.health.phsp.enums.QueryCriteriaMatchType;
 import lk.gov.health.phsp.enums.QueryFilterType;
+import lk.gov.health.phsp.enums.QueryOutputType;
 import lk.gov.health.phsp.enums.QueryType;
 import lk.gov.health.phsp.enums.QueryVariableEvaluationType;
+import lk.gov.health.phsp.enums.RelationshipType;
 
 /**
  *
@@ -59,6 +61,9 @@ public class QueryComponent extends Component {
 
     @Enumerated(EnumType.STRING)
     private QueryType queryType;
+    
+    @Enumerated(EnumType.STRING)
+    private QueryOutputType outputType;
 
     @Enumerated(EnumType.STRING)
     private QueryCriteriaMatchType matchType;
@@ -69,6 +74,22 @@ public class QueryComponent extends Component {
     @Enumerated(EnumType.STRING)
     private QueryFilterType filterType;
 
+    @Enumerated(EnumType.STRING)
+    private RelationshipType populationType;
+    
+    private boolean filterByDistrict;
+    private boolean filterByProvince;
+    private boolean filterByRdhs;
+    private boolean filterByMoh;
+    private boolean filterByFrom;
+    private boolean filterByDate;
+    private boolean filterByTo;
+    private boolean filterByInstitution;
+    private boolean filterByGn;
+    private boolean filterByYear;
+    private boolean filterByMonth;
+    private boolean filterByQuarter;
+    
     
     
     public String getIndicatorQuery() {
@@ -167,4 +188,118 @@ public class QueryComponent extends Component {
         this.filterType = filterType;
     }
 
+    public RelationshipType getPopulationType() {
+        return populationType;
+    }
+
+    public void setPopulationType(RelationshipType populationType) {
+        this.populationType = populationType;
+    }
+
+    public boolean isFilterByDistrict() {
+        return filterByDistrict;
+    }
+
+    public void setFilterByDistrict(boolean filterByDistrict) {
+        this.filterByDistrict = filterByDistrict;
+    }
+
+    public boolean isFilterByProvince() {
+        return filterByProvince;
+    }
+
+    public void setFilterByProvince(boolean filterByProvince) {
+        this.filterByProvince = filterByProvince;
+    }
+
+    public boolean isFilterByFrom() {
+        return filterByFrom;
+    }
+
+    public void setFilterByFrom(boolean filterByFrom) {
+        this.filterByFrom = filterByFrom;
+    }
+
+    public boolean isFilterByTo() {
+        return filterByTo;
+    }
+
+    public void setFilterByTo(boolean filterByTo) {
+        this.filterByTo = filterByTo;
+    }
+
+    public boolean isFilterByInstitution() {
+        return filterByInstitution;
+    }
+
+    public void setFilterByInstitution(boolean filterByInstitution) {
+        this.filterByInstitution = filterByInstitution;
+    }
+
+    public boolean isFilterByGn() {
+        return filterByGn;
+    }
+
+    public void setFilterByGn(boolean filterByGn) {
+        this.filterByGn = filterByGn;
+    }
+
+    public boolean isFilterByRdhs() {
+        return filterByRdhs;
+    }
+
+    public void setFilterByRdhs(boolean filterByRdhs) {
+        this.filterByRdhs = filterByRdhs;
+    }
+
+    public boolean isFilterByMoh() {
+        return filterByMoh;
+    }
+
+    public void setFilterByMoh(boolean filterByMoh) {
+        this.filterByMoh = filterByMoh;
+    }
+
+    public boolean isFilterByYear() {
+        return filterByYear;
+    }
+
+    public void setFilterByYear(boolean filterByYear) {
+        this.filterByYear = filterByYear;
+    }
+
+    public boolean isFilterByMonth() {
+        return filterByMonth;
+    }
+
+    public void setFilterByMonth(boolean filterByMonth) {
+        this.filterByMonth = filterByMonth;
+    }
+
+    public boolean isFilterByQuarter() {
+        return filterByQuarter;
+    }
+
+    public void setFilterByQuarter(boolean filterByQuarter) {
+        this.filterByQuarter = filterByQuarter;
+    }
+
+    public boolean isFilterByDate() {
+        return filterByDate;
+    }
+
+    public void setFilterByDate(boolean filterByDate) {
+        this.filterByDate = filterByDate;
+    }
+
+    public QueryOutputType getOutputType() {
+        return outputType;
+    }
+
+    public void setOutputType(QueryOutputType outputType) {
+        this.outputType = outputType;
+    }
+
+
+    
 }

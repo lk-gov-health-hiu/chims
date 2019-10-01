@@ -27,11 +27,7 @@ package lk.gov.health.phsp.enums;
  *
  * @author Dr M H B Ariyaratne<buddhika.ari@gmail.com>
  */
-public enum QueryType {
-    Population,
-    Indicator,
-    Client,
-    First_Encounter,
-    Any_Encounter,
-    Formset,
+public enum QueryOutputType {
+    Count,
+    List,
 }

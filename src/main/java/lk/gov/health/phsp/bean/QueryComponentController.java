@@ -35,11 +35,14 @@ import lk.gov.health.phsp.entity.DesignComponentForm;
 import lk.gov.health.phsp.entity.DesignComponentFormSet;
 import lk.gov.health.phsp.entity.Encounter;
 import lk.gov.health.phsp.entity.Institution;
+import lk.gov.health.phsp.entity.Relationship;
 import lk.gov.health.phsp.enums.Evaluation;
+import lk.gov.health.phsp.enums.QueryOutputType;
 import lk.gov.health.phsp.enums.RelationshipType;
 import lk.gov.health.phsp.facade.ClientEncounterComponentItemFacade;
 import lk.gov.health.phsp.facade.ClientFacade;
 import lk.gov.health.phsp.facade.EncounterFacade;
+import lk.gov.health.phsp.facade.RelationshipFacade;
 import lk.gov.health.phsp.pojcs.Jpq;
 import lk.gov.health.phsp.pojcs.Replaceable;
 import org.apache.commons.lang3.SerializationUtils;
@@ -56,13 +59,13 @@ public class QueryComponentController implements Serializable {
     private ClientFacade clientFacade;
     @EJB
     private EncounterFacade encounterFacade;
+    @EJB
+    private RelationshipFacade relationshipFacade;
 
     @Inject
     private WebUserController webUserController;
     @Inject
     private RelationshipController relationshipController;
-    
-    
 
     private List<QueryComponent> items = null;
     private QueryComponent selected;
@@ -73,16 +76,15 @@ public class QueryComponentController implements Serializable {
     private QueryComponent selectedSubcategory;
     private QueryComponent selectedForQuery;
 
-    
-    
     private QueryComponent addingQuery;
     private QueryComponent removingQuery;
     private QueryComponent movingForm;
-    
+
     private String resultString;
     private List<Client> resultClientList;
     private List<Encounter> resultEncounterList;
     private List<ClientEncounterComponentForm> resultFormList;
+    private List<Relationship> resultRelationshipList;
 
     private Area province;
     private Area district;
@@ -107,8 +109,8 @@ public class QueryComponentController implements Serializable {
     private boolean filterMonth;
     private boolean filterDate;
     private boolean filterQuarter;
-    
-     public void fillFormsofTheSelectedSet() {
+
+    public void fillFormsofTheSelectedSet() {
         selectedCretiria = fillFormsofTheSelectedSet(selected);
     }
 
@@ -195,14 +197,12 @@ public class QueryComponentController implements Serializable {
         fillFormsofTheSelectedSet();
         JsfUtil.addSuccessMessage("Item Moved Down");
     }
-    
-    
-    
+
     public void saveItem() {
         saveItem(selected);
     }
-    
-     public void saveItem(QueryComponent saving) {
+
+    public void saveItem(QueryComponent saving) {
         if (saving == null) {
             JsfUtil.addErrorMessage("No item selected.");
             return;
@@ -219,11 +219,11 @@ public class QueryComponentController implements Serializable {
             JsfUtil.addSuccessMessage("Updated Successfully.");
         }
     }
-    
+
     public String backToManageQueries() {
         return "/queryComponent/List";
     }
-    
+
     public String toEditCriterian() {
         if (selectedCretirian == null) {
             JsfUtil.addErrorMessage("Nothing to Edit");
@@ -363,6 +363,33 @@ public class QueryComponentController implements Serializable {
         resultClientList = null;
         resultFormList = null;
         resultEncounterList = null;
+        resultRelationshipList = null;
+
+        Jpq qr;
+
+        switch (selectedForQuery.getQueryType()) {
+            case Population:
+                qr = createAPopulationCountQuery(selectedForQuery);
+                 resultString = qr.getQc().getName() + " = " + qr.getLongResult(); 
+                 resultRelationshipList = qr.getRelationshipList();
+                break;
+
+            case Indicator:
+                break;
+
+            case Client:
+                break;
+
+            case First_Encounter:
+                break;
+
+            case Any_Encounter:
+                break;
+
+            case Formset:
+                break;
+
+        }
 
         if (selectedForQuery.getIndicatorQuery() != null && !selectedForQuery.getIndicatorQuery().trim().equals("")) {
             resultString = handleIndicatorQuery(selectedForQuery);
@@ -471,40 +498,28 @@ public class QueryComponentController implements Serializable {
         System.out.println("createAPopulationCountQuery");
         Jpq jpql = new Jpq();
         jpql.setQc(qc);
-        jpql.setJselect("select r.longValue1  ");
+        if (qc.getOutputType() == QueryOutputType.Count) {
+            jpql.setJselect("select r.longValue1  ");
+        } else if (qc.getOutputType() == QueryOutputType.List) {
+            jpql.setJselect("select r  ");
+        }
         jpql.setJfrom(" from Relationship r ");
         jpql.setJwhere(" where r.area=:a and r.relationshipType=:t and r.retired=:f ");
         if (year != null && year != 0) {
             jpql.setJwhere(jpql.getJwhere() + " and r.yearInt=:y");
             jpql.getM().put("y", year);
         }
-        String w = qc.getSelectQuery().trim().toLowerCase();
-        RelationshipType t = RelationshipType.Estimated_Midyear_Population;
-        if (w.contains("mypt")) {
-            t = RelationshipType.Estimated_Midyear_Population;
-        } else if (w.contains("mypf")) {
-            t = RelationshipType.Estimated_Midyear_Female_Population;
-        } else if (w.contains("mypm")) {
-            t = RelationshipType.Estimated_Midyear_Male_Population;
-        } else if (w.contains("tpt")) {
-            t = RelationshipType.Over_35_Population;
-        } else if (w.contains("tpm")) {
-            t = RelationshipType.Over_35_Male_Population;
-        } else if (w.contains("tpf")) {
-            t = RelationshipType.Over_35_Female_Population;
-        }
-
+        RelationshipType t = selectedCategory.getPopulationType();
         jpql.setJorderBy(" order by r.id desc");
         jpql.getM().put("f", false);
-        //TODO: Remove District and select the required area in the below line
         jpql.getM().put("a", district);
         jpql.getM().put("t", t);
-
         jpql.setJgroupby("");
-        System.out.println("j.getJpql() = " + jpql.getJpql());
-        System.out.println("j.getM() = " + jpql.getM());
-        jpql.setLongResult(getItemFacade().findLongByJpql(jpql.getJpql(), jpql.getM(), 1));
-
+        if (qc.getOutputType() == QueryOutputType.Count) {
+            jpql.setLongResult(getItemFacade().findLongByJpql(jpql.getJpql(), jpql.getM(), 1));
+        } else if (qc.getOutputType() == QueryOutputType.List) {
+            jpql.setRelationshipList(getRelationshipFacade().findByJpql(jpql.getJpql(), jpql.getM()));
+        }
         return jpql;
     }
 
@@ -1239,8 +1254,24 @@ public class QueryComponentController implements Serializable {
     public void setMovingForm(QueryComponent movingForm) {
         this.movingForm = movingForm;
     }
-    
 
+    public RelationshipFacade getRelationshipFacade() {
+        return relationshipFacade;
+    }
+
+    public void setRelationshipFacade(RelationshipFacade relationshipFacade) {
+        this.relationshipFacade = relationshipFacade;
+    }
+
+    public List<Relationship> getResultRelationshipList() {
+        return resultRelationshipList;
+    }
+
+    public void setResultRelationshipList(List<Relationship> resultRelationshipList) {
+        this.resultRelationshipList = resultRelationshipList;
+    }
+
+    
     
 
     @FacesConverter(forClass = QueryComponent.class)

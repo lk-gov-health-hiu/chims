@@ -41,14 +41,14 @@
                                         <f:selectItems 
                                             value="#{queryComponentController.subcategories(queryComponentController.selectedSubcategory)}" 
                                             var="q" itemLabel="#{q.name}" itemValue="#{q}"></f:selectItems>
-                                        <p:ajax event="change" process="@this" update="msgtext" ></p:ajax>
+                                        <p:ajax event="change" process="@this" update="lblDes :#{p:component('filters')}" ></p:ajax>
                                     </p:selectOneMenu>
                                     
                                     
                                     <p:commandButton value="Execute" ajax="false" action="#{queryComponentController.processQuery()}" >
                                     </p:commandButton>
 
-                                    <p:outputLabel value="#{queryComponentController.selectedForQuery.descreption}" >
+                                    <p:outputLabel id="lblDes" value="#{queryComponentController.selectedForQuery.descreption}" >
                                     </p:outputLabel>
 
                                 </p:panelGrid>
@@ -62,54 +62,62 @@
                                             </p:commandLink>
                                         </f:facet>
 
-                                        <p:outputLabel value="Province" for="province" rendered="#{queryComponentController.filterProvices}" >
+                                        <p:outputLabel value="Province" for="province" rendered="#{queryComponentController.selectedForQuery.filterByProvince}" >
                                         </p:outputLabel>
 
                                         <p:autoComplete id="province" value="#{queryComponentController.province}"
                                                         completeMethod="#{areaController.completeProvinces}"
                                                         var="p" itemLabel="#{p.name}" itemValue="#{p}" required="true"
-                                                        maxResults="15" forceSelection="true"  rendered="#{queryComponentController.filterProvices}" 
+                                                        maxResults="15" forceSelection="true"  rendered="#{queryComponentController.selectedForQuery.filterByProvince}" 
                                                         minQueryLength="3">
                                         </p:autoComplete>
 
-                                        <p:outputLabel value="District" rendered="#{queryComponentController.filterDistricts}" for="district" >
+                                        <p:outputLabel value="District" rendered="#{queryComponentController.selected.filterByDistrict}" for="district" >
                                         </p:outputLabel>
 
                                         <p:autoComplete id="district" value="#{queryComponentController.district}"
                                                         completeMethod="#{areaController.completeDistricts}"
                                                         var="d" itemLabel="#{d.name}" itemValue="#{d}" required="true"
                                                         maxResults="15" forceSelection="true" 
-                                                        rendered="#{queryComponentController.filterDistricts}" 
+                                                        rendered="#{queryComponentController.selectedForQuery.filterByDistrict}" 
                                                         minQueryLength="3">
                                         </p:autoComplete>
 
 
-                                        <p:outputLabel value="Institution" for="ins" rendered="#{queryComponentController.filterInstitutions}" >
+                                        <p:outputLabel value="Institution" for="ins" rendered="#{queryComponentController.selectedForQuery.filterByInstitution}" >
                                         </p:outputLabel>
-                                        <p:selectOneMenu id="ins" value="#{queryComponentController.institution}" rendered="#{queryComponentController.filterInstitutions}" required="true" >
+                                        <p:selectOneMenu id="ins" value="#{queryComponentController.institution}" rendered="#{queryComponentController.selectedForQuery.filterByInstitution}" required="true" >
                                             <f:selectItems value="#{institutionController.myClinics}" var="c" itemLabel="#{c.name}" itemValue="#{c}" ></f:selectItems>
                                         </p:selectOneMenu>
 
 
-                                        <p:outputLabel value="Year" for="ins" rendered="#{queryComponentController.filterYear}" >
+                                        <p:outputLabel value="Year" for="year" rendered="#{queryComponentController.selectedForQuery.filterByYear}" >
                                         </p:outputLabel>
-                                        <p:inputText value="#{queryComponentController.year}" required="true"  rendered="#{queryComponentController.filterYear}" ></p:inputText>
+                                        <p:inputText id="year" value="#{queryComponentController.year}" required="true"  rendered="#{queryComponentController.selectedForQuery.filterByYear}" ></p:inputText>
 
 
                                         <p:outputLabel value="From" for="from" 
-                                                       rendered="#{queryComponentController.filterFrom}" >
+                                                       rendered="#{queryComponentController.selectedForQuery.filterByFrom}" >
                                         </p:outputLabel>
                                         <p:calendar value="#{queryComponentController.from}" 
                                                     pattern="dd MMMM yyyy" id="from"
-                                                    rendered="#{queryComponentController.filterFrom}">
+                                                    rendered="#{queryComponentController.selectedForQuery.filterByFrom}">
                                         </p:calendar>
 
                                         <p:outputLabel value="To" for="to" 
-                                                       rendered="#{queryComponentController.filterTo}" >
+                                                       rendered="#{queryComponentController.selectedForQuery.filterByTo}" >
                                         </p:outputLabel>
                                         <p:calendar value="#{queryComponentController.to}" 
                                                     id="to"   pattern="dd MMMM yyyy"
-                                                    rendered="#{queryComponentController.filterTo}">
+                                                    rendered="#{queryComponentController.selectedForQuery.filterByTo}">
+                                        </p:calendar>
+                                        
+                                         <p:outputLabel value="Date" for="date" 
+                                                        rendered="#{queryComponentController.selectedForQuery.filterByDate}" >
+                                        </p:outputLabel>
+                                        <p:calendar value="#{queryComponentController.date}" 
+                                                    id="date"   pattern="dd MMMM yyyy"
+                                                    rendered="#{queryComponentController.selectedForQuery.filterByDate}">
                                         </p:calendar>
 
 

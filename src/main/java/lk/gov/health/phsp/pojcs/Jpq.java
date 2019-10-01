@@ -30,6 +30,7 @@ import lk.gov.health.phsp.entity.Client;
 import lk.gov.health.phsp.entity.ClientEncounterComponentForm;
 import lk.gov.health.phsp.entity.Encounter;
 import lk.gov.health.phsp.entity.QueryComponent;
+import lk.gov.health.phsp.entity.Relationship;
 
 /**
  *
@@ -51,6 +52,7 @@ public class Jpq {
     private List<Client> clientList;
     private List<Encounter> encounterList;
     private List<ClientEncounterComponentForm> formList;
+    private List<Relationship> relationshipList;
     
     /**
      * 
@@ -188,6 +190,14 @@ ORDER BY c.currency
 
     public void setFormList(List<ClientEncounterComponentForm> formList) {
         this.formList = formList;
+    }
+
+    public List<Relationship> getRelationshipList() {
+        return relationshipList;
+    }
+
+    public void setRelationshipList(List<Relationship> relationshipList) {
+        this.relationshipList = relationshipList;
     }
     
     

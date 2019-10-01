@@ -26,6 +26,7 @@ import lk.gov.health.phsp.enums.Month;
 import lk.gov.health.phsp.enums.PanelType;
 import lk.gov.health.phsp.enums.Quarter;
 import lk.gov.health.phsp.enums.QueryCriteriaMatchType;
+import lk.gov.health.phsp.enums.QueryOutputType;
 import lk.gov.health.phsp.enums.QueryType;
 import lk.gov.health.phsp.enums.QueryVariableEvaluationType;
 import lk.gov.health.phsp.enums.RelationshipType;
@@ -132,6 +133,20 @@ public class CommonController implements Serializable {
 
     public RelationshipType[] getRelationshipTypes() {
         return RelationshipType.values();
+    }
+
+    public RelationshipType[] getPopulationTypes() {
+        RelationshipType[] ps = new RelationshipType[]{
+            RelationshipType.Empanelled_Female_Population,
+            RelationshipType.Empanelled_Male_Population,
+            RelationshipType.Empanelled_Population,
+            RelationshipType.Estimated_Midyear_Female_Population,
+            RelationshipType.Estimated_Midyear_Male_Population,
+            RelationshipType.Estimated_Midyear_Population,
+            RelationshipType.Over_35_Female_Population,
+            RelationshipType.Over_35_Male_Population,
+            RelationshipType.Over_35_Population,};
+        return ps;
     }
 
     public SelectionDataType[] getSelectionDataTypes() {
@@ -244,6 +259,10 @@ public class CommonController implements Serializable {
 
     public Quarter[] getQuarters() {
         return Quarter.values();
+    }
+
+    public QueryOutputType[] getQueryOutputTypes() {
+        return QueryOutputType.values();
     }
 
     public QueryCriteriaMatchType[] getQueryCriteriaMatchTypes() {
