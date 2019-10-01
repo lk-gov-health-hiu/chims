@@ -24,7 +24,9 @@
 
 package lk.gov.health.phsp.entity;
 
+import java.util.List;
 import javax.persistence.Entity;
+import javax.persistence.OneToMany;
 
 /**
  *
@@ -32,6 +34,17 @@ import javax.persistence.Entity;
  */
 @Entity
 public class ClientEncounterComponentFormSet extends ClientEncounterComponent {
+
+    @OneToMany(mappedBy = "itemFormse")
+    private List<ClientEncounterComponentItem> clientEncounterComponentItems;
+
+    public List<ClientEncounterComponentItem> getClientEncounterComponentItems() {
+        return clientEncounterComponentItems;
+    }
+
+    public void setClientEncounterComponentItems(List<ClientEncounterComponentItem> clientEncounterComponentItems) {
+        this.clientEncounterComponentItems = clientEncounterComponentItems;
+    }
 
     
     

@@ -2,12 +2,14 @@ package lk.gov.health.phsp.entity;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Temporal;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -15,6 +17,9 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Entity
 @XmlRootElement
 public class Client implements Serializable {
+
+    @OneToMany(mappedBy = "itemClient")
+    private List<ClientEncounterComponentItem> clientEncounterComponentItems;
 
 // <editor-fold defaultstate="collapsed" desc="Attributes">
     @Id

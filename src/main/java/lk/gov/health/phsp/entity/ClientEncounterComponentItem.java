@@ -21,10 +21,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-
 package lk.gov.health.phsp.entity;
 
 import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
 
 /**
  *
@@ -33,5 +33,11 @@ import javax.persistence.Entity;
 @Entity
 public class ClientEncounterComponentItem extends ClientEncounterComponent {
 
-    
+    @ManyToOne
+    Client itemClient;
+    @ManyToOne
+    Encounter itemEncounter;
+    @ManyToOne
+    ClientEncounterComponentFormSet itemFormse;
+
 }
