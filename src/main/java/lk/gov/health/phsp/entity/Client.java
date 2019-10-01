@@ -39,6 +39,8 @@ public class Client implements Serializable {
     private WebUser createdBy;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date createdAt;
+    @ManyToOne
+    private Institution createInstitution;
     /*
     Last Edit Properties
      */
@@ -204,7 +206,25 @@ public class Client implements Serializable {
     public void setPhn(String phn) {
         this.phn = phn;
     }
+    
+    
 
 // </editor-fold>
+
+    public List<ClientEncounterComponentItem> getClientEncounterComponentItems() {
+        return clientEncounterComponentItems;
+    }
+
+    public void setClientEncounterComponentItems(List<ClientEncounterComponentItem> clientEncounterComponentItems) {
+        this.clientEncounterComponentItems = clientEncounterComponentItems;
+    }
+
+    public Institution getCreateInstitution() {
+        return createInstitution;
+    }
+
+    public void setCreateInstitution(Institution createInstitution) {
+        this.createInstitution = createInstitution;
+    }
     
 }

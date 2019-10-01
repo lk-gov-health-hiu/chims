@@ -353,6 +353,18 @@ public class QueryComponentController implements Serializable {
         return getFacade().findByJpql(j, m);
     }
 
+    public List<QueryComponent> criteria(QueryComponent p) {
+        String j = "select q from QueryComponent q "
+                + " where q.retired=false "
+                + " and q.queryLevel =:l "
+                + " and q.parentComponent =:p "
+                + " order by q.name";
+        Map m = new HashMap();
+        m.put("p", p);
+        m.put("l", QueryLevel.Criterian);
+        return getFacade().findByJpql(j, m);
+    }
+
     public QueryComponent findLastQuery(String qry) {
         String j = "select q from QueryComponent q "
                 + " where q.retired=false "
@@ -393,6 +405,11 @@ public class QueryComponentController implements Serializable {
                 break;
 
             case Client:
+                qr = createAClientCountQuery(selectedForQuery);
+                if (qr.getLongResult() != null) {
+                    resultString = qr.getQc().getName() + " = " + qr.getLongResult();
+                }
+                resultClientList = qr.getClientList();
                 break;
 
             case First_Encounter:
@@ -567,12 +584,43 @@ public class QueryComponentController implements Serializable {
 
     public Jpq createAClientCountQuery(QueryComponent qc) {
         System.out.println("createAClientCountQuery");
-        Jpq j = new Jpq();
-        j.setQc(qc);
-        j.setJselect("select count(distinct i.parentComponent.parentComponent.encounter.client)  ");
-        j.setJfrom(" from ClientEncounterComponentItem i ");
-        j.setJwhere(" where i.retired=:f ");
-        j.getM().put("f", false);
+        Jpq jpql = new Jpq();
+        jpql.setQc(qc);
+
+        List<QueryComponent> criterias = criteria(qc);
+
+        jpql.getM().put("f", false);
+        jpql.setJfrom(" from ClientEncounterComponentItem i ");
+        jpql.setJwhere(" where i.retired=:f ");
+        jpql.setJwhere(jpql.getJwhere() + addFilterStringForClient(jpql.getM()));
+
+        if (criterias == null || criterias.isEmpty()) {
+            if (qc.getOutputType() == QueryOutputType.Count) {
+                jpql.setJselect("select c from Client c  ");
+            } else if (qc.getOutputType() == QueryOutputType.List) {
+                jpql.setJselect("select distinct(i)  ");
+            }
+            System.out.println("j.getJpql() = " + jpql.getJpql());
+            System.out.println("j.getM() = " + jpql.getM());
+           
+            if (qc.getOutputType() == QueryOutputType.Count) {
+                jpql.setLongResult(getItemFacade().findLongByJpql(jpql.getJpql(), jpql.getM(), 1));
+            } else if (qc.getOutputType() == QueryOutputType.List) {
+                jpql.setRelationshipList(getRelationshipFacade().findByJpql(jpql.getJpql(), jpql.getM()));
+            }
+
+            return jpql;
+
+        } else {
+
+            if (qc.getOutputType() == QueryOutputType.Count) {
+                jpql.setJselect("select count(distinct i.parentComponent.parentComponent.encounter.client)  ");
+            } else if (qc.getOutputType() == QueryOutputType.List) {
+                jpql.setJselect("select distinct(i)  ");
+            }
+
+        }
+
         List<Replaceable> replaceblesInWhereQuery = findReplaceblesInWhereQuery(qc.getWhereQuery());
         int count = 0;
         for (Replaceable r : replaceblesInWhereQuery) {
@@ -583,8 +631,8 @@ public class QueryComponentController implements Serializable {
                     case it:
                         if (r.getEvaluation() == Evaluation.eq) {
                             qs += " and (i.item.code=:varc" + count + " and i.itemValue.code=:valc" + count + ")";
-                            j.getM().put("varc" + count, r.getVariableCode());
-                            j.getM().put("valc" + count, r.getValueCode());
+                            jpql.getM().put("varc" + count, r.getVariableCode());
+                            jpql.getM().put("valc" + count, r.getValueCode());
                         }
                         break;
                     case in:
@@ -617,22 +665,22 @@ public class QueryComponentController implements Serializable {
                         }
                         qs += " and (i.item.code=:varc" + count
                                 + " and (i.integerNumberValue" + e + ":val" + count + " ))";
-                        j.getM().put("val" + count, CommonController.getIntegerValue(r.getValueCode()));
-                        j.getM().put("varc" + count, r.getVariableCode());
+                        jpql.getM().put("val" + count, CommonController.getIntegerValue(r.getValueCode()));
+                        jpql.getM().put("varc" + count, r.getVariableCode());
                         break;
 
                 }
 
             }
-            j.setJwhere(j.getJwhere() + qs + addFilterString(j.getM()));
+            jpql.setJwhere(jpql.getJwhere() + qs + addFilterString(jpql.getM()));
 
         }
 
-        j.setJgroupby("");
-        System.out.println("j.getJpql() = " + j.getJpql());
-        System.out.println("j.getM() = " + j.getM());
-        j.setLongResult(getItemFacade().countByJpql(j.getJpql(), j.getM()));
-        return j;
+        jpql.setJgroupby("");
+        System.out.println("j.getJpql() = " + jpql.getJpql());
+        System.out.println("j.getM() = " + jpql.getM());
+        jpql.setLongResult(getItemFacade().countByJpql(jpql.getJpql(), jpql.getM()));
+        return jpql;
     }
 
     public Jpq createAClientListQuery(QueryComponent qc) {
@@ -774,6 +822,55 @@ public class QueryComponentController implements Serializable {
         j.setEncounterList(getEncounterFacade().findByJpql(j.getJpql(), j.getM()));
         System.out.println("j.getEncounterList() = " + j.getEncounterList());
         return j;
+    }
+
+    public String addFilterStringForClient(Map m) {
+        String f = "";
+        if (date != null) {
+            f += " and c.createdAt=:encounterDate ";
+            m.put("encounterDate", date);
+        }
+        if (from != null && to != null) {
+            f += " and c.createdAt between :from and :to ";
+            m.put("from", from);
+            m.put("to", to);
+        } else if (from != null) {
+            f += " and c.createdAt > :from ";
+            m.put("from", from);
+        } else if (to != null) {
+            f += " and c.createdAt < :to ";
+            m.put("to", to);
+        }
+        if (province != null) {
+            f += " and c.person.gnArea.province =:province ";
+            m.put("province", province);
+        }
+        if (district != null) {
+            f += " and c.person.gnArea.district =:district ";
+            m.put("district", district);
+        }
+        if (moh != null) {
+            f += " and c.person.gnArea.moh =:moh ";
+            m.put("moh", moh);
+        }
+        if (gn != null) {
+            f += " and c.person.gnArea =:moh ";
+            m.put("gn", gn);
+        }
+        if (institution != null) {
+            f += " and (c.createdInstitution =:institution "
+                    + " or  c.createdInstitution.parent =:institution "
+                    + " or c.createdInstitution.parent.parent =:institution "
+                    + " or c.createdInstitution.parent.parent.parent =:institution "
+                    + " or c.createdInstitution.parent.parent.parent.parent =:institution ) ";
+            m.put("institution", institution);
+        }
+
+        Encounter e;
+        Client c;
+        Institution i;
+
+        return f;
     }
 
     public String addFilterString(Map m) {
