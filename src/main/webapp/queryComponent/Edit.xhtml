@@ -11,45 +11,34 @@
         <p:dialog id="QueryComponentEditDlg" widgetVar="QueryComponentEditDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundleQuery.EditQueryComponentTitle}">
             <h:form id="QueryComponentEditForm">
                 <h:panelGroup id="display">
-                    <p:panelGrid columns="4" rendered="#{queryComponentController.selected != null}">
+                    <p:panelGrid columns="2" rendered="#{queryComponentController.selected != null}">
                         <p:outputLabel value="#{bundleQuery.CreateQueryComponentLabel_name}" for="name" />
                         <p:inputText id="name" value="#{queryComponentController.selected.name}" title="#{bundleQuery.CreateQueryComponentTitle_name}" />
 
                         <p:outputLabel value="Code" for="code" />
                         <p:inputText id="code" value="#{queryComponentController.selected.code}" title="Code" />
 
-                        <p:outputLabel value="#{bundleQuery.CreateQueryComponentLabel_descreption}" for="descreption" />
-                        <p:inputTextarea rows="4" cols="30" id="descreption" value="#{queryComponentController.selected.descreption}" 
+                        <p:outputLabel value="Parent" for="parent" />
+                        <p:autoComplete id="parent" value="#{queryComponentController.selected.parentComponent}" 
+                                        completeMethod="#{queryComponentController.completeQueries}" 
+                                        var="q" itemLabel="#{q.code}" itemValue="#{q}" forceSelection="true"
+                                        >
+                        </p:autoComplete>
+                        
+                        <p:outputLabel value="Descreption" for="descreption" />
+                        <p:inputTextarea rows="4" cols="30" id="descreption" 
+                                         value="#{queryComponentController.selected.descreption}" 
                                          title="#{bundleQuery.CreateQueryComponentTitle_descreption}" />
 
+                        <p:outputLabel value="Type" for="queryType" />
+                        <p:selectOneMenu id="queryType" required="true" value="#{queryComponentController.selected.queryType}" >
+                            <f:selectItem itemLabel="Select" ></f:selectItem>
+                            <f:selectItems value="#{commonController.queryType}" ></f:selectItems>
+                        </p:selectOneMenu>
+                        
                         <p:outputLabel value="Indicator Query" for="indicatorQuery" />
                         <p:inputTextarea rows="4" cols="30" id="indicatorQuery" value="#{queryComponentController.selected.indicatorQuery}" 
                                          title="Indicator Query" />
-
-                        <p:outputLabel value="Select Query" for="selectQuery" />
-                        <p:inputTextarea rows="4" cols="30" id="selectQuery" value="#{queryComponentController.selected.selectQuery}" 
-                                         title="Select Query" />
-
-
-                        <p:outputLabel value="From Query" for="fromQuery" />
-                        <p:inputTextarea rows="4" cols="30" id="fromQuery" value="#{queryComponentController.selected.fromQuery}"
-                                         title="fromQuery" />
-
-                        <p:outputLabel value="Where Query" for="whereQuery" />
-                        <p:inputTextarea rows="4" cols="30" id="whereQuery" value="#{queryComponentController.selected.whereQuery}" 
-                                         title="Where Query" />
-
-                        <p:outputLabel value="Group by Query" for="groupQuery" />
-                        <p:inputTextarea rows="4" cols="30" id="groupQuery" value="#{queryComponentController.selected.groupQuery}" 
-                                         title="Where Query" />
-
-                        <p:outputLabel value="Having Query" for="havingQuery" />
-                        <p:inputTextarea rows="4" cols="30" id="havingQuery" value="#{queryComponentController.selected.havingQuery}" 
-                                         title="Where Query" />
-
-                        <p:outputLabel value="Filter Query" for="filterQuery" />
-                        <p:inputTextarea rows="4" cols="30" id="filterQuery" value="#{queryComponentController.selected.filterQuery}" 
-                                         title="Where Query" />
 
 
                     </p:panelGrid>

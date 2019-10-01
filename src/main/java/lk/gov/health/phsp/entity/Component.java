@@ -59,9 +59,9 @@ public class Component implements Serializable {
     private Long id;
 
     String name;
-    
+
     private String code;
-    
+
     @ManyToOne(fetch = FetchType.EAGER)
     private Item item;
 
@@ -85,15 +85,14 @@ public class Component implements Serializable {
     private boolean required;
 
     private boolean calculateOnFocus;
-    
+
     private boolean calculateButton;
     @Lob
     private String calculationScriptForColour;
-    
+
     @Lob
     private String calculationScriptForBackgroundColour;
-    
-    
+
     private boolean displayDetailsBox;
     private boolean discreptionAsAToolTip;
     private boolean discreptionAsASideLabel;
@@ -102,8 +101,6 @@ public class Component implements Serializable {
 
     @Lob
     private String calculationScript;
-
-    
 
     @Lob
     private String requiredErrorMessage;
@@ -199,7 +196,7 @@ public class Component implements Serializable {
     private Date retiredAt;
     private String retireComments;
 
-     @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER)
     private Encounter encounter;
 
     @ManyToOne(fetch = FetchType.EAGER)
@@ -228,13 +225,17 @@ public class Component implements Serializable {
     @ManyToOne(fetch = FetchType.EAGER)
     private Prescription prescriptionValue;
 
-   
-
     private boolean completed;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date completedAt;
     @ManyToOne(fetch = FetchType.EAGER)
     private WebUser completedBy;
+
+    private Integer integerNumberValue2;
+    private Long longNumberValue2;
+    private Double realNumberValue2;
+    
+    
 
     public Encounter getEncounter() {
         return encounter;
@@ -388,9 +389,6 @@ public class Component implements Serializable {
         this.descreptionValue = descreptionValue;
     }
 
-
-    
-    
     public ComponentSetType getComponentSetType() {
         return componentSetType;
     }
@@ -437,13 +435,8 @@ public class Component implements Serializable {
 
     @Override
     public String toString() {
-        return "Component{" + "id=" + id + ", name=" + name + ", item=" + item + " , class= " +  "}";
+        return "Component{" + "id=" + id + ", name=" + name + ", item=" + item + " , class= " + "}";
     }
-
-    
-    
-
-    
 
     public String getName() {
         return name;
@@ -903,6 +896,28 @@ public class Component implements Serializable {
         this.code = code;
     }
 
-    
-    
+    public Integer getIntegerNumberValue2() {
+        return integerNumberValue2;
+    }
+
+    public void setIntegerNumberValue2(Integer integerNumberValue2) {
+        this.integerNumberValue2 = integerNumberValue2;
+    }
+
+    public Long getLongNumberValue2() {
+        return longNumberValue2;
+    }
+
+    public void setLongNumberValue2(Long longNumberValue2) {
+        this.longNumberValue2 = longNumberValue2;
+    }
+
+    public Double getRealNumberValue2() {
+        return realNumberValue2;
+    }
+
+    public void setRealNumberValue2(Double realNumberValue2) {
+        this.realNumberValue2 = realNumberValue2;
+    }
+
 }

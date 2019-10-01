@@ -55,24 +55,11 @@
                             </f:facet>
                             <h:outputText value="#{item.descreption}"/>
                         </p:column>
-                        
-                        <p:column>
-                            <f:facet name="header">
-                                <h:outputText value="#{bundleQuery.ListQueryComponentTitle_orderNo}"/>
-                            </f:facet>
-                            <h:outputText value="#{item.orderNo}"/>
-                        </p:column>
-                        <p:column>
-                            <f:facet name="header">
-                                <h:outputText value="#{bundleQuery.ListQueryComponentTitle_institution}"/>
-                            </f:facet>
-                            <h:outputText value="#{item.institution}"/>
-                        </p:column>
                         <f:facet name="footer">
                             <p:commandButton id="createButton" icon="ui-icon-plus"   value="#{bundleQuery.Create}" actionListener="#{queryComponentController.prepareCreate}" update=":QueryComponentCreateForm" oncomplete="PF('QueryComponentCreateDialog').show()"/>
                             <p:commandButton id="viewButton"   icon="ui-icon-search" value="#{bundleQuery.View}" update=":QueryComponentViewForm" oncomplete="PF('QueryComponentViewDialog').show()" disabled="#{empty queryComponentController.selected}"/>
                             <p:commandButton id="editButton"   icon="ui-icon-pencil" value="#{bundleQuery.Edit}" update=":QueryComponentEditForm" oncomplete="PF('QueryComponentEditDialog').show()" disabled="#{empty queryComponentController.selected}"/>
-                            <p:commandButton id="duplicateButton" icon="ui-icon-arrowrefresh-1-n"  value="Duplicate" action="#{queryComponentController.duplicate()}" ajax="false" disabled="#{empty queryComponentController.selected}"/>
+                            <p:commandButton id="duplicateButton" icon="ui-icon-arrowrefresh-1-n"  value="Manage" action="/queryComponent/manage_query" ajax="false" disabled="#{empty queryComponentController.selected}"/>
                             <p:commandButton id="deleteButton" icon="ui-icon-trash"  value="#{bundleQuery.Delete}" actionListener="#{queryComponentController.retire()}" ajax="false" disabled="#{empty queryComponentController.selected}"/>
                         </f:facet>
                     </p:dataTable>

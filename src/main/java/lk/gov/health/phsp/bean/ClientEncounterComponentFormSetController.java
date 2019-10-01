@@ -431,13 +431,20 @@ public class ClientEncounterComponentFormSetController implements Serializable {
         String navigationLink = "/clientEncounterComponentFormSet/Formset";
         formEditable = true;
 
+        Date d = new Date();
         Encounter e = new Encounter();
         e.setClient(clientController.getSelected());
         e.setInstitution(dfs.getInstitution());
-        e.setEncounterDate(new Date());
-        e.setEncounterFrom(new Date());
+        e.setEncounterDate(d);
+        e.setEncounterFrom(d);
         e.setEncounterType(EncounterType.Clinic_Visit);
+        
         e.setFirstEncounter(isFirstEncounterOfThatType(clientController.getSelected(),dfs.getInstitution(), EncounterType.Clinic_Visit));
+
+        e.setEncounterMonth(CommonController.getMonth(d));
+        e.setEncounterQuarter(CommonController.getQuarter(d));
+        e.setEncounterYear(CommonController.getYear(d));
+        
         encounterController.save(e);
 
         ClientEncounterComponentFormSet cfs = new ClientEncounterComponentFormSet();

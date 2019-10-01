@@ -22,7 +22,12 @@ import lk.gov.health.phsp.enums.DataCompletionStrategy;
 import lk.gov.health.phsp.enums.DataModificationStrategy;
 import lk.gov.health.phsp.enums.DataPopulationStrategy;
 import lk.gov.health.phsp.enums.ItemArrangementStrategy;
+import lk.gov.health.phsp.enums.Month;
 import lk.gov.health.phsp.enums.PanelType;
+import lk.gov.health.phsp.enums.Quarter;
+import lk.gov.health.phsp.enums.QueryCriteriaMatchType;
+import lk.gov.health.phsp.enums.QueryType;
+import lk.gov.health.phsp.enums.QueryVariableEvaluationType;
 import lk.gov.health.phsp.enums.RelationshipType;
 import lk.gov.health.phsp.enums.RenderType;
 import lk.gov.health.phsp.enums.SelectionDataType;
@@ -193,7 +198,7 @@ public class CommonController implements Serializable {
         }
         return d;
     }
-    
+
     public static Long getLongValue(String result) {
         Long l = null;
         try {
@@ -213,4 +218,44 @@ public class CommonController implements Serializable {
         }
         return d;//To change body of generated methods, choose Tools | Templates.
     }
+
+    public static Integer getMonth(Date d) {
+        Calendar c = Calendar.getInstance();
+        c.setTime(d);
+        return c.get(Calendar.MONTH);
+    }
+
+    public static Integer getYear(Date d) {
+        Calendar c = Calendar.getInstance();
+        c.setTime(d);
+        return c.get(Calendar.YEAR);
+    }
+
+    public static Integer getQuarter(Date d) {
+        Calendar c = Calendar.getInstance();
+        c.setTime(d);
+        int month = c.get(Calendar.MONTH);
+        return (month / 3) + 1;
+    }
+
+    public Month[] getMonths() {
+        return Month.values();
+    }
+
+    public Quarter[] getQuarters() {
+        return Quarter.values();
+    }
+
+    public QueryCriteriaMatchType[] getQueryCriteriaMatchTypes() {
+        return QueryCriteriaMatchType.values();
+    }
+
+    public QueryType[] getQueryType() {
+        return QueryType.values();
+    }
+
+    public QueryVariableEvaluationType[] getQueryVariableEvaluationType() {
+        return QueryVariableEvaluationType.values();
+    }
+
 }

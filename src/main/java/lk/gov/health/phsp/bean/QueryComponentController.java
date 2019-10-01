@@ -31,6 +31,8 @@ import javax.script.ScriptException;
 import lk.gov.health.phsp.entity.Area;
 import lk.gov.health.phsp.entity.Client;
 import lk.gov.health.phsp.entity.ClientEncounterComponentForm;
+import lk.gov.health.phsp.entity.DesignComponentForm;
+import lk.gov.health.phsp.entity.DesignComponentFormSet;
 import lk.gov.health.phsp.entity.Encounter;
 import lk.gov.health.phsp.entity.Institution;
 import lk.gov.health.phsp.enums.Evaluation;
@@ -41,7 +43,6 @@ import lk.gov.health.phsp.facade.EncounterFacade;
 import lk.gov.health.phsp.pojcs.Jpq;
 import lk.gov.health.phsp.pojcs.Replaceable;
 import org.apache.commons.lang3.SerializationUtils;
-import org.apache.http.client.utils.CloneUtils;
 
 @Named("queryComponentController")
 @SessionScoped
@@ -60,12 +61,24 @@ public class QueryComponentController implements Serializable {
     private WebUserController webUserController;
     @Inject
     private RelationshipController relationshipController;
+    
+    
 
     private List<QueryComponent> items = null;
     private QueryComponent selected;
+    private QueryComponent selectedCretirian;
+    private List<QueryComponent> selectedCretiria = null;
 
+    private QueryComponent selectedCategory;
+    private QueryComponent selectedSubcategory;
     private QueryComponent selectedForQuery;
 
+    
+    
+    private QueryComponent addingQuery;
+    private QueryComponent removingQuery;
+    private QueryComponent movingForm;
+    
     private String resultString;
     private List<Client> resultClientList;
     private List<Encounter> resultEncounterList;
@@ -94,6 +107,131 @@ public class QueryComponentController implements Serializable {
     private boolean filterMonth;
     private boolean filterDate;
     private boolean filterQuarter;
+    
+     public void fillFormsofTheSelectedSet() {
+        selectedCretiria = fillFormsofTheSelectedSet(selected);
+    }
+
+    public List<QueryComponent> fillFormsofTheSelectedSet(QueryComponent set) {
+        if (set == null) {
+            return new ArrayList<>();
+        }
+        String j = "Select f from QueryComponent f "
+                + "where f.retired=false "
+                + " and f.parentComponent=:pc "
+                + " order by f.orderNo";
+        Map m = new HashMap();
+        m.put("pc", set);
+        return getFacade().findByJpql(j, m);
+    }
+
+    public void addFormToTheSelectedSet() {
+//        // System.out.println("addFormToTheSelectedSet");
+//        // System.out.println("designComponentFormSet = " + designComponentFormSet);
+//        // System.out.println("addingQuery = " + addingQuery);
+        if (selected == null) {
+            JsfUtil.addErrorMessage("No Formset");
+            return;
+        }
+        if (addingQuery == null) {
+            JsfUtil.addErrorMessage("No Form");
+            return;
+        }
+        addingQuery.setParentComponent(selected);
+        addingQuery.setCreatedAt(new Date());
+        addingQuery.setCreatedBy(webUserController.getLoggedUser());
+        getFacade().create(addingQuery);
+
+        fillFormsofTheSelectedSet();
+        addingQuery = null;
+    }
+
+    public void removeFromFromTheSelectedSet() {
+        if (removingQuery == null) {
+            JsfUtil.addErrorMessage("No form to remove.");
+            return;
+        }
+        removingQuery.setRetired(true);
+        removingQuery.setRetiredAt(new Date());
+        removingQuery.setRetiredBy(webUserController.getLoggedUser());
+        getFacade().edit(removingQuery);
+        fillFormsofTheSelectedSet();
+        JsfUtil.addSuccessMessage("Item Removed");
+    }
+
+    public void moveUpTheSelectedSet() {
+        if (movingForm == null) {
+            JsfUtil.addErrorMessage("No form to move.");
+            return;
+        }
+        movingForm.setOrderNo(movingForm.getOrderNo() - 1.5);
+        getFacade().edit(movingForm);
+        fillFormsofTheSelectedSet();
+        Double o = 0.0;
+        for (QueryComponent f : getSelectedCretiria()) {
+            o = o + 1;
+            f.setOrderNo(o);
+            getFacade().edit(f);
+        }
+        fillFormsofTheSelectedSet();
+        movingForm = null;
+        JsfUtil.addSuccessMessage("Item Moved Up");
+    }
+
+    public void moveDownTheSelectedSet() {
+        if (movingForm == null) {
+            JsfUtil.addErrorMessage("No form to move.");
+            return;
+        }
+        movingForm.setOrderNo(movingForm.getOrderNo() + 1.5);
+        getFacade().edit(movingForm);
+        fillFormsofTheSelectedSet();
+        Double o = 0.0;
+        for (QueryComponent f : getSelectedCretiria()) {
+            o = o + 1;
+            f.setOrderNo(o);
+            getFacade().edit(f);
+        }
+        fillFormsofTheSelectedSet();
+        JsfUtil.addSuccessMessage("Item Moved Down");
+    }
+    
+    
+    
+    public void saveItem() {
+        saveItem(selected);
+    }
+    
+     public void saveItem(QueryComponent saving) {
+        if (saving == null) {
+            JsfUtil.addErrorMessage("No item selected.");
+            return;
+        }
+        if (saving.getId() == null) {
+            saving.setCreatedAt(new Date());
+            saving.setCreatedBy(webUserController.getLoggedUser());
+            getFacade().create(saving);
+            JsfUtil.addSuccessMessage("Saved Successfully.");
+        } else {
+            saving.setLastEditBy(webUserController.getLoggedUser());
+            saving.setLastEditeAt(new Date());
+            getFacade().edit(saving);
+            JsfUtil.addSuccessMessage("Updated Successfully.");
+        }
+    }
+    
+    public String backToManageQueries() {
+        return "/queryComponent/List";
+    }
+    
+    public String toEditCriterian() {
+        if (selectedCretirian == null) {
+            JsfUtil.addErrorMessage("Nothing to Edit");
+            return "";
+        }
+
+        return "/queryComponent/item";
+    }
 
     public QueryComponentController() {
     }
@@ -179,6 +317,27 @@ public class QueryComponentController implements Serializable {
                 + " order by q.name";
         Map m = new HashMap();
         m.put("q", "%" + qry.toLowerCase() + "%");
+        return getFacade().findByJpql(j, m);
+    }
+
+    public List<QueryComponent> completeQueryCategories(String qry) {
+        String j = "select q from QueryComponent q "
+                + " where q.retired=false "
+                + " and q.parentComponent is null "
+                + " and lower(q.name) like :q or lower(q.code) like :q "
+                + " order by q.name";
+        Map m = new HashMap();
+        m.put("q", "%" + qry.toLowerCase() + "%");
+        return getFacade().findByJpql(j, m);
+    }
+
+    public List<QueryComponent> subcategories(QueryComponent p) {
+        String j = "select q from QueryComponent q "
+                + " where q.retired=false "
+                + " and q.parentComponent =:p "
+                + " order by q.name";
+        Map m = new HashMap();
+        m.put("p", p);
         return getFacade().findByJpql(j, m);
     }
 
@@ -362,7 +521,7 @@ public class QueryComponentController implements Serializable {
         for (Replaceable r : replaceblesInWhereQuery) {
             count++;
             String qs = "";
-            if (r.isForForm()||r.isForClient()) {
+            if (r.isForForm() || r.isForClient()) {
                 switch (r.getQueryDataType()) {
                     case it:
                         if (r.getEvaluation() == Evaluation.eq) {
@@ -407,7 +566,7 @@ public class QueryComponentController implements Serializable {
 
                 }
 
-            } 
+            }
             j.setJwhere(j.getJwhere() + qs + addFilterString(j.getM()));
 
         }
@@ -1024,6 +1183,65 @@ public class QueryComponentController implements Serializable {
     public void setEncounterFacade(EncounterFacade encounterFacade) {
         this.encounterFacade = encounterFacade;
     }
+
+    public QueryComponent getSelectedCategory() {
+        return selectedCategory;
+    }
+
+    public void setSelectedCategory(QueryComponent selectedCategory) {
+        this.selectedCategory = selectedCategory;
+    }
+
+    public QueryComponent getSelectedSubcategory() {
+        return selectedSubcategory;
+    }
+
+    public void setSelectedSubcategory(QueryComponent selectedSubcategory) {
+        this.selectedSubcategory = selectedSubcategory;
+    }
+
+    public List<QueryComponent> getSelectedCretiria() {
+        return selectedCretiria;
+    }
+
+    public void setSelectedCretiria(List<QueryComponent> selectedCretiria) {
+        this.selectedCretiria = selectedCretiria;
+    }
+
+    public QueryComponent getAddingQuery() {
+        return addingQuery;
+    }
+
+    public void setAddingQuery(QueryComponent addingQuery) {
+        this.addingQuery = addingQuery;
+    }
+
+    public QueryComponent getRemovingQuery() {
+        return removingQuery;
+    }
+
+    public void setRemovingQuery(QueryComponent removingQuery) {
+        this.removingQuery = removingQuery;
+    }
+
+    public QueryComponent getSelectedCretirian() {
+        return selectedCretirian;
+    }
+
+    public void setSelectedCretirian(QueryComponent selectedCretirian) {
+        this.selectedCretirian = selectedCretirian;
+    }
+
+    public QueryComponent getMovingForm() {
+        return movingForm;
+    }
+
+    public void setMovingForm(QueryComponent movingForm) {
+        this.movingForm = movingForm;
+    }
+    
+
+    
 
     @FacesConverter(forClass = QueryComponent.class)
     public static class QueryComponentControllerConverter implements Converter {

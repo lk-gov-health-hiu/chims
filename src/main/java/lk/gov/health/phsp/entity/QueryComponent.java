@@ -24,8 +24,14 @@
 package lk.gov.health.phsp.entity;
 
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.Lob;
 import javax.persistence.Transient;
+import lk.gov.health.phsp.enums.QueryCriteriaMatchType;
+import lk.gov.health.phsp.enums.QueryFilterType;
+import lk.gov.health.phsp.enums.QueryType;
+import lk.gov.health.phsp.enums.QueryVariableEvaluationType;
 
 /**
  *
@@ -51,8 +57,20 @@ public class QueryComponent extends Component {
     @Lob
     private String orderQuery;
 
+    @Enumerated(EnumType.STRING)
+    private QueryType queryType;
 
+    @Enumerated(EnumType.STRING)
+    private QueryCriteriaMatchType matchType;
 
+    @Enumerated(EnumType.STRING)
+    private QueryVariableEvaluationType evaluationType;
+
+    @Enumerated(EnumType.STRING)
+    private QueryFilterType filterType;
+
+    
+    
     public String getIndicatorQuery() {
         return indicatorQuery;
     }
@@ -105,8 +123,6 @@ public class QueryComponent extends Component {
         return filterQuery;
     }
 
-    
-
     public String getOrderQuery() {
         return orderQuery;
     }
@@ -117,6 +133,38 @@ public class QueryComponent extends Component {
 
     public void setFilterQuery(String filterQuery) {
         this.filterQuery = filterQuery;
+    }
+
+    public QueryType getQueryType() {
+        return queryType;
+    }
+
+    public void setQueryType(QueryType queryType) {
+        this.queryType = queryType;
+    }
+
+    public QueryCriteriaMatchType getMatchType() {
+        return matchType;
+    }
+
+    public void setMatchType(QueryCriteriaMatchType matchType) {
+        this.matchType = matchType;
+    }
+
+    public QueryVariableEvaluationType getEvaluationType() {
+        return evaluationType;
+    }
+
+    public void setEvaluationType(QueryVariableEvaluationType evaluationType) {
+        this.evaluationType = evaluationType;
+    }
+
+    public QueryFilterType getFilterType() {
+        return filterType;
+    }
+
+    public void setFilterType(QueryFilterType filterType) {
+        this.filterType = filterType;
     }
 
 }
