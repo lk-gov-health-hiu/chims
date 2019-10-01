@@ -21,7 +21,8 @@
                         <p:outputLabel value="#{bundleClinical.EditItemLabel_name}" for="name" />
                         <p:inputText autocomplete="off" id="name" value="#{itemController.selected.name}" title="#{bundleClinical.EditItemTitle_name}" />
                         <p:outputLabel value="Code" for="code" />
-                        <p:inputText  autocomplete="off"  id="code" value="#{itemController.selected.code}" title="#{bundleClinical.EditItemTitle_id}" >
+                        <p:inputText  autocomplete="off"  id="code" readonly="true"
+                                      value="#{itemController.selected.code}" title="#{bundleClinical.EditItemTitle_id}" >
                             <f:validateRegex pattern="^[a-zA-Z0-9_]*$" />
                         </p:inputText>
                         <p:outputLabel value="Parent"  />

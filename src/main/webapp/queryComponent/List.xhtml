@@ -32,11 +32,18 @@
 
                         <p:column>
                             <f:facet name="header">
-                                <h:outputText value="#{bundleQuery.ListQueryComponentTitle_name}"/>
+                                <h:outputText value="Category"/>
+                            </f:facet>
+                            <h:outputText value="#{item.parentComponent.name}"/>
+                        </p:column>
+                        
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="Name"/>
                             </f:facet>
                             <h:outputText value="#{item.name}"/>
                         </p:column>
-                        <p:column>
+                        <p:column sortBy="#{item.code}" >
                             <f:facet name="header">
                                 <h:outputText value="Code"/>
                             </f:facet>
@@ -44,16 +51,11 @@
                         </p:column>
                         <p:column>
                             <f:facet name="header">
-                                <h:outputText value="#{bundleQuery.ListQueryComponentTitle_descreption}"/>
+                                <h:outputText value="Descreption"/>
                             </f:facet>
                             <h:outputText value="#{item.descreption}"/>
                         </p:column>
-                        <p:column>
-                            <f:facet name="header">
-                                <h:outputText value="#{bundleQuery.ListQueryComponentTitle_parentComponent}"/>
-                            </f:facet>
-                            <h:outputText value="#{item.parentComponent}"/>
-                        </p:column>
+                        
                         <p:column>
                             <f:facet name="header">
                                 <h:outputText value="#{bundleQuery.ListQueryComponentTitle_orderNo}"/>
@@ -65,31 +67,6 @@
                                 <h:outputText value="#{bundleQuery.ListQueryComponentTitle_institution}"/>
                             </f:facet>
                             <h:outputText value="#{item.institution}"/>
-                        </p:column>
-
-                        <p:column>
-                            <f:facet name="header">
-                                <h:outputText value="Indicator Query"/>
-                            </f:facet>
-                            <h:outputText value="#{item.indicatorQuery}"/>
-                        </p:column>
-                        <p:column>
-                            <f:facet name="header">
-                                <h:outputText value="Select Query"/>
-                            </f:facet>
-                            <h:outputText value="#{item.selectQuery}"/>
-                        </p:column>
-                        <p:column>
-                            <f:facet name="header">
-                                <h:outputText value="From Query"/>
-                            </f:facet>
-                            <h:outputText value="#{item.fromQuery}"/>
-                        </p:column>
-                        <p:column>
-                            <f:facet name="header">
-                                <h:outputText value="Filter Query"/>
-                            </f:facet>
-                            <h:outputText value="#{item.filterQuery}"/>
                         </p:column>
                         <f:facet name="footer">
                             <p:commandButton id="createButton" icon="ui-icon-plus"   value="#{bundleQuery.Create}" actionListener="#{queryComponentController.prepareCreate}" update=":QueryComponentCreateForm" oncomplete="PF('QueryComponentCreateDialog').show()"/>

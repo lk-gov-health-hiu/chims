@@ -82,6 +82,26 @@
                                         </p:outputLabel>
                                         <p:inputText value="#{queryComponentController.year}" required="true"  rendered="#{queryComponentController.filterYear}" ></p:inputText>
 
+
+                                        <p:outputLabel value="From" for="from" 
+                                                       rendered="#{queryComponentController.filterFrom}" >
+                                        </p:outputLabel>
+                                        <p:calendar value="#{queryComponentController.from}" 
+                                                    pattern="dd MMMM yyyy" id="from"
+                                                    rendered="#{queryComponentController.filterFrom}">
+                                        </p:calendar>
+
+                                        <p:outputLabel value="To" for="to" 
+                                                       rendered="#{queryComponentController.filterTo}" >
+                                        </p:outputLabel>
+                                        <p:calendar value="#{queryComponentController.to}" 
+                                                    id="to"   pattern="dd MMMM yyyy"
+                                                    rendered="#{queryComponentController.filterTo}">
+                                        </p:calendar>
+
+
+
+
                                     </p:panelGrid>
 
                                 </h:panelGroup>
