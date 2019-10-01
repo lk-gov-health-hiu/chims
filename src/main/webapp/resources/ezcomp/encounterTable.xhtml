@@ -1,0 +1,31 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:cc="http://xmlns.jcp.org/jsf/composite"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <!-- INTERFACE -->
+    <cc:interface>
+    </cc:interface>
+
+    <!-- IMPLEMENTATION -->
+    <cc:implementation>
+        <p:dataTable value="#{queryComponentController.resultEncounterList}" 
+                     var="cv"
+                     >
+            <f:facet name="header" >
+                <p:outputLabel value="Recent Completed Visits" ></p:outputLabel>
+            </f:facet>
+            <p:column headerText="Date" >
+                <p:outputLabel value="#{cv.encounterDate}" >
+                    <f:convertDateTime pattern="dd MMMM yyyy" ></f:convertDateTime>
+                </p:outputLabel>
+            </p:column>
+            <p:column headerText="Institution" >
+                <p:outputLabel value="#{cv.institution.name}" ></p:outputLabel>
+            </p:column>
+        </p:dataTable>
+
+    </cc:implementation>
+</html>

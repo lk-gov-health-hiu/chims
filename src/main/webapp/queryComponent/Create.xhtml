@@ -21,7 +21,7 @@
                         <p:outputLabel value="Parent" for="parent" />
                         <p:autoComplete id="parent" value="#{queryComponentController.selected.parentComponent}" 
                                         completeMethod="#{queryComponentController.completeQueries}" 
-                                        var="q" itemLabel="#{q.code}" itemValue="#{q}" forceSelection="true"
+                                        var="q" itemLabel="#{q.name}" itemValue="#{q}" forceSelection="true"
                                         >
                         </p:autoComplete>
 
@@ -31,13 +31,19 @@
                                          title="#{bundleQuery.CreateQueryComponentTitle_descreption}" />
 
                         <p:outputLabel value="Type" for="queryType" />
-                        <p:selectOneMenu id="queryType" required="true" value="#{queryComponentController.selected.queryType}" >
+                        <p:selectOneMenu id="queryType"  value="#{queryComponentController.selected.queryType}" >
                             <f:selectItem itemLabel="Select" ></f:selectItem>
                             <f:selectItems value="#{commonController.queryType}" ></f:selectItems>
                         </p:selectOneMenu>
-                        
+
+                        <p:outputLabel value="Level" for="queryLevel" />
+                        <p:selectOneMenu id="queryLevel"  value="#{queryComponentController.selected.queryLevel}" >
+                            <f:selectItem itemLabel="Select" ></f:selectItem>
+                            <f:selectItems value="#{commonController.queryLevels}" ></f:selectItems>
+                        </p:selectOneMenu>
+
                         <p:outputLabel value="Output" for="outputType" />
-                        <p:selectOneMenu id="outputType" required="true" value="#{queryComponentController.selected.outputType}" >
+                        <p:selectOneMenu id="outputType"  value="#{queryComponentController.selected.outputType}" >
                             <f:selectItem itemLabel="Select" ></f:selectItem>
                             <f:selectItems value="#{commonController.queryOutputTypes}" ></f:selectItems>
                         </p:selectOneMenu>
@@ -54,7 +60,7 @@
                         </p:selectOneMenu>
 
                         <p:outputLabel value="Filter By" />
-                        <p:panelGrid columns="2" >
+                        <p:panelGrid columns="4" >
                             <p:selectBooleanCheckbox value="#{queryComponentController.selected.filterByProvince}" itemLabel="Province" ></p:selectBooleanCheckbox>
                             <p:selectBooleanCheckbox value="#{queryComponentController.selected.filterByDistrict}" itemLabel="District" ></p:selectBooleanCheckbox>
                             <p:selectBooleanCheckbox value="#{queryComponentController.selected.filterByRdhs}" itemLabel="RDHS" ></p:selectBooleanCheckbox>

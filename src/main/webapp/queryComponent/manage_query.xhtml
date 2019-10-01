@@ -28,7 +28,7 @@
 
 
                             <p:panel header="Existing Creteria" >
-                                <p:dataTable id="lst" value="#{queryComponentController.selectedCategory}" var="f" >
+                                <p:dataTable id="lst" value="#{queryComponentController.selectedCretiria}" var="f" >
                                     <p:column headerText="Order No" width="60" >
                                         <p:outputLabel value="#{f.orderNo}" >
                                             <f:convertNumber pattern="0" ></f:convertNumber>
@@ -60,7 +60,7 @@
                                     <p:column headerText="Remove" width="150" >
                                         <p:commandButton id="btnRemove" icon="ui-icon-trash"  onclick="if (!confirm('Really want to do that?'))
                                                     return false"
-                                                         action="#{queryComponentController.removeFromFromTheSelectedSet()}" 
+                                                         action="#{queryComponentController.removeCriterianFromTheSelectedQuery()}" 
                                                          process="@this" update="lst" >
                                             <f:setPropertyActionListener value="#{f}" target="#{queryComponentController.removingQuery}" ></f:setPropertyActionListener>
                                         </p:commandButton>
@@ -69,7 +69,7 @@
 
                             </p:panel>
 
-                            <p:panel header="Add New Form" >
+                            <p:panel header="Add New Cretiria" >
                                 <p:panelGrid id="gridAddingForm" columns="2" rendered="#{queryComponentController.addingQuery ne null}">
                                     <p:outputLabel value="Name" ></p:outputLabel>
                                     <p:inputText id="name" value="#{queryComponentController.addingQuery.name}" ></p:inputText>
@@ -80,8 +80,8 @@
                                    
 
                                     <p:spacer ></p:spacer>
-                                    <p:commandButton process="name orderNo sex btnAdd" update="gridAddingForm lst" value="Add" id="btnAdd"
-                                                     action="#{queryComponentController.addFormToTheSelectedSet()}" ></p:commandButton>
+                                    <p:commandButton process="name orderNo btnAdd" update="gridAddingForm lst" value="Add" id="btnAdd"
+                                                     action="#{queryComponentController.addCriterianToTheSelectedQueriesCriteria()}" ></p:commandButton>
                                 </p:panelGrid>
 
                             </p:panel>

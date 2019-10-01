@@ -30,6 +30,7 @@ import javax.persistence.Lob;
 import javax.persistence.Transient;
 import lk.gov.health.phsp.enums.QueryCriteriaMatchType;
 import lk.gov.health.phsp.enums.QueryFilterType;
+import lk.gov.health.phsp.enums.QueryLevel;
 import lk.gov.health.phsp.enums.QueryOutputType;
 import lk.gov.health.phsp.enums.QueryType;
 import lk.gov.health.phsp.enums.QueryVariableEvaluationType;
@@ -61,7 +62,7 @@ public class QueryComponent extends Component {
 
     @Enumerated(EnumType.STRING)
     private QueryType queryType;
-    
+
     @Enumerated(EnumType.STRING)
     private QueryOutputType outputType;
 
@@ -76,7 +77,10 @@ public class QueryComponent extends Component {
 
     @Enumerated(EnumType.STRING)
     private RelationshipType populationType;
-    
+
+    @Enumerated(EnumType.STRING)
+    private QueryLevel queryLevel;
+
     private boolean filterByDistrict;
     private boolean filterByProvince;
     private boolean filterByRdhs;
@@ -89,9 +93,7 @@ public class QueryComponent extends Component {
     private boolean filterByYear;
     private boolean filterByMonth;
     private boolean filterByQuarter;
-    
-    
-    
+
     public String getIndicatorQuery() {
         return indicatorQuery;
     }
@@ -300,6 +302,14 @@ public class QueryComponent extends Component {
         this.outputType = outputType;
     }
 
+    public QueryLevel getQueryLevel() {
+        return queryLevel;
+    }
 
+    public void setQueryLevel(QueryLevel queryLevel) {
+        this.queryLevel = queryLevel;
+    }
+
+    
     
 }

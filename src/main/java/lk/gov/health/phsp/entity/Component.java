@@ -435,7 +435,7 @@ public class Component implements Serializable {
 
     @Override
     public String toString() {
-        return "Component{" + "id=" + id + ", name=" + name + ", item=" + item + " , class= " + "}";
+        return "Component{" + "id=" + id + ", name=" + name + ", item=" + item + "}";
     }
 
     public String getName() {

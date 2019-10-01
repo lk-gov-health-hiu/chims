@@ -21,9 +21,16 @@
                                     <p:outputLabel value="Category" ></p:outputLabel>
                                     <p:autoComplete id="acCat" value="#{queryComponentController.selectedCategory}" 
                                                     completeMethod="#{queryComponentController.completeQueryCategories}" 
-                                                    var="q" itemLabel="#{q.code}" itemValue="#{q}" forceSelection="true"
+                                                    var="q" itemLabel="#{q.name}" itemValue="#{q}" forceSelection="true"
                                                     >
+                                        <p:column headerText="Name" >
+                                            <p:outputLabel value="#{q.name}" ></p:outputLabel>
+                                        </p:column>
+                                        <p:column headerText="Code" >
+                                            <p:outputLabel value="#{q.code}" ></p:outputLabel>
+                                        </p:column>
                                         <p:ajax event="itemSelect"  process="@this" update="cmbSc cmbQry :#{p:component('filters')}" ></p:ajax>
+
                                     </p:autoComplete>
 
                                     <p:outputLabel value="Subcategory" ></p:outputLabel>
@@ -33,8 +40,9 @@
                                             value="#{queryComponentController.subcategories(queryComponentController.selectedCategory)}" 
                                             var="sc" itemLabel="#{sc.name}" itemValue="#{sc}"></f:selectItems>
                                         <p:ajax event="change" process="@this" update="cmbQry :#{p:component('filters')}" ></p:ajax>
+                                        <p:ajax event="blur" process="@this" update="cmbQry :#{p:component('filters')}" ></p:ajax>
                                     </p:selectOneMenu>
-                                    
+
                                     <p:outputLabel value="Query" ></p:outputLabel>
                                     <p:selectOneMenu id="cmbQry" value="#{queryComponentController.selectedForQuery}" >
                                         <f:selectItem itemLabel="Select a query" ></f:selectItem>
@@ -43,8 +51,8 @@
                                             var="q" itemLabel="#{q.name}" itemValue="#{q}"></f:selectItems>
                                         <p:ajax event="change" process="@this" update="lblDes :#{p:component('filters')}" ></p:ajax>
                                     </p:selectOneMenu>
-                                    
-                                    
+
+
                                     <p:commandButton value="Execute" ajax="false" action="#{queryComponentController.processQuery()}" >
                                     </p:commandButton>
 
@@ -72,7 +80,7 @@
                                                         minQueryLength="3">
                                         </p:autoComplete>
 
-                                        <p:outputLabel value="District" rendered="#{queryComponentController.selected.filterByDistrict}" for="district" >
+                                        <p:outputLabel value="District" rendered="#{queryComponentController.selectedForQuery.filterByDistrict}" for="district" >
                                         </p:outputLabel>
 
                                         <p:autoComplete id="district" value="#{queryComponentController.district}"
@@ -111,9 +119,9 @@
                                                     id="to"   pattern="dd MMMM yyyy"
                                                     rendered="#{queryComponentController.selectedForQuery.filterByTo}">
                                         </p:calendar>
-                                        
-                                         <p:outputLabel value="Date" for="date" 
-                                                        rendered="#{queryComponentController.selectedForQuery.filterByDate}" >
+
+                                        <p:outputLabel value="Date" for="date" 
+                                                       rendered="#{queryComponentController.selectedForQuery.filterByDate}" >
                                         </p:outputLabel>
                                         <p:calendar value="#{queryComponentController.date}" 
                                                     id="date"   pattern="dd MMMM yyyy"
@@ -140,21 +148,11 @@
                                 </h:panelGroup>
 
                                 <h:panelGroup rendered="#{queryComponentController.resultEncounterList ne null}" >
-                                    <p:dataTable value="#{queryComponentController.resultEncounterList}" 
-                                                 var="cv"
-                                                 >
-                                        <f:facet name="header" >
-                                            <p:outputLabel value="Recent Completed Visits" ></p:outputLabel>
-                                        </f:facet>
-                                        <p:column headerText="Date" >
-                                            <p:outputLabel value="#{cv.encounterDate}" >
-                                                <f:convertDateTime pattern="dd MMMM yyyy" ></f:convertDateTime>
-                                            </p:outputLabel>
-                                        </p:column>
-                                        <p:column headerText="Institution" >
-                                            <p:outputLabel value="#{cv.institution.name}" ></p:outputLabel>
-                                        </p:column>
-                                    </p:dataTable>
+                                    <ez:encounterTable/>
+                                </h:panelGroup>
+
+                                <h:panelGroup rendered="#{queryComponentController.resultRelationshipList ne null}" >
+                                    <ez:population/>
                                 </h:panelGroup>
 
                             </h:panelGroup>
