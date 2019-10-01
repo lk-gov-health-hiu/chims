@@ -641,23 +641,25 @@ public class QueryComponentController implements Serializable {
                 jpql.setJwhere(jpql.getJwhere() + " and i.item=:v1 and i.itemValue=:d1 ");
                 jpql.getM().put("v1", c.getItem());
                 jpql.getM().put("d1", c.getItemValue());
-            } else if (c.getMatchType() == QueryCriteriaMatchType.Variable_Value_Check) {
+            } else if (c.getMatchType() == QueryCriteriaMatchType.Variable_Range_check) {
+                jpql.setJwhere(jpql.getJwhere() + " and i.item=:v1 ");
+                jpql.getM().put("v1", c.getItem());
                 String eval = "";
                 switch (c.getEvaluationType()) {
                     case Equal:
-                        eval = "=";
+                        eval = " = ";
                         break;
                     case Grater_than_or_equal:
-                        eval = ">=";
+                        eval = " >= ";
                         break;
                     case Grater_than:
-                        eval = ">";
+                        eval = " > ";
                         break;
                     case Less_than:
-                        eval = "<";
+                        eval = " < ";
                         break;
                     case Less_than_or_equal:
-                        eval = "<=";
+                        eval = " <= ";
                         break;
                 }
                 switch (c.getEvaluationType()) {
@@ -668,40 +670,40 @@ public class QueryComponentController implements Serializable {
                     case Less_than_or_equal:
                         switch (c.getQueryDataType()) {
                             case Boolean:
-                                jpql.setJwhere(jpql.getJwhere() + " and i.item.booleanValue" + eval + ":v1");
-                                jpql.getM().put("v1", c.getBooleanValue());
+                                jpql.setJwhere(jpql.getJwhere() + " and i.booleanValue" + eval + ":d1");
+                                jpql.getM().put("d1", c.getBooleanValue());
                                 break;
                             case DateTime:
-                                jpql.setJwhere(jpql.getJwhere() + " and i.item.dateValue" + eval + ":v1");
-                                jpql.getM().put("v1", c.getDateValue());
+                                jpql.setJwhere(jpql.getJwhere() + " and i.dateValue" + eval + ":d1");
+                                jpql.getM().put("d1", c.getDateValue());
                                 break;
                             case String:
-                                jpql.setJwhere(jpql.getJwhere() + " and i.item.shortTextValue" + eval + ":v1");
-                                jpql.getM().put("v1", c.getShortTextValue());
+                                jpql.setJwhere(jpql.getJwhere() + " and i.shortTextValue" + eval + ":d1");
+                                jpql.getM().put("d1", c.getShortTextValue());
                                 break;
                             case area:
-                                jpql.setJwhere(jpql.getJwhere() + " and i.item.areaValue" + eval + ":v1");
-                                jpql.getM().put("v1", c.getAreaValue());
+                                jpql.setJwhere(jpql.getJwhere() + " and i.areaValue" + eval + ":d1");
+                                jpql.getM().put("d1", c.getAreaValue());
                                 break;
                             case institution:
-                                jpql.setJwhere(jpql.getJwhere() + " and i.item.institutionValue" + eval + ":v1");
-                                jpql.getM().put("v1", c.getInstitutionValue());
+                                jpql.setJwhere(jpql.getJwhere() + " and i.institutionValue" + eval + ":d1");
+                                jpql.getM().put("d1", c.getInstitutionValue());
                                 break;
                             case integer:
-                                jpql.setJwhere(jpql.getJwhere() + " and i.item.integerNumberValue" + eval + ":v1");
-                                jpql.getM().put("v1", c.getIntegerNumberValue());
+                                jpql.setJwhere(jpql.getJwhere() + " and i.integerNumberValue" + eval + ":d1");
+                                jpql.getM().put("d1", c.getIntegerNumberValue());
                                 break;
                             case item:
-                                jpql.setJwhere(jpql.getJwhere() + " and i.item.itemValue" + eval + ":v1");
-                                jpql.getM().put("v1", c.getItem());
+                                jpql.setJwhere(jpql.getJwhere() + " and i.itemValue" + eval + ":d1");
+                                jpql.getM().put("d1", c.getItem());
                                 break;
                             case real:
-                                jpql.setJwhere(jpql.getJwhere() + " and i.item.realNumberValue" + eval + ":v1");
-                                jpql.getM().put("v1", c.getRealNumberValue());
+                                jpql.setJwhere(jpql.getJwhere() + " and i.realNumberValue" + eval + ":d1");
+                                jpql.getM().put("d1", c.getRealNumberValue());
                                 break;
                             case longNumber:
-                                jpql.setJwhere(jpql.getJwhere() + " and i.item.longNumberValue" + eval + ":v1");
-                                jpql.getM().put("v1", c.getLongNumberValue());
+                                jpql.setJwhere(jpql.getJwhere() + " and i.longNumberValue" + eval + ":d1");
+                                jpql.getM().put("d1", c.getLongNumberValue());
                                 break;
 
                         }
