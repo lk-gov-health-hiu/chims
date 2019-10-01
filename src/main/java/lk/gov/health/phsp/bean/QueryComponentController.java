@@ -311,21 +311,22 @@ public class QueryComponentController implements Serializable {
     public List<QueryComponent> completeQueries(String qry) {
         String j = "select q from QueryComponent q "
                 + " where q.retired=false "
-                + " and lower(q.name) like :q or lower(q.code) like :q "
+                + " and (lower(q.name) like :qry or lower(q.code) like :qry) "
                 + " order by q.name";
         Map m = new HashMap();
-        m.put("q", "%" + qry.toLowerCase() + "%");
+        m.put("qry", "%" + qry.toLowerCase() + "%");
         return getFacade().findByJpql(j, m);
     }
 
     public List<QueryComponent> completeQueryCategories(String qry) {
+        System.out.println("completeQueryCategories");
         String j = "select q from QueryComponent q "
                 + " where q.retired=false "
-                + " and q.queryLevel =:l "
-                + " and lower(q.name) like :q or lower(q.code) like :q "
+                + " and q.queryLevel=:l "
+                + " and (lower(q.name) like :qry or lower(q.code) like :qry) "
                 + " order by q.name";
         Map m = new HashMap();
-        m.put("q", "%" + qry.toLowerCase() + "%");
+        m.put("qry", "%" + qry.toLowerCase() + "%");
         m.put("l", QueryLevel.Category);
         return getFacade().findByJpql(j, m);
     }
@@ -369,10 +370,10 @@ public class QueryComponentController implements Serializable {
     public QueryComponent findLastQuery(String qry) {
         String j = "select q from QueryComponent q "
                 + " where q.retired=false "
-                + " and lower(q.name) like :q or lower(q.code) like :q "
+                + " and (lower(q.name) like :q or lower(q.code) like :qry) "
                 + " order by q.name";
         Map m = new HashMap();
-        m.put("q", "%" + qry.toLowerCase() + "%");
+        m.put("qry", "%" + qry.toLowerCase() + "%");
         return getFacade().findFirstByJpql(j, m);
     }
 
@@ -517,17 +518,17 @@ public class QueryComponentController implements Serializable {
         q.setName(q.getName() + "1");
         q.setCreatedBy(webUserController.getLoggedUser());
         getFacade().create(q);
-        
-        for(QueryComponent c:cs){
+
+        for (QueryComponent c : cs) {
             QueryComponent newC = SerializationUtils.clone(c);
             newC.setId(null);
-            newC.setName(newC.getName()+ "1");
+            newC.setName(newC.getName() + "1");
             newC.setParentComponent(q);
             newC.setCreatedAt(new Date());
             newC.setCreatedBy(webUserController.getLoggedUser());
             getFacade().create(newC);
         }
-        
+
         items = null;
         selected = q;
         JsfUtil.addSuccessMessage("Duplicated");
@@ -710,16 +711,163 @@ public class QueryComponentController implements Serializable {
 
                 }
 
-               
             }
+
+            System.out.println("j.getJpql() = " + jpql.getJpql());
+            System.out.println("j.getM() = " + jpql.getM());
+            if (qc.getOutputType() == QueryOutputType.Count) {
+                jpql.setLongResult(getItemFacade().findLongByJpql(jpql.getJpql(), jpql.getM(), 1));
+            } else if (qc.getOutputType() == QueryOutputType.List) {
+                jpql.setClientList(getClientFacade().findByJpql(jpql.getJpql(), jpql.getM()));
+            }
+
+            return jpql;
+
+        } else {
+
+            String ss = "" ;
+            if (qc.getOutputType() == QueryOutputType.Count) {
+                ss = "select count(distinct c) from Client c, ";
+            } else if (qc.getOutputType() == QueryOutputType.List) {
+                ss = "select distinct (c) from Client c, ";
+            }
+            
+            
+            String w1 = " where ";
+            String w2 = "";
+            String w3 = "";
+
+            int count = 1;
+            for (QueryComponent qcm : criterias) {
+                System.out.println("count = " + count);
+                System.out.println("criterias.size() = " + criterias.size());
+                if (count != criterias.size()) {
+                    ss += " ClientEncounterComponentItem i" + count + ", ";
+                    w2 += " c.id=i" + count + ".itemClient.id and ";
+                    w3 +=  createJpqlBlockFromQueryComponentCriteria(qcm, jpql.getM(), count) + " and " ;
+                } else {
+                    ss += " ClientEncounterComponentItem i" + count + " ";
+                    w2 += " c.id=i" + count + ".itemClient.id and ";
+                    w3 +=   createJpqlBlockFromQueryComponentCriteria(qcm, jpql.getM(), count) + " ";
+                }
+                System.out.println("ss = " + ss);
+                System.out.println("w2 = " + w2);
+                System.out.println("w3 = " + w3);
+                count++;
+            }
+
+            /**
+             *
+             *
+             *
+             *
+             * select count(distinct p) from Patient p, Feature f1, Feature f2
+             * where p.id=f1.patient.id and p.id=f2.patient.id and
+             * f1.variableName=:name1 and f1.variableData:=data1 and
+             * f2.variableName=:name2 and f2.variableData:=data2
+             *
+             *
+             * 
+             * select count(distinct c) from Client c,  ClientEncounterComponentItem i1,  ClientEncounterComponentItem i2  
+             * where  c.id=i1.itemClient.id and  and i1.item=:v1   i1.integerNumberValue = :d1 and  i2.item=:v2 and i2.itemValue=:d2   
+             *
+             *
+             */
+            jpql.setJselect("");
+            jpql.setJfrom(ss);
+            jpql.setJwhere(w1+w2+w3 +" and c.retired=:f");
+
+            jpql.setJgroupby("");
+            System.out.println("j.getJpql() = " + jpql.getJpql());
+            System.out.println("j.getM() = " + jpql.getM());
+            if (qc.getOutputType() == QueryOutputType.Count) {
+                jpql.setLongResult(getItemFacade().findLongByJpql(jpql.getJpql(), jpql.getM(), 1));
+            } else if (qc.getOutputType() == QueryOutputType.List) {
+                jpql.setClientList(getClientFacade().findByJpql(jpql.getJpql(), jpql.getM()));
+            }
+
+            return jpql;
 
         }
 
-        jpql.setJgroupby("");
-        System.out.println("j.getJpql() = " + jpql.getJpql());
-        System.out.println("j.getM() = " + jpql.getM());
-        jpql.setLongResult(getItemFacade().countByJpql(jpql.getJpql(), jpql.getM()));
-        return jpql;
+    }
+
+    public String createJpqlBlockFromQueryComponentCriteria(QueryComponent c, Map m, int prefix) {
+        String bq = "";
+        if (c.getMatchType() == QueryCriteriaMatchType.Variable_Value_Check) {
+            bq += " i" + prefix + ".item=:v" + prefix + " and i" + prefix + ".itemValue=:d" + prefix + " ";
+            m.put("v" + prefix + "", c.getItem());
+            m.put("d" + prefix + "", c.getItemValue());
+        } else if (c.getMatchType() == QueryCriteriaMatchType.Variable_Range_check) {
+            bq += " i" + prefix + ".item=:v" + prefix + " and ";
+            m.put("v" + prefix + "", c.getItem());
+            String eval = "";
+            switch (c.getEvaluationType()) {
+                case Equal:
+                    eval = " = ";
+                    break;
+                case Grater_than_or_equal:
+                    eval = " >= ";
+                    break;
+                case Grater_than:
+                    eval = " > ";
+                    break;
+                case Less_than:
+                    eval = " < ";
+                    break;
+                case Less_than_or_equal:
+                    eval = " <= ";
+                    break;
+            }
+            switch (c.getEvaluationType()) {
+                case Equal:
+                case Grater_than_or_equal:
+                case Grater_than:
+                case Less_than:
+                case Less_than_or_equal:
+                    switch (c.getQueryDataType()) {
+                        case Boolean:
+                            bq += "  i" + prefix + ".booleanValue" + eval + ":d" + prefix + "";
+                            m.put("d" + prefix + "", c.getBooleanValue());
+                            break;
+                        case DateTime:
+                            bq += "  i" + prefix + ".dateValue" + eval + ":d" + prefix + "";
+                            m.put("d" + prefix + "", c.getDateValue());
+                            break;
+                        case String:
+                            bq += "  i" + prefix + ".shortTextValue" + eval + ":d" + prefix + "";
+                            m.put("d" + prefix + "", c.getShortTextValue());
+                            break;
+                        case area:
+                            bq += "  i" + prefix + ".areaValue" + eval + ":d" + prefix + "";
+                            m.put("d" + prefix + "", c.getAreaValue());
+                            break;
+                        case institution:
+                            bq += "  i" + prefix + ".institutionValue" + eval + ":d" + prefix + "";
+                            m.put("d" + prefix + "", c.getInstitutionValue());
+                            break;
+                        case integer:
+                            bq += "  i" + prefix + ".integerNumberValue" + eval + ":d" + prefix + "";
+                            m.put("d" + prefix + "", c.getIntegerNumberValue());
+                            break;
+                        case item:
+                            bq += "  i" + prefix + ".itemValue" + eval + ":d" + prefix + "";
+                            m.put("d" + prefix + "", c.getItem());
+                            break;
+                        case real:
+                            bq += "  i" + prefix + ".realNumberValue" + eval + ":d" + prefix + "";
+                            m.put("d" + prefix + "", c.getRealNumberValue());
+                            break;
+                        case longNumber:
+                            bq += "  i" + prefix + ".longNumberValue" + eval + ":d" + prefix + "";
+                            m.put("d" + prefix + "", c.getLongNumberValue());
+                            break;
+
+                    }
+
+            }
+        }
+        return bq;
     }
 
     public Jpq createAClientListQuery(QueryComponent qc) {
