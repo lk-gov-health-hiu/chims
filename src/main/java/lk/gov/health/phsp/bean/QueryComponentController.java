@@ -40,6 +40,7 @@ import lk.gov.health.phsp.enums.Evaluation;
 import lk.gov.health.phsp.enums.QueryCriteriaMatchType;
 import lk.gov.health.phsp.enums.QueryLevel;
 import lk.gov.health.phsp.enums.QueryOutputType;
+import lk.gov.health.phsp.enums.QueryType;
 import lk.gov.health.phsp.enums.RelationshipType;
 import lk.gov.health.phsp.facade.ClientEncounterComponentItemFacade;
 import lk.gov.health.phsp.facade.ClientFacade;
@@ -370,10 +371,10 @@ public class QueryComponentController implements Serializable {
     public QueryComponent findLastQuery(String qry) {
         String j = "select q from QueryComponent q "
                 + " where q.retired=false "
-                + " and (lower(q.name) like :q or lower(q.code) like :qry) "
-                + " order by q.name";
+                + " and lower(q.code)=:qry "
+                + " order by q.id desc";
         Map m = new HashMap();
-        m.put("qry", "%" + qry.toLowerCase() + "%");
+        m.put("qry",  qry.toLowerCase() );
         return getFacade().findFirstByJpql(j, m);
     }
 
@@ -456,22 +457,29 @@ public class QueryComponentController implements Serializable {
         String rs = "Nothing Calculated.";
         List<Replaceable> replaceables = findReplaceblesInIndicatorQuery(qc.getIndicatorQuery());
         for (Replaceable r : replaceables) {
-            QueryComponent temqc = findLastQuery(r.getQryCode());
             System.out.println("r.getQryCode() = " + r.getQryCode());
-            System.out.println("temqc.getName() = " + temqc.getName());
+            QueryComponent temqc = findLastQuery(r.getQryCode());
+            System.out.println("temqc = " + temqc);
             if (temqc == null) {
                 JsfUtil.addErrorMessage("Wrong Query. Check the names of queries");
                 return rs;
             }
 
             Jpq j;
-            if (temqc.getSelectQuery().trim().equalsIgnoreCase("#{client_count}")) {
-                j = createAClientCountQuery(temqc);
-            } else if (temqc.getFromQuery().trim().equalsIgnoreCase("#{pop}")) {
-                j = createAPopulationCountQuery(temqc);
-            } else {
+            System.out.println("temqc.getQueryType() = " + temqc.getQueryType());
+            if(null== temqc.getQueryType()){
                 JsfUtil.addErrorMessage("Wrong Query. Check the names of queries");
                 return rs;
+            }else switch (temqc.getQueryType()) {
+                case Population:
+                    j = createAPopulationCountQuery(temqc);
+                    break;
+                case Client:
+                    j = createAClientCountQuery(temqc);
+                    break;
+                default:
+                    JsfUtil.addErrorMessage("Wrong Query. Check the names of queries");
+                    return rs;
             }
             System.out.println("j.getLongResult() = " + j.getLongResult());
             r.setSelectedValue(j.getLongResult() + "");
@@ -1164,8 +1172,8 @@ public class QueryComponentController implements Serializable {
     }
 
     public List<Replaceable> findReplaceblesInIndicatorQuery(String text) {
-        // System.out.println("findReplaceblesInWhereQuery");
-        // System.out.println("text = " + text);
+         System.out.println("findReplaceblesInWhereQuery");
+         System.out.println("text = " + text);
 
         List<Replaceable> ss = new ArrayList<>();
 
