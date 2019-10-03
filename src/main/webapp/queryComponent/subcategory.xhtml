@@ -18,7 +18,7 @@
                             <f:facet name="header" >
                                 <p:outputLabel value="Manage Subcategories of #{queryComponentController.selectedCategory.name}">
                                 </p:outputLabel>
-                                <p:commandButton ajax="false" value="Back" action="subcategory" style="float: right;" ></p:commandButton>
+                                <p:commandButton ajax="false" value="Back" action="category" style="float: right;" ></p:commandButton>
                             </f:facet>
 
                             <p:dataTable value="#{queryComponentController.subcategories()}" var="item">

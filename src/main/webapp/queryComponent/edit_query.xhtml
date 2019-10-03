@@ -13,7 +13,18 @@
             <ui:define name="content">
      
             <h:form id="QueryComponentEditForm">
-                <h:panelGroup id="display">
+                <p:panelGrid id="display" columns="1" style="margin: auto;">
+                     <f:facet name="header" >
+
+                                <p:outputLabel value="Edit Subcategory" />
+
+
+                                <p:commandButton action="subcategory" value="Save" 
+                                                 actionListener="#{queryComponentController.saveSelectedItem()}" ajax="false" 
+                                                 style="float: right;" >
+                                </p:commandButton>
+                                <p:commandButton ajax="false" action="query" value="Back" style="float: right;" ></p:commandButton>
+                            </f:facet>
 
                     <p:tabView rendered="#{queryComponentController.selected != null}">
                         <p:tab title="Basic Details" >
@@ -88,9 +99,7 @@
                     
                     </p:tabView>
 
-                    <p:commandButton action="#{queryComponentController.update}" value="#{bundleQuery.Save}" ajax="false"/>
-                    
-                </h:panelGroup>
+                </p:panelGrid>
             </h:form>
 
             </ui:define>
