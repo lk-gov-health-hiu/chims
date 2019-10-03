@@ -11,47 +11,48 @@
         <ui:composition template="./../template.xhtml">
 
             <ui:define name="content">
-                <f:view>
+
+                <h:form>
+
 
                     <p:panel header="Edit subcategory Details" style="width: 100%; text-align: center;" >
 
-                        <h:form>
 
-                            <p:panelGrid columns="1" rendered="#{queryComponentController.selectedSubcategory ne null}"
-                                         style="margin: auto; text-align: left; width: 80%;">
-                                <f:facet name="header" >
-                                    <div>
-                                        <p:outputLabel value="Category" for="parentComponent" />
-                                        <p:outputLabel id="parentComponent" 
-                                                       value="#{queryComponentController.selectedSubcategory.parentComponent.name}" >
-                                        </p:outputLabel>
-                                    </div>
-                                    <p:commandButton action="subcategory" value="Save" actionListener="#{queryComponentController.saveSelectedItem()}" ajax="false" >
-                                    </p:commandButton>
-                                    <p:commandButton ajax="false" action="subcategory" value="Back" style="float: right;" ></p:commandButton>
-                                </f:facet>
-                                <p:panelGrid columns="2" >
-                                    <f:facet name="header" >
-                                        <p:outputLabel value="Edit Subcategory" ></p:outputLabel>
-                                    </f:facet>
-                                    <p:outputLabel value="Name:" for="name" />
-                                    <p:inputText id="name" required="true" rendered="true"
-                                                 value="#{queryComponentController.selected.name}" title="Name" />
+                        <p:panelGrid columns="2" rendered="#{queryComponentController.selected ne null}"
+                                     style="margin: auto; text-align: left; width: 80%;">
+                            <f:facet name="header" >
 
-                                    <p:outputLabel value="Descreption:" for="descreption" />
-                                    <p:inputTextarea id="descreption"
-                                                     value="#{queryComponentController.selected.descreption}" title="Name" />
+                                <p:outputLabel value="Edit Subcategory" />
 
-                                </p:panelGrid>
-                            </p:panelGrid>
-                        </h:form>
+
+                                <p:commandButton action="subcategory" value="Save" actionListener="#{queryComponentController.saveSelectedItem()}" ajax="false" 
+                                                 style="float: right;" >
+                                </p:commandButton>
+                                <p:commandButton ajax="false" action="subcategory" value="Back" style="float: right;" ></p:commandButton>
+                            </f:facet>
+
+                            <p:outputLabel value="Name:" for="name" />
+                            <p:inputText id="name" required="true" rendered="true"
+                                         value="#{queryComponentController.selected.name}" title="Name" />
+
+                            <p:outputLabel value="Descreption:" for="descreption" />
+                            <p:inputTextarea id="descreption"
+                                             value="#{queryComponentController.selected.descreption}" title="Name" />
+
+
+                        </p:panelGrid>
+
 
                         <p:spacer height="10" ></p:spacer>
 
                     </p:panel>
 
 
-                </f:view>
+
+                </h:form>
+
+
+
 
 
             </ui:define>
