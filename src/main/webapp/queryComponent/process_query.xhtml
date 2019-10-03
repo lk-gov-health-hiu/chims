@@ -55,6 +55,12 @@
 
                                     <p:commandButton value="Execute" ajax="false" action="#{queryComponentController.processQuery()}" >
                                     </p:commandButton>
+                                    
+                                    <p:commandButton value="Graph" ajax="false" action="/graph"  onclick="this.form.target='_blank'" >
+                                    </p:commandButton>
+                                    
+                                    <p:commandButton value="Graph" ajax="false" action="/map"  onclick="this.form.target='_blank'" >
+                                    </p:commandButton>
 
                                     <p:outputLabel id="lblDes" value="#{queryComponentController.selectedForQuery.descreption}" >
                                     </p:outputLabel>

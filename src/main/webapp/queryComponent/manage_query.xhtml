@@ -16,7 +16,7 @@
                     <f:facet name="header" >
                         <h:outputLabel value="Manage Query" ></h:outputLabel>
                         <h:outputLabel value=" - " ></h:outputLabel>
-                        <h:outputLabel value="#{queryComponentController.selected.name}" ></h:outputLabel>
+                        <h:outputLabel value="#{queryComponentController.selectedQuery.name}" ></h:outputLabel>
                     </f:facet>
 
                     <h:form >
@@ -49,20 +49,20 @@
                                         <p:commandButton id="btnUp"  icon="ui-icon-arrowthick-1-n"  
                                                          action="#{queryComponentController.moveUpTheSelectedSet()}" 
                                                          process="@this" update="lst" >
-                                            <f:setPropertyActionListener value="#{f}" target="#{queryComponentController.movingForm}" ></f:setPropertyActionListener>
+                                            <f:setPropertyActionListener value="#{f}" target="#{queryComponentController.moving}" ></f:setPropertyActionListener>
                                         </p:commandButton>
                                         <p:commandButton id="btnDown" icon="ui-icon-arrowthick-1-s" 
                                                          action="#{queryComponentController.moveDownTheSelectedSet()}" 
                                                          process="@this" update="lst" >
-                                            <f:setPropertyActionListener value="#{f}" target="#{queryComponentController.movingForm}" ></f:setPropertyActionListener>
+                                            <f:setPropertyActionListener value="#{f}" target="#{queryComponentController.moving}" ></f:setPropertyActionListener>
                                         </p:commandButton>
                                     </p:column>
                                     <p:column headerText="Remove" width="150" >
                                         <p:commandButton id="btnRemove" icon="ui-icon-trash"  onclick="if (!confirm('Really want to do that?'))
                                                     return false"
-                                                         action="#{queryComponentController.removeCriterianFromTheSelectedQuery()}" 
+                                                         action="#{queryComponentController.remove()}" 
                                                          process="@this" update="lst" >
-                                            <f:setPropertyActionListener value="#{f}" target="#{queryComponentController.removingQuery}" ></f:setPropertyActionListener>
+                                            <f:setPropertyActionListener value="#{f}" target="#{queryComponentController.removing}" ></f:setPropertyActionListener>
                                         </p:commandButton>
                                     </p:column>
                                 </p:dataTable>

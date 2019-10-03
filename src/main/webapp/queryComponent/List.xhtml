@@ -20,7 +20,7 @@
             <h:form id="QueryComponentListForm">
                 <p:panel header="#{bundleQuery.ListQueryComponentTitle}">
                     <p:dataTable id="datalist" value="#{queryComponentController.items}" var="item"
-                                 selectionMode="single" selection="#{queryComponentController.selected}"
+                                 selectionMode="single" selection="#{queryComponentController.selectedQuery}"
                                  paginator="true"
                                  rowKey="#{item.id}"
                                  rows="10"
@@ -65,11 +65,11 @@
                         </p:column>
                         <f:facet name="footer">
                             <p:commandButton id="createButton" icon="ui-icon-plus"   value="#{bundleQuery.Create}" actionListener="#{queryComponentController.prepareCreate}" update=":QueryComponentCreateForm" oncomplete="PF('QueryComponentCreateDialog').show()"/>
-                            <p:commandButton id="viewButton"   icon="ui-icon-search" value="#{bundleQuery.View}" update=":QueryComponentViewForm" oncomplete="PF('QueryComponentViewDialog').show()" disabled="#{empty queryComponentController.selected}"/>
-                            <p:commandButton id="editButton"   icon="ui-icon-pencil" value="#{bundleQuery.Edit}" update=":QueryComponentEditForm" oncomplete="PF('QueryComponentEditDialog').show()" disabled="#{empty queryComponentController.selected}"/>
-                            <p:commandButton id="duplicateButton" icon="ui-icon-arrowrefresh-1-n"  value="Duplicate" action="#{queryComponentController.duplicate()}" ajax="false" disabled="#{empty queryComponentController.selected}"/>
-                            <p:commandButton id="manage" style="display: none;" icon="ui-icon-arrowrefresh-1-n"  value="Manage" action="/queryComponent/manage_query" ajax="false" disabled="#{empty queryComponentController.selected}"/>
-                            <p:commandButton id="deleteButton" icon="ui-icon-trash"  value="#{bundleQuery.Delete}" actionListener="#{queryComponentController.retire()}" ajax="false" disabled="#{empty queryComponentController.selected}"/>
+                            <p:commandButton id="viewButton"   icon="ui-icon-search" value="#{bundleQuery.View}" update=":QueryComponentViewForm" oncomplete="PF('QueryComponentViewDialog').show()" disabled="#{empty queryComponentController.selectedQuery}"/>
+                            <p:commandButton id="editButton"   icon="ui-icon-pencil" value="#{bundleQuery.Edit}" update=":QueryComponentEditForm" oncomplete="PF('QueryComponentEditDialog').show()" disabled="#{empty queryComponentControselectedQueryected}"/>
+                            <p:commandButton id="duplicateButton" icon="ui-icon-arrowrefresh-1-n"  value="Duplicate" action="#{queryComponentController.duplicate()}" ajax="false" disabled="#{empty queryComponentCselectedQueryr.selected}"/>
+                            <p:commandButton id="manage" style="display: none;" icon="ui-icon-arrowrefresh-1-n"  value="Manage" action="/queryComponent/manage_query" ajax="false" disabled="#{empty queryComposelectedQueryroller.selected}"/>
+                            <p:commandButton id="deleteButton" icon="ui-icon-trash"  value="#{bundleQuery.Delete}" actionListener="#{queryComponentController.retire()}" ajax="false" disabled="#{empty queryselectedQuerytController.selected}"/>
                         </f:facet>
                     </p:dataTable>
                 </p:panel>
