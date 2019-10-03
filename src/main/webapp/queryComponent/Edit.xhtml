@@ -26,7 +26,7 @@
                                 <p:inputText id="code" value="#{queryComponentController.selected.code}" title="Code" />
 
                                 <p:outputLabel value="Parent" for="parent" />
-                                <p:autoComplete id="parent" value="#{queryComponentController.selected.parentComponent}" 
+                                <p:autoComplete id="parent" value="#{queryComponentController.selectedQuery.parentComponent}" 
                                                 completeMethod="#{queryComponentController.completeQueries}" 
                                                 var="q" itemLabel="#{q.name}" itemValue="#{q}" forceSelection="true"
                                                 >

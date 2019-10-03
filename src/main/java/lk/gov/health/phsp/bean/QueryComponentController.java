@@ -71,7 +71,9 @@ public class QueryComponentController implements Serializable {
     private RelationshipController relationshipController;
 
     private List<QueryComponent> items = null;
+    private List<QueryComponent> categories = null;
     private QueryComponent selected;
+    private QueryComponent selectedQuery;
     private QueryComponent selectedCretirian;
     private List<QueryComponent> selectedCretiria = null;
 
@@ -80,8 +82,12 @@ public class QueryComponentController implements Serializable {
     private QueryComponent selectedForQuery;
 
     private QueryComponent addingQuery;
-    private QueryComponent removingQuery;
-    private QueryComponent movingForm;
+    QueryComponent addingCategory;
+    QueryComponent addingSubcategory;
+    QueryComponent addingCriterian;
+
+    private QueryComponent removing;
+    private QueryComponent moving;
 
     private String resultString;
     private List<Client> resultClientList;
@@ -114,7 +120,59 @@ public class QueryComponentController implements Serializable {
     private boolean filterQuarter;
 
     public void fillCriteriaofTheSelectedQuery() {
-        selectedCretiria = QueryComponentController.this.fillCriteriaofTheSelectedQuery(selected);
+        selectedCretiria = QueryComponentController.this.fillCriteriaofTheSelectedQuery(selectedQuery);
+    }
+
+    public void saveCategory() {
+        if (addingCategory == null) {
+            JsfUtil.addErrorMessage("Nothing to save");
+            return;
+        }
+        saveItem(addingCategory);
+        categories=null;
+        addingCategory = null;
+    }
+
+    public void saveSubCategory() {
+        if (addingSubcategory == null) {
+            JsfUtil.addErrorMessage("Nothing to save");
+            return;
+        }
+        if (selectedCategory == null) {
+            JsfUtil.addErrorMessage("No Category");
+            return;
+        }
+        addingSubcategory.setParentComponent(selectedCategory);
+        saveItem(addingSubcategory);
+        addingSubcategory = null;
+    }
+
+    public void saveQuery() {
+        if (addingQuery == null) {
+            JsfUtil.addErrorMessage("Nothing to save");
+            return;
+        }
+        if (selectedSubcategory == null) {
+            JsfUtil.addErrorMessage("No Subcategory");
+            return;
+        }
+        addingQuery.setParentComponent(selectedSubcategory);
+        saveItem(addingQuery);
+        addingQuery=null;
+    }
+
+    public void saveCriterian() {
+        if (addingCriterian == null) {
+            JsfUtil.addErrorMessage("Nothing to save");
+            return;
+        }
+        if (selectedQuery == null) {
+            JsfUtil.addErrorMessage("No Subcategory");
+            return;
+        }
+        addingCriterian.setParentComponent(selectedQuery);
+        saveItem(addingCriterian);
+        addingCriterian=null;
     }
 
     public List<QueryComponent> fillCriteriaofTheSelectedQuery(QueryComponent set) {
@@ -131,7 +189,7 @@ public class QueryComponentController implements Serializable {
     }
 
     public void addCriterianToTheSelectedQueriesCriteria() {
-        if (selected == null) {
+        if (selectedQuery == null) {
             JsfUtil.addErrorMessage("No Formset");
             return;
         }
@@ -139,7 +197,7 @@ public class QueryComponentController implements Serializable {
             JsfUtil.addErrorMessage("No Form");
             return;
         }
-        addingQuery.setParentComponent(selected);
+        addingQuery.setParentComponent(selectedQuery);
         addingQuery.setCreatedAt(new Date());
         addingQuery.setCreatedBy(webUserController.getLoggedUser());
         getFacade().create(addingQuery);
@@ -147,26 +205,29 @@ public class QueryComponentController implements Serializable {
         addingQuery = null;
     }
 
-    public void removeCriterianFromTheSelectedQuery() {
-        if (removingQuery == null) {
+    public void remove() {
+        if (removing == null) {
             JsfUtil.addErrorMessage("No form to remove.");
             return;
         }
-        removingQuery.setRetired(true);
-        removingQuery.setRetiredAt(new Date());
-        removingQuery.setRetiredBy(webUserController.getLoggedUser());
-        getFacade().edit(removingQuery);
-        fillCriteriaofTheSelectedQuery();
-        JsfUtil.addSuccessMessage("Item Removed");
+        removing.setRetired(true);
+        removing.setRetiredAt(new Date());
+        removing.setRetiredBy(webUserController.getLoggedUser());
+        getFacade().edit(removing);
+        if(removing.getQueryLevel()==QueryLevel.Category){
+            categories =null;
+        }
+        removing=null;
+        JsfUtil.addSuccessMessage("Removed");
     }
 
     public void moveUpTheSelectedSet() {
-        if (movingForm == null) {
+        if (moving == null) {
             JsfUtil.addErrorMessage("No form to move.");
             return;
         }
-        movingForm.setOrderNo(movingForm.getOrderNo() - 1.5);
-        getFacade().edit(movingForm);
+        moving.setOrderNo(moving.getOrderNo() - 1.5);
+        getFacade().edit(moving);
         fillCriteriaofTheSelectedQuery();
         Double o = 0.0;
         for (QueryComponent f : getSelectedCretiria()) {
@@ -175,17 +236,17 @@ public class QueryComponentController implements Serializable {
             getFacade().edit(f);
         }
         fillCriteriaofTheSelectedQuery();
-        movingForm = null;
+        moving = null;
         JsfUtil.addSuccessMessage("Item Moved Up");
     }
 
     public void moveDownTheSelectedSet() {
-        if (movingForm == null) {
+        if (moving == null) {
             JsfUtil.addErrorMessage("No form to move.");
             return;
         }
-        movingForm.setOrderNo(movingForm.getOrderNo() + 1.5);
-        getFacade().edit(movingForm);
+        moving.setOrderNo(moving.getOrderNo() + 1.5);
+        getFacade().edit(moving);
         fillCriteriaofTheSelectedQuery();
         Double o = 0.0;
         for (QueryComponent f : getSelectedCretiria()) {
@@ -197,7 +258,7 @@ public class QueryComponentController implements Serializable {
         JsfUtil.addSuccessMessage("Item Moved Down");
     }
 
-    public void saveItem() {
+    public void saveSelectedItem() {
         saveItem(selected);
     }
 
@@ -332,6 +393,20 @@ public class QueryComponentController implements Serializable {
         return getFacade().findByJpql(j, m);
     }
 
+    public List<QueryComponent> fillCategories() {
+        String j = "select q from QueryComponent q "
+                + " where q.retired=false "
+                + " and q.queryLevel=:l "
+                + " order by q.name";
+        Map m = new HashMap();
+        m.put("l", QueryLevel.Category);
+        return getFacade().findByJpql(j, m);
+    }
+    
+    public List<QueryComponent> subcategories() {
+        return subcategories(selectedCategory);
+    }
+
     public List<QueryComponent> subcategories(QueryComponent p) {
         String j = "select q from QueryComponent q "
                 + " where q.retired=false "
@@ -344,6 +419,10 @@ public class QueryComponentController implements Serializable {
         return getFacade().findByJpql(j, m);
     }
 
+    public List<QueryComponent> queries() {
+        return queries(selectedSubcategory);
+    }
+    
     public List<QueryComponent> queries(QueryComponent p) {
         String j = "select q from QueryComponent q "
                 + " where q.retired=false "
@@ -354,6 +433,10 @@ public class QueryComponentController implements Serializable {
         m.put("p", p);
         m.put("l", QueryLevel.Query);
         return getFacade().findByJpql(j, m);
+    }
+    
+    public List<QueryComponent> criteria() {
+        return criteria(selectedQuery);
     }
 
     public List<QueryComponent> criteria(QueryComponent p) {
@@ -515,12 +598,12 @@ public class QueryComponentController implements Serializable {
     }
 
     public void duplicate() {
-        if (selected == null) {
+        if (selectedQuery == null) {
             JsfUtil.addErrorMessage("Noting selected.");
             return;
         }
-        List<QueryComponent> cs = criteria(selected);
-        QueryComponent q = SerializationUtils.clone(selected);
+        List<QueryComponent> cs = criteria(selectedQuery);
+        QueryComponent q = SerializationUtils.clone(selectedQuery);
         q.setId(null);
         q.setCreatedAt(new Date());
         q.setName(q.getName() + "1");
@@ -538,20 +621,20 @@ public class QueryComponentController implements Serializable {
         }
 
         items = null;
-        selected = q;
+        selectedQuery = q;
         JsfUtil.addSuccessMessage("Duplicated");
     }
 
     public void retire() {
-        if (selected == null) {
+        if (selectedQuery == null) {
             JsfUtil.addErrorMessage("Nothing Selected");
             return;
         }
-        selected.setRetired(true);
-        selected.setRetiredAt(new Date());
-        selected.setRetiredBy(webUserController.getLoggedUser());
-        getFacade().edit(selected);
-        selected = null;
+        selectedQuery.setRetired(true);
+        selectedQuery.setRetiredAt(new Date());
+        selectedQuery.setRetiredBy(webUserController.getLoggedUser());
+        getFacade().edit(selectedQuery);
+        selectedQuery = null;
         items = null;
         JsfUtil.addSuccessMessage("Removed");
     }
@@ -733,14 +816,13 @@ public class QueryComponentController implements Serializable {
 
         } else {
 
-            String ss = "" ;
+            String ss = "";
             if (qc.getOutputType() == QueryOutputType.Count) {
                 ss = "select count(distinct c) from Client c, ";
             } else if (qc.getOutputType() == QueryOutputType.List) {
                 ss = "select distinct (c) from Client c, ";
             }
-            
-            
+
             String w1 = " where ";
             String w2 = "";
             String w3 = "";
@@ -752,11 +834,11 @@ public class QueryComponentController implements Serializable {
                 if (count != criterias.size()) {
                     ss += " ClientEncounterComponentItem i" + count + ", ";
                     w2 += " c.id=i" + count + ".itemClient.id and ";
-                    w3 +=  createJpqlBlockFromQueryComponentCriteria(qcm, jpql.getM(), count) + " and " ;
+                    w3 += createJpqlBlockFromQueryComponentCriteria(qcm, jpql.getM(), count) + " and ";
                 } else {
                     ss += " ClientEncounterComponentItem i" + count + " ";
                     w2 += " c.id=i" + count + ".itemClient.id and ";
-                    w3 +=   createJpqlBlockFromQueryComponentCriteria(qcm, jpql.getM(), count) + " ";
+                    w3 += createJpqlBlockFromQueryComponentCriteria(qcm, jpql.getM(), count) + " ";
                 }
                 System.out.println("ss = " + ss);
                 System.out.println("w2 = " + w2);
@@ -775,15 +857,17 @@ public class QueryComponentController implements Serializable {
              * f2.variableName=:name2 and f2.variableData:=data2
              *
              *
-             * 
-             * select count(distinct c) from Client c,  ClientEncounterComponentItem i1,  ClientEncounterComponentItem i2  
-             * where  c.id=i1.itemClient.id and  and i1.item=:v1   i1.integerNumberValue = :d1 and  i2.item=:v2 and i2.itemValue=:d2   
+             *
+             * select count(distinct c) from Client c,
+             * ClientEncounterComponentItem i1, ClientEncounterComponentItem i2
+             * where c.id=i1.itemClient.id and and i1.item=:v1
+             * i1.integerNumberValue = :d1 and i2.item=:v2 and i2.itemValue=:d2
              *
              *
              */
             jpql.setJselect("");
             jpql.setJfrom(ss);
-            jpql.setJwhere(w1+w2+w3 +" and c.retired=:f");
+            jpql.setJwhere(w1 + w2 + w3 + " and c.retired=:f");
 
             jpql.setJgroupby("");
             System.out.println("j.getJpql() = " + jpql.getJpql());
@@ -1198,12 +1282,12 @@ public class QueryComponentController implements Serializable {
 
     }
 
-    public QueryComponent getSelected() {
-        return selected;
+    public QueryComponent getSelectedQuery() {
+        return selectedQuery;
     }
 
-    public void setSelected(QueryComponent selected) {
-        this.selected = selected;
+    public void setSelectedQuery(QueryComponent selectedQuery) {
+        this.selectedQuery = selectedQuery;
     }
 
     protected void setEmbeddableKeys() {
@@ -1217,9 +1301,9 @@ public class QueryComponentController implements Serializable {
     }
 
     public QueryComponent prepareCreate() {
-        selected = new QueryComponent();
+        selectedQuery = new QueryComponent();
         initializeEmbeddableKey();
-        return selected;
+        return selectedQuery;
     }
 
     public void create() {
@@ -1236,7 +1320,7 @@ public class QueryComponentController implements Serializable {
     public void destroy() {
         persist(PersistAction.DELETE, ResourceBundle.getBundle("/BundleQuery").getString("QueryComponentDeleted"));
         if (!JsfUtil.isValidationFailed()) {
-            selected = null; // Remove selection
+            selectedQuery = null; // Remove selection
             items = null;    // Invalidate list of items to trigger re-query.
         }
     }
@@ -1249,13 +1333,13 @@ public class QueryComponentController implements Serializable {
     }
 
     private void persist(PersistAction persistAction, String successMessage) {
-        if (selected != null) {
+        if (selectedQuery != null) {
             setEmbeddableKeys();
             try {
                 if (persistAction != PersistAction.DELETE) {
-                    getFacade().edit(selected);
+                    getFacade().edit(selectedQuery);
                 } else {
-                    getFacade().remove(selected);
+                    getFacade().remove(selectedQuery);
                 }
                 JsfUtil.addSuccessMessage(successMessage);
             } catch (EJBException ex) {
@@ -1560,6 +1644,7 @@ public class QueryComponentController implements Serializable {
     public QueryComponent getAddingQuery() {
         if (addingQuery == null) {
             addingQuery = new QueryComponent();
+            addingQuery.setQueryLevel(QueryLevel.Query);
         }
 
         return addingQuery;
@@ -1569,12 +1654,12 @@ public class QueryComponentController implements Serializable {
         this.addingQuery = addingQuery;
     }
 
-    public QueryComponent getRemovingQuery() {
-        return removingQuery;
+    public QueryComponent getRemoving() {
+        return removing;
     }
 
-    public void setRemovingQuery(QueryComponent removingQuery) {
-        this.removingQuery = removingQuery;
+    public void setRemoving(QueryComponent removing) {
+        this.removing = removing;
     }
 
     public QueryComponent getSelectedCretirian() {
@@ -1585,12 +1670,12 @@ public class QueryComponentController implements Serializable {
         this.selectedCretirian = selectedCretirian;
     }
 
-    public QueryComponent getMovingForm() {
-        return movingForm;
+    public QueryComponent getMoving() {
+        return moving;
     }
 
-    public void setMovingForm(QueryComponent movingForm) {
-        this.movingForm = movingForm;
+    public void setMoving(QueryComponent moving) {
+        this.moving = moving;
     }
 
     public RelationshipFacade getRelationshipFacade() {
@@ -1608,6 +1693,63 @@ public class QueryComponentController implements Serializable {
     public void setResultRelationshipList(List<Relationship> resultRelationshipList) {
         this.resultRelationshipList = resultRelationshipList;
     }
+
+    public List<QueryComponent> getCategories() {
+        if (categories == null) {
+            categories = fillCategories();
+        }
+        return categories;
+    }
+
+    public void setCategories(List<QueryComponent> categories) {
+        this.categories = categories;
+    }
+
+    public QueryComponent getAddingCategory() {
+        if (addingCategory == null) {
+            addingCategory = new QueryComponent();
+            addingCategory.setQueryLevel(QueryLevel.Category);
+        }
+        return addingCategory;
+    }
+
+    public void setAddingCategory(QueryComponent addingCategory) {
+        this.addingCategory = addingCategory;
+    }
+
+    public QueryComponent getAddingSubcategory() {
+        if (addingSubcategory == null) {
+            addingSubcategory = new QueryComponent();
+            addingSubcategory.setQueryLevel(QueryLevel.Subcategory);
+        }
+        return addingSubcategory;
+    }
+
+    public void setAddingSubcategory(QueryComponent addingSubcategory) {
+        this.addingSubcategory = addingSubcategory;
+    }
+
+    public QueryComponent getAddingCriterian() {
+        if (addingCriterian == null) {
+            addingCriterian = new QueryComponent();
+            addingCriterian.setQueryLevel(QueryLevel.Criterian);
+        }
+        return addingCriterian;
+    }
+
+    public void setAddingCriterian(QueryComponent addingCriterian) {
+        this.addingCriterian = addingCriterian;
+    }
+
+    public QueryComponent getSelected() {
+        return selected;
+    }
+
+    public void setSelected(QueryComponent selected) {
+        this.selected = selected;
+    }
+    
+    
 
     @FacesConverter(forClass = QueryComponent.class)
     public static class QueryComponentControllerConverter implements Converter {
