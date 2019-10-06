@@ -57,39 +57,12 @@
                                     <f:selectItems value="#{commonController.queryType}" ></f:selectItems>
                                 </p:selectOneMenu>
 
-                                <p:outputLabel value="Output" for="outputType" />
-                                <p:selectOneMenu id="outputType"  value="#{queryComponentController.selected.outputType}" >
-                                    <f:selectItem itemLabel="Select" ></f:selectItem>
-                                    <f:selectItems value="#{commonController.queryOutputTypes}" ></f:selectItems>
-                                </p:selectOneMenu>
-
                                 <p:outputLabel value="Population Type" for="populationType" />
                                 <p:selectOneMenu id="populationType"  value="#{queryComponentController.selected.populationType}" >
                                     <f:selectItem itemLabel="Select" ></f:selectItem>
                                     <f:selectItems value="#{commonController.populationTypes}" ></f:selectItems>
                                 </p:selectOneMenu>
 
-                                <p:outputLabel value="Filter By" />
-                                <p:panelGrid columns="4" >
-                                    <p:selectBooleanCheckbox value="#{queryComponentController.selected.filterByProvince}" itemLabel="Province" ></p:selectBooleanCheckbox>
-                                    <p:selectBooleanCheckbox value="#{queryComponentController.selected.filterByDistrict}" itemLabel="District" ></p:selectBooleanCheckbox>
-                                    <p:selectBooleanCheckbox value="#{queryComponentController.selected.filterByRdhs}" itemLabel="RDHS" ></p:selectBooleanCheckbox>
-                                    <p:selectBooleanCheckbox value="#{queryComponentController.selected.filterByMoh}" itemLabel="MOH" ></p:selectBooleanCheckbox>
-                                    <p:selectBooleanCheckbox value="#{queryComponentController.selected.filterByGn}" itemLabel="GN" ></p:selectBooleanCheckbox>
-
-                                    <p:selectBooleanCheckbox value="#{queryComponentController.selected.filterByFrom}" itemLabel="From" ></p:selectBooleanCheckbox>
-                                    <p:selectBooleanCheckbox value="#{queryComponentController.selected.filterByTo}" itemLabel="To" ></p:selectBooleanCheckbox>
-                                    <p:selectBooleanCheckbox value="#{queryComponentController.selected.filterByDate}" itemLabel="Date" ></p:selectBooleanCheckbox>
-                                    <p:selectBooleanCheckbox value="#{queryComponentController.selected.filterByYear}" itemLabel="Year" ></p:selectBooleanCheckbox>
-                                    <p:selectBooleanCheckbox value="#{queryComponentController.selected.filterByQuarter}" itemLabel="Quarter" ></p:selectBooleanCheckbox>
-                                    <p:selectBooleanCheckbox value="#{queryComponentController.selected.filterByMonth}" itemLabel="Month" ></p:selectBooleanCheckbox>
-
-
-
-                                    <p:selectBooleanCheckbox value="#{queryComponentController.selected.filterByInstitution}" itemLabel="Institution" ></p:selectBooleanCheckbox>
-
-
-                                </p:panelGrid>
 
                                 <p:outputLabel value="Indicator Query" for="indicatorQuery" />
                                 <p:inputTextarea rows="4" cols="30" id="indicatorQuery" value="#{queryComponentController.selected.indicatorQuery}" 

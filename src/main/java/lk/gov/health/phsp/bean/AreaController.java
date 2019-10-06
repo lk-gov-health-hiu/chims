@@ -318,6 +318,32 @@ public class AreaController implements Serializable {
         return areas;
     }
     
+    public Area getNationalArea(){
+        String j = "select a from Area a "
+                + " where "
+                + " a.type=:t "
+                + " and a.retired=false"
+                + " order by a.id desc";
+        Map m = new HashMap();
+        m.put("t", AreaType.National);
+        Area a=getFacade().findFirstByJpql(j, m);
+        if(a==null){
+            a = new Area();
+            a.setName("Sri Lanka");
+            a.setCode("LK");
+            a.setType(AreaType.National);
+            a.setCreatedAt(new Date());
+            a.setCreatedBy(webUserController.getLoggedUser());
+            getFacade().create(a);
+            List<Area> ps = getAreas(AreaType.Province, null);
+            for(Area p:ps){
+                p.setParentArea(a);
+                getFacade().edit(p);
+            }
+        }
+        return a;
+    }
+    
     public List<Area> getGnAreasOfPhm(Area mohArea) {
         String j;
         Map m = new HashMap();
@@ -341,7 +367,7 @@ public class AreaController implements Serializable {
                 + " where a.name is not null ";
         j += " and a.type=:t";
         m.put("t", AreaType.District);
-        j += " and a.province=:p ";
+        j += " and a.parentArea=:p ";
         m.put("p", province);
         j += " order by a.name";
         List<Area> areas = getFacade().findByJpql(j, m);

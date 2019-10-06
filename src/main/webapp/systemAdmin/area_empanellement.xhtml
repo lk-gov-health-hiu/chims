@@ -24,7 +24,7 @@
                                         <p:outputLabel value="Area" ></p:outputLabel>
                                         <p:autoComplete id="acPmci"
                                                         value="#{relationshipController.area}"
-                                                        completeMethod="#{areaController.completeDistricts}"
+                                                        completeMethod="#{areaController.completeAreas}"
                                                         var="p" itemLabel="#{p.name}" itemValue="#{p}"
                                                         >
                                             <p:ajax event="itemSelect" process="acPmci"
@@ -95,7 +95,7 @@
                                         
                                         <p:outputLabel value="GN Area" ></p:outputLabel>
                                         <p:autoComplete id="acGn" value="#{relationshipController.adding.area}"
-                                                        completeMethod="#{areaController.completeGnAreas}"
+                                                        completeMethod="#{areaController.completeAreas}"
                                                         var="gn" maxResults="20" forceSelection="true"
                                                         itemValue="#{gn}"
                                                         itemLabel="#{gn.name}" ></p:autoComplete>

@@ -16,13 +16,13 @@
                     <h:form>
                         <p:panelGrid columns="1"  styleClass="alignTop" style="width: 100%;">
                             <f:facet name="header" >
-                                <p:outputLabel value="Process Query - #{queryComponentController.selectedQuery.name}">
+                                <p:outputLabel value="Process Query - #{queryComponentController.selectedForQuery.name}">
                                 </p:outputLabel>
                                 <p:commandButton ajax="false" value="Back" action="query_process_subcategory" style="float: right;" ></p:commandButton>
                             </f:facet>
 
 
-                            <p:outputLabel value="#{queryComponentController.selectedQuery.descreption}">
+                            <p:outputLabel value="#{queryComponentController.selectedForQuery.descreption}">
                             </p:outputLabel>
 
                             <p:panelGrid columns="4">
@@ -148,7 +148,8 @@
                                         <p:outputLabel value="Execute" ></p:outputLabel>
                                     </f:facet>
 
-                                    <p:commandButton value="Execute" action="#{queryComponentController.processQuery()}" ajax="false" >
+                                    <p:commandButton value="Execute" action="#{queryComponentController.processQuery()}" ajax="false"
+                                                     onclick="target='_blank'">
                                     </p:commandButton>
                                 </p:panelGrid>
 

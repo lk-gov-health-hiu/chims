@@ -265,6 +265,10 @@ public class RelationshipController implements Serializable {
                 + " or r.area.phm=:a or r.area.phi=:a or r.area.dsd=:a  or r.area.moh=:a  or  r.area.district=:a  or  r.area.province=:a  or r.area.rdhsArea=:a  or r.area.pdhsArea=:a)  "
                 + " and r.retired=false "
                 + " and r.yearInt=:y";
+        j = "select r from Relationship r "
+                + " where r.area=:a  "
+                + " and r.retired=false "
+                + " and r.yearInt=:y";
 
         Map m = new HashMap();
         m.put("a", area);
