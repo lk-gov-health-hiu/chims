@@ -31,10 +31,10 @@ import java.util.Map;
  * @author Dr M H B Ariyaratne<buddhika.ari@gmail.com>
  */
 public enum Quarter {
-    First(0),
-    Second(1),
-    Third(2),
-    Fourth(3);
+    First(1),
+    Second(2),
+    Third(3),
+    Fourth(4);
 
     private int value;
     private static Map map = new HashMap<>();

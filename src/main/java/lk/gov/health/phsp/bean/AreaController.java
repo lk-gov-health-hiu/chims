@@ -210,8 +210,6 @@ public class AreaController implements Serializable {
         }
     }
 
-    
-    
     public List<Area> getMohAreas() {
         if (mohAreas == null) {
             mohAreas = getAreas(AreaType.MOH, null);
@@ -219,6 +217,47 @@ public class AreaController implements Serializable {
         return mohAreas;
     }
 
+    public List<Area> getMohAreas(Area district) {
+        mohAreas = getAreas(AreaType.MOH, district);
+
+        return mohAreas;
+    }
+
+    public List<Area> getMohAreasOfADistrict(Area district) {
+       String j;
+        Map m = new HashMap();
+        j = "select a "
+                + " from Area a "
+                + " where a.name is not null ";
+        
+        if (district != null) {
+            j += " and a.district=:pa ";
+            m.put("pa", district);
+        }
+        j += " order by a.name";
+
+        List<Area> areas = getFacade().findByJpql(j, m);
+        return areas;
+    }
+
+    
+    public List<Area> getMohAreasOfRdhs(Area rdhs) {
+       String j;
+        Map m = new HashMap();
+        j = "select a "
+                + " from Area a "
+                + " where a.name is not null ";
+        if (rdhs != null) {
+            j += " and a.rdhsArea=:pa ";
+            m.put("pa", rdhs);
+        }
+        j += " order by a.name";
+
+        List<Area> areas = getFacade().findByJpql(j, m);
+        return areas;
+    }
+    
+    
     public void setMohAreas(List<Area> mohAreas) {
         this.mohAreas = mohAreas;
     }
@@ -270,14 +309,56 @@ public class AreaController implements Serializable {
         j = "select a "
                 + " from Area a "
                 + " where a.name is not null ";
-
         j += " and a.type=:t";
         m.put("t", AreaType.GN);
-
-        j += " and a.mohArea=:moh ";
+        j += " and a.moh=:moh ";
         m.put("moh", mohArea);
         j += " order by a.name";
-        // System.out.println("m = " + m);
+        List<Area> areas = getFacade().findByJpql(j, m);
+        return areas;
+    }
+    
+    public List<Area> getGnAreasOfPhm(Area mohArea) {
+        String j;
+        Map m = new HashMap();
+        j = "select a "
+                + " from Area a "
+                + " where a.name is not null ";
+        j += " and a.type=:t";
+        m.put("t", AreaType.PHM);
+        j += " and a.moh=:moh ";
+        m.put("moh", mohArea);
+        j += " order by a.name";
+        List<Area> areas = getFacade().findByJpql(j, m);
+        return areas;
+    }
+    
+    public List<Area> getDistrictsOfAProvince(Area province) {
+        String j;
+        Map m = new HashMap();
+        j = "select a "
+                + " from Area a "
+                + " where a.name is not null ";
+        j += " and a.type=:t";
+        m.put("t", AreaType.District);
+        j += " and a.province=:p ";
+        m.put("p", province);
+        j += " order by a.name";
+        List<Area> areas = getFacade().findByJpql(j, m);
+        return areas;
+    }
+    
+    public List<Area> getPhmAreasOfMoh(Area mohArea) {
+        String j;
+        Map m = new HashMap();
+        j = "select a "
+                + " from Area a "
+                + " where a.name is not null ";
+        j += " and a.type=:t";
+        m.put("t", AreaType.PHM);
+        j += " and a.moh=:moh ";
+        m.put("moh", mohArea);
+        j += " order by a.name";
         List<Area> areas = getFacade().findByJpql(j, m);
         return areas;
     }
@@ -879,6 +960,10 @@ public class AreaController implements Serializable {
     }
 
     public List<Area> getAreas(AreaType areaType, Area superArea) {
+        return getAreas(areaType, superArea, null);
+    }
+
+    public List<Area> getAreas(AreaType areaType, Area parentArea, Area grandParentArea) {
         String j;
         Map m = new HashMap();
         j = "select a "
@@ -888,9 +973,13 @@ public class AreaController implements Serializable {
             j += " and a.type=:t";
             m.put("t", areaType);
         }
-        if (superArea != null) {
+        if (parentArea != null) {
             j += " and a.parentArea=:pa ";
-            m.put("pa", superArea);
+            m.put("pa", parentArea);
+        }
+        if (grandParentArea != null) {
+            j += " and a.parentArea.parentArea=:gpa ";
+            m.put("gpa", grandParentArea);
         }
         j += " order by a.name";
         // System.out.println("m = " + m);
@@ -905,7 +994,19 @@ public class AreaController implements Serializable {
     public List<Area> completeDistricts(String qry) {
         return getAreas(qry, AreaType.District);
     }
-    
+
+    public List<Area> completeMoh(String qry) {
+        return getAreas(qry, AreaType.MOH);
+    }
+
+    public List<Area> completePhm(String qry) {
+        return getAreas(qry, AreaType.PHM);
+    }
+
+    public List<Area> completeGn(String qry) {
+        return getAreas(qry, AreaType.GN);
+    }
+
     public List<Area> completeAreas(String qry) {
         return getAreas(qry, null);
     }
@@ -917,15 +1018,15 @@ public class AreaController implements Serializable {
     public List<Area> completeGnAreas(String qry) {
         return getAreas(qry, AreaType.GN);
     }
-    
+
     public List<Area> completePdhsAreas(String qry) {
         return getAreas(qry, AreaType.PdhsArea);
     }
-    
+
     public List<Area> completeRdhsAreas(String qry) {
         return getAreas(qry, AreaType.RdhsAra);
     }
-    
+
     public List<Area> completePhiAreas(String qry) {
         return getAreas(qry, AreaType.PHI);
     }
@@ -1118,9 +1219,6 @@ public class AreaController implements Serializable {
     }
 
     // <editor-fold defaultstate="collapsed" desc="Getters and Setters">
-    
-    
-    
     public List<Area> getProvinces() {
         if (provinces == null) {
             provinces = getAreas(AreaType.Province, null);
@@ -1248,9 +1346,12 @@ public class AreaController implements Serializable {
     }
 
     public List<Area> getGnAreas() {
-        if(gnAreas==null){
-            gnAreas = new  ArrayList<>();
-        }
+        gnAreas = getAreas(AreaType.GN, null);
+        return gnAreas;
+    }
+
+    public List<Area> getGnAreas(Area parentArea, AreaType type) {
+        gnAreas = getAreas(AreaType.GN, null);
         return gnAreas;
     }
 

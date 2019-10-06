@@ -31,6 +31,9 @@ import lk.gov.health.phsp.entity.ClientEncounterComponentForm;
 import lk.gov.health.phsp.entity.Encounter;
 import lk.gov.health.phsp.entity.QueryComponent;
 import lk.gov.health.phsp.entity.Relationship;
+import lk.gov.health.phsp.enums.QueryFilterAreaType;
+import lk.gov.health.phsp.enums.QueryFilterPeriodType;
+
 
 /**
  *
@@ -53,6 +56,10 @@ public class Jpq {
     private List<Encounter> encounterList;
     private List<ClientEncounterComponentForm> formList;
     private List<Relationship> relationshipList;
+    
+    QueryFilterAreaType areType;
+    QueryFilterPeriodType periodType;
+ 
     
     /**
      * 

@@ -21,19 +21,34 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package lk.gov.health.phsp.enums;
+package lk.gov.health.phsp.pojcs;
+
+import lk.gov.health.phsp.entity.Area;
 
 /**
  *
  * @author Dr M H B Ariyaratne<buddhika.ari@gmail.com>
  */
-public enum QueryFilterType {
-    Province,
-    District,
-    RDHS,
-    MOH,
-    GN,
-    From,
-    To,
-    Institution,
+public class QueryResult {
+    private Area area;
+    private Jpq jpq;
+
+    public Area getArea() {
+        return area;
+    }
+
+    public void setArea(Area area) {
+        this.area = area;
+    }
+
+    public Jpq getJpq() {
+        return jpq;
+    }
+
+    public void setJpq(Jpq jpq) {
+        this.jpq = jpq;
+    }
+    
+    
+    
 }

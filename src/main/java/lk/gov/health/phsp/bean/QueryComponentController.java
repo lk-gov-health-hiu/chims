@@ -31,22 +31,22 @@ import javax.script.ScriptException;
 import lk.gov.health.phsp.entity.Area;
 import lk.gov.health.phsp.entity.Client;
 import lk.gov.health.phsp.entity.ClientEncounterComponentForm;
-import lk.gov.health.phsp.entity.DesignComponentForm;
-import lk.gov.health.phsp.entity.DesignComponentFormSet;
 import lk.gov.health.phsp.entity.Encounter;
 import lk.gov.health.phsp.entity.Institution;
 import lk.gov.health.phsp.entity.Relationship;
 import lk.gov.health.phsp.enums.Evaluation;
 import lk.gov.health.phsp.enums.QueryCriteriaMatchType;
+import lk.gov.health.phsp.enums.QueryFilterAreaType;
+import lk.gov.health.phsp.enums.QueryFilterPeriodType;
 import lk.gov.health.phsp.enums.QueryLevel;
 import lk.gov.health.phsp.enums.QueryOutputType;
-import lk.gov.health.phsp.enums.QueryType;
 import lk.gov.health.phsp.enums.RelationshipType;
 import lk.gov.health.phsp.facade.ClientEncounterComponentItemFacade;
 import lk.gov.health.phsp.facade.ClientFacade;
 import lk.gov.health.phsp.facade.EncounterFacade;
 import lk.gov.health.phsp.facade.RelationshipFacade;
 import lk.gov.health.phsp.pojcs.Jpq;
+import lk.gov.health.phsp.pojcs.QueryResult;
 import lk.gov.health.phsp.pojcs.Replaceable;
 import org.apache.commons.lang3.SerializationUtils;
 
@@ -69,6 +69,8 @@ public class QueryComponentController implements Serializable {
     private WebUserController webUserController;
     @Inject
     private RelationshipController relationshipController;
+    @Inject
+    private AreaController areaController;
 
     private List<QueryComponent> items = null;
     private List<QueryComponent> categories = null;
@@ -95,10 +97,14 @@ public class QueryComponentController implements Serializable {
     private List<ClientEncounterComponentForm> resultFormList;
     private List<Relationship> resultRelationshipList;
 
+    private List<QueryResult> qrs = null;
+    private QueryResult qr = null;
+
     private Area province;
     private Area district;
     private Area gn;
     private Area moh;
+    private Area phm;
     private Institution institution;
     private Date from;
     private Date to;
@@ -111,6 +117,7 @@ public class QueryComponentController implements Serializable {
     private boolean filterDistricts;
     private boolean filterProvices;
     private boolean filterMoh;
+    private boolean filterPhm;
     private boolean filterGn;
     private boolean filterFrom;
     private boolean filterTo;
@@ -118,6 +125,9 @@ public class QueryComponentController implements Serializable {
     private boolean filterMonth;
     private boolean filterDate;
     private boolean filterQuarter;
+
+    private QueryFilterPeriodType periodType;
+    private QueryFilterAreaType areaType;
 
     public void fillCriteriaofTheSelectedQuery() {
         selectedCretiria = QueryComponentController.this.fillCriteriaofTheSelectedQuery(selectedQuery);
@@ -129,7 +139,7 @@ public class QueryComponentController implements Serializable {
             return;
         }
         saveItem(addingCategory);
-        categories=null;
+        categories = null;
         addingCategory = null;
     }
 
@@ -158,7 +168,7 @@ public class QueryComponentController implements Serializable {
         }
         addingQuery.setParentComponent(selectedSubcategory);
         saveItem(addingQuery);
-        addingQuery=null;
+        addingQuery = null;
     }
 
     public void saveCriterian() {
@@ -172,7 +182,7 @@ public class QueryComponentController implements Serializable {
         }
         addingCriterian.setParentComponent(selectedQuery);
         saveItem(addingCriterian);
-        addingCriterian=null;
+        addingCriterian = null;
     }
 
     public List<QueryComponent> fillCriteriaofTheSelectedQuery(QueryComponent set) {
@@ -214,10 +224,10 @@ public class QueryComponentController implements Serializable {
         removing.setRetiredAt(new Date());
         removing.setRetiredBy(webUserController.getLoggedUser());
         getFacade().edit(removing);
-        if(removing.getQueryLevel()==QueryLevel.Category){
-            categories =null;
+        if (removing.getQueryLevel() == QueryLevel.Category) {
+            categories = null;
         }
-        removing=null;
+        removing = null;
         JsfUtil.addSuccessMessage("Removed");
     }
 
@@ -297,8 +307,7 @@ public class QueryComponentController implements Serializable {
     }
 
     public String toProcessQuery() {
-
-        return "/queryComponent/process_query";
+        return "/queryComponent/query_process_category";
     }
 
     public void clearFilters() {
@@ -315,59 +324,69 @@ public class QueryComponentController implements Serializable {
         month = null;
     }
 
-    private void querySelectAction() {
-        if (selectedForQuery == null) {
-            return;
-        }
-        String filterQuery = selectedForQuery.getFilterQuery();
-        filterDistricts = false;
-        filterFrom = false;
-        filterGn = false;
-        filterInstitutions = false;
-        filterMoh = false;
+    public void areaFilterSelectAction() {
         filterProvices = false;
+        filterDistricts = false;
+        filterMoh = false;
+        filterPhm = false;
+        filterGn = false;
+        switch (areaType) {
+            case National:
+            case District_List:
+            case Province_List:
+                break;
+            case Province:
+            case Province_District_list:
+                filterProvices = true;
+                break;
+            case Distirct:
+            case District_MOH_List:
+                filterDistricts = true;
+                break;
+            case MOH:
+            case MOH_GN_List:
+            case MOH_PHM_List:
+                filterMoh = true;
+                break;
+            case PHM:
+            case PHM_GN_List:
+                filterPhm = true;
+                break;
+            case GN:
+                filterGn = true;
+        }
+    }
+
+    public void periodFilterSelectAction() {
+        filterFrom = false;
         filterTo = false;
         filterYear = false;
         filterMonth = false;
         filterDate = false;
         filterQuarter = false;
-        if (filterQuery == null) {
+        if (periodType == null) {
             return;
         }
-        if (filterQuery.toLowerCase().contains("pro")) {
-            filterProvices = true;
+        switch (periodType) {
+            case Year:
+                filterYear = true;
+                break;
+            case Quarter:
+                filterYear = true;
+                filterQuarter = true;
+                break;
+            case After:
+                filterFrom = true;
+                break;
+            case Before:
+                filterTo = true;
+                break;
+            case Period:
+                filterFrom = true;
+                filterTo = true;
+                return;
+            case All:
         }
-        if (filterQuery.toLowerCase().contains("dis")) {
-            filterDistricts = true;
-        }
-        if (filterQuery.toLowerCase().contains("moh")) {
-            filterMoh = true;
-        }
-        if (filterQuery.toLowerCase().contains("gn")) {
-            filterGn = true;
-        }
-        if (filterQuery.toLowerCase().contains("ins")) {
-            filterInstitutions = true;
-        }
-        if (filterQuery.toLowerCase().contains("date")) {
-            filterDate = true;
-        }
-        if (filterQuery.toLowerCase().contains("frm")) {
-            filterFrom = true;
-        }
-        if (filterQuery.toLowerCase().contains("to")) {
-            filterTo = true;
-        }
-        if (filterQuery.toLowerCase().contains("year")) {
-            filterYear = true;
-        }
-        if (filterQuery.toLowerCase().contains("qtr")) {
-            filterQuarter = true;
-        }
-        if (filterQuery.toLowerCase().contains("month")) {
-            filterMonth = true;
-        }
-
     }
 
     public List<QueryComponent> completeQueries(String qry) {
@@ -402,7 +421,7 @@ public class QueryComponentController implements Serializable {
         m.put("l", QueryLevel.Category);
         return getFacade().findByJpql(j, m);
     }
-    
+
     public List<QueryComponent> subcategories() {
         return subcategories(selectedCategory);
     }
@@ -422,7 +441,7 @@ public class QueryComponentController implements Serializable {
     public List<QueryComponent> queries() {
         return queries(selectedSubcategory);
     }
-    
+
     public List<QueryComponent> queries(QueryComponent p) {
         String j = "select q from QueryComponent q "
                 + " where q.retired=false "
@@ -434,7 +453,7 @@ public class QueryComponentController implements Serializable {
         m.put("l", QueryLevel.Query);
         return getFacade().findByJpql(j, m);
     }
-    
+
     public List<QueryComponent> criteria() {
         return criteria(selectedQuery);
     }
@@ -457,7 +476,7 @@ public class QueryComponentController implements Serializable {
                 + " and lower(q.code)=:qry "
                 + " order by q.id desc";
         Map m = new HashMap();
-        m.put("qry",  qry.toLowerCase() );
+        m.put("qry", qry.toLowerCase());
         return getFacade().findFirstByJpql(j, m);
     }
 
@@ -475,37 +494,119 @@ public class QueryComponentController implements Serializable {
         resultEncounterList = null;
         resultRelationshipList = null;
 
-        Jpq qr;
+        List<QueryResult> qrs = new ArrayList<>();
+        QueryResult qr = new QueryResult();
 
-        switch (selectedForQuery.getQueryType()) {
-            case Population:
-                qr = createAPopulationCountQuery(selectedForQuery);
-                if (qr.getLongResult() != null) {
-                    resultString = qr.getQc().getName() + " = " + qr.getLongResult();
+        switch (areaType) {
+            case Distirct:
+                qr.setArea(district);
+                qrs.add(qr);
+                break;
+            case GN:
+                qr.setArea(gn);
+                qrs.add(qr);
+                break;
+            case MOH:
+                qr.setArea(moh);
+                qrs.add(qr);
+                break;
+            case National:
+                qr.setArea(null);
+                qrs.add(qr);
+                break;
+            case PHM:
+                qr.setArea(phm);
+                qrs.add(qr);
+                break;
+            case Province:
+                qr.setArea(province);
+                qrs.add(qr);
+                break;
+
+            case Province_List:
+                for (Area p : areaController.getProvinces()) {
+                    qr = new QueryResult();
+                    qr.setArea(p);
+                    qrs.add(qr);
                 }
-                resultRelationshipList = qr.getRelationshipList();
                 break;
-
-            case Indicator:
-                resultString = handleIndicatorQuery(selectedForQuery);
-                break;
-
-            case Client:
-                qr = createAClientCountQuery(selectedForQuery);
-                if (qr.getLongResult() != null) {
-                    resultString = qr.getQc().getName() + " = " + qr.getLongResult();
+            case District_List:
+                for (Area d : areaController.getDistricts()) {
+                    qr = new QueryResult();
+                    qr.setArea(d);
+                    qrs.add(qr);
                 }
-                resultClientList = qr.getClientList();
+                break;
+            case District_MOH_List:
+                for (Area d : areaController.getMohAreasOfADistrict(district)) {
+                    qr.setArea(d);
+                    qr = new QueryResult();
+                    qrs.add(qr);
+                }
                 break;
 
-            case First_Encounter:
+            case MOH_GN_List:
+                for (Area d : areaController.getGnAreasOfMoh(moh)) {
+                    qr.setArea(d);
+                    qr = new QueryResult();
+                    qrs.add(qr);
+                }
                 break;
+            case MOH_PHM_List:
+                for (Area d : areaController.getPhmAreasOfMoh(moh)) {
+                    qr.setArea(d);
+                    qr = new QueryResult();
+                    qrs.add(qr);
+                }
+                break;
+            case PHM_GN_List:
+                for (Area d : areaController.getGnAreasOfPhm(moh)) {
+                    qr.setArea(d);
+                    qr = new QueryResult();
+                    qrs.add(qr);
+                }
+                break;
+            case Province_District_list:
+                for (Area d : areaController.getDistrictsOfAProvince(province)) {
+                    qr.setArea(d);
+                    qr = new QueryResult();
+                    qrs.add(qr);
+                }
+                break;
+        }
 
-            case Any_Encounter:
-                break;
+        for (QueryResult tqr : qrs) {
+            switch (selectedForQuery.getQueryType()) {
+                case Population:
+                    tqr.setJpq(createAPopulationCountQuery(selectedForQuery));
+                    if (tqr.getJpq().getLongResult() != null) {
+                        resultString = tqr.getJpq().getQc().getName() + " = " + tqr.getJpq().getLongResult();
+                    }
+                    resultRelationshipList = tqr.getJpq().getRelationshipList();
+                    break;
 
-            case Formset:
-                break;
+                case Indicator:
+                    resultString = handleIndicatorQuery(selectedForQuery);
+                    break;
+
+                case Client:
+                    tqr.setJpq(createAClientCountQuery(selectedForQuery));
+                    if (tqr.getJpq().getLongResult() != null) {
+                        resultString = tqr.getJpq().getQc().getName() + " = " + tqr.getJpq().getLongResult();
+                    }
+                    resultClientList = tqr.getJpq().getClientList();
+                    break;
+
+                case First_Encounter:
+                    break;
+
+                case Any_Encounter:
+                    break;
+
+                case Formset:
+                    break;
+
+            }
 
         }
 
@@ -550,19 +651,21 @@ public class QueryComponentController implements Serializable {
 
             Jpq j;
             System.out.println("temqc.getQueryType() = " + temqc.getQueryType());
-            if(null== temqc.getQueryType()){
+            if (null == temqc.getQueryType()) {
                 JsfUtil.addErrorMessage("Wrong Query. Check the names of queries");
                 return rs;
-            }else switch (temqc.getQueryType()) {
-                case Population:
-                    j = createAPopulationCountQuery(temqc);
-                    break;
-                case Client:
-                    j = createAClientCountQuery(temqc);
-                    break;
-                default:
-                    JsfUtil.addErrorMessage("Wrong Query. Check the names of queries");
-                    return rs;
+            } else {
+                switch (temqc.getQueryType()) {
+                    case Population:
+                        j = createAPopulationCountQuery(temqc);
+                        break;
+                    case Client:
+                        j = createAClientCountQuery(temqc);
+                        break;
+                    default:
+                        JsfUtil.addErrorMessage("Wrong Query. Check the names of queries");
+                        return rs;
+                }
             }
             System.out.println("j.getLongResult() = " + j.getLongResult());
             r.setSelectedValue(j.getLongResult() + "");
@@ -1256,8 +1359,8 @@ public class QueryComponentController implements Serializable {
     }
 
     public List<Replaceable> findReplaceblesInIndicatorQuery(String text) {
-         System.out.println("findReplaceblesInWhereQuery");
-         System.out.println("text = " + text);
+        System.out.println("findReplaceblesInWhereQuery");
+        System.out.println("text = " + text);
 
         List<Replaceable> ss = new ArrayList<>();
 
@@ -1517,6 +1620,9 @@ public class QueryComponentController implements Serializable {
     }
 
     public Date getFrom() {
+        if (from == null) {
+            from = CommonController.startOfTheYear();
+        }
         return from;
     }
 
@@ -1525,6 +1631,9 @@ public class QueryComponentController implements Serializable {
     }
 
     public Date getTo() {
+        if (to == null) {
+            to = new Date();
+        }
         return to;
     }
 
@@ -1541,6 +1650,9 @@ public class QueryComponentController implements Serializable {
     }
 
     public Integer getYear() {
+        if (year == null) {
+            year = CommonController.getYear(new Date());
+        }
         return year;
     }
 
@@ -1549,6 +1661,9 @@ public class QueryComponentController implements Serializable {
     }
 
     public Integer getQuarter() {
+        if (quarter == null) {
+            quarter = CommonController.getQuarter(new Date());
+        }
         return quarter;
     }
 
@@ -1557,6 +1672,9 @@ public class QueryComponentController implements Serializable {
     }
 
     public Integer getMonth() {
+        if (month == null) {
+            month = CommonController.getMonth(new Date());
+        }
         return month;
     }
 
@@ -1605,7 +1723,6 @@ public class QueryComponentController implements Serializable {
     }
 
     public void setSelectedForQuery(QueryComponent selectedForQuery) {
-        querySelectAction();
         this.selectedForQuery = selectedForQuery;
     }
 
@@ -1748,8 +1865,58 @@ public class QueryComponentController implements Serializable {
     public void setSelected(QueryComponent selected) {
         this.selected = selected;
     }
-    
-    
+
+    public QueryFilterPeriodType getPeriodType() {
+        return periodType;
+    }
+
+    public void setPeriodType(QueryFilterPeriodType periodType) {
+        this.periodType = periodType;
+    }
+
+    public QueryFilterAreaType getAreaType() {
+        return areaType;
+    }
+
+    public void setAreaType(QueryFilterAreaType areaType) {
+        this.areaType = areaType;
+    }
+
+    public boolean isFilterPhm() {
+        return filterPhm;
+    }
+
+    public void setFilterPhm(boolean filterPhm) {
+        this.filterPhm = filterPhm;
+    }
+
+    public Area getPhm() {
+        return phm;
+    }
+
+    public void setPhm(Area phm) {
+        this.phm = phm;
+    }
+
+    public List<QueryResult> getQrs() {
+        return qrs;
+    }
+
+    public void setQrs(List<QueryResult> qrs) {
+        this.qrs = qrs;
+    }
+
+    public QueryResult getQr() {
+        return qr;
+    }
+
+    public void setQr(QueryResult qr) {
+        this.qr = qr;
+    }
+
+    public AreaController getAreaController() {
+        return areaController;
+    }
 
     @FacesConverter(forClass = QueryComponent.class)
     public static class QueryComponentControllerConverter implements Converter {
