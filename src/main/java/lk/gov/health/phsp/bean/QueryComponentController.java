@@ -529,7 +529,6 @@ public class QueryComponentController implements Serializable {
         qr.setAreaType(areaType);
         qr.setPeriodType(periodType);
 
-
         switch (areaType) {
             case Distirct:
                 qr.setArea(district);
@@ -666,11 +665,11 @@ public class QueryComponentController implements Serializable {
                     break;
                 case Client:
                     tqr.setJpq(createAClientCountQuery(selectedForQuery, tqr.getArea(), tqr.getTfrom(), tqr.gettTo(),
-                             tqr.gettYear(), tqr.gettQuater()));
+                            tqr.gettYear(), tqr.gettQuater()));
                     if (tqr.getJpq().getLongResult() != null) {
                         tqr.setResultString(tqr.getJpq().getQc().getName() + " = " + tqr.getJpq().getLongResult());
                     }
-                    tqr.setLongResult(tqr.getLongResult());
+                    tqr.setLongResult(tqr.getJpq().getLongResult());
                     tqr.setResultClientList(tqr.getJpq().getClientList());
                     break;
 
@@ -845,7 +844,7 @@ public class QueryComponentController implements Serializable {
             if (qc.getOutputType() == QueryOutputType.List) {
                 jpql.setJselect("select c ");
             } else {
-                
+
                 jpql.setJselect("select count(c) ");
             }
 
@@ -888,10 +887,12 @@ public class QueryComponentController implements Serializable {
             System.out.println("j.getJpql() = " + jpql.getJpql());
             System.out.println("j.getM() = " + jpql.getM());
 
-            if (qc.getOutputType() == QueryOutputType.Count) {
-                jpql.setLongResult(getItemFacade().findLongByJpql(jpql.getJpql(), jpql.getM(), 1));
-            } else if (qc.getOutputType() == QueryOutputType.List) {
+            if (qc.getOutputType() == QueryOutputType.List) {
                 jpql.setClientList(getClientFacade().findByJpql(jpql.getJpql(), jpql.getM()));
+            } else {
+                jpql.setLongResult(getItemFacade().findLongByJpql(jpql.getJpql(), jpql.getM(), 1));
+                System.out.println("jpql.getLongResult() = " + jpql.getLongResult());
+
             }
 
             return jpql;
