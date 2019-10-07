@@ -661,7 +661,8 @@ public class QueryComponentController implements Serializable {
                     break;
 
                 case Indicator:
-                    tqr.setResultString(handleIndicatorQuery(selectedForQuery));
+                    tqr.setResultString(handleIndicatorQuery(selectedForQuery, tqr.getArea(), tqr.getTfrom(), tqr.gettTo(),
+                            tqr.gettYear(), tqr.gettQuater()));
                     break;
                 case Client:
                     tqr.setJpq(createAClientCountQuery(selectedForQuery, tqr.getArea(), tqr.getTfrom(), tqr.gettTo(),
@@ -693,7 +694,7 @@ public class QueryComponentController implements Serializable {
         return "graph";
     }
 
-    public String handleIndicatorQuery(QueryComponent qc) {
+    public Jpq handleIndicatorQuery(QueryComponent qc, Area ccArea, Date ccFrom, Date ccTo, Integer ccYear, Integer ccQuarter) {
         String rs = "Nothing Calculated.";
         List<Replaceable> replaceables = findReplaceblesInIndicatorQuery(qc.getIndicatorQuery());
         for (Replaceable r : replaceables) {
@@ -702,22 +703,23 @@ public class QueryComponentController implements Serializable {
             System.out.println("temqc = " + temqc);
             if (temqc == null) {
                 JsfUtil.addErrorMessage("Wrong Query. Check the names of queries");
-                return rs;
+                return new Jpq();
             }
 
             Jpq j = new Jpq();
             System.out.println("temqc.getQueryType() = " + temqc.getQueryType());
             if (null == temqc.getQueryType()) {
                 JsfUtil.addErrorMessage("Wrong Query. Check the names of queries");
-                return rs;
+                
+                return j;
             } else {
                 switch (temqc.getQueryType()) {
                     case Population:
                         //TODO: Add Logic Here
-                        j = createAPopulationCountQuery(temqc, null, null);
+                        j = createAPopulationCountQuery(temqc, ccArea, ccYear);
                         break;
                     case Client:
-//                        j = createAClientCountQuery(temqc);
+                        j = createAClientCountQuery(temqc, ccArea,ccFrom, ccTo, ccYear,ccQuarter);
                         break;
                     default:
                         JsfUtil.addErrorMessage("Wrong Query. Check the names of queries");
@@ -732,6 +734,9 @@ public class QueryComponentController implements Serializable {
         rs = "Formula \t" + javaStringToEvaluate + "\n";
         String res = evaluateScript(javaStringToEvaluate);
         rs += "Result : " + res;
+        Double dbl =CommonController.getDoubleValue(res);
+        Long lng = CommonController.getLongValue(res);
+        
         return rs;
     }
 
