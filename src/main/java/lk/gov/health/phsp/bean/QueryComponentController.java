@@ -661,7 +661,7 @@ public class QueryComponentController implements Serializable {
                     break;
 
                 case Indicator:
-                    tqr.setResultString(handleIndicatorQuery(selectedForQuery, tqr.getArea(), tqr.getTfrom(), tqr.gettTo(),
+                    tqr.setJpq(handleIndicatorQuery(selectedForQuery, tqr.getArea(), tqr.getTfrom(), tqr.gettTo(),
                             tqr.gettYear(), tqr.gettQuater()));
                     break;
                 case Client:
@@ -697,6 +697,7 @@ public class QueryComponentController implements Serializable {
     public Jpq handleIndicatorQuery(QueryComponent qc, Area ccArea, Date ccFrom, Date ccTo, Integer ccYear, Integer ccQuarter) {
         String rs = "Nothing Calculated.";
         List<Replaceable> replaceables = findReplaceblesInIndicatorQuery(qc.getIndicatorQuery());
+        Jpq j = new Jpq();
         for (Replaceable r : replaceables) {
             System.out.println("r.getQryCode() = " + r.getQryCode());
             QueryComponent temqc = findLastQuery(r.getQryCode());
@@ -706,7 +707,7 @@ public class QueryComponentController implements Serializable {
                 return new Jpq();
             }
 
-            Jpq j = new Jpq();
+            j = new Jpq();
             System.out.println("temqc.getQueryType() = " + temqc.getQueryType());
             if (null == temqc.getQueryType()) {
                 JsfUtil.addErrorMessage("Wrong Query. Check the names of queries");
@@ -723,7 +724,7 @@ public class QueryComponentController implements Serializable {
                         break;
                     default:
                         JsfUtil.addErrorMessage("Wrong Query. Check the names of queries");
-                        return rs;
+                        return j;
                 }
             }
             System.out.println("j.getLongResult() = " + j.getLongResult());
@@ -737,7 +738,7 @@ public class QueryComponentController implements Serializable {
         Double dbl =CommonController.getDoubleValue(res);
         Long lng = CommonController.getLongValue(res);
         
-        return rs;
+        return j;
     }
 
     public String evaluateScript(String script) {
