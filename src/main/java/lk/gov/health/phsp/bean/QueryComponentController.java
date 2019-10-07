@@ -508,17 +508,13 @@ public class QueryComponentController implements Serializable {
             switch (periodType) {
                 case After:
                     tfrom = from;
-                    tYear = CommonController.getYear(from);
                     break;
                 case All:
-                    tYear = CommonController.getYear(new Date());
                     break;
                 case Before:
                     tTo = to;
-                    tYear = CommonController.getYear(to);
                     break;
                 case Period:
-                    tYear = CommonController.getYear(from);
                     tfrom = from;
                     tTo = to;
                     break;
