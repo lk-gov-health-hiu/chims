@@ -504,36 +504,35 @@ public class QueryComponentController implements Serializable {
         Integer tYear = null;
         Integer tQuater = null;
 
-        switch (periodType) {
-            case After:
-                tfrom = from;
-                tYear = CommonController.getYear(from);
-                break;
-            case All:
-                tYear = CommonController.getYear(new Date());
-                break;
-            case Before:
-                tTo = to;
-                tYear = CommonController.getYear(to);
-                break;
-            case Period:
-                tYear = CommonController.getYear(from);
-                tfrom = from;
-                tTo = to;
-                break;
-            case Quarter:
-                tQuater = quarter;
-            case Year:
-                tYear = year;
-                break;
+        if (periodType != null) {
+            switch (periodType) {
+                case After:
+                    tfrom = from;
+                    tYear = CommonController.getYear(from);
+                    break;
+                case All:
+                    tYear = CommonController.getYear(new Date());
+                    break;
+                case Before:
+                    tTo = to;
+                    tYear = CommonController.getYear(to);
+                    break;
+                case Period:
+                    tYear = CommonController.getYear(from);
+                    tfrom = from;
+                    tTo = to;
+                    break;
+                case Quarter:
+                    tQuater = quarter;
+                case Year:
+                    tYear = year;
+                    break;
+            }
         }
 
         qr.setAreaType(areaType);
         qr.setPeriodType(periodType);
-        qr.setTfrom(tfrom);
-        qr.settTo(tTo);
-        qr.settYear(tYear);
-        qr.settQuater(tQuater);
+
 
         switch (areaType) {
             case Distirct:
@@ -670,7 +669,8 @@ public class QueryComponentController implements Serializable {
                     tqr.setResultString(handleIndicatorQuery(selectedForQuery));
                     break;
                 case Client:
-                    tqr.setJpq(createAClientCountQuery(selectedForQuery,tqr.get));
+                    tqr.setJpq(createAClientCountQuery(selectedForQuery, tqr.getArea(), tqr.getTfrom(), tqr.gettTo(),
+                             tqr.gettYear(), tqr.gettQuater()));
                     if (tqr.getJpq().getLongResult() != null) {
                         tqr.setResultString(tqr.getJpq().getQc().getName() + " = " + tqr.getJpq().getLongResult());
                     }
@@ -709,7 +709,7 @@ public class QueryComponentController implements Serializable {
                 return rs;
             }
 
-            Jpq j;
+            Jpq j = new Jpq();
             System.out.println("temqc.getQueryType() = " + temqc.getQueryType());
             if (null == temqc.getQueryType()) {
                 JsfUtil.addErrorMessage("Wrong Query. Check the names of queries");
@@ -721,7 +721,7 @@ public class QueryComponentController implements Serializable {
                         j = createAPopulationCountQuery(temqc, null, null);
                         break;
                     case Client:
-                        j = createAClientCountQuery(temqc);
+//                        j = createAClientCountQuery(temqc);
                         break;
                     default:
                         JsfUtil.addErrorMessage("Wrong Query. Check the names of queries");
@@ -833,8 +833,8 @@ public class QueryComponentController implements Serializable {
         return jpql;
     }
 
-    public Jpq createAClientCountQuery(QueryComponent qc, Area ccGn, Area ccPhm, Area ccMoh, Area ccDis, Area ccPro, Date ccFrom, Date ccTo, Integer ccYear, Integer ccQuarter) {
-        System.out.println("createAClientCountQuery");
+    public Jpq createAClientCountQuery(QueryComponent qc, Area ccArea, Date ccFrom, Date ccTo, Integer ccYear, Integer ccQuarter) {
+        System.out.println("Create A Client Count Query");
         Jpq jpql = new Jpq();
         jpql.setQc(qc);
 
@@ -845,14 +845,52 @@ public class QueryComponentController implements Serializable {
         if (criterias == null || criterias.isEmpty()) {
             jpql.setJwhere(" where c.retired=:f ");
             jpql.setJfrom("  from Client c ");
-            if (qc.getOutputType() == QueryOutputType.Count) {
-                jpql.setJselect("select count(c) ");
-            } else if (qc.getOutputType() == QueryOutputType.List) {
+            if (qc.getOutputType() == QueryOutputType.List) {
                 jpql.setJselect("select c ");
+            } else {
+                
+                jpql.setJselect("select count(c) ");
             }
+
+            jpql.setJwhere(jpql.getJwhere());
+
+            if (ccYear != null && ccQuarter != null) {
+                //TODO: Correct Code
+                jpql.setJwhere(jpql.getJwhere() + " and EXTRACT(YEAR,c.createdAt)=:ey and  EXTRACT(MONTH,c.createdAt)=:eq ");
+                jpql.getM().put("ey", ccYear);
+                jpql.getM().put("eq", ccQuarter * 3);
+            } else if (ccYear != null) {
+                //TODO: Correct Code
+                jpql.setJwhere(jpql.getJwhere() + " and EXTRACT(YEAR,i.encounter.encounterYear)=:ey ");
+                jpql.getM().put("ey", ccYear);
+            } else if (ccFrom != null && ccTo != null) {
+                jpql.setJwhere(jpql.getJwhere() + " and c.createdAt between :d1 and :d2 ");
+                jpql.getM().put("d1", ccFrom);
+                jpql.getM().put("d2", ccTo);
+            } else if (ccFrom != null) {
+                jpql.setJwhere(jpql.getJwhere() + " and c.createdAt > :d1 ");
+                jpql.getM().put("d1", ccFrom);
+            } else if (ccTo != null) {
+                jpql.setJwhere(jpql.getJwhere() + " and c.createdAt < :d2 ");
+                jpql.getM().put("d2", ccTo);
+            }
+
+            if (ccArea != null) {
+                switch (ccArea.getType()) {
+                    case District:
+                        jpql.setJwhere(jpql.getJwhere() + " and c.person.district=:area ");
+                        break;
+                    case Province:
+                        jpql.setJwhere(jpql.getJwhere() + " and c.person.province=:area ");
+                        break;
+                    //TODO: Add codes for other areas
+                }
+                jpql.getM().put("area", ccArea);
+            }
+
             System.out.println("j.getJpql() = " + jpql.getJpql());
             System.out.println("j.getM() = " + jpql.getM());
-            jpql.setJwhere(jpql.getJwhere() + addFilterStringForClient(jpql.getM()));
+
             if (qc.getOutputType() == QueryOutputType.Count) {
                 jpql.setLongResult(getItemFacade().findLongByJpql(jpql.getJpql(), jpql.getM(), 1));
             } else if (qc.getOutputType() == QueryOutputType.List) {
@@ -978,8 +1016,6 @@ public class QueryComponentController implements Serializable {
 
             }
 
-            
-            
             System.out.println("j.getJpql() = " + jpql.getJpql());
             System.out.println("j.getM() = " + jpql.getM());
             if (qc.getOutputType() == QueryOutputType.Count) {
@@ -1026,8 +1062,6 @@ public class QueryComponentController implements Serializable {
             jpql.setJfrom(ss);
             jpql.setJwhere(w1 + w2 + w3 + " and c.retired=:f ");
 
-            
-            
             if (ccYear != null && ccQuarter != null) {
                 jpql.setJwhere(jpql.getJwhere() + " and i.encounter.encounterYear=:ey and  i.encounter.encounterQuarter=:eq ");
                 jpql.getM().put("ey", ccYear);
@@ -1047,36 +1081,28 @@ public class QueryComponentController implements Serializable {
                 jpql.getM().put("d2", ccTo);
             }
 
-            if(ccDis!=null){
-                jpql.setJwhere(jpql.getJwhere() + " and i.client.person.district=:area ");
-                jpql.getM().put("area", ccDis);
+            if (ccArea != null) {
+                switch (ccArea.getType()) {
+                    case District:
+                        jpql.setJwhere(jpql.getJwhere() + " and i.client.person.district=:area ");
+                        break;
+                    case Province:
+                        jpql.setJwhere(jpql.getJwhere() + " and i.client.person.province=:area ");
+                        break;
+                    //TODO: Add codes for other areas
+                }
+                jpql.getM().put("area", ccArea);
             }
-            
-            
-             if(ccPro!=null){
-                jpql.setJwhere(jpql.getJwhere() + " and i.client.person.province=:area ");
-                jpql.getM().put("area", ccPro);
-            }
-            
-             //TODO : More code needed for MOH, PHM ,etc
-            
-            
+
+            //TODO : More code needed for MOH, PHM ,etc
             /**
-             * @ManyToOne
-    private Area gnArea;
-    @ManyToOne
-    private Area dsArea;
-    @ManyToOne
-    private Area phmArea;
-    @ManyToOne
-    private Area mohArea;
-    @ManyToOne
-    private Area district;
-    @ManyToOne
-    private Area province;
+             * @ManyToOne private Area gnArea;
+             * @ManyToOne private Area dsArea;
+             * @ManyToOne private Area phmArea;
+             * @ManyToOne private Area mohArea;
+             * @ManyToOne private Area district;
+             * @ManyToOne private Area province;
              */
-            
-            
             jpql.setJgroupby("");
             System.out.println("j.getJpql() = " + jpql.getJpql());
             System.out.println("j.getM() = " + jpql.getM());
@@ -1309,55 +1335,6 @@ public class QueryComponentController implements Serializable {
         j.setEncounterList(getEncounterFacade().findByJpql(j.getJpql(), j.getM()));
         System.out.println("j.getEncounterList() = " + j.getEncounterList());
         return j;
-    }
-
-    public String addFilterStringForClient(Map m) {
-        String f = "";
-        if (date != null) {
-            f += " and c.createdAt=:encounterDate ";
-            m.put("encounterDate", date);
-        }
-        if (from != null && to != null) {
-            f += " and c.createdAt between :from and :to ";
-            m.put("from", from);
-            m.put("to", to);
-        } else if (from != null) {
-            f += " and c.createdAt > :from ";
-            m.put("from", from);
-        } else if (to != null) {
-            f += " and c.createdAt < :to ";
-            m.put("to", to);
-        }
-        if (province != null) {
-            f += " and c.person.gnArea.province =:province ";
-            m.put("province", province);
-        }
-        if (district != null) {
-            f += " and c.person.gnArea.district =:district ";
-            m.put("district", district);
-        }
-        if (moh != null) {
-            f += " and c.person.gnArea.moh =:moh ";
-            m.put("moh", moh);
-        }
-        if (gn != null) {
-            f += " and c.person.gnArea =:moh ";
-            m.put("gn", gn);
-        }
-        if (institution != null) {
-            f += " and (c.createdInstitution =:institution "
-                    + " or  c.createdInstitution.parent =:institution "
-                    + " or c.createdInstitution.parent.parent =:institution "
-                    + " or c.createdInstitution.parent.parent.parent =:institution "
-                    + " or c.createdInstitution.parent.parent.parent.parent =:institution ) ";
-            m.put("institution", institution);
-        }
-
-        Encounter e;
-        Client c;
-        Institution i;
-
-        return f;
     }
 
     public String addFilterString(Map m) {
