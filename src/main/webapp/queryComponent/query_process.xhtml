@@ -33,7 +33,7 @@
                                         <p:outputLabel value="Period" ></p:outputLabel>
                                     </f:facet>
 
-                                    <p:selectOneListbox value="#{queryComponentController.periodType}">
+                                    <p:selectOneListbox value="#{queryComponentController.periodType}" required="true">
                                         <f:selectItems value="#{commonController.queryFilterPeriodTypes}" ></f:selectItems>
                                         <p:ajax process="@this" update="filters" listener="#{queryComponentController.periodFilterSelectAction}" />
                                     </p:selectOneListbox>
@@ -49,7 +49,9 @@
                                         <p:outputLabel value="Area" ></p:outputLabel>
                                     </f:facet>
 
-                                    <p:selectOneListbox value="#{queryComponentController.areaType}" scrollHeight="460" style="width: 20em; height: 24em;">
+                                    <p:selectOneListbox value="#{queryComponentController.areaType}" scrollHeight="460"
+                                                        style="width: 20em; height: 24em;"
+                                                        required="true">
                                         <f:selectItems value="#{commonController.queryFilterAreaType}" ></f:selectItems>
                                         <p:ajax process="@this" update="filters" listener="#{queryComponentController.areaFilterSelectAction()}" />
                                     </p:selectOneListbox>

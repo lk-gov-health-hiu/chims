@@ -40,6 +40,7 @@ import lk.gov.health.phsp.enums.QueryFilterAreaType;
 import lk.gov.health.phsp.enums.QueryFilterPeriodType;
 import lk.gov.health.phsp.enums.QueryLevel;
 import lk.gov.health.phsp.enums.QueryOutputType;
+import lk.gov.health.phsp.enums.QueryType;
 import lk.gov.health.phsp.enums.RelationshipType;
 import lk.gov.health.phsp.facade.ClientEncounterComponentItemFacade;
 import lk.gov.health.phsp.facade.ClientFacade;
@@ -461,6 +462,8 @@ public class QueryComponentController implements Serializable {
     }
 
     public List<QueryComponent> criteria(QueryComponent p) {
+        System.out.println("finding criteria");
+        System.out.println("p = " + p);
         String j = "select q from QueryComponent q "
                 + " where q.retired=false "
                 + " and q.queryLevel =:l "
@@ -469,7 +472,9 @@ public class QueryComponentController implements Serializable {
         Map m = new HashMap();
         m.put("p", p);
         m.put("l", QueryLevel.Criterian);
-        return getFacade().findByJpql(j, m);
+        List<QueryComponent> c =getFacade().findByJpql(j, m);
+        System.out.println("c = " + c);
+        return c;
     }
 
     public QueryComponent findLastQuery(String qry) {
@@ -663,6 +668,8 @@ public class QueryComponentController implements Serializable {
                 case Indicator:
                     tqr.setJpq(handleIndicatorQuery(selectedForQuery, tqr.getArea(), tqr.getTfrom(), tqr.gettTo(),
                             tqr.gettYear(), tqr.gettQuater()));
+                    tqr.setLongResult(tqr.getJpq().getLongResult());
+                    tqr.setDblResult(tqr.getJpq().getDblResult());
                     break;
                 case Client:
                     tqr.setJpq(createAClientCountQuery(selectedForQuery, tqr.getArea(), tqr.getTfrom(), tqr.gettTo(),
@@ -711,7 +718,7 @@ public class QueryComponentController implements Serializable {
             System.out.println("temqc.getQueryType() = " + temqc.getQueryType());
             if (null == temqc.getQueryType()) {
                 JsfUtil.addErrorMessage("Wrong Query. Check the names of queries");
-                
+
                 return j;
             } else {
                 switch (temqc.getQueryType()) {
@@ -720,7 +727,7 @@ public class QueryComponentController implements Serializable {
                         j = createAPopulationCountQuery(temqc, ccArea, ccYear);
                         break;
                     case Client:
-                        j = createAClientCountQuery(temqc, ccArea,ccFrom, ccTo, ccYear,ccQuarter);
+                        j = createAClientCountQuery(temqc, ccArea, ccFrom, ccTo, ccYear, ccQuarter);
                         break;
                     default:
                         JsfUtil.addErrorMessage("Wrong Query. Check the names of queries");
@@ -735,9 +742,12 @@ public class QueryComponentController implements Serializable {
         rs = "Formula \t" + javaStringToEvaluate + "\n";
         String res = evaluateScript(javaStringToEvaluate);
         rs += "Result : " + res;
-        Double dbl =CommonController.getDoubleValue(res);
+        Double dbl = CommonController.getDoubleValue(res);
+        System.out.println("dbl = " + dbl);
         Long lng = CommonController.getLongValue(res);
-        
+        System.out.println("lng = " + lng);
+        j.setLongResult(lng);
+        j.setDblResult(dbl);
         return j;
     }
 
@@ -758,8 +768,13 @@ public class QueryComponentController implements Serializable {
             String patternEnd = "}";
             String toBeReplaced;
             toBeReplaced = patternStart + s.getFullText() + patternEnd;
+            System.out.println("toBeReplaced = " + toBeReplaced);
             calculationScript = calculationScript.replace(toBeReplaced, s.getSelectedValue());
+            System.out.println("toBeReplaced = " + toBeReplaced);
+            System.out.println("s.getSelectedValue() = " + s.getSelectedValue());
+            System.out.println("calculationScript = " + calculationScript);
         }
+        System.out.println("calculationScript = " + calculationScript);
         return calculationScript;
     }
 
@@ -881,13 +896,15 @@ public class QueryComponentController implements Serializable {
                 switch (ccArea.getType()) {
                     case District:
                         jpql.setJwhere(jpql.getJwhere() + " and c.person.district=:area ");
+                        jpql.getM().put("area", ccArea);
                         break;
                     case Province:
                         jpql.setJwhere(jpql.getJwhere() + " and c.person.province=:area ");
+                        jpql.getM().put("area", ccArea);
                         break;
                     //TODO: Add codes for other areas
                 }
-                jpql.getM().put("area", ccArea);
+                
             }
 
             System.out.println("j.getJpql() = " + jpql.getJpql());
@@ -905,10 +922,10 @@ public class QueryComponentController implements Serializable {
 
         } else if (criterias.size() == 1) {
 
-            if (qc.getOutputType() == QueryOutputType.Count) {
-                jpql.setJselect("select count(distinct i.itemClient)  ");
-            } else if (qc.getOutputType() == QueryOutputType.List) {
+            if (qc.getOutputType() == QueryOutputType.List) {
                 jpql.setJselect("select distinct(i.itemClient)  ");
+            } else {
+                jpql.setJselect("select count(distinct i.itemClient)  ");
             }
 
             jpql.setJfrom(" from ClientEncounterComponentItem i ");
@@ -1033,10 +1050,10 @@ public class QueryComponentController implements Serializable {
         } else {
 
             String ss = "";
-            if (qc.getOutputType() == QueryOutputType.Count) {
-                ss = "select count(distinct c) from Client c, ";
-            } else if (qc.getOutputType() == QueryOutputType.List) {
+            if (qc.getOutputType() == QueryOutputType.List) {
                 ss = "select distinct (c) from Client c, ";
+            } else  {
+                ss = "select count(distinct c) from Client c, ";
             }
 
             String w1 = " where ";
@@ -2027,7 +2044,11 @@ public class QueryComponentController implements Serializable {
                 + "";
 
         js = js.replace("MyLabelsList", convertLabelsToChartNameSeries(qrs));
-        js = js.replace("MyDataList", convertLongValuesToChartDataSeries(qrs));
+        if (selectedForQuery.getQueryType() == QueryType.Indicator) {
+            js = js.replace("MyDataList", convertDoubleValuesToChartDataSeries(qrs));
+        } else {
+            js = js.replace("MyDataList", convertLongValuesToChartDataSeries(qrs));
+        }
         js = js.replace("MyFirstdataset", selectedForQuery.getName());
         return js;
     }
@@ -2050,6 +2071,22 @@ public class QueryComponentController implements Serializable {
         for (QueryResult e : cqrs) {
             i++;
             s += e.getJpq().getLongResult();
+            if (i != cqrs.size()) {
+                s += ", ";
+            }
+        }
+        return s;
+    }
+    
+    public String convertDoubleValuesToChartDataSeries(List<QueryResult> cqrs) {
+        String s = "";
+        int i = 0;
+        if (cqrs == null) {
+            return "";
+        }
+        for (QueryResult e : cqrs) {
+            i++;
+            s += e.getJpq().getDblResult();
             if (i != cqrs.size()) {
                 s += ", ";
             }

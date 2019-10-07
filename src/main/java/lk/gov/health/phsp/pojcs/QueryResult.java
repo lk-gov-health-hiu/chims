@@ -54,6 +54,7 @@ public class QueryResult {
 
     private String resultString;
     private Long longResult;
+    private Double dblResult;
     private List<Relationship> resultRelationshipList;
     private List<Client> resultClientList;
     private List<Encounter> resultEncounterList;
@@ -254,4 +255,13 @@ public class QueryResult {
         this.longResult = longResult;
     }
 
+    public Double getDblResult() {
+        return dblResult;
+    }
+
+    public void setDblResult(Double dblResult) {
+        this.dblResult = dblResult;
+    }
+
+    
 }

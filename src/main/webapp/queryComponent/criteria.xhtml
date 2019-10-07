@@ -45,10 +45,6 @@
                                         <f:setPropertyActionListener value="#{item}" target="#{queryComponentController.selected}" ></f:setPropertyActionListener>
                                     </p:commandButton>
 
-                                    <p:commandButton ajax="false" value="Criteria" action="criteria" >
-                                        <f:setPropertyActionListener value="#{item}" target="#{queryComponentController.selectedQuery}" ></f:setPropertyActionListener>
-                                    </p:commandButton>
-
                                     <p:commandButton ajax="false" value="Remove" action="#{queryComponentController.remove()}" 
                                                      onclick="if (!confirm('Really want to do that?'))
                                                                  return false">

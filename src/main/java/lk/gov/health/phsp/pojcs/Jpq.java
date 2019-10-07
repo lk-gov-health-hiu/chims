@@ -34,12 +34,12 @@ import lk.gov.health.phsp.entity.Relationship;
 import lk.gov.health.phsp.enums.QueryFilterAreaType;
 import lk.gov.health.phsp.enums.QueryFilterPeriodType;
 
-
 /**
  *
  * @author Dr M H B Ariyaratne<buddhika.ari@gmail.com>
  */
 public class Jpq {
+
     private String jfrom = "";
     private String jselect = "";
     private String jwhere = "";
@@ -47,36 +47,30 @@ public class Jpq {
     private String jhaving = "";
     private String jorderBy = "";
     private String filter = "";
-    private String jpql = "" ;
+    private String jpql = "";
     private Map m;
-    
+
     private Long longResult;
+    private Double dblResult;
     private QueryComponent qc;
     private List<Client> clientList;
     private List<Encounter> encounterList;
     private List<ClientEncounterComponentForm> formList;
     private List<Relationship> relationshipList;
-    
-    QueryFilterAreaType areType;
-    QueryFilterPeriodType periodType;
- 
-    
-    /**
-     * 
-SELECT c.currency, SUM(c.population)
-FROM Country c
-WHERE 'Europe' MEMBER OF c.continents
-GROUP BY c.currency
-HAVING COUNT(c) > 1
-ORDER BY c.currency
-     */
-    
-    
-    /**
-     * 
-     * @return 
-     */
 
+    private QueryFilterAreaType areType;
+    private QueryFilterPeriodType periodType;
+
+    /**
+     *
+     * SELECT c.currency, SUM(c.population) FROM Country c WHERE 'Europe' MEMBER
+     * OF c.continents GROUP BY c.currency HAVING COUNT(c) > 1 ORDER BY
+     * c.currency
+     */
+    /**
+     *
+     * @return
+     */
     public String getJfrom() {
         return jfrom;
     }
@@ -135,7 +129,7 @@ ORDER BY c.currency
     }
 
     public Map getM() {
-        if(m==null){
+        if (m == null) {
             m = new HashMap<>();
         }
         return m;
@@ -168,7 +162,6 @@ ORDER BY c.currency
     public void setQc(QueryComponent qc) {
         this.qc = qc;
     }
-
 
     @Override
     public String toString() {
@@ -206,8 +199,30 @@ ORDER BY c.currency
     public void setRelationshipList(List<Relationship> relationshipList) {
         this.relationshipList = relationshipList;
     }
-    
-    
-    
+
+    public Double getDblResult() {
+        return dblResult;
+    }
+
+    public void setDblResult(Double dblResult) {
+        this.dblResult = dblResult;
+    }
+
+    public QueryFilterAreaType getAreType() {
+        return areType;
+    }
+
+    public void setAreType(QueryFilterAreaType areType) {
+        this.areType = areType;
+    }
+
+    public QueryFilterPeriodType getPeriodType() {
+        return periodType;
+    }
+
+    public void setPeriodType(QueryFilterPeriodType periodType) {
+        this.periodType = periodType;
+    }
+
     
 }

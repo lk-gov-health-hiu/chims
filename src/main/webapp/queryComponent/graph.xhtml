@@ -37,15 +37,22 @@
             </h:panelGroup>
 
             <h:panelGroup rendered="#{queryComponentController.qrs.size() eq 1}" >
-                <ui:repeat value="#{queryComponentController.qrs}" var="q" >
-                    <h1>
-                        <p:outputLabel value="#{q.resultString}" ></p:outputLabel>
-                    </h1>
-                </ui:repeat>
-
+                <div style="text-align: center;width: 100%;">
+                    <ui:repeat value="#{queryComponentController.qrs}" var="q" >
+                        <div style="text-align: center; width: 100%; margin: auto;">
+                            <h1>
+                                <h:outputLabel value="#{q.resultString}" rendered="#{q.resultString ne null}" style="margin: auto;"></h:outputLabel>
+                            </h1>
+                            <h1>
+                                <h:outputLabel value="#{q.dblResult}" rendered="#{q.dblResult ne null}" ></h:outputLabel>
+                            </h1>
+                            <h1>
+                                <h:outputLabel value="#{q.longResult}" rendered="#{q.longResult ne null}" ></h:outputLabel>
+                            </h1>
+                        </div>
+                    </ui:repeat>
+                </div>
             </h:panelGroup>
-
-
 
         </p:panelGrid>
 
