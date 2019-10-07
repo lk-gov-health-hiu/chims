@@ -670,6 +670,7 @@ public class QueryComponentController implements Serializable {
                     if (tqr.getJpq().getLongResult() != null) {
                         tqr.setResultString(tqr.getJpq().getQc().getName() + " = " + tqr.getJpq().getLongResult());
                     }
+                    tqr.setLongResult(tqr.getLongResult());
                     tqr.setResultClientList(tqr.getJpq().getClientList());
                     break;
 

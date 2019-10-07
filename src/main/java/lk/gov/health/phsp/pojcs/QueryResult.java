@@ -53,6 +53,7 @@ public class QueryResult {
     private QueryFilterPeriodType periodType;
 
     private String resultString;
+    private Long longResult;
     private List<Relationship> resultRelationshipList;
     private List<Client> resultClientList;
     private List<Encounter> resultEncounterList;
@@ -226,6 +227,8 @@ public class QueryResult {
     public void setChartString(String chartString) {
         this.chartString = chartString;
     }
+    
+    
 
     public String convertLongValuesToChartDataSeries(List<QueryResult> cqrs) {
         String s = "";
@@ -241,6 +244,14 @@ public class QueryResult {
             }
         }
         return s;
+    }
+
+    public Long getLongResult() {
+        return longResult;
+    }
+
+    public void setLongResult(Long longResult) {
+        this.longResult = longResult;
     }
 
 }
