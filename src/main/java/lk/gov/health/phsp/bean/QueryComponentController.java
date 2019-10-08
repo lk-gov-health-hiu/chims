@@ -921,6 +921,7 @@ public class QueryComponentController implements Serializable {
             return jpql;
 
         } else if (criterias.size() == 1) {
+            System.out.println("criterias.size() == 1");
 
             if (qc.getOutputType() == QueryOutputType.List) {
                 jpql.setJselect("select distinct(i.itemClient)  ");
@@ -932,7 +933,11 @@ public class QueryComponentController implements Serializable {
             jpql.setJwhere(" where i.retired=:f ");
 
             QueryComponent c = criterias.get(0);
+            
+            System.out.println("criterias.get(0) = " + criterias.get(0));
 
+            System.out.println("c.getMatchType() = " + c.getMatchType());
+            
             if (c.getMatchType() == QueryCriteriaMatchType.Variable_Value_Check) {
                 jpql.setJwhere(jpql.getJwhere() + " and i.item=:v1 and i.itemValue=:d1 ");
                 jpql.getM().put("v1", c.getItem());
@@ -941,23 +946,25 @@ public class QueryComponentController implements Serializable {
                 jpql.setJwhere(jpql.getJwhere() + " and i.item=:v1 ");
                 jpql.getM().put("v1", c.getItem());
                 String eval = "";
+                System.out.println("c.getEvaluationType() = " + c.getEvaluationType());
                 switch (c.getEvaluationType()) {
                     case Equal:
-                        eval = " = ";
+                        eval = "=";
                         break;
                     case Grater_than_or_equal:
-                        eval = " >= ";
+                        eval = ">=";
                         break;
                     case Grater_than:
-                        eval = " > ";
+                        eval = ">";
                         break;
                     case Less_than:
-                        eval = " < ";
+                        eval = "<";
                         break;
                     case Less_than_or_equal:
-                        eval = " <= ";
+                        eval = "<=";
                         break;
                 }
+                System.out.println("c.getEvaluationType() = " + c.getEvaluationType());
                 switch (c.getEvaluationType()) {
                     case Equal:
                     case Grater_than_or_equal:
@@ -1151,19 +1158,19 @@ public class QueryComponentController implements Serializable {
             String eval = "";
             switch (c.getEvaluationType()) {
                 case Equal:
-                    eval = " = ";
+                    eval = "=";
                     break;
                 case Grater_than_or_equal:
-                    eval = " >= ";
+                    eval = ">=";
                     break;
                 case Grater_than:
-                    eval = " > ";
+                    eval = ">";
                     break;
                 case Less_than:
-                    eval = " < ";
+                    eval = "<";
                     break;
                 case Less_than_or_equal:
-                    eval = " <= ";
+                    eval = "<=";
                     break;
             }
             switch (c.getEvaluationType()) {

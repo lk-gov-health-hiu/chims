@@ -18,7 +18,7 @@
                     <p:panelGrid columns="1" style="margin: auto;" >
                         <f:facet name="header" >
                             <p:outputLabel value="Edit Creterian" ></p:outputLabel>
-                            <p:commandButton action="#{queryComponentController.update}" value="#{bundleQuery.Save}" 
+                            <p:commandButton action="#{queryComponentController.saveSelectedItem()}" value="#{bundleQuery.Save}" 
                                              ajax="false"
                                               style="float: right;" />
                             <p:commandButton ajax="false" value="Back" action="criteria" style="float: right;" ></p:commandButton>
@@ -53,6 +53,9 @@
                                                  itemLabel="#{i.name}" var="i" 
                                                  forceSelection="true"
                                                  >
+                                    <p:column headerText="ID" >
+                                        <p:outputLabel value="#{i.id}" ></p:outputLabel>
+                                    </p:column>
                                     <p:column headerText="Name" >
                                         <p:outputLabel value="#{i.name}" ></p:outputLabel>
                                     </p:column>
