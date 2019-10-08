@@ -472,7 +472,7 @@ public class QueryComponentController implements Serializable {
         Map m = new HashMap();
         m.put("p", p);
         m.put("l", QueryLevel.Criterian);
-        List<QueryComponent> c =getFacade().findByJpql(j, m);
+        List<QueryComponent> c = getFacade().findByJpql(j, m);
         System.out.println("c = " + c);
         return c;
     }
@@ -485,6 +485,32 @@ public class QueryComponentController implements Serializable {
         Map m = new HashMap();
         m.put("qry", qry.toLowerCase());
         return getFacade().findFirstByJpql(j, m);
+    }
+
+    public String testQuery() {
+        System.out.println("processQuery");
+        System.out.println("selectedForQuery = " + selectedForQuery);
+        if (selectedForQuery == null) {
+            JsfUtil.addErrorMessage("Nothing selected");
+            return "";
+        }
+
+        resultString = null;
+        resultClientList = null;
+        resultFormList = null;
+        resultEncounterList = null;
+        resultRelationshipList = null;
+
+        qrs = new ArrayList<>();
+        QueryResult qr = new QueryResult();
+        Map m = new HashMap();
+        m.put("f", false);
+
+        String j = "select count(distinct c) from ClientEncounterComponentItem i join i.itemClient c  where i.retired=:f";
+        qr.setLongResult(getFacade().countByJpql(j,m));
+        
+        qrs.add(qr);
+        return "graph";
     }
 
     public String processQuery() {
@@ -694,8 +720,6 @@ public class QueryComponentController implements Serializable {
 
         }
 
-        boolean tf = false;
-
         clearFilters();
 
         return "graph";
@@ -892,6 +916,8 @@ public class QueryComponentController implements Serializable {
                 jpql.getM().put("d2", ccTo);
             }
 
+            
+            System.out.println("ccArea = " + ccArea.getName());
             if (ccArea != null) {
                 switch (ccArea.getType()) {
                     case District:
@@ -904,7 +930,7 @@ public class QueryComponentController implements Serializable {
                         break;
                     //TODO: Add codes for other areas
                 }
-                
+
             }
 
             System.out.println("j.getJpql() = " + jpql.getJpql());
@@ -915,7 +941,7 @@ public class QueryComponentController implements Serializable {
             } else {
                 jpql.setLongResult(getItemFacade().findLongByJpql(jpql.getJpql(), jpql.getM(), 1));
                 System.out.println("jpql.getLongResult() = " + jpql.getLongResult());
-
+                
             }
 
             return jpql;
@@ -924,20 +950,20 @@ public class QueryComponentController implements Serializable {
             System.out.println("criterias.size() == 1");
 
             if (qc.getOutputType() == QueryOutputType.List) {
-                jpql.setJselect("select distinct(i.itemClient)  ");
+                jpql.setJselect("select distinct(c)  ");
             } else {
-                jpql.setJselect("select count(distinct i.itemClient)  ");
+                jpql.setJselect("select count(distinct c)  ");
             }
 
-            jpql.setJfrom(" from ClientEncounterComponentItem i ");
+            jpql.setJfrom(" from ClientEncounterComponentItem i join i.itemClient c");
             jpql.setJwhere(" where i.retired=:f ");
 
             QueryComponent c = criterias.get(0);
-            
+
             System.out.println("criterias.get(0) = " + criterias.get(0));
 
             System.out.println("c.getMatchType() = " + c.getMatchType());
-            
+
             if (c.getMatchType() == QueryCriteriaMatchType.Variable_Value_Check) {
                 jpql.setJwhere(jpql.getJwhere() + " and i.item=:v1 and i.itemValue=:d1 ");
                 jpql.getM().put("v1", c.getItem());
@@ -1044,12 +1070,30 @@ public class QueryComponentController implements Serializable {
 
             }
 
+            
+            System.out.println("ccArea = " + ccArea);
+            if (ccArea != null) {
+                switch (ccArea.getType()) {
+                    case District:
+                        jpql.setJwhere(jpql.getJwhere() + " and i.itemClient.person.district=:area ");
+                         jpql.getM().put("area", ccArea);
+                        break;
+                    case Province:
+                        jpql.setJwhere(jpql.getJwhere() + " and i.itemClient.person.province=:area ");
+                         jpql.getM().put("area", ccArea);
+                        break;
+                    //TODO: Add codes for other areas
+                }
+               
+            }
+            
             System.out.println("j.getJpql() = " + jpql.getJpql());
             System.out.println("j.getM() = " + jpql.getM());
-            if (qc.getOutputType() == QueryOutputType.Count) {
-                jpql.setLongResult(getItemFacade().findLongByJpql(jpql.getJpql(), jpql.getM(), 1));
-            } else if (qc.getOutputType() == QueryOutputType.List) {
+            if (qc.getOutputType() == QueryOutputType.List) {
                 jpql.setClientList(getClientFacade().findByJpql(jpql.getJpql(), jpql.getM()));
+            } else {
+                jpql.setLongResult(getItemFacade().findLongByJpql(jpql.getJpql(), jpql.getM(), 1));
+                System.out.println("jpql.getLongResult() = " + jpql.getLongResult());
             }
 
             return jpql;
@@ -1059,7 +1103,7 @@ public class QueryComponentController implements Serializable {
             String ss = "";
             if (qc.getOutputType() == QueryOutputType.List) {
                 ss = "select distinct (c) from Client c, ";
-            } else  {
+            } else {
                 ss = "select count(distinct c) from Client c, ";
             }
 
@@ -1112,14 +1156,16 @@ public class QueryComponentController implements Serializable {
             if (ccArea != null) {
                 switch (ccArea.getType()) {
                     case District:
-                        jpql.setJwhere(jpql.getJwhere() + " and i.client.person.district=:area ");
+                        jpql.setJwhere(jpql.getJwhere() + " and c.person.district=:area ");
+                         jpql.getM().put("area", ccArea);
                         break;
                     case Province:
-                        jpql.setJwhere(jpql.getJwhere() + " and i.client.person.province=:area ");
+                        jpql.setJwhere(jpql.getJwhere() + " and c.person.province=:area ");
+                         jpql.getM().put("area", ccArea);
                         break;
                     //TODO: Add codes for other areas
                 }
-                jpql.getM().put("area", ccArea);
+               
             }
 
             //TODO : More code needed for MOH, PHM ,etc
@@ -1134,10 +1180,10 @@ public class QueryComponentController implements Serializable {
             jpql.setJgroupby("");
             System.out.println("j.getJpql() = " + jpql.getJpql());
             System.out.println("j.getM() = " + jpql.getM());
-            if (qc.getOutputType() == QueryOutputType.Count) {
-                jpql.setLongResult(getItemFacade().findLongByJpql(jpql.getJpql(), jpql.getM(), 1));
-            } else if (qc.getOutputType() == QueryOutputType.List) {
+            if (qc.getOutputType() == QueryOutputType.List) {
                 jpql.setClientList(getClientFacade().findByJpql(jpql.getJpql(), jpql.getM()));
+            } else {
+                jpql.setLongResult(getItemFacade().findLongByJpql(jpql.getJpql(), jpql.getM(), 1));
             }
 
             return jpql;
@@ -2084,7 +2130,7 @@ public class QueryComponentController implements Serializable {
         }
         return s;
     }
-    
+
     public String convertDoubleValuesToChartDataSeries(List<QueryResult> cqrs) {
         String s = "";
         int i = 0;

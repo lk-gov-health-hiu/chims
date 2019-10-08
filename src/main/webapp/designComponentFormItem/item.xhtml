@@ -53,6 +53,9 @@
                                             <p:autoComplete id="item" value="#{designComponentFormItemController.selected.item}"
                                                             completeMethod="#{itemController.completeDictionaryItems}" forceSelection="true"
                                                             required="true"   var="dic" itemLabel="#{dic.code}" itemValue="#{dic}">
+                                                <p:column headerText="ID" >
+                                                    <p:outputLabel value="#{dic.id}" ></p:outputLabel>
+                                                </p:column>
                                                 <p:column headerText="Name" >
                                                     <p:outputLabel value="#{dic.name}" ></p:outputLabel>
                                                 </p:column>
