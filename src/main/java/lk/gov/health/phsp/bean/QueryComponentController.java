@@ -1081,15 +1081,15 @@ public class QueryComponentController implements Serializable {
                 jpql.setJwhere(jpql.getJwhere() + " and EXTRACT(YEAR,i.encounter.encounterYear)=:ey ");
                 jpql.getM().put("ey", ccYear);
             } else if (ccFrom != null && ccTo != null) {
-                jpql.setJwhere(jpql.getJwhere() + " and c.createdAt between :d1 and :d2 ");
-                jpql.getM().put("d1", ccFrom);
-                jpql.getM().put("d2", ccTo);
+                jpql.setJwhere(jpql.getJwhere() + " and c.createdAt between :date1 and :date2 ");
+                jpql.getM().put("date1", ccFrom);
+                jpql.getM().put("date2", ccTo);
             } else if (ccFrom != null) {
-                jpql.setJwhere(jpql.getJwhere() + " and c.createdAt > :d1 ");
-                jpql.getM().put("d1", ccFrom);
+                jpql.setJwhere(jpql.getJwhere() + " and c.createdAt > :date1 ");
+                jpql.getM().put("date1", ccFrom);
             } else if (ccTo != null) {
-                jpql.setJwhere(jpql.getJwhere() + " and c.createdAt < :d2 ");
-                jpql.getM().put("d2", ccTo);
+                jpql.setJwhere(jpql.getJwhere() + " and c.createdAt < :date2 ");
+                jpql.getM().put("date2", ccTo);
             }
 
             System.out.println("ccArea = " + ccArea);
@@ -1166,15 +1166,15 @@ public class QueryComponentController implements Serializable {
                 jpql.setJwhere(jpql.getJwhere() + " and EXTRACT(YEAR,i.encounter.encounterYear)=:ey ");
                 jpql.getM().put("ey", ccYear);
             } else if (ccFrom != null && ccTo != null) {
-                jpql.setJwhere(jpql.getJwhere() + " and c.createdAt between :d1 and :d2 ");
-                jpql.getM().put("d1", ccFrom);
-                jpql.getM().put("d2", ccTo);
+                jpql.setJwhere(jpql.getJwhere() + " and c.createdAt between :date1 and :date2 ");
+                jpql.getM().put("date1", ccFrom);
+                jpql.getM().put("date2", ccTo);
             } else if (ccFrom != null) {
-                jpql.setJwhere(jpql.getJwhere() + " and c.createdAt > :d1 ");
-                jpql.getM().put("d1", ccFrom);
+                jpql.setJwhere(jpql.getJwhere() + " and c.createdAt > :date1 ");
+                jpql.getM().put("date1", ccFrom);
             } else if (ccTo != null) {
-                jpql.setJwhere(jpql.getJwhere() + " and c.createdAt < :d2 ");
-                jpql.getM().put("d2", ccTo);
+                jpql.setJwhere(jpql.getJwhere() + " and c.createdAt < :date2 ");
+                jpql.getM().put("date2", ccTo);
             }
 
             if (ccArea != null) {
