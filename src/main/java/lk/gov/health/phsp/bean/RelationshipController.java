@@ -275,8 +275,12 @@ public class RelationshipController implements Serializable {
         m.put("y", year);
         items = getFacade().findByJpql(j, m);
     }
-
+    
     public Relationship findRelationship(Area a, RelationshipType type, Integer year) {
+        return findRelationship(a, type, year, false);
+    }
+
+    public Relationship findRelationship(Area a, RelationshipType type, Integer year, boolean create) {
         String j = "select r from Relationship r "
                 + " where r.area=:a "
                 + " and r.elationshipType=:t "
@@ -289,7 +293,15 @@ public class RelationshipController implements Serializable {
         m.put("a", a);
         m.put("t", type);
         j += " order by r.id desc";
-        return getFacade().findFirstByJpql(j, m);
+        Relationship r = getFacade().findFirstByJpql(j, m);
+        if(r==null && create){
+            r = new Relationship();
+            r.setArea(area);
+            r.setRelationshipType(type);
+            r.setYearInt(year);
+            getFacade().create(r);
+        }
+        return r;
     }
 
     public Relationship findRelationship(Area a, RelationshipType type) {
