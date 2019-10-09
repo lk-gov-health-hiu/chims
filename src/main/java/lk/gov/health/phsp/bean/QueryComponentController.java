@@ -7,6 +7,7 @@ import lk.gov.health.phsp.facade.QueryComponentFacade;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -707,7 +708,17 @@ public class QueryComponentController implements Serializable {
         for (QueryResult tqr : qrs) {
             switch (selectedForQuery.getQueryType()) {
                 case Population:
-                    tqr.setJpq(createAPopulationCountQuery(selectedForQuery, tqr.getArea(), tqr.gettYear()));
+                    Integer ty = tqr.gettYear();
+                    if(ty==null){
+                        Calendar c = Calendar.getInstance();
+                        if(tqr.getTfrom()!=null){
+                            c.setTime(tqr.getTfrom());
+                        }else if(tqr.gettTo()!=null){
+                            c.setTime(tqr.gettTo());
+                        }
+                        ty = c.get(Calendar.YEAR);
+                    }
+                    tqr.setJpq(createAPopulationCountQuery(selectedForQuery, tqr.getArea(), ty));
                     if (tqr.getJpq().getLongResult() != null) {
                         tqr.setResultString(tqr.getJpq().getQc().getName() + " = " + tqr.getJpq().getLongResult());
                     }

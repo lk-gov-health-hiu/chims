@@ -41,6 +41,8 @@ import jxl.Workbook;
 import jxl.read.biff.BiffException;
 import lk.gov.health.phsp.entity.Institution;
 import lk.gov.health.phsp.entity.Item;
+import lk.gov.health.phsp.entity.Relationship;
+import lk.gov.health.phsp.enums.RelationshipType;
 import org.primefaces.model.UploadedFile;
 import org.primefaces.event.map.OverlaySelectEvent;
 import org.primefaces.model.map.DefaultMapModel;
@@ -74,6 +76,10 @@ public class AreaController implements Serializable {
 
     @Inject
     private WebUserController webUserController;
+    @Inject
+    private CommonController commonController;
+    @Inject
+    private RelationshipController relationshipController;
 
     private MapModel polygonModel;
 
@@ -87,6 +93,7 @@ public class AreaController implements Serializable {
     private int femalePopulationColumnNumber;
     private int areaColumnNumber;
     private int startRow = 1;
+    private int year;
 
     public String importAreasFromExcel() {
         try {
@@ -210,6 +217,35 @@ public class AreaController implements Serializable {
         }
     }
 
+    public void updateNationalAndProvincialPopulationFromDistrictPopulations(){
+        for(RelationshipType t:commonController.getRelationshipTypes()){
+            Area sl = getNationalArea();
+            Relationship slr = getRelationshipController().findRelationship(sl, t, year,true);
+            Long pop=0l;
+            for(Area d:getDistricts()){
+                Relationship dr = getRelationshipController().findRelationship(d, t, year,true);
+                if(dr.getLongValue1()!=null){
+                    pop+=dr.getLongValue1();
+                }
+            }
+            slr.setLongValue1(pop);
+            getRelationshipController().save(slr);
+            for(Area p:getProvinces()){
+                List<Area> pds = getAreas(AreaType.District, p);
+                Relationship pr = getRelationshipController().findRelationship(sl, t, year,true);
+                Long ppop=0l;
+                for(Area d:pds){
+                    Relationship pdr = getRelationshipController().findRelationship(d, t, year,true);
+                    if(pdr.getLongValue1()!=null){
+                        ppop+=pdr.getLongValue1();
+                    }
+                }
+                pr.setLongValue1(ppop);
+            }
+        }
+        
+    }
+    
     public List<Area> getMohAreas() {
         if (mohAreas == null) {
             mohAreas = getAreas(AreaType.MOH, null);
@@ -1395,6 +1431,29 @@ public class AreaController implements Serializable {
     public void setDistricts(List<Area> districts) {
         this.districts = districts;
     }
+
+    public CommonController getCommonController() {
+        return commonController;
+    }
+
+    public RelationshipController getRelationshipController() {
+        return relationshipController;
+    }
+
+    public int getYear() {
+        if(year==0){
+            year = CommonController.getYear(new Date());
+        }
+        return year;
+    }
+
+    public void setYear(int year) {
+        this.year = year;
+    }
+    
+
+    
+    
 
     // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="Converters">

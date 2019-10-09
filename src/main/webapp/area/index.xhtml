@@ -24,6 +24,17 @@
                             <p:commandButton styleClass="defaultButton"  ajax="false" value="Upload GN Areas" action="/area/import_gn_areas"  ></p:commandButton>
                             <p:commandButton styleClass="defaultButton"  ajax="false" value="Manage All Areas" action="/area/List"  ></p:commandButton>
                             <p:commandButton styleClass="defaultButton"  ajax="false" value="Import District Data" action="/area/import_district_population"  ></p:commandButton>                        
+
+                            <h:panelGroup>
+                                <p:commandButton styleClass="defaultButton"  ajax="false" value="Calculate Provincial and National Data from District Data" action="#{areaController.updateNationalAndProvincialPopulationFromDistrictPopulations()}"  >
+                                </p:commandButton> 
+                                <p:inputText value="#{areaController.year}" placeholder="year">
+                                    <p:ajax update="@this" ></p:ajax>
+                                    <p:ajax event="blur" update="@this" ></p:ajax>
+                                    <p:ajax event="keyup" update="@this" ></p:ajax>
+                                </p:inputText>
+                            </h:panelGroup>
+
                         </h:panelGrid>
                     </h:form>  
                 </p:panel>
