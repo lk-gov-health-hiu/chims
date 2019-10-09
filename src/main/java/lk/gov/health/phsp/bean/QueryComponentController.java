@@ -563,26 +563,49 @@ public class QueryComponentController implements Serializable {
         switch (areaType) {
             case Distirct:
                 qr.setArea(district);
-
+                qr.setTfrom(tfrom);
+                qr.settTo(tTo);
+                qr.settYear(tYear);
+                qr.settQuater(tQuater);
                 qrs.add(qr);
                 break;
             case GN:
+                qr.setTfrom(tfrom);
+                qr.settTo(tTo);
+                qr.settYear(tYear);
+                qr.settQuater(tQuater);
                 qr.setArea(gn);
                 qrs.add(qr);
                 break;
             case MOH:
+                qr.setTfrom(tfrom);
+                qr.settTo(tTo);
+                qr.settYear(tYear);
+                qr.settQuater(tQuater);
                 qr.setArea(moh);
                 qrs.add(qr);
                 break;
             case National:
+                qr.setTfrom(tfrom);
+                qr.settTo(tTo);
+                qr.settYear(tYear);
+                qr.settQuater(tQuater);
                 qr.setArea(areaController.getNationalArea());
                 qrs.add(qr);
                 break;
             case PHM:
+                qr.setTfrom(tfrom);
+                qr.settTo(tTo);
+                qr.settYear(tYear);
+                qr.settQuater(tQuater);
                 qr.setArea(phm);
                 qrs.add(qr);
                 break;
             case Province:
+                qr.setTfrom(tfrom);
+                qr.settTo(tTo);
+                qr.settYear(tYear);
+                qr.settQuater(tQuater);
                 qr.setArea(province);
                 qrs.add(qr);
                 break;
@@ -897,12 +920,12 @@ public class QueryComponentController implements Serializable {
 
             if (ccYear != null && ccQuarter != null) {
                 //TODO: Correct Code
-                jpql.setJwhere(jpql.getJwhere() + " and EXTRACT(YEAR,c.createdAt)=:ey and  EXTRACT(MONTH,c.createdAt)=:eq ");
+                jpql.setJwhere(jpql.getJwhere() + " and YEAR(c.createdAt)=:ey and  MONTH(c.createdAt)=:eq ");
                 jpql.getM().put("ey", ccYear);
                 jpql.getM().put("eq", ccQuarter * 3);
             } else if (ccYear != null) {
                 //TODO: Correct Code
-                jpql.setJwhere(jpql.getJwhere() + " and EXTRACT(YEAR,i.encounter.encounterYear)=:ey ");
+                jpql.setJwhere(jpql.getJwhere() + " and YEAR(c.createdAt)=:ey ");
                 jpql.getM().put("ey", ccYear);
             } else if (ccFrom != null && ccTo != null) {
                 jpql.setJwhere(jpql.getJwhere() + " and c.createdAt between :d1 and :d2 ");
@@ -916,7 +939,7 @@ public class QueryComponentController implements Serializable {
                 jpql.getM().put("d2", ccTo);
             }
 
-            System.out.println("ccArea = " + ccArea.getName());
+            System.out.println("ccArea = " + ccArea);
             if (ccArea != null) {
                 switch (ccArea.getType()) {
                     case District:
@@ -1073,12 +1096,12 @@ public class QueryComponentController implements Serializable {
 
             if (ccYear != null && ccQuarter != null) {
                 //TODO: Correct Code
-                jpql.setJwhere(jpql.getJwhere() + " and EXTRACT(YEAR,c.createdAt)=:ey and  EXTRACT(MONTH,c.createdAt)=:eq ");
+                jpql.setJwhere(jpql.getJwhere() + " and YEAR(c.createdAt)=:ey and  MONTH(c.createdAt)=:eq ");
                 jpql.getM().put("ey", ccYear);
                 jpql.getM().put("eq", ccQuarter * 3);
             } else if (ccYear != null) {
                 //TODO: Correct Code
-                jpql.setJwhere(jpql.getJwhere() + " and EXTRACT(YEAR,i.encounter.encounterYear)=:ey ");
+                jpql.setJwhere(jpql.getJwhere() + " and YEAR(c.createdAt)=:ey ");
                 jpql.getM().put("ey", ccYear);
             } else if (ccFrom != null && ccTo != null) {
                 jpql.setJwhere(jpql.getJwhere() + " and c.createdAt between :date1 and :date2 ");
@@ -1122,6 +1145,7 @@ public class QueryComponentController implements Serializable {
             // </editor-fold>
         } else {
             // <editor-fold defaultstate="collapsed" desc="Multiple Criteria">
+            System.out.println("Multiple Criteria");
             String ss = "";
             if (qc.getOutputType() == QueryOutputType.List) {
                 ss = "select distinct (c) from Client c, ";
@@ -1156,14 +1180,15 @@ public class QueryComponentController implements Serializable {
             jpql.setJfrom(ss);
             jpql.setJwhere(w1 + w2 + w3 + " and c.retired=:f ");
 
+            System.out.println("Adding Period Filters");
             if (ccYear != null && ccQuarter != null) {
                 //TODO: Correct Code
-                jpql.setJwhere(jpql.getJwhere() + " and EXTRACT(YEAR,c.createdAt)=:ey and  EXTRACT(MONTH,c.createdAt)=:eq ");
+                jpql.setJwhere(jpql.getJwhere() + " and YEAR(c.createdAt)=:ey and  MONTH(c.createdAt)=:eq ");
                 jpql.getM().put("ey", ccYear);
                 jpql.getM().put("eq", ccQuarter * 3);
             } else if (ccYear != null) {
                 //TODO: Correct Code
-                jpql.setJwhere(jpql.getJwhere() + " and EXTRACT(YEAR,i.encounter.encounterYear)=:ey ");
+                jpql.setJwhere(jpql.getJwhere() + " and YEAR(c.createdAt)=:ey ");
                 jpql.getM().put("ey", ccYear);
             } else if (ccFrom != null && ccTo != null) {
                 jpql.setJwhere(jpql.getJwhere() + " and c.createdAt between :date1 and :date2 ");
@@ -1175,8 +1200,11 @@ public class QueryComponentController implements Serializable {
             } else if (ccTo != null) {
                 jpql.setJwhere(jpql.getJwhere() + " and c.createdAt < :date2 ");
                 jpql.getM().put("date2", ccTo);
+            } else {
+                System.out.println("No valid Period Filter");
             }
 
+            System.out.println("Adding Area Filters");
             if (ccArea != null) {
                 switch (ccArea.getType()) {
                     case District:
@@ -1188,6 +1216,8 @@ public class QueryComponentController implements Serializable {
                         jpql.getM().put("area", ccArea);
                         break;
                     //TODO: Add codes for other areas
+                    default:
+                        System.out.println("Filter NOT supported.");
                 }
 
             }

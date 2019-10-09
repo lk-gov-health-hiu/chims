@@ -276,12 +276,11 @@ public class CommonController implements Serializable {
     public QueryType[] getQueryType() {
         return QueryType.values();
     }
-    
+
     public QueryLevel[] getQueryLevels() {
         return QueryLevel.values();
     }
-    
-     
+
     public QueryDataType[] getQueryDataTypes() {
         return QueryDataType.values();
     }
@@ -289,13 +288,24 @@ public class CommonController implements Serializable {
     public QueryVariableEvaluationType[] getQueryVariableEvaluationType() {
         return QueryVariableEvaluationType.values();
     }
-    
-    public QueryFilterPeriodType[] getQueryFilterPeriodTypes(){
+
+    public QueryFilterPeriodType[] getQueryFilterPeriodTypes() {
         return QueryFilterPeriodType.values();
     }
 
-    public QueryFilterAreaType[] getQueryFilterAreaType(){
+    public QueryFilterPeriodType[] getQueryFilterPeriodTypesWithoutYearAndQuarter() {
+        QueryFilterPeriodType[] ts = new QueryFilterPeriodType[]{QueryFilterPeriodType.All, QueryFilterPeriodType.Period, QueryFilterPeriodType.After, QueryFilterPeriodType.Before};
+        return ts;
+    }
+
+    public QueryFilterAreaType[] getQueryFilterAreaType() {
         return QueryFilterAreaType.values();
-    } 
-    
+    }
+
+    public QueryFilterAreaType[] getQueryFilterAreaTypeUpToDistrictLevel() {
+        QueryFilterAreaType[] ts = new QueryFilterAreaType[]{QueryFilterAreaType.National, QueryFilterAreaType.Province_List,
+             QueryFilterAreaType.District_List, QueryFilterAreaType.Province, QueryFilterAreaType.Distirct, QueryFilterAreaType.Province_District_list};
+        return ts;
+    }
+
 }

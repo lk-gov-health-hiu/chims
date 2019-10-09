@@ -22,53 +22,49 @@
                             </f:facet>
 
 
-                            <p:outputLabel value="#{queryComponentController.selectedForQuery.descreption}">
-                            </p:outputLabel>
-
-                            <p:panelGrid columns="4">
 
 
-                                <p:panelGrid columns="1">
-                                    <f:facet name="header" >
-                                        <p:outputLabel value="Period" ></p:outputLabel>
-                                    </f:facet>
+                            <p:panelGrid columns="2" style="margin: auto;">
+                                <f:facet name="header" >
+                                    <p:outputLabel value="Query">
+                                    </p:outputLabel>
+                                </f:facet>
+                                <p:outputLabel value="Category">
+                                </p:outputLabel>
+                                <p:outputLabel value="#{queryComponentController.selectedForQuery.parentComponent.parentComponent.name}">
+                                </p:outputLabel>
 
-                                    <p:selectOneListbox value="#{queryComponentController.periodType}" required="true">
-                                        <f:selectItems value="#{commonController.queryFilterPeriodTypes}" ></f:selectItems>
-                                        <p:ajax process="@this" update="filters" listener="#{queryComponentController.periodFilterSelectAction}" />
-                                    </p:selectOneListbox>
+                                <p:outputLabel value="sub-Category">
+                                </p:outputLabel>
+                                <p:outputLabel value="#{queryComponentController.selectedForQuery.parentComponent.name}">
+                                </p:outputLabel>
 
+                                <p:outputLabel value="Query">
+                                </p:outputLabel>
+                                <p:outputLabel value="#{queryComponentController.selectedForQuery.name}">
+                                </p:outputLabel>
 
-
-
-
-                                </p:panelGrid>
-
-                                <p:panelGrid columns="1" >
-                                    <f:facet name="header" >
-                                        <p:outputLabel value="Area" ></p:outputLabel>
-                                    </f:facet>
-
-                                    <p:selectOneListbox value="#{queryComponentController.areaType}" scrollHeight="460"
-                                                        style="width: 20em; height: 24em;"
-                                                        required="true">
-                                        <f:selectItems value="#{commonController.queryFilterAreaType}" ></f:selectItems>
-                                        <p:ajax process="@this" update="filters" listener="#{queryComponentController.areaFilterSelectAction()}" />
-                                    </p:selectOneListbox>
+                                <p:outputLabel value="Descreption">
+                                </p:outputLabel>
+                                <p:outputLabel value="#{queryComponentController.selectedForQuery.descreption}">
+                                </p:outputLabel>
 
 
+                                <p:outputLabel value="Period" ></p:outputLabel>
+                                <p:selectOneMenu value="#{queryComponentController.periodType}" required="true" style="width: 400px;">
+                                    <f:selectItems value="#{commonController.queryFilterPeriodTypesWithoutYearAndQuarter}" ></f:selectItems>
+                                    <p:ajax process="@this" update="filters" listener="#{queryComponentController.periodFilterSelectAction}" />
+                                </p:selectOneMenu>
+                                <p:outputLabel value="Area" ></p:outputLabel>
+                                <p:selectOneMenu value="#{queryComponentController.areaType}" 
+                                                 required="true"  style="width: 400px;">
+                                    <f:selectItems value="#{commonController.queryFilterAreaTypeUpToDistrictLevel}" ></f:selectItems>
+                                    <p:ajax process="@this" update="filters" listener="#{queryComponentController.areaFilterSelectAction()}" />
+                                </p:selectOneMenu>
 
-
-
-                                </p:panelGrid>
-
-
+                                <p:outputLabel value="Filters" ></p:outputLabel>
+                                    
                                 <p:panelGrid id="filters" columns="2">
-
-                                    <f:facet name="header" >
-                                        <p:outputLabel value="Filters" ></p:outputLabel>
-                                    </f:facet>
-
 
                                     <p:outputLabel value="Year" rendered="#{queryComponentController.filterYear}"></p:outputLabel>
                                     <p:inputText value="#{queryComponentController.year}" rendered="#{queryComponentController.filterYear}"></p:inputText>
@@ -145,27 +141,13 @@
 
                                 </p:panelGrid>
 
-                                <p:panelGrid columns="1" >
-                                    <f:facet name="header" >
-                                        <p:outputLabel value="Execute" ></p:outputLabel>
-                                    </f:facet>
 
-                                    <p:commandButton value="Execute" action="#{queryComponentController.processQuery()}" ajax="false"
-                                                     onclick="target='_blank'">
-                                    </p:commandButton>
-                                    
-                                    <p:commandButton value="Test" action="#{queryComponentController.testQuery()}" ajax="false"
-                                                     onclick="target='_blank'">
-                                    </p:commandButton>
-                                </p:panelGrid>
-
-
+                                <p:spacer></p:spacer>
+                                <p:commandButton value="Execute" action="#{queryComponentController.processQuery()}" ajax="false"
+                                                 onclick="target = '_blank'">
+                                </p:commandButton>
 
                             </p:panelGrid>
-
-
-
-
 
 
 

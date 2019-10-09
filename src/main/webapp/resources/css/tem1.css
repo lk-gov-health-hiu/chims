@@ -152,3 +152,14 @@
 .noClass select{
     float: none;
 }
+
+@media screen and (min-width : 1000px) {
+    .verticalmenu {
+        display: none !important;
+    }
+}
+@media screen and (max-width : 1000px) {
+    .horizontalmenu {
+        display: none !important;
+    }
+}
