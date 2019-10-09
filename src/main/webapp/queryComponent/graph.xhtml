@@ -18,43 +18,87 @@
     </h:head>
     <h:body>
 
-        <p:panelGrid columns="1" style="height: 70vh; width: 100%;" >
-            <f:facet name="header" >
-                <p:outputLabel value="#{queryComponentController.selectedForQuery.name}" ></p:outputLabel>
-            </f:facet>
+        <h:form>
 
-            <p:outputLabel value="#{queryComponentController.selectedForQuery.descreption}" ></p:outputLabel>
+            <p:panelGrid columns="1" style="height: 70vh; width: 100%;" >
+                <f:facet name="header" >
+                    <p:outputLabel value="#{queryComponentController.selectedForQuery.name}" ></p:outputLabel>
+                </f:facet>
 
-            <h:panelGroup rendered="#{queryComponentController.qrs.size() gt 1}" >
-                <div style="width: 100%; height: 100%;" >
-                    <canvas id="myChart" ></canvas>   
-                </div> 
+                <p:outputLabel value="#{queryComponentController.selectedForQuery.descreption}" ></p:outputLabel>
 
-                <script  type="text/javascript">
-                    #{queryComponentController.barChartStringForChartJs}
-                </script>
+                <h:panelGroup rendered="#{queryComponentController.qrs.size() gt 1}" >
+                    <div style="width: 100%; height: 100%;" >
+                        <canvas id="myChart" ></canvas>   
+                    </div> 
 
-            </h:panelGroup>
+                    <script  type="text/javascript">
+                        #{queryComponentController.barChartStringForChartJs}
+                    </script>
 
-            <h:panelGroup rendered="#{queryComponentController.qrs.size() eq 1}" >
-                <div style="text-align: center;width: 100%;">
-                    <ui:repeat value="#{queryComponentController.qrs}" var="q" >
-                        <div style="text-align: center; width: 100%; margin: auto;">
-                            <h1>
-                                <h:outputLabel value="#{q.resultString}" rendered="#{q.resultString ne null}" style="margin: auto;"></h:outputLabel>
-                            </h1>
-                            <h1>
-                                <h:outputLabel value="#{q.dblResult}" rendered="#{q.dblResult ne null}" ></h:outputLabel>
-                            </h1>
-                            <h1>
-                                <h:outputLabel value="#{q.longResult}" rendered="#{q.longResult ne null}" ></h:outputLabel>
-                            </h1>
-                        </div>
-                    </ui:repeat>
-                </div>
-            </h:panelGroup>
+                </h:panelGroup>
 
-        </p:panelGrid>
+
+                <h:panelGroup rendered="#{queryComponentController.qrs ne null}" >
+                    <p:panelGrid columns="4" >
+                        <p:commandButton value="Export to Excel" ajax="false" >
+                            <p:dataExporter target="tbl" type="xls" fileName="#{queryComponentController.selectedForQuery.name}" ></p:dataExporter>
+                        </p:commandButton>
+                        <p:commandButton value="Export to PDF" ajax="false" >
+                            <p:dataExporter target="tbl" type="pdf" fileName="#{queryComponentController.selectedForQuery.name}" ></p:dataExporter>
+                        </p:commandButton>
+                        <p:commandButton value="Print" ajax="false" >
+                            <p:printer target="tbl"  ></p:printer>
+                        </p:commandButton>
+                    </p:panelGrid>
+
+
+                    <p:dataTable id="tbl" value="#{queryComponentController.qrs}" var="r" rowIndexVar="n">
+                        <p:column headerText="No" width="100">
+                            <p:outputLabel value="#{n + 1}" ></p:outputLabel>
+                        </p:column>
+                        <p:column headerText="Area">
+                            <p:outputLabel value="#{r.area.name}" ></p:outputLabel>
+                        </p:column>
+                        <p:column headerText="Value" rendered="#{queryComponentController.selectedForQuery.queryType eq 'Indicator'}">
+                            <p:outputLabel value="#{r.dblResult}" >
+                                <f:convertNumber pattern="#,##0.#####"></f:convertNumber>
+                            </p:outputLabel>
+                        </p:column>
+                        <p:column headerText="Value" rendered="#{queryComponentController.selectedForQuery.queryType ne 'Indicator'}">
+                            <p:outputLabel value="#{r.longResult}" >
+                                <f:convertNumber pattern="#,##0"></f:convertNumber>
+                            </p:outputLabel>
+                        </p:column>
+                    </p:dataTable>
+
+                </h:panelGroup>
+
+                <h:panelGroup rendered="#{queryComponentController.qrs.size() eq 1}" >
+                    <div style="text-align: center;width: 100%;">
+                        <ui:repeat value="#{queryComponentController.qrs}" var="q" >
+                            <div style="text-align: center; width: 100%; margin: auto;">
+                                <h1>
+                                    <h:outputLabel value="#{q.resultString}" rendered="#{q.resultString ne null}" style="margin: auto;"></h:outputLabel>
+                                </h1>
+                                <h1>
+                                    <h:outputLabel value="#{q.dblResult}" rendered="#{q.dblResult ne null}" >
+                                        <f:convertNumber pattern="#,##0.#####"></f:convertNumber>
+                                    </h:outputLabel>
+                                </h1>
+                                <h1>
+                                    <h:outputLabel value="#{q.longResult}" rendered="#{q.longResult ne null}" ></h:outputLabel>
+                                </h1>
+                            </div>
+                        </ui:repeat>
+                    </div>
+                </h:panelGroup>
+
+            </p:panelGrid>
+
+        </h:form>
+
+
 
 
 
