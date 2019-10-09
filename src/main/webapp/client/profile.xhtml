@@ -210,7 +210,9 @@
 
                                     <p:tab title="Clinics" >
                                         <h:form >
-                                            <p:dataTable value="#{clientController.selectedClientsClinics}" var="chlce" >
+                                           
+                                            
+                                            <p:dataTable id="tblClinics" value="#{clientController.selectedClientsClinics}" var="chlce" >
                                                 <f:facet name="header" >
                                                     <p:outputLabel value="Current Clinics" ></p:outputLabel>
                                                 </f:facet>
@@ -224,8 +226,14 @@
                                                     <h:dataTable value="#{designComponentFormSetController.getClinicFormSets(chlce.institution)}"
                                                                  var="cfs"  border="0" >
                                                         <h:column >
-                                                            <p:commandLink value="New #{cfs.name}" 
-                                                                           action="#{clientEncounterComponentFormSetController.createAndNavigateToClinicalEncounterComponentFormSetFromDesignComponentFormSetForClinicVisit(cfs)}" ></p:commandLink>
+                                                            <p:commandLink id="btnNewFormset" value="New #{cfs.name}" process="@this" update="@all"
+                                                                           action="#{clientEncounterComponentFormSetController.createAndNavigateToClinicalEncounterComponentFormSetFromDesignComponentFormSetForClinicVisit(cfs)}" >
+                                                            </p:commandLink>
+                                                            <p:blockUI block=":#{p:component('tblClinics')}" trigger="btnNewFormset" >
+                                                                 LOADING Patient data.<br/>
+                                                                 Please wait.<br/>
+                                                                 <p:graphicImage library="image" name="loading.gif" ></p:graphicImage>
+                                                            </p:blockUI>
                                                         </h:column>
                                                     </h:dataTable>
                                                 </p:column>

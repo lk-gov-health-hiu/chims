@@ -217,7 +217,7 @@ public class AreaController implements Serializable {
         }
     }
 
-    public void updateNationalAndProvincialPopulationFromDistrictPopulations(){
+    public void updateNationalAndProvincialPopulationFromDistrictPopulations() {
         RelationshipType[] rts = new RelationshipType[]{RelationshipType.Empanelled_Female_Population,
             RelationshipType.Empanelled_Male_Population,
             RelationshipType.Empanelled_Population,
@@ -226,50 +226,53 @@ public class AreaController implements Serializable {
             RelationshipType.Estimated_Midyear_Population,
             RelationshipType.Over_35_Female_Population,
             RelationshipType.Over_35_Male_Population,
-            RelationshipType.Over_35_Population,
-            
-        };
-        for(RelationshipType t:rts){
+            RelationshipType.Over_35_Population,};
+        for (RelationshipType t : rts) {
             System.out.println("t = " + t);
             Area sl = getNationalArea();
             System.out.println("sl = " + sl);
-            Relationship slr = getRelationshipController().findRelationship(sl, t, year,true);
+            Relationship slr = getRelationshipController().findRelationship(sl, t, year, true);
             System.out.println("slr = " + slr);
-            Long pop=0l;
-            for(Area d:getDistricts()){
-                System.out.println("d = " + d);
-                Relationship dr = getRelationshipController().findRelationship(d, t, year,true);
+            Long pop = 0l;
+            for (Area d : getDistricts()) {
+                System.out.println("d = " + d + " " + d.getId());
+                Relationship dr = getRelationshipController().findRelationship(d, t, year, false);
                 System.out.println("dr = " + dr);
-                System.out.println("dr.getLongValue1() = " + dr.getLongValue1());
-                if(dr.getLongValue1()!=null){
-                    pop+=dr.getLongValue1();
-                    System.out.println("pop = " + pop);
+                if (dr != null) {
+                    if (dr.getLongValue1() != null) {
+                        System.out.println("dr.getLongValue1() = " + dr.getLongValue1());
+                        pop += dr.getLongValue1();
+                        System.out.println("pop = " + pop);
+                    }
                 }
             }
             slr.setLongValue1(pop);
             getRelationshipController().save(slr);
-            for(Area p:getProvinces()){
+            for (Area p : getProvinces()) {
                 System.out.println("p = " + p);
                 List<Area> pds = getAreas(AreaType.District, p);
-                Relationship pr = getRelationshipController().findRelationship(p, t, year,true);
+                Relationship pr = getRelationshipController().findRelationship(p, t, year, true);
                 System.out.println("pr = " + pr);
-                Long ppop=0l;
-                for(Area d:pds){
+                Long ppop = 0l;
+                for (Area d : pds) {
                     System.out.println("d = " + d);
-                    Relationship pdr = getRelationshipController().findRelationship(d, t, year,true);
-                    System.out.println("pdr.getLongValue1() = " + pdr.getLongValue1());
-                    if(pdr.getLongValue1()!=null){
-                        ppop+=pdr.getLongValue1();
-                        System.out.println("ppop = " + ppop);
+                    Relationship pdr = getRelationshipController().findRelationship(d, t, year, false);
+                    System.out.println("pdr = " + pdr);
+                    if (pdr != null) {
+                        System.out.println("pdr.getLongValue1() = " + pdr.getLongValue1());
+                        if (pdr.getLongValue1() != null) {
+                            ppop += pdr.getLongValue1();
+                            System.out.println("ppop = " + ppop);
+                        }
                     }
                 }
                 pr.setLongValue1(ppop);
                 getRelationshipController().save(pr);
             }
         }
-        
+
     }
-    
+
     public List<Area> getMohAreas() {
         if (mohAreas == null) {
             mohAreas = getAreas(AreaType.MOH, null);
@@ -284,12 +287,12 @@ public class AreaController implements Serializable {
     }
 
     public List<Area> getMohAreasOfADistrict(Area district) {
-       String j;
+        String j;
         Map m = new HashMap();
         j = "select a "
                 + " from Area a "
                 + " where a.name is not null ";
-        
+
         if (district != null) {
             j += " and a.district=:pa ";
             m.put("pa", district);
@@ -300,9 +303,8 @@ public class AreaController implements Serializable {
         return areas;
     }
 
-    
     public List<Area> getMohAreasOfRdhs(Area rdhs) {
-       String j;
+        String j;
         Map m = new HashMap();
         j = "select a "
                 + " from Area a "
@@ -316,8 +318,7 @@ public class AreaController implements Serializable {
         List<Area> areas = getFacade().findByJpql(j, m);
         return areas;
     }
-    
-    
+
     public void setMohAreas(List<Area> mohAreas) {
         this.mohAreas = mohAreas;
     }
@@ -377,8 +378,8 @@ public class AreaController implements Serializable {
         List<Area> areas = getFacade().findByJpql(j, m);
         return areas;
     }
-    
-    public Area getNationalArea(){
+
+    public Area getNationalArea() {
         String j = "select a from Area a "
                 + " where "
                 + " a.type=:t "
@@ -386,8 +387,8 @@ public class AreaController implements Serializable {
                 + " order by a.id desc";
         Map m = new HashMap();
         m.put("t", AreaType.National);
-        Area a=getFacade().findFirstByJpql(j, m);
-        if(a==null){
+        Area a = getFacade().findFirstByJpql(j, m);
+        if (a == null) {
             a = new Area();
             a.setName("Sri Lanka");
             a.setCode("LK");
@@ -396,14 +397,14 @@ public class AreaController implements Serializable {
             a.setCreatedBy(webUserController.getLoggedUser());
             getFacade().create(a);
             List<Area> ps = getAreas(AreaType.Province, null);
-            for(Area p:ps){
+            for (Area p : ps) {
                 p.setParentArea(a);
                 getFacade().edit(p);
             }
         }
         return a;
     }
-    
+
     public List<Area> getGnAreasOfPhm(Area mohArea) {
         String j;
         Map m = new HashMap();
@@ -418,7 +419,7 @@ public class AreaController implements Serializable {
         List<Area> areas = getFacade().findByJpql(j, m);
         return areas;
     }
-    
+
     public List<Area> getDistrictsOfAProvince(Area province) {
         String j;
         Map m = new HashMap();
@@ -433,7 +434,7 @@ public class AreaController implements Serializable {
         List<Area> areas = getFacade().findByJpql(j, m);
         return areas;
     }
-    
+
     public List<Area> getPhmAreasOfMoh(Area mohArea) {
         String j;
         Map m = new HashMap();
@@ -1465,7 +1466,7 @@ public class AreaController implements Serializable {
     }
 
     public int getYear() {
-        if(year==0){
+        if (year == 0) {
             year = CommonController.getYear(new Date());
         }
         return year;
@@ -1474,10 +1475,6 @@ public class AreaController implements Serializable {
     public void setYear(int year) {
         this.year = year;
     }
-    
-
-    
-    
 
     // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="Converters">

@@ -282,18 +282,23 @@ public class RelationshipController implements Serializable {
 
     public Relationship findRelationship(Area relArea, RelationshipType relType, Integer relYear, boolean create) {
         String j = "select r from Relationship r "
-                + " where r.area=:a "
-                + " and r.elationshipType=:t "
-                + " and r.retired=false ";
+                + " where r.area.id=:a "
+                + " and r.relationshipType=:t "
+                + " and r.retired=:f ";
         Map m = new HashMap();
+        m.put("f", false);
         if (relYear!=null && relYear != 0) {
             j += " and r.yearInt=:y";
             m.put("y", relYear);
         }
-        m.put("a", relArea);
+        m.put("a", relArea.getId());
         m.put("t", relType);
         j += " order by r.id desc";
+        System.out.println("j = " + j);
+        System.out.println("m = " + m);
+        
         Relationship r = getFacade().findFirstByJpql(j, m);
+        System.out.println("r = " + r);
         if(r==null && create){
             r = new Relationship();
             r.setArea(relArea);
