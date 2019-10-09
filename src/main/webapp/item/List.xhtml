@@ -29,6 +29,12 @@
                             </f:facet>
                             <h:outputText value="#{item.itemType}"/>
                         </p:column>
+                         <p:column  filterBy="#{item.id}" filterMatchMode="contains" sortBy="#{item.id}">
+                            <f:facet name="header">
+                                <h:outputText value="ID"/>
+                            </f:facet>
+                            <h:outputText value="#{item.id}"/>
+                        </p:column>
                         <p:column  filterBy="#{item.name}" filterMatchMode="contains" sortBy="#{item.name}">
                             <f:facet name="header">
                                 <h:outputText value="#{bundleClinical.ListItemTitle_name}"/>

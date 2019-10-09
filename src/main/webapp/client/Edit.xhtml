@@ -12,10 +12,6 @@
             <h:form id="ClientEditForm">
                 <h:panelGroup id="display">
                     <p:panelGrid columns="2" rendered="#{clientController.selected != null}">
-                        <p:outputLabel value="#{bundleClinical.EditClientLabel_serialVersionUID}" for="serialVersionUID" />
-                        <p:inputText id="serialVersionUID" value="#{clientController.selected.serialVersionUID}" title="#{bundleClinical.EditClientTitle_serialVersionUID}" />
-                        <p:outputLabel value="#{bundleClinical.EditClientLabel_id}" for="id" />
-                        <p:inputText id="id" value="#{clientController.selected.id}" title="#{bundleClinical.EditClientTitle_id}" />
                         <p:outputLabel value="#{bundleClinical.EditClientLabel_person}" for="person" />
                         <p:selectOneMenu id="person" value="#{clientController.selected.person}" >
                             <f:selectItem itemLabel="#{bundleClinical.SelectOneMessage}"/>

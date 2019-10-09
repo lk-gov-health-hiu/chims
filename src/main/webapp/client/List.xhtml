@@ -13,7 +13,7 @@
             <h:outputText value="#{bundleClinical.ListClientTitle}"></h:outputText>
         </ui:define>
 
-        <ui:define name="body">
+        <ui:define name="content">
             <h:form id="ClientListForm">
                 <p:panel header="#{bundleClinical.ListClientTitle}">
                     <p:dataTable id="datalist" value="#{clientController.items}" var="item"
@@ -24,26 +24,15 @@
                                  rowsPerPageTemplate="10,20,30,40,50"
                                  >
 
-                        <p:ajax event="rowSelect"   update="createButton viewButton editButton deleteButton"/>
-                        <p:ajax event="rowUnselect" update="createButton viewButton editButton deleteButton"/>
+                        <p:ajax event="rowSelect"   update="createButton profile viewButton editButton deleteButton"/>
+                        <p:ajax event="rowUnselect" update="createButton profile viewButton editButton deleteButton"/>
 
-                        <p:column>
-                            <f:facet name="header">
-                                <h:outputText value="#{bundleClinical.ListClientTitle_serialVersionUID}"/>
-                            </f:facet>
-                            <h:outputText value="#{item.serialVersionUID}"/>
-                        </p:column>
-                        <p:column>
-                            <f:facet name="header">
-                                <h:outputText value="#{bundleClinical.ListClientTitle_id}"/>
-                            </f:facet>
-                            <h:outputText value="#{item.id}"/>
-                        </p:column>
+                        
                         <p:column>
                             <f:facet name="header">
                                 <h:outputText value="#{bundleClinical.ListClientTitle_person}"/>
                             </f:facet>
-                            <h:outputText value="#{item.person}"/>
+                            <h:outputText value="#{item.person.name}"/>
                         </p:column>
                         <p:column>
                             <f:facet name="header">
@@ -108,6 +97,9 @@
                             </h:outputText>
                         </p:column>
                         <f:facet name="footer">
+                            
+                            <p:commandButton ajax="false" id="profile" action="profile"   icon="ui-icon-pencil" value="Profile"  disabled="#{empty clientController.selected}" onclick="target = '_blank'"/>
+                            
                             <p:commandButton id="createButton" icon="ui-icon-plus"   value="#{bundleClinical.Create}" actionListener="#{clientController.prepareCreate}" update=":ClientCreateForm" oncomplete="PF('ClientCreateDialog').show()"/>
                             <p:commandButton id="viewButton"   icon="ui-icon-search" value="#{bundleClinical.View}" update=":ClientViewForm" oncomplete="PF('ClientViewDialog').show()" disabled="#{empty clientController.selected}"/>
                             <p:commandButton id="editButton"   icon="ui-icon-pencil" value="#{bundleClinical.Edit}" update=":ClientEditForm" oncomplete="PF('ClientEditDialog').show()" disabled="#{empty clientController.selected}"/>

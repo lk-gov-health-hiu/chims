@@ -12,10 +12,6 @@
             <h:form id="ClientCreateForm">
                 <h:panelGroup id="display">
                     <p:panelGrid columns="2" rendered="#{clientController.selected != null}">
-                        <p:outputLabel value="#{bundleClinical.CreateClientLabel_serialVersionUID}" for="serialVersionUID" />
-                        <p:inputText id="serialVersionUID" value="#{clientController.selected.serialVersionUID}" title="#{bundleClinical.CreateClientTitle_serialVersionUID}" />
-                        <p:outputLabel value="#{bundleClinical.CreateClientLabel_id}" for="id" />
-                        <p:inputText id="id" value="#{clientController.selected.id}" title="#{bundleClinical.CreateClientTitle_id}" />
                         <p:outputLabel value="#{bundleClinical.CreateClientLabel_person}" for="person" />
                         <p:selectOneMenu id="person" value="#{clientController.selected.person}" >
                             <f:selectItems value="#{personController.itemsAvailableSelectOne}"

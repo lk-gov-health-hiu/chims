@@ -32,7 +32,8 @@
                             <p:panelGrid columns="2" >
 
                                 <p:outputLabel value="#{bundleQuery.CreateQueryComponentLabel_name}" for="name" />
-                                <p:inputText id="name" value="#{queryComponentController.selected.name}" title="#{bundleQuery.CreateQueryComponentTitle_name}" />
+                                <p:inputText id="name" required="true"
+                                             value="#{queryComponentController.selected.name}" title="#{bundleQuery.CreateQueryComponentTitle_name}" />
 
                                 <p:outputLabel value="Code" for="code" />
                                 <p:inputText id="code" value="#{queryComponentController.selected.code}" title="Code" />
@@ -52,7 +53,7 @@
 
 
                                 <p:outputLabel value="Type" for="queryType" />
-                                <p:selectOneMenu id="queryType"  value="#{queryComponentController.selected.queryType}" >
+                                <p:selectOneMenu id="queryType"  value="#{queryComponentController.selected.queryType}" required="true" >
                                     <f:selectItem itemLabel="Select" ></f:selectItem>
                                     <f:selectItems value="#{commonController.queryType}" ></f:selectItems>
                                 </p:selectOneMenu>

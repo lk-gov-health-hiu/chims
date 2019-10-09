@@ -12,8 +12,6 @@
             <h:form id="ClientViewForm">
                 <h:panelGroup id="display">
                     <p:panelGrid columns="2" rendered="#{clientController.selected != null}">
-                        <h:outputText value="#{bundleClinical.ViewClientLabel_serialVersionUID}"/>
-                        <h:outputText value="#{clientController.selected.serialVersionUID}" title="#{bundleClinical.ViewClientTitle_serialVersionUID}"/>
                         <h:outputText value="#{bundleClinical.ViewClientLabel_id}"/>
                         <h:outputText value="#{clientController.selected.id}" title="#{bundleClinical.ViewClientTitle_id}"/>
                         <h:outputText value="#{bundleClinical.ViewClientLabel_person}"/>
