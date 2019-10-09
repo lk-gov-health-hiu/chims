@@ -12,7 +12,7 @@
 
             <ui:define name="content">
 
-                <p:panel header="Select GN Areas for a PMCI" >
+                <p:panel header="Select an Area" >
 
                     <h:form>
                         <p:panelGrid >
@@ -49,7 +49,7 @@
                                     <p:dataTable id="tbl" value="#{relationshipController.items}" var="gn" >
                                         <p:column >
                                             <f:facet name="header" >
-                                                <p:outputLabel value="GN" ></p:outputLabel>
+                                                <p:outputLabel value="Area" ></p:outputLabel>
                                             </f:facet>
                                             <p:outputLabel value="#{gn.area.name}" ></p:outputLabel>
                                         </p:column>
@@ -61,7 +61,13 @@
                                         </p:column>
                                         <p:column >
                                             <f:facet name="header" >
-                                                <p:outputLabel value="Empanelled Population" ></p:outputLabel>
+                                                <p:outputLabel value="Type" ></p:outputLabel>
+                                            </f:facet>
+                                            <p:outputLabel value="#{gn.relationshipType}" ></p:outputLabel>
+                                        </p:column>
+                                        <p:column >
+                                            <f:facet name="header" >
+                                                <p:outputLabel value="Population" ></p:outputLabel>
                                             </f:facet>
                                             <p:inputText id="txtPop" value="#{gn.longValue1}" >
                                                 <f:ajax execute="@this" event="blur" listener="#{relationshipController.save(gn)}" ></f:ajax>
@@ -93,7 +99,7 @@
                                         </p:inputText>
                                         <p:spacer ></p:spacer>
                                         
-                                        <p:outputLabel value="GN Area" ></p:outputLabel>
+                                        <p:outputLabel value="Area" ></p:outputLabel>
                                         <p:autoComplete id="acGn" value="#{relationshipController.adding.area}"
                                                         completeMethod="#{areaController.completeAreas}"
                                                         var="gn" maxResults="20" forceSelection="true"

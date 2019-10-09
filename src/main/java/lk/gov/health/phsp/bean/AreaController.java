@@ -218,29 +218,53 @@ public class AreaController implements Serializable {
     }
 
     public void updateNationalAndProvincialPopulationFromDistrictPopulations(){
-        for(RelationshipType t:commonController.getRelationshipTypes()){
+        RelationshipType[] rts = new RelationshipType[]{RelationshipType.Empanelled_Female_Population,
+            RelationshipType.Empanelled_Male_Population,
+            RelationshipType.Empanelled_Population,
+            RelationshipType.Estimated_Midyear_Female_Population,
+            RelationshipType.Estimated_Midyear_Male_Population,
+            RelationshipType.Estimated_Midyear_Population,
+            RelationshipType.Over_35_Female_Population,
+            RelationshipType.Over_35_Male_Population,
+            RelationshipType.Over_35_Population,
+            
+        };
+        for(RelationshipType t:rts){
+            System.out.println("t = " + t);
             Area sl = getNationalArea();
+            System.out.println("sl = " + sl);
             Relationship slr = getRelationshipController().findRelationship(sl, t, year,true);
+            System.out.println("slr = " + slr);
             Long pop=0l;
             for(Area d:getDistricts()){
+                System.out.println("d = " + d);
                 Relationship dr = getRelationshipController().findRelationship(d, t, year,true);
+                System.out.println("dr = " + dr);
+                System.out.println("dr.getLongValue1() = " + dr.getLongValue1());
                 if(dr.getLongValue1()!=null){
                     pop+=dr.getLongValue1();
+                    System.out.println("pop = " + pop);
                 }
             }
             slr.setLongValue1(pop);
             getRelationshipController().save(slr);
             for(Area p:getProvinces()){
+                System.out.println("p = " + p);
                 List<Area> pds = getAreas(AreaType.District, p);
-                Relationship pr = getRelationshipController().findRelationship(sl, t, year,true);
+                Relationship pr = getRelationshipController().findRelationship(p, t, year,true);
+                System.out.println("pr = " + pr);
                 Long ppop=0l;
                 for(Area d:pds){
+                    System.out.println("d = " + d);
                     Relationship pdr = getRelationshipController().findRelationship(d, t, year,true);
+                    System.out.println("pdr.getLongValue1() = " + pdr.getLongValue1());
                     if(pdr.getLongValue1()!=null){
                         ppop+=pdr.getLongValue1();
+                        System.out.println("ppop = " + ppop);
                     }
                 }
                 pr.setLongValue1(ppop);
+                getRelationshipController().save(pr);
             }
         }
         

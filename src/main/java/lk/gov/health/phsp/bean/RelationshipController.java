@@ -280,25 +280,25 @@ public class RelationshipController implements Serializable {
         return findRelationship(a, type, year, false);
     }
 
-    public Relationship findRelationship(Area a, RelationshipType type, Integer year, boolean create) {
+    public Relationship findRelationship(Area relArea, RelationshipType relType, Integer relYear, boolean create) {
         String j = "select r from Relationship r "
                 + " where r.area=:a "
                 + " and r.elationshipType=:t "
                 + " and r.retired=false ";
         Map m = new HashMap();
-        if (year!=null && year != 0) {
+        if (relYear!=null && relYear != 0) {
             j += " and r.yearInt=:y";
-            m.put("y", year);
+            m.put("y", relYear);
         }
-        m.put("a", a);
-        m.put("t", type);
+        m.put("a", relArea);
+        m.put("t", relType);
         j += " order by r.id desc";
         Relationship r = getFacade().findFirstByJpql(j, m);
         if(r==null && create){
             r = new Relationship();
-            r.setArea(area);
-            r.setRelationshipType(type);
-            r.setYearInt(year);
+            r.setArea(relArea);
+            r.setRelationshipType(relType);
+            r.setYearInt(relYear);
             getFacade().create(r);
         }
         return r;
