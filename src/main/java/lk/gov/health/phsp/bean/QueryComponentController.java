@@ -706,6 +706,7 @@ public class QueryComponentController implements Serializable {
         }
 
         for (QueryResult tqr : qrs) {
+
             switch (selectedForQuery.getQueryType()) {
                 case Population:
                     Integer ty = tqr.gettYear();
