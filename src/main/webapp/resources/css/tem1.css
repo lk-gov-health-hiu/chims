@@ -80,6 +80,9 @@
     width: 350px;
 }
 
+.btn600{
+    width: 350px;
+}
 
 
 .redTable th{
@@ -163,3 +166,4 @@
         display: none !important;
     }
 }
+

@@ -76,6 +76,8 @@ public class WebUser implements Serializable {
     String telNo;
     @ManyToOne
     Institution institution;
+    @ManyToOne
+    private Area area;
 
     String code;
 
@@ -88,11 +90,25 @@ public class WebUser implements Serializable {
     @Transient
     private boolean institutionUser;
     @Transient
+    private boolean institutionSuperUser;
+    @Transient
     private boolean institutionAdministrator;
     @Transient
     private boolean authorityUser;
     @Transient
-    private boolean authorityAdministrator;
+    private boolean meAdministrator;
+    @Transient
+    private boolean meSuperUser;
+    @Transient
+    private boolean meUser;
+    @Transient
+    private boolean doctor;
+    @Transient
+    private boolean nurse;
+    @Transient
+    private boolean client;
+    @Transient
+    private boolean midwife;
 
     public WebUser() {
     }
@@ -269,6 +285,8 @@ public class WebUser implements Serializable {
         this.webUserRole = webUserRole;
     }
 
+    
+    
     @Override
     public int hashCode() {
         int hash = 0;
@@ -306,65 +324,83 @@ public class WebUser implements Serializable {
     }
 
     public boolean isSystemAdministrator() {
-        if (webUserRole == WebUserRole.System_Administrator) {
-            return true;
-        } else {
-            return false;
-        }
+        systemAdministrator = webUserRole == WebUserRole.System_Administrator;
+        return systemAdministrator;
     }
 
     public boolean isSuperUser() {
-        if (webUserRole == WebUserRole.Super_User) {
-            return true;
-        } else {
-            return false;
-        }
-
+        superUser = webUserRole == WebUserRole.Super_User;
+        return superUser;
     }
 
     public boolean isUser() {
-        if (webUserRole == WebUserRole.User) {
-            return true;
-        } else {
-            return false;
-        }
-
+        user = webUserRole == WebUserRole.User;
+        return user;
     }
 
     public boolean isInstitutionUser() {
-        if (webUserRole == WebUserRole.Institution_User) {
-            return true;
-        } else {
-            return false;
-        }
-
+        institutionUser = webUserRole == WebUserRole.Institution_User;
+        return institutionUser;
     }
 
     public boolean isInstitutionAdministrator() {
-        if (webUserRole == WebUserRole.Institution_Administrator) {
-            return true;
-        } else {
-            return false;
-        }
-
+        institutionAdministrator = webUserRole == WebUserRole.Institution_Administrator;
+        return institutionAdministrator;
     }
 
     public boolean isAuthorityUser() {
-        if (webUserRole == WebUserRole.Authority_User) {
-            return true;
-        } else {
-            return false;
-        }
-
+        authorityUser = webUserRole == WebUserRole.Me_User;
+        return authorityUser;
     }
 
-    public boolean isAuthorityAdministrator() {
-        if (webUserRole == WebUserRole.Authority_Admin) {
-            return true;
-        } else {
-            return false;
-        }
-
+    public boolean isMeAdministrator() {
+        meAdministrator = webUserRole == WebUserRole.Me_Admin;
+        return meAdministrator;
     }
 
+    public Area getArea() {
+        return area;
+    }
+
+    public void setArea(Area area) {
+        this.area = area;
+    }
+
+    public boolean isInstitutionSuperUser() {
+        institutionSuperUser = webUserRole == WebUserRole.Institution_Super_User;
+        return institutionSuperUser;
+    }
+
+    public boolean isMeSuperUser() {
+        meSuperUser = webUserRole == WebUserRole.Me_Super_User;
+        return meSuperUser;
+    }
+
+    public boolean isMeUser() {
+        meUser = webUserRole == WebUserRole.Me_User;
+        return meUser;
+    }
+
+    public boolean isDoctor() {
+        doctor = webUserRole == WebUserRole.Doctor;
+        return doctor;
+    }
+
+    public boolean isNurse() {
+        nurse = webUserRole == WebUserRole.Nurse;
+        return nurse;
+    }
+
+    public boolean isClient() {
+        client = webUserRole == WebUserRole.Client;
+        return client;
+    }
+
+    public boolean isMidwife() {
+        midwife = webUserRole == WebUserRole.Midwife;
+        return midwife;
+    }
+
+    
+    
 }

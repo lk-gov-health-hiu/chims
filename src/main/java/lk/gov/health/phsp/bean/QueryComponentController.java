@@ -932,12 +932,14 @@ public class QueryComponentController implements Serializable {
 
             if (ccYear != null && ccQuarter != null) {
                 //TODO: Correct Code
-                jpql.setJwhere(jpql.getJwhere() + " and YEAR(c.createdAt)=:ey and  MONTH(c.createdAt)=:eq ");
+                jpql.setJwhere(jpql.getJwhere() + " and Extract(YEAR from c.createdAt)=:ey and "
+                        + " (EXTRACT(Month from c.createdAt) between :em1 and :em2) ");
                 jpql.getM().put("ey", ccYear);
-                jpql.getM().put("eq", ccQuarter * 3);
+                jpql.getM().put("em1", ccQuarter * 3-2);
+                jpql.getM().put("em2", ccQuarter * 3);
             } else if (ccYear != null) {
                 //TODO: Correct Code
-                jpql.setJwhere(jpql.getJwhere() + " and YEAR(c.createdAt)=:ey ");
+                jpql.setJwhere(jpql.getJwhere() + " and EXTRACT(YEAR from c.createdAt)=:ey ");
                 jpql.getM().put("ey", ccYear);
             } else if (ccFrom != null && ccTo != null) {
                 jpql.setJwhere(jpql.getJwhere() + " and c.createdAt between :d1 and :d2 ");
@@ -1108,12 +1110,14 @@ public class QueryComponentController implements Serializable {
 
             if (ccYear != null && ccQuarter != null) {
                 //TODO: Correct Code
-                jpql.setJwhere(jpql.getJwhere() + " and YEAR(c.createdAt)=:ey and  MONTH(c.createdAt)=:eq ");
+                jpql.setJwhere(jpql.getJwhere() + " and EXTRACT(YEAR FROM c.createdAt)=:ey and "
+                        + " ( EXTRACT(MONTH FROM c.createdAt) BETWEEN :em1 and :em2  )");
                 jpql.getM().put("ey", ccYear);
-                jpql.getM().put("eq", ccQuarter * 3);
+                jpql.getM().put("em1", ccQuarter * 3-2);
+                jpql.getM().put("em2", ccQuarter * 3);
             } else if (ccYear != null) {
                 //TODO: Correct Code
-                jpql.setJwhere(jpql.getJwhere() + " and YEAR(c.createdAt)=:ey ");
+                jpql.setJwhere(jpql.getJwhere() + " and EXTRACT(YEAR FROM c.createdAt)=:ey ");
                 jpql.getM().put("ey", ccYear);
             } else if (ccFrom != null && ccTo != null) {
                 jpql.setJwhere(jpql.getJwhere() + " and c.createdAt between :date1 and :date2 ");
@@ -1195,12 +1199,14 @@ public class QueryComponentController implements Serializable {
             System.out.println("Adding Period Filters");
             if (ccYear != null && ccQuarter != null) {
                 //TODO: Correct Code
-                jpql.setJwhere(jpql.getJwhere() + " and YEAR(c.createdAt)=:ey and  MONTH(c.createdAt)=:eq ");
+                jpql.setJwhere(jpql.getJwhere() + " and extract(year from c.createdAt)=:ey and "
+                        + " (extract(month from c.createdAt) between :em1 and :em2 )");
                 jpql.getM().put("ey", ccYear);
-                jpql.getM().put("eq", ccQuarter * 3);
+                jpql.getM().put("em1", ccQuarter * 3-2);
+                jpql.getM().put("em2", ccQuarter * 3);
             } else if (ccYear != null) {
                 //TODO: Correct Code
-                jpql.setJwhere(jpql.getJwhere() + " and YEAR(c.createdAt)=:ey ");
+                jpql.setJwhere(jpql.getJwhere() + " and extract(year from c.createdAt)=:ey ");
                 jpql.getM().put("ey", ccYear);
             } else if (ccFrom != null && ccTo != null) {
                 jpql.setJwhere(jpql.getJwhere() + " and c.createdAt between :date1 and :date2 ");

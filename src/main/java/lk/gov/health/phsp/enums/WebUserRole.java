@@ -32,11 +32,47 @@ public enum WebUserRole {
     Super_User,
     User,
     Institution_User,
+    Institution_Super_User,
     Institution_Administrator,
-    Authority_User,
-    Authority_Admin,
+    Me_User,
+    Me_Super_User,
+    Me_Admin,
     Doctor,
     Nurse,
     Midwife,
+    Client;
+
+    public String getLabel() {
+        switch (this) {
+            case Client:
+                return "Client";
+            case Doctor:
+                return "Doctor";
+            case Institution_Administrator:
+                return "Institution Administrator";
+            case Institution_Super_User:
+                return "Institution Super User";
+            case Institution_User:
+                return "Institution User";
+            case Me_Admin:
+                return "Monitoring & Evaluation Administrator";
+            case Me_Super_User:
+                return "Monitoring & Evaluation Super User";
+            case Me_User:
+                return "Monitoring & Evaluation User";
+            case Midwife:
+                return "Widwife";
+            case Nurse:
+                return "Nurse";
+            case Super_User:
+                return "Super User";
+            case System_Administrator:
+                return "Syetem Administrator";
+            case User:
+                return "User";
+            default:
+                return "None";
+        }
+    }
 
 }
