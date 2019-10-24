@@ -227,7 +227,11 @@ public class ItemController implements Serializable {
                 + "Dictionary_Item::DS Division:client_ds_division:3" + System.lineSeparator()
                 + "Dictionary_Item::Date of Registration:client_date_of_first_phc_registration:3" + System.lineSeparator()
                 + "Dictionary_Item::Person to be contact in an Emergency:next_of_kin_name:3" + System.lineSeparator()
-                + "Dictionary_Item::Details of Person to contact in Emergency:next_of_kin_contact_details:3" + System.lineSeparator();
+                + "Dictionary_Item::Details of Person to contact in Emergency:next_of_kin_contact_details:3" + System.lineSeparator()
+                + "Dictionary_Item::Drug Allergy:client_drug_allergy:3" + System.lineSeparator()
+                + "Dictionary_Item::Other Allergy:client_food_allergy:3" + System.lineSeparator()
+                
+                ;
 
         addInitialMetadata(initialData);
     }

@@ -31,17 +31,14 @@ import lk.gov.health.phsp.entity.DesignComponentFormItem;
 import lk.gov.health.phsp.entity.DesignComponentFormSet;
 import lk.gov.health.phsp.entity.Encounter;
 import lk.gov.health.phsp.entity.Institution;
-import lk.gov.health.phsp.enums.ComponentSetType;
 import lk.gov.health.phsp.enums.ComponentSex;
 import lk.gov.health.phsp.enums.DataCompletionStrategy;
 import lk.gov.health.phsp.enums.DataPopulationStrategy;
 import lk.gov.health.phsp.enums.EncounterType;
-import lk.gov.health.phsp.enums.SelectionDataType;
 import lk.gov.health.phsp.facade.ClientEncounterComponentItemFacade;
 import lk.gov.health.phsp.facade.ClientFacade;
-import lk.gov.health.phsp.facade.DesignComponentFormItemFacade;
 import lk.gov.health.phsp.facade.PersonFacade;
-import org.apache.commons.compress.utils.Sets;
+import org.apache.commons.lang3.SerializationUtils;
 // </editor-fold>
 
 @Named("clientEncounterComponentFormSetController")
@@ -416,7 +413,7 @@ public class ClientEncounterComponentFormSetController implements Serializable {
         m.put("c", c);
         m.put("i", i);
         m.put("t", t);
-        
+
         Long count = getFacade().countByJpql(j, m);
         if (count == null) {
             return true;
@@ -438,13 +435,13 @@ public class ClientEncounterComponentFormSetController implements Serializable {
         e.setEncounterDate(d);
         e.setEncounterFrom(d);
         e.setEncounterType(EncounterType.Clinic_Visit);
-        
-        e.setFirstEncounter(isFirstEncounterOfThatType(clientController.getSelected(),dfs.getInstitution(), EncounterType.Clinic_Visit));
+
+        e.setFirstEncounter(isFirstEncounterOfThatType(clientController.getSelected(), dfs.getInstitution(), EncounterType.Clinic_Visit));
 
         e.setEncounterMonth(CommonController.getMonth(d));
         e.setEncounterQuarter(CommonController.getQuarter(d));
         e.setEncounterYear(CommonController.getYear(d));
-        
+
         encounterController.save(e);
 
         ClientEncounterComponentFormSet cfs = new ClientEncounterComponentFormSet();
@@ -509,7 +506,7 @@ public class ClientEncounterComponentFormSetController implements Serializable {
 
                         ci.setEncounter(e);
                         ci.setInstitution(dfs.getInstitution());
-                        
+
                         ci.setItemFormset(cfs);
                         ci.setItemEncounter(e);
                         ci.setItemClient(e.getClient());
@@ -561,6 +558,8 @@ public class ClientEncounterComponentFormSetController implements Serializable {
                         ci.setCalculationScriptForBackgroundColour(di.getCalculationScriptForBackgroundColour());
                         ci.setMultipleEntiesPerForm(di.isMultipleEntiesPerForm());
 
+                        clientEncounterComponentItemController.save(ci);
+                        
                         if (ci.getDataPopulationStrategy() == DataPopulationStrategy.From_Client_Value) {
                             updateFromClientValue(ci);
                             updateToClientValue(ci);
@@ -651,6 +650,7 @@ public class ClientEncounterComponentFormSetController implements Serializable {
         }
 
         ClientEncounterComponentItem vi;
+        List<ClientEncounterComponentItem> vis;
         String j = "select vi from ClientEncounterComponentItem vi where vi.retired=false "
                 + " and vi.client=:c "
                 + " and vi.item=:i "
@@ -658,21 +658,57 @@ public class ClientEncounterComponentFormSetController implements Serializable {
         Map m = new HashMap();
         m.put("c", ti.getEncounter().getClient());
         m.put("i", ti.getItem());
-        vi = getItemFacade().findFirstByJpql(j, m);
-
-        if (vi == null) {
-            return;
+        if (ti.isMultipleEntiesPerForm()) {
+            vis = getItemFacade().findByJpql(j, m);
+            if (vis == null || vis.isEmpty()) {
+                return;
+            }
+            Double positionIncrement = ti.getOrderNo();
+            int temIndex = 0;
+            for (ClientEncounterComponentItem tvi : vis) {
+                if (temIndex == 0) {
+                    ti.setDateValue(tvi.getDateValue());
+                    ti.setShortTextValue(tvi.getShortTextValue());
+                    ti.setLongTextValue(tvi.getLongTextValue());
+                    ti.setItemValue(tvi.getItemValue());
+                    ti.setAreaValue(tvi.getAreaValue());
+                    ti.setItemValue(tvi.getItemValue());
+                    ti.setInstitution(tvi.getInstitutionValue());
+                    ti.setPrescriptionValue(tvi.getPrescriptionValue());
+                    ti.setOrderNo(positionIncrement);
+                    getItemFacade().edit(ti);
+                }else{
+                    ClientEncounterComponentItem nti = SerializationUtils.clone(ti);
+                    nti.setDateValue(tvi.getDateValue());
+                    nti.setShortTextValue(tvi.getShortTextValue());
+                    nti.setLongTextValue(tvi.getLongTextValue());
+                    nti.setItemValue(tvi.getItemValue());
+                    nti.setAreaValue(tvi.getAreaValue());
+                    nti.setItemValue(tvi.getItemValue());
+                    nti.setInstitution(tvi.getInstitutionValue());
+                    nti.setPrescriptionValue(tvi.getPrescriptionValue());
+                    nti.setId(null);
+                    nti.setOrderNo(positionIncrement);
+                    getItemFacade().create(nti);
+                }
+                positionIncrement += 0.0001;
+                temIndex++;
+            }
+        } else {
+            vi = getItemFacade().findFirstByJpql(j, m);
+            if (vi == null) {
+                return;
+            }
+            ti.setDateValue(vi.getDateValue());
+            ti.setShortTextValue(vi.getShortTextValue());
+            ti.setLongTextValue(vi.getLongTextValue());
+            ti.setItemValue(vi.getItemValue());
+            ti.setAreaValue(vi.getAreaValue());
+            ti.setItemValue(vi.getItemValue());
+            ti.setInstitution(vi.getInstitutionValue());
+            ti.setPrescriptionValue(vi.getPrescriptionValue());
+            getItemFacade().edit(ti);
         }
-
-        ti.setDateValue(vi.getDateValue());
-        ti.setShortTextValue(vi.getShortTextValue());
-        ti.setLongTextValue(vi.getLongTextValue());
-        ti.setItemValue(vi.getItemValue());
-        ti.setAreaValue(vi.getAreaValue());
-        ti.setItemValue(vi.getItemValue());
-        ti.setInstitution(vi.getInstitutionValue());
-        ti.setPrescriptionValue(vi.getPrescriptionValue());
-
     }
 
     public void updateFromLastEncounter(ClientEncounterComponentItem ti) {

@@ -27,7 +27,7 @@
                     <h:outputScript library="js" name="adminlte.min.js"></h:outputScript>
                     <h:outputScript library="js" name="demo.js"></h:outputScript>
 
-                    <div class="content-wrapper">
+                    <div class="content-wrapper" style="margin: 0px;">
                         <!-- Content Header (Page header) -->
                         <section class="content-header">
                             <div class="container-fluid">
@@ -55,14 +55,29 @@
                                         <div class="card card-primary card-outline">
                                             <div class="card-body box-profile">
                                                 <div class="text-center">
-                                                    <img class="profile-user-img img-fluid img-circle"
-                                                         src="../../dist/img/user4-128x128.jpg"
-                                                         alt="User profile picture"></img>
+
+
+
+                                                    <p:graphicImage  rendered="#{clientController.selected.person.sex.name eq 'Male'}"
+                                                                     library="image" name="male.jpg" 
+                                                                     class="profile-user-img img-fluid img-circle"
+                                                                     style="width: 128px;  margin: auto;" ></p:graphicImage>
+
+                                                    <p:graphicImage  rendered="#{clientController.selected.person.sex.name eq 'Female'}"
+                                                                     class="profile-user-img img-fluid img-circle"
+                                                                     library="image" name="female.png" style="width: 128px;  margin: auto;" ></p:graphicImage>
+
+
+
                                                 </div>
 
-                                                <h3 class="profile-username text-center">Nina Mcintire</h3>
+                                                <h3 class="profile-username text-center">
+                                                    <h:outputLabel value="#{clientController.selected.person.nameWithTitle}" ></h:outputLabel>
+                                                </h3>
 
-                                                <p class="text-muted text-center">Software Engineer</p>
+                                                <p class="text-muted text-center">
+                                                    <h:outputLabel value="#{clientController.selected.person.gnArea.name}" ></h:outputLabel>
+                                                </p>
 
 
                                             </div>
@@ -80,40 +95,47 @@
                                                 <strong><i class="fas fa-id-badge mr-1"></i> Name :</strong>
 
 
-                                                Kamal Perera
+                                                <h:outputLabel value="#{clientController.selected.person.nameWithTitle}" ></h:outputLabel>
 
                                                 <br/>
                                                 <strong><i class="fas fa-venus-mars mr-1"></i> Sex :</strong>
 
 
-                                                Male
+                                                <h:outputLabel value="#{clientController.selected.person.sex.name}" ></h:outputLabel>
 
                                                 <br/>
                                                 <strong><i class="fab fa-pagelines mr-1"></i> Age :</strong>
 
-                                                012 765 7653
+                                                <h:outputLabel value="#{clientController.selected.person.age}" ></h:outputLabel>
 
                                                 <br/>
                                                 <strong><i class="fas fa-birthday-cake mr-1"></i> DOB :</strong>
 
-                                                1966-04-12
+                                                <h:outputLabel value="#{clientController.selected.person.dateOfBirth}" >
+                                                    <f:convertDateTime pattern="dd MMMM yyyy" ></f:convertDateTime>
+                                                </h:outputLabel>
                                                 <br/>
 
                                                 <strong><i class="fas fa-mobile-alt mr-1"></i> Mobile No. :</strong>
 
 
-                                                077 765 7653
+                                                <h:outputLabel value="#{clientController.selected.person.phone1}" ></h:outputLabel>
 
 
                                                 <br/>
                                                 <strong><i class="fas fa-phone-square-alt mr-1"></i> Tele No. :</strong>
 
-                                                012 765 7653
+                                                <h:outputLabel value="#{clientController.selected.person.phone2}" ></h:outputLabel>
 
                                                 <br/>
                                                 <strong><i class="fas fa-map-marker-alt mr-1"></i> Address</strong>
 
-                                                <p class="text-muted">434/ School Lane , Yatiyanthota</p>
+                                                <p class="text-muted">
+                                                
+                                                    <h:outputLabel value="#{clientController.selected.person.address}" ></h:outputLabel>
+                                                
+                                                
+                                                </p>
 
                                                 <br/>
 
@@ -161,13 +183,19 @@
                                                             <div class="col-lg-6 col-12">
                                                                 <div class="small-box bg-info">
                                                                     <div class="inner">
-                                                                        <h4>Last (3) HLC visits</h4>
+                                                                        <h4>Recent Clinic visits</h4>
 
                                                                         <ul>
                                                                             <li>2019-08-11 </li>
                                                                             <li>2019-05-21</li>
                                                                             <li>2019-02-11</li>
                                                                         </ul>
+                                                                        
+                                                                        
+                                                                        
+                                                                        
+                                                                        
+                                                                        
 
                                                                     </div>
                                                                     <div class="icon">

@@ -346,7 +346,7 @@ public class WebUserController implements Serializable {
         }
         loggedUserPrivileges = userPrivilegeList(loggedUser);
         JsfUtil.addSuccessMessage("Successfully Logged");
-        return "index";
+        return "/index";
     }
 
     public String loginForMobile() {

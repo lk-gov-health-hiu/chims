@@ -59,8 +59,6 @@
 
 
             <div class="w3-row w3-theme-l5" style="height: 100%;" >
-                <ui:insert name="timeout">
-                </ui:insert>
                 <h:panelGroup rendered="#{webUserController.loggedUser ne null}">
                     <ui:insert name="content">
                     </ui:insert>
@@ -71,7 +69,6 @@
                         <ez:demo_login/>
                     </div>
                 </h:panelGroup>
-
             </div>
 
             <div class="footer w3-amber">
