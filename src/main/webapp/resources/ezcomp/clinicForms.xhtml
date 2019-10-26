@@ -157,6 +157,26 @@
                                             </p:selectOneMenu>
                                         </td>
                                     </h:panelGroup>
+                                    <h:panelGroup rendered="#{ii.renderType eq 'Autocomplete'}" >
+                                        <td>
+                                            <p:outputLabel for="acItem" value="#{ii.name}" ></p:outputLabel>
+                                        </td>
+                                        <td>
+                                            <p:autoComplete id="acItem" value="#{ii.itemValue}"
+                                                            completeMethod="#{itemController.completeItem}"
+                                                            var="acItem" itemLabel="#{acItem.name}" itemValue="#{acItem}"
+                                                            maxResults="15" forceSelection="true" 
+                                                            minQueryLength="3"
+                                                            required="#{ii.required}" 
+                                                            requiredMessage="#{ii.requiredErrorMessage}">
+                                                <p:ajax  event="blur" process="@this" 
+                                                         listener="#{clientEncounterComponentItemController.save(ii)}" >
+                                                </p:ajax>
+                                                
+                                            </p:autoComplete>
+                                        </td>
+
+                                    </h:panelGroup>
                                 </h:panelGroup>
                                 <h:panelGroup rendered="#{ii.renderType eq 'Boolean_Checkbox'}" >
                                     <td>

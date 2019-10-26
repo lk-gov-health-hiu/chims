@@ -131,10 +131,10 @@
                                                 <strong><i class="fas fa-map-marker-alt mr-1"></i> Address</strong>
 
                                                 <p class="text-muted">
-                                                
+
                                                     <h:outputLabel value="#{clientController.selected.person.address}" ></h:outputLabel>
-                                                
-                                                
+
+
                                                 </p>
 
                                                 <br/>
@@ -168,8 +168,13 @@
                                                                 <div class="small-box bg-info">
                                                                     <div class="inner">
                                                                         <h4>Allergies</h4>
+
                                                                         <ul>
-                                                                            <li>Penicillin</li>
+                                                                            <ui:repeat value="#{clientEncounterComponentFormSetController.fillClientValues(clientController.selected, 'client_drug_allergy')}"
+                                                                                       var="a" >
+                                                                                <li>${a.item.name}</li>
+                                                                            </ui:repeat>
+
                                                                             <li>Paracetamol</li>
                                                                         </ul>
 
@@ -190,12 +195,12 @@
                                                                             <li>2019-05-21</li>
                                                                             <li>2019-02-11</li>
                                                                         </ul>
-                                                                        
-                                                                        
-                                                                        
-                                                                        
-                                                                        
-                                                                        
+
+
+
+
+
+
 
                                                                     </div>
                                                                     <div class="icon">

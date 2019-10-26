@@ -228,9 +228,10 @@ public class ItemController implements Serializable {
                 + "Dictionary_Item::Date of Registration:client_date_of_first_phc_registration:3" + System.lineSeparator()
                 + "Dictionary_Item::Person to be contact in an Emergency:next_of_kin_name:3" + System.lineSeparator()
                 + "Dictionary_Item::Details of Person to contact in Emergency:next_of_kin_contact_details:3" + System.lineSeparator()
-                + "Dictionary_Item::Drug Allergy:client_drug_allergy:3" + System.lineSeparator()
-                + "Dictionary_Item::Other Allergy:client_food_allergy:3" + System.lineSeparator()
-                
+                + "Dictionary_Item::Has Drug Allergy:client_drug_allergy_exists:3" + System.lineSeparator()
+                + "Dictionary_Item::Is allergic to:client_allergic_to_medicine:3" + System.lineSeparator()
+                + "Dictionary_Item::Has Other Allergy:client_food_allergy_exists:3" + System.lineSeparator()
+                + "Dictionary_Item::Is allergic to:client_allergic_to:3" + System.lineSeparator()
                 ;
 
         addInitialMetadata(initialData);
@@ -512,7 +513,8 @@ public class ItemController implements Serializable {
 
     public List<Item> completeItem(String qry) {
         FacesContext context = FacesContext.getCurrentInstance();
-        Item parent = (Item) UIComponent.getCurrentComponent(context).getAttributes().get("parent");
+        String parentCode = (String) UIComponent.getCurrentComponent(context).getAttributes().get("parent");
+        Item parent = findItemByCode(parentCode);
         return findChildrenAndGrandchildrenItemList(parent, ItemType.Dictionary_Item, qry);
     }
 

@@ -31,6 +31,7 @@ import lk.gov.health.phsp.entity.DesignComponentFormItem;
 import lk.gov.health.phsp.entity.DesignComponentFormSet;
 import lk.gov.health.phsp.entity.Encounter;
 import lk.gov.health.phsp.entity.Institution;
+import lk.gov.health.phsp.entity.Item;
 import lk.gov.health.phsp.enums.ComponentSex;
 import lk.gov.health.phsp.enums.DataCompletionStrategy;
 import lk.gov.health.phsp.enums.DataPopulationStrategy;
@@ -73,6 +74,8 @@ public class ClientEncounterComponentFormSetController implements Serializable {
     private WebUserController webUserController;
     @Inject
     private EncounterController encounterController;
+    @Inject
+    private ItemController itemController;
 
 // </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="Class Variables">
@@ -580,6 +583,22 @@ public class ClientEncounterComponentFormSetController implements Serializable {
         return navigationLink;
     }
 
+    
+    public List<ClientEncounterComponentItem> fillClientValues(Client c, String code) {
+        Item i = itemController.findItemByCode(code);
+        if(i==null){
+            return new ArrayList<>();
+        }
+        String j = "select vi from ClientEncounterComponentItem vi where vi.retired=false "
+                + " and vi.client=:c "
+                + " and vi.item=:i "
+                + " order by vi.id desc";
+        Map m = new HashMap();
+        m.put("c", c);
+        m.put("i", i);
+        return getItemFacade().findByJpql(j, m);
+    }
+    
     public void updateFromClientValue(ClientEncounterComponentItem ti) {
         if (ti == null) {
             return;
@@ -813,6 +832,8 @@ public class ClientEncounterComponentFormSetController implements Serializable {
 
 // </editor-fold>    
 // <editor-fold defaultstate="collapsed" desc="Getters & Setters">
+    
+    
     public ClientEncounterComponentFormSet getSelected() {
         return selected;
     }
@@ -918,6 +939,10 @@ public class ClientEncounterComponentFormSetController implements Serializable {
 
     public PersonFacade getPersonFacade() {
         return personFacade;
+    }
+
+    public ItemController getItemController() {
+        return itemController;
     }
 
 // </editor-fold>    
