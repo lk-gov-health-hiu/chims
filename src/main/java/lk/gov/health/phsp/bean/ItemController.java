@@ -49,6 +49,7 @@ public class ItemController implements Serializable {
 
     private List<Item> items = null;
     private Item selected;
+    private Item selectedParent;
     private List<Item> titles;
     private List<Item> ethinicities;
     private List<Item> religions;
@@ -81,6 +82,10 @@ public class ItemController implements Serializable {
         Map m = new HashMap();
         m.put("s", s);
         items = getFacade().findByJpql(j, m);
+    }
+
+    public void makeAsSelectedParent(Item pi) {
+        selectedParent = pi;
     }
 
     public List<String> completeItemCodes(String qry) {
@@ -184,6 +189,13 @@ public class ItemController implements Serializable {
     public List<Item> completeItems(String qry) {
         return findItemList(null, null, qry);
     }
+    
+     public List<Item> completeItemsofParent(String qry) {
+        System.out.println("completeItemsofParent");
+        System.out.println("qry = " + qry);
+        System.out.println("selectedParent = " + selectedParent.getName());
+        return findChildrenAndGrandchildrenItemList(selectedParent, null, qry);
+    }
 
     public void addInitialMetadata() {
         addTitles();
@@ -231,8 +243,7 @@ public class ItemController implements Serializable {
                 + "Dictionary_Item::Has Drug Allergy:client_drug_allergy_exists:3" + System.lineSeparator()
                 + "Dictionary_Item::Is allergic to:client_allergic_to_medicine:3" + System.lineSeparator()
                 + "Dictionary_Item::Has Other Allergy:client_food_allergy_exists:3" + System.lineSeparator()
-                + "Dictionary_Item::Is allergic to:client_allergic_to:3" + System.lineSeparator()
-                ;
+                + "Dictionary_Item::Is allergic to:client_allergic_to:3" + System.lineSeparator();
 
         addInitialMetadata(initialData);
     }
@@ -507,16 +518,7 @@ public class ItemController implements Serializable {
         return findItemList(parentCode, t, null);
     }
 
-    public List<Item> completeItemWithoutParent(String qry) {
-        return findChildrenAndGrandchildrenItemList(null, ItemType.Dictionary_Item, qry);
-    }
-
-    public List<Item> completeItem(String qry) {
-        FacesContext context = FacesContext.getCurrentInstance();
-        String parentCode = (String) UIComponent.getCurrentComponent(context).getAttributes().get("parent");
-        Item parent = findItemByCode(parentCode);
-        return findChildrenAndGrandchildrenItemList(parent, ItemType.Dictionary_Item, qry);
-    }
+   
 
     public List<Item> findChildrenAndGrandchildrenItemList(Item parent) {
         return findChildrenAndGrandchildrenItemList(parent, ItemType.Dictionary_Item, null);
@@ -531,6 +533,10 @@ public class ItemController implements Serializable {
     }
 
     public List<Item> findChildrenAndGrandchildrenItemList(Item parent, ItemType t, String qry) {
+        System.out.println("findChildrenAndGrandchildrenItemList");
+        System.out.println("qry = " + qry);
+        System.out.println("parent = " + parent);
+        System.out.println("t = " + t);
         String j = "select t from Item t where t.retired=false ";
         Map m = new HashMap();
 
@@ -540,14 +546,18 @@ public class ItemController implements Serializable {
         }
         if (parent != null) {
             m.put("p", parent);
-            j += " and (t.parent=:p or t.parent.parent=:p or t.parent.parent.parent=:p  or t.parent.parent.parent.parent=:p)";
+            j += " and (t.parent=:p or t.parent.parent=:p or t.parent.parent.parent=:p)";
         }
         if (qry != null) {
             m.put("n", "%" + qry.trim().toLowerCase() + "%");
             j += " and lower(t.name) like :n ";
         }
         j += " order by t.orderNo";
-        return getFacade().findByJpql(j, m);
+        System.out.println("m = " + m);
+        System.out.println("j = " + j);
+        List<Item> tis =getFacade().findByJpql(j, m);
+        System.out.println("tis = " + tis.size());
+        return tis;
     }
 
     public List<Item> findItemList(String parentCode, ItemType t, String qry) {
@@ -720,6 +730,14 @@ public class ItemController implements Serializable {
         this.startRow = startRow;
     }
 
+    public Item getSelectedParent() {
+        return selectedParent;
+    }
+
+    public void setSelectedParent(Item selectedParent) {
+        this.selectedParent = selectedParent;
+    }
+
     @FacesConverter(forClass = Item.class)
     public static class ItemControllerConverter implements Converter {
 
@@ -735,7 +753,12 @@ public class ItemController implements Serializable {
 
         java.lang.Long getKey(String value) {
             java.lang.Long key;
-            key = Long.valueOf(value);
+            try {
+                key = Long.valueOf(value);
+            } catch (NumberFormatException e) {
+                System.out.println("e = " + e);
+                key =0l;
+            }
             return key;
         }
 

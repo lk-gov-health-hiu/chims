@@ -162,17 +162,20 @@
                                             <p:outputLabel for="acItem" value="#{ii.name}" ></p:outputLabel>
                                         </td>
                                         <td>
+                                            
                                             <p:autoComplete id="acItem" value="#{ii.itemValue}"
-                                                            completeMethod="#{itemController.completeItem}"
-                                                            var="acItem" itemLabel="#{acItem.name}" itemValue="#{acItem}"
+                                                            completeMethod="#{itemController.completeItemsofParent}"
+                                                            var="ai" itemLabel="#{ai.name}" itemValue="#{ai}"
                                                             maxResults="15" forceSelection="true" 
                                                             minQueryLength="3"
                                                             required="#{ii.required}" 
                                                             requiredMessage="#{ii.requiredErrorMessage}">
+                                                 <p:ajax  event="focus" process="@this" 
+                                                          listener="#{itemController.makeAsSelectedParent(ii.categoryOfAvailableItems)}" >
+                                                </p:ajax>
                                                 <p:ajax  event="blur" process="@this" 
                                                          listener="#{clientEncounterComponentItemController.save(ii)}" >
                                                 </p:ajax>
-                                                
                                             </p:autoComplete>
                                         </td>
 
