@@ -24,7 +24,10 @@
 package lk.gov.health.phsp.entity;
 
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.ManyToOne;
+import lk.gov.health.phsp.enums.DataRepresentationType;
 
 /**
  *
@@ -39,7 +42,11 @@ public class ClientEncounterComponentItem extends ClientEncounterComponent {
     private Encounter itemEncounter;
     @ManyToOne
     private ClientEncounterComponentFormSet itemFormset;
+    @Enumerated(EnumType.STRING)
+    private DataRepresentationType dataRepresentationType;
 
+    
+    
     public Client getItemClient() {
         return itemClient;
     }
@@ -62,6 +69,14 @@ public class ClientEncounterComponentItem extends ClientEncounterComponent {
 
     public void setItemFormset(ClientEncounterComponentFormSet itemFormset) {
         this.itemFormset = itemFormset;
+    }
+
+    public DataRepresentationType getDataRepresentationType() {
+        return dataRepresentationType;
+    }
+
+    public void setDataRepresentationType(DataRepresentationType dataRepresentationType) {
+        this.dataRepresentationType = dataRepresentationType;
     }
 
     
