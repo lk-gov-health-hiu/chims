@@ -78,6 +78,8 @@ public class Institution implements Serializable {
     @ManyToOne
     private Area dsDivision;
     @ManyToOne
+    private Area mohArea;
+    @ManyToOne
     private Area district;
     @ManyToOne
     private Area rdhsArea;
@@ -398,6 +400,14 @@ public class Institution implements Serializable {
 
     public void setPmci(boolean pmci) {
         this.pmci = pmci;
+    }
+
+    public Area getMohArea() {
+        return mohArea;
+    }
+
+    public void setMohArea(Area mohArea) {
+        this.mohArea = mohArea;
     }
 
     
