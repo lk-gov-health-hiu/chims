@@ -11,10 +11,14 @@
         <ui:composition template="/template.xhtml">
 
             <ui:define name="content">
+                <h:form >
+                    <p:panelGrid style="height: 100%;text-align: center;" columns="2">
+                        <f:facet name="header" >
+                            <p:outputLabel value="User List" ></p:outputLabel>
+                            <p:commandButton ajax="false" value="Back" action="index" style="float: right;"/>
+                        </f:facet>
 
-                <p:panel header="User List" style="height: 100%;text-align: center;">
 
-                    <h:form >
                         <p:dataTable value="#{webUserController.items}" var="item"  
 
                                      rowKey="#{item.id}" 
@@ -92,11 +96,12 @@
                                 </p:commandLink>
                             </p:column>
                         </p:dataTable>
-                    </h:form>
-
-                </p:panel>
 
 
+                    </p:panelGrid>
+                </h:form>
+                <br/>
+                <br/>
 
             </ui:define>
         </ui:composition>
