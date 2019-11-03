@@ -162,10 +162,10 @@ public class WebUserController implements Serializable {
 
     public List<Institution> findAutherizedInstitutions() {
         List<Institution> ins = new ArrayList<>();
-        if(loggedUser==null){
+        if (loggedUser == null) {
             return ins;
         }
-        if(loggedUser.getInstitution()==null){
+        if (loggedUser.getInstitution() == null) {
             return ins;
         }
         ins.add(loggedUser.getInstitution());
@@ -174,21 +174,68 @@ public class WebUserController implements Serializable {
     }
 
     public String toManagePrivileges() {
-
-        return "/webUser/privilegesF";
+        System.out.println("toManagePrivileges = " + this);
+        if (current == null) {
+            JsfUtil.addErrorMessage("Nothing Selected");
+            return "";
+        }
+        selectedNodes = new TreeNode[0];
+        List<UserPrivilege> userps = userPrivilegeList(current);
+        System.out.println("userps = " + userps);
+        for (TreeNode n : allPrivilegeRoot.getChildren()) {
+            n.setSelected(false);
+            for (TreeNode n1 : n.getChildren()) {
+                n1.setSelected(false);
+                for (TreeNode n2 : n1.getChildren()) {
+                    n2.setSelected(false);
+                }
+            }
+        }
+        List<TreeNode> temSelected = new ArrayList<>();
+        for (UserPrivilege wup : userps) {
+            System.out.println("wup = " + wup.getPrivilege());
+            for (TreeNode n : allPrivilegeRoot.getChildren()) {
+                if (wup.getPrivilege().equals(((PrivilegeTreeNode) n).getP())) {
+                    n.setSelected(true);
+                    System.out.println("n = " + n);
+                    System.out.println("wup.getPrivilege() = " + wup.getPrivilege());
+                    temSelected.add(n);
+                }
+                for (TreeNode n1 : n.getChildren()) {
+                    if (wup.getPrivilege().equals(((PrivilegeTreeNode) n1).getP())) {
+                        n1.setSelected(true);
+                        System.out.println("n1 = " + n1);
+                        System.out.println("wup.getPrivilege() = " + wup.getPrivilege());
+                        temSelected.add(n1);
+                    }
+                    for (TreeNode n2 : n1.getChildren()) {
+                        if (wup.getPrivilege().equals(((PrivilegeTreeNode) n2).getP())) {
+                            n2.setSelected(true);
+                            System.out.println("n2 = " + n2);
+                            System.out.println("wup.getPrivilege() = " + wup.getPrivilege());
+                            temSelected.add(n2);
+                        }
+                    }
+                }
+            }
+        }
+        selectedNodes = temSelected.toArray(new TreeNode[temSelected.size()]);
+        System.out.println("temSelected = " + temSelected);
+        System.out.println("selectedNodes = " + Arrays.toString(selectedNodes));
+        return "/webUser/privileges";
     }
 
     private void createAllPrivilege() {
         allPrivilegeRoot = new PrivilegeTreeNode("Root", null);
 
-        TreeNode clientManagement = new PrivilegeTreeNode("Client Management", allPrivilegeRoot);
-        TreeNode encounterManagement = new PrivilegeTreeNode("Encounter Management", allPrivilegeRoot);
-        TreeNode appointmentManagement = new PrivilegeTreeNode("Appointment Management", allPrivilegeRoot);
-        TreeNode labManagement = new PrivilegeTreeNode("Lab Management", allPrivilegeRoot);
-        TreeNode pharmacyManagement = new PrivilegeTreeNode("Pharmacy Management", allPrivilegeRoot);
-        TreeNode user = new PrivilegeTreeNode("User", allPrivilegeRoot);
-        TreeNode institutionAdministration = new PrivilegeTreeNode("Institution Administration", allPrivilegeRoot);
-        TreeNode systemAdministration = new PrivilegeTreeNode("System Administration", allPrivilegeRoot);
+        TreeNode clientManagement = new PrivilegeTreeNode("Client Management", allPrivilegeRoot, Privilege.Client_Management);
+        TreeNode encounterManagement = new PrivilegeTreeNode("Encounter Management", allPrivilegeRoot, Privilege.Encounter_Management);
+        TreeNode appointmentManagement = new PrivilegeTreeNode("Appointment Management", allPrivilegeRoot,Privilege.Appointment_Management);
+        TreeNode labManagement = new PrivilegeTreeNode("Lab Management", allPrivilegeRoot,Privilege.Lab_Management);
+        TreeNode pharmacyManagement = new PrivilegeTreeNode("Pharmacy Management", allPrivilegeRoot,Privilege.Pharmacy_Management);
+        TreeNode user = new PrivilegeTreeNode("User", allPrivilegeRoot, Privilege.Manage_Users);
+        TreeNode institutionAdministration = new PrivilegeTreeNode("Institution Administration", allPrivilegeRoot,Privilege.Institution_Administration);
+        TreeNode systemAdministration = new PrivilegeTreeNode("System Administration", allPrivilegeRoot,Privilege.System_Administration);
         //Client Management
 
         TreeNode add_Client = new PrivilegeTreeNode("Add_Client", clientManagement, Privilege.Add_Client);
@@ -205,11 +252,11 @@ public class WebUserController implements Serializable {
         TreeNode manage_Authorised_Areas = new PrivilegeTreeNode("Manage Authorised Areas", institutionAdministration, Privilege.Manage_Authorised_Areas);
         TreeNode manage_Authorised_Institutions = new PrivilegeTreeNode("Manage Authorised Institutions", institutionAdministration, Privilege.Manage_Authorised_Institutions);
         //System Administration
-        TreeNode manage_Users = new PrivilegeTreeNode("Manage Users", systemAdministration, Privilege.Add_Client);
-        TreeNode manage_Metadata = new PrivilegeTreeNode("Manage Metadata", systemAdministration, Privilege.Search_any_Client_by_IDs);
-        TreeNode manage_Area = new PrivilegeTreeNode("Manage Area", systemAdministration, Privilege.Search_any_Client_by_Details);
-        TreeNode manage_Institutions = new PrivilegeTreeNode("Manage Institutions", systemAdministration, Privilege.Search_any_client_by_ID_of_Authorised_Areas);
-        TreeNode manage_Forms = new PrivilegeTreeNode("Manage Forms", systemAdministration, Privilege.Search_any_client_by_Details_of_Authorised_Areas);
+        TreeNode manage_Users = new PrivilegeTreeNode("Manage Users", systemAdministration, Privilege.Manage_Users);
+        TreeNode manage_Metadata = new PrivilegeTreeNode("Manage Metadata", systemAdministration, Privilege.Manage_Metadata);
+        TreeNode manage_Area = new PrivilegeTreeNode("Manage Area", systemAdministration, Privilege.Manage_Area);
+        TreeNode manage_Institutions = new PrivilegeTreeNode("Manage Institutions", systemAdministration, Privilege.Manage_Institutions);
+        TreeNode manage_Forms = new PrivilegeTreeNode("Manage Forms", systemAdministration, Privilege.Manage_Forms);
 
     }
 
@@ -423,8 +470,9 @@ public class WebUserController implements Serializable {
     }
 
     public void addWebUserPrivileges(WebUser u, Privilege p) {
-        String j = "Select up from UserPrivilege up where up.retired=false"
-                + " and up.webUser=:u and up.privilege=:p";
+        String j = "Select up from UserPrivilege up where "
+                + " up.webUser=:u and up.privilege=:p "
+                + " order by up.id desc";
         Map m = new HashMap();
         m.put("u", u);
         m.put("p", p);
@@ -436,6 +484,14 @@ public class WebUserController implements Serializable {
             up.setWebUser(u);
             up.setPrivilege(p);
             getUserPrivilegeFacade().create(up);
+        } else {
+            up.setRetired(false);
+            up.setCreatedAt(new Date());
+            up.setCreatedBy(loggedUser);
+            up.setWebUser(u);
+            up.setPrivilege(p);
+
+            getUserPrivilegeFacade().edit(up);
         }
     }
 
@@ -554,6 +610,60 @@ public class WebUserController implements Serializable {
             JsfUtil.addErrorMessage(e, e.getMessage());
             return null;
         }
+    }
+
+    public String updateUserPrivileges() {
+
+        if (current == null) {
+            JsfUtil.addErrorMessage("Please select a user");
+            return "";
+        }
+        System.out.println("selectedNodes = " + Arrays.toString(selectedNodes));
+        System.out.println("selectedNodes.length = " + selectedNodes.length);
+        List<UserPrivilege> userps = userPrivilegeList(current);
+        List<Privilege> tps = new ArrayList<>();
+        if (selectedNodes != null && selectedNodes.length > 0) {
+            for (TreeNode node : selectedNodes) {
+                Privilege p;
+                p = ((PrivilegeTreeNode) node).getP();
+                System.out.println("p = " + p);
+                if (p != null) {
+                    tps.add(p);
+                }
+            }
+        }
+        System.out.println("tps = " + tps);
+        for (Privilege p : tps) {
+            boolean found = false;
+            for (UserPrivilege tup : userps) {
+                System.out.println("tup = " + tup);
+                System.out.println("p = " + p);
+                if (p != null && tup.getPrivilege() != null && p.equals(tup.getPrivilege())) {
+                    found = true;
+                }
+            }
+            if (!found) {
+                addWebUserPrivileges(current,p);
+            }
+        }
+
+        userps = userPrivilegeList(current);
+
+        for (UserPrivilege tup : userps) {
+            boolean found = false;
+            for (Privilege p : tps) {
+                if (p != null && tup.getPrivilege() != null && p.equals(tup.getPrivilege())) {
+                    found = true;
+                }
+            }
+            if (!found) {
+                tup.setRetired(true);
+                tup.setRetiredAt(new Date());
+                tup.setRetiredBy(loggedUser);
+                getUserPrivilegeFacade().edit(tup);
+            }
+        }
+        return "/webUser/manage_users";
     }
 
     public String updateMyDetails() {
@@ -1029,7 +1139,7 @@ public class WebUserController implements Serializable {
     }
 
     public List<Institution> getLoggableInstitutions() {
-        if(loggableInstitutions==null){
+        if (loggableInstitutions == null) {
             loggableInstitutions = findAutherizedInstitutions();
         }
         return loggableInstitutions;
@@ -1046,8 +1156,6 @@ public class WebUserController implements Serializable {
     public void setFile(UploadedFile file) {
         this.file = file;
     }
-    
-    
 
     @FacesConverter(forClass = WebUser.class)
     public static class WebUserControllerConverter implements Converter {
