@@ -230,12 +230,12 @@ public class WebUserController implements Serializable {
 
         TreeNode clientManagement = new PrivilegeTreeNode("Client Management", allPrivilegeRoot, Privilege.Client_Management);
         TreeNode encounterManagement = new PrivilegeTreeNode("Encounter Management", allPrivilegeRoot, Privilege.Encounter_Management);
-        TreeNode appointmentManagement = new PrivilegeTreeNode("Appointment Management", allPrivilegeRoot,Privilege.Appointment_Management);
-        TreeNode labManagement = new PrivilegeTreeNode("Lab Management", allPrivilegeRoot,Privilege.Lab_Management);
-        TreeNode pharmacyManagement = new PrivilegeTreeNode("Pharmacy Management", allPrivilegeRoot,Privilege.Pharmacy_Management);
+        TreeNode appointmentManagement = new PrivilegeTreeNode("Appointment Management", allPrivilegeRoot, Privilege.Appointment_Management);
+        TreeNode labManagement = new PrivilegeTreeNode("Lab Management", allPrivilegeRoot, Privilege.Lab_Management);
+        TreeNode pharmacyManagement = new PrivilegeTreeNode("Pharmacy Management", allPrivilegeRoot, Privilege.Pharmacy_Management);
         TreeNode user = new PrivilegeTreeNode("User", allPrivilegeRoot, Privilege.Manage_Users);
-        TreeNode institutionAdministration = new PrivilegeTreeNode("Institution Administration", allPrivilegeRoot,Privilege.Institution_Administration);
-        TreeNode systemAdministration = new PrivilegeTreeNode("System Administration", allPrivilegeRoot,Privilege.System_Administration);
+        TreeNode institutionAdministration = new PrivilegeTreeNode("Institution Administration", allPrivilegeRoot, Privilege.Institution_Administration);
+        TreeNode systemAdministration = new PrivilegeTreeNode("System Administration", allPrivilegeRoot, Privilege.System_Administration);
         //Client Management
 
         TreeNode add_Client = new PrivilegeTreeNode("Add_Client", clientManagement, Privilege.Add_Client);
@@ -458,6 +458,157 @@ public class WebUserController implements Serializable {
 
     }
 
+    List<Privilege> getInitialPrivileges(WebUserRole role) {
+        List<Privilege> wups = new ArrayList<>();
+        if (role == null) {
+            return wups;
+        }
+        switch (role) {
+
+            case Client:
+            case Midwife:
+                //Menu
+                wups.add(Privilege.Client_Management);
+                wups.add(Privilege.Encounter_Management);
+                wups.add(Privilege.Appointment_Management);
+                wups.add(Privilege.Lab_Management);
+                wups.add(Privilege.Pharmacy_Management);
+                wups.add(Privilege.User);
+                //Client Management
+                wups.add(Privilege.Add_Client);
+                wups.add(Privilege.Search_any_Client_by_IDs);
+                wups.add(Privilege.Search_any_Client_by_Details);
+                wups.add(Privilege.Search_any_client_by_ID_of_Authorised_Areas);
+                wups.add(Privilege.Search_any_client_by_Details_of_Authorised_Areas);
+                wups.add(Privilege.Search_any_client_by_ID_of_Authorised_Institutions);
+                wups.add(Privilege.Search_any_client_by_Details_of_Authorised_Institutions);
+                break;
+            case Nurse:
+                //Menu
+                wups.add(Privilege.Client_Management);
+                wups.add(Privilege.Encounter_Management);
+                wups.add(Privilege.Appointment_Management);
+                wups.add(Privilege.Lab_Management);
+                wups.add(Privilege.Pharmacy_Management);
+                wups.add(Privilege.User);
+                //Client Management
+                wups.add(Privilege.Add_Client);
+                wups.add(Privilege.Search_any_Client_by_IDs);
+                wups.add(Privilege.Search_any_Client_by_Details);
+                wups.add(Privilege.Search_any_client_by_ID_of_Authorised_Areas);
+                wups.add(Privilege.Search_any_client_by_Details_of_Authorised_Areas);
+                wups.add(Privilege.Search_any_client_by_ID_of_Authorised_Institutions);
+                wups.add(Privilege.Search_any_client_by_Details_of_Authorised_Institutions);
+                break;
+            case Doctor:
+                //Menu
+                wups.add(Privilege.Client_Management);
+                wups.add(Privilege.Encounter_Management);
+                wups.add(Privilege.Appointment_Management);
+                wups.add(Privilege.Lab_Management);
+                wups.add(Privilege.Pharmacy_Management);
+                wups.add(Privilege.User);
+                //Client Management
+                wups.add(Privilege.Add_Client);
+                wups.add(Privilege.Search_any_Client_by_IDs);
+                wups.add(Privilege.Search_any_Client_by_Details);
+                wups.add(Privilege.Search_any_client_by_ID_of_Authorised_Areas);
+                wups.add(Privilege.Search_any_client_by_Details_of_Authorised_Areas);
+                wups.add(Privilege.Search_any_client_by_ID_of_Authorised_Institutions);
+                wups.add(Privilege.Search_any_client_by_Details_of_Authorised_Institutions);
+                break;
+            case User:
+
+            case Institution_Administrator:
+                //Menu
+                wups.add(Privilege.User);
+                wups.add(Privilege.Institution_Administration);
+                //Institution Administration
+                wups.add(Privilege.Manage_Institution_Users);
+                wups.add(Privilege.Manage_Institution_Metadata);
+                wups.add(Privilege.Manage_Authorised_Areas);
+                wups.add(Privilege.Manage_Authorised_Institutions);
+                break;
+
+            case Institution_Super_User:
+                //Menu
+                wups.add(Privilege.User);
+                wups.add(Privilege.Institution_Administration);
+                //Institution Administration
+                wups.add(Privilege.Manage_Institution_Metadata);
+                wups.add(Privilege.Manage_Authorised_Areas);
+                wups.add(Privilege.Manage_Authorised_Institutions);
+                break;
+            case Institution_User:
+                //Menu
+                wups.add(Privilege.Client_Management);
+                wups.add(Privilege.Encounter_Management);
+                wups.add(Privilege.Appointment_Management);
+                wups.add(Privilege.Lab_Management);
+                wups.add(Privilege.Pharmacy_Management);
+                wups.add(Privilege.User);
+                //Client Management
+                wups.add(Privilege.Add_Client);
+                wups.add(Privilege.Search_any_Client_by_IDs);
+                wups.add(Privilege.Search_any_Client_by_Details);
+                wups.add(Privilege.Search_any_client_by_ID_of_Authorised_Areas);
+                wups.add(Privilege.Search_any_client_by_Details_of_Authorised_Areas);
+                wups.add(Privilege.Search_any_client_by_ID_of_Authorised_Institutions);
+                wups.add(Privilege.Search_any_client_by_Details_of_Authorised_Institutions);
+                break;
+            case Me_Admin:
+                wups.add(Privilege.User);
+                break;
+            case Me_Super_User:
+                wups.add(Privilege.User);
+                break;
+            case Me_User:
+                wups.add(Privilege.User);
+                break;
+            case Super_User:
+                wups.add(Privilege.User);
+                wups.add(Privilege.System_Administration);
+                //System Administration
+                wups.add(Privilege.Manage_Metadata);
+                wups.add(Privilege.Manage_Area);
+                wups.add(Privilege.Manage_Institutions);
+                wups.add(Privilege.Manage_Forms);
+                break;
+            case System_Administrator:
+                //Menu
+                wups.add(Privilege.Client_Management);
+                wups.add(Privilege.Encounter_Management);
+                wups.add(Privilege.Appointment_Management);
+                wups.add(Privilege.Lab_Management);
+                wups.add(Privilege.Pharmacy_Management);
+                wups.add(Privilege.User);
+                wups.add(Privilege.Institution_Administration);
+                wups.add(Privilege.System_Administration);
+                //Client Management
+                wups.add(Privilege.Add_Client);
+                wups.add(Privilege.Search_any_Client_by_IDs);
+                wups.add(Privilege.Search_any_Client_by_Details);
+                wups.add(Privilege.Search_any_client_by_ID_of_Authorised_Areas);
+                wups.add(Privilege.Search_any_client_by_Details_of_Authorised_Areas);
+                wups.add(Privilege.Search_any_client_by_ID_of_Authorised_Institutions);
+                wups.add(Privilege.Search_any_client_by_Details_of_Authorised_Institutions);
+                //Institution Administration
+                wups.add(Privilege.Manage_Institution_Users);
+                wups.add(Privilege.Manage_Institution_Metadata);
+                wups.add(Privilege.Manage_Authorised_Areas);
+                wups.add(Privilege.Manage_Authorised_Institutions);
+                //System Administration
+                wups.add(Privilege.Manage_Users);
+                wups.add(Privilege.Manage_Metadata);
+                wups.add(Privilege.Manage_Area);
+                wups.add(Privilege.Manage_Institutions);
+                wups.add(Privilege.Manage_Forms);
+                break;
+        }
+
+        return wups;
+    }
+
     public void addAllWebUserPrivileges(WebUser u) {
         List<Privilege> ps = Arrays.asList(Privilege.values());
         addWebUserPrivileges(u, ps);
@@ -585,6 +736,7 @@ public class WebUserController implements Serializable {
             current.setCreatedAt(new Date());
             current.setCreater(loggedUser);
             getFacade().create(current);
+            addWebUserPrivileges(current, getInitialPrivileges(current.getWebUserRole()));
             JsfUtil.addSuccessMessage(("A new User Created Successfully."));
         } catch (Exception e) {
             JsfUtil.addErrorMessage(e, ("Error Occured. Please change username and try again."));
@@ -643,7 +795,7 @@ public class WebUserController implements Serializable {
                 }
             }
             if (!found) {
-                addWebUserPrivileges(current,p);
+                addWebUserPrivileges(current, p);
             }
         }
 
