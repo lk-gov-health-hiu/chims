@@ -170,43 +170,48 @@
                                                                         <h4>Allergies</h4>
 
                                                                         <ul>
-                                                                            <ui:repeat value="#{clientEncounterComponentFormSetController.fillClientValues(clientController.selected, 'client_drug_allergy')}"
+                                                                            <ui:repeat value="#{clientEncounterComponentFormSetController.fillClientValues(clientController.selected, 'client_allergic_to_medicine')}"
                                                                                        var="a" >
-                                                                                <li>${a.item.name}</li>
+                                                                                <li>${a.itemValue.name}</li>
                                                                             </ui:repeat>
-
-                                                                            <li>Paracetamol</li>
                                                                         </ul>
 
                                                                     </div>
                                                                     <div class="icon">
                                                                         <i class="fas fa-allergies"></i>
                                                                     </div>
-                                                                    <a href="#" class="small-box-footer">Add New <i class="fas fa-arrow-circle-right"></i></a>
+                                                                    <a href="#" class="small-box-footer">Manage Allergies<i class="fas fa-arrow-circle-right"></i></a>
                                                                 </div>
                                                             </div>
                                                             <div class="col-lg-6 col-12">
                                                                 <div class="small-box bg-info">
                                                                     <div class="inner">
                                                                         <h4>Recent Clinic visits</h4>
-
-                                                                        <ul>
-                                                                            <li>2019-08-11 </li>
-                                                                            <li>2019-05-21</li>
-                                                                            <li>2019-02-11</li>
-                                                                        </ul>
-
-
-
-
-
-
-
+                                                                        <h:form>
+                                                                            <ul>
+                                                                                <ui:repeat value="#{clientEncounterComponentFormSetController.filluncompletedEncountersFormSets('Clinic_Visit',3)}" var="rcv" >
+                                                                                    <li>
+                                                                                        <h:commandLink action="#{clientEncounterComponentFormSetController.toViewFormset()}">
+                                                                                            <h:outputLabel value="#{rcv.name}">
+                                                                                            </h:outputLabel>
+                                                                                            <h:outputLabel value="&nbsp;on&nbsp;" ></h:outputLabel>
+                                                                                            <p:outputLabel value="#{rcv.encounter.encounterDate}" >
+                                                                                                <f:convertDateTime pattern="dd MMMM yyyy" ></f:convertDateTime>
+                                                                                            </p:outputLabel>
+                                                                                            <h:outputLabel value="&nbsp;at&nbsp;" ></h:outputLabel>
+                                                                                            <p:outputLabel value="#{rcv.institution.name}" >
+                                                                                            </p:outputLabel>
+                                                                                            <f:setPropertyActionListener value="#{rcv}" target="#{clientEncounterComponentFormSetController.selected}" ></f:setPropertyActionListener>
+                                                                                        </h:commandLink>
+                                                                                    </li>
+                                                                                </ui:repeat>
+                                                                            </ul>
+                                                                        </h:form>
                                                                     </div>
                                                                     <div class="icon">
                                                                         <i class="fas fa-clinic-medical"></i>
                                                                     </div>
-                                                                    <a href="#" class="small-box-footer">Add New <i class="fas fa-arrow-circle-right"></i></a>
+                                                                    <a href="#" class="small-box-footer">More<i class="fas fa-arrow-circle-right"></i></a>
                                                                 </div>
                                                             </div>
                                                         </div> 
@@ -223,7 +228,7 @@
                                                                         </div>
                                                                     </div>
 
-                                                                    <a href="#" class="small-box-footer">Add New <i class="fas fa-arrow-circle-right"></i></a>
+                                                                    <a href="#" class="small-box-footer">View Details<i class="fas fa-arrow-circle-right"></i></a>
                                                                 </div>
                                                             </div>
                                                             <div class="col-lg-6 col-12">
@@ -236,7 +241,7 @@
                                                                     <div class="icon">
                                                                         <i class="fas fa-clinic-medical"></i>
                                                                     </div>
-                                                                    <a href="#" class="small-box-footer">Add New <i class="fas fa-arrow-circle-right"></i></a>
+                                                                    <a href="#" class="small-box-footer">View Details<i class="fas fa-arrow-circle-right"></i></a>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -253,7 +258,7 @@
                                                                     <div class="icon">
                                                                         <i class="fas fa-procedures"></i>
                                                                     </div>
-                                                                    <a href="#" class="small-box-footer">Add New <i class="fas fa-arrow-circle-right"></i></a>
+                                                                    <a href="#" class="small-box-footer">View Details<i class="fas fa-arrow-circle-right"></i></a>
                                                                 </div>
                                                             </div>
                                                             <div class="col-lg-6 col-12">
@@ -266,7 +271,7 @@
                                                                     <div class="icon">
                                                                         <i class="fas fa-tablets"></i>
                                                                     </div>
-                                                                    <a href="#" class="small-box-footer">Add New <i class="fas fa-arrow-circle-right"></i></a>
+                                                                    <a href="#" class="small-box-footer">Manage Medications<i class="fas fa-arrow-circle-right"></i></a>
                                                                 </div>
                                                             </div>
 
@@ -289,6 +294,23 @@
                                                             </div>
                                                             <!-- /.card-header -->
                                                             <div class="card-body">
+
+                                                                <h:form >
+
+                                                                    <h:selectOneMenu value="#{clientController.selectedClinic}" >
+                                                                        <f:selectItem itemLabel="Select the clinic" ></f:selectItem>
+                                                                        <f:selectItems value="#{institutionController.myClinics}" 
+                                                                                       var="shlc" itemValue="#{shlc}" itemLabel="#{shlc.name}"></f:selectItems>
+                                                                    </h:selectOneMenu>
+
+                                                                    <p:commandButton action="#{institutionController.refreshMyInstitutions()}" ajax="false" 
+                                                                                     rendered="false"     icon="ui-icon-arrowrefresh-1-n" ></p:commandButton>
+
+                                                                    <p:spacer height="1" width="10" ></p:spacer>
+                                                                    <p:commandButton value="Enroll" ajax="false" action="#{clientController.enrollInClinic()}" ></p:commandButton>
+
+                                                                </h:form>
+
                                                             </div>
                                                         </div>
                                                         <div class="card card-primary">
@@ -297,6 +319,36 @@
                                                             </div>
                                                             <!-- /.card-header -->
                                                             <div class="card-body">
+
+
+                                                                <h:form >
+
+
+                                                                    <p:dataTable id="tblClinics" value="#{clientController.selectedClientsClinics}" var="chlce" >
+                                                                        <p:column headerText="Clinic" >
+                                                                            <p:outputLabel value="#{chlce.institution.name}" ></p:outputLabel>
+                                                                        </p:column>
+                                                                        <p:column headerText="Number" >
+                                                                            <p:outputLabel value="#{chlce.encounterNumber}" ></p:outputLabel>
+                                                                        </p:column>
+                                                                        <p:column headerText="New Encounter" >
+                                                                            <h:dataTable value="#{designComponentFormSetController.getClinicFormSets(chlce.institution)}"
+                                                                                         var="cfs"  border="0" >
+                                                                                <h:column >
+                                                                                    <p:commandLink id="btnNewFormset" value="New #{cfs.name}" process="@this" update="@all"
+                                                                                                   action="#{clientEncounterComponentFormSetController.createAndNavigateToClinicalEncounterComponentFormSetFromDesignComponentFormSetForClinicVisit(cfs)}" >
+                                                                                    </p:commandLink>
+                                                                                    <p:blockUI block=":#{p:component('tblClinics')}" trigger="btnNewFormset" >
+                                                                                        LOADING Patient data.<br/>
+                                                                                        Please wait.<br/>
+                                                                                        <p:graphicImage library="image" name="loading.gif" ></p:graphicImage>
+                                                                                    </p:blockUI>
+                                                                                </h:column>
+                                                                            </h:dataTable>
+                                                                        </p:column>
+                                                                    </p:dataTable>
+                                                                </h:form>
+
                                                             </div>
                                                         </div>
 
@@ -539,36 +591,7 @@
                                     </p:tab>
 
                                     <p:tab title="Clinics" >
-                                        <h:form >
 
-
-                                            <p:dataTable id="tblClinics" value="#{clientController.selectedClientsClinics}" var="chlce" >
-                                                <f:facet name="header" >
-                                                    <p:outputLabel value="Current Clinics" ></p:outputLabel>
-                                                </f:facet>
-                                                <p:column headerText="Clinic" >
-                                                    <p:outputLabel value="#{chlce.institution.name}" ></p:outputLabel>
-                                                </p:column>
-                                                <p:column headerText="Number" >
-                                                    <p:outputLabel value="#{chlce.encounterNumber}" ></p:outputLabel>
-                                                </p:column>
-                                                <p:column headerText="New Encounter" >
-                                                    <h:dataTable value="#{designComponentFormSetController.getClinicFormSets(chlce.institution)}"
-                                                                 var="cfs"  border="0" >
-                                                        <h:column >
-                                                            <p:commandLink id="btnNewFormset" value="New #{cfs.name}" process="@this" update="@all"
-                                                                           action="#{clientEncounterComponentFormSetController.createAndNavigateToClinicalEncounterComponentFormSetFromDesignComponentFormSetForClinicVisit(cfs)}" >
-                                                            </p:commandLink>
-                                                            <p:blockUI block=":#{p:component('tblClinics')}" trigger="btnNewFormset" >
-                                                                LOADING Patient data.<br/>
-                                                                Please wait.<br/>
-                                                                <p:graphicImage library="image" name="loading.gif" ></p:graphicImage>
-                                                            </p:blockUI>
-                                                        </h:column>
-                                                    </h:dataTable>
-                                                </p:column>
-                                            </p:dataTable>
-                                        </h:form>
                                     </p:tab>
 
                                     <p:tab title="Actions">
