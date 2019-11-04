@@ -294,11 +294,10 @@ public class RelationshipController implements Serializable {
         m.put("a", relArea.getId());
         m.put("t", relType);
         j += " order by r.id desc";
-        System.out.println("j = " + j);
-        System.out.println("m = " + m);
+        //System.out.println("j = " + j);
+        //System.out.println("m = " + m);
         
         Relationship r = getFacade().findFirstByJpql(j, m);
-        System.out.println("r = " + r);
         if(r==null && create){
             r = new Relationship();
             r.setArea(relArea);

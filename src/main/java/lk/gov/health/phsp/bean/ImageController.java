@@ -63,18 +63,15 @@ public class ImageController implements Serializable {
     }
 
     public StreamedContent getClientPhoto() {
-        System.out.println("getClientPhoto");
         FacesContext context = FacesContext.getCurrentInstance();
         if (context.getRenderResponse()) {
-            System.out.println("render response");
             return new DefaultStreamedContent();
         } else {
-            System.out.println("getPatientController().getSelected() = " + getClientController().getSelected());
+            //System.out.println("getPatientController().getSelected() = " + getClientController().getSelected());
             if (getClientController().getSelected() == null) {
                 return new DefaultStreamedContent();
             }
             ClientEncounterComponentItem dp = clientEncounterComponentFormSetController.fillClientValue(getClientController().getSelected(), "client_default_photo");
-            System.out.println("dp = " + dp);
             if (dp == null) {
                 return new DefaultStreamedContent();
             }

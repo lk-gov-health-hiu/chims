@@ -228,41 +228,34 @@ public class AreaController implements Serializable {
             RelationshipType.Over_35_Male_Population,
             RelationshipType.Over_35_Population,};
         for (RelationshipType t : rts) {
-            System.out.println("t = " + t);
+            //System.out.println("t = " + t);
             Area sl = getNationalArea();
-            System.out.println("sl = " + sl);
+            //System.out.println("sl = " + sl);
             Relationship slr = getRelationshipController().findRelationship(sl, t, year, true);
-            System.out.println("slr = " + slr);
             Long pop = 0l;
             for (Area d : getDistricts()) {
-                System.out.println("d = " + d + " " + d.getId());
+                //System.out.println("d = " + d + " " + d.getId());
                 Relationship dr = getRelationshipController().findRelationship(d, t, year, false);
-                System.out.println("dr = " + dr);
                 if (dr != null) {
                     if (dr.getLongValue1() != null) {
-                        System.out.println("dr.getLongValue1() = " + dr.getLongValue1());
+                        //System.out.println("dr.getLongValue1() = " + dr.getLongValue1());
                         pop += dr.getLongValue1();
-                        System.out.println("pop = " + pop);
                     }
                 }
             }
             slr.setLongValue1(pop);
             getRelationshipController().save(slr);
             for (Area p : getProvinces()) {
-                System.out.println("p = " + p);
+                //System.out.println("p = " + p);
                 List<Area> pds = getAreas(AreaType.District, p);
                 Relationship pr = getRelationshipController().findRelationship(p, t, year, true);
-                System.out.println("pr = " + pr);
                 Long ppop = 0l;
                 for (Area d : pds) {
-                    System.out.println("d = " + d);
+                    //System.out.println("d = " + d);
                     Relationship pdr = getRelationshipController().findRelationship(d, t, year, false);
-                    System.out.println("pdr = " + pdr);
                     if (pdr != null) {
-                        System.out.println("pdr.getLongValue1() = " + pdr.getLongValue1());
                         if (pdr.getLongValue1() != null) {
                             ppop += pdr.getLongValue1();
-                            System.out.println("ppop = " + ppop);
                         }
                     }
                 }
@@ -564,7 +557,7 @@ public class AreaController implements Serializable {
 
                             if (gnEdCount == 2) {
                                 coordinatesText = gnEdNode.getTextContent().trim();
-//                                // System.out.println("coordinatesText = " + coordinatesText);
+//                                // //System.out.println("coordinatesText = " + coordinatesText);
                             }
 
                             if (gnEdNode.hasChildNodes()) {
@@ -728,7 +721,7 @@ public class AreaController implements Serializable {
 
                             if (gnEdCount == 2) {
                                 coordinatesText = gnEdNode.getTextContent().trim();
-//                                // System.out.println("coordinatesText = " + coordinatesText);
+//                                // //System.out.println("coordinatesText = " + coordinatesText);
                             }
 
                             if (gnEdNode.hasChildNodes()) {
@@ -786,7 +779,7 @@ public class AreaController implements Serializable {
 
                 gn = getAreaByName(gnAreaCode, AreaType.GN, false, null);
                 if (gn == null) {
-                    // System.out.println("GN = " + gn);
+                    // //System.out.println("GN = " + gn);
                     gn = new Area();
                     gn.setType(AreaType.GN);
                     gn.setCentreLatitude(Double.parseDouble(centreLat));
@@ -796,7 +789,7 @@ public class AreaController implements Serializable {
                     gn.setCode(gnAreaCode);
                     gn.setParentArea(moh);
                     getFacade().create(gn);
-                    // System.out.println("gn = " + gn);
+                    // //System.out.println("gn = " + gn);
                     coordinatesText = coordinatesText.replaceAll("[\\t\\n\\r]", " ");
                     addCoordinates(gn, coordinatesText);
                 } else {
@@ -1069,7 +1062,7 @@ public class AreaController implements Serializable {
             m.put("gpa", grandParentArea);
         }
         j += " order by a.name";
-        // System.out.println("m = " + m);
+        // //System.out.println("m = " + m);
         List<Area> areas = getFacade().findByJpql(j, m);
         return areas;
     }
@@ -1156,7 +1149,7 @@ public class AreaController implements Serializable {
             m.put("t", areaType);
         }
         j += " order by a.code";
-//        // System.out.println("m = " + m);
+//        // //System.out.println("m = " + m);
         Area ta = getFacade().findFirstByJpql(j, m);
         if (ta == null && createNew) {
             ta = new Area();
@@ -1187,7 +1180,7 @@ public class AreaController implements Serializable {
                 m.put("t", areaType);
             }
             j += " order by a.code";
-//            // System.out.println("m = " + m);
+//            // //System.out.println("m = " + m);
             Area ta = getFacade().findFirstByJpql(j, m);
             if (ta == null && createNew) {
                 ta = new Area();
@@ -1200,8 +1193,8 @@ public class AreaController implements Serializable {
             }
             return ta;
         } catch (Exception e) {
-            // System.out.println("e = " + e);
-            // System.out.println("code = " + code);
+            // //System.out.println("e = " + e);
+            // //System.out.println("code = " + code);
             return null;
         }
     }
