@@ -17,9 +17,8 @@
                         <p:panelGrid columns="2" rendered="#{webUserController.selected != null}" style="margin: auto; text-align: left;">
                             <f:facet name="header" >
                                 <p:commandButton actionListener="#{webUserController.update}" value="#{bundleClinical.Save}" />
-                                <p:commandButton value="Back" action="index"/>
+                                <p:commandButton value="Back" action="manage_users"/>
                             </f:facet>
-
 
                             <p:outputLabel value="Username" for="username" />
                             <p:inputText  id="username" value="#{webUserController.selected.name}" title="#{bundleClinical.EditWebUserTitle_name}"
@@ -40,26 +39,20 @@
                                 title="Name" />
 
 
-
-
-                            <p:outputLabel value="#{bundleClinical.EditWebUserLabel_institution}" for="institution" />
+                            <p:outputLabel value="Institution" for="institution" />
                             <p:autoComplete  id="institution" value="#{webUserController.selected.institution}" 
                                              completeMethod="#{institutionController.completeInstitutions}"
                                              var="i" itemLabel="#{i.name}" itemValue="#{i}">
                             </p:autoComplete >
 
-
-
-
-
-                            <p:outputLabel value="#{bundleClinical.EditWebUserLabel_email}" for="email" />
+                            <p:outputLabel value="Email" for="email" />
                             <p:inputText id="email" value="#{webUserController.selected.email}" title="#{bundleClinical.EditWebUserTitle_email}" />
 
-                            <p:outputLabel value="#{bundleClinical.EditWebUserLabel_telNo}" for="telNo" />
+                            <p:outputLabel value="Telephone No." for="telNo" />
                             <p:inputText id="telNo" value="#{webUserController.selected.telNo}" title="#{bundleClinical.EditWebUserTitle_telNo}" />
 
 
-                            <p:outputLabel value="#{bundleClinical.EditWebUserLabel_webUserRole}" for="webUserRole" />
+                            <p:outputLabel value="Role" for="webUserRole" />
                             <p:selectOneMenu  id="webUserRole" value="#{webUserController.selected.webUserRole}"  >
                                 <f:selectItems value="#{applicationController.webUserRoles}" ></f:selectItems>
                             </p:selectOneMenu>

@@ -72,40 +72,21 @@
                         </p:tab>
                         <p:tab title="Location" >
                             <p:panelGrid columns="2">
-                                <p:outputLabel value="GnArea:" for="gnArea" />
-                                <p:autoComplete id="gnArea" value="#{institutionController.selected.gnArea}"
-                                                completeMethod="#{areaController.completeGnAreas}"
-                                                var="gn" itemLabel="#{gn.name}" itemValue="#{gn}"
+                                <p:outputLabel value="Province:" for="province" />
+                                <p:autoComplete id="province" value="#{institutionController.selected.province}"
+                                                completeMethod="#{areaController.completeProvinces}"
+                                                var="province" itemLabel="#{province.name}" itemValue="#{province}"
                                                 maxResults="15" forceSelection="true"
                                                 minQueryLength="3">
                                 </p:autoComplete>
 
-
-                                <p:outputLabel value="PhmArea:" for="phmArea" />
-                                <p:autoComplete id="phmArea" value="#{institutionController.selected.phmArea}"
-                                                completeMethod="#{areaController.completeGnAreas}"
-                                                var="phm" itemLabel="#{phm.name}" itemValue="#{phm}"
+                                <p:outputLabel value="PDHS Area:" for="pdhsArea" />
+                                <p:autoComplete id="pdhsArea" value="#{institutionController.selected.pdhsArea}"
+                                                completeMethod="#{areaController.completePdhsAreas}"
+                                                var="pdhsArea" itemLabel="#{pdhsArea.name}" itemValue="#{pdhsArea}"
                                                 maxResults="15" forceSelection="true"
                                                 minQueryLength="3">
                                 </p:autoComplete>
-
-                                <p:outputLabel value="PhiArea:" for="phiArea" />
-                                <p:autoComplete id="phiArea" value="#{institutionController.selected.phiArea}"
-                                                completeMethod="#{areaController.completePhiAreas}"
-                                                var="phiArea" itemLabel="#{phiArea.name}" itemValue="#{phiArea}"
-                                                maxResults="15" forceSelection="true"
-                                                minQueryLength="3">
-                                </p:autoComplete>
-
-
-                                <p:outputLabel value="DsDivision:" for="dsDivision" />
-                                <p:autoComplete id="dsDivision" value="#{institutionController.selected.dsDivision}"
-                                                completeMethod="#{areaController.completeDsAreas}"
-                                                var="dsDivision" itemLabel="#{phiArea.dsDivision}" itemValue="#{dsDivision}"
-                                                maxResults="15" forceSelection="true"
-                                                minQueryLength="3">
-                                </p:autoComplete>
-
 
                                 <p:outputLabel value="District:" for="district" />
                                 <p:autoComplete id="district" value="#{institutionController.selected.district}"
@@ -115,7 +96,7 @@
                                                 minQueryLength="3">
                                 </p:autoComplete>
 
-                                <p:outputLabel value="RdhsArea:" for="rdhsArea" />
+                                <p:outputLabel value="RDHS Area:" for="rdhsArea" />
                                 <p:autoComplete id="rdhsArea" value="#{institutionController.selected.rdhsArea}"
                                                 completeMethod="#{areaController.completeRdhsAreas}"
                                                 var="rdhsArea" itemLabel="#{rdhsArea.name}" itemValue="#{rdhsArea}"
@@ -123,22 +104,50 @@
                                                 minQueryLength="3">
                                 </p:autoComplete>
 
-                                <p:outputLabel value="Province:" for="province" />
-                                <p:autoComplete id="province" value="#{institutionController.selected.province}"
-                                                completeMethod="#{areaController.completeProvinces}"
-                                                var="province" itemLabel="#{province.name}" itemValue="#{province}"
+                                <p:outputLabel value="DS Division:" for="dsDivision" />
+                                <p:autoComplete id="dsDivision" value="#{institutionController.selected.dsDivision}"
+                                                completeMethod="#{areaController.completeDsAreas}"
+                                                var="dsDivision" itemLabel="#{dsDivision.name}" itemValue="#{dsDivision}"
                                                 maxResults="15" forceSelection="true"
                                                 minQueryLength="3">
                                 </p:autoComplete>
 
-                                <p:outputLabel value="PdhsArea:" for="pdhsArea" />
-                                <p:autoComplete id="pdhsArea" value="#{institutionController.selected.pdhsArea}"
-                                                completeMethod="#{areaController.completePdhsAreas}"
-                                                var="pdhsArea" itemLabel="#{pdhsArea.name}" itemValue="#{pdhsArea}"
+                                <p:outputLabel value="MOH Area:" for="moh" />
+                                <p:autoComplete id="moh" value="#{institutionController.selected.mohArea}"
+                                                completeMethod="#{areaController.completeMoh}"
+                                                var="moh" itemLabel="#{moh.name}" itemValue="#{moh}"
                                                 maxResults="15" forceSelection="true"
                                                 minQueryLength="3">
                                 </p:autoComplete>
-                            </p:panelGrid>                            
+
+
+                                <p:outputLabel value="PHI Area:" for="phiArea" />
+                                <p:autoComplete id="phiArea" value="#{institutionController.selected.phiArea}"
+                                                completeMethod="#{areaController.completePhiAreas}"
+                                                var="phiArea" itemLabel="#{phiArea.name}" itemValue="#{phiArea}"
+                                                maxResults="15" forceSelection="true"
+                                                minQueryLength="3">
+                                </p:autoComplete>
+
+                                <p:outputLabel value="PHM Area:" for="phmArea" />
+                                <p:autoComplete id="phmArea" value="#{institutionController.selected.phmArea}"
+                                                completeMethod="#{areaController.completeGnAreas}"
+                                                var="phm" itemLabel="#{phm.name}" itemValue="#{phm}"
+                                                maxResults="15" forceSelection="true"
+                                                minQueryLength="3">
+                                </p:autoComplete>
+
+                                <p:outputLabel value="GN Area:" for="gnArea" />
+                                <p:autoComplete id="gnArea" value="#{institutionController.selected.gnArea}"
+                                                completeMethod="#{areaController.completeGnAreas}"
+                                                var="gn" itemLabel="#{gn.name}" itemValue="#{gn}"
+                                                maxResults="15" forceSelection="true"
+                                                minQueryLength="3">
+                                </p:autoComplete>
+
+
+                            </p:panelGrid>  
+
                         </p:tab>
                     </p:tabView>
 

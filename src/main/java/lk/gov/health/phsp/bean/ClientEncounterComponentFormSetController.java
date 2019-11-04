@@ -35,6 +35,7 @@ import lk.gov.health.phsp.entity.Item;
 import lk.gov.health.phsp.enums.ComponentSex;
 import lk.gov.health.phsp.enums.DataCompletionStrategy;
 import lk.gov.health.phsp.enums.DataPopulationStrategy;
+import lk.gov.health.phsp.enums.DataRepresentationType;
 import lk.gov.health.phsp.enums.EncounterType;
 import lk.gov.health.phsp.facade.ClientEncounterComponentItemFacade;
 import lk.gov.health.phsp.facade.ClientFacade;
@@ -144,6 +145,7 @@ public class ClientEncounterComponentFormSetController implements Serializable {
 
     }
 
+    //TODO:Save Values to client Component
     public void updateToClientValue(ClientEncounterComponentItem vi) {
         // System.out.println("updateToClientValue");
         // System.out.println("vi = " + vi);
@@ -175,9 +177,10 @@ public class ClientEncounterComponentFormSetController implements Serializable {
         String j = "select vi from ClientEncounterComponentItem vi where vi.retired=false "
                 + " and vi.client=:c "
                 + " and vi.item=:i "
+                + " and vi.dataRepresentationType=:r "
                 + " order by vi.id desc";
         Map m = new HashMap();
-
+        m.put("r", DataRepresentationType.Client);
         m.put("c", c);
         m.put("i", vi.getItem());
 
@@ -191,6 +194,7 @@ public class ClientEncounterComponentFormSetController implements Serializable {
             ti.setCreatedBy(webUserController.getLoggedUser());
             ti.setClient(c);
             ti.setSelectionDataType(vi.getSelectionDataType());
+            ti.setDataRepresentationType(DataRepresentationType.Client);
             getItemFacade().create(ti);
         } else {
             ti.setLastEditBy(webUserController.getLoggedUser());
@@ -428,8 +432,20 @@ public class ClientEncounterComponentFormSetController implements Serializable {
     }
 
     public String createAndNavigateToClinicalEncounterComponentFormSetFromDesignComponentFormSetForClinicVisit(DesignComponentFormSet dfs) {
+
+        System.out.println("Time at start of createAndNavigateToClinicalEncounterComponentFormSetFromDesignComponentFormSetForClinicVisit " + (new Date().getTime()) / 1000);
+
         String navigationLink = "/clientEncounterComponentFormSet/Formset";
         formEditable = true;
+
+        if (clientController.getSelected() == null) {
+            JsfUtil.addErrorMessage("Please select a client");
+            return "";
+        }
+
+        Map<String, ClientEncounterComponentItem> mapOfClientValues = getClientValues(clientController.getSelected());
+
+        System.out.println("Time after getting client value map " + (new Date().getTime()) / 1000);
 
         Date d = new Date();
         Encounter e = new Encounter();
@@ -447,6 +463,8 @@ public class ClientEncounterComponentFormSetController implements Serializable {
 
         encounterController.save(e);
 
+        System.out.println("Time after saving new Encounter " + (new Date().getTime()) / 1000);
+
         ClientEncounterComponentFormSet cfs = new ClientEncounterComponentFormSet();
 
         cfs.setEncounter(e);
@@ -463,9 +481,16 @@ public class ClientEncounterComponentFormSetController implements Serializable {
 
         getFacade().create(cfs);
 
+        System.out.println("Time after saving new Formset " + (new Date().getTime()) / 1000);
+
         List<DesignComponentForm> dfList = designComponentFormController.fillFormsofTheSelectedSet(dfs);
 
+        System.out.println("Time after filling formsets " + (new Date().getTime()) / 1000);
+
         for (DesignComponentForm df : dfList) {
+
+            System.out.println("Form " + df.getName() +" Start " + (new Date().getTime()) / 1000);
+
             boolean skipThisForm = false;
             if (df.getComponentSex() == ComponentSex.For_Females && clientController.getSelected().getPerson().getSex().getCode().equalsIgnoreCase("male")) {
                 skipThisForm = true;
@@ -490,12 +515,33 @@ public class ClientEncounterComponentFormSetController implements Serializable {
                 cf.setBackgroundColour(df.getBackgroundColour());
                 cf.setForegroundColour(df.getForegroundColour());
                 cf.setBorderColour(df.getBorderColour());
+                
+                
 
                 clientEncounterComponentFormController.save(cf);
 
+                System.out.println("Before Filling Items " + (new Date().getTime()) / 1000);
+
                 List<DesignComponentFormItem> diList = designComponentFormItemController.fillItemsOfTheForm(df);
 
+                System.out.println("After Filling Items " + (new Date().getTime()) / 1000);
+
+                List<DesignComponentFormItem> diListMultiple = new ArrayList<>();
+                List<DesignComponentFormItem> diListSingle = new ArrayList<>();
+
                 for (DesignComponentFormItem di : diList) {
+                    if (di.isMultipleEntiesPerForm()) {
+                        diListMultiple.add(di);
+                    } else {
+                        diListSingle.add(di);
+                    }
+                }
+
+                System.out.println("After Sorting Items " + (new Date().getTime()) / 1000);
+
+                for (DesignComponentFormItem di : diListSingle) {
+
+                    System.out.println("Before Item start in Single " + (new Date().getTime()) / 1000);
 
                     boolean skipThisItem = false;
                     if (di.getComponentSex() == ComponentSex.For_Females && clientController.getSelected().getPerson().getSex().getCode().equalsIgnoreCase("male")) {
@@ -552,69 +598,221 @@ public class ClientEncounterComponentFormSetController implements Serializable {
                         ci.setDisplayDetailsBox(di.isDisplayDetailsBox());
                         ci.setDiscreptionAsAToolTip(di.isDiscreptionAsAToolTip());
 
-                        System.out.println("di.isDiscreptionAsASideLabel() = " + di.isDiscreptionAsASideLabel());
-
+                        // System.out.println("di.isDiscreptionAsASideLabel() = " + di.isDiscreptionAsASideLabel());
                         ci.setDiscreptionAsASideLabel(di.isDiscreptionAsASideLabel());
 
-                        System.out.println("ci.isDiscreptionAsASideLabel() = " + ci.isDiscreptionAsASideLabel());
-
+                        // System.out.println("ci.isDiscreptionAsASideLabel() = " + ci.isDiscreptionAsASideLabel());
                         ci.setCalculationScriptForBackgroundColour(di.getCalculationScriptForBackgroundColour());
                         ci.setMultipleEntiesPerForm(di.isMultipleEntiesPerForm());
 
-                        clientEncounterComponentItemController.save(ci);
+                        ci.setDataRepresentationType(DataRepresentationType.Encounter);
                         
+                        clientEncounterComponentItemController.save(ci);
+
                         if (ci.getDataPopulationStrategy() == DataPopulationStrategy.From_Client_Value) {
-                            updateFromClientValue(ci);
-                            updateToClientValue(ci);
+                            updateFromClientValueSingle(ci, e.getClient(), mapOfClientValues);
                         } else if (ci.getDataPopulationStrategy() == DataPopulationStrategy.From_Last_Encounter) {
                             updateFromLastEncounter(ci);
                         }
 
                         clientEncounterComponentItemController.save(ci);
 
-                        System.out.println("ci.isDiscreptionAsASideLabel() = " + ci.isDiscreptionAsASideLabel());
+                        // System.out.println("ci.isDiscreptionAsASideLabel() = " + ci.isDiscreptionAsASideLabel());
                     }
+
+                    System.out.println("After Item End in Single " + (new Date().getTime()) / 1000);
+                }
+
+                for (DesignComponentFormItem di : diListMultiple) {
+
+                    System.out.println("Before Item start in Multiple " + (new Date().getTime()) / 1000);
+
+                    boolean skipThisItem = false;
+                    if (di.getComponentSex() == ComponentSex.For_Females && clientController.getSelected().getPerson().getSex().getCode().equalsIgnoreCase("male")) {
+                        skipThisItem = true;
+                    }
+                    if (di.getComponentSex() == ComponentSex.For_Males && clientController.getSelected().getPerson().getSex().getCode().equalsIgnoreCase("female")) {
+                        skipThisItem = true;
+                    }
+
+                    if (!skipThisItem) {
+
+                        ClientEncounterComponentItem ci = new ClientEncounterComponentItem();
+
+                        ci.setEncounter(e);
+                        ci.setInstitution(dfs.getInstitution());
+
+                        ci.setItemFormset(cfs);
+                        ci.setItemEncounter(e);
+                        ci.setItemClient(e.getClient());
+
+                        ci.setItem(di.getItem());
+                        ci.setDescreption(di.getDescreption());
+
+                        ci.setRequired(di.isRequired());
+                        ci.setRequiredErrorMessage(di.getRequiredErrorMessage());
+                        ci.setRegexValidationString(di.getRegexValidationString());
+                        ci.setRegexValidationFailedMessage(di.getRegexValidationFailedMessage());
+
+                        ci.setReferenceComponent(di);
+                        ci.setParentComponent(cf);
+                        ci.setName(di.getName());
+                        ci.setRenderType(di.getRenderType());
+                        ci.setMimeType(di.getMimeType());
+                        ci.setSelectionDataType(di.getSelectionDataType());
+                        ci.setTopPercent(di.getTopPercent());
+                        ci.setLeftPercent(di.getLeftPercent());
+                        ci.setWidthPercent(di.getWidthPercent());
+                        ci.setHeightPercent(di.getHeightPercent());
+                        ci.setCategoryOfAvailableItems(di.getCategoryOfAvailableItems());
+                        ci.setOrderNo(di.getOrderNo());
+                        ci.setDataPopulationStrategy(di.getDataPopulationStrategy());
+                        ci.setDataModificationStrategy(di.getDataModificationStrategy());
+                        ci.setDataCompletionStrategy(di.getDataCompletionStrategy());
+                        ci.setIntHtmlColor(di.getIntHtmlColor());
+                        ci.setHexHtmlColour(di.getHexHtmlColour());
+
+                        ci.setForegroundColour(di.getForegroundColour());
+                        ci.setBackgroundColour(di.getBackgroundColour());
+                        ci.setBorderColour(di.getBorderColour());
+
+                        ci.setCalculateOnFocus(di.isCalculateOnFocus());
+                        ci.setCalculationScript(di.getCalculationScript());
+
+                        ci.setCalculateButton(di.isCalculateButton());
+                        ci.setCalculationScriptForColour(di.getCalculationScriptForColour());
+                        ci.setDisplayDetailsBox(di.isDisplayDetailsBox());
+                        ci.setDiscreptionAsAToolTip(di.isDiscreptionAsAToolTip());
+
+                        // System.out.println("di.isDiscreptionAsASideLabel() = " + di.isDiscreptionAsASideLabel());
+                        ci.setDiscreptionAsASideLabel(di.isDiscreptionAsASideLabel());
+
+                        // System.out.println("ci.isDiscreptionAsASideLabel() = " + ci.isDiscreptionAsASideLabel());
+                        ci.setCalculationScriptForBackgroundColour(di.getCalculationScriptForBackgroundColour());
+                        ci.setMultipleEntiesPerForm(di.isMultipleEntiesPerForm());
+
+                        ci.setDataRepresentationType(DataRepresentationType.Encounter);
+                        
+                        clientEncounterComponentItemController.save(ci);
+
+                        if (di.getDataPopulationStrategy() == DataPopulationStrategy.From_Client_Value) {
+                            updateFromClientValueMultiple(ci, e.getClient());
+                        } else if (di.getDataPopulationStrategy() == DataPopulationStrategy.From_Last_Encounter) {
+                            //TODO: Create Logic to Populate
+//                            updateFromLastEncounter();
+                        }
+
+                    }
+
+                    System.out.println("After Item End in Single " + (new Date().getTime()) / 1000);
                 }
 
             }
+
+            System.out.println("Form " + df.getName() +" Start " + (new Date().getTime()) / 1000);
         }
 
         selected = cfs;
         return navigationLink;
     }
 
-    
     public List<ClientEncounterComponentItem> fillClientValues(Client c, String code) {
         Item i = itemController.findItemByCode(code);
-        if(i==null){
+        if (i == null) {
             return new ArrayList<>();
         }
         String j = "select vi from ClientEncounterComponentItem vi where vi.retired=false "
                 + " and vi.client=:c "
-                + " and vi.item=:i "
+                + " and vi.item.code=:i "
+                + " and vi.dataRepresentationType=:r "
                 + " order by vi.id desc";
         Map m = new HashMap();
         m.put("c", c);
-        m.put("i", i);
+        m.put("i", i.getCode());
+        m.put("r", DataRepresentationType.Client);
         return getItemFacade().findByJpql(j, m);
     }
-    
-    public void updateFromClientValue(ClientEncounterComponentItem ti) {
-        if (ti == null) {
-            return;
+
+    public List<ClientEncounterComponentItem> updateFromClientValueMultiple(ClientEncounterComponentItem ti, Client c) {
+
+        List<ClientEncounterComponentItem> listOfClientItems = new ArrayList<>();
+
+        String code = ti.getItem().getCode();
+
+        ClientEncounterComponentItem vi;
+        List<ClientEncounterComponentItem> vis;
+        String j = "select vi from ClientEncounterComponentItem vi where vi.retired=false "
+                + " and vi.client=:c "
+                + " and vi.item.code=:i "
+                + " and vi.dataRepresentationType=:r "
+                + " order by vi.id desc";
+        Map m = new HashMap();
+        m.put("c", ti.getEncounter().getClient());
+        m.put("i", ti.getItem().getCode());
+        m.put("r", DataRepresentationType.Client);
+        vis = getItemFacade().findByJpql(j, m);
+        if (vis == null || vis.isEmpty()) {
+            vis = new ArrayList<>();
         }
-        Client c;
-        if (ti.getEncounter() == null && ti.getClient() == null) {
-            return;
-        } else if (ti.getEncounter() != null && ti.getClient() == null) {
-            if (ti.getEncounter().getClient() == null) {
-                return;
+        Double positionIncrement = ti.getOrderNo();
+        int temIndex = 0;
+        for (ClientEncounterComponentItem tvi : vis) {
+            if (temIndex == 0) {
+                ti.setDateValue(tvi.getDateValue());
+                ti.setShortTextValue(tvi.getShortTextValue());
+                ti.setLongTextValue(tvi.getLongTextValue());
+                ti.setItemValue(tvi.getItemValue());
+                ti.setAreaValue(tvi.getAreaValue());
+                ti.setItemValue(tvi.getItemValue());
+                ti.setInstitution(tvi.getInstitutionValue());
+                ti.setPrescriptionValue(tvi.getPrescriptionValue());
+                ti.setOrderNo(positionIncrement);
+                getItemFacade().edit(ti);
+                listOfClientItems.add(ti);
             } else {
-                c = ti.getEncounter().getClient();
+                ClientEncounterComponentItem nti = SerializationUtils.clone(ti);
+                nti.setDateValue(tvi.getDateValue());
+                nti.setShortTextValue(tvi.getShortTextValue());
+                nti.setLongTextValue(tvi.getLongTextValue());
+                nti.setItemValue(tvi.getItemValue());
+                nti.setAreaValue(tvi.getAreaValue());
+                nti.setItemValue(tvi.getItemValue());
+                nti.setInstitution(tvi.getInstitutionValue());
+                nti.setPrescriptionValue(tvi.getPrescriptionValue());
+                nti.setId(null);
+                nti.setOrderNo(positionIncrement);
+                getItemFacade().create(nti);
+                listOfClientItems.add(nti);
             }
-        } else {
-            c = ti.getClient();
+            positionIncrement += 0.0001;
+            temIndex++;
         }
+
+        if (listOfClientItems.isEmpty()) {
+            listOfClientItems.add(ti);
+        }
+
+        return listOfClientItems;
+    }
+
+    public Map<String, ClientEncounterComponentItem> getClientValues(Client c) {
+        List<ClientEncounterComponentItem> vis;
+        String j = "select vi from ClientEncounterComponentItem vi where vi.retired=false "
+                + " and vi.client=:c "
+                + " and vi.dataRepresentationType=:r ";
+        Map m = new HashMap();
+        m.put("c", c);
+        m.put("r", DataRepresentationType.Client);
+        vis = getItemFacade().findByJpql(j, m);
+        System.out.println("vis.size() = " + vis.size());
+        Map<String, ClientEncounterComponentItem> map = new HashMap();
+        for (ClientEncounterComponentItem vi : vis) {
+            map.put(vi.getCode(), vi);
+        }
+        return map;
+    }
+
+    public void updateFromClientValueSingle(ClientEncounterComponentItem ti, Client c, Map<String, ClientEncounterComponentItem> cvs) {
 
         String code = ti.getItem().getCode();
         switch (code) {
@@ -669,65 +867,21 @@ public class ClientEncounterComponentFormSetController implements Serializable {
         }
 
         ClientEncounterComponentItem vi;
-        List<ClientEncounterComponentItem> vis;
-        String j = "select vi from ClientEncounterComponentItem vi where vi.retired=false "
-                + " and vi.client=:c "
-                + " and vi.item=:i "
-                + " order by vi.id desc";
-        Map m = new HashMap();
-        m.put("c", ti.getEncounter().getClient());
-        m.put("i", ti.getItem());
-        if (ti.isMultipleEntiesPerForm()) {
-            vis = getItemFacade().findByJpql(j, m);
-            if (vis == null || vis.isEmpty()) {
-                return;
-            }
-            Double positionIncrement = ti.getOrderNo();
-            int temIndex = 0;
-            for (ClientEncounterComponentItem tvi : vis) {
-                if (temIndex == 0) {
-                    ti.setDateValue(tvi.getDateValue());
-                    ti.setShortTextValue(tvi.getShortTextValue());
-                    ti.setLongTextValue(tvi.getLongTextValue());
-                    ti.setItemValue(tvi.getItemValue());
-                    ti.setAreaValue(tvi.getAreaValue());
-                    ti.setItemValue(tvi.getItemValue());
-                    ti.setInstitution(tvi.getInstitutionValue());
-                    ti.setPrescriptionValue(tvi.getPrescriptionValue());
-                    ti.setOrderNo(positionIncrement);
-                    getItemFacade().edit(ti);
-                }else{
-                    ClientEncounterComponentItem nti = SerializationUtils.clone(ti);
-                    nti.setDateValue(tvi.getDateValue());
-                    nti.setShortTextValue(tvi.getShortTextValue());
-                    nti.setLongTextValue(tvi.getLongTextValue());
-                    nti.setItemValue(tvi.getItemValue());
-                    nti.setAreaValue(tvi.getAreaValue());
-                    nti.setItemValue(tvi.getItemValue());
-                    nti.setInstitution(tvi.getInstitutionValue());
-                    nti.setPrescriptionValue(tvi.getPrescriptionValue());
-                    nti.setId(null);
-                    nti.setOrderNo(positionIncrement);
-                    getItemFacade().create(nti);
-                }
-                positionIncrement += 0.0001;
-                temIndex++;
-            }
-        } else {
-            vi = getItemFacade().findFirstByJpql(j, m);
-            if (vi == null) {
-                return;
-            }
-            ti.setDateValue(vi.getDateValue());
-            ti.setShortTextValue(vi.getShortTextValue());
-            ti.setLongTextValue(vi.getLongTextValue());
-            ti.setItemValue(vi.getItemValue());
-            ti.setAreaValue(vi.getAreaValue());
-            ti.setItemValue(vi.getItemValue());
-            ti.setInstitution(vi.getInstitutionValue());
-            ti.setPrescriptionValue(vi.getPrescriptionValue());
-            getItemFacade().edit(ti);
+        vi = cvs.get(ti.getItem().getCode());
+
+        if (vi == null) {
+            return;
         }
+        ti.setDateValue(vi.getDateValue());
+        ti.setShortTextValue(vi.getShortTextValue());
+        ti.setLongTextValue(vi.getLongTextValue());
+        ti.setItemValue(vi.getItemValue());
+        ti.setAreaValue(vi.getAreaValue());
+        ti.setItemValue(vi.getItemValue());
+        ti.setInstitution(vi.getInstitutionValue());
+        ti.setPrescriptionValue(vi.getPrescriptionValue());
+        getItemFacade().edit(ti);
+
     }
 
     public void updateFromLastEncounter(ClientEncounterComponentItem ti) {
@@ -749,9 +903,12 @@ public class ClientEncounterComponentFormSetController implements Serializable {
 
         ClientEncounterComponentItem vi;
         String j = "select vi from ClientEncounterComponentItem vi where vi.retired=false "
-                + " and vi.encounter.client=:c order by vi.id desc";
+                + " and vi.encounter.client=:c "
+                + " and vi.dataRepresentationType=:r "
+                + " order by vi.id desc";
         Map m = new HashMap();
         m.put("c", ti.getEncounter().getClient());
+        m.put("r", DataRepresentationType.Encounter);
         vi = getItemFacade().findFirstByJpql(j, m);
 
         if (vi == null) {
@@ -832,8 +989,6 @@ public class ClientEncounterComponentFormSetController implements Serializable {
 
 // </editor-fold>    
 // <editor-fold defaultstate="collapsed" desc="Getters & Setters">
-    
-    
     public ClientEncounterComponentFormSet getSelected() {
         return selected;
     }

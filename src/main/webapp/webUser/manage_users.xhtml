@@ -11,10 +11,14 @@
         <ui:composition template="/template.xhtml">
 
             <ui:define name="content">
+                <h:form >
+                    <p:panelGrid style="height: 100%;text-align: center;" columns="2">
+                        <f:facet name="header" >
+                            <p:outputLabel value="User List" ></p:outputLabel>
+                            <p:commandButton ajax="false" value="Back" action="index" style="float: right;"/>
+                        </f:facet>
 
-                <p:panel header="User List" style="height: 100%;text-align: center;">
 
-                    <h:form >
                         <p:dataTable value="#{webUserController.items}" var="item"  
 
                                      rowKey="#{item.id}" 
@@ -26,16 +30,16 @@
                                      paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                                      rowsPerPageTemplate="10,20,25"
 
-                                    >
+                                     >
 
-                            <p:column>
+                            <p:column sortBy="#{item.person.name}" filterBy="#{item.person.name}" filterMatchMode="contains">
                                 <f:facet name="header">
                                     <h:outputText value="Name"/>
                                 </f:facet>
                                 <h:outputText value="#{item.person.name}"/>
                             </p:column>
 
-                            <p:column>
+                            <p:column sortBy="#{item.name}" filterBy="#{item.name}" filterMatchMode="contains">
                                 <f:facet name="header">
                                     <h:outputText value="Username"/>
                                 </f:facet>
@@ -43,19 +47,19 @@
                             </p:column>
 
 
-                            <p:column>
+                            <p:column sortBy="#{item.institution.name}" filterBy="#{item.institution.name}" filterMatchMode="contains">
                                 <f:facet name="header">
                                     <h:outputText value="Institution"/>
                                 </f:facet>
                                 <h:outputText value="#{item.institution.name}"/>
                             </p:column>
-                            <p:column>
+                            <p:column sortBy="#{item.email}" filterBy="#{item.email}" filterMatchMode="contains">
                                 <f:facet name="header">
                                     <h:outputText value="Email"/>
                                 </f:facet>
                                 <h:outputText value="#{item.email}"/>
                             </p:column>
-                            <p:column>
+                            <p:column sortBy="#{item.telNo}" filterBy="#{item.telNo}" filterMatchMode="contains">
                                 <f:facet name="header">
                                     <h:outputText value="Phone"/>
                                 </f:facet>
@@ -63,38 +67,41 @@
                             </p:column>
 
 
-                            <p:column>
+                            <p:column sortBy="#{item.webUserRole}" filterBy="#{item.webUserRole}" filterMatchMode="contains">
                                 <f:facet name="header">
                                     <h:outputText value="Role"/>
                                 </f:facet>
                                 <h:outputText value="#{item.webUserRole}"/>
                             </p:column>
 
-                            <p:column width="500">
+                            <p:column >
                                 <f:facet name="header">
                                     <h:outputText value="Actions"/>
                                 </f:facet>
-                                <h:panelGrid columns="3" >
-                                    <p:commandButton  value="Edit" ajax="false"
-                                                      action="#{webUserController.prepareEdit()}" >
-                                        <f:setPropertyActionListener value="#{item}" target="#{webUserController.current}" ></f:setPropertyActionListener>
-                                    </p:commandButton>
-                                     <p:commandButton  value="Privileges" ajax="false"
-                                                      action="privileges" >
-                                        <f:setPropertyActionListener value="#{item}" target="#{webUserController.current}" ></f:setPropertyActionListener>
-                                    </p:commandButton>
-                                    <p:commandButton  value="Password" ajax="false"
-                                                      action="#{webUserController.prepareEditPassword()}" >
-                                        <f:setPropertyActionListener value="#{item}" target="#{webUserController.current}" ></f:setPropertyActionListener>
-                                    </p:commandButton>
-                                </h:panelGrid>
+                                <p:commandLink  value="Edit" ajax="false"
+                                                action="#{webUserController.prepareEdit()}" >
+                                    <f:setPropertyActionListener value="#{item}" target="#{webUserController.current}" ></f:setPropertyActionListener>
+                                </p:commandLink>
+                                <p:spacer height="1" width="10" ></p:spacer>
+                                <p:commandLink  value="Privileges" ajax="false"
+                                                action="#{webUserController.toManagePrivileges()}" >
+                                    <f:setPropertyActionListener value="#{item}" 
+                                                                 target="#{webUserController.current}" >
+                                    </f:setPropertyActionListener>
+                                </p:commandLink>
+                                <p:spacer height="1" width="10" ></p:spacer>
+                                <p:commandLink  value="Password" ajax="false"
+                                                action="#{webUserController.prepareEditPassword()}" >
+                                    <f:setPropertyActionListener value="#{item}" target="#{webUserController.current}" ></f:setPropertyActionListener>
+                                </p:commandLink>
                             </p:column>
                         </p:dataTable>
-                    </h:form>
-
-                </p:panel>
 
 
+                    </p:panelGrid>
+                </h:form>
+                <br/>
+                <br/>
 
             </ui:define>
         </ui:composition>

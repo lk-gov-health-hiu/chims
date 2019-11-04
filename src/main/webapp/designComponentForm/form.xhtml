@@ -34,6 +34,12 @@
                                 <p:outputLabel value="Name:" for="name" />
                                 <p:inputText id="name" value="#{designComponentFormController.selected.name}" title="Name" />
 
+                                <p:outputLabel value="Formset:" for="formset" />
+                                <p:selectOneMenu id="formset" value="#{designComponentFormController.selected.parentComponent}" title="Name" >
+                                    <f:selectItems  value="#{designComponentFormSetController.items}" var="fs" itemLabel="#{fs.name}" itemValue="#{fs}" ></f:selectItems>
+                                </p:selectOneMenu>
+
+                                
                                 <p:outputLabel value="ComponentSex:" for="componentSex" />
                                 <p:selectOneMenu id="componentSex" 
                                                  value="#{designComponentFormController.selected.componentSex}" 
