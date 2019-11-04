@@ -243,7 +243,10 @@ public class ItemController implements Serializable {
                 + "Dictionary_Item::Has Drug Allergy:client_drug_allergy_exists:3" + System.lineSeparator()
                 + "Dictionary_Item::Is allergic to:client_allergic_to_medicine:3" + System.lineSeparator()
                 + "Dictionary_Item::Has Other Allergy:client_food_allergy_exists:3" + System.lineSeparator()
-                + "Dictionary_Item::Is allergic to:client_allergic_to:3" + System.lineSeparator();
+                + "Dictionary_Item::Is allergic to:client_allergic_to:3" + System.lineSeparator()
+                + "Dictionary_Item::Client's Default Photo:client_default_photo:3" + System.lineSeparator()
+                + "Dictionary_Item::Client's Photo:client_photo:3" + System.lineSeparator()
+                ;
 
         addInitialMetadata(initialData);
     }

@@ -720,6 +720,28 @@ public class ClientEncounterComponentFormSetController implements Serializable {
         return navigationLink;
     }
 
+    
+    public ClientEncounterComponentItem fillClientValue(Client c, String code) {
+        if (c ==null|| code==null) {
+            return null;
+        }
+        Item i = itemController.findItemByCode(code);
+        if (i == null) {
+            return null;
+        }
+        
+        String j = "select vi from ClientEncounterComponentItem vi where vi.retired=false "
+                + " and vi.client=:c "
+                + " and vi.item.code=:i "
+                + " and vi.dataRepresentationType=:r "
+                + " order by vi.id desc";
+        Map m = new HashMap();
+        m.put("c", c);
+        m.put("i", i.getCode());
+        m.put("r", DataRepresentationType.Client);
+        return getItemFacade().findFirstByJpql(j, m);
+    }
+    
     public List<ClientEncounterComponentItem> fillClientValues(Client c, String code) {
         System.out.println("fillClientValues");
         System.out.println("code = " + code);

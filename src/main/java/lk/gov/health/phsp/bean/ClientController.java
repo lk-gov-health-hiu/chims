@@ -70,6 +70,7 @@ public class ClientController implements Serializable {
     private YearMonthDay yearMonthDay;
     private Institution selectedClinic;
     private int profileTabActiveIndex;
+    private boolean goingToCaptureWebCamPhoto;
 
     // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="Constructors">
@@ -110,14 +111,20 @@ public class ClientController implements Serializable {
 
     // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="Functions">
+    public void prepareToCapturePhotoWithWebCam(){
+        goingToCaptureWebCamPhoto=true;
+    }
+    
+    public void finishCapturingPhotoWithWebCam(){
+        goingToCaptureWebCamPhoto=false;
+    }
+    
     public void onTabChange(TabChangeEvent event) {
 
         // System.out.println("profileTabActiveIndex = " + profileTabActiveIndex);
-
         TabView tabView = (TabView) event.getComponent();
 
         profileTabActiveIndex = tabView.getChildren().indexOf(event.getTab());
-
 
     }
 
@@ -294,7 +301,7 @@ public class ClientController implements Serializable {
         if (searchingId == null) {
             searchingId = "";
         }
-        
+
         selectedClients = listPatientsByIDs(searchingId.trim().toUpperCase());
 
         if (selectedClients == null || selectedClients.isEmpty()) {
@@ -588,6 +595,16 @@ public class ClientController implements Serializable {
     public EncounterController getEncounterController() {
         return encounterController;
     }
+
+    public boolean isGoingToCaptureWebCamPhoto() {
+        return goingToCaptureWebCamPhoto;
+    }
+
+    public void setGoingToCaptureWebCamPhoto(boolean goingToCaptureWebCamPhoto) {
+        this.goingToCaptureWebCamPhoto = goingToCaptureWebCamPhoto;
+    }
+    
+    
 
     // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="Inner Classes">
