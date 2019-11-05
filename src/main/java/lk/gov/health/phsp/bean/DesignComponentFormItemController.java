@@ -42,8 +42,7 @@ public class DesignComponentFormItemController implements Serializable {
     private WebUserController webUserController;
 
     public void fillDuplicateItemsInAFormSet(DesignComponentFormSet s) {
-        System.out.println("fillDuplicateItemsInAFormSet");
-        System.out.println("s = " + s);
+        //System.out.println("fillDuplicateItemsInAFormSet");
         String j = "select di from DesignComponentFormItem di "
                 + "  where di.retired=false "
                 + "  and di.parentComponent.parentComponent=:s ";
@@ -94,8 +93,7 @@ public class DesignComponentFormItemController implements Serializable {
 // <editor-fold defaultstate="collapsed" desc="Main Functions">
     
     public void searchById(){
-        System.out.println("searchById");
-        System.out.println("searchId = " + searchId);
+        //System.out.println("searchById");
         selected = getFacade().find(searchId);
     }
     

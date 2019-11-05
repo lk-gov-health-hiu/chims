@@ -70,6 +70,7 @@ public class ClientController implements Serializable {
     private YearMonthDay yearMonthDay;
     private Institution selectedClinic;
     private int profileTabActiveIndex;
+    private boolean goingToCaptureWebCamPhoto;
 
     // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="Constructors">
@@ -110,19 +111,25 @@ public class ClientController implements Serializable {
 
     // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="Functions">
+    public void prepareToCapturePhotoWithWebCam(){
+        goingToCaptureWebCamPhoto=true;
+    }
+    
+    public void finishCapturingPhotoWithWebCam(){
+        goingToCaptureWebCamPhoto=false;
+    }
+    
     public void onTabChange(TabChangeEvent event) {
 
-        // System.out.println("profileTabActiveIndex = " + profileTabActiveIndex);
-
+        // //System.out.println("profileTabActiveIndex = " + profileTabActiveIndex);
         TabView tabView = (TabView) event.getComponent();
 
         profileTabActiveIndex = tabView.getChildren().indexOf(event.getTab());
 
-
     }
 
     public List<Encounter> fillEncounters(Client client, InstitutionType insType, EncounterType encType, boolean excludeCompleted) {
-        // System.out.println("fillEncounters");
+        // //System.out.println("fillEncounters");
         String j = "select e from Encounter e where e.retired=false ";
         Map m = new HashMap();
         if (client != null) {
@@ -141,7 +148,7 @@ public class ClientController implements Serializable {
             j += " and e.completed=:com ";
             m.put("com", false);
         }
-        // System.out.println("m = " + m);
+        // //System.out.println("m = " + m);
         return encounterFacade.findByJpql(j, m);
     }
 
@@ -225,7 +232,7 @@ public class ClientController implements Serializable {
     }
 
     public Date guessDob(YearMonthDay yearMonthDay) {
-        // ////// System.out.println("year string is " + docStr);
+        // ////// //System.out.println("year string is " + docStr);
         int years = 0;
         int month = 0;
         int day = 0;
@@ -248,7 +255,7 @@ public class ClientController implements Serializable {
 
             return now.getTime();
         } catch (Exception e) {
-            ////// System.out.println("Error is " + e.getMessage());
+            ////// //System.out.println("Error is " + e.getMessage());
             return new Date();
 
         }
@@ -294,7 +301,7 @@ public class ClientController implements Serializable {
         if (searchingId == null) {
             searchingId = "";
         }
-        
+
         selectedClients = listPatientsByIDs(searchingId.trim().toUpperCase());
 
         if (selectedClients == null || selectedClients.isEmpty()) {
@@ -588,6 +595,16 @@ public class ClientController implements Serializable {
     public EncounterController getEncounterController() {
         return encounterController;
     }
+
+    public boolean isGoingToCaptureWebCamPhoto() {
+        return goingToCaptureWebCamPhoto;
+    }
+
+    public void setGoingToCaptureWebCamPhoto(boolean goingToCaptureWebCamPhoto) {
+        this.goingToCaptureWebCamPhoto = goingToCaptureWebCamPhoto;
+    }
+    
+    
 
     // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="Inner Classes">
