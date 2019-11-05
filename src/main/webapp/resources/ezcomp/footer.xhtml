@@ -11,29 +11,39 @@
 
     <!-- IMPLEMENTATION -->
     <cc:implementation>
-        <table style="width: 98%; margin: auto;">
-            <tr>
-                <td>
-                    &copy; National Cancer Institute, Maharagama, 2019, Powered by BMI Group
-                </td>
-                <td>
 
-                </td>
-                <td>
 
-                </td>
-                <td>
-                    <h:panelGroup rendered="#{webUserController.loggedUser ne null and false}" >
-                        <h:outputLabel value="Language"  />
-                        <h:selectOneMenu value="#{webUserController.loggedUser.defLocale}" >
-                            <f:selectItem itemLabel="Sinhala" itemValue="si" ></f:selectItem>
-                            <f:selectItem itemLabel="Tamil" itemValue="ta" ></f:selectItem>
-                            <f:selectItem itemLabel="English" itemValue="en" ></f:selectItem>
-                            <f:ajax execute="@this" render="@all" listener="#{webUserController.updateLoggedUser()}" ></f:ajax>
-                        </h:selectOneMenu>
-                    </h:panelGroup>
-                </td>
-            </tr>
-        </table>
+        <h:panelGroup rendered="#{webUserController.loggedUser ne null}" >
+             <table style="width: 98%; margin: auto;">
+                <tr>
+                    <td>
+                        &copy; National Cancer Institution, Maharagama, 2019
+                    </td>
+                    <td>
+                        &copy; Powered by BMI Group
+                    </td>
+                    <td>
+                        &copy; Ministry of Health, Nutrition &amp; Indigenous Medicine, 2019
+                    </td>
+                </tr>
+            </table>
+        </h:panelGroup>
+
+        <h:panelGroup rendered="#{webUserController.loggedUser eq null}" >
+            <table style="width: 98%; margin: auto;">
+                <tr>
+                    <td>
+                        &copy; National Cancer Institution, Maharagama, 2019
+                    </td>
+                    <td>
+                        &copy; Powered by BMI Group
+                    </td>
+                    <td>
+                        &copy; Ministry of Health, Nutrition &amp; Indigenous Medicine, 2019
+                    </td>
+                </tr>
+            </table>
+        </h:panelGroup>
+
     </cc:implementation>
 </html>
