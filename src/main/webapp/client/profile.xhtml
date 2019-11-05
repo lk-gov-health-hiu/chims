@@ -22,6 +22,11 @@
                     <h:outputStylesheet library="css" name="adminlte.min.css"></h:outputStylesheet> 
                     <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet"></link>
 
+                    <!--<h:outputScript library="js" name="jquery.min.js"></h:outputScript>-->
+                    <!--<h:outputScript library="js" name="bootstrap.bundle.min.js"></h:outputScript>-->
+                    <!--<h:outputScript library="js" name="adminlte.min.js"></h:outputScript>-->
+                    <!--<h:outputScript library="js" name="demo.js"></h:outputScript>-->
+
                     <div class="content-wrapper" style="margin: 0px;">
                         <!-- Content Header (Page header) -->
                         <h:form>
@@ -76,9 +81,9 @@
                                                     <p:commandLink process="@this" update="photoCap" actionListener="#{clientController.prepareToCapturePhotoWithWebCam()}"
                                                                    value="Capture" 
                                                                    onclick="PF('photoCapture').show();" />
-                                                     <p:commandLink process="@this" update="photoUp" actionListener="#{clientController.prepareToCapturePhotoWithWebCam()}"
+                                                     <p:commandLink process="@this" update="photoCap" actionListener="#{clientController.prepareToCapturePhotoWithWebCam()}"
                                                                    value="Upload" 
-                                                                   onclick="PF('photoUpload').show();" />
+                                                                   onclick="PF('photoCapture').show();" />
                                                 </p>
 
                                             </div>
@@ -398,7 +403,7 @@
 
 
 
-                <p:panel style="height: 100%;" rendered="#{clientController.selected ne null}">
+                <p:panel style="height: 100%;" rendered="#{clientController.selected ne null}" >
                     <f:facet name="header" >
                         <p:outputLabel value="#{clientController.selected.person.nameWithTitle}" ></p:outputLabel>
                         <p:spacer height="0" width="10" ></p:spacer>

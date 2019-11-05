@@ -169,7 +169,8 @@
                             <p:autoComplete id="dsd" value="#{clientController.selected.person.dsArea}"
                                             completeMethod="#{areaController.completeDsAreas}"
                                             var="ds" itemLabel="#{ds.name}" itemValue="#{ds}"
-                                            maxResults="15" forceSelection="true"
+                                            maxResults="15" forceSelection="true"  disabled="true"
+
                                             minQueryLength="3">
                             </p:autoComplete>
 
@@ -177,7 +178,8 @@
                             <p:autoComplete id="district" value="#{clientController.selected.person.district}"
                                             completeMethod="#{areaController.completeDistricts}"
                                             var="d" itemLabel="#{d.name}" itemValue="#{d}"
-                                            maxResults="15" forceSelection="true"
+                                            maxResults="15" forceSelection="true"  disabled="true"
+
                                             minQueryLength="3">
                             </p:autoComplete>
 
@@ -185,7 +187,7 @@
                             <p:autoComplete id="province" value="#{clientController.selected.person.province}"
                                             completeMethod="#{areaController.completeProvinces}"
                                             var="p" itemLabel="#{p.name}" itemValue="#{p}"
-                                            maxResults="15" forceSelection="true"
+                                            maxResults="15" forceSelection="true" disabled="true"
                                             minQueryLength="3">
                             </p:autoComplete>
 
