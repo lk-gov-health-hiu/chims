@@ -80,6 +80,14 @@ public class WebUser implements Serializable {
     private Area area;
 
     String code;
+    
+    /*
+    Last Edit Properties
+     */
+    @ManyToOne
+    private WebUser lastEditBy;
+    @Temporal(javax.persistence.TemporalType.TIMESTAMP)
+    private Date lastEditeAt;
 
     @Transient
     private boolean systemAdministrator;
@@ -399,6 +407,22 @@ public class WebUser implements Serializable {
     public boolean isMidwife() {
         midwife = webUserRole == WebUserRole.Midwife;
         return midwife;
+    }
+
+    public WebUser getLastEditBy() {
+        return lastEditBy;
+    }
+
+    public void setLastEditBy(WebUser lastEditBy) {
+        this.lastEditBy = lastEditBy;
+    }
+
+    public Date getLastEditeAt() {
+        return lastEditeAt;
+    }
+
+    public void setLastEditeAt(Date lastEditeAt) {
+        this.lastEditeAt = lastEditeAt;
     }
 
     

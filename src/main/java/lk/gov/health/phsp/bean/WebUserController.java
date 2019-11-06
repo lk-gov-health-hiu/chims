@@ -725,7 +725,7 @@ public class WebUserController implements Serializable {
         return "/webUser/View";
     }
 
-    public String createNewUserBySysAdmin() {
+    public String toCreateNewUserBySysAdmin() {
         current = new WebUser();
         password = "";
         passwordReenter = "";
@@ -733,6 +733,28 @@ public class WebUserController implements Serializable {
     }
 
     public String create() {
+        if (!password.equals(passwordReenter)) {
+            JsfUtil.addErrorMessage("Passwords do NOT match");
+            return "";
+        }
+        try {
+            current.setWebUserPassword(commonController.hash(password));
+            current.setCreatedAt(new Date());
+            current.setCreater(loggedUser);
+            getFacade().create(current);
+            addWebUserPrivileges(current, getInitialPrivileges(current.getWebUserRole()));
+            JsfUtil.addSuccessMessage(("A new User Created Successfully."));
+        } catch (Exception e) {
+            JsfUtil.addErrorMessage(e, ("Error Occured. Please change username and try again."));
+            return "";
+        }
+        return "index";
+    }
+    
+    public String saveNewWebUser() {
+        if(current.getId()!=null){
+            current.get
+        }
         if (!password.equals(passwordReenter)) {
             JsfUtil.addErrorMessage("Passwords do NOT match");
             return "";
@@ -883,6 +905,12 @@ public class WebUserController implements Serializable {
             JsfUtil.addErrorMessage(e, ("PersistenceErrorOccured"));
             return null;
         }
+    }
+
+    public WebUserRole[] getWebUserRolesForInsAdmin() {
+        WebUserRole[] rs = {WebUserRole.Institution_Administrator, WebUserRole.Institution_Super_User, WebUserRole.Institution_User,
+            WebUserRole.Doctor, WebUserRole.Nurse, WebUserRole.Midwife};
+        return rs;
     }
 
     public String destroy() {
