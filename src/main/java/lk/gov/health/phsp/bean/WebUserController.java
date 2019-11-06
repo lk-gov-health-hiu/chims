@@ -6,7 +6,6 @@ import lk.gov.health.phsp.entity.Institution;
 import lk.gov.health.phsp.enums.InstitutionType;
 import lk.gov.health.phsp.entity.Item;
 import lk.gov.health.phsp.entity.Upload;
-import lk.gov.health.phsp.enums.UploadType;
 import lk.gov.health.phsp.enums.WebUserRole;
 import lk.gov.health.phsp.facade.InstitutionFacade;
 import lk.gov.health.phsp.facade.ProjectInstitutionFacade;
@@ -15,14 +14,9 @@ import lk.gov.health.phsp.facade.UploadFacade;
 import lk.gov.health.phsp.facade.WebUserFacade;
 import lk.gov.health.phsp.facade.util.JsfUtil;
 import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 
 import java.io.Serializable;
-import java.io.StringWriter;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -40,15 +34,10 @@ import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
 import javax.faces.model.SelectItem;
 import javax.inject.Inject;
-import jxl.Cell;
-import jxl.Sheet;
-import jxl.Workbook;
-import jxl.read.biff.BiffException;
 import lk.gov.health.phsp.entity.UserPrivilege;
 import lk.gov.health.phsp.enums.Privilege;
 import lk.gov.health.phsp.enums.PrivilegeTreeNode;
 import lk.gov.health.phsp.facade.UserPrivilegeFacade;
-import org.apache.commons.io.IOUtils;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 import org.primefaces.model.TreeNode;
@@ -171,6 +160,30 @@ public class WebUserController implements Serializable {
         ins.add(loggedUser.getInstitution());
         ins.addAll(institutionController.findChildrenInstitutions(loggedUser.getInstitution()));
         return ins;
+    }
+
+    public String toManageInstitutionUsers() {
+        String j = "select u from WebUser u "
+                + " where u.retired=false "
+                + " and u.institution in :inss ";
+        Map m = new HashMap();
+        m.put("inss", getLoggableInstitutions());
+        items = getFacade().findByJpql(j, m);
+        return "/insAdmin/manage_users";
+    }
+
+    public String toAddNewUserByInsAdmin() {
+        current = new WebUser();
+        password = "";
+        passwordReenter = "";
+        return "/insAdmin/create_new_user";
+    }
+
+    public String toManageAllUsers() {
+        String j = "select u from WebUser u "
+                + " where u.retired=false ";
+        items = getFacade().findByJpql(j);
+        return "/systemAdmin/manage_users";
     }
 
     public String toManagePrivileges() {
@@ -712,13 +725,11 @@ public class WebUserController implements Serializable {
         return "/webUser/View";
     }
 
-    public String prepareCreate() {
+    public String createNewUserBySysAdmin() {
         current = new WebUser();
         password = "";
         passwordReenter = "";
-        return "/webUser/Create";
-        //970224568
-
+        return "/webUser/create_new_user";
     }
 
     public String create() {
