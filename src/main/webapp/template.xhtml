@@ -55,9 +55,13 @@
                         <ez:menu/>
                     </div>
                 </h:panelGroup>
+                
+                <h:panelGroup rendered="#{webUserController.loggedUser eq null}">
+                    <div class="w3-row" style="text-align: center;" >
+                        <p:graphicImage library="image" name="hmis_logo.png" style="width: 25%;" ></p:graphicImage>
+                    </div>
+                </h:panelGroup>
             </div>
-
-          
 
             <div class="w3-row w3-theme-l5" style="height: 100%;" >
                 <h:panelGroup rendered="#{webUserController.loggedUser ne null}">
