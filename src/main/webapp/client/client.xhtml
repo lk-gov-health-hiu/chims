@@ -43,7 +43,7 @@
                                                itemValue="#{s}" ></f:selectItems>
                             </p:selectOneMenu>
 
-                            <p:outputLabel value="Phn:" for="phn" />
+                            <p:outputLabel value="PHN No.:" for="phn" />
                             <h:panelGroup >
                                 <p:inputText id="phn" required="true"  autocomplete="off" value="#{clientController.selected.phn}" title="Phn" />
                                 <p:commandLink value="Generate" 
@@ -53,29 +53,29 @@
                             </h:panelGroup>
                             
 
-                            <p:outputLabel value="Phone1:" for="phone1" />
+                            <p:outputLabel value="Mobile No.:" for="phone1" />
                             <p:inputText id="phone1"  autocomplete="off" value="#{clientController.selected.person.phone1}" title="Phone1" />
 
 
-                            <p:outputLabel value="Phone2:" for="phone2" />
+                            <p:outputLabel value="Resident Phone No.:" for="phone2" />
                             <p:inputText id="phone2"  autocomplete="off" value="#{clientController.selected.person.phone2}" title="Phone2" />
 
 
                             <p:outputLabel value="Address:" for="address" />
                             <p:inputText id="address"  autocomplete="off" value="#{clientController.selected.person.address}" title="Address" />
 
-                            <p:outputLabel value="PassportNumber:" for="passportNumber" />
+                            <p:outputLabel value="Passport Number:" for="passportNumber" />
                             <p:inputText id="passportNumber"  autocomplete="off" value="#{clientController.selected.person.passportNumber}" title="PassportNumber" />
 
                             <p:outputLabel value="Email:" for="email" />
                             <p:inputText id="email"  autocomplete="off" value="#{clientController.selected.person.email}" title="Email" />
 
 
-                            <p:outputLabel value="DrivingLicenseNumber:" for="drivingLicenseNumber" />
+                            <p:outputLabel value="Driving License Number:" for="drivingLicenseNumber" />
                             <p:inputText id="drivingLicenseNumber"  autocomplete="off"  value="#{clientController.selected.person.drivingLicenseNumber}" title="DrivingLicenseNumber" />
 
 
-                            <p:outputLabel value="Nic:" for="nic" />
+                            <p:outputLabel value="NIC No.:" for="nic" />
                             <p:inputText id="nic"  autocomplete="off" value="#{clientController.selected.person.nic}" title="Nic" />
 
                             <p:outputLabel value="Citizenship:" for="citizenship" />
@@ -96,7 +96,7 @@
                                                itemValue="#{r}" ></f:selectItems>
                             </p:selectOneMenu>
 
-                            <p:outputLabel value="MariatalStatus:" for="mariatalStatus" />
+                            <p:outputLabel value="Mariatal Status:" for="mariatalStatus" />
                             <p:selectOneMenu id="mariatalStatus" value="#{clientController.selected.person.mariatalStatus}" >
                                 <f:selectItems value="#{itemController.marietalStatus}" var="m" itemLabel="#{m.name}"
                                                itemValue="#{m}" ></f:selectItems>
@@ -139,7 +139,7 @@
                                         execute="@this"/>
                             </p:calendar>
 
-                            <p:outputLabel value="GN Area" for="gn" />
+                            <p:outputLabel value="GN Area:" for="gn" />
                             <p:autoComplete id="gn" value="#{clientController.selected.person.gnArea}"
                                             completeMethod="#{areaController.completeGnAreas}"
                                             var="gn" itemLabel="#{gn.name}" itemValue="#{gn}"
@@ -149,7 +149,7 @@
                                         listener="#{clientController.gnAreaChanged()}"></f:ajax>
                             </p:autoComplete>
 
-                            <p:outputLabel value="PHM Area" for="phm" />
+                            <p:outputLabel value="PHM Area:" for="phm" />
                             <p:autoComplete id="phm" value="#{clientController.selected.person.phmArea}"
                                             completeMethod="#{areaController.completePhmAreas}"
                                             var="phm" itemLabel="#{phm.name}" itemValue="#{phm}"
@@ -157,7 +157,7 @@
                                             minQueryLength="3">
                             </p:autoComplete>
 
-                            <p:outputLabel value="MOH Area" for="moh" />
+                            <p:outputLabel value="MOH Area:" for="moh" />
                             <p:autoComplete id="moh" value="#{clientController.selected.person.mohArea}"
                                             completeMethod="#{areaController.completeMohAreas}"
                                             var="m" itemLabel="#{m.name}" itemValue="#{m}"
@@ -165,7 +165,7 @@
                                             minQueryLength="3">
                             </p:autoComplete>
 
-                            <p:outputLabel value="DS Divisional Area" for="dsd" />
+                            <p:outputLabel value="DS Divisional Area:" for="dsd" />
                             <p:autoComplete id="dsd" value="#{clientController.selected.person.dsArea}"
                                             completeMethod="#{areaController.completeDsAreas}"
                                             var="ds" itemLabel="#{ds.name}" itemValue="#{ds}"
@@ -174,7 +174,7 @@
                                             minQueryLength="3">
                             </p:autoComplete>
 
-                            <p:outputLabel value="District" for="district" />
+                            <p:outputLabel value="District:" for="district" />
                             <p:autoComplete id="district" value="#{clientController.selected.person.district}"
                                             completeMethod="#{areaController.completeDistricts}"
                                             var="d" itemLabel="#{d.name}" itemValue="#{d}"
@@ -183,7 +183,7 @@
                                             minQueryLength="3">
                             </p:autoComplete>
 
-                            <p:outputLabel value="Province" for="province" />
+                            <p:outputLabel value="Province:" for="province" />
                             <p:autoComplete id="province" value="#{clientController.selected.person.province}"
                                             completeMethod="#{areaController.completeProvinces}"
                                             var="p" itemLabel="#{p.name}" itemValue="#{p}"
