@@ -751,9 +751,13 @@ public class WebUserController implements Serializable {
         return "index";
     }
     
-    public String saveNewWebUser() {
+    public String saveNewWebUserByInsAdmin() {
         if(current.getId()!=null){
-            current.get
+            current.setLastEditBy(loggedUser);
+            current.setLastEditeAt(new Date());
+            getFacade().edit(current);
+            JsfUtil.addSuccessMessage("User Details Updated");
+            return "";
         }
         if (!password.equals(passwordReenter)) {
             JsfUtil.addErrorMessage("Passwords do NOT match");
@@ -770,7 +774,33 @@ public class WebUserController implements Serializable {
             JsfUtil.addErrorMessage(e, ("Error Occured. Please change username and try again."));
             return "";
         }
-        return "index";
+        return "/insAdmin/user_index";
+    }
+    
+    public String saveNewWebUserBySysAdmin() {
+        if(current.getId()!=null){
+            current.setLastEditBy(loggedUser);
+            current.setLastEditeAt(new Date());
+            getFacade().edit(current);
+            JsfUtil.addSuccessMessage("User Details Updated");
+            return "";
+        }
+        if (!password.equals(passwordReenter)) {
+            JsfUtil.addErrorMessage("Passwords do NOT match");
+            return "";
+        }
+        try {
+            current.setWebUserPassword(commonController.hash(password));
+            current.setCreatedAt(new Date());
+            current.setCreater(loggedUser);
+            getFacade().create(current);
+            addWebUserPrivileges(current, getInitialPrivileges(current.getWebUserRole()));
+            JsfUtil.addSuccessMessage(("A new User Created Successfully."));
+        } catch (Exception e) {
+            JsfUtil.addErrorMessage(e, ("Error Occured. Please change username and try again."));
+            return "";
+        }
+        return "/webUser/index";
     }
 
     public String prepareEdit() {
