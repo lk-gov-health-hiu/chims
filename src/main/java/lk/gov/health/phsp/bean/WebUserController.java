@@ -756,19 +756,19 @@ public class WebUserController implements Serializable {
             JsfUtil.addErrorMessage("Noting to save");
             return "";
         }
-        if (current.getId() != null) {
-            current.setLastEditBy(loggedUser);
-            current.setLastEditeAt(new Date());
-            getFacade().edit(current);
-            JsfUtil.addSuccessMessage("User Details Updated");
-            return "";
-        }
         if (!password.equals(passwordReenter)) {
             JsfUtil.addErrorMessage("Passwords do NOT match");
             return "";
         }
         if (userNameExsists(current.getName())) {
             JsfUtil.addErrorMessage("Username already exists. Please try another.");
+            return "";
+        }
+        if (current.getId() != null) {
+            current.setLastEditBy(loggedUser);
+            current.setLastEditeAt(new Date());
+            getFacade().edit(current);
+            JsfUtil.addSuccessMessage("User Details Updated");
             return "";
         }
         try {
@@ -803,7 +803,7 @@ public class WebUserController implements Serializable {
         }
         System.out.println("userNameExsists = " + un);
         System.out.println("un = " + un);
-        String j = "select u from WebUser u where lower(u.username)=:un order by u.id desc";
+        String j = "select u from WebUser u where lower(u.name)=:un order by u.id desc";
         Map m = new HashMap();
         m.put("un", un.toLowerCase());
         WebUser u = getFacade().findFirstByJpql(j, m);
@@ -812,24 +812,25 @@ public class WebUserController implements Serializable {
     }
 
     public String saveNewWebUserBySysAdmin() {
-        if (current == null) {
+        if (getSelected() == null) {
             JsfUtil.addErrorMessage("Noting to save");
             return "";
         }
-        if (current.getId() != null) {
-            current.setLastEditBy(loggedUser);
-            current.setLastEditeAt(new Date());
-            getFacade().edit(current);
-            JsfUtil.addSuccessMessage("User Details Updated");
-            return "";
-        }
+        
         if (!password.equals(passwordReenter)) {
             JsfUtil.addErrorMessage("Passwords do NOT match");
             return "";
         }
-        if (userNameExsists(current.getName())) {
+        if (userNameExsists(getSelected().getName())) {
             JsfUtil.addErrorMessage("Username already exists. Please try another.");
             return "";
+        }
+        if (getSelected().getId() != null) {
+            getSelected().setLastEditBy(loggedUser);
+            getSelected().setLastEditeAt(new Date());
+            getFacade().edit(getSelected());
+            JsfUtil.addSuccessMessage("User Details Updated");
+            return "/webUser/index";
         }
         try {
             current.setWebUserPassword(commonController.hash(password));
