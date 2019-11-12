@@ -111,14 +111,14 @@ public class ClientController implements Serializable {
 
     // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="Functions">
-    public void prepareToCapturePhotoWithWebCam(){
-        goingToCaptureWebCamPhoto=true;
+    public void prepareToCapturePhotoWithWebCam() {
+        goingToCaptureWebCamPhoto = true;
     }
-    
-    public void finishCapturingPhotoWithWebCam(){
-        goingToCaptureWebCamPhoto=false;
+
+    public void finishCapturingPhotoWithWebCam() {
+        goingToCaptureWebCamPhoto = false;
     }
-    
+
     public void onTabChange(TabChangeEvent event) {
 
         // //System.out.println("profileTabActiveIndex = " + profileTabActiveIndex);
@@ -352,6 +352,9 @@ public class ClientController implements Serializable {
     }
 
     public List<Client> listPatientsByIDs(String ids) {
+        if (ids == null || ids.trim().equals("")) {
+            return null;
+        }
         String j = "select c from Client c "
                 + " where c.retired=false "
                 + " and ("
@@ -603,8 +606,6 @@ public class ClientController implements Serializable {
     public void setGoingToCaptureWebCamPhoto(boolean goingToCaptureWebCamPhoto) {
         this.goingToCaptureWebCamPhoto = goingToCaptureWebCamPhoto;
     }
-    
-    
 
     // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="Inner Classes">

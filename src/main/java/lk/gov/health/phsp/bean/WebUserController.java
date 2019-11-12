@@ -750,9 +750,13 @@ public class WebUserController implements Serializable {
         }
         return "index";
     }
-    
+
     public String saveNewWebUserByInsAdmin() {
-        if(current.getId()!=null){
+        if (current == null) {
+            JsfUtil.addErrorMessage("Noting to save");
+            return "";
+        }
+        if (current.getId() != null) {
             current.setLastEditBy(loggedUser);
             current.setLastEditeAt(new Date());
             getFacade().edit(current);
@@ -761,6 +765,10 @@ public class WebUserController implements Serializable {
         }
         if (!password.equals(passwordReenter)) {
             JsfUtil.addErrorMessage("Passwords do NOT match");
+            return "";
+        }
+        if (userNameExsists(current.getName())) {
+            JsfUtil.addErrorMessage("Username already exists. Please try another.");
             return "";
         }
         try {
@@ -776,9 +784,39 @@ public class WebUserController implements Serializable {
         }
         return "/insAdmin/user_index";
     }
-    
+
+    public boolean userNameExsists() {
+        if (getSelected() == null) {
+            return false;
+        }
+        
+        System.out.println("userNameExsists");
+        System.out.println("userName = " + getSelected().getName());
+        boolean une = userNameExsists(getSelected().getName());
+        System.out.println("une = " + une);
+        return une;
+    }
+
+    public boolean userNameExsists(String un) {
+        if (un == null) {
+            return false;
+        }
+        System.out.println("userNameExsists = " + un);
+        System.out.println("un = " + un);
+        String j = "select u from WebUser u where lower(u.username)=:un order by u.id desc";
+        Map m = new HashMap();
+        m.put("un", un.toLowerCase());
+        WebUser u = getFacade().findFirstByJpql(j, m);
+        System.out.println("u = " + u);
+        return u != null;
+    }
+
     public String saveNewWebUserBySysAdmin() {
-        if(current.getId()!=null){
+        if (current == null) {
+            JsfUtil.addErrorMessage("Noting to save");
+            return "";
+        }
+        if (current.getId() != null) {
             current.setLastEditBy(loggedUser);
             current.setLastEditeAt(new Date());
             getFacade().edit(current);
@@ -787,6 +825,10 @@ public class WebUserController implements Serializable {
         }
         if (!password.equals(passwordReenter)) {
             JsfUtil.addErrorMessage("Passwords do NOT match");
+            return "";
+        }
+        if (userNameExsists(current.getName())) {
+            JsfUtil.addErrorMessage("Username already exists. Please try another.");
             return "";
         }
         try {

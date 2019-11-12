@@ -14,7 +14,7 @@
                 <p:panel id="WebUserEditDlg" header="Edit User Detais" style="text-align: center; height: 100%;" >
                     <h:form id="WebUserEditForm">
 
-                        <p:panelGrid  columns="2" rendered="#{webUserController.selected != null}" style="margin: auto; text-align: left;">
+                        <p:panelGrid  columns="3" rendered="#{webUserController.selected != null}" style="margin: auto; text-align: left;">
                             <f:facet name="header" >
                                 <p:commandButton action="#{webUserController.saveNewWebUserBySysAdmin()}" value="#{bundleClinical.Save}" />
                                 <p:commandButton value="Back" action="index" process="@this" update="@all">
@@ -26,6 +26,7 @@
                                 <f:selectItems value="#{itemController.titles}" var="t" itemLabel="#{t.name}"
                                                itemValue="#{t}" ></f:selectItems>
                             </p:selectOneMenu>
+                            <p:spacer ></p:spacer>
 
                             <p:outputLabel value="Name" for="name" />
                             <p:inputText 
@@ -34,25 +35,29 @@
                                 required="true"
                                 value="#{webUserController.selected.person.name}"
                                 title="Name" />
-
+                            <p:spacer ></p:spacer>
 
 
 
                             <p:outputLabel value="Username" for="username" />
                             <p:inputText  id="username" value="#{webUserController.selected.name}" title="#{bundleClinical.EditWebUserTitle_name}"
-                                          required="true" requiredMessage="#{bundleClinical.EditWebUserRequiredMessage_name}"/>
-
+                                          required="true" requiredMessage="#{bundleClinical.EditWebUserRequiredMessage_name}">
+                                <f:ajax execute="@this" render="lblune" event="blur" ></f:ajax>
+                            </p:inputText>
+                            <p:outputLabel id="lblune"
+                                           style="color: red;"
+                                           value="#{webUserController.userNameExsists()?'Username is already taken. Please try another.':''}" ></p:outputLabel>
 
                             <p:outputLabel value="Password" for="password" />
                             <p:inputText  id="password" value="#{webUserController.password}" title="Password"
                                           required="true" requiredMessage="Password is required."/>
-
+                            <p:spacer ></p:spacer>
 
 
                             <p:outputLabel value="Re-enter Password" for="passwordReenter" />
                             <p:inputText  id="passwordReenter" value="#{webUserController.passwordReenter}" title="Re-enter Password"
                                           required="true" requiredMessage="Password is required."/>
-
+                            <p:spacer ></p:spacer>
 
 
 
@@ -64,7 +69,7 @@
                                              forceSelection="true" required="true"
                                              minQueryLength="4" maxResults="30">
                             </p:autoComplete >
-
+                            <p:spacer ></p:spacer>
 
                             <p:outputLabel value="Area" for="area" />
                             <p:autoComplete  id="area" value="#{webUserController.selected.area}" 
@@ -73,21 +78,22 @@
                                              minQueryLength="4" maxResults="30"
                                              forceSelection="true" required="true">
                             </p:autoComplete >
-
+                            <p:spacer ></p:spacer>
 
                             <p:outputLabel value="#{bundleClinical.EditWebUserLabel_email}" for="email" />
                             <p:inputText id="email" value="#{webUserController.selected.email}" title="#{bundleClinical.EditWebUserTitle_email}" />
+                            <p:spacer ></p:spacer>
 
                             <p:outputLabel value="Telephone Number" for="telNo" />
                             <p:inputText id="telNo" value="#{webUserController.selected.telNo}" title="#{bundleClinical.EditWebUserTitle_telNo}" />
-
+                            <p:spacer ></p:spacer>
 
                             <p:outputLabel value="Role" for="webUserRole" />
                             <p:selectOneMenu  id="webUserRole" value="#{webUserController.selected.webUserRole}"  required="true">
                                 <f:selectItem itemLabel="Select" ></f:selectItem>
                                 <f:selectItems value="#{applicationController.webUserRoles}" var="r" itemLabel="#{r.label}" itemValue="#{r}" ></f:selectItems>
                             </p:selectOneMenu>
-
+                            <p:spacer ></p:spacer>
                         </p:panelGrid>
 
 
