@@ -51,14 +51,22 @@
                                                process="@this" 
                                                update="phn" ></p:commandLink>
                             </h:panelGroup>
-                            
+
 
                             <p:outputLabel value="Mobile No.:" for="phone1" />
-                            <p:inputText id="phone1"  autocomplete="off" value="#{clientController.selected.person.phone1}" title="Phone1" />
+                            <p:inputText id="phone1"  autocomplete="off" value="#{clientController.selected.person.phone1}" title="Mobile" 
+                                         validatorMessage="Please check the number">
+                                <f:validateRegex pattern="^(?:0|94|\+94|0094)?(?:(11|21|23|24|25|26|27|31|32|33|34|35|36|37|38|41|45|47|51|52|54|55|57|63|65|66|67|81|91)(0|2|3|4|5|7|9)|7(0|1|2|5|6|7|8)\d)\d{6}$"
+                                                 ></f:validateRegex>
+                                <f:ajax event="blur" execute="@this" ></f:ajax>
+                            </p:inputText>
 
 
                             <p:outputLabel value="Resident Phone No.:" for="phone2" />
-                            <p:inputText id="phone2"  autocomplete="off" value="#{clientController.selected.person.phone2}" title="Phone2" />
+                            <p:inputText id="phone2"  autocomplete="off" value="#{clientController.selected.person.phone2}" title="Resident" 
+                                         validatorMessage="Please check the number">
+                                <f:validateRegex pattern="^(?:0|94|\+94|0094)?(?:(11|21|23|24|25|26|27|31|32|33|34|35|36|37|38|41|45|47|51|52|54|55|57|63|65|66|67|81|91)(0|2|3|4|5|7|9)|7(0|1|2|5|6|7|8)\d)\d{6}$" ></f:validateRegex>
+                            </p:inputText>
 
 
                             <p:outputLabel value="Address:" for="address" />
@@ -111,7 +119,7 @@
                                     <f:ajax event="keyup" execute="@this month day" render="calDob" 
                                             listener="#{clientController.yearMonthDateChanged()}"  />
                                 </p:inputText>
-                                
+
                                 <p:inputText autocomplete="off" id="month"
                                              style="width: 90px; " 
                                              value="#{clientController.yearMonthDay.month}">
@@ -119,7 +127,7 @@
                                             render="calDob" 
                                             listener="#{clientController.yearMonthDateChanged()}"  />
                                 </p:inputText>
-                                
+
                                 <p:inputText autocomplete="off" id="day" 
                                              style="width: 90px;" 
                                              value="#{clientController.yearMonthDay.day}">
