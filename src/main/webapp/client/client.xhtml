@@ -76,7 +76,9 @@
                             <p:inputText id="passportNumber"  autocomplete="off" value="#{clientController.selected.person.passportNumber}" title="PassportNumber" />
 
                             <p:outputLabel value="Email:" for="email" />
-                            <p:inputText id="email"  autocomplete="off" value="#{clientController.selected.person.email}" title="Email" />
+                            <p:inputText id="email"  autocomplete="off" value="#{clientController.selected.person.email}" title="Email" validatorMessage="Please check email" >
+                                <f:validateRegex pattern="^([a-zA-Z0-9.!#$%&amp;'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*)?$" ></f:validateRegex>
+                            </p:inputText>
 
 
                             <p:outputLabel value="Driving License Number:" for="drivingLicenseNumber" />
