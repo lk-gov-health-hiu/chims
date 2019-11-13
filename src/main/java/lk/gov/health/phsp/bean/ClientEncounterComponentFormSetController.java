@@ -92,12 +92,25 @@ public class ClientEncounterComponentFormSetController implements Serializable {
 // </editor-fold>    
 // <editor-fold defaultstate="collapsed" desc="Navigation Functions">
 
+    
+    public String toViewOrEditFormset() {
+        if (selected == null) {
+            JsfUtil.addErrorMessage("Nothing selected.");
+            return "";
+        }
+        if(selected.isCompleted()){
+            return toViewFormset();
+        }else{
+            return toEditFormset();
+        }
+    }
+    
     public String toViewFormset() {
         if (selected == null) {
             JsfUtil.addErrorMessage("Nothing selected.");
             return "";
         }
-        String navigationLink = "/clientEncounterComponentFormSet/Formset";
+        String navigationLink = "/clientEncounterComponentFormSet/Formset_view";
         formEditable = false;
         return navigationLink;
     }
@@ -115,10 +128,10 @@ public class ClientEncounterComponentFormSetController implements Serializable {
 // </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="User Functions">
 
-    public void completeFormset() {
+    public String completeFormset() {
         if (selected == null) {
             JsfUtil.addErrorMessage("Nothing to Complete.");
-            return;
+            return "";
         }
         save(selected);
         selected.setCompleted(true);
@@ -128,6 +141,7 @@ public class ClientEncounterComponentFormSetController implements Serializable {
         executePostCompletionStrategies(selected);
         formEditable = false;
         JsfUtil.addSuccessMessage("Completed");
+        return toViewFormset();
     }
 
     public void executePostCompletionStrategies(ClientEncounterComponentFormSet s) {
@@ -414,6 +428,22 @@ public class ClientEncounterComponentFormSetController implements Serializable {
         return fs;
     }
 
+    
+    public ClientEncounterComponentFormSet findLastUncompletedEncounterOfThatType(Client c, Institution i, EncounterType t) {
+        String j = "select f from  ClientEncounterComponentFormSet f join f.encounter e"
+                + " where "
+                + " e.retired=false "
+                + " and e.client=:c "
+                + " and e.institution=:i "
+                + " and e.encounterType=:t";
+        Map m = new HashMap();
+        m.put("c", c);
+        m.put("i", i);
+        m.put("t", t);
+        return getFacade().findFirstByJpql(j, m);
+    }
+    
+    
     public boolean isFirstEncounterOfThatType(Client c, Institution i, EncounterType t) {
         String j = "select count(e) from Encounter e where "
                 + " e.retired=false "
@@ -436,6 +466,16 @@ public class ClientEncounterComponentFormSetController implements Serializable {
     }
 
     public String createAndNavigateToClinicalEncounterComponentFormSetFromDesignComponentFormSetForClinicVisit(DesignComponentFormSet dfs) {
+        ClientEncounterComponentFormSet efs =   findLastUncompletedEncounterOfThatType(clientController.getSelected(), dfs.getInstitution(), EncounterType.Clinic_Visit);
+        if(efs==null){
+            return createNewAndNavigateToClinicalEncounterComponentFormSetFromDesignComponentFormSetForClinicVisit(dfs);
+        }else{
+            selected = efs;
+            return toViewOrEditFormset();
+        }
+    }
+    
+    public String createNewAndNavigateToClinicalEncounterComponentFormSetFromDesignComponentFormSetForClinicVisit(DesignComponentFormSet dfs) {
 
         //System.out.println("Time at start of createAndNavigateToClinicalEncounterComponentFormSetFromDesignComponentFormSetForClinicVisit " + (new Date().getTime()) / 1000);
 
@@ -446,6 +486,8 @@ public class ClientEncounterComponentFormSetController implements Serializable {
             JsfUtil.addErrorMessage("Please select a client");
             return "";
         }
+        
+     
 
         Map<String, ClientEncounterComponentItem> mapOfClientValues = getClientValues(clientController.getSelected());
 
@@ -714,7 +756,8 @@ public class ClientEncounterComponentFormSetController implements Serializable {
         selected = cfs;
         return navigationLink;
     }
-
+    
+    
     
     public ClientEncounterComponentItem fillClientValue(Client c, String code) {
         if (c ==null|| code==null) {

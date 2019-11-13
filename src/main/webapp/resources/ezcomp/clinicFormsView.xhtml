@@ -1,0 +1,159 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:cc="http://xmlns.jcp.org/jsf/composite"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <!-- INTERFACE -->
+    <cc:interface>
+        <cc:attribute  name="form" type="lk.gov.health.phsp.entity.ClientEncounterComponentForm" />
+    </cc:interface>
+
+    <!-- IMPLEMENTATION -->
+    <cc:implementation>
+
+        <h:panelGroup id="gpFormItems" rendered="#{cc.attrs.form.itemArrangementStrategy eq 'Label_Value_Unit_Sets'}" >
+
+            <table style="#{cc.attrs.form.generatedCss}" class="alignTop w3-table w3-bordered w3-border">
+                <ui:repeat id="rptItems" value="#{clientEncounterComponentItemController.findClientEncounterComponentItemOfAForm(cc.attrs.form)}" 
+                           var="ii" >
+
+                    <h:panelGroup id="gpDataAndButtons" >
+                        <tr>
+
+                            <h:panelGroup id="gpData" >
+                                <h:panelGroup rendered="#{ii.renderType eq 'Input_Text'}" >
+                                    <h:panelGroup rendered="#{ii.selectionDataType eq'Short_Text'}" >
+                                        <td>
+                                            <p:outputLabel value="#{ii.name}" ></p:outputLabel>
+                                        </td>
+                                        <td>
+                                            <p:outputLabel id="itStC" value="#{ii.shortTextValue}" >
+                                            </p:outputLabel>
+                                        </td>
+                                    </h:panelGroup>
+                                    <h:panelGroup rendered="#{ii.selectionDataType eq 'Integer_Number'}" >
+                                        <td>
+                                            <p:outputLabel  value="#{ii.name}" ></p:outputLabel>
+                                        </td>
+                                        <td>
+                                            <p:outputLabel id="itIntC" value="#{ii.integerNumberValue}">
+                                            </p:outputLabel>
+                                        </td>
+                                    </h:panelGroup>
+                                    <h:panelGroup rendered="#{ii.selectionDataType eq 'Real_Number'}" >
+                                        <td>
+                                            <p:outputLabel  value="#{ii.name}" ></p:outputLabel>
+                                        </td>
+                                        <td>
+                                            <p:outputLabel id="itRnC" value="#{ii.realNumberValue}" >
+                                            </p:outputLabel>
+                                        </td>
+                                    </h:panelGroup>
+                                    <h:panelGroup rendered="#{ii.selectionDataType eq 'Long_Number'}" >
+                                        <td>
+                                            <p:outputLabel  value="#{ii.name}" ></p:outputLabel>
+                                        </td>
+                                        <td>
+                                            <p:outputLabel id="itLongC" value="#{ii.longNumberValue}" >
+                                            </p:outputLabel>
+                                        </td>
+                                    </h:panelGroup>
+                                </h:panelGroup>
+                                <h:panelGroup rendered="#{ii.renderType eq 'Input_Text_Area'}" >
+                                    <td>
+                                        <p:outputLabel  value="#{ii.name}" ></p:outputLabel>
+                                    </td>
+                                    <td>
+                                        <p:outputLabel id="txtItaL" value="#{ii.longTextValue}">
+                                        </p:outputLabel>
+                                    </td>
+                                </h:panelGroup>
+                                <h:panelGroup rendered="#{ii.selectionDataType eq 'DateTime'}" >
+                                    <h:panelGroup rendered="#{ii.renderType eq 'Date_Picker'}" >
+                                        <td>
+                                            <p:outputLabel  value="#{ii.name}" ></p:outputLabel>
+                                        </td>
+                                        <td>
+                                            <p:outputLabel  value="#{ii.dateValue}" >
+                                                <f:convertDateTime  pattern="dd MMMM yyyy"></f:convertDateTime>
+                                                <p:ajax  event="blur" process="@this" listener="#{clientEncounterComponentItemController.save(ii)}" ></p:ajax>
+                                            </p:outputLabel>
+                                        </td>
+
+                                    </h:panelGroup>
+                                    <h:panelGroup rendered="#{ii.renderType eq 'Calendar'}" >
+                                        <td>
+                                            <p:outputLabel value="#{ii.name}" ></p:outputLabel>
+                                        </td>
+                                        <td>
+                                            <p:outputLabel  value="#{ii.dateValue}" >
+                                                <f:convertDateTime  pattern="dd MMMM yyyy"></f:convertDateTime>
+                                                <p:ajax  event="blur" process="@this" listener="#{clientEncounterComponentItemController.save(ii)}" ></p:ajax>
+                                            </p:outputLabel>
+                                        </td>
+
+                                    </h:panelGroup>
+                                </h:panelGroup>
+                                <h:panelGroup rendered="#{ii.selectionDataType eq 'Item_Reference'}" >
+                                    <h:panelGroup rendered="#{ii.renderType eq 'Drop_Down_Menu'}" >
+                                        <td>
+                                            <p:outputLabel  value="#{ii.name}" ></p:outputLabel>
+                                        </td>
+                                        <td>
+                                            <p:outputLabel  value="#{ii.itemValue.name}" >
+                                            </p:outputLabel>
+                                        </td>
+                                    </h:panelGroup>
+                                    <h:panelGroup rendered="#{ii.renderType eq 'Autocomplete'}" >
+                                        <td>
+                                            <p:outputLabel  value="#{ii.name}" ></p:outputLabel>
+                                        </td>
+                                        <td>
+                                            <p:outputLabel  value="#{ii.itemValue.name}" >
+                                            </p:outputLabel>
+                                        </td>
+
+                                    </h:panelGroup>
+                                </h:panelGroup>
+                                <h:panelGroup rendered="#{ii.renderType eq 'Boolean_Checkbox'}" >
+                                    <td>
+                                        <p:outputLabel  value="#{ii.name}" ></p:outputLabel>
+                                    </td>
+                                    <td>
+                                        <p:outputLabel  value="#{ii.booleanValue?'Yes':'No'}" ></p:outputLabel>
+                                    </td>
+                                </h:panelGroup>
+
+                                <h:panelGroup rendered="#{ii.renderType eq 'Autocomplete' and ii.selectionDataType eq 'Area_Reference'}" >
+                                    <td>
+                                        <p:outputLabel  value="#{ii.name}" ></p:outputLabel>
+                                    </td>
+                                    <td>
+                                        <p:outputLabel  value="#{ii.areaValue.name}" ></p:outputLabel>
+                                    </td>
+
+                                </h:panelGroup>
+
+
+                            </h:panelGroup>
+                        </tr>
+
+                    </h:panelGroup>
+                </ui:repeat>
+            </table>                
+        </h:panelGroup>
+
+        <h:panelGroup rendered="#{cc.attrs.form.itemArrangementStrategy eq 'Absolute_Positioning'}" >
+            <p:outputLabel value="Still Under Construction. Please contact Development Team" ></p:outputLabel>
+        </h:panelGroup>
+
+        <h:panelGroup rendered="#{cc.attrs.form.itemArrangementStrategy eq 'Relative_Positioning'}" >
+            <p:outputLabel value="Still Under Construction. Please contact Development Team" ></p:outputLabel>
+        </h:panelGroup>
+
+    </cc:implementation>
+</html>

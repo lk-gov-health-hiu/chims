@@ -1,0 +1,125 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ez="http://xmlns.jcp.org/jsf/composite/ezcomp">
+
+    <body>
+
+        <ui:composition template="./../template.xhtml">
+
+            <ui:define name="content">
+                <h:form>
+                    <p:panelGrid columns="1" style="width: 100%;" >
+                        <f:facet name="header" >
+                            <div style="float: left;">
+                                <p:outputLabel value="#{clientEncounterComponentFormSetController.selected.encounter.client.person.nameWithTitle}" ></p:outputLabel>
+                                <p:outputLabel value=", " ></p:outputLabel>
+                                <p:outputLabel value="#{clientEncounterComponentFormSetController.selected.encounter.client.person.age}" ></p:outputLabel>
+                                <p:outputLabel value=", " ></p:outputLabel>
+                                <p:outputLabel value="#{clientEncounterComponentFormSetController.selected.encounter.client.person.sex.name}" ></p:outputLabel>
+                                <p:outputLabel value=", " ></p:outputLabel>
+                                <p:outputLabel value="#{clientEncounterComponentFormSetController.selected.name}" ></p:outputLabel>
+                                <p:outputLabel value=" at " ></p:outputLabel>
+                                <p:outputLabel value="#{clientEncounterComponentFormSetController.selected.institution.name}" ></p:outputLabel>
+                                <p:outputLabel value=" of " ></p:outputLabel>
+                                <p:outputLabel value="#{clientEncounterComponentFormSetController.selected.institution.parent.name}" ></p:outputLabel>
+                                <p:outputLabel value=" on " ></p:outputLabel>
+                                <p:outputLabel value="#{clientEncounterComponentFormSetController.selected.encounter.encounterDate}" >
+                                    <f:convertDateTime pattern="dd MMMM yyyy" ></f:convertDateTime>
+                                </p:outputLabel>
+                            </div>
+
+                            <div style="float: right;">
+
+                                <p:commandButton style="float: right;" rendered="#{!clientEncounterComponentFormSetController.selected.completed}" value="Complete" action="#{clientEncounterComponentFormSetController.completeFormset()}" ajax="false"
+                                                 onclick="if (!confirm('Really want to do complete the visit?')) return false"
+                                                 ></p:commandButton>
+                                <p:commandButton style="float: right;" value="Client Profile" action="#{clientController.toClientProfile()}" ajax="false" ></p:commandButton>
+
+                            </div>
+                        </f:facet>
+
+                        <h:panelGroup rendered="#{clientEncounterComponentFormSetController.selected.panelType eq 'TabView_Bottom_Oriented'}" >
+                            <p:tabView orientation="bottom" style="width: 100%;" value="#{clientEncounterComponentFormController.findClientEncounterComponentFormOfAFormset(clientEncounterComponentFormSetController.selected)}" var="f">
+                                <p:tab title="#{f.name}" >
+                                    <div style="#{f.generatedCss}" >
+                                        <ez:clinicFormsView form="#{f}" ></ez:clinicFormsView>
+                                    </div>
+                                </p:tab>
+                            </p:tabView>
+                        </h:panelGroup>
+                        <h:panelGroup rendered="#{clientEncounterComponentFormSetController.selected.panelType eq 'TabView_Left_Oriented'}" >
+                            <p:tabView orientation="left" style="width: 100%;" value="#{clientEncounterComponentFormController.findClientEncounterComponentFormOfAFormset(clientEncounterComponentFormSetController.selected)}" var="f">
+                                <p:tab title="#{f.name}" >
+                                    <div style="#{f.generatedCss}" >
+                                        <ez:clinicFormsView form="#{f}" ></ez:clinicFormsView>
+                                    </div>
+                                </p:tab>
+                            </p:tabView>
+                        </h:panelGroup>
+                        <h:panelGroup rendered="#{clientEncounterComponentFormSetController.selected.panelType eq 'Tabview_Top_Oriented'}" >
+                            <p:tabView orientation="top" style="width: 100%;" value="#{clientEncounterComponentFormController.findClientEncounterComponentFormOfAFormset(clientEncounterComponentFormSetController.selected)}" var="f">
+                                <p:tab title="#{f.name}" >
+                                    <div style="#{f.generatedCss}" >
+                                        <ez:clinicFormsView form="#{f}" ></ez:clinicFormsView>
+                                    </div>
+                                </p:tab>
+                            </p:tabView>
+                        </h:panelGroup>
+                        <h:panelGroup rendered="#{clientEncounterComponentFormSetController.selected.panelType eq 'TabView_Right_Oriented'}" >
+                            <p:tabView orientation="right" style="width: 100%;" value="#{clientEncounterComponentFormController.findClientEncounterComponentFormOfAFormset(clientEncounterComponentFormSetController.selected)}" var="f">
+                                <p:tab title="#{f.name}" >
+                                    <div style="#{f.generatedCss}" >
+                                        <ez:clinicFormsView form="#{f}" ></ez:clinicFormsView>
+                                    </div>
+                                </p:tab>
+                            </p:tabView>
+                        </h:panelGroup>
+                        <h:panelGroup rendered="#{clientEncounterComponentFormSetController.selected.panelType eq 'Accordion_Basic'}" >
+                            <p:accordionPanel  style="width: 100%;" value="#{clientEncounterComponentFormController.findClientEncounterComponentFormOfAFormset(clientEncounterComponentFormSetController.selected)}" var="f">
+                                <p:tab title="#{f.name}" >
+                                    <div style="#{f.generatedCss}" >
+                                        <ez:clinicFormsView form="#{f}" ></ez:clinicFormsView>
+                                    </div>
+                                </p:tab>
+                            </p:accordionPanel>
+                        </h:panelGroup>
+                        <h:panelGroup rendered="#{clientEncounterComponentFormSetController.selected.panelType eq 'Accordion_Multiple'}" >
+                            <p:accordionPanel multiple="true" style="width: 100%;" value="#{clientEncounterComponentFormController.findClientEncounterComponentFormOfAFormset(clientEncounterComponentFormSetController.selected)}" var="f">
+                                <p:tab title="#{f.name}" >
+                                    <div style="#{f.generatedCss}" >
+                                        <ez:clinicFormsView form="#{f}" ></ez:clinicFormsView>
+                                    </div>
+                                </p:tab>
+                            </p:accordionPanel>
+                        </h:panelGroup>
+
+
+
+                    </p:panelGrid>
+
+                </h:form>
+
+
+                <div>
+                    <br/>
+                    <br/>
+                    <br/><br/><br/>
+                    <br/>
+                    <br/>
+                    
+                    
+                </div>
+
+
+
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

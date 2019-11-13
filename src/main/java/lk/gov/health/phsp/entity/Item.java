@@ -52,6 +52,7 @@ public class Item implements Serializable {
     @Enumerated(EnumType.STRING)
     ItemType itemType;
     String name;
+    private String displayName;
     private String code;
     @ManyToOne
     private Item parent;
@@ -212,6 +213,16 @@ public class Item implements Serializable {
     public void setOrderNo(int orderNo) {
         this.orderNo = orderNo;
     }
+
+    public String getDisplayName() {
+        return displayName;
+    }
+
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
+    }
+
+    
 
     
 }

@@ -20,6 +20,11 @@
 
                         <p:outputLabel value="#{bundleClinical.EditItemLabel_name}" for="name" />
                         <p:inputText autocomplete="off" id="name" value="#{itemController.selected.name}" title="#{bundleClinical.EditItemTitle_name}" />
+                        
+                        <p:outputLabel value="Display Name" for="dname" />
+                        <p:inputText autocomplete="off" id="dname" value="#{itemController.selected.displayName}" title="#{bundleClinical.EditItemTitle_name}" />
+                        
+                        
                         <p:outputLabel value="Code" for="code" />
                         <p:inputText  autocomplete="off"  id="code" 
                                       value="#{itemController.selected.code}" 
