@@ -165,7 +165,7 @@
                                             
                                             <p:autoComplete id="acItem" value="#{ii.itemValue}"
                                                             completeMethod="#{itemController.completeItemsofParent}"
-                                                            var="ai" itemLabel="#{ai.displayName}" itemValue="#{ai}"
+                                                            var="ai" itemLabel="#{ai.name}" itemValue="#{ai}"
                                                             maxResults="15" forceSelection="true" 
                                                             minQueryLength="3"
                                                             required="#{ii.required}" 
@@ -203,7 +203,7 @@
                                     <td>
                                         <p:autoComplete id="acA" value="#{ii.areaValue}"
                                                         completeMethod="#{areaController.completeAreas}"
-                                                        var="a" itemLabel="#{a.displayName}" itemValue="#{a}"
+                                                        var="a" itemLabel="#{a.name}" itemValue="#{a}"
                                                         maxResults="15" forceSelection="true" 
                                                         minQueryLength="3"
                                                         required="#{ii.required}" 
