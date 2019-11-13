@@ -429,17 +429,21 @@ public class ClientEncounterComponentFormSetController implements Serializable {
     }
 
     
-    public ClientEncounterComponentFormSet findLastUncompletedEncounterOfThatType(Client c, Institution i, EncounterType t) {
+    public ClientEncounterComponentFormSet findLastUncompletedEncounterOfThatType(DesignComponentFormSet dfs, Client c, Institution i, EncounterType t) {
         String j = "select f from  ClientEncounterComponentFormSet f join f.encounter e"
                 + " where "
-                + " e.retired=false "
+                + " e.retired=false"
+                + " and f.retired=false "
+                + " and f.referenceComponent=:dfs "
                 + " and e.client=:c "
                 + " and e.institution=:i "
-                + " and e.encounterType=:t";
+                + " and e.encounterType=:t"
+                + " order by f.id desc";
         Map m = new HashMap();
         m.put("c", c);
         m.put("i", i);
         m.put("t", t);
+        m.put("dfs", dfs);
         return getFacade().findFirstByJpql(j, m);
     }
     
@@ -466,7 +470,7 @@ public class ClientEncounterComponentFormSetController implements Serializable {
     }
 
     public String createAndNavigateToClinicalEncounterComponentFormSetFromDesignComponentFormSetForClinicVisit(DesignComponentFormSet dfs) {
-        ClientEncounterComponentFormSet efs =   findLastUncompletedEncounterOfThatType(clientController.getSelected(), dfs.getInstitution(), EncounterType.Clinic_Visit);
+        ClientEncounterComponentFormSet efs =   findLastUncompletedEncounterOfThatType(dfs, clientController.getSelected(), dfs.getInstitution(), EncounterType.Clinic_Visit);
         if(efs==null){
             return createNewAndNavigateToClinicalEncounterComponentFormSetFromDesignComponentFormSetForClinicVisit(dfs);
         }else{
