@@ -445,7 +445,11 @@ public class ClientEncounterComponentFormSetController implements Serializable {
         m.put("i", i);
         m.put("t", t);
         m.put("dfs", dfs);
-        return getFacade().findFirstByJpql(j, m);
+        System.out.println("m = " + m);
+        System.out.println("j = " + j);
+        ClientEncounterComponentFormSet f= getFacade().findFirstByJpql(j, m);
+        System.out.println("f = " + f);
+        return f;
     }
     
     
