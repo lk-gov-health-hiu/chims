@@ -434,6 +434,7 @@ public class ClientEncounterComponentFormSetController implements Serializable {
                 + " where "
                 + " e.retired=false"
                 + " and f.retired=false "
+                + " and f.completed=:false "
                 + " and f.referenceComponent=:dfs "
                 + " and e.client=:c "
                 + " and e.institution=:i "
