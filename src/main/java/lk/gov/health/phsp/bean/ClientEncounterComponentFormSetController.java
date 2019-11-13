@@ -475,7 +475,7 @@ public class ClientEncounterComponentFormSetController implements Serializable {
             return createNewAndNavigateToClinicalEncounterComponentFormSetFromDesignComponentFormSetForClinicVisit(dfs);
         }else{
             selected = efs;
-            return toViewOrEditFormset();
+            return toEditFormset();
         }
     }
     
