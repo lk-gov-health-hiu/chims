@@ -7,11 +7,20 @@
       xmlns:p="http://primefaces.org/ui"
       xmlns:ez="http://xmlns.jcp.org/jsf/composite/ezcomp">
 
-    <body>
+    <h:body onload="confirmation.show()">
 
         <ui:composition template="./../template.xhtml">
 
             <ui:define name="content">
+
+                <p:confirmDialog message="Are you sure you want to edit customer"
+                                 header="Starting edit process" severity="alert" widgetVar="confirmation">
+                    <p:commandButton value="Yes"  oncomplete="confirmation.hide()"
+                                     />
+                    <p:commandButton value="No" onclick="confirmation.hide()" type="button" />
+                </p:confirmDialog>
+
+
                 <h:form>
                     <p:panelGrid columns="1" style="width: 100%;" >
                         <f:facet name="header" >
@@ -36,7 +45,8 @@
                             <div style="float: right;">
 
                                 <p:commandButton style="float: right;" rendered="#{!clientEncounterComponentFormSetController.selected.completed}" value="Complete" action="#{clientEncounterComponentFormSetController.completeFormset()}" ajax="false"
-                                                 onclick="if (!confirm('Really want to do complete the visit?')) return false"
+                                                 onclick="if (!confirm('Really want to do complete the visit?'))
+                                                             return false"
                                                  ></p:commandButton>
                                 <p:commandButton style="float: right;" value="Client Profile" action="#{clientController.toClientProfile()}" ajax="false" ></p:commandButton>
 
@@ -111,8 +121,8 @@
                     <br/><br/><br/>
                     <br/>
                     <br/>
-                    
-                    
+
+
                 </div>
 
 
@@ -121,5 +131,5 @@
 
         </ui:composition>
 
-    </body>
+    </h:body>
 </html>

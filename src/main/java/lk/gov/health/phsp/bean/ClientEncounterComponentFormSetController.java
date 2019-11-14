@@ -429,22 +429,32 @@ public class ClientEncounterComponentFormSetController implements Serializable {
     }
 
     
-    public ClientEncounterComponentFormSet findLastUncompletedEncounterOfThatType(DesignComponentFormSet dfs, Client c, Institution i, EncounterType t) {
+    public ClientEncounterComponentFormSet findLastUncompletedEncounterOfThatType
+        (DesignComponentFormSet dfs, Client c, Institution i, EncounterType t) {
         String j = "select f from  ClientEncounterComponentFormSet f join f.encounter e"
                 + " where "
-                + " e.retired=false"
-                + " and f.retired=false "
-                + " and f.completed=:false "
+                + " e.retired<>:er"
+                + " and f.retired<>:fr "
+                + " and f.completed<>:fc "
                 + " and f.referenceComponent=:dfs "
                 + " and e.client=:c "
                 + " and e.institution=:i "
                 + " and e.encounterType=:t"
                 + " order by f.id desc";
+//        j = "select f from  ClientEncounterComponentFormSet f join f.encounter e"
+//                + " where f.referenceComponent=:dfs "
+//                + " and e.client=:c "
+//                + " and e.institution=:i "
+//                + " and e.encounterType=:t"
+//                + " order by f.id desc";
         Map m = new HashMap();
         m.put("c", c);
         m.put("i", i);
         m.put("t", t);
         m.put("dfs", dfs);
+        m.put("er", true);
+        m.put("fr", true);
+        m.put("fc", true);
         System.out.println("m = " + m);
         System.out.println("j = " + j);
         ClientEncounterComponentFormSet f= getFacade().findFirstByJpql(j, m);
