@@ -43,7 +43,7 @@
                             <p:outputLabel value="Username:" for="username" />
                             <p:inputText  id="username" value="#{webUserController.selected.name}" 
                                           title="#{bundleClinical.EditWebUserTitle_name}"
-                                          required="true" 
+                                          required="true" autocomplete="false"
                                           requiredMessage="#{bundleClinical.EditWebUserRequiredMessage_name}">
                                 <f:ajax execute="@this" render="lblune" event="blur" ></f:ajax>
                             </p:inputText>
@@ -54,7 +54,7 @@
 
                             <p:outputLabel value="Password:" for="password" />
                             <p:password  id="password" value="#{webUserController.password}" title="Password"
-
+                                         autocomplete="false"
                                          required="true" requiredMessage="Password is required."/>
                             <p:spacer ></p:spacer>
 
@@ -62,7 +62,9 @@
 
                             <p:outputLabel value="Re-enter Password:" for="passwordReenter" />
                             <p:password  id="passwordReenter" value="#{webUserController.passwordReenter}" title="Re-enter Password"
-                                         required="true" requiredMessage="Password is required."/>
+                                         required="true"
+                                         autocomplete="false"
+                                         requiredMessage="Password is required."/>
                             <p:spacer ></p:spacer>
 
 
@@ -91,11 +93,15 @@
 
 
                             <p:outputLabel value="Email:" for="email" />
-                            <p:inputText id="email" value="#{webUserController.selected.email}" title="#{bundleClinical.EditWebUserTitle_email}" />
+                            <p:inputText id="email" value="#{webUserController.selected.email}"
+                                         title="#{bundleClinical.EditWebUserTitle_email}" 
+                                         autocomplete="false"/>
                             <p:spacer ></p:spacer>
 
                             <p:outputLabel value="Telephone Number.:" for="telNo" />
-                            <p:inputText id="telNo" value="#{webUserController.selected.telNo}" title="#{bundleClinical.EditWebUserTitle_telNo}" />
+                            <p:inputText id="telNo" value="#{webUserController.selected.telNo}" 
+                                         autocomplete="false"
+                                         title="#{bundleClinical.EditWebUserTitle_telNo}" />
                             <p:spacer ></p:spacer>
 
 
