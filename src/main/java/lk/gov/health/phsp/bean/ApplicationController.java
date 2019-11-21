@@ -48,7 +48,7 @@ public class ApplicationController {
 // </editor-fold>    
 
 // <editor-fold defaultstate="collapsed" desc="Class Variables">
-    private boolean demoSetup = true;
+    private boolean demoSetup = false;
 
 // </editor-fold>
     public ApplicationController() {
