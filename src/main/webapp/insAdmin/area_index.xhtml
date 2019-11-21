@@ -10,19 +10,21 @@
         <ui:composition template="./../template.xhtml">
 
             <ui:define name="content">
-                <h:form>
-                    <p:panel header="System Administration" >
+                
+                 <h:form>
+                    <p:panel header="Manage Areas" >
                         <p:tabView orientation="left" >
-                            <p:tab title="Metadata" >
+                            <p:tab title="GN Areas" >
                                 <p:panelGrid columns="1" >
-                                    <p:commandButton ajax="false" action="import_form_sets" value="Import Forms" ></p:commandButton>
-                                    <p:commandButton ajax="false" action="/designComponentFormSet/List_Ins" value="Manage Form Sets" ></p:commandButton>
+                                    <p:commandButton ajax="false" action="/insAdmin/gn_areas_for_pmci" value="Draining GN Areas" ></p:commandButton>
+                                    <p:commandButton ajax="false" action="/insAdmin/gn_data" value="Data for GN Areas" ></p:commandButton>
                                 </p:panelGrid>
                             </p:tab> 
 
                         </p:tabView>
                     </p:panel>
                 </h:form>
+                
             </ui:define>
 
         </ui:composition>

@@ -22,7 +22,7 @@
                     <p:panelGrid columns="1" >
                         <f:facet name="header" >
                             <p:commandButton ajax="false" value="Back to Manage Metadata"
-                                             action="/insAdmin/index" style="float: right;" ></p:commandButton>
+                                             action="/insAdmin/data_index" style="float: right;" ></p:commandButton>
                         </f:facet>
 
 
@@ -53,6 +53,12 @@
                                     <h:outputText value="Sex"/>
                                 </f:facet>
                                 <h:outputText value="#{item.componentSex}"/>
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Derived From"/>
+                                </f:facet>
+                                <h:outputText value="#{item.referenceComponent.name}"/>
                             </p:column>
                             <f:facet name="footer">
                                

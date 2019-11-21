@@ -87,6 +87,8 @@ public class WebUserController implements Serializable {
     private List<Upload> companyUploads;
 
     private List<Institution> loggableInstitutions;
+    private List<Institution> loggablePmcis;
+    private List<Area> loggableGnAreas;
 
     private Area selectedProvince;
     private Area selectedDistrict;
@@ -149,6 +151,20 @@ public class WebUserController implements Serializable {
         createAllPrivilege();
     }
 
+    public List<Area> findAutherizedGnAreas() {
+        List<Area> gns = new ArrayList<>();
+        if (loggedUser == null) {
+            return gns;
+        }
+        if (getLoggablePmcis() == null) {
+            return gns;
+        }
+        for (Institution i : getLoggablePmcis()) {
+            gns.addAll(institutionController.findDrainingGnAreas(i));
+        }
+        return gns;
+    }
+
     public List<Institution> findAutherizedInstitutions() {
         List<Institution> ins = new ArrayList<>();
         if (loggedUser == null) {
@@ -159,6 +175,21 @@ public class WebUserController implements Serializable {
         }
         ins.add(loggedUser.getInstitution());
         ins.addAll(institutionController.findChildrenInstitutions(loggedUser.getInstitution()));
+        return ins;
+    }
+
+    public List<Institution> findAutherizedPmcis() {
+        List<Institution> ins = new ArrayList<>();
+        if (loggedUser == null) {
+            return ins;
+        }
+        if (loggedUser.getInstitution() == null) {
+            return ins;
+        }
+        if (loggedUser.getInstitution().isPmci()) {
+            ins.add(loggedUser.getInstitution());
+        }
+        ins.addAll(institutionController.findChildrenPmcis(loggedUser.getInstitution()));
         return ins;
     }
 
@@ -385,6 +416,9 @@ public class WebUserController implements Serializable {
 
     public String login() {
         loggableInstitutions = null;
+        loggablePmcis = null;
+        loggableGnAreas = null;
+
         if (userName == null || userName.trim().equals("")) {
             JsfUtil.addErrorMessage("Please enter a Username");
             return "";
@@ -789,7 +823,7 @@ public class WebUserController implements Serializable {
         if (getSelected() == null) {
             return false;
         }
-        
+
         System.out.println("userNameExsists");
         System.out.println("userName = " + getSelected().getName());
         boolean une = userNameExsists(getSelected().getName());
@@ -816,7 +850,7 @@ public class WebUserController implements Serializable {
             JsfUtil.addErrorMessage("Noting to save");
             return "";
         }
-        
+
         if (!password.equals(passwordReenter)) {
             JsfUtil.addErrorMessage("Passwords do NOT match");
             return "";
@@ -1411,6 +1445,28 @@ public class WebUserController implements Serializable {
 
     public void setFile(UploadedFile file) {
         this.file = file;
+    }
+
+    public List<Institution> getLoggablePmcis() {
+        if (loggablePmcis == null) {
+            loggablePmcis = findAutherizedPmcis();
+        }
+        return loggablePmcis;
+    }
+
+    public void setLoggablePmcis(List<Institution> loggablePmcis) {
+        this.loggablePmcis = loggablePmcis;
+    }
+
+    public List<Area> getLoggableGnAreas() {
+        if (loggableGnAreas == null) {
+            loggableGnAreas = findAutherizedGnAreas();
+        }
+        return loggableGnAreas;
+    }
+
+    public void setLoggableGnAreas(List<Area> loggableGnAreas) {
+        this.loggableGnAreas = loggableGnAreas;
     }
 
     @FacesConverter(forClass = WebUser.class)

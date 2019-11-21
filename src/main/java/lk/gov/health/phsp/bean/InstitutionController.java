@@ -91,6 +91,23 @@ public class InstitutionController implements Serializable {
         m.put("p", selected);
         gnAreasOfSelected = areaFacade.findByJpql(j, m);
     }
+    
+    public List<Area>  findDrainingGnAreas(Institution ins) {
+        List<Area> gns;
+        if (ins == null) {
+            gns = new ArrayList<>();
+            return gns;
+        }
+        String j = "select a from Area a where a.retired=false "
+                + " and a.type=:t "
+                + " and a.pmci=:p "
+                + " order by a.name";
+        Map m = new HashMap();
+        m.put("t", AreaType.GN);
+        m.put("p", ins);
+        gns = areaFacade.findByJpql(j, m);
+        return gns;
+    }
 
     public InstitutionController() {
     }
@@ -113,13 +130,37 @@ public class InstitutionController implements Serializable {
         return ejbFacade;
     }
 
+    public List<Institution> findChildrenPmcis(Institution ins) {
+        String j;
+        Map m = new HashMap();
+        j = "select i from Institution i where i.retired=:ret and i.pmci=:pmci "
+                + " and i.parent=:p ";
+        m.put("p", ins);
+        m.put("pmci", true);
+        m.put("ret", false);
+        List<Institution> cins = getFacade().findByJpql(j, m);
+        List<Institution> tins = new ArrayList<>();
+        tins.addAll(cins);
+        if (cins.isEmpty()) {
+            return tins;
+        } else {
+            for (Institution i : cins) {
+                // //System.out.println("i = " + i);
+                // //System.out.println("tins before finding children " + tins);
+                tins.addAll(findChildrenPmcis(i));
+            }
+        }
+        return tins;
+    }
+    
     public List<Institution> findChildrenInstitutions(Institution ins) {
         // //System.out.println("findChildrenInstitutions for " + ins.getName());
         String j;
         Map m = new HashMap();
-        j = "select i from Institution i where i.retired=false "
+        j = "select i from Institution i where i.retired=:ret "
                 + " and i.parent=:p ";
         m.put("p", ins);
+           m.put("ret", false);
         List<Institution> cins = getFacade().findByJpql(j, m);
         List<Institution> tins = new ArrayList<>();
         tins.addAll(cins);

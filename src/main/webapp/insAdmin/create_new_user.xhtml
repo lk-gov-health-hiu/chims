@@ -12,12 +12,19 @@
 
             <ui:define name="content" >
                 <p:panel id="WebUserEditDlg" header="Add New User" style="text-align: center; height: 100%;" >
+                    <f:facet name="header" >
+                        <p:outputLabel value="Add New User" ></p:outputLabel>
+                        <h:form>
+                            <p:commandButton value="Back" action="index" ajax="false" style="float: right;" >
+                            </p:commandButton>
+                        </h:form>
+                    </f:facet>
                     <h:form id="WebUserEditForm">
 
                         <p:panelGrid  columns="3" rendered="#{webUserController.selected != null}" style="margin: auto; text-align: left;">
                             <f:facet name="header" >
                                 <p:commandButton action="#{webUserController.saveNewWebUserByInsAdmin()}" value="#{bundleClinical.Save}" />
-                                <p:commandButton value="Back" action="index" process="@this" update="@all">
+                                <p:commandButton value="Back" action="index" ajax="false" immediate="true">
                                 </p:commandButton>
                             </f:facet>
 

@@ -15,7 +15,7 @@
                     <p:panelGrid style="height: 100%;text-align: center;" columns="2">
                         <f:facet name="header" >
                             <p:outputLabel value="User List" ></p:outputLabel>
-                            <p:commandButton ajax="false" value="Back" action="index" style="float: right;"/>
+                            <p:commandButton ajax="false" value="Back" action="/insAdmin/user_index" style="float: right;"/>
                         </f:facet>
                         <p:dataTable value="#{webUserController.items}" var="item"  
                                      rowKey="#{item.id}" 
