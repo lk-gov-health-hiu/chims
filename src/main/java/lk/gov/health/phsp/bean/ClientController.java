@@ -1,6 +1,10 @@
 package lk.gov.health.phsp.bean;
 
 // <editor-fold defaultstate="collapsed" desc="Import">
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import lk.gov.health.phsp.entity.Client;
 import lk.gov.health.phsp.bean.util.JsfUtil;
 import lk.gov.health.phsp.bean.util.JsfUtil.PersistAction;
@@ -26,15 +30,25 @@ import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
 import javax.inject.Inject;
+import jxl.Cell;
+import jxl.Sheet;
+import jxl.Workbook;
+import jxl.read.biff.BiffException;
+import lk.gov.health.phsp.entity.Area;
 import lk.gov.health.phsp.entity.Encounter;
 import lk.gov.health.phsp.entity.Institution;
+import lk.gov.health.phsp.entity.Person;
+import lk.gov.health.phsp.entity.Relationship;
+import lk.gov.health.phsp.enums.AreaType;
 import lk.gov.health.phsp.enums.EncounterType;
 import lk.gov.health.phsp.enums.InstitutionType;
+import lk.gov.health.phsp.enums.RelationshipType;
 import lk.gov.health.phsp.facade.EncounterFacade;
 import lk.gov.health.phsp.pojcs.YearMonthDay;
 import org.bouncycastle.jcajce.provider.digest.GOST3411;
 import org.primefaces.component.tabview.TabView;
 import org.primefaces.event.TabChangeEvent;
+import org.primefaces.model.UploadedFile;
 // </editor-fold>
 
 @Named("clientController")
@@ -58,6 +72,7 @@ public class ClientController implements Serializable {
     // <editor-fold defaultstate="collapsed" desc="Variables">
     private List<Client> items = null;
     private List<Client> selectedClients = null;
+    private List<Client> importedClients = null;
     private Client selected;
     private List<Encounter> selectedClientsClinics;
     private String searchingId;
@@ -67,10 +82,13 @@ public class ClientController implements Serializable {
     private String searchingNicNo;
     private String searchingName;
     private String searchingPhoneNumber;
+    private String uploadDetails;
+    private String errorCode;
     private YearMonthDay yearMonthDay;
     private Institution selectedClinic;
     private int profileTabActiveIndex;
     private boolean goingToCaptureWebCamPhoto;
+    private UploadedFile file;
 
     // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="Constructors">
@@ -111,6 +129,144 @@ public class ClientController implements Serializable {
 
     // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="Functions">
+    public String importClientsFromExcel() {
+
+        importedClients = new ArrayList<>();
+
+        if (uploadDetails == null || uploadDetails.trim().equals("")) {
+            JsfUtil.addErrorMessage("Add Column Names");
+            return "save_import_clients";
+        }
+
+        String[] cols = uploadDetails.split("\\r?\\n");
+        if (cols == null || cols.length < 5) {
+            JsfUtil.addErrorMessage("No SUfficient Columns");
+            return "";
+        }
+
+        try {
+            File inputWorkbook;
+            Workbook w;
+            Cell cell;
+            InputStream in;
+
+            lk.gov.health.phsp.facade.util.JsfUtil.addSuccessMessage(file.getFileName());
+
+            try {
+                lk.gov.health.phsp.facade.util.JsfUtil.addSuccessMessage(file.getFileName());
+                in = file.getInputstream();
+                File f;
+                f = new File(Calendar.getInstance().getTimeInMillis() + file.getFileName());
+                FileOutputStream out = new FileOutputStream(f);
+                int read = 0;
+                byte[] bytes = new byte[1024];
+                while ((read = in.read(bytes)) != -1) {
+                    out.write(bytes, 0, read);
+                }
+                in.close();
+                out.flush();
+                out.close();
+
+                inputWorkbook = new File(f.getAbsolutePath());
+
+                lk.gov.health.phsp.facade.util.JsfUtil.addSuccessMessage("Excel File Opened");
+                w = Workbook.getWorkbook(inputWorkbook);
+                Sheet sheet = w.getSheet(0);
+
+                errorCode = "";
+
+                int startRow = 1;
+
+                for (int i = startRow; i < sheet.getRows(); i++) {
+
+                    Map m = new HashMap();
+
+                    Client c = new Client();
+                    Person p = new Person();
+                    c.setPerson(p);
+
+                    int colNo = 0;
+
+                    for (String colName : cols) {
+                        cell = sheet.getCell(colNo, i);
+                        String cellString = cell.getContents();
+
+                        String code = ti.getItem().getCode();
+                        switch (colName) {
+                            case "client_name":
+                                c.getPerson().getName();
+                                break;
+                            case "client_phn_number":
+                                c.getPhn();
+                                break;
+                            case "client_sex":
+                                c.getPerson().getSex();
+                                break;
+                            case "client_nic_number":
+                                c.getPerson().getNic();
+                                break;
+                            case "client_data_of_birth":
+                                c.getPerson().getDateOfBirth();
+                                break;
+                            case "client_current_age":
+                                c.getPerson().getAge();
+                                break;
+                            case "client_age_at_encounter":
+                                c.getPerson().getAge();
+                                break;
+                            case "client_permanent_address":
+                                c.getPerson().getAddress();
+                                break;
+                            case "client_current_address":
+                                c.getPerson().getAddress();
+                                break;
+                            case "client_mobile_number":
+                                c.getPerson().getPhone1();
+                                break;
+                            case "client_home_number":
+                                c.getPerson().getPhone2();
+                                break;
+                            case "client_permanent_moh_area":
+                                c.getPerson().getGnArea();
+                                break;
+                            case "client_permanent_phm_area":
+                                c.getPerson().getGnArea().getPhm();
+                                break;
+                            case "client_permanent_phi_area":
+                                c.getPerson().getGnArea().getPhi();
+                                break;
+                            case "client_gn_area":
+                                c.getPerson().getGnArea();
+                                break;
+                            case "client_ds_division":
+                                c.getPerson().getGnArea().getDsd();
+                                break;
+                        }
+
+                        colNo++;
+                    }
+
+                    importedClients.add(c);
+
+                }
+
+                lk.gov.health.phsp.facade.util.JsfUtil.addSuccessMessage("Succesful. All the data in Excel File Impoted to the database");
+                errorCode = "";
+                return "";
+            } catch (IOException ex) {
+                errorCode = ex.getMessage();
+                lk.gov.health.phsp.facade.util.JsfUtil.addErrorMessage(ex.getMessage());
+                return "";
+            } catch (BiffException e) {
+                lk.gov.health.phsp.facade.util.JsfUtil.addErrorMessage(e.getMessage());
+                errorCode = ex.getMessage();
+                return "";
+            }
+        } catch (Exception e) {
+            return "";
+        }
+    }
+
     public void prepareToCapturePhotoWithWebCam() {
         goingToCaptureWebCamPhoto = true;
     }
@@ -605,6 +761,58 @@ public class ClientController implements Serializable {
 
     public void setGoingToCaptureWebCamPhoto(boolean goingToCaptureWebCamPhoto) {
         this.goingToCaptureWebCamPhoto = goingToCaptureWebCamPhoto;
+    }
+
+    public String getUploadDetails() {
+        if (uploadDetails == null || uploadDetails.trim().equals("")) {
+            uploadDetails
+                    = "client_name" 
+                    + "client_phn_number" 
+                    + "client_sex" 
+                    + "client_nic_number" 
+                    + "client_data_of_birth"
+                    + "client_current_age"
+                    + "client_age_at_encounter"
+                    + "client_permanent_address"
+                    + "client_current_address"
+                    + "client_mobile_number"
+                    + "client_home_number" 
+                    + "client_permanent_moh_area"
+                    + "client_permanent_phm_area" 
+                    + "client_permanent_phi_area" 
+                    + "client_gn_area" 
+                    + "client_ds_division";
+        }
+
+        return uploadDetails;
+    }
+
+    public void setUploadDetails(String uploadDetails) {
+        this.uploadDetails = uploadDetails;
+    }
+
+    public UploadedFile getFile() {
+        return file;
+    }
+
+    public void setFile(UploadedFile file) {
+        this.file = file;
+    }
+
+    public List<Client> getImportedClients() {
+        return importedClients;
+    }
+
+    public void setImportedClients(List<Client> importedClients) {
+        this.importedClients = importedClients;
+    }
+
+    public String getErrorCode() {
+        return errorCode;
+    }
+
+    public void setErrorCode(String errorCode) {
+        this.errorCode = errorCode;
     }
 
     // </editor-fold>
