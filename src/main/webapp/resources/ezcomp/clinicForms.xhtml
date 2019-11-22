@@ -152,7 +152,7 @@
                                             <p:selectOneMenu id="domIc" value="#{ii.itemValue}" >
                                                 <f:selectItem itemLabel="Please select" ></f:selectItem>
                                                 <f:selectItems value="#{itemController.findItemList(ii.categoryOfAvailableItems)}" var="li"
-                                                               itemLabel="#{li.name}" itemValue="#{li}" ></f:selectItems>
+                                                               itemLabel="#{li.displayName}" itemValue="#{li}" ></f:selectItems>
                                                 <p:ajax  event="blur" process="@this" listener="#{clientEncounterComponentItemController.save(ii)}" ></p:ajax>
                                             </p:selectOneMenu>
                                         </td>
@@ -237,10 +237,6 @@
                     </h:panelGroup>
 
 
-                </ui:repeat>
-                <ui:repeat   value="#{clientEncounterComponentItemController.findClientEncounterComponentItemOfAForm(cc.attrs.form)}" 
-                             var="i" >
-                    <p:outputLabel title="#{i.name}" ></p:outputLabel>
                 </ui:repeat>
             </table>                
         </h:panelGroup>

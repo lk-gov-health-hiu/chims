@@ -7,20 +7,11 @@
       xmlns:p="http://primefaces.org/ui"
       xmlns:ez="http://xmlns.jcp.org/jsf/composite/ezcomp">
 
-    <h:body onload="confirmation.show()">
+    <body>
 
         <ui:composition template="./../template.xhtml">
 
             <ui:define name="content">
-
-                <p:confirmDialog message="Are you sure you want to edit customer"
-                                 header="Starting edit process" severity="alert" widgetVar="confirmation">
-                    <p:commandButton value="Yes"  oncomplete="confirmation.hide()"
-                                     />
-                    <p:commandButton value="No" onclick="confirmation.hide()" type="button" />
-                </p:confirmDialog>
-
-
                 <h:form>
                     <p:panelGrid columns="1" style="width: 100%;" >
                         <f:facet name="header" >
@@ -45,8 +36,7 @@
                             <div style="float: right;">
 
                                 <p:commandButton style="float: right;" rendered="#{!clientEncounterComponentFormSetController.selected.completed}" value="Complete" action="#{clientEncounterComponentFormSetController.completeFormset()}" ajax="false"
-                                                 onclick="if (!confirm('Really want to do complete the visit?'))
-                                                             return false"
+                                                 onclick="if (!confirm('Really want to do complete the visit?')) return false"
                                                  ></p:commandButton>
                                 <p:commandButton style="float: right;" value="Client Profile" action="#{clientController.toClientProfile()}" ajax="false" ></p:commandButton>
 
@@ -57,7 +47,7 @@
                             <p:tabView orientation="bottom" style="width: 100%;" value="#{clientEncounterComponentFormController.findClientEncounterComponentFormOfAFormset(clientEncounterComponentFormSetController.selected)}" var="f">
                                 <p:tab title="#{f.name}" >
                                     <div style="#{f.generatedCss}" >
-                                        <ez:clinicForms form="#{f}" ></ez:clinicForms>
+                                        <ez:clinicFormsView form="#{f}" ></ez:clinicFormsView>
                                     </div>
                                 </p:tab>
                             </p:tabView>
@@ -66,7 +56,7 @@
                             <p:tabView orientation="left" style="width: 100%;" value="#{clientEncounterComponentFormController.findClientEncounterComponentFormOfAFormset(clientEncounterComponentFormSetController.selected)}" var="f">
                                 <p:tab title="#{f.name}" >
                                     <div style="#{f.generatedCss}" >
-                                        <ez:clinicForms form="#{f}" ></ez:clinicForms>
+                                        <ez:clinicFormsView form="#{f}" ></ez:clinicFormsView>
                                     </div>
                                 </p:tab>
                             </p:tabView>
@@ -75,7 +65,7 @@
                             <p:tabView orientation="top" style="width: 100%;" value="#{clientEncounterComponentFormController.findClientEncounterComponentFormOfAFormset(clientEncounterComponentFormSetController.selected)}" var="f">
                                 <p:tab title="#{f.name}" >
                                     <div style="#{f.generatedCss}" >
-                                        <ez:clinicForms form="#{f}" ></ez:clinicForms>
+                                        <ez:clinicFormsView form="#{f}" ></ez:clinicFormsView>
                                     </div>
                                 </p:tab>
                             </p:tabView>
@@ -84,7 +74,7 @@
                             <p:tabView orientation="right" style="width: 100%;" value="#{clientEncounterComponentFormController.findClientEncounterComponentFormOfAFormset(clientEncounterComponentFormSetController.selected)}" var="f">
                                 <p:tab title="#{f.name}" >
                                     <div style="#{f.generatedCss}" >
-                                        <ez:clinicForms form="#{f}" ></ez:clinicForms>
+                                        <ez:clinicFormsView form="#{f}" ></ez:clinicFormsView>
                                     </div>
                                 </p:tab>
                             </p:tabView>
@@ -93,7 +83,7 @@
                             <p:accordionPanel  style="width: 100%;" value="#{clientEncounterComponentFormController.findClientEncounterComponentFormOfAFormset(clientEncounterComponentFormSetController.selected)}" var="f">
                                 <p:tab title="#{f.name}" >
                                     <div style="#{f.generatedCss}" >
-                                        <ez:clinicForms form="#{f}" ></ez:clinicForms>
+                                        <ez:clinicFormsView form="#{f}" ></ez:clinicFormsView>
                                     </div>
                                 </p:tab>
                             </p:accordionPanel>
@@ -102,7 +92,7 @@
                             <p:accordionPanel multiple="true" style="width: 100%;" value="#{clientEncounterComponentFormController.findClientEncounterComponentFormOfAFormset(clientEncounterComponentFormSetController.selected)}" var="f">
                                 <p:tab title="#{f.name}" >
                                     <div style="#{f.generatedCss}" >
-                                        <ez:clinicForms form="#{f}" ></ez:clinicForms>
+                                        <ez:clinicFormsView form="#{f}" ></ez:clinicFormsView>
                                     </div>
                                 </p:tab>
                             </p:accordionPanel>
@@ -121,8 +111,8 @@
                     <br/><br/><br/>
                     <br/>
                     <br/>
-
-
+                    
+                    
                 </div>
 
 
@@ -131,5 +121,5 @@
 
         </ui:composition>
 
-    </h:body>
+    </body>
 </html>

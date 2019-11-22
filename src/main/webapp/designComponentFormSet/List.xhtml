@@ -61,9 +61,10 @@
                                 <p:commandButton id="addForm"   icon="ui-icon-cart" value="Manage Pages" ajax="false" action="#{designComponentFormSetController.toAddFormsForTheSelectedSet()}" actionListener="#{designComponentFormSetController.setBackStringToSysAdmin()}"
                                                  disabled="#{empty designComponentFormSetController.selected}"/>
                                 
-                                <p:commandButton id="errorEheck"   icon="ui-icon-cart" value="Error Checking" 
+                                <p:commandButton id="errorEheck"   icon="ui-icon-cart" value="To Export" 
                                                  ajax="false" 
-                                                 action="#{designComponentFormSetController.toErrorCheckingOfFormsets()}" actionListener="#{designComponentFormSetController.setBackStringToSysAdmin()}"
+                                                 action="#{designComponentFormSetController.toExport()}"
+                                                 actionListener="#{designComponentFormSetController.setBackStringToSysAdmin()}"
                                                  disabled="#{empty designComponentFormSetController.selected}"/>
                                 
                                 <p:commandButton id="deleteButton" icon="ui-icon-trash"  value="#{bundleClinical.Delete}" actionListener="#{designComponentFormSetController.destroy}" update="datalist" disabled="#{empty designComponentFormSetController.selected}"

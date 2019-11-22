@@ -27,6 +27,7 @@ import javax.inject.Inject;
 import lk.gov.health.phsp.entity.DesignComponentForm;
 import lk.gov.health.phsp.entity.DesignComponentFormItem;
 import lk.gov.health.phsp.entity.Institution;
+import lk.gov.health.phsp.facade.DesignComponentFormItemFacade;
 import org.apache.commons.lang3.SerializationUtils;
 // </editor-fold>
 
@@ -37,6 +38,8 @@ public class DesignComponentFormSetController implements Serializable {
     // <editor-fold defaultstate="collapsed" desc="EJBs">
     @EJB
     private lk.gov.health.phsp.facade.DesignComponentFormSetFacade ejbFacade;
+    @EJB
+    private DesignComponentFormItemFacade itemFacade;
     // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="Controllers">
     @Inject
@@ -49,6 +52,7 @@ public class DesignComponentFormSetController implements Serializable {
     // <editor-fold defaultstate="collapsed" desc="Class Variables">
     private List<DesignComponentFormSet> items = null;
     private List<DesignComponentFormSet> insItems = null;
+    private List<DesignComponentFormItem> exportItems = null;
     private DesignComponentFormSet selected;
     private DesignComponentFormSet referanceSet;
     private Institution institution;
@@ -70,8 +74,16 @@ public class DesignComponentFormSetController implements Serializable {
     
     
     
-    public String toErrorCheckingOfFormsets(){
-        return "/designComponentFormSet/errors";
+    public String toExport(){
+        String j = "Select i from DesignComponentFormItem i where "
+                + " i.retired=:r "
+                + " and i.parentComponent.parentComponent=:p "
+                + " order by i.parentComponent.name, i.parentComponent.parentComponent.name, i.orderNo";
+        Map m = new HashMap();
+        m.put("r", false);
+        m.put("p", selected);
+        exportItems = getItemFacade().findByJpql(j, m);
+        return "/designComponentFormSet/export";
     }
     
     public void reloadSet(){
@@ -300,6 +312,10 @@ public class DesignComponentFormSetController implements Serializable {
 
     // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="Getters & Setters">
+   
+    
+    
+    
     public DesignComponentFormSet getReferanceSet() {
         return referanceSet;
     }
@@ -386,8 +402,38 @@ public class DesignComponentFormSetController implements Serializable {
         return backString;
     }
 
+    
+    
     public void setBackString(String backString) {
         this.backString = backString;
+    }
+
+    public List<DesignComponentFormItem> getExportItems() {
+        return exportItems;
+    }
+
+    public void setExportItems(List<DesignComponentFormItem> exportItems) {
+        this.exportItems = exportItems;
+    }
+
+    public void setEjbFacade(lk.gov.health.phsp.facade.DesignComponentFormSetFacade ejbFacade) {
+        this.ejbFacade = ejbFacade;
+    }
+
+    public void setDesignComponentFormController(DesignComponentFormController designComponentFormController) {
+        this.designComponentFormController = designComponentFormController;
+    }
+
+    public void setDesignComponentFormItemController(DesignComponentFormItemController designComponentFormItemController) {
+        this.designComponentFormItemController = designComponentFormItemController;
+    }
+
+    public void setWebUserController(WebUserController webUserController) {
+        this.webUserController = webUserController;
+    }
+
+    public DesignComponentFormItemFacade getItemFacade() {
+        return itemFacade;
     }
 
     @FacesConverter(forClass = DesignComponentFormSet.class)

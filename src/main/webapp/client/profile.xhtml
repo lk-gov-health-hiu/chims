@@ -102,7 +102,14 @@
                                         <!-- About Me Box -->
                                         <div class="card card-primary">
                                             <div class="card-header">
-                                                <h3 class="card-title">Demographic Details</h3>
+                                                <h3 class="card-title" style="width: 100%;">
+                                                    <div style="width: 100%;">
+                                                        <h:form>
+                                                            <h:outputLabel value="Demographic Details" style="float: left"></h:outputLabel>
+                                                            <p:commandLink value="Edit" ajax="false" action="client" style="float: right;" ></p:commandLink>
+                                                        </h:form>
+                                                    </div>
+                                                </h3>
                                             </div>
                                             <!-- /.card-header -->
                                             <div class="card-body">
@@ -203,9 +210,9 @@
                                                                         <h4>Recent Clinic visits</h4>
                                                                         <h:form>
                                                                             <ul>
-                                                                                <ui:repeat value="#{clientEncounterComponentFormSetController.filluncompletedEncountersFormSets('Clinic_Visit',3)}" var="rcv" >
+                                                                                <ui:repeat value="#{clientEncounterComponentFormSetController.fillLastFiveCompletedEncountersFormSets('Clinic_Visit')}" var="rcv" >
                                                                                     <li>
-                                                                                        <h:commandLink action="#{clientEncounterComponentFormSetController.toViewFormset()}">
+                                                                                        <h:commandLink action="#{clientEncounterComponentFormSetController.toViewOrEditFormset()}">
                                                                                             <h:outputLabel value="#{rcv.name}">
                                                                                             </h:outputLabel>
                                                                                             <h:outputLabel value="&nbsp;on&nbsp;" ></h:outputLabel>
@@ -411,241 +418,7 @@
 
 
 
-                <p:panel style="height: 100%;" rendered="#{clientController.selected ne null}" >
-                    <f:facet name="header" >
-                        <p:outputLabel value="#{clientController.selected.person.nameWithTitle}" ></p:outputLabel>
-                        <p:spacer height="0" width="10" ></p:spacer>
-                        <p:outputLabel value="#{clientController.selected.person.age}" ></p:outputLabel>
-                    </f:facet>
-
-                    <p:panelGrid styleClass="alignTop">
-
-                        <p:row >
-
-                            <p:column  >
-
-                                <h:form>
-
-                                    <p:panel style="text-align: center;">
-
-                                        <f:facet name="header" >
-                                            <p:outputLabel value="Demographic Details" style="float: left;" ></p:outputLabel>
-                                            <p:commandLink value="Edit" ajax="false" action="client" style="float: right;" ></p:commandLink>
-                                        </f:facet>
-
-                                        <p:graphicImage  rendered="#{clientController.selected.person.sex.name eq 'Male'}"
-                                                         library="image" name="male.jpg" style="width: 300px; height: 300px; margin: auto;" ></p:graphicImage>
-
-                                        <p:graphicImage  rendered="#{clientController.selected.person.sex.name eq 'Female'}"
-                                                         library="image" name="female.png" style="width: 300px; height: 300px; margin: auto;" ></p:graphicImage>
-
-
-                                        <p:panelGrid columns="2" >
-
-
-
-
-                                            <p:outputLabel value="Name:" for="name" />
-                                            <p:outputLabel id="name" value="#{clientController.selected.person.nameWithTitle}" title="Name" />
-
-                                            <p:outputLabel value="Sex:" for="sex" />
-                                            <p:outputLabel id="sex"  value="#{clientController.selected.person.sex.name}"  />
-
-                                            <p:outputLabel value="Phn:" for="phn" />
-                                            <p:outputLabel id="phn"  value="#{clientController.selected.phn}" title="Phn" />
-
-
-                                            <p:outputLabel value="Phone:" for="phone1" />
-                                            <p:outputLabel id="phone1"  
-                                                           value="#{clientController.selected.person.phone1}, #{clientController.selected.person.phone2}" title="Phone1" />
-
-
-                                            <p:outputLabel value="Area" for="address" />
-                                            <p:outputLabel id="address" 
-                                                           value="#{clientController.selected.person.gnArea.name}" title="Address" />
-
-
-                                            <p:outputLabel value="DateOfBirth:" for="dateOfBirth" />
-                                            <p:outputLabel id="dateOfBirth" value="#{clientController.selected.person.dateOfBirth}"
-                                                           >
-                                                <f:convertDateTime pattern="dd MMMM yyyy" ></f:convertDateTime>
-                                            </p:outputLabel>
-
-                                            <p:outputLabel value="Age" />
-                                            <p:outputLabel value="#{clientController.selected.person.age}"/>
-
-
-                                        </p:panelGrid>
-
-                                    </p:panel>
-
-
-
-                                </h:form>
-
-                            </p:column>
-
-                            <p:column style="width: 80%" >
-
-
-                                <p:tabView id="tvProfile" activeIndex="#{clientController.profileTabActiveIndex}" >
-
-                                    <p:ajax event="tabChange" process="tvProfile" listener="#{clientController.onTabChange}"/>
-
-                                    <p:tab title="Medications" >
-                                        <h:form>
-                                            <p:panelGrid columns="1"  style="width: 100%" >
-                                                <f:facet name="header" >
-                                                    <p:outputLabel value="Current Medications" style="float: left;"></p:outputLabel>
-                                                    <p:spacer height="1" width="5" ></p:spacer>
-                                                    <p:commandLink ajax="false" value="View Details" action="#"></p:commandLink>
-                                                </f:facet>
-                                            </p:panelGrid>
-                                        </h:form>
-                                    </p:tab>
-
-                                    <p:tab title="Admissions" >
-
-                                        <h:form>
-                                            <p:panelGrid columns="1" style="width: 100%" >
-                                                <f:facet name="header" >
-                                                    <p:outputLabel value="Recent Admissions" style="float: left;"></p:outputLabel>
-                                                    <p:spacer height="1" width="5" ></p:spacer>
-                                                    <p:commandLink ajax="false" value="View Details" action="#"></p:commandLink>
-                                                </f:facet>
-                                            </p:panelGrid>
-                                        </h:form>
-
-                                    </p:tab>                                    
-
-                                    <p:tab title="OPD Visits">
-                                        <h:form>
-                                            <p:panelGrid columns="1" style="width: 100%" >
-                                                <f:facet name="header" >
-                                                    <p:outputLabel value="Recent OPD Visits" style="float: left;"></p:outputLabel>
-                                                    <p:spacer height="1" width="5" ></p:spacer>
-                                                    <p:commandLink ajax="false" value="View Details" action="#"></p:commandLink>
-                                                </f:facet>
-                                            </p:panelGrid>
-                                        </h:form>
-                                    </p:tab>
-
-                                    <p:tab title="Clinic Visits" >
-                                        <h:form>
-                                            <p:panelGrid columns="1" style="width: 100%" >
-                                                <f:facet name="header" >
-                                                    <p:outputLabel value="Clinic Visits" style="float: left;"></p:outputLabel>
-                                                    <p:spacer height="1" width="5" ></p:spacer>
-                                                    <p:commandLink ajax="false" value="View Details" action="#"></p:commandLink>
-                                                </f:facet>
-
-                                                <p:dataTable value="#{clientEncounterComponentFormSetController.fillLastFiveCompletedEncountersFormSets('Clinic_Visit') }" 
-                                                             var="cv"
-                                                             >
-                                                    <f:facet name="header" >
-                                                        <p:outputLabel value="Recent Completed Visits" ></p:outputLabel>
-                                                    </f:facet>
-                                                    <p:column headerText="Date" >
-                                                        <p:outputLabel value="#{cv.encounter.encounterDate}" >
-                                                            <f:convertDateTime pattern="dd MMMM yyyy" ></f:convertDateTime>
-                                                        </p:outputLabel>
-                                                    </p:column>
-                                                    <p:column headerText="Visit" >
-                                                        <p:commandLink value="#{cv.name}" ajax="false" 
-                                                                       action="#{clientEncounterComponentFormSetController.toViewFormset()}" >
-                                                            <f:setPropertyActionListener value="#{cv}" target="#{clientEncounterComponentFormSetController.selected}" ></f:setPropertyActionListener>
-                                                        </p:commandLink>
-                                                    </p:column>
-                                                    <p:column headerText="Clinic" >
-                                                        <p:outputLabel value="#{cv.institution.name}" >
-                                                        </p:outputLabel>
-                                                    </p:column>
-                                                </p:dataTable>
-
-
-                                                <p:dataTable value="#{clientEncounterComponentFormSetController.filluncompletedEncountersFormSets('Clinic_Visit')}" 
-                                                             var="cv"
-                                                             >
-
-                                                    <f:facet name="header">
-                                                        <p:outputLabel value="Ongoing Visits" ></p:outputLabel>
-                                                    </f:facet>
-
-                                                    <p:column headerText="Date" >
-                                                        <p:outputLabel value="#{cv.encounter.encounterDate}" >
-                                                            <f:convertDateTime pattern="dd MMMM yyyy hh:mm s" ></f:convertDateTime>
-                                                        </p:outputLabel>
-                                                    </p:column>
-                                                    <p:column headerText="Visit" >
-                                                        <p:commandLink value="#{cv.name}" ajax="false" 
-                                                                       action="#{clientEncounterComponentFormSetController.toViewFormset()}" >
-                                                            <f:setPropertyActionListener value="#{cv}" target="#{clientEncounterComponentFormSetController.selected}" ></f:setPropertyActionListener>
-                                                        </p:commandLink>
-                                                    </p:column>
-                                                    <p:column headerText="Clinic" >
-                                                        <p:outputLabel value="#{cv.institution.name}" >
-                                                        </p:outputLabel>
-                                                    </p:column>
-                                                </p:dataTable>
-
-                                            </p:panelGrid>
-                                        </h:form>
-                                    </p:tab>
-
-                                    <p:tab title="Test Results" >
-                                        <h:form>
-                                            <p:panelGrid columns="1" style="width: 100%" >
-                                                <f:facet name="header" >
-                                                    <p:outputLabel value="Recent Tests" style="float: left;"></p:outputLabel>
-                                                    <p:spacer height="1" width="5" ></p:spacer>
-                                                    <p:commandLink ajax="false" value="View Details" action="#"></p:commandLink>
-                                                </f:facet>
-                                            </p:panelGrid>
-                                        </h:form>
-                                    </p:tab>
-
-                                    <p:tab title="Clinics" >
-
-                                    </p:tab>
-
-                                    <p:tab title="Actions">
-                                        <h:form >
-                                            <p:panelGrid  columns="3" style="width: 100%" >
-                                                <f:facet name="header">
-                                                    <p:outputLabel value="Enroll in an Clinic" ></p:outputLabel>
-                                                </f:facet>
-
-                                                <p:outputLabel value="Clinic" ></p:outputLabel>
-
-                                                <p:selectOneMenu value="#{clientController.selectedClinic}" >
-                                                    <f:selectItems value="#{institutionController.myClinics}" 
-                                                                   var="shlc" itemValue="#{shlc}" itemLabel="#{shlc.name}"></f:selectItems>
-                                                </p:selectOneMenu>
-
-                                                <p:commandButton action="#{institutionController.refreshMyInstitutions()}" ajax="false" 
-                                                                 icon="ui-icon-arrowrefresh-1-n" ></p:commandButton>
-
-                                                <p:spacer></p:spacer>
-                                                <p:commandButton value="Enroll" ajax="false" action="#{clientController.enrollInClinic()}" ></p:commandButton>
-                                                <p:spacer></p:spacer>
-
-                                            </p:panelGrid>
-                                        </h:form>
-                                    </p:tab>
-
-
-
-                                </p:tabView>
-
-
-                            </p:column>
-
-                        </p:row>
-
-                    </p:panelGrid>
-
-
-                </p:panel>
+       
 
 
 

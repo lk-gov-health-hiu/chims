@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import lk.gov.health.phsp.entity.Item;
 import lk.gov.health.phsp.bean.util.JsfUtil;
 import lk.gov.health.phsp.bean.util.JsfUtil.PersistAction;
 import lk.gov.health.phsp.facade.ItemFacade;
@@ -33,7 +32,6 @@ import jxl.Workbook;
 import jxl.read.biff.BiffException;
 import lk.gov.health.phsp.entity.DesignComponentFormSet;
 import lk.gov.health.phsp.entity.Item;
-import lk.gov.health.phsp.enums.AreaType;
 import lk.gov.health.phsp.enums.ItemType;
 import org.primefaces.model.UploadedFile;
 
@@ -189,11 +187,22 @@ public class ItemController implements Serializable {
     public List<Item> completeItems(String qry) {
         return findItemList(null, null, qry);
     }
-    
-     public List<Item> completeItemsofParent(String qry) {
+
+    public List<Item> completeItemsofParent(String qry) {
         //System.out.println("completeItemsofParent");
         //System.out.println("qry = " + qry);
         return findChildrenAndGrandchildrenItemList(selectedParent, null, qry);
+    }
+
+    public void generateDisplayNames() {
+        List<Item> tis = getFacade().findAll();
+        for(Item i:tis){
+            if(i.getDisplayName()==null || i.getDisplayName().trim().equals("")){
+                i.setDisplayName(i.getName());
+                getFacade().edit(i);
+            }
+        }
+
     }
 
     public void addInitialMetadata() {
@@ -244,8 +253,7 @@ public class ItemController implements Serializable {
                 + "Dictionary_Item::Has Other Allergy:client_food_allergy_exists:3" + System.lineSeparator()
                 + "Dictionary_Item::Is allergic to:client_allergic_to:3" + System.lineSeparator()
                 + "Dictionary_Item::Client's Default Photo:client_default_photo:3" + System.lineSeparator()
-                + "Dictionary_Item::Client's Photo:client_photo:3" + System.lineSeparator()
-                ;
+                + "Dictionary_Item::Client's Photo:client_photo:3" + System.lineSeparator();
 
         addInitialMetadata(initialData);
     }
@@ -520,8 +528,6 @@ public class ItemController implements Serializable {
         return findItemList(parentCode, t, null);
     }
 
-   
-
     public List<Item> findChildrenAndGrandchildrenItemList(Item parent) {
         return findChildrenAndGrandchildrenItemList(parent, ItemType.Dictionary_Item, null);
     }
@@ -557,7 +563,7 @@ public class ItemController implements Serializable {
         j += " order by t.orderNo";
         //System.out.println("m = " + m);
         //System.out.println("j = " + j);
-        List<Item> tis =getFacade().findByJpql(j, m);
+        List<Item> tis = getFacade().findByJpql(j, m);
         return tis;
     }
 
@@ -757,7 +763,7 @@ public class ItemController implements Serializable {
             try {
                 key = Long.valueOf(value);
             } catch (NumberFormatException e) {
-                key =0l;
+                key = 0l;
             }
             return key;
         }
