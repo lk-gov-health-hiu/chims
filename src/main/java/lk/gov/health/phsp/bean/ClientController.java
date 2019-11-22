@@ -10,6 +10,7 @@ import lk.gov.health.phsp.bean.util.JsfUtil;
 import lk.gov.health.phsp.bean.util.JsfUtil.PersistAction;
 import lk.gov.health.phsp.facade.ClientFacade;
 import java.io.Serializable;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -73,6 +74,8 @@ public class ClientController implements Serializable {
     private ItemController itemController;
     @Inject
     private CommonController commonController;
+    @Inject
+    private AreaController areaController;
     // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="Variables">
     private List<Client> items = null;
@@ -215,41 +218,31 @@ public class ClientController implements Serializable {
                                 c.getPerson().setNic(cellString);
                                 break;
                             case "client_data_of_birth":
-                                
-                                c.getPerson().getDateOfBirth();
-                                break;
-                            case "client_current_age":
-                                c.getPerson().getAge();
-                                break;
-                            case "client_age_at_encounter":
-                                c.getPerson().getAge();
+                                Date tdob = commonController.dateFromString(cellString, "yyyy/MM/dd");
+                                c.getPerson().setDateOfBirth(tdob);
                                 break;
                             case "client_permanent_address":
-                                c.getPerson().getAddress();
+                                c.getPerson().setAddress(cellString);
                                 break;
                             case "client_current_address":
-                                c.getPerson().getAddress();
+                                c.getPerson().setAddress(cellString);
                                 break;
                             case "client_mobile_number":
-                                c.getPerson().getPhone1();
+                                c.getPerson().setPhone1(cellString);
                                 break;
                             case "client_home_number":
-                                c.getPerson().getPhone2();
-                                break;
-                            case "client_permanent_moh_area":
-                                c.getPerson().getGnArea();
-                                break;
-                            case "client_permanent_phm_area":
-                                c.getPerson().getGnArea().getPhm();
-                                break;
-                            case "client_permanent_phi_area":
-                                c.getPerson().getGnArea().getPhi();
+                                c.getPerson().setPhone2(cellString);
                                 break;
                             case "client_gn_area":
-                                c.getPerson().getGnArea();
-                                break;
-                            case "client_ds_division":
-                                c.getPerson().getGnArea().getDsd();
+                                Area tgn = areaController.getAreaByName(cellString, AreaType.GN, false, null);
+                                if (tgn != null) {
+                                    c.getPerson().setGnArea(tgn);
+                                    c.getPerson().setDsArea(tgn.getDsd());
+                                    c.getPerson().setMohArea(tgn.getMoh());
+                                    c.getPerson().setPhmArea(tgn.getPhm());
+                                    c.getPerson().setDistrict(tgn.getDistrict());
+                                    c.getPerson().setProvince(tgn.getProvince());
+                                }
                                 break;
                         }
 
@@ -614,8 +607,6 @@ public class ClientController implements Serializable {
         return searchingId;
     }
 
-    
-    
     public void setSearchingId(String searchingId) {
         this.searchingId = searchingId;
     }
@@ -833,6 +824,10 @@ public class ClientController implements Serializable {
 
     public CommonController getCommonController() {
         return commonController;
+    }
+
+    public AreaController getAreaController() {
+        return areaController;
     }
 
     // </editor-fold>

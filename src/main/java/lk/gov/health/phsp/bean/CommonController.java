@@ -12,6 +12,8 @@ import lk.gov.health.phsp.enums.InstitutionType;
 import lk.gov.health.phsp.enums.ItemType;
 import lk.gov.health.phsp.enums.WebUserRole;
 import java.io.Serializable;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import javax.enterprise.context.SessionScoped;
@@ -54,6 +56,19 @@ public class CommonController implements Serializable {
      * Creates a new instance of HOSecurity
      */
     public CommonController() {
+    }
+    
+    public Date dateFromString(String dateString, String format){
+        if(format==null||format.trim().equals("")){
+            format = "dd/MM/yyyy";
+        }
+         SimpleDateFormat formatter1=new SimpleDateFormat(format);  
+        try {  
+            return formatter1.parse(dateString);
+        } catch (ParseException ex) {
+            System.out.println("error = " + ex.getMessage());
+            return null;
+        }
     }
 
     public String encrypt(String word) {
