@@ -37,6 +37,7 @@ import jxl.read.biff.BiffException;
 import lk.gov.health.phsp.entity.Area;
 import lk.gov.health.phsp.entity.Encounter;
 import lk.gov.health.phsp.entity.Institution;
+import lk.gov.health.phsp.entity.Item;
 import lk.gov.health.phsp.entity.Person;
 import lk.gov.health.phsp.entity.Relationship;
 import lk.gov.health.phsp.enums.AreaType;
@@ -68,6 +69,10 @@ public class ClientController implements Serializable {
     private WebUserController webUserController;
     @Inject
     private EncounterController encounterController;
+    @Inject
+    private ItemController itemController;
+    @Inject
+    private CommonController commonController;
     // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="Variables">
     private List<Client> items = null;
@@ -190,22 +195,27 @@ public class ClientController implements Serializable {
                     for (String colName : cols) {
                         cell = sheet.getCell(colNo, i);
                         String cellString = cell.getContents();
-
-                        String code = ti.getItem().getCode();
                         switch (colName) {
                             case "client_name":
-                                c.getPerson().getName();
+                                c.getPerson().setName(cellString);
                                 break;
                             case "client_phn_number":
-                                c.getPhn();
+                                c.setPhn(cellString);
                                 break;
                             case "client_sex":
-                                c.getPerson().getSex();
+                                Item sex;
+                                if (cellString.toLowerCase().contains("f")) {
+                                    sex = itemController.findItemByCode("sex_female");
+                                } else {
+                                    sex = itemController.findItemByCode("sex_male");
+                                }
+                                c.getPerson().setSex(sex);
                                 break;
                             case "client_nic_number":
-                                c.getPerson().getNic();
+                                c.getPerson().setNic(cellString);
                                 break;
                             case "client_data_of_birth":
+                                
                                 c.getPerson().getDateOfBirth();
                                 break;
                             case "client_current_age":
@@ -257,8 +267,8 @@ public class ClientController implements Serializable {
                 errorCode = ex.getMessage();
                 lk.gov.health.phsp.facade.util.JsfUtil.addErrorMessage(ex.getMessage());
                 return "";
-            } catch (BiffException e) {
-                lk.gov.health.phsp.facade.util.JsfUtil.addErrorMessage(e.getMessage());
+            } catch (BiffException ex) {
+                lk.gov.health.phsp.facade.util.JsfUtil.addErrorMessage(ex.getMessage());
                 errorCode = ex.getMessage();
                 return "";
             }
@@ -604,6 +614,8 @@ public class ClientController implements Serializable {
         return searchingId;
     }
 
+    
+    
     public void setSearchingId(String searchingId) {
         this.searchingId = searchingId;
     }
@@ -766,21 +778,21 @@ public class ClientController implements Serializable {
     public String getUploadDetails() {
         if (uploadDetails == null || uploadDetails.trim().equals("")) {
             uploadDetails
-                    = "client_name" 
-                    + "client_phn_number" 
-                    + "client_sex" 
-                    + "client_nic_number" 
+                    = "client_name"
+                    + "client_phn_number"
+                    + "client_sex"
+                    + "client_nic_number"
                     + "client_data_of_birth"
                     + "client_current_age"
                     + "client_age_at_encounter"
                     + "client_permanent_address"
                     + "client_current_address"
                     + "client_mobile_number"
-                    + "client_home_number" 
+                    + "client_home_number"
                     + "client_permanent_moh_area"
-                    + "client_permanent_phm_area" 
-                    + "client_permanent_phi_area" 
-                    + "client_gn_area" 
+                    + "client_permanent_phm_area"
+                    + "client_permanent_phi_area"
+                    + "client_gn_area"
                     + "client_ds_division";
         }
 
@@ -813,6 +825,14 @@ public class ClientController implements Serializable {
 
     public void setErrorCode(String errorCode) {
         this.errorCode = errorCode;
+    }
+
+    public ItemController getItemController() {
+        return itemController;
+    }
+
+    public CommonController getCommonController() {
+        return commonController;
     }
 
     // </editor-fold>

@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import lk.gov.health.phsp.entity.Item;
 import lk.gov.health.phsp.bean.util.JsfUtil;
 import lk.gov.health.phsp.bean.util.JsfUtil.PersistAction;
 import lk.gov.health.phsp.facade.ItemFacade;
@@ -33,7 +32,6 @@ import jxl.Workbook;
 import jxl.read.biff.BiffException;
 import lk.gov.health.phsp.entity.DesignComponentFormSet;
 import lk.gov.health.phsp.entity.Item;
-import lk.gov.health.phsp.enums.AreaType;
 import lk.gov.health.phsp.enums.ItemType;
 import org.primefaces.model.UploadedFile;
 
