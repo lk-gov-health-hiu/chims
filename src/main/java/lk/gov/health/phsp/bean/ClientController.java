@@ -378,6 +378,7 @@ public class ClientController implements Serializable {
             yearMonthDay.setYear(selected.getPerson().getAgeYears() + "");
             yearMonthDay.setMonth(selected.getPerson().getAgeMonths() + "");
             yearMonthDay.setDay(selected.getPerson().getAgeDays() + "");
+            selected.getPerson().setDobIsAnApproximation(false);
         } else {
             yearMonthDay = new YearMonthDay();
         }
@@ -387,6 +388,7 @@ public class ClientController implements Serializable {
         if (selected == null) {
             return;
         }
+        selected.getPerson().setDobIsAnApproximation(true);
         selected.getPerson().setDateOfBirth(guessDob(yearMonthDay));
     }
 
