@@ -29,33 +29,36 @@
                             </f:facet>
                             <h:outputText value="#{item.itemType}"/>
                         </p:column>
-                         <p:column  filterBy="#{item.id}" filterMatchMode="contains" sortBy="#{item.id}">
-                            <f:facet name="header">
-                                <h:outputText value="ID"/>
-                            </f:facet>
-                            <h:outputText value="#{item.id}"/>
-                        </p:column>
+
                         <p:column  filterBy="#{item.name}" filterMatchMode="contains" sortBy="#{item.name}">
                             <f:facet name="header">
                                 <h:outputText value="#{bundleClinical.ListItemTitle_name}"/>
                             </f:facet>
                             <h:outputText value="#{item.name}"/>
                         </p:column>
-                        
+
                         <p:column  filterBy="#{item.displayName}" filterMatchMode="contains" sortBy="#{item.displayName}">
                             <f:facet name="header">
                                 <h:outputText value="Display Name"/>
                             </f:facet>
                             <h:outputText value="#{item.displayName}"/>
                         </p:column>
-                        
-                        
+
+
                         <p:column  filterBy="#{item.code}" filterMatchMode="contains" sortBy="#{item.code}">
                             <f:facet name="header">
                                 <h:outputText value="Code"/>
                             </f:facet>
                             <h:outputText value="#{item.code}"/>
                         </p:column>
+
+                        <p:column  filterBy="#{item.dataType}" filterMatchMode="contains" sortBy="#{item.dataType}">
+                            <f:facet name="header">
+                                <h:outputText value="Data Type"/>
+                            </f:facet>
+                            <h:outputText value="#{item.dataType}"/>
+                        </p:column>
+
                         <p:column>
                             <f:facet name="header">
                                 <h:outputText value="Parent"/>

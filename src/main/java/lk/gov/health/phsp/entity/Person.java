@@ -73,6 +73,8 @@ public class Person implements Serializable {
 
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date dateOfBirth;
+    
+    private boolean dobIsAnApproximation;
 
     private String address;
 
@@ -332,6 +334,8 @@ public class Person implements Serializable {
         this.ageInDays = ageInDays;
     }
 
+    
+    
     public Item getSex() {
         return sex;
     }
@@ -396,6 +400,9 @@ public class Person implements Serializable {
         this.phone2 = phone2;
     }
 
+    
+    
+    
     public String getName() {
         return name;
     }
@@ -567,5 +574,13 @@ public class Person implements Serializable {
         return getName();
     }
 // </editor-fold>
+
+    public boolean isDobIsAnApproximation() {
+        return dobIsAnApproximation;
+    }
+
+    public void setDobIsAnApproximation(boolean dobIsAnApproximation) {
+        this.dobIsAnApproximation = dobIsAnApproximation;
+    }
 
 }

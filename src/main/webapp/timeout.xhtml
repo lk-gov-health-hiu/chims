@@ -6,6 +6,7 @@
       >
 
     <h:head>
+        <meta http-equiv="refresh" content="0;url=#{request.contextPath}/faces/index.xhtml" />
         <title>
             Timed Out
         </title>
@@ -26,14 +27,9 @@
                 -ms-transform: translate(-50%, -50%);
                 transform: translate(-50%, -50%);
             }
-            .grad1 {
-                background-color: red; /* For browsers that do not support gradients */
-                background-image: linear-gradient(to right, red , yellow); /* Standard syntax (must be last) */
-                color: white;
-            }
         </style>
 
-        <div class="center grad1">
+        <div class="center w3-indigo">
             <p>
                 <h1>
                     <h:form>

@@ -329,10 +329,12 @@ public class ClientController implements Serializable {
     }
 
     public void enrollInClinic() {
+        System.out.println("selectedClinic = " + selectedClinic);
         if (selectedClinic == null) {
-            JsfUtil.addErrorMessage("Please select an HLC clinic to enroll.");
+            JsfUtil.addErrorMessage("Please select an clinic to enroll.");
             return;
         }
+        System.out.println("selected = " + selected);
         if (selected == null) {
             JsfUtil.addErrorMessage("Please select a client to enroll.");
             return;
@@ -395,6 +397,7 @@ public class ClientController implements Serializable {
             yearMonthDay.setYear(selected.getPerson().getAgeYears() + "");
             yearMonthDay.setMonth(selected.getPerson().getAgeMonths() + "");
             yearMonthDay.setDay(selected.getPerson().getAgeDays() + "");
+            selected.getPerson().setDobIsAnApproximation(false);
         } else {
             yearMonthDay = new YearMonthDay();
         }
@@ -404,6 +407,7 @@ public class ClientController implements Serializable {
         if (selected == null) {
             return;
         }
+        selected.getPerson().setDobIsAnApproximation(true);
         selected.getPerson().setDateOfBirth(guessDob(yearMonthDay));
     }
 
