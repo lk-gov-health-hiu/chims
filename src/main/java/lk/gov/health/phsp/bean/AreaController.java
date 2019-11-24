@@ -96,6 +96,7 @@ public class AreaController implements Serializable {
     private int year;
 
     public String importAreasFromExcel() {
+        System.out.println("file = " + file);
         try {
             String strGnName;
             String strGNCode;

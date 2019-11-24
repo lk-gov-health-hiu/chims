@@ -146,6 +146,8 @@ public class ClientController implements Serializable {
 
     public String importClientsFromExcel() {
 
+        System.out.println("file = " + file);
+        
         importedClients = new ArrayList<>();
 
         if (uploadDetails == null || uploadDetails.trim().equals("")) {
