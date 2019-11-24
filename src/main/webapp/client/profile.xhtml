@@ -210,7 +210,7 @@
                                                                         <h4>Recent Clinic visits</h4>
                                                                         <h:form>
                                                                             <ul>
-                                                                                <ui:repeat value="#{clientEncounterComponentFormSetController.fillEncountersFormSets('Clinic_Visit')}" var="rcv" >
+                                                                                <ui:repeat value="#{clientEncounterComponentFormSetController.fillLastFiveEncountersFormSets('Clinic_Visit')}" var="rcv" >
                                                                                     <li>
                                                                                         <h:commandLink action="#{clientEncounterComponentFormSetController.toViewOrEditFormset()}"
                                                                                                        
