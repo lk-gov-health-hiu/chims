@@ -43,6 +43,7 @@
                                                                  action="#{clientEncounterComponentItemController.calculate(ii)}"></p:commandButton>
                                             </h:panelGroup>
                                         </td>
+
                                     </h:panelGroup>
                                     <h:panelGroup rendered="#{ii.selectionDataType eq 'Integer_Number'}" >
                                         <td>
@@ -162,7 +163,7 @@
                                             <p:outputLabel for="acItem" value="#{ii.name}" ></p:outputLabel>
                                         </td>
                                         <td>
-                                            
+
                                             <p:autoComplete id="acItem" value="#{ii.itemValue}"
                                                             completeMethod="#{itemController.completeItemsofParent}"
                                                             var="ai" itemLabel="#{ai.name}" itemValue="#{ai}"
@@ -170,8 +171,8 @@
                                                             minQueryLength="3"
                                                             required="#{ii.required}" 
                                                             requiredMessage="#{ii.requiredErrorMessage}">
-                                                 <p:ajax  event="focus" process="@this"  update="@this" 
-                                                          listener="#{itemController.makeAsSelectedParent(ii.categoryOfAvailableItems)}" >
+                                                <p:ajax  event="focus" process="@this"  update="@this" 
+                                                         listener="#{itemController.makeAsSelectedParent(ii.categoryOfAvailableItems)}" >
                                                 </p:ajax>
                                                 <p:ajax  event="blur" process="@this"  update="@this" 
                                                          listener="#{clientEncounterComponentItemController.save(ii)}" >
@@ -229,7 +230,14 @@
 
                                 </h:panelGroup>
                             </td>
-
+                            <td>
+                                 <p:outputLabel value="Last Result status is" ></p:outputLabel>
+                                 #{ii.displayLastResult}
+                                 <p:outputLabel value="." ></p:outputLabel>
+                                <h:panelGroup rendered="#{ii.displayLastResult}" >
+                                    <p:outputLabel value="Last Result" ></p:outputLabel>
+                                </h:panelGroup>
+                            </td>
 
 
                         </tr>

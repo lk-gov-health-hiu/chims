@@ -67,7 +67,7 @@
                                             <p:outputLabel value="Order No:" for="orderNo" />
                                             <p:inputText id="orderNo" value="#{designComponentFormItemController.selected.orderNo}" title="OrderNo" />
 
-                                            <p:outputLabel value="Multiple Enties Per Form" for="multipleEntiesPerForm" />
+                                            <p:outputLabel value="Multiple Entries per Form" for="multipleEntiesPerForm" />
                                             <p:selectBooleanCheckbox id="multipleEntiesPerForm" value="#{designComponentFormItemController.selected.multipleEntiesPerForm}" ></p:selectBooleanCheckbox>
 
 
@@ -146,6 +146,25 @@
                                                 </p:column>
                                             </p:autoComplete>
 
+
+                                            <p:outputLabel value="Display Last Results" for="displayLastResults" />
+                                            <p:selectBooleanCheckbox id="displayLastResults" value="#{designComponentFormItemController.selected.displayLastResult}" ></p:selectBooleanCheckbox>
+
+                                            <p:outputLabel value="Result Display Strategy:" for="resultDisplayStrategy" />
+                                            <p:selectOneMenu id="resultDisplayStrategy" 
+                                                             value="#{designComponentFormItemController.selected.resultDisplayStrategy}" 
+                                                             title="DataPopulationStrategy" >
+                                                <f:selectItems value="#{commonController.dataPopulationStrategies}" ></f:selectItems>
+                                            </p:selectOneMenu>
+
+                                            <p:outputLabel value="Display Link to Clients' Current Data" for="linkToClientData" />
+                                            <p:selectBooleanCheckbox id="linkToClientData" value="#{designComponentFormItemController.selected.displayLinkToClientValues}" ></p:selectBooleanCheckbox>
+
+
+                                            <p:outputLabel value="Display Link to Clients' Previous Visit Data" for="linkToPreviousResults" />
+                                            <p:selectBooleanCheckbox id="linkToPreviousResults" value="#{designComponentFormItemController.selected.displayLinkToResultList}" ></p:selectBooleanCheckbox>
+
+
                                         </p:panelGrid>
 
                                     </p:tab>
@@ -183,7 +202,7 @@
 
 
                                             <p:outputLabel value="Available Codes:" for="availableCode" />
-                                             <p:autoComplete id="availableCode"
+                                            <p:autoComplete id="availableCode"
                                                             completeMethod="#{itemController.completeItems}" 
                                                             var="ic" itemLabel="#{ic.code}" forceSelection="true"
                                                             itemValue="#{ic}" >
@@ -194,7 +213,7 @@
                                                     <p:outputLabel value="#{ic.code}" ></p:outputLabel>
                                                 </p:column>
                                             </p:autoComplete>
-                                            
+
                                         </p:panelGrid>
 
                                     </p:tab>

@@ -312,10 +312,12 @@ public class ClientController implements Serializable {
     }
 
     public void enrollInClinic() {
+        System.out.println("selectedClinic = " + selectedClinic);
         if (selectedClinic == null) {
-            JsfUtil.addErrorMessage("Please select an HLC clinic to enroll.");
+            JsfUtil.addErrorMessage("Please select an clinic to enroll.");
             return;
         }
+        System.out.println("selected = " + selected);
         if (selected == null) {
             JsfUtil.addErrorMessage("Please select a client to enroll.");
             return;

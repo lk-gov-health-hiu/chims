@@ -60,10 +60,12 @@ public class EncounterController implements Serializable {
     public boolean clinicEnrolmentExists(Institution i, Client c){
         String j = "select e from Encounter e "
                 + " where e.institution=:i "
-                + " and e.client=:c";
+                + " and e.client=:c"
+                + " and e.completed=:com";
         Map m = new HashMap();
         m.put("i", i);
         m.put("c", c);
+        m.put("c", false);
         Encounter e = getFacade().findFirstByJpql(j, m);
         if(e==null){
             return false;

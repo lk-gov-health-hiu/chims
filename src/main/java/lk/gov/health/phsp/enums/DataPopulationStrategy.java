@@ -30,7 +30,9 @@ package lk.gov.health.phsp.enums;
 public enum DataPopulationStrategy {
     None,
     From_Last_Encounter,
+    From_Client_Value,
+    From_Last_Encounter_of_same_formset,
+    From_Last_Encounter_of_same_clinic,
     @Deprecated
     From_Last_Data_Entered_Encounter,
-    From_Client_Value,
 }

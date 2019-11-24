@@ -96,6 +96,9 @@ public class Component implements Serializable {
     private boolean displayDetailsBox;
     private boolean discreptionAsAToolTip;
     private boolean discreptionAsASideLabel;
+    private boolean displayLastResult;
+    private boolean displayLinkToResultList;
+    private boolean displayLinkToClientValues;
 
     private boolean multipleEntiesPerForm;
 
@@ -127,6 +130,9 @@ public class Component implements Serializable {
 
     @Enumerated(EnumType.STRING)
     private DataPopulationStrategy dataPopulationStrategy;
+    
+    @Enumerated(EnumType.STRING)
+    private DataPopulationStrategy resultDisplayStrategy;
 
     @Enumerated(EnumType.STRING)
     private DataCompletionStrategy dataCompletionStrategy;
@@ -926,4 +932,37 @@ public class Component implements Serializable {
         this.realNumberValue2 = realNumberValue2;
     }
 
+    public boolean isDisplayLastResult() {
+        return displayLastResult;
+    }
+
+    public void setDisplayLastResult(boolean displayLastResult) {
+        this.displayLastResult = displayLastResult;
+    }
+
+    public boolean isDisplayLinkToResultList() {
+        return displayLinkToResultList;
+    }
+
+    public void setDisplayLinkToResultList(boolean displayLinkToResultList) {
+        this.displayLinkToResultList = displayLinkToResultList;
+    }
+
+    public boolean isDisplayLinkToClientValues() {
+        return displayLinkToClientValues;
+    }
+
+    public void setDisplayLinkToClientValues(boolean displayLinkToClientValues) {
+        this.displayLinkToClientValues = displayLinkToClientValues;
+    }
+
+    public DataPopulationStrategy getResultDisplayStrategy() {
+        return resultDisplayStrategy;
+    }
+
+    public void setResultDisplayStrategy(DataPopulationStrategy resultDisplayStrategy) {
+        this.resultDisplayStrategy = resultDisplayStrategy;
+    }
+
+    
 }
