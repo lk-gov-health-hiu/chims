@@ -137,13 +137,22 @@ public class ClientController implements Serializable {
 
     // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="Functions">
+    
+    
+    public void saveSelectedImports(){
+        for(Client c:selectedClients){
+            c.setId(null);
+            saveClient(c);
+        }
+    }
+    
     public String importClientsFromExcel() {
 
         importedClients = new ArrayList<>();
 
         if (uploadDetails == null || uploadDetails.trim().equals("")) {
             JsfUtil.addErrorMessage("Add Column Names");
-            return "save_import_clients";
+            return "";
         }
 
         String[] cols = uploadDetails.split("\\r?\\n");
@@ -185,6 +194,8 @@ public class ClientController implements Serializable {
 
                 int startRow = 1;
 
+                Long temId = 0L;
+                
                 for (int i = startRow; i < sheet.getRows(); i++) {
 
                     Map m = new HashMap();
@@ -249,13 +260,17 @@ public class ClientController implements Serializable {
                         colNo++;
                     }
 
+                    
+                    c.setId(temId);
+                    temId++;
+                    
                     importedClients.add(c);
 
                 }
 
                 lk.gov.health.phsp.facade.util.JsfUtil.addSuccessMessage("Succesful. All the data in Excel File Impoted to the database");
                 errorCode = "";
-                return "";
+                return "save_imported_clients";
             } catch (IOException ex) {
                 errorCode = ex.getMessage();
                 lk.gov.health.phsp.facade.util.JsfUtil.addErrorMessage(ex.getMessage());
@@ -265,7 +280,9 @@ public class ClientController implements Serializable {
                 errorCode = ex.getMessage();
                 return "";
             }
-        } catch (Exception e) {
+        } catch (IndexOutOfBoundsException e) {
+            errorCode = e.getMessage();
+            System.out.println("e = " + e.getMessage());
             return "";
         }
     }
@@ -537,20 +554,25 @@ public class ClientController implements Serializable {
     }
 
     public String saveClient() {
-        if (selected == null) {
+        saveClient(selected);
+        JsfUtil.addSuccessMessage("Saved.");
+        return toClientProfile();
+    }
+    
+    public String saveClient(Client c) {
+        if (c == null) {
             JsfUtil.addErrorMessage("No Client Selected to save.");
             return "";
         }
-        if (selected.getId() == null) {
-            selected.setCreatedBy(webUserController.getLoggedUser());
-            selected.setCreatedAt(new Date());
-            getFacade().create(selected);
-            JsfUtil.addSuccessMessage("New Client Saved.");
+        if (c.getId() == null) {
+            c.setCreatedBy(webUserController.getLoggedUser());
+            c.setCreatedAt(new Date());
+            getFacade().create(c);
+            
         } else {
-            selected.setLastEditBy(webUserController.getLoggedUser());
-            selected.setLastEditeAt(new Date());
-            getFacade().edit(selected);
-            JsfUtil.addSuccessMessage("Client Details Updated.");
+            c.setLastEditBy(webUserController.getLoggedUser());
+            c.setLastEditeAt(new Date());
+            getFacade().edit(c);
         }
         return toClientProfile();
     }
@@ -769,21 +791,22 @@ public class ClientController implements Serializable {
     public String getUploadDetails() {
         if (uploadDetails == null || uploadDetails.trim().equals("")) {
             uploadDetails
-                    = "client_name"
-                    + "client_phn_number"
-                    + "client_sex"
-                    + "client_nic_number"
-                    + "client_data_of_birth"
-                    + "client_current_age"
-                    + "client_age_at_encounter"
-                    + "client_permanent_address"
-                    + "client_current_address"
-                    + "client_mobile_number"
-                    + "client_home_number"
-                    + "client_permanent_moh_area"
-                    + "client_permanent_phm_area"
-                    + "client_permanent_phi_area"
-                    + "client_gn_area"
+                    = 
+                    "client_phn_number" + "\n" 
+                    + "client_name" + "\n" 
+                    + "client_sex" + "\n" 
+                    + "client_nic_number" + "\n" 
+                    + "client_data_of_birth" + "\n" 
+                    + "client_current_age" + "\n" 
+                    + "client_age_at_encounter" + "\n" 
+                    + "client_permanent_address" + "\n" 
+                    + "client_current_address" + "\n" 
+                    + "client_mobile_number" + "\n" 
+                    + "client_home_number" + "\n" 
+                    + "client_permanent_moh_area" + "\n" 
+                    + "client_permanent_phm_area" + "\n" 
+                    + "client_permanent_phi_area" + "\n" 
+                    + "client_gn_area" + "\n" 
                     + "client_ds_division";
         }
 

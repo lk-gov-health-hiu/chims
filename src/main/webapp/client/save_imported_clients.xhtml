@@ -1,0 +1,107 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <body>
+
+        <ui:composition template="./../template.xhtml">
+
+            <ui:define name="content">
+
+                <h:form  >
+                    <p:panelGrid columns="3" >
+
+                        <f:facet name="header" >
+                            <p:outputLabel value="Clients to Import" ></p:outputLabel>
+                        </f:facet>
+
+                        <p:commandButton value="Save Selected" ajax="false"
+                                         action="#{clientController.saveSelectedImports()}">
+                        </p:commandButton>
+
+
+                        <p:dataTable value="#{clientController.importedClients}"
+                                     selection="#{clientController.selectedClients}"
+                                     selectionMode="multiple"
+                                     var="c"
+                                     rowKey="#{c.id}" >
+                            <p:column selectionMode="multiple" >
+
+                            </p:column>
+
+                            <p:column sortBy="#{c.phn}" filterBy="#{c.phn}" filterMatchMode="contains">
+                                <p:outputLabel value="#{c.phn}" ></p:outputLabel>
+                            </p:column>
+
+                            <p:column sortBy="#{c.person.name}" filterBy="#{c.person.name}" filterMatchMode="contains">
+                                <p:outputLabel value="#{c.person.name}" ></p:outputLabel>
+                            </p:column>
+
+                            <p:column sortBy="#{c.person.sex.name}" filterBy="#{c.person.sex.name}" filterMatchMode="contains">
+                                <p:outputLabel value="#{c.person.sex.name}" ></p:outputLabel>
+                            </p:column>
+                            
+                            <p:column sortBy="#{c.person.nic}" filterBy="#{c.person.nic}" filterMatchMode="contains">
+                                <p:outputLabel value="#{c.person.nic}" ></p:outputLabel>
+                            </p:column>
+
+                            <p:column sortBy="#{c.person.address}" filterBy="#{c.person.address}" filterMatchMode="contains">
+                                <p:outputLabel value="#{c.person.address}" ></p:outputLabel>
+                            </p:column>
+                            
+                            <p:column sortBy="#{c.person.dateOfBirth}" >
+                                <p:outputLabel value="#{c.person.dateOfBirth}" ></p:outputLabel>
+                            </p:column>
+
+                            <p:column sortBy="#{c.person.phone1}" filterBy="#{c.person.phone1}" filterMatchMode="contains">
+                                <p:outputLabel value="#{c.person.phone1}" ></p:outputLabel>
+                            </p:column>
+
+                            <p:column sortBy="#{c.person.phone2}" 
+                                      filterBy="#{c.person.phone2}"
+                                      filterMatchMode="contains">
+                                <p:outputLabel value="#{c.person.phone2}" ></p:outputLabel>
+                            </p:column>
+
+                            <p:column sortBy="#{c.person.phmArea.name}" 
+                                      filterBy="#{c.person.phmArea.name}"
+                                      filterMatchMode="contains">
+                                <p:outputLabel value="#{c.person.phmArea.name}" ></p:outputLabel>
+                            </p:column>
+
+                            <p:column sortBy="#{c.person.dsArea.name}" 
+                                      filterBy="#{c.person.dsArea.name}"
+                                      filterMatchMode="contains">
+                                <p:outputLabel value="#{c.person.dsArea.name}" ></p:outputLabel>
+                            </p:column>
+
+
+                            <p:column sortBy="#{c.person.district.name}" 
+                                      filterBy="#{c.person.district.name}"
+                                      filterMatchMode="contains">
+                                <p:outputLabel value="#{c.person.district.name}" ></p:outputLabel>
+                            </p:column>
+
+                            <p:column sortBy="#{c.person.province.name}" 
+                                      filterBy="#{c.person.province.name}"
+                                      filterMatchMode="contains">
+                                <p:outputLabel value="#{c.person.province.name}" ></p:outputLabel>
+                            </p:column>
+
+
+
+                        </p:dataTable>
+
+                    </p:panelGrid>
+                </h:form>
+
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>
