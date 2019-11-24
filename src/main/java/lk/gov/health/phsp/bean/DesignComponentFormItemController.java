@@ -26,6 +26,8 @@ import javax.inject.Inject;
 import lk.gov.health.phsp.entity.Component;
 import lk.gov.health.phsp.entity.DesignComponentForm;
 import lk.gov.health.phsp.entity.DesignComponentFormSet;
+import lk.gov.health.phsp.entity.Item;
+import lk.gov.health.phsp.facade.ItemFacade;
 import org.apache.commons.lang3.SerializationUtils;
 // </editor-fold>
 
@@ -36,6 +38,8 @@ public class DesignComponentFormItemController implements Serializable {
 
     @EJB
     private lk.gov.health.phsp.facade.DesignComponentFormItemFacade ejbFacade;
+    @EJB
+    private ItemFacade itemFacade;
 // </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="Main Functions">
     @Inject
@@ -51,6 +55,23 @@ public class DesignComponentFormItemController implements Serializable {
         items = getFacade().findByJpql(j, m);
     }
 
+    public void addDataTypesToDictionaryItemsFromFormItems() {
+        String j = "select di from DesignComponentFormItem di "
+                + "  where di.retired=:ret ";
+        Map m = new HashMap();
+        m.put("ret", false);
+        items = getFacade().findByJpql(j, m);
+        for(DesignComponentFormItem fi:items){
+            if(fi.getItem()!=null){
+                Item i = fi.getItem();
+                if(fi.getSelectionDataType()!=null){
+                    i.setDataType(fi.getSelectionDataType());
+                }
+                getItemFacade().edit(i);
+            }
+        }
+    }
+
 // </editor-fold>    
 // <editor-fold defaultstate="collapsed" desc="Class Variables">
     private List<DesignComponentFormItem> items = null;
@@ -61,13 +82,11 @@ public class DesignComponentFormItemController implements Serializable {
     private DesignComponentFormItem removingItem;
     private DesignComponentFormItem movingItem;
     private Long searchId;
-    
+
     Component searchComponent;
-    
-    
+
 // </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="Constructors">
-
     public DesignComponentFormItemController() {
     }
 // </editor-fold>
@@ -91,12 +110,11 @@ public class DesignComponentFormItemController implements Serializable {
 
 // </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="Main Functions">
-    
-    public void searchById(){
+    public void searchById() {
         //System.out.println("searchById");
         selected = getFacade().find(searchId);
     }
-    
+
     public void saveItem() {
         if (selected == null) {
             JsfUtil.addErrorMessage("No item selected.");
@@ -321,8 +339,6 @@ public class DesignComponentFormItemController implements Serializable {
 // </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="Getters & Setters">
 
-    
-    
     public DesignComponentFormItem getSelected() {
         return selected;
     }
@@ -342,6 +358,8 @@ public class DesignComponentFormItemController implements Serializable {
         return items;
     }
 
+    
+    
     public DesignComponentFormItem getDesignComponentFormItem(java.lang.Long id) {
         return getFacade().find(id);
     }
@@ -416,6 +434,10 @@ public class DesignComponentFormItemController implements Serializable {
 
     public void setSearchId(Long searchId) {
         this.searchId = searchId;
+    }
+
+    public ItemFacade getItemFacade() {
+        return itemFacade;
     }
 
     @FacesConverter(forClass = DesignComponentFormItem.class)

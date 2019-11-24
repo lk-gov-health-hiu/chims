@@ -21,7 +21,6 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-
 package lk.gov.health.phsp.entity;
 
 import lk.gov.health.phsp.enums.ItemType;
@@ -33,9 +32,11 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.xml.bind.annotation.XmlRootElement;
+import lk.gov.health.phsp.enums.SelectionDataType;
 
 /**
  *
@@ -56,6 +57,17 @@ public class Item implements Serializable {
     private String code;
     @ManyToOne
     private Item parent;
+
+    @Lob
+    private String descreption;
+    private SelectionDataType dataType;
+    private Double absoluteMinimumDbl;
+    private Double absoluteMaximumDbl;
+    private Integer absoluteMinimumInt;
+    private Integer absoluteMaximumInt;
+    private Boolean multipleEntiesPerClientStatus;
+    
+
     private int orderNo;
 
     @ManyToOne
@@ -162,9 +174,6 @@ public class Item implements Serializable {
         this.retireComments = retireComments;
     }
 
-
-    
-    
     @Override
     public int hashCode() {
         int hash = 0;
@@ -222,7 +231,62 @@ public class Item implements Serializable {
         this.displayName = displayName;
     }
 
+    public String getDescreption() {
+        return descreption;
+    }
+
+    public void setDescreption(String descreption) {
+        this.descreption = descreption;
+    }
+
+    public SelectionDataType getDataType() {
+        return dataType;
+    }
+
+    public void setDataType(SelectionDataType dataType) {
+        this.dataType = dataType;
+    }
+
+    public Double getAbsoluteMinimumDbl() {
+        return absoluteMinimumDbl;
+    }
+
+    public void setAbsoluteMinimumDbl(Double absoluteMinimumDbl) {
+        this.absoluteMinimumDbl = absoluteMinimumDbl;
+    }
+
+    public Double getAbsoluteMaximumDbl() {
+        return absoluteMaximumDbl;
+    }
+
+    public void setAbsoluteMaximumDbl(Double absoluteMaximumDbl) {
+        this.absoluteMaximumDbl = absoluteMaximumDbl;
+    }
+
+    public Integer getAbsoluteMinimumInt() {
+        return absoluteMinimumInt;
+    }
+
+    public void setAbsoluteMinimumInt(Integer absoluteMinimumInt) {
+        this.absoluteMinimumInt = absoluteMinimumInt;
+    }
+
+    public Integer getAbsoluteMaximumInt() {
+        return absoluteMaximumInt;
+    }
+
+    public void setAbsoluteMaximumInt(Integer absoluteMaximumInt) {
+        this.absoluteMaximumInt = absoluteMaximumInt;
+    }
+
+    public Boolean getMultipleEntiesPerClientStatus() {
+        return multipleEntiesPerClientStatus;
+    }
+
+    public void setMultipleEntiesPerClientStatus(Boolean multipleEntiesPerClientStatus) {
+        this.multipleEntiesPerClientStatus = multipleEntiesPerClientStatus;
+    }
+    
     
 
-    
 }

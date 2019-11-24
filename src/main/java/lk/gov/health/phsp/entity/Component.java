@@ -471,6 +471,12 @@ public class Component implements Serializable {
     }
 
     public SelectionDataType getSelectionDataType() {
+        if(item!=null){
+            selectionDataType = item.getDataType();
+        }
+        if(selectionDataType==null){
+            selectionDataType = SelectionDataType.Short_Text;
+        }
         return selectionDataType;
     }
 

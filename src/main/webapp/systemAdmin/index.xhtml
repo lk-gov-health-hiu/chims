@@ -29,13 +29,18 @@
                             </p:tab> 
                             <p:tab title="Development" >
                                 <p:panelGrid columns="1" >
-                                    <p:commandButton ajax="false" action="#{designComponentFormSetController.toErrorCheckingOfFormsets()}" value="Error Checking" ></p:commandButton>
                                     <p:commandButton ajax="false" action="/demoAccount/List" value="Demo Accounts" ></p:commandButton>
                                     <p:commandButton ajax="false" action="/item/import" value="Import Items" ></p:commandButton>
                                     <p:commandButton ajax="false" action="/item/import" value="Import Institutions" ></p:commandButton>
-                                    <p:commandButton ajax="false" action="#{itemController.addInitialMetadata()}" value="Add Initial Metadata" ></p:commandButton>
-                                    <p:commandButton ajax="false" action="#{itemController.generateDisplayNames()}" value="Generate Display Names" ></p:commandButton>
                                     <p:commandButton ajax="false" action="/client/List" value="Client List" ></p:commandButton>
+                                    <p:commandButton ajax="false" action="#{itemController.addInitialMetadata()}" value="Add Initial Metadata" ></p:commandButton>
+                                </p:panelGrid>
+                            </p:tab> 
+                            
+                            <p:tab title="Development - Onetime Run" >
+                                <p:panelGrid columns="1" >
+                                    <p:commandButton ajax="false" action="#{designComponentFormItemController.addDataTypesToDictionaryItemsFromFormItems}" value="Transfer Data Type from FormItem to Item" ></p:commandButton>
+                                    <p:commandButton ajax="false" action="#{itemController.generateDisplayNames()}" value="Generate Display Names" ></p:commandButton>
                                 </p:panelGrid>
                             </p:tab> 
                         </p:tabView>

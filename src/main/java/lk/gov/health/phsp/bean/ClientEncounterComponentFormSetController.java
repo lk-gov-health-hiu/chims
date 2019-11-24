@@ -207,7 +207,7 @@ public class ClientEncounterComponentFormSetController implements Serializable {
             ti.setCreatedAt(new Date());
             ti.setCreatedBy(webUserController.getLoggedUser());
             ti.setClient(c);
-            ti.setSelectionDataType(vi.getSelectionDataType());
+//            ti.setSelectionDataType(vi.getSelectionDataType());
             ti.setDataRepresentationType(DataRepresentationType.Client);
             getItemFacade().create(ti);
         } else {
@@ -215,9 +215,9 @@ public class ClientEncounterComponentFormSetController implements Serializable {
             ti.setLastEditeAt(new Date());
         }
 
-        if (ti.getSelectionDataType() == null) {
-            ti.setSelectionDataType(vi.getSelectionDataType());
-        }
+//        if (ti.getSelectionDataType() == null) {
+//            ti.setSelectionDataType(vi.getSelectionDataType());
+//        }
 
         ti.setClient(c);
 
@@ -636,7 +636,7 @@ public class ClientEncounterComponentFormSetController implements Serializable {
                         ci.setName(di.getName());
                         ci.setRenderType(di.getRenderType());
                         ci.setMimeType(di.getMimeType());
-                        ci.setSelectionDataType(di.getSelectionDataType());
+//                        ci.setSelectionDataType(di.getSelectionDataType());
                         ci.setTopPercent(di.getTopPercent());
                         ci.setLeftPercent(di.getLeftPercent());
                         ci.setWidthPercent(di.getWidthPercent());
@@ -721,7 +721,7 @@ public class ClientEncounterComponentFormSetController implements Serializable {
                         ci.setName(di.getName());
                         ci.setRenderType(di.getRenderType());
                         ci.setMimeType(di.getMimeType());
-                        ci.setSelectionDataType(di.getSelectionDataType());
+//                        ci.setSelectionDataType(di.getSelectionDataType());
                         ci.setTopPercent(di.getTopPercent());
                         ci.setLeftPercent(di.getLeftPercent());
                         ci.setWidthPercent(di.getWidthPercent());

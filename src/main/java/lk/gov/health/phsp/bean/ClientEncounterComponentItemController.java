@@ -182,7 +182,9 @@ public class ClientEncounterComponentItemController implements Serializable {
                 //System.out.println("c.getRealNumberValue() = " + c.getRealNumberValue());
                 //System.out.println("c.getLongNumberValue() = " + c.getLongNumberValue());
                 //System.out.println("c.getItemValue().getItemValue() = " + c.getItemValue());
-                switch (c.getSelectionDataType()) {
+                
+                
+                switch (c.getItem().getDataType()) {
                     case Short_Text:
                         if (c.getShortTextValue() != null) {
                             r.setSelectedValue(c.getShortTextValue());
@@ -225,10 +227,10 @@ public class ClientEncounterComponentItemController implements Serializable {
         //System.out.println("result = " + result);
         //System.out.println("i.getSelectionDataType() = " + i.getSelectionDataType());
 
-        if (null == i.getSelectionDataType()) {
+        if (null == i.getItem().getDataType()) {
             i.setShortTextValue(result);
         } else {
-            switch (i.getSelectionDataType()) {
+            switch (i.getItem().getDataType()) {
                 case Real_Number:
                     i.setRealNumberValue(commonController.getDoubleValue(result));
                     //System.out.println("i.getRealNumberValue() = " + i.getRealNumberValue());
@@ -466,7 +468,7 @@ public class ClientEncounterComponentItemController implements Serializable {
         ci.setName(i.getName());
         ci.setRenderType(i.getRenderType());
         ci.setMimeType(i.getMimeType());
-        ci.setSelectionDataType(i.getSelectionDataType());
+//        ci.setSelectionDataType(i.getSelectionDataType());
         ci.setTopPercent(i.getTopPercent());
         ci.setLeftPercent(i.getLeftPercent());
         ci.setWidthPercent(i.getWidthPercent());
