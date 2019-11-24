@@ -196,8 +196,8 @@ public class ItemController implements Serializable {
 
     public void generateDisplayNames() {
         List<Item> tis = getFacade().findAll();
-        for(Item i:tis){
-            if(i.getDisplayName()==null || i.getDisplayName().trim().equals("")){
+        for (Item i : tis) {
+            if (i.getDisplayName() == null || i.getDisplayName().trim().equals("")) {
                 i.setDisplayName(i.getName());
                 getFacade().edit(i);
             }
@@ -223,6 +223,11 @@ public class ItemController implements Serializable {
 
         String initialData = "Dictionary_Item::Name:client_name:0" + System.lineSeparator()
                 + "Dictionary_Item::Sex:client_sex:0" + System.lineSeparator()
+                + "Dictionary_Item::Religion:client_religion:0" + System.lineSeparator()
+                + "Dictionary_Item::Ethnic Group:client_ethnic_group:0" + System.lineSeparator()
+                + "Dictionary_Item::Marital Status:client_marital_status:0" + System.lineSeparator()
+                + "Dictionary_Item::Title:client_title:0" + System.lineSeparator()
+                + "Dictionary_Item::Citizenship:client_citizenship:0" + System.lineSeparator()
                 + "Dictionary_Item::PHN Number:client_phn_number:0" + System.lineSeparator()
                 + "Dictionary_Item::NIC No.:client_nic_number:1" + System.lineSeparator()
                 + "Dictionary_Item::Date of Birth:client_data_of_birth:2" + System.lineSeparator()
@@ -236,6 +241,7 @@ public class ItemController implements Serializable {
                 + "Dictionary_Item::Current Address:client_current_address:3" + System.lineSeparator()
                 + "Dictionary_Item::Mobile Number:client_mobile_number:3" + System.lineSeparator()
                 + "Dictionary_Item::Home Number:client_home_number:3" + System.lineSeparator()
+                + "Dictionary_Item::Email:client_email:3" + System.lineSeparator()
                 + "Dictionary_Item::Guardian Details:guardian_details:3" + System.lineSeparator()
                 + "Dictionary_Item::MOH Area:client_current_moh_area:3" + System.lineSeparator()
                 + "Dictionary_Item::PHM Area:client_current_phm_area:3" + System.lineSeparator()
@@ -253,7 +259,9 @@ public class ItemController implements Serializable {
                 + "Dictionary_Item::Has Other Allergy:client_food_allergy_exists:3" + System.lineSeparator()
                 + "Dictionary_Item::Is allergic to:client_allergic_to:3" + System.lineSeparator()
                 + "Dictionary_Item::Client's Default Photo:client_default_photo:3" + System.lineSeparator()
-                + "Dictionary_Item::Client's Photo:client_photo:3" + System.lineSeparator();
+                + "Dictionary_Item::Client's Photo:client_photo:3" + System.lineSeparator()
+                + "Dictionary_Item::Client's Registered at:client_registered_at:3" + System.lineSeparator()
+                ;
 
         addInitialMetadata(initialData);
     }
@@ -340,7 +348,7 @@ public class ItemController implements Serializable {
                 + "Dictionary_Item:female_title:Dr(Miss):drmiss:9" + System.lineSeparator()
                 + "Dictionary_Item:female_title:Dr(Ms):drms:10" + System.lineSeparator()
                 + "Dictionary_Item:male_or_female_title:Rt Rev:rtrev:11" + System.lineSeparator()
-                + "Dictionary_Item:male_or_female_title:Baby of:bany_of:12" + System.lineSeparator()
+                + "Dictionary_Item:male_or_female_title:Baby of:baby_of:12" + System.lineSeparator()
                 + "Dictionary_Item:male_or_female_title:Other:title_other:13" + System.lineSeparator();
         addInitialMetadata(initialData);
     }

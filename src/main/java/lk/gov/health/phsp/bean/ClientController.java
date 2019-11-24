@@ -137,15 +137,13 @@ public class ClientController implements Serializable {
 
     // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="Functions">
-    
-    
-    public void saveSelectedImports(){
-        for(Client c:selectedClients){
+    public void saveSelectedImports() {
+        for (Client c : selectedClients) {
             c.setId(null);
             saveClient(c);
         }
     }
-    
+
     public String importClientsFromExcel() {
 
         importedClients = new ArrayList<>();
@@ -166,11 +164,7 @@ public class ClientController implements Serializable {
             Workbook w;
             Cell cell;
             InputStream in;
-
-            lk.gov.health.phsp.facade.util.JsfUtil.addSuccessMessage(file.getFileName());
-
             try {
-                lk.gov.health.phsp.facade.util.JsfUtil.addSuccessMessage(file.getFileName());
                 in = file.getInputstream();
                 File f;
                 f = new File(Calendar.getInstance().getTimeInMillis() + file.getFileName());
@@ -186,7 +180,7 @@ public class ClientController implements Serializable {
 
                 inputWorkbook = new File(f.getAbsolutePath());
 
-                lk.gov.health.phsp.facade.util.JsfUtil.addSuccessMessage("Excel File Opened");
+                JsfUtil.addSuccessMessage("Excel File Opened");
                 w = Workbook.getWorkbook(inputWorkbook);
                 Sheet sheet = w.getSheet(0);
 
@@ -195,7 +189,7 @@ public class ClientController implements Serializable {
                 int startRow = 1;
 
                 Long temId = 0L;
-                
+
                 for (int i = startRow; i < sheet.getRows(); i++) {
 
                     Map m = new HashMap();
@@ -225,6 +219,92 @@ public class ClientController implements Serializable {
                                 }
                                 c.getPerson().setSex(sex);
                                 break;
+                            case "client_citizenship":
+                                Item cs;
+                                if (cellString == null) {
+                                    cs = null;
+                                } else if (cellString.toLowerCase().contains("sri")) {
+                                    cs = itemController.findItemByCode("citizenship_local");
+                                } else {
+                                    cs = itemController.findItemByCode("citizenship_foreign");
+                                }
+                                c.getPerson().setCitizenship(cs);
+                                break;
+
+                            case "client_ethnic_group":
+                                Item eg = null;
+                                if (cellString == null || cellString.trim().equals("")) {
+                                    eg = null;
+                                } else if (cellString.equalsIgnoreCase("Sinhala")) {
+                                    eg = itemController.findItemByCode("sinhalese");
+                                } else if (cellString.equalsIgnoreCase("moors")) {
+                                    eg = itemController.findItemByCode("citizenship_local");
+                                } else if (cellString.equalsIgnoreCase("SriLankanTamil")) {
+                                    eg = itemController.findItemByCode("tamil");
+                                } else {
+                                    eg = itemController.findItemByCode("ethnic_group_other");;
+                                }
+                                c.getPerson().setCitizenship(eg);
+                                break;
+                            case "client_religion":
+                                Item re = null;
+                                if (cellString == null || cellString.trim().equals("")) {
+                                    re = null;
+                                } else if (cellString.equalsIgnoreCase("Buddhist")) {
+                                    re = itemController.findItemByCode("buddhist");
+                                } else if (cellString.equalsIgnoreCase("Christian")) {
+                                    re = itemController.findItemByCode("christian");
+                                } else if (cellString.equalsIgnoreCase("Hindu")) {
+                                    re = itemController.findItemByCode("hindu");
+                                } else {
+                                    re = itemController.findItemByCode("religion_other");;
+                                }
+                                c.getPerson().setCitizenship(re);
+                                break;
+                            case "client_marital_status":
+                                Item ms = null;
+                                if (cellString == null || cellString.trim().equals("")) {
+                                    ms = null;
+                                } else if (cellString.equalsIgnoreCase("Married")) {
+                                    ms = itemController.findItemByCode("married");
+                                } else if (cellString.equalsIgnoreCase("Separated")) {
+                                    ms = itemController.findItemByCode("seperated");
+                                } else if (cellString.equalsIgnoreCase("Single")) {
+                                    ms = itemController.findItemByCode("unmarried");
+                                } else {
+                                    ms = itemController.findItemByCode("marital_status_other");;
+                                }
+                                c.getPerson().setCitizenship(ms);
+                                break;
+                            case "client_title":
+                                Item title = null;
+                                String ts = cellString;
+                                switch (ts) {
+                                    case "Baby":
+                                        title = itemController.findItemByCode("baby");
+                                        break;
+                                    case "Babyof":
+                                        title = itemController.findItemByCode("baby_of");
+                                        break;
+                                    case "Mr":
+                                        title = itemController.findItemByCode("mr");
+                                        break;
+                                    case "Mrs":
+                                        title = itemController.findItemByCode("mrs");
+                                        break;
+                                    case "Ms":
+                                        title = itemController.findItemByCode("ms");
+                                        break;
+                                    case "Prof":
+                                        title = itemController.findItemByCode("prof");
+                                        break;
+                                    case "Rev":
+                                    case "Thero":
+                                        title = itemController.findItemByCode("rev");
+                                        break;
+                                }
+                                c.getPerson().setTitle(title);
+                                break;
                             case "client_nic_number":
                                 c.getPerson().setNic(cellString);
                                 break;
@@ -244,6 +324,12 @@ public class ClientController implements Serializable {
                             case "client_home_number":
                                 c.getPerson().setPhone2(cellString);
                                 break;
+                            case "client_registered_at":
+                                Date reg = commonController.dateFromString(cellString, "dd/MM/yyyy hh:mm:ss");
+                                c.getPerson().setCreatedAt(reg);
+                                c.setCreatedAt(reg);
+
+                                break;
                             case "client_gn_area":
                                 Area tgn = areaController.getAreaByName(cellString, AreaType.GN, false, null);
                                 if (tgn != null) {
@@ -260,10 +346,9 @@ public class ClientController implements Serializable {
                         colNo++;
                     }
 
-                    
                     c.setId(temId);
                     temId++;
-                    
+
                     importedClients.add(c);
 
                 }
@@ -562,7 +647,7 @@ public class ClientController implements Serializable {
         JsfUtil.addSuccessMessage("Saved.");
         return toClientProfile();
     }
-    
+
     public String saveClient(Client c) {
         if (c == null) {
             JsfUtil.addErrorMessage("No Client Selected to save.");
@@ -570,9 +655,16 @@ public class ClientController implements Serializable {
         }
         if (c.getId() == null) {
             c.setCreatedBy(webUserController.getLoggedUser());
-            c.setCreatedAt(new Date());
+            if (c.getCreatedAt() == null) {
+                c.setCreatedAt(new Date());
+            }
+            if (webUserController.getLoggedUser().getInstitution().getPoiInstitution() != null) {
+                c.setCreateInstitution(webUserController.getLoggedUser().getInstitution().getPoiInstitution());
+            }else if (webUserController.getLoggedUser().getInstitution() != null) {
+                c.setCreateInstitution(webUserController.getLoggedUser().getInstitution());
+            }
             getFacade().create(c);
-            
+
         } else {
             c.setLastEditBy(webUserController.getLoggedUser());
             c.setLastEditeAt(new Date());
@@ -653,6 +745,8 @@ public class ClientController implements Serializable {
         this.searchingPassportNo = searchingPassportNo;
     }
 
+    
+    
     public String getSearchingDrivingLicenceNo() {
         return searchingDrivingLicenceNo;
     }
@@ -795,23 +889,22 @@ public class ClientController implements Serializable {
     public String getUploadDetails() {
         if (uploadDetails == null || uploadDetails.trim().equals("")) {
             uploadDetails
-                    = 
-                    "client_phn_number" + "\n" 
-                    + "client_name" + "\n" 
-                    + "client_sex" + "\n" 
-                    + "client_nic_number" + "\n" 
-                    + "client_data_of_birth" + "\n" 
-                    + "client_current_age" + "\n" 
-                    + "client_age_at_encounter" + "\n" 
-                    + "client_permanent_address" + "\n" 
-                    + "client_current_address" + "\n" 
-                    + "client_mobile_number" + "\n" 
-                    + "client_home_number" + "\n" 
-                    + "client_permanent_moh_area" + "\n" 
-                    + "client_permanent_phm_area" + "\n" 
-                    + "client_permanent_phi_area" + "\n" 
-                    + "client_gn_area" + "\n" 
-                    + "client_ds_division";
+                    = "client_phn_number" + "\n"
+                    + "client_nic_number" + "\n"
+                    + "client_title" + "\n"
+                    + "client_name" + "\n"
+                    + "client_sex" + "\n"
+                    + "client_data_of_birth" + "\n"
+                    + "client_citizenship" + "\n"
+                    + "client_ethnic_group" + "\n"
+                    + "client_religion" + "\n"
+                    + "client_marital_status" + "\n"
+                    + "client_permanent_address" + "\n"
+                    + "client_gn_area" + "\n"
+                    + "client_mobile_number" + "\n"
+                    + "client_home_number" + "\n"
+                    + "client_email" + "\n"
+                    + "client_registered_at" + "\n";
         }
 
         return uploadDetails;
