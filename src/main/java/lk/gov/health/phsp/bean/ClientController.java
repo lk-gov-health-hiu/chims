@@ -205,6 +205,8 @@ public class ClientController implements Serializable {
                     for (String colName : cols) {
                         cell = sheet.getCell(colNo, i);
                         String cellString = cell.getContents();
+                        System.out.println("colName = " + colName);
+                        System.out.println("cellString = " + cellString);
                         switch (colName) {
                             case "client_name":
                                 c.getPerson().setName(cellString);
@@ -246,7 +248,7 @@ public class ClientController implements Serializable {
                                 } else {
                                     eg = itemController.findItemByCode("ethnic_group_other");;
                                 }
-                                c.getPerson().setCitizenship(eg);
+                                c.getPerson().setEthinicGroup(eg);
                                 break;
                             case "client_religion":
                                 Item re = null;
@@ -261,7 +263,7 @@ public class ClientController implements Serializable {
                                 } else {
                                     re = itemController.findItemByCode("religion_other");;
                                 }
-                                c.getPerson().setCitizenship(re);
+                                c.getPerson().setReligion(re);
                                 break;
                             case "client_marital_status":
                                 Item ms = null;
@@ -276,7 +278,7 @@ public class ClientController implements Serializable {
                                 } else {
                                     ms = itemController.findItemByCode("marital_status_other");;
                                 }
-                                c.getPerson().setCitizenship(ms);
+                                c.getPerson().setMariatalStatus(ms);
                                 break;
                             case "client_title":
                                 Item title = null;
