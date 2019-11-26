@@ -18,11 +18,11 @@
                     <p:panel header="#{bundleClinical.ListAreaTitle}">
                         
                         <p:commandButton value="Download" ajax="false" >
-                            <p:dataExporter target="datalist" type="cvs" fileName="gn" >
+                            <p:dataExporter target="datalist" type="csv" fileName="gn" >
                             </p:dataExporter>
                         </p:commandButton>
                         
-                        <p:dataTable id="datalist" value="#{areaController.items}" var="item"
+                        <p:dataTable id="tbl" value="#{areaController.items}" var="item"
                                      paginator="true"
                                      rowKey="#{item.id}"
                                      rows="10"
@@ -53,6 +53,30 @@
                                 <h:outputText value="#{item.district.name}"/>
                             </p:column>
                         </p:dataTable>
+                   
+                    
+                    
+                    
+                    
+                         <p:dataTable id="datalist" value="#{areaController.items}" var="item"
+                                       style="display: none;"
+                                    >
+                             <p:column headerText="code" >
+                                <h:outputText value="#{item.code}"/>
+                            </p:column>
+                             <p:column headerText="Name">
+                                <h:outputText value="#{item.name}"/>
+                            </p:column>
+                             <p:column headerText="DSD">
+                                <h:outputText value="#{item.dsd.name}"/>
+                            </p:column>
+                             <p:column  headerText="District">
+                                <h:outputText value="#{item.district.name}"/>
+                            </p:column>
+                        </p:dataTable>
+                   
+                    
+                    
                     </p:panel>
                 </h:form>
 
