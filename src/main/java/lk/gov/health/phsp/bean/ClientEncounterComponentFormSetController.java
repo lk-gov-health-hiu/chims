@@ -37,6 +37,7 @@ import lk.gov.health.phsp.enums.DataCompletionStrategy;
 import lk.gov.health.phsp.enums.DataPopulationStrategy;
 import lk.gov.health.phsp.enums.DataRepresentationType;
 import lk.gov.health.phsp.enums.EncounterType;
+import lk.gov.health.phsp.enums.SelectionDataType;
 import lk.gov.health.phsp.facade.ClientEncounterComponentItemFacade;
 import lk.gov.health.phsp.facade.ClientFacade;
 import lk.gov.health.phsp.facade.PersonFacade;
@@ -1004,6 +1005,99 @@ public class ClientEncounterComponentFormSetController implements Serializable {
         ti.setPrescriptionValue(vi.getPrescriptionValue());
         getItemFacade().edit(ti);
 
+    }
+
+    public String lastData(ClientEncounterComponentItem ci) {
+        String lr = "";
+        if (ci == null) {
+            return lr;
+        }
+        List<ClientEncounterComponentItem> lcis = null;
+        if (ci.getResultDisplayStrategy() == DataPopulationStrategy.From_Client_Value) {
+            lcis = dataFromClientValue(ci);
+        } else if (ci.getResultDisplayStrategy() == DataPopulationStrategy.From_Last_Encounter) {
+            lcis = dataFromLastEncounter(ci);
+        }
+        if (ci.getResultDisplayStrategy() == DataPopulationStrategy.From_Last_Encounter_of_same_clinic) {
+
+        }
+        if (ci.getResultDisplayStrategy() == DataPopulationStrategy.From_Last_Encounter_of_same_formset) {
+
+        }
+        if (lcis == null) {
+            return lr;
+        }
+        for (ClientEncounterComponentItem rc : lcis) {
+            switch (rc.getSelectionDataType()) {
+                case Area_Reference:
+                    break;
+                case Boolean:
+                    break;
+                case Client_Reference:
+                    break;
+                case DateTime:
+                    break;
+                case Integer_Number:
+                    break;
+                case Item_Reference:
+                    break;
+                case Long_Text:
+                    break;
+                case Prescreption_Reference:
+                    break;
+                case Long_Number:
+                    break;
+                case Real_Number:
+                    break;
+                case Short_Text:
+                    break;
+                default:
+            }
+
+        }
+        return lr;
+    }
+
+    public List<ClientEncounterComponentItem> dataFromClientValue(ClientEncounterComponentItem ti) {
+        String j = "select vi from ClientEncounterComponentItem vi where vi.retired=false "
+                + " and vi.client=:c "
+                + " and vi.item.code=:i "
+                + " and vi.dataRepresentationType=:r "
+                + " order by vi.id desc";
+        Map m = new HashMap();
+        m.put("r", DataRepresentationType.Client);
+        m.put("c", ti.getClient());
+        m.put("i", ti.getItem().getCode());
+
+        return getItemFacade().findByJpql(j, m);
+    
+        
+    }
+
+    public List<ClientEncounterComponentItem> dataFromLastEncounter(ClientEncounterComponentItem ti) {
+        if (ti == null) {
+            return null;
+        }
+        Client c;
+        if (ti.getEncounter() == null && ti.getClient() == null) {
+            return null;
+        } else if (ti.getEncounter() != null && ti.getClient() == null) {
+            if (ti.getEncounter().getClient() == null) {
+                return null;
+            } else {
+                c = ti.getEncounter().getClient();
+            }
+        } else {
+            c = ti.getClient();
+        }
+        String j = "select vi from ClientEncounterComponentItem vi where vi.retired=false "
+                + " and vi.encounter.client=:c "
+                + " and vi.dataRepresentationType=:r "
+                + " order by vi.id desc";
+        Map m = new HashMap();
+        m.put("c", ti.getEncounter().getClient());
+        m.put("r", DataRepresentationType.Encounter);
+        return getItemFacade().findByJpql(j, m);
     }
 
     public void updateFromLastEncounter(ClientEncounterComponentItem ti) {

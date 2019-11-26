@@ -362,7 +362,7 @@ public class ClientController implements Serializable {
                                 c.getPerson().setPhone2(cellString);
                                 break;
                             case "client_registered_at":
-                                Date reg = commonController.dateFromString(cellString, "dd/MM/yyyy hh:mm:ss");
+                                Date reg = commonController.dateFromString(cellString, "MM/dd/yyyy hh:mm:ss");
                                 c.getPerson().setCreatedAt(reg);
                                 c.setCreatedAt(reg);
 
