@@ -53,9 +53,10 @@
                                 <!-- small box -->
                                 <div class="small-box bg-info">
                                     <div class="inner">
-                                        <h3>5150</h3>
-
-                                        <p>Over 35 year population in the <br/>empanellment area</p>
+                                        <h3>#{webUserController.totalNumberOfRegisteredClients}</h3>
+                                        <p>Total Number Registered
+                                            <h:commandLink value="View" action="#{clientController.toRegisterdClients()}" ></h:commandLink>
+                                        </p>
                                     </div>
                                     <div class="icon">
                                         <i class="ion ion-bag"></i>

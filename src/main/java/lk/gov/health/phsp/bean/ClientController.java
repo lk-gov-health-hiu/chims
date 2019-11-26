@@ -137,6 +137,39 @@ public class ClientController implements Serializable {
 
     // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="Functions">
+    
+    
+    public Long countOfRegistedClients(Institution ins, Area gn){
+        String j = "select count(c) from Client c "
+                + " where c.retired=:ret ";
+        Map m = new HashMap();
+        m.put("ret", false);
+        if(ins!=null){
+            j+= " and c.createInstitution=:ins ";
+            m.put("ins", ins);
+        }
+        if(gn!=null){
+            j+=" and c.person.gnArea=:gn ";
+            m.put("gn", gn);
+        }
+        return getFacade().countByJpql(j, m);
+    }
+    
+    public String toRegisterdClients(){
+        String j = "select c from Client c "
+                + " where c.retired=:ret ";
+        Map m = new HashMap();
+        m.put("ret", false);
+        if(webUserController.getLoggedUser().getInstitution()!=null){
+            j+= " and c.createInstitution=:ins ";
+            m.put("ins", webUserController.getLoggedUser().getInstitution());
+        }else{
+            items = new ArrayList<>();
+        }
+        items = getFacade().findByJpql(j, m);
+        return "/insAdmin/registerd_clients";
+    }
+    
     public void saveSelectedImports() {
         for (Client c : selectedClients) {
             c.setId(null);
