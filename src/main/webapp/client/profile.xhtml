@@ -213,7 +213,7 @@
                                                                                 <ui:repeat value="#{clientEncounterComponentFormSetController.fillLastFiveEncountersFormSets('Clinic_Visit')}" var="rcv" >
                                                                                     <li>
                                                                                         <h:commandLink action="#{clientEncounterComponentFormSetController.toViewOrEditFormset()}"
-                                                                                                       
+
                                                                                                        style="color: #{rcv.completed?'white':'red'};">
                                                                                             <h:outputLabel value="#{rcv.name}">
                                                                                             </h:outputLabel>
@@ -321,18 +321,23 @@
 
                                                                 <h:form >
 
-                                                                    <h:selectOneMenu value="#{clientController.selectedClinic}" >
-                                                                        <f:selectItem itemLabel="Select the clinic" ></f:selectItem>
-                                                                        <f:selectItems value="#{institutionController.myClinics}" 
-                                                                                       var="shlc" itemValue="#{shlc}" itemLabel="#{shlc.name}"></f:selectItems>
-                                                                    </h:selectOneMenu>
-
-                                                                    <p:commandButton action="#{institutionController.refreshMyInstitutions()}" ajax="false" 
-                                                                                     rendered="false"     icon="ui-icon-arrowrefresh-1-n" ></p:commandButton>
-
-                                                                    <p:spacer height="1" width="10" ></p:spacer>
-                                                                    <p:commandButton value="Enroll" ajax="false" action="#{clientController.enrollInClinic()}" ></p:commandButton>
-
+                                                                    <table >
+                                                                        <tr>
+                                                                            <td>
+                                                                                <h:selectOneMenu value="#{clientController.selectedClinic}" >
+                                                                                    <f:selectItem itemLabel="Select the clinic" ></f:selectItem>
+                                                                                    <f:selectItems value="#{institutionController.myClinics}" 
+                                                                                                   var="shlc" itemValue="#{shlc}" itemLabel="#{shlc.name}"></f:selectItems>
+                                                                                </h:selectOneMenu>
+                                                                            </td>
+                                                                            <td>
+                                                                                <p:commandButton value="Enroll" ajax="false" action="#{clientController.enrollInClinic()}" ></p:commandButton>
+                                                                                <p:commandButton action="#{institutionController.refreshMyInstitutions()}" ajax="false" 
+                                                                                                     icon="ui-icon-arrowrefresh-1-n" ></p:commandButton>
+                                                                            </td>
+                                                                        </tr>
+                                                                    </table>
+                                                                    
                                                                 </h:form>
 
                                                             </div>
@@ -421,7 +426,7 @@
 
 
 
-       
+
 
 
 

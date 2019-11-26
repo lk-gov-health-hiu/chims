@@ -25,6 +25,7 @@ import javax.faces.convert.FacesConverter;
 import javax.inject.Inject;
 import lk.gov.health.phsp.entity.Client;
 import lk.gov.health.phsp.entity.Institution;
+import lk.gov.health.phsp.enums.EncounterType;
 
 @Named("encounterController")
 @SessionScoped
@@ -41,12 +42,21 @@ public class EncounterController implements Serializable {
     }
     
     public String createClinicEnrollNumber(Institution clinic) {
+        System.out.println("createClinicEnrollNumber");
+        System.out.println("clinic = " + clinic);
         String j = "select count(e) from Encounter e "
                 + " where e.institution=:ins "
-                + " and e.createdAt > :d";
+                + " and e.encounterType=:ec "
+                + " and e.createdAt>:d";
+//        j = "select count(e) from Encounter e ";
         Map m = new HashMap();
         m.put("d", CommonController.startOfTheYear());
-        Long c = getFacade().findLongByJpql(j, m);
+        m.put("ec", EncounterType.Clinic_Enroll);
+        m.put("ins", clinic);
+        System.out.println("m = " + m);
+        System.out.println("j = " + j);
+        Long c = getFacade().findLongByJpql(j,m);
+        System.out.println("c = " + c);
         if (c == null) {
             c = 1l;
         }else{

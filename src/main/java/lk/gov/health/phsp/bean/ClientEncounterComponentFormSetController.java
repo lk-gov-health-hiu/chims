@@ -85,6 +85,7 @@ public class ClientEncounterComponentFormSetController implements Serializable {
     private ClientEncounterComponentFormSet selected;
     private DesignComponentFormSet designFormSet;
     private boolean formEditable;
+    private Date encounterDate;
 // </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="Constructors">
 
@@ -548,7 +549,13 @@ public class ClientEncounterComponentFormSetController implements Serializable {
         Encounter e = new Encounter();
         e.setClient(clientController.getSelected());
         e.setInstitution(dfs.getInstitution());
-        e.setEncounterDate(d);
+
+        if (encounterDate != null) {
+            e.setEncounterDate(encounterDate);
+        } else {
+            e.setEncounterDate(d);
+        }
+
         e.setEncounterFrom(d);
         e.setEncounterType(EncounterType.Clinic_Visit);
 
@@ -1070,8 +1077,7 @@ public class ClientEncounterComponentFormSetController implements Serializable {
         m.put("i", ti.getItem().getCode());
 
         return getItemFacade().findByJpql(j, m);
-    
-        
+
     }
 
     public List<ClientEncounterComponentItem> dataFromLastEncounter(ClientEncounterComponentItem ti) {
@@ -1314,6 +1320,14 @@ public class ClientEncounterComponentFormSetController implements Serializable {
 
     public ItemController getItemController() {
         return itemController;
+    }
+
+    public Date getEncounterDate() {
+        return encounterDate;
+    }
+
+    public void setEncounterDate(Date encounterDate) {
+        this.encounterDate = encounterDate;
     }
 
 // </editor-fold>    

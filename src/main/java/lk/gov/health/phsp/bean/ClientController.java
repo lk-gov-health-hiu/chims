@@ -100,6 +100,7 @@ public class ClientController implements Serializable {
     private int profileTabActiveIndex;
     private boolean goingToCaptureWebCamPhoto;
     private UploadedFile file;
+    private Date clinicDate;
 
     // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="Constructors">
@@ -202,14 +203,14 @@ public class ClientController implements Serializable {
         } else {
             items = new ArrayList<>();
         }
-        
+
         System.out.println("m = " + m);
         System.out.println("j = " + j);
         items = getFacade().findByJpql(j, m);
         System.out.println("items.size() = " + items.size());
-        return "/insAdmin/registerd_clients";
+        return "/insAdmin/registered_clients";
     }
-    
+
     public String toRegisterdClients() {
         String j = "select c from Client c "
                 + " where c.retired=:ret ";
@@ -222,25 +223,25 @@ public class ClientController implements Serializable {
             items = new ArrayList<>();
         }
         items = getFacade().findByJpql(j, m);
-        return "/insAdmin/registerd_clients";
+        return "/insAdmin/registered_clients";
     }
 
     public void saveSelectedImports() {
-        if(institution==null){
+        if (institution == null) {
             JsfUtil.addErrorMessage("Institution ?");
             return;
         }
         for (Client c : selectedClients) {
             c.setCreateInstitution(institution);
             if (!phnExists(c.getPhn())) {
-                 c.setId(null);
+                c.setId(null);
                 saveClient(c);
             }
         }
     }
-    
+
     public void saveAllImports() {
-         if(institution==null){
+        if (institution == null) {
             JsfUtil.addErrorMessage("Institution ?");
             return;
         }
@@ -248,7 +249,7 @@ public class ClientController implements Serializable {
             c.setCreateInstitution(institution);
             c.setCreatedAt(c.getPerson().getCreatedAt());
             if (!phnExists(c.getPhn())) {
-                 c.setId(null);
+                c.setId(null);
                 saveClient(c);
             }
         }
@@ -561,7 +562,11 @@ public class ClientController implements Serializable {
         encounter.setCreatedAt(new Date());
         encounter.setCreatedBy(webUserController.getLoggedUser());
         encounter.setInstitution(selectedClinic);
-        encounter.setEncounterDate(new Date());
+        if(clinicDate!=null){
+            encounter.setEncounterDate(clinicDate);
+        }else{
+            encounter.setEncounterDate(new Date());
+        }
         encounter.setEncounterNumber(encounterController.createClinicEnrollNumber(selectedClinic));
         encounter.setCompleted(false);
         encounterFacade.create(encounter);
@@ -770,6 +775,15 @@ public class ClientController implements Serializable {
     }
 
     public String saveClient() {
+        Institution createdIns;
+        if (selected.getCreateInstitution() == null) {
+            if (webUserController.getLoggedUser().getInstitution().getPoiInstitution() != null) {
+                createdIns = webUserController.getLoggedUser().getInstitution().getPoiInstitution();
+            } else {
+                createdIns = webUserController.getLoggedUser().getInstitution();
+            }
+            selected.setCreateInstitution(createdIns);
+        }
         saveClient(selected);
         JsfUtil.addSuccessMessage("Saved.");
         return toClientProfile();
@@ -792,7 +806,7 @@ public class ClientController implements Serializable {
                     c.setCreateInstitution(webUserController.getLoggedUser().getInstitution());
                 }
             }
-            
+
             getFacade().create(c);
 
         } else {
@@ -1093,6 +1107,8 @@ public class ClientController implements Serializable {
     public void setIdFrom(Long idFrom) {
         this.idFrom = idFrom;
     }
+    
+    
 
     public Long getIdTo() {
         return idTo;
@@ -1100,6 +1116,14 @@ public class ClientController implements Serializable {
 
     public void setIdTo(Long idTo) {
         this.idTo = idTo;
+    }
+
+    public Date getClinicDate() {
+        return clinicDate;
+    }
+
+    public void setClinicDate(Date clinicDate) {
+        this.clinicDate = clinicDate;
     }
 
     // </editor-fold>

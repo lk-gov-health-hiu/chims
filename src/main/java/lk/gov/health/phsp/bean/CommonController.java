@@ -215,11 +215,11 @@ public class CommonController implements Serializable {
     public static Date startOfTheYear(Date d) {
         Calendar c = Calendar.getInstance();
         c.setTime(d);
-        c.set(Calendar.MONTH, 0);
-        c.set(Calendar.DAY_OF_MONTH, Calendar.JANUARY);
+        c.set(Calendar.MONTH, Calendar.JANUARY);
+        c.set(Calendar.DAY_OF_MONTH, 1 );
         c.set(Calendar.HOUR, 0);
         c.set(Calendar.MINUTE, 0);
-        c.set(Calendar.MILLISECOND, 0);
+        c.set(Calendar.MILLISECOND, 1);
         return c.getTime();
     }
 
