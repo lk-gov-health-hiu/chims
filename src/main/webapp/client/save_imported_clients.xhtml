@@ -20,9 +20,20 @@
                         </f:facet>
 
                         <h:panelGrid columns="2" >
+                            <p:outputLabel value="Institution" ></p:outputLabel>
+                            <p:autoComplete  id="parent" value="#{clientController.institution}" 
+                                             completeMethod="#{institutionController.completeInstitutions}"
+                                             var="i" itemLabel="#{i.name}" itemValue="#{i}">
+                            </p:autoComplete >
                             <p:commandButton value="Save Selected" ajax="false"
                                              action="#{clientController.saveSelectedImports()}">
                             </p:commandButton>
+                            
+                            <p:commandButton value="Save All" ajax="false"
+                                             action="#{clientController.saveAllImports()}">
+                            </p:commandButton>
+                            
+                            
                             <p:commandButton value="Export" ajax="false">
                                 <p:dataExporter target="tbl" type="csv" fileName="importedclients" ></p:dataExporter>
                             </p:commandButton>
@@ -113,10 +124,10 @@
 
                         </p:dataTable>
 
-                        
-                        
-                        
-                        
+
+
+
+
                         <p:dataTable value="#{clientController.importedClients}"
                                      var="c" id="tbl"
                                      rowKey="#{c.id}" style="display: none;" >
@@ -182,18 +193,18 @@
                             <p:column  headerText="District">
                                 <p:outputLabel value="#{c.person.district.name}" ></p:outputLabel>
                             </p:column>
-                            
-                            
-                             <p:column  headerText="Created at" >
-                                 <p:outputLabel value="#{c.createdAt}" >
-                                     <f:convertDateTime pattern="dd MMMM yyyy hh:mm:ss" ></f:convertDateTime>
-                                 </p:outputLabel>
+
+
+                            <p:column  headerText="Created at" >
+                                <p:outputLabel value="#{c.createdAt}" >
+                                    <f:convertDateTime pattern="dd MMMM yyyy hh:mm:ss" ></f:convertDateTime>
+                                </p:outputLabel>
                             </p:column>
 
 
                         </p:dataTable>
 
-                        
+
                     </p:panelGrid>
                 </h:form>
                 <div >

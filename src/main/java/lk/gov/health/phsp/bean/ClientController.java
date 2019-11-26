@@ -140,86 +140,118 @@ public class ClientController implements Serializable {
 
     // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="Functions">
-    
-    public void updateClientCreatedIdFromPersonId(){
+    public void updateClientCreatedIdFromPersonId() {
         String j = "select c from Client c "
                 + " where c.retired=:ret "
-               + " and c.createInstitution is null ";
-            Map m = new HashMap();
-            m.put("ret", false);
+                + " and c.createInstitution is null ";
+        Map m = new HashMap();
+        m.put("ret", false);
         List<Client> cs = getFacade().findByJpql(j, m);
-        for(Client c:cs){
+        for (Client c : cs) {
             c.setCreatedAt(c.getPerson().getCreatedAt());
             getFacade().edit(c);
         }
-        
+
     }
-    
-    
-    public void updateClientCreatedInstitution(){
-        if(institution==null){
+
+    public void updateClientCreatedInstitution() {
+        if (institution == null) {
             JsfUtil.addErrorMessage("Institution ?");
-            return ;
+            return;
         }
         String j = "select c from Client c "
                 + " where c.retired=:ret "
-               + " and c.id > :idf "
+                + " and c.id > :idf "
                 + " and c.id < :idt ";
-            Map m = new HashMap();
-            m.put("ret", false);
-            m.put("idf", idFrom);
-            m.put("idt", idTo);
+        Map m = new HashMap();
+        m.put("ret", false);
+        m.put("idf", idFrom);
+        m.put("idt", idTo);
         List<Client> cs = getFacade().findByJpql(j, m);
-        for(Client c:cs){
+        for (Client c : cs) {
             c.setCreateInstitution(institution);
             getFacade().edit(c);
         }
-        
+
     }
-    
-    
-    public Long countOfRegistedClients(Institution ins, Area gn){
+
+    public Long countOfRegistedClients(Institution ins, Area gn) {
         String j = "select count(c) from Client c "
                 + " where c.retired=:ret ";
         Map m = new HashMap();
         m.put("ret", false);
-        if(ins!=null){
-            j+= " and c.createInstitution=:ins ";
+        if (ins != null) {
+            j += " and c.createInstitution=:ins ";
             m.put("ins", ins);
         }
-        if(gn!=null){
-            j+=" and c.person.gnArea=:gn ";
+        if (gn != null) {
+            j += " and c.person.gnArea=:gn ";
             m.put("gn", gn);
         }
         return getFacade().countByJpql(j, m);
     }
-    
-    public String toRegisterdClients(){
+
+    public String toRegisterdClients() {
         String j = "select c from Client c "
                 + " where c.retired=:ret ";
         Map m = new HashMap();
         m.put("ret", false);
-        if(webUserController.getLoggedUser().getInstitution()!=null){
-            j+= " and c.createInstitution=:ins ";
+        if (webUserController.getLoggedUser().getInstitution() != null) {
+            j += " and c.createInstitution=:ins ";
             m.put("ins", webUserController.getLoggedUser().getInstitution());
-        }else{
+        } else {
             items = new ArrayList<>();
         }
         items = getFacade().findByJpql(j, m);
         return "/insAdmin/registerd_clients";
     }
-    
+
     public void saveSelectedImports() {
-        for (Client c : selectedClients) {
-            c.setId(null);
-            saveClient(c);
+        if(institution==null){
+            JsfUtil.addErrorMessage("Institution ?");
+            return;
         }
+        for (Client c : selectedClients) {
+            c.setCreateInstitution(institution);
+            if (!phnExists(c.getPhn())) {
+                 c.setId(null);
+                saveClient(c);
+            }
+        }
+    }
+    
+    public void saveAllImports() {
+         if(institution==null){
+            JsfUtil.addErrorMessage("Institution ?");
+            return;
+        }
+        for (Client c : importedClients) {
+            c.setCreateInstitution(institution);
+            c.setCreatedAt(c.getPerson().getCreatedAt());
+            if (!phnExists(c.getPhn())) {
+                 c.setId(null);
+                saveClient(c);
+            }
+        }
+    }
+
+    public boolean phnExists(String phn) {
+        String j = "select c from Client c where c.retired=:ret "
+                + " and c.phn=:phn";
+        Map m = new HashMap();
+        m.put("ret", false);
+        m.put("phn", phn);
+        Client c = getFacade().findFirstByJpql(j, m);
+        if (c == null) {
+            return false;
+        }
+        return true;
     }
 
     public String importClientsFromExcel() {
 
         System.out.println("file = " + file);
-        
+
         importedClients = new ArrayList<>();
 
         if (uploadDetails == null || uploadDetails.trim().equals("")) {
@@ -712,8 +744,6 @@ public class ClientController implements Serializable {
         m.put("q", ids.trim().toUpperCase());
         return getFacade().findByJpql(j, m);
     }
-    
-    
 
     public Client prepareCreate() {
         selected = new Client();
@@ -736,11 +766,14 @@ public class ClientController implements Serializable {
             if (c.getCreatedAt() == null) {
                 c.setCreatedAt(new Date());
             }
-            if (webUserController.getLoggedUser().getInstitution().getPoiInstitution() != null) {
-                c.setCreateInstitution(webUserController.getLoggedUser().getInstitution().getPoiInstitution());
-            }else if (webUserController.getLoggedUser().getInstitution() != null) {
-                c.setCreateInstitution(webUserController.getLoggedUser().getInstitution());
+            if (c.getCreateInstitution() == null) {
+                if (webUserController.getLoggedUser().getInstitution().getPoiInstitution() != null) {
+                    c.setCreateInstitution(webUserController.getLoggedUser().getInstitution().getPoiInstitution());
+                } else if (webUserController.getLoggedUser().getInstitution() != null) {
+                    c.setCreateInstitution(webUserController.getLoggedUser().getInstitution());
+                }
             }
+            
             getFacade().create(c);
 
         } else {
@@ -799,10 +832,6 @@ public class ClientController implements Serializable {
 
     // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="Getters & Setters">
-    
-    
-    
-    
     public String getSearchingId() {
         return searchingId;
     }
@@ -827,8 +856,6 @@ public class ClientController implements Serializable {
         this.searchingPassportNo = searchingPassportNo;
     }
 
-    
-    
     public String getSearchingDrivingLicenceNo() {
         return searchingDrivingLicenceNo;
     }
