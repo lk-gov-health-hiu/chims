@@ -55,7 +55,9 @@
                                     <div class="inner">
                                         <h3>#{webUserController.totalNumberOfRegisteredClients}</h3>
                                         <p>Total Number Registered
-                                            <h:commandLink value="View" action="#{clientController.toRegisterdClients()}" ></h:commandLink>
+                                            <h:form>
+                                                <h:commandLink value="View" action="#{clientController.toRegisterdClients()}" ></h:commandLink>
+                                            </h:form>
                                         </p>
                                     </div>
                                     <div class="icon">
