@@ -13,91 +13,111 @@
             <ui:define name="content">
 
                 <h:form  >
-                    <p:panelGrid columns="3" >
+                    <p:panelGrid columns="1" >
 
                         <f:facet name="header" >
                             <p:outputLabel value="Clients to Import" ></p:outputLabel>
                         </f:facet>
 
-                        <p:commandButton value="Save Selected" ajax="false"
-                                         action="#{clientController.saveSelectedImports()}">
-                        </p:commandButton>
+                        <h:panelGrid columns="2" >
+                            <p:commandButton value="Save Selected" ajax="false"
+                                             action="#{clientController.saveSelectedImports()}">
+                            </p:commandButton>
+                            <p:commandButton value="Export" ajax="false">
+                                <p:dataExporter target="tbl" type="xls" fileName="imported_clients" ></p:dataExporter>
+                            </p:commandButton>
 
-
+                        </h:panelGrid>
                         <p:dataTable value="#{clientController.importedClients}"
                                      selection="#{clientController.selectedClients}"
                                      selectionMode="multiple"
-                                     var="c"
+                                     var="c" id="tbl"
                                      rowKey="#{c.id}" >
-                            <p:column selectionMode="multiple" >
+                            <p:column selectionMode="multiple" width="15" >
 
                             </p:column>
 
-                            <p:column sortBy="#{c.phn}" filterBy="#{c.phn}" filterMatchMode="contains">
+                            <p:column headerText="PHN" width="200" sortBy="#{c.phn}" filterBy="#{c.phn}" filterMatchMode="contains">
                                 <p:outputLabel value="#{c.phn}" ></p:outputLabel>
                             </p:column>
 
-                            <p:column sortBy="#{c.person.name}" filterBy="#{c.person.name}" filterMatchMode="contains">
+                            <p:column headerText="Name" width="200"  sortBy="#{c.person.name}" filterBy="#{c.person.name}" filterMatchMode="contains">
                                 <p:outputLabel value="#{c.person.name}" ></p:outputLabel>
                             </p:column>
 
-                            <p:column sortBy="#{c.person.sex.name}" filterBy="#{c.person.sex.name}" filterMatchMode="contains">
+                            <p:column  headerText="Sex" width="200" sortBy="#{c.person.sex.name}" filterBy="#{c.person.sex.name}" filterMatchMode="contains">
                                 <p:outputLabel value="#{c.person.sex.name}" ></p:outputLabel>
                             </p:column>
-                            
-                            <p:column sortBy="#{c.person.nic}" filterBy="#{c.person.nic}" filterMatchMode="contains">
+
+                            <p:column headerText="NIC" width="200"  sortBy="#{c.person.nic}" filterBy="#{c.person.nic}" filterMatchMode="contains">
                                 <p:outputLabel value="#{c.person.nic}" ></p:outputLabel>
                             </p:column>
 
-                            <p:column sortBy="#{c.person.address}" filterBy="#{c.person.address}" filterMatchMode="contains">
-                                <p:outputLabel value="#{c.person.address}" ></p:outputLabel>
-                            </p:column>
-                            
-                            <p:column sortBy="#{c.person.dateOfBirth}" >
-                                <p:outputLabel value="#{c.person.dateOfBirth}" ></p:outputLabel>
+                            <p:column  headerText="Ethnic Group" width="200"  sortBy="#{c.person.ethinicGroup.name}" filterBy="#{c.person.ethinicGroup.name}" filterMatchMode="contains">
+                                <p:outputLabel value="#{c.person.ethinicGroup.name}" ></p:outputLabel>
                             </p:column>
 
-                            <p:column sortBy="#{c.person.phone1}" filterBy="#{c.person.phone1}" filterMatchMode="contains">
+                            <p:column  headerText="Religion" width="200" sortBy="#{c.person.religion.name}" filterBy="#{c.person.religion.name}" filterMatchMode="contains">
+                                <p:outputLabel value="#{c.person.religion.name}" ></p:outputLabel>
+                            </p:column>
+
+                            <p:column  headerText="Marietal Status" width="200" sortBy="#{c.person.mariatalStatus.name}" filterBy="#{c.person.mariatalStatus.name}" filterMatchMode="contains">
+                                <p:outputLabel value="#{c.person.mariatalStatus.name}" ></p:outputLabel>
+                            </p:column>
+
+                            <p:column  headerText="Citizenship" width="200" sortBy="#{c.person.citizenship.name}" filterBy="#{c.person.citizenship.name}" filterMatchMode="contains">
+                                <p:outputLabel value="#{c.person.citizenship.name}" ></p:outputLabel>
+                            </p:column>
+
+                            <p:column  headerText="Address" width="200" sortBy="#{c.person.address}" filterBy="#{c.person.address}" filterMatchMode="contains">
+                                <p:outputLabel value="#{c.person.address}" ></p:outputLabel>
+                            </p:column>
+
+                            <p:column  headerText="DOB" width="200" sortBy="#{c.person.dateOfBirth}" >
+                                <p:outputLabel value="#{c.person.dateOfBirth}" >
+                                    <f:convertDateTime pattern="dd/MMMM/yyyy" ></f:convertDateTime>
+                                </p:outputLabel>
+                            </p:column>
+
+                            <p:column  headerText="Phone1" width="200"  sortBy="#{c.person.phone1}" filterBy="#{c.person.phone1}" filterMatchMode="contains">
                                 <p:outputLabel value="#{c.person.phone1}" ></p:outputLabel>
                             </p:column>
 
-                            <p:column sortBy="#{c.person.phone2}" 
-                                      filterBy="#{c.person.phone2}"
-                                      filterMatchMode="contains">
+                            <p:column  headerText="Phone2" width="200" sortBy="#{c.person.phone2}" 
+                                       filterBy="#{c.person.phone2}"
+                                       filterMatchMode="contains">
                                 <p:outputLabel value="#{c.person.phone2}" ></p:outputLabel>
                             </p:column>
 
-                            <p:column sortBy="#{c.person.phmArea.name}" 
-                                      filterBy="#{c.person.phmArea.name}"
-                                      filterMatchMode="contains">
+                            <p:column  headerText="PHM Area" width="200" sortBy="#{c.person.phmArea.name}" 
+                                       filterBy="#{c.person.phmArea.name}"
+                                       filterMatchMode="contains">
                                 <p:outputLabel value="#{c.person.phmArea.name}" ></p:outputLabel>
                             </p:column>
 
-                            <p:column sortBy="#{c.person.dsArea.name}" 
-                                      filterBy="#{c.person.dsArea.name}"
-                                      filterMatchMode="contains">
+                            <p:column  headerText="DS Division" width="200" sortBy="#{c.person.dsArea.name}" 
+                                       filterBy="#{c.person.dsArea.name}"
+                                       filterMatchMode="contains">
                                 <p:outputLabel value="#{c.person.dsArea.name}" ></p:outputLabel>
                             </p:column>
 
 
-                            <p:column sortBy="#{c.person.district.name}" 
-                                      filterBy="#{c.person.district.name}"
-                                      filterMatchMode="contains">
+                            <p:column  headerText="District" width="200" sortBy="#{c.person.district.name}" 
+                                       filterBy="#{c.person.district.name}"
+                                       filterMatchMode="contains">
                                 <p:outputLabel value="#{c.person.district.name}" ></p:outputLabel>
                             </p:column>
-
-                            <p:column sortBy="#{c.person.province.name}" 
-                                      filterBy="#{c.person.province.name}"
-                                      filterMatchMode="contains">
-                                <p:outputLabel value="#{c.person.province.name}" ></p:outputLabel>
-                            </p:column>
-
 
 
                         </p:dataTable>
 
                     </p:panelGrid>
                 </h:form>
+                <div >
+                    <br/>
+                    <br/>
+                    <br/>
+                </div>
 
             </ui:define>
 

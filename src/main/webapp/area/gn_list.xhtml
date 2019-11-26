@@ -1,0 +1,65 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <h:body>
+
+        <ui:composition template="/template.xhtml">
+
+
+
+            <ui:define name="content">
+                
+                <h:form id="AreaListForm">
+                    <p:panel header="#{bundleClinical.ListAreaTitle}">
+                        
+                        <p:commandButton value="Download" ajax="false" >
+                            <p:dataExporter target="datalist" type="cvs" fileName="gn" >
+                            </p:dataExporter>
+                        </p:commandButton>
+                        
+                        <p:dataTable id="datalist" value="#{areaController.items}" var="item"
+                                     paginator="true"
+                                     rowKey="#{item.id}"
+                                     rows="10"
+                                     rowsPerPageTemplate="10,20,30,40,50"
+                                     >
+                            <p:column sortBy="#{item.code}"   filterBy="#{item.name}" filterMatchMode="contains">
+                                <f:facet name="header">
+                                    <h:outputText value="Code"/>
+                                </f:facet>
+                                <h:outputText value="#{item.code}"/>
+                            </p:column>
+                            <p:column sortBy="#{item.name}"  filterBy="#{item.name}" filterMatchMode="contains">
+                                <f:facet name="header">
+                                    <h:outputText value="#{bundleClinical.ListAreaTitle_name}"/>
+                                </f:facet>
+                                <h:outputText value="#{item.name}"/>
+                            </p:column>
+                            <p:column sortBy="#{item.dsd.name}" filterBy="#{item.dsd.name}" filterMatchMode="contains">
+                                <f:facet name="header" >
+                                    <h:outputText value="DS Division"/>
+                                </f:facet>
+                                <h:outputText value="#{item.dsd.name}"/>
+                            </p:column>
+                            <p:column  sortBy="#{item.district.name}" filterBy="#{item.district.name}" filterMatchMode="contains">
+                                <f:facet name="header">
+                                    <h:outputText value="District"/>
+                                </f:facet>
+                                <h:outputText value="#{item.district.name}"/>
+                            </p:column>
+                        </p:dataTable>
+                    </p:panel>
+                </h:form>
+
+            </ui:define>
+
+        </ui:composition>
+
+    </h:body>
+
+</html>

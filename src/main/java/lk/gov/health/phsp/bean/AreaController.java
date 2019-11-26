@@ -95,6 +95,12 @@ public class AreaController implements Serializable {
     private int startRow = 1;
     private int year;
 
+    
+    public String listGnAreas(){
+        items = getAreas(AreaType.GN, null);
+        return "/area/gn_list";
+    }
+    
     public String importAreasFromExcel() {
         System.out.println("file = " + file);
         try {
