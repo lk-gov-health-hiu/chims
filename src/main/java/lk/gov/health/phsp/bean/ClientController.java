@@ -204,8 +204,9 @@ public class ClientController implements Serializable {
         }
         
         System.out.println("m = " + m);
-        System.out.println("m = " + m);
+        System.out.println("j = " + j);
         items = getFacade().findByJpql(j, m);
+        System.out.println("items.size() = " + items.size());
         return "/insAdmin/registerd_clients";
     }
     
