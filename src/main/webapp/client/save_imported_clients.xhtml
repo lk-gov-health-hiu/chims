@@ -24,17 +24,19 @@
                                              action="#{clientController.saveSelectedImports()}">
                             </p:commandButton>
                             <p:commandButton value="Export" ajax="false">
-                                <p:dataExporter target="tbl" type="xls" fileName="imported_clients" ></p:dataExporter>
+                                <p:dataExporter target="tbl" type="csv" fileName="importedclients" ></p:dataExporter>
                             </p:commandButton>
 
                         </h:panelGrid>
                         <p:dataTable value="#{clientController.importedClients}"
                                      selection="#{clientController.selectedClients}"
-                                     selectionMode="multiple"
-                                     var="c" id="tbl"
-                                     rowKey="#{c.id}" >
+                                     var="c" 
+                                     rowKey="#{c.id}"
+                                     paginator="true"
+                                     rows="20"
+                                     rowsPerPageTemplate="10,20,30,40,50"
+                                     >
                             <p:column selectionMode="multiple" width="15" >
-
                             </p:column>
 
                             <p:column headerText="PHN" width="200" sortBy="#{c.phn}" filterBy="#{c.phn}" filterMatchMode="contains">
@@ -111,6 +113,87 @@
 
                         </p:dataTable>
 
+                        
+                        
+                        
+                        
+                        <p:dataTable value="#{clientController.importedClients}"
+                                     var="c" id="tbl"
+                                     rowKey="#{c.id}" style="display: none;" >
+                            <p:column headerText="PHN"  >
+                                <p:outputLabel value="#{c.phn}" ></p:outputLabel>
+                            </p:column>
+
+                            <p:column headerText="Name" >
+                                <p:outputLabel value="#{c.person.name}" ></p:outputLabel>
+                            </p:column>
+
+                            <p:column  headerText="Sex" >
+                                <p:outputLabel value="#{c.person.sex.name}" ></p:outputLabel>
+                            </p:column>
+
+                            <p:column headerText="NIC" >
+                                <p:outputLabel value="#{c.person.nic}" ></p:outputLabel>
+                            </p:column>
+
+                            <p:column  headerText="Ethnic Group">
+                                <p:outputLabel value="#{c.person.ethinicGroup.name}" ></p:outputLabel>
+                            </p:column>
+
+                            <p:column  headerText="Religion">
+                                <p:outputLabel value="#{c.person.religion.name}" ></p:outputLabel>
+                            </p:column>
+
+                            <p:column  headerText="Marietal Status" >
+                                <p:outputLabel value="#{c.person.mariatalStatus.name}" ></p:outputLabel>
+                            </p:column>
+
+                            <p:column  headerText="Citizenship" >
+                                <p:outputLabel value="#{c.person.citizenship.name}" ></p:outputLabel>
+                            </p:column>
+
+                            <p:column  headerText="Address">
+                                <p:outputLabel value="#{c.person.address}" ></p:outputLabel>
+                            </p:column>
+
+                            <p:column  headerText="DOB"  >
+                                <p:outputLabel value="#{c.person.dateOfBirth}" >
+                                    <f:convertDateTime pattern="dd/MMMM/yyyy" ></f:convertDateTime>
+                                </p:outputLabel>
+                            </p:column>
+
+                            <p:column  headerText="Phone1" >
+                                <p:outputLabel value="#{c.person.phone1}" ></p:outputLabel>
+                            </p:column>
+
+                            <p:column  headerText="Phone2" >
+                                <p:outputLabel value="#{c.person.phone2}" ></p:outputLabel>
+                            </p:column>
+
+                            <p:column  headerText="PHM Area" >
+                                <p:outputLabel value="#{c.person.phmArea.name}" ></p:outputLabel>
+                            </p:column>
+
+                            <p:column  headerText="DS Division" >
+                                <p:outputLabel value="#{c.person.dsArea.name}" ></p:outputLabel>
+                            </p:column>
+
+
+                            <p:column  headerText="District">
+                                <p:outputLabel value="#{c.person.district.name}" ></p:outputLabel>
+                            </p:column>
+                            
+                            
+                             <p:column  headerText="Created at" >
+                                 <p:outputLabel value="#{c.createdAt}" >
+                                     <f:convertDateTime pattern="dd MMMM yyyy hh:mm:ss" ></f:convertDateTime>
+                                 </p:outputLabel>
+                            </p:column>
+
+
+                        </p:dataTable>
+
+                        
                     </p:panelGrid>
                 </h:form>
                 <div >
