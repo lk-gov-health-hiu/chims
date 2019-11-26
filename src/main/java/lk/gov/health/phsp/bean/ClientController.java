@@ -191,6 +191,24 @@ public class ClientController implements Serializable {
         return getFacade().countByJpql(j, m);
     }
 
+    public String toRegisterdClientsDemo() {
+        String j = "select c from Client c "
+                + " where c.retired=:ret ";
+        Map m = new HashMap();
+        m.put("ret", false);
+        if (webUserController.getLoggedUser().getInstitution() != null) {
+            j += " and c.createInstitution=:ins ";
+            m.put("ins", webUserController.getLoggedUser().getInstitution());
+        } else {
+            items = new ArrayList<>();
+        }
+        
+        System.out.println("m = " + m);
+        System.out.println("m = " + m);
+        items = getFacade().findByJpql(j, m);
+        return "/insAdmin/registerd_clients";
+    }
+    
     public String toRegisterdClients() {
         String j = "select c from Client c "
                 + " where c.retired=:ret ";

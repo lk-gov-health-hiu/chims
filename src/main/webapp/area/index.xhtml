@@ -34,11 +34,13 @@
                                     <p:ajax event="keyup" update="@this" ></p:ajax>
                                 </p:inputText>
                             </h:panelGroup>
-                            
+
                             <p:commandButton styleClass="defaultButton"  ajax="false"
                                              value="List GN Areas" action="#{areaController.listGnAreas()}"  ></p:commandButton>                        
 
-
+                                             <h:commandButton  value="Test"
+                                                              action="#{clientController.toRegisterdClientsDemo}" >
+                            </h:commandButton>
                         </h:panelGrid>
                     </h:form>  
                 </p:panel>
