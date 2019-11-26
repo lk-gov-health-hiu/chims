@@ -77,6 +77,8 @@ public class WebUserController implements Serializable {
     private InstitutionController institutionController;
     @Inject
     private ItemController itemController;
+    @Inject
+    ClientController clientController;
 
     /*
     Variables
@@ -135,6 +137,9 @@ public class WebUserController implements Serializable {
     private String loginRequestResponse;
 
     private String locale;
+    
+    
+    Long totalNumberOfRegisteredClients;
 
     /**
      *
@@ -434,10 +439,22 @@ public class WebUserController implements Serializable {
             }
         }
         loggedUserPrivileges = userPrivilegeList(loggedUser);
+        
+        if(loggedUser.isInstitutionAdministrator()){
+            prepareInsAdminDashboard();
+        }else if (loggedUser.isSystemAdministrator()){
+            //TODO: Change to SysAdmin
+            prepareInsAdminDashboard();
+        }
+        
         JsfUtil.addSuccessMessage("Successfully Logged");
         return "/index";
     }
 
+    public void prepareInsAdminDashboard(){
+        totalNumberOfRegisteredClients = clientController.countOfRegistedClients(loggedUser.getInstitution(), null);
+    }
+    
     public String loginForMobile() {
         loginRequestResponse = "";
         if (userName == null || userName.trim().equals("")) {
@@ -1395,6 +1412,16 @@ public class WebUserController implements Serializable {
     public TreeNode getMyPrivilegeRoot() {
         return myPrivilegeRoot;
     }
+
+    public Long getTotalNumberOfRegisteredClients() {
+        return totalNumberOfRegisteredClients;
+    }
+
+    public void setTotalNumberOfRegisteredClients(Long totalNumberOfRegisteredClients) {
+        this.totalNumberOfRegisteredClients = totalNumberOfRegisteredClients;
+    }
+    
+    
 
     public void setMyPrivilegeRoot(TreeNode myPrivilegeRoot) {
         this.myPrivilegeRoot = myPrivilegeRoot;
