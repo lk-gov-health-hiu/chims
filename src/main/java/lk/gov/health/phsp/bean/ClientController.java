@@ -82,6 +82,9 @@ public class ClientController implements Serializable {
     private List<Client> selectedClients = null;
     private List<Client> importedClients = null;
     private Client selected;
+    private Long idFrom;
+    private Long idTo;
+    private Institution institution;
     private List<Encounter> selectedClientsClinics;
     private String searchingId;
     private String searchingPhn;
@@ -137,6 +140,42 @@ public class ClientController implements Serializable {
 
     // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="Functions">
+    
+    public void updateClientCreatedIdFromPersonId(){
+        String j = "select c from Client c "
+                + " where c.retired=:ret "
+               + " and c.createInstitution is null ";
+            Map m = new HashMap();
+            m.put("ret", false);
+        List<Client> cs = getFacade().findByJpql(j, m);
+        for(Client c:cs){
+            c.setCreatedAt(c.getPerson().getCreatedAt());
+            getFacade().edit(c);
+        }
+        
+    }
+    
+    
+    public void updateClientCreatedInstitution(){
+        if(institution==null){
+            JsfUtil.addErrorMessage("Institution ?");
+            return ;
+        }
+        String j = "select c from Client c "
+                + " where c.retired=:ret "
+               + " and c.id > :idf "
+                + " and c.id < :idt ";
+            Map m = new HashMap();
+            m.put("ret", false);
+            m.put("idf", idFrom);
+            m.put("idt", idTo);
+        List<Client> cs = getFacade().findByJpql(j, m);
+        for(Client c:cs){
+            c.setCreateInstitution(institution);
+            getFacade().edit(c);
+        }
+        
+    }
     
     
     public Long countOfRegistedClients(Institution ins, Area gn){
@@ -673,6 +712,8 @@ public class ClientController implements Serializable {
         m.put("q", ids.trim().toUpperCase());
         return getFacade().findByJpql(j, m);
     }
+    
+    
 
     public Client prepareCreate() {
         selected = new Client();
@@ -758,6 +799,10 @@ public class ClientController implements Serializable {
 
     // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="Getters & Setters">
+    
+    
+    
+    
     public String getSearchingId() {
         return searchingId;
     }
@@ -985,6 +1030,30 @@ public class ClientController implements Serializable {
 
     public AreaController getAreaController() {
         return areaController;
+    }
+
+    public Institution getInstitution() {
+        return institution;
+    }
+
+    public void setInstitution(Institution institution) {
+        this.institution = institution;
+    }
+
+    public Long getIdFrom() {
+        return idFrom;
+    }
+
+    public void setIdFrom(Long idFrom) {
+        this.idFrom = idFrom;
+    }
+
+    public Long getIdTo() {
+        return idTo;
+    }
+
+    public void setIdTo(Long idTo) {
+        this.idTo = idTo;
     }
 
     // </editor-fold>
