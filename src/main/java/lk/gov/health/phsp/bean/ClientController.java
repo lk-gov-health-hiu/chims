@@ -247,7 +247,6 @@ public class ClientController implements Serializable {
         }
         for (Client c : importedClients) {
             c.setCreateInstitution(institution);
-            c.setCreatedAt(c.getPerson().getCreatedAt());
             if (!phnExists(c.getPhn())) {
                 c.setId(null);
                 saveClient(c);
@@ -456,7 +455,6 @@ public class ClientController implements Serializable {
                                 Date reg = commonController.dateFromString(cellString, "MM/dd/yyyy hh:mm:ss");
                                 c.getPerson().setCreatedAt(reg);
                                 c.setCreatedAt(reg);
-
                                 break;
                             case "client_gn_area":
                                 Area tgn = areaController.getAreaByName(cellString, AreaType.GN, false, null);
