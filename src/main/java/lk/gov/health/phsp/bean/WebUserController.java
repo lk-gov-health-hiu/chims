@@ -844,7 +844,6 @@ public class WebUserController implements Serializable {
         System.out.println("userNameExsists");
         System.out.println("userName = " + getSelected().getName());
         boolean une = userNameExsists(getSelected().getName());
-        System.out.println("une = " + une);
         return une;
     }
 
@@ -858,7 +857,6 @@ public class WebUserController implements Serializable {
         Map m = new HashMap();
         m.put("un", un.toLowerCase());
         WebUser u = getFacade().findFirstByJpql(j, m);
-        System.out.println("u = " + u);
         return u != null;
     }
 
