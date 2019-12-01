@@ -56,7 +56,6 @@ public class EncounterController implements Serializable {
         System.out.println("m = " + m);
         System.out.println("j = " + j);
         Long c = getFacade().findLongByJpql(j,m);
-        System.out.println("c = " + c);
         if (c == null) {
             c = 1l;
         }else{
@@ -71,11 +70,13 @@ public class EncounterController implements Serializable {
         String j = "select e from Encounter e "
                 + " where e.institution=:i "
                 + " and e.client=:c"
-                + " and e.completed=:com";
+                + " and e.completed=:com"
+                + " and e.encounterType=:et";
         Map m = new HashMap();
         m.put("i", i);
         m.put("c", c);
-        m.put("c", false);
+        m.put("com", false);
+        m.put("et", EncounterType.Clinic_Enroll);
         Encounter e = getFacade().findFirstByJpql(j, m);
         if(e==null){
             return false;

@@ -67,7 +67,6 @@ public class CommonController implements Serializable {
         try {
             return formatter1.parse(dateString);
         } catch (ParseException ex) {
-            System.out.println("error = " + ex.getMessage());
             return null;
         }
     }

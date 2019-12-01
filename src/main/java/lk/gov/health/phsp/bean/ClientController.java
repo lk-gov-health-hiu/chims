@@ -207,7 +207,6 @@ public class ClientController implements Serializable {
         System.out.println("m = " + m);
         System.out.println("j = " + j);
         items = getFacade().findByJpql(j, m);
-        System.out.println("items.size() = " + items.size());
         return "/insAdmin/registered_clients";
     }
 
@@ -247,7 +246,6 @@ public class ClientController implements Serializable {
         }
         for (Client c : importedClients) {
             c.setCreateInstitution(institution);
-            c.setCreatedAt(c.getPerson().getCreatedAt());
             if (!phnExists(c.getPhn())) {
                 c.setId(null);
                 saveClient(c);
@@ -270,7 +268,6 @@ public class ClientController implements Serializable {
 
     public String importClientsFromExcel() {
 
-        System.out.println("file = " + file);
 
         importedClients = new ArrayList<>();
 
@@ -330,7 +327,6 @@ public class ClientController implements Serializable {
                         cell = sheet.getCell(colNo, i);
                         String cellString = cell.getContents();
                         System.out.println("colName = " + colName);
-                        System.out.println("cellString = " + cellString);
                         switch (colName) {
                             case "client_name":
                                 c.getPerson().setName(cellString);
@@ -456,7 +452,6 @@ public class ClientController implements Serializable {
                                 Date reg = commonController.dateFromString(cellString, "MM/dd/yyyy hh:mm:ss");
                                 c.getPerson().setCreatedAt(reg);
                                 c.setCreatedAt(reg);
-
                                 break;
                             case "client_gn_area":
                                 Area tgn = areaController.getAreaByName(cellString, AreaType.GN, false, null);
@@ -495,7 +490,6 @@ public class ClientController implements Serializable {
             }
         } catch (IndexOutOfBoundsException e) {
             errorCode = e.getMessage();
-            System.out.println("e = " + e.getMessage());
             return "";
         }
     }
@@ -547,7 +541,6 @@ public class ClientController implements Serializable {
             JsfUtil.addErrorMessage("Please select an clinic to enroll.");
             return;
         }
-        System.out.println("selected = " + selected);
         if (selected == null) {
             JsfUtil.addErrorMessage("Please select a client to enroll.");
             return;

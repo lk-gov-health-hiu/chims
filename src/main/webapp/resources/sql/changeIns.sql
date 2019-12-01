@@ -26,6 +26,6 @@
  * Created: Nov 26, 2019
  */
 
-update from client 
-set `CREATEINSTITUTION_ID` = 53251
-where id > 
+update from institution 
+set ``INSTITUTIONTYPE`` = 'Ward'
+where `INSTITUTIONTYPE` = 'Ward_Clinic' ;

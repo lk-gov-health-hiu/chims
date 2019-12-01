@@ -437,7 +437,6 @@ public class ClientEncounterComponentFormSetController implements Serializable {
         m.put("c", c);
         m.put("t", type);
         System.out.println("j = " + j);
-        System.out.println("m = " + m);
         if (count == 0) {
             fs = getFacade().findByJpql(j, m);
         } else {
@@ -463,7 +462,6 @@ public class ClientEncounterComponentFormSetController implements Serializable {
         m.put("c", getClientController().getSelected());
         m.put("t", type);
         System.out.println("j = " + j);
-        System.out.println("m = " + m);
 
         fs = getFacade().findByJpql(j, m, 5);
 
@@ -501,7 +499,6 @@ public class ClientEncounterComponentFormSetController implements Serializable {
         System.out.println("m = " + m);
         System.out.println("j = " + j);
         ClientEncounterComponentFormSet f = getFacade().findFirstByJpql(j, m);
-        System.out.println("f = " + f);
         return f;
     }
 
@@ -640,7 +637,6 @@ public class ClientEncounterComponentFormSetController implements Serializable {
                 for (DesignComponentFormItem di : diListSingle) {
 
                     System.out.println("di Single id = " + di.getId());
-                    System.out.println("di isDisplayLastResult = " + di.isDisplayLastResult());
 
                     //System.out.println("Before Item start in Single " + (new Date().getTime()) / 1000);
                     boolean skipThisItem = false;
@@ -721,10 +717,8 @@ public class ClientEncounterComponentFormSetController implements Serializable {
                         }
 
                         clientEncounterComponentItemController.save(ci);
-
-                        System.out.println("ci isDisplayLastResult = " + ci.isDisplayLastResult());
-
                         // //System.out.println("ci.isDiscreptionAsASideLabel() = " + ci.isDiscreptionAsASideLabel());
+
                     }
 
                 }
@@ -732,7 +726,6 @@ public class ClientEncounterComponentFormSetController implements Serializable {
                 for (DesignComponentFormItem di : diListMultiple) {
 
                     System.out.println("di Multiple id = " + di.getId());
-                    System.out.println("di isDisplayLastResult = " + di.isDisplayLastResult());
 
                     //System.out.println("Before Item start in Multiple " + (new Date().getTime()) / 1000);
                     boolean skipThisItem = false;
