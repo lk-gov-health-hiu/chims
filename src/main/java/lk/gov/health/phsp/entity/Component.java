@@ -25,6 +25,7 @@ package lk.gov.health.phsp.entity;
 
 import java.io.Serializable;
 import java.util.Date;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -228,7 +229,7 @@ public class Component implements Serializable {
     private Institution institutionValue;
     @ManyToOne(fetch = FetchType.EAGER)
     private Client clientValue;
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER,cascade = CascadeType.ALL)
     private Prescription prescriptionValue;
 
     private boolean completed;
@@ -380,6 +381,9 @@ public class Component implements Serializable {
     }
 
     public Prescription getPrescriptionValue() {
+        if(prescriptionValue==null){
+            prescriptionValue = new Prescription();
+        }
         return prescriptionValue;
     }
 

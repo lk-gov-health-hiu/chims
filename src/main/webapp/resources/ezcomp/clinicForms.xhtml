@@ -218,18 +218,27 @@
                                         <p:outputLabel for="acMedicine" value="#{ii.name}" ></p:outputLabel>
                                     </td>
                                     <td>
-                                        <p:autoComplete id="acMedicine" value="#{ii.itemValue}"
-                                                        completeMethod="#{itemController.completeItemsofParentWithFIlter}"
-                                                        var="ai" itemLabel="#{ai.name}" itemValue="#{ai}"
-                                                        maxResults="15" forceSelection="true" 
-                                                        minQueryLength="3"
-                                                        required="#{ii.required}" 
-                                                        requiredMessage="#{ii.requiredErrorMessage}">
-                                            <f:attribute name="filter" value="medicine" />
-                                            <p:ajax  event="blur" process="@this"  
-                                                     listener="#{clientEncounterComponentItemController.save(ii)}" >
-                                            </p:ajax>
-                                        </p:autoComplete>
+                                        <h:panelGrid >
+                                            <p:column>
+                                                <p:autoComplete id="acMedicine" value="#{ii.prescriptionValue.medicine}"
+                                                                completeMethod="#{itemController.completeItemsofParentWithFIlter}"
+                                                                var="ai" itemLabel="#{ai.name}" itemValue="#{ai}"
+                                                                maxResults="15" forceSelection="true" 
+                                                                minQueryLength="3"
+                                                                required="#{ii.required}" 
+                                                                requiredMessage="#{ii.requiredErrorMessage}">
+                                                    <f:attribute name="filter" value="medicine" />
+                                                    <p:ajax  event="blur" process="@this"  
+                                                             listener="#{clientEncounterComponentItemController.save(ii)}" >
+                                                    </p:ajax>
+                                                </p:autoComplete>
+                                            </p:column>
+                                            <p:column>
+                                                <p:inputText value="" ></p:inputText>
+                                            </p:column>
+
+                                        </h:panelGrid>
+
                                     </td>
                                 </h:panelGroup>
                             </h:panelGroup>
