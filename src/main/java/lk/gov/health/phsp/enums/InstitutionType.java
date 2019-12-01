@@ -18,7 +18,6 @@ public enum InstitutionType {
     Clinic,
     Unit,
     Ward,
-    Ward_Clinic,
     Stake_Holder,
     Partner,
     Private_Sector_Institute,

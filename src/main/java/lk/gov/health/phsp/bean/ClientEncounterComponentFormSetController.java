@@ -40,6 +40,7 @@ import lk.gov.health.phsp.enums.EncounterType;
 import lk.gov.health.phsp.enums.SelectionDataType;
 import lk.gov.health.phsp.facade.ClientEncounterComponentItemFacade;
 import lk.gov.health.phsp.facade.ClientFacade;
+import lk.gov.health.phsp.facade.EncounterFacade;
 import lk.gov.health.phsp.facade.PersonFacade;
 import org.apache.commons.lang3.SerializationUtils;
 // </editor-fold>
@@ -57,6 +58,8 @@ public class ClientEncounterComponentFormSetController implements Serializable {
     private ClientFacade clientFacade;
     @EJB
     private PersonFacade personFacade;
+    @EJB
+    private EncounterFacade encounterFacade;
 
 // </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="Controllers">
@@ -78,6 +81,8 @@ public class ClientEncounterComponentFormSetController implements Serializable {
     private EncounterController encounterController;
     @Inject
     private ItemController itemController;
+    @Inject
+    private CommonController commonController;
 
 // </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="Class Variables">
@@ -1034,35 +1039,239 @@ public class ClientEncounterComponentFormSetController implements Serializable {
         if (lcis == null) {
             return lr;
         }
-        for (ClientEncounterComponentItem rc : lcis) {
-            switch (rc.getSelectionDataType()) {
-                case Area_Reference:
-                    break;
-                case Boolean:
-                    break;
-                case Client_Reference:
-                    break;
-                case DateTime:
-                    break;
-                case Integer_Number:
-                    break;
-                case Item_Reference:
-                    break;
-                case Long_Text:
-                    break;
-                case Prescreption_Reference:
-                    break;
-                case Long_Number:
-                    break;
-                case Real_Number:
-                    break;
-                case Short_Text:
-                    break;
-                default:
-            }
+
+        switch (ci.getSelectionDataType()) {
+            case Area_Reference:
+                lr = areaValueToString(lcis);
+                break;
+            case Boolean:
+                lr = booleanValueToString(lcis);
+                break;
+            case Client_Reference:
+                lr = clientValueToString(lcis);
+                break;
+            case DateTime:
+                lr = dateValueToString(lcis);
+                break;
+            case Integer_Number:
+                lr = integerValueToString(lcis);
+                break;
+            case Item_Reference:
+                lr = itemValueToString(lcis);
+                break;
+            case Long_Text:
+                lr = longTextValueToString(lcis);
+                break;
+            case Prescreption_Reference:
+                lr = prescreptionValueToString(lcis);
+                break;
+            case Long_Number:
+                lr = longNumberValueToString(lcis);
+                break;
+            case Real_Number:
+                lr = realNumberValueToString(lcis);
+                break;
+            case Short_Text:
+                lr = shortTextValueToString(lcis);
+                break;
+            default:
 
         }
         return lr;
+    }
+
+    private String prescreptionValueToString(List<ClientEncounterComponentItem> is) {
+        String s = "";
+        if (is == null) {
+            return s;
+        }
+        if (is.isEmpty()) {
+            return s;
+        }
+        if (is.size() == 1) {
+            return is.get(0).getPrescriptionValue().toString();
+        }
+        for (ClientEncounterComponentItem i : is) {
+            s += commonController.dateToString(i.getCreatedAt()) + " " + is.get(0).getPrescriptionValue().toString() + "\n";
+        }
+        return s;
+    }
+
+    private String realNumberValueToString(List<ClientEncounterComponentItem> is) {
+        String s = "";
+        if (is == null) {
+            return s;
+        }
+        if (is.isEmpty()) {
+            return s;
+        }
+        if (is.size() == 1) {
+            return is.get(0).getLongNumberValue().toString();
+        }
+        for (ClientEncounterComponentItem i : is) {
+            s += commonController.dateToString(i.getCreatedAt()) + " " + is.get(0).getLongNumberValue().toString() + "\n";
+
+        }
+        return s;
+    }
+
+    private String longNumberValueToString(List<ClientEncounterComponentItem> is) {
+        String s = "";
+        if (is == null) {
+            return s;
+        }
+        if (is.isEmpty()) {
+            return s;
+        }
+        if (is.size() == 1) {
+            return is.get(0).getLongNumberValue().toString();
+        }
+        for (ClientEncounterComponentItem i : is) {
+            s += commonController.dateToString(i.getCreatedAt()) + " " + is.get(0).getLongNumberValue().toString() + "\n";
+
+        }
+        return s;
+    }
+
+    private String shortTextValueToString(List<ClientEncounterComponentItem> is) {
+        String s = "";
+        if (is == null) {
+            return s;
+        }
+        if (is.isEmpty()) {
+            return s;
+        }
+        if (is.size() == 1) {
+            return is.get(0).getShortTextValue();
+        }
+        for (ClientEncounterComponentItem i : is) {
+            s += commonController.dateToString(i.getCreatedAt()) + " " + is.get(0).getShortTextValue() + "\n";
+
+        }
+        return s;
+    }
+
+    private String longTextValueToString(List<ClientEncounterComponentItem> is) {
+        String s = "";
+        if (is == null) {
+            return s;
+        }
+        if (is.isEmpty()) {
+            return s;
+        }
+        if (is.size() == 1) {
+            return is.get(0).getLongTextValue();
+        }
+        for (ClientEncounterComponentItem i : is) {
+            s += commonController.dateToString(i.getCreatedAt()) + " " + is.get(0).getLongTextValue() + "\n";
+
+        }
+        return s;
+    }
+
+    private String itemValueToString(List<ClientEncounterComponentItem> is) {
+        String s = "";
+        if (is == null) {
+            return s;
+        }
+        if (is.isEmpty()) {
+            return s;
+        }
+        if (is.size() == 1) {
+            return is.get(0).getItemValue().getName();
+        }
+        for (ClientEncounterComponentItem i : is) {
+            s += commonController.dateToString(i.getCreatedAt()) + " " + is.get(0).getItemValue().getName() + "\n";
+
+        }
+        return s;
+    }
+
+    private String integerValueToString(List<ClientEncounterComponentItem> is) {
+        String s = "";
+        if (is == null) {
+            return s;
+        }
+        if (is.isEmpty()) {
+            return s;
+        }
+        if (is.size() == 1) {
+            return is.get(0).getLongNumberValue().toString();
+        }
+        for (ClientEncounterComponentItem i : is) {
+            s += commonController.dateToString(i.getCreatedAt()) + " " + is.get(0).getLongNumberValue().toString() + "\n";
+
+        }
+        return s;
+    }
+
+    private String booleanValueToString(List<ClientEncounterComponentItem> is) {
+        String s = "";
+        if (is == null) {
+            return s;
+        }
+        if (is.isEmpty()) {
+            return s;
+        }
+        if (is.size() == 1) {
+            return is.get(0).getBooleanValue().toString();
+        }
+        for (ClientEncounterComponentItem i : is) {
+            s += commonController.dateToString(i.getCreatedAt()) + " " + i.getBooleanValue().toString() + "\n";
+        }
+        return s;
+    }
+
+    private String areaValueToString(List<ClientEncounterComponentItem> is) {
+        String s = "";
+        if (is == null) {
+            return s;
+        }
+        if (is.isEmpty()) {
+            return s;
+        }
+        if (is.size() == 1) {
+            return is.get(0).getAreaValue().getName();
+        }
+        for (ClientEncounterComponentItem i : is) {
+            s += commonController.dateToString(i.getCreatedAt()) + " " + i.getAreaValue().getName() + "\n";
+        }
+        return s;
+    }
+
+    private String clientValueToString(List<ClientEncounterComponentItem> is) {
+        String s = "";
+        if (is == null) {
+            return s;
+        }
+        if (is.isEmpty()) {
+            return s;
+        }
+        if (is.size() == 1) {
+            return is.get(0).getClientValue().getPerson().getNameWithTitle();
+        }
+        for (ClientEncounterComponentItem i : is) {
+            s += commonController.dateToString(i.getCreatedAt()) + " " + i.getClientValue().getPerson().getNameWithTitle() + "\n";
+        }
+        return s;
+    }
+
+    private String dateValueToString(List<ClientEncounterComponentItem> is) {
+        String s = "";
+        if (is == null) {
+            return s;
+        }
+        if (is.isEmpty()) {
+            return s;
+        }
+
+        if (is.size() == 1) {
+            return commonController.dateToString(is.get(0).getDateValue());
+        }
+        for (ClientEncounterComponentItem i : is) {
+            s += commonController.dateToString(i.getCreatedAt()) + " " + commonController.dateToString(is.get(0).getDateValue()) + "\n";
+        }
+        return s;
     }
 
     public List<ClientEncounterComponentItem> dataFromClientValue(ClientEncounterComponentItem ti) {
@@ -1096,14 +1305,76 @@ public class ClientEncounterComponentFormSetController implements Serializable {
         } else {
             c = ti.getClient();
         }
-        String j = "select vi from ClientEncounterComponentItem vi where vi.retired=false "
-                + " and vi.encounter.client=:c "
-                + " and vi.dataRepresentationType=:r "
-                + " order by vi.id desc";
-        Map m = new HashMap();
+        Encounter lastEncounter;
+        String j;
+        Map m;
+
+        m = new HashMap();
         m.put("c", ti.getEncounter().getClient());
         m.put("r", DataRepresentationType.Encounter);
-        return getItemFacade().findByJpql(j, m);
+        m.put("te", ti.getEncounter());
+        j = "select vi.encounter from ClientEncounterComponentItem vi where vi.retired=false "
+                + " and vi.encounter.client=:c "
+                + " and vi.encounter <> :te "
+                + " and vi.dataRepresentationType=:r ";
+        switch (ti.getSelectionDataType()) {
+            case Area_Reference:
+                j += "and vi.areaValue is not null ";
+                break;
+            case Boolean:
+                j += "and vi.booleanValue is not null ";
+                break;
+            case Byte_Array:
+                j += "and vi.byteArrayValue is not null ";
+                break;
+            case Client_Reference:
+                j += "and vi.clientValue is not null";
+                break;
+            case DateTime:
+                j += "and vi.dateValue is not null ";
+                break;
+            case Integer_Number:
+                j += "and vi.integerNumberValue is not null ";
+                break;
+            case Item_Reference:
+                j += "and vi.itemValue is not null ";
+                break;
+            case Long_Number:
+                j += "and vi.longNumberValue is not null ";
+                break;
+            case Long_Text:
+                j += "and vi.longTextValue is not null ";
+                break;
+            case Prescreption_Reference:
+                j += "and vi.prescriptionValue.medicine is not null ";
+                break;
+            case Real_Number:
+                j += "and vi.realNumberValue is not null ";
+                break;
+            case Short_Text:
+                j += "and vi.shortTextValue is not null";
+                break;
+        }
+        j += " order by vi.id desc";
+        System.out.println("m = " + m);
+        System.out.println("j = " + j);
+        lastEncounter = getEncounterFacade().findFirstByJpql(j, m);
+        System.out.println("lastEncounter = " + lastEncounter);
+        j = "select vi from ClientEncounterComponentItem vi "
+                + " where vi.retired=false "
+                + " and vi.item.code=:ic"
+                + " and vi.encounter=:e "
+                + " and vi.dataRepresentationType=:r ";
+        j += " order by vi.id desc";
+        m = new HashMap();
+        m.put("r", DataRepresentationType.Encounter);
+        m.put("e", lastEncounter);
+        m.put("ic", ti.getItem().getCode());
+        System.out.println("m = " + m);
+        System.out.println("j = " + j);
+        List<ClientEncounterComponentItem> temLastResult = getItemFacade().findByJpql(j, m);
+        System.out.println("temLastResult = " + temLastResult);
+        return temLastResult;
     }
 
     public void updateFromLastEncounter(ClientEncounterComponentItem ti) {
@@ -1328,6 +1599,14 @@ public class ClientEncounterComponentFormSetController implements Serializable {
 
     public void setEncounterDate(Date encounterDate) {
         this.encounterDate = encounterDate;
+    }
+
+    public EncounterFacade getEncounterFacade() {
+        return encounterFacade;
+    }
+
+    public CommonController getCommonController() {
+        return commonController;
     }
 
 // </editor-fold>    

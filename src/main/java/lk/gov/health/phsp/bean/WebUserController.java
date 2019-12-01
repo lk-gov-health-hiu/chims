@@ -137,7 +137,7 @@ public class WebUserController implements Serializable {
     private String loginRequestResponse;
 
     private String locale;
-    
+
     
     Long totalNumberOfRegisteredClients;
 

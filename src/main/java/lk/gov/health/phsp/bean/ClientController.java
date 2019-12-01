@@ -995,7 +995,7 @@ public class ClientController implements Serializable {
 
     public List<Encounter> getSelectedClientsClinics() {
         if (selectedClientsClinics == null) {
-            selectedClientsClinics = fillEncounters(selected, InstitutionType.Ward_Clinic, EncounterType.Clinic_Enroll, true);
+            selectedClientsClinics = fillEncounters(selected, InstitutionType.Clinic, EncounterType.Clinic_Enroll, true);
         }
         return selectedClientsClinics;
     }

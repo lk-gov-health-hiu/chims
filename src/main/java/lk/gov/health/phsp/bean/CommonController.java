@@ -12,6 +12,7 @@ import lk.gov.health.phsp.enums.InstitutionType;
 import lk.gov.health.phsp.enums.ItemType;
 import lk.gov.health.phsp.enums.WebUserRole;
 import java.io.Serializable;
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -57,18 +58,34 @@ public class CommonController implements Serializable {
      */
     public CommonController() {
     }
-    
-    public Date dateFromString(String dateString, String format){
-        if(format==null||format.trim().equals("")){
+
+    public Date dateFromString(String dateString, String format) {
+        if (format == null || format.trim().equals("")) {
             format = "dd/MM/yyyy";
         }
-         SimpleDateFormat formatter1=new SimpleDateFormat(format);  
-        try {  
+        SimpleDateFormat formatter1 = new SimpleDateFormat(format);
+        try {
             return formatter1.parse(dateString);
         } catch (ParseException ex) {
             System.out.println("error = " + ex.getMessage());
             return null;
         }
+    }
+
+    public String dateToString() {
+        return dateToString(Calendar.getInstance().getTime());
+    }
+    
+    public String dateToString(Date date) {
+        return dateToString(date, "dd MMMM yyyy");
+    }
+
+    
+    public String dateToString(Date date, String format) {
+
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");
+        String strDate = dateFormat.format(date);
+        return strDate;
     }
 
     public String encrypt(String word) {
@@ -216,7 +233,7 @@ public class CommonController implements Serializable {
         Calendar c = Calendar.getInstance();
         c.setTime(d);
         c.set(Calendar.MONTH, Calendar.JANUARY);
-        c.set(Calendar.DAY_OF_MONTH, 1 );
+        c.set(Calendar.DAY_OF_MONTH, 1);
         c.set(Calendar.HOUR, 0);
         c.set(Calendar.MINUTE, 0);
         c.set(Calendar.MILLISECOND, 1);
@@ -319,7 +336,7 @@ public class CommonController implements Serializable {
 
     public QueryFilterAreaType[] getQueryFilterAreaTypeUpToDistrictLevel() {
         QueryFilterAreaType[] ts = new QueryFilterAreaType[]{QueryFilterAreaType.National, QueryFilterAreaType.Province_List,
-             QueryFilterAreaType.District_List, QueryFilterAreaType.Province, QueryFilterAreaType.Distirct, QueryFilterAreaType.Province_District_list};
+            QueryFilterAreaType.District_List, QueryFilterAreaType.Province, QueryFilterAreaType.Distirct, QueryFilterAreaType.Province_District_list};
         return ts;
     }
 

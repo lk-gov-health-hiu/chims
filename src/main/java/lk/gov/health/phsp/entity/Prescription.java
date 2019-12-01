@@ -47,10 +47,10 @@ public class Prescription implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    
+
     @Enumerated(EnumType.STRING)
     private PrescriptionType prescriptionType;
-    
+
     @ManyToOne
     private Item medicine;
     @ManyToOne
@@ -73,14 +73,12 @@ public class Prescription implements Serializable {
     private Date startFrom;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date continuedUpTo;
-    
+
     @ManyToOne
     private Client client;
     @ManyToOne
     private Encounter encounter;
-    
-    
-    
+
     /*
     Omitting Properties
      */
@@ -91,8 +89,8 @@ public class Prescription implements Serializable {
     private Date omittedAt;
     private String omitComments;
     private boolean omittedAsPrescribed;
-    
-        /*
+
+    /*
     Create Properties
      */
     @ManyToOne
@@ -123,7 +121,6 @@ public class Prescription implements Serializable {
     private Date retiredAt;
     private String retireComments;
 
-
     public Long getId() {
         return id;
     }
@@ -131,8 +128,6 @@ public class Prescription implements Serializable {
     public void setId(Long id) {
         this.id = id;
     }
-    
-    
 
     @Override
     public int hashCode() {
@@ -156,7 +151,29 @@ public class Prescription implements Serializable {
 
     @Override
     public String toString() {
-        return "lk.gov.health.phsp.entity.Prescription[ id=" + id + " ]";
+
+        String str = "";
+        if (medicine == null) {
+            return str;
+        }
+        str += medicine.getName() + " ";
+        if (medicineSuggested != null) {
+            str += " (" + medicineSuggested.getName() + ") ";
+        }
+        if (dose != null & doseUnit != null) {
+            str += dose + " " + doseUnit.getName();
+        }
+        if (frequency != null) {
+            str += frequency + " ";
+        }
+        if (duration != null && durationUnit != null) {
+            str += duration + " " + durationUnit.getName() + " ";
+        }
+        if (issueQuantity != null && issueUnit != null) {
+            str += issueQuantity +  " " + issueUnit.getName();
+        }
+
+        return str;
     }
 
     public Item getMedicine() {
@@ -406,5 +423,5 @@ public class Prescription implements Serializable {
     public void setPrescriptionType(PrescriptionType prescriptionType) {
         this.prescriptionType = prescriptionType;
     }
-    
+
 }
