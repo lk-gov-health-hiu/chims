@@ -166,15 +166,13 @@
                                         <td>
 
                                             <p:autoComplete id="acItem" value="#{ii.itemValue}"
-                                                            completeMethod="#{itemController.completeItemsofParent}"
+                                                            completeMethod="#{itemController.completeItemsofParentWithFIlter}"
                                                             var="ai" itemLabel="#{ai.name}" itemValue="#{ai}"
                                                             maxResults="15" forceSelection="true" 
                                                             minQueryLength="3"
                                                             required="#{ii.required}" 
                                                             requiredMessage="#{ii.requiredErrorMessage}">
-                                                <p:ajax  event="focus" process="@this"  update="@this" 
-                                                         listener="#{itemController.makeAsSelectedParent(ii.categoryOfAvailableItems)}" >
-                                                </p:ajax>
+                                                <f:attribute name="filter" value="#{ii.categoryOfAvailableItems.code}" />
                                                 <p:ajax  event="blur" process="@this"  update="@this" 
                                                          listener="#{clientEncounterComponentItemController.save(ii)}" >
                                                 </p:ajax>
@@ -197,7 +195,6 @@
                                         </p:selectBooleanCheckbox>
                                     </td>
                                 </h:panelGroup>
-
                                 <h:panelGroup rendered="#{ii.renderType eq 'Autocomplete' and ii.selectionDataType eq 'Area_Reference'}" >
                                     <td>
                                         <p:outputLabel for="acA" value="#{ii.name}" ></p:outputLabel>
@@ -215,14 +212,37 @@
                                             </p:ajax>
                                         </p:autoComplete>
                                     </td>
-
                                 </h:panelGroup>
-
-
+                                <h:panelGroup rendered="#{ii.renderType eq 'Prescreption'}" >
+                                    <td>
+                                        <p:outputLabel for="acMedicine" value="#{ii.name}" ></p:outputLabel>
+                                    </td>
+                                    <td>
+                                        <p:autoComplete id="acMedicine" value="#{ii.itemValue}"
+                                                        completeMethod="#{itemController.completeItemsofParentWithFIlter}"
+                                                        var="ai" itemLabel="#{ai.name}" itemValue="#{ai}"
+                                                        maxResults="15" forceSelection="true" 
+                                                        minQueryLength="3"
+                                                        required="#{ii.required}" 
+                                                        requiredMessage="#{ii.requiredErrorMessage}">
+                                            <f:attribute name="filter" value="medicine" />
+                                            <p:ajax  event="blur" process="@this"  
+                                                     listener="#{clientEncounterComponentItemController.save(ii)}" >
+                                            </p:ajax>
+                                        </p:autoComplete>
+                                    </td>
+                                </h:panelGroup>
                             </h:panelGroup>
 
                             <td>
                                 <p:outputLabel value="#{ii.descreption}" ></p:outputLabel>
+                                <h:panelGroup rendered="true">
+                                    <p:panelGrid columns="3" >
+                                        #{ii.name}
+                                        #{ii.renderType}
+                                        #{ii.selectionDataType}
+                                    </p:panelGrid>
+                                </h:panelGroup>
                             </td>
                             <td>
                                 <h:panelGroup rendered="#{ii.multipleEntiesPerForm}" >
@@ -234,9 +254,8 @@
                             <td>
                                 <h:panelGroup rendered="#{ii.displayLastResult}" >
                                     <h:outputText value="#{fn:replace(clientEncounterComponentFormSetController.lastData(ii),'\\n','&lt;br/&gt;')}" escape="false" />
-                                    <!--<p:outputLabel value="#{clientEncounterComponentFormSetController.lastData(ii)}" escape="false" ></p:outputLabel>-->
                                 </h:panelGroup>
-                            </td>-->
+                            </td>
 
 
                         </tr>

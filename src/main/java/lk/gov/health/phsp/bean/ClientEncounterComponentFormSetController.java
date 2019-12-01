@@ -436,7 +436,6 @@ public class ClientEncounterComponentFormSetController implements Serializable {
 
         m.put("c", c);
         m.put("t", type);
-        System.out.println("j = " + j);
         if (count == 0) {
             fs = getFacade().findByJpql(j, m);
         } else {
@@ -461,7 +460,6 @@ public class ClientEncounterComponentFormSetController implements Serializable {
         j += " order by s.encounter.encounterFrom desc";
         m.put("c", getClientController().getSelected());
         m.put("t", type);
-        System.out.println("j = " + j);
 
         fs = getFacade().findByJpql(j, m, 5);
 
@@ -497,7 +495,6 @@ public class ClientEncounterComponentFormSetController implements Serializable {
         m.put("fr", true);
         m.put("fc", true);
         System.out.println("m = " + m);
-        System.out.println("j = " + j);
         ClientEncounterComponentFormSet f = getFacade().findFirstByJpql(j, m);
         return f;
     }
@@ -636,8 +633,6 @@ public class ClientEncounterComponentFormSetController implements Serializable {
 
                 for (DesignComponentFormItem di : diListSingle) {
 
-                    System.out.println("di Single id = " + di.getId());
-
                     //System.out.println("Before Item start in Single " + (new Date().getTime()) / 1000);
                     boolean skipThisItem = false;
                     if (di.getComponentSex() == ComponentSex.For_Females && clientController.getSelected().getPerson().getSex().getCode().equalsIgnoreCase("male")) {
@@ -724,8 +719,6 @@ public class ClientEncounterComponentFormSetController implements Serializable {
                 }
 
                 for (DesignComponentFormItem di : diListMultiple) {
-
-                    System.out.println("di Multiple id = " + di.getId());
 
                     //System.out.println("Before Item start in Multiple " + (new Date().getTime()) / 1000);
                     boolean skipThisItem = false;
@@ -1274,11 +1267,26 @@ public class ClientEncounterComponentFormSetController implements Serializable {
                 + " and vi.dataRepresentationType=:r "
                 + " order by vi.id desc";
         Map m = new HashMap();
+        Client c;
+        if (ti.getEncounter() == null && ti.getClient() == null) {
+            return null;
+        } else if (ti.getEncounter() != null && ti.getClient() == null) {
+            if (ti.getEncounter().getClient() == null) {
+                return null;
+            } else {
+                c = ti.getEncounter().getClient();
+            }
+        } else {
+            c = ti.getClient();
+        }
         m.put("r", DataRepresentationType.Client);
-        m.put("c", ti.getClient());
+        m.put("c", c);
         m.put("i", ti.getItem().getCode());
-
-        return getItemFacade().findByJpql(j, m);
+        System.out.println("m = " + m);
+        System.out.println("j = " + j);
+        List<ClientEncounterComponentItem> tis = getItemFacade().findByJpql(j, m);
+        System.out.println("tis = " + tis);
+        return tis;
 
     }
 
@@ -1366,7 +1374,6 @@ public class ClientEncounterComponentFormSetController implements Serializable {
         System.out.println("m = " + m);
         System.out.println("j = " + j);
         List<ClientEncounterComponentItem> temLastResult = getItemFacade().findByJpql(j, m);
-        System.out.println("temLastResult = " + temLastResult);
         return temLastResult;
     }
 

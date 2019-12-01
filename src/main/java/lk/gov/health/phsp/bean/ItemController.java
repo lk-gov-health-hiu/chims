@@ -86,6 +86,11 @@ public class ItemController implements Serializable {
         selectedParent = pi;
     }
 
+    public void makeAsSelectedParentByCode(String strPi) {
+        Item pi = findItemByCode(strPi);
+        selectedParent = pi;
+    }
+
     public List<String> completeItemCodes(String qry) {
         String j = "select i.code from Item i "
                 + " where lower(i.code) like :q "
@@ -194,6 +199,15 @@ public class ItemController implements Serializable {
         return findChildrenAndGrandchildrenItemList(selectedParent, null, qry);
     }
 
+    public List<Item> completeItemsofParentWithFIlter(String qry) {
+        FacesContext context = FacesContext.getCurrentInstance();
+        String o = (String) UIComponent.getCurrentComponent(context).getAttributes().get("filter");
+        System.out.println("o = " + o);
+        Item ti = findItemByCode(o);
+        System.out.println("ti = " + ti);
+        return findChildrenAndGrandchildrenItemList(ti, null, qry);
+    }
+
     public void generateDisplayNames() {
         List<Item> tis = getFacade().findAll();
         for (Item i : tis) {
@@ -260,8 +274,7 @@ public class ItemController implements Serializable {
                 + "Dictionary_Item::Is allergic to:client_allergic_to:3" + System.lineSeparator()
                 + "Dictionary_Item::Client's Default Photo:client_default_photo:3" + System.lineSeparator()
                 + "Dictionary_Item::Client's Photo:client_photo:3" + System.lineSeparator()
-                + "Dictionary_Item::Client's Registered at:client_registered_at:3" + System.lineSeparator()
-                ;
+                + "Dictionary_Item::Client's Registered at:client_registered_at:3" + System.lineSeparator();
 
         addInitialMetadata(initialData);
     }
