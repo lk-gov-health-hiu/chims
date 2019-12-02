@@ -257,10 +257,20 @@ public class ItemController implements Serializable {
                 + "Dictionary_Item:measurement_unit_dose:microgram:measurement_unit_dose_microgram:0" + System.lineSeparator()
                 + "Dictionary_Item:measurement_unit_dose:#:measurement_unit_dose_unit:0" + System.lineSeparator()
                 
-                + "Dictionary_Item:measurement_unit_frequency:Dose Unit:measurement_unit_dose:0" + System.lineSeparator()
+                + "Dictionary_Item:measurement_unit_frequency:bid:measurement_unit_frequency_bid:0" + System.lineSeparator()
+                + "Dictionary_Item:measurement_unit_frequency:tds:measurement_unit_frequency_tds:0" + System.lineSeparator()
+                + "Dictionary_Item:measurement_unit_frequency:qds:measurement_unit_frequency_qds:0" + System.lineSeparator()
+                + "Dictionary_Item:measurement_unit_frequency:od:measurement_unit_frequency_od:0" + System.lineSeparator()
+                + "Dictionary_Item:measurement_unit_frequency:mane:measurement_unit_frequency_mane:0" + System.lineSeparator()
+                + "Dictionary_Item:measurement_unit_frequency:nocte:measurement_unit_frequency_nocte:0" + System.lineSeparator()
+                + "Dictionary_Item:measurement_unit_frequency:sos:measurement_unit_frequency_sos:0" + System.lineSeparator()
+                + "Dictionary_Item:measurement_unit_frequency:stat:measurement_unit_frequency_stat:0" + System.lineSeparator()
                 
                 
-                + "Dictionary_Item:measurement_unit_duration:Dose Unit:measurement_unit_dose:0" + System.lineSeparator()
+                + "Dictionary_Item:measurement_unit_duration:doses:measurement_unit_duration_doses:0" + System.lineSeparator()
+                + "Dictionary_Item:measurement_unit_duration:days:measurement_unit_duration_days:0" + System.lineSeparator()
+                + "Dictionary_Item:measurement_unit_duration:weeks:measurement_unit_duration_weekes:0" + System.lineSeparator()
+                + "Dictionary_Item:measurement_unit_duration:months:measurement_unit_duration_months:0" + System.lineSeparator()
                 
                 
                 + "Dictionary_Item:measurement_unit_issue_quantity:Dose Unit:measurement_unit_dose:0" + System.lineSeparator()
