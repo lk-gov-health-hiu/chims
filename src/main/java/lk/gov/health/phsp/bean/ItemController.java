@@ -227,7 +227,52 @@ public class ItemController implements Serializable {
         addSexes();
         addCitizenship();
         addClientData();
+        addMedicines();
+    }
 
+    public void addMedicines() {
+        String initialData = "Dictionary_Item::Medicine:medicine:0" + System.lineSeparator()
+                + "Dictionary_Item:medicine:VTM:vtm:1" + System.lineSeparator()
+                + "Dictionary_Item:medicine:ATM:atm:0" + System.lineSeparator()
+                + "Dictionary_Item:medicine:VMP:vmp:2" + System.lineSeparator()
+                + "Dictionary_Item:medicine:AMP:amp:3" + System.lineSeparator()
+                + "Dictionary_Item:medicine:VMPP:vmpp:4" + System.lineSeparator()
+                + "Dictionary_Item:medicine:AMPP:ampp:4" + System.lineSeparator()
+                + "Dictionary_Item::Dose:medicine_dose:0" + System.lineSeparator()
+                + "Dictionary_Item::Dose Unit:medicine_dose_unit:0" + System.lineSeparator()
+                + "Dictionary_Item::Duration:medicine_duration:0" + System.lineSeparator()
+                + "Dictionary_Item::Duration Unit:medicine_dutaion_unit:0" + System.lineSeparator()
+                + "Dictionary_Item::Frequency:medicine_frequency:0" + System.lineSeparator()
+                + "Dictionary_Item::Issue Quantity:medicine_issue_quantity :0" + System.lineSeparator()
+                + "Dictionary_Item::Issue Unit:medicine_issue_unit :0" + System.lineSeparator()
+                + "Dictionary_Item::Instructions:medicine_issue_instruction :0" + System.lineSeparator()
+                + "Dictionary_Item::Measurement Unit:measurement_unit:0" + System.lineSeparator()
+                + "Dictionary_Item:measurement_unit:Dose Unit:measurement_unit_dose:0" + System.lineSeparator()
+                + "Dictionary_Item:measurement_unit:Dose Unit:measurement_unit_frequency:0" + System.lineSeparator()
+                + "Dictionary_Item:measurement_unit:Dose Unit:measurement_unit_duration:0" + System.lineSeparator()
+                + "Dictionary_Item:measurement_unit:Dose Unit:measurement_unit_issue_quantity:0" + System.lineSeparator()
+                
+                + "Dictionary_Item:measurement_unit_dose:mg:measurement_unit_dose_mg:0" + System.lineSeparator()
+                + "Dictionary_Item:measurement_unit_dose:ml:measurement_unit_dose_ml:0" + System.lineSeparator()
+                + "Dictionary_Item:measurement_unit_dose:microgram:measurement_unit_dose_microgram:0" + System.lineSeparator()
+                + "Dictionary_Item:measurement_unit_dose:#:measurement_unit_dose_unit:0" + System.lineSeparator()
+                
+                + "Dictionary_Item:measurement_unit_frequency:Dose Unit:measurement_unit_dose:0" + System.lineSeparator()
+                
+                
+                + "Dictionary_Item:measurement_unit_duration:Dose Unit:measurement_unit_dose:0" + System.lineSeparator()
+                
+                
+                + "Dictionary_Item:measurement_unit_issue_quantity:Dose Unit:measurement_unit_dose:0" + System.lineSeparator()
+                
+                
+                
+                
+                
+                
+                + "Dictionary_Item::Issue Quantity :medicine_issue_quantity :0" + System.lineSeparator()
+                + "Dictionary_Item::Issue Quantity :medicine_issue_quantity :0" + System.lineSeparator();
+        addInitialMetadata(initialData);
     }
 
     public void addClientData() {
@@ -613,6 +658,18 @@ public class ItemController implements Serializable {
         String j = "select t from Item t where t.retired=false ";
         Map m = new HashMap();
 
+        if (parent != null) {
+            m.put("p", parent);
+            j += " and t.parent=:p ";
+        }
+        j += " order by t.name";
+        return getFacade().findByJpql(j, m);
+    }
+
+    public List<Item> findItemListByCode(String parentCode) {
+        String j = "select t from Item t where t.retired=false ";
+        Map m = new HashMap();
+        Item parent = findItemByCode(parentCode);
         if (parent != null) {
             m.put("p", parent);
             j += " and t.parent=:p ";

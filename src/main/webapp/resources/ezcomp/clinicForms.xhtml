@@ -218,26 +218,45 @@
                                         <p:outputLabel for="acMedicine" value="#{ii.name}" ></p:outputLabel>
                                     </td>
                                     <td>
-                                        <h:panelGrid >
-                                            <p:column>
-                                                <p:autoComplete id="acMedicine" value="#{ii.prescriptionValue.medicine}"
-                                                                completeMethod="#{itemController.completeItemsofParentWithFIlter}"
-                                                                var="ai" itemLabel="#{ai.name}" itemValue="#{ai}"
-                                                                maxResults="15" forceSelection="true" 
-                                                                minQueryLength="3"
-                                                                required="#{ii.required}" 
-                                                                requiredMessage="#{ii.requiredErrorMessage}">
-                                                    <f:attribute name="filter" value="medicine" />
-                                                    <p:ajax  event="blur" process="@this"  
-                                                             listener="#{clientEncounterComponentItemController.save(ii)}" >
-                                                    </p:ajax>
-                                                </p:autoComplete>
-                                            </p:column>
-                                            <p:column>
-                                                <p:inputText value="" ></p:inputText>
-                                            </p:column>
+                                        <table>
+                                            <tr>
+                                                <td>
+                                                    <p:autoComplete id="acMedicine" value="#{ii.prescriptionValue.medicine}"
+                                                                    completeMethod="#{itemController.completeItemsofParentWithFIlter}"
+                                                                    var="ai" itemLabel="#{ai.name}" itemValue="#{ai}"
+                                                                    maxResults="15" forceSelection="true" 
+                                                                    minQueryLength="3" placeholder="Medicine"
+                                                                    required="#{ii.required}" 
+                                                                    requiredMessage="#{ii.requiredErrorMessage}">
+                                                        <f:attribute name="filter" value="medicine" />
+                                                        <p:ajax  event="blur" process="@this"  
+                                                                 listener="#{clientEncounterComponentItemController.save(ii)}" >
+                                                        </p:ajax>
+                                                    </p:autoComplete>
+                                                </td>
+                                                <td>
+                                                    <p:inputText style="width: 50px;" value="#{ii.prescriptionValue.dose}" placeholder="dose" ></p:inputText>
+                                                </td>
+                                                <td>
+                                                    <p:selectOneMenu id="doseUnit" value="#{ii.itemValue}" >
+                                                        <f:selectItem itemLabel="Dose Unit" ></f:selectItem>
+                                                        <f:selectItems value="#{itemController.findItemListByCode()}" var="li"
+                                                                       itemLabel="#{li.displayName}" itemValue="#{li}" ></f:selectItems>
+                                                        <p:ajax  event="blur" process="@this"  update="@this" listener="#{clientEncounterComponentItemController.save(ii)}" ></p:ajax>
+                                                    </p:selectOneMenu>
+                                                </td>
+                                                <td>
+                                                    <p:inputText  style="width: 50px;" value="#{ii.prescriptionValue.duration}" placeholder="duration" ></p:inputText>
+                                                </td>
+                                                <td>
 
-                                        </h:panelGrid>
+                                                </td>
+                                                <td>
+                                                    <p:inputText  style="width: 50px;" value="#{ii.prescriptionValue.dose}" placeholder="issue qty" ></p:inputText>
+                                                </td>
+                                            </tr>
+                                        </table>
+
 
                                     </td>
                                 </h:panelGroup>
@@ -245,7 +264,7 @@
 
                             <td>
                                 <p:outputLabel value="#{ii.descreption}" ></p:outputLabel>
-                                <h:panelGroup rendered="true">
+                                <h:panelGroup rendered="false">
                                     <p:panelGrid columns="3" >
                                         #{ii.name}
                                         #{ii.renderType}
