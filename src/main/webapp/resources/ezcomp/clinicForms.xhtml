@@ -239,9 +239,17 @@
                                                 </td>
                                                 <td>
                                                     <p:selectOneMenu id="doseUnit" value="#{ii.itemValue}" >
-                                                        <f:selectItem itemLabel="Dose Unit" ></f:selectItem>
-                                                        <f:selectItems value="#{itemController.findItemListByCode()}" var="li"
-                                                                       itemLabel="#{li.displayName}" itemValue="#{li}" ></f:selectItems>
+                                                        <f:selectItem itemLabel="Select Dose Unit" ></f:selectItem>
+                                                        <f:selectItems value="#{itemController.findItemListByCode('measurement_unit_dose')}" var="li"
+                                                                       itemLabel="#{li.name}" itemValue="#{li}" ></f:selectItems>
+                                                        <p:ajax  event="blur" process="@this"  update="@this" listener="#{clientEncounterComponentItemController.save(ii)}" ></p:ajax>
+                                                    </p:selectOneMenu>
+                                                </td>
+                                                <td>
+                                                    <p:selectOneMenu id="frequency" value="#{ii.itemValue}" >
+                                                        <f:selectItem itemLabel="Select Frequency" ></f:selectItem>
+                                                        <f:selectItems value="#{itemController.findItemListByCode('measurement_unit_frequency')}" var="li"
+                                                                       itemLabel="#{li.name}" itemValue="#{li}" ></f:selectItems>
                                                         <p:ajax  event="blur" process="@this"  update="@this" listener="#{clientEncounterComponentItemController.save(ii)}" ></p:ajax>
                                                     </p:selectOneMenu>
                                                 </td>
@@ -249,7 +257,12 @@
                                                     <p:inputText  style="width: 50px;" value="#{ii.prescriptionValue.duration}" placeholder="duration" ></p:inputText>
                                                 </td>
                                                 <td>
-
+                                                    <p:selectOneMenu id="durationUnit" value="#{ii.itemValue}" >
+                                                        <f:selectItem itemLabel="Select Duration Unit" ></f:selectItem>
+                                                        <f:selectItems value="#{itemController.findItemListByCode('measurement_unit_duration')}" var="li"
+                                                                       itemLabel="#{li.name}" itemValue="#{li}" ></f:selectItems>
+                                                        <p:ajax  event="blur" process="@this"  update="@this" listener="#{clientEncounterComponentItemController.save(ii)}" ></p:ajax>
+                                                    </p:selectOneMenu>
                                                 </td>
                                                 <td>
                                                     <p:inputText  style="width: 50px;" value="#{ii.prescriptionValue.dose}" placeholder="issue qty" ></p:inputText>
