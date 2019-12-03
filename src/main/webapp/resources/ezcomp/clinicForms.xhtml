@@ -35,7 +35,7 @@
                                             <p:inputText id="itStC" value="#{ii.shortTextValue}" 
                                                          required="#{ii.required}" 
                                                          requiredMessage="#{ii.requiredErrorMessage}" >
-                                                <p:ajax  event="blur" process="@this"  update="@this" listener="#{clientEncounterComponentItemController.save(ii)}" ></p:ajax>
+                                                <p:ajax  event="blur" process="@this"   listener="#{clientEncounterComponentItemController.save(ii)}" ></p:ajax>
                                             </p:inputText>
                                         </td>
                                         <td>
@@ -54,7 +54,7 @@
                                             <p:inputText id="itIntC" value="#{ii.integerNumberValue}" 
                                                          required="#{ii.required}" 
                                                          requiredMessage="#{ii.requiredErrorMessage}" >
-                                                <p:ajax  event="blur" process="@this" update="@this"  listener="#{clientEncounterComponentItemController.save(ii)}" ></p:ajax>
+                                                <p:ajax  event="blur" process="@this"   listener="#{clientEncounterComponentItemController.save(ii)}" ></p:ajax>
 
                                             </p:inputText>
                                         </td>
@@ -74,7 +74,7 @@
                                             <p:inputText id="itRnC" value="#{ii.realNumberValue}" 
                                                          required="#{ii.required}" validatorMessage="#{ii.regexValidationFailedMessage}"
                                                          requiredMessage="#{ii.requiredErrorMessage}" >
-                                                <p:ajax  event="blur" process="@this" update="@this" listener="#{clientEncounterComponentItemController.save(ii)}" ></p:ajax>
+                                                <p:ajax  event="blur" process="@this"  listener="#{clientEncounterComponentItemController.save(ii)}" ></p:ajax>
                                             </p:inputText>
                                         </td>
                                         <td>
@@ -92,7 +92,7 @@
                                             <p:inputText id="itLongC" value="#{ii.longNumberValue}" 
                                                          required="#{ii.required}" 
                                                          requiredMessage="#{ii.requiredErrorMessage}" >
-                                                <p:ajax  event="blur" process="@this"  update="@this" listener="#{clientEncounterComponentItemController.save(ii)}" ></p:ajax>
+                                                <p:ajax  event="blur" process="@this"   listener="#{clientEncounterComponentItemController.save(ii)}" ></p:ajax>
                                             </p:inputText>
                                         </td>
                                         <td>
@@ -112,7 +112,7 @@
                                         <p:inputTextarea id="txtItaL" value="#{ii.longTextValue}" 
                                                          required="#{ii.required}" 
                                                          requiredMessage="#{ii.requiredErrorMessage}" >
-                                            <p:ajax  event="blur" process="@this"  update="@this" listener="#{clientEncounterComponentItemController.save(ii)}" ></p:ajax>
+                                            <p:ajax  event="blur" process="@this"   listener="#{clientEncounterComponentItemController.save(ii)}" ></p:ajax>
                                         </p:inputTextarea>
                                     </td>
                                 </h:panelGroup>
@@ -126,7 +126,7 @@
                                                         required="#{ii.required}" navigator="true"
                                                         requiredMessage="#{ii.requiredErrorMessage}" 
                                                         pattern="dd MMMM yyyy">
-                                                <p:ajax  event="blur" process="@this"  update="@this" listener="#{clientEncounterComponentItemController.save(ii)}" ></p:ajax>
+                                                <p:ajax  event="blur" process="@this"   listener="#{clientEncounterComponentItemController.save(ii)}" ></p:ajax>
                                             </p:calendar>
                                         </td>
 
@@ -139,7 +139,7 @@
                                             <p:calendar id="calC" value="#{ii.dateValue}" 
                                                         required="#{ii.required}" 
                                                         requiredMessage="#{ii.requiredErrorMessage}" pattern="dd MMMM yyyy">
-                                                <p:ajax  event="blur" process="@this"  update="@this" listener="#{clientEncounterComponentItemController.save(ii)}" ></p:ajax>
+                                                <p:ajax  event="blur" process="@this"   listener="#{clientEncounterComponentItemController.save(ii)}" ></p:ajax>
                                             </p:calendar>
                                         </td>
 
@@ -155,7 +155,7 @@
                                                 <f:selectItem itemLabel="Please select" ></f:selectItem>
                                                 <f:selectItems value="#{itemController.findItemList(ii.categoryOfAvailableItems)}" var="li"
                                                                itemLabel="#{li.displayName}" itemValue="#{li}" ></f:selectItems>
-                                                <p:ajax  event="blur" process="@this"  update="@this" listener="#{clientEncounterComponentItemController.save(ii)}" ></p:ajax>
+                                                <p:ajax  event="blur" process="@this"   listener="#{clientEncounterComponentItemController.save(ii)}" ></p:ajax>
                                             </p:selectOneMenu>
                                         </td>
                                     </h:panelGroup>
@@ -173,7 +173,7 @@
                                                             required="#{ii.required}" 
                                                             requiredMessage="#{ii.requiredErrorMessage}">
                                                 <f:attribute name="filter" value="#{ii.categoryOfAvailableItems.code}" />
-                                                <p:ajax  event="blur" process="@this"  update="@this" 
+                                                <p:ajax  event="blur" process="@this"   
                                                          listener="#{clientEncounterComponentItemController.save(ii)}" >
                                                 </p:ajax>
                                             </p:autoComplete>
@@ -189,7 +189,7 @@
                                         <p:selectBooleanCheckbox id="bcNc" value="#{ii.booleanValue}" 
                                                                  required="#{ii.required}" 
                                                                  requiredMessage="#{ii.requiredErrorMessage}" >
-                                            <p:ajax  event="blur" process="@this"  update="@this" 
+                                            <p:ajax  event="blur" process="@this"   
                                                      listener="#{clientEncounterComponentItemController.save(ii)}" >
                                             </p:ajax>
                                         </p:selectBooleanCheckbox>
@@ -207,7 +207,7 @@
                                                         minQueryLength="3"
                                                         required="#{ii.required}" 
                                                         requiredMessage="#{ii.requiredErrorMessage}">
-                                            <p:ajax  event="blur" process="@this"  update="@this" 
+                                            <p:ajax  event="blur" process="@this"   
                                                      listener="#{clientEncounterComponentItemController.save(ii)}" >
                                             </p:ajax>
                                         </p:autoComplete>
@@ -242,7 +242,7 @@
                                                         <f:selectItem itemLabel="Select Dose Unit" ></f:selectItem>
                                                         <f:selectItems value="#{itemController.findItemListByCode('measurement_unit_dose')}" var="li"
                                                                        itemLabel="#{li.name}" itemValue="#{li}" ></f:selectItems>
-                                                        <p:ajax  event="blur" process="@this"  update="@this" listener="#{clientEncounterComponentItemController.save(ii)}" ></p:ajax>
+                                                        <p:ajax  event="blur" process="@this"   listener="#{clientEncounterComponentItemController.save(ii)}" ></p:ajax>
                                                     </p:selectOneMenu>
                                                 </td>
                                                 <td>
@@ -250,7 +250,7 @@
                                                         <f:selectItem itemLabel="Select Frequency" ></f:selectItem>
                                                         <f:selectItems value="#{itemController.findItemListByCode('measurement_unit_frequency')}" var="li"
                                                                        itemLabel="#{li.name}" itemValue="#{li}" ></f:selectItems>
-                                                        <p:ajax  event="blur" process="@this"  update="@this" listener="#{clientEncounterComponentItemController.save(ii)}" ></p:ajax>
+                                                        <p:ajax  event="blur" process="@this"   listener="#{clientEncounterComponentItemController.save(ii)}" ></p:ajax>
                                                     </p:selectOneMenu>
                                                 </td>
                                                 <td>
@@ -261,7 +261,7 @@
                                                         <f:selectItem itemLabel="Select Duration Unit" ></f:selectItem>
                                                         <f:selectItems value="#{itemController.findItemListByCode('measurement_unit_duration')}" var="li"
                                                                        itemLabel="#{li.name}" itemValue="#{li}" ></f:selectItems>
-                                                        <p:ajax  event="blur" process="@this"  update="@this" listener="#{clientEncounterComponentItemController.save(ii)}" ></p:ajax>
+                                                        <p:ajax  event="blur" process="@this"   listener="#{clientEncounterComponentItemController.save(ii)}" ></p:ajax>
                                                     </p:selectOneMenu>
                                                 </td>
                                                 <td>
@@ -272,7 +272,7 @@
                                                         <f:selectItem itemLabel="Select Issue Qty Unit" ></f:selectItem>
                                                         <f:selectItems value="#{itemController.findItemListByCode('measurement_unit_issue_quantity')}" var="li"
                                                                        itemLabel="#{li.name}" itemValue="#{li}" ></f:selectItems>
-                                                        <p:ajax  event="blur" process="@this"  update="@this" listener="#{clientEncounterComponentItemController.save(ii)}" ></p:ajax>
+                                                        <p:ajax  event="blur" process="@this"   listener="#{clientEncounterComponentItemController.save(ii)}" ></p:ajax>
                                                     </p:selectOneMenu>
                                                 </td>
                                             </tr>
