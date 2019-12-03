@@ -423,7 +423,7 @@ public class WebUserController implements Serializable {
         loggableInstitutions = null;
         loggablePmcis = null;
         loggableGnAreas = null;
-
+        institutionController.setMyClinics(null);
         if (userName == null || userName.trim().equals("")) {
             JsfUtil.addErrorMessage("Please enter a Username");
             return "";
@@ -442,6 +442,7 @@ public class WebUserController implements Serializable {
         
         if(loggedUser.isInstitutionAdministrator()){
             prepareInsAdminDashboard();
+            
         }else if (loggedUser.isSystemAdministrator()){
             //TODO: Change to SysAdmin
             prepareInsAdminDashboard();

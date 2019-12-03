@@ -298,6 +298,8 @@ public class InstitutionController implements Serializable {
         return myClinics;
     }
 
+    
+    
     public lk.gov.health.phsp.facade.InstitutionFacade getEjbFacade() {
         return ejbFacade;
     }
@@ -336,6 +338,10 @@ public class InstitutionController implements Serializable {
     public void setRemovingArea(Area removingArea) {
         this.removingArea = removingArea;
 
+    }
+
+    public void setMyClinics(List<Institution> myClinics) {
+        this.myClinics = myClinics;
     }
 
     @FacesConverter(forClass = Institution.class)
