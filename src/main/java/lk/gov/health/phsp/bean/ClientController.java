@@ -205,7 +205,6 @@ public class ClientController implements Serializable {
         }
 
         System.out.println("m = " + m);
-        System.out.println("j = " + j);
         items = getFacade().findByJpql(j, m);
         return "/insAdmin/registered_clients";
     }
@@ -326,7 +325,6 @@ public class ClientController implements Serializable {
                     for (String colName : cols) {
                         cell = sheet.getCell(colNo, i);
                         String cellString = cell.getContents();
-                        System.out.println("colName = " + colName);
                         switch (colName) {
                             case "client_name":
                                 c.getPerson().setName(cellString);
@@ -536,7 +534,6 @@ public class ClientController implements Serializable {
     }
 
     public void enrollInClinic() {
-        System.out.println("selectedClinic = " + selectedClinic);
         if (selectedClinic == null) {
             JsfUtil.addErrorMessage("Please select an clinic to enroll.");
             return;

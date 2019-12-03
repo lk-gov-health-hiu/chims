@@ -285,11 +285,14 @@
 
                             <td>
                                 <p:outputLabel value="#{ii.descreption}" ></p:outputLabel>
-                                <h:panelGroup rendered="false">
-                                    <p:panelGrid columns="3" >
-                                        #{ii.name}
-                                        #{ii.renderType}
-                                        #{ii.selectionDataType}
+                                <h:panelGroup rendered="true">
+                                    <p:panelGrid columns="2" >
+                                        <p:outputLabel value="Name" ></p:outputLabel>
+                                        <p:outputLabel value="#{ii.name}" ></p:outputLabel>
+                                        <p:outputLabel value="renderType" ></p:outputLabel>
+                                        <p:outputLabel value="#{ii.renderType}" ></p:outputLabel>
+                                        <p:outputLabel value="selectionDataType" ></p:outputLabel>
+                                        <p:outputLabel value="#{ii.selectionDataType}" ></p:outputLabel>
                                     </p:panelGrid>
                                 </h:panelGroup>
                             </td>

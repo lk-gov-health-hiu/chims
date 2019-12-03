@@ -421,7 +421,6 @@ public class ClientEncounterComponentFormSetController implements Serializable {
                 + " s.retired=false "
                 + " and s.encounter.encounterType=:t "
                 + " and s.encounter.client=:c ";
-        System.out.println("completeOnly = " + completeOnly);
         if (completeOnly == null) {
 
         } else if (completeOnly == true) {
@@ -494,7 +493,6 @@ public class ClientEncounterComponentFormSetController implements Serializable {
         m.put("er", true);
         m.put("fr", true);
         m.put("fc", true);
-        System.out.println("m = " + m);
         ClientEncounterComponentFormSet f = getFacade().findFirstByJpql(j, m);
         return f;
     }
@@ -664,7 +662,7 @@ public class ClientEncounterComponentFormSetController implements Serializable {
                         ci.setName(di.getName());
                         ci.setRenderType(di.getRenderType());
                         ci.setMimeType(di.getMimeType());
-//                        ci.setSelectionDataType(di.getSelectionDataType());
+                        ci.setSelectionDataType(di.getSelectionDataType());
                         ci.setTopPercent(di.getTopPercent());
                         ci.setLeftPercent(di.getLeftPercent());
                         ci.setWidthPercent(di.getWidthPercent());
@@ -1288,7 +1286,6 @@ public class ClientEncounterComponentFormSetController implements Serializable {
         System.out.println("m = " + m);
         System.out.println("j = " + j);
         List<ClientEncounterComponentItem> tis = getItemFacade().findByJpql(j, m);
-        System.out.println("tis = " + tis);
         return tis;
 
     }
@@ -1375,7 +1372,6 @@ public class ClientEncounterComponentFormSetController implements Serializable {
         m.put("e", lastEncounter);
         m.put("ic", ti.getItem().getCode());
         System.out.println("m = " + m);
-        System.out.println("j = " + j);
         List<ClientEncounterComponentItem> temLastResult = getItemFacade().findByJpql(j, m);
         return temLastResult;
     }
