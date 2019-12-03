@@ -131,7 +131,7 @@ public class Component implements Serializable {
 
     @Enumerated(EnumType.STRING)
     private DataPopulationStrategy dataPopulationStrategy;
-    
+
     @Enumerated(EnumType.STRING)
     private DataPopulationStrategy resultDisplayStrategy;
 
@@ -229,7 +229,7 @@ public class Component implements Serializable {
     private Institution institutionValue;
     @ManyToOne(fetch = FetchType.EAGER)
     private Client clientValue;
-    @ManyToOne(fetch = FetchType.EAGER,cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Prescription prescriptionValue;
 
     private boolean completed;
@@ -241,8 +241,6 @@ public class Component implements Serializable {
     private Integer integerNumberValue2;
     private Long longNumberValue2;
     private Double realNumberValue2;
-    
-    
 
     public Encounter getEncounter() {
         return encounter;
@@ -381,7 +379,7 @@ public class Component implements Serializable {
     }
 
     public Prescription getPrescriptionValue() {
-        if(prescriptionValue==null){
+        if (prescriptionValue == null) {
             prescriptionValue = new Prescription();
         }
         return prescriptionValue;
@@ -481,11 +479,12 @@ public class Component implements Serializable {
     }
 
     public SelectionDataType getSelectionDataType() {
-        if(item!=null){
-            selectionDataType = item.getDataType();
-        }
-        if(selectionDataType==null){
-            selectionDataType = SelectionDataType.Short_Text;
+        if (selectionDataType == null) {
+            if (item != null) {
+                selectionDataType = item.getDataType();
+            }else{
+                selectionDataType = SelectionDataType.Short_Text;
+            }
         }
         return selectionDataType;
     }
@@ -968,5 +967,4 @@ public class Component implements Serializable {
         this.resultDisplayStrategy = resultDisplayStrategy;
     }
 
-    
 }
