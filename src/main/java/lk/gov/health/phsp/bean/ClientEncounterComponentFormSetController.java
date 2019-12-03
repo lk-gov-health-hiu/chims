@@ -1200,6 +1200,9 @@ public class ClientEncounterComponentFormSetController implements Serializable {
             return s;
         }
         if (is.size() == 1) {
+            if(is.get(0).getBooleanValue()==null){
+                return s;
+            }
             return is.get(0).getBooleanValue().toString();
         }
         for (ClientEncounterComponentItem i : is) {
