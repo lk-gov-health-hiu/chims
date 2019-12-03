@@ -1455,6 +1455,8 @@ public class WebUserController implements Serializable {
     }
 
     public List<Institution> getLoggableInstitutions() {
+        System.out.println("getLoggableInstitutions");
+        System.out.println("loggableInstitutions = " + loggableInstitutions);
         if (loggableInstitutions == null) {
             loggableInstitutions = findAutherizedInstitutions();
         }
