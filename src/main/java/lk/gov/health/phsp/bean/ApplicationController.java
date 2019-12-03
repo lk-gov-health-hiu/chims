@@ -49,6 +49,7 @@ public class ApplicationController {
 
 // <editor-fold defaultstate="collapsed" desc="Class Variables">
     private boolean demoSetup = false;
+    private String versionNo = "1.1";
 
 // </editor-fold>
     public ApplicationController() {
@@ -136,6 +137,8 @@ public class ApplicationController {
         return institutionFacade;
     }
     
+    
+    
 // </editor-fold>
 
     public boolean isDemoSetup() {
@@ -144,6 +147,14 @@ public class ApplicationController {
 
     public void setDemoSetup(boolean demoSetup) {
         this.demoSetup = demoSetup;
+    }
+
+    public String getVersionNo() {
+        return versionNo;
+    }
+
+    public void setVersionNo(String versionNo) {
+        this.versionNo = versionNo;
     }
 
 }
