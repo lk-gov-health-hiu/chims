@@ -11,7 +11,12 @@
         <ui:composition template="/template.xhtml">
 
             <ui:define name="content" >
-                <p:panel id="WebUserEditDlg" header="Edit User Detais" style="text-align: center; height: 100%;" >
+                
+                <p:panel style="height: 100%; text-align: center;" rendered="#{!webUserController.loggedUser.systemAdministrator}">
+                    <h1>You are NOT authorized</h1>
+                </p:panel>
+                
+                <p:panel id="WebUserEditDlg" header="Edit User Detais" style="text-align: center; height: 100%;" rendered="#{webUserController.loggedUser.systemAdministrator}">
                     <h:form id="WebUserEditForm">
 
                         <p:panelGrid  columns="3" rendered="#{webUserController.selected != null}" style="margin: auto; text-align: left;">
