@@ -582,7 +582,7 @@ public class ClientController implements Serializable {
             JsfUtil.addErrorMessage("A Point of Issue is NOT assigned to your Institution. Please discuss with the System Administrator.");
             return;
         }
-        selected.setPhn(applicationController.createNewPersonalHealthNumber(webUserController.getLoggedUser().getInstitution()));
+        selected.setPhn(applicationController.createNewPersonalHealthNumber(poiIns));
     }
 
     public void gnAreaChanged() {

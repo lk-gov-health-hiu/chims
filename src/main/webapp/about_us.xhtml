@@ -41,6 +41,57 @@
                             </td>
                         </tr>
                     </table>
+
+                    <table >
+                        <tr>
+                            <td>
+                                <p:outputLabel value="Logged Username" ></p:outputLabel>
+                            </td>
+                            <td>
+                                <p:outputLabel value="#{webUserController.loggedUser.name}" ></p:outputLabel>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <p:outputLabel value="Logged User" ></p:outputLabel>
+                            </td>
+                            <td>
+                                <p:outputLabel value="#{webUserController.loggedUser.person.nameWithTitle}" ></p:outputLabel>
+                            </td>
+                        </tr>
+ <tr>
+                            <td>
+                                <p:outputLabel value="Logged Institution" ></p:outputLabel>
+                            </td>
+                            <td>
+                                <p:outputLabel value="#{webUserController.loggedUser.institution.name}" ></p:outputLabel>
+                            </td>
+                        </tr>
+                         <tr>
+                            <td>
+                                <p:outputLabel value="POI Institution" ></p:outputLabel>
+                            </td>
+                            <td>
+                                <p:outputLabel value="#{webUserController.loggedUser.institution.poiInstitution.name}" ></p:outputLabel>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <p:outputLabel value="POI Number" ></p:outputLabel>
+                            </td>
+                            <td>
+                                <p:outputLabel value="#{webUserController.loggedUser.institution.poiInstitution.poiNumber}" ></p:outputLabel>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <p:outputLabel value="Last POI" ></p:outputLabel>
+                            </td>
+                            <td>
+                                <p:outputLabel value="#{webUserController.loggedUser.institution.poiInstitution.lastHin}" ></p:outputLabel>
+                            </td>
+                        </tr>
+                    </table>
                 </div>
 
 
