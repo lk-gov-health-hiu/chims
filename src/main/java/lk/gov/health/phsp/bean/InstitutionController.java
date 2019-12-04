@@ -299,6 +299,8 @@ public class InstitutionController implements Serializable {
         }
         return myClinics;
     }
+    
+    
 
     
     
