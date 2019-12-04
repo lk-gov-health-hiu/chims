@@ -35,6 +35,7 @@ import javax.faces.convert.FacesConverter;
 import javax.faces.model.SelectItem;
 import javax.inject.Inject;
 import lk.gov.health.phsp.entity.UserPrivilege;
+import lk.gov.health.phsp.enums.EncounterType;
 import lk.gov.health.phsp.enums.Privilege;
 import lk.gov.health.phsp.enums.PrivilegeTreeNode;
 import lk.gov.health.phsp.facade.UserPrivilegeFacade;
@@ -78,7 +79,9 @@ public class WebUserController implements Serializable {
     @Inject
     private ItemController itemController;
     @Inject
-    ClientController clientController;
+    private ClientController clientController;
+    @Inject
+    private EncounterController encounterController;
 
     /*
     Variables
@@ -138,8 +141,9 @@ public class WebUserController implements Serializable {
 
     private String locale;
 
-    
     Long totalNumberOfRegisteredClients;
+    private Long totalNumberOfClinicVisits;
+    private Long totalNumberOfClinicEnrolments;
 
     /**
      *
@@ -439,23 +443,50 @@ public class WebUserController implements Serializable {
             }
         }
         loggedUserPrivileges = userPrivilegeList(loggedUser);
-        
-        if(loggedUser.isInstitutionAdministrator()){
-            prepareInsAdminDashboard();
-            
-        }else if (loggedUser.isSystemAdministrator()){
-            //TODO: Change to SysAdmin
-            prepareInsAdminDashboard();
-        }
-        
+        prepareDashboards();
         JsfUtil.addSuccessMessage("Successfully Logged");
         return "/index";
     }
+    
+    public void prepareDashboards(){
+        if (loggedUser.isInstitutionAdministrator()) {
+            prepareInsAdminDashboard();
 
-    public void prepareInsAdminDashboard(){
-        totalNumberOfRegisteredClients = clientController.countOfRegistedClients(loggedUser.getInstitution(), null);
+        } else if (loggedUser.isSystemAdministrator()) {
+            //TODO: Change to SysAdmin
+            prepareInsAdminDashboard();
+        }else if (loggedUser.isDoctor()) {
+            //TODO: Change to SysAdmin
+            prepareDocDashboard();
+        }else if (loggedUser.isNurse()) {
+            //TODO: Change to SysAdmin
+            prepareNurseDashboard();
+        }
+    }
+
+    public String toHome(){
+        prepareDashboards();
+        return "/index";
     }
     
+    public void prepareInsAdminDashboard() {
+        totalNumberOfRegisteredClients = clientController.countOfRegistedClients(loggedUser.getInstitution(), null);
+        totalNumberOfClinicEnrolments = encounterController.countOfEncounters(getInstitutionController().getMyClinics(), EncounterType.Clinic_Enroll);
+        totalNumberOfClinicVisits = encounterController.countOfEncounters(getInstitutionController().getMyClinics(), EncounterType.Clinic_Visit);
+    }
+
+    public void prepareDocDashboard() {
+        totalNumberOfRegisteredClients = clientController.countOfRegistedClients(loggedUser.getInstitution(), null);
+        totalNumberOfClinicEnrolments = encounterController.countOfEncounters(getInstitutionController().getMyClinics(), EncounterType.Clinic_Enroll);
+        totalNumberOfClinicVisits = encounterController.countOfEncounters(getInstitutionController().getMyClinics(), EncounterType.Clinic_Visit);
+    }
+
+    public void prepareNurseDashboard() {
+        totalNumberOfRegisteredClients = clientController.countOfRegistedClients(loggedUser.getInstitution(), null);
+        totalNumberOfClinicEnrolments = encounterController.countOfEncounters(getInstitutionController().getMyClinics(), EncounterType.Clinic_Enroll);
+        totalNumberOfClinicVisits = encounterController.countOfEncounters(getInstitutionController().getMyClinics(), EncounterType.Clinic_Visit);
+    }
+
     public String loginForMobile() {
         loginRequestResponse = "";
         if (userName == null || userName.trim().equals("")) {
@@ -1419,8 +1450,6 @@ public class WebUserController implements Serializable {
     public void setTotalNumberOfRegisteredClients(Long totalNumberOfRegisteredClients) {
         this.totalNumberOfRegisteredClients = totalNumberOfRegisteredClients;
     }
-    
-    
 
     public void setMyPrivilegeRoot(TreeNode myPrivilegeRoot) {
         this.myPrivilegeRoot = myPrivilegeRoot;
@@ -1495,6 +1524,32 @@ public class WebUserController implements Serializable {
 
     public void setLoggableGnAreas(List<Area> loggableGnAreas) {
         this.loggableGnAreas = loggableGnAreas;
+    }
+
+    public Long getTotalNumberOfClinicVisits() {
+        return totalNumberOfClinicVisits;
+    }
+
+    public void setTotalNumberOfClinicVisits(Long totalNumberOfClinicVisits) {
+        this.totalNumberOfClinicVisits = totalNumberOfClinicVisits;
+    }
+
+    
+    
+    public ClientController getClientController() {
+        return clientController;
+    }
+
+    public EncounterController getEncounterController() {
+        return encounterController;
+    }
+
+    public Long getTotalNumberOfClinicEnrolments() {
+        return totalNumberOfClinicEnrolments;
+    }
+
+    public void setTotalNumberOfClinicEnrolments(Long totalNumberOfClinicEnrolments) {
+        this.totalNumberOfClinicEnrolments = totalNumberOfClinicEnrolments;
     }
 
     @FacesConverter(forClass = WebUser.class)

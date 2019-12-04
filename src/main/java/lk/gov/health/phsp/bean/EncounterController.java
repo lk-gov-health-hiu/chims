@@ -66,6 +66,30 @@ public class EncounterController implements Serializable {
         return clinic.getCode() + "/" + yy + "/" + c;
     }
     
+    
+    
+    public Long countOfEncounters(List<Institution> clinic, EncounterType ec) {
+        System.out.println("countOfClinicEnrollments");
+        System.out.println("clinic = " + clinic);
+        String j = "select count(e) from Encounter e "
+                + " where e.retired=:ret "
+                + " and e.institution in :ins "
+                + " and e.encounterType=:ec "
+                + " and e.createdAt>:d";
+        Map m = new HashMap();
+        m.put("d", CommonController.startOfTheYear());
+        m.put("ec", ec);
+        m.put("ret",false);
+        m.put("ins", clinic);
+        System.out.println("m = " + m);
+        System.out.println("j = " + j);
+        Long c = getFacade().findLongByJpql(j,m);
+        if (c == null) {
+            c = 0l;
+        }
+        return c;
+    }
+    
     public boolean clinicEnrolmentExists(Institution i, Client c){
         String j = "select e from Encounter e "
                 + " where e.institution=:i "

@@ -15,11 +15,11 @@
         <h:outputStylesheet library="css" name="adminlte.min.css"></h:outputStylesheet>
         <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet"></link>
 
-<!--        <h:outputScript library="js" name="jquery.min.js"></h:outputScript>
-        <h:outputScript library="js" name="bootstrap.bundle.min.js"></h:outputScript>
-        <h:outputScript library="js" name="adminlte.min.js"></h:outputScript>
-        <h:outputScript library="js" name="demo.js"></h:outputScript>
-        <h:outputScript library="js" name="chart.js"></h:outputScript>-->
+        <!--        <h:outputScript library="js" name="jquery.min.js"></h:outputScript>
+                <h:outputScript library="js" name="bootstrap.bundle.min.js"></h:outputScript>
+                <h:outputScript library="js" name="adminlte.min.js"></h:outputScript>
+                <h:outputScript library="js" name="demo.js"></h:outputScript>
+                <h:outputScript library="js" name="chart.js"></h:outputScript>-->
 
         <h:form>
 
@@ -76,9 +76,9 @@
                                     <!-- small box -->
                                     <div class="small-box bg-success">
                                         <div class="inner">
-                                            <h3>245</h3>
+                                            <h3>#{webUserController.totalNumberOfClinicEnrolments}</h3>
 
-                                            <p>No. more than 35 year <br/>screened</p>
+                                            <p>Total Clinic Enrollments</p>
                                         </div>
                                         <div class="icon">
                                             <i class="ion ion-stats-bars"></i>
@@ -91,9 +91,9 @@
                                     <!-- small box -->
                                     <div class="small-box bg-warning">
                                         <div class="inner">
-                                            <h3>4.75 <sup style="font-size: 20px">%</sup></h3>
+                                            <h3>#{webUserController.totalNumberOfClinicVisits}</h3>
 
-                                            <p>% of people screened according to the empanelment</p>
+                                            <p>Total Number of Clinic Visits.</p>
                                         </div>
                                         <div class="icon">
                                             <i class="ion ion-person-add"></i>
@@ -106,9 +106,8 @@
                                     <!-- small box -->
                                     <div class="small-box bg-danger">
                                         <div class="inner">
-                                            <h3>24</h3>
-
-                                            <p>No of screened high risk (CVD Only) <br/>clients</p>
+                                            <h3>0</h3>
+                                            <p>No of Empanelled Population</p>
                                         </div>
                                         <div class="icon">
                                             <i class="ion ion-stats-bars"></i>
