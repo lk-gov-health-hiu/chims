@@ -164,7 +164,7 @@ a.wide, a.box{
     color:#fff;
     -webkit-transition: -webkit-transform 0.1s;
     position:relative;
-    overflow:hidden;
+    /*overflow:hidden;*/
 }
 
 a.wide h2, a.box h2{
@@ -194,7 +194,7 @@ a.wide:active, a.box:active{
 .wide{
     width:270px;
     height:120px;
-    overflow:hidden;
+    /*overflow:hidden;*/
     font-size:13px;
     padding:10px;
     display:block;
@@ -205,7 +205,7 @@ a.wide:active, a.box:active{
 .box{
     width:120px;
     height:120px;
-    overflow:hidden;
+    /*overflow:hidden;*/
     font-size:13px;
     padding:10px;
     display:block;

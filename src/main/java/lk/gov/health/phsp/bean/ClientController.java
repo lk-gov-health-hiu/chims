@@ -141,16 +141,26 @@ public class ClientController implements Serializable {
 
     // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="Functions">
-    public void updateClientCreatedIdFromPersonId() {
+    public void fixClientPersonCreatedAt() {
         String j = "select c from Client c "
-                + " where c.retired=:ret "
-                + " and c.createInstitution is null ";
+                + " where c.retired=:ret ";
         Map m = new HashMap();
         m.put("ret", false);
         List<Client> cs = getFacade().findByJpql(j, m);
         for (Client c : cs) {
-            c.setCreatedAt(c.getPerson().getCreatedAt());
-            getFacade().edit(c);
+            System.out.println("c = " + c);
+            if (c.getCreatedAt()==null && c.getPerson().getCreatedAt() != null) {
+                c.setCreatedAt(c.getPerson().getCreatedAt());
+                getFacade().edit(c);
+            }else if (c.getCreatedAt()!=null && c.getPerson().getCreatedAt() == null) {
+                c.getPerson().setCreatedAt(c.getCreatedAt());
+                getFacade().edit(c);
+            }else if (c.getCreatedAt()==null && c.getPerson().getCreatedAt() == null) {
+                c.getPerson().setCreatedAt(new Date());
+                c.setCreatedAt(new Date());
+                getFacade().edit(c);
+            }
+
         }
 
     }
@@ -238,6 +248,35 @@ public class ClientController implements Serializable {
         }
     }
 
+    public void fillAllClients() {
+        String j = "select c from Client c order by c.id";
+        items = getFacade().findByJpql(j);
+    }
+
+    public void fillRetiredClients() {
+        String j = "select c from Client c where c.retired=true order by c.id";
+        items = getFacade().findByJpql(j);
+    }
+
+    public void fillNonRetiredClients() {
+        String j = "select c from Client c where c.retired=false order by c.id";
+        items = getFacade().findByJpql(j);
+    }
+
+    public void retireSelectedClients() {
+        for (Client c : selectedClients) {
+            c.setRetired(true);
+            c.setRetireComments("Bulk Delete");
+            c.setRetiredAt(new Date());
+
+            c.getPerson().setRetired(true);
+            c.getPerson().setRetireComments("Bulk Delete");
+            c.getPerson().setRetiredAt(new Date());
+
+            getFacade().edit(c);
+        }
+    }
+
     public void saveAllImports() {
         if (institution == null) {
             JsfUtil.addErrorMessage("Institution ?");
@@ -266,7 +305,6 @@ public class ClientController implements Serializable {
     }
 
     public String importClientsFromExcel() {
-
 
         importedClients = new ArrayList<>();
 
@@ -552,9 +590,9 @@ public class ClientController implements Serializable {
         encounter.setCreatedAt(new Date());
         encounter.setCreatedBy(webUserController.getLoggedUser());
         encounter.setInstitution(selectedClinic);
-        if(clinicDate!=null){
+        if (clinicDate != null) {
             encounter.setEncounterDate(clinicDate);
-        }else{
+        } else {
             encounter.setEncounterDate(new Date());
         }
         encounter.setEncounterNumber(encounterController.createClinicEnrollNumber(selectedClinic));
@@ -796,9 +834,13 @@ public class ClientController implements Serializable {
                     c.setCreateInstitution(webUserController.getLoggedUser().getInstitution());
                 }
             }
-
+            if (c.getPerson().getCreatedAt() == null) {
+                c.getPerson().setCreatedAt(new Date());
+            }
+            if (c.getPerson().getCreatedBy() == null) {
+                c.getPerson().setCreatedBy(webUserController.getLoggedUser());
+            }
             getFacade().create(c);
-
         } else {
             c.setLastEditBy(webUserController.getLoggedUser());
             c.setLastEditeAt(new Date());
@@ -926,9 +968,9 @@ public class ClientController implements Serializable {
     }
 
     public List<Client> getItems() {
-        if (items == null) {
-            items = getFacade().findAll();
-        }
+//        if (items == null) {
+//            items = getFacade().findAll();
+//        }
         return items;
     }
 
@@ -1097,8 +1139,6 @@ public class ClientController implements Serializable {
     public void setIdFrom(Long idFrom) {
         this.idFrom = idFrom;
     }
-    
-    
 
     public Long getIdTo() {
         return idTo;
