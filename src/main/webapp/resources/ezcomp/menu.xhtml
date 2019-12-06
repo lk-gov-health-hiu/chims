@@ -75,7 +75,7 @@
                     <p:outputLabel value="|"></p:outputLabel>
                     <p:spacer height="1" width="5" ></p:spacer>
                     <p:commandButton action="#{webUserController.logOut()}" ajax="false"
-                                     rendered="#{webUserController.loggedUser ne null}" value="Logout" />
+                                     rendered="#{webUserController.loggedUser ne null}" value="#{webUserController.loggedUser.name} - Logout" />
                 </f:facet>
             </p:menubar>
 
