@@ -18,8 +18,8 @@
                         <p:panelGrid columns="1" >
                             <p:commandButton 
                                 ajax="false"
-                                action="#{clientController.updateClientCreatedIdFromPersonId()}"
-                                value="Update the Created date of client from person create date" >
+                                action="#{clientController.fixClientPersonCreatedAt()}"
+                                value="Fix Client / Person Created Dates" >
                             </p:commandButton>
                             <p:panelGrid columns="3" >
                                 <p:outputLabel value="Institution" ></p:outputLabel>
