@@ -18,7 +18,11 @@
 
             <ui:define name="content">
 
-                <p:panel style="height: 100%; text-align: center;" >
+                <p:panel style="height: 100%; text-align: center;" rendered="#{!webUserController.loggedUser.systemAdministrator}">
+                    <h1>You are NOT authorized</h1>
+                </p:panel>
+                
+                <p:panel style="height: 100%; text-align: center;" rendered="#{webUserController.loggedUser.systemAdministrator}">
 
                     
                     <h:form>

@@ -154,7 +154,7 @@ public class InstitutionController implements Serializable {
     }
     
     public List<Institution> findChildrenInstitutions(Institution ins) {
-        // //System.out.println("findChildrenInstitutions for " + ins.getName());
+        System.out.println("findChildrenInstitutions for " + ins.getName());
         String j;
         Map m = new HashMap();
         j = "select i from Institution i where i.retired=:ret "
@@ -168,8 +168,8 @@ public class InstitutionController implements Serializable {
             return tins;
         } else {
             for (Institution i : cins) {
-                // //System.out.println("i = " + i);
-                // //System.out.println("tins before finding children " + tins);
+                System.out.println("i = " + i);
+                System.out.println("tins before finding children " + tins);
                 tins.addAll(findChildrenInstitutions(i));
             }
         }
@@ -287,17 +287,23 @@ public class InstitutionController implements Serializable {
     }
 
     public List<Institution> getMyClinics() {
+        System.out.println("getMyClinics");
+        System.out.println("myClinics = " + myClinics);
         if (myClinics == null) {
             myClinics = new ArrayList<>();
             for (Institution i : webUserController.getLoggableInstitutions()) {
-                if (i.getInstitutionType().equals(InstitutionType.Ward_Clinic)) {
+                if (i.getInstitutionType().equals(InstitutionType.Clinic)) {
                     myClinics.add(i);
                 }
             }
         }
         return myClinics;
     }
+    
+    
 
+    
+    
     public lk.gov.health.phsp.facade.InstitutionFacade getEjbFacade() {
         return ejbFacade;
     }
@@ -336,6 +342,10 @@ public class InstitutionController implements Serializable {
     public void setRemovingArea(Area removingArea) {
         this.removingArea = removingArea;
 
+    }
+
+    public void setMyClinics(List<Institution> myClinics) {
+        this.myClinics = myClinics;
     }
 
     @FacesConverter(forClass = Institution.class)

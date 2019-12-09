@@ -1,0 +1,116 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <body>
+
+        <ui:composition template="./../template.xhtml">
+
+            <ui:define name="content">
+
+                <h:form  >
+
+
+                    <h:panelGrid columns="5" >
+                        <p:commandButton value="Fill All Clients" ajax="false"
+                                         action="#{clientController.fillAllClients()}">
+                        </p:commandButton>
+
+                        <p:commandButton value="Fill Retired Clients" ajax="false"
+                                         action="#{clientController.fillRetiredClients()}">
+                        </p:commandButton>
+
+                        <p:commandButton value="Fill Non-Retired Clients" ajax="false"
+                                         action="#{clientController.fillNonRetiredClients()}">
+                        </p:commandButton>
+
+                        <p:commandButton value="Retire Selected Clients" ajax="false"
+                                         action="#{clientController.retireSelectedClients()}">
+                        </p:commandButton>
+
+                    </h:panelGrid>
+                    
+                    <p:dataTable value="#{clientController.items}"
+                                 selection="#{clientController.selectedClients}"
+                                 var="c" 
+                                 rowKey="#{c.id}"
+                                 paginator="true"
+                                 rows="20"
+                                 rowsPerPageTemplate="10,20,30,40,50"
+                                 >
+                        <p:column selectionMode="multiple" width="15" >
+                        </p:column>
+
+                        <p:column headerText="PHN" width="200" sortBy="#{c.phn}" filterBy="#{c.phn}" filterMatchMode="contains">
+                            <p:outputLabel value="#{c.phn}" ></p:outputLabel>
+                        </p:column>
+
+                        <p:column headerText="Name" width="200"  sortBy="#{c.person.name}" filterBy="#{c.person.name}" filterMatchMode="contains">
+                            <p:outputLabel value="#{c.person.name}" ></p:outputLabel>
+                        </p:column>
+
+                        <p:column  headerText="Sex" width="200" sortBy="#{c.person.sex.name}" filterBy="#{c.person.sex.name}" filterMatchMode="contains">
+                            <p:outputLabel value="#{c.person.sex.name}" ></p:outputLabel>
+                        </p:column>
+
+                        <p:column headerText="GN Area" width="200"  
+                                  sortBy="#{c.person.gnArea.name}" 
+                                  filterBy="#{c.person.gnArea.name}" 
+                                  filterMatchMode="contains">
+                            <p:outputLabel value="#{c.person.gnArea.name}" ></p:outputLabel>
+                        </p:column>
+
+                        <p:column headerText="District" width="200"  
+                                  sortBy="#{c.person.district.name}" 
+                                  filterBy="#{c.person.district.name}" 
+                                  filterMatchMode="contains">
+                            <p:outputLabel value="#{c.person.district.name}" ></p:outputLabel>
+                        </p:column>
+
+                        <p:column  headerText="Registered in" width="200"  
+                                   sortBy="#{c.createInstitution.name}" 
+                                   filterBy="#{c.createInstitution.name}" filterMatchMode="contains">
+                            <p:outputLabel value="#{c.createInstitution.name}" ></p:outputLabel>
+                        </p:column>
+
+                        <p:column  headerText="Register at" width="200" sortBy="#{c.createdAt}" 
+                                   filterBy="#{c.createdAt}" filterMatchMode="contains">
+                            <p:outputLabel value="#{c.createdAt}" >
+                                <f:convertDateTime pattern="dd MMMM yyyy" ></f:convertDateTime>
+                            </p:outputLabel>
+                        </p:column>
+
+                        <p:column  headerText="Comments" width="200" sortBy="#{c.person.mariatalStatus.name}" filterBy="#{c.person.mariatalStatus.name}" filterMatchMode="contains">
+                            <p:outputLabel value="#{c.retired?'Retired':''}" ></p:outputLabel>
+                        </p:column>
+
+
+
+
+                    </p:dataTable>
+
+
+
+
+
+
+
+
+
+                </h:form>
+                <div >
+                    <br/>
+                    <br/>
+                    <br/>
+                </div>
+
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

@@ -86,6 +86,11 @@ public class ItemController implements Serializable {
         selectedParent = pi;
     }
 
+    public void makeAsSelectedParentByCode(String strPi) {
+        Item pi = findItemByCode(strPi);
+        selectedParent = pi;
+    }
+
     public List<String> completeItemCodes(String qry) {
         String j = "select i.code from Item i "
                 + " where lower(i.code) like :q "
@@ -194,10 +199,19 @@ public class ItemController implements Serializable {
         return findChildrenAndGrandchildrenItemList(selectedParent, null, qry);
     }
 
+    public List<Item> completeItemsofParentWithFIlter(String qry) {
+        FacesContext context = FacesContext.getCurrentInstance();
+        String o = (String) UIComponent.getCurrentComponent(context).getAttributes().get("filter");
+        System.out.println("o = " + o);
+        Item ti = findItemByCode(o);
+        System.out.println("ti = " + ti);
+        return findChildrenAndGrandchildrenItemList(ti, null, qry);
+    }
+
     public void generateDisplayNames() {
         List<Item> tis = getFacade().findAll();
-        for(Item i:tis){
-            if(i.getDisplayName()==null || i.getDisplayName().trim().equals("")){
+        for (Item i : tis) {
+            if (i.getDisplayName() == null || i.getDisplayName().trim().equals("")) {
                 i.setDisplayName(i.getName());
                 getFacade().edit(i);
             }
@@ -213,7 +227,60 @@ public class ItemController implements Serializable {
         addSexes();
         addCitizenship();
         addClientData();
+        addMedicines();
+    }
 
+    public void addMedicines() {
+        String initialData = "Dictionary_Item::Medicine:medicine:0" + System.lineSeparator()
+                + "Dictionary_Item:medicine:VTM:vtm:1" + System.lineSeparator()
+                + "Dictionary_Item:medicine:ATM:atm:0" + System.lineSeparator()
+                + "Dictionary_Item:medicine:VMP:vmp:2" + System.lineSeparator()
+                + "Dictionary_Item:medicine:AMP:amp:3" + System.lineSeparator()
+                + "Dictionary_Item:medicine:VMPP:vmpp:4" + System.lineSeparator()
+                + "Dictionary_Item:medicine:AMPP:ampp:4" + System.lineSeparator()
+                + "Dictionary_Item::Dose:medicine_dose:0" + System.lineSeparator()
+                + "Dictionary_Item::Dose Unit:medicine_dose_unit:0" + System.lineSeparator()
+                + "Dictionary_Item::Duration:medicine_duration:0" + System.lineSeparator()
+                + "Dictionary_Item::Duration Unit:medicine_dutaion_unit:0" + System.lineSeparator()
+                + "Dictionary_Item::Frequency:medicine_frequency:0" + System.lineSeparator()
+                + "Dictionary_Item::Issue Quantity:medicine_issue_quantity :0" + System.lineSeparator()
+                + "Dictionary_Item::Issue Unit:medicine_issue_unit :0" + System.lineSeparator()
+                + "Dictionary_Item::Instructions:medicine_issue_instruction :0" + System.lineSeparator()
+                + "Dictionary_Item::Measurement Unit:measurement_unit:0" + System.lineSeparator()
+                + "Dictionary_Item:measurement_unit:Dose Unit:measurement_unit_dose:0" + System.lineSeparator()
+                + "Dictionary_Item:measurement_unit:Dose Unit:measurement_unit_frequency:1" + System.lineSeparator()
+                + "Dictionary_Item:measurement_unit:Dose Unit:measurement_unit_duration:2" + System.lineSeparator()
+                + "Dictionary_Item:measurement_unit:Dose Unit:measurement_unit_issue_quantity:3" + System.lineSeparator()
+                
+                + "Dictionary_Item:measurement_unit_dose:mg:measurement_unit_dose_mg:0" + System.lineSeparator()
+                + "Dictionary_Item:measurement_unit_dose:ml:measurement_unit_dose_ml:1" + System.lineSeparator()
+                + "Dictionary_Item:measurement_unit_dose:microgram:measurement_unit_dose_microgram:2" + System.lineSeparator()
+                + "Dictionary_Item:measurement_unit_dose:#:measurement_unit_dose_unit:3" + System.lineSeparator()
+                
+                + "Dictionary_Item:measurement_unit_frequency:bid:measurement_unit_frequency_bid:0" + System.lineSeparator()
+                + "Dictionary_Item:measurement_unit_frequency:tds:measurement_unit_frequency_tds:1" + System.lineSeparator()
+                + "Dictionary_Item:measurement_unit_frequency:qds:measurement_unit_frequency_qds:2" + System.lineSeparator()
+                + "Dictionary_Item:measurement_unit_frequency:od:measurement_unit_frequency_od:3" + System.lineSeparator()
+                + "Dictionary_Item:measurement_unit_frequency:mane:measurement_unit_frequency_mane:4" + System.lineSeparator()
+                + "Dictionary_Item:measurement_unit_frequency:nocte:measurement_unit_frequency_nocte:5" + System.lineSeparator()
+                + "Dictionary_Item:measurement_unit_frequency:sos:measurement_unit_frequency_sos:6" + System.lineSeparator()
+                + "Dictionary_Item:measurement_unit_frequency:stat:measurement_unit_frequency_stat:7" + System.lineSeparator()
+                
+                
+                + "Dictionary_Item:measurement_unit_duration:doses:measurement_unit_duration_doses:1" + System.lineSeparator()
+                + "Dictionary_Item:measurement_unit_duration:days:measurement_unit_duration_days:0" + System.lineSeparator()
+                + "Dictionary_Item:measurement_unit_duration:weeks:measurement_unit_duration_weekes:2" + System.lineSeparator()
+                + "Dictionary_Item:measurement_unit_duration:months:measurement_unit_duration_months:3" + System.lineSeparator()
+                
+                
+                + "Dictionary_Item:measurement_unit_issue_quantity:#:measurement_unit_issue_quantity_units:0" + System.lineSeparator()
+                + "Dictionary_Item:measurement_unit_issue_quantity:g:measurement_unit_issue_quantity_g:1" + System.lineSeparator()
+                + "Dictionary_Item:measurement_unit_issue_quantity:mg:measurement_unit_issue_quantity_mg:2" + System.lineSeparator()
+                + "Dictionary_Item:measurement_unit_issue_quantity:ml:measurement_unit_issue_quantity_ml:3" + System.lineSeparator()
+                
+                
+                ;
+        addInitialMetadata(initialData);
     }
 
     public void addClientData() {
@@ -223,6 +290,11 @@ public class ItemController implements Serializable {
 
         String initialData = "Dictionary_Item::Name:client_name:0" + System.lineSeparator()
                 + "Dictionary_Item::Sex:client_sex:0" + System.lineSeparator()
+                + "Dictionary_Item::Religion:client_religion:0" + System.lineSeparator()
+                + "Dictionary_Item::Ethnic Group:client_ethnic_group:0" + System.lineSeparator()
+                + "Dictionary_Item::Marital Status:client_marital_status:0" + System.lineSeparator()
+                + "Dictionary_Item::Title:client_title:0" + System.lineSeparator()
+                + "Dictionary_Item::Citizenship:client_citizenship:0" + System.lineSeparator()
                 + "Dictionary_Item::PHN Number:client_phn_number:0" + System.lineSeparator()
                 + "Dictionary_Item::NIC No.:client_nic_number:1" + System.lineSeparator()
                 + "Dictionary_Item::Date of Birth:client_data_of_birth:2" + System.lineSeparator()
@@ -236,6 +308,7 @@ public class ItemController implements Serializable {
                 + "Dictionary_Item::Current Address:client_current_address:3" + System.lineSeparator()
                 + "Dictionary_Item::Mobile Number:client_mobile_number:3" + System.lineSeparator()
                 + "Dictionary_Item::Home Number:client_home_number:3" + System.lineSeparator()
+                + "Dictionary_Item::Email:client_email:3" + System.lineSeparator()
                 + "Dictionary_Item::Guardian Details:guardian_details:3" + System.lineSeparator()
                 + "Dictionary_Item::MOH Area:client_current_moh_area:3" + System.lineSeparator()
                 + "Dictionary_Item::PHM Area:client_current_phm_area:3" + System.lineSeparator()
@@ -253,7 +326,8 @@ public class ItemController implements Serializable {
                 + "Dictionary_Item::Has Other Allergy:client_food_allergy_exists:3" + System.lineSeparator()
                 + "Dictionary_Item::Is allergic to:client_allergic_to:3" + System.lineSeparator()
                 + "Dictionary_Item::Client's Default Photo:client_default_photo:3" + System.lineSeparator()
-                + "Dictionary_Item::Client's Photo:client_photo:3" + System.lineSeparator();
+                + "Dictionary_Item::Client's Photo:client_photo:3" + System.lineSeparator()
+                + "Dictionary_Item::Client's Registered at:client_registered_at:3" + System.lineSeparator();
 
         addInitialMetadata(initialData);
     }
@@ -340,7 +414,7 @@ public class ItemController implements Serializable {
                 + "Dictionary_Item:female_title:Dr(Miss):drmiss:9" + System.lineSeparator()
                 + "Dictionary_Item:female_title:Dr(Ms):drms:10" + System.lineSeparator()
                 + "Dictionary_Item:male_or_female_title:Rt Rev:rtrev:11" + System.lineSeparator()
-                + "Dictionary_Item:male_or_female_title:Baby of:bany_of:12" + System.lineSeparator()
+                + "Dictionary_Item:male_or_female_title:Baby of:baby_of:12" + System.lineSeparator()
                 + "Dictionary_Item:male_or_female_title:Other:title_other:13" + System.lineSeparator();
         addInitialMetadata(initialData);
     }
@@ -592,6 +666,18 @@ public class ItemController implements Serializable {
         String j = "select t from Item t where t.retired=false ";
         Map m = new HashMap();
 
+        if (parent != null) {
+            m.put("p", parent);
+            j += " and t.parent=:p ";
+        }
+        j += " order by t.name";
+        return getFacade().findByJpql(j, m);
+    }
+
+    public List<Item> findItemListByCode(String parentCode) {
+        String j = "select t from Item t where t.retired=false ";
+        Map m = new HashMap();
+        Item parent = findItemByCode(parentCode);
         if (parent != null) {
             m.put("p", parent);
             j += " and t.parent=:p ";

@@ -17,14 +17,13 @@
 
 
         <h:form>  
-            <p:growl id="messages"/>
-
+           
             <h:outputStylesheet library="css" name="tem1.css"/>
 
             <p:menubar  rendered="#{webUserController.loggedUser ne null}"  autoDisplay="true"   styleClass="horizontalmenu">
 
 
-                <p:menuitem ajax="false" value="Home" icon="ui-icon-home" action="/index" />
+                <p:menuitem ajax="false" value="Home" icon="ui-icon-home" action="#{webUserController.toHome()}" />
                 <p:submenu label="Clients" rendered="#{webUserController.hasPrivilege('Client_Management')}" >
                     <p:menuitem ajax="false" value="Search by IDs" action="#{clientController.toSearchClientById()}" />
                     <p:menuitem ajax="false" value="Register New" action="#{clientController.toAddNewClient()}"  />
@@ -63,6 +62,7 @@
                     <p:menuitem value="Trouble Shooting" action="/troubleschooter"  />
                     <p:menuitem value="Fedback" action="/feedback" />
                     <p:menuitem value="Contact us" action="/contact" />
+                    <p:menuitem value="About us" action="/about_us" />
                 </p:submenu>
 
 
@@ -75,7 +75,7 @@
                     <p:outputLabel value="|"></p:outputLabel>
                     <p:spacer height="1" width="5" ></p:spacer>
                     <p:commandButton action="#{webUserController.logOut()}" ajax="false"
-                                     rendered="#{webUserController.loggedUser ne null}" value="Logout" />
+                                     rendered="#{webUserController.loggedUser ne null}" value="#{webUserController.loggedUser.name} - Logout" />
                 </f:facet>
             </p:menubar>
 
@@ -118,7 +118,10 @@
                         <p:menuitem value="Trouble Shooting" action="/troubleschooter"  />
                         <p:menuitem value="Fedback" action="/feedback" />
                         <p:menuitem value="Contact us" action="/contact" />
+                        <p:menuitem value="About us" action="/about_us" />
                     </p:submenu>
+                    
+                    <p:menuitem ajax="false" value="Logout"  action="#{webUserController.logOut()}" />
 
                 </p:submenu>
 

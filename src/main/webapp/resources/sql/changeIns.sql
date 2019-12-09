@@ -1,7 +1,7 @@
-/*
+/* 
  * The MIT License
  *
- * Copyright 2019 Dr M H B Ariyaratne<buddhika.ari@gmail.com>.
+ * Copyright 2019 hiu_pdhs_sp.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,18 +21,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package lk.gov.health.phsp.enums;
-
 /**
- *
- * @author Dr M H B Ariyaratne<buddhika.ari@gmail.com>
+ * Author:  hiu_pdhs_sp
+ * Created: Nov 26, 2019
  */
-public enum DataPopulationStrategy {
-    None,
-    From_Last_Encounter,
-    From_Client_Value,
-    From_Last_Encounter_of_same_formset,
-    From_Last_Encounter_of_same_clinic,
-    @Deprecated
-    From_Last_Data_Entered_Encounter,
-}
+
+update from institution 
+set ``INSTITUTIONTYPE`` = 'Ward'
+where `INSTITUTIONTYPE` = 'Ward_Clinic' ;

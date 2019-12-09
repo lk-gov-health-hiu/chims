@@ -210,9 +210,11 @@
                                                                         <h4>Recent Clinic visits</h4>
                                                                         <h:form>
                                                                             <ul>
-                                                                                <ui:repeat value="#{clientEncounterComponentFormSetController.fillLastFiveCompletedEncountersFormSets('Clinic_Visit')}" var="rcv" >
+                                                                                <ui:repeat value="#{clientEncounterComponentFormSetController.fillLastFiveEncountersFormSets('Clinic_Visit')}" var="rcv" >
                                                                                     <li>
-                                                                                        <h:commandLink action="#{clientEncounterComponentFormSetController.toViewOrEditFormset()}">
+                                                                                        <h:commandLink action="#{clientEncounterComponentFormSetController.toViewOrEditFormset()}"
+
+                                                                                                       style="color: #{rcv.completed?'white':'red'};">
                                                                                             <h:outputLabel value="#{rcv.name}">
                                                                                             </h:outputLabel>
                                                                                             <h:outputLabel value="&nbsp;on&nbsp;" ></h:outputLabel>
@@ -222,6 +224,7 @@
                                                                                             <h:outputLabel value="&nbsp;at&nbsp;" ></h:outputLabel>
                                                                                             <p:outputLabel value="#{rcv.institution.name}" >
                                                                                             </p:outputLabel>
+                                                                                            #{rcv.id}
                                                                                             <f:setPropertyActionListener value="#{rcv}" target="#{clientEncounterComponentFormSetController.selected}" ></f:setPropertyActionListener>
                                                                                         </h:commandLink>
                                                                                     </li>
@@ -311,25 +314,31 @@
 
                                                         <div class="card card-primary">
                                                             <div class="card-header">
-                                                                <h3 class="card-title">Clinic Enrolement</h3>
+                                                                <h3 class="card-title">Clinic Enrollments</h3>
                                                             </div>
                                                             <!-- /.card-header -->
                                                             <div class="card-body">
 
                                                                 <h:form >
 
-                                                                    <h:selectOneMenu value="#{clientController.selectedClinic}" >
-                                                                        <f:selectItem itemLabel="Select the clinic" ></f:selectItem>
-                                                                        <f:selectItems value="#{institutionController.myClinics}" 
-                                                                                       var="shlc" itemValue="#{shlc}" itemLabel="#{shlc.name}"></f:selectItems>
-                                                                    </h:selectOneMenu>
-
-                                                                    <p:commandButton action="#{institutionController.refreshMyInstitutions()}" ajax="false" 
-                                                                                     rendered="false"     icon="ui-icon-arrowrefresh-1-n" ></p:commandButton>
-
-                                                                    <p:spacer height="1" width="10" ></p:spacer>
-                                                                    <p:commandButton value="Enroll" ajax="false" action="#{clientController.enrollInClinic()}" ></p:commandButton>
-
+                                                                    <table >
+                                                                        <tr>
+                                                                            <td>
+                                                                                <h:selectOneMenu value="#{clientController.selectedClinic}" >
+                                                                                    <f:selectItem itemLabel="Select the clinic" ></f:selectItem>
+                                                                                    <f:selectItems value="#{institutionController.myClinics}" 
+                                                                                                   var="shlc" itemValue="#{shlc}" itemLabel="#{shlc.name}"></f:selectItems>
+                                                                                </h:selectOneMenu>
+                                                                            </td>
+                                                                            <td>
+                                                                                <p:commandButton value="Enroll" ajax="false" 
+                                                                                                 action="#{clientController.enrollInClinic()}" ></p:commandButton>
+                                                                                <p:commandButton action="#{institutionController.refreshMyInstitutions()}" ajax="false" 
+                                                                                                     icon="ui-icon-arrowrefresh-1-n" ></p:commandButton>
+                                                                            </td>
+                                                                        </tr>
+                                                                    </table>
+                                                                    
                                                                 </h:form>
 
                                                             </div>
@@ -418,7 +427,7 @@
 
 
 
-       
+
 
 
 

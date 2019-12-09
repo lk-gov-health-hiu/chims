@@ -311,7 +311,7 @@ public class QueryComponentController implements Serializable {
     }
 
     public String toProcessQuery() {
-        return "/queryComponent/query_process_category";
+        return "/queryComponent/query_process";
     }
 
     public void clearFilters() {

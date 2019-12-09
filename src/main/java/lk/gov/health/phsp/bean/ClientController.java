@@ -82,6 +82,9 @@ public class ClientController implements Serializable {
     private List<Client> selectedClients = null;
     private List<Client> importedClients = null;
     private Client selected;
+    private Long idFrom;
+    private Long idTo;
+    private Institution institution;
     private List<Encounter> selectedClientsClinics;
     private String searchingId;
     private String searchingPhn;
@@ -97,6 +100,7 @@ public class ClientController implements Serializable {
     private int profileTabActiveIndex;
     private boolean goingToCaptureWebCamPhoto;
     private UploadedFile file;
+    private Date clinicDate;
 
     // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="Constructors">
@@ -137,13 +141,176 @@ public class ClientController implements Serializable {
 
     // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="Functions">
+    public void fixClientPersonCreatedAt() {
+        String j = "select c from Client c "
+                + " where c.retired=:ret ";
+        Map m = new HashMap();
+        m.put("ret", false);
+        List<Client> cs = getFacade().findByJpql(j, m);
+        for (Client c : cs) {
+            System.out.println("c = " + c);
+            if (c.getCreatedAt()==null && c.getPerson().getCreatedAt() != null) {
+                c.setCreatedAt(c.getPerson().getCreatedAt());
+                getFacade().edit(c);
+            }else if (c.getCreatedAt()!=null && c.getPerson().getCreatedAt() == null) {
+                c.getPerson().setCreatedAt(c.getCreatedAt());
+                getFacade().edit(c);
+            }else if (c.getCreatedAt()==null && c.getPerson().getCreatedAt() == null) {
+                c.getPerson().setCreatedAt(new Date());
+                c.setCreatedAt(new Date());
+                getFacade().edit(c);
+            }
+
+        }
+
+    }
+
+    public void updateClientCreatedInstitution() {
+        if (institution == null) {
+            JsfUtil.addErrorMessage("Institution ?");
+            return;
+        }
+        String j = "select c from Client c "
+                + " where c.retired=:ret "
+                + " and c.id > :idf "
+                + " and c.id < :idt ";
+        Map m = new HashMap();
+        m.put("ret", false);
+        m.put("idf", idFrom);
+        m.put("idt", idTo);
+        List<Client> cs = getFacade().findByJpql(j, m);
+        for (Client c : cs) {
+            c.setCreateInstitution(institution);
+            getFacade().edit(c);
+        }
+
+    }
+
+    public Long countOfRegistedClients(Institution ins, Area gn) {
+        String j = "select count(c) from Client c "
+                + " where c.retired=:ret ";
+        Map m = new HashMap();
+        m.put("ret", false);
+        if (ins != null) {
+            j += " and c.createInstitution=:ins ";
+            m.put("ins", ins);
+        }
+        if (gn != null) {
+            j += " and c.person.gnArea=:gn ";
+            m.put("gn", gn);
+        }
+        return getFacade().countByJpql(j, m);
+    }
+
+    public String toRegisterdClientsDemo() {
+        String j = "select c from Client c "
+                + " where c.retired=:ret ";
+        Map m = new HashMap();
+        m.put("ret", false);
+        if (webUserController.getLoggedUser().getInstitution() != null) {
+            j += " and c.createInstitution=:ins ";
+            m.put("ins", webUserController.getLoggedUser().getInstitution());
+        } else {
+            items = new ArrayList<>();
+        }
+
+        System.out.println("m = " + m);
+        items = getFacade().findByJpql(j, m);
+        return "/insAdmin/registered_clients";
+    }
+
+    public String toRegisterdClients() {
+        String j = "select c from Client c "
+                + " where c.retired=:ret ";
+        Map m = new HashMap();
+        m.put("ret", false);
+        if (webUserController.getLoggedUser().getInstitution() != null) {
+            j += " and c.createInstitution=:ins ";
+            m.put("ins", webUserController.getLoggedUser().getInstitution());
+        } else {
+            items = new ArrayList<>();
+        }
+        items = getFacade().findByJpql(j, m);
+        return "/insAdmin/registered_clients";
+    }
+
+    public void saveSelectedImports() {
+        if (institution == null) {
+            JsfUtil.addErrorMessage("Institution ?");
+            return;
+        }
+        for (Client c : selectedClients) {
+            c.setCreateInstitution(institution);
+            if (!phnExists(c.getPhn())) {
+                c.setId(null);
+                saveClient(c);
+            }
+        }
+    }
+
+    public void fillAllClients() {
+        String j = "select c from Client c order by c.id";
+        items = getFacade().findByJpql(j);
+    }
+
+    public void fillRetiredClients() {
+        String j = "select c from Client c where c.retired=true order by c.id";
+        items = getFacade().findByJpql(j);
+    }
+
+    public void fillNonRetiredClients() {
+        String j = "select c from Client c where c.retired=false order by c.id";
+        items = getFacade().findByJpql(j);
+    }
+
+    public void retireSelectedClients() {
+        for (Client c : selectedClients) {
+            c.setRetired(true);
+            c.setRetireComments("Bulk Delete");
+            c.setRetiredAt(new Date());
+
+            c.getPerson().setRetired(true);
+            c.getPerson().setRetireComments("Bulk Delete");
+            c.getPerson().setRetiredAt(new Date());
+
+            getFacade().edit(c);
+        }
+    }
+
+    public void saveAllImports() {
+        if (institution == null) {
+            JsfUtil.addErrorMessage("Institution ?");
+            return;
+        }
+        for (Client c : importedClients) {
+            c.setCreateInstitution(institution);
+            if (!phnExists(c.getPhn())) {
+                c.setId(null);
+                saveClient(c);
+            }
+        }
+    }
+
+    public boolean phnExists(String phn) {
+        String j = "select c from Client c where c.retired=:ret "
+                + " and c.phn=:phn";
+        Map m = new HashMap();
+        m.put("ret", false);
+        m.put("phn", phn);
+        Client c = getFacade().findFirstByJpql(j, m);
+        if (c == null) {
+            return false;
+        }
+        return true;
+    }
+
     public String importClientsFromExcel() {
 
         importedClients = new ArrayList<>();
 
         if (uploadDetails == null || uploadDetails.trim().equals("")) {
             JsfUtil.addErrorMessage("Add Column Names");
-            return "save_import_clients";
+            return "";
         }
 
         String[] cols = uploadDetails.split("\\r?\\n");
@@ -157,11 +324,7 @@ public class ClientController implements Serializable {
             Workbook w;
             Cell cell;
             InputStream in;
-
-            lk.gov.health.phsp.facade.util.JsfUtil.addSuccessMessage(file.getFileName());
-
             try {
-                lk.gov.health.phsp.facade.util.JsfUtil.addSuccessMessage(file.getFileName());
                 in = file.getInputstream();
                 File f;
                 f = new File(Calendar.getInstance().getTimeInMillis() + file.getFileName());
@@ -177,13 +340,15 @@ public class ClientController implements Serializable {
 
                 inputWorkbook = new File(f.getAbsolutePath());
 
-                lk.gov.health.phsp.facade.util.JsfUtil.addSuccessMessage("Excel File Opened");
+                JsfUtil.addSuccessMessage("Excel File Opened");
                 w = Workbook.getWorkbook(inputWorkbook);
                 Sheet sheet = w.getSheet(0);
 
                 errorCode = "";
 
                 int startRow = 1;
+
+                Long temId = 0L;
 
                 for (int i = startRow; i < sheet.getRows(); i++) {
 
@@ -214,6 +379,92 @@ public class ClientController implements Serializable {
                                 }
                                 c.getPerson().setSex(sex);
                                 break;
+                            case "client_citizenship":
+                                Item cs;
+                                if (cellString == null) {
+                                    cs = null;
+                                } else if (cellString.toLowerCase().contains("sri")) {
+                                    cs = itemController.findItemByCode("citizenship_local");
+                                } else {
+                                    cs = itemController.findItemByCode("citizenship_foreign");
+                                }
+                                c.getPerson().setCitizenship(cs);
+                                break;
+
+                            case "client_ethnic_group":
+                                Item eg = null;
+                                if (cellString == null || cellString.trim().equals("")) {
+                                    eg = null;
+                                } else if (cellString.equalsIgnoreCase("Sinhala")) {
+                                    eg = itemController.findItemByCode("sinhalese");
+                                } else if (cellString.equalsIgnoreCase("moors")) {
+                                    eg = itemController.findItemByCode("citizenship_local");
+                                } else if (cellString.equalsIgnoreCase("SriLankanTamil")) {
+                                    eg = itemController.findItemByCode("tamil");
+                                } else {
+                                    eg = itemController.findItemByCode("ethnic_group_other");;
+                                }
+                                c.getPerson().setEthinicGroup(eg);
+                                break;
+                            case "client_religion":
+                                Item re = null;
+                                if (cellString == null || cellString.trim().equals("")) {
+                                    re = null;
+                                } else if (cellString.equalsIgnoreCase("Buddhist")) {
+                                    re = itemController.findItemByCode("buddhist");
+                                } else if (cellString.equalsIgnoreCase("Christian")) {
+                                    re = itemController.findItemByCode("christian");
+                                } else if (cellString.equalsIgnoreCase("Hindu")) {
+                                    re = itemController.findItemByCode("hindu");
+                                } else {
+                                    re = itemController.findItemByCode("religion_other");;
+                                }
+                                c.getPerson().setReligion(re);
+                                break;
+                            case "client_marital_status":
+                                Item ms = null;
+                                if (cellString == null || cellString.trim().equals("")) {
+                                    ms = null;
+                                } else if (cellString.equalsIgnoreCase("Married")) {
+                                    ms = itemController.findItemByCode("married");
+                                } else if (cellString.equalsIgnoreCase("Separated")) {
+                                    ms = itemController.findItemByCode("seperated");
+                                } else if (cellString.equalsIgnoreCase("Single")) {
+                                    ms = itemController.findItemByCode("unmarried");
+                                } else {
+                                    ms = itemController.findItemByCode("marital_status_other");;
+                                }
+                                c.getPerson().setMariatalStatus(ms);
+                                break;
+                            case "client_title":
+                                Item title = null;
+                                String ts = cellString;
+                                switch (ts) {
+                                    case "Baby":
+                                        title = itemController.findItemByCode("baby");
+                                        break;
+                                    case "Babyof":
+                                        title = itemController.findItemByCode("baby_of");
+                                        break;
+                                    case "Mr":
+                                        title = itemController.findItemByCode("mr");
+                                        break;
+                                    case "Mrs":
+                                        title = itemController.findItemByCode("mrs");
+                                        break;
+                                    case "Ms":
+                                        title = itemController.findItemByCode("ms");
+                                        break;
+                                    case "Prof":
+                                        title = itemController.findItemByCode("prof");
+                                        break;
+                                    case "Rev":
+                                    case "Thero":
+                                        title = itemController.findItemByCode("rev");
+                                        break;
+                                }
+                                c.getPerson().setTitle(title);
+                                break;
                             case "client_nic_number":
                                 c.getPerson().setNic(cellString);
                                 break;
@@ -233,6 +484,11 @@ public class ClientController implements Serializable {
                             case "client_home_number":
                                 c.getPerson().setPhone2(cellString);
                                 break;
+                            case "client_registered_at":
+                                Date reg = commonController.dateFromString(cellString, "MM/dd/yyyy hh:mm:ss");
+                                c.getPerson().setCreatedAt(reg);
+                                c.setCreatedAt(reg);
+                                break;
                             case "client_gn_area":
                                 Area tgn = areaController.getAreaByName(cellString, AreaType.GN, false, null);
                                 if (tgn != null) {
@@ -249,13 +505,16 @@ public class ClientController implements Serializable {
                         colNo++;
                     }
 
+                    c.setId(temId);
+                    temId++;
+
                     importedClients.add(c);
 
                 }
 
                 lk.gov.health.phsp.facade.util.JsfUtil.addSuccessMessage("Succesful. All the data in Excel File Impoted to the database");
                 errorCode = "";
-                return "";
+                return "save_imported_clients";
             } catch (IOException ex) {
                 errorCode = ex.getMessage();
                 lk.gov.health.phsp.facade.util.JsfUtil.addErrorMessage(ex.getMessage());
@@ -265,7 +524,8 @@ public class ClientController implements Serializable {
                 errorCode = ex.getMessage();
                 return "";
             }
-        } catch (Exception e) {
+        } catch (IndexOutOfBoundsException e) {
+            errorCode = e.getMessage();
             return "";
         }
     }
@@ -313,7 +573,7 @@ public class ClientController implements Serializable {
 
     public void enrollInClinic() {
         if (selectedClinic == null) {
-            JsfUtil.addErrorMessage("Please select an HLC clinic to enroll.");
+            JsfUtil.addErrorMessage("Please select an clinic to enroll.");
             return;
         }
         if (selected == null) {
@@ -330,7 +590,11 @@ public class ClientController implements Serializable {
         encounter.setCreatedAt(new Date());
         encounter.setCreatedBy(webUserController.getLoggedUser());
         encounter.setInstitution(selectedClinic);
-        encounter.setEncounterDate(new Date());
+        if (clinicDate != null) {
+            encounter.setEncounterDate(clinicDate);
+        } else {
+            encounter.setEncounterDate(new Date());
+        }
         encounter.setEncounterNumber(encounterController.createClinicEnrollNumber(selectedClinic));
         encounter.setCompleted(false);
         encounterFacade.create(encounter);
@@ -356,7 +620,7 @@ public class ClientController implements Serializable {
             JsfUtil.addErrorMessage("A Point of Issue is NOT assigned to your Institution. Please discuss with the System Administrator.");
             return;
         }
-        selected.setPhn(applicationController.createNewPersonalHealthNumber(webUserController.getLoggedUser().getInstitution()));
+        selected.setPhn(applicationController.createNewPersonalHealthNumber(poiIns));
     }
 
     public void gnAreaChanged() {
@@ -378,6 +642,7 @@ public class ClientController implements Serializable {
             yearMonthDay.setYear(selected.getPerson().getAgeYears() + "");
             yearMonthDay.setMonth(selected.getPerson().getAgeMonths() + "");
             yearMonthDay.setDay(selected.getPerson().getAgeDays() + "");
+            selected.getPerson().setDobIsAnApproximation(false);
         } else {
             yearMonthDay = new YearMonthDay();
         }
@@ -387,6 +652,7 @@ public class ClientController implements Serializable {
         if (selected == null) {
             return;
         }
+        selected.getPerson().setDobIsAnApproximation(true);
         selected.getPerson().setDateOfBirth(guessDob(yearMonthDay));
     }
 
@@ -537,20 +803,48 @@ public class ClientController implements Serializable {
     }
 
     public String saveClient() {
-        if (selected == null) {
+        Institution createdIns;
+        if (selected.getCreateInstitution() == null) {
+            if (webUserController.getLoggedUser().getInstitution().getPoiInstitution() != null) {
+                createdIns = webUserController.getLoggedUser().getInstitution().getPoiInstitution();
+            } else {
+                createdIns = webUserController.getLoggedUser().getInstitution();
+            }
+            selected.setCreateInstitution(createdIns);
+        }
+        saveClient(selected);
+        JsfUtil.addSuccessMessage("Saved.");
+        return toClientProfile();
+    }
+
+    public String saveClient(Client c) {
+        if (c == null) {
             JsfUtil.addErrorMessage("No Client Selected to save.");
             return "";
         }
-        if (selected.getId() == null) {
-            selected.setCreatedBy(webUserController.getLoggedUser());
-            selected.setCreatedAt(new Date());
-            getFacade().create(selected);
-            JsfUtil.addSuccessMessage("New Client Saved.");
+        if (c.getId() == null) {
+            c.setCreatedBy(webUserController.getLoggedUser());
+            if (c.getCreatedAt() == null) {
+                c.setCreatedAt(new Date());
+            }
+            if (c.getCreateInstitution() == null) {
+                if (webUserController.getLoggedUser().getInstitution().getPoiInstitution() != null) {
+                    c.setCreateInstitution(webUserController.getLoggedUser().getInstitution().getPoiInstitution());
+                } else if (webUserController.getLoggedUser().getInstitution() != null) {
+                    c.setCreateInstitution(webUserController.getLoggedUser().getInstitution());
+                }
+            }
+            if (c.getPerson().getCreatedAt() == null) {
+                c.getPerson().setCreatedAt(new Date());
+            }
+            if (c.getPerson().getCreatedBy() == null) {
+                c.getPerson().setCreatedBy(webUserController.getLoggedUser());
+            }
+            getFacade().create(c);
         } else {
-            selected.setLastEditBy(webUserController.getLoggedUser());
-            selected.setLastEditeAt(new Date());
-            getFacade().edit(selected);
-            JsfUtil.addSuccessMessage("Client Details Updated.");
+            c.setLastEditBy(webUserController.getLoggedUser());
+            c.setLastEditeAt(new Date());
+            getFacade().edit(c);
         }
         return toClientProfile();
     }
@@ -674,9 +968,9 @@ public class ClientController implements Serializable {
     }
 
     public List<Client> getItems() {
-        if (items == null) {
-            items = getFacade().findAll();
-        }
+//        if (items == null) {
+//            items = getFacade().findAll();
+//        }
         return items;
     }
 
@@ -733,7 +1027,7 @@ public class ClientController implements Serializable {
 
     public List<Encounter> getSelectedClientsClinics() {
         if (selectedClientsClinics == null) {
-            selectedClientsClinics = fillEncounters(selected, InstitutionType.Ward_Clinic, EncounterType.Clinic_Enroll, true);
+            selectedClientsClinics = fillEncounters(selected, InstitutionType.Clinic, EncounterType.Clinic_Enroll, true);
         }
         return selectedClientsClinics;
     }
@@ -769,22 +1063,22 @@ public class ClientController implements Serializable {
     public String getUploadDetails() {
         if (uploadDetails == null || uploadDetails.trim().equals("")) {
             uploadDetails
-                    = "client_name"
-                    + "client_phn_number"
-                    + "client_sex"
-                    + "client_nic_number"
-                    + "client_data_of_birth"
-                    + "client_current_age"
-                    + "client_age_at_encounter"
-                    + "client_permanent_address"
-                    + "client_current_address"
-                    + "client_mobile_number"
-                    + "client_home_number"
-                    + "client_permanent_moh_area"
-                    + "client_permanent_phm_area"
-                    + "client_permanent_phi_area"
-                    + "client_gn_area"
-                    + "client_ds_division";
+                    = "client_phn_number" + "\n"
+                    + "client_nic_number" + "\n"
+                    + "client_title" + "\n"
+                    + "client_name" + "\n"
+                    + "client_sex" + "\n"
+                    + "client_data_of_birth" + "\n"
+                    + "client_citizenship" + "\n"
+                    + "client_ethnic_group" + "\n"
+                    + "client_religion" + "\n"
+                    + "client_marital_status" + "\n"
+                    + "client_permanent_address" + "\n"
+                    + "client_gn_area" + "\n"
+                    + "client_mobile_number" + "\n"
+                    + "client_home_number" + "\n"
+                    + "client_email" + "\n"
+                    + "client_registered_at" + "\n";
         }
 
         return uploadDetails;
@@ -828,6 +1122,38 @@ public class ClientController implements Serializable {
 
     public AreaController getAreaController() {
         return areaController;
+    }
+
+    public Institution getInstitution() {
+        return institution;
+    }
+
+    public void setInstitution(Institution institution) {
+        this.institution = institution;
+    }
+
+    public Long getIdFrom() {
+        return idFrom;
+    }
+
+    public void setIdFrom(Long idFrom) {
+        this.idFrom = idFrom;
+    }
+
+    public Long getIdTo() {
+        return idTo;
+    }
+
+    public void setIdTo(Long idTo) {
+        this.idTo = idTo;
+    }
+
+    public Date getClinicDate() {
+        return clinicDate;
+    }
+
+    public void setClinicDate(Date clinicDate) {
+        this.clinicDate = clinicDate;
     }
 
     // </editor-fold>

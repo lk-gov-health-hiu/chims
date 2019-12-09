@@ -31,6 +31,8 @@
     </h:head>
 
     <h:body style="font-family: 'Poppins', sans-serif!important;">
+          <ui:insert name="free">
+                    </ui:insert>
         <style>
             html,body { height: 100%; margin: 0px; padding: 0px; }
             .ui-widget {
@@ -46,8 +48,7 @@
 
         </style>
         <f:view locale="#{webUserController.locale}" >
-            <p:growl escape="true" life="500"  >
-                <p:growl autoUpdate="true" ></p:growl>
+            <p:growl autoUpdate="true"   >
             </p:growl>
             <div class="w3-row w3-theme-l5" style="font-family: 'Poppins', sans-serif!important;">
                 <h:panelGroup rendered="#{webUserController.loggedUser ne null}">
@@ -55,7 +56,7 @@
                         <ez:menu/>
                     </div>
                 </h:panelGroup>
-                
+
                 <h:panelGroup rendered="#{webUserController.loggedUser eq null}">
                     <div class="w3-row" style="text-align: center;" >
                         <p:graphicImage library="image" name="hmis_logo.png" style="width: 25%;" ></p:graphicImage>
@@ -73,6 +74,8 @@
                     <div style="width: 50%; margin: auto;">
                         <ez:demo_login/>
                     </div>
+                    <ui:insert name="timeout">
+                    </ui:insert>
                 </h:panelGroup>
             </div>
 

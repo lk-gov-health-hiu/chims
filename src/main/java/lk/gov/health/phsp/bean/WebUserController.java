@@ -35,6 +35,7 @@ import javax.faces.convert.FacesConverter;
 import javax.faces.model.SelectItem;
 import javax.inject.Inject;
 import lk.gov.health.phsp.entity.UserPrivilege;
+import lk.gov.health.phsp.enums.EncounterType;
 import lk.gov.health.phsp.enums.Privilege;
 import lk.gov.health.phsp.enums.PrivilegeTreeNode;
 import lk.gov.health.phsp.facade.UserPrivilegeFacade;
@@ -77,6 +78,10 @@ public class WebUserController implements Serializable {
     private InstitutionController institutionController;
     @Inject
     private ItemController itemController;
+    @Inject
+    private ClientController clientController;
+    @Inject
+    private EncounterController encounterController;
 
     /*
     Variables
@@ -135,6 +140,10 @@ public class WebUserController implements Serializable {
     private String loginRequestResponse;
 
     private String locale;
+
+    Long totalNumberOfRegisteredClients;
+    private Long totalNumberOfClinicVisits;
+    private Long totalNumberOfClinicEnrolments;
 
     /**
      *
@@ -418,7 +427,7 @@ public class WebUserController implements Serializable {
         loggableInstitutions = null;
         loggablePmcis = null;
         loggableGnAreas = null;
-
+        institutionController.setMyClinics(null);
         if (userName == null || userName.trim().equals("")) {
             JsfUtil.addErrorMessage("Please enter a Username");
             return "";
@@ -434,8 +443,48 @@ public class WebUserController implements Serializable {
             }
         }
         loggedUserPrivileges = userPrivilegeList(loggedUser);
+        prepareDashboards();
         JsfUtil.addSuccessMessage("Successfully Logged");
         return "/index";
+    }
+    
+    public void prepareDashboards(){
+        if (loggedUser.isInstitutionAdministrator()) {
+            prepareInsAdminDashboard();
+
+        } else if (loggedUser.isSystemAdministrator()) {
+            //TODO: Change to SysAdmin
+            prepareInsAdminDashboard();
+        }else if (loggedUser.isDoctor()) {
+            //TODO: Change to SysAdmin
+            prepareDocDashboard();
+        }else if (loggedUser.isNurse()) {
+            //TODO: Change to SysAdmin
+            prepareNurseDashboard();
+        }
+    }
+
+    public String toHome(){
+        prepareDashboards();
+        return "/index";
+    }
+    
+    public void prepareInsAdminDashboard() {
+        totalNumberOfRegisteredClients = clientController.countOfRegistedClients(loggedUser.getInstitution(), null);
+        totalNumberOfClinicEnrolments = encounterController.countOfEncounters(getInstitutionController().getMyClinics(), EncounterType.Clinic_Enroll);
+        totalNumberOfClinicVisits = encounterController.countOfEncounters(getInstitutionController().getMyClinics(), EncounterType.Clinic_Visit);
+    }
+
+    public void prepareDocDashboard() {
+        totalNumberOfRegisteredClients = clientController.countOfRegistedClients(loggedUser.getInstitution().getPoiInstitution(), null);
+        totalNumberOfClinicEnrolments = encounterController.countOfEncounters(getInstitutionController().getMyClinics(), EncounterType.Clinic_Enroll);
+        totalNumberOfClinicVisits = encounterController.countOfEncounters(getInstitutionController().getMyClinics(), EncounterType.Clinic_Visit);
+    }
+
+    public void prepareNurseDashboard() {
+        totalNumberOfRegisteredClients = clientController.countOfRegistedClients(loggedUser.getInstitution().getPoiInstitution(), null);
+        totalNumberOfClinicEnrolments = encounterController.countOfEncounters(getInstitutionController().getMyClinics(), EncounterType.Clinic_Enroll);
+        totalNumberOfClinicVisits = encounterController.countOfEncounters(getInstitutionController().getMyClinics(), EncounterType.Clinic_Visit);
     }
 
     public String loginForMobile() {
@@ -827,7 +876,6 @@ public class WebUserController implements Serializable {
         System.out.println("userNameExsists");
         System.out.println("userName = " + getSelected().getName());
         boolean une = userNameExsists(getSelected().getName());
-        System.out.println("une = " + une);
         return une;
     }
 
@@ -841,7 +889,6 @@ public class WebUserController implements Serializable {
         Map m = new HashMap();
         m.put("un", un.toLowerCase());
         WebUser u = getFacade().findFirstByJpql(j, m);
-        System.out.println("u = " + u);
         return u != null;
     }
 
@@ -1396,6 +1443,14 @@ public class WebUserController implements Serializable {
         return myPrivilegeRoot;
     }
 
+    public Long getTotalNumberOfRegisteredClients() {
+        return totalNumberOfRegisteredClients;
+    }
+
+    public void setTotalNumberOfRegisteredClients(Long totalNumberOfRegisteredClients) {
+        this.totalNumberOfRegisteredClients = totalNumberOfRegisteredClients;
+    }
+
     public void setMyPrivilegeRoot(TreeNode myPrivilegeRoot) {
         this.myPrivilegeRoot = myPrivilegeRoot;
     }
@@ -1429,6 +1484,8 @@ public class WebUserController implements Serializable {
     }
 
     public List<Institution> getLoggableInstitutions() {
+        System.out.println("getLoggableInstitutions");
+        System.out.println("loggableInstitutions = " + loggableInstitutions);
         if (loggableInstitutions == null) {
             loggableInstitutions = findAutherizedInstitutions();
         }
@@ -1467,6 +1524,32 @@ public class WebUserController implements Serializable {
 
     public void setLoggableGnAreas(List<Area> loggableGnAreas) {
         this.loggableGnAreas = loggableGnAreas;
+    }
+
+    public Long getTotalNumberOfClinicVisits() {
+        return totalNumberOfClinicVisits;
+    }
+
+    public void setTotalNumberOfClinicVisits(Long totalNumberOfClinicVisits) {
+        this.totalNumberOfClinicVisits = totalNumberOfClinicVisits;
+    }
+
+    
+    
+    public ClientController getClientController() {
+        return clientController;
+    }
+
+    public EncounterController getEncounterController() {
+        return encounterController;
+    }
+
+    public Long getTotalNumberOfClinicEnrolments() {
+        return totalNumberOfClinicEnrolments;
+    }
+
+    public void setTotalNumberOfClinicEnrolments(Long totalNumberOfClinicEnrolments) {
+        this.totalNumberOfClinicEnrolments = totalNumberOfClinicEnrolments;
     }
 
     @FacesConverter(forClass = WebUser.class)

@@ -25,6 +25,7 @@ package lk.gov.health.phsp.entity;
 
 import java.io.Serializable;
 import java.util.Date;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -96,6 +97,9 @@ public class Component implements Serializable {
     private boolean displayDetailsBox;
     private boolean discreptionAsAToolTip;
     private boolean discreptionAsASideLabel;
+    private boolean displayLastResult;
+    private boolean displayLinkToResultList;
+    private boolean displayLinkToClientValues;
 
     private boolean multipleEntiesPerForm;
 
@@ -127,6 +131,9 @@ public class Component implements Serializable {
 
     @Enumerated(EnumType.STRING)
     private DataPopulationStrategy dataPopulationStrategy;
+
+    @Enumerated(EnumType.STRING)
+    private DataPopulationStrategy resultDisplayStrategy;
 
     @Enumerated(EnumType.STRING)
     private DataCompletionStrategy dataCompletionStrategy;
@@ -222,7 +229,7 @@ public class Component implements Serializable {
     private Institution institutionValue;
     @ManyToOne(fetch = FetchType.EAGER)
     private Client clientValue;
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Prescription prescriptionValue;
 
     private boolean completed;
@@ -234,8 +241,6 @@ public class Component implements Serializable {
     private Integer integerNumberValue2;
     private Long longNumberValue2;
     private Double realNumberValue2;
-    
-    
 
     public Encounter getEncounter() {
         return encounter;
@@ -374,6 +379,9 @@ public class Component implements Serializable {
     }
 
     public Prescription getPrescriptionValue() {
+        if (prescriptionValue == null) {
+            prescriptionValue = new Prescription();
+        }
         return prescriptionValue;
     }
 
@@ -471,6 +479,13 @@ public class Component implements Serializable {
     }
 
     public SelectionDataType getSelectionDataType() {
+        if (selectionDataType == null) {
+            if (item != null) {
+                selectionDataType = item.getDataType();
+            }else{
+                selectionDataType = SelectionDataType.Short_Text;
+            }
+        }
         return selectionDataType;
     }
 
@@ -918,6 +933,38 @@ public class Component implements Serializable {
 
     public void setRealNumberValue2(Double realNumberValue2) {
         this.realNumberValue2 = realNumberValue2;
+    }
+
+    public boolean isDisplayLastResult() {
+        return displayLastResult;
+    }
+
+    public void setDisplayLastResult(boolean displayLastResult) {
+        this.displayLastResult = displayLastResult;
+    }
+
+    public boolean isDisplayLinkToResultList() {
+        return displayLinkToResultList;
+    }
+
+    public void setDisplayLinkToResultList(boolean displayLinkToResultList) {
+        this.displayLinkToResultList = displayLinkToResultList;
+    }
+
+    public boolean isDisplayLinkToClientValues() {
+        return displayLinkToClientValues;
+    }
+
+    public void setDisplayLinkToClientValues(boolean displayLinkToClientValues) {
+        this.displayLinkToClientValues = displayLinkToClientValues;
+    }
+
+    public DataPopulationStrategy getResultDisplayStrategy() {
+        return resultDisplayStrategy;
+    }
+
+    public void setResultDisplayStrategy(DataPopulationStrategy resultDisplayStrategy) {
+        this.resultDisplayStrategy = resultDisplayStrategy;
     }
 
 }

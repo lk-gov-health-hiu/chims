@@ -1,0 +1,59 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+    <body>
+
+        <ui:composition template="/template.xhtml">
+
+            <ui:define name="content">
+
+                <h:form>
+
+                    <p:panel header="Error Correction of Import Clients" >
+
+                        <p:panelGrid columns="1" >
+                            <p:commandButton 
+                                ajax="false"
+                                action="#{clientController.fixClientPersonCreatedAt()}"
+                                value="Fix Client / Person Created Dates" >
+                            </p:commandButton>
+                            <p:panelGrid columns="3" >
+                                <p:outputLabel value="Institution" ></p:outputLabel>
+                                <p:autoComplete  id="parent" value="#{clientController.institution}" 
+                                                 completeMethod="#{institutionController.completeInstitutions}"
+                                                 var="i" itemLabel="#{i.name}" itemValue="#{i}">
+                                </p:autoComplete >
+                                <p:spacer height="1" width="20" ></p:spacer>
+                                <p:outputLabel value="From ID" ></p:outputLabel>
+                                <p:inputText value="#{clientController.idFrom}" ></p:inputText>
+                                <p:spacer height="1" width="20" ></p:spacer>
+
+                                <p:outputLabel value="To ID" ></p:outputLabel>
+                                <p:inputText value="#{clientController.idTo}" ></p:inputText>
+                                <p:spacer height="1" width="20" ></p:spacer>
+
+
+                                <p:commandButton 
+                                    ajax="false"
+                                    action="#{clientController.updateClientCreatedInstitution()}"
+                                    value="Update Client Institution" >
+                                </p:commandButton>
+
+
+                            </p:panelGrid>
+                        </p:panelGrid>
+
+                    </p:panel>
+
+                </h:form>
+
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>
