@@ -45,17 +45,17 @@
                             <div >
 
                                 <p:commandButton  rendered="#{!clientEncounterComponentFormSetController.selected.completed}"
-                                                 value="Complete" action="#{clientEncounterComponentFormSetController.completeFormset()}" ajax="false"
-                                                 onclick="if (!confirm('Really want to do complete the visit?'))
+                                                  value="Complete" action="#{clientEncounterComponentFormSetController.completeFormset()}" ajax="false"
+                                                  onclick="if (!confirm('Really want to do complete the visit?'))
                                                              return false"
-                                                 ></p:commandButton>
+                                                  ></p:commandButton>
                                 <p:commandButton  value="Client Profile" action="#{clientController.toClientProfile()}" ajax="false" ></p:commandButton>
 
                             </div>
                         </f:facet>
 
                         <h:panelGroup rendered="#{clientEncounterComponentFormSetController.selected.panelType eq 'TabView_Bottom_Oriented'}" >
-                            <p:tabView orientation="bottom" style="width: 100%;" value="#{clientEncounterComponentFormController.findClientEncounterComponentFormOfAFormset(clientEncounterComponentFormSetController.selected)}" var="f">
+                            <p:tabView orientation="bottom" style="width: 100%; padding: 5px;" value="#{clientEncounterComponentFormController.findClientEncounterComponentFormOfAFormset(clientEncounterComponentFormSetController.selected)}" var="f">
                                 <p:tab title="#{f.name}" >
                                     <div style="#{f.generatedCss}" >
                                         <ez:clinicForms form="#{f}" ></ez:clinicForms>
@@ -64,7 +64,7 @@
                             </p:tabView>
                         </h:panelGroup>
                         <h:panelGroup rendered="#{clientEncounterComponentFormSetController.selected.panelType eq 'TabView_Left_Oriented'}" >
-                            <p:tabView orientation="left" style="width: 100%;" value="#{clientEncounterComponentFormController.findClientEncounterComponentFormOfAFormset(clientEncounterComponentFormSetController.selected)}" var="f">
+                            <p:tabView orientation="left" style="width: 100%; padding: 5px;" value="#{clientEncounterComponentFormController.findClientEncounterComponentFormOfAFormset(clientEncounterComponentFormSetController.selected)}" var="f">
                                 <p:tab title="#{f.name}" >
                                     <div style="#{f.generatedCss}" >
                                         <ez:clinicForms form="#{f}" ></ez:clinicForms>
@@ -73,7 +73,7 @@
                             </p:tabView>
                         </h:panelGroup>
                         <h:panelGroup rendered="#{clientEncounterComponentFormSetController.selected.panelType eq 'Tabview_Top_Oriented'}" >
-                            <p:tabView orientation="top" style="width: 100%;" value="#{clientEncounterComponentFormController.findClientEncounterComponentFormOfAFormset(clientEncounterComponentFormSetController.selected)}" var="f">
+                            <p:tabView orientation="top" style="width: 100%; padding: 5px;" value="#{clientEncounterComponentFormController.findClientEncounterComponentFormOfAFormset(clientEncounterComponentFormSetController.selected)}" var="f">
                                 <p:tab title="#{f.name}" >
                                     <div style="#{f.generatedCss}" >
                                         <ez:clinicForms form="#{f}" ></ez:clinicForms>
@@ -82,7 +82,7 @@
                             </p:tabView>
                         </h:panelGroup>
                         <h:panelGroup rendered="#{clientEncounterComponentFormSetController.selected.panelType eq 'TabView_Right_Oriented'}" >
-                            <p:tabView orientation="right" style="width: 100%;" value="#{clientEncounterComponentFormController.findClientEncounterComponentFormOfAFormset(clientEncounterComponentFormSetController.selected)}" var="f">
+                            <p:tabView orientation="right" style="width: 100%; padding: 5px;" value="#{clientEncounterComponentFormController.findClientEncounterComponentFormOfAFormset(clientEncounterComponentFormSetController.selected)}" var="f">
                                 <p:tab title="#{f.name}" >
                                     <div style="#{f.generatedCss}" >
                                         <ez:clinicForms form="#{f}" ></ez:clinicForms>
@@ -91,7 +91,7 @@
                             </p:tabView>
                         </h:panelGroup>
                         <h:panelGroup rendered="#{clientEncounterComponentFormSetController.selected.panelType eq 'Accordion_Basic'}" >
-                            <p:accordionPanel  style="width: 100%;" value="#{clientEncounterComponentFormController.findClientEncounterComponentFormOfAFormset(clientEncounterComponentFormSetController.selected)}" var="f">
+                            <p:accordionPanel  style="width: 100%; padding: 5px;" value="#{clientEncounterComponentFormController.findClientEncounterComponentFormOfAFormset(clientEncounterComponentFormSetController.selected)}" var="f">
                                 <p:tab title="#{f.name}" >
                                     <div style="#{f.generatedCss}" >
                                         <ez:clinicForms form="#{f}" ></ez:clinicForms>
@@ -100,7 +100,7 @@
                             </p:accordionPanel>
                         </h:panelGroup>
                         <h:panelGroup rendered="#{clientEncounterComponentFormSetController.selected.panelType eq 'Accordion_Multiple'}" >
-                            <p:accordionPanel multiple="true" style="width: 100%;" value="#{clientEncounterComponentFormController.findClientEncounterComponentFormOfAFormset(clientEncounterComponentFormSetController.selected)}" var="f">
+                            <p:accordionPanel multiple="true" style="width: 100%; padding: 5px;" value="#{clientEncounterComponentFormController.findClientEncounterComponentFormOfAFormset(clientEncounterComponentFormSetController.selected)}" var="f">
                                 <p:tab title="#{f.name}" >
                                     <div style="#{f.generatedCss}" >
                                         <ez:clinicForms form="#{f}" ></ez:clinicForms>
@@ -108,26 +108,15 @@
                                 </p:tab>
                             </p:accordionPanel>
                         </h:panelGroup>
-
-
-
                     </p:panelGrid>
-
                 </h:form>
-
-
                 <div>
                     <br/>
                     <br/>
-                    <br/><br/><br/>
                     <br/>
                     <br/>
-
-
+                    <br/>
                 </div>
-
-
-
             </ui:define>
 
         </ui:composition>
