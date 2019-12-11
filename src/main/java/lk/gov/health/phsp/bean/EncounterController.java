@@ -34,12 +34,46 @@ public class EncounterController implements Serializable {
     @EJB
     private lk.gov.health.phsp.facade.EncounterFacade ejbFacade;
     private List<Encounter> items = null;
+    private List<Encounter> selectedClients;
     private Encounter selected;
     @Inject
     private WebUserController webUserController;
 
     public EncounterController() {
     }
+    
+    
+    
+    
+    
+    
+    public void fillAllClients() {
+        String j = "select c from Client c order by c.id";
+        items = getFacade().findByJpql(j);
+    }
+
+    public void fillRetiredClients() {
+        String j = "select c from Client c where c.retired=true order by c.id";
+        items = getFacade().findByJpql(j);
+    }
+
+    public void fillNonRetiredClients() {
+        String j = "select c from Client c where c.retired=false order by c.id";
+        items = getFacade().findByJpql(j);
+    }
+
+    public void retireSelectedClients() {
+        for (Encounter c : selectedClients) {
+            c.setRetired(true);
+            c.setRetireComments("Bulk Delete");
+            c.setRetiredAt(new Date());
+            getFacade().edit(c);
+        }
+    }
+    
+    
+    
+    
     
     public String createClinicEnrollNumber(Institution clinic) {
         System.out.println("createClinicEnrollNumber");
@@ -175,9 +209,9 @@ public class EncounterController implements Serializable {
     }
 
     public List<Encounter> getItems() {
-        if (items == null) {
-            items = getFacade().findAll();
-        }
+//        if (items == null) {
+//            items = getFacade().findAll();
+//        }
         return items;
     }
 
@@ -228,6 +262,15 @@ public class EncounterController implements Serializable {
     public lk.gov.health.phsp.facade.EncounterFacade getEjbFacade() {
         return ejbFacade;
     }
+
+    public List<Encounter> getSelectedClients() {
+        return selectedClients;
+    }
+
+    public void setSelectedClients(List<Encounter> selectedClients) {
+        this.selectedClients = selectedClients;
+    }
+
     
     
 

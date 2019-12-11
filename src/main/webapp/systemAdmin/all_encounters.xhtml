@@ -5,7 +5,7 @@
       xmlns:p="http://primefaces.org/ui"
       xmlns:f="http://xmlns.jcp.org/jsf/core">
     <h:head>
-        <title>Facelet Title</title>
+        <title>All Clients</title>
     </h:head>
     <h:body>
         <h:form  >
@@ -13,64 +13,72 @@
 
             <h:panelGrid columns="5" >
                 <p:commandButton value="Fill All Clients" ajax="false"
-                                 action="#{clientController.fillAllClients()}">
+                                 action="#{encounterController.fillAllClients()}">
                 </p:commandButton>
 
                 <p:commandButton value="Fill Retired Clients" ajax="false"
-                                 action="#{clientController.fillRetiredClients()}">
+                                 action="#{encounterController.fillRetiredClients()}">
                 </p:commandButton>
 
                 <p:commandButton value="Fill Non-Retired Clients" ajax="false"
-                                 action="#{clientController.fillNonRetiredClients()}">
+                                 action="#{encounterController.fillNonRetiredClients()}">
                 </p:commandButton>
 
                 <p:commandButton value="Retire Selected Clients" ajax="false"
-                                 action="#{clientController.retireSelectedClients()}">
+                                 action="#{encounterController.retireSelectedClients()}">
                 </p:commandButton>
 
             </h:panelGrid>
 
-            <p:dataTable value="#{clientController.items}"
-                         selection="#{clientController.selectedClients}"
+            <p:dataTable value="#{encounterController.items}"
+                         selection="#{encounterController.selectedClients}"
                          var="c" 
                          rowKey="#{c.id}"
                          paginator="true"
                          rows="20"
                          rowsPerPageTemplate="10,20,30,40,50"
+                         resizeMode="expand"
                          >
                 <p:column selectionMode="multiple" width="15" >
                 </p:column>
+                
+                 <p:column headerText="ID" width="200" sortBy="#{c.id}" 
+                           filterBy="#{c.id}" filterMatchMode="contains">
+                    <p:outputLabel value="#{c.id}" ></p:outputLabel>
+                </p:column>
 
                 <p:column headerText="PHN" width="200" sortBy="#{c.phn}" filterBy="#{c.phn}" filterMatchMode="contains">
-                    <p:outputLabel value="#{c.phn}" ></p:outputLabel>
+                    <p:outputLabel value="#{c.client.phn}" ></p:outputLabel>
                 </p:column>
 
                 <p:column headerText="Name" width="200"  sortBy="#{c.person.name}" filterBy="#{c.person.name}" filterMatchMode="contains">
-                    <p:outputLabel value="#{c.person.name}" ></p:outputLabel>
+                    <p:outputLabel value="#{c.client.person.name}" ></p:outputLabel>
                 </p:column>
 
-                <p:column  headerText="Sex" width="200" sortBy="#{c.person.sex.name}" filterBy="#{c.person.sex.name}" filterMatchMode="contains">
-                    <p:outputLabel value="#{c.person.sex.name}" ></p:outputLabel>
+                <p:column  headerText="Sex" width="200" 
+                           sortBy="#{c.client.person.sex.name}" 
+                           filterBy="#{c.client.person.sex.name}" filterMatchMode="contains">
+                    <p:outputLabel value="#{c.client.person.sex.name}" ></p:outputLabel>
                 </p:column>
 
                 <p:column headerText="GN Area" width="200"  
-                          sortBy="#{c.person.gnArea.name}" 
-                          filterBy="#{c.person.gnArea.name}" 
+                          sortBy="#{c.client.person.gnArea.name}" 
+                          filterBy="#{c.client.person.gnArea.name}" 
                           filterMatchMode="contains">
-                    <p:outputLabel value="#{c.person.gnArea.name}" ></p:outputLabel>
+                    <p:outputLabel value="#{c.client.person.gnArea.name}" ></p:outputLabel>
                 </p:column>
 
                 <p:column headerText="District" width="200"  
-                          sortBy="#{c.person.district.name}" 
-                          filterBy="#{c.person.district.name}" 
+                          sortBy="#{c.client.person.district.name}" 
+                          filterBy="#{c.client.person.district.name}" 
                           filterMatchMode="contains">
-                    <p:outputLabel value="#{c.person.district.name}" ></p:outputLabel>
+                    <p:outputLabel value="#{c.client.person.district.name}" ></p:outputLabel>
                 </p:column>
 
                 <p:column  headerText="Registered in" width="200"  
-                           sortBy="#{c.createInstitution.name}" 
-                           filterBy="#{c.createInstitution.name}" filterMatchMode="contains">
-                    <p:outputLabel value="#{c.createInstitution.name}" ></p:outputLabel>
+                           sortBy="#{c.client.createInstitution.name}" 
+                           filterBy="#{c.client.createInstitution.name}" filterMatchMode="contains">
+                    <p:outputLabel value="#{c.client.createInstitution.name}" ></p:outputLabel>
                 </p:column>
 
                 <p:column  headerText="Register at" width="200" sortBy="#{c.createdAt}" 
@@ -80,27 +88,13 @@
                     </p:outputLabel>
                 </p:column>
                 
-                 <p:column  headerText="Register at" width="200" sortBy="#{c.person.createdAt}" 
-                            filterBy="#{c.person.createdAt}" filterMatchMode="contains">
-                    <p:outputLabel value="#{c.person.createdAt}" >
-                        <f:convertDateTime pattern="dd MMMM yyyy" ></f:convertDateTime>
+                <p:column  headerText="Type" width="200" sortBy="#{c.encounterType}" 
+                            filterBy="#{c.encounterType}" filterMatchMode="contains">
+                    <p:outputLabel value="#{c.encounterType}" >
                     </p:outputLabel>
                 </p:column>
 
-                <p:column  headerText="Comments" width="200" sortBy="#{c.person.mariatalStatus.name}" filterBy="#{c.person.mariatalStatus.name}" filterMatchMode="contains">
-                    <p:outputLabel value="#{c.retired?'Retired':''}" ></p:outputLabel>
-                </p:column>
-
-
-
-
             </p:dataTable>
-
-
-
-
-
-
 
 
 
