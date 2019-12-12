@@ -1180,6 +1180,18 @@ public class ClientEncounterComponentFormSetController implements Serializable {
             return s;
         }
         if (is.size() == 1) {
+            if (is == null) {
+                return s;
+            }
+            if (is.get(0) == null) {
+                return s;
+            }
+            if (is.get(0).getLongNumberValue() == null) {
+                return s;
+            }
+            if (is.get(0).getLongNumberValue().toString() == null) {
+                return s;
+            }
             return is.get(0).getLongNumberValue().toString();
         }
         for (ClientEncounterComponentItem i : is) {
