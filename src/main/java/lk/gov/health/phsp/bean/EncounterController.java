@@ -7,6 +7,7 @@ import lk.gov.health.phsp.facade.EncounterFacade;
 
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -40,7 +41,9 @@ public class EncounterController implements Serializable {
 
     public EncounterController() {
     }
-    
+
+  
+
     public String createClinicEnrollNumber(Institution clinic) {
         System.out.println("createClinicEnrollNumber");
         System.out.println("clinic = " + clinic);
@@ -55,19 +58,17 @@ public class EncounterController implements Serializable {
         m.put("ins", clinic);
         System.out.println("m = " + m);
         System.out.println("j = " + j);
-        Long c = getFacade().findLongByJpql(j,m);
+        Long c = getFacade().findLongByJpql(j, m);
         if (c == null) {
             c = 1l;
-        }else{
-            c+=1;
+        } else {
+            c += 1;
         }
         SimpleDateFormat format = new SimpleDateFormat("yy");
         String yy = format.format(new Date());
         return clinic.getCode() + "/" + yy + "/" + c;
     }
-    
-    
-    
+
     public Long countOfEncounters(List<Institution> clinic, EncounterType ec) {
         System.out.println("countOfClinicEnrollments");
         System.out.println("clinic = " + clinic);
@@ -79,18 +80,18 @@ public class EncounterController implements Serializable {
         Map m = new HashMap();
         m.put("d", CommonController.startOfTheYear());
         m.put("ec", ec);
-        m.put("ret",false);
+        m.put("ret", false);
         m.put("ins", clinic);
         System.out.println("m = " + m);
         System.out.println("j = " + j);
-        Long c = getFacade().findLongByJpql(j,m);
+        Long c = getFacade().findLongByJpql(j, m);
         if (c == null) {
             c = 0l;
         }
         return c;
     }
-    
-    public boolean clinicEnrolmentExists(Institution i, Client c){
+
+    public boolean clinicEnrolmentExists(Institution i, Client c) {
         String j = "select e from Encounter e "
                 + " where e.institution=:i "
                 + " and e.client=:c"
@@ -102,12 +103,12 @@ public class EncounterController implements Serializable {
         m.put("com", false);
         m.put("et", EncounterType.Clinic_Enroll);
         Encounter e = getFacade().findFirstByJpql(j, m);
-        if(e==null){
+        if (e == null) {
             return false;
         }
-        if(e.getCompleted()){
+        if (e.getCompleted()) {
             return false;
-        }else{
+        } else {
             return true;
         }
     }
@@ -135,7 +136,7 @@ public class EncounterController implements Serializable {
         initializeEmbeddableKey();
         return selected;
     }
-    
+
     public void save() {
         save(selected);
     }
@@ -148,7 +149,7 @@ public class EncounterController implements Serializable {
             e.setCreatedAt(new Date());
             e.setCreatedBy(webUserController.getLoggedUser());
             getFacade().create(e);
-        }else{
+        } else {
             e.setLastEditBy(webUserController.getLoggedUser());
             e.setLastEditeAt(new Date());
             getFacade().edit(e);
@@ -228,8 +229,6 @@ public class EncounterController implements Serializable {
     public lk.gov.health.phsp.facade.EncounterFacade getEjbFacade() {
         return ejbFacade;
     }
-    
-    
 
     @FacesConverter(forClass = Encounter.class)
     public static class EncounterControllerConverter implements Converter {
