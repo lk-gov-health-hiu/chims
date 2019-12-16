@@ -65,6 +65,14 @@
                           filterMatchMode="contains">
                     <p:outputLabel value="#{c.person.gnArea.name}" ></p:outputLabel>
                 </p:column>
+                
+                 <p:column headerText="Date of Birth" width="200"  
+                          sortBy="#{c.person.dateOfBirth}" 
+                          >
+                     <p:outputLabel value="#{c.person.dateOfBirth}" >
+                         <f:convertDateTime pattern="dd MMMM yyyy" ></f:convertDateTime>
+                     </p:outputLabel>
+                </p:column>
 
                 <p:column headerText="District" width="200"  
                           sortBy="#{c.person.district.name}" 
