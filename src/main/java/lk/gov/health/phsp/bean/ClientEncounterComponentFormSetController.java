@@ -530,7 +530,8 @@ public class ClientEncounterComponentFormSetController implements Serializable {
 
     public String createNewAndNavigateToClinicalEncounterComponentFormSetFromDesignComponentFormSetForClinicVisit(DesignComponentFormSet dfs) {
 
-        //System.out.println("Time at start of createAndNavigateToClinicalEncounterComponentFormSetFromDesignComponentFormSetForClinicVisit " + (new Date().getTime()) / 1000);
+        System.out.println("Time at start of createAndNavigateToClinicalEncounterComponentFormSetFromDesignComponentFormSetForClinicVisit " + (new Date().getTime()) / 1000);
+
         String navigationLink = "/clientEncounterComponentFormSet/Formset";
         formEditable = true;
 
@@ -567,6 +568,7 @@ public class ClientEncounterComponentFormSetController implements Serializable {
         //System.out.println("Time after saving new Encounter " + (new Date().getTime()) / 1000);
         ClientEncounterComponentFormSet cfs = new ClientEncounterComponentFormSet();
 
+
         cfs.setEncounter(e);
         cfs.setInstitution(dfs.getInstitution());
 
@@ -586,7 +588,7 @@ public class ClientEncounterComponentFormSetController implements Serializable {
 
         for (DesignComponentForm df : dfList) {
 
-            //System.out.println("Form " + df.getName() +" Start " + (new Date().getTime()) / 1000);
+            System.out.println("Form " + df.getName() + " Start " + (new Date().getTime()) / 1000);
             boolean skipThisForm = false;
             if (df.getComponentSex() == ComponentSex.For_Females && clientController.getSelected().getPerson().getSex().getCode().equalsIgnoreCase("male")) {
                 skipThisForm = true;
@@ -597,6 +599,7 @@ public class ClientEncounterComponentFormSetController implements Serializable {
             if (!skipThisForm) {
 
                 ClientEncounterComponentForm cf = new ClientEncounterComponentForm();
+
 
                 cf.setEncounter(e);
                 cf.setInstitution(dfs.getInstitution());
@@ -630,6 +633,8 @@ public class ClientEncounterComponentFormSetController implements Serializable {
                 }
 
                 for (DesignComponentFormItem di : diListSingle) {
+
+                    System.out.println("di Single= " + di.getName() + di.getId());
 
                     //System.out.println("Before Item start in Single " + (new Date().getTime()) / 1000);
                     boolean skipThisItem = false;
@@ -1073,10 +1078,19 @@ public class ClientEncounterComponentFormSetController implements Serializable {
             return s;
         }
         if (is.size() == 1) {
+            if (is.get(0).getPrescriptionValue() == null) {
+                return s;
+            }
             return is.get(0).getPrescriptionValue().toString();
         }
         for (ClientEncounterComponentItem i : is) {
-            s += commonController.dateToString(i.getCreatedAt()) + " " + is.get(0).getPrescriptionValue().toString() + "\n";
+            if (i.getCreatedAt() != null) {
+                s += commonController.dateToString(i.getCreatedAt()) + " ";
+            }
+            if (i.getPrescriptionValue() != null) {
+                s += i.getPrescriptionValue().toString() + "\n";
+            }
+
         }
         return s;
     }
@@ -1093,8 +1107,12 @@ public class ClientEncounterComponentFormSetController implements Serializable {
             return is.get(0).getLongNumberValue().toString();
         }
         for (ClientEncounterComponentItem i : is) {
-            s += commonController.dateToString(i.getCreatedAt()) + " " + is.get(0).getLongNumberValue().toString() + "\n";
-
+            if (i.getCreatedAt() != null) {
+                s += commonController.dateToString(i.getCreatedAt()) + " ";
+            }
+            if (i.getLongNumberValue() != null) {
+                s += i.getLongNumberValue().toString() + "\n";
+            }
         }
         return s;
     }
@@ -1108,11 +1126,18 @@ public class ClientEncounterComponentFormSetController implements Serializable {
             return s;
         }
         if (is.size() == 1) {
+            if (is.get(0).getLongNumberValue() == null) {
+                return s;
+            }
             return is.get(0).getLongNumberValue().toString();
         }
         for (ClientEncounterComponentItem i : is) {
-            s += commonController.dateToString(i.getCreatedAt()) + " " + is.get(0).getLongNumberValue().toString() + "\n";
-
+            if (i.getCreatedAt() != null) {
+                s += commonController.dateToString(i.getCreatedAt()) + " ";
+            }
+            if (i.getLongNumberValue() != null) {
+                s += i.getLongNumberValue().toString() + "\n";
+            }
         }
         return s;
     }
@@ -1126,11 +1151,18 @@ public class ClientEncounterComponentFormSetController implements Serializable {
             return s;
         }
         if (is.size() == 1) {
+            if (is.get(0).getShortTextValue() == null) {
+                return s;
+            }
             return is.get(0).getShortTextValue();
         }
         for (ClientEncounterComponentItem i : is) {
-            s += commonController.dateToString(i.getCreatedAt()) + " " + is.get(0).getShortTextValue() + "\n";
-
+            if (i.getCreatedAt() != null) {
+                s += commonController.dateToString(i.getCreatedAt()) + " ";
+            }
+            if (i.getShortTextValue() != null) {
+                s += i.getShortTextValue() + "\n";
+            }
         }
         return s;
     }
@@ -1144,11 +1176,18 @@ public class ClientEncounterComponentFormSetController implements Serializable {
             return s;
         }
         if (is.size() == 1) {
+            if (is.get(0).getLongTextValue() == null) {
+                return s;
+            }
             return is.get(0).getLongTextValue();
         }
         for (ClientEncounterComponentItem i : is) {
-            s += commonController.dateToString(i.getCreatedAt()) + " " + is.get(0).getLongTextValue() + "\n";
-
+            if (i.getCreatedAt() != null) {
+                s += commonController.dateToString(i.getCreatedAt()) + " ";
+            }
+            if (i.getLongTextValue() != null) {
+                s += i.getLongTextValue() + "\n";
+            }
         }
         return s;
     }
@@ -1162,11 +1201,18 @@ public class ClientEncounterComponentFormSetController implements Serializable {
             return s;
         }
         if (is.size() == 1) {
+            if (is.get(0).getItemValue() == null) {
+                return s;
+            }
             return is.get(0).getItemValue().getName();
         }
         for (ClientEncounterComponentItem i : is) {
-            s += commonController.dateToString(i.getCreatedAt()) + " " + is.get(0).getItemValue().getName() + "\n";
-
+            if (i.getCreatedAt() != null) {
+                s += commonController.dateToString(i.getCreatedAt()) + " ";
+            }
+            if (i.getItemValue() != null) {
+                s += i.getItemValue().getName() + "\n";
+            }
         }
         return s;
     }
@@ -1180,11 +1226,18 @@ public class ClientEncounterComponentFormSetController implements Serializable {
             return s;
         }
         if (is.size() == 1) {
-            return is.get(0).getLongNumberValue().toString();
+            if (is.get(0).getIntegerNumberValue() == null) {
+                return s;
+            }
+            return is.get(0).getIntegerNumberValue().toString();
         }
         for (ClientEncounterComponentItem i : is) {
-            s += commonController.dateToString(i.getCreatedAt()) + " " + is.get(0).getLongNumberValue().toString() + "\n";
-
+            if (i.getCreatedAt() != null) {
+                s += commonController.dateToString(i.getCreatedAt()) + " ";
+            }
+            if (i.getIntegerNumberValue() != null) {
+                s += i.getIntegerNumberValue().toString() + "\n";
+            }
         }
         return s;
     }
@@ -1198,13 +1251,18 @@ public class ClientEncounterComponentFormSetController implements Serializable {
             return s;
         }
         if (is.size() == 1) {
-            if(is.get(0).getBooleanValue()==null){
+            if (is.get(0).getBooleanValue() == null) {
                 return s;
             }
             return is.get(0).getBooleanValue().toString();
         }
         for (ClientEncounterComponentItem i : is) {
-            s += commonController.dateToString(i.getCreatedAt()) + " " + i.getBooleanValue().toString() + "\n";
+            if (i.getCreatedAt() != null) {
+                s += commonController.dateToString(i.getCreatedAt()) + " " + i.getBooleanValue().toString() + "\n";
+            }
+            if (i.getBooleanValue() != null) {
+                s += i.getBooleanValue().toString() + "\n";
+            }
         }
         return s;
     }
@@ -1218,10 +1276,18 @@ public class ClientEncounterComponentFormSetController implements Serializable {
             return s;
         }
         if (is.size() == 1) {
+            if (is.get(0).getAreaValue() == null) {
+                return s;
+            }
             return is.get(0).getAreaValue().getName();
         }
         for (ClientEncounterComponentItem i : is) {
-            s += commonController.dateToString(i.getCreatedAt()) + " " + i.getAreaValue().getName() + "\n";
+            if (i.getCreatedAt() != null) {
+                s += commonController.dateToString(i.getCreatedAt()) + " ";
+            }
+            if (i.getAreaValue() != null) {
+                s += i.getAreaValue().getName() + "\n";
+            }
         }
         return s;
     }
@@ -1235,10 +1301,18 @@ public class ClientEncounterComponentFormSetController implements Serializable {
             return s;
         }
         if (is.size() == 1) {
+            if (is.get(0).getClientValue() == null || is.get(0).getClientValue().getPerson() == null) {
+                return s;
+            }
             return is.get(0).getClientValue().getPerson().getNameWithTitle();
         }
         for (ClientEncounterComponentItem i : is) {
-            s += commonController.dateToString(i.getCreatedAt()) + " " + i.getClientValue().getPerson().getNameWithTitle() + "\n";
+            if (i.getCreatedAt() != null) {
+                s += commonController.dateToString(i.getCreatedAt()) + " ";
+            }
+            if (i.getClientValue() != null && i.getClientValue().getPerson() != null) {
+                s += i.getClientValue().getPerson().getNameWithTitle() + "\n";
+            }
         }
         return s;
     }
@@ -1253,10 +1327,18 @@ public class ClientEncounterComponentFormSetController implements Serializable {
         }
 
         if (is.size() == 1) {
+            if (is.get(0).getDateValue() == null) {
+                return s;
+            }
             return commonController.dateToString(is.get(0).getDateValue());
         }
         for (ClientEncounterComponentItem i : is) {
-            s += commonController.dateToString(i.getCreatedAt()) + " " + commonController.dateToString(is.get(0).getDateValue()) + "\n";
+            if (i.getCreatedAt() != null) {
+                s += commonController.dateToString(i.getCreatedAt()) + " ";
+            }
+            if (i.getDateValue() != null) {
+                s += commonController.dateToString(i.getDateValue()) + "\n";
+            }
         }
         return s;
     }
@@ -1284,7 +1366,6 @@ public class ClientEncounterComponentFormSetController implements Serializable {
         m.put("c", c);
         m.put("i", ti.getItem().getCode());
         System.out.println("m = " + m);
-        System.out.println("j = " + j);
         List<ClientEncounterComponentItem> tis = getItemFacade().findByJpql(j, m);
         return tis;
 
@@ -1371,7 +1452,6 @@ public class ClientEncounterComponentFormSetController implements Serializable {
         m.put("r", DataRepresentationType.Encounter);
         m.put("e", lastEncounter);
         m.put("ic", ti.getItem().getCode());
-        System.out.println("m = " + m);
         List<ClientEncounterComponentItem> temLastResult = getItemFacade().findByJpql(j, m);
         return temLastResult;
     }

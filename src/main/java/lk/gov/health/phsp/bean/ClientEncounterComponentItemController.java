@@ -75,8 +75,8 @@ public class ClientEncounterComponentItemController implements Serializable {
 
     
     public List<ClientEncounterComponentItem> findClientEncounterComponentItemOfAForm(ClientEncounterComponentForm fs) {
-        // //System.out.println("findClientEncounterComponentItemOfAForm = ");
-        // //System.out.println("fs = " + fs);
+        System.out.println("findClientEncounterComponentItemOfAForm");
+        System.out.println("fs = " + fs.getName() + " " + fs.getId());
         String j = "select f from ClientEncounterComponentItem f "
                 + " where f.retired=false "
                 + " and f.parentComponent=:p "
@@ -84,7 +84,7 @@ public class ClientEncounterComponentItemController implements Serializable {
         Map m = new HashMap();
         m.put("p", fs);
         List<ClientEncounterComponentItem> t = getFacade().findByJpql(j, m);
-        // //System.out.println("t = " + t);
+        System.out.println("t = " + t);
         if (t == null) {
             t = new ArrayList<>();
         }
