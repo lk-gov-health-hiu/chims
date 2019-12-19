@@ -298,15 +298,33 @@ public class ClientController implements Serializable {
             c.setRetired(true);
             c.setRetireComments("Bulk Delete");
             c.setRetiredAt(new Date());
+            c.setRetiredBy(webUserController.getLoggedUser());
 
             c.getPerson().setRetired(true);
             c.getPerson().setRetireComments("Bulk Delete");
+            c.getPerson().setRetiredAt(new Date());
+            c.getPerson().setRetiredBy(webUserController.getLoggedUser());
+
+            getFacade().edit(c);
+        }
+    }
+
+    public void retireSelectedClient() {
+       Client c=selected;
+        if (c !=null) {
+            c.setRetired(true);
+            c.setRetiredBy(webUserController.getLoggedUser());
+            c.setRetiredAt(new Date());
+
+            c.getPerson().setRetired(true);
+            c.getPerson().setRetiredBy(webUserController.getLoggedUser());
             c.getPerson().setRetiredAt(new Date());
 
             getFacade().edit(c);
         }
     }
 
+    
     public void saveAllImports() {
         if (institution == null) {
             JsfUtil.addErrorMessage("Institution ?");
@@ -1006,6 +1024,10 @@ public class ClientController implements Serializable {
 //            items = getFacade().findAll();
 //        }
         return items;
+    }
+    
+    public List<Client> getItems(String jpql, Map m) {
+        return getFacade().findByJpql(jpql, m);
     }
 
     public Client getClient(java.lang.Long id) {

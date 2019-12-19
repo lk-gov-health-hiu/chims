@@ -90,6 +90,18 @@ public class EncounterController implements Serializable {
         }
         return c;
     }
+    
+    public void retireSelectedEncounter(){
+        if(selected==null){
+            JsfUtil.addErrorMessage("Nothing Selected");
+            return;
+        }
+        selected.setRetired(true);
+        selected.setRetiredAt(new Date());
+        selected.setRetiredBy(webUserController.getLoggedUser());
+        JsfUtil.addSuccessMessage("Retired Successfully");
+        selected=null;
+    }
 
     public boolean clinicEnrolmentExists(Institution i, Client c) {
         String j = "select e from Encounter e "
@@ -175,11 +187,8 @@ public class EncounterController implements Serializable {
         }
     }
 
-    public List<Encounter> getItems() {
-        if (items == null) {
-            items = getFacade().findAll();
-        }
-        return items;
+    public List<Encounter> getItems(String jpql, Map m) {
+        return getFacade().findByJpql(jpql, m);
     }
 
     private void persist(PersistAction persistAction, String successMessage) {

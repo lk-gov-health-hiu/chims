@@ -4,20 +4,25 @@
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:p="http://primefaces.org/ui">
-
+    <head>
+        <ui:define name="head">
+                Reports
+            </ui:define>
+    </head>
     <body>
 
-        <ui:composition template="./../../template.xhtml">
+        <ui:composition template="/template.xhtml">
 
-            <ui:define name="head">
-                Administrator Reports
-            </ui:define>
+            
 
             <ui:define name="content">
                 <h:form>
                     <p:panelGrid columns="1" >
                         <p:commandButton value="Clinic Registrations" 
-                                         action="#{reportController.toViewPeriodClinicRegistrations()}"
+                                         action="#{reportController.toViewClientRegistrations()}"
+                                         ajax="false"></p:commandButton>
+                        <p:commandButton value="Clinic ENrollments" 
+                                         action="#{reportController.toViewClinicEnrollments()}"
                                          ajax="false"></p:commandButton>
                         
                     </p:panelGrid>

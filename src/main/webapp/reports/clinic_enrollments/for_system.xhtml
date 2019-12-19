@@ -8,7 +8,7 @@
 
     <head>
         <ui:define name="head">
-            Client Registrations
+            Clinic Enrollments
         </ui:define>
     </head>
     <body>
@@ -20,14 +20,14 @@
                 <h:form>
                     <p:panelGrid columns="2" styleClass="alignTop" >
                         <f:facet name="header" >
-                            <p:outputLabel value="Client Registrations" ></p:outputLabel>
+                            <p:outputLabel value="Clinic Enrollments" ></p:outputLabel>
                         </f:facet>
                         <p:panelGrid columns="2" >
                             <f:facet name="header" >
                                 <p:outputLabel value="Filters" >
                                 </p:outputLabel>
                                 <p:commandButton value="Process" ajax="false"
-                                                 action="#{reportController.fillClientRegistrationForSysAdmin()}"></p:commandButton>
+                                                 action="#{reportController.fillClinicEnrollmentsForSysAdmin()}"></p:commandButton>
                             </f:facet>
                             <p:outputLabel value="From" ></p:outputLabel>
                             <p:calendar value="#{reportController.fromDate}" pattern="dd MM yyyy" ></p:calendar>
@@ -43,7 +43,7 @@
                         </p:panelGrid>
 
                         <p:panelGrid columns="1" >
-                            <p:dataTable value="#{reportController.clients}" var="c"
+                            <p:dataTable value="#{reportController.encounters}" var="c"
                                          rowKey="#{c.id}"
                                          rowIndexVar="n"
                                          paginator="true"
@@ -54,42 +54,24 @@
                                 <p:column headerText="No" width="50">
                                     <p:outputLabel value="#{n+1}"></p:outputLabel>
                                 </p:column>
-                                <p:column headerText="Date" sortBy="#{c.createdAt}"
+                                <p:column headerText="PHN" filterBy="#{c.client.phn}" filterMatchMode="contains" sortBy="#{c.client.phn}"
                                           >
-                                    <p:outputLabel value="#{c.createdAt}" >
-                                        <f:convertDateTime pattern="dd MMMM yyyy hh:mm" ></f:convertDateTime>
-                                    </p:outputLabel>
+                                    <p:outputLabel value="#{c.client.phn}" ></p:outputLabel>
                                 </p:column>
-                                <p:column headerText="PHN" filterBy="#{c.phn}" filterMatchMode="contains" sortBy="#{c.phn}"
-                                          >
-                                    <p:outputLabel value="#{c.phn}" ></p:outputLabel>
+                                <p:column headerText="Name"  filterBy="#{c.client.person.nameWithTitle}" filterMatchMode="contains" sortBy="#{c.client.person.nameWithTitle}">
+                                    <p:outputLabel value="#{c.client.person.nameWithTitle}" ></p:outputLabel>
                                 </p:column>
-                                <p:column headerText="Name"  filterBy="#{c.person.nameWithTitle}" filterMatchMode="contains" sortBy="#{c.person.nameWithTitle}">
-                                    <p:outputLabel value="#{c.person.nameWithTitle}" ></p:outputLabel>
-                                </p:column>
-                                <p:column filterBy="#{c.person.gnArea.name}" 
+                                <p:column filterBy="#{c.client.person.gnArea.name}" 
                                           filterMatchMode="contains" 
-                                          sortBy="#{c.person.gnArea.name}"
+                                          sortBy="#{c.client.person.gnArea.name}"
                                           >
-                                    <p:outputLabel value="#{c.person.gnArea.name}" ></p:outputLabel>
-                                </p:column>
-                                <p:column filterBy="#{c.createdBy.person.name}" 
-                                          filterMatchMode="contains" 
-                                          sortBy="#{c.createdBy.person.name}"
-                                          >
-                                    <p:outputLabel value="#{c.createdBy.person.name}" ></p:outputLabel>
+                                    <p:outputLabel value="#{c.client.person.gnArea.name}" ></p:outputLabel>
                                 </p:column>
                                 <p:column headerText="Action" >
-                                    <p:commandButton value="View" 
-                                                     action="#{clientController.toClientProfile()}"
+                                    <p:commandButton value="Retire" 
+                                                     action="#{encounterController.retireSelectedEncounter}"
                                                      >
-                                        <f:setPropertyActionListener target="#{clientController.selected}"
-                                                                     value="#{c}"></f:setPropertyActionListener>
-                                    </p:commandButton>
-                                    <p:commandButton value="Delete" 
-                                                     action="#{clientController.retireSelectedClient()}"
-                                                     >
-                                        <f:setPropertyActionListener target="#{clientController.selected}"
+                                        <f:setPropertyActionListener target="#{encounterController.selected}"
                                                                      value="#{c}"></f:setPropertyActionListener>
                                     </p:commandButton>
                                 </p:column>

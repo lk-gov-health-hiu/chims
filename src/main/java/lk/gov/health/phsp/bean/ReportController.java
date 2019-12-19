@@ -29,12 +29,15 @@ import javax.enterprise.context.SessionScoped;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.inject.Inject;
 import lk.gov.health.phsp.entity.Area;
 import lk.gov.health.phsp.entity.Client;
 import lk.gov.health.phsp.entity.Encounter;
 import lk.gov.health.phsp.entity.Institution;
+import lk.gov.health.phsp.enums.EncounterType;
 // </editor-fold>   
 
 /**
@@ -56,6 +59,8 @@ public class ReportController implements Serializable {
     private ComponentController componentController;
     @Inject
     private WebUserController webUserController;
+    @Inject
+    private InstitutionController institutionController;
 // </editor-fold>  
 // <editor-fold defaultstate="collapsed" desc="Class Variables">
     private List<Encounter> encounters;
@@ -76,7 +81,7 @@ public class ReportController implements Serializable {
 
 // </editor-fold> 
 // <editor-fold defaultstate="collapsed" desc="Navigation">
-    public String toViewPeriodClinicRegistrations() {
+    public String toViewClientRegistrations() {
         encounters = new ArrayList<>();
         String forSys = "/reports/client_registrations/for_system";
         String forIns = "/reports/client_registrations/for_ins";
@@ -111,12 +116,110 @@ public class ReportController implements Serializable {
         }
         return action;
     }
+    
+    public String toViewClinicEnrollments() {
+        encounters = new ArrayList<>();
+        String forSys = "/reports/clinic_enrollments/for_system";
+        String forIns = "/reports/clinic_enrollments/for_ins";
+        String forMe = "/reports/clinic_enrollments/for_me";
+        String forClient = "/reports/clinic_enrollments/for_clients";
+        String noAction = "";
+        String action = "";
+        switch (webUserController.getLoggedUser().getWebUserRole()) {
+            case Client:
+                action = forClient;
+                break;
+            case Doctor:
+            case Institution_Administrator:
+            case Institution_Super_User:
+            case Institution_User:
+            case Nurse:
+            case Midwife:
+                action = forIns;
+                break;
+            case Me_Admin:
+            case Me_Super_User:
+                action = forMe;
+                break;
+            case Me_User:
+            case User:
+                action = noAction;
+                break;
+            case Super_User:
+            case System_Administrator:
+                action = forSys;
+                break;
+        }
+        return action;
+    }
 
 // </editor-fold>   
 // <editor-fold defaultstate="collapsed" desc="Functions">
+    
+    public void fillClientRegistrationForSysAdmin(){
+        String j;
+        Map m = new HashMap();
+        j = "select c from Client c "
+                + " where c.retired=:ret "
+                + " and c.createdAt between :fd and :td ";
+        m.put("ret", false);
+        m.put("fd", fromDate);
+        m.put("td", toDate);
+        if(institution!=null){
+            j += " and c.createInstitution in :ins ";
+            List<Institution> ins = institutionController.findChildrenInstitutions(institution);
+            ins.add(institution);
+            m.put("ins", ins);
+        }
+        
+        clients = clientController.getItems(j,m);
+    }
+    
+    public void fillClinicEnrollmentsForSysAdmin(){
+        String j;
+        Map m = new HashMap();
+        j = "select c from Encounter c "
+                + " where c.retired=:ret "
+                + " c.encounterType=:type "
+                + " and c.encounterDate between :fd and :td ";
+        m.put("ret", false);
+        m.put("fd", fromDate);
+        m.put("td", toDate);
+        m.put("type", EncounterType.Clinic_Enroll);
+        if(institution!=null){
+            j += " and c.institution in :ins ";
+            List<Institution> ins = institutionController.findChildrenInstitutions(institution);
+            ins.add(institution);
+            m.put("ins", ins);
+        }
+        encounters = encounterController.getItems(j,m);
+    }
+    
+    public void fillEncountersForSysAdmin(){
+        String j;
+        Map m = new HashMap();
+        j = "select c from Encounter c "
+                + " where c.retired=:ret "
+                + " c.encounterType=:type "
+                + " and c.encounterDate between :fd and :td ";
+        m.put("ret", false);
+        m.put("fd", fromDate);
+        m.put("td", toDate);
+        m.put("type", EncounterType.Clinic_Enroll);
+        if(institution!=null){
+            j += " and c.institution in :ins ";
+            List<Institution> ins = institutionController.findChildrenInstitutions(institution);
+            ins.add(institution);
+            m.put("ins", ins);
+        }
+        encounters = encounterController.getItems(j,m);
+    }
+    
+    
 // </editor-fold>   
 // <editor-fold defaultstate="collapsed" desc="Getters and Setters">
 
+    
 
     public EncounterController getEncounterController() {
         return encounterController;
@@ -151,6 +254,9 @@ public class ReportController implements Serializable {
     }
     
     public Date getFromDate() {
+        if(fromDate==null){
+            fromDate = CommonController.startOfTheYear();
+        }
         return fromDate;
     }
 
@@ -159,6 +265,9 @@ public class ReportController implements Serializable {
     }
 
     public Date getToDate() {
+        if(toDate==null){
+            toDate = new Date();
+        }
         return toDate;
     }
 
@@ -183,6 +292,10 @@ public class ReportController implements Serializable {
     }
     
 // </editor-fold> 
+
+    public InstitutionController getInstitutionController() {
+        return institutionController;
+    }
 
     
 
