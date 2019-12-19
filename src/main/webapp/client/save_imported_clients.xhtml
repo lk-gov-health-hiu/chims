@@ -37,6 +37,9 @@
                             <p:commandButton value="Export" ajax="false">
                                 <p:dataExporter target="tbl" type="csv" fileName="importedclients" ></p:dataExporter>
                             </p:commandButton>
+                            
+                            <p:commandButton value="Refresh" ajax="false">
+                            </p:commandButton>
 
                         </h:panelGrid>
                         <p:dataTable value="#{clientController.importedClients}"
@@ -90,6 +93,13 @@
                                 <p:outputLabel value="#{c.person.dateOfBirth}" >
                                     <f:convertDateTime pattern="dd/MMMM/yyyy" ></f:convertDateTime>
                                 </p:outputLabel>
+                            </p:column>
+                            
+                            <p:column  headerText="GN Area" width="200" 
+                                       sortBy="#{c.person.gnArea.name}" 
+                                       filterBy="#{c.person.gnArea.name}"
+                                       filterMatchMode="contains">
+                                <p:outputLabel value="#{c.person.gnArea.name}"></p:outputLabel>
                             </p:column>
 
                             <p:column  headerText="Phone1" width="200"  sortBy="#{c.person.phone1}" filterBy="#{c.person.phone1}" filterMatchMode="contains">
@@ -172,6 +182,10 @@
                                     <f:convertDateTime pattern="dd/MMMM/yyyy" ></f:convertDateTime>
                                 </p:outputLabel>
                             </p:column>
+                            
+                            <p:column  headerText="GN Area" >
+                                <p:outputLabel value="#{c.person.gnArea.name}" ></p:outputLabel>
+                            </p:column>
 
                             <p:column  headerText="Phone1" >
                                 <p:outputLabel value="#{c.person.phone1}" ></p:outputLabel>
@@ -179,10 +193,6 @@
 
                             <p:column  headerText="Phone2" >
                                 <p:outputLabel value="#{c.person.phone2}" ></p:outputLabel>
-                            </p:column>
-
-                            <p:column  headerText="PHM Area" >
-                                <p:outputLabel value="#{c.person.phmArea.name}" ></p:outputLabel>
                             </p:column>
 
                             <p:column  headerText="DS Division" >

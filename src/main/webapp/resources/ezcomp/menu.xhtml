@@ -37,6 +37,7 @@
                 <p:submenu label="Analysis" >
                     <p:menuitem ajax="false" value="Queries" 
                                 action="#{queryComponentController.toProcessQuery()}"  />
+                    <p:menuitem ajax="false" value="Reports" action="/reports/index" ></p:menuitem>
                 </p:submenu>
 
 
@@ -95,12 +96,14 @@
                     <p:submenu label="Analysis" >
                         <p:menuitem ajax="false" value="Queries" 
                                     action="#{queryComponentController.toProcessQuery()}"  />
+                      <p:menuitem ajax="false" value="Reports" action="/reports/index" ></p:menuitem>
+                
                     </p:submenu>
 
 
                     <p:submenu label="Institution Administration" >
                         <p:menuitem value="Manage Users" action="/webUser/index"  />
-                        <p:menuitem value="Manage Institutions" action="/institution/List"  />
+                        <p:menuitem value="Manage Institutions" action="/insAdmin/institution_index"  />
                         <p:menuitem value="Manage Areas" action="/area/index" ajax="false"  />
                         <p:menuitem value="Manage Metadata" action="/insAdmin/index"  />
                     </p:submenu>

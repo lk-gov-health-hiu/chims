@@ -32,6 +32,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
@@ -96,6 +97,8 @@ public class Encounter implements Serializable {
     private WebUser retiredBy;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date retiredAt;
+    @Lob
+    private String retireComments;
 
     @ManyToOne
     private WebUser retiredReversedBy;
@@ -363,6 +366,14 @@ public class Encounter implements Serializable {
 
     public void setClientEncounterComponentItems(List<ClientEncounterComponentItem> clientEncounterComponentItems) {
         this.clientEncounterComponentItems = clientEncounterComponentItems;
+    }
+
+    public String getRetireComments() {
+        return retireComments;
+    }
+
+    public void setRetireComments(String retireComments) {
+        this.retireComments = retireComments;
     }
     
     

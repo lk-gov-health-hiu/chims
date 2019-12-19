@@ -149,13 +149,13 @@ public class ClientController implements Serializable {
         List<Client> cs = getFacade().findByJpql(j, m);
         for (Client c : cs) {
             System.out.println("c = " + c);
-            if (c.getCreatedAt()==null && c.getPerson().getCreatedAt() != null) {
+            if (c.getCreatedAt() == null && c.getPerson().getCreatedAt() != null) {
                 c.setCreatedAt(c.getPerson().getCreatedAt());
                 getFacade().edit(c);
-            }else if (c.getCreatedAt()!=null && c.getPerson().getCreatedAt() == null) {
+            } else if (c.getCreatedAt() != null && c.getPerson().getCreatedAt() == null) {
                 c.getPerson().setCreatedAt(c.getCreatedAt());
                 getFacade().edit(c);
-            }else if (c.getCreatedAt()==null && c.getPerson().getCreatedAt() == null) {
+            } else if (c.getCreatedAt() == null && c.getPerson().getCreatedAt() == null) {
                 c.getPerson().setCreatedAt(new Date());
                 c.setCreatedAt(new Date());
                 getFacade().edit(c);
@@ -182,6 +182,36 @@ public class ClientController implements Serializable {
         for (Client c : cs) {
             c.setCreateInstitution(institution);
             getFacade().edit(c);
+        }
+
+    }
+
+    public void updateClientDateOfBirth() {
+        String j = "select c from Client c "
+                + " where c.retired=:ret "
+                + " and c.id > :idf "
+                + " and c.id < :idt ";
+        Map m = new HashMap();
+        m.put("ret", false);
+        m.put("idf", idFrom);
+        m.put("idt", idTo);
+        List<Client> cs = getFacade().findByJpql(j, m);
+        for (Client c : cs) {
+            Calendar cd = Calendar.getInstance();
+
+            if (c.getPerson().getDateOfBirth() != null) {
+
+                cd.setTime(c.getPerson().getDateOfBirth());
+
+                int dobYear = cd.get(Calendar.YEAR);
+
+                if (dobYear < 1800) {
+                    cd.add(Calendar.YEAR, 2000);
+                    c.getPerson().setDateOfBirth(cd.getTime());
+                    getFacade().edit(c);
+                }
+
+            }
         }
 
     }
@@ -268,15 +298,33 @@ public class ClientController implements Serializable {
             c.setRetired(true);
             c.setRetireComments("Bulk Delete");
             c.setRetiredAt(new Date());
+            c.setRetiredBy(webUserController.getLoggedUser());
 
             c.getPerson().setRetired(true);
             c.getPerson().setRetireComments("Bulk Delete");
+            c.getPerson().setRetiredAt(new Date());
+            c.getPerson().setRetiredBy(webUserController.getLoggedUser());
+
+            getFacade().edit(c);
+        }
+    }
+
+    public void retireSelectedClient() {
+       Client c=selected;
+        if (c !=null) {
+            c.setRetired(true);
+            c.setRetiredBy(webUserController.getLoggedUser());
+            c.setRetiredAt(new Date());
+
+            c.getPerson().setRetired(true);
+            c.getPerson().setRetiredBy(webUserController.getLoggedUser());
             c.getPerson().setRetiredAt(new Date());
 
             getFacade().edit(c);
         }
     }
 
+    
     public void saveAllImports() {
         if (institution == null) {
             JsfUtil.addErrorMessage("Institution ?");
@@ -490,7 +538,11 @@ public class ClientController implements Serializable {
                                 c.setCreatedAt(reg);
                                 break;
                             case "client_gn_area":
+                                System.out.println("GN");
+                                System.out.println("cellString = " + cellString);
+
                                 Area tgn = areaController.getAreaByName(cellString, AreaType.GN, false, null);
+                                System.out.println("tgn = " + tgn);
                                 if (tgn != null) {
                                     c.getPerson().setGnArea(tgn);
                                     c.getPerson().setDsArea(tgn.getDsd());
@@ -972,6 +1024,10 @@ public class ClientController implements Serializable {
 //            items = getFacade().findAll();
 //        }
         return items;
+    }
+    
+    public List<Client> getItems(String jpql, Map m) {
+        return getFacade().findByJpql(jpql, m);
     }
 
     public Client getClient(java.lang.Long id) {

@@ -1,0 +1,89 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <head>
+        <ui:define name="head">
+            Encounters
+        </ui:define>
+    </head>
+    <body>
+
+        <ui:composition template="/template.xhtml">
+
+
+            <ui:define name="content">
+                <h:form>
+                    <p:panelGrid columns="2" styleClass="alignTop" >
+                        <f:facet name="header" >
+                            <p:outputLabel value="Encounters" ></p:outputLabel>
+                        </f:facet>
+                        <p:panelGrid columns="2" >
+                            <f:facet name="header" >
+                                <p:outputLabel value="Filters" >
+                                </p:outputLabel>
+                                <p:commandButton value="Process" ajax="false"
+                                                 action="#{reportController.fillClinicEnrollmentsForSysAdmin()}"></p:commandButton>
+                            </f:facet>
+                            <p:outputLabel value="From" ></p:outputLabel>
+                            <p:calendar value="#{reportController.fromDate}" pattern="dd MM yyyy" ></p:calendar>
+
+                            <p:outputLabel value="To" ></p:outputLabel>
+                            <p:calendar value="#{reportController.toDate}" pattern="dd MM yyyy" ></p:calendar>
+
+                            <p:outputLabel value="Institution" ></p:outputLabel>
+                            <p:autoComplete   value="#{reportController.institution}" 
+                                              completeMethod="#{institutionController.completeInstitutions}"
+                                              var="i" itemLabel="#{i.name}" itemValue="#{i}">
+                            </p:autoComplete >
+                        </p:panelGrid>
+
+                        <p:panelGrid columns="1" >
+                            <p:dataTable value="#{reportController.encounters}" var="c"
+                                         rowKey="#{c.id}"
+                                         rowIndexVar="n"
+                                         paginator="true"
+                                         rows="10"
+                                         rowsPerPageTemplate="10,20,30,40,50"
+
+                                         >
+                                <p:column headerText="No" width="50">
+                                    <p:outputLabel value="#{n+1}"></p:outputLabel>
+                                </p:column>
+                                <p:column headerText="PHN" filterBy="#{c.client.phn}" filterMatchMode="contains" sortBy="#{c.client.phn}"
+                                          >
+                                    <p:outputLabel value="#{c.client.phn}" ></p:outputLabel>
+                                </p:column>
+                                <p:column headerText="Name"  filterBy="#{c.client.person.nameWithTitle}" filterMatchMode="contains" sortBy="#{c.client.person.nameWithTitle}">
+                                    <p:outputLabel value="#{c.client.person.nameWithTitle}" ></p:outputLabel>
+                                </p:column>
+                                <p:column filterBy="#{c.client.person.gnArea.name}" 
+                                          filterMatchMode="contains" 
+                                          sortBy="#{c.client.person.gnArea.name}"
+                                          >
+                                    <p:outputLabel value="#{c.client.person.gnArea.name}" ></p:outputLabel>
+                                </p:column>
+                                <p:column headerText="Action" >
+                                    <p:commandButton value="Retire" 
+                                                     action="#{encounterController.retireSelectedEncounter}"
+                                                     >
+                                        <f:setPropertyActionListener target="#{encounterController.selected}"
+                                                                     value="#{c}"></f:setPropertyActionListener>
+                                    </p:commandButton>
+                                </p:column>
+                            </p:dataTable>
+                        </p:panelGrid>
+
+                    </p:panelGrid>
+
+                </h:form>
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>
