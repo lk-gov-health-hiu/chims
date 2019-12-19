@@ -55,7 +55,9 @@
                         </f:facet>
 
                         <h:panelGroup rendered="#{clientEncounterComponentFormSetController.selected.panelType eq 'TabView_Bottom_Oriented'}" >
-                            <p:tabView orientation="bottom" style="width: 100%;" value="#{clientEncounterComponentFormController.findClientEncounterComponentFormOfAFormset(clientEncounterComponentFormSetController.selected)}" var="f">
+                            <p:tabView orientation="bottom" 
+                                       style="width: 100%;" 
+                                       value="#{clientEncounterComponentFormController.findClientEncounterComponentFormOfAFormset(clientEncounterComponentFormSetController.selected)}" var="f">
                                 <p:tab title="#{f.name}" >
                                     <div style="#{f.generatedCss}" >
                                         <ez:clinicForms form="#{f}" ></ez:clinicForms>
