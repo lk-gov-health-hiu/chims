@@ -1226,26 +1226,10 @@ public class ClientEncounterComponentFormSetController implements Serializable {
             return s;
         }
         if (is.size() == 1) {
-<<<<<<< HEAD
             if (is.get(0).getIntegerNumberValue() == null) {
                 return s;
             }
             return is.get(0).getIntegerNumberValue().toString();
-=======
-            if (is == null) {
-                return s;
-            }
-            if (is.get(0) == null) {
-                return s;
-            }
-            if (is.get(0).getLongNumberValue() == null) {
-                return s;
-            }
-            if (is.get(0).getLongNumberValue().toString() == null) {
-                return s;
-            }
-            return is.get(0).getLongNumberValue().toString();
->>>>>>> origin/master
         }
         for (ClientEncounterComponentItem i : is) {
             if (i.getCreatedAt() != null) {
