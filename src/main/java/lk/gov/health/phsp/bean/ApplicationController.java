@@ -49,7 +49,7 @@ public class ApplicationController {
 
 // <editor-fold defaultstate="collapsed" desc="Class Variables">
     private boolean demoSetup = false;
-    private String versionNo = "1.1";
+    private String versionNo = "1.1.1";
 
 // </editor-fold>
     public ApplicationController() {
@@ -69,7 +69,7 @@ public class ApplicationController {
         // //System.out.println("thisHin = " + thisHin);
         String poi = ins.getPoiNumber();
         // //System.out.println("poi = " + poi);
-        String num = String.format("%05d", thisHin);
+        String num = String.format("%06d", thisHin);
         // //System.out.println("num = " + num);
         String checkDigit = calculateCheckDigit(poi + num);
         String phn = poi + num + checkDigit;
