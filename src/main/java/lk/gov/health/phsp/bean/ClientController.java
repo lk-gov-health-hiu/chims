@@ -282,6 +282,11 @@ public class ClientController implements Serializable {
         String j = "select c from Client c order by c.id";
         items = getFacade().findByJpql(j);
     }
+    
+    public void fillClientsWithWrongPhnLength() {
+        String j = "select c from Client c where length(c.phn) <>11 order by c.id";
+        items = getFacade().findByJpql(j);
+    }
 
     public void fillRetiredClients() {
         String j = "select c from Client c where c.retired=true order by c.id";
