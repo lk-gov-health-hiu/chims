@@ -21,33 +21,37 @@
                 <p:panel style="height: 100%; text-align: center;" rendered="#{!webUserController.loggedUser.systemAdministrator}">
                     <h1>You are NOT authorized</h1>
                 </p:panel>
-                
-                <p:panel style="height: 100%; text-align: center;" rendered="#{webUserController.loggedUser.systemAdministrator}">
-
-                    
-                    <h:form>
-
-                        <p:panelGrid columns="1" style="margin: auto;" >
-                            <f:facet name="header" >
-                                <p:outputLabel value="Manage Users" ></p:outputLabel>
-                            </f:facet>
-                            
-                            <p:commandButton  
-                                value="Add New User" styleClass="btn300"
-                                action="#{webUserController.toCreateNewUserBySysAdmin()}">
-                            </p:commandButton>
-                            <p:commandButton  
-                                value="View Users"  styleClass="btn300"
-                                              action="/webUser/manage_users">
-                            </p:commandButton>
 
 
-                        </p:panelGrid>
 
-                    </h:form>
+                <h:form>
+
+                    <p:panelGrid columns="1" style="margin: auto;width: 100%;"  rendered="#{webUserController.loggedUser.systemAdministrator}">
+                        <f:facet name="header" >
+                            <p:outputLabel value="Manage Users" ></p:outputLabel>
+                        </f:facet>
+
+                        <p:commandButton  
+                            value="Add New User" styleClass="btn300"
+                            action="#{webUserController.toCreateNewUserBySysAdmin()}">
+                        </p:commandButton>
+                        <p:commandButton  
+                            value="View Users"  styleClass="btn300"
+                            action="/webUser/manage_users">
+                        </p:commandButton>
 
 
-                </p:panel>
+                        <p:commandButton  styleClass="btn300" ajax="false" action="/systemAdmin/assume_users" value="Assume Users"  rendered="#{webUserController.loggedUser.systemAdministrator}" ></p:commandButton>
+
+                        <p:commandButton  styleClass="btn300" ajax="false" action="/systemAdmin/assume_roles" value="Assume Roles"  rendered="#{webUserController.loggedUser.systemAdministrator}" ></p:commandButton>
+
+
+                    </p:panelGrid>
+
+                </h:form>
+
+
+
 
 
 

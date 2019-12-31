@@ -387,6 +387,9 @@ public class Institution implements Serializable {
     }
 
     public Institution getPoiInstitution() {
+        if(poiInstitution==null){
+            poiInstitution=this;
+        }
         return poiInstitution;
     }
 

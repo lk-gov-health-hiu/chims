@@ -49,7 +49,7 @@ public class ApplicationController {
 
 // <editor-fold defaultstate="collapsed" desc="Class Variables">
     private boolean demoSetup = false;
-    private String versionNo = "1.1.1";
+    private String versionNo = "1.1.2";
 
 // </editor-fold>
     public ApplicationController() {

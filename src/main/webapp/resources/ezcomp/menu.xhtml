@@ -77,6 +77,11 @@
                     <p:spacer height="1" width="5" ></p:spacer>
                     <p:commandButton action="#{webUserController.logOut()}" ajax="false"
                                      rendered="#{webUserController.loggedUser ne null}" value="#{webUserController.loggedUser.name} - Logout" />
+                
+                    <p:commandButton action="#{webUserController.endAssumingRoles()}" ajax="false"
+                                     rendered="#{webUserController.loggedUser.assumedRole ne null}" 
+                                     value="Back as Admin" />
+              
                 </f:facet>
             </p:menubar>
 

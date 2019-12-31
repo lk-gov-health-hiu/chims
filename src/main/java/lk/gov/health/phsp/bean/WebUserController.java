@@ -145,6 +145,11 @@ public class WebUserController implements Serializable {
     private Long totalNumberOfClinicVisits;
     private Long totalNumberOfClinicEnrolments;
 
+    private WebUserRole assumedRole;
+    private Institution assumedInstitution;
+    private Area assumedArea;
+    private List<UserPrivilege> assumedPrivileges;
+
     /**
      *
      * Privileges
@@ -158,6 +163,61 @@ public class WebUserController implements Serializable {
     public void init() {
         emptyModel = new DefaultMapModel();
         createAllPrivilege();
+    }
+
+    public String assumeUser() {
+        if (current == null) {
+            JsfUtil.addErrorMessage("Please select a User");
+            return "";
+        }
+        assumedArea = current.getArea();
+        assumedInstitution = current.getInstitution();
+        assumedRole = current.getWebUserRole();
+        assumedPrivileges = userPrivilegeList(current);
+        return assumeRoles();
+
+    }
+
+    public String assumeRoles() {
+        if (assumedRole == null) {
+            JsfUtil.addErrorMessage("Please select a Role");
+            return "";
+        }
+
+        if (assumedInstitution == null) {
+            JsfUtil.addErrorMessage("Please lsect an Institution");
+            return "";
+        }
+//        if (assumedArea == null) {
+//            JsfUtil.addErrorMessage("Please select an area");
+//            return "";
+//        }
+        if (assumedPrivileges == null) {
+            assumedPrivileges = generateAssumedPrivileges(loggedUser, getInitialPrivileges(assumedRole));
+        }
+        WebUser twu = loggedUser;
+        logOut();
+        userName = twu.getName();
+        loggedUser = twu;
+        loggedUser.setAssumedArea(assumedArea);
+        loggedUser.setAssumedInstitution(assumedInstitution);
+        loggedUser.setAssumedRole(assumedRole);
+        return login(true);
+    }
+
+    public void assumedInstitutionChanged() {
+        if (assumedInstitution != null) {
+            assumedArea = assumedInstitution.getDistrict();
+        }
+    }
+
+    public String endAssumingRoles() {
+        assumedRole = null;
+        assumedInstitution = null;
+        assumedArea = null;
+        assumedPrivileges = null;
+        logOut();
+        return login(true);
     }
 
     public List<Area> findAutherizedGnAreas() {
@@ -424,6 +484,10 @@ public class WebUserController implements Serializable {
     }
 
     public String login() {
+        return login(false);
+    }
+
+    public String login(boolean withoutPassword) {
         loggableInstitutions = null;
         loggablePmcis = null;
         loggableGnAreas = null;
@@ -432,43 +496,47 @@ public class WebUserController implements Serializable {
             JsfUtil.addErrorMessage("Please enter a Username");
             return "";
         }
-        if (password == null || password.trim().equals("")) {
-            JsfUtil.addErrorMessage("Please enter the Password");
-            return "";
+        if (!withoutPassword) {
+            if (password == null || password.trim().equals("")) {
+                JsfUtil.addErrorMessage("Please enter the Password");
+                return "";
+            }
         }
         if (!isFirstVisit()) {
-            if (!checkLogin()) {
+            if (!checkLogin(withoutPassword)) {
                 JsfUtil.addErrorMessage("Username/Password Error. Please retry.");
                 return "";
             }
         }
-        loggedUserPrivileges = userPrivilegeList(loggedUser);
+        if (assumedPrivileges == null) {
+            loggedUserPrivileges = userPrivilegeList(loggedUser);
+        }
         prepareDashboards();
         JsfUtil.addSuccessMessage("Successfully Logged");
         return "/index";
     }
-    
-    public void prepareDashboards(){
+
+    public void prepareDashboards() {
         if (loggedUser.isInstitutionAdministrator()) {
             prepareInsAdminDashboard();
 
         } else if (loggedUser.isSystemAdministrator()) {
             //TODO: Change to SysAdmin
             prepareInsAdminDashboard();
-        }else if (loggedUser.isDoctor()) {
+        } else if (loggedUser.isDoctor()) {
             //TODO: Change to SysAdmin
             prepareDocDashboard();
-        }else if (loggedUser.isNurse()) {
+        } else if (loggedUser.isNurse()) {
             //TODO: Change to SysAdmin
             prepareNurseDashboard();
         }
     }
 
-    public String toHome(){
+    public String toHome() {
         prepareDashboards();
         return "/index";
     }
-    
+
     public void prepareInsAdminDashboard() {
         totalNumberOfRegisteredClients = clientController.countOfRegistedClients(loggedUser.getInstitution(), null);
         totalNumberOfClinicEnrolments = encounterController.countOfEncounters(getInstitutionController().getMyClinics(), EncounterType.Clinic_Enroll);
@@ -497,14 +565,26 @@ public class WebUserController implements Serializable {
             loginRequestResponse += "Wrong Isername. Please go back to settings and update.";
             return "/mobile/login_failure";
         }
-        if (!checkLogin()) {
+        if (!checkLogin(false)) {
             loginRequestResponse += "Wrong Isername. Please go back to settings and update.";
             return "/mobile/login_failure";
         }
         return "/mobile/index";
     }
 
-    private boolean checkLogin() {
+    public List<WebUser> completeUsers(String qry) {
+        String temSQL;
+        temSQL = "SELECT u FROM WebUser u WHERE lower(u.name) like :userName and u.retired =:ret";
+        Map m = new HashMap();
+        m.put("userName", "%" + qry.trim().toLowerCase() + "%");
+        m.put("ret", false);
+        return getFacade().findByJpql(temSQL, m);
+    }
+
+    private boolean checkLogin(boolean withoutPassword) {
+        if (loggedUser != null && withoutPassword) {
+            return true;
+        }
         String temSQL;
         temSQL = "SELECT u FROM WebUser u WHERE lower(u.name)=:userName and u.retired =:ret";
         Map m = new HashMap();
@@ -513,6 +593,9 @@ public class WebUserController implements Serializable {
         loggedUser = getFacade().findFirstByJpql(temSQL, m);
         if (loggedUser == null) {
             return false;
+        }
+        if (withoutPassword) {
+            return true;
         }
         if (commonController.matchPassword(password, loggedUser.getWebUserPassword())) {
             return true;
@@ -1534,8 +1617,6 @@ public class WebUserController implements Serializable {
         this.totalNumberOfClinicVisits = totalNumberOfClinicVisits;
     }
 
-    
-    
     public ClientController getClientController() {
         return clientController;
     }
@@ -1550,6 +1631,49 @@ public class WebUserController implements Serializable {
 
     public void setTotalNumberOfClinicEnrolments(Long totalNumberOfClinicEnrolments) {
         this.totalNumberOfClinicEnrolments = totalNumberOfClinicEnrolments;
+    }
+
+    public WebUserRole getAssumedRole() {
+        return assumedRole;
+    }
+
+    public void setAssumedRole(WebUserRole assumedRole) {
+        this.assumedRole = assumedRole;
+    }
+
+    public Institution getAssumedInstitution() {
+        return assumedInstitution;
+    }
+
+    public void setAssumedInstitution(Institution assumedInstitution) {
+        this.assumedInstitution = assumedInstitution;
+    }
+
+    public Area getAssumedArea() {
+        return assumedArea;
+    }
+
+    public void setAssumedArea(Area assumedArea) {
+        this.assumedArea = assumedArea;
+    }
+
+    public List<UserPrivilege> getAssumedPrivileges() {
+        return assumedPrivileges;
+    }
+
+    public void setAssumedPrivileges(List<UserPrivilege> assumedPrivileges) {
+        this.assumedPrivileges = assumedPrivileges;
+    }
+
+    private List<UserPrivilege> generateAssumedPrivileges(WebUser wu, List<Privilege> ps) {
+        List<UserPrivilege> ups = new ArrayList<>();
+        for (Privilege p : ps) {
+            UserPrivilege up = new UserPrivilege();
+            up.setPrivilege(p);
+            up.setWebUser(wu);
+            ups.add(up);
+        }
+        return ups;
     }
 
     @FacesConverter(forClass = WebUser.class)
