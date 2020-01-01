@@ -60,6 +60,7 @@
                                                 <div class="text-center" >
                                                     <p:graphicImage  style="width: 95%;" 
                                                                      id="photos" cache="false" 
+                                                                     class="profile-user-img img-fluid img-circle"
                                                                      rendered="#{imageController.clientPhoto ne null}"    
                                                                      value="#{imageController.clientPhoto}"  >
                                                     </p:graphicImage>
@@ -114,50 +115,43 @@
                                             <!-- /.card-header -->
                                             <div class="card-body">
                                                 <strong><i class="fas fa-id-badge mr-1"></i> Name :</strong>
-
-
                                                 <h:outputLabel value="#{clientController.selected.person.nameWithTitle}" ></h:outputLabel>
-
                                                 <br/>
+                                                
+                                                <strong><i class="fas fa-id-badge mr-1"></i> PHN :</strong>
+                                                <h:outputLabel value="#{clientController.selected.phn}" ></h:outputLabel>
+                                                <br/>
+                                                
+                                                <strong><i class="fas fa-id-badge mr-1"></i> GN Area :</strong>
+                                                <h:outputLabel value="#{clientController.selected.person.gnArea.name}" ></h:outputLabel>
+                                                <br/>
+                                                
                                                 <strong><i class="fas fa-venus-mars mr-1"></i> Sex :</strong>
-
-
                                                 <h:outputLabel value="#{clientController.selected.person.sex.name}" ></h:outputLabel>
-
                                                 <br/>
+                                                
                                                 <strong><i class="fab fa-pagelines mr-1"></i> Age :</strong>
-
                                                 <h:outputLabel value="#{clientController.selected.person.age}" ></h:outputLabel>
-
                                                 <br/>
+                                                
                                                 <strong><i class="fas fa-birthday-cake mr-1"></i> DOB :</strong>
-
                                                 <h:outputLabel value="#{clientController.selected.person.dateOfBirth}" >
                                                     <f:convertDateTime pattern="dd MMMM yyyy" ></f:convertDateTime>
                                                 </h:outputLabel>
                                                 <br/>
 
                                                 <strong><i class="fas fa-mobile-alt mr-1"></i> Mobile No. :</strong>
-
-
                                                 <h:outputLabel value="#{clientController.selected.person.phone1}" ></h:outputLabel>
-
-
                                                 <br/>
+                                                
                                                 <strong><i class="fas fa-phone-square-alt mr-1"></i> Tele No. :</strong>
-
                                                 <h:outputLabel value="#{clientController.selected.person.phone2}" ></h:outputLabel>
-
                                                 <br/>
+                                                
                                                 <strong><i class="fas fa-map-marker-alt mr-1"></i> Address</strong>
-
                                                 <p class="text-muted">
-
                                                     <h:outputLabel value="#{clientController.selected.person.address}" ></h:outputLabel>
-
-
                                                 </p>
-
                                                 <br/>
 
 
