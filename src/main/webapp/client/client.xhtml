@@ -44,11 +44,17 @@
 
                             <p:outputLabel value="PHN No.:" for="phn" />
                             <h:panelGroup >
-                                <p:inputText id="phn" required="true"  autocomplete="off" value="#{clientController.selected.phn}" title="Phn" />
+                                <p:inputText id="phn" required="true"  autocomplete="off" 
+                                             value="#{clientController.selected.phn}" title="Phn" >
+                                    <f:ajax event="change" execute="@this" render="phnExists" listener="#{clientController.checkPhnExists}" ></f:ajax>
+                                </p:inputText>
                                 <p:commandLink value="Generate" 
                                                action="#{clientController.generateAndAssignNewPhn}" 
                                                process="@this" 
                                                update="phn" ></p:commandLink>
+                                <h:panelGroup id="phnExists" >
+                                    <p:outputLabel value="Already Exists" style="color: red;" rendered="#{clientController.phnExists}" ></p:outputLabel>
+                                </h:panelGroup>
                             </h:panelGroup>
 
 
@@ -85,10 +91,16 @@
 
 
                             <p:outputLabel value="NIC No.:" for="nic" />
-                            <p:inputText id="nic"  autocomplete="off" value="#{clientController.selected.person.nic}" title="Nic" validatorMessage="Please check the number">
-                                <f:validateRegex pattern="^([0-9]{9}[x|X|v|V]|[0-9]{12})?$" ></f:validateRegex>
-                            </p:inputText>
-
+                            <h:panelGroup >
+                                <p:inputText id="nic"  autocomplete="off" value="#{clientController.selected.person.nic}" title="Nic" validatorMessage="Please check the number">
+                                    <f:validateRegex pattern="^([0-9]{9}[x|X|v|V]|[0-9]{12})?$" ></f:validateRegex>
+                                    <f:ajax event="change" execute="@this" render="nicExists" 
+                                            listener="#{clientController.checkNicExists}" ></f:ajax>
+                                </p:inputText>
+                                <h:panelGroup id="nicExists" >
+                                    <p:outputLabel value="NIC already Exists" style="color: red;" rendered="#{clientController.nicExists}" ></p:outputLabel>
+                                </h:panelGroup>
+                            </h:panelGroup>
                             <p:outputLabel value="Citizenship:" for="citizenship" />
                             <p:selectOneMenu id="citizenship" value="#{clientController.selected.person.citizenship}" >
                                 <f:selectItems value="#{itemController.citizenships}" var="c" itemLabel="#{c.name}"

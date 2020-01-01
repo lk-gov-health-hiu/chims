@@ -102,6 +102,11 @@ public class ClientController implements Serializable {
     private UploadedFile file;
     private Date clinicDate;
 
+    private Boolean nicExists;
+    private Boolean phnExists;
+    private Boolean passportExists;
+    private Boolean dlExists;
+
     // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="Constructors">
     public ClientController() {
@@ -141,6 +146,94 @@ public class ClientController implements Serializable {
 
     // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="Functions">
+   
+    public void clearExistsValues(){
+        phnExists=false;
+        nicExists=false;
+        passportExists=false;
+        dlExists=false;
+    }
+    
+    public void checkPhnExists() {
+        phnExists = null;
+        if (selected == null) {
+            return;
+        }
+        if (selected.getPhn() == null) {
+            return;
+        }
+        if (selected.getPhn().trim().equals("")) {
+            return;
+        }
+        phnExists = checkPhnExists(selected.getPhn(), selected);
+    }
+    
+    
+
+    public Boolean checkPhnExists(String phn, Client c) {
+        String jpql = "select count(c) from Client c "
+                + " where c.retired=:ret "
+                + " and c.phn=:phn ";
+        Map m = new HashMap();
+        m.put("ret", false);
+        m.put("phn", phn);
+        if (c != null && c.getId() != null) {
+            jpql += " and c <> :client";
+            m.put("client", c);
+        }
+        Long count = getFacade().countByJpql(jpql, m);
+        if (count == null || count == 0l) {
+            return false;
+        } else {
+            return true;
+        }
+
+    }
+
+    
+    public void checkNicExists() {
+        nicExists = null;
+        if (selected == null) {
+            return;
+        }
+        if (selected.getPerson() == null) {
+            return;
+        }
+         if (selected.getPerson().getNic() == null) {
+            return;
+        }
+        if (selected.getPerson().getNic().trim().equals("")) {
+            return;
+        }
+        nicExists = checkNicExists(selected.getPerson().getNic(), selected);
+    }
+    
+    
+
+    public Boolean checkNicExists(String nic, Client c) {
+        String jpql = "select count(c) from Client c "
+                + " where c.retired=:ret "
+                + " and c.person.nic=:nic ";
+        Map m = new HashMap();
+        m.put("ret", false);
+        m.put("nic", nic);
+        if (c != null && c.getPerson()!=null && c.getPerson().getId() != null) {
+            jpql += " and c.person <> :person";
+            m.put("person", c.getPerson());
+        }
+        Long count = getFacade().countByJpql(jpql, m);
+        if (count == null || count == 0l) {
+            return false;
+        } else {
+            return true;
+        }
+
+    }
+
+    
+    
+    
+    
     public void fixClientPersonCreatedAt() {
         String j = "select c from Client c "
                 + " where c.retired=:ret ";
@@ -271,7 +364,7 @@ public class ClientController implements Serializable {
         }
         for (Client c : selectedClients) {
             c.setCreateInstitution(institution);
-            if (!phnExists(c.getPhn())) {
+            if (!checkPhnExists(c.getPhn(),null)) {
                 c.setId(null);
                 saveClient(c);
             }
@@ -282,7 +375,7 @@ public class ClientController implements Serializable {
         String j = "select c from Client c order by c.id";
         items = getFacade().findByJpql(j);
     }
-    
+
     public void fillClientsWithWrongPhnLength() {
         String j = "select c from Client c where length(c.phn) <>11 order by c.id";
         items = getFacade().findByJpql(j);
@@ -315,8 +408,8 @@ public class ClientController implements Serializable {
     }
 
     public void retireSelectedClient() {
-       Client c=selected;
-        if (c !=null) {
+        Client c = selected;
+        if (c != null) {
             c.setRetired(true);
             c.setRetiredBy(webUserController.getLoggedUser());
             c.setRetiredAt(new Date());
@@ -329,7 +422,6 @@ public class ClientController implements Serializable {
         }
     }
 
-    
     public void saveAllImports() {
         if (institution == null) {
             JsfUtil.addErrorMessage("Institution ?");
@@ -337,25 +429,25 @@ public class ClientController implements Serializable {
         }
         for (Client c : importedClients) {
             c.setCreateInstitution(institution);
-            if (!phnExists(c.getPhn())) {
+            if (!checkPhnExists(c.getPhn(),null)) {
                 c.setId(null);
                 saveClient(c);
             }
         }
     }
 
-    public boolean phnExists(String phn) {
-        String j = "select c from Client c where c.retired=:ret "
-                + " and c.phn=:phn";
-        Map m = new HashMap();
-        m.put("ret", false);
-        m.put("phn", phn);
-        Client c = getFacade().findFirstByJpql(j, m);
-        if (c == null) {
-            return false;
-        }
-        return true;
-    }
+//    public boolean phnExists(String phn) {
+//        String j = "select c from Client c where c.retired=:ret "
+//                + " and c.phn=:phn";
+//        Map m = new HashMap();
+//        m.put("ret", false);
+//        m.put("phn", phn);
+//        Client c = getFacade().findFirstByJpql(j, m);
+//        if (c == null) {
+//            return false;
+//        }
+//        return true;
+//    }
 
     public String importClientsFromExcel() {
 
@@ -756,6 +848,7 @@ public class ClientController implements Serializable {
     }
 
     public String searchById() {
+       clearExistsValues();
         if (searchingPhn != null && !searchingPhn.trim().equals("")) {
             selectedClients = listPatientsByPhn(searchingPhn);
         } else if (searchingNicNo != null && !searchingNicNo.trim().equals("")) {
@@ -780,6 +873,7 @@ public class ClientController implements Serializable {
     }
 
     public String searchByAnyId() {
+        clearExistsValues();
         if (searchingId == null) {
             searchingId = "";
         }
@@ -958,6 +1052,8 @@ public class ClientController implements Serializable {
         return searchingId;
     }
 
+    
+    
     public void setSearchingId(String searchingId) {
         this.searchingId = searchingId;
     }
@@ -1030,7 +1126,7 @@ public class ClientController implements Serializable {
 //        }
         return items;
     }
-    
+
     public List<Client> getItems(String jpql, Map m) {
         return getFacade().findByJpql(jpql, m);
     }
@@ -1215,6 +1311,38 @@ public class ClientController implements Serializable {
 
     public void setClinicDate(Date clinicDate) {
         this.clinicDate = clinicDate;
+    }
+
+    public Boolean getNicExists() {
+        return nicExists;
+    }
+
+    public void setNicExists(Boolean nicExists) {
+        this.nicExists = nicExists;
+    }
+
+    public Boolean getPhnExists() {
+        return phnExists;
+    }
+
+    public void setPhnExists(Boolean phnExists) {
+        this.phnExists = phnExists;
+    }
+
+    public Boolean getPassportExists() {
+        return passportExists;
+    }
+
+    public void setPassportExists(Boolean passportExists) {
+        this.passportExists = passportExists;
+    }
+
+    public Boolean getDlExists() {
+        return dlExists;
+    }
+
+    public void setDlExists(Boolean dlExists) {
+        this.dlExists = dlExists;
     }
 
     // </editor-fold>
