@@ -54,6 +54,18 @@
                     </tr>
                     <tr>
                         <td>
+                            <p:outputLabel value="Privileges" ></p:outputLabel>
+                        </td>
+                        <td>
+                            <ui:repeat value="#{webUserController.loggedUserPrivileges}" var="p" >
+                                <p:outputLabel value="#{p.privilege}&nbsp;" ></p:outputLabel>
+                            </ui:repeat>
+                        </td>
+                    </tr>
+
+
+                    <tr>
+                        <td>
                             <p:outputLabel value="Logged Institution" ></p:outputLabel>
                         </td>
                         <td>

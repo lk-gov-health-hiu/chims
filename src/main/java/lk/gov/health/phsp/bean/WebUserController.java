@@ -202,6 +202,7 @@ public class WebUserController implements Serializable {
         loggedUser.setAssumedArea(assumedArea);
         loggedUser.setAssumedInstitution(assumedInstitution);
         loggedUser.setAssumedRole(assumedRole);
+        loggedUserPrivileges = assumedPrivileges;
         return login(true);
     }
 
