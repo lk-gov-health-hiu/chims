@@ -168,6 +168,12 @@
                                             var="gn" itemLabel="#{gn.name}" itemValue="#{gn}"
                                             maxResults="15" forceSelection="true" required="true"
                                             minQueryLength="3">
+                                <p:column headerText="Name">
+                                    <p:outputLabel value="#{gn.name}"></p:outputLabel>
+                                </p:column>
+                                  <p:column headerText="DS Division">
+                                    <p:outputLabel value="#{gn.parentArea.name}"></p:outputLabel>
+                                </p:column>
                                 <f:ajax event="itemSelect" execute="@this" render="phm moh dsd district province" 
                                         listener="#{clientController.gnAreaChanged()}"></f:ajax>
                             </p:autoComplete>

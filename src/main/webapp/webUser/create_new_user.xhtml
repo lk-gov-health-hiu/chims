@@ -82,6 +82,17 @@
                                              var="i" itemLabel="#{i.name}" itemValue="#{i}"
                                              minQueryLength="4" maxResults="30"
                                              forceSelection="true" required="true">
+                                <p:column headerText="Name">
+                                    <p:outputLabel value="#{i.name}"></p:outputLabel>
+                                </p:column>
+                                  <p:column headerText="Parent">
+                                    <p:outputLabel value="#{i.parentArea.name}"></p:outputLabel>
+                                </p:column>
+                                 <p:column headerText="Type">
+                                    <p:outputLabel value="#{i.type}"></p:outputLabel>
+                                </p:column>
+                                
+                                
                             </p:autoComplete >
                             <p:spacer ></p:spacer>
 
