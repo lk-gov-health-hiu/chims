@@ -45,8 +45,6 @@ public class EncounterController implements Serializable {
   
 
     public String createClinicEnrollNumber(Institution clinic) {
-        System.out.println("createClinicEnrollNumber");
-        System.out.println("clinic = " + clinic);
         String j = "select count(e) from Encounter e "
                 + " where e.institution=:ins "
                 + " and e.encounterType=:ec "
@@ -68,8 +66,6 @@ public class EncounterController implements Serializable {
     }
 
     public Long countOfEncounters(List<Institution> clinic, EncounterType ec) {
-        System.out.println("countOfClinicEnrollments");
-        System.out.println("clinic = " + clinic);
         String j = "select count(e) from Encounter e "
                 + " where e.retired=:ret "
                 + " and e.institution in :ins "
