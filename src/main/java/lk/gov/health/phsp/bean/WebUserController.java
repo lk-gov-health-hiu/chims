@@ -608,7 +608,9 @@ public class WebUserController implements Serializable {
     }
 
     private boolean isFirstVisit() {
-        if (getFacade().count() <= 0) {
+        String j = "select c from WebUser c";
+        WebUser w = getFacade().findFirstByJpql(j);
+        if (w==null) {
             JsfUtil.addSuccessMessage("First Visit");
 
             Institution ins = new Institution();
