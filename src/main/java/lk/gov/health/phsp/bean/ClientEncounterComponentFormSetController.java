@@ -87,6 +87,7 @@ public class ClientEncounterComponentFormSetController implements Serializable {
 // </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="Class Variables">
     private List<ClientEncounterComponentFormSet> items = null;
+    private List<ClientEncounterComponentFormSet> selectedItems = null;
     private ClientEncounterComponentFormSet selected;
     private DesignComponentFormSet designFormSet;
     private boolean formEditable;
@@ -133,6 +134,27 @@ public class ClientEncounterComponentFormSetController implements Serializable {
     }
 // </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="User Functions">
+
+    public void retireSelectedItems() {
+        if (selectedItems == null) {
+            return;
+        }
+        for (ClientEncounterComponentFormSet s : selectedItems) {
+            Encounter e = s.getEncounter();
+            if (s != null) {
+                s.setRetired(true);
+                s.setRetiredAt(new Date());
+                s.setRetiredBy(webUserController.getLoggedUser());
+                getEncounterFacade().edit(e);
+            }
+            s.setRetired(true);
+            s.setRetiredAt(new Date());
+            s.setRetiredBy(webUserController.getLoggedUser());
+            getFacade().edit(s);
+        }
+        selectedItems = null;
+        items = null;
+    }
 
     public String completeFormset() {
         if (selected == null) {
@@ -467,9 +489,7 @@ public class ClientEncounterComponentFormSetController implements Serializable {
         }
         return fs;
     }
-    
-    
-    
+
     public String fillAllEncountersFormSetsOfSelectedClient(EncounterType type) {
         List<ClientEncounterComponentFormSet> fs;
         Map m = new HashMap();
@@ -484,8 +504,51 @@ public class ClientEncounterComponentFormSetController implements Serializable {
         if (fs == null) {
             fs = new ArrayList<>();
         }
-        items= fs;
+        items = fs;
         return "/client/client_encounters";
+    }
+
+    public String fillAllNonRetiredEncountersFormSets() {
+        List<ClientEncounterComponentFormSet> fs;
+        Map m = new HashMap();
+        String j = "select s from ClientEncounterComponentFormSet s where "
+                + " s.retired=:ret ";
+        j += " order by s.encounter.encounterFrom desc";
+        m.put("ret", false);
+        fs = getFacade().findByJpql(j, m);
+        if (fs == null) {
+            fs = new ArrayList<>();
+        }
+        items = fs;
+        return "/systemAdmin/all_encounters";
+    }
+
+    public String fillAllRetiredEncountersFormSets() {
+        List<ClientEncounterComponentFormSet> fs;
+        Map m = new HashMap();
+        String j = "select s from ClientEncounterComponentFormSet s where "
+                + " s.retired=:ret ";
+        j += " order by s.encounter.encounterFrom desc";
+        m.put("ret", true);
+        fs = getFacade().findByJpql(j, m);
+        if (fs == null) {
+            fs = new ArrayList<>();
+        }
+        items = fs;
+        return "/systemAdmin/all_encounters";
+    }
+
+    public String fillAllEncountersFormSets() {
+        List<ClientEncounterComponentFormSet> fs;
+        Map m = new HashMap();
+        String j = "select s from ClientEncounterComponentFormSet s ";
+        j += " order by s.encounter.encounterFrom desc";
+        fs = getFacade().findByJpql(j);
+        if (fs == null) {
+            fs = new ArrayList<>();
+        }
+        items = fs;
+        return "/systemAdmin/all_encounters";
     }
 
     public ClientEncounterComponentFormSet findLastUncompletedEncounterOfThatType(DesignComponentFormSet dfs, Client c, Institution i, EncounterType t) {
@@ -588,7 +651,6 @@ public class ClientEncounterComponentFormSetController implements Serializable {
         //System.out.println("Time after saving new Encounter " + (new Date().getTime()) / 1000);
         ClientEncounterComponentFormSet cfs = new ClientEncounterComponentFormSet();
 
-
         cfs.setEncounter(e);
         cfs.setInstitution(dfs.getInstitution());
 
@@ -619,7 +681,6 @@ public class ClientEncounterComponentFormSetController implements Serializable {
             if (!skipThisForm) {
 
                 ClientEncounterComponentForm cf = new ClientEncounterComponentForm();
-
 
                 cf.setEncounter(e);
                 cf.setInstitution(dfs.getInstitution());
@@ -1124,6 +1185,12 @@ public class ClientEncounterComponentFormSetController implements Serializable {
             return s;
         }
         if (is.size() == 1) {
+            if (is.get(0) == null) {
+                return s;
+            }
+            if (is.get(0).getLongNumberValue() == null) {
+                return s;
+            }
             return is.get(0).getLongNumberValue().toString();
         }
         for (ClientEncounterComponentItem i : is) {
@@ -1706,6 +1773,14 @@ public class ClientEncounterComponentFormSetController implements Serializable {
 
     public CommonController getCommonController() {
         return commonController;
+    }
+
+    public List<ClientEncounterComponentFormSet> getSelectedItems() {
+        return selectedItems;
+    }
+
+    public void setSelectedItems(List<ClientEncounterComponentFormSet> selectedItems) {
+        this.selectedItems = selectedItems;
     }
 
 // </editor-fold>    
