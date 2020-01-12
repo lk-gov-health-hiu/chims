@@ -30,5 +30,17 @@ package lk.gov.health.phsp.enums;
 public enum ComponentSex {
     For_Males,
     For_Females,
-    For_Both,
+    For_Both;
+    
+    public String label(){
+        switch (this){
+            case For_Both: return "Both";
+                
+            case For_Females:return "Females";
+                
+            case For_Males:return "Males";
+                
+        }
+        return "";
+    }
 }

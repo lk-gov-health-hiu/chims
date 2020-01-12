@@ -44,9 +44,9 @@
                                         </p:outputLabel>
                                     </p:column>
                                     <p:column headerText="Sex" width="80" >
-                                        <p:outputLabel value="#{f.componentSex}" ></p:outputLabel>
+                                        <p:outputLabel value="#{f.componentSex.label()}" ></p:outputLabel>
                                     </p:column>
-                                    <p:column headerText="Actions" width="250" >
+                                    <p:column headerText="Actions" width="200" >
                                         <p:commandButton id="btnEdit" value="Edit"  icon="ui-icon-pencil"  
                                                          action="#{designComponentFormItemController.toEditDesignComponentFromItem()}" 
                                                          ajax="false" >
@@ -58,7 +58,7 @@
                                             <f:setPropertyActionListener value="#{f}" target="#{designComponentFormItemController.selected}" ></f:setPropertyActionListener>
                                         </p:commandButton>
                                     </p:column>
-                                    <p:column headerText="Change Order" width="150" >
+                                    <p:column headerText="Change Order" width="100" >
                                         <p:commandButton id="btnUp"  icon="ui-icon-arrowthick-1-n"  
                                                          action="#{designComponentFormItemController.moveItemUpInForm()}" 
                                                          process="@this" update="lst" >
@@ -70,7 +70,7 @@
                                             <f:setPropertyActionListener value="#{f}" target="#{designComponentFormItemController.movingItem}" ></f:setPropertyActionListener>
                                         </p:commandButton>
                                     </p:column>
-                                    <p:column headerText="Remove" width="150" >
+                                    <p:column headerText="Delete" width="50" >
                                         <p:commandButton id="btnRemove" icon="ui-icon-trash"  onclick="if (!confirm('Really want to do that?'))
                                                     return false"
                                                     action="#{designComponentFormItemController.removeItemFromFrom()}" 
