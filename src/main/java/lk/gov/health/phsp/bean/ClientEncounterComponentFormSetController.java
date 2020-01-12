@@ -613,7 +613,6 @@ public class ClientEncounterComponentFormSetController implements Serializable {
 
     public String createNewAndNavigateToClinicalEncounterComponentFormSetFromDesignComponentFormSetForClinicVisit(DesignComponentFormSet dfs) {
 
-        System.out.println("Time at start of createAndNavigateToClinicalEncounterComponentFormSetFromDesignComponentFormSetForClinicVisit " + (new Date().getTime()) / 1000);
 
         String navigationLink = "/clientEncounterComponentFormSet/Formset";
         formEditable = true;
@@ -670,7 +669,6 @@ public class ClientEncounterComponentFormSetController implements Serializable {
 
         for (DesignComponentForm df : dfList) {
 
-            System.out.println("Form " + df.getName() + " Start " + (new Date().getTime()) / 1000);
             boolean skipThisForm = false;
             if (df.getComponentSex() == ComponentSex.For_Females && clientController.getSelected().getPerson().getSex().getCode().equalsIgnoreCase("male")) {
                 skipThisForm = true;
@@ -715,7 +713,6 @@ public class ClientEncounterComponentFormSetController implements Serializable {
 
                 for (DesignComponentFormItem di : diListSingle) {
 
-                    System.out.println("di Single= " + di.getName() + di.getId());
 
                     //System.out.println("Before Item start in Single " + (new Date().getTime()) / 1000);
                     boolean skipThisItem = false;
@@ -1452,7 +1449,6 @@ public class ClientEncounterComponentFormSetController implements Serializable {
         m.put("r", DataRepresentationType.Client);
         m.put("c", c);
         m.put("i", ti.getItem().getCode());
-        System.out.println("m = " + m);
         List<ClientEncounterComponentItem> tis = getItemFacade().findByJpql(j, m);
         return tis;
 
@@ -1526,9 +1522,7 @@ public class ClientEncounterComponentFormSetController implements Serializable {
         }
         j += " order by vi.id desc";
         System.out.println("m = " + m);
-        System.out.println("j = " + j);
         lastEncounter = getEncounterFacade().findFirstByJpql(j, m);
-        System.out.println("lastEncounter = " + lastEncounter);
         j = "select vi from ClientEncounterComponentItem vi "
                 + " where vi.retired=false "
                 + " and vi.item.code=:ic"

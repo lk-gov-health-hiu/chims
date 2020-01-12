@@ -84,7 +84,6 @@ public class ClientEncounterComponentItemController implements Serializable {
         Map m = new HashMap();
         m.put("p", fs);
         List<ClientEncounterComponentItem> t = getFacade().findByJpql(j, m);
-        System.out.println("t = " + t);
         if (t == null) {
             t = new ArrayList<>();
         }

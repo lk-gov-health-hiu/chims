@@ -960,7 +960,6 @@ public class WebUserController implements Serializable {
         }
 
         System.out.println("userNameExsists");
-        System.out.println("userName = " + getSelected().getName());
         boolean une = userNameExsists(getSelected().getName());
         return une;
     }
@@ -970,7 +969,6 @@ public class WebUserController implements Serializable {
             return false;
         }
         System.out.println("userNameExsists = " + un);
-        System.out.println("un = " + un);
         String j = "select u from WebUser u where lower(u.name)=:un order by u.id desc";
         Map m = new HashMap();
         m.put("un", un.toLowerCase());
@@ -1571,7 +1569,6 @@ public class WebUserController implements Serializable {
 
     public List<Institution> getLoggableInstitutions() {
         System.out.println("getLoggableInstitutions");
-        System.out.println("loggableInstitutions = " + loggableInstitutions);
         if (loggableInstitutions == null) {
             loggableInstitutions = findAutherizedInstitutions();
         }

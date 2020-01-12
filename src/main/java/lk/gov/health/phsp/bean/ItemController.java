@@ -204,7 +204,6 @@ public class ItemController implements Serializable {
         String o = (String) UIComponent.getCurrentComponent(context).getAttributes().get("filter");
         System.out.println("o = " + o);
         Item ti = findItemByCode(o);
-        System.out.println("ti = " + ti);
         return findChildrenAndGrandchildrenItemList(ti, null, qry);
     }
 
