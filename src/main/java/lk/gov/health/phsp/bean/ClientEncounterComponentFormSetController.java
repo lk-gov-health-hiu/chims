@@ -603,7 +603,7 @@ public class ClientEncounterComponentFormSetController implements Serializable {
 
     public String createAndNavigateToClinicalEncounterComponentFormSetFromDesignComponentFormSetForClinicVisit(DesignComponentFormSet dfs) {
         ClientEncounterComponentFormSet efs = findLastUncompletedEncounterOfThatType(dfs, clientController.getSelected(), dfs.getInstitution(), EncounterType.Clinic_Visit);
-        System.out.println("efs = " + efs);
+
         if (efs == null) {
             return createNewAndNavigateToClinicalEncounterComponentFormSetFromDesignComponentFormSetForClinicVisit(dfs);
         } else {
@@ -669,19 +669,15 @@ public class ClientEncounterComponentFormSetController implements Serializable {
 
         for (DesignComponentForm df : dfList) {
 
-            System.out.println("df = " + df.getName() + " " + df.getId());
-
-            System.out.println("df.getComponentSex() = " + df.getComponentSex());
-            System.out.println("clientController.getSelected().getPerson().getSex().getCode() = " + clientController.getSelected().getPerson().getSex().getCode());
+            System.out.println(df.getOrderNo() + " = " + df.getName() + " " + df.getId() + "\t");
 
             boolean skipThisForm = false;
-            if (df.getComponentSex() == ComponentSex.For_Females && clientController.getSelected().getPerson().getSex().getCode().equalsIgnoreCase("male")) {
+            if (df.getComponentSex() == ComponentSex.For_Females && clientController.getSelected().getPerson().getSex().getCode().equalsIgnoreCase("sex_male")) {
                 skipThisForm = true;
             }
-            if (df.getComponentSex() == ComponentSex.For_Males && clientController.getSelected().getPerson().getSex().getCode().equalsIgnoreCase("female")) {
+            if (df.getComponentSex() == ComponentSex.For_Males && clientController.getSelected().getPerson().getSex().getCode().equalsIgnoreCase("sex_female")) {
                 skipThisForm = true;
             }
-            System.out.println("skipThisForm = " + skipThisForm);
 
             if (!skipThisForm) {
 
@@ -706,33 +702,18 @@ public class ClientEncounterComponentFormSetController implements Serializable {
                 //System.out.println("Before Filling Items " + (new Date().getTime()) / 1000);
                 List<DesignComponentFormItem> diList = designComponentFormItemController.fillItemsOfTheForm(df);
 
-                //System.out.println("After Filling Items " + (new Date().getTime()) / 1000);
-                List<DesignComponentFormItem> diListMultiple = new ArrayList<>();
-                List<DesignComponentFormItem> diListSingle = new ArrayList<>();
+                for (DesignComponentFormItem dis : diList) {
 
-                for (DesignComponentFormItem di : diList) {
+                    System.out.print(" " + dis.getName() + ",\t");
 
-                    System.out.println("di.getName() = " + di.getName());
-
-                    if (di.isMultipleEntiesPerForm()) {
-                        diListMultiple.add(di);
-                    } else {
-                        diListSingle.add(di);
-                    }
-                }
-
-                for (DesignComponentFormItem dis : diListSingle) {
-
-                    System.out.println("dis.getName() = " + dis.getName());
-                    //System.out.println("Before Item start in Single " + (new Date().getTime()) / 1000);
                     boolean disSkipThisItem = false;
-                    if (dis.getComponentSex() == ComponentSex.For_Females && clientController.getSelected().getPerson().getSex().getCode().equalsIgnoreCase("male")) {
+                    if (dis.getComponentSex() == ComponentSex.For_Females && clientController.getSelected().getPerson().getSex().getCode().equalsIgnoreCase("sex_male")) {
                         disSkipThisItem = true;
                     }
-                    if (dis.getComponentSex() == ComponentSex.For_Males && clientController.getSelected().getPerson().getSex().getCode().equalsIgnoreCase("female")) {
+                    if (dis.getComponentSex() == ComponentSex.For_Males && clientController.getSelected().getPerson().getSex().getCode().equalsIgnoreCase("sex_female")) {
                         disSkipThisItem = true;
                     }
-                    System.out.println("disSkipThisItem = " + disSkipThisItem);
+
                     if (!disSkipThisItem) {
                         ClientEncounterComponentItem ci = new ClientEncounterComponentItem();
 
@@ -805,96 +786,6 @@ public class ClientEncounterComponentFormSetController implements Serializable {
 
                         clientEncounterComponentItemController.save(ci);
                         // //System.out.println("ci.isDiscreptionAsASideLabel() = " + ci.isDiscreptionAsASideLabel());
-
-                    }
-
-                }
-
-                for (DesignComponentFormItem dim : diListMultiple) {
-
-                    System.out.println("dim.getName() = " + dim.getName());
-                    
-                    boolean dimSkipThisItem = false;
-                    if (dim.getComponentSex() == ComponentSex.For_Females && clientController.getSelected().getPerson().getSex().getCode().equalsIgnoreCase("male")) {
-                        dimSkipThisItem = true;
-                    }
-                    if (dim.getComponentSex() == ComponentSex.For_Males && clientController.getSelected().getPerson().getSex().getCode().equalsIgnoreCase("female")) {
-                        dimSkipThisItem = true;
-                    }
-
-                    System.out.println("dimSkipThisItem = " + dimSkipThisItem);
-                    
-                    if (!dimSkipThisItem) {
-
-                        ClientEncounterComponentItem ci = new ClientEncounterComponentItem();
-
-                        ci.setEncounter(e);
-                        ci.setInstitution(dfs.getInstitution());
-
-                        ci.setItemFormset(cfs);
-                        ci.setItemEncounter(e);
-                        ci.setItemClient(e.getClient());
-
-                        ci.setItem(dim.getItem());
-                        ci.setDescreption(dim.getDescreption());
-
-                        ci.setRequired(dim.isRequired());
-                        ci.setRequiredErrorMessage(dim.getRequiredErrorMessage());
-                        ci.setRegexValidationString(dim.getRegexValidationString());
-                        ci.setRegexValidationFailedMessage(dim.getRegexValidationFailedMessage());
-
-                        ci.setReferenceComponent(dim);
-                        ci.setParentComponent(cf);
-                        ci.setName(dim.getName());
-                        ci.setRenderType(dim.getRenderType());
-                        ci.setMimeType(dim.getMimeType());
-//                        ci.setSelectionDataType(di.getSelectionDataType());
-                        ci.setTopPercent(dim.getTopPercent());
-                        ci.setLeftPercent(dim.getLeftPercent());
-                        ci.setWidthPercent(dim.getWidthPercent());
-                        ci.setHeightPercent(dim.getHeightPercent());
-                        ci.setCategoryOfAvailableItems(dim.getCategoryOfAvailableItems());
-                        ci.setOrderNo(dim.getOrderNo());
-                        ci.setDataPopulationStrategy(dim.getDataPopulationStrategy());
-                        ci.setDataModificationStrategy(dim.getDataModificationStrategy());
-                        ci.setDataCompletionStrategy(dim.getDataCompletionStrategy());
-                        ci.setIntHtmlColor(dim.getIntHtmlColor());
-                        ci.setHexHtmlColour(dim.getHexHtmlColour());
-
-                        ci.setForegroundColour(dim.getForegroundColour());
-                        ci.setBackgroundColour(dim.getBackgroundColour());
-                        ci.setBorderColour(dim.getBorderColour());
-
-                        ci.setCalculateOnFocus(dim.isCalculateOnFocus());
-                        ci.setCalculationScript(dim.getCalculationScript());
-
-                        ci.setCalculateButton(dim.isCalculateButton());
-                        ci.setCalculationScriptForColour(dim.getCalculationScriptForColour());
-                        ci.setDisplayDetailsBox(dim.isDisplayDetailsBox());
-                        ci.setDiscreptionAsAToolTip(dim.isDiscreptionAsAToolTip());
-
-                        ci.setDisplayLastResult(dim.isDisplayLastResult());
-                        ci.setDisplayLinkToClientValues(dim.isDisplayLastResult());
-                        ci.setResultDisplayStrategy(dim.getResultDisplayStrategy());
-                        ci.setDisplayLinkToResultList(dim.isDisplayLinkToResultList());
-
-                        // //System.out.println("di.isDiscreptionAsASideLabel() = " + di.isDiscreptionAsASideLabel());
-                        ci.setDiscreptionAsASideLabel(dim.isDiscreptionAsASideLabel());
-
-                        // //System.out.println("ci.isDiscreptionAsASideLabel() = " + ci.isDiscreptionAsASideLabel());
-                        ci.setCalculationScriptForBackgroundColour(dim.getCalculationScriptForBackgroundColour());
-                        ci.setMultipleEntiesPerForm(dim.isMultipleEntiesPerForm());
-
-                        ci.setDataRepresentationType(DataRepresentationType.Encounter);
-
-                        clientEncounterComponentItemController.save(ci);
-
-                        if (dim.getDataPopulationStrategy() == DataPopulationStrategy.From_Client_Value) {
-                            updateFromClientValueMultiple(ci, e.getClient());
-                        } else if (dim.getDataPopulationStrategy() == DataPopulationStrategy.From_Last_Encounter) {
-                            //TODO: Create Logic to Populate
-//                            updateFromLastEncounter();
-                        }
 
                     }
 

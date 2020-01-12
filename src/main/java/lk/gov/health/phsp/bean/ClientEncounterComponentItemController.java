@@ -75,6 +75,7 @@ public class ClientEncounterComponentItemController implements Serializable {
 
     
     public List<ClientEncounterComponentItem> findClientEncounterComponentItemOfAForm(ClientEncounterComponentForm fs) {
+        System.out.println(fs.getOrderNo() + "Filling  " + fs.getName() + " " + fs.getId() );
         String j = "select f from ClientEncounterComponentItem f "
                 + " where f.retired=false "
                 + " and f.parentComponent=:p "
@@ -85,6 +86,7 @@ public class ClientEncounterComponentItemController implements Serializable {
         if (t == null) {
             t = new ArrayList<>();
         }
+        System.out.print("  = " + t.size());
         return t;
     }
 
