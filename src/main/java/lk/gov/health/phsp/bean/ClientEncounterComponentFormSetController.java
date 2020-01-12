@@ -467,6 +467,26 @@ public class ClientEncounterComponentFormSetController implements Serializable {
         }
         return fs;
     }
+    
+    
+    
+    public String fillAllEncountersFormSetsOfSelectedClient(EncounterType type) {
+        List<ClientEncounterComponentFormSet> fs;
+        Map m = new HashMap();
+        String j = "select s from ClientEncounterComponentFormSet s where "
+                + " s.retired=false "
+                + " and s.encounter.encounterType=:t "
+                + " and s.encounter.client=:c ";
+        j += " order by s.encounter.encounterFrom desc";
+        m.put("c", getClientController().getSelected());
+        m.put("t", type);
+        fs = getFacade().findByJpql(j, m);
+        if (fs == null) {
+            fs = new ArrayList<>();
+        }
+        items= fs;
+        return "/client/client_encounters";
+    }
 
     public ClientEncounterComponentFormSet findLastUncompletedEncounterOfThatType(DesignComponentFormSet dfs, Client c, Institution i, EncounterType t) {
         String j = "select f from  ClientEncounterComponentFormSet f join f.encounter e"
@@ -1574,9 +1594,9 @@ public class ClientEncounterComponentFormSetController implements Serializable {
     }
 
     public List<ClientEncounterComponentFormSet> getItems() {
-        if (items == null) {
-            items = getFacade().findAll();
-        }
+//        if (items == null) {
+//            items = getFacade().findAll();
+//        }
         return items;
     }
 

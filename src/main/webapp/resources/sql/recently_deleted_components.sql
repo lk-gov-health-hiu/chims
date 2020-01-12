@@ -1,7 +1,7 @@
-/*
+/* 
  * The MIT License
  *
- * Copyright 2019 Dr M H B Ariyaratne<buddhika.ari@gmail.com>.
+ * Copyright 2020 hiu_pdhs_sp.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,26 +21,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package lk.gov.health.phsp.enums;
-
 /**
- *
- * @author Dr M H B Ariyaratne<buddhika.ari@gmail.com>
+ * Author:  hiu_pdhs_sp
+ * Created: Jan 12, 2020
  */
-public enum ComponentSex {
-    For_Males,
-    For_Females,
-    For_Both;
-    
-    public String label(){
-        switch (this){
-            case For_Both: return "Both";
-                
-            case For_Females:return "Females";
-                
-            case For_Males:return "Males";
-                
-        }
-        return "";
-    }
-}
+SELECT id,name,`RETIRED`, `INSTITUTION_ID`, `DTYPE`,`CREATEDAT`,`CREATEDBY_ID`,`RETIREDAT`,`RETIREDBY_ID` FROM component order by `RETIREDAT` desc LIMIT 100;
+

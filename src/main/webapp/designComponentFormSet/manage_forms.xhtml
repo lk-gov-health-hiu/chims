@@ -23,13 +23,13 @@
 
                         <p:panelGrid columns="2" styleClass="alignTop" >
                             <f:facet name="header" >
-                                 <p:commandButton ajax="false" value="Back to Manage Form Sets" action="#{designComponentFormSetController.backToManageFormSets()}" style="float: right;" ></p:commandButton>
+                                <p:commandButton ajax="false" value="Back to Manage Form Sets" action="#{designComponentFormSetController.backToManageFormSets()}" style="float: right;" ></p:commandButton>
                             </f:facet>
 
 
                             <p:panel header="Existing Forms" >
                                 <p:dataTable id="lst" value="#{designComponentFormController.formsOfTheSelectedSet}" var="f" >
-                                    <p:column headerText="Order No" width="60" >
+                                    <p:column headerText="Order No" width="40" >
                                         <p:outputLabel value="#{f.orderNo}" >
                                             <f:convertNumber pattern="0" ></f:convertNumber>
                                         </p:outputLabel>
@@ -39,9 +39,9 @@
                                         </p:outputLabel>
                                     </p:column>
                                     <p:column headerText="Sex" width="80" >
-                                        <p:outputLabel value="#{f.componentSex}" ></p:outputLabel>
+                                        <p:outputLabel value="#{f.componentSex.label()}" ></p:outputLabel>
                                     </p:column>
-                                    <p:column headerText="Actions" width="250" >
+                                    <p:column headerText="Actions" width="260" >
                                         <p:commandButton id="btnEdit" value="Edit"  icon="ui-icon-pencil"  
                                                          action="#{designComponentFormController.toEditDesignComponentFrom()}" 
                                                          ajax="false" >
@@ -53,7 +53,7 @@
                                             <f:setPropertyActionListener value="#{f}" target="#{designComponentFormController.selected}" ></f:setPropertyActionListener>
                                         </p:commandButton>
                                     </p:column>
-                                    <p:column headerText="Change Order" width="150" >
+                                    <p:column headerText="Change Order" width="100" >
                                         <p:commandButton id="btnUp"  icon="ui-icon-arrowthick-1-n"  
                                                          action="#{designComponentFormController.moveUpTheSelectedSet()}" 
                                                          process="@this" update="lst" >
@@ -65,7 +65,7 @@
                                             <f:setPropertyActionListener value="#{f}" target="#{designComponentFormController.movingForm}" ></f:setPropertyActionListener>
                                         </p:commandButton>
                                     </p:column>
-                                    <p:column headerText="Remove" width="150" >
+                                    <p:column headerText="Remove" width="50" >
                                         <p:commandButton id="btnRemove" icon="ui-icon-trash"  onclick="if (!confirm('Really want to do that?'))
                                                     return false"
                                                          action="#{designComponentFormController.removeFromFromTheSelectedSet()}" 
@@ -106,9 +106,16 @@
 
 
                 </p:panel>
-
+                <div>
+                    <br/>
+                    <br/>
+                    <br/>
+                    <br/>
+                </div>
 
             </ui:define>
+
+
 
         </ui:composition>
 

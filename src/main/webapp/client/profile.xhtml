@@ -117,23 +117,23 @@
                                                 <strong><i class="fas fa-id-badge mr-1"></i> Name :</strong>
                                                 <h:outputLabel value="#{clientController.selected.person.nameWithTitle}" ></h:outputLabel>
                                                 <br/>
-                                                
+
                                                 <strong><i class="fas fa-id-badge mr-1"></i> PHN :</strong>
                                                 <h:outputLabel value="#{clientController.selected.phn}" ></h:outputLabel>
                                                 <br/>
-                                                
+
                                                 <strong><i class="fas fa-id-badge mr-1"></i> GN Area :</strong>
                                                 <h:outputLabel value="#{clientController.selected.person.gnArea.name}" ></h:outputLabel>
                                                 <br/>
-                                                
+
                                                 <strong><i class="fas fa-venus-mars mr-1"></i> Sex :</strong>
                                                 <h:outputLabel value="#{clientController.selected.person.sex.name}" ></h:outputLabel>
                                                 <br/>
-                                                
+
                                                 <strong><i class="fab fa-pagelines mr-1"></i> Age :</strong>
                                                 <h:outputLabel value="#{clientController.selected.person.age}" ></h:outputLabel>
                                                 <br/>
-                                                
+
                                                 <strong><i class="fas fa-birthday-cake mr-1"></i> DOB :</strong>
                                                 <h:outputLabel value="#{clientController.selected.person.dateOfBirth}" >
                                                     <f:convertDateTime pattern="dd MMMM yyyy" ></f:convertDateTime>
@@ -143,11 +143,11 @@
                                                 <strong><i class="fas fa-mobile-alt mr-1"></i> Mobile No. :</strong>
                                                 <h:outputLabel value="#{clientController.selected.person.phone1}" ></h:outputLabel>
                                                 <br/>
-                                                
+
                                                 <strong><i class="fas fa-phone-square-alt mr-1"></i> Tele No. :</strong>
                                                 <h:outputLabel value="#{clientController.selected.person.phone2}" ></h:outputLabel>
                                                 <br/>
-                                                
+
                                                 <strong><i class="fas fa-map-marker-alt mr-1"></i> Address</strong>
                                                 <p class="text-muted">
                                                     <h:outputLabel value="#{clientController.selected.person.address}" ></h:outputLabel>
@@ -228,7 +228,12 @@
                                                                     <div class="icon">
                                                                         <i class="fas fa-clinic-medical"></i>
                                                                     </div>
-                                                                    <a href="#" class="small-box-footer">More<i class="fas fa-arrow-circle-right"></i></a>
+                                                                    <h:form>
+                                                                        <h:commandLink action="#{clientEncounterComponentFormSetController.fillAllEncountersFormSetsOfSelectedClient('Clinic_Visit')}"
+                                                                                       class="small-box-footer"  >
+                                                                            More<i class="fas fa-arrow-circle-right"></i>
+                                                                        </h:commandLink>
+                                                                    </h:form>
                                                                 </div>
                                                             </div>
                                                         </div> 
@@ -327,11 +332,11 @@
                                                                                 <p:commandButton value="Enroll" ajax="false" 
                                                                                                  action="#{clientController.enrollInClinic()}" ></p:commandButton>
                                                                                 <p:commandButton action="#{institutionController.refreshMyInstitutions()}" ajax="false" 
-                                                                                                     icon="ui-icon-arrowrefresh-1-n" ></p:commandButton>
+                                                                                                 icon="ui-icon-arrowrefresh-1-n" ></p:commandButton>
                                                                             </td>
                                                                         </tr>
                                                                     </table>
-                                                                    
+
                                                                 </h:form>
 
                                                             </div>
