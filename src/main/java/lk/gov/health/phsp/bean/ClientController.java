@@ -241,7 +241,7 @@ public class ClientController implements Serializable {
         m.put("ret", false);
         List<Client> cs = getFacade().findByJpql(j, m);
         for (Client c : cs) {
-            System.out.println("c = " + c);
+            
             if (c.getCreatedAt() == null && c.getPerson().getCreatedAt() != null) {
                 c.setCreatedAt(c.getPerson().getCreatedAt());
                 getFacade().edit(c);
@@ -337,7 +337,7 @@ public class ClientController implements Serializable {
             items = new ArrayList<>();
         }
 
-        System.out.println("m = " + m);
+        
         items = getFacade().findByJpql(j, m);
         return "/insAdmin/registered_clients";
     }

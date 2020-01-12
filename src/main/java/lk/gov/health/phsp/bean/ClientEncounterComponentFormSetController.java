@@ -603,6 +603,7 @@ public class ClientEncounterComponentFormSetController implements Serializable {
 
     public String createAndNavigateToClinicalEncounterComponentFormSetFromDesignComponentFormSetForClinicVisit(DesignComponentFormSet dfs) {
         ClientEncounterComponentFormSet efs = findLastUncompletedEncounterOfThatType(dfs, clientController.getSelected(), dfs.getInstitution(), EncounterType.Clinic_Visit);
+        System.out.println("efs = " + efs);
         if (efs == null) {
             return createNewAndNavigateToClinicalEncounterComponentFormSetFromDesignComponentFormSetForClinicVisit(dfs);
         } else {
@@ -612,7 +613,6 @@ public class ClientEncounterComponentFormSetController implements Serializable {
     }
 
     public String createNewAndNavigateToClinicalEncounterComponentFormSetFromDesignComponentFormSetForClinicVisit(DesignComponentFormSet dfs) {
-
 
         String navigationLink = "/clientEncounterComponentFormSet/Formset";
         formEditable = true;
@@ -669,6 +669,11 @@ public class ClientEncounterComponentFormSetController implements Serializable {
 
         for (DesignComponentForm df : dfList) {
 
+            System.out.println("df = " + df.getName() + " " + df.getId());
+
+            System.out.println("df.getComponentSex() = " + df.getComponentSex());
+            System.out.println("clientController.getSelected().getPerson().getSex().getCode() = " + clientController.getSelected().getPerson().getSex().getCode());
+
             boolean skipThisForm = false;
             if (df.getComponentSex() == ComponentSex.For_Females && clientController.getSelected().getPerson().getSex().getCode().equalsIgnoreCase("male")) {
                 skipThisForm = true;
@@ -676,6 +681,8 @@ public class ClientEncounterComponentFormSetController implements Serializable {
             if (df.getComponentSex() == ComponentSex.For_Males && clientController.getSelected().getPerson().getSex().getCode().equalsIgnoreCase("female")) {
                 skipThisForm = true;
             }
+            System.out.println("skipThisForm = " + skipThisForm);
+
             if (!skipThisForm) {
 
                 ClientEncounterComponentForm cf = new ClientEncounterComponentForm();
@@ -704,6 +711,9 @@ public class ClientEncounterComponentFormSetController implements Serializable {
                 List<DesignComponentFormItem> diListSingle = new ArrayList<>();
 
                 for (DesignComponentFormItem di : diList) {
+
+                    System.out.println("di.getName() = " + di.getName());
+
                     if (di.isMultipleEntiesPerForm()) {
                         diListMultiple.add(di);
                     } else {
@@ -711,18 +721,19 @@ public class ClientEncounterComponentFormSetController implements Serializable {
                     }
                 }
 
-                for (DesignComponentFormItem di : diListSingle) {
+                for (DesignComponentFormItem dis : diListSingle) {
 
-
+                    System.out.println("dis.getName() = " + dis.getName());
                     //System.out.println("Before Item start in Single " + (new Date().getTime()) / 1000);
-                    boolean skipThisItem = false;
-                    if (di.getComponentSex() == ComponentSex.For_Females && clientController.getSelected().getPerson().getSex().getCode().equalsIgnoreCase("male")) {
-                        skipThisItem = true;
+                    boolean disSkipThisItem = false;
+                    if (dis.getComponentSex() == ComponentSex.For_Females && clientController.getSelected().getPerson().getSex().getCode().equalsIgnoreCase("male")) {
+                        disSkipThisItem = true;
                     }
-                    if (di.getComponentSex() == ComponentSex.For_Males && clientController.getSelected().getPerson().getSex().getCode().equalsIgnoreCase("female")) {
-                        skipThisItem = true;
+                    if (dis.getComponentSex() == ComponentSex.For_Males && clientController.getSelected().getPerson().getSex().getCode().equalsIgnoreCase("female")) {
+                        disSkipThisItem = true;
                     }
-                    if (!skipThisItem) {
+                    System.out.println("disSkipThisItem = " + disSkipThisItem);
+                    if (!disSkipThisItem) {
                         ClientEncounterComponentItem ci = new ClientEncounterComponentItem();
 
                         ci.setEncounter(e);
@@ -732,55 +743,55 @@ public class ClientEncounterComponentFormSetController implements Serializable {
                         ci.setItemEncounter(e);
                         ci.setItemClient(e.getClient());
 
-                        ci.setItem(di.getItem());
-                        ci.setDescreption(di.getDescreption());
+                        ci.setItem(dis.getItem());
+                        ci.setDescreption(dis.getDescreption());
 
-                        ci.setRequired(di.isRequired());
-                        ci.setRequiredErrorMessage(di.getRequiredErrorMessage());
-                        ci.setRegexValidationString(di.getRegexValidationString());
-                        ci.setRegexValidationFailedMessage(di.getRegexValidationFailedMessage());
+                        ci.setRequired(dis.isRequired());
+                        ci.setRequiredErrorMessage(dis.getRequiredErrorMessage());
+                        ci.setRegexValidationString(dis.getRegexValidationString());
+                        ci.setRegexValidationFailedMessage(dis.getRegexValidationFailedMessage());
 
-                        ci.setReferenceComponent(di);
+                        ci.setReferenceComponent(dis);
                         ci.setParentComponent(cf);
-                        ci.setName(di.getName());
-                        ci.setRenderType(di.getRenderType());
-                        ci.setMimeType(di.getMimeType());
-                        ci.setSelectionDataType(di.getSelectionDataType());
-                        ci.setTopPercent(di.getTopPercent());
-                        ci.setLeftPercent(di.getLeftPercent());
-                        ci.setWidthPercent(di.getWidthPercent());
-                        ci.setHeightPercent(di.getHeightPercent());
-                        ci.setCategoryOfAvailableItems(di.getCategoryOfAvailableItems());
-                        ci.setOrderNo(di.getOrderNo());
-                        ci.setDataPopulationStrategy(di.getDataPopulationStrategy());
-                        ci.setDataModificationStrategy(di.getDataModificationStrategy());
-                        ci.setDataCompletionStrategy(di.getDataCompletionStrategy());
-                        ci.setIntHtmlColor(di.getIntHtmlColor());
-                        ci.setHexHtmlColour(di.getHexHtmlColour());
+                        ci.setName(dis.getName());
+                        ci.setRenderType(dis.getRenderType());
+                        ci.setMimeType(dis.getMimeType());
+                        ci.setSelectionDataType(dis.getSelectionDataType());
+                        ci.setTopPercent(dis.getTopPercent());
+                        ci.setLeftPercent(dis.getLeftPercent());
+                        ci.setWidthPercent(dis.getWidthPercent());
+                        ci.setHeightPercent(dis.getHeightPercent());
+                        ci.setCategoryOfAvailableItems(dis.getCategoryOfAvailableItems());
+                        ci.setOrderNo(dis.getOrderNo());
+                        ci.setDataPopulationStrategy(dis.getDataPopulationStrategy());
+                        ci.setDataModificationStrategy(dis.getDataModificationStrategy());
+                        ci.setDataCompletionStrategy(dis.getDataCompletionStrategy());
+                        ci.setIntHtmlColor(dis.getIntHtmlColor());
+                        ci.setHexHtmlColour(dis.getHexHtmlColour());
 
-                        ci.setForegroundColour(di.getForegroundColour());
-                        ci.setBackgroundColour(di.getBackgroundColour());
-                        ci.setBorderColour(di.getBorderColour());
+                        ci.setForegroundColour(dis.getForegroundColour());
+                        ci.setBackgroundColour(dis.getBackgroundColour());
+                        ci.setBorderColour(dis.getBorderColour());
 
-                        ci.setCalculateOnFocus(di.isCalculateOnFocus());
-                        ci.setCalculationScript(di.getCalculationScript());
+                        ci.setCalculateOnFocus(dis.isCalculateOnFocus());
+                        ci.setCalculationScript(dis.getCalculationScript());
 
-                        ci.setCalculateButton(di.isCalculateButton());
-                        ci.setCalculationScriptForColour(di.getCalculationScriptForColour());
-                        ci.setDisplayDetailsBox(di.isDisplayDetailsBox());
-                        ci.setDiscreptionAsAToolTip(di.isDiscreptionAsAToolTip());
+                        ci.setCalculateButton(dis.isCalculateButton());
+                        ci.setCalculationScriptForColour(dis.getCalculationScriptForColour());
+                        ci.setDisplayDetailsBox(dis.isDisplayDetailsBox());
+                        ci.setDiscreptionAsAToolTip(dis.isDiscreptionAsAToolTip());
 
-                        ci.setDisplayLastResult(di.isDisplayLastResult());
-                        ci.setDisplayLinkToClientValues(di.isDisplayLastResult());
-                        ci.setResultDisplayStrategy(di.getResultDisplayStrategy());
-                        ci.setDisplayLinkToResultList(di.isDisplayLinkToResultList());
+                        ci.setDisplayLastResult(dis.isDisplayLastResult());
+                        ci.setDisplayLinkToClientValues(dis.isDisplayLastResult());
+                        ci.setResultDisplayStrategy(dis.getResultDisplayStrategy());
+                        ci.setDisplayLinkToResultList(dis.isDisplayLinkToResultList());
 
                         // //System.out.println("di.isDiscreptionAsASideLabel() = " + di.isDiscreptionAsASideLabel());
-                        ci.setDiscreptionAsASideLabel(di.isDiscreptionAsASideLabel());
+                        ci.setDiscreptionAsASideLabel(dis.isDiscreptionAsASideLabel());
 
                         // //System.out.println("ci.isDiscreptionAsASideLabel() = " + ci.isDiscreptionAsASideLabel());
-                        ci.setCalculationScriptForBackgroundColour(di.getCalculationScriptForBackgroundColour());
-                        ci.setMultipleEntiesPerForm(di.isMultipleEntiesPerForm());
+                        ci.setCalculationScriptForBackgroundColour(dis.getCalculationScriptForBackgroundColour());
+                        ci.setMultipleEntiesPerForm(dis.isMultipleEntiesPerForm());
 
                         ci.setDataRepresentationType(DataRepresentationType.Encounter);
 
@@ -799,18 +810,21 @@ public class ClientEncounterComponentFormSetController implements Serializable {
 
                 }
 
-                for (DesignComponentFormItem di : diListMultiple) {
+                for (DesignComponentFormItem dim : diListMultiple) {
 
-                    //System.out.println("Before Item start in Multiple " + (new Date().getTime()) / 1000);
-                    boolean skipThisItem = false;
-                    if (di.getComponentSex() == ComponentSex.For_Females && clientController.getSelected().getPerson().getSex().getCode().equalsIgnoreCase("male")) {
-                        skipThisItem = true;
+                    System.out.println("dim.getName() = " + dim.getName());
+                    
+                    boolean dimSkipThisItem = false;
+                    if (dim.getComponentSex() == ComponentSex.For_Females && clientController.getSelected().getPerson().getSex().getCode().equalsIgnoreCase("male")) {
+                        dimSkipThisItem = true;
                     }
-                    if (di.getComponentSex() == ComponentSex.For_Males && clientController.getSelected().getPerson().getSex().getCode().equalsIgnoreCase("female")) {
-                        skipThisItem = true;
+                    if (dim.getComponentSex() == ComponentSex.For_Males && clientController.getSelected().getPerson().getSex().getCode().equalsIgnoreCase("female")) {
+                        dimSkipThisItem = true;
                     }
 
-                    if (!skipThisItem) {
+                    System.out.println("dimSkipThisItem = " + dimSkipThisItem);
+                    
+                    if (!dimSkipThisItem) {
 
                         ClientEncounterComponentItem ci = new ClientEncounterComponentItem();
 
@@ -821,63 +835,63 @@ public class ClientEncounterComponentFormSetController implements Serializable {
                         ci.setItemEncounter(e);
                         ci.setItemClient(e.getClient());
 
-                        ci.setItem(di.getItem());
-                        ci.setDescreption(di.getDescreption());
+                        ci.setItem(dim.getItem());
+                        ci.setDescreption(dim.getDescreption());
 
-                        ci.setRequired(di.isRequired());
-                        ci.setRequiredErrorMessage(di.getRequiredErrorMessage());
-                        ci.setRegexValidationString(di.getRegexValidationString());
-                        ci.setRegexValidationFailedMessage(di.getRegexValidationFailedMessage());
+                        ci.setRequired(dim.isRequired());
+                        ci.setRequiredErrorMessage(dim.getRequiredErrorMessage());
+                        ci.setRegexValidationString(dim.getRegexValidationString());
+                        ci.setRegexValidationFailedMessage(dim.getRegexValidationFailedMessage());
 
-                        ci.setReferenceComponent(di);
+                        ci.setReferenceComponent(dim);
                         ci.setParentComponent(cf);
-                        ci.setName(di.getName());
-                        ci.setRenderType(di.getRenderType());
-                        ci.setMimeType(di.getMimeType());
+                        ci.setName(dim.getName());
+                        ci.setRenderType(dim.getRenderType());
+                        ci.setMimeType(dim.getMimeType());
 //                        ci.setSelectionDataType(di.getSelectionDataType());
-                        ci.setTopPercent(di.getTopPercent());
-                        ci.setLeftPercent(di.getLeftPercent());
-                        ci.setWidthPercent(di.getWidthPercent());
-                        ci.setHeightPercent(di.getHeightPercent());
-                        ci.setCategoryOfAvailableItems(di.getCategoryOfAvailableItems());
-                        ci.setOrderNo(di.getOrderNo());
-                        ci.setDataPopulationStrategy(di.getDataPopulationStrategy());
-                        ci.setDataModificationStrategy(di.getDataModificationStrategy());
-                        ci.setDataCompletionStrategy(di.getDataCompletionStrategy());
-                        ci.setIntHtmlColor(di.getIntHtmlColor());
-                        ci.setHexHtmlColour(di.getHexHtmlColour());
+                        ci.setTopPercent(dim.getTopPercent());
+                        ci.setLeftPercent(dim.getLeftPercent());
+                        ci.setWidthPercent(dim.getWidthPercent());
+                        ci.setHeightPercent(dim.getHeightPercent());
+                        ci.setCategoryOfAvailableItems(dim.getCategoryOfAvailableItems());
+                        ci.setOrderNo(dim.getOrderNo());
+                        ci.setDataPopulationStrategy(dim.getDataPopulationStrategy());
+                        ci.setDataModificationStrategy(dim.getDataModificationStrategy());
+                        ci.setDataCompletionStrategy(dim.getDataCompletionStrategy());
+                        ci.setIntHtmlColor(dim.getIntHtmlColor());
+                        ci.setHexHtmlColour(dim.getHexHtmlColour());
 
-                        ci.setForegroundColour(di.getForegroundColour());
-                        ci.setBackgroundColour(di.getBackgroundColour());
-                        ci.setBorderColour(di.getBorderColour());
+                        ci.setForegroundColour(dim.getForegroundColour());
+                        ci.setBackgroundColour(dim.getBackgroundColour());
+                        ci.setBorderColour(dim.getBorderColour());
 
-                        ci.setCalculateOnFocus(di.isCalculateOnFocus());
-                        ci.setCalculationScript(di.getCalculationScript());
+                        ci.setCalculateOnFocus(dim.isCalculateOnFocus());
+                        ci.setCalculationScript(dim.getCalculationScript());
 
-                        ci.setCalculateButton(di.isCalculateButton());
-                        ci.setCalculationScriptForColour(di.getCalculationScriptForColour());
-                        ci.setDisplayDetailsBox(di.isDisplayDetailsBox());
-                        ci.setDiscreptionAsAToolTip(di.isDiscreptionAsAToolTip());
+                        ci.setCalculateButton(dim.isCalculateButton());
+                        ci.setCalculationScriptForColour(dim.getCalculationScriptForColour());
+                        ci.setDisplayDetailsBox(dim.isDisplayDetailsBox());
+                        ci.setDiscreptionAsAToolTip(dim.isDiscreptionAsAToolTip());
 
-                        ci.setDisplayLastResult(di.isDisplayLastResult());
-                        ci.setDisplayLinkToClientValues(di.isDisplayLastResult());
-                        ci.setResultDisplayStrategy(di.getResultDisplayStrategy());
-                        ci.setDisplayLinkToResultList(di.isDisplayLinkToResultList());
+                        ci.setDisplayLastResult(dim.isDisplayLastResult());
+                        ci.setDisplayLinkToClientValues(dim.isDisplayLastResult());
+                        ci.setResultDisplayStrategy(dim.getResultDisplayStrategy());
+                        ci.setDisplayLinkToResultList(dim.isDisplayLinkToResultList());
 
                         // //System.out.println("di.isDiscreptionAsASideLabel() = " + di.isDiscreptionAsASideLabel());
-                        ci.setDiscreptionAsASideLabel(di.isDiscreptionAsASideLabel());
+                        ci.setDiscreptionAsASideLabel(dim.isDiscreptionAsASideLabel());
 
                         // //System.out.println("ci.isDiscreptionAsASideLabel() = " + ci.isDiscreptionAsASideLabel());
-                        ci.setCalculationScriptForBackgroundColour(di.getCalculationScriptForBackgroundColour());
-                        ci.setMultipleEntiesPerForm(di.isMultipleEntiesPerForm());
+                        ci.setCalculationScriptForBackgroundColour(dim.getCalculationScriptForBackgroundColour());
+                        ci.setMultipleEntiesPerForm(dim.isMultipleEntiesPerForm());
 
                         ci.setDataRepresentationType(DataRepresentationType.Encounter);
 
                         clientEncounterComponentItemController.save(ci);
 
-                        if (di.getDataPopulationStrategy() == DataPopulationStrategy.From_Client_Value) {
+                        if (dim.getDataPopulationStrategy() == DataPopulationStrategy.From_Client_Value) {
                             updateFromClientValueMultiple(ci, e.getClient());
-                        } else if (di.getDataPopulationStrategy() == DataPopulationStrategy.From_Last_Encounter) {
+                        } else if (dim.getDataPopulationStrategy() == DataPopulationStrategy.From_Last_Encounter) {
                             //TODO: Create Logic to Populate
 //                            updateFromLastEncounter();
                         }
