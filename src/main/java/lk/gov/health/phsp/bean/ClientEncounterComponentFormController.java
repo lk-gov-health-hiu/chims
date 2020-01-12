@@ -70,7 +70,6 @@ public class ClientEncounterComponentFormController implements Serializable {
         Map m = new HashMap();
         m.put("p", fs);
         System.out.println("m = " + m);
-        System.out.println("j = " + j);
         List<ClientEncounterComponentForm> t= getFacade().findByJpql(j, m);
         if(t ==null){
            t = new ArrayList<>();

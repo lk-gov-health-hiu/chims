@@ -202,7 +202,6 @@ public class ItemController implements Serializable {
     public List<Item> completeItemsofParentWithFIlter(String qry) {
         FacesContext context = FacesContext.getCurrentInstance();
         String o = (String) UIComponent.getCurrentComponent(context).getAttributes().get("filter");
-        System.out.println("o = " + o);
         Item ti = findItemByCode(o);
         return findChildrenAndGrandchildrenItemList(ti, null, qry);
     }

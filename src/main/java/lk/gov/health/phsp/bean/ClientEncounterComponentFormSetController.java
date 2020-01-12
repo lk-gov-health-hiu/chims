@@ -1521,7 +1521,6 @@ public class ClientEncounterComponentFormSetController implements Serializable {
                 break;
         }
         j += " order by vi.id desc";
-        System.out.println("m = " + m);
         lastEncounter = getEncounterFacade().findFirstByJpql(j, m);
         j = "select vi from ClientEncounterComponentItem vi "
                 + " where vi.retired=false "

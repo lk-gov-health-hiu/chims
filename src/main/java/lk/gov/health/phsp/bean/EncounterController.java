@@ -56,7 +56,6 @@ public class EncounterController implements Serializable {
         m.put("d", CommonController.startOfTheYear());
         m.put("ec", EncounterType.Clinic_Enroll);
         m.put("ins", clinic);
-        System.out.println("m = " + m);
         Long c = getFacade().findLongByJpql(j, m);
         if (c == null) {
             c = 1l;
@@ -81,7 +80,6 @@ public class EncounterController implements Serializable {
         m.put("ec", ec);
         m.put("ret", false);
         m.put("ins", clinic);
-        System.out.println("m = " + m);
         Long c = getFacade().findLongByJpql(j, m);
         if (c == null) {
             c = 0l;
