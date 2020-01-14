@@ -75,7 +75,6 @@ public class ClientEncounterComponentItemController implements Serializable {
 
     
     public List<ClientEncounterComponentItem> findClientEncounterComponentItemOfAForm(ClientEncounterComponentForm fs) {
-        System.out.println(fs.getOrderNo() + "Filling  " + fs.getName() + " " + fs.getId() );
         String j = "select f from ClientEncounterComponentItem f "
                 + " where f.retired=false "
                 + " and f.parentComponent=:p "
@@ -86,7 +85,6 @@ public class ClientEncounterComponentItemController implements Serializable {
         if (t == null) {
             t = new ArrayList<>();
         }
-        System.out.print("  = " + t.size());
         return t;
     }
 
@@ -122,48 +120,48 @@ public class ClientEncounterComponentItemController implements Serializable {
     }
 
     public void calculate(ClientEncounterComponentItem i) {
-        //System.out.println("calculate");
+        System.out.println("calculate");
         if (i == null) {
-            //System.out.println("i is null. NOT calculating " + i);
+            System.out.println("i is null. NOT calculating " + i);
             return;
         }
 
         if (i.getCalculationScript() == null || i.getCalculationScript().trim().equals("")) {
-            //System.out.println("No Cript. Not calculating ");
+            System.out.println("No Cript. Not calculating ");
             return;
         }
         if (i.getParentComponent() == null || i.getParentComponent().getParentComponent() == null) {
-            //System.out.println("No Formset. Not calculating ");
+            System.out.println("No Formset. Not calculating ");
             return;
         }
         if (!(i.getParentComponent().getParentComponent() instanceof ClientEncounterComponentFormSet)) {
-            //System.out.println("Not a Formset. Not calculating ");
-            //System.out.println("i.getParentComponent().getParentComponent() = " + i.getParentComponent().getParentComponent());
+            System.out.println("Not a Formset. Not calculating ");
+            System.out.println("i.getParentComponent().getParentComponent() = " + i.getParentComponent().getParentComponent());
             return;
         }
 
         if (i.getCalculationScript().trim().equalsIgnoreCase("#{client_current_age_in_years}")) {
             ClientEncounterComponentFormSet s = (ClientEncounterComponentFormSet) i.getParentComponent().getParentComponent();
-            //System.out.println("s = " + s);
+            System.out.println("s = " + s);
             Person p = s.getEncounter().getClient().getPerson();
-            //System.out.println("p = " + p);
-            //System.out.println("p.getAgeYears() = " + p.getAgeYears());
+            System.out.println("p = " + p);
+            System.out.println("p.getAgeYears() = " + p.getAgeYears());
             i.setShortTextValue(p.getAgeYears() + "");
             i.setIntegerNumberValue(p.getAgeYears());
             getFacade().edit(i);
             return;
         } else {
-            //System.out.println("No age is to calculate. Proceeding to normal calculation.");
+            System.out.println("No age is to calculate. Proceeding to normal calculation.");
         }
 
         List<Replaceable> replacingBlocks = findReplaceblesInCalculationString(i.getCalculationScript());
 
-        // //System.out.println("replacingBlocks = " + replacingBlocks);
+         System.out.println("replacingBlocks = " + replacingBlocks);
         for (Replaceable r : replacingBlocks) {
-            //System.out.println("r.getPef() = " + r.getPef());
+            System.out.println("r.getPef() = " + r.getPef());
             if (r.getPef().equalsIgnoreCase("f")) {
                 if (r.getSm().equalsIgnoreCase("s")) {
-                    //System.out.println("Single Value Search");
+                    System.out.println("Single Value Search");
                     r.setClientEncounterComponentItem(findFormsetValue(i, r.getVariableCode()));
                 } else {
                     r.setClientEncounterComponentItem(findFormsetValue(i, r.getVariableCode(), r.getValueCode()));
@@ -173,10 +171,10 @@ public class ClientEncounterComponentItemController implements Serializable {
             }
             if (r.getClientEncounterComponentItem() != null) {
                 ClientEncounterComponentItem c = r.getClientEncounterComponentItem();
-                //System.out.println("Found Item " + c.getId());
-                //System.out.println("c.getItem().getCode() = " + c.getItem().getCode());
-                //System.out.println("Data Type = " + c.getSelectionDataType());
-                //System.out.println("c.getShortTextValue() = " + c.getShortTextValue());
+                System.out.println("Found Item " + c.getId());
+                System.out.println("c.getItem().getCode() = " + c.getItem().getCode());
+                System.out.println("Data Type = " + c.getSelectionDataType());
+                System.out.println("c.getShortTextValue() = " + c.getShortTextValue());
                 //System.out.println("c.getBooleanValue() = " + c.getBooleanValue());
                 //System.out.println("c.getRealNumberValue() = " + c.getRealNumberValue());
                 //System.out.println("c.getLongNumberValue() = " + c.getLongNumberValue());

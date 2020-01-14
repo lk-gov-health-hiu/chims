@@ -669,7 +669,6 @@ public class ClientEncounterComponentFormSetController implements Serializable {
 
         for (DesignComponentForm df : dfList) {
 
-            System.out.println(df.getOrderNo() + " = " + df.getName() + " " + df.getId() + "\t");
 
             boolean skipThisForm = false;
             if (df.getComponentSex() == ComponentSex.For_Females && clientController.getSelected().getPerson().getSex().getCode().equalsIgnoreCase("sex_male")) {
@@ -704,7 +703,6 @@ public class ClientEncounterComponentFormSetController implements Serializable {
 
                 for (DesignComponentFormItem dis : diList) {
 
-                    System.out.print(" " + dis.getName() + ",\t");
 
                     boolean disSkipThisItem = false;
                     if (dis.getComponentSex() == ComponentSex.For_Females && clientController.getSelected().getPerson().getSex().getCode().equalsIgnoreCase("sex_male")) {
