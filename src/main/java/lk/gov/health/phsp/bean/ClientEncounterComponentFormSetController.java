@@ -92,6 +92,7 @@ public class ClientEncounterComponentFormSetController implements Serializable {
     private DesignComponentFormSet designFormSet;
     private boolean formEditable;
     private Date encounterDate;
+    private Integer selectedTabIndex;
 // </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="Constructors">
 
@@ -603,7 +604,7 @@ public class ClientEncounterComponentFormSetController implements Serializable {
 
     public String createAndNavigateToClinicalEncounterComponentFormSetFromDesignComponentFormSetForClinicVisit(DesignComponentFormSet dfs) {
         ClientEncounterComponentFormSet efs = findLastUncompletedEncounterOfThatType(dfs, clientController.getSelected(), dfs.getInstitution(), EncounterType.Clinic_Visit);
-
+        selectedTabIndex = 0;
         if (efs == null) {
             return createNewAndNavigateToClinicalEncounterComponentFormSetFromDesignComponentFormSetForClinicVisit(dfs);
         } else {
@@ -1667,6 +1668,9 @@ public class ClientEncounterComponentFormSetController implements Serializable {
         return encounterFacade;
     }
 
+    
+    
+    
     public CommonController getCommonController() {
         return commonController;
     }
@@ -1677,6 +1681,17 @@ public class ClientEncounterComponentFormSetController implements Serializable {
 
     public void setSelectedItems(List<ClientEncounterComponentFormSet> selectedItems) {
         this.selectedItems = selectedItems;
+    }
+
+    public Integer getSelectedTabIndex() {
+        if(selectedTabIndex==null){
+            selectedTabIndex = 0;
+        }
+        return selectedTabIndex;
+    }
+
+    public void setSelectedTabIndex(Integer selectedTabIndex) {
+        this.selectedTabIndex = selectedTabIndex;
     }
 
 // </editor-fold>    

@@ -435,6 +435,15 @@ public class ClientEncounterComponentItemController implements Serializable {
             getFacade().edit(i);
         }
 
+        Long temporaryFormSetStartTimeInLong ;
+        Long temporaryCurrentTimeInLong ;
+        
+        if(i.getParentComponent()==null && i.getParentComponent().getParentComponent()==null && i.getParentComponent().getParentComponent().getCreatedAt()==null){
+            temporaryFormSetStartTimeInLong = i.getParentComponent().getParentComponent().getCreatedAt().getTime();
+        }else{
+            temporaryFormSetStartTimeInLong = (new Date()).getTime();
+        }
+        
         ClientEncounterComponentItem ci = new ClientEncounterComponentItem();
 
         ci.setParentComponent(i.getParentComponent());
@@ -499,7 +508,15 @@ public class ClientEncounterComponentItemController implements Serializable {
         // //System.out.println("getParentComponent = " + ci.getParentComponent());
         // //System.out.println("getReferenceComponent = " + ci.getReferenceComponent());
 
-        ci.setOrderNo(i.getOrderNo() + (i.getOrderNo() / 0.001));
+        
+        
+        
+        
+        temporaryCurrentTimeInLong = (new Date()).getTime();
+        
+        ci.setOrderNo(i.getOrderNo() + ((temporaryCurrentTimeInLong - temporaryFormSetStartTimeInLong) / temporaryFormSetStartTimeInLong));
+        
+        
         ci.setCreatedAt(new Date());
         ci.setCreatedBy(webUserController.getLoggedUser());
 

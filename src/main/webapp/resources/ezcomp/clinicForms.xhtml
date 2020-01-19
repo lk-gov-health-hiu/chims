@@ -30,10 +30,18 @@
                                      <table >
                                          <tr>
                                              <td>
+                                                 Active Index
+                                             </td>
+                                              <td>
+                                                #{clientEncounterComponentFormSetController.selectedTabIndex}
+                                             </td>
+                                         </tr>
+                                         <tr>
+                                             <td>
                                                  Name
                                              </td>
                                               <td>
-                                                 #{ii.name}"
+                                                 #{ii.name}
                                              </td>
                                          </tr>
                                          <tr>
@@ -271,7 +279,7 @@
                             </td>
                             <td>
                                 <h:panelGroup rendered="#{ii.multipleEntiesPerForm}" >
-                                    <p:commandButton id="btnAdd"  value="Add Another" process="@this" update="@form :#{p:component('gpFormItems')}"
+                                    <p:commandButton id="btnAdd"  value="Add Another" process="@this" update="@form :#{p:component('formset')}"
                                                      action="#{clientEncounterComponentItemController.addAnother(ii)}"></p:commandButton>
 
                                 </h:panelGroup>
