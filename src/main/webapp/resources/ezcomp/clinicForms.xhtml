@@ -54,23 +54,29 @@
                                          </tr>
                                          <tr>
                                              <td>
-                                                 Name
+                                                 Selection Data Type
                                              </td>
                                               <td>
                                                  #{ii.selectionDataType}"
+                                             </td>
+                                         </tr>
+                                          <tr>
+                                             <td>
+                                                 Colour
+                                             </td>
+                                              <td>
+                                                 #{ii.generatedCss}
                                              </td>
                                          </tr>
                                      </table>
                                 
                             </td>
                             </h:panelGroup>
-                           
-
                             <h:panelGroup id="gpData" >
                                 <h:panelGroup rendered="#{ii.renderType eq 'Input_Text'}" >
                                     <h:panelGroup rendered="#{ii.selectionDataType eq'Short_Text'}" >
                                         <td>
-                                            <p:outputLabel for="itStC" value="#{ii.name}" ></p:outputLabel>
+                                            <p:outputLabel for="itStC" value="#{ii.name}" style="#{ii.generatedCss}" ></p:outputLabel>
                                         </td>
                                         <td>
                                             <p:inputText id="itStC" value="#{ii.shortTextValue}" 
@@ -89,7 +95,7 @@
                                     </h:panelGroup>
                                     <h:panelGroup rendered="#{ii.selectionDataType eq 'Integer_Number'}" >
                                         <td>
-                                            <p:outputLabel for="itIntC" value="#{ii.name}" ></p:outputLabel>
+                                            <p:outputLabel for="itIntC" value="#{ii.name}"  style="#{ii.generatedCss}" ></p:outputLabel>
                                         </td>
                                         <td>
                                             <p:inputText id="itIntC" value="#{ii.integerNumberValue}" 
@@ -109,7 +115,7 @@
                                     </h:panelGroup>
                                     <h:panelGroup rendered="#{ii.selectionDataType eq 'Real_Number'}" >
                                         <td>
-                                            <p:outputLabel for="itRnC" value="#{ii.name}" ></p:outputLabel>
+                                            <p:outputLabel for="itRnC" value="#{ii.name}"  style="#{ii.generatedCss}" ></p:outputLabel>
                                         </td>
                                         <td>
                                             <p:inputText id="itRnC" value="#{ii.realNumberValue}" 
@@ -127,7 +133,7 @@
                                     </h:panelGroup>
                                     <h:panelGroup rendered="#{ii.selectionDataType eq 'Long_Number'}" >
                                         <td>
-                                            <p:outputLabel for="itLongC" value="#{ii.name}" ></p:outputLabel>
+                                            <p:outputLabel for="itLongC" value="#{ii.name}"  style="#{ii.generatedCss}" ></p:outputLabel>
                                         </td>
                                         <td>
                                             <p:inputText id="itLongC" value="#{ii.longNumberValue}" 
@@ -147,7 +153,7 @@
                                 </h:panelGroup>
                                 <h:panelGroup rendered="#{ii.renderType eq 'Input_Text_Area'}" >
                                     <td>
-                                        <p:outputLabel for="txtItaL" value="#{ii.name}" ></p:outputLabel>
+                                        <p:outputLabel for="txtItaL" value="#{ii.name}"  style="#{ii.generatedCss}" ></p:outputLabel>
                                     </td>
                                     <td>
                                         <p:inputTextarea id="txtItaL" value="#{ii.longTextValue}" 
@@ -160,7 +166,7 @@
                                 <h:panelGroup rendered="#{ii.selectionDataType eq 'DateTime'}" >
                                     <h:panelGroup rendered="#{ii.renderType eq 'Date_Picker'}" >
                                         <td>
-                                            <p:outputLabel for="calDp" value="#{ii.name}" ></p:outputLabel>
+                                            <p:outputLabel for="calDp" value="#{ii.name}"  style="#{ii.generatedCss}" ></p:outputLabel>
                                         </td>
                                         <td>
                                             <p:calendar id="calDp" value="#{ii.dateValue}" 
@@ -189,7 +195,7 @@
                                 <h:panelGroup rendered="#{ii.selectionDataType eq 'Item_Reference'}" >
                                     <h:panelGroup rendered="#{ii.renderType eq 'Drop_Down_Menu'}" >
                                         <td>
-                                            <p:outputLabel for="domIc" value="#{ii.name}" ></p:outputLabel>
+                                            <p:outputLabel for="domIc" value="#{ii.name}"  style="#{ii.generatedCss}" ></p:outputLabel>
                                         </td>
                                         <td>
                                             <p:selectOneMenu id="domIc" value="#{ii.itemValue}" >
@@ -202,7 +208,7 @@
                                     </h:panelGroup>
                                     <h:panelGroup rendered="#{ii.renderType eq 'Autocomplete'}" >
                                         <td>
-                                            <p:outputLabel for="acItem" value="#{ii.name}" ></p:outputLabel>
+                                            <p:outputLabel for="acItem" value="#{ii.name}"  style="#{ii.generatedCss}" ></p:outputLabel>
                                         </td>
                                         <td>
 
@@ -224,7 +230,7 @@
                                 </h:panelGroup>
                                 <h:panelGroup rendered="#{ii.renderType eq 'Boolean_Checkbox'}" >
                                     <td>
-                                        <p:outputLabel for="bcNc" value="#{ii.name}" ></p:outputLabel>
+                                        <p:outputLabel for="bcNc" value="#{ii.name}"  style="#{ii.generatedCss}" ></p:outputLabel>
                                     </td>
                                     <td>
                                         <p:selectBooleanCheckbox id="bcNc" value="#{ii.booleanValue}" 
@@ -238,7 +244,7 @@
                                 </h:panelGroup>
                                 <h:panelGroup rendered="#{ii.renderType eq 'Autocomplete' and ii.selectionDataType eq 'Area_Reference'}" >
                                     <td>
-                                        <p:outputLabel for="acA" value="#{ii.name}" ></p:outputLabel>
+                                        <p:outputLabel for="acA" value="#{ii.name}"  style="#{ii.generatedCss}" ></p:outputLabel>
                                     </td>
                                     <td>
                                         <p:autoComplete id="acA" value="#{ii.areaValue}"
@@ -256,7 +262,7 @@
                                 </h:panelGroup>
                                 <h:panelGroup rendered="#{ii.renderType eq 'Prescreption'}" >
                                     <td>
-                                        <p:outputLabel value="#{ii.name}" ></p:outputLabel>
+                                        <p:outputLabel value="#{ii.name}"  style="#{ii.generatedCss}" ></p:outputLabel>
                                     </td>
                                     <td>
                                         <ez:prescription/>
