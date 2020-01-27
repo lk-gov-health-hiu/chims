@@ -32,7 +32,7 @@
 
     <servlet-mapping>
         <servlet-name>Faces Servlet</servlet-name>
-        <url-pattern>/moh/*</url-pattern>
+        <url-pattern>/app/*</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>
@@ -40,7 +40,8 @@
         </session-timeout>
     </session-config>
     <welcome-file-list>
-        <welcome-file>moh/index.xhtml</welcome-file>
+        <welcome-file>app/index.xhtml</welcome-file>
+         <welcome-file>/app/index.xhtml</welcome-file>
     </welcome-file-list>
    
     <filter>
@@ -61,7 +62,7 @@
     
     <error-page>
         <exception-type>javax.faces.application.ViewExpiredException</exception-type>
-        <location>/moh/timeout.xhtml</location>
+        <location>/app/timeout.xhtml</location>
     </error-page>    
     
 </web-app>
