@@ -167,7 +167,6 @@ public class InstitutionController implements Serializable {
             return tins;
         } else {
             for (Institution i : cins) {
-                System.out.println("i = " + i);
                 tins.addAll(findChildrenInstitutions(i));
             }
         }
@@ -285,7 +284,6 @@ public class InstitutionController implements Serializable {
     }
 
     public List<Institution> getMyClinics() {
-        System.out.println("getMyClinics");
         if (myClinics == null) {
             myClinics = new ArrayList<>();
             for (Institution i : webUserController.getLoggableInstitutions()) {

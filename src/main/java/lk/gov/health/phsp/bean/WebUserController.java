@@ -56,7 +56,7 @@ public class WebUserController implements Serializable {
     EJBs
      */
     @EJB
-    private lk.gov.health.phsp.facade.WebUserFacade ejbFacade;
+    private WebUserFacade ejbFacade;
     @EJB
     private InstitutionFacade institutionFacade;
     @EJB
@@ -586,6 +586,12 @@ public class WebUserController implements Serializable {
         if (loggedUser != null && withoutPassword) {
             return true;
         }
+        
+        if(getFacade()==null){
+            JsfUtil.addErrorMessage("Server Error");
+            return false;
+        }
+        
         String temSQL;
         temSQL = "SELECT u FROM WebUser u WHERE lower(u.name)=:userName and u.retired =:ret";
         Map m = new HashMap();
@@ -608,6 +614,10 @@ public class WebUserController implements Serializable {
     }
 
     private boolean isFirstVisit() {
+        if(getFacade()==null){
+            JsfUtil.addErrorMessage("Server Config Error.");
+            return false;
+        }
         String j = "select c from WebUser c";
         WebUser w = getFacade().findFirstByJpql(j);
         if (w==null) {
@@ -959,8 +969,6 @@ public class WebUserController implements Serializable {
             return false;
         }
 
-        System.out.println("userNameExsists");
-        System.out.println("userName = " + getSelected().getName());
         boolean une = userNameExsists(getSelected().getName());
         return une;
     }
@@ -969,8 +977,6 @@ public class WebUserController implements Serializable {
         if (un == null) {
             return false;
         }
-        System.out.println("userNameExsists = " + un);
-        System.out.println("un = " + un);
         String j = "select u from WebUser u where lower(u.name)=:un order by u.id desc";
         Map m = new HashMap();
         m.put("un", un.toLowerCase());
@@ -1570,8 +1576,6 @@ public class WebUserController implements Serializable {
     }
 
     public List<Institution> getLoggableInstitutions() {
-        System.out.println("getLoggableInstitutions");
-        System.out.println("loggableInstitutions = " + loggableInstitutions);
         if (loggableInstitutions == null) {
             loggableInstitutions = findAutherizedInstitutions();
         }

@@ -53,6 +53,7 @@ public class ItemController implements Serializable {
     private List<Item> religions;
     private List<Item> sexes;
     private List<Item> marietalStatus;
+    private List<Item> educationalStatus;
     private List<Item> citizenships;
     private List<Item> mimeTypes;
     private List<Item> categories;
@@ -202,9 +203,7 @@ public class ItemController implements Serializable {
     public List<Item> completeItemsofParentWithFIlter(String qry) {
         FacesContext context = FacesContext.getCurrentInstance();
         String o = (String) UIComponent.getCurrentComponent(context).getAttributes().get("filter");
-        System.out.println("o = " + o);
         Item ti = findItemByCode(o);
-        System.out.println("ti = " + ti);
         return findChildrenAndGrandchildrenItemList(ti, null, qry);
     }
 
@@ -222,6 +221,7 @@ public class ItemController implements Serializable {
     public void addInitialMetadata() {
         addTitles();
         addMarietalStatus();
+        addEducationalStatus();
         addReligions();
         addEthinicGroups();
         addSexes();
@@ -394,6 +394,15 @@ public class ItemController implements Serializable {
                 + "Dictionary_Item:marital_status:Divorsed:divorsed:3" + System.lineSeparator()
                 + "Dictionary_Item:marital_status:Seperated:seperated:4" + System.lineSeparator()
                 + "Dictionary_Item:marital_status:Other:marital_status_other:4" + System.lineSeparator();
+        addInitialMetadata(initialData);
+    }
+    
+    public void addEducationalStatus() {
+        String initialData = "Dictionary_Category::Educational Status:education_levels:0" + System.lineSeparator()
+                + "Dictionary_Item:education_levels:No Formal Education:no_formal_education:0" + System.lineSeparator()
+                + "Dictionary_Item:education_levels:1st Degree Education (Grade 1 -5 ):education_levels_1st_degree:1" + System.lineSeparator()
+                + "Dictionary_Item:education_levels:Secondary Education (Grade 6 - 10):education_levels_secondary_education:2" + System.lineSeparator()
+                + "Dictionary_Item:education_levels:Secondary Education (Grade 6 - 10):education_levels_secondary_education:2" + System.lineSeparator();
         addInitialMetadata(initialData);
     }
 
@@ -733,6 +742,10 @@ public class ItemController implements Serializable {
     public void setMarietalStatus(List<Item> marietalStatus) {
         this.marietalStatus = marietalStatus;
     }
+    
+    
+    
+    
 
     public List<Item> getCitizenships() {
         if (citizenships == null) {
@@ -829,6 +842,17 @@ public class ItemController implements Serializable {
 
     public void setSelectedParent(Item selectedParent) {
         this.selectedParent = selectedParent;
+    }
+
+    public List<Item> getEducationalStatus() {
+         if (educationalStatus == null) {
+            educationalStatus = findItemList("education_levels", ItemType.Dictionary_Item);
+        }
+        return educationalStatus;
+    }
+
+    public void setEducationalStatus(List<Item> educationalStatus) {
+        this.educationalStatus = educationalStatus;
     }
 
     @FacesConverter(forClass = Item.class)

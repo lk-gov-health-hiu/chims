@@ -70,6 +70,11 @@ public class Person implements Serializable {
 
     @ManyToOne
     private Item mariatalStatus;
+    
+     @ManyToOne
+    private Item educationStatus;
+     
+     private String occupation;
 
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date dateOfBirth;
@@ -548,6 +553,17 @@ public class Person implements Serializable {
         this.mariatalStatus = mariatalStatus;
     }
 
+    public Item getEducationStatus() {
+        return educationStatus;
+    }
+
+    public void setEducationStatus(Item educationStatus) {
+        this.educationStatus = educationStatus;
+    }
+    
+    
+    
+
 // </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="Over-rides">
     @Override
@@ -581,6 +597,14 @@ public class Person implements Serializable {
 
     public void setDobIsAnApproximation(boolean dobIsAnApproximation) {
         this.dobIsAnApproximation = dobIsAnApproximation;
+    }
+
+    public String getOccupation() {
+        return occupation;
+    }
+
+    public void setOccupation(String occupation) {
+        this.occupation = occupation;
     }
 
 }

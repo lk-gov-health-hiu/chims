@@ -56,6 +56,12 @@ public class DesignComponentFormController implements Serializable {
 // </editor-fold>    
 // <editor-fold defaultstate="collapsed" desc="Navigation Functions">
 
+    public String toListSystemForms(){
+        String j = "select f from DesignComponentForm f where f.parentComponent.institution is null order by f.name";
+        items = getFacade().findByJpql(j);
+        return "/designComponentForm/List";
+    }
+    
     public String toEditDesignComponentFrom() {
         if (selected == null) {
             JsfUtil.addErrorMessage("Nothing to Edit");

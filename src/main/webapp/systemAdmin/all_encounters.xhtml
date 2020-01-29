@@ -12,85 +12,73 @@
 
 
             <h:panelGrid columns="5" >
-                <p:commandButton value="Fill All Clients" ajax="false"
-                                 action="#{encounterController.fillAllClients()}">
+                <p:commandButton value="Fill All Encounters" ajax="false"
+                                 action="#{clientEncounterComponentFormSetController.fillAllEncountersFormSets()}">
                 </p:commandButton>
 
-                <p:commandButton value="Fill Retired Clients" ajax="false"
-                                 action="#{encounterController.fillRetiredClients()}">
+                <p:commandButton value="Fill Retired Encounters" ajax="false"
+                                 action="#{clientEncounterComponentFormSetController.fillAllRetiredEncountersFormSets()}">
                 </p:commandButton>
 
-                <p:commandButton value="Fill Non-Retired Clients" ajax="false"
-                                 action="#{encounterController.fillNonRetiredClients()}">
+                <p:commandButton value="Fill Non-Retired Encounters" ajax="false"
+                                 action="#{clientEncounterComponentFormSetController.fillAllNonRetiredEncountersFormSets()}">
                 </p:commandButton>
 
-                <p:commandButton value="Retire Selected Clients" ajax="false"
-                                 action="#{encounterController.retireSelectedClients()}">
+                <p:commandButton value="Retire Selected Encounters" ajax="false"
+                                 action="#{clientEncounterComponentFormSetController.retireSelectedItems()}">
                 </p:commandButton>
 
             </h:panelGrid>
 
-            <p:dataTable value="#{encounterController.items}"
-                         selection="#{encounterController.selectedClients}"
+            <p:dataTable value="#{clientEncounterComponentFormSetController.items}"
+                         selection="#{clientEncounterComponentFormSetController.selectedItems}"
                          var="c" 
                          rowKey="#{c.id}"
                          paginator="true"
                          rows="20"
                          rowsPerPageTemplate="10,20,30,40,50"
-                         resizeMode="expand"
+                         resizeMode="fit"
+                         tableStyle="width:auto;"
                          >
-                <p:column selectionMode="multiple" width="15" >
-                </p:column>
-                
-                 <p:column headerText="ID" width="200" sortBy="#{c.id}" 
-                           filterBy="#{c.id}" filterMatchMode="contains">
-                    <p:outputLabel value="#{c.id}" ></p:outputLabel>
+                <p:column selectionMode="multiple"  >
                 </p:column>
 
-                <p:column headerText="PHN" width="200" sortBy="#{c.phn}" filterBy="#{c.phn}" filterMatchMode="contains">
-                    <p:outputLabel value="#{c.client.phn}" ></p:outputLabel>
+                <p:column headerText="PHN"  sortBy="#{c.encounter.client.phn}" filterBy="#{c.encounter.client.phn}" filterMatchMode="contains">
+                    <p:outputLabel value="#{c.encounter.client.phn}" ></p:outputLabel>
                 </p:column>
 
-                <p:column headerText="Name" width="200"  sortBy="#{c.person.name}" filterBy="#{c.person.name}" filterMatchMode="contains">
-                    <p:outputLabel value="#{c.client.person.name}" ></p:outputLabel>
+                <p:column headerText="Name"   sortBy="#{c.encounter.client.person.name}" filterBy="#{c.encounter.client.person.name}" filterMatchMode="contains">
+                    <h:commandLink action="#{clientEncounterComponentFormSetController.toViewOrEditFormset()}"
+                                   style="color: #{rcv.completed?'white':'red'};">
+                        <h:outputLabel value="#{c.encounter.client.person.name}">
+                        </h:outputLabel>
+                        <f:setPropertyActionListener value="#{c}" target="#{clientEncounterComponentFormSetController.selected}" ></f:setPropertyActionListener>
+                    </h:commandLink>
                 </p:column>
 
-                <p:column  headerText="Sex" width="200" 
-                           sortBy="#{c.client.person.sex.name}" 
-                           filterBy="#{c.client.person.sex.name}" filterMatchMode="contains">
-                    <p:outputLabel value="#{c.client.person.sex.name}" ></p:outputLabel>
-                </p:column>
-
-                <p:column headerText="GN Area" width="200"  
-                          sortBy="#{c.client.person.gnArea.name}" 
-                          filterBy="#{c.client.person.gnArea.name}" 
+                <p:column headerText="District"   
+                          sortBy="#{c.encounter.client.person.district.name}" 
+                          filterBy="#{c.encounter.client.person.district.name}" 
                           filterMatchMode="contains">
-                    <p:outputLabel value="#{c.client.person.gnArea.name}" ></p:outputLabel>
+                    <p:outputLabel value="#{c.encounter.client.person.district.name}" ></p:outputLabel>
                 </p:column>
 
-                <p:column headerText="District" width="200"  
-                          sortBy="#{c.client.person.district.name}" 
-                          filterBy="#{c.client.person.district.name}" 
-                          filterMatchMode="contains">
-                    <p:outputLabel value="#{c.client.person.district.name}" ></p:outputLabel>
+                <p:column  headerText="Registered in"   
+                           sortBy="#{c.encounter.client.createInstitution.name}" 
+                           filterBy="#{c.encounter.client.createInstitution.name}" filterMatchMode="contains">
+                    <p:outputLabel value="#{c.encounter.client.createInstitution.name}" ></p:outputLabel>
                 </p:column>
 
-                <p:column  headerText="Registered in" width="200"  
-                           sortBy="#{c.client.createInstitution.name}" 
-                           filterBy="#{c.client.createInstitution.name}" filterMatchMode="contains">
-                    <p:outputLabel value="#{c.client.createInstitution.name}" ></p:outputLabel>
-                </p:column>
-
-                <p:column  headerText="Register at" width="200" sortBy="#{c.createdAt}" 
-                           filterBy="#{c.createdAt}" filterMatchMode="contains">
-                    <p:outputLabel value="#{c.createdAt}" >
-                        <f:convertDateTime pattern="dd MMMM yyyy" ></f:convertDateTime>
+                <p:column  headerText="Register at"  sortBy="#{c.encounter.createdAt}" 
+                           filterBy="#{c.encounter.createdAt}" filterMatchMode="contains">
+                    <p:outputLabel value="#{c.encounter.createdAt}" >
+                        <f:convertDateTime pattern="dd MM yyyy" ></f:convertDateTime>
                     </p:outputLabel>
                 </p:column>
-                
-                <p:column  headerText="Type" width="200" sortBy="#{c.encounterType}" 
-                            filterBy="#{c.encounterType}" filterMatchMode="contains">
-                    <p:outputLabel value="#{c.encounterType}" >
+
+                <p:column  headerText="Registeed By"  sortBy="#{c.encounter.createdBy.person.name}" 
+                           filterBy="#{c.encounter.createdBy.person.name}" filterMatchMode="contains">
+                    <p:outputLabel value="#{c.encounter.createdBy.person.name}" >
                     </p:outputLabel>
                 </p:column>
 

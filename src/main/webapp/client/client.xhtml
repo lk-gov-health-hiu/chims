@@ -58,6 +58,43 @@
                             </h:panelGroup>
 
 
+                            <p:outputLabel value="Age:"  />
+                            <h:panelGroup >
+                                <p:inputText autocomplete="off"  id="year"  
+                                             value="#{clientController.yearMonthDay.year}" 
+                                             style="width: 90px; ">
+                                    <f:ajax event="keyup" execute="@this month day" render="calDob" 
+                                            listener="#{clientController.yearMonthDateChanged()}"  />
+                                </p:inputText>
+
+                                <p:inputText autocomplete="off" id="month"
+                                             style="width: 90px; " 
+                                             value="#{clientController.yearMonthDay.month}">
+                                    <f:ajax event="keyup" execute="@this year day" 
+                                            render="calDob" 
+                                            listener="#{clientController.yearMonthDateChanged()}"  />
+                                </p:inputText>
+
+                                <p:inputText autocomplete="off" id="day" 
+                                             style="width: 90px;" 
+                                             value="#{clientController.yearMonthDay.day}">
+                                    <f:ajax event="keyup" execute="@this year month" render="calDob" 
+                                            listener="#{clientController.yearMonthDateChanged()}" />
+                                </p:inputText>
+
+                            </h:panelGroup>
+
+                            <p:outputLabel value="Date of Birth:"  />
+                            <p:calendar  value="#{clientController.selected.person.dateOfBirth}" 
+                                         id="calDob"  navigator="true" pattern="dd/MM/yyyy" 
+                                         inputStyle="width: 124px!important;" required="true"
+                                         styleClass="shortinput">
+                                <f:ajax event="dateSelect" listener="#{clientController.updateYearDateMonth}"
+                                        render="year month day" 
+                                        execute="@this"/>
+                            </p:calendar>
+
+
                             <p:outputLabel value="Mobile No.:" for="phone1" />
                             <p:inputText id="phone1"  autocomplete="off" value="#{clientController.selected.person.phone1}" title="Mobile" 
                                          validatorMessage="Please check the number">
@@ -125,6 +162,12 @@
                                                itemValue="#{m}" ></f:selectItems>
                             </p:selectOneMenu>
 
+                            <p:outputLabel value="Education Status:" for="education" />
+                            <p:selectOneMenu id="education" value="#{clientController.selected.person.educationStatus}" >
+                                <f:selectItem itemLabel="Please select" ></f:selectItem>
+                                <f:selectItems value="#{itemController.educationalStatus}" var="m" itemLabel="#{m.name}"
+                                               itemValue="#{m}" ></f:selectItems>
+                            </p:selectOneMenu>
 
                             <p:spacer></p:spacer>
                             <p:spacer></p:spacer>
@@ -138,32 +181,8 @@
                                             listener="#{clientController.yearMonthDateChanged()}"  />
                                 </p:inputText>
 
-                                <p:inputText autocomplete="off" id="month"
-                                             style="width: 90px; " 
-                                             value="#{clientController.yearMonthDay.month}">
-                                    <f:ajax event="keyup" execute="@this year day" 
-                                            render="calDob" 
-                                            listener="#{clientController.yearMonthDateChanged()}"  />
-                                </p:inputText>
-
-                                <p:inputText autocomplete="off" id="day" 
-                                             style="width: 90px;" 
-                                             value="#{clientController.yearMonthDay.day}">
-                                    <f:ajax event="keyup" execute="@this year month" render="calDob" 
-                                            listener="#{clientController.yearMonthDateChanged()}" />
-                                </p:inputText>
-
-                            </h:panelGroup>
-
-                            <p:outputLabel value="Date of Birth:"  />
-                            <p:calendar  value="#{clientController.selected.person.dateOfBirth}" 
-                                         id="calDob"  navigator="true" pattern="dd/MM/yyyy" 
-                                         inputStyle="width: 124px!important;" required="true"
-                                         styleClass="shortinput">
-                                <f:ajax event="dateSelect" listener="#{clientController.updateYearDateMonth}"
-                                        render="year month day" 
-                                        execute="@this"/>
-                            </p:calendar>
+                            <p:spacer></p:spacer>
+                            <p:spacer></p:spacer>
 
                             <p:outputLabel value="GN Area:" for="gn" />
                             <p:autoComplete id="gn" value="#{clientController.selected.person.gnArea}"
