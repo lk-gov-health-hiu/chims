@@ -95,12 +95,11 @@ public class AreaController implements Serializable {
     private int startRow = 1;
     private int year;
 
-    
-    public String listGnAreas(){
+    public String listGnAreas() {
         items = getAreas(AreaType.GN, null);
         return "/area/gn_list";
     }
-    
+
     public String importAreasFromExcel() {
         try {
             String strGnName;
@@ -1050,6 +1049,10 @@ public class AreaController implements Serializable {
     }
 
     public List<Area> getAreas(AreaType areaType, Area parentArea, Area grandParentArea) {
+        return getAreas(areaType, parentArea, grandParentArea, null);
+    }
+
+    public List<Area> getAreas(AreaType areaType, Area parentArea, Area grandParentArea, String qry) {
         String j;
         Map m = new HashMap();
         j = "select a "
@@ -1067,12 +1070,39 @@ public class AreaController implements Serializable {
             j += " and a.parentArea.parentArea=:gpa ";
             m.put("gpa", grandParentArea);
         }
+        if (qry != null) {
+            j += " and lower(a.name) like :qry ";
+            m.put("qry", "%" + qry.toLowerCase() + "%");
+        }
         j += " order by a.name";
         // //System.out.println("m = " + m);
         List<Area> areas = getFacade().findByJpql(j, m);
         return areas;
     }
 
+//    public List<Area> getAreas(AreaType areaType, Area parentArea, String qry) {
+//        String j;
+//        Map m = new HashMap();
+//        j = "select a "
+//                + " from Area a "
+//                + " where a.name is not null ";
+//        if (areaType != null) {
+//            j += " and a.type=:t";
+//            m.put("t", areaType);
+//        }
+//        if (parentArea != null) {
+//            j += " and a.parentArea=:pa ";
+//            m.put("pa", parentArea);
+//        }
+//        if (qry != null) {
+//            j += " and lower(a.name) like :qry ";
+//            m.put("qry", "%" + qry.toLowerCase() + "%");
+//        }
+//        j += " order by a.name";
+//        // //System.out.println("m = " + m);
+//        List<Area> areas = getFacade().findByJpql(j, m);
+//        return areas;
+//    }
     public List<Area> completeProvinces(String qry) {
         return getAreas(qry, AreaType.Province);
     }
