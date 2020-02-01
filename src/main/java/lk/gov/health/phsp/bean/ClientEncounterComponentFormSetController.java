@@ -940,6 +940,9 @@ public class ClientEncounterComponentFormSetController implements Serializable {
             case "client_current_age":
                 ti.setShortTextValue(c.getPerson().getAge());
                 return;
+                case "client_age_at_encounter_in_years":
+                ti.setIntegerNumberValue(c.getPerson().getAgeYears());
+                return;
             case "client_age_at_encounter":
                 ti.setShortTextValue(c.getPerson().getAge());
                 return;
