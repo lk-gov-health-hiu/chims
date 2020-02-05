@@ -1,0 +1,92 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <body>
+
+        <ui:composition template="./../template.xhtml">
+
+            <ui:define name="content">
+
+
+
+
+                <p:panel style="text-align: center;height: 100%;" >
+                    <f:facet name="header" >
+                        <p:outputLabel value="Print Client Details" rendered="#{clientController.selected.id eq null}"></p:outputLabel>
+                    </f:facet>
+
+                    <h:form>
+                        <p:panelGrid columns="1">
+                            <p:commandLink value="Print PHN as a Barcode" ajax="false">
+                                <p:printer target="barcodePhn" ></p:printer>
+                            </p:commandLink>
+
+                            <p:commandLink value="Print Card" ajax="false">
+                                <p:printer target="card" ></p:printer>
+                            </p:commandLink>
+
+                            <p:commandLink value="Back" ajax="false" action="/client/profile">
+                            </p:commandLink>
+
+                        </p:panelGrid>
+
+                        <div class="printOnly" >
+                            <p:barcode id="barcodePhn" type="code128" cache="false" value="#{clientController.selected.phn}" ></p:barcode>
+                            <p:panel id="card" >
+                                <table>
+                                    <tr>
+                                        <th colspan="3" >
+                                            Percenal Health Card
+                                        </th>
+                                    </tr>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th><p:spacer height="1" width="10"></p:spacer>
+                                        </th>
+                                        <th>#{clientController.selected.person.nameWithTitle}</th>
+                                    </tr>
+                                    <tr>
+                                        <th>Age</th>
+                                        <th><p:spacer height="1" width="10"></p:spacer>
+                                        </th>
+                                        <th>#{clientController.selected.person.age}</th>
+                                    </tr>
+                                    <tr>
+                                        <th>PHN</th>
+                                        <th><p:spacer height="1" width="10"></p:spacer>
+                                        </th>
+                                        <th>#{clientController.selected.phn}</th>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="3">
+                                            <p:barcode id="cardPhn" type="code128" cache="false" value="#{clientController.selected.phn}" ></p:barcode>
+                                        </td>
+                                    </tr>
+                                </table>
+
+                            </p:panel>
+                        </div>
+
+
+
+                    </h:form>
+
+                </p:panel>
+
+
+
+
+
+
+
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>
