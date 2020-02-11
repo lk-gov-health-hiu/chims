@@ -212,9 +212,9 @@
                             <p:autoComplete id="dsd" value="#{clientController.selected.person.dsArea}"
                                             completeMethod="#{areaController.completeDsAreas}"
                                             var="ds" itemLabel="#{ds.name}" itemValue="#{ds}"
-                                            maxResults="15" forceSelection="true"  
+                                            maxResults="15" forceSelection="true"  disabled="true"
+
                                             minQueryLength="3">
-                                <p:ajax event="itemSelect" process="@this" update="gn" ></p:ajax>
                             </p:autoComplete>
 
                             <p:outputLabel value="District:" for="district" />
