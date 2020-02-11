@@ -147,6 +147,19 @@ public class ClientController implements Serializable {
     // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="Functions">
    
+    
+    public List<Area> getGnAreasForTheSelectedClient(String qry){
+        List<Area> areas = new ArrayList<>();
+        if(selected==null){
+            return areas;
+        }
+        if(selected.getPerson().getDsArea()==null){
+            return areaController.getAreas(AreaType.GN,null,  null, qry);
+        }else{
+            return areaController.getAreas(AreaType.GN,selected.getPerson().getDsArea(),  null, qry);
+        }
+    }
+    
     public void clearExistsValues(){
         phnExists=false;
         nicExists=false;
