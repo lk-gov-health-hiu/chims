@@ -30,8 +30,8 @@
                 </p:submenu>
 
                 <p:submenu label="Settings"  rendered="#{webUserController.hasPrivilege('User')}" >
-                    <p:menuitem value="Change My Password" action="/webUser/my_password"  />
-                    <p:menuitem value="Change My Details" action="/webUser/my_details"  />
+                    <p:menuitem value="Change My Password" action="#{webUserController.toChangeMyPassword()}"  />
+                    <p:menuitem value="Change My Details" action="#{webUserController.toChangeMyDetails()}"  />
                 </p:submenu>
 
                 <p:submenu label="Analysis" >
@@ -94,8 +94,8 @@
                     </p:submenu>
 
                     <p:submenu label="Settings" >
-                        <p:menuitem value="Change My Password" action="/webUser/my_password"  />
-                        <p:menuitem value="Change My Details" action="/webUser/my_details"  />
+                        <p:menuitem value="Change My Password" action="#{webUserController.toChangeMyPassword()}"  />
+                        <p:menuitem value="Change My Details" action="#{webUserController.toChangeMyDetails()}"  />
                     </p:submenu>
 
                     <p:submenu label="Analysis" >

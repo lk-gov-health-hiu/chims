@@ -26,6 +26,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
 import javax.inject.Inject;
+import javax.persistence.Transient;
 import jxl.Cell;
 import jxl.Sheet;
 import jxl.Workbook;
@@ -64,6 +65,10 @@ public class ItemController implements Serializable {
     private int itemCodeColumnNumber;
     private int parentCodeColumnNumber;
     private int startRow = 1;
+    
+  
+    
+    
 
     public ItemController() {
     }
@@ -854,6 +859,11 @@ public class ItemController implements Serializable {
     public void setEducationalStatus(List<Item> educationalStatus) {
         this.educationalStatus = educationalStatus;
     }
+
+   
+    
+    
+    
 
     @FacesConverter(forClass = Item.class)
     public static class ItemControllerConverter implements Converter {

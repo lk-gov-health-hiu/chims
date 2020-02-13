@@ -35,6 +35,7 @@ import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
+import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlRootElement;
 import lk.gov.health.phsp.enums.SelectionDataType;
 
@@ -47,6 +48,10 @@ import lk.gov.health.phsp.enums.SelectionDataType;
 public class Item implements Serializable {
 
     private static final long serialVersionUID = 1L;
+
+    public static long getSerialVersionUID() {
+        return serialVersionUID;
+    }
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -65,8 +70,9 @@ public class Item implements Serializable {
     private Double absoluteMaximumDbl;
     private Integer absoluteMinimumInt;
     private Integer absoluteMaximumInt;
+    private Long absoluteMinimumLong;
+    private Long absoluteMaximumLong;
     private Boolean multipleEntiesPerClientStatus;
-    
 
     private int orderNo;
 
@@ -85,6 +91,33 @@ public class Item implements Serializable {
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date retiredAt;
     private String retireComments;
+
+    @Transient
+    private boolean dataTypeReal;
+    @Transient
+    private boolean dataTypeLong;
+    @Transient
+    private boolean dataTypeItem;
+    @Transient
+    private boolean dataTypeShortText;
+    @Transient
+    private boolean dataTypeLongText;
+    @Transient
+    private boolean dataTypeInteger;
+    @Transient
+    private boolean dataTypeDateTime;
+    @Transient
+    private boolean dataTypeArea;
+    @Transient
+    private boolean dataTypeClient;
+    @Transient
+    private boolean dataTypeInstitution;
+    @Transient
+    private boolean dataTypeBoolean;
+    @Transient
+    private boolean dataTypeByteArray;
+    @Transient
+    private boolean dataTypePrescreption;
 
     public ItemType getItemType() {
         return itemType;
@@ -285,6 +318,144 @@ public class Item implements Serializable {
 
     public void setMultipleEntiesPerClientStatus(Boolean multipleEntiesPerClientStatus) {
         this.multipleEntiesPerClientStatus = multipleEntiesPerClientStatus;
+    }
+
+    public void classifyDataTypes() {
+
+        dataTypeReal = false;
+        dataTypeLong = false;
+        dataTypeItem = false;
+        dataTypeShortText = false;
+        dataTypeLongText = false;
+        dataTypeInteger = false;
+        dataTypeDateTime = false;
+        dataTypeArea = false;
+        dataTypeClient = false;
+        dataTypeInstitution = false;
+        dataTypeBoolean = false;
+        dataTypeByteArray = false;
+        dataTypePrescreption = false;
+
+        switch (this.dataType) {
+            case Area_Reference:
+                dataTypeArea = true;
+                return;
+            case Boolean:
+                dataTypeBoolean = true;
+                return;
+            case Byte_Array:
+                dataTypeByteArray = true;
+                return;
+            case Client_Reference:
+                dataTypeClient = true;
+                return;
+            case DateTime:
+                dataTypeDateTime = true;
+                return;
+            case Integer_Number:
+                dataTypeInteger = true;
+                return;
+            case Item_Reference:
+                dataTypeItem = true;
+                return;
+            case Long_Number:
+                dataTypeLong = true;
+                return;
+            case Long_Text:
+                dataTypeLongText = true;
+                return;
+            case Prescreption_Reference:
+                dataTypePrescreption = true;
+                return;
+            case Real_Number:
+                dataTypeReal = true;
+                return;
+            case Short_Text:
+                dataTypeShortText = true;
+                return;
+
+        }
+    }
+
+    public boolean isDataTypeItem() {
+        classifyDataTypes();
+        return dataTypeItem;
+    }
+
+    public boolean isDataTypeShortText() {
+        classifyDataTypes();
+        return dataTypeShortText;
+    }
+
+    public boolean isDataTypeLongText() {
+        classifyDataTypes();
+        return dataTypeLongText;
+    }
+
+    public boolean isDataTypeDateTime() {
+        classifyDataTypes();
+        return dataTypeDateTime;
+    }
+
+    public boolean isDataTypeArea() {
+        classifyDataTypes();
+        return dataTypeArea;
+    }
+
+    public boolean isDataTypeClient() {
+        classifyDataTypes();
+        return dataTypeClient;
+    }
+
+    public boolean isDataTypeInstitution() {
+        classifyDataTypes();
+        return dataTypeInstitution;
+    }
+
+    public boolean isDataTypeReal() {
+        classifyDataTypes();
+        return dataTypeReal;
+    }
+
+    public boolean isDataTypeLong() {
+        classifyDataTypes();
+        return dataTypeLong;
+    }
+
+    public boolean isDataTypeInteger() {
+        classifyDataTypes();
+        return dataTypeInteger;
+    }
+
+    public boolean isDataTypeBoolean() {
+        classifyDataTypes();
+        return dataTypeBoolean;
+    }
+
+    public boolean isDataTypeByteArray() {
+        classifyDataTypes();
+        return dataTypeByteArray;
+    }
+
+    public boolean isDataTypePrescreption() {
+        classifyDataTypes();
+        return dataTypePrescreption;
+    }
+
+    public Long getAbsoluteMinimumLong() {
+        return absoluteMinimumLong;
+    }
+
+    public void setAbsoluteMinimumLong(Long absoluteMinimumLong) {
+        this.absoluteMinimumLong = absoluteMinimumLong;
+    }
+
+    public Long getAbsoluteMaximumLong() {
+        return absoluteMaximumLong;
+    }
+
+    public void setAbsoluteMaximumLong(Long absoluteMaximumLong) {
+        this.absoluteMaximumLong = absoluteMaximumLong;
     }
     
     
