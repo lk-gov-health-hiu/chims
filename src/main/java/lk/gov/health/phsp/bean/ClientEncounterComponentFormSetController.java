@@ -670,7 +670,6 @@ public class ClientEncounterComponentFormSetController implements Serializable {
 
         for (DesignComponentForm df : dfList) {
 
-
             boolean skipThisForm = false;
             if (df.getComponentSex() == ComponentSex.For_Females && clientController.getSelected().getPerson().getSex().getCode().equalsIgnoreCase("sex_male")) {
                 skipThisForm = true;
@@ -703,7 +702,6 @@ public class ClientEncounterComponentFormSetController implements Serializable {
                 List<DesignComponentFormItem> diList = designComponentFormItemController.fillItemsOfTheForm(df);
 
                 for (DesignComponentFormItem dis : diList) {
-
 
                     boolean disSkipThisItem = false;
                     if (dis.getComponentSex() == ComponentSex.For_Females && clientController.getSelected().getPerson().getSex().getCode().equalsIgnoreCase("sex_male")) {
@@ -940,8 +938,10 @@ public class ClientEncounterComponentFormSetController implements Serializable {
             case "client_current_age":
                 ti.setShortTextValue(c.getPerson().getAge());
                 return;
-                case "client_age_at_encounter_in_years":
+            case "client_age_at_encounter_in_years":
                 ti.setIntegerNumberValue(c.getPerson().getAgeYears());
+                ti.setShortTextValue(c.getPerson().getAgeYears() + "");
+                ti.setRealNumberValue(Double.valueOf(c.getPerson().getAgeYears()));
                 return;
             case "client_age_at_encounter":
                 ti.setShortTextValue(c.getPerson().getAge());
@@ -1671,9 +1671,6 @@ public class ClientEncounterComponentFormSetController implements Serializable {
         return encounterFacade;
     }
 
-    
-    
-    
     public CommonController getCommonController() {
         return commonController;
     }
@@ -1687,7 +1684,7 @@ public class ClientEncounterComponentFormSetController implements Serializable {
     }
 
     public Integer getSelectedTabIndex() {
-        if(selectedTabIndex==null){
+        if (selectedTabIndex == null) {
             selectedTabIndex = 0;
         }
         return selectedTabIndex;
