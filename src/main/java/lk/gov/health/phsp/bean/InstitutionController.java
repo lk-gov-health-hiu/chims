@@ -7,6 +7,7 @@ import lk.gov.health.phsp.facade.InstitutionFacade;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -42,13 +43,12 @@ public class InstitutionController implements Serializable {
 
     private List<Institution> items = null;
     private Institution selected;
+    private Institution deleting;
     private List<Institution> myClinics;
     private List<Area> gnAreasOfSelected;
     private Area area;
     private Area removingArea;
 
-    
-    
     public void addGnToPmc() {
         if (selected == null) {
             JsfUtil.addErrorMessage("No PMC is selected");
@@ -64,17 +64,48 @@ public class InstitutionController implements Serializable {
         fillGnAreasOfSelected();
         JsfUtil.addSuccessMessage("Successfully added.");
     }
+
+    public String toAddInstitution() {
+        selected = new Institution();
+        return "/institution/institution";
+    }
     
+    public String toEditInstitution() {
+        if(selected==null){
+            JsfUtil.addErrorMessage("Please select");
+            return "";
+        }
+        return "/institution/institution";
+    }
     
+    public String deleteInstitution() {
+        if(deleting==null){
+            JsfUtil.addErrorMessage("Please select");
+            return "";
+        }
+        deleting.setRetired(true);
+        deleting.setRetiredAt(new Date());
+        deleting.setRetirer(webUserController.getLoggedUser());
+        getFacade().edit(deleting);
+        return "/institution/list";
+    }
     
-    public void removeGnFromPmc(){
-        if(removingArea==null){
-             JsfUtil.addErrorMessage("Nothing to remove");
+    public String toListInstitutions(){
+        return "/institution/list";
+    }
+    
+     public String toSearchInstitutions(){
+        return "/institution/search";
+    }
+
+    public void removeGnFromPmc() {
+        if (removingArea == null) {
+            JsfUtil.addErrorMessage("Nothing to remove");
             return;
         }
         removingArea.setPmci(null);
         fillGnAreasOfSelected();
-        removingArea =null;
+        removingArea = null;
     }
 
     public void fillGnAreasOfSelected() {
@@ -91,8 +122,8 @@ public class InstitutionController implements Serializable {
         m.put("p", selected);
         gnAreasOfSelected = areaFacade.findByJpql(j, m);
     }
-    
-    public List<Area>  findDrainingGnAreas(Institution ins) {
+
+    public List<Area> findDrainingGnAreas(Institution ins) {
         List<Area> gns;
         if (ins == null) {
             gns = new ArrayList<>();
@@ -152,14 +183,14 @@ public class InstitutionController implements Serializable {
         }
         return tins;
     }
-    
+
     public List<Institution> findChildrenInstitutions(Institution ins) {
         String j;
         Map m = new HashMap();
         j = "select i from Institution i where i.retired=:ret "
                 + " and i.parent=:p ";
         m.put("p", ins);
-           m.put("ret", false);
+        m.put("ret", false);
         List<Institution> cins = getFacade().findByJpql(j, m);
         List<Institution> tins = new ArrayList<>();
         tins.addAll(cins);
@@ -211,6 +242,28 @@ public class InstitutionController implements Serializable {
         selected = new Institution();
         initializeEmbeddableKey();
         return selected;
+    }
+
+    public void saveOrUpdateInstitution() {
+        if (selected == null) {
+            JsfUtil.addErrorMessage("Nothing to select");
+            return;
+        }
+        if (selected.getId() == null) {
+            selected.setCreatedAt(new Date());
+            selected.setCreater(webUserController.getLoggedUser());
+            getFacade().create(selected);
+            items = null;
+            getItems();
+            JsfUtil.addSuccessMessage("Saved");
+        } else {
+            selected.setEditedAt(new Date());
+            selected.setEditer(webUserController.getLoggedUser());
+            getFacade().edit(selected);
+            items = null;
+            getItems();
+            JsfUtil.addSuccessMessage("Updates");
+        }
     }
 
     public void create() {
@@ -294,11 +347,7 @@ public class InstitutionController implements Serializable {
         }
         return myClinics;
     }
-    
-    
 
-    
-    
     public lk.gov.health.phsp.facade.InstitutionFacade getEjbFacade() {
         return ejbFacade;
     }
@@ -343,6 +392,17 @@ public class InstitutionController implements Serializable {
         this.myClinics = myClinics;
     }
 
+    public Institution getDeleting() {
+        return deleting;
+    }
+
+    public void setDeleting(Institution deleting) {
+        this.deleting = deleting;
+    }
+
+    
+    
+    
     @FacesConverter(forClass = Institution.class)
     public static class InstitutionControllerConverter implements Converter {
 

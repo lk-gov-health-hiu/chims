@@ -1,0 +1,44 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <body>
+
+        <ui:composition template="./../template.xhtml">
+
+            <ui:define name="content">
+             
+
+
+                    <p:panelGrid style="width: 100%;" columns="2" styleClass="alignTop">
+                        <f:facet name="header" >
+                            <p:outputLabel value="Manage Institutions" ></p:outputLabel>
+                        </f:facet>
+                        <h:form>
+                        <p:panelGrid columns="1" >
+                            <p:commandButton value="Add Institution" ajax="false"
+                                             action="#{institutionController.toAddInstitution}"></p:commandButton>
+                            <p:commandButton value="Search Institutions" ajax="false"
+                                             action="#{institutionController.toSearchInstitutions()}"></p:commandButton>
+                            <p:commandButton value="List Institutions" ajax="false"
+                                             action="#{institutionController.toListInstitutions()}"></p:commandButton>
+                        </p:panelGrid>
+                        </h:form>
+                        <p:panelGrid columns="1" styleClass="alignTop" >
+                            <ui:insert name="insContents" >
+                                
+                            </ui:insert>
+                        </p:panelGrid>
+                    </p:panelGrid>
+
+               
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>
