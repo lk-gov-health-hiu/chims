@@ -87,6 +87,9 @@ public class InstitutionController implements Serializable {
         deleting.setRetiredAt(new Date());
         deleting.setRetirer(webUserController.getLoggedUser());
         getFacade().edit(deleting);
+        JsfUtil.addSuccessMessage("Deleted");
+        items = null;
+        getItems();
         return "/institution/list";
     }
     
@@ -287,7 +290,10 @@ public class InstitutionController implements Serializable {
 
     public List<Institution> getItems() {
         if (items == null) {
-            items = getFacade().findAll();
+            String j = "select i from Institution i where i.retired=:ret order by i.name";
+            Map m = new HashMap<>();
+            m.put("ret", false);
+            items = getFacade().findByJpql(j, m);
         }
         return items;
     }

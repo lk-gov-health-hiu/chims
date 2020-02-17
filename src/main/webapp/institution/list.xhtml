@@ -58,16 +58,9 @@
                                     <f:setPropertyActionListener value="#{item}" target="#{institutionController.selected}" ></f:setPropertyActionListener>
                                 </p:commandButton>
                                 <p:commandButton ajax="false" value="Delete"
-                                                 onclick="confirmation.show()"
                                                  action="#{institutionController.deleteInstitution()}" >
                                     <f:setPropertyActionListener value="#{item}" target="#{institutionController.deleting}" ></f:setPropertyActionListener>
                                 </p:commandButton>
-                                <p:confirmDialog message="Are you sure you want to delete Institution"
-                                                 header="Starting Deleting Institution" severity="alert" widgetVar="confirmation">
-                                    <p:commandButton value="Yes"  oncomplete="confirmation.hide()"
-                                                     />
-                                    <p:commandButton value="No" onclick="confirmation.hide()" type="button" />
-                                </p:confirmDialog>
                             </p:column>
 
                         </p:dataTable>
