@@ -35,13 +35,15 @@
 
                         </p:panelGrid>
 
-                        <div class="printOnly" >
+                        <div class="printOnly" style="90%;" >
                             <p:barcode id="barcodePhn" type="code128" cache="false" value="#{clientController.selected.phn}" ></p:barcode>
                             <p:panel id="card" >
-                                <table>
+                                <table style="width: 98%; text-align: left;">
                                     <tr>
-                                        <th colspan="3" >
-                                            Percenal Health Card
+                                        <th colspan="3" style="text-align: center;" >
+                                            <h1>
+                                                Personal Health Card
+                                            </h1>
                                         </th>
                                     </tr>
                                     <tr>
@@ -51,10 +53,10 @@
                                         <th>#{clientController.selected.person.nameWithTitle}</th>
                                     </tr>
                                     <tr>
-                                        <th>Age</th>
+                                        <th>NIC</th>
                                         <th><p:spacer height="1" width="10"></p:spacer>
                                         </th>
-                                        <th>#{clientController.selected.person.age}</th>
+                                        <th>#{clientController.selected.person.nic}</th>
                                     </tr>
                                     <tr>
                                         <th>PHN</th>
@@ -63,8 +65,32 @@
                                         <th>#{clientController.selected.phn}</th>
                                     </tr>
                                     <tr>
-                                        <td colspan="3">
-                                            <p:barcode id="cardPhn" type="code128" cache="false" value="#{clientController.selected.phn}" ></p:barcode>
+                                        <th>Gender</th>
+                                        <th><p:spacer height="1" width="10"></p:spacer>
+                                        </th>
+                                        <th>#{clientController.selected.person.sex.name}</th>
+                                    </tr>
+                                    <tr>
+                                        <th>Data of Birth</th>
+                                        <th><p:spacer height="1" width="10"></p:spacer>
+                                        </th>
+                                        <th>
+                                            <p:outputLabel value="#{clientController.selected.person.dateOfBirth}" >
+                                                <f:convertDateTime pattern="dd MMMM yyyy" ></f:convertDateTime>
+                                            </p:outputLabel>
+                                            
+                                        
+                                        </th>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="3" style="text-align: center;">
+                                            <div style="width: 90%; padding: 0px; margin: 0px auto; overflow-y: hidden;" >
+                                                <p:barcode id="cardPhn" type="code128" cache="false" 
+                                                           value="#{clientController.selected.phn}"
+                                                           style="height: 400px; width: 100%;"
+                                                           height="400"></p:barcode>
+                                            </div>
+                                            
                                         </td>
                                     </tr>
                                 </table>
