@@ -35,67 +35,66 @@
 
                         </p:panelGrid>
 
-                        <div class="printOnly" style="90%;" >
+                        <div  style="90%;" >
                             <p:barcode id="barcodePhn" type="code128" cache="false" value="#{clientController.selected.phn}" ></p:barcode>
-                            <p:panel id="card" >
-                                <table style="width: 98%; text-align: left;">
-                                    <tr>
-                                        <th colspan="3" style="text-align: center;" >
-                                            <h1>
-                                                Personal Health Card
-                                            </h1>
-                                        </th>
-                                    </tr>
-                                    <tr>
-                                        <th>Name</th>
-                                        <th><p:spacer height="1" width="10"></p:spacer>
-                                        </th>
-                                        <th>#{clientController.selected.person.nameWithTitle}</th>
-                                    </tr>
-                                    <tr>
-                                        <th>NIC</th>
-                                        <th><p:spacer height="1" width="10"></p:spacer>
-                                        </th>
-                                        <th>#{clientController.selected.person.nic}</th>
-                                    </tr>
-                                    <tr>
-                                        <th>PHN</th>
-                                        <th><p:spacer height="1" width="10"></p:spacer>
-                                        </th>
-                                        <th>#{clientController.selected.phn}</th>
-                                    </tr>
-                                    <tr>
-                                        <th>Gender</th>
-                                        <th><p:spacer height="1" width="10"></p:spacer>
-                                        </th>
-                                        <th>#{clientController.selected.person.sex.name}</th>
-                                    </tr>
-                                    <tr>
-                                        <th>Data of Birth</th>
-                                        <th><p:spacer height="1" width="10"></p:spacer>
-                                        </th>
-                                        <th>
-                                            <p:outputLabel value="#{clientController.selected.person.dateOfBirth}" >
-                                                <f:convertDateTime pattern="dd MMMM yyyy" ></f:convertDateTime>
-                                            </p:outputLabel>
-                                            
-                                        
-                                        </th>
-                                    </tr>
-                                    <tr>
-                                        <td colspan="3" style="text-align: center;">
-                                            <div style="width: 90%; padding: 0px; margin: 0px auto; overflow-y: hidden;" >
-                                                <p:barcode id="cardPhn" type="code128" cache="false" 
-                                                           value="#{clientController.selected.phn}"
-                                                           style="height: 400px; width: 100%;"
-                                                           height="400"></p:barcode>
-                                            </div>
-                                            
-                                        </td>
-                                    </tr>
-                                </table>
+                            <p:panel id="card" style="border: none;" >
+
+                                <div style="font-size: 0.65rem;line-height: 0.65rem;" >
+                                    <p:outputLabel escape="false" value="Name&nbsp;:&nbsp;#{clientController.selected.person.nameWithTitle}"></p:outputLabel>  
+                                    <br/>
+                                    <p:outputLabel  escape="false" value="NIC&nbsp;&nbsp;&nbsp;:&nbsp;#{clientController.selected.person.nic}" ></p:outputLabel> 
+                                    <br/>
+                                    <p:outputLabel  escape="false" value="Gender&nbsp;:&nbsp;#{clientController.selected.person.sex.name}"></p:outputLabel>
+                                    <br/>
+                                    <p:outputLabel  escape="false" value="DOB&nbsp;&nbsp;&nbsp;:&nbsp;"></p:outputLabel> 
+                                    <p:outputLabel  escape="false" value="#{clientController.selected.person.dateOfBirth}" >
+                                        <f:convertDateTime pattern="dd MMMM yyyy" ></f:convertDateTime>
+                                    </p:outputLabel>
+                                    <br/>
+                                    <p:outputLabel  escape="false" value="PHN&nbsp;&nbsp;:&nbsp;#{clientController.selected.phn}" ></p:outputLabel>  
+                                    <br/>
+                                    <p:barcode id="cardPhn" type="upca" format="png" cache="false" 
+                                               value="#{clientController.selected.phn}"
+                                               hrp="none" width="90%" height="60px"
+                                               ></p:barcode>
+
+                                </div>
+
+
 
                             </p:panel>
+
+
+                            <!--                                <table style="width: 98%; text-align: left;font-size: 0.65rem;line-height: 0.5rem;">
+                                                                <tr>
+                                                                    <th>NIC</th>
+                                                                    <th><p:spacer height="1" width="10"></p:spacer>
+                                                                    </th>
+                                                                    <th>#{clientController.selected.person.nic}</th>
+                                                                </tr>
+                                                                <tr>
+                                                                    <th>PHN</th>
+                                                                    <th><p:spacer height="1" width="10"></p:spacer>
+                                                                    </th>
+                                                                    <th>#{clientController.selected.phn}</th>
+                                                                </tr>
+                                                                <tr>
+                                                                    <th>Gender</th>
+                                                                    <th><p:spacer height="1" width="10"></p:spacer>
+                                                                    </th>
+                                                                    <th>#{clientController.selected.person.sex.name}</th>
+                                                                </tr>
+                                                                <tr>
+                                                                    <th>DOB</th>
+                                                                    <th><p:spacer height="1" width="10"></p:spacer>
+                                                                    </th>
+                                                                    <th>
+                                                                        <p:outputLabel value="#{clientController.selected.person.dateOfBirth}" >
+                                                                            <f:convertDateTime pattern="dd MMMM yyyy" ></f:convertDateTime>
+                                                                        </p:outputLabel>
+                                                                    </th>
+                                                                </tr>
+                                                            </table>-->
                         </div>
 
 
