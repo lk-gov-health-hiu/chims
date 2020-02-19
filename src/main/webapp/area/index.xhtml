@@ -24,28 +24,20 @@
                                         <p:commandButton styleClass="width25rem"
                                                          ajax="false" value="Add Area"
                                                          action="#{areaController.toAddArea()}"  ></p:commandButton>
-
                                         <p:commandButton styleClass="width25rem"
                                                          ajax="false" value="List Area"
                                                          action="#{areaController.toListAreasForSysAdmin()}"  ></p:commandButton>
-
-                                          <p:commandButton styleClass="width25rem"
+                                        <p:commandButton styleClass="width25rem"
                                                          ajax="false" value="Browse Areas"
-                                                         action="#{areaController.toListAreasForSysAdmin()}"  ></p:commandButton>
-                
-                                                         
-                                        <p:commandButton styleClass="width25rem"  ajax="false" value="District Details" action="/area/districts"  ></p:commandButton>
-                                        <p:commandButton styleClass="width25rem"  ajax="false" value="Upload GN Areas" action="/area/import_gn_areas"  ></p:commandButton>
+                                                         action="#{areaController.toBrowseAreasForSysAdmin()}"  ></p:commandButton>
+                                        <p:commandButton styleClass="width25rem"
+                                                         ajax="false" value="Search Areas"
+                                                         action="#{areaController.toSearchAreasForSysAdmin()}"  ></p:commandButton>
+                                        <p:commandButton styleClass="width25rem"  ajax="false" value="Import GN Areas" action="/area/import_gn_areas"  ></p:commandButton>
                                         <p:commandButton styleClass="width25rem"  ajax="false" value="Import District Data" action="/area/import_district_population"  ></p:commandButton>                        
                                         <p:commandButton styleClass="width25rem"  ajax="false" 
                                                          value="Calculate Provincial Data from District Data" 
                                                          action="/area/calculate_provincial_data_from_district_data"  ></p:commandButton>                        
-
-
-                                        <p:commandButton styleClass="width25rem"  ajax="false"
-                                                         value="List GN Areas" action="#{areaController.listGnAreas()}"  ></p:commandButton>                        
-
-
                                     </p:panelGrid>
                                 </h:form>  
                             </p:panel>
