@@ -3,7 +3,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:p="http://primefaces.org/ui">
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
 
     <body>
 
@@ -11,39 +12,65 @@
 
             <ui:define name="content">
 
+                <h:outputStylesheet library="css" name="tem1.css" ></h:outputStylesheet>
+
+
+                <table style="width: 100%;" >
+                    <tr>
+                        <td style="width: calc(30rem);vertical-align: top;">
+                            <p:panel style="width: 100%;" header="Actions">
+                                <h:form >
+                                    <p:panelGrid  >
+                                        <p:commandButton styleClass="width25rem"
+                                                         ajax="false" value="Add Area"
+                                                         action="#{areaController.toAddArea()}"  ></p:commandButton>
+
+                                        <p:commandButton styleClass="width25rem"
+                                                         ajax="false" value="List Area"
+                                                         action="#{areaController.toListAreasForSysAdmin()}"  ></p:commandButton>
+
+                                          <p:commandButton styleClass="width25rem"
+                                                         ajax="false" value="Browse Areas"
+                                                         action="#{areaController.toListAreasForSysAdmin()}"  ></p:commandButton>
+                
+                                                         
+                                        <p:commandButton styleClass="width25rem"  ajax="false" value="District Details" action="/area/districts"  ></p:commandButton>
+                                        <p:commandButton styleClass="width25rem"  ajax="false" value="Upload GN Areas" action="/area/import_gn_areas"  ></p:commandButton>
+                                        <p:commandButton styleClass="width25rem"  ajax="false" value="Import District Data" action="/area/import_district_population"  ></p:commandButton>                        
+                                        <p:commandButton styleClass="width25rem"  ajax="false" 
+                                                         value="Calculate Provincial Data from District Data" 
+                                                         action="/area/calculate_provincial_data_from_district_data"  ></p:commandButton>                        
+
+
+                                        <p:commandButton styleClass="width25rem"  ajax="false"
+                                                         value="List GN Areas" action="#{areaController.listGnAreas()}"  ></p:commandButton>                        
+
+
+                                    </p:panelGrid>
+                                </h:form>  
+                            </p:panel>
+                        </td>
+                        <td style="width: calc(100% - 30rem);vertical-align: top;">
+                            <p:panel style="width: 100%;height: calc(100vh-5rem);">
+                                <f:facet name="header" >
+                                    <ui:insert name="insTopic" >
+                                        <p:outputLabel value="Details" ></p:outputLabel>
+                                    </ui:insert>
+                                </f:facet>
+                                <ui:insert name="insContents" >
+
+                                </ui:insert>
+                            </p:panel>
+                        </td>
+                    </tr>
+                </table>
 
 
 
 
 
 
-                <p:panel header="Manage Areas" style="height: 100%;" >
-                    <h:form >
-                        <h:panelGrid columns="1"  style="margin: auto; text-align: center;" >
-                            <p:commandButton styleClass="defaultButton"  ajax="false" value="District Details" action="/area/districts"  ></p:commandButton>
-                            <p:commandButton styleClass="defaultButton"  ajax="false" value="Upload GN Areas" action="/area/import_gn_areas"  ></p:commandButton>
-                            <p:commandButton styleClass="defaultButton"  ajax="false" value="Manage All Areas" action="/area/List"  ></p:commandButton>
-                            <p:commandButton styleClass="defaultButton"  ajax="false" value="Import District Data" action="/area/import_district_population"  ></p:commandButton>                        
 
-                            <h:panelGroup>
-                                <p:commandButton styleClass="defaultButton"  ajax="false" value="Calculate Provincial and National Data from District Data" action="#{areaController.updateNationalAndProvincialPopulationFromDistrictPopulations()}"  >
-                                </p:commandButton> 
-                                <p:inputText value="#{areaController.year}" placeholder="year">
-                                    <p:ajax update="@this" ></p:ajax>
-                                    <p:ajax event="blur" update="@this" ></p:ajax>
-                                    <p:ajax event="keyup" update="@this" ></p:ajax>
-                                </p:inputText>
-                            </h:panelGroup>
-
-                            <p:commandButton styleClass="defaultButton"  ajax="false"
-                                             value="List GN Areas" action="#{areaController.listGnAreas()}"  ></p:commandButton>                        
-
-                                             <h:commandButton  value="Test"
-                                                              action="#{clientController.toRegisterdClientsDemo}" >
-                            </h:commandButton>
-                        </h:panelGrid>
-                    </h:form>  
-                </p:panel>
 
 
 

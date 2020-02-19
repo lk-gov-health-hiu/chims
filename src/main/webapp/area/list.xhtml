@@ -1,0 +1,72 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <body>
+
+        <ui:composition template="./index.xhtml">
+
+            <ui:define name="insTopic">
+                <p:outputLabel value="Area List" ></p:outputLabel>
+            </ui:define>
+
+            <ui:define name="insContents">
+
+                <h:form id="AreaListForm">
+
+                    <p:dataTable id="datalist" value="#{areaController.items}" var="item"
+                                 selectionMode="single" selection="#{areaController.selected}"
+                                 paginator="true"
+                                 rowKey="#{item.id}"
+                                 rows="10"
+                                 rowsPerPageTemplate="10,20,30,40,50"
+                                 >
+                        <p:column sortBy="#{item.type}">
+                            <f:facet name="header">
+                                <h:outputText value="#{bundleClinical.ListAreaTitle_type}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.type}"/>
+                        </p:column>
+                        <p:column sortBy="#{item.name}"  filterBy="#{item.name}" filterMatchMode="contains">
+                            <f:facet name="header">
+                                <h:outputText value="#{bundleClinical.ListAreaTitle_name}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.name}"/>
+                        </p:column>
+                        <p:column sortBy="#{item.code}" filterBy="#{item.code}" filterMatchMode="contains">
+                            <f:facet name="header" >
+                                <h:outputText value="#{bundleClinical.ListAreaTitle_code}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.code}"/>
+                        </p:column>
+                        <p:column  sortBy="#{item.parentArea.name}" filterBy="#{item.parentArea.name}" filterMatchMode="contains">
+                            <f:facet name="header">
+                                <h:outputText value="#{bundleClinical.ListAreaTitle_parentArea}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.parentArea.name}"/>
+                        </p:column>
+                        
+                        <p:column headerText="Actions" >
+                            <p:commandButton ajax="false" value="View" action="#{areaController.toEditAreaForSysAdmin()}" >
+                                <f:setPropertyActionListener value="#{item}" target="#{areaController.deleting}"
+                            </p:commandButton>
+                            <p:commandButton ajax="false" value="View" action="#{areaController.deleteAreaForSysAdmin()}" >
+                                <f:setPropertyActionListener value="#{item}" target="#{areaController.deleting}"
+                            </p:commandButton>
+                        </p:column>
+                        
+                    </p:dataTable>
+
+                </h:form>
+
+
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>
