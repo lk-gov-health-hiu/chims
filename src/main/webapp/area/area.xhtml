@@ -1,0 +1,64 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <body>
+
+        <ui:composition template="./index.xhtml">
+
+            <ui:define name="insTopic">
+                <p:outputLabel value="Area" ></p:outputLabel>
+            </ui:define>
+
+            <ui:define name="insContents">
+
+                <h:form id="AreaEditForm">
+                    <h:panelGroup id="display">
+                        <p:commandButton action="#{areaController.saveOrUpdateAreaForSystemAdmin}" 
+                                         value="#{bundleClinical.Save}" 
+                                         />
+
+
+                        <p:panelGrid columns="2" rendered="#{areaController.selected != null}">
+                            <p:outputLabel value="#{bundleClinical.EditAreaLabel_type}" for="type" />
+                            <p:selectOneMenu id="type" 
+                                         value="#{areaController.selected.type}" 
+                                         title="#{bundleClinical.CreateAreaTitle_type}" >
+                            <f:selectItem itemLabel="Select" ></f:selectItem>
+                            <f:selectItems value="#{commonController.areaTypes}" ></f:selectItems>
+                        </p:selectOneMenu>
+                            
+                            
+                            <p:outputLabel value="#{bundleClinical.EditAreaLabel_name}" for="name" />
+                            <p:inputText id="name" value="#{areaController.selected.name}" title="#{bundleClinical.EditAreaTitle_name}" />
+                            <p:outputLabel value="#{bundleClinical.EditAreaLabel_code}" for="code" />
+                            <p:inputText id="code" value="#{areaController.selected.code}" title="#{bundleClinical.EditAreaTitle_code}" />
+                            <p:outputLabel value="#{bundleClinical.EditAreaLabel_parentArea}" for="parentArea" />
+                            <p:selectOneMenu id="parentArea" value="#{areaController.selected.parentArea}" >
+                                <f:selectItem itemLabel="#{bundleClinical.SelectOneMessage}"/>
+                                <f:selectItems value="#{areaController.itemsAvailableSelectOne}"
+                                               var="parentAreaItem"
+                                               itemValue="#{parentAreaItem}"/>
+                            </p:selectOneMenu>
+                            <p:outputLabel value="#{bundleClinical.EditAreaLabel_centreLongitude}" for="centreLongitude" />
+                            <p:inputText id="centreLongitude" value="#{areaController.selected.centreLongitude}" title="#{bundleClinical.EditAreaTitle_centreLongitude}" />
+                            <p:outputLabel value="#{bundleClinical.EditAreaLabel_centreLatitude}" for="centreLatitude" />
+                            <p:inputText id="centreLatitude" value="#{areaController.selected.centreLatitude}" title="#{bundleClinical.EditAreaTitle_centreLatitude}" />
+                            <p:outputLabel value="#{bundleClinical.EditAreaLabel_zoomLavel}" for="zoomLavel" />
+                            <p:inputText id="zoomLavel" value="#{areaController.selected.zoomLavel}" title="#{bundleClinical.EditAreaTitle_zoomLavel}" />
+                        </p:panelGrid>
+
+                    </h:panelGroup>
+                </h:form>
+
+
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

@@ -72,6 +72,7 @@ public class AreaController implements Serializable {
     private List<Area> provinces = null;
     private List<Area> districts = null;
     private Area selected;
+    private Area deleting ;
     private UploadedFile file;
 
     @Inject
@@ -99,6 +100,69 @@ public class AreaController implements Serializable {
         items = getAreas(AreaType.GN, null);
         return "/area/gn_list";
     }
+
+    public String toAddArea() {
+        selected = new Area();
+        return "/area/area";
+    }
+
+    public String toEditAreaForSysAdmin() {
+        if (selected == null) {
+            JsfUtil.addErrorMessage("Please select an Area to Edit");
+            return "";
+        }
+        return "/area/area";
+    }
+
+    public String deleteAreaForSysAdmin() {
+        if (deleting == null) {
+            JsfUtil.addErrorMessage("Please select an Area to Delete");
+            return "";
+        }
+        items = null;
+        deleting=null;
+        return toListAreasForSysAdmin();
+    }
+    
+    public String saveOrUpdateAreaForSystemAdmin(){
+        if(selected==null){
+            JsfUtil.addErrorMessage("Please select an Area");
+            return "";
+        }
+        if(selected.getId()==null){
+            selected.setCreatedAt(new Date());
+            selected.setCreatedBy(webUserController.getLoggedUser());
+            getFacade().create(selected);
+            JsfUtil.addSuccessMessage("Saved");
+        }else{
+            selected.setLastEditBy(webUserController.getLoggedUser());
+            selected.setLastEditeAt(new Date());
+            getFacade().edit(deleting);
+            JsfUtil.addSuccessMessage("Updated");
+        }
+        items =null;
+        selected=null;
+        return toListAreasForSysAdmin();
+    }
+    
+    public String toListAreasForSysAdmin(){
+        String j = "select a from Area a where a.retired=:ret order by a.name";
+        Map m = new HashMap();
+        m.put("ret", false);
+        items = getFacade().findByJpql(j, m);
+        return "/area/list";
+    }
+    
+    public String toBrowseAreasForSysAdmin(){
+        
+        return "/area/browse";
+    }
+    
+     public String toSearchAreasForSysAdmin(){
+       
+        return "/area/search";
+    }
+    
 
     public String importAreasFromExcel() {
         try {
@@ -1044,6 +1108,8 @@ public class AreaController implements Serializable {
         return "/area/index";
     }
 
+    
+    
     public List<Area> getAreas(AreaType areaType, Area superArea) {
         return getAreas(areaType, superArea, null);
     }
@@ -1503,6 +1569,14 @@ public class AreaController implements Serializable {
 
     public void setYear(int year) {
         this.year = year;
+    }
+
+    public Area getDeleting() {
+        return deleting;
+    }
+
+    public void setDeleting(Area deleting) {
+        this.deleting = deleting;
     }
 
     // </editor-fold>
