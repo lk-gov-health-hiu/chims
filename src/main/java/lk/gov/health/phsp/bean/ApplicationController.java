@@ -45,6 +45,8 @@ public class ApplicationController {
 // <editor-fold defaultstate="collapsed" desc="EJBs">
     @EJB
     private InstitutionFacade institutionFacade;
+    
+    
 // </editor-fold>    
 
 // <editor-fold defaultstate="collapsed" desc="Class Variables">
@@ -56,9 +58,13 @@ public class ApplicationController {
     }
 
     // <editor-fold defaultstate="collapsed" desc="Functions">
-    public String createNewPersonalHealthNumber(Institution ins) {
+    public String createNewPersonalHealthNumber(Institution pins) {
         System.out.println("createNewPersonalHealthNumber");
-        if (ins == null) {
+        if (pins == null) {
+            return null;
+        }
+        Institution ins = getInstitutionFacade().find(pins.getId());
+        if(ins==null){
             return null;
         }
         Long lastHinIssued = ins.getLastHin();
@@ -78,6 +84,7 @@ public class ApplicationController {
         ins.setLastHin(thisHin);
          System.out.println("thisHin = " + thisHin);
         getInstitutionFacade().edit(ins);
+        
         return phn;
     }
 
