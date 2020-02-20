@@ -271,6 +271,9 @@ public class ClientEncounterComponentFormSetController implements Serializable {
             case "client_name":
                 c.getPerson().setName(ti.getShortTextValue());
                 return;
+            case "client_occupation":
+                c.getPerson().setOccupation(ti.getShortTextValue());
+                return;
             case "client_phn_number":
                 c.setPhn(ti.getShortTextValue());
                 return;
@@ -925,6 +928,9 @@ public class ClientEncounterComponentFormSetController implements Serializable {
                 return;
             case "client_phn_number":
                 ti.setShortTextValue(c.getPhn());
+                return;
+            case "client_occupation"   :
+                ti.setShortTextValue(c.getPerson().getOccupation());
                 return;
             case "client_sex":
                 ti.setItemValue(c.getPerson().getSex());
