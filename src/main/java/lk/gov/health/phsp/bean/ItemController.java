@@ -311,6 +311,10 @@ public class ItemController implements Serializable {
                 + "Dictionary_Item::Age at Encounter (Years):client_age_at_encounter_in_years:3" + System.lineSeparator()
                 + "Dictionary_Item::Permanent Age:client_permanent_address:3" + System.lineSeparator()
                 + "Dictionary_Item::Current Address:client_current_address:3" + System.lineSeparator()
+                
+                + "Dictionary_Item::Occupation:client_occupation:3" + System.lineSeparator()
+                
+                
                 + "Dictionary_Item::Mobile Number:client_mobile_number:3" + System.lineSeparator()
                 + "Dictionary_Item::Home Number:client_home_number:3" + System.lineSeparator()
                 + "Dictionary_Item::Email:client_email:3" + System.lineSeparator()
