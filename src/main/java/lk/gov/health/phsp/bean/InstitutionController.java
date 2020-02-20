@@ -49,6 +49,11 @@ public class InstitutionController implements Serializable {
     private Area area;
     private Area removingArea;
 
+    
+    public Institution getInstitutionById(Long id){
+        return getFacade().find(id);
+    }
+    
     public void addGnToPmc() {
         if (selected == null) {
             JsfUtil.addErrorMessage("No PMC is selected");

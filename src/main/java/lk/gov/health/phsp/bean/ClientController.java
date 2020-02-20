@@ -73,6 +73,8 @@ public class ClientController implements Serializable {
     @Inject
     private ItemController itemController;
     @Inject
+    private InstitutionController institutionController;
+    @Inject
     private CommonController commonController;
     @Inject
     private AreaController areaController;
@@ -146,27 +148,25 @@ public class ClientController implements Serializable {
 
     // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="Functions">
-   
-    
-    public List<Area> getGnAreasForTheSelectedClient(String qry){
+    public List<Area> getGnAreasForTheSelectedClient(String qry) {
         List<Area> areas = new ArrayList<>();
-        if(selected==null){
+        if (selected == null) {
             return areas;
         }
-        if(selected.getPerson().getDsArea()==null){
-            return areaController.getAreas(AreaType.GN,null,  null, qry);
-        }else{
-            return areaController.getAreas(AreaType.GN,selected.getPerson().getDsArea(),  null, qry);
+        if (selected.getPerson().getDsArea() == null) {
+            return areaController.getAreas(AreaType.GN, null, null, qry);
+        } else {
+            return areaController.getAreas(AreaType.GN, selected.getPerson().getDsArea(), null, qry);
         }
     }
-    
-    public void clearExistsValues(){
-        phnExists=false;
-        nicExists=false;
-        passportExists=false;
-        dlExists=false;
+
+    public void clearExistsValues() {
+        phnExists = false;
+        nicExists = false;
+        passportExists = false;
+        dlExists = false;
     }
-    
+
     public void checkPhnExists() {
         phnExists = null;
         if (selected == null) {
@@ -180,8 +180,6 @@ public class ClientController implements Serializable {
         }
         phnExists = checkPhnExists(selected.getPhn(), selected);
     }
-    
-    
 
     public Boolean checkPhnExists(String phn, Client c) {
         String jpql = "select count(c) from Client c "
@@ -203,7 +201,6 @@ public class ClientController implements Serializable {
 
     }
 
-    
     public void checkNicExists() {
         nicExists = null;
         if (selected == null) {
@@ -212,7 +209,7 @@ public class ClientController implements Serializable {
         if (selected.getPerson() == null) {
             return;
         }
-         if (selected.getPerson().getNic() == null) {
+        if (selected.getPerson().getNic() == null) {
             return;
         }
         if (selected.getPerson().getNic().trim().equals("")) {
@@ -220,8 +217,6 @@ public class ClientController implements Serializable {
         }
         nicExists = checkNicExists(selected.getPerson().getNic(), selected);
     }
-    
-    
 
     public Boolean checkNicExists(String nic, Client c) {
         String jpql = "select count(c) from Client c "
@@ -230,7 +225,7 @@ public class ClientController implements Serializable {
         Map m = new HashMap();
         m.put("ret", false);
         m.put("nic", nic);
-        if (c != null && c.getPerson()!=null && c.getPerson().getId() != null) {
+        if (c != null && c.getPerson() != null && c.getPerson().getId() != null) {
             jpql += " and c.person <> :person";
             m.put("person", c.getPerson());
         }
@@ -243,10 +238,6 @@ public class ClientController implements Serializable {
 
     }
 
-    
-    
-    
-    
     public void fixClientPersonCreatedAt() {
         String j = "select c from Client c "
                 + " where c.retired=:ret ";
@@ -254,7 +245,7 @@ public class ClientController implements Serializable {
         m.put("ret", false);
         List<Client> cs = getFacade().findByJpql(j, m);
         for (Client c : cs) {
-            
+
             if (c.getCreatedAt() == null && c.getPerson().getCreatedAt() != null) {
                 c.setCreatedAt(c.getPerson().getCreatedAt());
                 getFacade().edit(c);
@@ -350,7 +341,6 @@ public class ClientController implements Serializable {
             items = new ArrayList<>();
         }
 
-        
         items = getFacade().findByJpql(j, m);
         return "/insAdmin/registered_clients";
     }
@@ -377,7 +367,7 @@ public class ClientController implements Serializable {
         }
         for (Client c : selectedClients) {
             c.setCreateInstitution(institution);
-            if (!checkPhnExists(c.getPhn(),null)) {
+            if (!checkPhnExists(c.getPhn(), null)) {
                 c.setId(null);
                 saveClient(c);
             }
@@ -442,7 +432,7 @@ public class ClientController implements Serializable {
         }
         for (Client c : importedClients) {
             c.setCreateInstitution(institution);
-            if (!checkPhnExists(c.getPhn(),null)) {
+            if (!checkPhnExists(c.getPhn(), null)) {
                 c.setId(null);
                 saveClient(c);
             }
@@ -461,7 +451,6 @@ public class ClientController implements Serializable {
 //        }
 //        return true;
 //    }
-
     public String importClientsFromExcel() {
 
         importedClients = new ArrayList<>();
@@ -773,6 +762,7 @@ public class ClientController implements Serializable {
             JsfUtil.addErrorMessage("You do not have an Institution. Please contact support.");
             return;
         }
+        System.out.println("webUserController.getLoggedUser().getInstitution() = " + webUserController.getLoggedUser().getInstitution().getLastHin());
         if (webUserController.getLoggedUser().getInstitution().getPoiInstitution() != null) {
             poiIns = webUserController.getLoggedUser().getInstitution().getPoiInstitution();
         } else {
@@ -783,6 +773,15 @@ public class ClientController implements Serializable {
             return;
         }
         selected.setPhn(applicationController.createNewPersonalHealthNumber(poiIns));
+
+        if (webUserController.getLoggedUser().getInstitution().getPoiInstitution() != null) {
+            webUserController.getLoggedUser().getInstitution().setPoiInstitution(institutionController.getInstitutionById(webUserController.getLoggedUser().getInstitution().getPoiInstitution().getId()));
+        } else {
+            webUserController.getLoggedUser().setInstitution(institutionController.getInstitutionById(webUserController.getLoggedUser().getInstitution().getId()));
+        }
+
+        System.out.println("webUserController.getLoggedUser().getInstitution() = " + webUserController.getLoggedUser().getInstitution().getLastHin());
+
     }
 
     public void gnAreaChanged() {
@@ -861,7 +860,7 @@ public class ClientController implements Serializable {
     }
 
     public String searchById() {
-       clearExistsValues();
+        clearExistsValues();
         if (searchingPhn != null && !searchingPhn.trim().equals("")) {
             selectedClients = listPatientsByPhn(searchingPhn);
         } else if (searchingNicNo != null && !searchingNicNo.trim().equals("")) {
@@ -1065,8 +1064,6 @@ public class ClientController implements Serializable {
         return searchingId;
     }
 
-    
-    
     public void setSearchingId(String searchingId) {
         this.searchingId = searchingId;
     }
@@ -1356,6 +1353,14 @@ public class ClientController implements Serializable {
 
     public void setDlExists(Boolean dlExists) {
         this.dlExists = dlExists;
+    }
+
+    public InstitutionController getInstitutionController() {
+        return institutionController;
+    }
+
+    public void setInstitutionController(InstitutionController institutionController) {
+        this.institutionController = institutionController;
     }
 
     // </editor-fold>
