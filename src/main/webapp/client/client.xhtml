@@ -169,7 +169,7 @@
                             <p:autoComplete id="gn" value="#{clientController.selected.person.gnArea}"
                                             completeMethod="#{clientController.getGnAreasForTheSelectedClient}"
                                             var="gn" itemLabel="#{gn.name}" itemValue="#{gn}"
-                                            maxResults="15" forceSelection="true" required="true"
+                                            maxResults="15" forceSelection="true" placeholder="Not Known"
                                             minQueryLength="3">
                                 <p:column headerText="Name">
                                     <p:outputLabel value="#{gn.name}"></p:outputLabel>

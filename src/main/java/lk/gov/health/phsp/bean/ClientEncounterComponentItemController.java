@@ -46,20 +46,21 @@ public class ClientEncounterComponentItemController implements Serializable {
 
     @Inject
     private CommonController commonController;
+    @Inject
+    private ItemController itemController;
 
     private List<ClientEncounterComponentItem> items = null;
     private List<ClientEncounterComponentItem> formsetItems = null;
     private ClientEncounterComponentItem selected;
 
     private Long searchId;
-    
-    
-    public void searchById(){
+
+    public void searchById() {
         //System.out.println("searchById");
         //System.out.println("searchId = " + searchId);
         selected = getFacade().find(searchId);
     }
-    
+
     public void findClientEncounterComponentItemOfAFormset(ClientEncounterComponentFormSet fs) {
         // //System.out.println("findClientEncounterComponentItemOfAForm = ");
         // //System.out.println("fs = " + fs);
@@ -72,8 +73,6 @@ public class ClientEncounterComponentItemController implements Serializable {
         formsetItems = getFacade().findByJpql(j, m);
     }
 
-
-    
     public List<ClientEncounterComponentItem> findClientEncounterComponentItemOfAForm(ClientEncounterComponentForm fs) {
         String j = "select f from ClientEncounterComponentItem f "
                 + " where f.retired=false "
@@ -151,11 +150,12 @@ public class ClientEncounterComponentItemController implements Serializable {
         }
 
         List<Replaceable> replacingBlocks = findReplaceblesInCalculationString(i.getCalculationScript());
-        System.out.println("replacingBlocks = " + replacingBlocks);
-        
-        
+        System.out.println("replacingBlocks Size = " + replacingBlocks.size());
+
         for (Replaceable r : replacingBlocks) {
-            System.out.println("r = " + r);
+            System.out.println("PEF Value = " + r.getPef());
+            System.out.println("SM Value = " + r.getSm());
+            System.out.println("Default Value = " + r.getDefaultValue());
             if (r.getPef().equalsIgnoreCase("f")) {
                 if (r.getSm().equalsIgnoreCase("s")) {
                     r.setClientEncounterComponentItem(findFormsetValue(i, r.getVariableCode()));
@@ -167,17 +167,29 @@ public class ClientEncounterComponentItemController implements Serializable {
             }
             if (r.getClientEncounterComponentItem() != null) {
                 ClientEncounterComponentItem c = r.getClientEncounterComponentItem();
+                
+                if(c.getItem()==null){
+                    System.out.println("Item is Null. ID of ClientEncounterComponentItem is " + c.getId());
+                    continue;
+                }else{
+                    if(c.getItem().getDataType()==null){
+                        System.out.println("Items data type is null.");
+                        continue;
+                    }
+                }
+                
                 System.out.println("c.getBooleanValue() = " + c.getBooleanValue());
                 System.out.println("c.getRealNumberValue() = " + c.getRealNumberValue());
                 System.out.println("c.getLongNumberValue() = " + c.getLongNumberValue());
                 System.out.println("c.getItemValue().getItemValue() = " + c.getItemValue());
-                
-                
+                System.out.println("c.getItem().getDataType() = " + c.getItem().getDataType());
+
                 switch (c.getItem().getDataType()) {
                     case Short_Text:
                         if (c.getShortTextValue() != null) {
                             r.setSelectedValue(c.getShortTextValue());
                         }
+                        break;
                     case Boolean:
                         if (c.getBooleanValue() != null) {
                             r.setSelectedValue(c.getBooleanValue().toString());
@@ -194,7 +206,7 @@ public class ClientEncounterComponentItemController implements Serializable {
                         }
                         break;
                     case Item_Reference:
-                        if (c.getItemValue()!= null) {
+                        if (c.getItemValue() != null) {
                             r.setSelectedValue(c.getItemValue().getCode());
                         }
                         break;
@@ -210,7 +222,7 @@ public class ClientEncounterComponentItemController implements Serializable {
         System.out.println("javaString To Evaluate = \n" + javaStringToEvaluate);
 
         String result = evaluateScript(javaStringToEvaluate);
-        
+
         System.out.println("Assigning Found Calculation Results");
         System.out.println("i.getId() = " + i.getId());
         System.out.println("result = " + result);
@@ -246,7 +258,7 @@ public class ClientEncounterComponentItemController implements Serializable {
             getFacade().edit(i);
         }
 
-         System.out.println("javaStringToEvaluate = " + javaStringToEvaluate);
+        System.out.println("javaStringToEvaluate = " + javaStringToEvaluate);
     }
 
     public String evaluateScript(String script) {
@@ -435,15 +447,15 @@ public class ClientEncounterComponentItemController implements Serializable {
             getFacade().edit(i);
         }
 
-        Long temporaryFormSetStartTimeInLong ;
-        Long temporaryCurrentTimeInLong ;
-        
-        if(i.getParentComponent()==null && i.getParentComponent().getParentComponent()==null && i.getParentComponent().getParentComponent().getCreatedAt()==null){
+        Long temporaryFormSetStartTimeInLong;
+        Long temporaryCurrentTimeInLong;
+
+        if (i.getParentComponent() == null && i.getParentComponent().getParentComponent() == null && i.getParentComponent().getParentComponent().getCreatedAt() == null) {
             temporaryFormSetStartTimeInLong = i.getParentComponent().getParentComponent().getCreatedAt().getTime();
-        }else{
+        } else {
             temporaryFormSetStartTimeInLong = (new Date()).getTime();
         }
-        
+
         ClientEncounterComponentItem ci = new ClientEncounterComponentItem();
 
         ci.setParentComponent(i.getParentComponent());
@@ -508,15 +520,10 @@ public class ClientEncounterComponentItemController implements Serializable {
         // //System.out.println("getParentComponent = " + ci.getParentComponent());
         // //System.out.println("getReferenceComponent = " + ci.getReferenceComponent());
 
-        
-        
-        
-        
         temporaryCurrentTimeInLong = (new Date()).getTime();
-        
+
         ci.setOrderNo(i.getOrderNo() + ((temporaryCurrentTimeInLong - temporaryFormSetStartTimeInLong) / temporaryFormSetStartTimeInLong));
-        
-        
+
         ci.setCreatedAt(new Date());
         ci.setCreatedBy(webUserController.getLoggedUser());
 
@@ -606,13 +613,10 @@ public class ClientEncounterComponentItemController implements Serializable {
         return commonController;
     }
 
-    
-    
-    
     private ClientEncounterComponentItem findClientValue(ClientEncounterComponentItem i, String code) {
-        //System.out.println("findClientValue");
-        //System.out.println("code = " + code);
-        //System.out.println("i = " + i);
+        System.out.println("findClientValue");
+        System.out.println("code = " + code);
+        System.out.println("i = " + i);
         if (i == null) {
             return null;
         }
@@ -646,19 +650,44 @@ public class ClientEncounterComponentItemController implements Serializable {
         if (code.trim().equals("")) {
             return null;
         }
+
         String j = "select i from ClientEncounterComponentItem i where i.retired=false "
                 + " and i.client=:client "
                 + " and lower(i.item.code)=:c";
         Map m = new HashMap();
         m.put("client", client);
         m.put("c", code.toLowerCase());
-        //System.out.println("m = " + m);
-        //System.out.println("j = " + j);
+        System.out.println("m = " + m);
+        System.out.println("j = " + j);
         ClientEncounterComponentItem fountVal = getFacade().findFirstByJpql(j, m);
-        if (fountVal == null) {
-            //System.out.println("Patient Value NOT Found ");
+        if (fountVal != null) {
+            if (code.equalsIgnoreCase("client_current_age_in_years")) {
+                Person p = client.getPerson();
+                fountVal.setLastEditeAt(new Date());
+                fountVal.setLastEditBy(webUserController.getLoggedUser());
+                fountVal.setShortTextValue(p.getAgeYears() + "");
+                fountVal.setRealNumberValue(Double.valueOf(p.getAgeYears()));
+                fountVal.setIntegerNumberValue(p.getAgeYears());
+                getFacade().edit(fountVal);
+                System.out.println("Patient Age Item Updated. ID is " + fountVal);
+            }
+            System.out.println("Patient Value Found. ID is " + fountVal);
         } else {
-            //System.out.println("Patient Value Found. ID is " + fountVal);
+            if (code.equalsIgnoreCase("client_current_age_in_years")) {
+                ClientEncounterComponentItem ageItem = new ClientEncounterComponentItem();
+                ageItem.setClient(client);
+                ageItem.setCreatedAt(new Date());
+                ageItem.setCreatedBy(webUserController.getLoggedUser());
+                ageItem.setItem(itemController.findItemByCode("client_current_age_in_years"));
+                Person p = client.getPerson();
+                ageItem.setShortTextValue(p.getAgeYears() + "");
+                ageItem.setRealNumberValue(Double.valueOf(p.getAgeYears()));
+                ageItem.setIntegerNumberValue(p.getAgeYears());
+                getFacade().create(ageItem);
+                fountVal = ageItem;
+                System.out.println("Patient age created. ID is " + fountVal);
+            }
+            
         }
         return fountVal;
 
@@ -679,6 +708,12 @@ public class ClientEncounterComponentItemController implements Serializable {
     public void setFormsetItems(List<ClientEncounterComponentItem> formsetItems) {
         this.formsetItems = formsetItems;
     }
+
+    public ItemController getItemController() {
+        return itemController;
+    }
+    
+    
 
     @FacesConverter(forClass = ClientEncounterComponentItem.class)
     public static class ClientEncounterComponentItemControllerConverter implements Converter {
