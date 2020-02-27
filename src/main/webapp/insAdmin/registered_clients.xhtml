@@ -18,6 +18,17 @@
                         <f:facet name="header" >
                             <p:outputLabel value="Registed Clients" ></p:outputLabel>
                         </f:facet>
+                        
+                        <p:panelGrid columns="2" >
+                            <p:outputLabel value="From" ></p:outputLabel>
+                            <p:calendar value="#{clientController.from}" pattern="dd MM yyyy hh:mm a" ></p:calendar>
+                            <p:outputLabel value="To" ></p:outputLabel>
+                             <p:calendar value="#{clientController.to}" pattern="dd MM yyyy hh:mm a" ></p:calendar>
+                             <p:spacer></p:spacer>
+                             <p:commandButton ajax="false" value="Refresh" action="#{clientController.toRegisterdClientsWithDates}" ></p:commandButton>
+                           
+                        </p:panelGrid>
+                        
 
                         <p:commandButton ajax="false" value="Print Selected" >
                             <p:printer target="card" ></p:printer>

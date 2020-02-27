@@ -31,6 +31,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
 import javax.inject.Inject;
+import javax.persistence.TemporalType;
 import jxl.Cell;
 import jxl.Sheet;
 import jxl.Workbook;
@@ -103,6 +104,8 @@ public class ClientController implements Serializable {
     private boolean goingToCaptureWebCamPhoto;
     private UploadedFile file;
     private Date clinicDate;
+    private Date from;
+    private Date to;
 
     private Boolean nicExists;
     private Boolean phnExists;
@@ -357,6 +360,25 @@ public class ClientController implements Serializable {
             items = new ArrayList<>();
         }
         items = getFacade().findByJpql(j, m);
+        return "/insAdmin/registered_clients";
+    }
+    
+    public String toRegisterdClientsWithDates() {
+        String j = "select c from Client c "
+                + " where c.retired=:ret ";
+        Map m = new HashMap();
+        m.put("ret", false);
+        if (webUserController.getLoggedUser().getInstitution() != null) {
+            j += " and c.createInstitution=:ins ";
+            m.put("ins", webUserController.getLoggedUser().getInstitution());
+        } else {
+            items = new ArrayList<>();
+        }
+        j= j + " and c.createdAt between :fd and :td ";
+               j= j + " order by c.id desc";
+        m.put("fd", from);
+        m.put("td", to);
+        items = getFacade().findByJpql(j, m, TemporalType.TIMESTAMP);
         return "/insAdmin/registered_clients";
     }
 
@@ -1362,6 +1384,30 @@ public class ClientController implements Serializable {
     public void setInstitutionController(InstitutionController institutionController) {
         this.institutionController = institutionController;
     }
+
+    public Date getFrom() {
+        if(from==null){
+            from = commonController.startOfTheDay();
+        }
+        return from;
+    }
+
+    public void setFrom(Date from) {
+        this.from = from;
+    }
+
+    public Date getTo() {
+        if(to==null){
+            to=commonController.endOfTheDay();
+        }
+        return to;
+    }
+
+    public void setTo(Date to) {
+        this.to = to;
+    }
+    
+    
 
     // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="Inner Classes">
