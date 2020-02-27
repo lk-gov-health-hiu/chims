@@ -70,29 +70,29 @@ public class CommonController implements Serializable {
             return null;
         }
     }
-    
-    
-    public Date startOfTheDay(){
-        return CommonController.this.startOfTheDay(new Date());
+
+    public Date startOfTheDay() {
+        return startOfTheDay(new Date());
     }
-    
-    public Date startOfTheDay(Date date){
+
+    public Date startOfTheDay(Date date) {
         Calendar d = Calendar.getInstance();
         d.setTime(date);
-        d.set(Calendar.HOUR, 0);
+        d.set(Calendar.HOUR_OF_DAY, 0);
         d.set(Calendar.MINUTE, 0);
         d.set(Calendar.SECOND, 0);
         d.set(Calendar.MILLISECOND, 0);
         return d.getTime();
     }
-    
-    public Date endOfTheDay(){
+
+    public Date endOfTheDay() {
         return endOfTheDay(new Date());
     }
-    
-    public Date endOfTheDay(Date date){
+
+    public Date endOfTheDay(Date date) {
         Calendar d = Calendar.getInstance();
-        d.setTime(CommonController.this.startOfTheDay(date));
+        d.setTime(startOfTheDay(date));
+        d.add(Calendar.DATE, 1);
         d.add(Calendar.MILLISECOND, -1);
         return d.getTime();
     }
@@ -100,12 +100,11 @@ public class CommonController implements Serializable {
     public String dateToString() {
         return dateToString(Calendar.getInstance().getTime());
     }
-    
+
     public String dateToString(Date date) {
         return dateToString(date, "dd MMMM yyyy");
     }
 
-    
     public String dateToString(Date date, String format) {
 
         DateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");

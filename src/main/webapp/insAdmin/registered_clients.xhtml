@@ -53,7 +53,7 @@
 
                             <p:column  headerText="Register On" sortBy="#{c.createdAt}" >
                                 <p:outputLabel value="#{c.createdAt}" >
-                                    <f:convertDateTime parent="dd MMMM yyyy" ></f:convertDateTime>
+                                    <f:convertDateTime pattern="dd MMMM yyyy hh:mm a" timeZone="Asia/Colombo" ></f:convertDateTime>
                                 </p:outputLabel>
                             </p:column>
                             <p:column  headerText="PHN" sortBy="#{c.phn}" filterBy="#{c.phn}" filterMatchMode="contains">
