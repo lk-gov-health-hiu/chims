@@ -19,7 +19,6 @@
                 <h:form id="AreaListForm">
 
                     <p:dataTable id="datalist" value="#{areaController.items}" var="item"
-                                 selectionMode="single" selection="#{areaController.selected}"
                                  paginator="true"
                                  rowKey="#{item.id}"
                                  rows="10"
@@ -51,11 +50,12 @@
                         </p:column>
                         
                         <p:column headerText="Actions" >
-                            <p:commandButton ajax="false" value="View" action="#{areaController.toEditAreaForSysAdmin()}" >
-                                <f:setPropertyActionListener value="#{item}" target="#{areaController.deleting}"
+                            <p:commandButton ajax="false" value="Edit" action="#{areaController.toEditAreaForSysAdmin()}" >
+                                <f:setPropertyActionListener value="#{item}" target="#{areaController.deleting}" ></f:setPropertyActionListener>
                             </p:commandButton>
-                            <p:commandButton ajax="false" value="View" action="#{areaController.deleteAreaForSysAdmin()}" >
-                                <f:setPropertyActionListener value="#{item}" target="#{areaController.deleting}"
+                            <p:commandButton ajax="false" value="Delete" action="#{areaController.deleteAreaForSysAdmin()}"
+                                             onclick="return confirm('Are you sure?')">
+                                <f:setPropertyActionListener value="#{item}" target="#{areaController.deleting}" ></f:setPropertyActionListener>
                             </p:commandButton>
                         </p:column>
                         

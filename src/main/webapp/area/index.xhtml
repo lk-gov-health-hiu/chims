@@ -17,11 +17,11 @@
 
                 <table style="width: 100%;" >
                     <tr>
-                        <td style="width: calc(30rem);vertical-align: top;">
-                            <p:panel style="width: 100%;" header="Actions">
+                        <td style="width: calc(26rem);vertical-align: top;">
+                            <p:panel style="width: 100%; min-height: 75vh;" header="Actions">
                                 <h:form >
                                     <p:panelGrid  >
-                                        <p:commandButton styleClass="width25rem"
+                                        <p:commandButton styleClass="width25rem" 
                                                          ajax="false" value="Add Area"
                                                          action="#{areaController.toAddArea()}"  ></p:commandButton>
                                         <p:commandButton styleClass="width25rem"
@@ -42,8 +42,8 @@
                                 </h:form>  
                             </p:panel>
                         </td>
-                        <td style="width: calc(100% - 30rem);vertical-align: top;">
-                            <p:panel style="width: 100%;height: calc(100vh-5rem);">
+                        <td style="width: calc(100% - 25.8rem);vertical-align: top;">
+                            <p:panel style="width: 100%;min-height: 75vh;">
                                 <f:facet name="header" >
                                     <ui:insert name="insTopic" >
                                         <p:outputLabel value="Details" ></p:outputLabel>
@@ -53,6 +53,8 @@
 
                                 </ui:insert>
                             </p:panel>
+                            <br/>
+                            <br/>
                         </td>
                     </tr>
                 </table>

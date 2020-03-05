@@ -119,6 +119,10 @@ public class AreaController implements Serializable {
             JsfUtil.addErrorMessage("Please select an Area to Delete");
             return "";
         }
+        deleting.setRetired(true);
+        deleting.setRetiredAt(new Date());
+        deleting.setRetiredBy(webUserController.getLoggedUser());
+        getFacade().edit(deleting);
         items = null;
         deleting=null;
         return toListAreasForSysAdmin();
