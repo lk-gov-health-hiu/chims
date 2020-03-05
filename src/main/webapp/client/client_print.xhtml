@@ -35,7 +35,7 @@
 
                         </p:panelGrid>
 
-                        <div  style="90%;" >
+                        <div   >
                             <p:barcode id="barcodePhn" type="code128" cache="false" value="#{clientController.selected.phn}" ></p:barcode>
                             <p:panel id="card" style="border: none;" >
 
@@ -65,36 +65,6 @@
                             </p:panel>
 
 
-                            <!--                                <table style="width: 98%; text-align: left;font-size: 0.65rem;line-height: 0.5rem;">
-                                                                <tr>
-                                                                    <th>NIC</th>
-                                                                    <th><p:spacer height="1" width="10"></p:spacer>
-                                                                    </th>
-                                                                    <th>#{clientController.selected.person.nic}</th>
-                                                                </tr>
-                                                                <tr>
-                                                                    <th>PHN</th>
-                                                                    <th><p:spacer height="1" width="10"></p:spacer>
-                                                                    </th>
-                                                                    <th>#{clientController.selected.phn}</th>
-                                                                </tr>
-                                                                <tr>
-                                                                    <th>Gender</th>
-                                                                    <th><p:spacer height="1" width="10"></p:spacer>
-                                                                    </th>
-                                                                    <th>#{clientController.selected.person.sex.name}</th>
-                                                                </tr>
-                                                                <tr>
-                                                                    <th>DOB</th>
-                                                                    <th><p:spacer height="1" width="10"></p:spacer>
-                                                                    </th>
-                                                                    <th>
-                                                                        <p:outputLabel value="#{clientController.selected.person.dateOfBirth}" >
-                                                                            <f:convertDateTime pattern="dd MMMM yyyy" ></f:convertDateTime>
-                                                                        </p:outputLabel>
-                                                                    </th>
-                                                                </tr>
-                                                            </table>-->
                         </div>
 
 

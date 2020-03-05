@@ -273,6 +273,9 @@ public class Item implements Serializable {
     }
 
     public SelectionDataType getDataType() {
+        if(dataType==null){
+            dataType = SelectionDataType.Short_Text;
+        }
         return dataType;
     }
 

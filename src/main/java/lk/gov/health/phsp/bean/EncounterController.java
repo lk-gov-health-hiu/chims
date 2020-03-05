@@ -65,7 +65,10 @@ public class EncounterController implements Serializable {
         return clinic.getCode() + "/" + yy + "/" + c;
     }
 
-    public Long countOfEncounters(List<Institution> clinic, EncounterType ec) {
+    public Long countOfEncounters(List<Institution> clinics, EncounterType ec) {
+        if(clinics==null || clinics.isEmpty()){
+            return 0l;
+        }
         String j = "select count(e) from Encounter e "
                 + " where e.retired=:ret "
                 + " and e.institution in :ins "
@@ -75,7 +78,7 @@ public class EncounterController implements Serializable {
         m.put("d", CommonController.startOfTheYear());
         m.put("ec", ec);
         m.put("ret", false);
-        m.put("ins", clinic);
+        m.put("ins", clinics);
         Long c = getFacade().findLongByJpql(j, m);
         if (c == null) {
             c = 0l;
