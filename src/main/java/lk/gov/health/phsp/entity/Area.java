@@ -59,6 +59,7 @@ public class Area implements Serializable {
     private AreaType type;
     private String name;
     private String code;
+    private Long areauid;
     @ManyToOne
     private Area parentArea;
 
@@ -436,5 +437,15 @@ public class Area implements Serializable {
     public void setFemaleTargePopulation(Long femaleTargePopulation) {
         this.femaleTargePopulation = femaleTargePopulation;
     }
+
+    public Long getAreauid() {
+        return areauid;
+    }
+
+    public void setAreauid(Long areauid) {
+        this.areauid = areauid;
+    }
+    
+    
 
 }

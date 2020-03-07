@@ -186,5 +186,10 @@
     width: 25rem;
     margin: 0.2rem;
     padding: 0.2rem;
+    text-align: left!important;
 }
 
+
+.width50percent{
+    width: 50%;
+}

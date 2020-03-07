@@ -17,11 +17,11 @@
 
                 <table style="width: 100%;" >
                     <tr>
-                        <td style="width: calc(30rem);vertical-align: top;">
-                            <p:panel style="width: 100%;" header="Actions">
+                        <td style="width: calc(26rem);vertical-align: top;">
+                            <p:panel style="width: 100%; min-height: 75vh;" header="Actions">
                                 <h:form >
                                     <p:panelGrid  >
-                                        <p:commandButton styleClass="width25rem"
+                                        <p:commandButton styleClass="width25rem" 
                                                          ajax="false" value="Add Area"
                                                          action="#{areaController.toAddArea()}"  ></p:commandButton>
                                         <p:commandButton styleClass="width25rem"
@@ -33,7 +33,20 @@
                                         <p:commandButton styleClass="width25rem"
                                                          ajax="false" value="Search Areas"
                                                          action="#{areaController.toSearchAreasForSysAdmin()}"  ></p:commandButton>
-                                        <p:commandButton styleClass="width25rem"  ajax="false" value="Import GN Areas" action="/area/import_gn_areas"  ></p:commandButton>
+                                        <p:commandButton styleClass="width25rem"  ajax="false"
+                                                         value="Create new GN Areas By Import" action="/area/import_gn_areas"  ></p:commandButton>
+                                        
+                                        
+                                        <p:commandButton styleClass="width25rem"  ajax="false"
+                                                         value="Add Draining GN Areas for Health Institutions" 
+                                                         action="/area/import_draining_gn_areas_for_institutions"  ></p:commandButton>
+                                        
+                                        
+                                         <p:commandButton styleClass="width25rem"  ajax="false"
+                                                         value="Update UID of Areas by Area Code" 
+                                                         action="/area/import_update_uid"  ></p:commandButton>
+                                        
+                                        
                                         <p:commandButton styleClass="width25rem"  ajax="false" value="Import District Data" action="/area/import_district_population"  ></p:commandButton>                        
                                         <p:commandButton styleClass="width25rem"  ajax="false" 
                                                          value="Calculate Provincial Data from District Data" 
@@ -42,8 +55,8 @@
                                 </h:form>  
                             </p:panel>
                         </td>
-                        <td style="width: calc(100% - 30rem);vertical-align: top;">
-                            <p:panel style="width: 100%;height: calc(100vh-5rem);">
+                        <td style="width: calc(100% - 25.8rem);vertical-align: top;">
+                            <p:panel style="width: 100%;min-height: 75vh;">
                                 <f:facet name="header" >
                                     <ui:insert name="insTopic" >
                                         <p:outputLabel value="Details" ></p:outputLabel>
@@ -53,6 +66,8 @@
 
                                 </ui:insert>
                             </p:panel>
+                            <br/>
+                            <br/>
                         </td>
                     </tr>
                 </table>
