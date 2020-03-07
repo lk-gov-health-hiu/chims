@@ -67,8 +67,9 @@
                                 <p:outputLabel value="#{c.person.nic}" ></p:outputLabel>
                             </p:column>
                             
-                              <p:column  headerText="Phone" sortBy="#{c.person.phone1}" filterBy="#{c.person.phone1}" filterMatchMode="contains">
-                                <p:outputLabel value="#{c.person.phone1}" ></p:outputLabel>
+                            <p:column  headerText="Phone" sortBy="#{c.person.transPhoneNumbers}" 
+                                       filterBy="#{c.person.transPhoneNumbers}" filterMatchMode="contains">
+                                <p:outputLabel value="#{c.person.transPhoneNumbers}" ></p:outputLabel>
                             </p:column>
 
 
@@ -115,8 +116,6 @@
 
 
                         </p:panel>
-
-
                     </div>
                 </h:form>
 

@@ -348,21 +348,6 @@ public class ClientController implements Serializable {
         return "/insAdmin/registered_clients";
     }
 
-    public String toRegisterdClients() {
-        String j = "select c from Client c "
-                + " where c.retired=:ret ";
-        Map m = new HashMap();
-        m.put("ret", false);
-        if (webUserController.getLoggedUser().getInstitution() != null) {
-            j += " and c.createInstitution=:ins ";
-            m.put("ins", webUserController.getLoggedUser().getInstitution());
-        } else {
-            items = new ArrayList<>();
-        }
-        items = getFacade().findByJpql(j, m);
-        return "/insAdmin/registered_clients";
-    }
-    
     public String toRegisterdClientsWithDates() {
         String j = "select c from Client c "
                 + " where c.retired=:ret ";
@@ -371,15 +356,27 @@ public class ClientController implements Serializable {
         if (webUserController.getLoggedUser().getInstitution() != null) {
             j += " and c.createInstitution=:ins ";
             m.put("ins", webUserController.getLoggedUser().getInstitution());
-        } else {
-            items = new ArrayList<>();
-        }
+        } 
         j= j + " and c.createdAt between :fd and :td ";
                j= j + " order by c.id desc";
-        m.put("fd", from);
-        m.put("td", to);
+        m.put("fd", getFrom());
+        m.put("td", getTo());
         items = getFacade().findByJpql(j, m, TemporalType.TIMESTAMP);
         return "/insAdmin/registered_clients";
+    }
+    
+    
+    public String toRegisterdClientsWithDatesForSystemAdmin() {
+        String j = "select c from Client c "
+                + " where c.retired=:ret ";
+        Map m = new HashMap();
+        m.put("ret", false);
+        j= j + " and c.createdAt between :fd and :td ";
+               j= j + " order by c.id desc";
+        m.put("fd", getFrom());
+        m.put("td", getTo());
+        items = getFacade().findByJpql(j, m, TemporalType.TIMESTAMP);
+        return "/systemAdmin/all_clients";
     }
 
     public void saveSelectedImports() {

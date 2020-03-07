@@ -143,6 +143,8 @@ public class Person implements Serializable {
     private long ageInDays;
     @Transient
     private int serealNumber;
+    @Transient
+    private String transPhoneNumbers;
 // </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="Functions">
 
@@ -565,6 +567,9 @@ public class Person implements Serializable {
     
     
     
+    
+    
+    
 
 // </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="Over-rides">
@@ -607,6 +612,27 @@ public class Person implements Serializable {
 
     public void setOccupation(String occupation) {
         this.occupation = occupation;
+    }
+
+    public String getTransPhoneNumbers() {
+        boolean phoneOneNotBlank=false;
+        boolean phoneTwoNotBlank=false;
+        if(phone1!=null && !phone1.trim().equals("")){
+            phoneOneNotBlank=true;
+        }
+        if(phone2!=null && !phone2.trim().equals("")){
+            phoneTwoNotBlank=true;
+        }
+        if(phoneOneNotBlank && phoneTwoNotBlank){
+            transPhoneNumbers = phone1 + ", " + phone2;
+        }else if(phoneOneNotBlank){
+            transPhoneNumbers = phone1;
+        }else if(phoneTwoNotBlank){
+            transPhoneNumbers = phone2;
+        }else{
+            transPhoneNumbers = "";
+        }
+        return transPhoneNumbers;
     }
 
 }
