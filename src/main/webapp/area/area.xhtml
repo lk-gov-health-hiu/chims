@@ -37,6 +37,12 @@
                             <p:inputText id="name" value="#{areaController.selected.name}" title="#{bundleClinical.EditAreaTitle_name}" />
                             <p:outputLabel value="#{bundleClinical.EditAreaLabel_code}" for="code" />
                             <p:inputText id="code" value="#{areaController.selected.code}" title="#{bundleClinical.EditAreaTitle_code}" />
+                            
+                            <p:outputLabel value="ID" for="id" />
+                            <p:inputText id="id" value="#{areaController.selected.areauid}" 
+                                         title="ID" />
+                            
+                            
                             <p:outputLabel value="#{bundleClinical.EditAreaLabel_parentArea}" for="parentArea" />
                             <p:selectOneMenu id="parentArea" value="#{areaController.selected.parentArea}" >
                                 <f:selectItem itemLabel="#{bundleClinical.SelectOneMessage}"/>

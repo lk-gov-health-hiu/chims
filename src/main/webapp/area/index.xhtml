@@ -33,7 +33,20 @@
                                         <p:commandButton styleClass="width25rem"
                                                          ajax="false" value="Search Areas"
                                                          action="#{areaController.toSearchAreasForSysAdmin()}"  ></p:commandButton>
-                                        <p:commandButton styleClass="width25rem"  ajax="false" value="Import GN Areas" action="/area/import_gn_areas"  ></p:commandButton>
+                                        <p:commandButton styleClass="width25rem"  ajax="false"
+                                                         value="Create new GN Areas By Import" action="/area/import_gn_areas"  ></p:commandButton>
+                                        
+                                        
+                                        <p:commandButton styleClass="width25rem"  ajax="false"
+                                                         value="Add Draining GN Areas for Health Institutions" 
+                                                         action="/area/import_draining_gn_areas_for_institutions"  ></p:commandButton>
+                                        
+                                        
+                                         <p:commandButton styleClass="width25rem"  ajax="false"
+                                                         value="Update UID of Areas by Area Code" 
+                                                         action="/area/import_update_uid"  ></p:commandButton>
+                                        
+                                        
                                         <p:commandButton styleClass="width25rem"  ajax="false" value="Import District Data" action="/area/import_district_population"  ></p:commandButton>                        
                                         <p:commandButton styleClass="width25rem"  ajax="false" 
                                                          value="Calculate Provincial Data from District Data" 

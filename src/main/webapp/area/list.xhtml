@@ -42,6 +42,12 @@
                             </f:facet>
                             <h:outputText value="#{item.code}"/>
                         </p:column>
+                        <p:column sortBy="#{item.areauid}" filterBy="#{item.areauid}" filterMatchMode="contains">
+                            <f:facet name="header" >
+                                <h:outputText value="ID"/>
+                            </f:facet>
+                            <h:outputText value="#{item.areauid}"/>
+                        </p:column>
                         <p:column  sortBy="#{item.parentArea.name}" filterBy="#{item.parentArea.name}" filterMatchMode="contains">
                             <f:facet name="header">
                                 <h:outputText value="#{bundleClinical.ListAreaTitle_parentArea}"/>
@@ -51,7 +57,7 @@
                         
                         <p:column headerText="Actions" >
                             <p:commandButton ajax="false" value="Edit" action="#{areaController.toEditAreaForSysAdmin()}" >
-                                <f:setPropertyActionListener value="#{item}" target="#{areaController.deleting}" ></f:setPropertyActionListener>
+                                <f:setPropertyActionListener value="#{item}" target="#{areaController.selected}" ></f:setPropertyActionListener>
                             </p:commandButton>
                             <p:commandButton ajax="false" value="Delete" action="#{areaController.deleteAreaForSysAdmin()}"
                                              onclick="return confirm('Are you sure?')">

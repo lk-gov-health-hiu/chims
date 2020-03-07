@@ -72,7 +72,7 @@ public class AreaController implements Serializable {
     private List<Area> provinces = null;
     private List<Area> districts = null;
     private Area selected;
-    private Area deleting ;
+    private Area deleting;
     private UploadedFile file;
 
     @Inject
@@ -84,8 +84,12 @@ public class AreaController implements Serializable {
 
     private MapModel polygonModel;
 
+    private String successMessage;
+    private String failureMessage;
+
     private int gnNameColumnNumber;
     private int gnCodeColumnNumber;
+    private int gnUidColumnNumber;
     private int dsdNameColumnNumber;
     private int districtNameColumnNumber;
     private int provinceNameColumnNumber;
@@ -124,49 +128,48 @@ public class AreaController implements Serializable {
         deleting.setRetiredBy(webUserController.getLoggedUser());
         getFacade().edit(deleting);
         items = null;
-        deleting=null;
+        deleting = null;
         return toListAreasForSysAdmin();
     }
-    
-    public String saveOrUpdateAreaForSystemAdmin(){
-        if(selected==null){
+
+    public String saveOrUpdateAreaForSystemAdmin() {
+        if (selected == null) {
             JsfUtil.addErrorMessage("Please select an Area");
             return "";
         }
-        if(selected.getId()==null){
+        if (selected.getId() == null) {
             selected.setCreatedAt(new Date());
             selected.setCreatedBy(webUserController.getLoggedUser());
             getFacade().create(selected);
             JsfUtil.addSuccessMessage("Saved");
-        }else{
+        } else {
             selected.setLastEditBy(webUserController.getLoggedUser());
             selected.setLastEditeAt(new Date());
             getFacade().edit(deleting);
             JsfUtil.addSuccessMessage("Updated");
         }
-        items =null;
-        selected=null;
+        items = null;
+        selected = null;
         return toListAreasForSysAdmin();
     }
-    
-    public String toListAreasForSysAdmin(){
+
+    public String toListAreasForSysAdmin() {
         String j = "select a from Area a where a.retired=:ret order by a.name";
         Map m = new HashMap();
         m.put("ret", false);
         items = getFacade().findByJpql(j, m);
         return "/area/list";
     }
-    
-    public String toBrowseAreasForSysAdmin(){
-        
+
+    public String toBrowseAreasForSysAdmin() {
+
         return "/area/browse";
     }
-    
-     public String toSearchAreasForSysAdmin(){
-       
+
+    public String toSearchAreasForSysAdmin() {
+
         return "/area/search";
     }
-    
 
     public String importAreasFromExcel() {
         try {
@@ -286,6 +289,100 @@ public class AreaController implements Serializable {
                 return "";
             }
         } catch (Exception e) {
+            return "";
+        }
+    }
+
+    public String importUpdateUidFromCodeOfAreasFromExcel() {
+        successMessage = "";
+        failureMessage = "";
+//        <br/>
+        String newLine = "<br/>";
+        try {
+
+            String strGNCode;
+            String strGnUid;
+            Long longGnUid;
+
+            Area gn;
+
+            File inputWorkbook;
+            Workbook w;
+            Cell cell;
+            InputStream in;
+
+            JsfUtil.addSuccessMessage(file.getFileName());
+
+            try {
+                JsfUtil.addSuccessMessage(file.getFileName());
+                in = file.getInputstream();
+                File f;
+                f = new File(Calendar.getInstance().getTimeInMillis() + file.getFileName());
+                FileOutputStream out = new FileOutputStream(f);
+                int read = 0;
+                byte[] bytes = new byte[1024];
+                while ((read = in.read(bytes)) != -1) {
+                    out.write(bytes, 0, read);
+                }
+                in.close();
+                out.flush();
+                out.close();
+
+                inputWorkbook = new File(f.getAbsolutePath());
+
+                successMessage += "File Uploaded Successfully." + newLine;
+
+                w = Workbook.getWorkbook(inputWorkbook);
+                Sheet sheet = w.getSheet(0);
+
+                for (int i = startRow; i < sheet.getRows(); i++) {
+
+                    Map m = new HashMap();
+
+                    cell = sheet.getCell(gnCodeColumnNumber, i);
+                    strGNCode = cell.getContents();
+
+                    if (strGNCode == null || strGNCode.trim().equals("")) {
+                        failureMessage += "No GN Code for the line number " + i + newLine;
+                        continue;
+                    }
+
+                    cell = sheet.getCell(gnUidColumnNumber, i);
+                    strGnUid = cell.getContents();
+
+                    if (strGnUid == null || strGnUid.trim().equals("")) {
+                        failureMessage += "No GN UID for the line number " + i + "." + newLine;
+                        continue;
+                    }
+
+                    try {
+                        longGnUid = Long.parseLong(strGnUid);
+                    } catch (NumberFormatException e) {
+                        failureMessage += "The GN UID for the line number " + i + " is not a number." + newLine;
+                        continue;
+                    }
+
+                    gn = getAreaByCode(strGNCode, null);
+
+                    if (gn == null) {
+                        failureMessage += "NO Areas could be found with the code for the line number " + i + " is not a number." + newLine;
+                        continue;
+                    }
+
+                    gn.setAreauid(longGnUid);
+                    getFacade().edit(gn);
+                    successMessage += "Successfully added the UID for " + gn.getName() + "(" + gn.getCode() + ")." + newLine;
+
+                }
+                JsfUtil.addSuccessMessage("Succesful. All the data in Excel File Impoted to the database");
+                return "";
+            } catch (IOException | BiffException ex) {
+                JsfUtil.addErrorMessage(ex.getMessage());
+                failureMessage += "Error. " + ex.getMessage() + ". Aborting the process." + newLine;
+                return "";
+            }
+        } catch (IndexOutOfBoundsException e) {
+            failureMessage += "Error. " + e.getMessage() + ". Aborting the process." + newLine;
             return "";
         }
     }
@@ -1112,8 +1209,6 @@ public class AreaController implements Serializable {
         return "/area/index";
     }
 
-    
-    
     public List<Area> getAreas(AreaType areaType, Area superArea) {
         return getAreas(areaType, superArea, null);
     }
@@ -1238,6 +1333,27 @@ public class AreaController implements Serializable {
         }
         j += " order by a.code";
         return getFacade().findByJpql(j, m);
+    }
+
+    public Area getAreaByCode(String code, AreaType areaType) {
+        if (code.trim().equals("")) {
+            return null;
+        }
+        String j;
+        Map m = new HashMap();
+        j = "select a "
+                + " from Area a "
+                + " where a.retired=:ret "
+                + " and upper(a.code)=:n  ";
+        m.put("n", code.toUpperCase());
+        m.put("ret", false);
+        if (areaType != null) {
+            j += " and a.type=:t";
+            m.put("t", areaType);
+        }
+        j += " order by a.id desc";
+        Area ta = getFacade().findFirstByJpql(j, m);
+        return ta;
     }
 
     public Area getAreaByName(String nameOrCode, AreaType areaType, boolean createNew, Area parentArea) {
@@ -1581,6 +1697,30 @@ public class AreaController implements Serializable {
 
     public void setDeleting(Area deleting) {
         this.deleting = deleting;
+    }
+
+    public int getGnUidColumnNumber() {
+        return gnUidColumnNumber;
+    }
+
+    public void setGnUidColumnNumber(int gnUidColumnNumber) {
+        this.gnUidColumnNumber = gnUidColumnNumber;
+    }
+
+    public String getSuccessMessage() {
+        return successMessage;
+    }
+
+    public void setSuccessMessage(String successMessage) {
+        this.successMessage = successMessage;
+    }
+
+    public String getFailureMessage() {
+        return failureMessage;
+    }
+
+    public void setFailureMessage(String failureMessage) {
+        this.failureMessage = failureMessage;
     }
 
     // </editor-fold>
