@@ -95,6 +95,12 @@
                                       filterMatchMode="contains">
                                 <p:outputLabel value="#{c.person.gnArea.name}" ></p:outputLabel>
                             </p:column>
+                            
+                             <p:column headerText="Registerd At" sortBy="#{c.createInstitution.name}" 
+                                      filterBy="#{c.createInstitution.name}"
+                                      filterMatchMode="contains">
+                                 <p:outputLabel value="#{c.createInstitution.name}" ></p:outputLabel>
+                            </p:column>
 
                             <p:column headerText="Edit" >
                                 <p:commandButton ajax="false" action="#{clientController.toClientProfile()}" value="Edit" >
