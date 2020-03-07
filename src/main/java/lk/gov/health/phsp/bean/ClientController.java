@@ -356,25 +356,25 @@ public class ClientController implements Serializable {
         if (webUserController.getLoggedUser().getInstitution() != null) {
             j += " and c.createInstitution=:ins ";
             m.put("ins", webUserController.getLoggedUser().getInstitution());
-        } 
-        j= j + " and c.createdAt between :fd and :td ";
-               j= j + " order by c.id desc";
+        }
+        j = j + " and c.createdAt between :fd and :td ";
+        j = j + " order by c.id desc";
         m.put("fd", getFrom());
         m.put("td", getTo());
         items = getFacade().findByJpql(j, m, TemporalType.TIMESTAMP);
         return "/insAdmin/registered_clients";
     }
-    
-    
+
     public String toRegisterdClientsWithDatesForSystemAdmin() {
         String j = "select c from Client c "
                 + " where c.retired=:ret ";
         Map m = new HashMap();
         m.put("ret", false);
-        j= j + " and c.createdAt between :fd and :td ";
-               j= j + " order by c.id desc";
+        j = j + " and c.createdAt between :fd and :td ";
+        j = j + " order by c.id desc";
         m.put("fd", getFrom());
         m.put("td", getTo());
+        selectedClients = null;
         items = getFacade().findByJpql(j, m, TemporalType.TIMESTAMP);
         return "/systemAdmin/all_clients";
     }
@@ -393,24 +393,23 @@ public class ClientController implements Serializable {
         }
     }
 
-    public void fillAllClients() {
-        String j = "select c from Client c order by c.id";
-        items = getFacade().findByJpql(j);
-    }
-
     public void fillClientsWithWrongPhnLength() {
         String j = "select c from Client c where length(c.phn) <>11 order by c.id";
         items = getFacade().findByJpql(j);
     }
 
-    public void fillRetiredClients() {
-        String j = "select c from Client c where c.retired=true order by c.id";
-        items = getFacade().findByJpql(j);
-    }
-
-    public void fillNonRetiredClients() {
-        String j = "select c from Client c where c.retired=false order by c.id";
-        items = getFacade().findByJpql(j);
+    public String fillRetiredClients() {
+        String j = "select c from Client c "
+                + " where c.retired=:ret ";
+        Map m = new HashMap();
+        m.put("ret", true);
+        j = j + " and c.createdAt between :fd and :td ";
+        j = j + " order by c.id desc";
+        m.put("fd", getFrom());
+        m.put("td", getTo());
+        selectedClients = null;
+        items = getFacade().findByJpql(j, m, TemporalType.TIMESTAMP);
+        return "/systemAdmin/all_clients";
     }
 
     public String retireSelectedClients() {
@@ -428,7 +427,25 @@ public class ClientController implements Serializable {
             getFacade().edit(c);
         }
         selectedClients = null;
-        to
+        return toRegisterdClientsWithDatesForSystemAdmin();
+    }
+
+    public String unretireSelectedClients() {
+        for (Client c : selectedClients) {
+            c.setRetired(false);
+            c.setRetireComments("Bulk Un Delete");
+            c.setLastEditBy(webUserController.getLoggedUser());
+            c.setLastEditeAt(new Date());
+
+            c.getPerson().setRetired(false);
+            c.getPerson().setRetireComments("Bulk Un Delete");
+            c.getPerson().setEditedAt(new Date());
+            c.getPerson().setEditer(webUserController.getLoggedUser());
+
+            getFacade().edit(c);
+        }
+        selectedClients = null;
+        return toRegisterdClientsWithDatesForSystemAdmin();
     }
 
     public void retireSelectedClient() {
@@ -1385,7 +1402,7 @@ public class ClientController implements Serializable {
     }
 
     public Date getFrom() {
-        if(from==null){
+        if (from == null) {
             from = commonController.startOfTheDay();
         }
         return from;
@@ -1396,8 +1413,8 @@ public class ClientController implements Serializable {
     }
 
     public Date getTo() {
-        if(to==null){
-            to=commonController.endOfTheDay();
+        if (to == null) {
+            to = commonController.endOfTheDay();
         }
         return to;
     }
@@ -1405,8 +1422,6 @@ public class ClientController implements Serializable {
     public void setTo(Date to) {
         this.to = to;
     }
-    
-    
 
     // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="Inner Classes">

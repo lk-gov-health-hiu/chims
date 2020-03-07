@@ -24,15 +24,28 @@
                             <p:calendar value="#{clientController.from}" pattern="dd MM yyyy hh:mm a" ></p:calendar>
                             <p:outputLabel value="To" ></p:outputLabel>
                             <p:calendar value="#{clientController.to}" pattern="dd MM yyyy hh:mm a" ></p:calendar>
-                            <p:spacer></p:spacer>
-                            <p:commandButton ajax="false" value="Refresh" 
-                                             action="#{clientController.toRegisterdClientsWithDatesForSystemAdmin()}" ></p:commandButton>
 
                         </p:panelGrid>
 
-                        <p:commandButton value="Retire Selected Clients" ajax="false"
-                                         action="#{clientController.retireSelectedClients()}">
-                        </p:commandButton>
+                        <h:panelGrid columns="4" >
+                            <p:commandButton ajax="false" value="Fill Clients" 
+                                             action="#{clientController.toRegisterdClientsWithDatesForSystemAdmin()}" ></p:commandButton>
+
+                            <p:commandButton value="Fill Retired Clients" ajax="false"
+                                             action="#{clientController.fillRetiredClients()}">
+                            </p:commandButton>
+
+                            <p:commandButton value="Retire Selected Clients" ajax="false"
+                                             action="#{clientController.retireSelectedClients()}">
+                            </p:commandButton>
+                            
+                             <p:commandButton value="Reverse Retiring of Selected Clients" ajax="false"
+                                             action="#{clientController.unretireSelectedClients()}">
+                            </p:commandButton>
+
+                        </h:panelGrid>
+
+                      
 
 
 
