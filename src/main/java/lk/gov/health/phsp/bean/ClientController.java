@@ -413,7 +413,7 @@ public class ClientController implements Serializable {
         items = getFacade().findByJpql(j);
     }
 
-    public void retireSelectedClients() {
+    public String retireSelectedClients() {
         for (Client c : selectedClients) {
             c.setRetired(true);
             c.setRetireComments("Bulk Delete");
@@ -427,6 +427,8 @@ public class ClientController implements Serializable {
 
             getFacade().edit(c);
         }
+        selectedClients = null;
+        to
     }
 
     public void retireSelectedClient() {

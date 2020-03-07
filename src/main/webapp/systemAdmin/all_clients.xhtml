@@ -18,23 +18,23 @@
                         <f:facet name="header" >
                             <p:outputLabel value="Registed Clients" ></p:outputLabel>
                         </f:facet>
-                        
+
                         <p:panelGrid columns="2" >
                             <p:outputLabel value="From" ></p:outputLabel>
                             <p:calendar value="#{clientController.from}" pattern="dd MM yyyy hh:mm a" ></p:calendar>
                             <p:outputLabel value="To" ></p:outputLabel>
-                             <p:calendar value="#{clientController.to}" pattern="dd MM yyyy hh:mm a" ></p:calendar>
-                             <p:spacer></p:spacer>
-                             <p:commandButton ajax="false" value="Refresh" 
-                                              action="#{clientController.toRegisterdClientsWithDatesForSystemAdmin()}" ></p:commandButton>
-                           
-                        </p:panelGrid>
-                        
-                        
+                            <p:calendar value="#{clientController.to}" pattern="dd MM yyyy hh:mm a" ></p:calendar>
+                            <p:spacer></p:spacer>
+                            <p:commandButton ajax="false" value="Refresh" 
+                                             action="#{clientController.toRegisterdClientsWithDatesForSystemAdmin()}" ></p:commandButton>
 
-                        <p:commandButton ajax="false" value="Print Selected" >
-                            <p:printer target="card" ></p:printer>
+                        </p:panelGrid>
+
+                        <p:commandButton value="Retire Selected Clients" ajax="false"
+                                         action="#{clientController.retireSelectedClients()}">
                         </p:commandButton>
+
+
 
 
 
@@ -46,12 +46,14 @@
                                      rowKey="#{c.id}"
                                      paginator="true"
                                      rows="10"
-                                     selection="#{clientController.selected}"
+                                     selection="#{clientController.selectedClients}"
                                      rowsPerPageTemplate="10,20,30,40,50"
                                      >
 
-                            <p:ajax event="rowSelect" process="tbl"  update=":#{p:component('card')}" />
-                            <p:ajax event="rowUnselect"   process="tbl"  update=":#{p:component('card')}"  />
+
+
+                            <p:column selectionMode="multiple" width="35" >
+                            </p:column>
 
                             <p:column  headerText="Register On" sortBy="#{c.createdAt}" >
                                 <p:outputLabel value="#{c.createdAt}" >
@@ -68,7 +70,7 @@
                             <p:column  headerText="NIC" sortBy="#{c.person.nic}" filterBy="#{c.person.nic}" filterMatchMode="contains">
                                 <p:outputLabel value="#{c.person.nic}" ></p:outputLabel>
                             </p:column>
-                            
+
                             <p:column  headerText="Phone" sortBy="#{c.person.transPhoneNumbers}" 
                                        filterBy="#{c.person.transPhoneNumbers}" filterMatchMode="contains">
                                 <p:outputLabel value="#{c.person.transPhoneNumbers}" ></p:outputLabel>
@@ -91,34 +93,7 @@
 
                     </p:panelGrid>
 
-                    <div   >
-                        <p:panel id="card" style="border: none;" >
 
-                            <div style="font-size: 0.65rem;line-height: 0.65rem;" >
-                                <p:outputLabel escape="false" value="Name&nbsp;:&nbsp;#{clientController.selected.person.nameWithTitle}"></p:outputLabel>  
-                                <br/>
-                                <p:outputLabel  escape="false" value="NIC&nbsp;&nbsp;&nbsp;:&nbsp;#{clientController.selected.person.nic}" ></p:outputLabel> 
-                                <br/>
-                                <p:outputLabel  escape="false" value="Gender&nbsp;:&nbsp;#{clientController.selected.person.sex.name}"></p:outputLabel>
-                                <br/>
-                                <p:outputLabel  escape="false" value="DOB&nbsp;&nbsp;&nbsp;:&nbsp;"></p:outputLabel> 
-                                <p:outputLabel  escape="false" value="#{clientController.selected.person.dateOfBirth}" >
-                                    <f:convertDateTime pattern="dd MMMM yyyy" ></f:convertDateTime>
-                                </p:outputLabel>
-                                <br/>
-                                <p:outputLabel  escape="false" value="PHN&nbsp;&nbsp;:&nbsp;#{clientController.selected.phn}" ></p:outputLabel>  
-                                <br/>
-                                <p:barcode id="cardPhn" type="code39"  cache="false" 
-                                           value="#{clientController.selected.phn}"
-                                           hrp="none" 
-                                           ></p:barcode>
-
-                            </div>
-
-
-
-                        </p:panel>
-                    </div>
                 </h:form>
 
             </ui:define>
