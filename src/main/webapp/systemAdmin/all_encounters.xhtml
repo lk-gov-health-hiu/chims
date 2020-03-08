@@ -1,92 +1,115 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:p="http://primefaces.org/ui"
       xmlns:f="http://xmlns.jcp.org/jsf/core">
-    <h:head>
-        <title>All Clients</title>
-    </h:head>
-    <h:body>
-        <h:form  >
+
+    <body>
+
+        <ui:composition template="/template.xhtml">
+
+            <ui:define name="content">
+
+                <h:form  >
+
+                    <p:panelGrid columns="2" >
+
+                        <p:panelGrid columns="2" >
+                            <p:panelGrid columns="2" >
+                                <p:outputLabel value="From" ></p:outputLabel>
+                                <p:calendar value="#{clientEncounterComponentFormSetController.from}" pattern="dd MM yyyy hh:mm a" ></p:calendar>
+                                <p:outputLabel value="To" ></p:outputLabel>
+                                <p:calendar value="#{clientEncounterComponentFormSetController.to}" pattern="dd MM yyyy hh:mm a" ></p:calendar>
+                            </p:panelGrid>
+
+                        </p:panelGrid>
 
 
-            <h:panelGrid columns="5" >
-                <p:commandButton value="Fill All Encounters" ajax="false"
-                                 action="#{clientEncounterComponentFormSetController.fillAllEncountersFormSets()}">
-                </p:commandButton>
-
-                <p:commandButton value="Fill Retired Encounters" ajax="false"
-                                 action="#{clientEncounterComponentFormSetController.fillAllRetiredEncountersFormSets()}">
-                </p:commandButton>
-
-                <p:commandButton value="Fill Non-Retired Encounters" ajax="false"
-                                 action="#{clientEncounterComponentFormSetController.fillAllNonRetiredEncountersFormSets()}">
-                </p:commandButton>
-
-                <p:commandButton value="Retire Selected Encounters" ajax="false"
-                                 action="#{clientEncounterComponentFormSetController.retireSelectedItems()}">
-                </p:commandButton>
-
-            </h:panelGrid>
-
-            <p:dataTable value="#{clientEncounterComponentFormSetController.items}"
-                         selection="#{clientEncounterComponentFormSetController.selectedItems}"
-                         var="c" 
-                         rowKey="#{c.id}"
-                         paginator="true"
-                         rows="20"
-                         rowsPerPageTemplate="10,20,30,40,50"
-                         resizeMode="fit"
-                         tableStyle="width:auto;"
-                         >
-                <p:column selectionMode="multiple"  >
-                </p:column>
-
-                <p:column headerText="PHN"  sortBy="#{c.encounter.client.phn}" filterBy="#{c.encounter.client.phn}" filterMatchMode="contains">
-                    <p:outputLabel value="#{c.encounter.client.phn}" ></p:outputLabel>
-                </p:column>
-
-                <p:column headerText="Name"   sortBy="#{c.encounter.client.person.name}" filterBy="#{c.encounter.client.person.name}" filterMatchMode="contains">
-                    <h:commandLink action="#{clientEncounterComponentFormSetController.toViewOrEditFormset()}"
-                                   style="color: #{rcv.completed?'white':'red'};">
-                        <h:outputLabel value="#{c.encounter.client.person.name}">
-                        </h:outputLabel>
-                        <f:setPropertyActionListener value="#{c}" target="#{clientEncounterComponentFormSetController.selected}" ></f:setPropertyActionListener>
-                    </h:commandLink>
-                </p:column>
-
-                <p:column headerText="District"   
-                          sortBy="#{c.encounter.client.person.district.name}" 
-                          filterBy="#{c.encounter.client.person.district.name}" 
-                          filterMatchMode="contains">
-                    <p:outputLabel value="#{c.encounter.client.person.district.name}" ></p:outputLabel>
-                </p:column>
-
-                <p:column  headerText="Registered in"   
-                           sortBy="#{c.encounter.client.createInstitution.name}" 
-                           filterBy="#{c.encounter.client.createInstitution.name}" filterMatchMode="contains">
-                    <p:outputLabel value="#{c.encounter.client.createInstitution.name}" ></p:outputLabel>
-                </p:column>
-
-                <p:column  headerText="Register at"  sortBy="#{c.encounter.createdAt}" 
-                           filterBy="#{c.encounter.createdAt}" filterMatchMode="contains">
-                    <p:outputLabel value="#{c.encounter.createdAt}" >
-                        <f:convertDateTime pattern="dd MM yyyy" ></f:convertDateTime>
-                    </p:outputLabel>
-                </p:column>
-
-                <p:column  headerText="Registeed By"  sortBy="#{c.encounter.createdBy.person.name}" 
-                           filterBy="#{c.encounter.createdBy.person.name}" filterMatchMode="contains">
-                    <p:outputLabel value="#{c.encounter.createdBy.person.name}" >
-                    </p:outputLabel>
-                </p:column>
-
-            </p:dataTable>
+                        <h:panelGrid columns="3" >
+                            <p:commandButton value="Fill Encounters" ajax="false"
+                                             action="#{clientEncounterComponentFormSetController.fillEncountersFormSetsForSysadmin()}">
+                            </p:commandButton>
+                            <p:commandButton value="Fill Retired Encounters" ajax="false"
+                                             action="#{clientEncounterComponentFormSetController.fillRetiredEncountersFormSets()}">
+                            </p:commandButton>
+                            <p:spacer ></p:spacer>
+                            <p:commandButton value="Retire Selected Encounters" ajax="false"
+                                             action="#{clientEncounterComponentFormSetController.retireSelectedItems()}">
+                            </p:commandButton>
+                            <p:commandButton value="Mark Selected Encounters as Not Complete" ajax="false"
+                                             action="#{clientEncounterComponentFormSetController.retireSelectedItemsAsUncomplete()}">
+                            </p:commandButton>
+                            <p:commandButton value="Mark Selected Encounters as Complete" ajax="false"
+                                             action="#{clientEncounterComponentFormSetController.retireSelectedItemsAsComplete()}">
+                            </p:commandButton>
+                        </h:panelGrid>
+                    </p:panelGrid>
 
 
 
-        </h:form>
-    </h:body>
+                    <p:dataTable value="#{clientEncounterComponentFormSetController.items}"
+                                 selection="#{clientEncounterComponentFormSetController.selectedItems}"
+                                 var="c" 
+                                 rowKey="#{c.id}"
+                                 paginator="true"
+                                 rows="20"
+                                 rowsPerPageTemplate="10,20,30,40,50"
+                                 resizeMode="fit"
+                                 tableStyle="width:auto;"
+                                 >
+                        <p:column selectionMode="multiple"  >
+                        </p:column>
+
+                        <p:column headerText="PHN"  sortBy="#{c.encounter.client.phn}" filterBy="#{c.encounter.client.phn}" filterMatchMode="contains">
+                            <p:outputLabel value="#{c.encounter.client.phn}" ></p:outputLabel>
+                        </p:column>
+
+                        <p:column headerText="Name"   sortBy="#{c.encounter.client.person.name}" filterBy="#{c.encounter.client.person.name}" filterMatchMode="contains">
+                            <h:outputLabel value="#{c.encounter.client.person.name}">
+                            </h:outputLabel>
+                        </p:column>
+
+                        <p:column headerText="Status"   sortBy="#{c.completed}">
+                            <h:outputLabel value="#{c.completed?'Completed':'Yet to complete'}">
+                            </h:outputLabel>
+                        </p:column>
+
+                        <p:column headerText="Institution"   
+                                  sortBy="#{c.encounter.institution.name}" 
+                                  filterBy="#{c.encounter.institution.name}" 
+                                  filterMatchMode="contains">
+                            <p:outputLabel value="#{c.encounter.institution.name}" ></p:outputLabel>
+                        </p:column>
+
+                        <p:column  headerText="Formset"   
+                                   sortBy="#{c.name}">
+                            <p:outputLabel value="#{c.name}" ></p:outputLabel>
+                        </p:column>
+
+                        <p:column  headerText="Date/Time"  sortBy="#{c.encounter.createdAt}" >
+                            <p:outputLabel value="#{c.encounter.encounterFrom}" >
+                                <f:convertDateTime pattern="dd MM yyyy hh:mm a" ></f:convertDateTime>
+                            </p:outputLabel>
+                        </p:column>
+
+                        <p:column  headerText="Action" >
+                            <p:commandButton ajax="false" value="View" action="#{clientEncounterComponentFormSetController.toViewOrEditFormset()}" >
+                                <f:setPropertyActionListener value="#{c}" target="#{clientEncounterComponentFormSetController.selected}" ></f:setPropertyActionListener>
+
+                            </p:commandButton>
+                        </p:column>
+
+                    </p:dataTable>
+
+
+
+                </h:form>
+
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
 </html>
-

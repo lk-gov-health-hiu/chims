@@ -43,7 +43,8 @@
                                     <p:commandButton ajax="false" 
                                                      action="#{clientController.toRegisterdClientsWithDatesForSystemAdmin()}" 
                                                      value="Client List"   ></p:commandButton>
-                                    <p:commandButton ajax="false" action="/systemAdmin/all_encounters" value="Encounter List"   ></p:commandButton>
+                                    <p:commandButton ajax="false" 
+                                                     action="#{clientEncounterComponentFormSetController.fillEncountersFormSetsForSysadmin}" value="Encounter List"   ></p:commandButton>
                                 </p:panelGrid>
                             </p:tab> 
 
