@@ -1,0 +1,99 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <body>
+
+        <ui:composition template="./../template.xhtml">
+
+            <ui:define name="content">
+                <h:form>
+
+                    <h:form >
+                        <p:panel header="Import Forms" styleClass="pageRootPanel" >
+
+
+
+                            <p:panelGrid columns="2" styleClass="alignTop pageInnerPanel" >
+                                <f:facet name="header" >
+                                    <p:commandButton value="Back" action="/insAdmin/data_index" ajax="false" ></p:commandButton>
+                                </f:facet>
+
+                                <p:panel header="Existing Forms" >
+                                    <p:dataTable id="datalist" value="#{designComponentFormSetController.insItems}" var="item"
+                                                 selectionMode="single" selection="#{designComponentFormSetController.selected}"
+                                                 paginator="true"
+                                                 rowKey="#{item.id}"
+                                                 rows="10"
+                                                 rowsPerPageTemplate="10,20,30,40,50"
+                                                 >
+
+                                        <p:column>
+                                            <f:facet name="header">
+                                                <h:outputText value="#{bundleClinical.ListDesignComponentFormSetTitle_name}"/>
+                                            </f:facet>
+                                            <h:outputText value="#{item.name}"/>
+                                        </p:column>
+                                        <p:column>
+                                            <f:facet name="header">
+                                                <h:outputText value="For"/>
+                                            </f:facet>
+                                            <h:outputText value="#{item.institution.name}"/>
+                                        </p:column>
+                                        <p:column>
+                                            <f:facet name="header">
+                                                <h:outputText value="Derived From"/>
+                                            </f:facet>
+                                            <h:outputText value="#{item.name}"/>
+                                        </p:column>
+                                    </p:dataTable>
+                                </p:panel>
+
+                                <p:panelGrid columns="2" >
+                                    <f:facet name="header" >
+                                        <p:outputLabel value="Import Formset" ></p:outputLabel>
+                                        <p:commandButton id="btnImport" value="Import" 
+                                                         action="#{designComponentFormSetController.importFormSet()}"
+                                                         process="refSet forIns btnImport" update="datalist refSet forIns" 
+                                                         style="float: right;"></p:commandButton>
+
+                                    </f:facet>
+                                    <p:outputLabel value="Formset" ></p:outputLabel>
+                                    <p:autoComplete id="refSet" value="#{designComponentFormSetController.referanceSet}" 
+                                                    var="s" itemLabel="#{s.name}" itemValue="#{s}"
+                                                    completeMethod="#{designComponentFormSetController.completeFormSets}"
+                                                    >
+                                    </p:autoComplete>
+
+                                    <p:outputLabel value="For" ></p:outputLabel>
+                                    <p:autoComplete completeMethod="#{institutionController.completeInstitutions}"
+                                                    var="i" id="forIns" 
+                                                       itemLabel="#{i.name}" itemValue="#{i}"
+                                                        value="#{designComponentFormSetController.institution}"
+                                                        forceSelection="true"
+                                                        >
+                                    </p:autoComplete>
+                                    
+                                    
+                                  
+
+                                </p:panelGrid>
+
+                            </p:panelGrid>
+
+
+
+                        </p:panel>
+                    </h:form>
+
+                </h:form>
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>
