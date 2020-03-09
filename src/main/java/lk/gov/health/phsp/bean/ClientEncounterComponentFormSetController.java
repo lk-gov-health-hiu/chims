@@ -93,6 +93,8 @@ public class ClientEncounterComponentFormSetController implements Serializable {
     private boolean formEditable;
     private Date encounterDate;
     private Integer selectedTabIndex;
+    private Date from;
+    private Date to;
 // </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="Constructors">
 
@@ -142,15 +144,63 @@ public class ClientEncounterComponentFormSetController implements Serializable {
         }
         for (ClientEncounterComponentFormSet s : selectedItems) {
             Encounter e = s.getEncounter();
-            if (s != null) {
-                s.setRetired(true);
-                s.setRetiredAt(new Date());
-                s.setRetiredBy(webUserController.getLoggedUser());
+            if (e != null) {
+                e.setRetired(true);
+                e.setRetiredAt(new Date());
+                e.setRetiredBy(webUserController.getLoggedUser());
                 getEncounterFacade().edit(e);
             }
             s.setRetired(true);
             s.setRetiredAt(new Date());
             s.setRetiredBy(webUserController.getLoggedUser());
+            getFacade().edit(s);
+        }
+        selectedItems = null;
+        items = null;
+    }
+
+    public void retireSelectedItemsAsUncomplete() {
+        if (selectedItems == null) {
+            return;
+        }
+        for (ClientEncounterComponentFormSet s : selectedItems) {
+            if (s == null) {
+                continue;
+            }
+            Encounter e = s.getEncounter();
+            if (e != null) {
+                e.setCompleted(false);
+                e.setLastEditeAt(new Date());
+                e.setLastEditBy(webUserController.getLoggedUser());
+                getEncounterFacade().edit(e);
+            }
+            s.setCompleted(false);
+            s.setLastEditeAt(new Date());
+            s.setLastEditBy(webUserController.getLoggedUser());
+            getFacade().edit(s);
+        }
+        selectedItems = null;
+        items = null;
+    }
+
+    public void retireSelectedItemsAsComplete() {
+        if (selectedItems == null) {
+            return;
+        }
+        for (ClientEncounterComponentFormSet s : selectedItems) {
+            if (s == null) {
+                continue;
+            }
+            Encounter e = s.getEncounter();
+            if (e != null) {
+                e.setCompleted(true);
+                e.setCompletedAt(new Date());
+                e.setCompletedBy(webUserController.getLoggedUser());
+                getEncounterFacade().edit(e);
+            }
+            s.setCompleted(false);
+            s.setCompletedAt(new Date());
+            s.setCompletedBy(webUserController.getLoggedUser());
             getFacade().edit(s);
         }
         selectedItems = null;
@@ -344,15 +394,15 @@ public class ClientEncounterComponentFormSetController implements Serializable {
     }
 
     public List<ClientEncounterComponentFormSet> fillLastFiveCompletedEncountersFormSets(String type) {
-        return fillEncountersFormSets(type, 5);
+        return ClientEncounterComponentFormSetController.this.fillEncountersFormSets(type, 5);
     }
 
     public List<ClientEncounterComponentFormSet> filluncompletedEncountersFormSets(String type) {
-        return fillEncountersFormSets(type, false);
+        return ClientEncounterComponentFormSetController.this.fillEncountersFormSets(type, false);
     }
 
     public List<ClientEncounterComponentFormSet> filluncompletedEncountersFormSets(String type, int count) {
-        return fillEncountersFormSets(type, count, false);
+        return ClientEncounterComponentFormSetController.this.fillEncountersFormSets(type, count, false);
     }
 
     public List<ClientEncounterComponentFormSet> fillEncountersFormSets(EncounterType type) {
@@ -360,7 +410,7 @@ public class ClientEncounterComponentFormSetController implements Serializable {
         if (c == null) {
             return new ArrayList<>();
         }
-        return fillEncountersFormSets(c, type, 0, null);
+        return ClientEncounterComponentFormSetController.this.fillEncountersFormSets(c, type, 0, null);
     }
 
 //    public List<ClientEncounterComponentFormSet> fillLastFiveEncountersFormSets(EncounterType type) {
@@ -368,10 +418,10 @@ public class ClientEncounterComponentFormSetController implements Serializable {
 //        if (c == null) {
 //            return new ArrayList<>();
 //        }
-//        return fillEncountersFormSets(c, type, 5, null);
+//        return fillEncountersFormSetsForSysadmin(c, type, 5, null);
 //    }
     public List<ClientEncounterComponentFormSet> fillEncountersFormSets(String type) {
-        return fillEncountersFormSets(type, true);
+        return ClientEncounterComponentFormSetController.this.fillEncountersFormSets(type, true);
     }
 
     public List<ClientEncounterComponentFormSet> fillEncountersFormSets(String type, boolean completedOnly) {
@@ -389,11 +439,11 @@ public class ClientEncounterComponentFormSetController implements Serializable {
     }
 
     public List<ClientEncounterComponentFormSet> fillEncountersFormSets(String type, int count) {
-        return fillEncountersFormSets(type, count, true);
+        return ClientEncounterComponentFormSetController.this.fillEncountersFormSets(type, count, true);
     }
 
     public List<ClientEncounterComponentFormSet> fillEncountersFormSets(String type, int count, boolean completedOnly) {
-        // //System.out.println("fillEncountersFormSets");
+        // //System.out.println("fillEncountersFormSetsForSysadmin");
         // //System.out.println("count = " + count);
         EncounterType ec = null;
         try {
@@ -402,7 +452,7 @@ public class ClientEncounterComponentFormSetController implements Serializable {
             if (c == null) {
                 return new ArrayList<>();
             }
-            return fillEncountersFormSets(c, ec, count, completedOnly);
+            return ClientEncounterComponentFormSetController.this.fillEncountersFormSets(c, ec, count, completedOnly);
         } catch (Exception e) {
             return new ArrayList<>();
         }
@@ -419,18 +469,18 @@ public class ClientEncounterComponentFormSetController implements Serializable {
     }
 
     public List<ClientEncounterComponentFormSet> fillEncountersFormSets(Client c, EncounterType type) {
-        return fillEncountersFormSets(c, type, 0);
+        return ClientEncounterComponentFormSetController.this.fillEncountersFormSets(c, type, 0);
     }
 
     public List<ClientEncounterComponentFormSet> fillEncountersFormSets(Client c, EncounterType type, int count) {
-        return fillEncountersFormSets(c, type, count, true);
+        return ClientEncounterComponentFormSetController.this.fillEncountersFormSets(c, type, count, true);
     }
 
     public List<ClientEncounterComponentFormSet> fillEncountersFormSets(Client c, String type, int count) {
         EncounterType ec = null;
         try {
             ec = EncounterType.valueOf(type);
-            return fillEncountersFormSets(c, ec, count, true);
+            return ClientEncounterComponentFormSetController.this.fillEncountersFormSets(c, ec, count, true);
         } catch (Exception e) {
             return new ArrayList<>();
         }
@@ -438,7 +488,7 @@ public class ClientEncounterComponentFormSetController implements Serializable {
     }
 
     public List<ClientEncounterComponentFormSet> fillEncountersFormSets(Client c, EncounterType type, int count, Boolean completeOnly) {
-        // //System.out.println("fillEncountersFormSets");
+        // //System.out.println("fillEncountersFormSetsForSysadmin");
         // //System.out.println("count = " + count);
         // //System.out.println("type = " + type);
         List<ClientEncounterComponentFormSet> fs;
@@ -473,7 +523,7 @@ public class ClientEncounterComponentFormSetController implements Serializable {
     }
 
     public List<ClientEncounterComponentFormSet> fillLastFiveEncountersFormSets(EncounterType type) {
-        // //System.out.println("fillEncountersFormSets");
+        // //System.out.println("fillEncountersFormSetsForSysadmin");
         // //System.out.println("count = " + count);
         // //System.out.println("type = " + type);
         List<ClientEncounterComponentFormSet> fs;
@@ -512,42 +562,25 @@ public class ClientEncounterComponentFormSetController implements Serializable {
         return "/client/client_encounters";
     }
 
-    public String fillAllNonRetiredEncountersFormSets() {
-        List<ClientEncounterComponentFormSet> fs;
-        Map m = new HashMap();
-        String j = "select s from ClientEncounterComponentFormSet s where "
-                + " s.retired=:ret ";
-        j += " order by s.encounter.encounterFrom desc";
-        m.put("ret", false);
-        fs = getFacade().findByJpql(j, m);
-        if (fs == null) {
-            fs = new ArrayList<>();
-        }
-        items = fs;
-        return "/systemAdmin/all_encounters";
+    public String fillRetiredEncountersFormSets() {
+        return fillEncountersFormSetsForSysadmin(true);
+    }
+    
+    public String fillEncountersFormSetsForSysadmin() {
+         return fillEncountersFormSetsForSysadmin(false);
     }
 
-    public String fillAllRetiredEncountersFormSets() {
-        List<ClientEncounterComponentFormSet> fs;
-        Map m = new HashMap();
-        String j = "select s from ClientEncounterComponentFormSet s where "
-                + " s.retired=:ret ";
-        j += " order by s.encounter.encounterFrom desc";
-        m.put("ret", true);
-        fs = getFacade().findByJpql(j, m);
-        if (fs == null) {
-            fs = new ArrayList<>();
-        }
-        items = fs;
-        return "/systemAdmin/all_encounters";
-    }
-
-    public String fillAllEncountersFormSets() {
+    public String fillEncountersFormSetsForSysadmin(boolean retired) {
         List<ClientEncounterComponentFormSet> fs;
         Map m = new HashMap();
         String j = "select s from ClientEncounterComponentFormSet s ";
+        j += " where s.retired=:ret ";
+        j += " and s.encounter.encounterFrom between :fd and :td ";
         j += " order by s.encounter.encounterFrom desc";
-        fs = getFacade().findByJpql(j);
+        m.put("ret", retired);
+        m.put("fd", getFrom());
+        m.put("td", getTo());
+        fs = getFacade().findByJpql(j,m);
         if (fs == null) {
             fs = new ArrayList<>();
         }
@@ -929,7 +962,7 @@ public class ClientEncounterComponentFormSetController implements Serializable {
             case "client_phn_number":
                 ti.setShortTextValue(c.getPhn());
                 return;
-            case "client_occupation"   :
+            case "client_occupation":
                 ti.setShortTextValue(c.getPerson().getOccupation());
                 return;
             case "client_sex":
@@ -1698,6 +1731,28 @@ public class ClientEncounterComponentFormSetController implements Serializable {
 
     public void setSelectedTabIndex(Integer selectedTabIndex) {
         this.selectedTabIndex = selectedTabIndex;
+    }
+
+    public Date getFrom() {
+        if(from==null){
+            from = commonController.startOfTheDay();
+        }
+        return from;
+    }
+
+    public void setFrom(Date from) {
+        this.from = from;
+    }
+
+    public Date getTo() {
+        if(to==null){
+            to = commonController.endOfTheDay();
+        }
+        return to;
+    }
+
+    public void setTo(Date to) {
+        this.to = to;
     }
 
 // </editor-fold>    
