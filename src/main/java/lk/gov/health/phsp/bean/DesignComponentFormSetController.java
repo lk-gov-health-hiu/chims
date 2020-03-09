@@ -68,6 +68,22 @@ public class DesignComponentFormSetController implements Serializable {
     public String backToManageFormSets() {
         return backString;
     }
+    
+    public String back(){
+        return backString;
+    }
+    
+    public String toManageInstitutionFormssets(){
+        String j = "Select s from DesignComponentFormSet s "
+                + " where s.retired=:ret "
+                + " and s.institution is not null"
+                + " order by s.name";
+        Map m = new HashMap();
+        m.put("ret", false);
+        backString = "/systemAdmin/index";
+        items = getFacade().findByJpql(j, m);
+        return "/designComponentFormSet/List_sys";
+    }
 
     // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="Main Functions">
