@@ -147,6 +147,10 @@ public class InstitutionController implements Serializable {
         gns = areaFacade.findByJpql(j, m);
         return gns;
     }
+    
+    
+    
+    
 
     public InstitutionController() {
     }
@@ -216,6 +220,20 @@ public class InstitutionController implements Serializable {
         return fillInstitutions(null, nameQry, null);
     }
 
+    
+    public Institution findInstitutionByName(String name) {
+        String j = "Select i from Institution i where i.retired=:ret ";
+        Map m = new HashMap();
+        if (name != null) {
+            j += " and lower(i.name)=:n ";
+            m.put("n", name.trim().toLowerCase());
+        }
+        m.put("ret", false);
+        System.out.println("j = " + j);
+        System.out.println("m = " + m);
+        return getFacade().findFirstByJpql(j, m);
+    }
+    
     public List<Institution> completePmcis(String nameQry) {
         String j = "Select i from Institution i where i.retired=false and i.pmci=true ";
         Map m = new HashMap();
