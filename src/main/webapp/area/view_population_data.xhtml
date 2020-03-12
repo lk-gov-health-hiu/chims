@@ -1,0 +1,103 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <body>
+
+        <ui:composition template="./index.xhtml">
+
+            <ui:define name="insTopic">
+                <p:outputLabel value="View Population Areas" ></p:outputLabel>
+            </ui:define>
+
+            <ui:define name="insContents">
+
+                <h:form  >
+
+
+                    <p:panelGrid columns="3" >
+
+                        <p:outputLabel value="Year" ></p:outputLabel>
+                        <p:spacer height="1" width="10"></p:spacer>
+                        <p:inputText value="#{relationshipController.year}" ></p:inputText>
+
+                        <p:outputLabel value="Population Data Type" ></p:outputLabel>
+                        <p:spacer height="1" width="10"></p:spacer>
+                        <p:selectOneMenu value="#{relationshipController.rt}" >
+                            <f:selectItem itemLabel="Please select" ></f:selectItem>
+                            <f:selectItems value="#{areaController.rts}" ></f:selectItems>
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value="Parent Area" ></p:outputLabel>
+                        <p:spacer height="1" width="10"></p:spacer>
+                        <p:autoComplete value="#{relationshipController.area}"
+                                        completeMethod="#{areaController.completeAreas}"
+                                        var="a" maxResults="20" minQueryLength="4"
+                                        itemLabel="#{a.name}"
+                                        itemValue="#{a}">
+                            <p:column headerText="Name" >
+                                <p:outputLabel value="#{a.name}" ></p:outputLabel>
+                            </p:column>
+                            <p:column headerText="Type" >
+                                <p:outputLabel value="#{a.type}" ></p:outputLabel>
+                            </p:column>
+                            <p:column headerText="Parent" >
+                                <p:outputLabel value="#{a.parentArea.name}" ></p:outputLabel>
+                            </p:column>
+                        </p:autoComplete>
+
+
+
+
+                        <p:spacer></p:spacer>
+                        <p:spacer></p:spacer>
+                        <p:commandButton ajax="false" value="Fill" 
+                                         action="#{relationshipController.fillAreaRelationshipData()}"  ></p:commandButton>
+                    </p:panelGrid>
+
+                    <p:panelGrid columns="1" >
+
+
+                        <p:dataTable value="#{relationshipController.items}"
+                                     var="r"
+                                     rowKey="#{r.id}"
+                                     rowIndexVar="n"
+
+                                     >
+                            <p:column width="50" headerText="No" 
+                                      >
+                                
+                                <p:outputLabel value="#{n+1}" >
+                                </p:outputLabel>  
+                            </p:column>
+                            <p:column headerText="Area" sortBy="#{r.area.name}"
+                                      filterBy="#{r.area.name}"
+                                      filterMatchMode="contains"
+                                      >
+                                <p:commandButton value="#{r.area.name}" ajax="false" action="" >
+                                    
+                                </p:commandButton>
+                            </p:column>
+                            <p:column headerText="Value" width="200"
+                                      sortBy="#{r.longValue1}">
+                                <p:outputLabel value="#{r.longValue1}" >
+                                </p:outputLabel>  
+                            </p:column>
+
+                        </p:dataTable>
+
+                    </p:panelGrid>
+
+                </h:form>
+
+
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>
