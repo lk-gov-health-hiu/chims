@@ -13,7 +13,8 @@
 
 
                 <h:panelGroup>
-                    <p:commandButton styleClass="defaultButton"  ajax="false" value="Calculate Provincial and National Data from District Data" action="#{areaController.updateNationalAndProvincialPopulationFromDistrictPopulations()}"  >
+                    <p:commandButton styleClass="defaultButton"  ajax="false" value="Calculate Provincial and National Data from District Data" 
+                                     action="#{areaController.updateNationalAndProvincialPopulationFromDistrictPopulations()}"  >
                     </p:commandButton> 
                     <p:inputText value="#{areaController.year}" placeholder="year">
                         <p:ajax update="@this" ></p:ajax>

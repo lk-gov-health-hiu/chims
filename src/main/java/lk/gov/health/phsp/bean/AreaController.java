@@ -94,6 +94,7 @@ public class AreaController implements Serializable {
     private Integer gnCodeColumnNumber;
     private Integer gnUidColumnNumber;
     private Integer institutionColumnNumber;
+    private Integer dataColumnNumber;
     private Integer dsdNameColumnNumber;
     private Integer districtNameColumnNumber;
     private Integer provinceNameColumnNumber;
@@ -103,6 +104,9 @@ public class AreaController implements Serializable {
     private Integer areaColumnNumber;
     private Integer startRow = 1;
     private Integer year;
+
+    private RelationshipType rt;
+    private RelationshipType[] rts;
 
     public String listGnAreas() {
         items = getAreas(AreaType.GN, null);
@@ -309,8 +313,21 @@ public class AreaController implements Serializable {
         startMessage += "Row Numbers are Zero Based. For example, Row 1 is 0. Row 2 is 1.<br/>";
         return "/area/import_draining_gn_areas_for_institutions";
     }
-    
-    
+
+    public String toImportPopulationOfGnAreas() {
+        successMessage = "";
+        failureMessage = "";
+        startMessage = "";
+        startMessage += "This will search the GN Area and add Population data.<br/>";
+        startMessage += "This Area can be searched by the code or UID. If search by areas code, leave UID column blank. If areas need to be search by UID, leave code column blank.<br/>";
+        startMessage += "No area will be created if the name is not found. Names search is case insensitive.<br/>";
+        startMessage += "District Populations and Provincial Populations will be recalculated.<br/>";
+        startMessage += "Upload as an xls file. XLSX files are not currently supported. That feature will be added soon.<br/>";
+        startMessage += "Column Numbers are Zero Based. For example, Column A is 0. Column B is 1.<br/>";
+        startMessage += "Row Numbers are Zero Based. For example, Row 1 is 0. Row 2 is 1.<br/>";
+        return "/area/import_population_of_gn_areas";
+    }
+
     public String toImportPopulationData() {
         successMessage = "";
         failureMessage = "";
@@ -321,6 +338,202 @@ public class AreaController implements Serializable {
         startMessage += "Column Numbers are Zero Based. For example, Column A is 0. Column B is 1.";
         startMessage += "Row Numbers are Zero Based. For example, Row 1 is 0. Row 2 is 1.";
         return "/area/import_draining_gn_areas_for_institutions";
+    }
+
+    public String uploadPopulationOfGnAreas() {
+        successMessage = "";
+        failureMessage = "";
+        Map<Long, Area> districts = new HashMap<>();
+//        <br/>
+        String newLine = "<br/>";
+
+        if (year == null) {
+            JsfUtil.addErrorMessage("Please select the year.");
+            failureMessage = "Process Aborted. No year is given.";
+        }
+
+        if (rt == null) {
+            JsfUtil.addErrorMessage("Please select the population type.");
+            failureMessage = "Process Aborted. No population type is given.";
+        }
+
+        try {
+
+            String strGNCode;
+            String strGnUid;
+            String strData;
+            Long longGnUid = null;
+
+            Area gn = null;
+            Long dataValue;
+
+            File inputWorkbook;
+            Workbook w;
+            Cell cell;
+            InputStream in;
+
+            JsfUtil.addSuccessMessage(file.getFileName());
+
+            try {
+                JsfUtil.addSuccessMessage(file.getFileName());
+                in = file.getInputstream();
+                File f;
+                f = new File(Calendar.getInstance().getTimeInMillis() + file.getFileName());
+                FileOutputStream out = new FileOutputStream(f);
+                Integer read = 0;
+                byte[] bytes = new byte[1024];
+                while ((read = in.read(bytes)) != -1) {
+                    out.write(bytes, 0, read);
+                }
+                in.close();
+                out.flush();
+                out.close();
+
+                inputWorkbook = new File(f.getAbsolutePath());
+
+                successMessage += "File Uploaded Successfully." + newLine;
+
+                w = Workbook.getWorkbook(inputWorkbook);
+                Sheet sheet = w.getSheet(0);
+
+                for (Integer i = startRow; i < sheet.getRows(); i++) {
+
+                    Map m = new HashMap();
+
+                    cell = sheet.getCell(dataColumnNumber, i);
+                    strData = cell.getContents();
+                    if (strData == null) {
+                        failureMessage += "No Population data given for the line number " + i + "." + newLine;
+                        continue;
+                    }
+
+                    try {
+                        dataValue = Long.parseLong(strData);
+                    } catch (Exception e) {
+                        failureMessage += "Wrong data for in the Population data COlumn for the line number " + i + "." + newLine;
+                        continue;
+                    }
+
+                    if (gnCodeColumnNumber != null && gnUidColumnNumber != null) {
+                        cell = sheet.getCell(gnUidColumnNumber, i);
+                        strGnUid = cell.getContents();
+
+                        cell = sheet.getCell(gnCodeColumnNumber, i);
+                        strGNCode = cell.getContents();
+
+                        if (strGnUid == null && strGNCode == null) {
+                            failureMessage += "No Area UID or Area Code given for the line number " + i + "." + newLine;
+                            continue;
+                        } else if (strGnUid != null && strGNCode != null) {
+                            try {
+                                longGnUid = Long.parseLong(strGnUid);
+                                gn = getAreaByUid(longGnUid, null);
+                            } catch (NumberFormatException e) {
+
+                            }
+                            if (gn == null) {
+                                gn = getAreaByCode(strGNCode, null);
+                            }
+                        } else if (strGnUid != null) {
+                            try {
+                                longGnUid = Long.parseLong(strGnUid);
+                            } catch (NumberFormatException e) {
+
+                            }
+                            gn = getAreaByUid(longGnUid, null);
+                        } else if (strGNCode != null) {
+                            gn = getAreaByCode(strGNCode, null);
+                        }
+                    } else if (gnCodeColumnNumber != null) {
+                        cell = sheet.getCell(gnCodeColumnNumber, i);
+                        strGNCode = cell.getContents();
+
+                        if (strGNCode == null || strGNCode.trim().equals("")) {
+                            failureMessage += "No GN Code for the line number " + i + newLine;
+                            continue;
+                        }
+                        gn = getAreaByCode(strGNCode, null);
+
+                    } else if (gnUidColumnNumber != null) {
+                        cell = sheet.getCell(gnUidColumnNumber, i);
+                        strGnUid = cell.getContents();
+                        if (strGnUid == null || strGnUid.trim().equals("")) {
+                            failureMessage += "No GN UID for the line number " + i + "." + newLine;
+                            continue;
+                        }
+                        try {
+                            longGnUid = Long.parseLong(strGnUid);
+                            gn = getAreaByUid(longGnUid, null);
+                        } catch (NumberFormatException e) {
+
+                        }
+                    } else {
+                        failureMessage += "Both Area UID and Area Code for the line number " + i + newLine + " is missing.";
+                        continue;
+                    }
+
+                    if (gn == null) {
+                        failureMessage += "No Matching area for Code or UID for the line number " + i + newLine;
+                        continue;
+                    }
+
+                    switch (rt) {
+                        case Empanelled_Female_Population:
+                            gn.setFemalePopulation(dataValue);
+                            break;
+                        case Empanelled_Male_Population:
+                            gn.setMalePopulation(dataValue);
+                            break;
+                        case Empanelled_Population:
+                            gn.setTotalPopulation(dataValue);
+                            break;
+                        case Estimated_Midyear_Female_Population:
+                            gn.setFemalePopulation(dataValue);
+                            break;
+                        case Estimated_Midyear_Male_Population:
+                            gn.setMalePopulation(dataValue);
+                            break;
+                        case Estimated_Midyear_Population:
+                            gn.setTotalPopulation(dataValue);
+                            break;
+                        case Over_35_Female_Population:
+                            gn.setMaleTargetPopulation(dataValue);
+                            break;
+                        case Over_35_Male_Population:
+                            gn.setFemaleTargePopulation(dataValue);
+                            break;
+                        case Over_35_Population:
+                            gn.setTotalTargetPopulation(dataValue);
+                            break;
+                    }
+
+                    getFacade().edit(gn);
+
+                    Relationship trt = relationshipController.findRelationship(gn, rt, year, true);
+
+                    trt.setLongValue1(dataValue);
+                    trt.setLastEditBy(webUserController.getLoggedUser());
+                    trt.setLastEditeAt(new Date());
+                    getRelationshipController().save(trt);
+
+                    if (gn.getParentArea().getParentArea() != null) {
+                        Area dis = gn.getParentArea().getParentArea();
+                        districts.put(dis.getId(), dis);
+                    }
+
+                }
+                JsfUtil.addSuccessMessage("Completed. Please check success and failure messages.");
+                return "";
+            } catch (IOException | BiffException ex) {
+                JsfUtil.addErrorMessage(ex.getMessage());
+                failureMessage += "Error. " + ex.getMessage() + ". Aborting the process." + newLine;
+                return "";
+            }
+        } catch (IndexOutOfBoundsException e) {
+            failureMessage += "Error. " + e.getMessage() + ". Aborting the process." + newLine;
+            return "";
+        }
+
     }
 
     public String uploadInstitutionDrainingAreas() {
@@ -569,16 +782,7 @@ public class AreaController implements Serializable {
     }
 
     public void updateNationalAndProvincialPopulationFromDistrictPopulations() {
-        RelationshipType[] rts = new RelationshipType[]{RelationshipType.Empanelled_Female_Population,
-            RelationshipType.Empanelled_Male_Population,
-            RelationshipType.Empanelled_Population,
-            RelationshipType.Estimated_Midyear_Female_Population,
-            RelationshipType.Estimated_Midyear_Male_Population,
-            RelationshipType.Estimated_Midyear_Population,
-            RelationshipType.Over_35_Female_Population,
-            RelationshipType.Over_35_Male_Population,
-            RelationshipType.Over_35_Population,};
-        for (RelationshipType t : rts) {
+        for (RelationshipType t : getRts()) {
             //System.out.prIntegerln("t = " + t);
             Area sl = getNationalArea();
             //System.out.prIntegerln("sl = " + sl);
@@ -1883,7 +2087,8 @@ public class AreaController implements Serializable {
     }
 
     public Integer getYear() {
-        if (year == 0) {
+
+        if (year == null || year == 0) {
             year = CommonController.getYear(new Date());
         }
         return year;
@@ -1943,6 +2148,41 @@ public class AreaController implements Serializable {
 
     public void setStartMessage(String startMessage) {
         this.startMessage = startMessage;
+    }
+
+    public Integer getDataColumnNumber() {
+        return dataColumnNumber;
+    }
+
+    public void setDataColumnNumber(Integer dataColumnNumber) {
+        this.dataColumnNumber = dataColumnNumber;
+    }
+
+    public RelationshipType[] getRts() {
+        if (rts == null) {
+            rts = new RelationshipType[]{RelationshipType.Empanelled_Female_Population,
+                RelationshipType.Empanelled_Male_Population,
+                RelationshipType.Empanelled_Population,
+                RelationshipType.Estimated_Midyear_Female_Population,
+                RelationshipType.Estimated_Midyear_Male_Population,
+                RelationshipType.Estimated_Midyear_Population,
+                RelationshipType.Over_35_Female_Population,
+                RelationshipType.Over_35_Male_Population,
+                RelationshipType.Over_35_Population,};
+        }
+        return rts;
+    }
+
+    public void setRts(RelationshipType[] rts) {
+        this.rts = rts;
+    }
+
+    public RelationshipType getRt() {
+        return rt;
+    }
+
+    public void setRt(RelationshipType rt) {
+        this.rt = rt;
     }
 
     // </editor-fold>
