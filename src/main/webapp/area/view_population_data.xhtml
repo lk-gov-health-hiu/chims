@@ -78,8 +78,8 @@
                                       filterBy="#{r.area.name}"
                                       filterMatchMode="contains"
                                       >
-                                <p:commandButton value="#{r.area.name}" ajax="false" action="" >
-                                    
+                                <p:commandButton value="#{r.area.name}" ajax="false" action="#{relationshipController.fillAreaRelationshipData()}" >
+                                    <f:setPropertyActionListener value="#{r}" target="#{relationshipController.selected}" ></f:setPropertyActionListener>
                                 </p:commandButton>
                             </p:column>
                             <p:column headerText="Value" width="200"

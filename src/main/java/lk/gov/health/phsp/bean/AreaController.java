@@ -311,7 +311,7 @@ public class AreaController implements Serializable {
         startMessage += "Upload as an xls file. XLSX files are not currently supported. That feature will be added soon.<br/>";
         startMessage += "Column Numbers are Zero Based. For example, Column A is 0. Column B is 1.<br/>";
         startMessage += "Row Numbers are Zero Based. For example, Row 1 is 0. Row 2 is 1.<br/>";
-        return "/area/import_draining_gn_areas_for_institutions";
+        return "/area/import_institution_draining_areas";
     }
 
     public String toImportPopulationOfGnAreas() {

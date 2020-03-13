@@ -34,10 +34,15 @@
                                                          ajax="false" value="Search Areas"
                                                          action="#{areaController.toSearchAreasForSysAdmin()}"  ></p:commandButton>
 
-
-                                        <p:commandButton styleClass="width25rem"  ajax="false"
+                                        <p:commandButton styleClass="width25rem"  ajax="false" disabled="true"
                                                          value="Upload Institution Draining Areas" 
                                                          action="#{areaController.toImportInstitutionDrainingAreas()}"  ></p:commandButton>
+
+
+
+                                        <p:commandButton styleClass="width25rem"  ajax="false"
+                                                         value="Upload Institution Draining Areas **" 
+                                                         action="/area/import_institution_draining_areas"  ></p:commandButton>
 
 
 
