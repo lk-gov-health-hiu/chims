@@ -18,6 +18,10 @@
 
                 <h:form id="AreaListForm">
 
+                    <p:commandButton ajax="false" value="Download" >
+                        <p:dataExporter target="datalist" type="xls" fileName="areas" ></p:dataExporter>
+                    </p:commandButton>
+                    
                     <p:dataTable id="datalist" value="#{areaController.items}" var="item"
                                  paginator="true"
                                  rowKey="#{item.id}"
@@ -55,7 +59,7 @@
                             <h:outputText value="#{item.parentArea.name}"/>
                         </p:column>
                         
-                        <p:column headerText="Actions" >
+                        <p:column headerText="Actions" exportable="false" >
                             <p:commandButton ajax="false" value="Edit" action="#{areaController.toEditAreaForSysAdmin()}" >
                                 <f:setPropertyActionListener value="#{item}" target="#{areaController.selected}" ></f:setPropertyActionListener>
                             </p:commandButton>

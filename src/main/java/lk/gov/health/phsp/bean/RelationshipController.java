@@ -57,9 +57,11 @@ public class RelationshipController implements Serializable {
     private List<Relationship> items = null;
     private Relationship selected;
 
+    private RelationshipType rt;
+
     private Area area;
-    private int year;
-    private int month;
+    private Integer year;
+    private Integer month;
 
     private Relationship adding;
     private Relationship removing;
@@ -139,12 +141,12 @@ public class RelationshipController implements Serializable {
                     strEstimatedTargetPopulation = cell.getContents();
                     targetPopulation = CommonController.getLongValue(strEstimatedTargetPopulation);
 
-                    Relationship myp = findRelationship(district, RelationshipType.Estimated_Midyear_Population, year);
+                    Relationship myp = findRelationship(district, RelationshipType.Estimated_Midyear_Population, getYear());
                     if (myp == null) {
                         myp = new Relationship();
                         myp.setArea(district);
                         myp.setRelationshipType(RelationshipType.Estimated_Midyear_Population);
-                        myp.setYearInt(year);
+                        myp.setYearInt(getYear());
                         myp.setCreatedAt(new Date());
                         myp.setCreatedBy(webUserController.getLoggedUser());
                         getFacade().create(myp);
@@ -155,12 +157,12 @@ public class RelationshipController implements Serializable {
                     myp.setLongValue1(midyearPopulation);
                     getFacade().edit(myp);
 
-                    Relationship tp = findRelationship(district, RelationshipType.Over_35_Population, year);
+                    Relationship tp = findRelationship(district, RelationshipType.Over_35_Population, getYear());
                     if (tp == null) {
                         tp = new Relationship();
                         tp.setArea(district);
                         tp.setRelationshipType(RelationshipType.Over_35_Population);
-                        tp.setYearInt(year);
+                        tp.setYearInt(getYear());
                         tp.setCreatedAt(new Date());
                         tp.setCreatedBy(webUserController.getLoggedUser());
                         getFacade().create(tp);
@@ -200,7 +202,7 @@ public class RelationshipController implements Serializable {
             JsfUtil.addErrorMessage("Type ?");
             return;
         }
-        
+
         if (adding.getLongValue1() == null) {
             JsfUtil.addErrorMessage("Please enter the number empanelled");
             return;
@@ -210,14 +212,14 @@ public class RelationshipController implements Serializable {
             return;
         }
         if (adding.getYearInt() == 0) {
-            adding.setYearInt(year);
+            adding.setYearInt(getYear());
             return;
         }
         if (findRelationship(adding.getArea(), adding.getRelationshipType(), adding.getYearInt()) != null) {
             JsfUtil.addErrorMessage("Already data added.");
             return;
         }
-        
+
         save(adding);
         fillRelationshipData();
         adding = null;
@@ -274,8 +276,35 @@ public class RelationshipController implements Serializable {
 
         Map m = new HashMap();
         m.put("a", area);
-        m.put("y", year);
+        m.put("y", getYear());
         m.put("ret", false);
+        items = getFacade().findByJpql(j, m);
+    }
+
+    public String toFillAreaData() {
+        items = null;
+        return "/area/view_population_data";
+    }
+
+    public void fillAreaRelationshipData() {
+        if (area == null) {
+            return;
+        }
+        if (getYear() == null) {
+            JsfUtil.addErrorMessage("No Year Selected.");
+            return;
+        }
+        String j = "select r from Relationship r "
+                + " where r.area.parentArea=:a   "
+                + " and r.retired=:ret "
+                + " and r.relationshipType=:rt "
+                + " and r.yearInt=:y";
+
+        Map m = new HashMap();
+        m.put("a", area);
+        m.put("y", getYear());
+        m.put("ret", false);
+        m.put("rt", rt);
         items = getFacade().findByJpql(j, m);
     }
 
@@ -443,15 +472,15 @@ public class RelationshipController implements Serializable {
         this.removing = removing;
     }
 
-    public int getYear() {
-        if (year == 0) {
+    public Integer getYear() {
+        if (year == null || year == 0) {
             Calendar c = Calendar.getInstance();
             year = c.get(Calendar.YEAR);
         }
         return year;
     }
 
-    public void setYear(int year) {
+    public void setYear(Integer year) {
         this.year = year;
     }
 
@@ -525,6 +554,14 @@ public class RelationshipController implements Serializable {
 
     public void setErrorCode(String errorCode) {
         this.errorCode = errorCode;
+    }
+
+    public RelationshipType getRt() {
+        return rt;
+    }
+
+    public void setRt(RelationshipType rt) {
+        this.rt = rt;
     }
 
     @FacesConverter(forClass = Relationship.class)
