@@ -11,7 +11,7 @@
         <ui:composition template="./../template.xhtml">
 
             <ui:define name="content">
-                 <h:outputStylesheet library="css" name="tem1.css"/>
+                <h:outputStylesheet library="css" name="tem1.css"/>
                 <h:outputScript library="photocam" name="webcam.js" ></h:outputScript>
 
                 <h:panelGroup rendered="true" >
@@ -50,7 +50,7 @@
                                     </div>
                                 </div><!-- /.container-fluid -->
                             </section>
-                           
+
                         </h:form>
                         <!-- Main content -->
                         <section class="content">
@@ -152,11 +152,20 @@
                                                 <h:outputLabel value="#{clientController.selected.person.phone2}" ></h:outputLabel>
                                                 <br/>
 
+                                                <strong><i class="fas fa-phone-square-alt mr-1"></i> Local Ref. No. :</strong>
+                                                <h:outputLabel value="#{clientController.selected.person.localReferanceNo}" ></h:outputLabel>
+                                                <br/>
+                                                
+                                                <strong><i class="fas fa-phone-square-alt mr-1"></i> Senior Citizen No. :</strong>
+                                                <h:outputLabel value="#{clientController.selected.person.ssNumber}" ></h:outputLabel>
+                                                <br/>
+
                                                 <strong><i class="fas fa-map-marker-alt mr-1"></i> Address</strong>
                                                 <p class="text-muted">
                                                     <h:outputLabel value="#{clientController.selected.person.address}" ></h:outputLabel>
                                                 </p>
                                                 <br/>
+
 
 
 

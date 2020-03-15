@@ -95,6 +95,9 @@ public class Person implements Serializable {
 
     private String website;
     private String drivingLicenseNumber;
+    
+    private String localReferanceNo;
+    private String ssNumber;
 
     @ManyToOne
     private Area gnArea;
@@ -130,7 +133,7 @@ public class Person implements Serializable {
 // </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="Transient Attributes">
     @Transient
-    boolean ageCalculated = false;
+    private boolean ageCalculated = false;
     @Transient
     private int ageMonths;
     @Transient
@@ -613,6 +616,8 @@ public class Person implements Serializable {
     public void setOccupation(String occupation) {
         this.occupation = occupation;
     }
+    
+    
 
     public String getTransPhoneNumbers() {
         boolean phoneOneNotBlank=false;
@@ -633,6 +638,30 @@ public class Person implements Serializable {
             transPhoneNumbers = "";
         }
         return transPhoneNumbers;
+    }
+
+    public boolean isAgeCalculated() {
+        return ageCalculated;
+    }
+
+    public void setAgeCalculated(boolean ageCalculated) {
+        this.ageCalculated = ageCalculated;
+    }
+
+    public String getLocalReferanceNo() {
+        return localReferanceNo;
+    }
+
+    public void setLocalReferanceNo(String localReferanceNo) {
+        this.localReferanceNo = localReferanceNo;
+    }
+
+    public String getSsNumber() {
+        return ssNumber;
+    }
+
+    public void setSsNumber(String ssNumber) {
+        this.ssNumber = ssNumber;
     }
 
 }
