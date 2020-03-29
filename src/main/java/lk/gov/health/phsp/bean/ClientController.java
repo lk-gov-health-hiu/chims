@@ -992,9 +992,9 @@ public class ClientController implements Serializable {
                 + " or "
                 + " upper(c.phn)=:q "
                 + " or "
-                + " c.localReferanceNo=:q "
+                + " c.person.localReferanceNo=:q "
                 + " or "
-                + " c.ssNumber=:q "
+                + " c.person.ssNumber=:q "
                 + " ) "
                 + " order by c.phn";
         Map m = new HashMap();
