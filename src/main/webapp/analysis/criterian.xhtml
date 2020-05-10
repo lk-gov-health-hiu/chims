@@ -1,0 +1,133 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <body>
+
+        <ui:composition template="/analysis/index.xhtml">
+
+            <ui:define name="content">
+
+                <h:form >
+
+
+                    <p:panelGrid columns="1" style="margin: auto;" >
+                        <f:facet name="header" >
+                            <p:outputLabel value="Edit Creterian" ></p:outputLabel>
+                            <p:commandButton action="#{queryComponentController.saveSelectedItem()}" value="#{bundleQuery.Save}" 
+                                             ajax="false"
+                                              style="float: right;" />
+                            <p:commandButton ajax="false" value="Back" action="criteria" style="float: right;" ></p:commandButton>
+                        </f:facet>
+
+
+                        <h:panelGroup id="display">
+
+
+                            <p:panelGrid columns="2" rendered="#{queryComponentController.selected != null}">
+
+                                <p:outputLabel value="#{bundleQuery.CreateQueryComponentLabel_name}" for="name" />
+                                <p:inputText id="name" value="#{queryComponentController.selected.name}" title="#{bundleQuery.CreateQueryComponentTitle_name}" />
+
+
+                                <p:outputLabel value="MatchType:" for="matchType" />
+                                <p:selectOneMenu id="matchType"  value="#{queryComponentController.selected.matchType}" >
+                                    <f:selectItem itemLabel="Select" ></f:selectItem>
+                                    <f:selectItems value="#{commonController.queryCriteriaMatchTypes}" ></f:selectItems>
+                                </p:selectOneMenu>
+
+
+                                <p:outputLabel value="EvaluationType:" for="evaluationType" />
+                                <p:selectOneMenu id="evaluationType"  value="#{queryComponentController.selected.evaluationType}" >
+                                    <f:selectItem itemLabel="Select" ></f:selectItem>
+                                    <f:selectItems value="#{commonController.queryVariableEvaluationType}" ></f:selectItems>
+                                </p:selectOneMenu>
+
+                                <p:outputLabel value="Item:" for="item" />
+                                <p:autoComplete  id="item" completeMethod="#{itemController.completeDictionaryItems}" 
+                                                 value="#{queryComponentController.selected.item}" itemValue="#{i}"
+                                                 itemLabel="#{i.name}" var="i" 
+                                                 forceSelection="true"
+                                                 >
+                                    <p:column headerText="ID" >
+                                        <p:outputLabel value="#{i.id}" ></p:outputLabel>
+                                    </p:column>
+                                    <p:column headerText="Name" >
+                                        <p:outputLabel value="#{i.name}" ></p:outputLabel>
+                                    </p:column>
+                                    <p:column headerText="Code" >
+                                        <p:outputLabel value="#{i.code}" ></p:outputLabel>
+                                    </p:column>
+                                </p:autoComplete>
+
+
+                                <p:outputLabel value="Data Type:" for="queryDataType" />
+                                <p:selectOneMenu id="queryDataType"  value="#{queryComponentController.selected.queryDataType}" >
+                                    <f:selectItem itemLabel="Select" ></f:selectItem>
+                                    <f:selectItems value="#{commonController.queryDataTypes}" ></f:selectItems>
+                                </p:selectOneMenu>
+
+                                <p:outputLabel value="Item Value:" for="itemValue" />
+                                <p:autoComplete  id="itemValue" completeMethod="#{itemController.completeDictionaryItems}" 
+                                                 value="#{queryComponentController.selected.itemValue}" itemValue="#{iv}"
+                                                 itemLabel="#{iv.name}" var="iv" 
+                                                 forceSelection="true"
+                                                 >
+                                    <p:column headerText="Name" >
+                                        <p:outputLabel value="#{iv.name}" ></p:outputLabel>
+                                    </p:column>
+                                    <p:column headerText="Name" >
+                                        <p:outputLabel value="#{iv.code}" ></p:outputLabel>
+                                    </p:column>
+                                </p:autoComplete>
+
+                                <p:outputLabel value="Integer Number Value:" for="integerNumberValue" />
+                                <p:inputText id="integerNumberValue" value="#{queryComponentController.selected.integerNumberValue}" title="IntegerNumberValue" />
+
+                                <p:outputLabel value="Long Number Value:" for="longNumberValue" />
+                                <p:inputText id="longNumberValue" value="#{queryComponentController.selected.longNumberValue}" title="LongNumberValue" />
+
+                                <p:outputLabel value="Real Number Value:" for="realNumberValue" />
+                                <p:inputText id="realNumberValue" value="#{queryComponentController.selected.realNumberValue}" title="RealNumberValue" />
+
+
+                                <p:outputLabel value="Integer Number Value 2:" for="integerNumberValue2" />
+                                <p:inputText id="integerNumberValue2" value="#{queryComponentController.selected.integerNumberValue2}" title="IntegerNumberValue2" />
+
+                                <p:outputLabel value="Long Number Value 2:" for="longNumberValue2" />
+                                <p:inputText id="longNumberValue2" value="#{queryComponentController.selected.longNumberValue2}" title="LongNumberValue2" />
+
+                                <p:outputLabel value="Real Number Value 2:" for="realNumberValue2" />
+                                <p:inputText id="realNumberValue2" value="#{queryComponentController.selected.realNumberValue2}" title="RealNumberValue2" />
+
+
+
+
+                            </p:panelGrid>
+
+
+
+
+
+
+
+                        </h:panelGroup>
+
+                    </p:panelGrid>   
+
+                </h:form>
+
+
+
+
+
+
+
+            </ui:define>
+        </ui:composition>
+    </body>
+</html>

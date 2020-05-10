@@ -234,6 +234,19 @@ public class InstitutionController implements Serializable {
         return getFacade().findFirstByJpql(j, m);
     }
     
+    public Institution findInstitutionById(Long id) {
+        String j = "Select i from Institution i where i.retired=:ret ";
+        Map m = new HashMap();
+        if (id != null) {
+            j += " and i.id=:n ";
+            m.put("n", id);
+        }
+        m.put("ret", false);
+        System.out.println("j = " + j);
+        System.out.println("m = " + m);
+        return getFacade().findFirstByJpql(j, m);
+    }
+    
     public List<Institution> completePmcis(String nameQry) {
         String j = "Select i from Institution i where i.retired=false and i.pmci=true ";
         Map m = new HashMap();

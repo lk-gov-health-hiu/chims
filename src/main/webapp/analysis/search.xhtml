@@ -1,0 +1,87 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <h:body>
+
+        <ui:composition template="/analysis/index.xhtml">
+
+            <ui:define name="analysis">
+
+                <h:form >
+                    <p:panelGrid columns="1" >
+                        <f:facet name="header" >
+                            <p:outputLabel value="Search Analysis" ></p:outputLabel>
+                        </f:facet>
+
+
+                        <p:panelGrid columns="2" >
+                            <p:outputLabel value="Name" ></p:outputLabel>
+                            <p:inputText value="#{queryComponentController.searchText}" ></p:inputText>
+
+                            <p:spacer ></p:spacer>
+                            <p:commandButton ajax="false" action="#{queryComponentController.listQueries}" value="List Queries" >
+                            </p:commandButton>
+
+                            <p:spacer ></p:spacer>
+                            <p:commandButton ajax="false" action="#{queryComponentController.clearSearchText()}" value="Clear" >
+                            </p:commandButton>
+                        </p:panelGrid>
+
+
+
+
+
+                        <p:dataTable value="#{queryComponentController.items}" 
+                                     var="item" rowIndexVar="#{item.id}"
+
+                                     paginator="true"
+                                     rows="10"
+                                     rowsPerPageTemplate="10,20,30,40,50"
+
+                                     >
+
+                            <p:column headerText="Name" 
+                                      sortBy="#{item.name}" filterBy="#{item.name}" filterMatchMode="contains"
+                                      >
+                                <p:outputLabel value="#{item.name}" >
+                                </p:outputLabel>
+                            </p:column>
+
+                            <p:column headerText="Code" 
+                                      sortBy="#{item.code}" filterBy="#{item.code}" filterMatchMode="contains"
+                                      >
+                                <p:outputLabel value="#{item.code}" >
+                                </p:outputLabel>
+                            </p:column>
+
+                            <p:column headerText="Descreption" 
+                                      >
+                                <p:outputLabel value="#{item.descreption}" >
+                                </p:outputLabel>
+                            </p:column>
+
+                            <p:column headerText="Type" 
+                                      sortBy="#{item.queryType}" filterBy="#{item.queryType}" filterMatchMode="contains"
+                                      >
+                                <p:outputLabel value="#{item.queryType}" >
+                                </p:outputLabel>
+                            </p:column>
+
+                        </p:dataTable>
+
+                    </p:panelGrid>
+                </h:form>
+
+
+
+            </ui:define>
+
+        </ui:composition>
+
+    </h:body>
+</html>

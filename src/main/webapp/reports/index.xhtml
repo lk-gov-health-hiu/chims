@@ -4,7 +4,8 @@
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:p="http://primefaces.org/ui"
-      xmlns:f="http://xmlns.jcp.org/jsf/core">
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:reports="http://xmlns.jcp.org/jsf/composite/reports">
     <head>
         <ui:define name="head">
                 Reports
@@ -17,18 +18,13 @@
             
 
             <ui:define name="content">
-                <h:form>
-                    <p:panelGrid columns="1" class="w3-border w3-margin w3-card">
-                        <f:facet name="Reports" ></f:facet>
-                        <p:commandButton value="Clinic Registrations" 
-                                         action="#{reportController.toViewClientRegistrations()}"
-                                         ajax="false"></p:commandButton>
-                        <p:commandButton value="Clinic Enrollments" 
-                                         action="#{reportController.toViewClinicEnrollments()}"
-                                         ajax="false"></p:commandButton>
-                        
-                    </p:panelGrid>
-                </h:form>
+                
+                <h:panelGroup rendered="#{true or webUserController.loggedUser.institutionUser or webUserController.loggedUser.institutionSuperUser or webUserController.loggedUser.institutionAdministrator }" >
+                    <reports:out/>
+                </h:panelGroup>
+                
+
+
             </ui:define>
 
         </ui:composition>

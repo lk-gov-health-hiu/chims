@@ -22,9 +22,8 @@
                         <p:dataExporter target="datalist" type="xls" fileName="areas" ></p:dataExporter>
                     </p:commandButton>
                     
-                    <p:dataTable id="datalist" value="#{areaController.items}" var="item"
+                    <p:dataTable id="datalist" value="#{areaController.items}" var="item" rowKey="#{item.id}"
                                  paginator="true"
-                                 rowKey="#{item.id}"
                                  rows="10"
                                  rowsPerPageTemplate="10,20,30,40,50"
                                  >

@@ -18,11 +18,11 @@
     <dependencies>
         
         <!-- https://mvnrepository.com/artifact/uk.com.robust-it/cloning -->
-<dependency>
-    <groupId>uk.com.robust-it</groupId>
-    <artifactId>cloning</artifactId>
-    <version>1.9.12</version>
-</dependency>
+        <dependency>
+            <groupId>uk.com.robust-it</groupId>
+            <artifactId>cloning</artifactId>
+            <version>1.9.12</version>
+        </dependency>
 
 
         

@@ -133,6 +133,57 @@ public class QueryComponentController implements Serializable {
     private QueryFilterPeriodType periodType;
     private QueryFilterAreaType areaType;
 
+    private String searchText;
+
+    public String toManageAnalysis() {
+        return "/analysis/index";
+    }
+
+    public String toListAnalysis() {
+        String j;
+        Map m = new HashMap();
+        j = "select q from QueryComponent q "
+                + " where q.retired<>:ret ";
+        m.put("ret", true);
+        j = j + " order by q.name";
+        items = getFacade().findByJpql(j, m);
+        return "/analysis/list";
+    }
+
+    public String toSearchAnalysis() {
+        items = null;
+        clearSearchText();
+        return "/analysis/search";
+    }
+
+    public String toCreateNewAnalysis() {
+        selected = new QueryComponent();
+        return "/analysis/analysis";
+    }
+
+    public void listQueries() {
+        listQueries(searchText);
+    }
+
+    public void listQueries(String strSearch) {
+        String j;
+        Map m = new HashMap();
+        j = "select q from QueryComponent q "
+                + " where q.retired<>:ret ";
+        m.put("ret", true);
+        if (strSearch != null && !strSearch.trim().equals("")) {
+            j = j + " lower(q.name) like :n or lower(q.code) like :q ";
+            m.put("n", "%" + strSearch.trim().toLowerCase() + "%");
+        }
+        j = j + " order by q.name";
+        items = getFacade().findByJpql(j, m);
+
+    }
+
+    public void clearSearchText() {
+        searchText = "";
+    }
+
     public void fillCriteriaofTheSelectedQuery() {
         selectedCretiria = QueryComponentController.this.fillCriteriaofTheSelectedQuery(selectedQuery);
     }
@@ -710,11 +761,11 @@ public class QueryComponentController implements Serializable {
             switch (selectedForQuery.getQueryType()) {
                 case Population:
                     Integer ty = tqr.gettYear();
-                    if(ty==null){
+                    if (ty == null) {
                         Calendar c = Calendar.getInstance();
-                        if(tqr.getTfrom()!=null){
+                        if (tqr.getTfrom() != null) {
                             c.setTime(tqr.getTfrom());
-                        }else if(tqr.gettTo()!=null){
+                        } else if (tqr.gettTo() != null) {
                             c.setTime(tqr.gettTo());
                         }
                         ty = c.get(Calendar.YEAR);
@@ -903,7 +954,6 @@ public class QueryComponentController implements Serializable {
 
         //System.out.println("jpql.getM() = " + jpql.getM());
         //System.out.println("jpql.getJpql() = " + jpql.getJpql());
-
         jpql.setLongResult(getItemFacade().findLongByJpql(jpql.getJpql(), jpql.getM(), 1));
 
         return jpql;
@@ -935,7 +985,7 @@ public class QueryComponentController implements Serializable {
                 jpql.setJwhere(jpql.getJwhere() + " and Extract(YEAR from c.createdAt)=:ey and "
                         + " (EXTRACT(Month from c.createdAt) between :em1 and :em2) ");
                 jpql.getM().put("ey", ccYear);
-                jpql.getM().put("em1", ccQuarter * 3-2);
+                jpql.getM().put("em1", ccQuarter * 3 - 2);
                 jpql.getM().put("em2", ccQuarter * 3);
             } else if (ccYear != null) {
                 //TODO: Correct Code
@@ -971,7 +1021,6 @@ public class QueryComponentController implements Serializable {
 
             //System.out.println("j.getJpql() = " + jpql.getJpql());
             //System.out.println("j.getM() = " + jpql.getM());
-
             if (qc.getOutputType() == QueryOutputType.List) {
                 jpql.setClientList(getClientFacade().findByJpql(jpql.getJpql(), jpql.getM()));
             } else {
@@ -999,9 +1048,7 @@ public class QueryComponentController implements Serializable {
             QueryComponent c = criterias.get(0);
 
             //System.out.println("criterias.get(0) = " + criterias.get(0));
-
             //System.out.println("c.getMatchType() = " + c.getMatchType());
-
             if (c.getMatchType() == QueryCriteriaMatchType.Variable_Value_Check) {
                 jpql.setJwhere(jpql.getJwhere() + " and i.item=:v1 and i.itemValue=:d1 ");
                 jpql.getM().put("v1", c.getItem());
@@ -1113,7 +1160,7 @@ public class QueryComponentController implements Serializable {
                 jpql.setJwhere(jpql.getJwhere() + " and EXTRACT(YEAR FROM c.createdAt)=:ey and "
                         + " ( EXTRACT(MONTH FROM c.createdAt) BETWEEN :em1 and :em2  )");
                 jpql.getM().put("ey", ccYear);
-                jpql.getM().put("em1", ccQuarter * 3-2);
+                jpql.getM().put("em1", ccQuarter * 3 - 2);
                 jpql.getM().put("em2", ccQuarter * 3);
             } else if (ccYear != null) {
                 //TODO: Correct Code
@@ -1202,7 +1249,7 @@ public class QueryComponentController implements Serializable {
                 jpql.setJwhere(jpql.getJwhere() + " and extract(year from c.createdAt)=:ey and "
                         + " (extract(month from c.createdAt) between :em1 and :em2 )");
                 jpql.getM().put("ey", ccYear);
-                jpql.getM().put("em1", ccQuarter * 3-2);
+                jpql.getM().put("em1", ccQuarter * 3 - 2);
                 jpql.getM().put("em2", ccQuarter * 3);
             } else if (ccYear != null) {
                 //TODO: Correct Code
@@ -1235,7 +1282,7 @@ public class QueryComponentController implements Serializable {
                         break;
                     //TODO: Add codes for other areas
                     default:
-                        //System.out.println("Filter NOT supported.");
+                    //System.out.println("Filter NOT supported.");
                 }
 
             }
@@ -1649,9 +1696,9 @@ public class QueryComponentController implements Serializable {
     }
 
     public List<QueryComponent> getItems() {
-        if (items == null) {
-            items = getFacade().findAll();
-        }
+//        if (items == null) {
+//            items = getFacade().findAll();
+//        }
         return items;
     }
 
@@ -2225,6 +2272,14 @@ public class QueryComponentController implements Serializable {
             }
         }
         return s;
+    }
+
+    public String getSearchText() {
+        return searchText;
+    }
+
+    public void setSearchText(String searchText) {
+        this.searchText = searchText;
     }
 
     @FacesConverter(forClass = QueryComponent.class)

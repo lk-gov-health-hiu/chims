@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2020 chims.
+ * Copyright 2020 MoH LK.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,460 +25,460 @@ package lk.gov.health.phsp.pojcs;
 
 /**
  *
- * @author chims
+ * @author Dr MHB Ariyaratne
  */
 public class NcdReportTem {
 
     
     
-    private double TotalNoOfParticipants;
-    private double Age20To34;
-    private double Age35To65;
-    private double AgeGt65;
-    private double NumberWithAlreadyDiagnosedDiseasesDM;
-    private double NumberWithAlreadyDiagnosedDiseasesHypertension;
-    private double NumberWithAlreadyDiagnosedDiseasesCVA;
-    private double NumberWithAlreadyDiagnosedDiseasesHeartDiseases;
-    private double NumberWithAlreadyDiagnosedDiseasesCKD;
-    private double NumberWithAlreadyDiagnosedDiseasesCancer;
-    private double NumberWithAlreadyDiagnosedDiseasesOther;
-    private double PhysicalActivitySedentary;
-    private double PhysicalActivityNonSedentary;
-    private double RiskFactorsNoOfSmokers;
-    private double RiskFactorsNoOfChewingTobacco;
-    private double RiskFactorsNoOfOtherSmokelessTobaccoUsers;
-    private double NoOfAlcoholUsers;
-    private double BmiLt18_5;
-    private double Bmi18_5to22_9;
-    private double Bmi23to24_9;
-    private double Bmi25to29_9;
-    private double BmiGt30;
-    private double WaistCircumstanceMaleGt90cmOrFemaleGt80cm;
-    private double Sbp120andDbp80;
-    private double Sbo120To139AndDbp80To89;
-    private double Sbp140AndDbp90OrAbove;
-    private double NoOfParticipantsWhoHaveUndergoneTheOralExamination;
-    private double NoOfParticipantsWhoHaveUndergoneTheBreastExaminatioin;
-    private double NoOfParticipantsWhoHaveUndergoneTheTyroidExamination;
-    private double NoOfParticipantsWhoHaveUndergoneThePapSmearExamination;
-    private double RbsLt140;
-    private double Rbs140To199;
-    private double RbsGte200;
-    private double FbsLt100;
-    private double Fbs100To125;
-    private double FbsGt126;
-    private double SerumCreatininNormal;
-    private double SerumCreatininHigh;
-    private double SerumCholosterolMgDlLt270;
-    private double SerumCholosterolMgDlLt270To299;
-    private double SerumCholosterolMgDlLtGt300;
-    private double CvsRiskLt10;
-    private double CvsRisk10to20;
-    private double CvsRisk20to30;
-    private double CvsRiskGt30;
-    private double ReferralMedicalClinicOfTheInstitution;
-    private double ReferralSpecialMedicalClinic;
-    private double ReferralHealthyLifestyleCenter;
-    private double ReferralWellWomanClinic;
-    private double ReferralDentalClinic;
+    private long TotalNoOfParticipants;
+    private long Age20To34;
+    private long Age35To65;
+    private long AgeGt65;
+    private long NumberWithAlreadyDiagnosedDiseasesDM;
+    private long NumberWithAlreadyDiagnosedDiseasesHypertension;
+    private long NumberWithAlreadyDiagnosedDiseasesCVA;
+    private long NumberWithAlreadyDiagnosedDiseasesHeartDiseases;
+    private long NumberWithAlreadyDiagnosedDiseasesCKD;
+    private long NumberWithAlreadyDiagnosedDiseasesCancer;
+    private long NumberWithAlreadyDiagnosedDiseasesOther;
+    private long PhysicalActivitySedentary;
+    private long PhysicalActivityNonSedentary;
+    private long RiskFactorsNoOfSmokers;
+    private long RiskFactorsNoOfChewingTobacco;
+    private long RiskFactorsNoOfOtherSmokelessTobaccoUsers;
+    private long NoOfAlcoholUsers;
+    private long BmiLt18_5;
+    private long Bmi18_5to22_9;
+    private long Bmi23to24_9;
+    private long Bmi25to29_9;
+    private long BmiGt30;
+    private long WaistCircumstanceMaleGt90cmOrFemaleGt80cm;
+    private long Sbp120andDbp80;
+    private long Sbo120To139AndDbp80To89;
+    private long Sbp140AndDbp90OrAbove;
+    private long NoOfParticipantsWhoHaveUndergoneTheOralExamination;
+    private long NoOfParticipantsWhoHaveUndergoneTheBreastExaminatioin;
+    private long NoOfParticipantsWhoHaveUndergoneTheTyroidExamination;
+    private long NoOfParticipantsWhoHaveUndergoneThePapSmearExamination;
+    private long RbsLt140;
+    private long Rbs140To199;
+    private long RbsGte200;
+    private long FbsLt100;
+    private long Fbs100To125;
+    private long FbsGt126;
+    private long SerumCreatininNormal;
+    private long SerumCreatininHigh;
+    private long SerumCholosterolMgDlLt270;
+    private long SerumCholosterolMgDlLt270To299;
+    private long SerumCholosterolMgDlLtGt300;
+    private long CvsRiskLt10;
+    private long CvsRisk10to20;
+    private long CvsRisk20to30;
+    private long CvsRiskGt30;
+    private long ReferralMedicalClinicOfTheInstitution;
+    private long ReferralSpecialMedicalClinic;
+    private long ReferralHealthyLifestyleCenter;
+    private long ReferralWellWomanClinic;
+    private long ReferralDentalClinic;
 
-    public double getTotalNoOfParticipants() {
+    public long getTotalNoOfParticipants() {
         return TotalNoOfParticipants;
     }
 
-    public void setTotalNoOfParticipants(double TotalNoOfParticipants) {
+    public void setTotalNoOfParticipants(long TotalNoOfParticipants) {
         this.TotalNoOfParticipants = TotalNoOfParticipants;
     }
 
-    public double getAge20To34() {
+    public long getAge20To34() {
         return Age20To34;
     }
 
-    public void setAge20To34(double Age20To34) {
+    public void setAge20To34(long Age20To34) {
         this.Age20To34 = Age20To34;
     }
 
-    public double getAge35To65() {
+    public long getAge35To65() {
         return Age35To65;
     }
 
-    public void setAge35To65(double Age35To65) {
+    public void setAge35To65(long Age35To65) {
         this.Age35To65 = Age35To65;
     }
 
-    public double getAgeGt65() {
+    public long getAgeGt65() {
         return AgeGt65;
     }
 
-    public void setAgeGt65(double AgeGt65) {
+    public void setAgeGt65(long AgeGt65) {
         this.AgeGt65 = AgeGt65;
     }
 
-    public double getNumberWithAlreadyDiagnosedDiseasesDM() {
+    public long getNumberWithAlreadyDiagnosedDiseasesDM() {
         return NumberWithAlreadyDiagnosedDiseasesDM;
     }
 
-    public void setNumberWithAlreadyDiagnosedDiseasesDM(double NumberWithAlreadyDiagnosedDiseasesDM) {
+    public void setNumberWithAlreadyDiagnosedDiseasesDM(long NumberWithAlreadyDiagnosedDiseasesDM) {
         this.NumberWithAlreadyDiagnosedDiseasesDM = NumberWithAlreadyDiagnosedDiseasesDM;
     }
 
-    public double getNumberWithAlreadyDiagnosedDiseasesHypertension() {
+    public long getNumberWithAlreadyDiagnosedDiseasesHypertension() {
         return NumberWithAlreadyDiagnosedDiseasesHypertension;
     }
 
-    public void setNumberWithAlreadyDiagnosedDiseasesHypertension(double NumberWithAlreadyDiagnosedDiseasesHypertension) {
+    public void setNumberWithAlreadyDiagnosedDiseasesHypertension(long NumberWithAlreadyDiagnosedDiseasesHypertension) {
         this.NumberWithAlreadyDiagnosedDiseasesHypertension = NumberWithAlreadyDiagnosedDiseasesHypertension;
     }
 
-    public double getNumberWithAlreadyDiagnosedDiseasesCVA() {
+    public long getNumberWithAlreadyDiagnosedDiseasesCVA() {
         return NumberWithAlreadyDiagnosedDiseasesCVA;
     }
 
-    public void setNumberWithAlreadyDiagnosedDiseasesCVA(double NumberWithAlreadyDiagnosedDiseasesCVA) {
+    public void setNumberWithAlreadyDiagnosedDiseasesCVA(long NumberWithAlreadyDiagnosedDiseasesCVA) {
         this.NumberWithAlreadyDiagnosedDiseasesCVA = NumberWithAlreadyDiagnosedDiseasesCVA;
     }
 
-    public double getNumberWithAlreadyDiagnosedDiseasesHeartDiseases() {
+    public long getNumberWithAlreadyDiagnosedDiseasesHeartDiseases() {
         return NumberWithAlreadyDiagnosedDiseasesHeartDiseases;
     }
 
-    public void setNumberWithAlreadyDiagnosedDiseasesHeartDiseases(double NumberWithAlreadyDiagnosedDiseasesHeartDiseases) {
+    public void setNumberWithAlreadyDiagnosedDiseasesHeartDiseases(long NumberWithAlreadyDiagnosedDiseasesHeartDiseases) {
         this.NumberWithAlreadyDiagnosedDiseasesHeartDiseases = NumberWithAlreadyDiagnosedDiseasesHeartDiseases;
     }
 
-    public double getNumberWithAlreadyDiagnosedDiseasesCKD() {
+    public long getNumberWithAlreadyDiagnosedDiseasesCKD() {
         return NumberWithAlreadyDiagnosedDiseasesCKD;
     }
 
-    public void setNumberWithAlreadyDiagnosedDiseasesCKD(double NumberWithAlreadyDiagnosedDiseasesCKD) {
+    public void setNumberWithAlreadyDiagnosedDiseasesCKD(long NumberWithAlreadyDiagnosedDiseasesCKD) {
         this.NumberWithAlreadyDiagnosedDiseasesCKD = NumberWithAlreadyDiagnosedDiseasesCKD;
     }
 
-    public double getNumberWithAlreadyDiagnosedDiseasesCancer() {
+    public long getNumberWithAlreadyDiagnosedDiseasesCancer() {
         return NumberWithAlreadyDiagnosedDiseasesCancer;
     }
 
-    public void setNumberWithAlreadyDiagnosedDiseasesCancer(double NumberWithAlreadyDiagnosedDiseasesCancer) {
+    public void setNumberWithAlreadyDiagnosedDiseasesCancer(long NumberWithAlreadyDiagnosedDiseasesCancer) {
         this.NumberWithAlreadyDiagnosedDiseasesCancer = NumberWithAlreadyDiagnosedDiseasesCancer;
     }
 
-    public double getNumberWithAlreadyDiagnosedDiseasesOther() {
+    public long getNumberWithAlreadyDiagnosedDiseasesOther() {
         return NumberWithAlreadyDiagnosedDiseasesOther;
     }
 
-    public void setNumberWithAlreadyDiagnosedDiseasesOther(double NumberWithAlreadyDiagnosedDiseasesOther) {
+    public void setNumberWithAlreadyDiagnosedDiseasesOther(long NumberWithAlreadyDiagnosedDiseasesOther) {
         this.NumberWithAlreadyDiagnosedDiseasesOther = NumberWithAlreadyDiagnosedDiseasesOther;
     }
 
-    public double getPhysicalActivitySedentary() {
+    public long getPhysicalActivitySedentary() {
         return PhysicalActivitySedentary;
     }
 
-    public void setPhysicalActivitySedentary(double PhysicalActivitySedentary) {
+    public void setPhysicalActivitySedentary(long PhysicalActivitySedentary) {
         this.PhysicalActivitySedentary = PhysicalActivitySedentary;
     }
 
-    public double getPhysicalActivityNonSedentary() {
+    public long getPhysicalActivityNonSedentary() {
         return PhysicalActivityNonSedentary;
     }
 
-    public void setPhysicalActivityNonSedentary(double PhysicalActivityNonSedentary) {
+    public void setPhysicalActivityNonSedentary(long PhysicalActivityNonSedentary) {
         this.PhysicalActivityNonSedentary = PhysicalActivityNonSedentary;
     }
 
-    public double getRiskFactorsNoOfSmokers() {
+    public long getRiskFactorsNoOfSmokers() {
         return RiskFactorsNoOfSmokers;
     }
 
-    public void setRiskFactorsNoOfSmokers(double RiskFactorsNoOfSmokers) {
+    public void setRiskFactorsNoOfSmokers(long RiskFactorsNoOfSmokers) {
         this.RiskFactorsNoOfSmokers = RiskFactorsNoOfSmokers;
     }
 
-    public double getRiskFactorsNoOfChewingTobacco() {
+    public long getRiskFactorsNoOfChewingTobacco() {
         return RiskFactorsNoOfChewingTobacco;
     }
 
-    public void setRiskFactorsNoOfChewingTobacco(double RiskFactorsNoOfChewingTobacco) {
+    public void setRiskFactorsNoOfChewingTobacco(long RiskFactorsNoOfChewingTobacco) {
         this.RiskFactorsNoOfChewingTobacco = RiskFactorsNoOfChewingTobacco;
     }
 
-    public double getRiskFactorsNoOfOtherSmokelessTobaccoUsers() {
+    public long getRiskFactorsNoOfOtherSmokelessTobaccoUsers() {
         return RiskFactorsNoOfOtherSmokelessTobaccoUsers;
     }
 
-    public void setRiskFactorsNoOfOtherSmokelessTobaccoUsers(double RiskFactorsNoOfOtherSmokelessTobaccoUsers) {
+    public void setRiskFactorsNoOfOtherSmokelessTobaccoUsers(long RiskFactorsNoOfOtherSmokelessTobaccoUsers) {
         this.RiskFactorsNoOfOtherSmokelessTobaccoUsers = RiskFactorsNoOfOtherSmokelessTobaccoUsers;
     }
 
-    public double getNoOfAlcoholUsers() {
+    public long getNoOfAlcoholUsers() {
         return NoOfAlcoholUsers;
     }
 
-    public void setNoOfAlcoholUsers(double NoOfAlcoholUsers) {
+    public void setNoOfAlcoholUsers(long NoOfAlcoholUsers) {
         this.NoOfAlcoholUsers = NoOfAlcoholUsers;
     }
 
-    public double getBmiLt18_5() {
+    public long getBmiLt18_5() {
         return BmiLt18_5;
     }
 
-    public void setBmiLt18_5(double BmiLt18_5) {
+    public void setBmiLt18_5(long BmiLt18_5) {
         this.BmiLt18_5 = BmiLt18_5;
     }
 
-    public double getBmi18_5to22_9() {
+    public long getBmi18_5to22_9() {
         return Bmi18_5to22_9;
     }
 
-    public void setBmi18_5to22_9(double Bmi18_5to22_9) {
+    public void setBmi18_5to22_9(long Bmi18_5to22_9) {
         this.Bmi18_5to22_9 = Bmi18_5to22_9;
     }
 
-    public double getBmi23to24_9() {
+    public long getBmi23to24_9() {
         return Bmi23to24_9;
     }
 
-    public void setBmi23to24_9(double Bmi23to24_9) {
+    public void setBmi23to24_9(long Bmi23to24_9) {
         this.Bmi23to24_9 = Bmi23to24_9;
     }
 
-    public double getBmi25to29_9() {
+    public long getBmi25to29_9() {
         return Bmi25to29_9;
     }
 
-    public void setBmi25to29_9(double Bmi25to29_9) {
+    public void setBmi25to29_9(long Bmi25to29_9) {
         this.Bmi25to29_9 = Bmi25to29_9;
     }
 
-    public double getBmiGt30() {
+    public long getBmiGt30() {
         return BmiGt30;
     }
 
-    public void setBmiGt30(double BmiGt30) {
+    public void setBmiGt30(long BmiGt30) {
         this.BmiGt30 = BmiGt30;
     }
 
-    public double getWaistCircumstanceMaleGt90cmOrFemaleGt80cm() {
+    public long getWaistCircumstanceMaleGt90cmOrFemaleGt80cm() {
         return WaistCircumstanceMaleGt90cmOrFemaleGt80cm;
     }
 
-    public void setWaistCircumstanceMaleGt90cmOrFemaleGt80cm(double WaistCircumstanceMaleGt90cmOrFemaleGt80cm) {
+    public void setWaistCircumstanceMaleGt90cmOrFemaleGt80cm(long WaistCircumstanceMaleGt90cmOrFemaleGt80cm) {
         this.WaistCircumstanceMaleGt90cmOrFemaleGt80cm = WaistCircumstanceMaleGt90cmOrFemaleGt80cm;
     }
 
-    public double getSbp120andDbp80() {
+    public long getSbp120andDbp80() {
         return Sbp120andDbp80;
     }
 
-    public void setSbp120andDbp80(double Sbp120andDbp80) {
+    public void setSbp120andDbp80(long Sbp120andDbp80) {
         this.Sbp120andDbp80 = Sbp120andDbp80;
     }
 
-    public double getSbo120To139AndDbp80To89() {
+    public long getSbo120To139AndDbp80To89() {
         return Sbo120To139AndDbp80To89;
     }
 
-    public void setSbo120To139AndDbp80To89(double Sbo120To139AndDbp80To89) {
+    public void setSbo120To139AndDbp80To89(long Sbo120To139AndDbp80To89) {
         this.Sbo120To139AndDbp80To89 = Sbo120To139AndDbp80To89;
     }
 
-    public double getSbp140AndDbp90OrAbove() {
+    public long getSbp140AndDbp90OrAbove() {
         return Sbp140AndDbp90OrAbove;
     }
 
-    public void setSbp140AndDbp90OrAbove(double Sbp140AndDbp90OrAbove) {
+    public void setSbp140AndDbp90OrAbove(long Sbp140AndDbp90OrAbove) {
         this.Sbp140AndDbp90OrAbove = Sbp140AndDbp90OrAbove;
     }
 
-    public double getNoOfParticipantsWhoHaveUndergoneTheOralExamination() {
+    public long getNoOfParticipantsWhoHaveUndergoneTheOralExamination() {
         return NoOfParticipantsWhoHaveUndergoneTheOralExamination;
     }
 
-    public void setNoOfParticipantsWhoHaveUndergoneTheOralExamination(double NoOfParticipantsWhoHaveUndergoneTheOralExamination) {
+    public void setNoOfParticipantsWhoHaveUndergoneTheOralExamination(long NoOfParticipantsWhoHaveUndergoneTheOralExamination) {
         this.NoOfParticipantsWhoHaveUndergoneTheOralExamination = NoOfParticipantsWhoHaveUndergoneTheOralExamination;
     }
 
-    public double getNoOfParticipantsWhoHaveUndergoneTheBreastExaminatioin() {
+    public long getNoOfParticipantsWhoHaveUndergoneTheBreastExaminatioin() {
         return NoOfParticipantsWhoHaveUndergoneTheBreastExaminatioin;
     }
 
-    public void setNoOfParticipantsWhoHaveUndergoneTheBreastExaminatioin(double NoOfParticipantsWhoHaveUndergoneTheBreastExaminatioin) {
+    public void setNoOfParticipantsWhoHaveUndergoneTheBreastExaminatioin(long NoOfParticipantsWhoHaveUndergoneTheBreastExaminatioin) {
         this.NoOfParticipantsWhoHaveUndergoneTheBreastExaminatioin = NoOfParticipantsWhoHaveUndergoneTheBreastExaminatioin;
     }
 
-    public double getNoOfParticipantsWhoHaveUndergoneTheTyroidExamination() {
+    public long getNoOfParticipantsWhoHaveUndergoneTheTyroidExamination() {
         return NoOfParticipantsWhoHaveUndergoneTheTyroidExamination;
     }
 
-    public void setNoOfParticipantsWhoHaveUndergoneTheTyroidExamination(double NoOfParticipantsWhoHaveUndergoneTheTyroidExamination) {
+    public void setNoOfParticipantsWhoHaveUndergoneTheTyroidExamination(long NoOfParticipantsWhoHaveUndergoneTheTyroidExamination) {
         this.NoOfParticipantsWhoHaveUndergoneTheTyroidExamination = NoOfParticipantsWhoHaveUndergoneTheTyroidExamination;
     }
 
-    public double getNoOfParticipantsWhoHaveUndergoneThePapSmearExamination() {
+    public long getNoOfParticipantsWhoHaveUndergoneThePapSmearExamination() {
         return NoOfParticipantsWhoHaveUndergoneThePapSmearExamination;
     }
 
-    public void setNoOfParticipantsWhoHaveUndergoneThePapSmearExamination(double NoOfParticipantsWhoHaveUndergoneThePapSmearExamination) {
+    public void setNoOfParticipantsWhoHaveUndergoneThePapSmearExamination(long NoOfParticipantsWhoHaveUndergoneThePapSmearExamination) {
         this.NoOfParticipantsWhoHaveUndergoneThePapSmearExamination = NoOfParticipantsWhoHaveUndergoneThePapSmearExamination;
     }
 
-    public double getRbsLt140() {
+    public long getRbsLt140() {
         return RbsLt140;
     }
 
-    public void setRbsLt140(double RbsLt140) {
+    public void setRbsLt140(long RbsLt140) {
         this.RbsLt140 = RbsLt140;
     }
 
-    public double getRbs140To199() {
+    public long getRbs140To199() {
         return Rbs140To199;
     }
 
-    public void setRbs140To199(double Rbs140To199) {
+    public void setRbs140To199(long Rbs140To199) {
         this.Rbs140To199 = Rbs140To199;
     }
 
-    public double getRbsGte200() {
+    public long getRbsGte200() {
         return RbsGte200;
     }
 
-    public void setRbsGte200(double RbsGte200) {
+    public void setRbsGte200(long RbsGte200) {
         this.RbsGte200 = RbsGte200;
     }
 
-    public double getFbsLt100() {
+    public long getFbsLt100() {
         return FbsLt100;
     }
 
-    public void setFbsLt100(double FbsLt100) {
+    public void setFbsLt100(long FbsLt100) {
         this.FbsLt100 = FbsLt100;
     }
 
-    public double getFbs100To125() {
+    public long getFbs100To125() {
         return Fbs100To125;
     }
 
-    public void setFbs100To125(double Fbs100To125) {
+    public void setFbs100To125(long Fbs100To125) {
         this.Fbs100To125 = Fbs100To125;
     }
 
-    public double getFbsGt126() {
+    public long getFbsGt126() {
         return FbsGt126;
     }
 
-    public void setFbsGt126(double FbsGt126) {
+    public void setFbsGt126(long FbsGt126) {
         this.FbsGt126 = FbsGt126;
     }
 
-    public double getSerumCreatininNormal() {
+    public long getSerumCreatininNormal() {
         return SerumCreatininNormal;
     }
 
-    public void setSerumCreatininNormal(double SerumCreatininNormal) {
+    public void setSerumCreatininNormal(long SerumCreatininNormal) {
         this.SerumCreatininNormal = SerumCreatininNormal;
     }
 
-    public double getSerumCreatininHigh() {
+    public long getSerumCreatininHigh() {
         return SerumCreatininHigh;
     }
 
-    public void setSerumCreatininHigh(double SerumCreatininHigh) {
+    public void setSerumCreatininHigh(long SerumCreatininHigh) {
         this.SerumCreatininHigh = SerumCreatininHigh;
     }
 
-    public double getSerumCholosterolMgDlLt270() {
+    public long getSerumCholosterolMgDlLt270() {
         return SerumCholosterolMgDlLt270;
     }
 
-    public void setSerumCholosterolMgDlLt270(double SerumCholosterolMgDlLt270) {
+    public void setSerumCholosterolMgDlLt270(long SerumCholosterolMgDlLt270) {
         this.SerumCholosterolMgDlLt270 = SerumCholosterolMgDlLt270;
     }
 
-    public double getSerumCholosterolMgDlLt270To299() {
+    public long getSerumCholosterolMgDlLt270To299() {
         return SerumCholosterolMgDlLt270To299;
     }
 
-    public void setSerumCholosterolMgDlLt270To299(double SerumCholosterolMgDlLt270To299) {
+    public void setSerumCholosterolMgDlLt270To299(long SerumCholosterolMgDlLt270To299) {
         this.SerumCholosterolMgDlLt270To299 = SerumCholosterolMgDlLt270To299;
     }
 
-    public double getSerumCholosterolMgDlLtGt300() {
+    public long getSerumCholosterolMgDlLtGt300() {
         return SerumCholosterolMgDlLtGt300;
     }
 
-    public void setSerumCholosterolMgDlLtGt300(double SerumCholosterolMgDlLtGt300) {
+    public void setSerumCholosterolMgDlLtGt300(long SerumCholosterolMgDlLtGt300) {
         this.SerumCholosterolMgDlLtGt300 = SerumCholosterolMgDlLtGt300;
     }
 
-    public double getCvsRiskLt10() {
+    public long getCvsRiskLt10() {
         return CvsRiskLt10;
     }
 
-    public void setCvsRiskLt10(double CvsRiskLt10) {
+    public void setCvsRiskLt10(long CvsRiskLt10) {
         this.CvsRiskLt10 = CvsRiskLt10;
     }
 
-    public double getCvsRisk10to20() {
+    public long getCvsRisk10to20() {
         return CvsRisk10to20;
     }
 
-    public void setCvsRisk10to20(double CvsRisk10to20) {
+    public void setCvsRisk10to20(long CvsRisk10to20) {
         this.CvsRisk10to20 = CvsRisk10to20;
     }
 
-    public double getCvsRisk20to30() {
+    public long getCvsRisk20to30() {
         return CvsRisk20to30;
     }
 
-    public void setCvsRisk20to30(double CvsRisk20to30) {
+    public void setCvsRisk20to30(long CvsRisk20to30) {
         this.CvsRisk20to30 = CvsRisk20to30;
     }
 
-    public double getCvsRiskGt30() {
+    public long getCvsRiskGt30() {
         return CvsRiskGt30;
     }
 
-    public void setCvsRiskGt30(double CvsRiskGt30) {
+    public void setCvsRiskGt30(long CvsRiskGt30) {
         this.CvsRiskGt30 = CvsRiskGt30;
     }
 
-    public double getReferralMedicalClinicOfTheInstitution() {
+    public long getReferralMedicalClinicOfTheInstitution() {
         return ReferralMedicalClinicOfTheInstitution;
     }
 
-    public void setReferralMedicalClinicOfTheInstitution(double ReferralMedicalClinicOfTheInstitution) {
+    public void setReferralMedicalClinicOfTheInstitution(long ReferralMedicalClinicOfTheInstitution) {
         this.ReferralMedicalClinicOfTheInstitution = ReferralMedicalClinicOfTheInstitution;
     }
 
-    public double getReferralSpecialMedicalClinic() {
+    public long getReferralSpecialMedicalClinic() {
         return ReferralSpecialMedicalClinic;
     }
 
-    public void setReferralSpecialMedicalClinic(double ReferralSpecialMedicalClinic) {
+    public void setReferralSpecialMedicalClinic(long ReferralSpecialMedicalClinic) {
         this.ReferralSpecialMedicalClinic = ReferralSpecialMedicalClinic;
     }
 
-    public double getReferralHealthyLifestyleCenter() {
+    public long getReferralHealthyLifestyleCenter() {
         return ReferralHealthyLifestyleCenter;
     }
 
-    public void setReferralHealthyLifestyleCenter(double ReferralHealthyLifestyleCenter) {
+    public void setReferralHealthyLifestyleCenter(long ReferralHealthyLifestyleCenter) {
         this.ReferralHealthyLifestyleCenter = ReferralHealthyLifestyleCenter;
     }
 
-    public double getReferralWellWomanClinic() {
+    public long getReferralWellWomanClinic() {
         return ReferralWellWomanClinic;
     }
 
-    public void setReferralWellWomanClinic(double ReferralWellWomanClinic) {
+    public void setReferralWellWomanClinic(long ReferralWellWomanClinic) {
         this.ReferralWellWomanClinic = ReferralWellWomanClinic;
     }
 
-    public double getReferralDentalClinic() {
+    public long getReferralDentalClinic() {
         return ReferralDentalClinic;
     }
 
-    public void setReferralDentalClinic(double ReferralDentalClinic) {
+    public void setReferralDentalClinic(long ReferralDentalClinic) {
         this.ReferralDentalClinic = ReferralDentalClinic;
     }
 

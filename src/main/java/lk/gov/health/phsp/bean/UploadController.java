@@ -4,9 +4,18 @@ import lk.gov.health.phsp.entity.Upload;
 import lk.gov.health.phsp.bean.util.JsfUtil;
 import lk.gov.health.phsp.bean.util.JsfUtil.PersistAction;
 import lk.gov.health.phsp.facade.UploadFacade;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 
 import java.io.Serializable;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -18,15 +27,52 @@ import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
+import javax.inject.Inject;
+import jxl.Cell;
+import jxl.Sheet;
+import jxl.Workbook;
+import jxl.read.biff.BiffException;
+import lk.gov.health.phsp.entity.Component;
+import org.apache.commons.io.IOUtils;
+import org.primefaces.model.DefaultStreamedContent;
+import org.primefaces.model.StreamedContent;
+import org.primefaces.model.UploadedFile;
 
-@Named("uploadController")
+@Named
 @SessionScoped
 public class UploadController implements Serializable {
 
     @EJB
     private lk.gov.health.phsp.facade.UploadFacade ejbFacade;
+    @Inject
+    private WebUserController webUserController;
     private List<Upload> items = null;
     private Upload selected;
+    private Component selectedComponent;
+    private UploadedFile file;
+
+    public String toUploadComponentUploadSingle() {
+        if (selectedComponent == null) {
+            JsfUtil.addErrorMessage("No Component");
+            return "";
+        }
+        String j = "select u from Upload u "
+                + " where u.retired<>:ret "
+                + " and u.component=:com";
+        Map m = new HashMap();
+        m.put("ret", true);
+        m.put("com", selectedComponent);
+
+        selected = getFacade().findFirstByJpql(j, m);
+        if (selected == null) {
+            selected = new Upload();
+            selected.setCreatedAt(new Date());
+            selected.setCreater(webUserController.getLoggedUser());
+            selected.setComponent(selectedComponent);
+            getFacade().create(selected);
+        }
+        return "/queryComponent/upload_query";
+    }
 
     public UploadController() {
     }
@@ -81,6 +127,72 @@ public class UploadController implements Serializable {
         return items;
     }
 
+    public String uploadFile() {
+
+        System.out.println("uploadFileToMerge");
+
+        if (file == null) {
+            lk.gov.health.phsp.facade.util.JsfUtil.addErrorMessage("Error in Uploading file. No such file");
+            return "";
+        }
+
+        if (file.getFileName() == null) {
+            lk.gov.health.phsp.facade.util.JsfUtil.addErrorMessage("Error in Uploading file. No such file name.");
+            return "";
+        }
+
+        if (selected == null) {
+            JsfUtil.addErrorMessage("No file. Error");
+            return "/queryComponent/query";
+        }
+
+        selected.setFileName(file.getFileName());
+        selected.setFileType(file.getContentType());
+
+        InputStream in;
+
+        try {
+            in = getFile().getInputstream();
+            selected.setBaImage(IOUtils.toByteArray(in));
+        } catch (IOException e) {
+            System.out.println("Error " + e.getMessage());
+        }
+
+        if (selected.getId() == null) {
+            getFacade().create(selected);
+        } else {
+            getFacade().edit(selected);
+        }
+
+        return "/queryComponent/query";
+
+    }
+
+    public void writeFileToDataSource(File f, Upload ds) {
+        InputStream in;
+
+        try {
+            in = getFile().getInputstream();
+            FileOutputStream out = new FileOutputStream(f);
+            int read = 0;
+            byte[] bytes = new byte[1024];
+            while ((read = in.read(bytes)) != -1) {
+                out.write(bytes, 0, read);
+            }
+            in.close();
+            out.flush();
+            out.close();
+
+            ds.setFileName(file.getFileName());
+            ds.setFileType(file.getContentType());
+            in = file.getInputstream();
+            ds.setBaImage(IOUtils.toByteArray(in));
+        } catch (IOException e) {
+            System.out.println("Error " + e.getMessage());
+        }
+
+    }
+
     private void persist(PersistAction persistAction, String successMessage) {
         if (selected != null) {
             setEmbeddableKeys();
@@ -119,6 +231,30 @@ public class UploadController implements Serializable {
 
     public List<Upload> getItemsAvailableSelectOne() {
         return getFacade().findAll();
+    }
+
+    public WebUserController getWebUserController() {
+        return webUserController;
+    }
+
+    public lk.gov.health.phsp.facade.UploadFacade getEjbFacade() {
+        return ejbFacade;
+    }
+
+    public Component getSelectedComponent() {
+        return selectedComponent;
+    }
+
+    public void setSelectedComponent(Component selectedComponent) {
+        this.selectedComponent = selectedComponent;
+    }
+
+    public UploadedFile getFile() {
+        return file;
+    }
+
+    public void setFile(UploadedFile file) {
+        this.file = file;
     }
 
     @FacesConverter(forClass = Upload.class)

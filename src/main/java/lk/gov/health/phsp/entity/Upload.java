@@ -53,6 +53,10 @@ public class Upload implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     //Main Properties
     Long id;
+    
+    @ManyToOne
+    private Component component;
+    
     @ManyToOne
     Institution institution;
     @ManyToOne
@@ -124,6 +128,8 @@ public class Upload implements Serializable {
         return "com.divudi.entity.Patient[ id=" + id + " ]";
     }
 
+    
+    
     public WebUser getCreater() {
         return creater;
     }
@@ -218,6 +224,14 @@ public class Upload implements Serializable {
 
     public void setUploadType(UploadType uploadType) {
         this.uploadType = uploadType;
+    }
+
+    public Component getComponent() {
+        return component;
+    }
+
+    public void setComponent(Component component) {
+        this.component = component;
     }
 
 }

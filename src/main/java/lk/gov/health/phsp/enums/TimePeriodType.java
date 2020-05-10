@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2019 Dr M H B Ariyaratne<buddhika.ari@gmail.com>.
+ * Copyright 2020 chims.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,16 +25,11 @@ package lk.gov.health.phsp.enums;
 
 /**
  *
- * @author Dr M H B Ariyaratne<buddhika.ari@gmail.com>
+ * @author chims
  */
-public enum QueryType {
-    Population,
-    Indicator,
-    Client,
-    First_Encounter,
-    Any_Encounter,
-    Formset,
-    Client_Count,
-    Encounter_Count,
-    Formset_Count,
+public enum TimePeriodType {
+    Yearley,
+    Monthly,
+    Quarterly,
+    Dates,
 }

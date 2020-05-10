@@ -254,6 +254,122 @@ public class CommonController implements Serializable {
         return startOfTheYear(new Date());
     }
 
+    public static Date startOfTheMonth() {
+        return startOfTheMonth(new Date());
+    }
+
+    public static Date startOfTheLastMonth() {
+        Calendar c = Calendar.getInstance();
+        c.add(Calendar.MONTH, -1);
+        return startOfTheMonth(c.getTime());
+    }
+
+    public static Date endOfTheLastMonth() {
+        Calendar c = Calendar.getInstance();
+        c.add(Calendar.MONTH, -1);
+        return endOfTheMonth(c.getTime());
+    }
+
+    public static Date startOfTheLastQuarter() {
+        Calendar c = Calendar.getInstance();
+        c.add(Calendar.MONTH, -3);
+        return startOfQuarter(c.getTime());
+    }
+
+    public static Date endOfTheLastQuarter() {
+        Calendar c = Calendar.getInstance();
+        c.add(Calendar.MONTH, -3);
+        return endOfQuarter(c.getTime());
+    }
+
+    public static Date startOfTheMonth(Date d) {
+        Calendar c = Calendar.getInstance();
+        c.setTime(d);
+        c.set(Calendar.DAY_OF_MONTH, 1);
+        c.set(Calendar.HOUR, 0);
+        c.set(Calendar.MINUTE, 0);
+        c.set(Calendar.MILLISECOND, 1);
+        return c.getTime();
+    }
+
+    public static Date startOfQuarter() {
+        return startOfQuarter(new Date());
+    }
+
+    public static Date startOfQuarter(Date date) {
+        Calendar c = Calendar.getInstance();
+        int month = c.get(Calendar.MONTH);
+        switch (month) {
+            case Calendar.JANUARY:
+            case Calendar.FEBRUARY:
+            case Calendar.MARCH:
+                c.set(Calendar.MONTH, Calendar.JANUARY);
+                break;
+            case Calendar.APRIL:
+            case Calendar.MAY:
+            case Calendar.JUNE:
+                c.set(Calendar.MONTH, Calendar.APRIL);
+                break;
+            case Calendar.JULY:
+            case Calendar.AUGUST:
+            case Calendar.SEPTEMBER:
+                c.set(Calendar.MONTH, Calendar.JULY);
+                break;
+            case Calendar.OCTOBER:
+            case Calendar.NOVEMBER:
+            case Calendar.DECEMBER:
+                c.set(Calendar.MONTH, Calendar.OCTOBER);
+                break;
+        }
+        return startOfTheMonth(c.getTime());
+    }
+
+    public static Date endOfQuarter() {
+        return endOfQuarter(new Date());
+    }
+
+    public static Date endOfQuarter(Date date) {
+        Calendar c = Calendar.getInstance();
+        int month = c.get(Calendar.MONTH);
+        switch (month) {
+            case Calendar.JANUARY:
+            case Calendar.FEBRUARY:
+            case Calendar.MARCH:
+                c.set(Calendar.MONTH, Calendar.MARCH);
+                break;
+            case Calendar.APRIL:
+            case Calendar.MAY:
+            case Calendar.JUNE:
+                c.set(Calendar.MONTH, Calendar.JUNE);
+                break;
+            case Calendar.JULY:
+            case Calendar.AUGUST:
+            case Calendar.SEPTEMBER:
+                c.set(Calendar.MONTH, Calendar.SEPTEMBER);
+                break;
+            case Calendar.OCTOBER:
+            case Calendar.NOVEMBER:
+            case Calendar.DECEMBER:
+                c.set(Calendar.MONTH, Calendar.DECEMBER);
+                break;
+        }
+        return endOfTheMonth(c.getTime());
+    }
+
+    public static Date endOfTheMonth() {
+        return endOfTheMonth(new Date());
+    }
+
+    public static Date endOfTheMonth(Date d) {
+        Calendar c = Calendar.getInstance();
+        c.setTime(d);
+        c.set(Calendar.DAY_OF_MONTH, c.getActualMaximum(Calendar.DAY_OF_MONTH));
+        c.set(Calendar.HOUR, c.getActualMaximum(Calendar.HOUR));
+        c.set(Calendar.MINUTE, c.getActualMaximum(Calendar.MINUTE));
+        c.set(Calendar.MILLISECOND, c.getActualMaximum(Calendar.MILLISECOND));
+        return c.getTime();
+    }
+
     public static Date startOfTheYear(Date d) {
         Calendar c = Calendar.getInstance();
         c.setTime(d);
@@ -273,6 +389,34 @@ public class CommonController implements Serializable {
             d = null;
         }
         return d;
+    }
+
+    public static Long getDifferenceInYears(Date from, Date to) {
+        if (from == null || to == null) {
+            return 0l;
+        }
+        Long difInMiliSeconds = to.getTime() - from.getTime();
+        difInMiliSeconds = Math.abs(difInMiliSeconds);
+        System.out.println("difInMiliSeconds = " + difInMiliSeconds);
+        
+        Long diffInSec = difInMiliSeconds / 1000;
+        System.out.println("diffInSec = " + diffInSec);
+        
+        Long diffInMin = diffInSec / 60;
+        System.out.println("diffInMin = " + diffInMin);
+        
+        Long diffInHrs = diffInMin / 60;
+        System.out.println("diffInHrs = " + diffInHrs);
+        
+        Long diffInDLong = diffInHrs / 24;
+        System.out.println("diffInDLong = " + diffInDLong);
+        
+        Long diffInYrs = diffInDLong / 365;
+        System.out.println("diffInYrs = " + diffInYrs);
+        
+        return diffInYrs ;
+        
+        
     }
 
     public static Long getLongValue(String result) {
@@ -301,10 +445,113 @@ public class CommonController implements Serializable {
         return c.get(Calendar.MONTH);
     }
 
+    public static Integer getYear() {
+        return getYear(new Date());
+    }
+
+    public static Integer getMonth() {
+        return getMonth(new Date());
+    }
+
+    public static Integer getDateOfMonth() {
+        return getDateOfMonth(new Date());
+    }
+
+    public static Integer getDateOfMonth(Date d) {
+        Calendar c = Calendar.getInstance();
+        c.setTime(d);
+        return c.get(Calendar.DATE);
+    }
+
+    public static String dateTimeToString(Date date, String format) {
+        DateFormat dateFormat = new SimpleDateFormat(format);
+        String strDate = dateFormat.format(date);
+        return strDate;
+    }
+
+    public static String monthString(Integer month) {
+        if (month == null) {
+            return "";
+        }
+        switch (month) {
+            case Calendar.JANUARY:
+                return "January";
+            case Calendar.FEBRUARY:
+                return "February";
+            case Calendar.MARCH:
+                return "March";
+            case Calendar.APRIL:
+                return "April";
+            case Calendar.MAY:
+                return "May";
+            case Calendar.JUNE:
+                return "June";
+            case Calendar.JULY:
+                return "July";
+            case Calendar.AUGUST:
+                return "August";
+            case Calendar.SEPTEMBER:
+                return "September";
+            case Calendar.OCTOBER:
+                return "October";
+            case Calendar.NOVEMBER:
+                return "November";
+            case Calendar.DECEMBER:
+                return "December";
+        }
+        return "";
+    }
+
+    public static String quarterString(Integer month) {
+        if (month == null) {
+            return "";
+        }
+        switch (month) {
+            case Calendar.JANUARY:
+            case Calendar.FEBRUARY:
+            case Calendar.MARCH:
+                return "First";
+            case Calendar.APRIL:
+            case Calendar.MAY:
+            case Calendar.JUNE:
+                return "Second";
+            case Calendar.JULY:
+            case Calendar.AUGUST:
+            case Calendar.SEPTEMBER:
+                return "Third";
+            case Calendar.OCTOBER:
+            case Calendar.NOVEMBER:
+            case Calendar.DECEMBER:
+                return "Fourth";
+        }
+        return "";
+    }
+
+    public static String quarterString(Quarter quarter) {
+        if (quarter == null) {
+            return "";
+        }
+        switch (quarter) {
+            case First:
+                return "First";
+            case Second:
+                return "Second";
+            case Third:
+                return "Third";
+            case Fourth:
+                return "Fourth";
+        }
+        return "";
+    }
+
     public static Integer getYear(Date d) {
         Calendar c = Calendar.getInstance();
         c.setTime(d);
         return c.get(Calendar.YEAR);
+    }
+
+    public static Integer getQuarter() {
+        return getQuarter(new Date());
     }
 
     public static Integer getQuarter(Date d) {
