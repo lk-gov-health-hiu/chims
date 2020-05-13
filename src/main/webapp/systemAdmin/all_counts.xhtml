@@ -1,0 +1,55 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <body>
+
+        <ui:composition template="/template.xhtml">
+
+            <ui:define name="content">
+
+                <h:form id="form" >
+                    <p:panelGrid columns="1" >
+
+                        <f:facet name="header" >
+                            <p:outputLabel value="Registed Clients" ></p:outputLabel>
+                        </f:facet>
+
+                        <p:panelGrid columns="2" >
+                            <p:outputLabel value="From" ></p:outputLabel>
+                            <p:calendar value="#{analysisController.from}" pattern="dd MM yyyy hh:mm a" ></p:calendar>
+                            <p:outputLabel value="To" ></p:outputLabel>
+                            <p:calendar value="#{analysisController.to}" pattern="dd MM yyyy hh:mm a" ></p:calendar>
+
+                        </p:panelGrid>
+
+                        <h:panelGrid columns="2" >
+                            <p:outputLabel value="Clients" ></p:outputLabel>
+                            <p:outputLabel value="#{analysisController.clientCount}" ></p:outputLabel>
+                            
+                            <p:outputLabel value="Encounters" ></p:outputLabel>
+                            <p:outputLabel value="#{analysisController.encounterCount}" ></p:outputLabel>
+                            
+                            
+                        </h:panelGrid>
+
+
+
+
+
+
+                    </p:panelGrid>
+
+
+                </h:form>
+
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

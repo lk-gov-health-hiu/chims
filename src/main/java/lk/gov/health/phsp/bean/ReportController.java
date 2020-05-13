@@ -53,6 +53,12 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.Iterator;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.faces.context.FacesContext;
 import javax.servlet.ServletContext;
 import jxl.CellType;
@@ -68,6 +74,8 @@ import lk.gov.health.phsp.entity.ClientEncounterComponentItem;
 import lk.gov.health.phsp.entity.DesignComponentFormItem;
 import lk.gov.health.phsp.entity.Item;
 import lk.gov.health.phsp.entity.QueryComponent;
+import lk.gov.health.phsp.entity.Upload;
+import lk.gov.health.phsp.enums.QueryType;
 import lk.gov.health.phsp.enums.TimePeriodType;
 import lk.gov.health.phsp.facade.ClientEncounterComponentItemFacade;
 import lk.gov.health.phsp.facade.ClientFacade;
@@ -76,7 +84,9 @@ import lk.gov.health.phsp.facade.EncounterFacade;
 import lk.gov.health.phsp.facade.QueryComponentFacade;
 import lk.gov.health.phsp.facade.UploadFacade;
 import lk.gov.health.phsp.facade.util.JsfUtil;
+import lk.gov.health.phsp.pojcs.Replaceable;
 import lk.gov.health.phsp.pojcs.ReportTimePeriod;
+import org.apache.commons.io.FileUtils;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
@@ -105,10 +115,9 @@ public class ReportController implements Serializable {
     private QueryComponentFacade queryComponentFacade;
     @EJB
     private UploadFacade uploadFacade;
-    
+
 // </editor-fold>     
 // <editor-fold defaultstate="collapsed" desc="Controllers">
-
     @Inject
     private EncounterController encounterController;
     @Inject
@@ -119,6 +128,8 @@ public class ReportController implements Serializable {
     private WebUserController webUserController;
     @Inject
     private InstitutionController institutionController;
+    @Inject
+    private QueryComponentController queryComponentController;
 // </editor-fold>  
 // <editor-fold defaultstate="collapsed" desc="Class Variables">
     private List<Encounter> encounters;
@@ -190,9 +201,13 @@ public class ReportController implements Serializable {
         m.put("fc", true);
         m.put("fd", fromDate);
         m.put("td", toDate);
-        List<Encounter> encounterIds = encounterFacade.findLongList(j, m);
 
-        return encounterIds;
+        System.out.println("m = " + m);
+        System.out.println("j = " + j);
+
+        List<Encounter> encs = encounterFacade.findByJpql(j, m);
+
+        return encs;
 
     }
 
@@ -331,252 +346,195 @@ public class ReportController implements Serializable {
         rtp.setTo(CommonController.endOfTheMonth());
         rtp.setYear(CommonController.getYear());
         rtp.setMonth(CommonController.getMonth());
-        toDownloadNcdReport(getWebUserController().getLoggedUser().getInstitution(), rtp);
+        toDownloadNcdReport(institution, rtp);
     }
 
     public void toDownloadNcdReport(Institution ins, ReportTimePeriod rtp) {
-        
-        
-        
-        String FILE_NAME = "NCD_Report_.xlsx";
 
-        XSSFWorkbook workbook = new XSSFWorkbook();
-        XSSFSheet sheet = workbook.createSheet("NCD_Report");
-
-        int rowNum = 0;
-        int firstRow = 0;
-        int lastRow = 0;
-        int firstCol = 0;
-        int lastCol = 2;
-
-        System.out.println("Creating excel");
-
-        String txt;
-
-        Row row;
-        Cell cell;
-
-        row = sheet.createRow(0);
-        txt = "Monthly Summary of the NCD Screening Activities ( HLC/ Office/Mobile) H1239";
-        cell = row.createCell(1);
-        cell.setCellValue(txt);
-        sheet.addMergedRegion(CellRangeAddress.valueOf("A1:X1"));
-
-        row = sheet.createRow(1);
-
-        txt = "Institution";
-        cell = row.createCell(0);
-        cell.setCellValue(txt);
-
-        txt = ins.getName();
-        cell = row.createCell(1);
-        cell.setCellValue(txt);
-
-        sheet.addMergedRegion(CellRangeAddress.valueOf("B2:D2"));
-
-        row = sheet.createRow(2);
-
-        txt = rtp.getLabel();
-        cell = row.createCell(0);
-        cell.setCellValue(txt);
-
-        txt = rtp.getValue();
-        cell = row.createCell(1);
-        cell.setCellValue(txt);
-        sheet.addMergedRegion(CellRangeAddress.valueOf("B3:D3"));
-
-        row = sheet.createRow(3);
-
-        firstRow = 3;
-        lastRow = 3;
-        firstCol = 3;
-        lastCol = 5;
-        txt = "Age in Years";
-        cell = row.createCell(3);
-        cell.setCellValue(txt);
-        sheet.addMergedRegion(new CellRangeAddress(firstRow, lastRow, firstCol, lastCol));
-
-        row = sheet.createRow(4);
-        txt = "Total Participants";
-        cell = row.createCell(2);
-        cell.setCellValue(txt);
-
-        txt = "Less than 35";
-        cell = row.createCell(3);
-        cell.setCellValue(txt);
-        txt = "35-65";
-        cell = row.createCell(4);
-        cell.setCellValue(txt);
-        txt = "More than 35";
-        cell = row.createCell(5);
-        cell.setCellValue(txt);
-
-        List<Institution> allIns = institutionController.findChildrenInstitutions(ins);
-
-        System.out.println("allIns = " + allIns.size());
-
-        int rowCount = 5;
-
-        for (Institution i : allIns) {
-
-            System.out.println("i = " + i.getName());
-
-            List<Encounter> encs = findEncounters(rtp.getFrom(), rtp.getTo(), i);
-
-            if (encs == null) {
-                System.out.println(i.getName() + " No Result");
-                continue;
-            } else if (encs.size() < 1) {
-                System.out.println(i.getName() + " No Encounters");
-                continue;
-            } else {
-                System.out.println(i.getName() + " No Encounters");
-            }
-
-            NcdReportTem mri = new NcdReportTem();
-            NcdReportTem fri = new NcdReportTem();
-            NcdReportTem tri = new NcdReportTem();
-
-            if (i == null) {
-                continue;
-            }
-
-            Row mrow = sheet.createRow(rowCount);
-            Row frow = sheet.createRow(rowCount + 1);
-            Row trow = sheet.createRow(rowCount + 2);
-
-            txt = i.getName();
-            cell = mrow.createCell(0);
-            cell.setCellValue(txt);
-
-            txt = "Male";
-            cell = mrow.createCell(1);
-            cell.setCellValue(txt);
-
-            txt = "Female";
-            cell = frow.createCell(1);
-            cell.setCellValue(txt);
-
-            txt = "Total";
-            cell = trow.createCell(1);
-            cell.setCellValue(txt);
-
-            for (Encounter e : encs) {
-
-                Long age = CommonController.getDifferenceInYears(e.getClient().getPerson().getDateOfBirth(), e.getCreatedAt());
-                System.out.println("e.getClient().getPerson().getDateOfBirth() = " + e.getClient().getPerson().getDateOfBirth());
-                System.out.println("e.getCreatedAt() = " + e.getCreatedAt());
-                System.out.println("age = " + age);
-
-                if (e.getClient().getPerson().getSex().getCode().equalsIgnoreCase("sex_male")) {
-                    mri.setTotalNoOfParticipants(mri.getTotalNoOfParticipants() + 1);
-                    if (age < 35) {
-                        mri.setAge20To34(mri.getAge20To34() + 1);
-                    } else if (age < 65) {
-                        mri.setAge35To65(mri.getAge35To65() + 1);
-                    } else {
-                        mri.setAgeGt65(mri.getAgeGt65() + 1);
-                    }
-                } else if (e.getClient().getPerson().getSex().getCode().equalsIgnoreCase("sex_female")) {
-                    fri.setTotalNoOfParticipants(fri.getTotalNoOfParticipants() + 1);
-                    if (age < 35) {
-                        fri.setAge20To34(fri.getAge20To34() + 1);
-                    } else if (age < 65) {
-                        fri.setAge35To65(fri.getAge35To65() + 1);
-                    } else {
-                        fri.setAgeGt65(fri.getAgeGt65() + 1);
-                    }
-                }
-                tri.setTotalNoOfParticipants(tri.getTotalNoOfParticipants() + 1);
-
-                if (age < 35) {
-                    tri.setAge20To34(tri.getAge20To34() + 1);
-                } else if (age < 65) {
-                    tri.setAge35To65(tri.getAge35To65() + 1);
-                } else {
-                    tri.setAgeGt65(tri.getAgeGt65() + 1);
-                }
-                List<ClientEncounterComponentItem> its = ClientEncounterComponentFormItems(e);
-            }
-
-            //Totals
-            txt = "" + mri.getTotalNoOfParticipants();
-            cell = mrow.createCell(2);
-            cell.setCellValue(txt);
-
-            txt = "" + fri.getTotalNoOfParticipants();
-            cell = frow.createCell(2);
-            cell.setCellValue(txt);
-
-            txt = "" + tri.getTotalNoOfParticipants();
-            cell = trow.createCell(2);
-            cell.setCellValue(txt);
-
-            //Ages
-            txt = "" + mri.getAge20To34();
-            cell = mrow.createCell(3);
-            cell.setCellValue(txt);
-            txt = "" + mri.getAge35To65();
-            cell = mrow.createCell(4);
-            cell.setCellValue(txt);
-            txt = "" + mri.getAgeGt65();
-            cell = mrow.createCell(5);
-            cell.setCellValue(txt);
-
-            txt = "" + fri.getAge20To34();
-            cell = frow.createCell(3);
-            cell.setCellValue(txt);
-            txt = "" + fri.getAge35To65();
-            cell = frow.createCell(4);
-            cell.setCellValue(txt);
-            txt = "" + fri.getAgeGt65();
-            cell = frow.createCell(5);
-            cell.setCellValue(txt);
-
-            txt = "" + tri.getAge20To34();
-            cell = trow.createCell(3);
-            cell.setCellValue(txt);
-            txt = "" + tri.getAge35To65();
-            cell = trow.createCell(4);
-            cell.setCellValue(txt);
-            txt = "" + tri.getAgeGt65();
-            cell = trow.createCell(5);
-            cell.setCellValue(txt);
-
-            rowCount = rowCount + 3;
-
+        if (queryComponent == null) {
+            JsfUtil.addErrorMessage("Please select the report");
+            return;
         }
 
-//        for (Object[] datatype : datatypes) {
-//            Row row = sheet.createRow(rowNum++);
-//            int colNum = 0;
-//            for (Object field : datatype) {
-//                Cell cell = row.createCell(colNum++);
-//                if (field instanceof String) {
-//                    cell.setCellValue((String) field);
-//                } else if (field instanceof Integer) {
-//                    cell.setCellValue((Integer) field);
-//                }
-//            }
-//        }
+        if (queryComponent.getQueryType() == null) {
+            JsfUtil.addErrorMessage("No type for the Query.");
+            return;
+        }
+
+        String j = "select u from Upload u "
+                + " where u.component=:c";
+        Map m = new HashMap();
+        m.put("c", queryComponent);
+
+        Upload upload = getUploadFacade().findFirstByJpql(j, m);
+        if (upload == null) {
+            JsfUtil.addErrorMessage("No file is available for seelcted summery");
+            return;
+        }
+
+        List<Encounter> encs = null;
+        List<Client> clnts = null;
+
+        switch (queryComponent.getQueryType()) {
+            case Encounter_Count:
+                encs = findEncounters(rtp.getFrom(), rtp.getTo(), ins);
+                break;
+            case Client_Count:
+                JsfUtil.addErrorMessage("Under Development");
+                System.out.println("clnts = " + clnts);
+                return;
+            default:
+                JsfUtil.addErrorMessage("Under Development");
+                return;
+        }
+
+        if (encs == null) {
+            JsfUtil.addErrorMessage("No results");
+            return;
+        } else if (encs.size() < 1) {
+
+            JsfUtil.addErrorMessage("No results");
+            return;
+        }
+
+        String FILE_NAME = upload.getFileName() + "_" + (new Date()) + ".xlsx";
+
+        File newFile = new File(FILE_NAME);
+
         try {
-            FileOutputStream outputStream = new FileOutputStream(FILE_NAME);
-            workbook.write(outputStream);
-            workbook.close();
+            FileUtils.writeByteArrayToFile(newFile, upload.getBaImage());
+        } catch (IOException ex) {
+            System.out.println("ex = " + ex);
+        }
+
+        XSSFWorkbook workbook;
+        XSSFSheet sheet;
+
+        try {
+
+            FileInputStream excelFile = new FileInputStream(newFile);
+            workbook = new XSSFWorkbook(excelFile);
+            sheet = workbook.getSheetAt(0);
+            XSSFSheet sheet2 = workbook.createSheet("Test Sheet CHIMS");
+
+            Iterator<Row> iterator = sheet.iterator();
+
+            System.out.println("sheet.getSheetName() = " + sheet.getSheetName());
+
+            while (iterator.hasNext()) {
+
+                Row currentRow = iterator.next();
+                Iterator<Cell> cellIterator = currentRow.iterator();
+
+                while (cellIterator.hasNext()) {
+
+                    Cell currentCell = cellIterator.next();
+
+                    String cellString = "";
+
+                    switch (currentCell.getCellType()) {
+                        case STRING:
+                            cellString = currentCell.getStringCellValue();
+                            break;
+                        case BLANK:
+                        case BOOLEAN:
+                        case ERROR:
+                        case FORMULA:
+                        case NUMERIC:
+                        case _NONE:
+                            
+                            continue;
+                    }
+
+                    if (cellString.contains("#{")) {
+                        Long temLong = findReplaceblesInCalculationString(cellString, encs);
+                        if (temLong != null) {
+                            currentCell.setCellValue(temLong);
+                        } else {
+                            
+                        }
+                    }
+
+                }
+                System.out.println();
+
+                excelFile.close();
+
+                FileOutputStream out = new FileOutputStream(FILE_NAME);
+                workbook.write(out);
+                out.close();
+
+                InputStream stream;
+                stream = new FileInputStream(newFile);
+                file = new DefaultStreamedContent(stream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", FILE_NAME);
+
+            }
         } catch (FileNotFoundException e) {
-            System.out.println("e.printStackTrace() = " + e.getMessage());
+            System.out.println("e = " + e);
         } catch (IOException e) {
-            System.out.println("e.printStackTrace() = " + e.getMessage());
+            System.out.println("e = " + e);
         }
 
-        InputStream stream;
-        try {
-            stream = new FileInputStream(FILE_NAME);
-            file = new DefaultStreamedContent(stream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", FILE_NAME);
-        } catch (FileNotFoundException ex) {
-            System.out.println("ex3 = " + ex.getMessage());
-            mergingMessage = "Error - " + ex.getMessage();
+       
+
+    }
+
+    public Long findReplaceblesInCalculationString(String text, List<Encounter> ens) {
+        System.out.println("findReplaceblesInCalculationString");
+
+        Long l = 0l;
+
+        if (ens == null) {
+            System.out.println("No encounters");
+            return l;
         }
+        if (ens.isEmpty()) {
+            System.out.println("Empty encounter list");
+            l = 0l;
+            return l;
+        }
+
+        List<Replaceable> ss = new ArrayList<>();
+
+        String patternStart = "#{";
+        String patternEnd = "}";
+        String regexString = Pattern.quote(patternStart) + "(.*?)" + Pattern.quote(patternEnd);
+
+        Pattern p = Pattern.compile(regexString);
+        Matcher m = p.matcher(text);
+
+        while (m.find()) {
+            String block = m.group(1);
+            System.out.println("block = " + block);
+            QueryComponent qc = getQueryComponentController().findByCode(block);
+            if (qc == null) {
+                System.out.println("No Such Query = ");
+                l = null;
+                return l;
+
+            } else {
+                System.out.println("qc.getQueryType() = " + qc.getQueryType());
+                if (qc.getQueryType() == QueryType.Encounter_Count) {
+                    List<QueryComponent> criteria = getQueryComponentController().criteria(qc);
+                    System.out.println("criteria = " + criteria);
+                    if (criteria == null || criteria.isEmpty()) {
+                        l = Long.valueOf(ens.size());
+                        return l;
+                    } else {
+
+                    }
+
+                } else {
+                    l = null;
+                    return l;
+                }
+            }
+
+        }
+
+        System.out.println("End of while");
+        return l;
+
     }
 
     public void toDownloadNcdReportLastMonthInstitution() {
@@ -586,7 +544,7 @@ public class ReportController implements Serializable {
         rtp.setTo(CommonController.endOfTheLastMonth());
         rtp.setYear(CommonController.getYear(CommonController.endOfTheLastMonth()));
         rtp.setMonth(CommonController.getMonth(CommonController.endOfTheLastMonth()));
-        toDownloadNcdReport(getWebUserController().getLoggedUser().getInstitution(), rtp);
+        toDownloadNcdReport(institution, rtp);
     }
 
     public void toDownloadNcdReportThisQuarterInstitution() {
@@ -596,17 +554,24 @@ public class ReportController implements Serializable {
         rtp.setTo(CommonController.endOfQuarter());
         rtp.setYear(CommonController.getYear());
         rtp.setQuarter(CommonController.getQuarter());
-        toDownloadNcdReport(getWebUserController().getLoggedUser().getInstitution(), rtp);
+        toDownloadNcdReport(institution, rtp);
     }
 
     public void toDownloadNcdReportLastQuarterInstitution() {
         ReportTimePeriod rtp = new ReportTimePeriod();
         rtp.setTimePeriodType(TimePeriodType.Quarterly);
         rtp.setFrom(CommonController.startOfTheLastQuarter());
+
         rtp.setTo(CommonController.endOfTheLastQuarter());
         rtp.setYear(CommonController.getYear(CommonController.startOfTheLastQuarter()));
         rtp.setQuarter(CommonController.getQuarter(CommonController.startOfTheLastQuarter()));
-        toDownloadNcdReport(getWebUserController().getLoggedUser().getInstitution(), rtp);
+
+        System.out.println("rtp.getFrom() = " + rtp.getFrom());
+        System.out.println("rtp.getTo() = " + rtp.getTo());
+        System.out.println("rtp.getYear() = " + rtp.getYear());
+        System.out.println("rtp.getQuarter() = " + rtp.getQuarter());
+
+        toDownloadNcdReport(institution, rtp);
     }
 
     public String toViewClientRegistrations() {
@@ -875,8 +840,6 @@ public class ReportController implements Serializable {
         return queryComponent;
     }
 
-    
-    
     public void setQueryComponent(QueryComponent queryComponent) {
         this.queryComponent = queryComponent;
     }
@@ -888,7 +851,9 @@ public class ReportController implements Serializable {
     public UploadFacade getUploadFacade() {
         return uploadFacade;
     }
-    
-    
+
+    public QueryComponentController getQueryComponentController() {
+        return queryComponentController;
+    }
 
 }

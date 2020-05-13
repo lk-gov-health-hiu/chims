@@ -2282,6 +2282,16 @@ public class QueryComponentController implements Serializable {
         this.searchText = searchText;
     }
 
+    public QueryComponent findByCode(String code) {
+        String j = "select q from QueryComponent q "
+                + " where q.retired <> :ret "
+                + " and q.code=:code";
+        Map m = new HashMap();
+        m.put("ret", true);
+        m.put("code", code);
+        return getFacade().findFirstByJpql(j, m);
+    }
+
     @FacesConverter(forClass = QueryComponent.class)
     public static class QueryComponentControllerConverter implements Converter {
 

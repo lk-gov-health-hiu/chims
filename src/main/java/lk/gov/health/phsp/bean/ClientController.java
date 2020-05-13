@@ -378,6 +378,8 @@ public class ClientController implements Serializable {
         items = getFacade().findByJpql(j, m, TemporalType.TIMESTAMP);
         return "/systemAdmin/all_clients";
     }
+    
+    
 
     public void saveSelectedImports() {
         if (institution == null) {

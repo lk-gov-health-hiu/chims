@@ -298,6 +298,7 @@ public class CommonController implements Serializable {
 
     public static Date startOfQuarter(Date date) {
         Calendar c = Calendar.getInstance();
+        c.setTime(date);
         int month = c.get(Calendar.MONTH);
         switch (month) {
             case Calendar.JANUARY:
@@ -330,6 +331,7 @@ public class CommonController implements Serializable {
 
     public static Date endOfQuarter(Date date) {
         Calendar c = Calendar.getInstance();
+        c.setTime(date);
         int month = c.get(Calendar.MONTH);
         switch (month) {
             case Calendar.JANUARY:

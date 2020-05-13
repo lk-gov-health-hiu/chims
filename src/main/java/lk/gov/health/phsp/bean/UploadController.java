@@ -149,6 +149,8 @@ public class UploadController implements Serializable {
         selected.setFileName(file.getFileName());
         selected.setFileType(file.getContentType());
 
+        System.out.println("selected.getFileName() = " + selected.getFileName());
+
         InputStream in;
 
         try {
@@ -163,33 +165,17 @@ public class UploadController implements Serializable {
         } else {
             getFacade().edit(selected);
         }
+        System.out.println("selected.getFileName() = " + selected.getFileName());
+
+        selected.setFileName(file.getFileName());
+        selected.setFileType(file.getContentType());
+
+        System.out.println("selected.getFileName() = " + selected.getFileName());
+
+        getFacade().edit(selected);
+        System.out.println("selected.getFileName() = " + selected.getFileName());
 
         return "/queryComponent/query";
-
-    }
-
-    public void writeFileToDataSource(File f, Upload ds) {
-        InputStream in;
-
-        try {
-            in = getFile().getInputstream();
-            FileOutputStream out = new FileOutputStream(f);
-            int read = 0;
-            byte[] bytes = new byte[1024];
-            while ((read = in.read(bytes)) != -1) {
-                out.write(bytes, 0, read);
-            }
-            in.close();
-            out.flush();
-            out.close();
-
-            ds.setFileName(file.getFileName());
-            ds.setFileType(file.getContentType());
-            in = file.getInputstream();
-            ds.setBaImage(IOUtils.toByteArray(in));
-        } catch (IOException e) {
-            System.out.println("Error " + e.getMessage());
-        }
 
     }
 

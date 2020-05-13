@@ -43,10 +43,14 @@
                             <p:tab title="Entered data" >
                                 <p:panelGrid columns="1" >
                                     <p:commandButton ajax="false" 
+                                                     action="#{analysisController.toCountsForSystemAdmin()}" 
+                                                     value="Counts"   ></p:commandButton>
+                                    <p:commandButton ajax="false" 
                                                      action="#{clientController.toRegisterdClientsWithDatesForSystemAdmin()}" 
                                                      value="Client List"   ></p:commandButton>
                                     <p:commandButton ajax="false" 
-                                                     action="#{clientEncounterComponentFormSetController.fillEncountersFormSetsForSysadmin}" value="Encounter List"   ></p:commandButton>
+                                                     action="#{clientEncounterComponentFormSetController.fillEncountersFormSetsForSysadmin}" 
+                                                     value="Encounter List"   ></p:commandButton>
                                 </p:panelGrid>
                             </p:tab> 
 

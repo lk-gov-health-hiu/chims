@@ -29,6 +29,14 @@
                                     itemLabel="#{q.name}"
                                     itemValue="#{q}">
                     </p:autoComplete>
+                    
+                    <p:outputLabel value="Institution" ></p:outputLabel>
+                    <p:autoComplete value="#{reportController.institution}"
+                                    completeMethod="#{institutionController.completeInstitutions}"
+                                    var="i"
+                                    itemLabel="#{i.name}"
+                                    itemValue="#{i}">
+                    </p:autoComplete>
                 </p:panelGrid>
 
                 <p:commandButton value="This Month NCD Report" 
