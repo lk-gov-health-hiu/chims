@@ -65,10 +65,6 @@ public class ItemController implements Serializable {
     private int itemCodeColumnNumber;
     private int parentCodeColumnNumber;
     private int startRow = 1;
-    
-  
-    
-    
 
     public ItemController() {
     }
@@ -256,12 +252,10 @@ public class ItemController implements Serializable {
                 + "Dictionary_Item:measurement_unit:Dose Unit:measurement_unit_frequency:1" + System.lineSeparator()
                 + "Dictionary_Item:measurement_unit:Dose Unit:measurement_unit_duration:2" + System.lineSeparator()
                 + "Dictionary_Item:measurement_unit:Dose Unit:measurement_unit_issue_quantity:3" + System.lineSeparator()
-                
                 + "Dictionary_Item:measurement_unit_dose:mg:measurement_unit_dose_mg:0" + System.lineSeparator()
                 + "Dictionary_Item:measurement_unit_dose:ml:measurement_unit_dose_ml:1" + System.lineSeparator()
                 + "Dictionary_Item:measurement_unit_dose:microgram:measurement_unit_dose_microgram:2" + System.lineSeparator()
                 + "Dictionary_Item:measurement_unit_dose:#:measurement_unit_dose_unit:3" + System.lineSeparator()
-                
                 + "Dictionary_Item:measurement_unit_frequency:bid:measurement_unit_frequency_bid:0" + System.lineSeparator()
                 + "Dictionary_Item:measurement_unit_frequency:tds:measurement_unit_frequency_tds:1" + System.lineSeparator()
                 + "Dictionary_Item:measurement_unit_frequency:qds:measurement_unit_frequency_qds:2" + System.lineSeparator()
@@ -270,21 +264,14 @@ public class ItemController implements Serializable {
                 + "Dictionary_Item:measurement_unit_frequency:nocte:measurement_unit_frequency_nocte:5" + System.lineSeparator()
                 + "Dictionary_Item:measurement_unit_frequency:sos:measurement_unit_frequency_sos:6" + System.lineSeparator()
                 + "Dictionary_Item:measurement_unit_frequency:stat:measurement_unit_frequency_stat:7" + System.lineSeparator()
-                
-                
                 + "Dictionary_Item:measurement_unit_duration:doses:measurement_unit_duration_doses:1" + System.lineSeparator()
                 + "Dictionary_Item:measurement_unit_duration:days:measurement_unit_duration_days:0" + System.lineSeparator()
                 + "Dictionary_Item:measurement_unit_duration:weeks:measurement_unit_duration_weekes:2" + System.lineSeparator()
                 + "Dictionary_Item:measurement_unit_duration:months:measurement_unit_duration_months:3" + System.lineSeparator()
-                
-                
                 + "Dictionary_Item:measurement_unit_issue_quantity:#:measurement_unit_issue_quantity_units:0" + System.lineSeparator()
                 + "Dictionary_Item:measurement_unit_issue_quantity:g:measurement_unit_issue_quantity_g:1" + System.lineSeparator()
                 + "Dictionary_Item:measurement_unit_issue_quantity:mg:measurement_unit_issue_quantity_mg:2" + System.lineSeparator()
-                + "Dictionary_Item:measurement_unit_issue_quantity:ml:measurement_unit_issue_quantity_ml:3" + System.lineSeparator()
-                
-                
-                ;
+                + "Dictionary_Item:measurement_unit_issue_quantity:ml:measurement_unit_issue_quantity_ml:3" + System.lineSeparator();
         addInitialMetadata(initialData);
     }
 
@@ -311,10 +298,7 @@ public class ItemController implements Serializable {
                 + "Dictionary_Item::Age at Encounter (Years):client_age_at_encounter_in_years:3" + System.lineSeparator()
                 + "Dictionary_Item::Permanent Age:client_permanent_address:3" + System.lineSeparator()
                 + "Dictionary_Item::Current Address:client_current_address:3" + System.lineSeparator()
-                
                 + "Dictionary_Item::Occupation:client_occupation:3" + System.lineSeparator()
-                
-                
                 + "Dictionary_Item::Mobile Number:client_mobile_number:3" + System.lineSeparator()
                 + "Dictionary_Item::Home Number:client_home_number:3" + System.lineSeparator()
                 + "Dictionary_Item::Email:client_email:3" + System.lineSeparator()
@@ -405,7 +389,7 @@ public class ItemController implements Serializable {
                 + "Dictionary_Item:marital_status:Other:marital_status_other:4" + System.lineSeparator();
         addInitialMetadata(initialData);
     }
-    
+
     public void addEducationalStatus() {
         String initialData = "Dictionary_Category::Educational Status:education_levels:0" + System.lineSeparator()
                 + "Dictionary_Item:education_levels:No Formal Education:no_formal_education:0" + System.lineSeparator()
@@ -468,16 +452,20 @@ public class ItemController implements Serializable {
 
     public Item createItem(ItemType itemType, Item parent, String name, String code, int orderNo) {
         Item item;
+        Map m = new HashMap();
         String j = "select i from Item i "
                 + " where i.retired=false "
-                + " and i.itemType=:it "
-                + " and i.parent=:p "
-                + " and i.name=:name "
+                + " and i.itemType=:it ";
+        if (parent != null) {
+            j += " and i.parent=:p ";
+            m.put("p", parent);
+        }
+        j += " and i.name=:name "
                 + " and i.code=:code "
                 + " order by i.id";
-        Map m = new HashMap();
+
         m.put("it", itemType);
-        m.put("p", parent);
+
         m.put("name", name);
         m.put("code", code);
         item = getFacade().findFirstByJpql(j, m);
@@ -751,10 +739,6 @@ public class ItemController implements Serializable {
     public void setMarietalStatus(List<Item> marietalStatus) {
         this.marietalStatus = marietalStatus;
     }
-    
-    
-    
-    
 
     public List<Item> getCitizenships() {
         if (citizenships == null) {
@@ -854,7 +838,7 @@ public class ItemController implements Serializable {
     }
 
     public List<Item> getEducationalStatus() {
-         if (educationalStatus == null) {
+        if (educationalStatus == null) {
             educationalStatus = findItemList("education_levels", ItemType.Dictionary_Item);
         }
         return educationalStatus;
@@ -863,11 +847,6 @@ public class ItemController implements Serializable {
     public void setEducationalStatus(List<Item> educationalStatus) {
         this.educationalStatus = educationalStatus;
     }
-
-   
-    
-    
-    
 
     @FacesConverter(forClass = Item.class)
     public static class ItemControllerConverter implements Converter {
