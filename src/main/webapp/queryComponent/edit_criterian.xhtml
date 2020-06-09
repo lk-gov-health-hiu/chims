@@ -20,7 +20,7 @@
                             <p:outputLabel value="Edit Creterian" ></p:outputLabel>
                             <p:commandButton action="#{queryComponentController.saveSelectedItem()}" value="#{bundleQuery.Save}" 
                                              ajax="false"
-                                              style="float: right;" />
+                                             style="float: right;" />
                             <p:commandButton ajax="false" value="Back" action="criteria" style="float: right;" ></p:commandButton>
                         </f:facet>
 
@@ -48,9 +48,9 @@
                                 </p:selectOneMenu>
 
                                 <p:outputLabel value="Item:" for="item" />
-                                <p:autoComplete  id="item" completeMethod="#{itemController.completeDictionaryItems}" 
+                                <p:autoComplete  id="item" completeMethod="#{designComponentFormItemController.completeItemsInDesignFormItems}" 
                                                  value="#{queryComponentController.selected.item}" itemValue="#{i}"
-                                                 itemLabel="#{i.name}" var="i" 
+                                                 itemLabel="#{i.name}" var="i" minQueryLength="3"
                                                  forceSelection="true"
                                                  >
                                     <p:column headerText="ID" >
@@ -62,6 +62,7 @@
                                     <p:column headerText="Code" >
                                         <p:outputLabel value="#{i.code}" ></p:outputLabel>
                                     </p:column>
+                                    <f:ajax event="itemSelect" execute="item" render="itemValue" ></f:ajax>
                                 </p:autoComplete>
 
 
@@ -72,18 +73,18 @@
                                 </p:selectOneMenu>
 
                                 <p:outputLabel value="Item Value:" for="itemValue" />
-                                <p:autoComplete  id="itemValue" completeMethod="#{itemController.completeDictionaryItems}" 
-                                                 value="#{queryComponentController.selected.itemValue}" itemValue="#{iv}"
-                                                 itemLabel="#{iv.name}" var="iv" 
-                                                 forceSelection="true"
-                                                 >
+                                <p:selectOneMenu id="itemValue" value="#{queryComponentController.selected.itemValue}" >
+                                    <f:selectItem itemLabel="Select" ></f:selectItem>
+                                    <f:selectItems value="#{queryComponentController.itemsInDesignFormItemValues}" itemValue="#{iv}"
+                                                   itemLabel="#{iv.name}" var="iv" ></f:selectItems>
                                     <p:column headerText="Name" >
                                         <p:outputLabel value="#{iv.name}" ></p:outputLabel>
                                     </p:column>
-                                    <p:column headerText="Name" >
+                                    <p:column headerText="Code" >
                                         <p:outputLabel value="#{iv.code}" ></p:outputLabel>
                                     </p:column>
-                                </p:autoComplete>
+                                </p:selectOneMenu>
+                               
 
                                 <p:outputLabel value="Integer Number Value:" for="integerNumberValue" />
                                 <p:inputText id="integerNumberValue" value="#{queryComponentController.selected.integerNumberValue}" title="IntegerNumberValue" />

@@ -231,6 +231,14 @@ public class Component implements Serializable {
     private Client clientValue;
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Prescription prescriptionValue;
+    
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private Observation observationValue;
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private Procedure procedureValue;
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private Movement movementValue;
+    
 
     private boolean completed;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
@@ -967,4 +975,30 @@ public class Component implements Serializable {
         this.resultDisplayStrategy = resultDisplayStrategy;
     }
 
+    public Observation getObservationValue() {
+        return observationValue;
+    }
+
+    public void setObservationValue(Observation observationValue) {
+        this.observationValue = observationValue;
+    }
+
+    public Procedure getProcedureValue() {
+        return procedureValue;
+    }
+
+    public void setProcedureValue(Procedure procedureValue) {
+        this.procedureValue = procedureValue;
+    }
+
+    public Movement getMovementValue() {
+        return movementValue;
+    }
+
+    public void setMovementValue(Movement movementValue) {
+        this.movementValue = movementValue;
+    }
+
+    
+    
 }

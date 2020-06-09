@@ -34,6 +34,7 @@ import lk.gov.health.phsp.entity.Client;
 import lk.gov.health.phsp.entity.ClientEncounterComponentForm;
 import lk.gov.health.phsp.entity.Encounter;
 import lk.gov.health.phsp.entity.Institution;
+import lk.gov.health.phsp.entity.Item;
 import lk.gov.health.phsp.entity.Relationship;
 import lk.gov.health.phsp.enums.Evaluation;
 import lk.gov.health.phsp.enums.QueryCriteriaMatchType;
@@ -43,6 +44,7 @@ import lk.gov.health.phsp.enums.QueryLevel;
 import lk.gov.health.phsp.enums.QueryOutputType;
 import lk.gov.health.phsp.enums.QueryType;
 import lk.gov.health.phsp.enums.RelationshipType;
+import lk.gov.health.phsp.enums.SelectionDataType;
 import lk.gov.health.phsp.facade.ClientEncounterComponentItemFacade;
 import lk.gov.health.phsp.facade.ClientFacade;
 import lk.gov.health.phsp.facade.EncounterFacade;
@@ -163,6 +165,47 @@ public class QueryComponentController implements Serializable {
 
     public void listQueries() {
         listQueries(searchText);
+    }
+
+    public List<Item> getItemsInDesignFormItemValues() {
+        System.out.println("getItemsInDesignFormItemValues");
+        if (getSelected() == null || getSelected().getItem() == null) {
+            System.out.println("null");
+            return new ArrayList<>();
+        }
+        String j = "select distinct(di.categoryOfAvailableItems) "
+                + " from DesignComponentFormItem di "
+                + " where di.retired<>:ret "
+                + " and lower(di.item.code)=:qry ";
+        Map m = new HashMap();
+        m.put("ret", true);
+        m.put("qry", getSelected().getItem().getCode().trim().toLowerCase());
+        System.out.println("m = " + m);
+        System.out.println("j = " + j);
+        List<Item> parentItems = getItemFacade().findByJpql(j, m);
+        List<Item> temItsm = new ArrayList<>();
+
+        if (parentItems == null || parentItems.isEmpty()) {
+            return new ArrayList<>();
+        }
+
+        for (Item i : parentItems) {
+            if (i == null || i.getCode() == null) {
+                continue;
+            }
+            j = "select i from Item i "
+                    + "where i.retired<>:ret "
+                    + " and lower(i.parent.code)=:code "
+                    + "";
+            m = new HashMap();
+            m.put("ret", true);
+            m.put("code", i.getCode());
+            List<Item> temIt = getItemFacade().findByJpql(j, m);
+            if (temIt != null) {
+                temItsm.addAll(temIt);
+            }
+        }
+        return temItsm;
     }
 
     public void listQueries(String strSearch) {

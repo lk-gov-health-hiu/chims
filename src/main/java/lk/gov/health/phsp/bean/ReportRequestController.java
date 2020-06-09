@@ -59,6 +59,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import javax.enterprise.context.RequestScoped;
 import javax.faces.context.FacesContext;
 import javax.servlet.ServletContext;
 import jxl.CellType;
@@ -97,9 +98,9 @@ import org.primefaces.model.StreamedContent;
  *
  * @author hiu_pdhs_sp
  */
-@Named(value = "reportController")
-@SessionScoped
-public class ReportController implements Serializable {
+@Named
+@RequestScoped
+public class ReportRequestController implements Serializable {
 // <editor-fold defaultstate="collapsed" desc="EJBs">
 
     @EJB
@@ -151,7 +152,7 @@ public class ReportController implements Serializable {
     /**
      * Creates a new instance of ReportController
      */
-    public ReportController() {
+    public ReportRequestController() {
     }
 
 // </editor-fold> 
@@ -538,35 +539,24 @@ public class ReportController implements Serializable {
 
     }
 
-    public boolean matchQuery(QueryComponent q, ClientEncounterComponentItem qi) {
-        if (q.getItem() == null) {
-            return false;
-        }
-        if (qi.getItem() == null) {
-            return false;
-        }
-        if (!qi.getItem().getCode().equalsIgnoreCase(q.getItem().getCode())) {
-            return false;
-        }
-        System.out.println("qi.getItem().getCode() = " + qi.getItem().getCode());
-        System.out.println("q.getItem().getCode() = " + q.getItem().getCode());
-
+    public boolean matchQuery(QueryComponent q, ClientEncounterComponentItem clientValue) {
         boolean m = false;
-        Integer int1 = null;
-        Integer int2 = null;
+        Integer qInt1 = null;
+        Integer qInt2 = null;
         Double real1 = null;
         Double real2 = null;
         Long lng1 = null;
         Long lng2 = null;
         Item itemVariable = null;
         Item itemValue = null;
-        System.out.println("q.getMatchType() = " + q.getMatchType());
+
         if (q.getMatchType() == QueryCriteriaMatchType.Variable_Value_Check) {
-            System.out.println("q.getQueryDataType() = " + q.getQueryDataType());
             switch (q.getQueryDataType()) {
                 case integer:
-                    int1 = q.getIntegerNumberValue();
-                    int2 = q.getIntegerNumberValue2();
+                    qInt1 = q.getIntegerNumberValue();
+                    qInt2 = q.getIntegerNumberValue2();
+                    System.out.println("Query int1 = " + qInt1);
+                    System.out.println("Query int2 = " + qInt2);
                     break;
                 case item:
                     itemValue = q.getItemValue();
@@ -584,99 +574,106 @@ public class ReportController implements Serializable {
             }
             switch (q.getEvaluationType()) {
                 case Equal:
-                    if (int1 != null) {
-                        m = int1.equals(qi.getIntegerNumberValue());
+                    System.out.println("Equal");
+
+                    if (qInt1 != null) {
+                        m = qInt1.equals(clientValue.getIntegerNumberValue());
                     }
                     if (lng1 != null) {
-                        m = lng1.equals(qi.getLongNumberValue());
+                        m = lng1.equals(clientValue.getLongNumberValue());
                     }
                     if (real1 != null) {
-                        m = real1.equals(qi.getRealNumberValue());
+                        m = real1.equals(clientValue.getRealNumberValue());
                     }
 
                     if (itemValue != null && itemVariable != null) {
+                        if (clientValue == null || itemValue.getCode() == null || clientValue.getItem() == null || clientValue.getItemValue().getCode() == null) {
 
-                        System.out.println("itemValue = " + itemValue.getCode());
-                        System.out.println("itemVariable = " + itemVariable.getCode());
-                        System.out.println("qi Item Name " + qi.getItem().getCode());
-                        System.out.println("qi Item Value = " + qi.getItemValue().getCode());
-
-                        if (itemValue.getCode().equals(qi.getItemValue().getCode())) {
-                            m = true;
+                        } else {
+                            if (itemValue.getCode().equals(clientValue.getItemValue().getCode())) {
+                                m = true;
+                            }
                         }
                     }
                     break;
                 case Less_than:
-                    if (int1 != null && qi.getIntegerNumberValue() != null) {
-                        m = qi.getIntegerNumberValue() < int1;
+                    System.out.println("Less than");
+                    System.out.println("Client Value = " + clientValue.getIntegerNumberValue());
+                    if (qInt1 != null && clientValue.getIntegerNumberValue() != null) {
+                        m = clientValue.getIntegerNumberValue() < qInt1;
                     }
-                    if (lng1 != null && qi.getLongNumberValue() != null) {
-                        m = qi.getLongNumberValue() < lng1;
+                    if (lng1 != null && clientValue.getLongNumberValue() != null) {
+                        m = clientValue.getLongNumberValue() < lng1;
                     }
-                    if (real1 != null && qi.getRealNumberValue() != null) {
-                        m = qi.getRealNumberValue() < real1;
+                    if (real1 != null && clientValue.getRealNumberValue() != null) {
+                        m = clientValue.getRealNumberValue() < real1;
                     }
-
+                    System.out.println("Included = " + m);
+                    break;
                 case Between:
-                    if (int1 != null && int2 != null && qi.getIntegerNumberValue() != null) {
-                        if (int1 > int2) {
-                            Integer intTem = int1;
-                            intTem = int1;
-                            int1 = int2;
-                            int2 = intTem;
+                    System.out.println("Between");
+                    System.out.println("Client Value = " + clientValue.getIntegerNumberValue());
+                    if (qInt1 != null && qInt2 != null && clientValue.getIntegerNumberValue() != null) {
+                        if (qInt1 > qInt2) {
+                            Integer intTem = qInt1;
+                            qInt1 = qInt2;
+                            qInt2 = intTem;
                         }
-                        if (qi.getIntegerNumberValue() > int1 && qi.getIntegerNumberValue() < int2) {
+                        if (clientValue.getIntegerNumberValue() > qInt1 && clientValue.getIntegerNumberValue() < qInt2) {
                             m = true;
                         }
                     }
-                    if (lng1 != null && lng2 != null && qi.getLongNumberValue() != null) {
+                    if (lng1 != null && lng2 != null && clientValue.getLongNumberValue() != null) {
                         if (lng1 > lng2) {
                             Long intTem = lng1;
                             intTem = lng1;
                             lng1 = lng2;
                             lng2 = intTem;
                         }
-                        if (qi.getLongNumberValue() > lng1 && qi.getLongNumberValue() < lng2) {
+                        if (clientValue.getLongNumberValue() > lng1 && clientValue.getLongNumberValue() < lng2) {
                             m = true;
                         }
                     }
-                    if (real1 != null && real2 != null && qi.getRealNumberValue() != null) {
+                    if (real1 != null && real2 != null && clientValue.getRealNumberValue() != null) {
                         if (real1 > real2) {
                             Double realTem = real1;
                             realTem = real1;
                             real1 = real2;
                             real2 = realTem;
                         }
-                        if (qi.getRealNumberValue() > real1 && qi.getRealNumberValue() < real2) {
+                        if (clientValue.getRealNumberValue() > real1 && clientValue.getRealNumberValue() < real2) {
                             m = true;
                         }
                     }
-
+                    break;
                 case Grater_than:
-                    if (int1 != null && qi.getIntegerNumberValue() != null) {
-                        m = qi.getIntegerNumberValue() > int1;
+                    System.out.println("Grater than");
+                    System.out.println("Client Value = " + clientValue.getIntegerNumberValue());
+                    if (qInt1 != null && clientValue.getIntegerNumberValue() != null) {
+                        m = clientValue.getIntegerNumberValue() > qInt1;
                     }
-                    if (real1 != null && qi.getRealNumberValue() != null) {
-                        m = qi.getRealNumberValue() > real1;
+                    if (real1 != null && clientValue.getRealNumberValue() != null) {
+                        m = clientValue.getRealNumberValue() > real1;
                     }
-
+                    break;
                 case Grater_than_or_equal:
-                    if (int1 != null && qi.getIntegerNumberValue() != null) {
-                        m = qi.getIntegerNumberValue() < int1;
+                    if (qInt1 != null && clientValue.getIntegerNumberValue() != null) {
+                        m = clientValue.getIntegerNumberValue() < qInt1;
                     }
-                    if (real1 != null && qi.getRealNumberValue() != null) {
-                        m = qi.getRealNumberValue() < real1;
+                    if (real1 != null && clientValue.getRealNumberValue() != null) {
+                        m = clientValue.getRealNumberValue() < real1;
                     }
                 case Less_than_or_equal:
-                    if (int1 != null && qi.getIntegerNumberValue() != null) {
-                        m = qi.getIntegerNumberValue() >= int1;
+                    if (qInt1 != null && clientValue.getIntegerNumberValue() != null) {
+                        m = clientValue.getIntegerNumberValue() >= qInt1;
                     }
-                    if (real1 != null && qi.getRealNumberValue() != null) {
-                        m = qi.getRealNumberValue() >= real1;
+                    if (real1 != null && clientValue.getRealNumberValue() != null) {
+                        m = clientValue.getRealNumberValue() >= real1;
                     }
+                    break;
             }
         }
-        System.out.println("m = " + m);
+        System.out.println("Included= " + m);
         return m;
     }
 
@@ -687,10 +684,17 @@ public class ReportController implements Serializable {
             List<ClientEncounterComponentItem> is = clientEncounterComponentItemController.findClientEncounterComponentItems(e);
             boolean suitableForInclusion = true;
             for (QueryComponent q : qrys) {
+                System.out.println("query = " + q.getName());
                 boolean thisMatchOk = false;
                 for (ClientEncounterComponentItem i : is) {
-                    if (matchQuery(q, i)) {
-                        thisMatchOk = true;
+                    if (i.getItem() == null || q.getItem() == null) {
+                        continue;
+                    }
+                    if (i.getItem().getCode().trim().equalsIgnoreCase(q.getItem().getCode().trim())) {
+                        System.out.println("i.getItem().getCode() = " + i.getItem().getCode());
+                        if (matchQuery(q, i)) {
+                            thisMatchOk = true;
+                        }
                     }
                 }
                 if (!thisMatchOk) {

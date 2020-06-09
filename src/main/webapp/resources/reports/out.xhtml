@@ -23,7 +23,7 @@
                 
                 <p:panelGrid columns="2" >
                     <p:outputLabel value="Report" ></p:outputLabel>
-                    <p:autoComplete value="#{reportController.queryComponent}"
+                    <p:autoComplete value="#{reportRequestController.queryComponent}"
                                     completeMethod="#{queryComponentController.completeQueries}"
                                     var="q"
                                     itemLabel="#{q.name}"
@@ -31,7 +31,7 @@
                     </p:autoComplete>
                     
                     <p:outputLabel value="Institution" ></p:outputLabel>
-                    <p:autoComplete value="#{reportController.institution}"
+                    <p:autoComplete value="#{reportRequestController.institution}"
                                     completeMethod="#{institutionController.completeInstitutions}"
                                     var="i"
                                     itemLabel="#{i.name}"
@@ -40,27 +40,27 @@
                 </p:panelGrid>
 
                 <p:commandButton value="This Month NCD Report" 
-                                 actionListener="#{reportController.toDownloadNcdReportThisMonthInstitution()}"
+                                 actionListener="#{reportRequestController.toDownloadNcdReportThisMonthInstitution()}"
                                  ajax="false">
-                    <p:fileDownload value="#{reportController.file}" />
+                    <p:fileDownload value="#{reportRequestController.file}" />
                 </p:commandButton>
 
                 <p:commandButton value="Last Month NCD Report" 
-                                 actionListener="#{reportController.toDownloadNcdReportLastMonthInstitution()}"
+                                 actionListener="#{reportRequestController.toDownloadNcdReportLastMonthInstitution()}"
                                  ajax="false">
-                    <p:fileDownload value="#{reportController.file}" />
+                    <p:fileDownload value="#{reportRequestController.file}" />
                 </p:commandButton>
 
                 <p:commandButton value="This Quarter NCD Report" 
-                                 actionListener="#{reportController.toDownloadNcdReportThisQuarterInstitution()}"
+                                 actionListener="#{reportRequestController.toDownloadNcdReportThisQuarterInstitution()}"
                                  ajax="false">
-                    <p:fileDownload value="#{reportController.file}" />
+                    <p:fileDownload value="#{reportRequestController.file}" />
                 </p:commandButton>
 
                 <p:commandButton value="Last Quarter NCD Report" 
-                                 actionListener="#{reportController.toDownloadNcdReportLastQuarterInstitution()}"
+                                 actionListener="#{reportRequestController.toDownloadNcdReportLastQuarterInstitution()}"
                                  ajax="false">
-                    <p:fileDownload value="#{reportController.file}" />
+                    <p:fileDownload value="#{reportRequestController.file}" />
                 </p:commandButton>
 
                 <p:commandButton value="Clinic Registrations" 
