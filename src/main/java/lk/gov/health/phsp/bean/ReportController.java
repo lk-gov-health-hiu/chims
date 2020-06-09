@@ -75,6 +75,7 @@ import lk.gov.health.phsp.entity.DesignComponentFormItem;
 import lk.gov.health.phsp.entity.Item;
 import lk.gov.health.phsp.entity.QueryComponent;
 import lk.gov.health.phsp.entity.Upload;
+import lk.gov.health.phsp.enums.QueryCriteriaMatchType;
 import lk.gov.health.phsp.enums.QueryType;
 import lk.gov.health.phsp.enums.TimePeriodType;
 import lk.gov.health.phsp.facade.ClientEncounterComponentItemFacade;
@@ -130,6 +131,8 @@ public class ReportController implements Serializable {
     private InstitutionController institutionController;
     @Inject
     private QueryComponentController queryComponentController;
+    @Inject
+    private ClientEncounterComponentItemController clientEncounterComponentItemController;
 // </editor-fold>  
 // <editor-fold defaultstate="collapsed" desc="Class Variables">
     private List<Encounter> encounters;
@@ -442,7 +445,7 @@ public class ReportController implements Serializable {
                         case FORMULA:
                         case NUMERIC:
                         case _NONE:
-                            
+
                             continue;
                     }
 
@@ -451,7 +454,7 @@ public class ReportController implements Serializable {
                         if (temLong != null) {
                             currentCell.setCellValue(temLong);
                         } else {
-                            
+
                         }
                     }
 
@@ -474,8 +477,6 @@ public class ReportController implements Serializable {
         } catch (IOException e) {
             System.out.println("e = " + e);
         }
-
-       
 
     }
 
@@ -521,7 +522,7 @@ public class ReportController implements Serializable {
                         l = Long.valueOf(ens.size());
                         return l;
                     } else {
-
+                        l = findMatchingCount(ens, criteria);
                     }
 
                 } else {
@@ -535,6 +536,154 @@ public class ReportController implements Serializable {
         System.out.println("End of while");
         return l;
 
+    }
+
+   
+
+    public boolean matchQuery(QueryComponent q, ClientEncounterComponentItem qi) {
+        System.out.println("matchQuery");
+        boolean m = false;
+        Integer int1 = null;
+        Integer int2 = null;
+        Double real1 = null;
+        Double real2 = null;
+        Long lng1=null;
+        Long lng2 = null;
+        Item itemVariable = null;
+        Item itemValue = null;
+        if (q.getMatchType() == QueryCriteriaMatchType.Variable_Value_Check) {
+            switch (q.getQueryDataType()) {
+                case integer:
+                    int1 = q.getIntegerNumberValue();
+                    int2 = q.getIntegerNumberValue2();
+                    break;
+                case item:
+                    itemValue = q.getItemValue();
+                    itemVariable = q.getItem();
+                    break;
+                case real:
+                    real1 = q.getRealNumberValue();
+                    real2 = q.getRealNumberValue2();
+                    break;
+                case longNumber:
+                    lng1 = q.getLongNumberValue();
+                    lng2 = q.getLongNumberValue2();
+                    break;
+
+            }
+            switch (q.getEvaluationType()) {
+                case Equal:
+                    if (int1 != null) {
+                        m = int1.equals(qi.getIntegerNumberValue());
+                    }
+                    if (lng1 != null) {
+                        m = lng1.equals(qi.getLongNumberValue());
+                    }
+                    if (real1 != null) {
+                        m = real1.equals(qi.getRealNumberValue());
+                    }
+                    if (itemValue != null && itemVariable != null) {
+                        if (itemValue.getCode().equals(qi.getItemValue().getCode()) && itemVariable.getCode().equals(qi.getItem().getCode())) {
+                            m = true;
+                        }
+                    }
+                    break;
+                case Less_than:
+                    if (int1 != null && qi.getIntegerNumberValue() !=null) {
+                        m = qi.getIntegerNumberValue() < int1;
+                    }
+                    if (lng1 != null && qi.getLongNumberValue() !=null) {
+                        m = qi.getLongNumberValue() < lng1;
+                    }
+                    if (real1 != null && qi.getRealNumberValue()!=null) {
+                        m = qi.getRealNumberValue() < real1;
+                    }
+
+                case Between:
+                    if (int1 != null && int2 != null &&  qi.getIntegerNumberValue()!=null) {
+                        if(int1>int2){
+                            Integer intTem = int1;
+                            intTem = int1;
+                            int1 = int2;
+                            int2 = intTem;
+                        }
+                        if(qi.getIntegerNumberValue() > int1 &&  qi.getIntegerNumberValue() < int2){
+                            m = true;
+                        }
+                    }
+                    if (lng1 != null && lng2 != null &&  qi.getLongNumberValue()!=null) {
+                        if(lng1>lng2){
+                            Long intTem = lng1;
+                            intTem = lng1;
+                            lng1 = lng2;
+                            lng2 = intTem;
+                        }
+                        if(qi.getLongNumberValue() > lng1 &&  qi.getLongNumberValue() < lng2){
+                            m = true;
+                        }
+                    }
+                    if (real1 != null && real2 != null && qi.getRealNumberValue()!=null) {
+                        if(real1>real2){
+                            Double realTem = real1;
+                            realTem = real1;
+                            real1 = real2;
+                            real2 = realTem;
+                        }
+                        if(qi.getRealNumberValue() > real1 &&  qi.getRealNumberValue() < real2){
+                            m = true;
+                        }
+                    }
+
+                case Grater_than:
+                    if (int1 != null && qi.getIntegerNumberValue()!=null) {
+                        m = qi.getIntegerNumberValue() > int1;
+                    }
+                    if (real1 != null && qi.getRealNumberValue()!=null) {
+                        m = qi.getRealNumberValue() > real1;
+                    }
+
+                case Grater_than_or_equal:
+                    if (int1 != null && qi.getIntegerNumberValue()!=null) {
+                        m = qi.getIntegerNumberValue() < int1;
+                    }
+                    if (real1 != null && qi.getRealNumberValue()!=null) {
+                        m = qi.getRealNumberValue() < real1;
+                    }
+                case Less_than_or_equal:
+                    if (int1 != null && qi.getIntegerNumberValue()!=null) {
+                        m = qi.getIntegerNumberValue() >= int1;
+                    }
+                    if (real1 != null && qi.getRealNumberValue()!=null) {
+                        m = qi.getRealNumberValue() >= real1;
+                    }
+            }
+        }
+        System.out.println("m = " + m);
+        return m;
+    }
+
+    public Long findMatchingCount(List<Encounter> encs, List<QueryComponent> qrys) {
+        System.out.println("findMatchingCount");
+        Long c = 0l;
+        for (Encounter e : encs) {
+            List<ClientEncounterComponentItem> is = clientEncounterComponentItemController.findClientEncounterComponentItems(e);
+            boolean suitableForInclusion = false;
+            for (QueryComponent q : qrys) {
+                boolean thisMatchOk = true;
+                for (ClientEncounterComponentItem i : is) {
+                    if (matchQuery(q, i)) {
+                        thisMatchOk = true;
+                    }
+                }
+                if (thisMatchOk) {
+                    suitableForInclusion = false;
+                }
+            }
+            if (suitableForInclusion) {
+                c++;
+            }
+        }
+        return c;
     }
 
     public void toDownloadNcdReportLastMonthInstitution() {
@@ -854,6 +1003,14 @@ public class ReportController implements Serializable {
 
     public QueryComponentController getQueryComponentController() {
         return queryComponentController;
+    }
+
+    public ClientEncounterComponentItemController getClientEncounterComponentItemController() {
+        return clientEncounterComponentItemController;
+    }
+
+    public void setClientEncounterComponentItemController(ClientEncounterComponentItemController clientEncounterComponentItemController) {
+        this.clientEncounterComponentItemController = clientEncounterComponentItemController;
     }
 
 }

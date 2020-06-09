@@ -33,6 +33,7 @@ import javax.script.ScriptEngine;
 import javax.script.ScriptException;
 import lk.gov.health.phsp.entity.Client;
 import lk.gov.health.phsp.entity.Component;
+import lk.gov.health.phsp.entity.Encounter;
 import lk.gov.health.phsp.entity.Person;
 
 @Named("clientEncounterComponentItemController")
@@ -80,6 +81,19 @@ public class ClientEncounterComponentItemController implements Serializable {
                 + " order by f.orderNo";
         Map m = new HashMap();
         m.put("p", fs);
+        List<ClientEncounterComponentItem> t = getFacade().findByJpql(j, m);
+        if (t == null) {
+            t = new ArrayList<>();
+        }
+        return t;
+    }
+    
+    public List<ClientEncounterComponentItem> findClientEncounterComponentItems(Encounter enc) {
+        String j = "select f from ClientEncounterComponentItem f "
+                + " where f.retired=false "
+                + " and f.encounter=:e";
+        Map m = new HashMap();
+        m.put("e", enc);
         List<ClientEncounterComponentItem> t = getFacade().findByJpql(j, m);
         if (t == null) {
             t = new ArrayList<>();
