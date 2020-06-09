@@ -11,6 +11,11 @@
 
         <ui:define name="content">
             <h:form id="ItemListForm">
+                
+                <p:commandButton value="Download" ajax="false" >
+                    <p:dataExporter target="datalist" type="xls" fileName="dictionary" ></p:dataExporter>
+                </p:commandButton>
+                
                 <p:panel header="#{bundleClinical.ListItemTitle}">
                     <p:dataTable id="datalist" value="#{itemController.items}" var="item"
                                  selectionMode="single" selection="#{itemController.selected}"
@@ -66,7 +71,7 @@
                             <h:outputText value="#{item.dataType}"/>
                         </p:column>
 
-                        <p:column>
+                        <p:column  filterBy="#{item.parent.name}" filterMatchMode="contains" sortBy="#{item.parent.name}">
                             <f:facet name="header">
                                 <h:outputText value="Parent"/>
                             </f:facet>

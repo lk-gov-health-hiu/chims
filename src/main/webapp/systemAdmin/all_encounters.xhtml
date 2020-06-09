@@ -47,9 +47,11 @@
                         </h:panelGrid>
                     </p:panelGrid>
 
+                    <p:commandButton rendered="true" value="Download" ajax="false" >
+                        <p:dataExporter target="tbl" fileName="encounters" type="xls" ></p:dataExporter>
+                    </p:commandButton>
 
-
-                    <p:dataTable value="#{clientEncounterComponentFormSetController.items}"
+                    <p:dataTable rendered="true" id="tbl" value="#{clientEncounterComponentFormSetController.items}"
                                  selection="#{clientEncounterComponentFormSetController.selectedItems}"
                                  var="c" 
                                  rowKey="#{c.id}"
@@ -59,7 +61,7 @@
                                  resizeMode="fit"
                                  tableStyle="width:auto;"
                                  >
-                        <p:column selectionMode="multiple"  >
+                        <p:column selectionMode="multiple" exportable="false"  >
                         </p:column>
 
                         <p:column headerText="PHN"  sortBy="#{c.encounter.client.phn}" filterBy="#{c.encounter.client.phn}" filterMatchMode="contains">
@@ -76,11 +78,39 @@
                             </h:outputLabel>
                         </p:column>
 
-                        <p:column headerText="Institution"   
+                        <p:column headerText="GN Area"   
+                                  sortBy="#{c.encounter.client.person.gnArea.name}" 
+                                  filterBy="#{c.encounter.client.person.gnArea.name}" 
+                                  filterMatchMode="contains">
+                            <p:outputLabel value="#{c.encounter.client.person.gnArea.name}" ></p:outputLabel>
+                        </p:column>
+
+                        <p:column headerText="Clinic"   
                                   sortBy="#{c.encounter.institution.name}" 
                                   filterBy="#{c.encounter.institution.name}" 
                                   filterMatchMode="contains">
                             <p:outputLabel value="#{c.encounter.institution.name}" ></p:outputLabel>
+                        </p:column>
+
+                        <p:column headerText="Institution"   
+                                  sortBy="#{c.encounter.institution.parent.name}" 
+                                  filterBy="#{c.encounter.institution.parent.name}" 
+                                  filterMatchMode="contains">
+                            <p:outputLabel value="#{c.encounter.institution.parent.name}" ></p:outputLabel>
+                        </p:column>
+
+                        <p:column headerText="RDHS"   
+                                  sortBy="#{c.encounter.institution.parent.parent.name}" 
+                                  filterBy="#{c.encounter.institution.parent.parent.name}" 
+                                  filterMatchMode="contains">
+                            <p:outputLabel value="#{c.encounter.institution.parent.parent.name}" ></p:outputLabel>
+                        </p:column>
+
+                        <p:column headerText="PDHS"   
+                                  sortBy="#{c.encounter.institution.parent.parent.parent.name}" 
+                                  filterBy="#{c.encounter.institution.parent.parent.parent.name}" 
+                                  filterMatchMode="contains">
+                            <p:outputLabel value="#{c.encounter.institution.parent.parent.parent.name}" ></p:outputLabel>
                         </p:column>
 
                         <p:column  headerText="Formset"   
@@ -94,7 +124,7 @@
                             </p:outputLabel>
                         </p:column>
 
-                        <p:column  headerText="Action" >
+                        <p:column  headerText="Action" exportable="false" >
                             <p:commandButton ajax="false" value="View" action="#{clientEncounterComponentFormSetController.toViewOrEditFormset()}" >
                                 <f:setPropertyActionListener value="#{c}" target="#{clientEncounterComponentFormSetController.selected}" ></f:setPropertyActionListener>
 

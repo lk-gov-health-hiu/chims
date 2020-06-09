@@ -57,13 +57,33 @@
                             <p:outputLabel value="Privileges" ></p:outputLabel>
                         </td>
                         <td>
-                            <ui:repeat value="#{webUserController.loggedUserPrivileges}" var="p" >
-                                <p:outputLabel value="#{p.privilege}&nbsp;" ></p:outputLabel>
-                            </ui:repeat>
+                            <table >
+                                <ui:repeat value="#{webUserController.loggedUserPrivileges}" var="p" >
+                                    <tr>
+                                        <td>
+                                            <p:outputLabel value="#{p.privilege}" ></p:outputLabel>
+                                        </td>
+                                    </tr>
+                                </ui:repeat>
+                            </table>
                         </td>
                     </tr>
-
-
+                    <tr>
+                        <td>
+                            <p:outputLabel value="My Institutions" ></p:outputLabel>
+                        </td>
+                        <td>
+                            <table >
+                                <ui:repeat value="#{webUserController.loggableInstitutions}" var="i" >
+                                    <tr>
+                                        <td>
+                                            <p:outputLabel value="#{i.name}" ></p:outputLabel>
+                                        </td>
+                                    </tr>
+                                </ui:repeat>
+                            </table>
+                        </td>
+                    </tr>
                     <tr>
                         <td>
                             <p:outputLabel value="Logged Institution" ></p:outputLabel>
