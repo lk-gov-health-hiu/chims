@@ -229,8 +229,6 @@ public class InstitutionController implements Serializable {
             m.put("n", name.trim().toLowerCase());
         }
         m.put("ret", false);
-        System.out.println("j = " + j);
-        System.out.println("m = " + m);
         return getFacade().findFirstByJpql(j, m);
     }
     
@@ -242,8 +240,6 @@ public class InstitutionController implements Serializable {
             m.put("n", id);
         }
         m.put("ret", false);
-        System.out.println("j = " + j);
-        System.out.println("m = " + m);
         return getFacade().findFirstByJpql(j, m);
     }
     

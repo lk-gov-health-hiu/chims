@@ -168,9 +168,7 @@ public class QueryComponentController implements Serializable {
     }
 
     public List<Item> getItemsInDesignFormItemValues() {
-        System.out.println("getItemsInDesignFormItemValues");
         if (getSelected() == null || getSelected().getItem() == null) {
-            System.out.println("null");
             return new ArrayList<>();
         }
         String j = "select distinct(di.categoryOfAvailableItems) "
@@ -180,8 +178,6 @@ public class QueryComponentController implements Serializable {
         Map m = new HashMap();
         m.put("ret", true);
         m.put("qry", getSelected().getItem().getCode().trim().toLowerCase());
-        System.out.println("m = " + m);
-        System.out.println("j = " + j);
         List<Item> parentItems = getItemFacade().findByJpql(j, m);
         List<Item> temItsm = new ArrayList<>();
 

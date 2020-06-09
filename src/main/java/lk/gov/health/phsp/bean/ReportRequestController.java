@@ -587,9 +587,11 @@ public class ReportRequestController implements Serializable {
                     }
 
                     if (itemValue != null && itemVariable != null) {
-                        if (clientValue == null || itemValue.getCode() == null || clientValue.getItem() == null || clientValue.getItemValue().getCode() == null) {
+                        if (clientValue != null
+                                && itemValue.getCode() != null
+                                && clientValue.getItemValue() != null
+                                && clientValue.getItemValue().getCode() != null) {
 
-                        } else {
                             if (itemValue.getCode().equals(clientValue.getItemValue().getCode())) {
                                 m = true;
                             }

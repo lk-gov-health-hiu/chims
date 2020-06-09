@@ -129,7 +129,6 @@ public class UploadController implements Serializable {
 
     public String uploadFile() {
 
-        System.out.println("uploadFileToMerge");
 
         if (file == null) {
             lk.gov.health.phsp.facade.util.JsfUtil.addErrorMessage("Error in Uploading file. No such file");
@@ -149,7 +148,6 @@ public class UploadController implements Serializable {
         selected.setFileName(file.getFileName());
         selected.setFileType(file.getContentType());
 
-        System.out.println("selected.getFileName() = " + selected.getFileName());
 
         InputStream in;
 
@@ -157,7 +155,6 @@ public class UploadController implements Serializable {
             in = getFile().getInputstream();
             selected.setBaImage(IOUtils.toByteArray(in));
         } catch (IOException e) {
-            System.out.println("Error " + e.getMessage());
         }
 
         if (selected.getId() == null) {
@@ -165,15 +162,12 @@ public class UploadController implements Serializable {
         } else {
             getFacade().edit(selected);
         }
-        System.out.println("selected.getFileName() = " + selected.getFileName());
 
         selected.setFileName(file.getFileName());
         selected.setFileType(file.getContentType());
 
-        System.out.println("selected.getFileName() = " + selected.getFileName());
 
         getFacade().edit(selected);
-        System.out.println("selected.getFileName() = " + selected.getFileName());
 
         return "/queryComponent/query";
 

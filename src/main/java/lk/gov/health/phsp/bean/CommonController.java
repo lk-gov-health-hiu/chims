@@ -402,19 +402,14 @@ public class CommonController implements Serializable {
         System.out.println("difInMiliSeconds = " + difInMiliSeconds);
         
         Long diffInSec = difInMiliSeconds / 1000;
-        System.out.println("diffInSec = " + diffInSec);
         
         Long diffInMin = diffInSec / 60;
-        System.out.println("diffInMin = " + diffInMin);
         
         Long diffInHrs = diffInMin / 60;
-        System.out.println("diffInHrs = " + diffInHrs);
         
         Long diffInDLong = diffInHrs / 24;
-        System.out.println("diffInDLong = " + diffInDLong);
         
         Long diffInYrs = diffInDLong / 365;
-        System.out.println("diffInYrs = " + diffInYrs);
         
         return diffInYrs ;
         
