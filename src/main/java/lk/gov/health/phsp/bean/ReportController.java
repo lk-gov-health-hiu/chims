@@ -812,6 +812,44 @@ public class ReportController implements Serializable {
         }
         return action;
     }
+    
+    
+    public String toViewClinicVisits() {
+        encounters = new ArrayList<>();
+        String forSys = "/reports/clinic_visits/for_system";
+        String forIns = "/reports/clinic_visits/for_ins";
+        String forMe = "/reports/clinic_visits/for_me";
+        String forClient = "/reports/clinic_visits/for_clients";
+        String noAction = "";
+        String action = "";
+        switch (webUserController.getLoggedUser().getWebUserRole()) {
+            case Client:
+                action = forClient;
+                break;
+            case Doctor:
+            case Institution_Administrator:
+            case Institution_Super_User:
+            case Institution_User:
+            case Nurse:
+            case Midwife:
+                action = forIns;
+                break;
+            case Me_Admin:
+            case Me_Super_User:
+                action = forMe;
+                break;
+            case Me_User:
+            case User:
+                action = noAction;
+                break;
+            case Super_User:
+            case System_Administrator:
+                action = forSys;
+                break;
+        }
+        return action;
+    }
+    
 
 // </editor-fold>   
 // <editor-fold defaultstate="collapsed" desc="Functions">
@@ -850,6 +888,71 @@ public class ReportController implements Serializable {
             List<Institution> ins = institutionController.findChildrenInstitutions(institution);
             ins.add(institution);
             m.put("ins", ins);
+        }
+        encounters = encounterController.getItems(j, m);
+    }
+    
+    public void fillClinicVisitsForSysAdmin() {
+        String j;
+        Map m = new HashMap();
+        j = "select c from Encounter c "
+                + " where c.retired=:ret "
+                + " c.encounterType=:type "
+                + " and c.encounterDate between :fd and :td ";
+        m.put("ret", false);
+        m.put("fd", fromDate);
+        m.put("td", toDate);
+        m.put("type", EncounterType.Clinic_Visit);
+        if (institution != null) {
+            j += " and c.institution in :ins ";
+            List<Institution> ins = institutionController.findChildrenInstitutions(institution);
+            ins.add(institution);
+            m.put("ins", ins);
+        }
+        encounters = encounterController.getItems(j, m);
+    }
+    
+    
+    public void fillClinicEnrollmentsForInstitution() {
+        String j;
+        Map m = new HashMap();
+        j = "select c from Encounter c "
+                + " where c.retired=:ret "
+                + " c.encounterType=:type "
+                + " and c.encounterDate between :fd and :td ";
+        m.put("ret", false);
+        m.put("fd", fromDate);
+        m.put("td", toDate);
+        m.put("type", EncounterType.Clinic_Enroll);
+        if (institution != null) {
+            j += " and c.institution in :ins ";
+            List<Institution> ins = institutionController.findChildrenInstitutions(institution);
+            ins.add(institution);
+            m.put("ins", ins);
+        }else{
+            m.put("ins", webUserController.getLoggableInstitutions());
+        }
+        encounters = encounterController.getItems(j, m);
+    }
+    
+    public void fillClinicVisitsForInstitution() {
+        String j;
+        Map m = new HashMap();
+        j = "select c from Encounter c "
+                + " where c.retired=:ret "
+                + " c.encounterType=:type "
+                + " and c.encounterDate between :fd and :td ";
+        m.put("ret", false);
+        m.put("fd", fromDate);
+        m.put("td", toDate);
+        m.put("type", EncounterType.Clinic_Visit);
+        if (institution != null) {
+            j += " and c.institution in :ins ";
+            List<Institution> ins = institutionController.findChildrenInstitutions(institution);
+            ins.add(institution);
+            m.put("ins", ins);
+        }else{
+            m.put("ins", webUserController.getLoggableInstitutions());
         }
         encounters = encounterController.getItems(j, m);
     }

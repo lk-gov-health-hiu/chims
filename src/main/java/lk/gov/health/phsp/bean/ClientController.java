@@ -378,8 +378,28 @@ public class ClientController implements Serializable {
         items = getFacade().findByJpql(j, m, TemporalType.TIMESTAMP);
         return "/systemAdmin/all_clients";
     }
-    
-    
+
+    public void fillRegisterdClientsWithDatesForInstitution() {
+        String j = "select c from Client c "
+                + " where c.retired<>:ret ";
+        Map m = new HashMap();
+        m.put("ret", true);
+        j = j + " and c.createdAt between :fd and :td ";
+
+        if (institution != null) {
+            j = j + " and c.createInstitution =:ins ";
+            m.put("ins", institution);
+        } else {
+            j = j + " and c.createInstitution in :ins ";
+            m.put("ins", webUserController.getLoggableInstitutions());
+        }
+
+        j = j + " order by c.id desc";
+        m.put("fd", getFrom());
+        m.put("td", getTo());
+        selectedClients = null;
+        items = getFacade().findByJpql(j, m, TemporalType.TIMESTAMP);
+    }
 
     public void saveSelectedImports() {
         if (institution == null) {

@@ -720,6 +720,25 @@ public class ReportRequestController implements Serializable {
         toDownloadNcdReport(institution, rtp);
     }
 
+    public void toDownloadNcdReportPeriodInstitution() {
+        ReportTimePeriod rtp = new ReportTimePeriod();
+        rtp.setTimePeriodType(TimePeriodType.Dates);
+        if (fromDate == null) {
+            rtp.setFrom(CommonController.startOfTheLastMonth());
+        }else{
+            rtp.setFrom(fromDate);
+        }
+        if(toDate==null){
+            rtp.setTo(CommonController.endOfTheLastMonth());
+        }else{
+            rtp.setTo(toDate);
+        }
+        
+        rtp.setYear(CommonController.getYear(CommonController.endOfTheLastMonth()));
+        rtp.setMonth(CommonController.getMonth(CommonController.endOfTheLastMonth()));
+        toDownloadNcdReport(institution, rtp);
+    }
+
     public void toDownloadNcdReportThisQuarterInstitution() {
         ReportTimePeriod rtp = new ReportTimePeriod();
         rtp.setTimePeriodType(TimePeriodType.Quarterly);
