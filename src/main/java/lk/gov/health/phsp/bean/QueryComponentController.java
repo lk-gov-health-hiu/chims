@@ -80,6 +80,7 @@ public class QueryComponentController implements Serializable {
     private List<QueryComponent> categories = null;
     private QueryComponent selected;
     private QueryComponent selectedQuery;
+    private QueryComponent selectedToDuplicateQuery;
     private QueryComponent selectedCretirian;
     private List<QueryComponent> selectedCretiria = null;
 
@@ -927,6 +928,37 @@ public class QueryComponentController implements Serializable {
         return calculationScript;
     }
 
+    
+    
+    
+    public void duplicateSelected() {
+        if (selectedToDuplicateQuery == null) {
+            JsfUtil.addErrorMessage("Noting selected.");
+            return;
+        }
+        List<QueryComponent> cs = criteria(selectedToDuplicateQuery);
+        QueryComponent q = SerializationUtils.clone(selectedToDuplicateQuery);
+        q.setId(null);
+        q.setCreatedAt(new Date());
+        q.setName(q.getName() + " Copy");
+        q.setCreatedBy(webUserController.getLoggedUser());
+        getFacade().create(q);
+
+        for (QueryComponent c : cs) {
+            QueryComponent newC = SerializationUtils.clone(c);
+            newC.setId(null);
+            newC.setName(newC.getName());
+            newC.setParentComponent(q);
+            newC.setCreatedAt(new Date());
+            newC.setCreatedBy(webUserController.getLoggedUser());
+            getFacade().create(newC);
+        }
+
+        items = null;
+        selectedToDuplicateQuery = q;
+        JsfUtil.addSuccessMessage("Duplicated");
+    }
+    
     public void duplicate() {
         if (selectedQuery == null) {
             JsfUtil.addErrorMessage("Noting selected.");
@@ -2196,6 +2228,8 @@ public class QueryComponentController implements Serializable {
         this.filterPhm = filterPhm;
     }
 
+    
+    
     public Area getPhm() {
         return phm;
     }
@@ -2329,6 +2363,14 @@ public class QueryComponentController implements Serializable {
         m.put("ret", true);
         m.put("code", code);
         return getFacade().findFirstByJpql(j, m);
+    }
+
+    public QueryComponent getSelectedToDuplicateQuery() {
+        return selectedToDuplicateQuery;
+    }
+
+    public void setSelectedToDuplicateQuery(QueryComponent selectedToDuplicateQuery) {
+        this.selectedToDuplicateQuery = selectedToDuplicateQuery;
     }
 
     @FacesConverter(forClass = QueryComponent.class)

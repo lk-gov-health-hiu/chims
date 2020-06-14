@@ -60,6 +60,9 @@
                                         <f:setPropertyActionListener value="#{item}" target="#{queryComponentController.selected}" ></f:setPropertyActionListener>
 
                                     </p:commandButton>
+                                    <p:commandButton id="duplicateButton" icon="ui-icon-arrowrefresh-1-n"  value="Duplicate" action="#{queryComponentController.duplicateSelected()}" ajax="false" >
+                                        <f:setPropertyActionListener value="#{item}" target="#{queryComponentController.selectedToDuplicateQuery}" ></f:setPropertyActionListener>
+                                    </p:commandButton>
 
                                     <p:commandButton ajax="false" value="Remove" action="#{queryComponentController.remove()}" 
                                                      onclick="if (!confirm('Really want to do that?'))
