@@ -22,76 +22,103 @@
                                 <p:commandButton ajax="false" value="Back" action="subcategory" style="float: right;" ></p:commandButton>
                             </f:facet>
 
-                            <p:dataTable value="#{queryComponentController.queries()}" var="item">
 
-                                <p:column>
-                                    <f:facet name="header">
-                                        <h:outputText value="Name"/>
-                                    </f:facet>
-                                    <h:outputText value="#{item.name}"/>
-                                </p:column>
-                                <p:column>
-                                    <f:facet name="header">
-                                        <h:outputText value="Code"/>
-                                    </f:facet>
-                                    <h:outputText value="#{item.code}"/>
-                                </p:column>
-                                <p:column>
-                                    <f:facet name="header">
-                                        <h:outputText value="Descreption"/>
-                                    </f:facet>
-                                    <h:outputText value="#{item.descreption}"/>
-                                </p:column>
-                                <p:column>
-                                    <f:facet name="header">
-                                        <h:outputText value="Actions"/>
-                                    </f:facet>
+                            <p:tabView >
 
-                                    <p:commandButton ajax="false" value="Edit" action="edit_query" >
-                                        <f:setPropertyActionListener value="#{item}" target="#{queryComponentController.selected}" ></f:setPropertyActionListener>
-                                    </p:commandButton>
+                                <p:tab title="Edit" >
+                                    <p:dataTable value="#{queryComponentController.queries()}" var="item"
 
-                                    <p:commandButton ajax="false" value="Criteria" action="criteria" >
-                                        <f:setPropertyActionListener value="#{item}" target="#{queryComponentController.selectedQuery}" ></f:setPropertyActionListener>
-                                    </p:commandButton>
+                                                 rowKey="#{item.id}"
 
-                                    <p:commandButton ajax="false" value="Upload" action="#{uploadController.toUploadComponentUploadSingle}" >
-                                        <f:setPropertyActionListener value="#{item}" target="#{uploadController.selectedComponent}" ></f:setPropertyActionListener>
-                                        <f:setPropertyActionListener value="#{item}" target="#{queryComponentController.selected}" ></f:setPropertyActionListener>
+                                                 paginator="true"
+                                                 rows="10"
+                                                 rowsPerPageTemplate="10,20,30,40,50"
+                                                 >
 
-                                    </p:commandButton>
-                                    <p:commandButton id="duplicateButton" icon="ui-icon-arrowrefresh-1-n"  value="Duplicate" action="#{queryComponentController.duplicateSelected()}" ajax="false" >
-                                        <f:setPropertyActionListener value="#{item}" target="#{queryComponentController.selectedToDuplicateQuery}" ></f:setPropertyActionListener>
-                                    </p:commandButton>
+                                        <p:column sortBy="#{item.name}" filterBy="#{item.name}" filterMatchMode="contains">
+                                            <f:facet name="header">
+                                                <h:outputText value="Name"/>
+                                            </f:facet>
+                                            <h:outputText value="#{item.name}"/>
+                                        </p:column>
+                                        <p:column sortBy="#{item.code}" filterBy="#{item.code}" filterMatchMode="contains">
+                                            <f:facet name="header">
+                                                <h:outputText value="Code"/>
+                                            </f:facet>
+                                            <h:outputText value="#{item.code}"/>
+                                        </p:column>
+                                        <p:column rendered="false">
+                                            <f:facet name="header">
+                                                <h:outputText value="Descreption"/>
+                                            </f:facet>
+                                            <h:outputText value="#{item.descreption}"/>
+                                        </p:column>
+                                        <p:column>
+                                            <f:facet name="header">
+                                                <h:outputText value="Actions"/>
+                                            </f:facet>
 
-                                    <p:commandButton ajax="false" value="Remove" action="#{queryComponentController.remove()}" 
-                                                     onclick="if (!confirm('Really want to do that?'))
-                                                                 return false">
-                                        <f:setPropertyActionListener value="#{item}" target="#{queryComponentController.removing}" ></f:setPropertyActionListener>
-                                    </p:commandButton>
-                                </p:column>
-                            </p:dataTable>  
+                                            <h:panelGrid columns="5" >
+                                                <p:commandButton ajax="false" value="Edit" action="edit_query" >
+                                                    <f:setPropertyActionListener value="#{item}" target="#{queryComponentController.selected}" ></f:setPropertyActionListener>
+                                                </p:commandButton>
 
-                            <p:panelGrid  columns="2">
-                                <f:facet name="header" >
-                                    <p:outputLabel value="Add New Query" >
-                                    </p:outputLabel>
-                                </f:facet>
-                                <p:outputLabel value="Name" >
-                                </p:outputLabel>
-                                <p:inputText value="#{queryComponentController.addingQuery.name}">
-                                </p:inputText>
-                                <p:outputLabel value="Descreption" >
-                                </p:outputLabel>
-                                <p:inputTextarea value="#{queryComponentController.addingQuery.descreption}">
-                                </p:inputTextarea>
+                                                <p:commandButton ajax="false" value="Criteria" action="criteria" >
+                                                    <f:setPropertyActionListener value="#{item}" target="#{queryComponentController.selectedQuery}" ></f:setPropertyActionListener>
+                                                </p:commandButton>
 
-                                <p:spacer></p:spacer>
-                                <p:commandButton ajax="false" action="#{queryComponentController.saveQuery()}" value="Save" >
-                                </p:commandButton>
+                                                <p:commandButton  ajax="false" value="Upload" action="#{uploadController.toUploadComponentUploadSingle}" >
+                                                    <f:setPropertyActionListener value="#{item}" target="#{uploadController.selectedComponent}" ></f:setPropertyActionListener>
+                                                    <f:setPropertyActionListener value="#{item}" target="#{queryComponentController.selected}" ></f:setPropertyActionListener>
+
+                                                </p:commandButton>
+                                                <p:commandButton id="duplicateButton" icon="ui-icon-arrowrefresh-1-n"  value="Duplicate" action="#{queryComponentController.duplicateSelected()}" ajax="false" >
+                                                    <f:setPropertyActionListener value="#{item}" target="#{queryComponentController.selectedToDuplicateQuery}" ></f:setPropertyActionListener>
+                                                </p:commandButton>
+
+                                                <p:commandButton ajax="false" value="Remove" action="#{queryComponentController.remove()}" 
+                                                                 onclick="if (!confirm('Really want to do that?'))
+                                                                             return false">
+                                                    <f:setPropertyActionListener value="#{item}" target="#{queryComponentController.removing}" ></f:setPropertyActionListener>
+                                                </p:commandButton>
+
+                                            </h:panelGrid>
 
 
-                            </p:panelGrid>
+                                        </p:column>
+                                    </p:dataTable>  
+
+                                </p:tab>
+
+                                <p:tab title="Add New" >
+
+                                    <p:panelGrid  columns="2">
+                                        <f:facet name="header" >
+                                            <p:outputLabel value="Add New Query" >
+                                            </p:outputLabel>
+                                        </f:facet>
+                                        <p:outputLabel value="Name" >
+                                        </p:outputLabel>
+                                        <p:inputText value="#{queryComponentController.addingQuery.name}">
+                                        </p:inputText>
+                                        <p:outputLabel value="Descreption" >
+                                        </p:outputLabel>
+                                        <p:inputTextarea value="#{queryComponentController.addingQuery.descreption}">
+                                        </p:inputTextarea>
+
+                                        <p:spacer></p:spacer>
+                                        <p:commandButton ajax="false" action="#{queryComponentController.saveQuery()}" value="Save" >
+                                        </p:commandButton>
+
+
+                                    </p:panelGrid>
+                                </p:tab>
+
+                            </p:tabView>
+
+
+
+
 
                         </p:panelGrid>
                     </h:form>
