@@ -16,60 +16,100 @@
 
 
         <h:form>
-            <p:panelGrid columns="1" class="w3-border w3-margin w3-card" style="width: 95%; margin: auto;">
+            <p:panelGrid columns="1" class="w3-border w3-margin w3-card" style="width: 99%; margin: auto;">
                 <f:facet name="header" >
                     <p:outputLabel value="Institution Reports" ></p:outputLabel>
                 </f:facet>
-                
-                <p:panelGrid columns="2" >
-                    <p:outputLabel value="Report" ></p:outputLabel>
-                    <p:autoComplete value="#{reportRequestController.queryComponent}"
-                                    completeMethod="#{queryComponentController.completeQueries}"
-                                    var="q"
-                                    itemLabel="#{q.name}"
-                                    itemValue="#{q}">
-                    </p:autoComplete>
-                    
-                    <p:outputLabel value="Institution" ></p:outputLabel>
-                    <p:autoComplete value="#{reportRequestController.institution}"
-                                    completeMethod="#{institutionController.completeInstitutions}"
-                                    var="i"
-                                    itemLabel="#{i.name}"
-                                    itemValue="#{i}">
-                    </p:autoComplete>
-                </p:panelGrid>
 
-                <p:commandButton value="This Month NCD Report" 
-                                 actionListener="#{reportRequestController.toDownloadNcdReportThisMonthInstitution()}"
-                                 ajax="false">
-                    <p:fileDownload value="#{reportRequestController.file}" />
-                </p:commandButton>
+                <p:tabView orientation="left" >
 
-                <p:commandButton value="Last Month NCD Report" 
-                                 actionListener="#{reportRequestController.toDownloadNcdReportLastMonthInstitution()}"
-                                 ajax="false">
-                    <p:fileDownload value="#{reportRequestController.file}" />
-                </p:commandButton>
+                    <p:tab title="Download Excel Reports" >
+                        <p:panelGrid columns="2" >
+                            <p:outputLabel value="Report" ></p:outputLabel>
+                            <p:autoComplete value="#{reportRequestController.queryComponent}"
+                                            completeMethod="#{queryComponentController.completeQueries}"
+                                            var="q"
+                                            itemLabel="#{q.name}"
+                                            itemValue="#{q}">
+                            </p:autoComplete>
 
-                <p:commandButton value="This Quarter NCD Report" 
-                                 actionListener="#{reportRequestController.toDownloadNcdReportThisQuarterInstitution()}"
-                                 ajax="false">
-                    <p:fileDownload value="#{reportRequestController.file}" />
-                </p:commandButton>
+                            <p:outputLabel value="Institution" ></p:outputLabel>
+                            <p:autoComplete value="#{reportRequestController.institution}"
+                                            completeMethod="#{institutionController.completeInstitutions}"
+                                            var="i"
+                                            itemLabel="#{i.name}"
+                                            itemValue="#{i}">
+                            </p:autoComplete>
 
-                <p:commandButton value="Last Quarter NCD Report" 
-                                 actionListener="#{reportRequestController.toDownloadNcdReportLastQuarterInstitution()}"
-                                 ajax="false">
-                    <p:fileDownload value="#{reportRequestController.file}" />
-                </p:commandButton>
+                            <p:outputLabel value="From" ></p:outputLabel>
+                            <p:calendar value="#{reportRequestController.fromDate}" pattern="dd MMMM yyyy" ></p:calendar>
 
-                <p:commandButton value="Clinic Registrations" 
-                                 action="#{reportController.toViewClientRegistrations()}"
-                                 ajax="false"></p:commandButton>
+                            <p:outputLabel value="To" ></p:outputLabel>
+                            <p:calendar value="#{reportRequestController.toDate}" pattern="dd MMMM yyyy" ></p:calendar>
 
-                <p:commandButton value="Clinic Enrollments" 
-                                 action="#{reportController.toViewClinicEnrollments()}"
-                                 ajax="false"></p:commandButton>
+                        </p:panelGrid>
+
+                        <p:panelGrid columns="1" >
+                            <p:commandButton value="Selected Period Clinic Report"  style="width:30em;margin:auto;"
+                                             actionListener="#{reportRequestController.toDownloadNcdReportPeriodInstitution()}"
+                                             ajax="false">
+                                <p:fileDownload value="#{reportRequestController.file}" />
+                            </p:commandButton>
+
+                            <p:commandButton value="This Month Clinic Report" style="width:30em;margin:auto;"
+                                             actionListener="#{reportRequestController.toDownloadNcdReportThisMonthInstitution()}"
+                                             ajax="false">
+                                <p:fileDownload value="#{reportRequestController.file}" />
+                            </p:commandButton>
+
+                            <p:commandButton value="Last Month Clinic Report"  style="width:30em;margin:auto;"
+                                             actionListener="#{reportRequestController.toDownloadNcdReportLastMonthInstitution()}"
+                                             ajax="false">
+                                <p:fileDownload value="#{reportRequestController.file}" />
+                            </p:commandButton>
+
+                            <p:commandButton value="This Quarter Clinic Report"  style="width:30em;margin:auto;"
+                                             actionListener="#{reportRequestController.toDownloadNcdReportThisQuarterInstitution()}"
+                                             ajax="false">
+                                <p:fileDownload value="#{reportRequestController.file}" />
+                            </p:commandButton>
+
+                            <p:commandButton value="Last Quarter Clinic Report"  style="width:30em;margin:auto;"
+                                             actionListener="#{reportRequestController.toDownloadNcdReportLastQuarterInstitution()}"
+                                             ajax="false">
+                                <p:fileDownload value="#{reportRequestController.file}" />
+                            </p:commandButton>
+                        </p:panelGrid>
+
+                    </p:tab>
+
+                    <p:tab title="Lists" >
+
+                        <h:panelGrid columns="1" >
+
+                            <p:commandButton value="Client Registrations"   style="width:30em;margin:auto;"
+                                             action="#{reportController.toViewClientRegistrations()}"
+                                             ajax="false"></p:commandButton>
+
+                            <p:commandButton value="Clinic Enrollments"   style="width:30em;margin:auto;"
+                                             action="#{reportController.toViewClinicEnrollments()}"
+                                             ajax="false"></p:commandButton>
+                            
+                             <p:commandButton value="Clinic Visits"   style="width:30em;margin:auto;"
+                                             action="#{reportController.toViewClinicEnrollments()}"
+                                             ajax="false"></p:commandButton>
+
+                        </h:panelGrid>
+
+
+                    </p:tab>
+
+                </p:tabView>
+
+
+
+
+
 
             </p:panelGrid>
         </h:form>

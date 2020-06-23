@@ -39,7 +39,7 @@
                             </f:facet>
                             <h:outputText value="#{item.name}"/>
                         </p:column>
-                        <p:column sortBy="#{item.code}" filterBy="#{item.code}" filterMatchMode="contains">
+                        <p:column sortBy="#{item.code}" filterBy="#{item.code}" >
                             <f:facet name="header" >
                                 <h:outputText value="#{bundleClinical.ListAreaTitle_code}"/>
                             </f:facet>
@@ -57,7 +57,12 @@
                             </f:facet>
                             <h:outputText value="#{item.parentArea.name}"/>
                         </p:column>
-                        
+                        <p:column  sortBy="#{item.district.name}" filterBy="#{item.district.name}" filterMatchMode="contains">
+                            <f:facet name="header">
+                                <h:outputText value="District"/>
+                            </f:facet>
+                            <h:outputText value="#{item.district.name}"/>
+                        </p:column>
                         <p:column headerText="Actions" exportable="false" >
                             <p:commandButton ajax="false" value="Edit" action="#{areaController.toEditAreaForSysAdmin()}" >
                                 <f:setPropertyActionListener value="#{item}" target="#{areaController.selected}" ></f:setPropertyActionListener>

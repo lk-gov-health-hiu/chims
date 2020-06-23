@@ -1,0 +1,109 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <h:head >
+        <ui:define name="head">
+            Client Registrations
+        </ui:define>
+    </h:head>
+
+    <h:body>
+
+        <ui:composition template="./../../template.xhtml">
+
+
+
+            <ui:define name="content">
+                <h:form>
+                    <p:panelGrid columns="2" styleClass="alignTop" >
+                        <f:facet name="header" >
+                            <p:outputLabel value="Client Registrations" ></p:outputLabel>
+                        </f:facet>
+                        <p:panelGrid columns="1" >
+                            <f:facet name="header" >
+                                <p:outputLabel value="Filters" >
+                                </p:outputLabel>
+
+                            </f:facet>
+                            <p:outputLabel value="From" ></p:outputLabel>
+                            <p:calendar value="#{clientController.from}" pattern="dd MM yyyy hh:mm a" ></p:calendar>
+                            <p:outputLabel value="To" ></p:outputLabel>
+                            <p:calendar value="#{clientController.to}" pattern="dd MM yyyy hh:mm a" ></p:calendar>
+                            <p:outputLabel value="Institution / Unit" ></p:outputLabel>
+                            <p:selectOneMenu   value="#{clientController.institution}" >
+                                <f:selectItem itemLabel="All" ></f:selectItem>
+                                <f:selectItems value="#{webUserController.loggableInstitutions}"
+                                               var="i" itemLabel="#{i.name}" itemValue="#{i}"></f:selectItems>
+                            </p:selectOneMenu >
+
+                            <p:commandButton value="Process" ajax="false"
+                                             action="#{clientController.fillRegisterdClientsWithDatesForInstitution()}"></p:commandButton>
+
+                        </p:panelGrid>
+
+                        <p:dataTable value="#{clientController.items}"
+                                     id="tbl"
+                                     var="c" 
+                                     rowKey="#{c.id}"
+                                     paginator="true"
+                                     rows="10"
+                                     rowsPerPageTemplate="10,20,30,40,50"
+                                     >
+                            <p:column  headerText="Register On" sortBy="#{c.createdAt}" >
+                                <p:outputLabel value="#{c.createdAt}" >
+                                    <f:convertDateTime pattern="dd MMMM yyyy hh:mm a" timeZone="Asia/Colombo" ></f:convertDateTime>
+                                </p:outputLabel>
+                            </p:column>
+                            <p:column  headerText="PHN" sortBy="#{c.phn}" filterBy="#{c.phn}" filterMatchMode="contains">
+                                <p:outputLabel value="#{c.phn}" ></p:outputLabel>
+                            </p:column>
+                            <p:column  headerText="Name" sortBy="#{c.person.name}" filterBy="#{c.person.name}" filterMatchMode="contains">
+                                <p:outputLabel value="#{c.person.name}" ></p:outputLabel>
+                            </p:column>
+
+                            <p:column  headerText="NIC" sortBy="#{c.person.nic}" filterBy="#{c.person.nic}" filterMatchMode="contains">
+                                <p:outputLabel value="#{c.person.nic}" ></p:outputLabel>
+                            </p:column>
+
+                            <p:column  headerText="Phone" sortBy="#{c.person.transPhoneNumbers}" 
+                                       filterBy="#{c.person.transPhoneNumbers}" filterMatchMode="contains">
+                                <p:outputLabel value="#{c.person.transPhoneNumbers}" ></p:outputLabel>
+                            </p:column>
+
+
+                            <p:column headerText="GN Area" sortBy="#{c.person.gnArea.name}" 
+                                      filterBy="#{c.person.gnArea.name}"
+                                      filterMatchMode="contains">
+                                <p:outputLabel value="#{c.person.gnArea.name}" ></p:outputLabel>
+                            </p:column>
+
+                            <p:column headerText="Registerd At" sortBy="#{c.createInstitution.name}" 
+                                      filterBy="#{c.createInstitution.name}"
+                                      filterMatchMode="contains">
+                                <p:outputLabel value="#{c.createInstitution.name}" ></p:outputLabel>
+                            </p:column>
+
+                            <p:column headerText="Edit" >
+                                <p:commandButton ajax="false" action="#{clientController.toClientProfile()}" value="Edit" >
+                                    <f:setPropertyActionListener value="#{c}" target="#{clientController.selected}" ></f:setPropertyActionListener>
+                                </p:commandButton>
+                            </p:column>
+
+                        </p:dataTable>
+
+                    </p:panelGrid>
+
+
+
+                </h:form>
+            </ui:define>
+
+        </ui:composition>
+
+    </h:body>
+</html>

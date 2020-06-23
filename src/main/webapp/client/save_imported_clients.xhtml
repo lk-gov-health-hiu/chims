@@ -13,209 +13,210 @@
             <ui:define name="content">
 
                 <h:form  >
-                    <p:panelGrid columns="1" >
-
+                    <p:outputLabel value="Clients to Import" ></p:outputLabel>
+                    <h:panelGrid columns="2" >
                         <f:facet name="header" >
                             <p:outputLabel value="Clients to Import" ></p:outputLabel>
                         </f:facet>
 
-                        <h:panelGrid columns="2" >
-                            <p:outputLabel value="Institution" ></p:outputLabel>
-                            <p:autoComplete  id="parent" value="#{clientController.institution}" 
-                                             completeMethod="#{institutionController.completeInstitutions}"
-                                             var="i" itemLabel="#{i.name}" itemValue="#{i}">
-                            </p:autoComplete >
-                            <p:commandButton value="Save Selected" ajax="false"
-                                             action="#{clientController.saveSelectedImports()}">
-                            </p:commandButton>
-                            
-                            <p:commandButton value="Save All" ajax="false"
-                                             action="#{clientController.saveAllImports()}">
-                            </p:commandButton>
-                            
-                            
-                            <p:commandButton value="Export" ajax="false">
-                                <p:dataExporter target="tbl" type="csv" fileName="importedclients" ></p:dataExporter>
-                            </p:commandButton>
-                            
-                            <p:commandButton value="Refresh" ajax="false">
-                            </p:commandButton>
+                        <p:outputLabel value="Institution" ></p:outputLabel>
+                        <p:autoComplete  id="parent" value="#{clientController.institution}" 
+                                         completeMethod="#{institutionController.completeInstitutions}"
+                                         var="i" itemLabel="#{i.name}" itemValue="#{i}">
+                        </p:autoComplete >
+                        <p:commandButton value="Save Selected" ajax="false"
+                                         action="#{clientController.saveSelectedImports()}">
+                        </p:commandButton>
 
-                        </h:panelGrid>
-                        <p:dataTable value="#{clientController.importedClients}"
-                                     selection="#{clientController.selectedClients}"
-                                     var="c" 
-                                     rowKey="#{c.id}"
-                                     paginator="true"
-                                     rows="20"
-                                     rowsPerPageTemplate="10,20,30,40,50"
-                                     >
-                            <p:column selectionMode="multiple" width="15" >
-                            </p:column>
-
-                            <p:column headerText="PHN" width="200" sortBy="#{c.phn}" filterBy="#{c.phn}" filterMatchMode="contains">
-                                <p:outputLabel value="#{c.phn}" ></p:outputLabel>
-                            </p:column>
-
-                            <p:column headerText="Name" width="200"  sortBy="#{c.person.name}" filterBy="#{c.person.name}" filterMatchMode="contains">
-                                <p:outputLabel value="#{c.person.name}" ></p:outputLabel>
-                            </p:column>
-
-                            <p:column  headerText="Sex" width="200" sortBy="#{c.person.sex.name}" filterBy="#{c.person.sex.name}" filterMatchMode="contains">
-                                <p:outputLabel value="#{c.person.sex.name}" ></p:outputLabel>
-                            </p:column>
-
-                            <p:column headerText="NIC" width="200"  sortBy="#{c.person.nic}" filterBy="#{c.person.nic}" filterMatchMode="contains">
-                                <p:outputLabel value="#{c.person.nic}" ></p:outputLabel>
-                            </p:column>
-
-                            <p:column  headerText="Ethnic Group" width="200"  sortBy="#{c.person.ethinicGroup.name}" filterBy="#{c.person.ethinicGroup.name}" filterMatchMode="contains">
-                                <p:outputLabel value="#{c.person.ethinicGroup.name}" ></p:outputLabel>
-                            </p:column>
-
-                            <p:column  headerText="Religion" width="200" sortBy="#{c.person.religion.name}" filterBy="#{c.person.religion.name}" filterMatchMode="contains">
-                                <p:outputLabel value="#{c.person.religion.name}" ></p:outputLabel>
-                            </p:column>
-
-                            <p:column  headerText="Marietal Status" width="200" sortBy="#{c.person.mariatalStatus.name}" filterBy="#{c.person.mariatalStatus.name}" filterMatchMode="contains">
-                                <p:outputLabel value="#{c.person.mariatalStatus.name}" ></p:outputLabel>
-                            </p:column>
-
-                            <p:column  headerText="Citizenship" width="200" sortBy="#{c.person.citizenship.name}" filterBy="#{c.person.citizenship.name}" filterMatchMode="contains">
-                                <p:outputLabel value="#{c.person.citizenship.name}" ></p:outputLabel>
-                            </p:column>
-
-                            <p:column  headerText="Address" width="200" sortBy="#{c.person.address}" filterBy="#{c.person.address}" filterMatchMode="contains">
-                                <p:outputLabel value="#{c.person.address}" ></p:outputLabel>
-                            </p:column>
-
-                            <p:column  headerText="DOB" width="200" sortBy="#{c.person.dateOfBirth}" >
-                                <p:outputLabel value="#{c.person.dateOfBirth}" >
-                                    <f:convertDateTime pattern="dd/MMMM/yyyy" ></f:convertDateTime>
-                                </p:outputLabel>
-                            </p:column>
-                            
-                            <p:column  headerText="GN Area" width="200" 
-                                       sortBy="#{c.person.gnArea.name}" 
-                                       filterBy="#{c.person.gnArea.name}"
-                                       filterMatchMode="contains">
-                                <p:outputLabel value="#{c.person.gnArea.name}"></p:outputLabel>
-                            </p:column>
-
-                            <p:column  headerText="Phone1" width="200"  sortBy="#{c.person.phone1}" filterBy="#{c.person.phone1}" filterMatchMode="contains">
-                                <p:outputLabel value="#{c.person.phone1}" ></p:outputLabel>
-                            </p:column>
-
-                            <p:column  headerText="Phone2" width="200" sortBy="#{c.person.phone2}" 
-                                       filterBy="#{c.person.phone2}"
-                                       filterMatchMode="contains">
-                                <p:outputLabel value="#{c.person.phone2}" ></p:outputLabel>
-                            </p:column>
-
-                            <p:column  headerText="PHM Area" width="200" sortBy="#{c.person.phmArea.name}" 
-                                       filterBy="#{c.person.phmArea.name}"
-                                       filterMatchMode="contains">
-                                <p:outputLabel value="#{c.person.phmArea.name}" ></p:outputLabel>
-                            </p:column>
-
-                            <p:column  headerText="DS Division" width="200" sortBy="#{c.person.dsArea.name}" 
-                                       filterBy="#{c.person.dsArea.name}"
-                                       filterMatchMode="contains">
-                                <p:outputLabel value="#{c.person.dsArea.name}" ></p:outputLabel>
-                            </p:column>
+                        <p:commandButton value="Save All" ajax="false"
+                                         action="#{clientController.saveAllImports()}">
+                        </p:commandButton>
 
 
-                            <p:column  headerText="District" width="200" sortBy="#{c.person.district.name}" 
-                                       filterBy="#{c.person.district.name}"
-                                       filterMatchMode="contains">
-                                <p:outputLabel value="#{c.person.district.name}" ></p:outputLabel>
-                            </p:column>
+                        <p:commandButton value="Export" ajax="false">
+                            <p:dataExporter target="tbl" type="csv" fileName="importedclients" ></p:dataExporter>
+                        </p:commandButton>
+
+                        <p:commandButton value="Refresh" ajax="false">
+                        </p:commandButton>
+
+                    </h:panelGrid>
+
+                    <p:dataTable value="#{clientController.importedClients}"
+                                 selection="#{clientController.selectedClients}"
+                                 var="c" 
+                                 rowKey="#{c.id}"
+                                 paginator="true"
+                                 rows="20"
+                                 rowsPerPageTemplate="10,20,30,40,50"
+                                 >
+                        <p:column selectionMode="multiple" width="15" >
+                        </p:column>
+
+                        <p:column headerText="PHN" width="200" sortBy="#{c.phn}" filterBy="#{c.phn}" filterMatchMode="contains">
+                            <p:outputLabel value="#{c.phn}" ></p:outputLabel>
+                        </p:column>
+
+                        <p:column headerText="Name" width="200"  sortBy="#{c.person.name}" filterBy="#{c.person.name}" filterMatchMode="contains">
+                            <p:outputLabel value="#{c.person.name}" ></p:outputLabel>
+                        </p:column>
+
+                        <p:column  headerText="Sex" width="200" sortBy="#{c.person.sex.name}" filterBy="#{c.person.sex.name}" filterMatchMode="contains">
+                            <p:outputLabel value="#{c.person.sex.name}" ></p:outputLabel>
+                        </p:column>
+
+                        <p:column headerText="NIC" width="200"  sortBy="#{c.person.nic}" filterBy="#{c.person.nic}" filterMatchMode="contains">
+                            <p:outputLabel value="#{c.person.nic}" ></p:outputLabel>
+                        </p:column>
+
+                        <p:column  headerText="Ethnic Group" width="200"  sortBy="#{c.person.ethinicGroup.name}" filterBy="#{c.person.ethinicGroup.name}" filterMatchMode="contains">
+                            <p:outputLabel value="#{c.person.ethinicGroup.name}" ></p:outputLabel>
+                        </p:column>
+
+                        <p:column  headerText="Religion" width="200" sortBy="#{c.person.religion.name}" filterBy="#{c.person.religion.name}" filterMatchMode="contains">
+                            <p:outputLabel value="#{c.person.religion.name}" ></p:outputLabel>
+                        </p:column>
+
+                        <p:column  headerText="Marietal Status" width="200" sortBy="#{c.person.mariatalStatus.name}" filterBy="#{c.person.mariatalStatus.name}" filterMatchMode="contains">
+                            <p:outputLabel value="#{c.person.mariatalStatus.name}" ></p:outputLabel>
+                        </p:column>
+
+                        <p:column  headerText="Citizenship" width="200" sortBy="#{c.person.citizenship.name}" filterBy="#{c.person.citizenship.name}" filterMatchMode="contains">
+                            <p:outputLabel value="#{c.person.citizenship.name}" ></p:outputLabel>
+                        </p:column>
+
+                        <p:column  headerText="Address" width="200" sortBy="#{c.person.address}" filterBy="#{c.person.address}" filterMatchMode="contains">
+                            <p:outputLabel value="#{c.person.address}" ></p:outputLabel>
+                        </p:column>
+
+                        <p:column  headerText="DOB" width="200" sortBy="#{c.person.dateOfBirth}" >
+                            <p:outputLabel value="#{c.person.dateOfBirth}" >
+                                <f:convertDateTime pattern="dd/MMMM/yyyy" ></f:convertDateTime>
+                            </p:outputLabel>
+                        </p:column>
+
+                        <p:column  headerText="GN Area" width="200" 
+                                   sortBy="#{c.person.gnArea.name}" 
+                                   filterBy="#{c.person.gnArea.name}"
+                                   filterMatchMode="contains">
+                            <p:outputLabel value="#{c.person.gnArea.name}"></p:outputLabel>
+                        </p:column>
+
+                        <p:column  headerText="Phone1" width="200"  sortBy="#{c.person.phone1}" filterBy="#{c.person.phone1}" filterMatchMode="contains">
+                            <p:outputLabel value="#{c.person.phone1}" ></p:outputLabel>
+                        </p:column>
+
+                        <p:column  headerText="Phone2" width="200" sortBy="#{c.person.phone2}" 
+                                   filterBy="#{c.person.phone2}"
+                                   filterMatchMode="contains">
+                            <p:outputLabel value="#{c.person.phone2}" ></p:outputLabel>
+                        </p:column>
+
+                        <p:column  headerText="PHM Area" width="200" sortBy="#{c.person.phmArea.name}" 
+                                   filterBy="#{c.person.phmArea.name}"
+                                   filterMatchMode="contains">
+                            <p:outputLabel value="#{c.person.phmArea.name}" ></p:outputLabel>
+                        </p:column>
+
+                        <p:column  headerText="DS Division" width="200" sortBy="#{c.person.dsArea.name}" 
+                                   filterBy="#{c.person.dsArea.name}"
+                                   filterMatchMode="contains">
+                            <p:outputLabel value="#{c.person.dsArea.name}" ></p:outputLabel>
+                        </p:column>
 
 
-                        </p:dataTable>
+                        <p:column  headerText="District" width="200" sortBy="#{c.person.district.name}" 
+                                   filterBy="#{c.person.district.name}"
+                                   filterMatchMode="contains">
+                            <p:outputLabel value="#{c.person.district.name}" ></p:outputLabel>
+                        </p:column>
 
 
+                    </p:dataTable>
 
 
 
-                        <p:dataTable value="#{clientController.importedClients}"
-                                     var="c" id="tbl"
-                                     rowKey="#{c.id}" style="display: none;" >
-                            <p:column headerText="PHN"  >
-                                <p:outputLabel value="#{c.phn}" ></p:outputLabel>
-                            </p:column>
-
-                            <p:column headerText="Name" >
-                                <p:outputLabel value="#{c.person.name}" ></p:outputLabel>
-                            </p:column>
-
-                            <p:column  headerText="Sex" >
-                                <p:outputLabel value="#{c.person.sex.name}" ></p:outputLabel>
-                            </p:column>
-
-                            <p:column headerText="NIC" >
-                                <p:outputLabel value="#{c.person.nic}" ></p:outputLabel>
-                            </p:column>
-
-                            <p:column  headerText="Ethnic Group">
-                                <p:outputLabel value="#{c.person.ethinicGroup.name}" ></p:outputLabel>
-                            </p:column>
-
-                            <p:column  headerText="Religion">
-                                <p:outputLabel value="#{c.person.religion.name}" ></p:outputLabel>
-                            </p:column>
-
-                            <p:column  headerText="Marietal Status" >
-                                <p:outputLabel value="#{c.person.mariatalStatus.name}" ></p:outputLabel>
-                            </p:column>
-
-                            <p:column  headerText="Citizenship" >
-                                <p:outputLabel value="#{c.person.citizenship.name}" ></p:outputLabel>
-                            </p:column>
-
-                            <p:column  headerText="Address">
-                                <p:outputLabel value="#{c.person.address}" ></p:outputLabel>
-                            </p:column>
-
-                            <p:column  headerText="DOB"  >
-                                <p:outputLabel value="#{c.person.dateOfBirth}" >
-                                    <f:convertDateTime pattern="dd/MMMM/yyyy" ></f:convertDateTime>
-                                </p:outputLabel>
-                            </p:column>
-                            
-                            <p:column  headerText="GN Area" >
-                                <p:outputLabel value="#{c.person.gnArea.name}" ></p:outputLabel>
-                            </p:column>
-
-                            <p:column  headerText="Phone1" >
-                                <p:outputLabel value="#{c.person.phone1}" ></p:outputLabel>
-                            </p:column>
-
-                            <p:column  headerText="Phone2" >
-                                <p:outputLabel value="#{c.person.phone2}" ></p:outputLabel>
-                            </p:column>
-
-                            <p:column  headerText="DS Division" >
-                                <p:outputLabel value="#{c.person.dsArea.name}" ></p:outputLabel>
-                            </p:column>
 
 
-                            <p:column  headerText="District">
-                                <p:outputLabel value="#{c.person.district.name}" ></p:outputLabel>
-                            </p:column>
+                    <p:dataTable value="#{clientController.importedClients}"
+                                 var="c" id="tbl"
+                                 rowKey="#{c.id}" style="display: none;" >
+                        <p:column headerText="PHN"  >
+                            <p:outputLabel value="#{c.phn}" ></p:outputLabel>
+                        </p:column>
+
+                        <p:column headerText="Name" >
+                            <p:outputLabel value="#{c.person.name}" ></p:outputLabel>
+                        </p:column>
+
+                        <p:column  headerText="Sex" >
+                            <p:outputLabel value="#{c.person.sex.name}" ></p:outputLabel>
+                        </p:column>
+
+                        <p:column headerText="NIC" >
+                            <p:outputLabel value="#{c.person.nic}" ></p:outputLabel>
+                        </p:column>
+
+                        <p:column  headerText="Ethnic Group">
+                            <p:outputLabel value="#{c.person.ethinicGroup.name}" ></p:outputLabel>
+                        </p:column>
+
+                        <p:column  headerText="Religion">
+                            <p:outputLabel value="#{c.person.religion.name}" ></p:outputLabel>
+                        </p:column>
+
+                        <p:column  headerText="Marietal Status" >
+                            <p:outputLabel value="#{c.person.mariatalStatus.name}" ></p:outputLabel>
+                        </p:column>
+
+                        <p:column  headerText="Citizenship" >
+                            <p:outputLabel value="#{c.person.citizenship.name}" ></p:outputLabel>
+                        </p:column>
+
+                        <p:column  headerText="Address">
+                            <p:outputLabel value="#{c.person.address}" ></p:outputLabel>
+                        </p:column>
+
+                        <p:column  headerText="DOB"  >
+                            <p:outputLabel value="#{c.person.dateOfBirth}" >
+                                <f:convertDateTime pattern="dd/MMMM/yyyy" ></f:convertDateTime>
+                            </p:outputLabel>
+                        </p:column>
+
+                        <p:column  headerText="GN Area" >
+                            <p:outputLabel value="#{c.person.gnArea.name}" ></p:outputLabel>
+                        </p:column>
+
+                        <p:column  headerText="Phone1" >
+                            <p:outputLabel value="#{c.person.phone1}" ></p:outputLabel>
+                        </p:column>
+
+                        <p:column  headerText="Phone2" >
+                            <p:outputLabel value="#{c.person.phone2}" ></p:outputLabel>
+                        </p:column>
+
+                        <p:column  headerText="DS Division" >
+                            <p:outputLabel value="#{c.person.dsArea.name}" ></p:outputLabel>
+                        </p:column>
 
 
-                            <p:column  headerText="Created at" >
-                                <p:outputLabel value="#{c.createdAt}" >
-                                    <f:convertDateTime pattern="dd MMMM yyyy hh:mm:ss" ></f:convertDateTime>
-                                </p:outputLabel>
-                            </p:column>
+                        <p:column  headerText="District">
+                            <p:outputLabel value="#{c.person.district.name}" ></p:outputLabel>
+                        </p:column>
 
 
-                        </p:dataTable>
+                        <p:column  headerText="Created at" >
+                            <p:outputLabel value="#{c.createdAt}" >
+                                <f:convertDateTime pattern="dd MMMM yyyy hh:mm:ss" ></f:convertDateTime>
+                            </p:outputLabel>
+                        </p:column>
 
 
-                    </p:panelGrid>
+                    </p:dataTable>
+
+
+
+
                 </h:form>
                 <div >
                     <br/>
