@@ -16,29 +16,43 @@
                     <p:panelGrid columns="3" >
 
                         <f:facet name="header" >
-                            <p:outputLabel value="Upload Distirct Population by xls file. Column Numbers are Zero Based." ></p:outputLabel>
+                            <p:outputLabel value="Upload Clients by xls file. Column Numbers are Zero Based." ></p:outputLabel>
                         </f:facet>
 
-                        <p:outputLabel value="Upload Details" ></p:outputLabel>
+                        <p:outputLabel value="Institution" ></p:outputLabel>
+                        <p:autoComplete value="#{clientController.institution}"
+                                        completeMethod="#{institutionController.completeInstitutions}"
+                                        var="ins"
+                                        itemLabel="#{ins.name}"
+                                        itemValue="#{ins}">
+                        </p:autoComplete>
                         <p:spacer height="1" width="10"></p:spacer>
-                        <p:inputTextarea value="#{clientController.uploadDetails}"
-                                         rows="10" cols="200">
-                        </p:inputTextarea>
 
+                        <p:outputLabel value="Date Time Format" ></p:outputLabel>
+                        <p:inputText value="#{clientController.dateTimeFormat}" ></p:inputText>
+                        <p:spacer height="1" width="10"></p:spacer>
                         
+                        <p:outputLabel value="Date Format" ></p:outputLabel>
+                        <p:inputText value="#{clientController.dateFormat}" ></p:inputText>
+                        <p:spacer height="1" width="10"></p:spacer>
+
+                        <p:outputLabel value="Upload Details" ></p:outputLabel>
+                        <p:inputTextarea value="#{clientController.uploadDetails}"
+                                         rows="10" cols="100">
+                        </p:inputTextarea>
+                        <p:spacer height="1" width="10"></p:spacer>
 
 
                         <p:fileUpload value="#{clientController.file}" mode="simple"/>
-                        <p:spacer></p:spacer>
                         <p:commandButton ajax="false" value="Import Clients" 
                                          action="#{clientController.importClientsFromExcel()}"  ></p:commandButton>
-
-
+                        <p:spacer></p:spacer>
+                        
                     </p:panelGrid>
                     <p:outputLabel value="#{clientController.errorCode}" ></p:outputLabel>
                 </h:form>
-                
-                
+
+
 
             </ui:define>
 

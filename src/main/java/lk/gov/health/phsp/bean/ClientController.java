@@ -49,6 +49,7 @@ import lk.gov.health.phsp.enums.RelationshipType;
 import lk.gov.health.phsp.facade.EncounterFacade;
 import lk.gov.health.phsp.pojcs.YearMonthDay;
 import org.bouncycastle.jcajce.provider.digest.GOST3411;
+import org.joda.time.Days;
 import org.primefaces.component.tabview.TabView;
 import org.primefaces.event.TabChangeEvent;
 import org.primefaces.model.UploadedFile;
@@ -111,6 +112,8 @@ public class ClientController implements Serializable {
     private Boolean phnExists;
     private Boolean passportExists;
     private Boolean dlExists;
+    private String dateTimeFormat;
+    private String dateFormat;
 
     // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="Constructors">
@@ -515,6 +518,11 @@ public class ClientController implements Serializable {
 
         importedClients = new ArrayList<>();
 
+        if (institution == null) {
+            JsfUtil.addErrorMessage("Add Institution");
+            return "";
+        }
+
         if (uploadDetails == null || uploadDetails.trim().equals("")) {
             JsfUtil.addErrorMessage("Add Column Names");
             return "";
@@ -566,6 +574,37 @@ public class ClientController implements Serializable {
                     c.setPerson(p);
 
                     int colNo = 0;
+
+                    String gnAreaName = null;
+                    String gnAreaCode = null;
+                    for (String colName : cols) {
+                        cell = sheet.getCell(colNo, i);
+                        String cellString = cell.getContents();
+                        switch (colName) {
+                            case "client_gn_area_name":
+                                gnAreaName = cellString;
+                                break;
+                            case "client_gn_area_code":
+                                gnAreaCode = cellString;
+                                break;
+                        }
+                        colNo++;
+                    }
+                    Area gnArea = null;
+                    System.out.println("gnAreaName = " + gnAreaName);
+                    System.out.println("gnAreaCode = " + gnAreaCode);
+                    if (gnAreaName != null && gnAreaCode != null) {
+                        gnArea = areaController.getGnAreaByNameAndCode(gnAreaName, gnAreaCode);
+                    } else if (gnAreaName != null) {
+                        gnArea = areaController.getGnAreaByName(gnAreaName);
+                    } else if (gnAreaCode != null) {
+                        gnArea = areaController.getGnAreaByCode(gnAreaCode);
+                    }
+                    if (gnArea != null) {
+                        System.out.println("gnArea = " + gnArea.getName());
+                    }
+
+                    colNo = 0;
 
                     for (String colName : cols) {
                         cell = sheet.getCell(colNo, i);
@@ -676,7 +715,30 @@ public class ClientController implements Serializable {
                                 c.getPerson().setNic(cellString);
                                 break;
                             case "client_data_of_birth":
-                                Date tdob = commonController.dateFromString(cellString, "yyyy/MM/dd");
+                                Date tdob = null;
+                                Date today = new Date();
+                                int ageInYears = 0;
+                                int birthYear;
+                                int thisYear;
+                                
+                                try {
+                                    tdob = commonController.dateFromString(cellString, dateFormat);
+                                    Calendar bc = Calendar.getInstance();
+                                    bc.setTime(tdob);
+                                    birthYear = bc.get(Calendar.YEAR);
+                                    Calendar tc = Calendar.getInstance();
+                                    thisYear = tc.get(Calendar.YEAR);
+                                    ageInYears = thisYear - birthYear;
+                                    System.out.println("ageInYears = " + ageInYears);
+                                } catch (Exception e) {
+                                    System.out.println("e = " + e);
+                                }
+                                if (ageInYears < 0) {
+                                    tdob = today;
+                                } else if (ageInYears > 200) {
+                                    tdob = today;
+                                }
+
                                 c.getPerson().setDateOfBirth(tdob);
                                 break;
                             case "client_permanent_address":
@@ -692,7 +754,7 @@ public class ClientController implements Serializable {
                                 c.getPerson().setPhone2(cellString);
                                 break;
                             case "client_registered_at":
-                                Date reg = commonController.dateFromString(cellString, "MM/dd/yyyy hh:mm:ss");
+                                Date reg = commonController.dateFromString(cellString, dateTimeFormat);
                                 c.getPerson().setCreatedAt(reg);
                                 c.setCreatedAt(reg);
                                 break;
@@ -700,21 +762,27 @@ public class ClientController implements Serializable {
                                 System.out.println("GN");
                                 System.out.println("cellString = " + cellString);
 
-                                Area tgn = areaController.getAreaByName(cellString, AreaType.GN, false, null);
-                                System.out.println("tgn = " + tgn);
-                                if (tgn != null) {
-                                    c.getPerson().setGnArea(tgn);
-                                    c.getPerson().setDsArea(tgn.getDsd());
-                                    c.getPerson().setMohArea(tgn.getMoh());
-                                    c.getPerson().setPhmArea(tgn.getPhm());
-                                    c.getPerson().setDistrict(tgn.getDistrict());
-                                    c.getPerson().setProvince(tgn.getProvince());
+                                Area tgn;
+                                if (gnArea == null) {
+                                    gnArea = areaController.getAreaByCodeIfNotName(cellString, AreaType.GN);
                                 }
+
                                 break;
                         }
 
                         colNo++;
                     }
+
+                    System.out.println("tgn = " + gnArea);
+                    if (gnArea != null) {
+                        c.getPerson().setGnArea(gnArea);
+                        c.getPerson().setDsArea(gnArea.getDsd());
+                        c.getPerson().setMohArea(gnArea.getMoh());
+                        c.getPerson().setPhmArea(gnArea.getPhm());
+                        c.getPerson().setDistrict(gnArea.getDistrict());
+                        c.getPerson().setProvince(gnArea.getProvince());
+                    }
+                    c.setCreateInstitution(institution);
 
                     c.setId(temId);
                     temId++;
@@ -1305,7 +1373,8 @@ public class ClientController implements Serializable {
                     + "client_religion" + "\n"
                     + "client_marital_status" + "\n"
                     + "client_permanent_address" + "\n"
-                    + "client_gn_area" + "\n"
+                    + "client_gn_area_name" + "\n"
+                    + "client_gn_area_code" + "\n"
                     + "client_mobile_number" + "\n"
                     + "client_home_number" + "\n"
                     + "client_email" + "\n"
@@ -1447,6 +1516,29 @@ public class ClientController implements Serializable {
 
     public void setTo(Date to) {
         this.to = to;
+
+    }
+
+    public String getDateTimeFormat() {
+        if (dateTimeFormat == null) {
+            dateTimeFormat = "yyyy-MM-dd hh:mm:ss";
+        }
+        return dateTimeFormat;
+    }
+
+    public void setDateTimeFormat(String dateTimeFormat) {
+        this.dateTimeFormat = dateTimeFormat;
+    }
+
+    public String getDateFormat() {
+        if (dateFormat == null) {
+            dateFormat = "yyyy/MM/dd";
+        }
+        return dateFormat;
+    }
+
+    public void setDateFormat(String dateFormat) {
+        this.dateFormat = dateFormat;
     }
 
     // </editor-fold>
@@ -1494,5 +1586,5 @@ public class ClientController implements Serializable {
 
     }
 
-    // </editor-fold>
+// </editor-fold>
 }

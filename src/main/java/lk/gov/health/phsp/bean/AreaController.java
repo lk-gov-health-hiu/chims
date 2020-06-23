@@ -1791,6 +1791,96 @@ public class AreaController implements Serializable {
         return ta;
     }
 
+    public Area getGnAreaByCode(String code) {
+        AreaType areaType = AreaType.GN;
+        if (code.trim().equals("")) {
+            return null;
+        }
+        String j;
+        Map m = new HashMap();
+        j = "select a "
+                + " from Area a "
+                + " where upper(a.code)=:n  ";
+        m.put("n", code.toUpperCase());
+
+        j += " and a.type=:t";
+        m.put("t", areaType);
+        Area ta = getFacade().findFirstByJpql(j, m);
+        return ta;
+    }
+
+    public Area getGnAreaByName(String name) {
+        AreaType areaType = AreaType.GN;
+        if (name.trim().equals("")) {
+            return null;
+        }
+        String j;
+        Map m = new HashMap();
+        j = "select a "
+                + " from Area a "
+                + " where upper(a.name)=:n  ";
+        m.put("n", name.toUpperCase());
+
+        j += " and a.type=:t";
+        m.put("t", areaType);
+        Area ta = getFacade().findFirstByJpql(j, m);
+        return ta;
+    }
+
+    public Area getGnAreaByNameAndCode(String name, String code) {
+        AreaType areaType = AreaType.GN;
+        if (name.trim().equals("")) {
+            return null;
+        }
+        String j;
+        Map m = new HashMap();
+        j = "select a "
+                + " from Area a "
+                + " where upper(a.name)=:n "
+                + " and upper(a.code)=:c ";
+        m.put("n", name.toUpperCase());
+        m.put("c", code.toUpperCase());
+        j += " and a.type=:t";
+        m.put("t", areaType);
+        Area ta = getFacade().findFirstByJpql(j, m);
+        return ta;
+    }
+
+    public Area getAreaByCodeIfNotName(String nameOrCode, AreaType areaType) {
+        if (nameOrCode.trim().equals("")) {
+            return null;
+        }
+        String j;
+        Map m = new HashMap();
+
+        j = "select a "
+                + " from Area a "
+                + " where upper(a.code)=:n  ";
+        m.put("n", nameOrCode.toUpperCase());
+        if (areaType != null) {
+            j += " and a.type=:t";
+            m.put("t", areaType);
+        }
+
+        Area ta = getFacade().findFirstByJpql(j, m);
+
+        if (ta != null) {
+            return ta;
+        }
+
+        m = new HashMap();
+        j = "select a "
+                + " from Area a "
+                + " where upper(a.name)=:n  ";
+        m.put("n", nameOrCode.toUpperCase());
+        if (areaType != null) {
+            j += " and a.type=:t";
+            m.put("t", areaType);
+        }
+        ta = getFacade().findFirstByJpql(j, m);
+        return ta;
+    }
+
     public Area getAreaByCodeAndName(String code, String name, AreaType areaType, boolean createNew, Area parentArea) {
         try {
             if (code.trim().equals("")) {
