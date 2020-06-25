@@ -25,7 +25,7 @@
                                         <p:selectOneMenu id="acPmci"
                                                         value="#{institutionController.selected}">
                                             <f:selectItem itemLabel="Select" ></f:selectItem>
-                                            <f:selectItems value="#{webUserController.loggablePmcis}"
+                                            <f:selectItems value="#{webUserController.loggableInstitutions}"
                                                         var="p" itemLabel="#{p.name}" itemValue="#{p}"
                                                         ></f:selectItems>
                                             <p:ajax event="change" process="acPmci"
