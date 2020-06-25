@@ -112,6 +112,7 @@ public class InstitutionController implements Serializable {
             return;
         }
         removingArea.setPmci(null);
+        getAreaFacade().edit(removingArea);
         fillGnAreasOfSelected();
         removingArea = null;
     }
