@@ -1,0 +1,50 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+    <body>
+
+        <ui:composition template="./../template.xhtml">
+
+            <ui:define name="content">
+                <h:form>
+                    <p:panel header="System Administration" >
+                        <p:tabView orientation="left" >
+                            <p:tab title="Dictionary" >
+                                <p:panelGrid columns="1" >
+                                    <p:commandButton ajax="false" action="/item/List" value="Data Dictionaty" ></p:commandButton>
+                                </p:panelGrid>
+                            </p:tab>
+                            <p:tab title="Metadata" >
+                                <p:panelGrid columns="1" >
+                                    <p:commandButton ajax="false" action="/designComponentFormSet/List" value="Fromset Management" ></p:commandButton>
+                                    <p:commandButton ajax="false" action="/systemAdmin/import_form_sets" value="Import Forms" ></p:commandButton>
+                                    <p:commandButton ajax="false" action="#{designComponentFormSetController.toManageInstitutionFormssets()}" value="Manage Forms" ></p:commandButton>
+                                </p:panelGrid>
+                            </p:tab> 
+                            <p:tab title="Import" >
+                                <p:panelGrid columns="1" >
+                                    <p:commandButton ajax="false" action="/item/import" value="Import Items" ></p:commandButton>
+                                    <p:commandButton ajax="false" action="/item/import" value="Import Institutions" ></p:commandButton>
+                                    <p:commandButton ajax="false" action="#{itemController.addInitialMetadata()}" value="Add Initial Metadata" ></p:commandButton>
+                                </p:panelGrid>
+                            </p:tab> 
+                            <p:tab title="Corrections" >
+                                <p:panelGrid columns="1" >
+                                    <p:commandButton ajax="false" action="#{designComponentFormController.toListSystemForms()}" value="Forms"   ></p:commandButton>
+                                    <p:commandButton ajax="false" action="#{designComponentFormItemController.addDataTypesToDictionaryItemsFromFormItems}" value="Transfer Data Type from FormItem to Item" ></p:commandButton>
+                                    <p:commandButton ajax="false" action="#{itemController.generateDisplayNames()}" value="Generate Display Names" ></p:commandButton>
+                                </p:panelGrid>
+                            </p:tab> 
+                        </p:tabView>
+                    </p:panel>
+                </h:form>
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

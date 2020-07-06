@@ -481,3 +481,9 @@ table.greyGridTable tfoot td {
     font-weight:400;
     font-size: 30px;
 }
+
+.noBorders tr, .noBorders td {
+    background: none !important;
+    border: none !important;
+}
+

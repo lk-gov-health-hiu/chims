@@ -26,27 +26,42 @@
 
                 <h:form>
 
-                    <p:panelGrid columns="1" style="margin: auto;width: 100%;"  rendered="#{webUserController.loggedUser.systemAdministrator}">
+                    <p:panel style="min-height: 80vh;" >
                         <f:facet name="header" >
                             <p:outputLabel value="Manage Users" ></p:outputLabel>
                         </f:facet>
+                        <h:panelGrid columns="2" styleClass="noBorders">
+                            <p:graphicImage library="image" name="user-mx.png" ></p:graphicImage>
 
-                        <p:commandButton  
-                            value="Add New User" styleClass="btn300"
-                            action="#{webUserController.toCreateNewUserBySysAdmin()}">
-                        </p:commandButton>
-                        <p:commandButton  
-                            value="View Users"  styleClass="btn300"
-                            action="/webUser/manage_users">
-                        </p:commandButton>
+                            <h:panelGrid  styleClass="noBorders"
+                                          columns="1" style="margin: auto;width: 100%;"  rendered="#{webUserController.loggedUser.systemAdministrator}">
 
 
-                        <p:commandButton  styleClass="btn300" ajax="false" action="/systemAdmin/assume_users" value="Assume Users"  rendered="#{webUserController.loggedUser.systemAdministrator}" ></p:commandButton>
+                                <p:commandButton   icon="fa fa-user-plus" 
+                                                   value="Add New User" styleClass="btn300"
+                                                   action="#{webUserController.toCreateNewUserBySysAdmin()}">
+                                </p:commandButton>
+                                <p:commandButton  icon="fa fa-users" 
+                                                  value="View Users"  styleClass="btn300"
+                                                  action="/webUser/manage_users">
+                                </p:commandButton>
 
-                        <p:commandButton  styleClass="btn300" ajax="false" action="/systemAdmin/assume_roles" value="Assume Roles"  rendered="#{webUserController.loggedUser.systemAdministrator}" ></p:commandButton>
+
+                                <p:commandButton icon="fa fa-user-secret" 
+                                                 styleClass="btn300" ajax="false" action="/systemAdmin/assume_users" value="Assume Users"  rendered="#{webUserController.loggedUser.systemAdministrator}" ></p:commandButton>
+
+                                <p:commandButton icon="fa fa-user-circle"  styleClass="btn300" ajax="false" action="/systemAdmin/assume_roles" value="Assume Roles"  rendered="#{webUserController.loggedUser.systemAdministrator}" ></p:commandButton>
+
+                                <p:commandButton   icon="fa fa-id-card"  
+                                                   styleClass="btn300" ajax="false" action="/demoAccount/List" value="Demo Accounts" ></p:commandButton>
 
 
-                    </p:panelGrid>
+                            </h:panelGrid>
+                        </h:panelGrid>
+
+                    </p:panel>
+
+
 
                 </h:form>
 
