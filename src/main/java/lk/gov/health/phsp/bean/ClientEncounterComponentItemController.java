@@ -133,7 +133,7 @@ public class ClientEncounterComponentItemController implements Serializable {
     }
 
     public void calculate(ClientEncounterComponentItem i) {
-        System.out.println("Calculating " + i.getName());
+//        System.out.println("Calculating " + i.getName());
         if (i == null) {
             return;
         }
@@ -158,18 +158,18 @@ public class ClientEncounterComponentItemController implements Serializable {
             i.setRealNumberValue(Double.valueOf(p.getAgeYears()));
             i.setIntegerNumberValue(p.getAgeYears());
             getFacade().edit(i);
-            System.out.println("Age is calculated. Quitting");
+//            System.out.println("Age is calculated. Quitting");
             return;
         } else {
         }
 
         List<Replaceable> replacingBlocks = findReplaceblesInCalculationString(i.getCalculationScript());
-        System.out.println("replacingBlocks Size = " + replacingBlocks.size());
+//        System.out.println("replacingBlocks Size = " + replacingBlocks.size());
 
         for (Replaceable r : replacingBlocks) {
-            System.out.println("PEF Value = " + r.getPef());
-            System.out.println("SM Value = " + r.getSm());
-            System.out.println("Default Value = " + r.getDefaultValue());
+//            System.out.println("PEF Value = " + r.getPef());
+//            System.out.println("SM Value = " + r.getSm());
+//            System.out.println("Default Value = " + r.getDefaultValue());
             if (r.getPef().equalsIgnoreCase("f")) {
                 if (r.getSm().equalsIgnoreCase("s")) {
                     r.setClientEncounterComponentItem(findFormsetValue(i, r.getVariableCode()));
@@ -192,11 +192,11 @@ public class ClientEncounterComponentItemController implements Serializable {
                     }
                 }
                 
-                System.out.println("c.getBooleanValue() = " + c.getBooleanValue());
-                System.out.println("c.getRealNumberValue() = " + c.getRealNumberValue());
-                System.out.println("c.getLongNumberValue() = " + c.getLongNumberValue());
-                System.out.println("c.getItemValue().getItemValue() = " + c.getItemValue());
-                System.out.println("c.getItem().getDataType() = " + c.getItem().getDataType());
+//                System.out.println("c.getBooleanValue() = " + c.getBooleanValue());
+//                System.out.println("c.getRealNumberValue() = " + c.getRealNumberValue());
+//                System.out.println("c.getLongNumberValue() = " + c.getLongNumberValue());
+//                System.out.println("c.getItemValue().getItemValue() = " + c.getItemValue());
+//                System.out.println("c.getItem().getDataType() = " + c.getItem().getDataType());
 
                 switch (c.getItem().getDataType()) {
                     case Short_Text:
@@ -225,22 +225,22 @@ public class ClientEncounterComponentItemController implements Serializable {
                         }
                         break;
                 }
-                System.out.println("Found Value is r.getSelectedValue() = " + r.getSelectedValue());
+//                System.out.println("Found Value is r.getSelectedValue() = " + r.getSelectedValue());
             } else {
                 r.setSelectedValue(r.getDefaultValue());
-                System.out.println("No Value Found - Default Value is r.getSelectedValue() = " + r.getSelectedValue());
+//                System.out.println("No Value Found - Default Value is r.getSelectedValue() = " + r.getSelectedValue());
             }
         }
 
         String javaStringToEvaluate = addTemplateToReport(i.getCalculationScript().trim(), replacingBlocks);
-        System.out.println("javaString To Evaluate = \n" + javaStringToEvaluate);
+//        System.out.println("javaString To Evaluate = \n" + javaStringToEvaluate);
 
         String result = evaluateScript(javaStringToEvaluate);
 
-        System.out.println("Assigning Found Calculation Results");
-        System.out.println("i.getId() = " + i.getId());
-        System.out.println("result = " + result);
-        System.out.println("i.getSelectionDataType() = " + i.getSelectionDataType());
+//        System.out.println("Assigning Found Calculation Results");
+//        System.out.println("i.getId() = " + i.getId());
+//        System.out.println("result = " + result);
+//        System.out.println("i.getSelectionDataType() = " + i.getSelectionDataType());
 
         if (null == i.getItem().getDataType()) {
             i.setShortTextValue(result);

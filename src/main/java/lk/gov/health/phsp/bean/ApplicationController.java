@@ -59,7 +59,6 @@ public class ApplicationController {
 
     // <editor-fold defaultstate="collapsed" desc="Functions">
     public String createNewPersonalHealthNumber(Institution pins) {
-        System.out.println("createNewPersonalHealthNumber");
         if (pins == null) {
             return null;
         }
@@ -68,12 +67,10 @@ public class ApplicationController {
             return null;
         }
         Long lastHinIssued = ins.getLastHin();
-         System.out.println("lastHinIssued = " + lastHinIssued);
         if (lastHinIssued == null) {
             lastHinIssued = 0l;
         }
         Long thisHin = lastHinIssued + 1;
-         System.out.println("thisHin = " + thisHin);
         String poi = ins.getPoiNumber();
         String num = String.format("%06d", thisHin);
         String checkDigit = calculateCheckDigit(poi + num);
