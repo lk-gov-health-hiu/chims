@@ -44,9 +44,12 @@
                             
                             
                             <p:outputLabel value="#{bundleClinical.EditAreaLabel_parentArea}" for="parentArea" />
-                            <p:selectOneMenu id="parentArea" value="#{areaController.selected.parentArea}" >
+                            <p:selectOneMenu id="parentArea"
+                                             filter="true"
+                                             filterMatchMode="contains"
+                                             value="#{areaController.selected.parentArea}" >
                                 <f:selectItem itemLabel="#{bundleClinical.SelectOneMessage}"/>
-                                <f:selectItems value="#{areaController.itemsAvailableSelectOne}"
+                                <f:selectItems value="#{areaController.dsAreas}"
                                                var="parentAreaItem"
                                                itemValue="#{parentAreaItem}"/>
                             </p:selectOneMenu>
