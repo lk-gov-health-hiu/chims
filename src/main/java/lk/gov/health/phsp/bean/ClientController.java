@@ -714,7 +714,7 @@ public class ClientController implements Serializable {
                                 int ageInYears = 0;
                                 int birthYear;
                                 int thisYear;
-                                
+
                                 try {
                                     tdob = commonController.dateFromString(cellString, dateFormat);
                                     Calendar bc = Calendar.getInstance();
@@ -1012,7 +1012,7 @@ public class ClientController implements Serializable {
             searchingId = "";
         }
 
-        selectedClients = listPatientsByIDs(searchingId.trim().toUpperCase());
+        selectedClients = listPatientsByIDsStepvice(searchingId.trim().toUpperCase());
 
         if (selectedClients == null || selectedClients.isEmpty()) {
             JsfUtil.addErrorMessage("No Results Found. Try different search criteria.");
@@ -1058,6 +1058,54 @@ public class ClientController implements Serializable {
         String j = "select c from Client c where c.retired=false and (upper(c.person.phone1)=:q or upper(c.person.phone2)=:q) order by c.phn";
         Map m = new HashMap();
         m.put("q", phn.trim().toUpperCase());
+        return getFacade().findByJpql(j, m);
+    }
+
+    public List<Client> listPatientsByIDsStepvice(String ids) {
+        if (ids == null || ids.trim().equals("")) {
+            return null;
+        }
+        List<Client> cs;
+        String j;
+        Map m;
+        m = new HashMap();
+        j = "select c from Client c "
+                + " where c.retired=false "
+                + " and upper(c.phn)=:q "
+                + " order by c.phn";
+        m.put("q", ids.trim().toUpperCase());
+
+        cs = getFacade().findByJpql(j, m);
+
+        if (cs != null && !cs.isEmpty()) {
+            return cs;
+        }
+
+        j = "select c from Client c "
+                + " where c.retired=false "
+                + " and ("
+                + " upper(c.person.phone1)=:q "
+                + " or "
+                + " upper(c.person.phone2)=:q "
+                + " or "
+                + " upper(c.person.nic)=:q "
+                + " ) "
+                + " order by c.phn";
+        cs = getFacade().findByJpql(j, m);
+        if (cs != null && !cs.isEmpty()) {
+            return cs;
+        }
+
+        j = "select c from Client c "
+                + " where c.retired=false "
+                + " and ("
+                + " c.person.localReferanceNo=:q "
+                + " or "
+                + " c.person.ssNumber=:q "
+                + " ) "
+                + " order by c.phn";
+
+        
         return getFacade().findByJpql(j, m);
     }
 
