@@ -10,8 +10,6 @@ import lk.gov.health.phsp.bean.util.JsfUtil;
 import lk.gov.health.phsp.bean.util.JsfUtil.PersistAction;
 import lk.gov.health.phsp.facade.ClientFacade;
 import java.io.Serializable;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -41,15 +39,11 @@ import lk.gov.health.phsp.entity.Encounter;
 import lk.gov.health.phsp.entity.Institution;
 import lk.gov.health.phsp.entity.Item;
 import lk.gov.health.phsp.entity.Person;
-import lk.gov.health.phsp.entity.Relationship;
 import lk.gov.health.phsp.enums.AreaType;
 import lk.gov.health.phsp.enums.EncounterType;
 import lk.gov.health.phsp.enums.InstitutionType;
-import lk.gov.health.phsp.enums.RelationshipType;
 import lk.gov.health.phsp.facade.EncounterFacade;
 import lk.gov.health.phsp.pojcs.YearMonthDay;
-import org.bouncycastle.jcajce.provider.digest.GOST3411;
-import org.joda.time.Days;
 import org.primefaces.component.tabview.TabView;
 import org.primefaces.event.TabChangeEvent;
 import org.primefaces.model.UploadedFile;
@@ -591,8 +585,8 @@ public class ClientController implements Serializable {
                         colNo++;
                     }
                     Area gnArea = null;
-                    System.out.println("gnAreaName = " + gnAreaName);
-                    System.out.println("gnAreaCode = " + gnAreaCode);
+//                    System.out.println("gnAreaName = " + gnAreaName);
+//                    System.out.println("gnAreaCode = " + gnAreaCode);
                     if (gnAreaName != null && gnAreaCode != null) {
                         gnArea = areaController.getGnAreaByNameAndCode(gnAreaName, gnAreaCode);
                     } else if (gnAreaName != null) {
@@ -601,7 +595,7 @@ public class ClientController implements Serializable {
                         gnArea = areaController.getGnAreaByCode(gnAreaCode);
                     }
                     if (gnArea != null) {
-                        System.out.println("gnArea = " + gnArea.getName());
+//                        System.out.println("gnArea = " + gnArea.getName());
                     }
 
                     colNo = 0;
@@ -729,9 +723,9 @@ public class ClientController implements Serializable {
                                     Calendar tc = Calendar.getInstance();
                                     thisYear = tc.get(Calendar.YEAR);
                                     ageInYears = thisYear - birthYear;
-                                    System.out.println("ageInYears = " + ageInYears);
+//                                    System.out.println("ageInYears = " + ageInYears);
                                 } catch (Exception e) {
-                                    System.out.println("e = " + e);
+//                                    System.out.println("e = " + e);
                                 }
                                 if (ageInYears < 0) {
                                     tdob = today;

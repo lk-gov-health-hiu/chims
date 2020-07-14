@@ -205,8 +205,8 @@ public class ReportController implements Serializable {
         m.put("fd", fromDate);
         m.put("td", toDate);
 
-        System.out.println("m = " + m);
-        System.out.println("j = " + j);
+//        System.out.println("m = " + m);
+//        System.out.println("j = " + j);
 
         List<Encounter> encs = encounterFacade.findByJpql(j, m);
 
@@ -322,7 +322,7 @@ public class ReportController implements Serializable {
                     myFirstWbook.close();
                     mergingMessage = "Closing File.";
                 } catch (IOException | WriteException e) {
-                    System.out.println("e2 = " + e.getMessage());
+//                    System.out.println("e2 = " + e.getMessage());
                     mergingMessage = "Error - " + e.getMessage();
                 }
             }

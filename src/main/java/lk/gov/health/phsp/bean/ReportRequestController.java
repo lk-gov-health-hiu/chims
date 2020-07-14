@@ -206,8 +206,8 @@ public class ReportRequestController implements Serializable {
         m.put("fd", fromDate);
         m.put("td", toDate);
 
-        System.out.println("m = " + m);
-        System.out.println("j = " + j);
+//        System.out.println("m = " + m);
+//        System.out.println("j = " + j);
 
         List<Encounter> encs = encounterFacade.findByJpql(j, m);
 

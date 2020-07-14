@@ -399,7 +399,6 @@ public class CommonController implements Serializable {
         }
         Long difInMiliSeconds = to.getTime() - from.getTime();
         difInMiliSeconds = Math.abs(difInMiliSeconds);
-        System.out.println("difInMiliSeconds = " + difInMiliSeconds);
         
         Long diffInSec = difInMiliSeconds / 1000;
         
