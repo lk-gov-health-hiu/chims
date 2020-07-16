@@ -25,7 +25,66 @@
                     <p:outputLabel value="#{queryComponentController.selectedForQuery.name}" ></p:outputLabel>
                 </f:facet>
 
-                <p:outputLabel value="#{queryComponentController.selectedForQuery.descreption}" ></p:outputLabel>
+
+                <h:panelGrid columns="2" >
+
+
+                    <p:outputLabel value="Name"></p:outputLabel>
+                    <p:outputLabel id="name" value="#{queryComponentController.selectedForQuery.name}">
+                    </p:outputLabel>
+
+                    <p:outputLabel value="Descreption">
+                    </p:outputLabel>
+                    <p:outputLabel id="des" value="#{queryComponentController.selectedForQuery.descreption}">
+                    </p:outputLabel>
+
+                    <p:outputLabel value="Year" rendered="#{queryComponentController.filterYear}"></p:outputLabel>
+                    <p:outputLabel value="#{queryComponentController.year}" 
+                                   rendered="#{queryComponentController.filterYear}"></p:outputLabel>
+
+                    <p:outputLabel value="Quarter"  rendered="#{queryComponentController.filterQuarter}"></p:outputLabel>
+                    <p:outputLabel value="#{queryComponentController.quarter}" 
+                                   rendered="#{queryComponentController.filterQuarter}">
+                    </p:outputLabel>
+
+                    <p:outputLabel value="From"  rendered="#{queryComponentController.filterFrom}"></p:outputLabel>
+                    <p:outputLabel value="#{queryComponentController.from}" 
+                                   rendered="#{queryComponentController.filterFrom}">
+                        <f:convertDateTime pattern="dd MMMM yyyy" ></f:convertDateTime>
+                    </p:outputLabel>
+
+                    <p:outputLabel value="To"  rendered="#{queryComponentController.filterTo}"></p:outputLabel>
+                    <p:outputLabel value="#{queryComponentController.to}" 
+                                rendered="#{queryComponentController.filterTo}">
+                        <f:convertDateTime pattern="dd MMMM yyyy" ></f:convertDateTime>
+                    </p:outputLabel>
+
+                    <p:outputLabel value="Province"  rendered="#{queryComponentController.filterProvices}"></p:outputLabel>
+                    <p:outputLabel id="province" value="#{queryComponentController.province.name}"
+                                    rendered="#{queryComponentController.filterProvices}">
+                    </p:outputLabel>
+
+                    <p:outputLabel value="District"  rendered="#{queryComponentController.filterDistricts}"></p:outputLabel>
+                    <p:outputLabel id="district" value="#{queryComponentController.district}"
+                                    rendered="#{queryComponentController.filterDistricts}">
+                    </p:outputLabel>
+
+                    <p:outputLabel value="MOH"  rendered="#{queryComponentController.filterMoh}"></p:outputLabel>
+                    <p:outputLabel id="moh" value="#{queryComponentController.moh}"
+                                    rendered="#{queryComponentController.filterMoh}">
+                    </p:outputLabel>
+
+
+                    <p:outputLabel value="PHM"  rendered="#{queryComponentController.filterPhm}"></p:outputLabel>
+                    <p:outputLabel id="phm" value="#{queryComponentController.phm}"
+                                    rendered="#{queryComponentController.filterPhm}">
+                    </p:outputLabel>
+
+                    <p:outputLabel value="GN"  rendered="#{queryComponentController.filterGn}"></p:outputLabel>
+                    <p:outputLabel id="gn" value="#{queryComponentController.gn}"
+                                    rendered="#{queryComponentController.filterGn}">
+                    </p:outputLabel>
+                </h:panelGrid>
 
                 <h:panelGroup rendered="#{queryComponentController.qrs.size() gt 1}" >
                     <div style="width: 100%; height: 100%;" >

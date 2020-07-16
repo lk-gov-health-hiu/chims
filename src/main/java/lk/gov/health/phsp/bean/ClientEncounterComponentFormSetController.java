@@ -103,6 +103,15 @@ public class ClientEncounterComponentFormSetController implements Serializable {
 // </editor-fold>    
 // <editor-fold defaultstate="collapsed" desc="Navigation Functions">
 
+    public String toClientProfileFromEncounter() {
+        if (selected == null) {
+            JsfUtil.addErrorMessage("Nothing selected.");
+            return "";
+        }
+        clientController.setSelected(selected.getEncounter().getClient());
+        return "/client/profile";
+    }
+
     public String toViewOrEditFormset() {
         if (selected == null) {
             JsfUtil.addErrorMessage("Nothing selected.");
@@ -565,9 +574,9 @@ public class ClientEncounterComponentFormSetController implements Serializable {
     public String fillRetiredEncountersFormSets() {
         return fillEncountersFormSetsForSysadmin(true);
     }
-    
+
     public String fillEncountersFormSetsForSysadmin() {
-         return fillEncountersFormSetsForSysadmin(false);
+        return fillEncountersFormSetsForSysadmin(false);
     }
 
     public String fillEncountersFormSetsForSysadmin(boolean retired) {
@@ -580,7 +589,7 @@ public class ClientEncounterComponentFormSetController implements Serializable {
         m.put("ret", retired);
         m.put("fd", getFrom());
         m.put("td", getTo());
-        fs = getFacade().findByJpql(j,m);
+        fs = getFacade().findByJpql(j, m);
         if (fs == null) {
             fs = new ArrayList<>();
         }
@@ -1734,7 +1743,7 @@ public class ClientEncounterComponentFormSetController implements Serializable {
     }
 
     public Date getFrom() {
-        if(from==null){
+        if (from == null) {
             from = commonController.startOfTheDay();
         }
         return from;
@@ -1745,7 +1754,7 @@ public class ClientEncounterComponentFormSetController implements Serializable {
     }
 
     public Date getTo() {
-        if(to==null){
+        if (to == null) {
             to = commonController.endOfTheDay();
         }
         return to;

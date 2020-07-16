@@ -62,13 +62,13 @@
                                         <div class="card card-primary card-outline">
                                             <div class="card-body box-profile">
                                                 <div class="text-center" >
-                                                    <p:graphicImage  style="width: 95%;" 
+<!--                                                    <p:graphicImage  style="width: 95%;" 
                                                                      id="photos" cache="false" 
                                                                      class="profile-user-img img-fluid img-circle"
                                                                      rendered="#{imageController.clientPhoto ne null}"    
                                                                      value="#{imageController.clientPhoto}"  >
-                                                    </p:graphicImage>
-                                                    <h:panelGroup rendered="#{imageController.clientPhoto eq null}" >
+                                                    </p:graphicImage>-->
+                                                    <h:panelGroup rendered="true" >
                                                         <p:graphicImage  rendered="#{clientController.selected.person.sex.name eq 'Male'}"
                                                                          library="image" name="male.jpg" 
                                                                          class="profile-user-img img-fluid img-circle"
@@ -335,11 +335,18 @@
                                                                     <table >
                                                                         <tr>
                                                                             <td>
-                                                                                <h:selectOneMenu value="#{clientController.selectedClinic}" >
+                                                                                <h:selectOneMenu value="#{clientController.selectedClinic}" rendered="#{webUserController.loggedUser.systemAdministrator ne true and webUserController.loggedUser.superUser ne true}" >
                                                                                     <f:selectItem itemLabel="Select the clinic" ></f:selectItem>
                                                                                     <f:selectItems value="#{institutionController.myClinics}" 
                                                                                                    var="shlc" itemValue="#{shlc}" itemLabel="#{shlc.name}"></f:selectItems>
                                                                                 </h:selectOneMenu>
+                                                                                
+                                                                                <p:autoComplete completeMethod="#{institutionController.completeInstitutions}" 
+                                                                                                rendered="#{webUserController.loggedUser.systemAdministrator eq true or webUserController.loggedUser.superUser eq true}"
+                                                                                                value="#{clientController.selectedClinic}"
+                                                                                                var="shlc" itemValue="#{shlc}" itemLabel="#{shlc.name}">
+                                                                                </p:autoComplete>
+                                                                                
                                                                             </td>
                                                                             <td>
                                                                                 <p:commandButton value="Enroll" ajax="false" 

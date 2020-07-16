@@ -137,6 +137,8 @@ public class ClientController implements Serializable {
         selectedClientsClinics = null;
         return "/client/profile";
     }
+    
+   
 
     public String toAddNewClient() {
         selected = new Client();
@@ -1062,10 +1064,15 @@ public class ClientController implements Serializable {
     }
 
     public List<Client> listPatientsByIDsStepvice(String ids) {
+        System.out.println("ids = " + ids);
         if (ids == null || ids.trim().equals("")) {
             return null;
         }
         List<Client> cs;
+        if(ids==null || ids.trim().equals("")){
+            cs = new ArrayList<>();
+            return cs;
+        }
         String j;
         Map m;
         m = new HashMap();
@@ -1074,10 +1081,12 @@ public class ClientController implements Serializable {
                 + " and upper(c.phn)=:q "
                 + " order by c.phn";
         m.put("q", ids.trim().toUpperCase());
-
+        System.out.println("m = " + m);
+        System.out.println("j = " + j);
         cs = getFacade().findByJpql(j, m);
-
+        
         if (cs != null && !cs.isEmpty()) {
+            System.out.println("cs.size() = " + cs.size());
             return cs;
         }
 
@@ -1092,7 +1101,10 @@ public class ClientController implements Serializable {
                 + " ) "
                 + " order by c.phn";
         cs = getFacade().findByJpql(j, m);
+        System.out.println("m = " + m);
+        System.out.println("j = " + j);
         if (cs != null && !cs.isEmpty()) {
+            System.out.println("cs.size() = " + cs.size());
             return cs;
         }
 
