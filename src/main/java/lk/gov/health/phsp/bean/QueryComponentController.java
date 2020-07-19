@@ -798,6 +798,7 @@ public class QueryComponentController implements Serializable {
 
         for (QueryResult tqr : qrs) {
 
+            System.out.println("selectedForQuery.getQueryType() = " + selectedForQuery.getQueryType());
             switch (selectedForQuery.getQueryType()) {
                 case Population:
                     Integer ty = tqr.gettYear();
@@ -1031,14 +1032,14 @@ public class QueryComponentController implements Serializable {
     }
 
     public Jpq createClientQuery(QueryComponent qc, Area ccArea, Date ccFrom, Date ccTo, Integer ccYear, Integer ccQuarter) {
-        //System.out.println("Create A Client Count Query");
+        System.out.println("Create A Client Count Query");
         Jpq jpql = new Jpq();
         jpql.setQc(qc);
         List<QueryComponent> criterias = criteria(qc);
         jpql.getM().put("f", false);
         if (criterias == null || criterias.isEmpty()) {
             // <editor-fold defaultstate="collapsed" desc="No Criteria">
-            //System.out.println("No Criteria");
+            System.out.println("No Criteria");
 
             jpql.setJwhere(" where c.retired=:f ");
             jpql.setJfrom("  from Client c ");
@@ -1105,7 +1106,7 @@ public class QueryComponentController implements Serializable {
             // </editor-fold>
         } else if (criterias.size() == 1) {
             // <editor-fold defaultstate="collapsed" desc="Single Criteria">
-            //System.out.println("Single Criteria");
+            System.out.println("Single Criteria");
 
             if (qc.getOutputType() == QueryOutputType.List) {
                 jpql.setJselect("select distinct(c)  ");
@@ -1146,7 +1147,7 @@ public class QueryComponentController implements Serializable {
                         eval = "<=";
                         break;
                 }
-                //System.out.println("c.getEvaluationType() = " + c.getEvaluationType());
+                System.out.println("c.getEvaluationType() = " + c.getEvaluationType());
                 switch (c.getEvaluationType()) {
                     case Equal:
                     case Grater_than_or_equal:
@@ -1265,8 +1266,8 @@ public class QueryComponentController implements Serializable {
 
             }
 
-            //System.out.println("j.getJpql() = " + jpql.getJpql());
-            //System.out.println("j.getM() = " + jpql.getM());
+            System.out.println("j.getJpql() = " + jpql.getJpql());
+            System.out.println("j.getM() = " + jpql.getM());
             if (qc.getOutputType() == QueryOutputType.List) {
                 jpql.setClientList(getClientFacade().findByJpql(jpql.getJpql(), jpql.getM()));
             } else {
@@ -1279,7 +1280,7 @@ public class QueryComponentController implements Serializable {
             // </editor-fold>
         } else {
             // <editor-fold defaultstate="collapsed" desc="Multiple Criteria">
-            //System.out.println("Multiple Criteria");
+            System.out.println("Multiple Criteria");
             String ss = "";
             if (qc.getOutputType() == QueryOutputType.List) {
                 ss = "select distinct (c) from Client c, ";
@@ -1360,8 +1361,8 @@ public class QueryComponentController implements Serializable {
 
             //TODO : More code needed for MOH, PHM ,etc
             jpql.setJgroupby("");
-            //System.out.println("j.getJpql() = " + jpql.getJpql());
-            //System.out.println("j.getM() = " + jpql.getM());
+            System.out.println("j.getJpql() = " + jpql.getJpql());
+            System.out.println("j.getM() = " + jpql.getM());
             if (qc.getOutputType() == QueryOutputType.List) {
                 jpql.setClientList(getClientFacade().findByJpql(jpql.getJpql(), jpql.getM()));
             } else {
