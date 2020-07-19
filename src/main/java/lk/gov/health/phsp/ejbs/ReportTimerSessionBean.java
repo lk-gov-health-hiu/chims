@@ -236,7 +236,7 @@ public class ReportTimerSessionBean {
                     String cellString = "";
                     switch (currentCell.getCellType()) {
                         case STRING:
-                            cellString = currentCell.getStringCellValue() + " Testing";
+                            cellString = currentCell.getStringCellValue();
                             break;
                         case BLANK:
                         case BOOLEAN:
