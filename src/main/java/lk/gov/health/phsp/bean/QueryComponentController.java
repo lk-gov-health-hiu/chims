@@ -59,7 +59,7 @@ import org.apache.commons.lang3.SerializationUtils;
 public class QueryComponentController implements Serializable {
 
     @EJB
-    private lk.gov.health.phsp.facade.QueryComponentFacade ejbFacade;
+    private QueryComponentFacade ejbFacade;
     @EJB
     private ClientEncounterComponentItemFacade itemFacade;
     @EJB
@@ -75,6 +75,8 @@ public class QueryComponentController implements Serializable {
     private RelationshipController relationshipController;
     @Inject
     private AreaController areaController;
+    @Inject
+    private ApplicationController applicationController;
 
     private List<QueryComponent> items = null;
     private List<QueryComponent> categories = null;
@@ -485,13 +487,17 @@ public class QueryComponentController implements Serializable {
     }
 
     public List<QueryComponent> completeQueries(String qry) {
-        String j = "select q from QueryComponent q "
-                + " where q.retired=false "
-                + " and (lower(q.name) like :qry or lower(q.code) like :qry) "
-                + " order by q.name";
-        Map m = new HashMap();
-        m.put("qry", "%" + qry.toLowerCase() + "%");
-        return getFacade().findByJpql(j, m);
+        List<QueryComponent> tls = applicationController.getQueryComponents();
+        List<QueryComponent> sls = new ArrayList<>();
+        qry = qry.trim().toLowerCase();
+        
+        
+        for(QueryComponent qc:tls){
+            if(qc.getName().toLowerCase().contains(qry) || qc.getName().toLowerCase().contains(qry)){
+                sls.add(qc);
+            }
+        }
+        return sls;
     }
 
     public List<QueryComponent> completeQueryCategories(String qry) {
@@ -2356,6 +2362,8 @@ public class QueryComponentController implements Serializable {
         this.searchText = searchText;
     }
 
+    
+    
     public QueryComponent findByCode(String code) {
         String j = "select q from QueryComponent q "
                 + " where q.retired <> :ret "
@@ -2372,6 +2380,10 @@ public class QueryComponentController implements Serializable {
 
     public void setSelectedToDuplicateQuery(QueryComponent selectedToDuplicateQuery) {
         this.selectedToDuplicateQuery = selectedToDuplicateQuery;
+    }
+
+    public ApplicationController getApplicationController() {
+        return applicationController;
     }
 
     @FacesConverter(forClass = QueryComponent.class)

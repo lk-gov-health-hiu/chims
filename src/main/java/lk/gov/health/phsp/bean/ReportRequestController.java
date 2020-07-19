@@ -146,6 +146,7 @@ public class ReportRequestController implements Serializable {
     private StreamedContent file;
     private String mergingMessage;
     private QueryComponent queryComponent;
+    
 // </editor-fold> 
 
 // <editor-fold defaultstate="collapsed" desc="Constructors">
@@ -208,7 +209,6 @@ public class ReportRequestController implements Serializable {
 
 //        System.out.println("m = " + m);
 //        System.out.println("j = " + j);
-
         List<Encounter> encs = encounterFacade.findByJpql(j, m);
 
         return encs;
@@ -355,6 +355,7 @@ public class ReportRequestController implements Serializable {
 
     public void toDownloadNcdReport(Institution ins, ReportTimePeriod rtp) {
 
+       
         if (queryComponent == null) {
             JsfUtil.addErrorMessage("Please select the report");
             return;
@@ -414,12 +415,14 @@ public class ReportRequestController implements Serializable {
         XSSFWorkbook workbook;
         XSSFSheet sheet;
 
+       
+
         try {
 
             FileInputStream excelFile = new FileInputStream(newFile);
             workbook = new XSSFWorkbook(excelFile);
             sheet = workbook.getSheetAt(0);
-            XSSFSheet sheet2 = workbook.createSheet("Test Sheet CHIMS");
+//            XSSFSheet sheet2 = workbook.createSheet("Test Sheet CHIMS");
 
             Iterator<Row> iterator = sheet.iterator();
 
@@ -462,6 +465,8 @@ public class ReportRequestController implements Serializable {
                 }
                 System.out.println();
 
+              
+
                 excelFile.close();
 
                 FileOutputStream out = new FileOutputStream(FILE_NAME);
@@ -475,10 +480,12 @@ public class ReportRequestController implements Serializable {
             }
         } catch (FileNotFoundException e) {
             System.out.println("e = " + e);
+           
         } catch (IOException e) {
+           
             System.out.println("e = " + e);
         }
-
+       
     }
 
     public Long findReplaceblesInCalculationString(String text, List<Encounter> ens) {
@@ -711,6 +718,7 @@ public class ReportRequestController implements Serializable {
     }
 
     public void toDownloadNcdReportLastMonthInstitution() {
+      
         ReportTimePeriod rtp = new ReportTimePeriod();
         rtp.setTimePeriodType(TimePeriodType.Monthly);
         rtp.setFrom(CommonController.startOfTheLastMonth());
@@ -725,15 +733,15 @@ public class ReportRequestController implements Serializable {
         rtp.setTimePeriodType(TimePeriodType.Dates);
         if (fromDate == null) {
             rtp.setFrom(CommonController.startOfTheLastMonth());
-        }else{
+        } else {
             rtp.setFrom(fromDate);
         }
-        if(toDate==null){
+        if (toDate == null) {
             rtp.setTo(CommonController.endOfTheLastMonth());
-        }else{
+        } else {
             rtp.setTo(toDate);
         }
-        
+
         rtp.setYear(CommonController.getYear(CommonController.endOfTheLastMonth()));
         rtp.setMonth(CommonController.getMonth(CommonController.endOfTheLastMonth()));
         toDownloadNcdReport(institution, rtp);
@@ -1055,5 +1063,7 @@ public class ReportRequestController implements Serializable {
     public void setClientEncounterComponentItemController(ClientEncounterComponentItemController clientEncounterComponentItemController) {
         this.clientEncounterComponentItemController = clientEncounterComponentItemController;
     }
+
+    
 
 }

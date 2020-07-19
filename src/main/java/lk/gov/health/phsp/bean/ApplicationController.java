@@ -24,14 +24,18 @@
 package lk.gov.health.phsp.bean;
 
 // <editor-fold defaultstate="collapsed" desc="Import">
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.ejb.EJB;
 import javax.inject.Named;
 import javax.enterprise.context.ApplicationScoped;
 import lk.gov.health.phsp.entity.Institution;
+import lk.gov.health.phsp.entity.QueryComponent;
 import lk.gov.health.phsp.enums.InstitutionType;
 import lk.gov.health.phsp.enums.WebUserRole;
 import lk.gov.health.phsp.facade.InstitutionFacade;
+import lk.gov.health.phsp.facade.QueryComponentFacade;
 // </editor-fold>
 
 /**
@@ -45,13 +49,15 @@ public class ApplicationController {
 // <editor-fold defaultstate="collapsed" desc="EJBs">
     @EJB
     private InstitutionFacade institutionFacade;
-    
+       @EJB
+    private QueryComponentFacade queryComponentFacade;
     
 // </editor-fold>    
 
 // <editor-fold defaultstate="collapsed" desc="Class Variables">
     private boolean demoSetup = false;
     private String versionNo = "1.1.4";
+    private List<QueryComponent> queryComponents;
 
 // </editor-fold>
     public ApplicationController() {
@@ -122,8 +128,25 @@ public class ApplicationController {
         return digit.substring(digit.length() - 1);
     }
 
+    
+    public List<QueryComponent> findQueryComponents() {
+        String j = "select q from QueryComponent q "
+                + " where q.retired=false "
+                + " order by q.name";
+        Map m = new HashMap();
+        return getQueryComponentFacade().findByJpql(j, m);
+    }    
+    
+    public void reloadQueryComponents(){
+        queryComponents = null;
+    }
+    
     // </editor-fold>
-    // <editor-fold defaultstate="collapsed" desc="Enums">
+    
+
+
+
+// <editor-fold defaultstate="collapsed" desc="Enums">
     public InstitutionType[] getInstitutionTypes() {
         return InstitutionType.values();
     }
@@ -134,7 +157,7 @@ public class ApplicationController {
 
     // <editor-fold>
     // <editor-fold defaultstate="collapsed" desc="Getters & Setters">
-    public InstitutionFacade getInstitutionFacade() {
+    private InstitutionFacade getInstitutionFacade() {
         return institutionFacade;
     }
     
@@ -158,4 +181,21 @@ public class ApplicationController {
         this.versionNo = versionNo;
     }
 
+    public List<QueryComponent> getQueryComponents() {
+        if(queryComponents==null){
+            queryComponents = findQueryComponents();
+        }
+        return queryComponents;
+    }
+
+    public QueryComponentFacade getQueryComponentFacade() {
+        return queryComponentFacade;
+    }
+
+    public void setQueryComponentFacade(QueryComponentFacade queryComponentFacade) {
+        this.queryComponentFacade = queryComponentFacade;
+    }
+
+    
+    
 }

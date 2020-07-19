@@ -76,6 +76,13 @@
 
                             </p:panelGrid>
 
+                            
+                            
+                        </p:panelGrid>
+                        <p:panelGrid columns="2" styleClass="alignTop" >
+                            <p:commandButton ajax="false" value="Refresh for User" 
+                                             action="#{applicationController.reloadQueryComponents()}"
+                                             ></p:commandButton>
                         </p:panelGrid>
                     </h:form>
                 </f:view>
