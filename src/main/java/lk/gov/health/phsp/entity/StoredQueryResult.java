@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package lk.gov.health.phsp.enums;
+package lk.gov.health.phsp.entity;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -31,13 +31,11 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
-import lk.gov.health.phsp.entity.Area;
-import lk.gov.health.phsp.entity.Institution;
-import lk.gov.health.phsp.entity.QueryComponent;
-import lk.gov.health.phsp.entity.Upload;
-import lk.gov.health.phsp.entity.WebUser;
+import javax.persistence.Transient;
+import lk.gov.health.phsp.enums.TimePeriodType;
 
 /**
  *
@@ -61,7 +59,7 @@ public class StoredQueryResult implements Serializable {
     private QueryComponent queryComponent;
     @Enumerated(EnumType.STRING)
     private TimePeriodType timePeriodType;
-    
+
     private Integer resultYear;
     private Integer resultQuarter;
     private Integer resultMonth;
@@ -77,11 +75,10 @@ public class StoredQueryResult implements Serializable {
     private boolean processStarted;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date processStartedAt;
-    
+
     private boolean processCompleted;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date processCompletedAt;
-
 
     private boolean processFailed;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
@@ -92,6 +89,8 @@ public class StoredQueryResult implements Serializable {
 
     private Long longValue;
     private Double doubleValue;
+    @Lob
+    private String errorMessage;
 
     @ManyToOne
     private WebUser creater;
@@ -105,6 +104,9 @@ public class StoredQueryResult implements Serializable {
     private Date retiredAt;
     private String retireComments;
 
+    @Transient
+    private String processStatus;
+
     public Long getId() {
         return id;
     }
@@ -112,9 +114,6 @@ public class StoredQueryResult implements Serializable {
     public void setId(Long id) {
         this.id = id;
     }
-    
-    
-    
 
     @Override
     public int hashCode() {
@@ -123,6 +122,8 @@ public class StoredQueryResult implements Serializable {
         return hash;
     }
 
+    
+    
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
@@ -355,6 +356,26 @@ public class StoredQueryResult implements Serializable {
 
     public void setResultTo(Date resultTo) {
         this.resultTo = resultTo;
+    }
+
+    public String getProcessStatus() {
+        processStatus = "Unknown";
+        if (processStarted == false) {
+            return "Awaiting in the queue for Processing";
+        } else if (processFailed) {
+            return "Processing failed";
+        } else if (processCompleted) {
+            return "Processing completed";
+        }
+        return processStatus;
+    }
+
+    public String getErrorMessage() {
+        return errorMessage;
+    }
+
+    public void setErrorMessage(String errorMessage) {
+        this.errorMessage = errorMessage;
     }
 
 }

@@ -39,6 +39,7 @@ import lk.gov.health.phsp.enums.QueryVariableEvaluationType;
 import lk.gov.health.phsp.enums.RelationshipType;
 import lk.gov.health.phsp.enums.RenderType;
 import lk.gov.health.phsp.enums.SelectionDataType;
+import lk.gov.health.phsp.enums.TimePeriodType;
 import org.jasypt.util.password.BasicPasswordEncryptor;
 import org.jasypt.util.text.BasicTextEncryptor;
 
@@ -191,6 +192,10 @@ public class CommonController implements Serializable {
         return rts;
     }
 
+    public TimePeriodType[] getTimePeriodTypes() {
+        return TimePeriodType.values();
+    }
+
     public RelationshipType[] getRelationshipTypes() {
         return RelationshipType.values();
     }
@@ -291,6 +296,20 @@ public class CommonController implements Serializable {
         c.set(Calendar.MILLISECOND, 1);
         return c.getTime();
     }
+    
+    public static Date startOfTheMonth(Integer year, Integer month) {
+        Calendar c = Calendar.getInstance();
+        c.set(Calendar.YEAR, year);
+        c.set(Calendar.MONTH, month);
+        return startOfTheMonth(c.getTime());
+    }
+    
+    public static Date endOfTheMonth(Integer year, Integer month) {
+        Calendar c = Calendar.getInstance();
+        c.set(Calendar.YEAR, year);
+        c.set(Calendar.MONTH, month);
+        return endOfTheMonth(c.getTime());
+    }
 
     public static Date startOfQuarter() {
         return startOfQuarter(new Date());
@@ -323,6 +342,50 @@ public class CommonController implements Serializable {
                 break;
         }
         return startOfTheMonth(c.getTime());
+    }
+
+    public static Date startOfQuarter(Integer year, Integer quarter) {
+        Calendar c = Calendar.getInstance();
+        c.set(Calendar.YEAR, year);
+        switch (quarter) {
+            case 1:
+                c.set(Calendar.MONTH, Calendar.JANUARY);
+                break;
+            case 2:
+                c.set(Calendar.MONTH, Calendar.APRIL);
+                break;
+            case 3:
+                c.set(Calendar.MONTH, Calendar.JULY);
+                break;
+            case 4:
+                c.set(Calendar.MONTH, Calendar.OCTOBER);
+                break;
+            default:
+                c.set(Calendar.MONTH, Calendar.JANUARY);
+        }
+        return startOfTheMonth(c.getTime());
+    }
+
+    public static Date endOfQuarter(Integer year, Integer quarter) {
+        Calendar c = Calendar.getInstance();
+        c.set(Calendar.YEAR, year);
+        switch (quarter) {
+            case 1:
+                c.set(Calendar.MONTH, Calendar.MARCH);
+                break;
+            case 2:
+                c.set(Calendar.MONTH, Calendar.JUNE);
+                break;
+            case 3:
+                c.set(Calendar.MONTH, Calendar.SEPTEMBER);
+                break;
+            case 4:
+                c.set(Calendar.MONTH, Calendar.DECEMBER);
+                break;
+            default:
+                c.set(Calendar.MONTH, Calendar.MARCH);
+        }
+        return endOfTheMonth(c.getTime());
     }
 
     public static Date endOfQuarter() {
@@ -358,6 +421,24 @@ public class CommonController implements Serializable {
         return endOfTheMonth(c.getTime());
     }
 
+    public static Date endOfYear() {
+        return endOfYear(new Date());
+    }
+
+    public static Date endOfYear(Date date) {
+        Calendar c = Calendar.getInstance();
+        c.setTime(date);
+        c.set(Calendar.MONTH, Calendar.DECEMBER);
+        return endOfTheMonth(c.getTime());
+    }
+
+    public static Date endOfYear(Integer year) {
+        Calendar c = Calendar.getInstance();
+        c.set(Calendar.YEAR, year);
+        c.set(Calendar.MONTH, Calendar.DECEMBER);
+        return endOfTheMonth(c.getTime());
+    }
+
     public static Date endOfTheMonth() {
         return endOfTheMonth(new Date());
     }
@@ -383,6 +464,17 @@ public class CommonController implements Serializable {
         return c.getTime();
     }
 
+    public static Date startOfTheYear(Integer year) {
+        Calendar c = Calendar.getInstance();
+        c.set(Calendar.YEAR, year);
+        c.set(Calendar.MONTH, Calendar.JANUARY);
+        c.set(Calendar.DAY_OF_MONTH, 1);
+        c.set(Calendar.HOUR, 0);
+        c.set(Calendar.MINUTE, 0);
+        c.set(Calendar.MILLISECOND, 1);
+        return c.getTime();
+    }
+
     public static Double getDoubleValue(String result) {
         Double d = null;
         try {
@@ -399,20 +491,19 @@ public class CommonController implements Serializable {
         }
         Long difInMiliSeconds = to.getTime() - from.getTime();
         difInMiliSeconds = Math.abs(difInMiliSeconds);
-        
+
         Long diffInSec = difInMiliSeconds / 1000;
-        
+
         Long diffInMin = diffInSec / 60;
-        
+
         Long diffInHrs = diffInMin / 60;
-        
+
         Long diffInDLong = diffInHrs / 24;
-        
+
         Long diffInYrs = diffInDLong / 365;
-        
-        return diffInYrs ;
-        
-        
+
+        return diffInYrs;
+
     }
 
     public static Long getLongValue(String result) {

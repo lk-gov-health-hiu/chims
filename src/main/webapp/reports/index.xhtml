@@ -3,26 +3,45 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:p="http://primefaces.org/ui"
-      xmlns:f="http://xmlns.jcp.org/jsf/core"
-      xmlns:reports="http://xmlns.jcp.org/jsf/composite/reports">
+      xmlns:p="http://primefaces.org/ui">
     <head>
         <ui:define name="head">
-                Reports
-            </ui:define>
+            Reports
+        </ui:define>
     </head>
     <body>
 
         <ui:composition template="/template.xhtml">
 
-            
+
 
             <ui:define name="content">
-                
-                <h:panelGroup rendered="#{true or webUserController.loggedUser.institutionUser or webUserController.loggedUser.institutionSuperUser or webUserController.loggedUser.institutionAdministrator }" >
-                    <reports:out/>
-                </h:panelGroup>
-                
+
+                <h:form>
+                    <h:panelGrid columns="1" >
+                        
+                        <p:commandButton value="Institution Excel Reports"   style="width:30em;margin:auto;"
+                                         action="#{reportController.toViewInstitutionExcelReports()}"
+                                         ajax="false"></p:commandButton>
+                        
+                         <p:commandButton value="My Excel Reports"   style="width:30em;margin:auto;"
+                                          action="#{reportController.toViewMyExcelReports()}"
+                                         ajax="false"></p:commandButton>
+
+                        <p:commandButton value="Client Registrations"   style="width:30em;margin:auto;"
+                                         action="#{reportController.toViewClientRegistrations()}"
+                                         ajax="false"></p:commandButton>
+
+                        <p:commandButton value="Clinic Enrollments"   style="width:30em;margin:auto;"
+                                         action="#{reportController.toViewClinicEnrollments()}"
+                                         ajax="false"></p:commandButton>
+
+                        <p:commandButton value="Clinic Visits"   style="width:30em;margin:auto;"
+                                         action="#{reportController.toViewClinicEnrollments()}"
+                                         ajax="false"></p:commandButton>
+
+                    </h:panelGrid>
+                </h:form>
 
 
             </ui:define>

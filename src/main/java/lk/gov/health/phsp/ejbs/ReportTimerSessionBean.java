@@ -23,10 +23,11 @@
  */
 package lk.gov.health.phsp.ejbs;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -40,7 +41,6 @@ import java.util.regex.Pattern;
 import javax.ejb.EJB;
 import javax.ejb.Schedule;
 import javax.ejb.Stateless;
-import lk.gov.health.phsp.bean.CommonController;
 import lk.gov.health.phsp.entity.Client;
 import lk.gov.health.phsp.entity.ClientEncounterComponentItem;
 import lk.gov.health.phsp.entity.Encounter;
@@ -52,22 +52,20 @@ import lk.gov.health.phsp.enums.EncounterType;
 import lk.gov.health.phsp.enums.QueryCriteriaMatchType;
 import lk.gov.health.phsp.enums.QueryLevel;
 import lk.gov.health.phsp.enums.QueryType;
-import lk.gov.health.phsp.enums.StoredQueryResult;
-import lk.gov.health.phsp.enums.TimePeriodType;
+import lk.gov.health.phsp.entity.StoredQueryResult;
 import lk.gov.health.phsp.facade.ClientEncounterComponentItemFacade;
 import lk.gov.health.phsp.facade.EncounterFacade;
 import lk.gov.health.phsp.facade.QueryComponentFacade;
-import lk.gov.health.phsp.facade.StoreQueryResultFacade;
+import lk.gov.health.phsp.facade.StoredQueryResultFacade;
 import lk.gov.health.phsp.facade.UploadFacade;
-import lk.gov.health.phsp.facade.util.JsfUtil;
 import lk.gov.health.phsp.pojcs.Replaceable;
 import lk.gov.health.phsp.pojcs.ReportTimePeriod;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.primefaces.model.DefaultStreamedContent;
 
 /**
  *
@@ -79,7 +77,7 @@ public class ReportTimerSessionBean {
     private boolean processingReport = false;
 
     @EJB
-    private StoreQueryResultFacade storeQueryResultFacade;
+    private StoredQueryResultFacade storeQueryResultFacade;
     @EJB
     private UploadFacade uploadFacade;
     @EJB
@@ -89,21 +87,21 @@ public class ReportTimerSessionBean {
     @EJB
     private ClientEncounterComponentItemFacade clientEncounterComponentItemFacade;
 
-    @Schedule(dayOfWeek = "Mon-Fri",
-            month = "*",
+    @Schedule(
             hour = "*",
-            dayOfMonth = "*",
-            year = "*",
             minute = "*",
-            second = "0",
+            second = "10",
             persistent = false)
     public void runEveryMinute() {
+        System.out.println("runEveryMinute = " + new Date());
+        System.out.println("processingReport = " + processingReport);
         if (!processingReport) {
-
+            runReports();
         }
     }
 
     public void runReports() {
+        System.out.println("runReports");
         processingReport = true;
         String j;
         Map m = new HashMap();
@@ -114,6 +112,7 @@ public class ReportTimerSessionBean {
                 + " and q.processStarted=false "
                 + " order by q.id";
         List<StoredQueryResult> qs = getStoreQueryResultFacade().findByJpql(j);
+        System.out.println("qs = " + qs);
         if (qs == null) {
             processingReport = false;
             return;
@@ -145,6 +144,7 @@ public class ReportTimerSessionBean {
     }
 
     private boolean processReport(StoredQueryResult sqr) {
+        System.out.println("sqr = " + sqr);
         boolean success = false;
 
         QueryComponent queryComponent = sqr.getQueryComponent();
@@ -159,12 +159,14 @@ public class ReportTimerSessionBean {
         rtp.setDateOfMonth(sqr.getResultDateOfMonth());
 
         if (queryComponent == null) {
-            JsfUtil.addErrorMessage("Please select the report");
+            sqr.setErrorMessage("No report available.");
+            getStoreQueryResultFacade().edit(sqr);
             return success;
         }
 
         if (queryComponent.getQueryType() == null) {
-            JsfUtil.addErrorMessage("No type for the Query.");
+            sqr.setErrorMessage("No query type specified.");
+            getStoreQueryResultFacade().edit(sqr);
             return success;
         }
 
@@ -175,7 +177,8 @@ public class ReportTimerSessionBean {
 
         Upload upload = getUploadFacade().findFirstByJpql(j, m);
         if (upload == null) {
-            JsfUtil.addErrorMessage("No file is available for seelcted summery");
+            sqr.setErrorMessage("No excel template uploaded.");
+            getStoreQueryResultFacade().edit(sqr);
             return success;
         }
 
@@ -187,22 +190,23 @@ public class ReportTimerSessionBean {
                 encs = findEncounters(rtp.getFrom(), rtp.getTo(), ins);
                 break;
             case Client_Count:
-                JsfUtil.addErrorMessage("Under Development");
-                System.out.println("clnts = " + clnts);
+                sqr.setErrorMessage("Client Queries not yet supported.");
+                getStoreQueryResultFacade().edit(sqr);
                 return success;
             default:
-                JsfUtil.addErrorMessage("Under Development");
+                sqr.setErrorMessage("This type of query not yet supported.");
+                getStoreQueryResultFacade().edit(sqr);
                 return success;
         }
 
         if (encs == null) {
-            JsfUtil.addErrorMessage("No results");
+            sqr.setErrorMessage("No Data.");
+            getStoreQueryResultFacade().edit(sqr);
             return success;
         } else if (encs.size() < 1) {
-
-            JsfUtil.addErrorMessage("No results");
+            sqr.setErrorMessage("No Data.");
+            getStoreQueryResultFacade().edit(sqr);
             return success;
-
         }
 
         String FILE_NAME = upload.getFileName() + "_" + (new Date()) + ".xlsx";
@@ -212,7 +216,8 @@ public class ReportTimerSessionBean {
         try {
             FileUtils.writeByteArrayToFile(newFile, upload.getBaImage());
         } catch (IOException ex) {
-            System.out.println("ex = " + ex);
+            sqr.setErrorMessage("IO Exception. " + ex.getMessage());
+            getStoreQueryResultFacade().edit(sqr);
         }
 
         XSSFWorkbook workbook;
@@ -223,23 +228,14 @@ public class ReportTimerSessionBean {
             FileInputStream excelFile = new FileInputStream(newFile);
             workbook = new XSSFWorkbook(excelFile);
             sheet = workbook.getSheetAt(0);
-//            XSSFSheet sheet2 = workbook.createSheet("Test Sheet CHIMS");
-
             Iterator<Row> iterator = sheet.iterator();
 
-            System.out.println("sheet.getSheetName() = " + sheet.getSheetName());
-
             while (iterator.hasNext()) {
-
                 Row currentRow = iterator.next();
                 Iterator<Cell> cellIterator = currentRow.iterator();
-
                 while (cellIterator.hasNext()) {
-
                     Cell currentCell = cellIterator.next();
-
                     String cellString = "";
-
                     switch (currentCell.getCellType()) {
                         case STRING:
                             cellString = currentCell.getStringCellValue();
@@ -264,20 +260,45 @@ public class ReportTimerSessionBean {
                     }
 
                 }
-                System.out.println();
 
+                InputStream is;
+
+                try {
+                    ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                    workbook.write(bos);
+                    byte[] barray = bos.toByteArray();
+                    is = new ByteArrayInputStream(barray);
+                } catch (IOException e) {
+                    sqr.setErrorMessage("IO Exception. " + e.getMessage());
+                    getStoreQueryResultFacade().edit(sqr);
+                    return success;
+                }
+
+                System.out.println("1 = " + 1);
                 excelFile.close();
+                System.out.println("2 = " + 2);
 
-                FileOutputStream out = new FileOutputStream(FILE_NAME);
-                workbook.write(out);
-                out.close();
+                Upload u = new Upload();
+                u.setFileName(newFile.getName());
+                u.setCreatedAt(new Date());
+                u.setBaImage(IOUtils.toByteArray(is));
+
+                getUploadFacade().create(u);
+
+                System.out.println("5 = " + 5);
+
+                sqr.setUpload(upload);
+                getStoreQueryResultFacade().edit(sqr);
+                System.out.println("6 = " + 6);
 
             }
         } catch (FileNotFoundException e) {
-            System.out.println("e = " + e);
+            sqr.setErrorMessage("IO Exception. " + e.getMessage());
+            getStoreQueryResultFacade().edit(sqr);
             return success;
         } catch (IOException e) {
-            System.out.println("e = " + e);
+            sqr.setErrorMessage("IO Exception. " + e.getMessage());
+            getStoreQueryResultFacade().edit(sqr);
             return success;
         }
 
@@ -363,7 +384,6 @@ public class ReportTimerSessionBean {
         m.put("fc", true);
         m.put("fd", fromDate);
         m.put("td", toDate);
-
 
         List<Encounter> encs = encounterFacade.findByJpql(j, m);
 
@@ -581,7 +601,7 @@ public class ReportTimerSessionBean {
         return c;
     }
 
-    public StoreQueryResultFacade getStoreQueryResultFacade() {
+    public StoredQueryResultFacade getStoreQueryResultFacade() {
         return storeQueryResultFacade;
     }
 

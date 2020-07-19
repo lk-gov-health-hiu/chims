@@ -26,14 +26,14 @@ package lk.gov.health.phsp.facade;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import lk.gov.health.phsp.enums.StoredQueryResult;
+import lk.gov.health.phsp.entity.StoredQueryResult;
 
 /**
  *
  * @author Dr M H B Ariyaratne<buddhika.ari@gmail.com>
  */
 @Stateless
-public class StoreQueryResultFacade extends AbstractFacade<StoredQueryResult> {
+public class StoredQueryResultFacade extends AbstractFacade<StoredQueryResult> {
 
     @PersistenceContext(unitName = "hmisPU")
     private EntityManager em;
@@ -43,7 +43,7 @@ public class StoreQueryResultFacade extends AbstractFacade<StoredQueryResult> {
         return em;
     }
 
-    public StoreQueryResultFacade() {
+    public StoredQueryResultFacade() {
         super(StoredQueryResult.class);
     }
     
