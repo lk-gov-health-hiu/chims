@@ -28,6 +28,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -66,6 +67,7 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.primefaces.model.DefaultStreamedContent;
 
 /**
  *
@@ -101,7 +103,6 @@ public class ReportTimerSessionBean {
     }
 
     public void runReports() {
-        System.out.println("runReports");
         processingReport = true;
         String j;
         Map m = new HashMap();
@@ -111,35 +112,32 @@ public class ReportTimerSessionBean {
                 + " and q.processCompleted=false "
                 + " and q.processStarted=false "
                 + " order by q.id";
-        List<StoredQueryResult> qs = getStoreQueryResultFacade().findByJpql(j);
+        StoredQueryResult qs = getStoreQueryResultFacade().findFirstByJpql(j);
         System.out.println("qs = " + qs);
         if (qs == null) {
             processingReport = false;
             return;
         }
-        if (qs.isEmpty()) {
-            processingReport = false;
-            return;
-        }
 
-        for (StoredQueryResult q : qs) {
-            q.setProcessStarted(true);
-            q.setProcessStartedAt(new Date());
-            q.setProcessFailed(false);
-            q.setProcessCompleted(false);
+        qs.setProcessStarted(true);
+        qs.setProcessStartedAt(new Date());
+        qs.setProcessFailed(false);
+        qs.setProcessCompleted(false);
+        getStoreQueryResultFacade().edit(qs);
+        Long id = qs.getId();
+
+        StoredQueryResult q = getStoreQueryResultFacade().find(id);
+
+        if (processReport(q)) {
+            q.setProcessCompleted(true);
+            q.setProcessCompletedAt(new Date());
             getStoreQueryResultFacade().edit(q);
-
-            if (processReport(q)) {
-                q.setProcessCompleted(true);
-                q.setProcessCompletedAt(new Date());
-                getStoreQueryResultFacade().edit(q);
-            } else {
-                q.setProcessFailed(true);
-                q.setProcessFailedAt(new Date());
-                getStoreQueryResultFacade().edit(q);
-            }
-
+        } else {
+            q.setProcessFailed(true);
+            q.setProcessFailedAt(new Date());
+            getStoreQueryResultFacade().edit(q);
         }
+
         processingReport = false;
     }
 
@@ -238,7 +236,7 @@ public class ReportTimerSessionBean {
                     String cellString = "";
                     switch (currentCell.getCellType()) {
                         case STRING:
-                            cellString = currentCell.getStringCellValue();
+                            cellString = currentCell.getStringCellValue() + " Testing";
                             break;
                         case BLANK:
                         case BOOLEAN:
@@ -261,33 +259,30 @@ public class ReportTimerSessionBean {
 
                 }
 
-                InputStream is;
 
-                try {
-                    ByteArrayOutputStream bos = new ByteArrayOutputStream();
-                    workbook.write(bos);
-                    byte[] barray = bos.toByteArray();
-                    is = new ByteArrayInputStream(barray);
-                } catch (IOException e) {
-                    sqr.setErrorMessage("IO Exception. " + e.getMessage());
-                    getStoreQueryResultFacade().edit(sqr);
-                    return success;
-                }
 
-                System.out.println("1 = " + 1);
                 excelFile.close();
-                System.out.println("2 = " + 2);
+
+                FileOutputStream out = new FileOutputStream(FILE_NAME);
+                workbook.write(out);
+                out.close();
+
+                System.out.println("FILE_NAME = " + FILE_NAME);
+                
+                InputStream stream;
+                stream = new FileInputStream(FILE_NAME);
 
                 Upload u = new Upload();
-                u.setFileName(newFile.getName());
+                u.setFileName(FILE_NAME);
+                u.setFileType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
                 u.setCreatedAt(new Date());
-                u.setBaImage(IOUtils.toByteArray(is));
+                u.setBaImage(IOUtils.toByteArray(stream));
 
                 getUploadFacade().create(u);
 
                 System.out.println("5 = " + 5);
 
-                sqr.setUpload(upload);
+                sqr.setUpload(u);
                 getStoreQueryResultFacade().edit(sqr);
                 System.out.println("6 = " + 6);
 

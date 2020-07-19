@@ -56,6 +56,21 @@
                                                >
                                 </p:outputLabel>
                             </p:column>
+                            <p:column headerText="Actions" >
+                                <p:commandButton value="Download" 
+                                                 ajax="false" 
+                                                 onclick="PrimeFaces.monitorDownload(start, stop);" 
+                                                 icon="ui-icon-arrowthick-1-s">
+                                    <f:setPropertyActionListener value="#{r}" 
+                                                                 target="#{reportController.downloadingResult}" 
+                                                                 ></f:setPropertyActionListener>
+                                    <p:fileDownload value="#{reportController.downloadingFile}" />
+                                </p:commandButton>
+                                <p:commandButton ajax="false" action="#{reportController.removeReport()}"
+                                                 value="Remove">
+                                    <f:setPropertyActionListener value="#{r}" target="#{reportController.removingResult}" ></f:setPropertyActionListener>
+                                </p:commandButton>
+                            </p:column>
                         </p:dataTable>
 
 

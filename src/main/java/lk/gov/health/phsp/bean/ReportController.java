@@ -24,6 +24,7 @@
 package lk.gov.health.phsp.bean;
 
 // <editor-fold defaultstate="collapsed" desc="Imports">
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import javax.inject.Named;
@@ -160,10 +161,14 @@ public class ReportController implements Serializable {
     }
 
 // </editor-fold> 
-    
-    
     private List<StoredQueryResult> myResults;
     private List<StoredQueryResult> reportResults;
+
+    private StoredQueryResult removingResult;
+    private StoredQueryResult downloadingResult;
+
+    private Upload currentUpload;
+    private StreamedContent downloadingFile;
 
     private ReportTimePeriod reportTimePeriod;
     private TimePeriodType timePeriodType;
@@ -172,6 +177,26 @@ public class ReportController implements Serializable {
     private Integer month;
     private Integer dateOfMonth;
     private Quarter quarterEnum;
+
+    
+
+    public StreamedContent getDownloadingFile() {
+        if(getDownloadingResult()==null){
+            JsfUtil.addErrorMessage("No Download file");
+            return null;
+        }
+        if(getDownloadingResult().getUpload()==null){
+            JsfUtil.addErrorMessage("No Excel file");
+            return null;
+        }
+        InputStream stream = new ByteArrayInputStream(downloadingResult.getUpload().getBaImage());
+        if(downloadingResult.getUpload().getFileType()==null || downloadingResult.getUpload().getFileType().trim().equals("")){
+            downloadingResult.getUpload().setFileType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+            getStoredQueryResultFacade().edit(downloadingResult);
+        }
+        downloadingFile = new DefaultStreamedContent(stream, downloadingResult.getUpload().getFileType(), downloadingResult.getUpload().getFileName());
+        return downloadingFile;
+    }
     
     public void listMyReports() {
         String j;
@@ -235,6 +260,25 @@ public class ReportController implements Serializable {
 
     }
 
+    public void removeReport() {
+        if (removingResult == null) {
+            JsfUtil.addErrorMessage("Nothing to remove");
+            return;
+        }
+        if (removingResult.isProcessCompleted()
+                && !removingResult.getCreater().equals(webUserController.getLoggedUser())) {
+            JsfUtil.addErrorMessage("You can not remove others successful reports.");
+            return;
+        }
+        removingResult.setRetired(true);
+        removingResult.setRetirer(webUserController.getLoggedUser());
+        removingResult.setRetiredAt(new Date());
+        getStoredQueryResultFacade().edit(removingResult);
+        JsfUtil.addSuccessMessage("Removed");
+        listExistingReports();
+        listMyReports();
+    }
+
     public void createNewReport() {
         if (institution == null) {
             JsfUtil.addErrorMessage("Please select an institutions");
@@ -284,12 +328,11 @@ public class ReportController implements Serializable {
         setFromDate(sqr.getResultFrom());
         setToDate(sqr.getResultTo());
         JsfUtil.addSuccessMessage("Added to the Queue to Process");
-        
+
         listExistingReports();
 
     }
 
-    
     public TimePeriodType getTimePeriodType() {
         if (timePeriodType == null) {
             timePeriodType = TimePeriodType.Monthly;
@@ -395,25 +438,16 @@ public class ReportController implements Serializable {
     public void setReportTimePeriod(ReportTimePeriod reportTimePeriod) {
         this.reportTimePeriod = reportTimePeriod;
     }
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+
 // <editor-fold defaultstate="collapsed" desc="Navigation">
     public String toViewReports() {
         return "/reports/index";
     }
-    
+
     public String toViewInstitutionExcelReports() {
         return "/reports/excel/institution_excel_reports";
     }
-    
+
     public String toViewMyExcelReports() {
         listMyReports();
         return "/reports/excel/my_excel_reports";
@@ -466,7 +500,6 @@ public class ReportController implements Serializable {
 
 //        System.out.println("m = " + m);
 //        System.out.println("j = " + j);
-
         List<Encounter> encs = encounterFacade.findByJpql(j, m);
 
         return encs;
@@ -1000,10 +1033,10 @@ public class ReportController implements Serializable {
         toDownloadNcdReport(institution, rtp);
     }
 
-    public String toExcelReports(){
+    public String toExcelReports() {
         return "/reports/excel/index";
     }
-    
+
     public String toViewClientRegistrations() {
         encounters = new ArrayList<>();
         String forSys = "/reports/client_registrations/for_system";
@@ -1075,8 +1108,7 @@ public class ReportController implements Serializable {
         }
         return action;
     }
-    
-    
+
     public String toViewClinicVisits() {
         encounters = new ArrayList<>();
         String forSys = "/reports/clinic_visits/for_system";
@@ -1112,7 +1144,6 @@ public class ReportController implements Serializable {
         }
         return action;
     }
-    
 
 // </editor-fold>   
 // <editor-fold defaultstate="collapsed" desc="Functions">
@@ -1154,7 +1185,7 @@ public class ReportController implements Serializable {
         }
         encounters = encounterController.getItems(j, m);
     }
-    
+
     public void fillClinicVisitsForSysAdmin() {
         String j;
         Map m = new HashMap();
@@ -1174,8 +1205,7 @@ public class ReportController implements Serializable {
         }
         encounters = encounterController.getItems(j, m);
     }
-    
-    
+
     public void fillClinicEnrollmentsForInstitution() {
         String j;
         Map m = new HashMap();
@@ -1192,12 +1222,12 @@ public class ReportController implements Serializable {
             List<Institution> ins = institutionController.findChildrenInstitutions(institution);
             ins.add(institution);
             m.put("ins", ins);
-        }else{
+        } else {
             m.put("ins", webUserController.getLoggableInstitutions());
         }
         encounters = encounterController.getItems(j, m);
     }
-    
+
     public void fillClinicVisitsForInstitution() {
         String j;
         Map m = new HashMap();
@@ -1214,7 +1244,7 @@ public class ReportController implements Serializable {
             List<Institution> ins = institutionController.findChildrenInstitutions(institution);
             ins.add(institution);
             m.put("ins", ins);
-        }else{
+        } else {
             m.put("ins", webUserController.getLoggableInstitutions());
         }
         encounters = encounterController.getItems(j, m);
@@ -1413,6 +1443,28 @@ public class ReportController implements Serializable {
         this.reportResults = reportResults;
     }
 
-    
-    
+    public StoredQueryResult getRemovingResult() {
+        return removingResult;
+    }
+
+    public void setRemovingResult(StoredQueryResult removingResult) {
+        this.removingResult = removingResult;
+    }
+
+    public StoredQueryResult getDownloadingResult() {
+        return downloadingResult;
+    }
+
+    public void setDownloadingResult(StoredQueryResult downloadingResult) {
+        this.downloadingResult = downloadingResult;
+    }
+
+    public Upload getCurrentUpload() {
+        return currentUpload;
+    }
+
+    public void setCurrentUpload(Upload currentUpload) {
+        this.currentUpload = currentUpload;
+    }
+
 }
