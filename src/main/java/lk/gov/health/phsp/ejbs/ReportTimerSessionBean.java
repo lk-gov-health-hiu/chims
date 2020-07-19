@@ -95,7 +95,7 @@ public class ReportTimerSessionBean {
             second = "10",
             persistent = false)
     public void runEveryMinute() {
-//        System.out.println("runEveryMinute = " + new Date());
+        queryComponents = null;
         try {
             if (!processingReport) {
                 runReports();
@@ -117,7 +117,7 @@ public class ReportTimerSessionBean {
                     + " and q.processStarted=false "
                     + " order by q.id";
             StoredQueryResult qs = getStoreQueryResultFacade().findFirstByJpql(j);
-            System.out.println("qs = " + qs);
+////            System.out.println("qs = " + qs);
             if (qs == null) {
                 processingReport = false;
                 return;
@@ -146,13 +146,13 @@ public class ReportTimerSessionBean {
 
             processingReport = false;
         } catch (Exception e) {
-            System.out.println("runReports Error = " + e);
+//            System.out.println("runReports Error = " + e);
             processingReport = false;
         }
     }
 
     private boolean processReport(StoredQueryResult sqr) {
-//        System.out.println("sqr = " + sqr);
+////        System.out.println("sqr = " + sqr);
         boolean success = false;
         try {
 
@@ -252,7 +252,7 @@ public class ReportTimerSessionBean {
                         CellType ct = currentCell.getCellType();
 
                         if (ct == null) {
-                            System.out.println("ct = " + ct);
+////                            System.out.println("ct = " + ct);
                             continue;
                         }
 
@@ -275,7 +275,7 @@ public class ReportTimerSessionBean {
                             if (temLong != null) {
                                 currentCell.setCellValue(temLong);
                             } else {
-                                System.out.println("temLong is null.");
+////                                System.out.println("temLong is null.");
                             }
                         }
 
@@ -289,8 +289,7 @@ public class ReportTimerSessionBean {
                 workbook.write(out);
                 out.close();
 
-                System.out.println("FILE_NAME = " + FILE_NAME);
-
+////                System.out.println("FILE_NAME = " + FILE_NAME);
                 InputStream stream;
                 stream = new FileInputStream(FILE_NAME);
 
@@ -302,11 +301,10 @@ public class ReportTimerSessionBean {
 
                 getUploadFacade().create(u);
 
-                System.out.println("5 = " + 5);
-
+//                System.out.println("5 = " + 5);
                 sqr.setUpload(u);
                 getStoreQueryResultFacade().edit(sqr);
-                System.out.println("6 = " + 6);
+//                System.out.println("6 = " + 6);
             } catch (FileNotFoundException e) {
                 sqr.setErrorMessage("IO Exception. " + e.getMessage());
                 getStoreQueryResultFacade().edit(sqr);
@@ -321,24 +319,21 @@ public class ReportTimerSessionBean {
             return success;
         } catch (Exception e) {
             success = true;
-            System.out.println("Error in processReport = " + e);
+//            System.out.println("Error in processReport = " + e);
             return success;
         }
     }
 
     public Long findReplaceblesInCalculationString(String text, List<Encounter> ens) {
-        System.out.println("findReplaceblesInCalculationString");
-
+        String str=text;
         Long l = 0l;
 
         try {
 
             if (ens == null) {
-                System.out.println("No encounters");
                 return l;
             }
             if (ens.isEmpty()) {
-                System.out.println("Empty encounter list");
                 l = 0l;
                 return l;
             }
@@ -349,34 +344,37 @@ public class ReportTimerSessionBean {
 
             Pattern p = Pattern.compile(regexString);
 
-            System.out.println("p = " + p);
-
             Matcher m = p.matcher(text);
-
-            System.out.println("m = " + m);
 
             while (m.find()) {
                 String block = m.group(1);
-                System.out.println("block = " + block);
+                str = block;
                 QueryComponent qc = findQueryComponentByCode(block);
                 if (qc == null) {
-                    System.out.println("No Such Query = ");
+                    str+=" not qc";
+                    System.out.println(str);
                     l = null;
                     return l;
 
                 } else {
-                    System.out.println("qc.getQueryType() = " + qc.getQueryType());
                     if (qc.getQueryType() == QueryType.Encounter_Count) {
                         List<QueryComponent> criteria = findCriteriaForQueryComponent(qc);
-                        System.out.println("criteria = " + criteria);
+                        
                         if (criteria == null || criteria.isEmpty()) {
                             l = Long.valueOf(ens.size());
+                            str += " " + l;
+                            System.out.println(str);
                             return l;
                         } else {
                             l = findMatchingCount(ens, criteria);
+                            str += criteria + " " + l;
+                            System.out.println(str);
+                            return l;
                         }
 
                     } else {
+                        str+=" not encounter count";
+                        System.out.println(str);
                         l = null;
                         return l;
                     }
@@ -384,7 +382,7 @@ public class ReportTimerSessionBean {
 
             }
 
-            System.out.println("End of while");
+            
             return l;
 
         } catch (Exception e) {
@@ -420,6 +418,7 @@ public class ReportTimerSessionBean {
     }
 
     public QueryComponent findQueryComponentByCode(String code) {
+        System.out.println("code = " + code);
         if (code == null) {
             return null;
         }
@@ -435,20 +434,20 @@ public class ReportTimerSessionBean {
     }
 
     public Long findMatchingCount(List<Encounter> encs, List<QueryComponent> qrys) {
-        System.out.println("findMatchingCount");
+        
         Long c = 0l;
         for (Encounter e : encs) {
             List<ClientEncounterComponentItem> is = findClientEncounterComponentItems(e);
             boolean suitableForInclusion = true;
             for (QueryComponent q : qrys) {
-                System.out.println("query = " + q.getName());
+               
                 boolean thisMatchOk = false;
                 for (ClientEncounterComponentItem i : is) {
                     if (i.getItem() == null || q.getItem() == null) {
                         continue;
                     }
                     if (i.getItem().getCode().trim().equalsIgnoreCase(q.getItem().getCode().trim())) {
-                        System.out.println("i.getItem().getCode() = " + i.getItem().getCode());
+                        
                         if (matchQuery(q, i)) {
                             thisMatchOk = true;
                         }
@@ -481,8 +480,8 @@ public class ReportTimerSessionBean {
                 case integer:
                     qInt1 = q.getIntegerNumberValue();
                     qInt2 = q.getIntegerNumberValue2();
-                    System.out.println("Query int1 = " + qInt1);
-                    System.out.println("Query int2 = " + qInt2);
+//                    System.out.println("Query int1 = " + qInt1);
+//                    System.out.println("Query int2 = " + qInt2);
                     break;
                 case item:
                     itemValue = q.getItemValue();
@@ -500,7 +499,7 @@ public class ReportTimerSessionBean {
             }
             switch (q.getEvaluationType()) {
                 case Equal:
-                    System.out.println("Equal");
+//                    System.out.println("Equal");
 
                     if (qInt1 != null) {
                         m = qInt1.equals(clientValue.getIntegerNumberValue());
@@ -525,8 +524,8 @@ public class ReportTimerSessionBean {
                     }
                     break;
                 case Less_than:
-                    System.out.println("Less than");
-                    System.out.println("Client Value = " + clientValue.getIntegerNumberValue());
+//                    System.out.println("Less than");
+//                    System.out.println("Client Value = " + clientValue.getIntegerNumberValue());
                     if (qInt1 != null && clientValue.getIntegerNumberValue() != null) {
                         m = clientValue.getIntegerNumberValue() < qInt1;
                     }
@@ -536,11 +535,11 @@ public class ReportTimerSessionBean {
                     if (real1 != null && clientValue.getRealNumberValue() != null) {
                         m = clientValue.getRealNumberValue() < real1;
                     }
-                    System.out.println("Included = " + m);
+//                    System.out.println("Included = " + m);
                     break;
                 case Between:
-                    System.out.println("Between");
-                    System.out.println("Client Value = " + clientValue.getIntegerNumberValue());
+//                    System.out.println("Between");
+//                    System.out.println("Client Value = " + clientValue.getIntegerNumberValue());
                     if (qInt1 != null && qInt2 != null && clientValue.getIntegerNumberValue() != null) {
                         if (qInt1 > qInt2) {
                             Integer intTem = qInt1;
@@ -575,8 +574,8 @@ public class ReportTimerSessionBean {
                     }
                     break;
                 case Grater_than:
-                    System.out.println("Grater than");
-                    System.out.println("Client Value = " + clientValue.getIntegerNumberValue());
+//                    System.out.println("Grater than");
+//                    System.out.println("Client Value = " + clientValue.getIntegerNumberValue());
                     if (qInt1 != null && clientValue.getIntegerNumberValue() != null) {
                         m = clientValue.getIntegerNumberValue() > qInt1;
                     }
@@ -601,7 +600,7 @@ public class ReportTimerSessionBean {
                     break;
             }
         }
-        System.out.println("Included= " + m);
+//        System.out.println("Included= " + m);
         return m;
     }
 
@@ -622,17 +621,18 @@ public class ReportTimerSessionBean {
         if (p == null) {
             return null;
         }
+        System.out.println("p = " + p);
         List<QueryComponent> output = new ArrayList<>();
         for (QueryComponent qc : getQueryComponents()) {
-            if (p.getQueryLevel() == null) {
+            if (qc.getQueryLevel() == null) {
                 continue;
             }
-            if (p.getParentComponent() == null) {
+            if (qc.getParentComponent() == null) {
                 continue;
             }
 
-            if (p.getQueryLevel() == QueryLevel.Criterian) {
-                if (p.getParentComponent().equals(p)) {
+            if (qc.getQueryLevel() == QueryLevel.Criterian) {
+                if (qc.getParentComponent().equals(p)) {
                     output.add(qc);
                 }
             }
