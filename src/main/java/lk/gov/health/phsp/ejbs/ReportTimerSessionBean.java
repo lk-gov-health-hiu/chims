@@ -426,7 +426,10 @@ public class ReportTimerSessionBean {
             if (qc.getCode() == null) {
                 continue;
             }
-            if (qc.getCode().equalsIgnoreCase(code)) {
+            if(code.equals("encounter_count_males_below_35_active")){
+                System.out.println("qc.getCode() = " + qc.getCode());
+            }
+            if (qc.getCode().trim().equals(code.trim())) {
                 return qc;
             }
         }
