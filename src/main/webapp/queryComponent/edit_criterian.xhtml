@@ -84,26 +84,28 @@
                                         <p:outputLabel value="#{iv.code}" ></p:outputLabel>
                                     </p:column>
                                 </p:selectOneMenu>
-                               
 
-                                <p:outputLabel value="Integer Number Value:" for="integerNumberValue" />
-                                <p:inputText id="integerNumberValue" value="#{queryComponentController.selected.integerNumberValue}" title="IntegerNumberValue" />
 
-                                <p:outputLabel value="Long Number Value:" for="longNumberValue" />
-                                <p:inputText id="longNumberValue" value="#{queryComponentController.selected.longNumberValue}" title="LongNumberValue" />
+                                <p:outputLabel value="Integer Numbers:" for="integerNumberValue" />
+                                <h:panelGrid columns="2" >
+                                    <p:inputText id="integerNumberValue" value="#{queryComponentController.selected.integerNumberValue}" title="IntegerNumberValue" />
+                                    <p:inputText id="integerNumberValue2" value="#{queryComponentController.selected.integerNumberValue2}" title="IntegerNumberValue2" />
+
+                                </h:panelGrid>
+
+                                <p:outputLabel value="Long Number Values:" for="longNumberValue" />
+                                <h:panelGrid columns="2" >
+                                    <p:inputText id="longNumberValue" value="#{queryComponentController.selected.longNumberValue}" title="LongNumberValue" />
+                                    <p:inputText id="longNumberValue2" value="#{queryComponentController.selected.longNumberValue2}" title="LongNumberValue2" />
+                                </h:panelGrid>
+
 
                                 <p:outputLabel value="Real Number Value:" for="realNumberValue" />
-                                <p:inputText id="realNumberValue" value="#{queryComponentController.selected.realNumberValue}" title="RealNumberValue" />
+                                <h:panelGrid columns="2" >
+                                    <p:inputText id="realNumberValue" value="#{queryComponentController.selected.realNumberValue}" title="RealNumberValue" />
+                                    <p:inputText id="realNumberValue2" value="#{queryComponentController.selected.realNumberValue2}" title="RealNumberValue2" />
+                                </h:panelGrid>
 
-
-                                <p:outputLabel value="Integer Number Value 2:" for="integerNumberValue2" />
-                                <p:inputText id="integerNumberValue2" value="#{queryComponentController.selected.integerNumberValue2}" title="IntegerNumberValue2" />
-
-                                <p:outputLabel value="Long Number Value 2:" for="longNumberValue2" />
-                                <p:inputText id="longNumberValue2" value="#{queryComponentController.selected.longNumberValue2}" title="LongNumberValue2" />
-
-                                <p:outputLabel value="Real Number Value 2:" for="realNumberValue2" />
-                                <p:inputText id="realNumberValue2" value="#{queryComponentController.selected.realNumberValue2}" title="RealNumberValue2" />
 
 
 
