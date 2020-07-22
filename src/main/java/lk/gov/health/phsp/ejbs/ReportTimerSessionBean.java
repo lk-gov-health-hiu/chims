@@ -90,7 +90,7 @@ public class ReportTimerSessionBean {
 
     @Schedule(
             hour = "*",
-            minute = "*/10",
+            minute = "*/30",
             second = "10",
             persistent = false)
     public void runEveryMinute() {
