@@ -48,6 +48,10 @@
                                 <p:outputLabel value="#{r.queryComponent.name}">
                                 </p:outputLabel>
                             </p:column>
+                            <p:column headerText="Period" >
+                                <p:outputLabel value="#{r.periodString}">
+                                </p:outputLabel>
+                            </p:column>
                             <p:column headerText="Status" >
                                 <p:outputLabel value="#{r.processStatus}">
                                 </p:outputLabel>
@@ -58,6 +62,7 @@
                             </p:column>
                             <p:column headerText="Actions" >
                                 <p:commandButton value="Download" 
+                                                 disabled="#{!r.processCompleted}"
                                                  ajax="false" 
                                                  onclick="PrimeFaces.monitorDownload(start, stop);" 
                                                  icon="ui-icon-arrowthick-1-s">

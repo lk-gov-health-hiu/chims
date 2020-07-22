@@ -296,14 +296,14 @@ public class CommonController implements Serializable {
         c.set(Calendar.MILLISECOND, 1);
         return c.getTime();
     }
-    
+
     public static Date startOfTheMonth(Integer year, Integer month) {
         Calendar c = Calendar.getInstance();
         c.set(Calendar.YEAR, year);
         c.set(Calendar.MONTH, month);
         return startOfTheMonth(c.getTime());
     }
-    
+
     public static Date endOfTheMonth(Integer year, Integer month) {
         Calendar c = Calendar.getInstance();
         c.set(Calendar.YEAR, year);
@@ -554,6 +554,78 @@ public class CommonController implements Serializable {
         DateFormat dateFormat = new SimpleDateFormat(format);
         String strDate = dateFormat.format(date);
         return strDate;
+    }
+
+    public static String dateTimeToString(Date date) {
+        return dateTimeToString(date, "dd MMMM yyyy");
+    }
+
+    public static String quarterAsString(Integer q) {
+        String qs = "";
+        if (q == null) {
+            return qs;
+        }
+        switch (q) {
+            case 1:
+                qs = "First";
+                break;
+            case 2:
+                qs = "Second";
+                break;
+            case 3:
+                qs = "Thired";
+                break;
+            case 4:
+                qs = "Forth";
+                break;
+        }
+        return qs;
+    }
+
+    public static String monthAsString(Integer q) {
+        String qs = "";
+        if (q == null) {
+            return qs;
+        }
+        switch (q) {
+            case 1:
+                qs = "January";
+                break;
+            case 2:
+                qs = "February";
+                break;
+            case 3:
+                qs = "March";
+                break;
+            case 4:
+                qs = "April";
+                break;
+            case 5:
+                qs = "May";
+                break;
+            case 6:
+                qs = "June";
+                break;
+            case 7:
+                qs = "July";
+                break;
+            case 8:
+                qs = "Aujust";
+                break;
+            case 9:
+                qs = "September";
+                break;
+            case 10:
+                qs = "Ocober";
+                break;
+            case 11:
+                qs = "November";
+                break;
+            case 12:
+                qs = "December";
+                break;
+        }
+        return qs;
     }
 
     public static String monthString(Integer month) {
