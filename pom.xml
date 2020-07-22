@@ -78,7 +78,7 @@
         <dependency>
             <groupId>org.primefaces</groupId>  
             <artifactId>primefaces</artifactId>  
-            <version>7.0</version>
+            <version>6.2</version>
             <type>jar</type>
         </dependency>  
        
@@ -122,11 +122,13 @@
             <version>2.6</version>
         </dependency> 
 
+        <!-- https://mvnrepository.com/artifact/commons-fileupload/commons-fileupload -->
         <dependency>
             <groupId>commons-fileupload</groupId>
             <artifactId>commons-fileupload</artifactId>
             <version>1.4</version>
         </dependency>
+
         <dependency>
             <groupId>org.apache.directory.studio</groupId>
             <artifactId>org.dom4j.dom4j</artifactId>

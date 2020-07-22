@@ -57,7 +57,6 @@ import lk.gov.health.phsp.facade.EncounterFacade;
 import lk.gov.health.phsp.facade.QueryComponentFacade;
 import lk.gov.health.phsp.facade.StoredQueryResultFacade;
 import lk.gov.health.phsp.facade.UploadFacade;
-import lk.gov.health.phsp.pojcs.Replaceable;
 import lk.gov.health.phsp.pojcs.ReportTimePeriod;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -95,6 +94,7 @@ public class ReportTimerSessionBean {
             second = "10",
             persistent = false)
     public void runEveryMinute() {
+        System.out.println("runEveryMinute = " + new Date());
         queryComponents = null;
         try {
             if (!processingReport) {
@@ -218,7 +218,7 @@ public class ReportTimerSessionBean {
                 return success;
             }
 
-            String FILE_NAME = upload.getFileName() + "_" + (new Date()) + ".xlsx";
+            String FILE_NAME = "/tmp/" + upload.getFileName() + "_" + (new Date()) + ".xlsx";
 
             File newFile = new File(FILE_NAME);
 
@@ -293,11 +293,13 @@ public class ReportTimerSessionBean {
                 InputStream stream;
                 stream = new FileInputStream(FILE_NAME);
 
+                byte[] byteArray = IOUtils.toByteArray(stream);
+                
                 Upload u = new Upload();
                 u.setFileName(FILE_NAME);
                 u.setFileType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
                 u.setCreatedAt(new Date());
-                u.setBaImage(IOUtils.toByteArray(stream));
+                u.setBaImage(byteArray);
 
                 getUploadFacade().create(u);
 
