@@ -94,8 +94,9 @@ public class ReportTimerSessionBean {
             second = "10",
             persistent = false)
     public void runEveryMinute() {
-        System.out.println("runEveryMinute = " + new Date());
+        System.out.println("runEveryTenMinute = " + new Date());
         queryComponents = null;
+        System.out.println("processingReport = " + processingReport);
         try {
             if (!processingReport) {
                 runReports();
@@ -117,34 +118,36 @@ public class ReportTimerSessionBean {
                     + " and q.processCompleted=false "
                     + " and q.processStarted=false "
                     + " order by q.id";
-            StoredQueryResult qs = getStoreQueryResultFacade().findFirstByJpql(j);
+            List<StoredQueryResult> qs = getStoreQueryResultFacade().findByJpql(j);
 ////            System.out.println("qs = " + qs);
             if (qs == null) {
                 processingReport = false;
                 return;
             }
 
-            qs.setProcessStarted(true);
-            qs.setProcessStartedAt(new Date());
-            qs.setProcessFailed(false);
-            qs.setProcessCompleted(false);
-            getStoreQueryResultFacade().edit(qs);
-            Long id = qs.getId();
+            for (StoredQueryResult q : qs) {
 
-            StoredQueryResult q = getStoreQueryResultFacade().find(id);
-
-            boolean processSuccess = processReport(q);
-
-            if (processSuccess) {
-                q.setProcessCompleted(true);
-                q.setProcessCompletedAt(new Date());
+                q.setProcessStarted(true);
+                q.setProcessStartedAt(new Date());
+                q.setProcessFailed(false);
+                q.setProcessCompleted(false);
                 getStoreQueryResultFacade().edit(q);
-            } else {
-                q.setProcessFailed(true);
-                q.setProcessFailedAt(new Date());
-                getStoreQueryResultFacade().edit(q);
+                Long id = q.getId();
+
+                StoredQueryResult nq = getStoreQueryResultFacade().find(id);
+
+                boolean processSuccess = processReport(nq);
+
+                if (processSuccess) {
+                    nq.setProcessCompleted(true);
+                    nq.setProcessCompletedAt(new Date());
+                    getStoreQueryResultFacade().edit(nq);
+                } else {
+                    nq.setProcessFailed(true);
+                    nq.setProcessFailedAt(new Date());
+                    getStoreQueryResultFacade().edit(nq);
+                }
             }
-
             processingReport = false;
         } catch (Exception e) {
 //            System.out.println("runReports Error = " + e);
@@ -222,7 +225,7 @@ public class ReportTimerSessionBean {
             String FILE_NAME = upload.getFileName() + "_" + (new Date()) + ".xlsx";
 
             String folder = "/tmp/";
-            
+
             File newFile = new File(folder + FILE_NAME);
 
             try {
@@ -296,16 +299,13 @@ public class ReportTimerSessionBean {
                 InputStream stream;
                 stream = new FileInputStream(FILE_NAME);
 
-                
-                
                 Upload u = new Upload();
                 u.setFileName(FILE_NAME);
                 u.setFileType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
                 u.setCreatedAt(new Date());
-                
 
                 getUploadFacade().create(u);
-                
+
                 byte[] byteArray = IOUtils.toByteArray(stream);
                 u.setBaImage(byteArray);
 
@@ -326,14 +326,14 @@ public class ReportTimerSessionBean {
             success = true;
             return success;
         } catch (Exception e) {
-            success = true;
-//            System.out.println("Error in processReport = " + e);
+            success = false;
+            System.out.println("Error in processReport = " + e);
             return success;
         }
     }
 
     public Long findReplaceblesInCalculationString(String text, List<Encounter> ens) {
-        String str=text;
+        String str = text;
         Long l = 0l;
 
         try {
@@ -359,7 +359,7 @@ public class ReportTimerSessionBean {
                 str = block;
                 QueryComponent qc = findQueryComponentByCode(block);
                 if (qc == null) {
-                    str+=" not qc";
+                    str += " not qc";
                     System.out.println(str);
                     l = null;
                     return l;
@@ -367,7 +367,7 @@ public class ReportTimerSessionBean {
                 } else {
                     if (qc.getQueryType() == QueryType.Encounter_Count) {
                         List<QueryComponent> criteria = findCriteriaForQueryComponent(qc);
-                        
+
                         if (criteria == null || criteria.isEmpty()) {
                             l = Long.valueOf(ens.size());
                             str += " " + l;
@@ -381,7 +381,7 @@ public class ReportTimerSessionBean {
                         }
 
                     } else {
-                        str+=" not encounter count";
+                        str += " not encounter count";
                         System.out.println(str);
                         l = null;
                         return l;
@@ -390,7 +390,6 @@ public class ReportTimerSessionBean {
 
             }
 
-            
             return l;
 
         } catch (Exception e) {
@@ -434,7 +433,7 @@ public class ReportTimerSessionBean {
             if (qc.getCode() == null) {
                 continue;
             }
-            if(code.equals("encounter_count_males_below_35_active")){
+            if (code.equals("encounter_count_males_below_35_active")) {
                 System.out.println("qc.getCode() = " + qc.getCode());
             }
             if (qc.getCode().trim().equals(code.trim())) {
@@ -445,20 +444,20 @@ public class ReportTimerSessionBean {
     }
 
     public Long findMatchingCount(List<Encounter> encs, List<QueryComponent> qrys) {
-        
+
         Long c = 0l;
         for (Encounter e : encs) {
             List<ClientEncounterComponentItem> is = findClientEncounterComponentItems(e);
             boolean suitableForInclusion = true;
             for (QueryComponent q : qrys) {
-               
+
                 boolean thisMatchOk = false;
                 for (ClientEncounterComponentItem i : is) {
                     if (i.getItem() == null || q.getItem() == null) {
                         continue;
                     }
                     if (i.getItem().getCode().trim().equalsIgnoreCase(q.getItem().getCode().trim())) {
-                        
+
                         if (matchQuery(q, i)) {
                             thisMatchOk = true;
                         }
