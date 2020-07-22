@@ -90,7 +90,7 @@ public class ReportTimerSessionBean {
 
     @Schedule(
             hour = "*",
-            minute = "*",
+            minute = "*/10",
             second = "10",
             persistent = false)
     public void runEveryMinute() {
@@ -106,6 +106,7 @@ public class ReportTimerSessionBean {
     }
 
     public void runReports() {
+        System.out.println("runReports");
         try {
             processingReport = true;
             String j;
@@ -218,9 +219,11 @@ public class ReportTimerSessionBean {
                 return success;
             }
 
-            String FILE_NAME = "/tmp/" + upload.getFileName() + "_" + (new Date()) + ".xlsx";
+            String FILE_NAME = upload.getFileName() + "_" + (new Date()) + ".xlsx";
 
-            File newFile = new File(FILE_NAME);
+            String folder = "/tmp/";
+            
+            File newFile = new File(folder + FILE_NAME);
 
             try {
                 FileUtils.writeByteArrayToFile(newFile, upload.getBaImage());
@@ -293,15 +296,18 @@ public class ReportTimerSessionBean {
                 InputStream stream;
                 stream = new FileInputStream(FILE_NAME);
 
-                byte[] byteArray = IOUtils.toByteArray(stream);
+                
                 
                 Upload u = new Upload();
                 u.setFileName(FILE_NAME);
                 u.setFileType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
                 u.setCreatedAt(new Date());
-                u.setBaImage(byteArray);
+                
 
                 getUploadFacade().create(u);
+                
+                byte[] byteArray = IOUtils.toByteArray(stream);
+                u.setBaImage(byteArray);
 
 //                System.out.println("5 = " + 5);
                 sqr.setUpload(u);

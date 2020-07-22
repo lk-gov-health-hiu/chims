@@ -23,8 +23,6 @@
  */
 package lk.gov.health.phsp.pojcs;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import lk.gov.health.phsp.entity.Area;
