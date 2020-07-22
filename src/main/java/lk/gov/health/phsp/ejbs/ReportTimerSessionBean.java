@@ -57,6 +57,7 @@ import lk.gov.health.phsp.facade.EncounterFacade;
 import lk.gov.health.phsp.facade.QueryComponentFacade;
 import lk.gov.health.phsp.facade.StoredQueryResultFacade;
 import lk.gov.health.phsp.facade.UploadFacade;
+import lk.gov.health.phsp.pojcs.EncounterWithComponents;
 import lk.gov.health.phsp.pojcs.ReportTimePeriod;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -90,7 +91,7 @@ public class ReportTimerSessionBean {
 
     @Schedule(
             hour = "*",
-            minute = "*/3",
+            minute = "*",
             second = "10",
             persistent = false)
     public void runEveryMinute() {
@@ -123,16 +124,21 @@ public class ReportTimerSessionBean {
         }
 
         for (StoredQueryResult q : qs) {
-
+            System.out.println("q = " + q);
+            System.out.println("q = " + q.isProcessStarted());
             q.setProcessStarted(true);
             q.setProcessStartedAt(new Date());
             q.setProcessFailed(false);
             q.setProcessCompleted(false);
             getStoreQueryResultFacade().edit(q);
+            System.out.println("q = " + q);
+            System.out.println("q = " + q.isProcessStarted());
             Long id = q.getId();
 
             StoredQueryResult nq = getStoreQueryResultFacade().find(id);
 
+            System.out.println("nq = " + nq);
+            System.out.println("nq = " + nq.isProcessStarted());
             boolean processSuccess = processReport(nq);
 
             if (processSuccess) {
@@ -188,12 +194,18 @@ public class ReportTimerSessionBean {
             return success;
         }
 
-        List<Encounter> encs = null;
+        List<EncounterWithComponents> encs = new ArrayList<>();
         List<Client> clnts = null;
 
         switch (queryComponent.getQueryType()) {
             case Encounter_Count:
-                encs = findEncounters(rtp.getFrom(), rtp.getTo(), ins);
+                List<Encounter> tes = findEncounters(rtp.getFrom(), rtp.getTo(), ins);
+                for(Encounter e:tes){
+                    EncounterWithComponents enc = new EncounterWithComponents();
+                    enc.setComponents(findClientEncounterComponentItems(e));
+                    encs.add(enc);
+                }
+
                 break;
             case Client_Count:
                 sqr.setErrorMessage("Client Queries not yet supported.");
@@ -321,7 +333,7 @@ public class ReportTimerSessionBean {
 
     }
 
-    public Long findReplaceblesInCalculationString(String text, List<Encounter> ens) {
+    public Long findReplaceblesInCalculationString(String text, List<EncounterWithComponents> ens) {
         String str = text;
         Long l = 0l;
 
@@ -426,11 +438,11 @@ public class ReportTimerSessionBean {
         return null;
     }
 
-    public Long findMatchingCount(List<Encounter> encs, List<QueryComponent> qrys) {
+    public Long findMatchingCount(List<EncounterWithComponents> encs, List<QueryComponent> qrys) {
 
         Long c = 0l;
-        for (Encounter e : encs) {
-            List<ClientEncounterComponentItem> is = findClientEncounterComponentItems(e);
+        for (EncounterWithComponents e : encs) {
+            List<ClientEncounterComponentItem> is = e.getComponents();
             boolean suitableForInclusion = true;
             for (QueryComponent q : qrys) {
 
@@ -603,6 +615,8 @@ public class ReportTimerSessionBean {
                 + " and f.encounter=:e";
         Map m = new HashMap();
         m.put("e", enc);
+        System.out.println("m = " + m);
+        System.out.println("j = " + j);
         List<ClientEncounterComponentItem> t = getClientEncounterComponentItemFacade().findByJpql(j, m);
         if (t == null) {
             t = new ArrayList<>();
