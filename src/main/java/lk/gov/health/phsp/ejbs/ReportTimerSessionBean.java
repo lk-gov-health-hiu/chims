@@ -57,6 +57,7 @@ import lk.gov.health.phsp.facade.EncounterFacade;
 import lk.gov.health.phsp.facade.QueryComponentFacade;
 import lk.gov.health.phsp.facade.StoredQueryResultFacade;
 import lk.gov.health.phsp.facade.UploadFacade;
+import lk.gov.health.phsp.pojcs.EncounterWithComponents;
 import lk.gov.health.phsp.pojcs.ReportTimePeriod;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -90,312 +91,300 @@ public class ReportTimerSessionBean {
 
     @Schedule(
             hour = "*",
-            minute = "*/30",
+            minute = "*",
             second = "10",
             persistent = false)
     public void runEveryMinute() {
-        System.out.println("runEveryTenMinute = " + new Date());
+//        System.out.println("runEveryTenMinute = " + new Date());
         queryComponents = null;
-        System.out.println("processingReport = " + processingReport);
-        try {
-            if (!processingReport) {
-                runReports();
-            }
-        } catch (Exception e) {
-            System.out.println("runEveryMinute Error = " + e);
+
+        if (!processingReport) {
+            runReports();
         }
+
     }
 
     public void runReports() {
-        System.out.println("runReports");
-        try {
-            processingReport = true;
-            String j;
-            Map m = new HashMap();
-            j = "select q from StoredQueryResult q "
-                    + " where q.retired=false "
-                    + " and q.processFailed=false "
-                    + " and q.processCompleted=false "
-                    + " and q.processStarted=false "
-                    + " order by q.id";
-            List<StoredQueryResult> qs = getStoreQueryResultFacade().findByJpql(j);
+
+        processingReport = true;
+        String j;
+        Map m = new HashMap();
+        j = "select q from StoredQueryResult q "
+                + " where q.retired=false "
+                + " and q.processFailed=false "
+                + " and q.processCompleted=false "
+                + " and q.processStarted=false "
+                + " order by q.id";
+        List<StoredQueryResult> qs = getStoreQueryResultFacade().findByJpql(j);
 ////            System.out.println("qs = " + qs);
-            if (qs == null) {
-                processingReport = false;
-                return;
-            }
-
-            for (StoredQueryResult q : qs) {
-
-                q.setProcessStarted(true);
-                q.setProcessStartedAt(new Date());
-                q.setProcessFailed(false);
-                q.setProcessCompleted(false);
-                getStoreQueryResultFacade().edit(q);
-                Long id = q.getId();
-
-                StoredQueryResult nq = getStoreQueryResultFacade().find(id);
-
-                boolean processSuccess = processReport(nq);
-
-                if (processSuccess) {
-                    nq.setProcessCompleted(true);
-                    nq.setProcessCompletedAt(new Date());
-                    getStoreQueryResultFacade().edit(nq);
-                } else {
-                    nq.setProcessFailed(true);
-                    nq.setProcessFailedAt(new Date());
-                    getStoreQueryResultFacade().edit(nq);
-                }
-            }
+        if (qs == null) {
             processingReport = false;
-        } catch (Exception e) {
-//            System.out.println("runReports Error = " + e);
-            processingReport = false;
+            return;
         }
+
+        for (StoredQueryResult q : qs) {
+//            System.out.println("q = " + q);
+//            System.out.println("q = " + q.isProcessStarted());
+            q.setProcessStarted(true);
+            q.setProcessStartedAt(new Date());
+            q.setProcessFailed(false);
+            q.setProcessCompleted(false);
+            getStoreQueryResultFacade().edit(q);
+//            System.out.println("q = " + q);
+//            System.out.println("q = " + q.isProcessStarted());
+            Long id = q.getId();
+
+            StoredQueryResult nq = getStoreQueryResultFacade().find(id);
+
+//            System.out.println("nq = " + nq);
+            boolean processSuccess = processReport(nq);
+
+            if (processSuccess) {
+                nq.setProcessCompleted(true);
+                nq.setProcessCompletedAt(new Date());
+                getStoreQueryResultFacade().edit(nq);
+            } else {
+                nq.setProcessFailed(true);
+                nq.setProcessFailedAt(new Date());
+                getStoreQueryResultFacade().edit(nq);
+            }
+        }
+        processingReport = false;
+
     }
 
     private boolean processReport(StoredQueryResult sqr) {
 ////        System.out.println("sqr = " + sqr);
         boolean success = false;
+
+        QueryComponent queryComponent = sqr.getQueryComponent();
+        Institution ins = sqr.getInstitution();
+        ReportTimePeriod rtp = new ReportTimePeriod();
+        rtp.setTimePeriodType(sqr.getTimePeriodType());
+        rtp.setFrom(sqr.getResultFrom());
+        rtp.setTo(sqr.getResultTo());
+        rtp.setYear(sqr.getResultYear());
+        rtp.setMonth(sqr.getResultMonth());
+        rtp.setQuarter(sqr.getResultQuarter());
+        rtp.setDateOfMonth(sqr.getResultDateOfMonth());
+
+        if (queryComponent == null) {
+            sqr.setErrorMessage("No report available.");
+            getStoreQueryResultFacade().edit(sqr);
+            return success;
+        }
+
+        if (queryComponent.getQueryType() == null) {
+            sqr.setErrorMessage("No query type specified.");
+            getStoreQueryResultFacade().edit(sqr);
+            return success;
+        }
+
+        String j = "select u from Upload u "
+                + " where u.component=:c";
+        Map m = new HashMap();
+        m.put("c", queryComponent);
+
+        Upload upload = getUploadFacade().findFirstByJpql(j, m);
+        if (upload == null) {
+            sqr.setErrorMessage("No excel template uploaded.");
+            getStoreQueryResultFacade().edit(sqr);
+            return success;
+        }
+
+        List<EncounterWithComponents> encs = new ArrayList<>();
+        List<Client> clnts = null;
+
+        switch (queryComponent.getQueryType()) {
+            case Encounter_Count:
+                List<Encounter> tes = findEncounters(rtp.getFrom(), rtp.getTo(), ins);
+                for(Encounter e:tes){
+                    EncounterWithComponents enc = new EncounterWithComponents();
+                    enc.setComponents(findClientEncounterComponentItems(e));
+                    encs.add(enc);
+                }
+
+                break;
+            case Client_Count:
+                sqr.setErrorMessage("Client Queries not yet supported.");
+                getStoreQueryResultFacade().edit(sqr);
+                return success;
+            default:
+                sqr.setErrorMessage("This type of query not yet supported.");
+                getStoreQueryResultFacade().edit(sqr);
+                return success;
+        }
+
+        if (encs == null) {
+            sqr.setErrorMessage("No Data.");
+            getStoreQueryResultFacade().edit(sqr);
+            return success;
+        } else if (encs.size() < 1) {
+            sqr.setErrorMessage("No Data.");
+            getStoreQueryResultFacade().edit(sqr);
+            return success;
+        }
+
+        String FILE_NAME = upload.getFileName() + "_" + (new Date()) + ".xlsx";
+
+        String folder = "/tmp/";
+
+        File newFile = new File(folder + FILE_NAME);
+
+        try {
+            FileUtils.writeByteArrayToFile(newFile, upload.getBaImage());
+        } catch (IOException ex) {
+            sqr.setErrorMessage("IO Exception. " + ex.getMessage());
+            getStoreQueryResultFacade().edit(sqr);
+        }
+
+        XSSFWorkbook workbook;
+        XSSFSheet sheet;
+
         try {
 
-            QueryComponent queryComponent = sqr.getQueryComponent();
-            Institution ins = sqr.getInstitution();
-            ReportTimePeriod rtp = new ReportTimePeriod();
-            rtp.setTimePeriodType(sqr.getTimePeriodType());
-            rtp.setFrom(sqr.getResultFrom());
-            rtp.setTo(sqr.getResultTo());
-            rtp.setYear(sqr.getResultYear());
-            rtp.setMonth(sqr.getResultMonth());
-            rtp.setQuarter(sqr.getResultQuarter());
-            rtp.setDateOfMonth(sqr.getResultDateOfMonth());
+            FileInputStream excelFile = new FileInputStream(newFile);
+            workbook = new XSSFWorkbook(excelFile);
+            sheet = workbook.getSheetAt(0);
+            Iterator<Row> iterator = sheet.iterator();
 
-            if (queryComponent == null) {
-                sqr.setErrorMessage("No report available.");
-                getStoreQueryResultFacade().edit(sqr);
-                return success;
-            }
+            while (iterator.hasNext()) {
 
-            if (queryComponent.getQueryType() == null) {
-                sqr.setErrorMessage("No query type specified.");
-                getStoreQueryResultFacade().edit(sqr);
-                return success;
-            }
+                Row currentRow = iterator.next();
 
-            String j = "select u from Upload u "
-                    + " where u.component=:c";
-            Map m = new HashMap();
-            m.put("c", queryComponent);
+                Iterator<Cell> cellIterator = currentRow.iterator();
+                while (cellIterator.hasNext()) {
+                    Cell currentCell = cellIterator.next();
 
-            Upload upload = getUploadFacade().findFirstByJpql(j, m);
-            if (upload == null) {
-                sqr.setErrorMessage("No excel template uploaded.");
-                getStoreQueryResultFacade().edit(sqr);
-                return success;
-            }
+                    String cellString = "";
 
-            List<Encounter> encs = null;
-            List<Client> clnts = null;
+                    CellType ct = currentCell.getCellType();
 
-            switch (queryComponent.getQueryType()) {
-                case Encounter_Count:
-                    encs = findEncounters(rtp.getFrom(), rtp.getTo(), ins);
-                    break;
-                case Client_Count:
-                    sqr.setErrorMessage("Client Queries not yet supported.");
-                    getStoreQueryResultFacade().edit(sqr);
-                    return success;
-                default:
-                    sqr.setErrorMessage("This type of query not yet supported.");
-                    getStoreQueryResultFacade().edit(sqr);
-                    return success;
-            }
-
-            if (encs == null) {
-                sqr.setErrorMessage("No Data.");
-                getStoreQueryResultFacade().edit(sqr);
-                return success;
-            } else if (encs.size() < 1) {
-                sqr.setErrorMessage("No Data.");
-                getStoreQueryResultFacade().edit(sqr);
-                return success;
-            }
-
-            String FILE_NAME = upload.getFileName() + "_" + (new Date()) + ".xlsx";
-
-            String folder = "/tmp/";
-
-            File newFile = new File(folder + FILE_NAME);
-
-            try {
-                FileUtils.writeByteArrayToFile(newFile, upload.getBaImage());
-            } catch (IOException ex) {
-                sqr.setErrorMessage("IO Exception. " + ex.getMessage());
-                getStoreQueryResultFacade().edit(sqr);
-            }
-
-            XSSFWorkbook workbook;
-            XSSFSheet sheet;
-
-            try {
-
-                FileInputStream excelFile = new FileInputStream(newFile);
-                workbook = new XSSFWorkbook(excelFile);
-                sheet = workbook.getSheetAt(0);
-                Iterator<Row> iterator = sheet.iterator();
-
-                while (iterator.hasNext()) {
-
-                    Row currentRow = iterator.next();
-
-                    Iterator<Cell> cellIterator = currentRow.iterator();
-                    while (cellIterator.hasNext()) {
-                        Cell currentCell = cellIterator.next();
-
-                        String cellString = "";
-
-                        CellType ct = currentCell.getCellType();
-
-                        if (ct == null) {
+                    if (ct == null) {
 ////                            System.out.println("ct = " + ct);
+                        continue;
+                    }
+
+                    switch (ct) {
+                        case STRING:
+                            cellString = currentCell.getStringCellValue();
+                            break;
+                        case BLANK:
+                        case BOOLEAN:
+                        case ERROR:
+                        case FORMULA:
+                        case NUMERIC:
+                        case _NONE:
+
                             continue;
-                        }
+                    }
 
-                        switch (ct) {
-                            case STRING:
-                                cellString = currentCell.getStringCellValue();
-                                break;
-                            case BLANK:
-                            case BOOLEAN:
-                            case ERROR:
-                            case FORMULA:
-                            case NUMERIC:
-                            case _NONE:
-
-                                continue;
-                        }
-
-                        if (cellString.contains("#{")) {
-                            Long temLong = findReplaceblesInCalculationString(cellString, encs);
-                            if (temLong != null) {
-                                currentCell.setCellValue(temLong);
-                            } else {
+                    if (cellString.contains("#{")) {
+                        Long temLong = findReplaceblesInCalculationString(cellString, encs);
+                        if (temLong != null) {
+                            currentCell.setCellValue(temLong);
+                        } else {
 ////                                System.out.println("temLong is null.");
-                            }
                         }
-
                     }
 
                 }
 
-                excelFile.close();
-
-                FileOutputStream out = new FileOutputStream(FILE_NAME);
-                workbook.write(out);
-                out.close();
-
-////                System.out.println("FILE_NAME = " + FILE_NAME);
-                InputStream stream;
-                stream = new FileInputStream(FILE_NAME);
-
-                Upload u = new Upload();
-                u.setFileName(FILE_NAME);
-                u.setFileType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
-                u.setCreatedAt(new Date());
-
-                getUploadFacade().create(u);
-
-                byte[] byteArray = IOUtils.toByteArray(stream);
-                u.setBaImage(byteArray);
-
-//                System.out.println("5 = " + 5);
-                sqr.setUpload(u);
-                getStoreQueryResultFacade().edit(sqr);
-//                System.out.println("6 = " + 6);
-            } catch (FileNotFoundException e) {
-                sqr.setErrorMessage("IO Exception. " + e.getMessage());
-                getStoreQueryResultFacade().edit(sqr);
-                return success;
-            } catch (IOException e) {
-                sqr.setErrorMessage("IO Exception. " + e.getMessage());
-                getStoreQueryResultFacade().edit(sqr);
-                return success;
             }
 
-            success = true;
+            excelFile.close();
+
+            FileOutputStream out = new FileOutputStream(FILE_NAME);
+            workbook.write(out);
+            out.close();
+
+////                System.out.println("FILE_NAME = " + FILE_NAME);
+            InputStream stream;
+            stream = new FileInputStream(FILE_NAME);
+
+            Upload u = new Upload();
+            u.setFileName(FILE_NAME);
+            u.setFileType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+            u.setCreatedAt(new Date());
+
+            getUploadFacade().create(u);
+
+            byte[] byteArray = IOUtils.toByteArray(stream);
+            u.setBaImage(byteArray);
+
+//                System.out.println("5 = " + 5);
+            sqr.setUpload(u);
+            getStoreQueryResultFacade().edit(sqr);
+//                System.out.println("6 = " + 6);
+        } catch (FileNotFoundException e) {
+            sqr.setErrorMessage("IO Exception. " + e.getMessage());
+            getStoreQueryResultFacade().edit(sqr);
             return success;
-        } catch (Exception e) {
-            success = false;
-            System.out.println("Error in processReport = " + e);
+        } catch (IOException e) {
+            sqr.setErrorMessage("IO Exception. " + e.getMessage());
+            getStoreQueryResultFacade().edit(sqr);
             return success;
         }
+
+        success = true;
+        return success;
+
     }
 
-    public Long findReplaceblesInCalculationString(String text, List<Encounter> ens) {
+    public Long findReplaceblesInCalculationString(String text, List<EncounterWithComponents> ens) {
         String str = text;
         Long l = 0l;
 
-        try {
-
-            if (ens == null) {
-                return l;
-            }
-            if (ens.isEmpty()) {
-                l = 0l;
-                return l;
-            }
-
-            String patternStart = "#{";
-            String patternEnd = "}";
-            String regexString = Pattern.quote(patternStart) + "(.*?)" + Pattern.quote(patternEnd);
-
-            Pattern p = Pattern.compile(regexString);
-
-            Matcher m = p.matcher(text);
-
-            while (m.find()) {
-                String block = m.group(1);
-                str = block;
-                QueryComponent qc = findQueryComponentByCode(block);
-                if (qc == null) {
-                    str += " not qc";
-                    System.out.println(str);
-                    l = null;
-                    return l;
-
-                } else {
-                    if (qc.getQueryType() == QueryType.Encounter_Count) {
-                        List<QueryComponent> criteria = findCriteriaForQueryComponent(qc);
-
-                        if (criteria == null || criteria.isEmpty()) {
-                            l = Long.valueOf(ens.size());
-                            str += " " + l;
-                            System.out.println(str);
-                            return l;
-                        } else {
-                            l = findMatchingCount(ens, criteria);
-                            str += criteria + " " + l;
-                            System.out.println(str);
-                            return l;
-                        }
-
-                    } else {
-                        str += " not encounter count";
-                        System.out.println(str);
-                        l = null;
-                        return l;
-                    }
-                }
-
-            }
-
-            return l;
-
-        } catch (Exception e) {
-            System.out.println("Replacable Calculation String error = " + e);
+        if (ens == null) {
             return l;
         }
+        if (ens.isEmpty()) {
+            l = 0l;
+            return l;
+        }
+
+        String patternStart = "#{";
+        String patternEnd = "}";
+        String regexString = Pattern.quote(patternStart) + "(.*?)" + Pattern.quote(patternEnd);
+
+        Pattern p = Pattern.compile(regexString);
+
+        Matcher m = p.matcher(text);
+
+        while (m.find()) {
+            String block = m.group(1);
+            str = block;
+            QueryComponent qc = findQueryComponentByCode(block);
+            if (qc == null) {
+                str += " not qc";
+                l = null;
+                return l;
+
+            } else {
+                if (qc.getQueryType() == QueryType.Encounter_Count) {
+                    List<QueryComponent> criteria = findCriteriaForQueryComponent(qc);
+
+                    if (criteria == null || criteria.isEmpty()) {
+                        l = Long.valueOf(ens.size());
+                        str += " " + l;
+                        return l;
+                    } else {
+                        l = findMatchingCount(ens, criteria);
+                        str += criteria + " " + l;
+                        return l;
+                    }
+
+                } else {
+                    str += " not encounter count";
+                    l = null;
+                    return l;
+                }
+            }
+
+        }
+
+        return l;
+
     }
 
     private List<Encounter> findEncounters(Date fromDate, Date toDate, Institution institution) {
@@ -425,7 +414,6 @@ public class ReportTimerSessionBean {
     }
 
     public QueryComponent findQueryComponentByCode(String code) {
-        System.out.println("code = " + code);
         if (code == null) {
             return null;
         }
@@ -434,7 +422,6 @@ public class ReportTimerSessionBean {
                 continue;
             }
             if (code.equals("encounter_count_males_below_35_active")) {
-                System.out.println("qc.getCode() = " + qc.getCode());
             }
             if (qc.getCode().trim().equals(code.trim())) {
                 return qc;
@@ -443,11 +430,11 @@ public class ReportTimerSessionBean {
         return null;
     }
 
-    public Long findMatchingCount(List<Encounter> encs, List<QueryComponent> qrys) {
+    public Long findMatchingCount(List<EncounterWithComponents> encs, List<QueryComponent> qrys) {
 
         Long c = 0l;
-        for (Encounter e : encs) {
-            List<ClientEncounterComponentItem> is = findClientEncounterComponentItems(e);
+        for (EncounterWithComponents e : encs) {
+            List<ClientEncounterComponentItem> is = e.getComponents();
             boolean suitableForInclusion = true;
             for (QueryComponent q : qrys) {
 
@@ -620,6 +607,7 @@ public class ReportTimerSessionBean {
                 + " and f.encounter=:e";
         Map m = new HashMap();
         m.put("e", enc);
+//        System.out.println("m = " + m);
         List<ClientEncounterComponentItem> t = getClientEncounterComponentItemFacade().findByJpql(j, m);
         if (t == null) {
             t = new ArrayList<>();
@@ -631,7 +619,6 @@ public class ReportTimerSessionBean {
         if (p == null) {
             return null;
         }
-        System.out.println("p = " + p);
         List<QueryComponent> output = new ArrayList<>();
         for (QueryComponent qc : getQueryComponents()) {
             if (qc.getQueryLevel() == null) {

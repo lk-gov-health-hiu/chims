@@ -35,6 +35,7 @@ import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.Transient;
+import lk.gov.health.phsp.bean.CommonController;
 import lk.gov.health.phsp.enums.TimePeriodType;
 
 /**
@@ -106,6 +107,8 @@ public class StoredQueryResult implements Serializable {
 
     @Transient
     private String processStatus;
+    @Transient
+    private String periodString;
 
     public Long getId() {
         return id;
@@ -122,8 +125,6 @@ public class StoredQueryResult implements Serializable {
         return hash;
     }
 
-    
-    
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
@@ -376,6 +377,42 @@ public class StoredQueryResult implements Serializable {
 
     public void setErrorMessage(String errorMessage) {
         this.errorMessage = errorMessage;
+    }
+
+    public String getPeriodString() {
+        periodString = "";
+        if (this.timePeriodType == null) {
+            return periodString;
+        }
+        switch (this.timePeriodType) {
+            case Yearley:
+                periodString = "Year : " + this.resultYear;
+                break;
+            case Quarterly:
+                ;
+                periodString = "Year : " + 
+                        this.resultYear + 
+                        ", Quarter : " +
+                        CommonController.quarterAsString(this.resultQuarter) ;
+                break;
+            case Monthly:
+                periodString = "Year : " + 
+                        this.resultYear + 
+                        ", Month : " +
+                        CommonController.monthAsString(this.resultMonth) ;
+                break;
+            case Dates:
+                periodString = "From : " + 
+                        CommonController.dateTimeToString(this.resultFrom) + 
+                        ", To : " + 
+                        CommonController.dateTimeToString(this.resultTo);
+                break;
+        }
+        return periodString;
+    }
+
+    public void setPeriodString(String periodString) {
+        this.periodString = periodString;
     }
 
 }
