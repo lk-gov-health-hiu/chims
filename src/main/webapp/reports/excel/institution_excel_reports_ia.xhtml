@@ -1,0 +1,124 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:reports="http://xmlns.jcp.org/jsf/composite/reports">
+    <head>
+        <ui:define name="head">
+            Excel Reports
+        </ui:define>
+    </head>
+    <body>
+
+        <ui:composition template="/template.xhtml">
+            <ui:define name="content">
+                <h:form>
+                    <p:panelGrid columns="1" class="w3-border w3-margin w3-card" style="width: 99%; margin: auto;">
+                        <f:facet name="header" >
+                            <p:outputLabel value="Institution Reports" ></p:outputLabel>
+                        </f:facet>
+
+
+                        <p:panelGrid columns="2" >
+                            <p:outputLabel value="Report" ></p:outputLabel>
+                            <p:autoComplete value="#{reportController.queryComponent}"
+                                            completeMethod="#{queryComponentController.completeQueries}"
+                                            var="q"
+                                            itemLabel="#{q.name}"
+                                            itemValue="#{q}">
+                            </p:autoComplete>
+
+                            <p:outputLabel value="Institution" ></p:outputLabel>
+                            <p:selectOneMenu   value="#{reportController.institution}" >
+                                <f:selectItem itemLabel="All" ></f:selectItem>
+                                <f:selectItems value="#{webUserController.loggableInstitutions}"
+                                               var="i" itemLabel="#{i.name}" itemValue="#{i}"></f:selectItems>
+                            </p:selectOneMenu >
+
+                            <p:outputLabel value="Period Type" ></p:outputLabel>
+                            <p:selectOneMenu value="#{reportController.timePeriodType}" >
+                                <f:selectItem itemLabel="Select" ></f:selectItem>
+                                <f:selectItems value="#{commonController.timePeriodTypes}" ></f:selectItems>
+                            </p:selectOneMenu>
+
+                            <p:outputLabel id="lblYear" value="Year" ></p:outputLabel>
+                            <p:inputText id="txtYear" value="#{reportController.year}" ></p:inputText>
+
+                            <p:outputLabel id="lblQuarter" value="Quarter" ></p:outputLabel>
+                            <p:selectOneMenu id="ddmQuarter" value="#{reportController.quarterEnum}" >
+                                <f:selectItem itemLabel="Select" ></f:selectItem>
+                                <f:selectItems value="#{commonController.quarters}" ></f:selectItems>
+                            </p:selectOneMenu>
+
+                            <p:outputLabel id="lblMonth" value="Month" ></p:outputLabel>
+                            <p:inputText id="txtMonth" value="#{reportController.month}" ></p:inputText>
+
+
+                            <p:commandButton value="List Existing"  style="width:30em;margin:auto;"
+                                             actionListener="#{reportController.listExistingReports()}"
+                                             ajax="false">
+                            </p:commandButton>
+
+                            <p:commandButton value="Create New"  style="width:30em;margin:auto;"
+                                             actionListener="#{reportController.createNewReport()}"
+                                             ajax="false">
+                            </p:commandButton>
+
+
+                        </p:panelGrid>
+                        <p:dataTable value="#{reportController.reportResults}" var="r" >
+                            <p:column headerText="Created Data" >
+                                <p:outputLabel value="#{r.createdAt}" >
+                                    <f:convertDateTime pattern="dd MMMM yyyy" ></f:convertDateTime>
+                                </p:outputLabel>
+                            </p:column>
+                            <p:column headerText="Created By" >
+                                <p:outputLabel value="#{r.creater.person.name}" >
+                                </p:outputLabel>
+                            </p:column>
+                            <p:column headerText="Period" >
+                                <p:outputLabel value="#{r.periodString}">
+                                </p:outputLabel>
+                            </p:column>
+                            <p:column headerText="Status" >
+                                <p:outputLabel value="#{r.processStatus}">
+                                </p:outputLabel>
+                                <p:outputLabel value="#{r.errorMessage}" 
+                                               rendered="#{r.errorMessage ne null}"
+                                               >
+                                </p:outputLabel>
+                            </p:column>
+                            <p:column headerText="Actions" >
+                                <p:commandButton value="Download" 
+                                                 disabled="#{!r.processCompleted}"
+                                                 ajax="false" 
+                                                 onclick="PrimeFaces.monitorDownload(start, stop);" 
+                                                 icon="ui-icon-arrowthick-1-s">
+                                    <f:setPropertyActionListener value="#{r}" 
+                                                                 target="#{reportController.downloadingResult}" 
+                                                                 ></f:setPropertyActionListener>
+                                    <p:fileDownload value="#{reportController.downloadingFile}" />
+                                </p:commandButton>
+                                <p:commandButton ajax="false" action="#{reportController.removeReport()}"
+                                                 value="Remove">
+                                    <f:setPropertyActionListener value="#{r}" target="#{reportController.removingResult}" ></f:setPropertyActionListener>
+                                </p:commandButton>
+                            </p:column>
+                        </p:dataTable>
+
+
+
+
+
+
+
+                    </p:panelGrid>
+                </h:form>
+            </ui:define>
+        </ui:composition>
+
+    </body>
+</html>

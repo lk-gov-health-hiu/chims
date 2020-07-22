@@ -95,9 +95,8 @@ public class ReportTimerSessionBean {
             second = "10",
             persistent = false)
     public void runEveryMinute() {
-        System.out.println("runEveryTenMinute = " + new Date());
+//        System.out.println("runEveryTenMinute = " + new Date());
         queryComponents = null;
-        System.out.println("processingReport = " + processingReport);
 
         if (!processingReport) {
             runReports();
@@ -124,21 +123,20 @@ public class ReportTimerSessionBean {
         }
 
         for (StoredQueryResult q : qs) {
-            System.out.println("q = " + q);
-            System.out.println("q = " + q.isProcessStarted());
+//            System.out.println("q = " + q);
+//            System.out.println("q = " + q.isProcessStarted());
             q.setProcessStarted(true);
             q.setProcessStartedAt(new Date());
             q.setProcessFailed(false);
             q.setProcessCompleted(false);
             getStoreQueryResultFacade().edit(q);
-            System.out.println("q = " + q);
-            System.out.println("q = " + q.isProcessStarted());
+//            System.out.println("q = " + q);
+//            System.out.println("q = " + q.isProcessStarted());
             Long id = q.getId();
 
             StoredQueryResult nq = getStoreQueryResultFacade().find(id);
 
-            System.out.println("nq = " + nq);
-            System.out.println("nq = " + nq.isProcessStarted());
+//            System.out.println("nq = " + nq);
             boolean processSuccess = processReport(nq);
 
             if (processSuccess) {
@@ -359,7 +357,6 @@ public class ReportTimerSessionBean {
             QueryComponent qc = findQueryComponentByCode(block);
             if (qc == null) {
                 str += " not qc";
-                System.out.println(str);
                 l = null;
                 return l;
 
@@ -370,18 +367,15 @@ public class ReportTimerSessionBean {
                     if (criteria == null || criteria.isEmpty()) {
                         l = Long.valueOf(ens.size());
                         str += " " + l;
-                        System.out.println(str);
                         return l;
                     } else {
                         l = findMatchingCount(ens, criteria);
                         str += criteria + " " + l;
-                        System.out.println(str);
                         return l;
                     }
 
                 } else {
                     str += " not encounter count";
-                    System.out.println(str);
                     l = null;
                     return l;
                 }
@@ -420,7 +414,6 @@ public class ReportTimerSessionBean {
     }
 
     public QueryComponent findQueryComponentByCode(String code) {
-        System.out.println("code = " + code);
         if (code == null) {
             return null;
         }
@@ -429,7 +422,6 @@ public class ReportTimerSessionBean {
                 continue;
             }
             if (code.equals("encounter_count_males_below_35_active")) {
-                System.out.println("qc.getCode() = " + qc.getCode());
             }
             if (qc.getCode().trim().equals(code.trim())) {
                 return qc;
@@ -615,8 +607,7 @@ public class ReportTimerSessionBean {
                 + " and f.encounter=:e";
         Map m = new HashMap();
         m.put("e", enc);
-        System.out.println("m = " + m);
-        System.out.println("j = " + j);
+//        System.out.println("m = " + m);
         List<ClientEncounterComponentItem> t = getClientEncounterComponentItemFacade().findByJpql(j, m);
         if (t == null) {
             t = new ArrayList<>();
@@ -628,7 +619,6 @@ public class ReportTimerSessionBean {
         if (p == null) {
             return null;
         }
-        System.out.println("p = " + p);
         List<QueryComponent> output = new ArrayList<>();
         for (QueryComponent qc : getQueryComponents()) {
             if (qc.getQueryLevel() == null) {
