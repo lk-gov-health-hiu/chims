@@ -90,7 +90,7 @@ public class ReportTimerSessionBean {
     private List<QueryComponent> queryComponents;
 
     @Schedule(
-            hour = "*",
+            hour = "22",
             minute = "*",
             second = "10",
             persistent = false)
