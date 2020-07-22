@@ -90,7 +90,7 @@ public class ReportTimerSessionBean {
     private List<QueryComponent> queryComponents;
 
     @Schedule(
-            hour = "22",
+            hour = "*",
             minute = "*",
             second = "10",
             persistent = false)
@@ -104,7 +104,7 @@ public class ReportTimerSessionBean {
 
     }
 
-    public void runReports() {
+    private void runReports() {
 
         processingReport = true;
         String j;
@@ -198,7 +198,7 @@ public class ReportTimerSessionBean {
         switch (queryComponent.getQueryType()) {
             case Encounter_Count:
                 List<Encounter> tes = findEncounters(rtp.getFrom(), rtp.getTo(), ins);
-                for(Encounter e:tes){
+                for (Encounter e : tes) {
                     EncounterWithComponents enc = new EncounterWithComponents();
                     enc.setComponents(findClientEncounterComponentItems(e));
                     encs.add(enc);
@@ -331,7 +331,7 @@ public class ReportTimerSessionBean {
 
     }
 
-    public Long findReplaceblesInCalculationString(String text, List<EncounterWithComponents> ens) {
+    private Long findReplaceblesInCalculationString(String text, List<EncounterWithComponents> ens) {
         String str = text;
         Long l = 0l;
 
@@ -413,7 +413,7 @@ public class ReportTimerSessionBean {
 
     }
 
-    public QueryComponent findQueryComponentByCode(String code) {
+    private QueryComponent findQueryComponentByCode(String code) {
         if (code == null) {
             return null;
         }
@@ -430,7 +430,7 @@ public class ReportTimerSessionBean {
         return null;
     }
 
-    public Long findMatchingCount(List<EncounterWithComponents> encs, List<QueryComponent> qrys) {
+    private Long findMatchingCount(List<EncounterWithComponents> encs, List<QueryComponent> qrys) {
 
         Long c = 0l;
         for (EncounterWithComponents e : encs) {
@@ -461,7 +461,7 @@ public class ReportTimerSessionBean {
         return c;
     }
 
-    public boolean matchQuery(QueryComponent q, ClientEncounterComponentItem clientValue) {
+    private boolean matchQuery(QueryComponent q, ClientEncounterComponentItem clientValue) {
         boolean m = false;
         Integer qInt1 = null;
         Integer qInt2 = null;
@@ -601,7 +601,7 @@ public class ReportTimerSessionBean {
         return m;
     }
 
-    public List<ClientEncounterComponentItem> findClientEncounterComponentItems(Encounter enc) {
+    private List<ClientEncounterComponentItem> findClientEncounterComponentItems(Encounter enc) {
         String j = "select f from ClientEncounterComponentItem f "
                 + " where f.retired=false "
                 + " and f.encounter=:e";
@@ -615,7 +615,7 @@ public class ReportTimerSessionBean {
         return t;
     }
 
-    public List<QueryComponent> findCriteriaForQueryComponent(QueryComponent p) {
+    private List<QueryComponent> findCriteriaForQueryComponent(QueryComponent p) {
         if (p == null) {
             return null;
         }
@@ -637,42 +637,34 @@ public class ReportTimerSessionBean {
         return output;
     }
 
-    public List<QueryComponent> findAllQueryComponents() {
+    private List<QueryComponent> findAllQueryComponents() {
         String j = "select q from QueryComponent q "
                 + " where q.retired=false ";
         List<QueryComponent> c = getQueryComponentFacade().findByJpql(j);
         return c;
     }
 
-    public StoredQueryResultFacade getStoreQueryResultFacade() {
+    private StoredQueryResultFacade getStoreQueryResultFacade() {
         return storeQueryResultFacade;
     }
 
-    public boolean isProcessingReport() {
-        return processingReport;
-    }
-
-    public void setProcessingReport(boolean processingReport) {
-        this.processingReport = processingReport;
-    }
-
-    public UploadFacade getUploadFacade() {
+    private UploadFacade getUploadFacade() {
         return uploadFacade;
     }
 
-    public EncounterFacade getEncounterFacade() {
+    private EncounterFacade getEncounterFacade() {
         return encounterFacade;
     }
 
-    public QueryComponentFacade getQueryComponentFacade() {
+    private QueryComponentFacade getQueryComponentFacade() {
         return queryComponentFacade;
     }
 
-    public ClientEncounterComponentItemFacade getClientEncounterComponentItemFacade() {
+    private ClientEncounterComponentItemFacade getClientEncounterComponentItemFacade() {
         return clientEncounterComponentItemFacade;
     }
 
-    public List<QueryComponent> getQueryComponents() {
+    private List<QueryComponent> getQueryComponents() {
         if (queryComponents == null) {
             queryComponents = findAllQueryComponents();
         }
@@ -680,7 +672,7 @@ public class ReportTimerSessionBean {
         return queryComponents;
     }
 
-    public void setQueryComponents(List<QueryComponent> queryComponents) {
+    private void setQueryComponents(List<QueryComponent> queryComponents) {
         this.queryComponents = queryComponents;
     }
 
