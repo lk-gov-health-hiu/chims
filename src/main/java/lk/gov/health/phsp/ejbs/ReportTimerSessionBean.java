@@ -89,11 +89,11 @@ public class ReportTimerSessionBean {
     @EJB
     private ClientEncounterComponentItemFacade clientEncounterComponentItemFacade;
 
-    @Schedule(
-            hour = "*",
-            minute = "10",
-            second = "10",
-            persistent = false)
+//    @Schedule(
+//            hour = "*",
+//            minute = "10",
+//            second = "10",
+//            persistent = false)
     public void runEveryMinute() {
         System.out.println("runEveryMinute = " + new Date());
         System.out.println("processingReport = " + processingReport);

@@ -33,15 +33,24 @@
                     <p:menuitem value="Change My Password" action="#{webUserController.toChangeMyPassword()}"    ajax="false" />
                     <p:menuitem value="Change My Details" action="#{webUserController.toChangeMyDetails()}"    ajax="false" />
                 </p:submenu>
+                
+                
+                  <p:submenu label="Analysis" 
+                             rendered="#{webUserController.hasPrivilege('Client_Management')}" >
+                    <p:menuitem ajax="false" value="Reports" 
+                                action="/reports/index_ins" ></p:menuitem>
+                </p:submenu>
 
-                <p:submenu label="Analysis" >
+                <p:submenu label="Analysis" 
+                           rendered="#{webUserController.hasPrivilege('Institution_Administration')}" >
                     <p:menuitem ajax="false" value="Queries" 
                                 action="#{queryComponentController.toProcessQuery()}"  />
                     <p:menuitem ajax="false" value="Reports" action="#{reportController.toViewReports()}" ></p:menuitem>
                 </p:submenu>
 
 
-                <p:submenu label="Institution Administration"  rendered="#{webUserController.hasPrivilege('Institution_Administration')}"  >
+                <p:submenu label="Institution Administration"  
+                           rendered="#{webUserController.hasPrivilege('Institution_Administration')}"  >
                     <p:menuitem value="Manage Users" 
                                 action="/insAdmin/user_index" ajax="false"
                                 rendered="#{webUserController.hasPrivilege('Institution_Administration')}" />
