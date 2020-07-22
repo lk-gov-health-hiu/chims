@@ -3,7 +3,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:p="http://primefaces.org/ui">
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
     <head>
         <ui:define name="head">
             Reports
@@ -19,6 +20,9 @@
 
                 <h:form>
                     <h:panelGrid columns="1" >
+                        <f:facet name="header" >
+                            <h:outputLabel value="Reports" ></h:outputLabel>
+                        </f:facet>
                         
                         <p:commandButton value="Institution Excel Reports"   style="width:30em;margin:auto;"
                                          action="#{reportController.toViewInstitutionExcelReports()}"
@@ -38,6 +42,10 @@
 
                         <p:commandButton value="Clinic Visits"   style="width:30em;margin:auto;"
                                          action="#{reportController.toViewClinicEnrollments()}"
+                                         ajax="false"></p:commandButton>
+                        
+                          <p:commandButton value="Client Registrations by Institution"   style="width:30em;margin:auto;"
+                                           action="#{reportController.toViewClientRegistrationsByInstitution()}"
                                          ajax="false"></p:commandButton>
 
                     </h:panelGrid>

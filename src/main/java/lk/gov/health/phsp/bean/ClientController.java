@@ -378,6 +378,9 @@ public class ClientController implements Serializable {
         return "/systemAdmin/all_clients";
     }
 
+    
+   
+    
     public void fillRegisterdClientsWithDatesForInstitution() {
         String j = "select c from Client c "
                 + " where c.retired<>:ret ";
@@ -900,10 +903,10 @@ public class ClientController implements Serializable {
 
         if (webUserController.getLoggedUser().getInstitution().getPoiInstitution() != null) {
             webUserController.getLoggedUser().getInstitution().setPoiInstitution(institutionController.getInstitutionById(webUserController.getLoggedUser().getInstitution().getPoiInstitution().getId()));
-            System.out.println("Last HIN case 1 = " + webUserController.getLoggedUser().getInstitution().getPoiInstitution().getLastHin());
+//            System.out.println("Last HIN case 1 = " + webUserController.getLoggedUser().getInstitution().getPoiInstitution().getLastHin());
         } else {
             webUserController.getLoggedUser().setInstitution(institutionController.getInstitutionById(webUserController.getLoggedUser().getInstitution().getId()));
-            System.out.println("Last HIN Case 2 = " + webUserController.getLoggedUser().getInstitution().getLastHin());
+//            System.out.println("Last HIN Case 2 = " + webUserController.getLoggedUser().getInstitution().getLastHin());
         }
 
     }

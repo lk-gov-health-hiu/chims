@@ -248,21 +248,21 @@ public class ClientEncounterComponentItemController implements Serializable {
             switch (i.getItem().getDataType()) {
                 case Real_Number:
                     i.setRealNumberValue(commonController.getDoubleValue(result));
-                    System.out.println("i.getRealNumberValue() = " + i.getRealNumberValue());
+//                    System.out.println("i.getRealNumberValue() = " + i.getRealNumberValue());
                     getFacade().edit(i);
                     break;
                 case Integer_Number:
                     i.setIntegerNumberValue(commonController.getIntegerValue(result));
-                    System.out.println("i.getIntegerNumberValue() = " + i.getIntegerNumberValue());
+//                    System.out.println("i.getIntegerNumberValue() = " + i.getIntegerNumberValue());
                     getFacade().edit(i);
                     break;
                 case Short_Text:
                     i.setShortTextValue(result);
-                    System.out.println("i.getShortTextValue() = " + i.getShortTextValue());
+//                    System.out.println("i.getShortTextValue() = " + i.getShortTextValue());
                     getFacade().edit(i);
                     break;
                 case Long_Text:
-                    System.out.println("i.getLongTextValue() = " + i.getLongTextValue());
+//                    System.out.println("i.getLongTextValue() = " + i.getLongTextValue());
                     i.setLongTextValue(result);
                     getFacade().edit(i);
                     break;
@@ -272,7 +272,7 @@ public class ClientEncounterComponentItemController implements Serializable {
             getFacade().edit(i);
         }
 
-        System.out.println("javaStringToEvaluate = " + javaStringToEvaluate);
+//        System.out.println("javaStringToEvaluate = " + javaStringToEvaluate);
     }
 
     public String evaluateScript(String script) {
@@ -628,9 +628,9 @@ public class ClientEncounterComponentItemController implements Serializable {
     }
 
     private ClientEncounterComponentItem findClientValue(ClientEncounterComponentItem i, String code) {
-        System.out.println("findClientValue");
-        System.out.println("code = " + code);
-        System.out.println("i = " + i);
+//        System.out.println("findClientValue");
+//        System.out.println("code = " + code);
+//        System.out.println("i = " + i);
         if (i == null) {
             return null;
         }
@@ -671,8 +671,8 @@ public class ClientEncounterComponentItemController implements Serializable {
         Map m = new HashMap();
         m.put("client", client);
         m.put("c", code.toLowerCase());
-        System.out.println("m = " + m);
-        System.out.println("j = " + j);
+//        System.out.println("m = " + m);
+//        System.out.println("j = " + j);
         ClientEncounterComponentItem fountVal = getFacade().findFirstByJpql(j, m);
         if (fountVal != null) {
             if (code.equalsIgnoreCase("client_current_age_in_years")) {
@@ -683,9 +683,9 @@ public class ClientEncounterComponentItemController implements Serializable {
                 fountVal.setRealNumberValue(Double.valueOf(p.getAgeYears()));
                 fountVal.setIntegerNumberValue(p.getAgeYears());
                 getFacade().edit(fountVal);
-                System.out.println("Patient Age Item Updated. ID is " + fountVal);
+//                System.out.println("Patient Age Item Updated. ID is " + fountVal);
             }
-            System.out.println("Patient Value Found. ID is " + fountVal);
+//            System.out.println("Patient Value Found. ID is " + fountVal);
         } else {
             if (code.equalsIgnoreCase("client_current_age_in_years")) {
                 ClientEncounterComponentItem ageItem = new ClientEncounterComponentItem();
@@ -699,7 +699,7 @@ public class ClientEncounterComponentItemController implements Serializable {
                 ageItem.setIntegerNumberValue(p.getAgeYears());
                 getFacade().create(ageItem);
                 fountVal = ageItem;
-                System.out.println("Patient age created. ID is " + fountVal);
+//                System.out.println("Patient age created. ID is " + fountVal);
             }
             
         }

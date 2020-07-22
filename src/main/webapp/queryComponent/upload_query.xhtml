@@ -12,6 +12,13 @@
 
             <ui:define name="content">
 
+
+<!--
+                <h:form enctype="multipart/form-data">
+                    <p:fileUpload value="#{uploadController.file}" mode="simple" />
+                    <p:commandButton value="Submit" ajax="false" action="#{uploadController.uploadFile1}"/>
+                </h:form>-->
+
                 <h:form enctype="multipart/form-data" >
                     <p:panelGrid id="display" columns="1" style="margin: auto;">
                         <f:facet name="header" >
@@ -19,8 +26,8 @@
                             <p:outputLabel value="Upload Query" />
 
 
-                            <p:commandButton action="query" value="Upload" 
-                                             actionListener="#{uploadController.uploadFile()}" ajax="false" 
+                            <p:commandButton  value="Upload" 
+                                             action="#{uploadController.uploadFile()}" ajax="false" 
                                              style="float: right;" >
                             </p:commandButton>
                             <p:commandButton ajax="false" action="query" value="Back" style="float: right;" ></p:commandButton>

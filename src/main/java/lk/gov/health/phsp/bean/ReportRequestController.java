@@ -54,7 +54,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.Calendar;
 import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -77,17 +76,14 @@ import lk.gov.health.phsp.entity.DesignComponentFormItem;
 import lk.gov.health.phsp.entity.Item;
 import lk.gov.health.phsp.entity.QueryComponent;
 import lk.gov.health.phsp.entity.Upload;
-import lk.gov.health.phsp.enums.Quarter;
 import lk.gov.health.phsp.enums.QueryCriteriaMatchType;
 import lk.gov.health.phsp.enums.QueryType;
-import lk.gov.health.phsp.entity.StoredQueryResult;
 import lk.gov.health.phsp.enums.TimePeriodType;
 import lk.gov.health.phsp.facade.ClientEncounterComponentItemFacade;
 import lk.gov.health.phsp.facade.ClientFacade;
 import lk.gov.health.phsp.facade.DesignComponentFormItemFacade;
 import lk.gov.health.phsp.facade.EncounterFacade;
 import lk.gov.health.phsp.facade.QueryComponentFacade;
-import lk.gov.health.phsp.facade.StoredQueryResultFacade;
 import lk.gov.health.phsp.facade.UploadFacade;
 import lk.gov.health.phsp.facade.util.JsfUtil;
 import lk.gov.health.phsp.pojcs.Replaceable;
@@ -121,8 +117,6 @@ public class ReportRequestController implements Serializable {
     private QueryComponentFacade queryComponentFacade;
     @EJB
     private UploadFacade uploadFacade;
-    @EJB
-    private StoredQueryResultFacade storedQueryResultFacade;
 
 // </editor-fold>     
 // <editor-fold defaultstate="collapsed" desc="Controllers">
@@ -151,9 +145,9 @@ public class ReportRequestController implements Serializable {
     private NcdReportTem ncdReportTem;
     private StreamedContent file;
     private String mergingMessage;
-    
-
+    private QueryComponent queryComponent;
 // </editor-fold> 
+
 // <editor-fold defaultstate="collapsed" desc="Constructors">
     /**
      * Creates a new instance of ReportController
@@ -166,137 +160,6 @@ public class ReportRequestController implements Serializable {
     public String toViewReports() {
         return "/reports/index";
     }
-    
-    private QueryComponent queryComponent;
-    List<StoredQueryResult> myResults;
-    List<StoredQueryResult> reportResults;
-
-    private ReportTimePeriod reportTimePeriod;
-    private TimePeriodType timePeriodType;
-    private Integer year;
-    private Integer quarter;
-    private Integer month;
-    private Integer dateOfMonth;
-    private Quarter quarterEnum;
-    
-    public void listMyReports() {
-        String j;
-        Map m = new HashMap();
-        j = "select s "
-                + " from StoredQueryResult s "
-                + " where s.retired=false "
-                + " and s.creater=:me "
-                + " order by s.id desc";
-
-        m.put("me", webUserController.getLoggedUser());
-        myResults = getStoredQueryResultFacade().findByJpql(j, m);
-    }
-
-    public void listExistingReports() {
-        if (institution == null) {
-            JsfUtil.addErrorMessage("Please select an institutions");
-            return;
-        }
-
-        if (queryComponent == null) {
-            JsfUtil.addErrorMessage("Please select a report");
-            return;
-        }
-
-        switch (getTimePeriodType()) {
-            case Yearley:
-                setFromDate(CommonController.startOfTheYear(getYear()));
-                setToDate(CommonController.endOfYear(getYear()));
-                break;
-            case Quarterly:
-                setFromDate(CommonController.startOfQuarter(getYear(), getQuarter()));
-                setToDate(CommonController.endOfQuarter(getYear(), getQuarter()));
-                break;
-            case Monthly:
-                setFromDate(CommonController.startOfTheMonth(getYear(), getMonth()));
-                setToDate(CommonController.endOfTheMonth(getYear(), getMonth()));
-                break;
-            case Dates:
-            //TODO: Add what happens when selected dates
-
-        }
-
-        String j;
-        Map m = new HashMap();
-        j = "select s "
-                + " from StoredQueryResult s "
-                + " where s.retired=false "
-                + " and s.institution=:ins "
-                + " and s.queryComponent=:qc "
-                + " and s.resultFrom=:f "
-                + " and s.resultTo=:t "
-                + " order by s.id desc";
-
-        m.put("ins", institution);
-        m.put("qc", queryComponent);
-        m.put("f", getFromDate());
-        m.put("t", getToDate());
-
-        reportResults = getStoredQueryResultFacade().findByJpql(j, m);
-
-    }
-
-    public void createNewReport() {
-        if (institution == null) {
-            JsfUtil.addErrorMessage("Please select an institutions");
-            return;
-        }
-
-        if (queryComponent == null) {
-            JsfUtil.addErrorMessage("Please select a report");
-            return;
-        }
-
-        StoredQueryResult sqr = new StoredQueryResult();
-        sqr.setCreatedAt(new Date());
-        sqr.setCreater(webUserController.getLoggedUser());
-
-        sqr.setInstitution(institution);
-        sqr.setRequestCreatedAt(new Date());
-        sqr.setTimePeriodType(getTimePeriodType());
-        sqr.setQueryComponent(queryComponent);
-
-        switch (getTimePeriodType()) {
-            case Yearley:
-                sqr.setResultFrom(CommonController.startOfTheYear(getYear()));
-                sqr.setResultTo(CommonController.endOfYear(getYear()));
-                sqr.setResultYear(getYear());
-
-                break;
-            case Quarterly:
-                sqr.setResultFrom(CommonController.startOfQuarter(getYear(), getQuarter()));
-                sqr.setResultTo(CommonController.endOfQuarter(getYear(), getQuarter()));
-                sqr.setResultYear(getYear());
-                sqr.setResultQuarter(getQuarter());
-                break;
-            case Monthly:
-                sqr.setResultFrom(CommonController.startOfTheMonth(getYear(), getMonth()));
-                sqr.setResultTo(CommonController.endOfTheMonth(getYear(), getMonth()));
-                sqr.setResultYear(getYear());
-                sqr.setResultMonth(getMonth());
-                break;
-            case Dates:
-            //TODO: Add what happens when selected dates
-
-        }
-
-        getStoredQueryResultFacade().create(sqr);
-
-        setFromDate(sqr.getResultFrom());
-        setToDate(sqr.getResultTo());
-        JsfUtil.addSuccessMessage("Added to the Queue to Process");
-        
-        listExistingReports();
-
-    }
-
-    
-    
 
     private List<Long> findEncounterIds(Date fromDate, Date toDate, Institution institution) {
         String j = "select e.id "
@@ -345,6 +208,7 @@ public class ReportRequestController implements Serializable {
 
 //        System.out.println("m = " + m);
 //        System.out.println("j = " + j);
+
         List<Encounter> encs = encounterFacade.findByJpql(j, m);
 
         return encs;
@@ -479,6 +343,16 @@ public class ReportRequestController implements Serializable {
 
     }
 
+    public void toDownloadNcdReportThisMonthInstitution() {
+        ReportTimePeriod rtp = new ReportTimePeriod();
+        rtp.setTimePeriodType(TimePeriodType.Monthly);
+        rtp.setFrom(CommonController.startOfTheMonth());
+        rtp.setTo(CommonController.endOfTheMonth());
+        rtp.setYear(CommonController.getYear());
+        rtp.setMonth(CommonController.getMonth());
+        toDownloadNcdReport(institution, rtp);
+    }
+
     public void toDownloadNcdReport(Institution ins, ReportTimePeriod rtp) {
 
         if (queryComponent == null) {
@@ -545,7 +419,7 @@ public class ReportRequestController implements Serializable {
             FileInputStream excelFile = new FileInputStream(newFile);
             workbook = new XSSFWorkbook(excelFile);
             sheet = workbook.getSheetAt(0);
-//            XSSFSheet sheet2 = workbook.createSheet("Test Sheet CHIMS");
+            XSSFSheet sheet2 = workbook.createSheet("Test Sheet CHIMS");
 
             Iterator<Row> iterator = sheet.iterator();
 
@@ -601,9 +475,7 @@ public class ReportRequestController implements Serializable {
             }
         } catch (FileNotFoundException e) {
             System.out.println("e = " + e);
-
         } catch (IOException e) {
-
             System.out.println("e = " + e);
         }
 
@@ -837,15 +709,8 @@ public class ReportRequestController implements Serializable {
         }
         return c;
     }
-    
-    
-    
-    
-    
-    
-    
-    public void toDownloadNcdReportLastMonthInstitution() {
 
+    public void toDownloadNcdReportLastMonthInstitution() {
         ReportTimePeriod rtp = new ReportTimePeriod();
         rtp.setTimePeriodType(TimePeriodType.Monthly);
         rtp.setFrom(CommonController.startOfTheLastMonth());
@@ -860,15 +725,15 @@ public class ReportRequestController implements Serializable {
         rtp.setTimePeriodType(TimePeriodType.Dates);
         if (fromDate == null) {
             rtp.setFrom(CommonController.startOfTheLastMonth());
-        } else {
+        }else{
             rtp.setFrom(fromDate);
         }
-        if (toDate == null) {
+        if(toDate==null){
             rtp.setTo(CommonController.endOfTheLastMonth());
-        } else {
+        }else{
             rtp.setTo(toDate);
         }
-
+        
         rtp.setYear(CommonController.getYear(CommonController.endOfTheLastMonth()));
         rtp.setMonth(CommonController.getMonth(CommonController.endOfTheLastMonth()));
         toDownloadNcdReport(institution, rtp);
@@ -1189,112 +1054,6 @@ public class ReportRequestController implements Serializable {
 
     public void setClientEncounterComponentItemController(ClientEncounterComponentItemController clientEncounterComponentItemController) {
         this.clientEncounterComponentItemController = clientEncounterComponentItemController;
-    }
-
-    public TimePeriodType getTimePeriodType() {
-        if (timePeriodType == null) {
-            timePeriodType = TimePeriodType.Monthly;
-        }
-        return timePeriodType;
-    }
-
-    public void setTimePeriodType(TimePeriodType timePeriodType) {
-        this.timePeriodType = timePeriodType;
-    }
-
-    public Integer getYear() {
-        if (year == null || year == 0) {
-            year = CommonController.getYear(CommonController.startOfTheLastQuarter());
-        }
-        return year;
-    }
-
-    public void setYear(Integer year) {
-        this.year = year;
-    }
-
-    public Integer getQuarter() {
-        if (quarter == null) {
-            quarter = CommonController.getQuarter(CommonController.startOfTheLastQuarter());
-        }
-        return quarter;
-    }
-
-    public void setQuarter(Integer quarter) {
-        this.quarter = quarter;
-    }
-
-    public Integer getMonth() {
-        if (month == null) {
-            month = CommonController.getMonth(CommonController.startOfTheLastMonth());
-        }
-        return month;
-    }
-
-    public void setMonth(Integer month) {
-        this.month = month;
-    }
-
-    public Integer getDateOfMonth() {
-        return dateOfMonth;
-    }
-
-    public void setDateOfMonth(Integer dateOfMonth) {
-        this.dateOfMonth = dateOfMonth;
-    }
-
-    public Quarter getQuarterEnum() {
-        if (quarterEnum == null) {
-            switch (getQuarter()) {
-                case 1:
-                    quarterEnum = Quarter.First;
-                    break;
-                case 2:
-                    quarterEnum = Quarter.Second;
-                    break;
-                case 3:
-                    quarterEnum = Quarter.Third;
-                    break;
-                case 4:
-                    quarterEnum = Quarter.Fourth;
-                    break;
-                default:
-                    quarterEnum = Quarter.First;
-            }
-        }
-        return quarterEnum;
-    }
-
-    public void setQuarterEnum(Quarter quarterEnum) {
-        switch (quarterEnum) {
-            case First:
-                quarter = 1;
-                break;
-            case Second:
-                quarter = 2;
-                break;
-            case Third:
-                quarter = 3;
-                break;
-            case Fourth:
-                quarter = 4;
-                break;
-            default:
-                quarter = 1;
-        }
-        this.quarterEnum = quarterEnum;
-    }
-
-    public StoredQueryResultFacade getStoredQueryResultFacade() {
-        return storedQueryResultFacade;
-    }
-
-    public ReportTimePeriod getReportTimePeriod() {
-        return reportTimePeriod;
-    }
-
-    public void setReportTimePeriod(ReportTimePeriod reportTimePeriod) {
-        this.reportTimePeriod = reportTimePeriod;
     }
 
 }

@@ -31,6 +31,12 @@
 
                             <p:panelGrid columns="2" >
 
+<!--                                <p:outputLabel value="Parent" for="parent" />
+                                <p:selectOneMenu id="parent" value="#{queryComponentController.selected.name}" >
+                                    <f:selectItems value="#{queryComponentController.categories}"
+                                                   var="c" itemLabel="#{c.name}" itemValue="#{c}" ></f:selectItems>
+                                </p:selectOneMenu>
+                                -->
                                 <p:outputLabel value="#{bundleQuery.CreateQueryComponentLabel_name}" for="name" />
                                 <p:inputText id="name" required="true"
                                              value="#{queryComponentController.selected.name}" title="#{bundleQuery.CreateQueryComponentTitle_name}" />

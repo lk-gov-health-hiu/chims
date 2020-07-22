@@ -61,6 +61,7 @@ import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.faces.context.FacesContext;
+import javax.persistence.TemporalType;
 import javax.servlet.ServletContext;
 import jxl.CellType;
 import jxl.DateCell;
@@ -89,6 +90,7 @@ import lk.gov.health.phsp.facade.QueryComponentFacade;
 import lk.gov.health.phsp.facade.StoredQueryResultFacade;
 import lk.gov.health.phsp.facade.UploadFacade;
 import lk.gov.health.phsp.facade.util.JsfUtil;
+import lk.gov.health.phsp.pojcs.InstitutionCount;
 import lk.gov.health.phsp.pojcs.Replaceable;
 import lk.gov.health.phsp.pojcs.ReportTimePeriod;
 import org.apache.commons.io.FileUtils;
@@ -163,6 +165,8 @@ public class ReportController implements Serializable {
 // </editor-fold> 
     private List<StoredQueryResult> myResults;
     private List<StoredQueryResult> reportResults;
+    private List<InstitutionCount> institutionCounts;
+    private Long reportCount;
 
     private StoredQueryResult removingResult;
     private StoredQueryResult downloadingResult;
@@ -178,26 +182,24 @@ public class ReportController implements Serializable {
     private Integer dateOfMonth;
     private Quarter quarterEnum;
 
-    
-
     public StreamedContent getDownloadingFile() {
-        if(getDownloadingResult()==null){
+        if (getDownloadingResult() == null) {
             JsfUtil.addErrorMessage("No Download file");
             return null;
         }
-        if(getDownloadingResult().getUpload()==null){
+        if (getDownloadingResult().getUpload() == null) {
             JsfUtil.addErrorMessage("No Excel file");
             return null;
         }
         InputStream stream = new ByteArrayInputStream(downloadingResult.getUpload().getBaImage());
-        if(downloadingResult.getUpload().getFileType()==null || downloadingResult.getUpload().getFileType().trim().equals("")){
+        if (downloadingResult.getUpload().getFileType() == null || downloadingResult.getUpload().getFileType().trim().equals("")) {
             downloadingResult.getUpload().setFileType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
             getStoredQueryResultFacade().edit(downloadingResult);
         }
         downloadingFile = new DefaultStreamedContent(stream, downloadingResult.getUpload().getFileType(), downloadingResult.getUpload().getFileName());
         return downloadingFile;
     }
-    
+
     public void listMyReports() {
         String j;
         Map m = new HashMap();
@@ -1037,6 +1039,42 @@ public class ReportController implements Serializable {
         return "/reports/excel/index";
     }
 
+    public String toViewClientRegistrationsByInstitution() {
+        encounters = new ArrayList<>();
+        String forSys = "/reports/client_registrations/for_system_by_ins";
+        String forIns = "/reports/client_registrations/for_ins_by_ins";
+        String forMe = "/reports/client_registrations/for_me_by_ins";
+        String forClient = "/reports/client_registrations/for_clients";
+        String noAction = "";
+        String action = "";
+        switch (webUserController.getLoggedUser().getWebUserRole()) {
+            case Client:
+                action = forClient;
+                break;
+            case Doctor:
+            case Institution_Administrator:
+            case Institution_Super_User:
+            case Institution_User:
+            case Nurse:
+            case Midwife:
+                action = forIns;
+                break;
+            case Me_Admin:
+            case Me_Super_User:
+                action = forMe;
+                break;
+            case Me_User:
+            case User:
+                action = noAction;
+                break;
+            case Super_User:
+            case System_Administrator:
+                action = forSys;
+                break;
+        }
+        return action;
+    }
+
     public String toViewClientRegistrations() {
         encounters = new ArrayList<>();
         String forSys = "/reports/client_registrations/for_system";
@@ -1164,6 +1202,59 @@ public class ReportController implements Serializable {
         }
 
         clients = clientController.getItems(j, m);
+    }
+
+    public void fillClientRegistrationForSysAdminByInstitution() {
+        String j;
+        Map m = new HashMap();
+        j = "select new lk.gov.health.phsp.pojcs.InstitutionCount(c.createInstitution, count(c)) "
+                + " from Client c "
+                + " where c.retired=:ret "
+                + " and c.createdAt between :fd and :td "
+                + " group by c.createInstitution "
+                + " order by c.createInstitution.name";
+        m.put("ret", false);
+        m.put("fd", fromDate);
+        m.put("td", toDate);
+        List<Object> objs = getClientFacade().findAggregates(j, m);
+        institutionCounts = new ArrayList<>();
+        reportCount=0l;
+        for (Object o : objs) {
+            if (o instanceof InstitutionCount) {
+                InstitutionCount ic = (InstitutionCount) o;
+                institutionCounts.add(ic);
+                reportCount+=ic.getCount();
+            }
+        }
+    }
+
+    public void fillRegistrationsOfClientsByInstitution() {
+
+        String j = "select new lk.gov.health.phsp.pojcs.InstitutionCount(c.createInstitution, count(c)) "
+                + " from Client c "
+                + " where c.retired<>:ret ";
+        Map m = new HashMap();
+        m.put("ret", true);
+        j = j + " and c.createdAt between :fd and :td ";
+
+        j = j + " and c.createInstitution in :ins ";
+        m.put("ins", webUserController.getLoggableInstitutions());
+
+        j = j + " group by c.createInstitution ";
+        j = j + " order by c.createInstitution.name ";
+        m.put("fd", getFromDate());
+        m.put("td", getToDate());
+        List<Object> objs = getClientFacade().findAggregates(j, m);
+        institutionCounts = new ArrayList<>();
+        reportCount =0l;
+        for (Object o : objs) {
+            if (o instanceof InstitutionCount) {
+                InstitutionCount ic = (InstitutionCount) o;
+                institutionCounts.add(ic);
+                reportCount+=ic.getCount();
+            }
+        }
+
     }
 
     public void fillClinicEnrollmentsForSysAdmin() {
@@ -1443,6 +1534,8 @@ public class ReportController implements Serializable {
         this.reportResults = reportResults;
     }
 
+    
+    
     public StoredQueryResult getRemovingResult() {
         return removingResult;
     }
@@ -1465,6 +1558,22 @@ public class ReportController implements Serializable {
 
     public void setCurrentUpload(Upload currentUpload) {
         this.currentUpload = currentUpload;
+    }
+
+    public List<InstitutionCount> getInstitutionCounts() {
+        return institutionCounts;
+    }
+
+    public void setInstitutionCounts(List<InstitutionCount> institutionCounts) {
+        this.institutionCounts = institutionCounts;
+    }
+
+    public Long getReportCount() {
+        return reportCount;
+    }
+
+    public void setReportCount(Long reportCount) {
+        this.reportCount = reportCount;
     }
 
 }
