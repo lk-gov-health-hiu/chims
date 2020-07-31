@@ -210,7 +210,7 @@ public class ReportController implements Serializable {
                 + " order by s.id desc";
 
         m.put("me", webUserController.getLoggedUser());
-        myResults = getStoredQueryResultFacade().findByJpql(j, m);
+        myResults = getStoredQueryResultFacade().findByJpql(j, m, true);
     }
 
     public void listExistingReports() {
