@@ -35,7 +35,8 @@
                                 <p:outputLabel value="Parent:" for="parent" />
                                 <p:autoComplete  id="parent" value="#{institutionController.selected.parent}" 
                                                  completeMethod="#{institutionController.completeInstitutions}"
-                                                 var="i" itemLabel="#{i.name}" itemValue="#{i}">
+                                                 var="i" itemLabel="#{i.name}" itemValue="#{i}"
+                                                  forceSelection="true" >
                                 </p:autoComplete >
                             </p:panelGrid>
                         </p:tab>
@@ -64,7 +65,8 @@
                                 <p:outputLabel value="POI Issuing Institution:" for="poii" />
                                 <p:autoComplete  id="poii" value="#{institutionController.selected.poiInstitution}" 
                                                  completeMethod="#{institutionController.completeInstitutions}"
-                                                 var="pi" itemLabel="#{pi.name}" itemValue="#{pi}">
+                                                 var="pi" itemLabel="#{pi.name}" itemValue="#{pi}"
+                                                  forceSelection="true" >
                                 </p:autoComplete >
                             </p:panelGrid>                            
                         </p:tab>

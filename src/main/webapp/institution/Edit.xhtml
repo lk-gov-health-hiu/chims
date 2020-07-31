@@ -37,7 +37,8 @@
                                 <p:outputLabel value="Parent:" for="parent" />
                                 <p:autoComplete  id="parent" value="#{institutionController.selected.parent}" 
                                                  completeMethod="#{institutionController.completeInstitutions}"
-                                                 var="i" itemLabel="#{i.name}" itemValue="#{i}">
+                                                 var="i" itemLabel="#{i.name}" itemValue="#{i}"
+                                                  forceSelection="true" >
                                 </p:autoComplete >
                             </p:panelGrid>
                         </p:tab>

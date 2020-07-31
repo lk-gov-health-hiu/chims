@@ -343,7 +343,7 @@
                                                                                 
                                                                                 <p:autoComplete completeMethod="#{institutionController.completeInstitutions}" 
                                                                                                 rendered="#{webUserController.loggedUser.systemAdministrator eq true or webUserController.loggedUser.superUser eq true}"
-                                                                                                value="#{clientController.selectedClinic}"
+                                                                                                value="#{clientController.selectedClinic}"  forceSelection="true" 
                                                                                                 var="shlc" itemValue="#{shlc}" itemLabel="#{shlc.name}">
                                                                                 </p:autoComplete>
                                                                                 
