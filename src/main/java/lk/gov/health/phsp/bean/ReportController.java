@@ -90,10 +90,14 @@ import lk.gov.health.phsp.facade.QueryComponentFacade;
 import lk.gov.health.phsp.facade.StoredQueryResultFacade;
 import lk.gov.health.phsp.facade.UploadFacade;
 import lk.gov.health.phsp.facade.util.JsfUtil;
+import lk.gov.health.phsp.pojcs.ClientBasicData;
 import lk.gov.health.phsp.pojcs.InstitutionCount;
 import lk.gov.health.phsp.pojcs.Replaceable;
 import lk.gov.health.phsp.pojcs.ReportTimePeriod;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.CreationHelper;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
@@ -173,6 +177,7 @@ public class ReportController implements Serializable {
 
     private Upload currentUpload;
     private StreamedContent downloadingFile;
+    private StreamedContent resultExcelFile;
 
     private ReportTimePeriod reportTimePeriod;
     private TimePeriodType timePeriodType;
@@ -1235,6 +1240,147 @@ public class ReportController implements Serializable {
         clients = clientController.getItems(j, m);
     }
 
+    public void downloadClientRegistrationsForSysAdmin() {
+        String j;
+        Map m = new HashMap();
+        j = "select new lk.gov.health.phsp.pojcs.ClientBasicData("
+                + "c.phn, "
+                + "c.person.gnArea.name, "
+                + "c.createInstitution.name, "
+                + "c.person.dateOfBirth, "
+                + "c.createdAt, "
+                + "c.person.sex.name "
+                + ") "
+                + " from Client c "
+                + " where c.retired=:ret "
+                + " and c.createdAt between :fd and :td ";
+        m.put("ret", false);
+        m.put("fd", fromDate);
+        m.put("td", toDate);
+
+        //phn, String gnArea, String createdInstitution, Date dataOfBirth, String sex
+        if (institution != null) {
+            j += " and c.createInstitution in :ins ";
+            List<Institution> ins = institutionController.findChildrenInstitutions(institution);
+            ins.add(institution);
+            m.put("ins", ins);
+        }
+
+        List<Object> objs = getClientFacade().findAggregates(j, m);
+
+        String FILE_NAME = "client_registrations" + "_" + (new Date()) + ".xlsx";
+        String mimeType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+
+        String folder = "/tmp/";
+
+        File newFile = new File(folder + FILE_NAME);
+
+        XSSFWorkbook workbook = new XSSFWorkbook();
+        XSSFSheet sheet = workbook.createSheet("Java Books");
+
+        int rowCount = 0;
+
+        Row t1 = sheet.createRow(rowCount++);
+        Cell th1_lbl = t1.createCell(0);
+        th1_lbl.setCellValue("Report");
+        Cell th1_val = t1.createCell(1);
+        th1_val.setCellValue("List of Clients");
+
+        Row t2 = sheet.createRow(rowCount++);
+        Cell th2_lbl = t2.createCell(0);
+        th2_lbl.setCellValue("From");
+        Cell th2_val = t2.createCell(1);
+        th2_val.setCellValue(CommonController.dateTimeToString(fromDate, "dd MMMM yyyy"));
+
+        Row t3 = sheet.createRow(rowCount++);
+        Cell th3_lbl = t3.createCell(0);
+        th3_lbl.setCellValue("To");
+        Cell th3_val = t3.createCell(1);
+        th3_val.setCellValue(CommonController.dateTimeToString(toDate, "dd MMMM yyyy"));
+
+        if (institution != null) {
+            Row t4 = sheet.createRow(rowCount++);
+            Cell th4_lbl = t4.createCell(0);
+            th4_lbl.setCellValue("Institution");
+            Cell th4_val = t4.createCell(1);
+            th4_val.setCellValue(institution.getName());
+        }
+
+        rowCount++;
+
+        Row t5 = sheet.createRow(rowCount++);
+        Cell th5_1 = t5.createCell(0);
+        th5_1.setCellValue("Serial");
+        Cell th5_2 = t5.createCell(1);
+        th5_2.setCellValue("PHN");
+        Cell th5_3 = t5.createCell(2);
+        th5_3.setCellValue("Sex");
+        Cell th5_4 = t5.createCell(3);
+        th5_4.setCellValue("Age in Years");
+        Cell th5_5 = t5.createCell(4);
+        th5_5.setCellValue("Registered on");
+        Cell th5_6 = t5.createCell(5);
+        th5_6.setCellValue("GN Areas");
+        if (institution == null) {
+            Cell th5_7 = t5.createCell(6);
+            th5_7.setCellValue("Institution");
+        }
+
+        int serial = 1;
+
+        CellStyle cellStyle = workbook.createCellStyle();
+        CreationHelper createHelper = workbook.getCreationHelper();
+        cellStyle.setDataFormat(
+                createHelper.createDataFormat().getFormat("dd/MMMM/yyyy hh:mm"));
+
+        for (Object o : objs) {
+            if (o instanceof ClientBasicData) {
+                ClientBasicData cbd = (ClientBasicData) o;
+                Row row = sheet.createRow(++rowCount);
+
+                Cell c1 = row.createCell(0);
+                c1.setCellValue(serial);
+                
+                Cell c2 = row.createCell(1);
+                c2.setCellValue(cbd.getPhn());
+                
+                Cell c3 = row.createCell(2);
+                c3.setCellValue(cbd.getSex());
+                
+                Cell c4 = row.createCell(3);
+                c4.setCellValue(cbd.getAgeInYears());
+                
+                Cell c5 = row.createCell(4);
+                c5.setCellValue(cbd.getCreatedAt());
+                c5.setCellStyle(cellStyle);
+                
+                Cell c6 = row.createCell(5);
+                c6.setCellValue(cbd.getGnArea());
+                if (institution == null) {
+                    Cell c7 = row.createCell(6);
+                    c7.setCellValue(cbd.getCreatedInstitution());
+                }
+
+                serial++;
+            }
+        }
+
+        try (FileOutputStream outputStream = new FileOutputStream(newFile)) {
+            workbook.write(outputStream);
+        } catch (Exception e) {
+            System.out.println("e = " + e);
+        }
+
+        InputStream stream;
+        try {
+            stream = new FileInputStream(newFile);
+            resultExcelFile = new DefaultStreamedContent(stream, mimeType, FILE_NAME);
+        } catch (FileNotFoundException ex) {
+            System.out.println("ex = " + ex);
+        }
+
+    }
+
     public void fillClientRegistrationForSysAdminByInstitution() {
         String j;
         Map m = new HashMap();
@@ -1249,12 +1395,12 @@ public class ReportController implements Serializable {
         m.put("td", toDate);
         List<Object> objs = getClientFacade().findAggregates(j, m);
         institutionCounts = new ArrayList<>();
-        reportCount=0l;
+        reportCount = 0l;
         for (Object o : objs) {
             if (o instanceof InstitutionCount) {
                 InstitutionCount ic = (InstitutionCount) o;
                 institutionCounts.add(ic);
-                reportCount+=ic.getCount();
+                reportCount += ic.getCount();
             }
         }
     }
@@ -1277,12 +1423,12 @@ public class ReportController implements Serializable {
         m.put("td", getToDate());
         List<Object> objs = getClientFacade().findAggregates(j, m);
         institutionCounts = new ArrayList<>();
-        reportCount =0l;
+        reportCount = 0l;
         for (Object o : objs) {
             if (o instanceof InstitutionCount) {
                 InstitutionCount ic = (InstitutionCount) o;
                 institutionCounts.add(ic);
-                reportCount+=ic.getCount();
+                reportCount += ic.getCount();
             }
         }
 
@@ -1565,8 +1711,6 @@ public class ReportController implements Serializable {
         this.reportResults = reportResults;
     }
 
-    
-    
     public StoredQueryResult getRemovingResult() {
         return removingResult;
     }
@@ -1605,6 +1749,14 @@ public class ReportController implements Serializable {
 
     public void setReportCount(Long reportCount) {
         this.reportCount = reportCount;
+    }
+
+    public StreamedContent getResultExcelFile() {
+        return resultExcelFile;
+    }
+
+    public void setResultExcelFile(StreamedContent resultExcelFile) {
+        this.resultExcelFile = resultExcelFile;
     }
 
 }

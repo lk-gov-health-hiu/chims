@@ -6,31 +6,55 @@
       xmlns:p="http://primefaces.org/ui"
       xmlns:f="http://xmlns.jcp.org/jsf/core">
 
+    <head>
+        <ui:define name="head">
+            Client Registrations
+        </ui:define>
+    </head>
     <body>
 
-        <ui:composition template="./../../template.xhtml">
+        <ui:composition template="/template.xhtml">
 
-            <ui:define name="head">
-                Encounters
-            </ui:define>
 
             <ui:define name="content">
                 <h:form>
-                    <p:panelGrid columns="2" >
+                    <p:panelGrid columns="2" styleClass="alignTop" >
                         <f:facet name="header" >
-                            <p:outputLabel value="Encounter Reports" ></p:outputLabel>
+                            <p:outputLabel value="Client Registrations" ></p:outputLabel>
                         </f:facet>
-                        <p:panelGrid columns="1" >
+                        <p:panelGrid columns="2" >
                             <f:facet name="header" >
                                 <p:outputLabel value="Filters" >
                                 </p:outputLabel>
-                                <p:commandButton value="Process" ajax="false"
-                                                 action="#{encounterController.fillEncountersForSystemAdmin}"></p:commandButton>
                             </f:facet>
+                            <p:outputLabel value="From" ></p:outputLabel>
+                            <p:calendar value="#{reportController.fromDate}" pattern="dd MM yyyy" ></p:calendar>
+
+                            <p:outputLabel value="To" ></p:outputLabel>
+                            <p:calendar value="#{reportController.toDate}" pattern="dd MM yyyy" ></p:calendar>
+
+                            <p:outputLabel value="Institution" ></p:outputLabel>
+                            <p:autoComplete   value="#{reportController.institution}" 
+                                              completeMethod="#{institutionController.completeInstitutions}"
+                                              var="i" itemLabel="#{i.name}" itemValue="#{i}">
+                            </p:autoComplete >
+
+                            <p:spacer></p:spacer>
+
+                            <p:commandButton value="Download" 
+                                             ajax="false" 
+                                             oncomplete ="PrimeFaces.monitorDownload(start, stop);" 
+                                             icon="ui-icon-arrowthick-1-s"
+                                             actionListener="#{reportController.downloadClientRegistrationsForSysAdmin()}">
+                                <p:fileDownload value="#{reportController.resultExcelFile}" />
+                            </p:commandButton>
+
                         </p:panelGrid>
-                        
+
+                     
+
                     </p:panelGrid>
-                    
+
                 </h:form>
             </ui:define>
 

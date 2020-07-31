@@ -37,6 +37,8 @@ public enum Privilege {
     Manage_Area,
     Manage_Institutions,
     Manage_Forms,
-    
+    //Monitoring and Evaluation
+    Monitoring_and_evaluation,
+    Monitoring_and_evaluation_reports,
 
 }

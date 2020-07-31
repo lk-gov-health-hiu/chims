@@ -89,11 +89,7 @@ public class ReportTimerSessionBean {
 
     private List<QueryComponent> queryComponents;
 
-//    @Schedule(
-//            hour = "22",
-//            minute = "*",
-//            second = "10",
-//            persistent = false)
+
     public void runEveryMinute() {
 //        System.out.println("runEveryTenMinute = " + new Date());
         queryComponents = null;

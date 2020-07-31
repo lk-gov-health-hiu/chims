@@ -40,50 +40,18 @@
                             </p:autoComplete >
 
                             <p:spacer></p:spacer>
-                            <p:commandButton value="Process" ajax="false"
-                                             action="#{reportController.fillClientRegistrationForSysAdmin()}"></p:commandButton>
+
+                            <p:commandButton value="Download" 
+                                             ajax="false" 
+                                             oncomplete ="PrimeFaces.monitorDownload(start, stop);" 
+                                             icon="ui-icon-arrowthick-1-s"
+                                             actionListener="#{reportController.downloadClientRegistrationsForSysAdmin()}">
+                                <p:fileDownload value="#{reportController.resultExcelFile}" />
+                            </p:commandButton>
 
                         </p:panelGrid>
 
-                        <p:panelGrid columns="1" >
-                            <p:dataTable value="#{reportController.clients}" var="c"
-                                         rowKey="#{c.id}"
-                                         rowIndexVar="n"
-                                         paginator="true"
-                                         rows="10"
-                                         rowsPerPageTemplate="10,20,30,40,50"
-
-                                         >
-                                <p:column headerText="Date" sortBy="#{c.createdAt}"
-                                          >
-                                    <p:outputLabel value="#{c.createdAt}" >
-                                        <f:convertDateTime pattern="dd MMMM yyyy hh:mm" ></f:convertDateTime>
-                                    </p:outputLabel>
-                                </p:column>
-                                <p:column headerText="PHN" filterBy="#{c.phn}" filterMatchMode="contains" sortBy="#{c.phn}"
-                                          >
-                                    <p:outputLabel value="#{c.phn}" ></p:outputLabel>
-                                </p:column>
-                                <p:column headerText="Name"  filterBy="#{c.person.nameWithTitle}" filterMatchMode="contains" sortBy="#{c.person.nameWithTitle}">
-                                    <p:outputLabel value="#{c.person.nameWithTitle}" ></p:outputLabel>
-                                </p:column>
-                                <p:column  headerText="GN Area"  filterBy="#{c.person.gnArea.name}" 
-                                           filterMatchMode="contains" 
-                                           sortBy="#{c.person.gnArea.name}"
-                                           >
-                                    <p:outputLabel value="#{c.person.gnArea.name}" ></p:outputLabel>
-                                </p:column>
-
-                                <p:column headerText="Action" >
-                                    <p:commandButton value="View" 
-                                                     action="#{clientController.toClientProfile()}"
-                                                     >
-                                        <f:setPropertyActionListener target="#{clientController.selected}"
-                                                                     value="#{c}"></f:setPropertyActionListener>
-                                    </p:commandButton>
-                                </p:column>
-                            </p:dataTable>
-                        </p:panelGrid>
+                     
 
                     </p:panelGrid>
 

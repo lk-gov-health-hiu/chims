@@ -41,60 +41,17 @@
                                                var="i" itemLabel="#{i.name}" itemValue="#{i}"></f:selectItems>
                             </p:selectOneMenu >
 
-                            <p:commandButton value="Process" ajax="false"
-                                             action="#{clientController.fillRegisterdClientsWithDatesForInstitution()}"></p:commandButton>
+                            <p:commandButton value="Download" 
+                                             ajax="false" 
+                                             oncomplete ="PrimeFaces.monitorDownload(start, stop);" 
+                                             icon="ui-icon-arrowthick-1-s"
+                                             actionListener="#{reportController.downloadClientRegistrationsForSysAdmin()}">
+                                <p:fileDownload value="#{reportController.resultExcelFile}" />
+                            </p:commandButton>    
 
                         </p:panelGrid>
 
-                        <p:dataTable value="#{clientController.items}"
-                                     id="tbl"
-                                     var="c" 
-                                     rowKey="#{c.id}"
-                                     paginator="true"
-                                     rows="10"
-                                     rowsPerPageTemplate="10,20,30,40,50"
-                                     >
-                            <p:column  headerText="Register On" sortBy="#{c.createdAt}" >
-                                <p:outputLabel value="#{c.createdAt}" >
-                                    <f:convertDateTime pattern="dd MMMM yyyy hh:mm a" timeZone="Asia/Colombo" ></f:convertDateTime>
-                                </p:outputLabel>
-                            </p:column>
-                            <p:column  headerText="PHN" sortBy="#{c.phn}" filterBy="#{c.phn}" filterMatchMode="contains">
-                                <p:outputLabel value="#{c.phn}" ></p:outputLabel>
-                            </p:column>
-                            <p:column  headerText="Name" sortBy="#{c.person.name}" filterBy="#{c.person.name}" filterMatchMode="contains">
-                                <p:outputLabel value="#{c.person.name}" ></p:outputLabel>
-                            </p:column>
-
-                            <p:column  headerText="NIC" sortBy="#{c.person.nic}" filterBy="#{c.person.nic}" filterMatchMode="contains">
-                                <p:outputLabel value="#{c.person.nic}" ></p:outputLabel>
-                            </p:column>
-
-                            <p:column  headerText="Phone" sortBy="#{c.person.transPhoneNumbers}" 
-                                       filterBy="#{c.person.transPhoneNumbers}" filterMatchMode="contains">
-                                <p:outputLabel value="#{c.person.transPhoneNumbers}" ></p:outputLabel>
-                            </p:column>
-
-
-                            <p:column headerText="GN Area" sortBy="#{c.person.gnArea.name}" 
-                                      filterBy="#{c.person.gnArea.name}"
-                                      filterMatchMode="contains">
-                                <p:outputLabel value="#{c.person.gnArea.name}" ></p:outputLabel>
-                            </p:column>
-
-                            <p:column headerText="Registerd At" sortBy="#{c.createInstitution.name}" 
-                                      filterBy="#{c.createInstitution.name}"
-                                      filterMatchMode="contains">
-                                <p:outputLabel value="#{c.createInstitution.name}" ></p:outputLabel>
-                            </p:column>
-
-                            <p:column headerText="Edit" >
-                                <p:commandButton ajax="false" action="#{clientController.toClientProfile()}" value="Edit" >
-                                    <f:setPropertyActionListener value="#{c}" target="#{clientController.selected}" ></f:setPropertyActionListener>
-                                </p:commandButton>
-                            </p:column>
-
-                        </p:dataTable>
+                    
 
                     </p:panelGrid>
 
