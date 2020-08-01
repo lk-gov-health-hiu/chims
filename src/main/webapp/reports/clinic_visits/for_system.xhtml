@@ -18,16 +18,14 @@
 
             <ui:define name="content">
                 <h:form>
-                    <p:panelGrid columns="2" styleClass="alignTop" >
+                    <p:panel >
                         <f:facet name="header" >
-                            <p:outputLabel value="Clinic Enrollments" ></p:outputLabel>
+                            <p:outputLabel value="Clinic Visits" ></p:outputLabel>
                         </f:facet>
-                        <p:panelGrid columns="2" >
+                        <p:panelGrid >
                             <f:facet name="header" >
                                 <p:outputLabel value="Filters" >
                                 </p:outputLabel>
-                                <p:commandButton value="Process" ajax="false"
-                                                 action="#{reportController.fillClinicEnrollmentsForSysAdmin()}"></p:commandButton>
                             </f:facet>
                             <p:outputLabel value="From" ></p:outputLabel>
                             <p:calendar value="#{reportController.fromDate}" pattern="dd MM yyyy" ></p:calendar>
@@ -40,45 +38,22 @@
                                               completeMethod="#{institutionController.completeInstitutions}"
                                               var="i" itemLabel="#{i.name}" itemValue="#{i}">
                             </p:autoComplete >
-                        </p:panelGrid>
 
-                        <p:panelGrid columns="1" >
-                            <p:dataTable value="#{reportController.encounters}" var="c"
-                                         rowKey="#{c.id}"
-                                         rowIndexVar="n"
-                                         paginator="true"
-                                         rows="10"
-                                         rowsPerPageTemplate="10,20,30,40,50"
 
-                                         >
-                                <p:column headerText="No" width="50">
-                                    <p:outputLabel value="#{n+1}"></p:outputLabel>
-                                </p:column>
-                                <p:column headerText="PHN" filterBy="#{c.client.phn}" filterMatchMode="contains" sortBy="#{c.client.phn}"
-                                          >
-                                    <p:outputLabel value="#{c.client.phn}" ></p:outputLabel>
-                                </p:column>
-                                <p:column headerText="Name"  filterBy="#{c.client.person.nameWithTitle}" filterMatchMode="contains" sortBy="#{c.client.person.nameWithTitle}">
-                                    <p:outputLabel value="#{c.client.person.nameWithTitle}" ></p:outputLabel>
-                                </p:column>
-                                <p:column filterBy="#{c.client.person.gnArea.name}" 
-                                          filterMatchMode="contains" 
-                                          sortBy="#{c.client.person.gnArea.name}"
-                                          >
-                                    <p:outputLabel value="#{c.client.person.gnArea.name}" ></p:outputLabel>
-                                </p:column>
-                                <p:column headerText="Action" >
-                                    <p:commandButton value="Retire" 
-                                                     action="#{encounterController.retireSelectedEncounter}"
-                                                     >
-                                        <f:setPropertyActionListener target="#{encounterController.selected}"
-                                                                     value="#{c}"></f:setPropertyActionListener>
-                                    </p:commandButton>
-                                </p:column>
-                            </p:dataTable>
-                        </p:panelGrid>
+                            <p:spacer ></p:spacer>
+                            <p:commandButton value="Download" 
+                                             ajax="false" 
+                                             oncomplete ="PrimeFaces.monitorDownload(start, stop);" 
+                                             icon="ui-icon-arrowthick-1-s"
+                                             actionListener="#{reportController.downloadClinicVisitsForSysAdmin()}">
+                                <p:fileDownload value="#{reportController.resultExcelFile}" />
+                            </p:commandButton>
 
-                    </p:panelGrid>
+                            </p:panelGrid>
+
+
+
+                        </p:panel>
 
                 </h:form>
             </ui:define>
