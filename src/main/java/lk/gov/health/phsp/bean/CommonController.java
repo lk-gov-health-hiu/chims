@@ -90,6 +90,31 @@ public class CommonController implements Serializable {
         return endOfTheDay(new Date());
     }
 
+    public static int ageFromDob(Date dob){
+        if(dob==null){
+            return 0;
+        }
+        Calendar cDob = Calendar.getInstance();
+        cDob.setTime(dob);
+        Calendar today = Calendar.getInstance();
+        int yearsInBetween = today.get(Calendar.YEAR) 
+                                - cDob.get(Calendar.YEAR);
+        return yearsInBetween;
+    }
+    
+    public static int differenceInYears(Date fromDate, Date toDate){
+        if(fromDate==null || toDate==null){
+            return 0;
+        }
+        Calendar cFromDate = Calendar.getInstance();
+        cFromDate.setTime(fromDate);
+        Calendar cTodate = Calendar.getInstance();
+        cTodate.setTime(toDate);
+        int yearsInBetween = cTodate.get(Calendar.YEAR) 
+                                - cFromDate.get(Calendar.YEAR);
+        return yearsInBetween;
+    }
+    
     public Date endOfTheDay(Date date) {
         Calendar d = Calendar.getInstance();
         d.setTime(startOfTheDay(date));

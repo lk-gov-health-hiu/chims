@@ -903,7 +903,7 @@ public class ClientController implements Serializable {
 
         if (webUserController.getLoggedUser().getInstitution().getPoiInstitution() != null) {
             webUserController.getLoggedUser().getInstitution().setPoiInstitution(institutionController.getInstitutionById(webUserController.getLoggedUser().getInstitution().getPoiInstitution().getId()));
-//            System.out.println("Last HIN case 1 = " + webUserController.getLoggedUser().getInstitution().getPoiInstitution().getLastHin());
+//            System.out.println(webUserController.getLoggedUser().getInstitution().getPoiInstitution().getLastHin());
         } else {
             webUserController.getLoggedUser().setInstitution(institutionController.getInstitutionById(webUserController.getLoggedUser().getInstitution().getId()));
 //            System.out.println("Last HIN Case 2 = " + webUserController.getLoggedUser().getInstitution().getLastHin());

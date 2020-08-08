@@ -37,7 +37,7 @@
                         <p:autoComplete value="#{relationshipController.area}"
                                         completeMethod="#{areaController.completeAreas}"
                                         var="a" maxResults="20" minQueryLength="4"
-                                        itemLabel="#{a.name}"
+                                        itemLabel="#{a.name}" forceSelection="true"
                                         itemValue="#{a}">
                             <p:column headerText="Name" >
                                 <p:outputLabel value="#{a.name}" ></p:outputLabel>

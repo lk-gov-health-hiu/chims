@@ -344,6 +344,8 @@ public class WebUserController implements Serializable {
         TreeNode pharmacyManagement = new PrivilegeTreeNode("Pharmacy Management", allPrivilegeRoot, Privilege.Pharmacy_Management);
         TreeNode user = new PrivilegeTreeNode("User", allPrivilegeRoot, Privilege.Manage_Users);
         TreeNode institutionAdministration = new PrivilegeTreeNode("Institution Administration", allPrivilegeRoot, Privilege.Institution_Administration);
+        TreeNode me = new PrivilegeTreeNode("Monitoring and Evaluation", allPrivilegeRoot, Privilege.Monitoring_and_evaluation);
+        
         TreeNode systemAdministration = new PrivilegeTreeNode("System Administration", allPrivilegeRoot, Privilege.System_Administration);
         //Client Management
 
@@ -367,6 +369,10 @@ public class WebUserController implements Serializable {
         TreeNode manage_Institutions = new PrivilegeTreeNode("Manage Institutions", systemAdministration, Privilege.Manage_Institutions);
         TreeNode manage_Forms = new PrivilegeTreeNode("Manage Forms", systemAdministration, Privilege.Manage_Forms);
 
+        //Monitoring and Evaluation
+        TreeNode me_Users = new PrivilegeTreeNode("View Reports", me, Privilege.Monitoring_and_evaluation_reports);
+        
+        
     }
 
     public String toChangeMyDetails() {
@@ -745,12 +751,18 @@ public class WebUserController implements Serializable {
                 break;
             case Me_Admin:
                 wups.add(Privilege.User);
+                wups.add(Privilege.Monitoring_and_evaluation);
+                wups.add(Privilege.Monitoring_and_evaluation_reports);
                 break;
             case Me_Super_User:
                 wups.add(Privilege.User);
+                wups.add(Privilege.Monitoring_and_evaluation);
+                wups.add(Privilege.Monitoring_and_evaluation_reports);
                 break;
             case Me_User:
                 wups.add(Privilege.User);
+                wups.add(Privilege.Monitoring_and_evaluation);
+                wups.add(Privilege.Monitoring_and_evaluation_reports);
                 break;
             case Super_User:
                 wups.add(Privilege.User);
@@ -790,6 +802,7 @@ public class WebUserController implements Serializable {
                 wups.add(Privilege.Manage_Area);
                 wups.add(Privilege.Manage_Institutions);
                 wups.add(Privilege.Manage_Forms);
+                
                 break;
         }
 

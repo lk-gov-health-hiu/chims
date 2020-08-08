@@ -17,6 +17,8 @@ import javax.persistence.TemporalType;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.ParameterExpression;
 import javax.persistence.criteria.Predicate;
+import org.eclipse.persistence.config.CacheUsage;
+import org.eclipse.persistence.config.QueryHints;
 
 /**
  *
@@ -218,6 +220,32 @@ public abstract class AbstractFacade<T> {
         }
         return qry.getResultList();
     }
+    
+    
+    public List<T> findByJpql(String jpql, Map<String, Object> parameters, boolean withoutCache) {
+        TypedQuery<T> qry = getEntityManager().createQuery(jpql, entityClass);
+        if(withoutCache){
+            qry.setHint(QueryHints.CACHE_USAGE, CacheUsage.DoNotCheckCache);
+        }
+        Set s = parameters.entrySet();
+        Iterator it = s.iterator();
+//        ////// //System.out.println("jpql = " + jpql);
+        while (it.hasNext()) {
+            Map.Entry m = (Map.Entry) it.next();
+            String pPara = (String) m.getKey();
+            if (m.getValue() instanceof Date) {
+                Date pVal = (Date) m.getValue();
+                qry.setParameter(pPara, pVal, TemporalType.DATE);
+//                ////// //System.out.println("Parameter " + pPara + "\t Val =" + pVal);
+            } else {
+                Object pVal = (Object) m.getValue();
+                qry.setParameter(pPara, pVal);
+//                ////// //System.out.println("Parameter " + pPara + "\t Val =" + pVal);
+            }
+        }
+        return qry.getResultList();
+    }
+    
 
     public List<T> findByJpql(String jpql, Map<String, Object> parameters, TemporalType tt) {
         TypedQuery<T> qry = getEntityManager().createQuery(jpql, entityClass);

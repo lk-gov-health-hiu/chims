@@ -20,7 +20,7 @@
                         </f:facet>
 
                         <p:outputLabel value="Institution" ></p:outputLabel>
-                        <p:autoComplete  id="parent" value="#{clientController.institution}" 
+                        <p:autoComplete  id="parent" value="#{clientController.institution}"  forceSelection="true" 
                                          completeMethod="#{institutionController.completeInstitutions}"
                                          var="i" itemLabel="#{i.name}" itemValue="#{i}">
                         </p:autoComplete >
