@@ -111,7 +111,13 @@
                                         </p:inputTextarea>
 
                                         <p:spacer></p:spacer>
-                                        <p:commandButton ajax="false" action="#{queryComponentController.saveQuery()}" value="Save" >
+                                        <p:commandButton ajax="false" 
+                                                         action="#{queryComponentController.saveQuery()}" value="Save" >
+                                        </p:commandButton>
+                                        
+                                         <p:commandButton ajax="false" 
+                                                          action="#{queryComponentController.saveQueryAndEdit()}" 
+                                                          value="Save and to Edit" >
                                         </p:commandButton>
 
 

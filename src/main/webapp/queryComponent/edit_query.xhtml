@@ -23,6 +23,10 @@
                                                  actionListener="#{queryComponentController.saveSelectedItem()}" ajax="false" 
                                                  style="float: right;" >
                                 </p:commandButton>
+                                <p:commandButton value="Save &nbsp; Criteria" 
+                                                 action="#{queryComponentController.saveSelectedItemAndCriteria()}" ajax="false" 
+                                                 style="float: right;" >
+                                </p:commandButton>
                                 <p:commandButton ajax="false" action="query" value="Back" style="float: right;" ></p:commandButton>
                             </f:facet>
 

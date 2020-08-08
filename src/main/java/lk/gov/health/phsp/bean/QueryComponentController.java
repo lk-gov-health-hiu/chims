@@ -268,6 +268,22 @@ public class QueryComponentController implements Serializable {
         addingQuery = null;
     }
 
+    public String saveQueryAndEdit() {
+        if (addingQuery == null) {
+            JsfUtil.addErrorMessage("Nothing to save");
+            return "";
+        }
+        if (selectedSubcategory == null) {
+            JsfUtil.addErrorMessage("No Subcategory");
+            return "";
+        }
+        addingQuery.setParentComponent(selectedSubcategory);
+        saveItem(addingQuery);
+        selected = addingQuery;
+        addingQuery = null;
+        return "edit_query";
+    }
+
     public void saveCriterian() {
         if (addingCriterian == null) {
             JsfUtil.addErrorMessage("Nothing to save");
@@ -367,6 +383,12 @@ public class QueryComponentController implements Serializable {
 
     public void saveSelectedItem() {
         saveItem(selected);
+    }
+    
+    public String saveSelectedItemAndCriteria() {
+        saveItem(selected);
+        selectedQuery = selected;
+        return "criteria";
     }
 
     public void saveItem(QueryComponent saving) {
@@ -490,10 +512,9 @@ public class QueryComponentController implements Serializable {
         List<QueryComponent> tls = applicationController.getQueryComponents();
         List<QueryComponent> sls = new ArrayList<>();
         qry = qry.trim().toLowerCase();
-        
-        
-        for(QueryComponent qc:tls){
-            if(qc.getName().toLowerCase().contains(qry) || qc.getName().toLowerCase().contains(qry)){
+
+        for (QueryComponent qc : tls) {
+            if (qc.getName().toLowerCase().contains(qry) || qc.getName().toLowerCase().contains(qry)) {
                 sls.add(qc);
             }
         }
@@ -935,9 +956,6 @@ public class QueryComponentController implements Serializable {
         return calculationScript;
     }
 
-    
-    
-    
     public void duplicateSelected() {
         if (selectedToDuplicateQuery == null) {
             JsfUtil.addErrorMessage("Noting selected.");
@@ -965,7 +983,7 @@ public class QueryComponentController implements Serializable {
         selectedToDuplicateQuery = q;
         JsfUtil.addSuccessMessage("Duplicated");
     }
-    
+
     public void duplicate() {
         if (selectedQuery == null) {
             JsfUtil.addErrorMessage("Noting selected.");
@@ -2235,8 +2253,6 @@ public class QueryComponentController implements Serializable {
         this.filterPhm = filterPhm;
     }
 
-    
-    
     public Area getPhm() {
         return phm;
     }
@@ -2362,8 +2378,6 @@ public class QueryComponentController implements Serializable {
         this.searchText = searchText;
     }
 
-    
-    
     public QueryComponent findByCode(String code) {
         String j = "select q from QueryComponent q "
                 + " where q.retired <> :ret "
