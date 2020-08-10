@@ -248,8 +248,8 @@ public class ReportController implements Serializable {
                 setToDate(CommonController.endOfQuarter(getYear(), getQuarter()));
                 break;
             case Monthly:
-                setFromDate(CommonController.startOfTheMonth(getYear(), getMonth() + 1));
-                setToDate(CommonController.endOfTheMonth(getYear(), getMonth() + 1));
+                setFromDate(CommonController.startOfTheMonth(getYear(), getMonth() - 1));
+                setToDate(CommonController.endOfTheMonth(getYear(), getMonth() - 1));
                 break;
             case Dates:
             //TODO: Add what happens when selected dates
@@ -315,8 +315,8 @@ public class ReportController implements Serializable {
                 sqr.setResultQuarter(getQuarter());
                 break;
             case Monthly:
-                sqr.setResultFrom(CommonController.startOfTheMonth(getYear(), getMonth() + 1));
-                sqr.setResultTo(CommonController.endOfTheMonth(getYear(), getMonth() + 1));
+                sqr.setResultFrom(CommonController.startOfTheMonth(getYear(), getMonth() - 1));
+                sqr.setResultTo(CommonController.endOfTheMonth(getYear(), getMonth() - 1));
                 sqr.setResultYear(getYear());
                 sqr.setResultMonth(getMonth());
                 break;
@@ -399,8 +399,8 @@ public class ReportController implements Serializable {
                 sqr.setResultQuarter(getQuarter());
                 break;
             case Monthly:
-                sqr.setResultFrom(CommonController.startOfTheMonth(getYear(), getMonth()));
-                sqr.setResultTo(CommonController.endOfTheMonth(getYear(), getMonth()));
+                sqr.setResultFrom(CommonController.startOfTheMonth(getYear(), getMonth()-1));
+                sqr.setResultTo(CommonController.endOfTheMonth(getYear(), getMonth()-1));
                 sqr.setResultYear(getYear());
                 sqr.setResultMonth(getMonth());
                 break;
