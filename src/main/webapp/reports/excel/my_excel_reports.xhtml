@@ -55,6 +55,9 @@
                             <p:column headerText="Status" >
                                 <p:outputLabel value="#{r.processStatus}">
                                 </p:outputLabel>
+<!--                                <p:outputLabel value="#{r.id}">
+                                </p:outputLabel>
+                                <p:outputLabel value="#{r.processCompletedAt}" ></p:outputLabel>-->
                                 <p:outputLabel value="#{r.errorMessage}" 
                                                rendered="#{r.errorMessage ne null}"
                                                >

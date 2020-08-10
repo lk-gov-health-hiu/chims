@@ -37,12 +37,19 @@ import javax.persistence.Temporal;
 import javax.persistence.Transient;
 import lk.gov.health.phsp.bean.CommonController;
 import lk.gov.health.phsp.enums.TimePeriodType;
+import org.eclipse.persistence.annotations.Cache;
+import org.eclipse.persistence.annotations.CacheType;
 
 /**
  *
  * @author buddhika
  */
 @Entity
+@Cache(
+        type = CacheType.NONE, // Cache nothing
+        expiry = 0,
+        alwaysRefresh = true
+)
 public class StoredQueryResult implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -76,6 +83,14 @@ public class StoredQueryResult implements Serializable {
     private boolean processStarted;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date processStartedAt;
+
+    private boolean submittedForConsolidation;
+    @Temporal(javax.persistence.TemporalType.TIMESTAMP)
+    private Date submittedForConsolidationAt;
+
+    private boolean readyAfterConsolidation;
+    @Temporal(javax.persistence.TemporalType.TIMESTAMP)
+    private Date readyAfterConsolidationAt;
 
     private boolean processCompleted;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
@@ -390,22 +405,22 @@ public class StoredQueryResult implements Serializable {
                 break;
             case Quarterly:
                 ;
-                periodString = "Year : " + 
-                        this.resultYear + 
-                        ", Quarter : " +
-                        CommonController.quarterAsString(this.resultQuarter) ;
+                periodString = "Year : "
+                        + this.resultYear
+                        + ", Quarter : "
+                        + CommonController.quarterAsString(this.resultQuarter);
                 break;
             case Monthly:
-                periodString = "Year : " + 
-                        this.resultYear + 
-                        ", Month : " +
-                        CommonController.monthAsString(this.resultMonth) ;
+                periodString = "Year : "
+                        + this.resultYear
+                        + ", Month : "
+                        + CommonController.monthAsString(this.resultMonth);
                 break;
             case Dates:
-                periodString = "From : " + 
-                        CommonController.dateTimeToString(this.resultFrom) + 
-                        ", To : " + 
-                        CommonController.dateTimeToString(this.resultTo);
+                periodString = "From : "
+                        + CommonController.dateTimeToString(this.resultFrom)
+                        + ", To : "
+                        + CommonController.dateTimeToString(this.resultTo);
                 break;
         }
         return periodString;
@@ -415,4 +430,37 @@ public class StoredQueryResult implements Serializable {
         this.periodString = periodString;
     }
 
+    public boolean isSubmittedForConsolidation() {
+        return submittedForConsolidation;
+    }
+
+    public void setSubmittedForConsolidation(boolean submittedForConsolidation) {
+        this.submittedForConsolidation = submittedForConsolidation;
+    }
+
+    public Date getSubmittedForConsolidationAt() {
+        return submittedForConsolidationAt;
+    }
+
+    public void setSubmittedForConsolidationAt(Date submittedForConsolidationAt) {
+        this.submittedForConsolidationAt = submittedForConsolidationAt;
+    }
+
+    public boolean isReadyAfterConsolidation() {
+        return readyAfterConsolidation;
+    }
+
+    public void setReadyAfterConsolidation(boolean readyAfterConsolidation) {
+        this.readyAfterConsolidation = readyAfterConsolidation;
+    }
+
+    public Date getReadyAfterConsolidationAt() {
+        return readyAfterConsolidationAt;
+    }
+
+    public void setReadyAfterConsolidationAt(Date readyAfterConsolidationAt) {
+        this.readyAfterConsolidationAt = readyAfterConsolidationAt;
+    }
+    
+    
 }
