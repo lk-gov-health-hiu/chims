@@ -21,55 +21,63 @@
                             <p:outputLabel value="Institution Reports" ></p:outputLabel>
                         </f:facet>
 
+                        <h:panelGrid columns="2" styleClass="alignTop" >
 
-                        <p:panelGrid columns="2" >
-                            <p:outputLabel value="Report" ></p:outputLabel>
-                            <p:autoComplete value="#{reportController.queryComponent}"
-                                            completeMethod="#{queryComponentController.completeQueries}"
-                                            var="q"
-                                            itemLabel="#{q.name}"
-                                            itemValue="#{q}">
-                            </p:autoComplete>
+                            <p:panelGrid columns="2" >
+                                <p:outputLabel value="Report" ></p:outputLabel>
+                                <p:autoComplete value="#{reportController.queryComponent}"
+                                                completeMethod="#{queryComponentController.completeExcelReports}"
+                                                var="q" forceSelection="true"
+                                                itemLabel="#{q.name}"
+                                                itemValue="#{q}">
+                                </p:autoComplete>
 
-                            <p:outputLabel value="Institution" ></p:outputLabel>
-                            <p:autoComplete value="#{reportController.institution}"
-                                            completeMethod="#{institutionController.completeInstitutions}"
-                                            var="i"
-                                            itemLabel="#{i.name}"
-                                            itemValue="#{i}">
-                            </p:autoComplete>
+                                <p:outputLabel value="Institution" ></p:outputLabel>
+                                <p:autoComplete value="#{reportController.institution}"
+                                                completeMethod="#{institutionController.completeInstitutions}"
+                                                var="i"
+                                                itemLabel="#{i.name}"
+                                                itemValue="#{i}">
+                                </p:autoComplete>
 
-                            <p:outputLabel value="Period Type" ></p:outputLabel>
-                            <p:selectOneMenu value="#{reportController.timePeriodType}" >
-                                <f:selectItem itemLabel="Select" ></f:selectItem>
-                                <f:selectItems value="#{commonController.timePeriodTypes}" ></f:selectItems>
-                            </p:selectOneMenu>
+                                <p:outputLabel value="Period Type" ></p:outputLabel>
+                                <p:selectOneMenu value="#{reportController.timePeriodType}" >
+                                    <f:selectItem itemLabel="Select" ></f:selectItem>
+                                    <f:selectItems value="#{commonController.timePeriodTypes}" ></f:selectItems>
+                                </p:selectOneMenu>
 
-                            <p:outputLabel id="lblYear" value="Year" ></p:outputLabel>
-                            <p:inputText id="txtYear" value="#{reportController.year}" ></p:inputText>
+                                <p:outputLabel id="lblYear" value="Year" ></p:outputLabel>
+                                <p:inputText id="txtYear" value="#{reportController.year}" ></p:inputText>
 
-                            <p:outputLabel id="lblQuarter" value="Quarter" ></p:outputLabel>
-                            <p:selectOneMenu id="ddmQuarter" value="#{reportController.quarterEnum}" >
-                                <f:selectItem itemLabel="Select" ></f:selectItem>
-                                <f:selectItems value="#{commonController.quarters}" ></f:selectItems>
-                            </p:selectOneMenu>
+                                <p:outputLabel id="lblQuarter" value="Quarter" ></p:outputLabel>
+                                <p:selectOneMenu id="ddmQuarter" value="#{reportController.quarterEnum}" >
+                                    <f:selectItem itemLabel="Select" ></f:selectItem>
+                                    <f:selectItems value="#{commonController.quarters}" ></f:selectItems>
+                                </p:selectOneMenu>
 
-                            <p:outputLabel id="lblMonth" value="Month" ></p:outputLabel>
-                            <p:inputText id="txtMonth" value="#{reportController.month}" ></p:inputText>
+                                <p:outputLabel id="lblMonth" value="Month" ></p:outputLabel>
+                                <p:inputText id="txtMonth" value="#{reportController.month}" ></p:inputText>
+                            </p:panelGrid>
+                            <p:panelGrid columns="1" >
+                                <p:commandButton value="List Existing"  style="width:30em;margin:auto;"
+                                                 actionListener="#{reportController.listExistingReports()}"
+                                                 ajax="false">
+                                </p:commandButton>
+
+                                <p:commandButton value="Create New"  style="width:30em;margin:auto;"
+                                                 actionListener="#{reportController.createNewReport()}"
+                                                 ajax="false">
+                                </p:commandButton>
+
+                                <p:commandButton value="Clear Consolidated Data"  style="width:30em;margin:auto;"
+                                                 actionListener="#{reportController.createNewReport()}"
+                                                 ajax="false">
+                                </p:commandButton>
+                            </p:panelGrid>
 
 
-                            <p:commandButton value="List Existing"  style="width:30em;margin:auto;"
-                                             actionListener="#{reportController.listExistingReports()}"
-                                             ajax="false">
-                            </p:commandButton>
+                        </h:panelGrid>
 
-                            <p:commandButton value="Create New"  style="width:30em;margin:auto;"
-                                             actionListener="#{reportController.createNewReport()}"
-                                             ajax="false">
-                            </p:commandButton>
-
-
-                        </p:panelGrid>
                         <p:dataTable value="#{reportController.reportResults}" var="r" >
                             <p:column headerText="Created Data" >
                                 <p:outputLabel value="#{r.createdAt}" >

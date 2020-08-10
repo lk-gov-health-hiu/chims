@@ -73,7 +73,9 @@ import jxl.write.WritableSheet;
 import jxl.write.WritableWorkbook;
 import jxl.write.WriteException;
 import lk.gov.health.phsp.entity.ClientEncounterComponentItem;
+import lk.gov.health.phsp.entity.ConsolidatedQueryResult;
 import lk.gov.health.phsp.entity.DesignComponentFormItem;
+import lk.gov.health.phsp.entity.IndividualQueryResult;
 import lk.gov.health.phsp.entity.Item;
 import lk.gov.health.phsp.entity.QueryComponent;
 import lk.gov.health.phsp.entity.StoredQueryResult;
@@ -84,8 +86,10 @@ import lk.gov.health.phsp.enums.QueryType;
 import lk.gov.health.phsp.enums.TimePeriodType;
 import lk.gov.health.phsp.facade.ClientEncounterComponentItemFacade;
 import lk.gov.health.phsp.facade.ClientFacade;
+import lk.gov.health.phsp.facade.ConsolidatedQueryResultFacade;
 import lk.gov.health.phsp.facade.DesignComponentFormItemFacade;
 import lk.gov.health.phsp.facade.EncounterFacade;
+import lk.gov.health.phsp.facade.IndividualQueryResultFacade;
 import lk.gov.health.phsp.facade.QueryComponentFacade;
 import lk.gov.health.phsp.facade.StoredQueryResultFacade;
 import lk.gov.health.phsp.facade.UploadFacade;
@@ -129,6 +133,10 @@ public class ReportController implements Serializable {
     private UploadFacade uploadFacade;
     @EJB
     private StoredQueryResultFacade storedQueryResultFacade;
+    @EJB
+    private ConsolidatedQueryResultFacade consolidatedQueryResultFacade;
+    @EJB
+    private IndividualQueryResultFacade individualQueryResultFacade;
 
 // </editor-fold>     
 // <editor-fold defaultstate="collapsed" desc="Controllers">
@@ -240,8 +248,8 @@ public class ReportController implements Serializable {
                 setToDate(CommonController.endOfQuarter(getYear(), getQuarter()));
                 break;
             case Monthly:
-                setFromDate(CommonController.startOfTheMonth(getYear(), getMonth()));
-                setToDate(CommonController.endOfTheMonth(getYear(), getMonth()));
+                setFromDate(CommonController.startOfTheMonth(getYear(), getMonth() + 1));
+                setToDate(CommonController.endOfTheMonth(getYear(), getMonth() + 1));
                 break;
             case Dates:
             //TODO: Add what happens when selected dates
@@ -285,6 +293,76 @@ public class ReportController implements Serializable {
         JsfUtil.addSuccessMessage("Removed");
         listExistingReports();
         listMyReports();
+    }
+
+    public void clearReportData() {
+        if (institution == null) {
+            JsfUtil.addErrorMessage("Please select an institutions");
+            return;
+        }
+
+        StoredQueryResult sqr = new StoredQueryResult();
+        switch (getTimePeriodType()) {
+            case Yearley:
+                sqr.setResultFrom(CommonController.startOfTheYear(getYear()));
+                sqr.setResultTo(CommonController.endOfYear(getYear()));
+                sqr.setResultYear(getYear());
+                break;
+            case Quarterly:
+                sqr.setResultFrom(CommonController.startOfQuarter(getYear(), getQuarter()));
+                sqr.setResultTo(CommonController.endOfQuarter(getYear(), getQuarter()));
+                sqr.setResultYear(getYear());
+                sqr.setResultQuarter(getQuarter());
+                break;
+            case Monthly:
+                sqr.setResultFrom(CommonController.startOfTheMonth(getYear(), getMonth() + 1));
+                sqr.setResultTo(CommonController.endOfTheMonth(getYear(), getMonth() + 1));
+                sqr.setResultYear(getYear());
+                sqr.setResultMonth(getMonth());
+                break;
+            case Dates:
+                sqr.setResultFrom(fromDate);
+                sqr.setResultTo(toDate);
+                break;
+        }
+        setFromDate(sqr.getResultFrom());
+        setToDate(sqr.getResultTo());
+
+        String j;
+        Map m = new HashMap();
+        j = "select r "
+                + " from ConsolidatedQueryResult r "
+                + " where r.resultFrom=:fd "
+                + " and r.resultTo=:td ";
+        m.put("fd", sqr.getResultFrom());
+        m.put("td", sqr.getResultTo());
+        j += " and r.institution=:ins ";
+        m.put("ins", institution);
+        List<ConsolidatedQueryResult> crs = getConsolidatedQueryResultFacade().findByJpql(j, m);
+        for (ConsolidatedQueryResult cr : crs) {
+            cr.setLongValue(null);
+            getConsolidatedQueryResultFacade().edit(cr);
+        }
+
+        List<Long> encIds  = findEncounterIds(sqr.getResultFrom(), sqr.getResultTo(), institution);
+
+        for (Long encId : encIds) {
+            m = new HashMap();
+            j = "select r "
+                    + " from IndividualQueryResult r "
+                    + " where r.encounterId=:enid";
+            m.put("enid", encId);
+            List<IndividualQueryResult> iqrs = getIndividualQueryResultFacade().findByJpql(j, m);
+            
+            for(IndividualQueryResult iqr:iqrs){
+                iqr.setIncluded(null);
+                getIndividualQueryResultFacade().edit(iqr);
+            }
+
+        }
+        
+        JsfUtil.addSuccessMessage("All Previous Calculated Data Discarded.");
+
     }
 
     public void createNewReport() {
@@ -1458,7 +1536,6 @@ public class ReportController implements Serializable {
     public void downloadClinicEnrollmentsForSysAdmin() {
         String j;
         Map m = new HashMap();
-       
 
         j = "select new lk.gov.health.phsp.pojcs.EncounterBasicData("
                 + "e.client.phn, "
@@ -1483,7 +1560,6 @@ public class ReportController implements Serializable {
             ins.add(institution);
             m.put("ins", ins);
         }
-        
 
         //String phn, String gnArea, String institution, Date dataOfBirth, Date encounterAt, String sex
         List<Object> objs = getClientFacade().findAggregates(j, m);
@@ -1604,7 +1680,6 @@ public class ReportController implements Serializable {
     public void downloadClinicVisitsForSysAdmin() {
         String j;
         Map m = new HashMap();
-       
 
         j = "select new lk.gov.health.phsp.pojcs.EncounterBasicData("
                 + "e.client.phn, "
@@ -1629,7 +1704,6 @@ public class ReportController implements Serializable {
             ins.add(institution);
             m.put("ins", ins);
         }
-        
 
         //String phn, String gnArea, String institution, Date dataOfBirth, Date encounterAt, String sex
         List<Object> objs = getClientFacade().findAggregates(j, m);
@@ -1747,7 +1821,6 @@ public class ReportController implements Serializable {
 
     }
 
-    
     public void fillClinicVisitsForSysAdmin() {
         String j;
         Map m = new HashMap();
@@ -2051,6 +2124,14 @@ public class ReportController implements Serializable {
 
     public void setResultExcelFile(StreamedContent resultExcelFile) {
         this.resultExcelFile = resultExcelFile;
+    }
+
+    public ConsolidatedQueryResultFacade getConsolidatedQueryResultFacade() {
+        return consolidatedQueryResultFacade;
+    }
+
+    public IndividualQueryResultFacade getIndividualQueryResultFacade() {
+        return individualQueryResultFacade;
     }
 
 }

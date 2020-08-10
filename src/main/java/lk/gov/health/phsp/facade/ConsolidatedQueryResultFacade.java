@@ -21,21 +21,30 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package lk.gov.health.phsp.enums;
+package lk.gov.health.phsp.facade;
+
+import javax.ejb.Stateless;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import lk.gov.health.phsp.entity.ConsolidatedQueryResult;
 
 /**
  *
  * @author Dr M H B Ariyaratne<buddhika.ari@gmail.com>
  */
-public enum QueryType {
-    Population,
-    Indicator,
-    Client,
-    First_Encounter,
-    Any_Encounter,
-    Formset,
-    Client_Count,
-    Encounter_Count,
-    Formset_Count,
-    Excel_Report,
+@Stateless
+public class ConsolidatedQueryResultFacade extends AbstractFacade<ConsolidatedQueryResult> {
+
+    @PersistenceContext(unitName = "hmisPU")
+    private EntityManager em;
+
+    @Override
+    protected EntityManager getEntityManager() {
+        return em;
+    }
+
+    public ConsolidatedQueryResultFacade() {
+        super(ConsolidatedQueryResult.class);
+    }
+    
 }

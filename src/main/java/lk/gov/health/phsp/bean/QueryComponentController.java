@@ -384,7 +384,7 @@ public class QueryComponentController implements Serializable {
     public void saveSelectedItem() {
         saveItem(selected);
     }
-    
+
     public String saveSelectedItemAndCriteria() {
         saveItem(selected);
         selectedQuery = selected;
@@ -516,6 +516,21 @@ public class QueryComponentController implements Serializable {
         for (QueryComponent qc : tls) {
             if (qc.getName().toLowerCase().contains(qry) || qc.getName().toLowerCase().contains(qry)) {
                 sls.add(qc);
+            }
+        }
+        return sls;
+    }
+
+    public List<QueryComponent> completeExcelReports(String qry) {
+        List<QueryComponent> tls = applicationController.getQueryComponents();
+        List<QueryComponent> sls = new ArrayList<>();
+        qry = qry.trim().toLowerCase();
+
+        for (QueryComponent qc : tls) {
+            if (qc.getQueryType() == QueryType.Excel_Report) {
+                if (qc.getName().toLowerCase().contains(qry) || qc.getName().toLowerCase().contains(qry)) {
+                    sls.add(qc);
+                }
             }
         }
         return sls;
