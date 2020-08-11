@@ -154,6 +154,7 @@ public class ReportController implements Serializable {
     private QueryComponentController queryComponentController;
     @Inject
     private ClientEncounterComponentItemController clientEncounterComponentItemController;
+    @Inject private ExcelReportController excelReportController;
 // </editor-fold>  
 // <editor-fold defaultstate="collapsed" desc="Class Variables">
     private List<Encounter> encounters;
@@ -414,7 +415,7 @@ public class ReportController implements Serializable {
         setFromDate(sqr.getResultFrom());
         setToDate(sqr.getResultTo());
         JsfUtil.addSuccessMessage("Added to the Queue to Process");
-
+        excelReportController.processReport(sqr);
         listExistingReports();
 
     }
@@ -2113,6 +2114,8 @@ public class ReportController implements Serializable {
     public Long getReportCount() {
         return reportCount;
     }
+    
+    
 
     public void setReportCount(Long reportCount) {
         this.reportCount = reportCount;
@@ -2132,6 +2135,14 @@ public class ReportController implements Serializable {
 
     public IndividualQueryResultFacade getIndividualQueryResultFacade() {
         return individualQueryResultFacade;
+    }
+
+    public ExcelReportController getExcelReportController() {
+        return excelReportController;
+    }
+
+    public void setExcelReportController(ExcelReportController excelReportController) {
+        this.excelReportController = excelReportController;
     }
 
 }

@@ -23,36 +23,42 @@
  */
 package lk.gov.health.phsp.pojcs;
 
-import java.util.ArrayList;
 import java.util.List;
-import lk.gov.health.phsp.entity.ClientEncounterComponentItem;
-import lk.gov.health.phsp.entity.Encounter;
+import lk.gov.health.phsp.entity.QueryComponent;
 
 /**
  *
  * @author buddhika
  */
-public class EncounterWithComponents {
-    private Long encounterId;
-    private List<ClientEncounterComponentItem> components;
+public class QueryWithCriteria {
+    private QueryComponent query;
+    private List<QueryComponent> criteria;
 
-    public Long getEncounterId() {
-        return encounterId;
+    public QueryWithCriteria() {
     }
 
-    public void setEncounterId(Long encounterId) {
-        this.encounterId = encounterId;
+    public QueryWithCriteria(QueryComponent query, List<QueryComponent> criteria) {
+        this.query = query;
+        this.criteria = criteria;
     }
 
-    public List<ClientEncounterComponentItem> getComponents() {
-        if(components==null){
-            components = new ArrayList<>();
-        }
-        return components;
+    
+    
+    
+    public QueryComponent getQuery() {
+        return query;
     }
 
-    public void setComponents(List<ClientEncounterComponentItem> components) {
-        this.components = components;
+    public void setQuery(QueryComponent query) {
+        this.query = query;
+    }
+
+    public List<QueryComponent> getCriteria() {
+        return criteria;
+    }
+
+    public void setCriteria(List<QueryComponent> criteria) {
+        this.criteria = criteria;
     }
     
     

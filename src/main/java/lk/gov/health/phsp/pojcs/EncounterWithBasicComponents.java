@@ -32,16 +32,16 @@ import lk.gov.health.phsp.entity.Encounter;
  *
  * @author buddhika
  */
-public class EncounterWithComponents {
-    private Long encounterId;
+public class EncounterWithBasicComponents {
+    private Encounter encounter;
     private List<ClientEncounterComponentItem> components;
 
-    public Long getEncounterId() {
-        return encounterId;
+    public Encounter getEncounter() {
+        return encounter;
     }
 
-    public void setEncounterId(Long encounterId) {
-        this.encounterId = encounterId;
+    public void setEncounter(Encounter encounter) {
+        this.encounter = encounter;
     }
 
     public List<ClientEncounterComponentItem> getComponents() {
