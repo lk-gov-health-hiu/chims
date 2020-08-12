@@ -429,6 +429,13 @@ public class ExcelReportController implements Serializable {
 //                if(logActivity) System.out.println("5 = " + 5);
             sqr.setUpload(u);
             getStoreQueryResultFacade().edit(sqr);
+            getUploadFacade().edit(u);
+            for(int i=0;i<10000;i++){
+                
+            }
+            System.out.println("u ID " + u.getId());
+            System.out.println("u BA " + u.getBaImage().toString());
+            System.out.println("byteArray = " + byteArray.toString());
 
         } catch (FileNotFoundException e) {
             sqr.setErrorMessage("IO Exception. " + e.getMessage());

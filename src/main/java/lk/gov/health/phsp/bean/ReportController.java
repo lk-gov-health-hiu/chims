@@ -434,7 +434,7 @@ public class ReportController implements Serializable {
         }else{
             JsfUtil.addErrorMessage("Error");
         }
-        listExistingReports();
+       
 
     }
 
