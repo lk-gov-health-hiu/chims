@@ -154,7 +154,8 @@ public class ReportController implements Serializable {
     private QueryComponentController queryComponentController;
     @Inject
     private ClientEncounterComponentItemController clientEncounterComponentItemController;
-    @Inject private ExcelReportController excelReportController;
+    @Inject
+    private ExcelReportController excelReportController;
 // </editor-fold>  
 // <editor-fold defaultstate="collapsed" desc="Class Variables">
     private List<Encounter> encounters;
@@ -204,6 +205,18 @@ public class ReportController implements Serializable {
         }
         if (getDownloadingResult().getUpload() == null) {
             JsfUtil.addErrorMessage("No Excel file");
+            return null;
+        }
+        if (downloadingResult == null) {
+            JsfUtil.addErrorMessage("Null Error - 1");
+            return null;
+        }
+        if (downloadingResult.getUpload() == null) {
+            JsfUtil.addErrorMessage("Null Error - 2");
+            return null;
+        }
+        if (downloadingResult.getUpload().getBaImage() == null) {
+            JsfUtil.addErrorMessage("Null Error - 3");
             return null;
         }
         InputStream stream = new ByteArrayInputStream(downloadingResult.getUpload().getBaImage());
@@ -345,7 +358,7 @@ public class ReportController implements Serializable {
             getConsolidatedQueryResultFacade().edit(cr);
         }
 
-        List<Long> encIds  = findEncounterIds(sqr.getResultFrom(), sqr.getResultTo(), institution);
+        List<Long> encIds = findEncounterIds(sqr.getResultFrom(), sqr.getResultTo(), institution);
 
         for (Long encId : encIds) {
             m = new HashMap();
@@ -354,14 +367,14 @@ public class ReportController implements Serializable {
                     + " where r.encounterId=:enid";
             m.put("enid", encId);
             List<IndividualQueryResult> iqrs = getIndividualQueryResultFacade().findByJpql(j, m);
-            
-            for(IndividualQueryResult iqr:iqrs){
+
+            for (IndividualQueryResult iqr : iqrs) {
                 iqr.setIncluded(null);
                 getIndividualQueryResultFacade().edit(iqr);
             }
 
         }
-        
+
         JsfUtil.addSuccessMessage("All Previous Calculated Data Discarded.");
 
     }
@@ -400,8 +413,8 @@ public class ReportController implements Serializable {
                 sqr.setResultQuarter(getQuarter());
                 break;
             case Monthly:
-                sqr.setResultFrom(CommonController.startOfTheMonth(getYear(), getMonth()-1));
-                sqr.setResultTo(CommonController.endOfTheMonth(getYear(), getMonth()-1));
+                sqr.setResultFrom(CommonController.startOfTheMonth(getYear(), getMonth() - 1));
+                sqr.setResultTo(CommonController.endOfTheMonth(getYear(), getMonth() - 1));
                 sqr.setResultYear(getYear());
                 sqr.setResultMonth(getMonth());
                 break;
@@ -415,7 +428,12 @@ public class ReportController implements Serializable {
         setFromDate(sqr.getResultFrom());
         setToDate(sqr.getResultTo());
         JsfUtil.addSuccessMessage("Added to the Queue to Process");
-        excelReportController.processReport(sqr);
+        boolean reportDone = getExcelReportController().processReport(sqr);
+        if(reportDone){
+            JsfUtil.addSuccessMessage("Ok");
+        }else{
+            JsfUtil.addErrorMessage("Error");
+        }
         listExistingReports();
 
     }
@@ -2114,8 +2132,6 @@ public class ReportController implements Serializable {
     public Long getReportCount() {
         return reportCount;
     }
-    
-    
 
     public void setReportCount(Long reportCount) {
         this.reportCount = reportCount;
