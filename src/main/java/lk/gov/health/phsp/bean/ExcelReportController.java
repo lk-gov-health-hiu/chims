@@ -108,7 +108,7 @@ public class ExcelReportController implements Serializable {
         if (logActivity) {
             System.out.println("Going to run reports at " + currentTimeAsString() + ".");
         }
-        
+
         if (storedQueryResult != null) {
             updateStoredQueryOnStartProcessing(storedQueryResult);
             List<Long> encounterIds = findEncounterIds(storedQueryResult.getResultFrom(),
@@ -693,7 +693,11 @@ public class ExcelReportController implements Serializable {
                         }
                     }
                     if (itemValue != null && itemVariable != null) {
-                        if (itemValue.getCode() != null
+
+                        if (itemValue != null
+                                && itemValue.getCode() != null
+                                && clientValue !=null 
+                                && clientValue.getItemValue() !=null
                                 && clientValue.getItemValue().getCode() != null) {
 
                             if (itemValue.getCode().equals(clientValue.getItemValue().getCode())) {
@@ -925,7 +929,6 @@ public class ExcelReportController implements Serializable {
         List<ClientEncounterComponentItem> ts = getClientEncounterComponentItemFacade().findByJpql(j, m);
         return ts;
     }
-
 
     private String currentTimeAsString() {
         Date date = Calendar.getInstance().getTime();
