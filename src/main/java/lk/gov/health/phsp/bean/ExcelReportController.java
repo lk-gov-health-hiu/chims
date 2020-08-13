@@ -402,8 +402,12 @@ public class ExcelReportController implements Serializable {
 //                            System.out.println("qryCode = " + qryCode);
                             if (qryCode != null) {
                                 QueryWithCriteria qwc = findQwcFromQwcs(qwcs, qryCode);
-                                Long value = calculateIndividualQueryResult(ewcs, qwc);
-                                currentCell.setCellValue(value);
+                                if (qwc != null) {
+                                    Long value = calculateIndividualQueryResult(ewcs, qwc);
+                                    currentCell.setCellValue(value);
+                                } else {
+                                    currentCell.setCellValue(" ");
+                                }
                             } else {
                                 currentCell.setCellValue("");
                             }
@@ -620,11 +624,13 @@ public class ExcelReportController implements Serializable {
                     }
                     break;
                 case item:
-                    if (needCheckLogin) {
+                    if (needCheckLogin && clientValue.getItem() != null) {
                         System.out.println("clientValue.getItemCode() = " + clientValue.getItem().getCode());
                     }
-                    if (needCheckLogin) {
+                    if (needCheckLogin && clientValue.getItemValue() != null) {
                         System.out.println("clientValue.getItemValueCode() = " + clientValue.getItemValue().getCode());
+                    }else{
+                        System.out.println("CLient Item Value is NULL");
                     }
 
                     itemValue = q.getItemValue();
@@ -913,7 +919,7 @@ public class ExcelReportController implements Serializable {
                     break;
                 case item:
                     if (needCheckLogin) {
-                        System.out.println("clientValue.getIntegerNumberValue() = " + clientValue.getItemValue());
+                        System.out.println("clientValue.getItemValue() = " + clientValue.getItemValue());
                     }
                     if (clientValue.getItemValue() != null) {
                         valueNotNull = true;
@@ -1187,17 +1193,14 @@ public class ExcelReportController implements Serializable {
                     if (qryCode.equalsIgnoreCase(tq.getQuery().getCode())) {
                         q = tq;
                     }
-                    if (tq.getQuery().getCode().equalsIgnoreCase(checkingString)) {
-                        System.out.println("q.getQuery().getCode() = " + tq.getQuery().getCode());
-                    }
                 } else {
                     if (logActivity) {
-//                        System.out.println("No code for query in QueryWithCriteria");
+                        System.out.println("No code for query in QueryWithCriteria");
                     }
                 }
             } else {
                 if (logActivity) {
-//                    System.out.println("No query in QueryWithCriteria");
+                    System.out.println("No query in QueryWithCriteria");
                 }
             }
         }
