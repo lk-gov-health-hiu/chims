@@ -85,6 +85,9 @@ public class ExcelReportController implements Serializable {
     StoredQueryResult storedQueryResult;
     private List<QueryComponent> queryComponents;
 
+    String checkingString = "encounter_count_males_35_to_70_oral_ex";
+    boolean needCheckLogin = false;
+
     @EJB
     private StoredQueryResultFacade storeQueryResultFacade;
     @EJB
@@ -278,9 +281,14 @@ public class ExcelReportController implements Serializable {
                         if (qc != null) {
                             QueryWithCriteria qwc = new QueryWithCriteria();
                             qwc.setQuery(qc);
-//                            System.out.println("qc = " + qc);
+                            if (qc.getCode().equalsIgnoreCase(checkingString)) {
+                                System.out.println("qc = " + qc.getCode());
+                            }
+
                             qwc.setCriteria(findCriteriaForQueryComponent(qc.getCode()));
-//                            System.out.println("qwc.getCriteria() = " + qwc.getCriteria());
+                            if (qc.getCode().equalsIgnoreCase(checkingString)) {
+                                System.out.println("qc = " + qwc.getCriteria());
+                            }
                             qs.add(qwc);
                         } else {
                             if (logActivity) {
@@ -430,8 +438,8 @@ public class ExcelReportController implements Serializable {
             sqr.setUpload(u);
             getStoreQueryResultFacade().edit(sqr);
             getUploadFacade().edit(u);
-            for(int i=0;i<10000;i++){
-                
+            for (int i = 0; i < 10000; i++) {
+
             }
             System.out.println("u ID " + u.getId());
             System.out.println("u BA " + u.getBaImage().toString());
@@ -456,6 +464,7 @@ public class ExcelReportController implements Serializable {
         if (logActivity) {
 //            System.out.println("Calculating Individual Query Results for Query ");
         }
+
         Long result = 0l;
         if (ewcs == null) {
             if (logActivity) {
@@ -471,9 +480,8 @@ public class ExcelReportController implements Serializable {
         }
         List<QueryComponent> criteria = qwc.getCriteria();
 
-        if (logActivity) {
-//            System.out.println("criteria = " + criteria);
-        }
+        needCheckLogin = qwc.getQuery().getCode().equals(checkingString);
+
         if (criteria == null || criteria.isEmpty()) {
             Integer ti = ewcs.size();
             result = ti.longValue();
@@ -510,6 +518,10 @@ public class ExcelReportController implements Serializable {
 
         boolean suitableForInclusion = true;
 
+        if (needCheckLogin) {
+            System.out.println("finding matches");
+        }
+
         for (QueryComponent qc : qrys.getCriteria()) {
             if (qc.getItem() == null) {
                 if (logActivity) {
@@ -544,7 +556,6 @@ public class ExcelReportController implements Serializable {
 
 //                System.out.println("cei.getItem().getCode() = " + cei.getItem().getCode());
 //                System.out.println("qc.getItem().getCode() = " + qc.getItem().getCode());
-
                 if (cei.getItem().getCode().trim().equalsIgnoreCase(qc.getItem().getCode().trim())) {
                     componentFound = true;
                     if (matchQuery(qc, cei)) {
@@ -572,7 +583,9 @@ public class ExcelReportController implements Serializable {
     }
 
     private boolean matchQuery(QueryComponent q, ClientEncounterComponentItem clientValue) {
-//        System.out.println("Match Query");
+        if (needCheckLogin) {
+            System.out.println("matchQuery - q=" + q + " cv=" + clientValue);
+        }
         if (clientValue == null) {
             return false;
         }
@@ -588,87 +601,70 @@ public class ExcelReportController implements Serializable {
         Boolean qBool = null;
 
         if (q.getMatchType() == QueryCriteriaMatchType.Variable_Value_Check) {
-            if (logActivity) {
-//                System.out.println("q.getQueryDataType() = " + q.getQueryDataType());
+            if (needCheckLogin) {
+                System.out.println("q.getQueryDataType() = " + q.getQueryDataType());
             }
             switch (q.getQueryDataType()) {
                 case integer:
-//                    if(logActivity) System.out.println("clientValue.getIntegerNumberValue() = " + clientValue.getIntegerNumberValue());
+                    if (needCheckLogin) {
+                        System.out.println("clientValue.getIntegerNumberValue() = " + clientValue.getIntegerNumberValue());
+                    }
 
                     qInt1 = q.getIntegerNumberValue();
                     qInt2 = q.getIntegerNumberValue2();
-//                    if(logActivity) System.out.println("Query int1 = " + qInt1);
-//                    if(logActivity) System.out.println("Query int2 = " + qInt2);
+                    if (needCheckLogin) {
+                        System.out.println("Query int1 = " + qInt1);
+                    }
+                    if (needCheckLogin) {
+                        System.out.println("Query int2 = " + qInt2);
+                    }
                     break;
                 case item:
-//                    if(logActivity) System.out.println("clientValue.getItemCode() = " + clientValue.getItemCode());
-//                    if(logActivity) System.out.println("clientValue.getItemValueCode() = " + clientValue.getItemValueCode());
+                    if (needCheckLogin) {
+                        System.out.println("clientValue.getItemCode() = " + clientValue.getItem().getCode());
+                    }
+                    if (needCheckLogin) {
+                        System.out.println("clientValue.getItemValueCode() = " + clientValue.getItemValue().getCode());
+                    }
 
                     itemValue = q.getItemValue();
                     itemVariable = q.getItem();
                     break;
                 case real:
-//                    if(logActivity) System.out.println("clientValue.getRealNumberValue() = " + clientValue.getRealNumberValue());
+                    if (needCheckLogin) {
+                        System.out.println("clientValue.getRealNumberValue() = " + clientValue.getRealNumberValue());
+                    }
 
                     real1 = q.getRealNumberValue();
                     real2 = q.getRealNumberValue2();
                     break;
                 case longNumber:
+                    if (needCheckLogin) {
+                        System.out.println("clientValue.getLongNumberValue() = " + clientValue.getLongNumberValue());
+                    }
                     lng1 = q.getLongNumberValue();
                     lng2 = q.getLongNumberValue2();
                     break;
                 case Boolean:
+                    if (needCheckLogin) {
+                        System.out.println("clientValue.getBooleanValue() = " + clientValue.getBooleanValue());
+                    }
                     qBool = q.getBooleanValue();
                     break;
 
             }
-            if (logActivity) {
-//                System.out.println("q.getEvaluationType() = " + q.getEvaluationType());
+            if (needCheckLogin) {
+                System.out.println("q.getEvaluationType() = " + q.getEvaluationType());
             }
             switch (q.getEvaluationType()) {
 
                 case Not_null:
-                    if (qInt1 != null) {
-                        Integer tmpIntVal = clientValue.getIntegerNumberValue();
-                        if (tmpIntVal == null) {
-                            tmpIntVal = stringToInteger(clientValue.getShortTextValue());
-                        }
-                        if (tmpIntVal != null) {
-                            m = true;
-                        }
-                    }
-                    if (lng1 != null) {
-                        Long tmpLLongVal = clientValue.getLongNumberValue();
-                        if (tmpLLongVal == null) {
-                            tmpLLongVal = stringToLong(clientValue.getShortTextValue());
-                        }
-                        if (tmpLLongVal != null) {
-                            m = true;
-                        }
-                    }
-                    if (real1 != null) {
-                        Double tmpDbl = clientValue.getRealNumberValue();
-                        if (tmpDbl == null) {
-                            tmpDbl = stringToDouble(clientValue.getShortTextValue());
-                        }
-                        if (tmpDbl != null) {
-                            m = true;
-                        }
-                    }
-                    if (qBool != null) {
-                        if (clientValue.getBooleanValue() != null) {
-                            m = true;
-                        }
-                    }
-                    if (itemValue != null && itemVariable != null) {
-                        if (itemValue.getCode() != null) {
-                            if (clientValue.getItemValue().getCode() != null) {
-                                m = true;
-                            }
-                        }
-                    }
+                    m = clientValueIsNotNull(q, clientValue);
                     break;
 
+                case Is_null:
+                    m = !clientValueIsNotNull(q, clientValue);
+                    break;
                 case Equal:
                     if (qInt1 != null) {
                         Integer tmpIntVal = clientValue.getIntegerNumberValue();
@@ -706,8 +702,8 @@ public class ExcelReportController implements Serializable {
 
                         if (itemValue != null
                                 && itemValue.getCode() != null
-                                && clientValue !=null 
-                                && clientValue.getItemValue() !=null
+                                && clientValue != null
+                                && clientValue.getItemValue() != null
                                 && clientValue.getItemValue().getCode() != null) {
 
                             if (itemValue.getCode().equals(clientValue.getItemValue().getCode())) {
@@ -898,6 +894,59 @@ public class ExcelReportController implements Serializable {
         }
 //        System.out.println("match is  = " + m);
         return m;
+    }
+
+    public boolean clientValueIsNotNull(QueryComponent q, ClientEncounterComponentItem clientValue) {
+        boolean valueNotNull = false;
+        if (needCheckLogin) {
+            System.out.println("clientValueIsNotNull");
+        }
+        if (q.getMatchType() == QueryCriteriaMatchType.Variable_Value_Check) {
+            switch (q.getQueryDataType()) {
+                case integer:
+                    if (needCheckLogin) {
+                        System.out.println("clientValue.getIntegerNumberValue() = " + clientValue.getIntegerNumberValue());
+                    }
+                    if (clientValue.getIntegerNumberValue() != null) {
+                        valueNotNull = true;
+                    }
+                    break;
+                case item:
+                    if (needCheckLogin) {
+                        System.out.println("clientValue.getIntegerNumberValue() = " + clientValue.getItemValue());
+                    }
+                    if (clientValue.getItemValue() != null) {
+                        valueNotNull = true;
+                    }
+                    break;
+                case real:
+                    if (needCheckLogin) {
+                        System.out.println("clientValue.getIntegerNumberValue() = " + clientValue.getRealNumberValue());
+                    }
+                    if (clientValue.getRealNumberValue() != null) {
+                        valueNotNull = true;
+                    }
+                    break;
+                case longNumber:
+                    if (needCheckLogin) {
+                        System.out.println("clientValue.getIntegerNumberValue() = " + clientValue.getLongNumberValue());
+                    }
+                    if (clientValue.getLongNumberValue() != null) {
+                        valueNotNull = true;
+                    }
+                    break;
+                case Boolean:
+                    if (needCheckLogin) {
+                        System.out.println("clientValue.getIntegerNumberValue() = " + clientValue.getBooleanValue());
+                    }
+                    if (clientValue.getBooleanValue() != null) {
+                        valueNotNull = true;
+                    }
+                    break;
+
+            }
+        }
+        return valueNotNull;
     }
 
     private List<Long> findEncounterIds(Date fromDate, Date toDate, Institution institution) {
@@ -1137,6 +1186,9 @@ public class ExcelReportController implements Serializable {
                 if (tq.getQuery().getCode() != null) {
                     if (qryCode.equalsIgnoreCase(tq.getQuery().getCode())) {
                         q = tq;
+                    }
+                    if (tq.getQuery().getCode().equalsIgnoreCase(checkingString)) {
+                        System.out.println("q.getQuery().getCode() = " + tq.getQuery().getCode());
                     }
                 } else {
                     if (logActivity) {
