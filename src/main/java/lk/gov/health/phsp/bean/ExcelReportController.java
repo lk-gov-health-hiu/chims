@@ -133,13 +133,19 @@ public class ExcelReportController implements Serializable {
             if (success) {
                 updateOnSuccess(storedQueryResult);
                 JsfUtil.addSuccessMessage("Report Created. Download from Below");
+                encountersWithComponents = null;
+                queriesWithCriteria = null;
                 return true;
             } else {
                 JsfUtil.addErrorMessage("Report Error. Please check details.");
+                encountersWithComponents = null;
+                queriesWithCriteria = null;
                 return false;
             }
         } else {
             JsfUtil.addErrorMessage("No Report Selected");
+            encountersWithComponents = null;
+            queriesWithCriteria = null;
             return false;
         }
 
@@ -629,7 +635,7 @@ public class ExcelReportController implements Serializable {
                     }
                     if (needCheckLogin && clientValue.getItemValue() != null) {
                         System.out.println("clientValue.getItemValueCode() = " + clientValue.getItemValue().getCode());
-                    }else{
+                    } else {
                         System.out.println("CLient Item Value is NULL");
                     }
 
