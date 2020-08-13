@@ -79,13 +79,13 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 @SessionScoped
 public class ExcelReportController implements Serializable {
 
-    private final boolean logActivity = true;
+    private final boolean logActivity = false;
     private List<EncounterWithComponents> encountersWithComponents;
     private List<QueryWithCriteria> queriesWithCriteria;
     StoredQueryResult storedQueryResult;
     private List<QueryComponent> queryComponents;
 
-    String checkingString = "encounter_count_males_35_to_70_oral_ex";
+    String checkingString = "dsfsdfsdfds";
     boolean needCheckLogin = false;
 
     @EJB
