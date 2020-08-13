@@ -403,18 +403,19 @@ public class ExcelReportController implements Serializable {
                         } else if (cellString.equals("#{report_period}")) {
                             currentCell.setCellValue(sqr.getPeriodString());
                         } else {
-//                            System.out.println("cellString = " + cellString);
+                            if (logActivity) {
+                                System.out.println("cellString = " + cellString);
+                            }
                             String qryCode = findQueryComponentCodeByCellString(cellString);
-//                            System.out.println("qryCode = " + qryCode);
+                            if (logActivity) {
+                                System.out.println("qryCode = " + qryCode);
+                            }
                             if (qryCode != null) {
                                 QueryWithCriteria qwc = findQwcFromQwcs(qwcs, qryCode);
-                                if (qwc != null) {
-                                    Long value = calculateIndividualQueryResult(ewcs, qwc);
-                                    currentCell.setCellValue(value);
-                                } else {
-                                    currentCell.setCellValue(" ");
-                                }
+                                Long value = calculateIndividualQueryResult(ewcs, qwc);
+                                currentCell.setCellValue(value);
                             } else {
+                                System.out.println("Query not found for " + cellString);
                                 currentCell.setCellValue("");
                             }
 
@@ -472,7 +473,7 @@ public class ExcelReportController implements Serializable {
 
     private Long calculateIndividualQueryResult(List<EncounterWithComponents> ewcs, QueryWithCriteria qwc) {
         if (logActivity) {
-//            System.out.println("Calculating Individual Query Results for Query ");
+            System.out.println("Calculating Individual Query Results for Query " + qwc);
         }
 
         Long result = 0l;
@@ -484,17 +485,24 @@ public class ExcelReportController implements Serializable {
         }
         if (qwc == null) {
             if (logActivity) {
-                System.out.println("No QueryWithCriteria.");
+                System.out.println("No Query With Criteria.");
             }
             return result;
         }
         List<QueryComponent> criteria = qwc.getCriteria();
 
-        needCheckLogin = qwc.getQuery().getCode().equals(checkingString);
+        if (qwc.getQuery() != null && qwc.getQuery().getCode() != null) {
+            needCheckLogin = qwc.getQuery().getCode().equals(checkingString);
+        } else {
+            needCheckLogin = false;
+        }
 
         if (criteria == null || criteria.isEmpty()) {
             Integer ti = ewcs.size();
             result = ti.longValue();
+            if (needCheckLogin) {
+                System.out.println("result when no criteria " + result);
+            }
             return result;
         } else {
             for (EncounterWithComponents ewc : ewcs) {
@@ -503,12 +511,13 @@ public class ExcelReportController implements Serializable {
                 }
             }
         }
-//        System.out.println("result = " + result);
         return result;
     }
 
     private boolean findMatch(List<ClientEncounterComponentItem> ccs, QueryWithCriteria qrys) {
-//        System.out.println("Find Metch");
+        if (needCheckLogin) {
+            System.out.println("Find Match");
+        }
         if (qrys == null) {
             System.out.println("No Query with Components = " + qrys);
             return false;
@@ -550,6 +559,9 @@ public class ExcelReportController implements Serializable {
             boolean componentFound = false;
 
             for (ClientEncounterComponentItem cei : ccs) {
+                if (needCheckLogin) {
+                    System.out.println("cei Id" + cei.getId() + " Item " + cei.getItem());
+                }
 
                 if (cei.getItem() == null) {
                     if (logActivity) {
@@ -637,6 +649,7 @@ public class ExcelReportController implements Serializable {
                         System.out.println("clientValue.getItemValueCode() = " + clientValue.getItemValue().getCode());
                     } else {
                         System.out.println("CLient Item Value is NULL");
+                        System.out.println("clietnValue ID is " + clientValue.getId());
                     }
 
                     itemValue = q.getItemValue();

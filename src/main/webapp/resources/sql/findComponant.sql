@@ -1,6 +1,3 @@
-select distinct(name), count(name)
+select id,`name`,`ITEM_ID`,`ITEMVALUE_ID`,`CREATEDAT`,`LASTEDITEAT`,`DTYPE`
 from component 
-WHERE `DTYPE`='ClientEncounterComponentItem'
-group by `name`
-order by count(name) desc
-limit 10;
+WHERE id=3774841 or `ID`=5199623;

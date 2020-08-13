@@ -25,7 +25,7 @@
 
                     <h:panelGroup id="gpDataAndButtons" >
                         <tr>
-                            <h:panelGroup rendered="false">
+                            <h:panelGroup rendered="true">
                                  <td>
                                      <table >
                                          <tr>
@@ -46,10 +46,26 @@
                                          </tr>
                                          <tr>
                                              <td>
-                                                 Render Type
+                                                 Name
                                              </td>
                                               <td>
-                                                 #{ii.renderType}"
+                                                 #{ii.name}
+                                             </td>
+                                         </tr>
+                                         <tr>
+                                             <td>
+                                                 ID
+                                             </td>
+                                              <td>
+                                                 #{ii.id}"
+                                             </td>
+                                         </tr>
+                                          <tr>
+                                             <td>
+                                                 ID
+                                             </td>
+                                              <td>
+                                                 #{ii.itemValue.name}"
                                              </td>
                                          </tr>
                                          <tr>
