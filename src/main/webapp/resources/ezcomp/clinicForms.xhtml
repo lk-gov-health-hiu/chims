@@ -25,7 +25,7 @@
 
                     <h:panelGroup id="gpDataAndButtons" >
                         <tr>
-                            <h:panelGroup rendered="true">
+                            <h:panelGroup rendered="false">
                                  <td>
                                      <table >
                                          <tr>
@@ -252,7 +252,7 @@
                                         <p:selectBooleanCheckbox id="bcNc" value="#{ii.booleanValue}" 
                                                                  required="#{ii.required}" 
                                                                  requiredMessage="#{ii.requiredErrorMessage}" >
-                                            <p:ajax  event="blur" process="@this"   
+                                            <p:ajax  process="@this"   
                                                      listener="#{clientEncounterComponentItemController.save(ii)}" >
                                             </p:ajax>
                                         </p:selectBooleanCheckbox>
