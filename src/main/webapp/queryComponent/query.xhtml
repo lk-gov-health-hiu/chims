@@ -18,6 +18,9 @@
                             <f:facet name="header" >
                                 <p:outputLabel value="Manage Queries of #{queryComponentController.selectedSubcategory.name}">
                                 </p:outputLabel>
+                                <p:commandButton ajax="false" value="Download" 
+                                                 action="#{queryComponentController.downloadAllQueriesWithDetails()}"
+                                                 style="float: right;" ></p:commandButton>
 
                                 <p:commandButton ajax="false" value="Back" action="subcategory" style="float: right;" ></p:commandButton>
                             </f:facet>
@@ -60,11 +63,13 @@
 
                                             <h:panelGrid columns="5" >
                                                 <p:commandButton ajax="false" value="Edit" action="edit_query" >
-                                                    <f:setPropertyActionListener value="#{item}" target="#{queryComponentController.selected}" ></f:setPropertyActionListener>
+                                                    <f:setPropertyActionListener value="#{item}" 
+                                                                                 target="#{queryComponentController.selected}" ></f:setPropertyActionListener>
                                                 </p:commandButton>
 
                                                 <p:commandButton ajax="false" value="Criteria" action="criteria" >
-                                                    <f:setPropertyActionListener value="#{item}" target="#{queryComponentController.selectedQuery}" ></f:setPropertyActionListener>
+                                                    <f:setPropertyActionListener value="#{item}" 
+                                                                                 target="#{queryComponentController.selectedQuery}" ></f:setPropertyActionListener>
                                                 </p:commandButton>
 
                                                 <p:commandButton  ajax="false" value="Upload" action="#{uploadController.toUploadComponentUploadSingle}" >
@@ -114,10 +119,10 @@
                                         <p:commandButton ajax="false" 
                                                          action="#{queryComponentController.saveQuery()}" value="Save" >
                                         </p:commandButton>
-                                        
-                                         <p:commandButton ajax="false" 
-                                                          action="#{queryComponentController.saveQueryAndEdit()}" 
-                                                          value="Save and to Edit" >
+
+                                        <p:commandButton ajax="false" 
+                                                         action="#{queryComponentController.saveQueryAndEdit()}" 
+                                                         value="Save and to Edit" >
                                         </p:commandButton>
 
 

@@ -1,5 +1,10 @@
 package lk.gov.health.phsp.bean;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.InputStream;
 import lk.gov.health.phsp.entity.QueryComponent;
 import lk.gov.health.phsp.bean.util.JsfUtil;
 import lk.gov.health.phsp.bean.util.JsfUtil.PersistAction;
@@ -49,10 +54,19 @@ import lk.gov.health.phsp.facade.ClientEncounterComponentItemFacade;
 import lk.gov.health.phsp.facade.ClientFacade;
 import lk.gov.health.phsp.facade.EncounterFacade;
 import lk.gov.health.phsp.facade.RelationshipFacade;
+import lk.gov.health.phsp.pojcs.EncounterBasicData;
 import lk.gov.health.phsp.pojcs.Jpq;
 import lk.gov.health.phsp.pojcs.QueryResult;
 import lk.gov.health.phsp.pojcs.Replaceable;
 import org.apache.commons.lang3.SerializationUtils;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.CreationHelper;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.primefaces.model.DefaultStreamedContent;
+import org.primefaces.model.StreamedContent;
 
 @Named("queryComponentController")
 @SessionScoped
@@ -139,6 +153,8 @@ public class QueryComponentController implements Serializable {
     private QueryFilterAreaType areaType;
 
     private String searchText;
+
+    private StreamedContent resultExcelFile;
 
     public String toManageAnalysis() {
         return "/analysis/index";
@@ -577,6 +593,176 @@ public class QueryComponentController implements Serializable {
 
     public List<QueryComponent> queries() {
         return queries(selectedSubcategory);
+    }
+
+    public void downloadAllQueriesWithDetails() {
+
+        String FILE_NAME = "query_details" + "_" + (new Date()) + ".xlsx";
+        String mimeType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+
+        String folder = "/tmp/";
+
+        File newFile = new File(folder + FILE_NAME);
+
+        XSSFWorkbook workbook = new XSSFWorkbook();
+        XSSFSheet sheet = workbook.createSheet("Queries");
+
+        int rowCount = 0;
+
+        Row t1 = sheet.createRow(rowCount++);
+        Cell th1_lbl = t1.createCell(0);
+        th1_lbl.setCellValue("Report");
+        Cell th1_val = t1.createCell(1);
+        th1_val.setCellValue("List of Queries");
+
+        Row t2 = sheet.createRow(rowCount++);
+        Cell th2_lbl = t2.createCell(0);
+        th2_lbl.setCellValue("Subgroup");
+        Cell th2_val = t2.createCell(1);
+        th2_val.setCellValue(selectedCategory.getName());
+
+        Row t3 = sheet.createRow(rowCount++);
+        Cell th3_lbl = t3.createCell(0);
+        th3_lbl.setCellValue("To");
+        Cell th3_val = t3.createCell(1);
+        th3_val.setCellValue(selectedSubcategory.getName());
+
+        rowCount++;
+
+        Row t5 = sheet.createRow(rowCount++);
+        Cell th5_1 = t5.createCell(0);
+        th5_1.setCellValue("Serial");
+        Cell th5_2 = t5.createCell(1);
+        th5_2.setCellValue("Name");
+        Cell th5_3 = t5.createCell(2);
+        th5_3.setCellValue("Code");
+        Cell th5_4 = t5.createCell(3);
+        th5_4.setCellValue("Type");
+        Cell th5_5 = t5.createCell(4);
+        th5_5.setCellValue("Criteria");
+        Cell th5_6 = t5.createCell(5);
+        th5_6.setCellValue("Match Type");
+
+        Cell th5_7 = t5.createCell(6);
+        th5_7.setCellValue("Evaluation Type");
+        Cell th5_8 = t5.createCell(7);
+        th5_8.setCellValue("Item");
+        Cell th5_9 = t5.createCell(8);
+        th5_9.setCellValue("Data TYpe");
+        Cell th5_10 = t5.createCell(9);
+        th5_10.setCellValue("Item Value");
+        Cell th5_11 = t5.createCell(10);
+        th5_11.setCellValue("Int1");
+        Cell th5_12 = t5.createCell(11);
+        th5_12.setCellValue("Int2");
+
+        Cell th5_13 = t5.createCell(12);
+        th5_13.setCellValue("Long 1");
+        Cell th5_14 = t5.createCell(13);
+        th5_14.setCellValue("Long 2");
+        Cell th5_15 = t5.createCell(14);
+        th5_15.setCellValue("Real 1");
+        Cell th5_16 = t5.createCell(15);
+        th5_16.setCellValue("Real 2");
+        Cell th5_17 = t5.createCell(16);
+        th5_17.setCellValue("Boolean");
+
+        int serial = 1;
+
+        CellStyle cellStyle = workbook.createCellStyle();
+        CreationHelper createHelper = workbook.getCreationHelper();
+        cellStyle.setDataFormat(
+                createHelper.createDataFormat().getFormat("dd/MMMM/yyyy hh:mm"));
+
+        List<QueryComponent> tmpQueryComponents = queries(selectedSubcategory);
+        for (QueryComponent tmpQc : tmpQueryComponents) {
+            List<QueryComponent> tmpCs = criteria(tmpQc);
+
+            for (QueryComponent c : tmpCs) {
+
+                Row row = sheet.createRow(++rowCount);
+
+                Cell c1 = row.createCell(0);
+                c1.setCellValue(serial);
+
+                Cell c2 = row.createCell(1);
+                c2.setCellValue(tmpQc.getName());
+
+                Cell c3 = row.createCell(2);
+                c3.setCellValue(tmpQc.getCode());
+
+                Cell c4 = row.createCell(3);
+                if (c.getQueryType() != null) {
+                    c4.setCellValue(tmpQc.getQueryType().toString());
+                }
+
+                Cell c5 = row.createCell(4);
+                c5.setCellValue(c.getName());
+
+                Cell c7 = row.createCell(5);
+                if (c.getMatchType() != null) {
+                    c7.setCellValue(c.getMatchType().toString());
+                }
+
+                Cell c8 = row.createCell(6);
+                if (c.getEvaluationType() != null) {
+                    c8.setCellValue(c.getEvaluationType().toString());
+                }
+
+                Cell c9 = row.createCell(7);
+                if (c.getItem() != null) {
+                    c9.setCellValue(c.getItem().getName());
+                }
+
+                Cell c10 = row.createCell(8);
+                if (c.getQueryDataType() != null) {
+                    c10.setCellValue(c.getQueryDataType().toString());
+                }
+
+                Cell c11 = row.createCell(9);
+                if (c.getItemValue() != null) {
+                    c11.setCellValue(c.getItemValue().getName());
+                }
+
+                Cell c12 = row.createCell(10);
+                c12.setCellValue(c.getIntegerNumberValue());
+
+                Cell c13 = row.createCell(11);
+                c13.setCellValue(c.getIntegerNumberValue());
+
+                Cell c14 = row.createCell(12);
+                c14.setCellValue(c.getIntegerNumberValue());
+
+                Cell c15 = row.createCell(13);
+                c15.setCellValue(c.getIntegerNumberValue());
+
+                Cell c16 = row.createCell(14);
+                c16.setCellValue(c.getIntegerNumberValue());
+
+                Cell c17 = row.createCell(15);
+                c17.setCellValue(c.getIntegerNumberValue());
+
+                Cell c18 = row.createCell(16);
+                c18.setCellValue(c.getIntegerNumberValue());
+
+                serial++;
+            }
+
+        }
+        try (FileOutputStream outputStream = new FileOutputStream(newFile)) {
+            workbook.write(outputStream);
+        } catch (Exception e) {
+            System.out.println("e = " + e);
+        }
+
+        InputStream stream;
+        try {
+            stream = new FileInputStream(newFile);
+            resultExcelFile = new DefaultStreamedContent(stream, mimeType, FILE_NAME);
+        } catch (FileNotFoundException ex) {
+            System.out.println("ex = " + ex);
+        }
+
     }
 
     public List<QueryComponent> queries(QueryComponent p) {
@@ -2413,6 +2599,14 @@ public class QueryComponentController implements Serializable {
 
     public ApplicationController getApplicationController() {
         return applicationController;
+    }
+
+    public StreamedContent getResultExcelFile() {
+        return resultExcelFile;
+    }
+
+    public void setResultExcelFile(StreamedContent resultExcelFile) {
+        this.resultExcelFile = resultExcelFile;
     }
 
     @FacesConverter(forClass = QueryComponent.class)
