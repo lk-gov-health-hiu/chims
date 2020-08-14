@@ -20,7 +20,9 @@
                                 </p:outputLabel>
                                 <p:commandButton ajax="false" value="Download" 
                                                  action="#{queryComponentController.downloadAllQueriesWithDetails()}"
-                                                 style="float: right;" ></p:commandButton>
+                                                 style="float: right;" >
+                                    <p:fileDownload value="#{queryComponentController.resultExcelFile}" />
+                                </p:commandButton>
 
                                 <p:commandButton ajax="false" value="Back" action="subcategory" style="float: right;" ></p:commandButton>
                             </f:facet>

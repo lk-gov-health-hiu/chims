@@ -686,17 +686,17 @@ public class QueryComponentController implements Serializable {
                 c1.setCellValue(serial);
 
                 Cell c2 = row.createCell(1);
-                if (c.getName() != null) {
+                if (tmpQc.getName() != null) {
                     c2.setCellValue(tmpQc.getName());
                 }
 
                 Cell c3 = row.createCell(2);
-                if (c.getCode() != null) {
+                if (tmpQc.getCode() != null) {
                     c3.setCellValue(tmpQc.getCode());
                 }
 
                 Cell c4 = row.createCell(3);
-                if (c.getQueryType() != null) {
+                if (tmpQc.getQueryType() != null) {
                     c4.setCellValue(tmpQc.getQueryType().toString());
                 }
 
@@ -751,17 +751,17 @@ public class QueryComponentController implements Serializable {
                 }
 
                 Cell c16 = row.createCell(14);
-                if (c.getItemValue() != null) {
+                if (c.getRealNumberValue() != null) {
                     c16.setCellValue(c.getRealNumberValue());
                 }
 
                 Cell c17 = row.createCell(15);
-                if (c.getItemValue() != null) {
+                if (c.getRealNumberValue2() != null) {
                     c17.setCellValue(c.getRealNumberValue2());
                 }
 
                 Cell c18 = row.createCell(16);
-                if (c.getItemValue() != null) {
+                if (c.getBooleanValue() != null) {
                     c18.setCellValue(c.getBooleanValue());
                 }
 
