@@ -686,10 +686,14 @@ public class QueryComponentController implements Serializable {
                 c1.setCellValue(serial);
 
                 Cell c2 = row.createCell(1);
-                c2.setCellValue(tmpQc.getName());
+                if (c.getName() != null) {
+                    c2.setCellValue(tmpQc.getName());
+                }
 
                 Cell c3 = row.createCell(2);
-                c3.setCellValue(tmpQc.getCode());
+                if (c.getCode() != null) {
+                    c3.setCellValue(tmpQc.getCode());
+                }
 
                 Cell c4 = row.createCell(3);
                 if (c.getQueryType() != null) {
@@ -697,7 +701,9 @@ public class QueryComponentController implements Serializable {
                 }
 
                 Cell c5 = row.createCell(4);
-                c5.setCellValue(c.getName());
+                if (c.getName() != null) {
+                    c5.setCellValue(c.getName());
+                }
 
                 Cell c7 = row.createCell(5);
                 if (c.getMatchType() != null) {
@@ -710,7 +716,7 @@ public class QueryComponentController implements Serializable {
                 }
 
                 Cell c9 = row.createCell(7);
-                if (c.getItem() != null) {
+                if (c.getItem() != null && c.getItem().getName() != null) {
                     c9.setCellValue(c.getItem().getName());
                 }
 
@@ -720,30 +726,44 @@ public class QueryComponentController implements Serializable {
                 }
 
                 Cell c11 = row.createCell(9);
-                if (c.getItemValue() != null) {
+                if (c.getItemValue() != null && c.getItemValue().getName() != null) {
                     c11.setCellValue(c.getItemValue().getName());
                 }
 
                 Cell c12 = row.createCell(10);
-                c12.setCellValue(c.getIntegerNumberValue());
+                if (c.getIntegerNumberValue() != null) {
+                    c12.setCellValue(c.getIntegerNumberValue());
+                }
 
                 Cell c13 = row.createCell(11);
-                c13.setCellValue(c.getIntegerNumberValue());
+                if (c.getIntegerNumberValue2() != null) {
+                    c13.setCellValue(c.getIntegerNumberValue2());
+                }
 
                 Cell c14 = row.createCell(12);
-                c14.setCellValue(c.getIntegerNumberValue());
+                if (c.getLongNumberValue() != null) {
+                    c14.setCellValue(c.getLongNumberValue());
+                }
 
                 Cell c15 = row.createCell(13);
-                c15.setCellValue(c.getIntegerNumberValue());
+                if (c.getLongNumberValue2() != null) {
+                    c15.setCellValue(c.getLongNumberValue2());
+                }
 
                 Cell c16 = row.createCell(14);
-                c16.setCellValue(c.getIntegerNumberValue());
+                if (c.getItemValue() != null) {
+                    c16.setCellValue(c.getRealNumberValue());
+                }
 
                 Cell c17 = row.createCell(15);
-                c17.setCellValue(c.getIntegerNumberValue());
+                if (c.getItemValue() != null) {
+                    c17.setCellValue(c.getRealNumberValue2());
+                }
 
                 Cell c18 = row.createCell(16);
-                c18.setCellValue(c.getIntegerNumberValue());
+                if (c.getItemValue() != null) {
+                    c18.setCellValue(c.getBooleanValue());
+                }
 
                 serial++;
             }

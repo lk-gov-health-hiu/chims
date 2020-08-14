@@ -288,17 +288,17 @@ public class ExcelReportController implements Serializable {
                             QueryWithCriteria qwc = new QueryWithCriteria();
                             qwc.setQuery(qc);
                             if (qc.getCode().equalsIgnoreCase(checkingString)) {
-                                System.out.println("qc = " + qc.getCode());
+//                                System.out.println("qc = " + qc.getCode());
                             }
 
                             qwc.setCriteria(findCriteriaForQueryComponent(qc.getCode()));
                             if (qc.getCode().equalsIgnoreCase(checkingString)) {
-                                System.out.println("qc = " + qwc.getCriteria());
+//                                System.out.println("qc = " + qwc.getCriteria());
                             }
                             qs.add(qwc);
                         } else {
                             if (logActivity) {
-//                                System.out.println("No qc found for " + cellString);
+                                System.out.println("No qc found for " + cellString);
                             }
                         }
                     }
@@ -404,16 +404,18 @@ public class ExcelReportController implements Serializable {
                             currentCell.setCellValue(sqr.getPeriodString());
                         } else {
                             if (logActivity) {
-                                System.out.println("cellString = " + cellString);
+//                                System.out.println("cellString = " + cellString);
                             }
                             String qryCode = findQueryComponentCodeByCellString(cellString);
                             if (logActivity) {
-                                System.out.println("qryCode = " + qryCode);
+//                                System.out.println("qryCode = " + qryCode);
                             }
                             if (qryCode != null) {
                                 QueryWithCriteria qwc = findQwcFromQwcs(qwcs, qryCode);
                                 Long value = calculateIndividualQueryResult(ewcs, qwc);
-                                currentCell.setCellValue(value);
+                                if (value != null) {
+                                    currentCell.setCellValue(value);
+                                }
                             } else {
                                 System.out.println("Query not found for " + cellString);
                                 currentCell.setCellValue("");
@@ -452,9 +454,9 @@ public class ExcelReportController implements Serializable {
             for (int i = 0; i < 10000; i++) {
 
             }
-            System.out.println("u ID " + u.getId());
-            System.out.println("u BA " + u.getBaImage().toString());
-            System.out.println("byteArray = " + byteArray.toString());
+//            System.out.println("u ID " + u.getId());
+//            System.out.println("u BA " + u.getBaImage().toString());
+//            System.out.println("byteArray = " + byteArray.toString());
 
         } catch (FileNotFoundException e) {
             sqr.setErrorMessage("IO Exception. " + e.getMessage());
