@@ -35,6 +35,9 @@ import lk.gov.health.phsp.entity.Encounter;
 public class EncounterWithComponents {
     private Long encounterId;
     private List<ClientEncounterComponentItem> components;
+    private Long countOfEncounterDates;
+    
+    
 
     public Long getEncounterId() {
         return encounterId;
@@ -53,6 +56,14 @@ public class EncounterWithComponents {
 
     public void setComponents(List<ClientEncounterComponentItem> components) {
         this.components = components;
+    }
+
+    public Long getCountOfEncounterDates() {
+        return countOfEncounterDates;
+    }
+
+    public void setCountOfEncounterDates(Long countOfEncounterDates) {
+        this.countOfEncounterDates = countOfEncounterDates;
     }
     
     

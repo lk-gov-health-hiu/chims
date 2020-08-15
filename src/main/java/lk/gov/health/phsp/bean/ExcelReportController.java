@@ -402,6 +402,13 @@ public class ExcelReportController implements Serializable {
                             }
                         } else if (cellString.equals("#{report_period}")) {
                             currentCell.setCellValue(sqr.getPeriodString());
+                        } else if (cellString.equals("#{report_dates_count}")) {
+                            Long tds = findCountOfEncounterDates(storedQueryResult.getResultFrom(),
+                                    storedQueryResult.getResultTo(),
+                                    storedQueryResult.getInstitution());
+                            if (tds != null) {
+                                currentCell.setCellValue(tds);
+                            }
                         } else {
                             if (logActivity) {
 //                                System.out.println("cellString = " + cellString);
@@ -998,6 +1005,30 @@ public class ExcelReportController implements Serializable {
         m.put("fd", fromDate);
         m.put("td", toDate);
         List<Long> encs = encounterFacade.findLongList(j, m);
+        return encs;
+    }
+
+    private Long findCountOfEncounterDates(Date fromDate, Date toDate, Institution institution) {
+        if (logActivity) {
+            System.out.println("Finding Encounter IDs");
+        }
+        String j = "select count(e.encounterDate) "
+                + " from  ClientEncounterComponentFormSet f join f.encounter e"
+                + " where e.retired<>:er"
+                + " and f.retired<>:fr ";
+        j += " and f.completed=:fc ";
+        j += " and e.institution=:i "
+                + " and e.encounterType=:t "
+                + " and e.encounterDate between :fd and :td";
+        Map m = new HashMap();
+        m.put("i", institution);
+        m.put("t", EncounterType.Clinic_Visit);
+        m.put("er", true);
+        m.put("fr", true);
+        m.put("fc", true);
+        m.put("fd", fromDate);
+        m.put("td", toDate);
+        Long encs = encounterFacade.findLongByJpql(j, m);
         return encs;
     }
 
