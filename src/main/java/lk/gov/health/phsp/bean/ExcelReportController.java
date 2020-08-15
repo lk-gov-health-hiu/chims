@@ -1010,7 +1010,7 @@ public class ExcelReportController implements Serializable {
 
     private Long findCountOfEncounterDates(Date fromDate, Date toDate, Institution institution) {
         if (logActivity) {
-            System.out.println("Finding Encounter IDs");
+            System.out.println("Finding Encounter Date count");
         }
         String j = "select count(e.encounterDate) "
                 + " from  ClientEncounterComponentFormSet f join f.encounter e"
@@ -1029,6 +1029,8 @@ public class ExcelReportController implements Serializable {
         m.put("fc", true);
         m.put("fd", fromDate);
         m.put("td", toDate);
+        System.out.println("m = " + m);
+        System.out.println("j = " + j);
         Long encs = encounterFacade.findLongByJpql(j, m);
         return encs;
     }
