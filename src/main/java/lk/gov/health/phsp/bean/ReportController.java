@@ -241,6 +241,11 @@ public class ReportController implements Serializable {
         myResults = getStoredQueryResultFacade().findByJpql(j, m, true);
     }
 
+    public void listExistingMonthlyReports() {
+        setTimePeriodType(TimePeriodType.Monthly);
+        listExistingReports();
+    }
+    
     public void listExistingReports() {
         if (institution == null) {
             JsfUtil.addErrorMessage("Please select an institutions");
@@ -379,6 +384,11 @@ public class ReportController implements Serializable {
 
     }
 
+    public void createNewMonthlyReport() {
+        setTimePeriodType(TimePeriodType.Monthly);
+        createNewReport();
+    }
+    
     public void createNewReport() {
         if (institution == null) {
             JsfUtil.addErrorMessage("Please select an institutions");

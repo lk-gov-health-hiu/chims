@@ -403,9 +403,9 @@ public class ExcelReportController implements Serializable {
                         } else if (cellString.equals("#{report_period}")) {
                             currentCell.setCellValue(sqr.getPeriodString());
                         } else if (cellString.equals("#{report_dates_count}")) {
-                            Long tds = findCountOfEncounterDates(storedQueryResult.getResultFrom(),
-                                    storedQueryResult.getResultTo(),
-                                    storedQueryResult.getInstitution());
+                            Long tds = findCountOfEncounterDates(sqr.getResultFrom(),
+                                    sqr.getResultTo(),
+                                    sqr.getInstitution());
                             if (tds != null) {
                                 currentCell.setCellValue(tds);
                             }
@@ -652,13 +652,13 @@ public class ExcelReportController implements Serializable {
                     break;
                 case item:
                     if (needCheckLogin && clientValue.getItem() != null) {
-                        System.out.println("clientValue.getItemCode() = " + clientValue.getItem().getCode());
+//                        System.out.println("clientValue.getItemCode() = " + clientValue.getItem().getCode());
                     }
                     if (needCheckLogin && clientValue.getItemValue() != null) {
-                        System.out.println("clientValue.getItemValueCode() = " + clientValue.getItemValue().getCode());
+//                        System.out.println("clientValue.getItemValueCode() = " + clientValue.getItemValue().getCode());
                     } else {
-                        System.out.println("CLient Item Value is NULL");
-                        System.out.println("clietnValue ID is " + clientValue.getId());
+//                        System.out.println("CLient Item Value is NULL");
+//                        System.out.println("clietnValue ID is " + clientValue.getId());
                     }
 
                     itemValue = q.getItemValue();
