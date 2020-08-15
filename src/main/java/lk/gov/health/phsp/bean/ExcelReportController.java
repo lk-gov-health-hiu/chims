@@ -1019,7 +1019,8 @@ public class ExcelReportController implements Serializable {
         j += " and f.completed=:fc ";
         j += " and e.institution=:i "
                 + " and e.encounterType=:t "
-                + " and e.encounterDate between :fd and :td";
+                + " and e.encounterDate between :fd and :td "
+                + " group by e.encounterDate";
         Map m = new HashMap();
         m.put("i", institution);
         m.put("t", EncounterType.Clinic_Visit);
