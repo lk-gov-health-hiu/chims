@@ -630,7 +630,7 @@ public class ExcelReportController implements Serializable {
         Item itemVariable = null;
         Item itemValue = null;
         Boolean qBool = null;
-        String qStr =null;
+        String qStr = null;
 
         if (q.getMatchType() == QueryCriteriaMatchType.Variable_Value_Check) {
             if (needCheckLogin) {
@@ -749,8 +749,8 @@ public class ExcelReportController implements Serializable {
                             }
                         }
                     }
-                    if(qStr!=null){
-                        if (clientValue.getShortTextValue()!= null) {
+                    if (qStr != null) {
+                        if (clientValue.getShortTextValue() != null) {
                             m = qStr.equals(clientValue.getShortTextValue());
                         }
                     }
@@ -991,8 +991,8 @@ public class ExcelReportController implements Serializable {
                     }
                     break;
                 case String:
-                    if(clientValue.getShortTextValue()!=null){
-                        valueNotNull=true;
+                    if (clientValue.getShortTextValue() != null) {
+                        valueNotNull = true;
                     }
                     break;
             }
@@ -1208,6 +1208,13 @@ public class ExcelReportController implements Serializable {
     }
 
     private String removeNonNumericCharactors(String str) {
+        if (str == null) {
+            return "";
+        }
+        if (str.contains("-")) {
+            String[] parts = str.split("-");
+            str = parts[0];
+        }
         return str.replaceAll("[^\\d.]", "");
     }
 
