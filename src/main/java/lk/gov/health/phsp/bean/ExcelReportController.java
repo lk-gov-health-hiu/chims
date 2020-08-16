@@ -79,7 +79,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 @SessionScoped
 public class ExcelReportController implements Serializable {
 
-    private final boolean logActivity = false;
+    private final boolean logActivity = true;
     private List<EncounterWithComponents> encountersWithComponents;
     private List<QueryWithCriteria> queriesWithCriteria;
     StoredQueryResult storedQueryResult;
@@ -630,6 +630,7 @@ public class ExcelReportController implements Serializable {
         Item itemVariable = null;
         Item itemValue = null;
         Boolean qBool = null;
+        String qStr =null;
 
         if (q.getMatchType() == QueryCriteriaMatchType.Variable_Value_Check) {
             if (needCheckLogin) {
@@ -684,6 +685,9 @@ public class ExcelReportController implements Serializable {
                         System.out.println("clientValue.getBooleanValue() = " + clientValue.getBooleanValue());
                     }
                     qBool = q.getBooleanValue();
+                    break;
+                case String:
+                    qStr = q.getShortTextValue();
                     break;
 
             }
@@ -743,6 +747,11 @@ public class ExcelReportController implements Serializable {
                             if (itemValue.getCode().equals(clientValue.getItemValue().getCode())) {
                                 m = true;
                             }
+                        }
+                    }
+                    if(qStr!=null){
+                        if (clientValue.getShortTextValue()!= null) {
+                            m = qStr.equals(clientValue.getShortTextValue());
                         }
                     }
                     break;
@@ -883,6 +892,9 @@ public class ExcelReportController implements Serializable {
                         }
                         if (temDbl != null) {
                             m = temDbl >= real1;
+//                            System.out.println("Client value = temDbl = " + temDbl);
+//                            System.out.println("Query Value = real1 = " + real1);
+//                            System.out.println("m = " + m);
                         }
 
                     }
@@ -895,6 +907,7 @@ public class ExcelReportController implements Serializable {
                             m = tmpLng >= lng1;
                         }
                     }
+                    break;
                 case Less_than_or_equal:
                     if (qInt1 != null) {
                         Integer tmpInt = clientValue.getIntegerNumberValue();
@@ -977,7 +990,11 @@ public class ExcelReportController implements Serializable {
                         valueNotNull = true;
                     }
                     break;
-
+                case String:
+                    if(clientValue.getShortTextValue()!=null){
+                        valueNotNull=true;
+                    }
+                    break;
             }
         }
         return valueNotNull;
@@ -1147,6 +1164,9 @@ public class ExcelReportController implements Serializable {
         } catch (NumberFormatException e) {
             outInt = null;
         }
+        if (logActivity) {
+            System.out.println("stringToInteger " + str + " > " + outInt);
+        }
         return outInt;
     }
 
@@ -1161,6 +1181,9 @@ public class ExcelReportController implements Serializable {
             outLong = Long.parseLong(str);
         } catch (NumberFormatException e) {
             outLong = null;
+        }
+        if (logActivity) {
+            System.out.println("stringToLong " + str + " > " + outLong);
         }
         return outLong;
     }
@@ -1177,6 +1200,9 @@ public class ExcelReportController implements Serializable {
             outDbl = Double.parseDouble(str);
         } catch (NumberFormatException e) {
             outDbl = null;
+        }
+        if (logActivity) {
+            System.out.println("stringToDouble " + str + " > " + outDbl);
         }
         return outDbl;
     }
