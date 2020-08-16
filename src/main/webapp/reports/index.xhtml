@@ -5,50 +5,83 @@
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:p="http://primefaces.org/ui"
       xmlns:f="http://xmlns.jcp.org/jsf/core">
-    <head>
+    <h:head>
         <ui:define name="head">
             Reports
         </ui:define>
-    </head>
-    <body>
+    </h:head>
+    <h:body>
 
         <ui:composition template="/template.xhtml">
-
-
-
             <ui:define name="content">
 
                 <h:form>
-                    <h:panelGrid columns="1" >
+                    <p:panelGrid columns="1" style="width: 100%;" >
                         <f:facet name="header" >
                             <h:outputLabel value="Reports" ></h:outputLabel>
                         </f:facet>
-                        
-                        <p:commandButton value="Excel Reports for Institutions"   style="width:30em;margin:auto;"
-                                         action="#{reportController.toViewInstitutionExcelReports()}"
-                                         ajax="false"></p:commandButton>
-                        
-                         <p:commandButton value="My Excel Reports"   style="width:30em;margin:auto;"
-                                          action="#{reportController.toViewMyExcelReports()}"
-                                         ajax="false"></p:commandButton>
 
-                        <p:commandButton value="Client Registrations"   style="width:30em;margin:auto;"
-                                         action="#{reportController.toViewClientRegistrations()}"
-                                         ajax="false"></p:commandButton>
+                        <p:tabView orientation="left" >
+                            <p:tab title="Summeries" >
+                                <p:panelGrid columns="1" >
+                                    <p:commandButton value="Monthly Institution Summeries"   style="width:30em;margin:auto;"
+                                                     action="#{reportController.toInstitutionMonthlySummeries()}"
+                                                     ajax="false"></p:commandButton>
 
-                        <p:commandButton value="Clinic Enrollments"   style="width:30em;margin:auto;"
-                                         action="#{reportController.toViewClinicEnrollments()}"
-                                         ajax="false"></p:commandButton>
+                                    <p:commandButton value="Consolidated Summeries"   style="width:30em;margin:auto;"
+                                                     action="#{reportController.toInstitutionMonthlySummeries()}"
+                                                     ajax="false"></p:commandButton>
 
-                        <p:commandButton value="Clinic Visits"   style="width:30em;margin:auto;"
-                                         action="#{reportController.toViewClinicVisits()}"
-                                         ajax="false"></p:commandButton>
-                        
-                          <p:commandButton value="Client Registrations by Institution"   style="width:30em;margin:auto;"
-                                           action="#{reportController.toViewClientRegistrationsByInstitution()}"
-                                         ajax="false"></p:commandButton>
+                                    <p:commandButton value="My Summeries"   style="width:30em;margin:auto;"
+                                                     action="#{reportController.toViewMySummeries()}"
+                                                     ajax="false"></p:commandButton>
 
-                    </h:panelGrid>
+                                    <p:commandButton value="Institution-vice Client Registrations"   style="width:30em;margin:auto;"
+                                                     action="#{reportController.toViewClientRegistrationsByInstitution()}"
+                                                     ajax="false"></p:commandButton>
+                                </p:panelGrid>
+
+                            </p:tab>
+
+                            <p:tab title="Lists" >
+
+                                <p:panelGrid columns="1" >
+                                    <p:commandButton value="Client Registrations"   style="width:30em;margin:auto;"
+                                                     action="#{reportController.toViewClientRegistrations()}"
+                                                     ajax="false"></p:commandButton>
+
+                                    <p:commandButton value="Clinic Enrollments"   style="width:30em;margin:auto;"
+                                                     action="#{reportController.toViewClinicEnrollments()}"
+                                                     ajax="false"></p:commandButton>
+
+                                    <p:commandButton value="Clinic Visits"   style="width:30em;margin:auto;"
+                                                     action="#{reportController.toViewClinicVisits()}"
+                                                     ajax="false"></p:commandButton>
+
+                                </p:panelGrid>
+
+
+                            </p:tab>
+
+                            <p:tab title="Data" >
+                                <p:panelGrid columns="1" >
+
+
+                                    <p:commandButton value="Clinical Data"   style="width:30em;margin:auto;"
+                                                     action="#{reportController.toSingleVariableClinicalData()}"
+                                                     ajax="false"></p:commandButton>
+
+                                </p:panelGrid>
+
+
+
+                            </p:tab>
+
+                        </p:tabView>
+
+
+
+                    </p:panelGrid>
                 </h:form>
 
 
@@ -56,5 +89,5 @@
 
         </ui:composition>
 
-    </body>
+    </h:body>
 </html>

@@ -183,6 +183,20 @@ public class DesignComponentFormItemController implements Serializable {
         m.put("p", form);
         return getFacade().findByJpql(j, m);
     }
+    
+    public List<DesignComponentFormItem> fillItemsOfTheFormSet(DesignComponentFormSet formset) {
+        List<DesignComponentFormItem> is;
+        if (formset == null) {
+            is = new ArrayList<>();
+            return is;
+        }
+        String j = "Select i from DesignComponentFormItem i where i.retired=false "
+                + " and i.parentComponent.parentComponent=:p "
+                + " order by i.parentComponent.orderNo, i.orderNo ";
+        Map m = new HashMap();
+        m.put("p", formset);
+        return getFacade().findByJpql(j, m);
+    }
 
     public void addNewItemToForm() {
         if (designComponentForm == null) {

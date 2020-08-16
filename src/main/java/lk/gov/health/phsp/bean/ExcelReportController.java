@@ -132,7 +132,7 @@ public class ExcelReportController implements Serializable {
                     queriesWithCriteria);
             if (success) {
                 updateOnSuccess(storedQueryResult);
-                JsfUtil.addSuccessMessage("Report Created. Download from Below");
+//                JsfUtil.addSuccessMessage("Report Created. Download from Below");
                 encountersWithComponents = null;
                 queriesWithCriteria = null;
                 return true;

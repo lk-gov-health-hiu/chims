@@ -345,7 +345,7 @@ public class WebUserController implements Serializable {
         TreeNode user = new PrivilegeTreeNode("User", allPrivilegeRoot, Privilege.Manage_Users);
         TreeNode institutionAdministration = new PrivilegeTreeNode("Institution Administration", allPrivilegeRoot, Privilege.Institution_Administration);
         TreeNode me = new PrivilegeTreeNode("Monitoring and Evaluation", allPrivilegeRoot, Privilege.Monitoring_and_evaluation);
-        
+
         TreeNode systemAdministration = new PrivilegeTreeNode("System Administration", allPrivilegeRoot, Privilege.System_Administration);
         //Client Management
 
@@ -371,8 +371,7 @@ public class WebUserController implements Serializable {
 
         //Monitoring and Evaluation
         TreeNode me_Users = new PrivilegeTreeNode("View Reports", me, Privilege.Monitoring_and_evaluation_reports);
-        
-        
+
     }
 
     public String toChangeMyDetails() {
@@ -432,6 +431,26 @@ public class WebUserController implements Serializable {
 
     public void sendSubmitClientRequestConfirmationEmail() {
 
+    }
+
+    public List<Institution> completeLoggableInstitutions(String qry) {
+        List<Institution> ins = new ArrayList<>();
+        if (qry == null) {
+            return ins;
+        }
+        if (qry.trim().equals("")) {
+            return ins;
+        }
+        qry = qry.trim().toLowerCase();
+        for (Institution i : getLoggableInstitutions()) {
+            if (i.getName() == null) {
+                continue;
+            }
+            if (i.getName().toLowerCase().contains(qry)) {
+                ins.add(i);
+            }
+        }
+        return ins;
     }
 
     public void downloadCurrentFile() {
@@ -592,12 +611,12 @@ public class WebUserController implements Serializable {
         if (loggedUser != null && withoutPassword) {
             return true;
         }
-        
-        if(getFacade()==null){
+
+        if (getFacade() == null) {
             JsfUtil.addErrorMessage("Server Error");
             return false;
         }
-        
+
         String temSQL;
         temSQL = "SELECT u FROM WebUser u WHERE lower(u.name)=:userName and u.retired =:ret";
         Map m = new HashMap();
@@ -620,13 +639,13 @@ public class WebUserController implements Serializable {
     }
 
     private boolean isFirstVisit() {
-        if(getFacade()==null){
+        if (getFacade() == null) {
             JsfUtil.addErrorMessage("Server Config Error.");
             return false;
         }
         String j = "select c from WebUser c";
         WebUser w = getFacade().findFirstByJpql(j);
-        if (w==null) {
+        if (w == null) {
             JsfUtil.addSuccessMessage("First Visit");
 
             Institution ins = new Institution();
@@ -802,7 +821,7 @@ public class WebUserController implements Serializable {
                 wups.add(Privilege.Manage_Area);
                 wups.add(Privilege.Manage_Institutions);
                 wups.add(Privilege.Manage_Forms);
-                
+
                 break;
         }
 
