@@ -533,6 +533,8 @@ public class ReportController implements Serializable {
                 serial++;
             }
         }
+        
+        cis=null;
 
         try (FileOutputStream outputStream = new FileOutputStream(newFile)) {
             workbook.write(outputStream);
@@ -622,6 +624,7 @@ public class ReportController implements Serializable {
     public void createNewMonthlyReport() {
         setTimePeriodType(TimePeriodType.Monthly);
         createNewReport();
+        System.gc();
     }
 
     public void createNewReport() {
@@ -2109,6 +2112,9 @@ public class ReportController implements Serializable {
             }
         }
 
+        objs=null;
+        System.gc();
+        
         try (FileOutputStream outputStream = new FileOutputStream(newFile)) {
             workbook.write(outputStream);
         } catch (Exception e) {

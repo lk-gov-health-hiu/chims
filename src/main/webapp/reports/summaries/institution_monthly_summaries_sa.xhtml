@@ -34,14 +34,17 @@
                                                 itemValue="#{q}">
                                 </p:autoComplete>
 
-                                <p:outputLabel value="Institution" for="form" ></p:outputLabel>
-                                <p:selectOneMenu value="" >
-                                    <f:selectItem itemLabel="Select a Form" ></f:selectItem>
-                                    <f:selectItems value="#{designComponentFormController.items}"
-                                                   var="df"
-                                                   itemLabel="#{df.name}"
-                                                   itemValue="#{df}" ></f:selectItems>
-                                </p:selectOneMenu>
+                                <p:outputLabel value="Institution" for="ins" ></p:outputLabel>
+                                <p:autoComplete value="#{reportController.institution}"
+                                                id="ins"
+                                                requiredMessage="Please select a clinic. Selecting a Hospital will not give results."
+
+                                                required="true"
+                                                completeMethod="#{institutionController.completeInstitutions}"
+                                                var="i"
+                                                itemLabel="#{i.name}"
+                                                itemValue="#{i}">
+                                </p:autoComplete>
 
 
                                 <p:outputLabel id="lblYear" value="Year" for="txtYear" ></p:outputLabel>
