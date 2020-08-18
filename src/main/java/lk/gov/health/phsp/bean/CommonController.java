@@ -46,6 +46,7 @@ import org.jasypt.util.text.BasicTextEncryptor;
 import org.joda.time.Instant;
 import org.joda.time.LocalDate;
 import org.joda.time.Period;
+import org.joda.time.PeriodType;
 
 /**
  *
@@ -126,10 +127,14 @@ public class CommonController implements Serializable {
         if (toWhichDate == null) {
             toWhichDate = new Date();
         }
-        LocalDate l1 = LocalDate.fromDateFields(dateOfBirth);
-        LocalDate now1 = LocalDate.fromDateFields(toWhichDate);
-        Period diff = Period.fieldDifference(l1, now1);
-        return diff.getYears();
+        LocalDate dob = new LocalDate(dateOfBirth);
+        LocalDate date = new LocalDate(toWhichDate);
+        Period period = new Period(dob, date, PeriodType.yearMonthDay());
+        int age = period.getYears();
+        System.out.println("dateOfBirth = " + dateOfBirth);
+        System.out.println("toWhichDate = " + toWhichDate);
+        System.out.println("age = " + age);
+        return age;
     }
 
     public Date endOfTheDay(Date date) {
