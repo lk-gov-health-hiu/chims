@@ -75,7 +75,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
  *
  * @author buddhika
  */
-@Named(value = "excelReportController")
+@Named
 @SessionScoped
 public class ExcelReportController implements Serializable {
 
@@ -1067,6 +1067,52 @@ public class ExcelReportController implements Serializable {
         return ts;
     }
 
+    
+    
+    public long findClientCountEncounterComponentItemMatchCount(
+            List<Institution> ins, 
+            Date fromDate,
+            Date toDate,
+            String itemCode, 
+            List<String> valueStrings) {
+        if (logActivity) {
+//            System.out.println("Finding ENcounter Component Items for Querying");
+        }
+        String j;
+        Map m;
+        m = new HashMap();
+        j = "select count(f.encounter) "
+                + " from ClientEncounterComponentItem f "
+                + " where f.retired<>:ret "
+                + " and f.encounter.retired<>:ret ";
+                j+= " and f.item.code=:ic ";
+                j+= " and f.shortTextValue in :ivs";
+        m.put("ic", itemCode);
+        m.put("ret", true);
+        m.put("ivs", valueStrings);
+        if(ins!=null && !ins.isEmpty()){
+            m.put("ins", itemCode);
+            j += " and f.encounter.institution in :ins ";
+        }
+        if(fromDate!=null && toDate!=null){
+             m.put("fd", fromDate);
+             m.put("td", toDate);
+            j += " and f.encounter.encounterDate between :fd and :td ";
+        }
+//        j += " group by e";
+        Long count = getClientEncounterComponentItemFacade().findLongByJpql(j, m);
+        System.out.println("j = " + j);
+        System.out.println("m = " + m);
+        System.out.println("count = " + count);
+        long val;
+        if(count!=null){
+            val = (long) count;
+        }else{
+            val = 0l;
+        }
+        return val;
+    }
+    
     private String currentTimeAsString() {
         Date date = Calendar.getInstance().getTime();
         DateFormat dateFormat = new SimpleDateFormat("hh:mm:ss");

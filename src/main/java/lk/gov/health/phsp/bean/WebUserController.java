@@ -82,7 +82,8 @@ public class WebUserController implements Serializable {
     private ClientController clientController;
     @Inject
     private EncounterController encounterController;
-
+    @Inject
+    ExcelReportController reportController;
     /*
     Variables
      */
@@ -144,11 +145,17 @@ public class WebUserController implements Serializable {
     Long totalNumberOfRegisteredClients;
     private Long totalNumberOfClinicVisits;
     private Long totalNumberOfClinicEnrolments;
+    private Long totalNumberOfCvsRiskClients;
 
     private WebUserRole assumedRole;
     private Institution assumedInstitution;
     private Area assumedArea;
     private List<UserPrivilege> assumedPrivileges;
+
+    String riskVariable = "cvs_risk_factor";
+    String riskVal1 = "30-40%";
+    String riskVal2 = ">40%";
+    List<String> riskVals;
 
     /**
      *
@@ -543,12 +550,15 @@ public class WebUserController implements Serializable {
     }
 
     public void prepareDashboards() {
+        riskVals = new ArrayList<>();
+        riskVals.add(riskVal1);
+        riskVals.add(riskVal2);
         if (loggedUser.isInstitutionAdministrator()) {
             prepareInsAdminDashboard();
-        }  else if (loggedUser.isSystemAdministrator()) {
+        } else if (loggedUser.isSystemAdministrator()) {
             prepareSysAdminDashboard();
         } else if (loggedUser.isMeAdministrator()) {
-            prepareSysAdminDashboard();
+            prepareMeAdminDashboard();
         } else if (loggedUser.isMeSuperUser()) {
             prepareMeAdminDashboard();
         } else if (loggedUser.isDoctor()) {
@@ -567,30 +577,43 @@ public class WebUserController implements Serializable {
         totalNumberOfRegisteredClients = clientController.countOfRegistedClients(null, null);
         totalNumberOfClinicEnrolments = encounterController.countOfEncounters(null, EncounterType.Clinic_Enroll);
         totalNumberOfClinicVisits = encounterController.countOfEncounters(null, EncounterType.Clinic_Visit);
+        totalNumberOfCvsRiskClients = reportController.findClientCountEncounterComponentItemMatchCount(
+                null, CommonController.startOfTheYear(), new Date(), riskVariable, riskVals);
     }
 
     public void prepareMeAdminDashboard() {
         totalNumberOfRegisteredClients = clientController.countOfRegistedClients(null, null);
         totalNumberOfClinicEnrolments = encounterController.countOfEncounters(null, EncounterType.Clinic_Enroll);
         totalNumberOfClinicVisits = encounterController.countOfEncounters(null, EncounterType.Clinic_Visit);
+        totalNumberOfCvsRiskClients = reportController.findClientCountEncounterComponentItemMatchCount(
+                null, CommonController.startOfTheYear(), new Date(), riskVariable, riskVals);
     }
 
     public void prepareInsAdminDashboard() {
         totalNumberOfRegisteredClients = clientController.countOfRegistedClients(loggedUser.getInstitution(), null);
         totalNumberOfClinicEnrolments = encounterController.countOfEncounters(getInstitutionController().getMyClinics(), EncounterType.Clinic_Enroll);
         totalNumberOfClinicVisits = encounterController.countOfEncounters(getInstitutionController().getMyClinics(), EncounterType.Clinic_Visit);
+        totalNumberOfCvsRiskClients = reportController.findClientCountEncounterComponentItemMatchCount(
+                getInstitutionController().getMyClinics(), CommonController.startOfTheYear(), new Date(), riskVariable, riskVals);
     }
 
     public void prepareDocDashboard() {
         totalNumberOfRegisteredClients = clientController.countOfRegistedClients(loggedUser.getInstitution().getPoiInstitution(), null);
         totalNumberOfClinicEnrolments = encounterController.countOfEncounters(getInstitutionController().getMyClinics(), EncounterType.Clinic_Enroll);
         totalNumberOfClinicVisits = encounterController.countOfEncounters(getInstitutionController().getMyClinics(), EncounterType.Clinic_Visit);
+
+        totalNumberOfCvsRiskClients = reportController.findClientCountEncounterComponentItemMatchCount(
+                getInstitutionController().getMyClinics(), CommonController.startOfTheYear(), new Date(), riskVariable, riskVals);
+
     }
 
     public void prepareNurseDashboard() {
         totalNumberOfRegisteredClients = clientController.countOfRegistedClients(loggedUser.getInstitution().getPoiInstitution(), null);
         totalNumberOfClinicEnrolments = encounterController.countOfEncounters(getInstitutionController().getMyClinics(), EncounterType.Clinic_Enroll);
         totalNumberOfClinicVisits = encounterController.countOfEncounters(getInstitutionController().getMyClinics(), EncounterType.Clinic_Visit);
+        totalNumberOfCvsRiskClients = reportController.findClientCountEncounterComponentItemMatchCount(
+                getInstitutionController().getMyClinics(), CommonController.startOfTheYear(), new Date(), riskVariable, riskVals);
+
     }
 
     public String loginForMobile() {
@@ -1725,6 +1748,14 @@ public class WebUserController implements Serializable {
             ups.add(up);
         }
         return ups;
+    }
+
+    public Long getTotalNumberOfCvsRiskClients() {
+        return totalNumberOfCvsRiskClients;
+    }
+
+    public void setTotalNumberOfCvsRiskClients(Long totalNumberOfCvsRiskClients) {
+        this.totalNumberOfCvsRiskClients = totalNumberOfCvsRiskClients;
     }
 
     @FacesConverter(forClass = WebUser.class)
