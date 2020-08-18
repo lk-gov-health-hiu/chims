@@ -288,8 +288,8 @@ public class ReportController implements Serializable {
                 setToDate(CommonController.endOfQuarter(getYear(), getQuarter()));
                 break;
             case Monthly:
-                setFromDate(CommonController.startOfTheMonth(getYear(), getMonth() - 1));
-                setToDate(CommonController.endOfTheMonth(getYear(), getMonth() - 1));
+                setFromDate(CommonController.startOfTheMonth(getYear(), getMonth() ));
+                setToDate(CommonController.endOfTheMonth(getYear(), getMonth() ));
                 break;
             case Dates:
             //TODO: Add what happens when selected dates
@@ -377,7 +377,7 @@ public class ReportController implements Serializable {
         List<ClientEncounterComponentItem> cis = clientEncounterComponentItemFacade.findByJpql(j, m);
         System.out.println("cis = " + cis.size());
         //String phn, String gnArea, String institution, Date dataOfBirth, Date encounterAt, String sex
-        List<Object> objs = getClientFacade().findAggregates(j, m);
+//        List<Object> objs = getClientFacade().findAggregates(j, m);
 
         String FILE_NAME = "client_values" + "_" + (new Date()) + ".xlsx";
         String mimeType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
@@ -486,7 +486,7 @@ public class ReportController implements Serializable {
                 }
 
                 Cell c4 = row.createCell(3);
-                int ageInYears = CommonController.differenceInYears(p.getDateOfBirth(), e.getEncounterDate());
+                int ageInYears = CommonController.calculateAge(p.getDateOfBirth(), e.getEncounterDate());
                 c4.setCellValue(ageInYears);
 
                 Cell c5 = row.createCell(4);
@@ -571,8 +571,8 @@ public class ReportController implements Serializable {
                 sqr.setResultQuarter(getQuarter());
                 break;
             case Monthly:
-                sqr.setResultFrom(CommonController.startOfTheMonth(getYear(), getMonth() - 1));
-                sqr.setResultTo(CommonController.endOfTheMonth(getYear(), getMonth() - 1));
+                sqr.setResultFrom(CommonController.startOfTheMonth(getYear(), getMonth() ));
+                sqr.setResultTo(CommonController.endOfTheMonth(getYear(), getMonth() ));
                 sqr.setResultYear(getYear());
                 sqr.setResultMonth(getMonth());
                 break;
@@ -661,10 +661,13 @@ public class ReportController implements Serializable {
                 sqr.setResultQuarter(getQuarter());
                 break;
             case Monthly:
-                sqr.setResultFrom(CommonController.startOfTheMonth(getYear(), getMonth() - 1));
-                sqr.setResultTo(CommonController.endOfTheMonth(getYear(), getMonth() - 1));
+                System.out.println("getMonth() = " + getMonth());
+                sqr.setResultFrom(CommonController.startOfTheMonth(getYear(), getMonth()));
+                sqr.setResultTo(CommonController.endOfTheMonth(getYear(), getMonth()));
                 sqr.setResultYear(getYear());
                 sqr.setResultMonth(getMonth());
+                System.out.println("sqr.getResultFrom() = " + sqr.getResultFrom());;
+                System.out.println("sqr.getResultTo() = " + sqr.getResultTo());;
                 break;
             case Dates:
             //TODO: Add what happens when selected dates

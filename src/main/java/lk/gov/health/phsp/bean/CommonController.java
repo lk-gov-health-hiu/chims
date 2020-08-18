@@ -15,6 +15,7 @@ import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.ZoneId;
 import java.util.Calendar;
 import java.util.Date;
 import javax.enterprise.context.SessionScoped;
@@ -42,6 +43,9 @@ import lk.gov.health.phsp.enums.SelectionDataType;
 import lk.gov.health.phsp.enums.TimePeriodType;
 import org.jasypt.util.password.BasicPasswordEncryptor;
 import org.jasypt.util.text.BasicTextEncryptor;
+import org.joda.time.Instant;
+import org.joda.time.LocalDate;
+import org.joda.time.Period;
 
 /**
  *
@@ -90,31 +94,44 @@ public class CommonController implements Serializable {
         return endOfTheDay(new Date());
     }
 
-    public static int ageFromDob(Date dob){
-        if(dob==null){
+    public static int ageFromDob(Date dob) {
+        if (dob == null) {
             return 0;
         }
         Calendar cDob = Calendar.getInstance();
         cDob.setTime(dob);
         Calendar today = Calendar.getInstance();
-        int yearsInBetween = today.get(Calendar.YEAR) 
-                                - cDob.get(Calendar.YEAR);
+        int yearsInBetween = today.get(Calendar.YEAR)
+                - cDob.get(Calendar.YEAR);
         return yearsInBetween;
     }
-    
-    public static int differenceInYears(Date fromDate, Date toDate){
-        if(fromDate==null || toDate==null){
+
+    public static int differenceInYears(Date fromDate, Date toDate) {
+        if (fromDate == null || toDate == null) {
             return 0;
         }
         Calendar cFromDate = Calendar.getInstance();
         cFromDate.setTime(fromDate);
         Calendar cTodate = Calendar.getInstance();
         cTodate.setTime(toDate);
-        int yearsInBetween = cTodate.get(Calendar.YEAR) 
-                                - cFromDate.get(Calendar.YEAR);
+        int yearsInBetween = cTodate.get(Calendar.YEAR)
+                - cFromDate.get(Calendar.YEAR);
         return yearsInBetween;
     }
-    
+
+    public static int calculateAge(Date dateOfBirth, Date toWhichDate) {
+        if (dateOfBirth == null) {
+            return 0;
+        }
+        if (toWhichDate == null) {
+            toWhichDate = new Date();
+        }
+        LocalDate l1 = LocalDate.fromDateFields(dateOfBirth);
+        LocalDate now1 = LocalDate.fromDateFields(toWhichDate);
+        Period diff = Period.fieldDifference(l1, now1);
+        return diff.getYears();
+    }
+
     public Date endOfTheDay(Date date) {
         Calendar d = Calendar.getInstance();
         d.setTime(startOfTheDay(date));
@@ -613,40 +630,40 @@ public class CommonController implements Serializable {
             return qs;
         }
         switch (q) {
-            case 1:
+            case 0:
                 qs = "January";
                 break;
-            case 2:
+            case 1:
                 qs = "February";
                 break;
-            case 3:
+            case 2:
                 qs = "March";
                 break;
-            case 4:
+            case 3:
                 qs = "April";
                 break;
-            case 5:
+            case 4:
                 qs = "May";
                 break;
-            case 6:
+            case 5:
                 qs = "June";
                 break;
-            case 7:
+            case 6:
                 qs = "July";
                 break;
-            case 8:
+            case 7:
                 qs = "Aujust";
                 break;
-            case 9:
+            case 8:
                 qs = "September";
                 break;
-            case 10:
+            case 9:
                 qs = "Ocober";
                 break;
-            case 11:
+            case 10:
                 qs = "November";
                 break;
-            case 12:
+            case 11:
                 qs = "December";
                 break;
         }
