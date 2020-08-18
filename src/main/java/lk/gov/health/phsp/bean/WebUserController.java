@@ -39,6 +39,7 @@ import lk.gov.health.phsp.enums.EncounterType;
 import lk.gov.health.phsp.enums.Privilege;
 import lk.gov.health.phsp.enums.PrivilegeTreeNode;
 import lk.gov.health.phsp.facade.UserPrivilegeFacade;
+import org.primefaces.event.TabChangeEvent;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 import org.primefaces.model.TreeNode;
@@ -157,6 +158,8 @@ public class WebUserController implements Serializable {
     String riskVal2 = ">40%";
     List<String> riskVals;
 
+    int reportTabIndex;
+
     /**
      *
      * Privileges
@@ -184,6 +187,7 @@ public class WebUserController implements Serializable {
         return assumeRoles();
 
     }
+
 
     public String assumeRoles() {
         if (assumedRole == null) {
@@ -1685,6 +1689,14 @@ public class WebUserController implements Serializable {
 
     public Long getTotalNumberOfClinicVisits() {
         return totalNumberOfClinicVisits;
+    }
+
+    public int getReportTabIndex() {
+        return reportTabIndex;
+    }
+
+    public void setReportTabIndex(int reportTabIndex) {
+        this.reportTabIndex = reportTabIndex;
     }
 
     public void setTotalNumberOfClinicVisits(Long totalNumberOfClinicVisits) {

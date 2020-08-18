@@ -836,6 +836,44 @@ public class ReportController implements Serializable {
         }
         return action;
     }
+    
+    public String toConsolidateSummeries() {
+        String forSys = "/reports/summaries/consolidate_summaries_sa";
+        String forIns = "/reports/summaries/consolidate_summaries_ia";
+        String forMeu = "/reports/summaries/consolidate_meu";
+        String forMea = "/reports/summaries/consolidate_mea";
+        String forClient = "";
+        String noAction = "";
+        String action = "";
+        switch (webUserController.getLoggedUser().getWebUserRole()) {
+            case Client:
+                action = forClient;
+                break;
+            case Doctor:
+            case Institution_Administrator:
+            case Institution_Super_User:
+            case Institution_User:
+            case Nurse:
+            case Midwife:
+                action = forIns;
+                break;
+            case Me_Admin:
+                action = forMea;
+                break;
+            case Me_Super_User:
+                action = forMeu;
+                break;
+            case Me_User:
+            case User:
+                action = noAction;
+                break;
+            case Super_User:
+            case System_Administrator:
+                action = forSys;
+                break;
+        }
+        return action;
+    }
 
     public String toSingleVariableClinicalData() {
         String forSys = "/reports/clinical_data/single_variable_sa";
@@ -876,7 +914,9 @@ public class ReportController implements Serializable {
     }
 
     public String toViewMySummeries() {
+        System.out.println("toViewMySummeries");
         listMyReports();
+        System.out.println("list reports donw");
         return "/reports/summaries/my_summaries";
     }
 
