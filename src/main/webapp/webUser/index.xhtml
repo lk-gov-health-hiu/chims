@@ -31,7 +31,6 @@
                             <p:outputLabel value="Manage Users" ></p:outputLabel>
                         </f:facet>
                         <h:panelGrid columns="2" styleClass="noBorders">
-                            <p:graphicImage library="image" name="user-mx.png" ></p:graphicImage>
 
                             <h:panelGrid  styleClass="noBorders"
                                           columns="1" style="margin: auto;width: 100%;"  rendered="#{webUserController.loggedUser.systemAdministrator}">
@@ -57,6 +56,9 @@
 
 
                             </h:panelGrid>
+
+                            <p:graphicImage library="image" name="user-mx.png" ></p:graphicImage>
+
                         </h:panelGrid>
 
                     </p:panel>

@@ -1091,7 +1091,7 @@ public class ExcelReportController implements Serializable {
         m.put("ret", true);
         m.put("ivs", valueStrings);
         if(ins!=null && !ins.isEmpty()){
-            m.put("ins", itemCode);
+            m.put("ins", ins);
             j += " and f.encounter.institution in :ins ";
         }
         if(fromDate!=null && toDate!=null){

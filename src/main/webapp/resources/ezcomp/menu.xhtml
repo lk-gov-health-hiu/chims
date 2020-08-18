@@ -51,7 +51,7 @@
                 </p:submenu>
 
                 <p:submenu label="System Administration"  rendered="#{webUserController.hasPrivilege('System_Administration')}"  >
-                    <p:menuitem value="Manage Users" action="/webUser/index"  ajax="false" />
+                    <p:menuitem value="Manage Users" action="#{webUserController.toManageAllUsers()}"  ajax="false" />
                     <p:menuitem value="Manage Institutions" action="/institution/index"     ajax="false" />
                     <p:menuitem value="Manage Areas" action="/area/index" ajax="false"    />
                     <p:menuitem value="Manage Metadata" action="/systemAdmin/manage_metadata_index"    ajax="false" />
@@ -124,7 +124,7 @@
                 </p:submenu>
 
                 <p:submenu label="System Administration"  rendered="#{webUserController.hasPrivilege('System_Administration')}"  >
-                    <p:menuitem value="Manage Users" action="/webUser/index"  ajax="false" />
+                    <p:menuitem value="Manage Users" action="#{webUserController.toManageAllUsers()}"  ajax="false" />
                     <p:menuitem value="Manage Institutions" action="/institution/index"     ajax="false" />
                     <p:menuitem value="Manage Areas" action="/area/index" ajax="false"    />
                     <p:menuitem value="Manage Metadata" action="/systemAdmin/manage_metadata_index"    ajax="false" />

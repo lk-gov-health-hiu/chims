@@ -295,7 +295,7 @@ public class WebUserController implements Serializable {
         String j = "select u from WebUser u "
                 + " where u.retired=false ";
         items = getFacade().findByJpql(j);
-        return "/systemAdmin/manage_users";
+        return "/webUser/index";
     }
 
     public String toManagePrivileges() {
