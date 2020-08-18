@@ -545,15 +545,15 @@ public class WebUserController implements Serializable {
     public void prepareDashboards() {
         if (loggedUser.isInstitutionAdministrator()) {
             prepareInsAdminDashboard();
-
-        } else if (loggedUser.isSystemAdministrator()) {
-            //TODO: Change to SysAdmin
-            prepareInsAdminDashboard();
+        }  else if (loggedUser.isSystemAdministrator()) {
+            prepareSysAdminDashboard();
+        } else if (loggedUser.isMeAdministrator()) {
+            prepareSysAdminDashboard();
+        } else if (loggedUser.isMeSuperUser()) {
+            prepareMeAdminDashboard();
         } else if (loggedUser.isDoctor()) {
-            //TODO: Change to SysAdmin
             prepareDocDashboard();
         } else if (loggedUser.isNurse()) {
-            //TODO: Change to SysAdmin
             prepareNurseDashboard();
         }
     }
@@ -561,6 +561,18 @@ public class WebUserController implements Serializable {
     public String toHome() {
         prepareDashboards();
         return "/index";
+    }
+
+    public void prepareSysAdminDashboard() {
+        totalNumberOfRegisteredClients = clientController.countOfRegistedClients(null, null);
+        totalNumberOfClinicEnrolments = encounterController.countOfEncounters(null, EncounterType.Clinic_Enroll);
+        totalNumberOfClinicVisits = encounterController.countOfEncounters(null, EncounterType.Clinic_Visit);
+    }
+
+    public void prepareMeAdminDashboard() {
+        totalNumberOfRegisteredClients = clientController.countOfRegistedClients(null, null);
+        totalNumberOfClinicEnrolments = encounterController.countOfEncounters(null, EncounterType.Clinic_Enroll);
+        totalNumberOfClinicVisits = encounterController.countOfEncounters(null, EncounterType.Clinic_Visit);
     }
 
     public void prepareInsAdminDashboard() {
