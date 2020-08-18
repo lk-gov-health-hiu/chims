@@ -131,7 +131,7 @@
                                     <div class="small-box bg-danger">
                                         <div class="inner">
                                             <h3>
-                                                <h:outputLabel value="#{reportController.toSingleVariableClinicalData}" >
+                                                <h:outputLabel value="#{webUserController.totalNumberOfCvsRiskClients}" >
                                                     <f:convertNumber pattern="#,##0" ></f:convertNumber>
                                                 </h:outputLabel>
                                             </h3>
@@ -142,7 +142,7 @@
                                         </div>
                                         <h:commandLink 
                                             class="small-box-footer"
-                                            value="View" action="#{reportController.toViewClientRegistrations()}" >
+                                            value="View" action="#{reportController.toSingleVariableClinicalData()}" >
                                             More info 
                                             <i class="fas fa-arrow-circle-right"></i>
                                         </h:commandLink>
