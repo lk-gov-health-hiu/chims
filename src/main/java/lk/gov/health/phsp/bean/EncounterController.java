@@ -42,8 +42,6 @@ public class EncounterController implements Serializable {
     public EncounterController() {
     }
 
-  
-
     public String createClinicEnrollNumber(Institution clinic) {
         String j = "select count(e) from Encounter e "
                 + " where e.institution=:ins "
@@ -66,28 +64,24 @@ public class EncounterController implements Serializable {
     }
 
     public Long countOfEncounters(List<Institution> clinics, EncounterType ec) {
-        if(clinics==null || clinics.isEmpty()){
-            return 0l;
-        }
         String j = "select count(e) from Encounter e "
                 + " where e.retired=:ret "
-                + " and e.institution in :ins "
                 + " and e.encounterType=:ec "
                 + " and e.createdAt>:d";
         Map m = new HashMap();
         m.put("d", CommonController.startOfTheYear());
         m.put("ec", ec);
         m.put("ret", false);
-        m.put("ins", clinics);
-        Long c = getFacade().findLongByJpql(j, m);
-        if (c == null) {
-            c = 0l;
+        if (clinics != null && !clinics.isEmpty()) {
+            m.put("ins", clinics);
+            j += " and e.institution in :ins ";
         }
+        Long c = getFacade().findLongByJpql(j, m);
         return c;
     }
-    
-    public void retireSelectedEncounter(){
-        if(selected==null){
+
+    public void retireSelectedEncounter() {
+        if (selected == null) {
             JsfUtil.addErrorMessage("Nothing Selected");
             return;
         }
@@ -95,7 +89,7 @@ public class EncounterController implements Serializable {
         selected.setRetiredAt(new Date());
         selected.setRetiredBy(webUserController.getLoggedUser());
         JsfUtil.addSuccessMessage("Retired Successfully");
-        selected=null;
+        selected = null;
     }
 
     public boolean clinicEnrolmentExists(Institution i, Client c) {
