@@ -40,7 +40,7 @@
                                                 requiredMessage="Please select a clinic. Selecting a Hospital will not give results."
 
                                                 required="true"
-                                                completeMethod="#{institutionController.completeInstitutions}"
+                                                completeMethod="#{webUserController.completeLoggableInstitutions}"
                                                 var="i"
                                                 itemLabel="#{i.name}"
                                                 itemValue="#{i}">

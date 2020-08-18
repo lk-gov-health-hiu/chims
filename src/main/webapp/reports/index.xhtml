@@ -33,7 +33,7 @@
                                                      ajax="false"></p:commandButton>
 
                                     <p:commandButton value="Consolidated Summeries"   style="width:20em;margin:auto;"
-                                                     action="#{reportController.toInstitutionMonthlySummeries()}"
+                                                     action="#{reportController.toConsolidateSummeries()}"
                                                      ajax="false"></p:commandButton>
 
                                     <p:commandButton value="My Summeries"   style="width:20em;margin:auto;"
@@ -83,7 +83,7 @@
 
                         </p:accordionPanel>
                     </h:form>
-                    <p:panel style="width: calc(100vw - 23rem);">
+                    <p:panel style="width: calc(100vw - 28rem);">
                         <ui:insert name="reports">
 
                         </ui:insert>
