@@ -1698,11 +1698,13 @@ public class ReportController implements Serializable {
             if (webUserController.getLoggedUser().isRestrictedToInstitution()) {
                 j += " and c.createInstitution in :ins ";
                 List<Institution> ins = webUserController.getLoggableInstitutions();
-                ins.add(institution);
                 m.put("ins", ins);
             }
         }
 
+        System.out.println("m = " + m);
+        System.out.println("j = " + j);
+        
         List<Object> objs = getClientFacade().findAggregates(j, m);
 
         String FILE_NAME = "client_registrations" + "_" + (new Date()) + ".xlsx";

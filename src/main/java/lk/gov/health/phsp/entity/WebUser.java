@@ -125,6 +125,8 @@ public class WebUser implements Serializable {
     private Area assumedArea;
     @Transient
     private boolean restrictedToInstitution;
+    @Transient
+    private boolean currentlyInAssumedState;
 
     public WebUser() {
     }
@@ -468,19 +470,38 @@ public class WebUser implements Serializable {
     }
 
     public boolean isRestrictedToInstitution() {
-        if(this.webUserRole==null){
-            return true;
+        restrictedToInstitution = true;
+        WebUserRole ur ;
+        if(currentlyInAssumedState){
+            ur=assumedRole;
+        }else{
+            ur = this.getWebUserRole();
         }
-        switch (this.webUserRole) {
+        if (ur == null) {
+            return restrictedToInstitution;
+        }
+        switch (ur) {
             case Me_Admin:
             case Me_Super_User:
             case Institution_User:
             case System_Administrator:
             case Super_User:
-                return false;
+                restrictedToInstitution = false;
+                break;
             default:
-                return true;
+                restrictedToInstitution = true;
         }
+        return restrictedToInstitution;
     }
 
+    public boolean isCurrentlyInAssumedState() {
+        return currentlyInAssumedState;
+    }
+
+    public void setCurrentlyInAssumedState(boolean currentlyInAssumedState) {
+        this.currentlyInAssumedState = currentlyInAssumedState;
+    }
+
+    
+    
 }
