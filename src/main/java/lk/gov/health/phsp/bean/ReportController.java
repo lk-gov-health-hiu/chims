@@ -288,8 +288,8 @@ public class ReportController implements Serializable {
                 setToDate(CommonController.endOfQuarter(getYear(), getQuarter()));
                 break;
             case Monthly:
-                setFromDate(CommonController.startOfTheMonth(getYear(), getMonth() ));
-                setToDate(CommonController.endOfTheMonth(getYear(), getMonth() ));
+                setFromDate(CommonController.startOfTheMonth(getYear(), getMonth()));
+                setToDate(CommonController.endOfTheMonth(getYear(), getMonth()));
                 break;
             case Dates:
             //TODO: Add what happens when selected dates
@@ -527,14 +527,14 @@ public class ReportController implements Serializable {
 
                 Cell c12 = row.createCell(11);
 
-                if (i.getParentComponent()!= null && i.getParentComponent().getParentComponent() != null) {
+                if (i.getParentComponent() != null && i.getParentComponent().getParentComponent() != null) {
                     c12.setCellValue(i.getParentComponent().getParentComponent().isCompleted() ? "Complete" : "Not Completed");
                 }
                 serial++;
             }
         }
-        
-        cis=null;
+
+        cis = null;
 
         try (FileOutputStream outputStream = new FileOutputStream(newFile)) {
             workbook.write(outputStream);
@@ -571,8 +571,8 @@ public class ReportController implements Serializable {
                 sqr.setResultQuarter(getQuarter());
                 break;
             case Monthly:
-                sqr.setResultFrom(CommonController.startOfTheMonth(getYear(), getMonth() ));
-                sqr.setResultTo(CommonController.endOfTheMonth(getYear(), getMonth() ));
+                sqr.setResultFrom(CommonController.startOfTheMonth(getYear(), getMonth()));
+                sqr.setResultTo(CommonController.endOfTheMonth(getYear(), getMonth()));
                 sqr.setResultYear(getYear());
                 sqr.setResultMonth(getMonth());
                 break;
@@ -666,8 +666,10 @@ public class ReportController implements Serializable {
                 sqr.setResultTo(CommonController.endOfTheMonth(getYear(), getMonth()));
                 sqr.setResultYear(getYear());
                 sqr.setResultMonth(getMonth());
-                System.out.println("sqr.getResultFrom() = " + sqr.getResultFrom());;
-                System.out.println("sqr.getResultTo() = " + sqr.getResultTo());;
+                System.out.println("sqr.getResultFrom() = " + sqr.getResultFrom());
+                ;
+                System.out.println("sqr.getResultTo() = " + sqr.getResultTo());
+                ;
                 break;
             case Dates:
             //TODO: Add what happens when selected dates
@@ -836,7 +838,7 @@ public class ReportController implements Serializable {
         }
         return action;
     }
-    
+
     public String toConsolidateSummeries() {
         String forSys = "/reports/summaries/consolidate_summaries_sa";
         String forIns = "/reports/summaries/consolidate_summaries_ia";
@@ -1669,7 +1671,7 @@ public class ReportController implements Serializable {
         clients = clientController.getItems(j, m);
     }
 
-    public void downloadClientRegistrationsForSysAdmin() {
+    public void downloadClientRegistrations() {
         String j;
         Map m = new HashMap();
         j = "select new lk.gov.health.phsp.pojcs.ClientBasicData("
@@ -1687,12 +1689,18 @@ public class ReportController implements Serializable {
         m.put("fd", fromDate);
         m.put("td", toDate);
 
-        //phn, String gnArea, String createdInstitution, Date dataOfBirth, String sex
         if (institution != null) {
             j += " and c.createInstitution in :ins ";
             List<Institution> ins = institutionController.findChildrenInstitutions(institution);
             ins.add(institution);
             m.put("ins", ins);
+        } else {
+            if (webUserController.getLoggedUser().isRestrictedToInstitution()) {
+                j += " and c.createInstitution in :ins ";
+                List<Institution> ins = webUserController.getLoggableInstitutions();
+                ins.add(institution);
+                m.put("ins", ins);
+            }
         }
 
         List<Object> objs = getClientFacade().findAggregates(j, m);
@@ -1810,29 +1818,6 @@ public class ReportController implements Serializable {
 
     }
 
-    public void fillClientRegistrationForSysAdminByInstitution() {
-        String j;
-        Map m = new HashMap();
-        j = "select new lk.gov.health.phsp.pojcs.InstitutionCount(c.createInstitution, count(c)) "
-                + " from Client c "
-                + " where c.retired=:ret "
-                + " and c.createdAt between :fd and :td "
-                + " group by c.createInstitution "
-                + " order by c.createInstitution.name";
-        m.put("ret", false);
-        m.put("fd", fromDate);
-        m.put("td", toDate);
-        List<Object> objs = getClientFacade().findAggregates(j, m);
-        institutionCounts = new ArrayList<>();
-        reportCount = 0l;
-        for (Object o : objs) {
-            if (o instanceof InstitutionCount) {
-                InstitutionCount ic = (InstitutionCount) o;
-                institutionCounts.add(ic);
-                reportCount += ic.getCount();
-            }
-        }
-    }
 
     public void fillRegistrationsOfClientsByInstitution() {
 
@@ -1843,8 +1828,10 @@ public class ReportController implements Serializable {
         m.put("ret", true);
         j = j + " and c.createdAt between :fd and :td ";
 
-        j = j + " and c.createInstitution in :ins ";
-        m.put("ins", webUserController.getLoggableInstitutions());
+        if (webUserController.getLoggedUser().isRestrictedToInstitution()) {
+            j = j + " and c.createInstitution in :ins ";
+            m.put("ins", webUserController.getLoggableInstitutions());
+        }
 
         j = j + " group by c.createInstitution ";
         j = j + " order by c.createInstitution.name ";
@@ -1863,7 +1850,7 @@ public class ReportController implements Serializable {
 
     }
 
-    public void fillClinicEnrollmentsForSysAdmin() {
+    public void fillClinicEnrollments() {
         String j;
         Map m = new HashMap();
         j = "select c from Encounter c "
@@ -1879,11 +1866,18 @@ public class ReportController implements Serializable {
             List<Institution> ins = institutionController.findChildrenInstitutions(institution);
             ins.add(institution);
             m.put("ins", ins);
+        } else {
+            if (webUserController.getLoggedUser().isRestrictedToInstitution()) {
+                j += " and c.institution in :ins ";
+                List<Institution> ins = webUserController.getLoggableInstitutions();
+                ins.add(institution);
+                m.put("ins", ins);
+            }
         }
         encounters = encounterController.getItems(j, m);
     }
 
-    public void downloadClinicEnrollmentsForSysAdmin() {
+    public void downloadClinicEnrollments() {
         String j;
         Map m = new HashMap();
 
@@ -1904,13 +1898,20 @@ public class ReportController implements Serializable {
         m.put("fd", fromDate);
         m.put("td", toDate);
         m.put("type", EncounterType.Clinic_Enroll);
+
         if (institution != null) {
             j += " and e.institution in :ins ";
             List<Institution> ins = institutionController.findChildrenInstitutions(institution);
             ins.add(institution);
             m.put("ins", ins);
+        } else {
+            if (webUserController.getLoggedUser().isRestrictedToInstitution()) {
+                j += " and e.institution in :ins ";
+                List<Institution> ins = webUserController.getLoggableInstitutions();
+                ins.add(institution);
+                m.put("ins", ins);
+            }
         }
-
         //String phn, String gnArea, String institution, Date dataOfBirth, Date encounterAt, String sex
         List<Object> objs = getClientFacade().findAggregates(j, m);
 
@@ -2027,7 +2028,7 @@ public class ReportController implements Serializable {
 
     }
 
-    public void downloadClinicVisitsForSysAdmin() {
+    public void downloadClinicVisits() {
         String j;
         Map m = new HashMap();
 
@@ -2053,6 +2054,13 @@ public class ReportController implements Serializable {
             List<Institution> ins = institutionController.findChildrenInstitutions(institution);
             ins.add(institution);
             m.put("ins", ins);
+        } else {
+            if (webUserController.getLoggedUser().isRestrictedToInstitution()) {
+                j += " and e.institution in :ins ";
+                List<Institution> ins = webUserController.getLoggableInstitutions();
+                ins.add(institution);
+                m.put("ins", ins);
+            }
         }
 
         //String phn, String gnArea, String institution, Date dataOfBirth, Date encounterAt, String sex
@@ -2155,9 +2163,9 @@ public class ReportController implements Serializable {
             }
         }
 
-        objs=null;
+        objs = null;
         System.gc();
-        
+
         try (FileOutputStream outputStream = new FileOutputStream(newFile)) {
             workbook.write(outputStream);
         } catch (Exception e) {

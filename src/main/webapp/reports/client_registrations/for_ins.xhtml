@@ -24,21 +24,20 @@
                             </p:outputLabel>
                         </f:facet>
                         <p:outputLabel value="From" ></p:outputLabel>
-                        <p:calendar value="#{clientController.from}" pattern="dd MM yyyy hh:mm a" ></p:calendar>
+                        <p:calendar value="#{reportController.fromDate}" pattern="dd MM yyyy hh:mm a" ></p:calendar>
                         <p:outputLabel value="To" ></p:outputLabel>
-                        <p:calendar value="#{clientController.to}" pattern="dd MM yyyy hh:mm a" ></p:calendar>
+                        <p:calendar value="#{reportController.toDate}" pattern="dd MM yyyy hh:mm a" ></p:calendar>
                         <p:outputLabel value="Institution / Unit" ></p:outputLabel>
-                        <p:selectOneMenu   value="#{clientController.institution}" >
-                            <f:selectItem itemLabel="All" ></f:selectItem>
-                            <f:selectItems value="#{webUserController.loggableInstitutions}"
-                                           var="i" itemLabel="#{i.name}" itemValue="#{i}"></f:selectItems>
-                        </p:selectOneMenu >
+                        <p:autoComplete   value="#{reportController.institution}" 
+                                          completeMethod="#{webUserController.completeLoggableInstitutions}"
+                                          var="i" itemLabel="#{i.name}" itemValue="#{i}">
+                        </p:autoComplete >
 
                         <p:commandButton value="Download" 
                                          ajax="false" 
                                          oncomplete ="PrimeFaces.monitorDownload(start, stop);" 
                                          icon="ui-icon-arrowthick-1-s"
-                                         actionListener="#{reportController.downloadClientRegistrationsForSysAdmin()}">
+                                         actionListener="#{reportController.downloadClientRegistrations()}">
                             <p:fileDownload value="#{reportController.resultExcelFile}" />
                         </p:commandButton>    
 

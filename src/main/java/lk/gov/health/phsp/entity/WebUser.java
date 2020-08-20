@@ -123,6 +123,8 @@ public class WebUser implements Serializable {
     private Institution assumedInstitution;
     @Transient
     private Area assumedArea;
+    @Transient
+    private boolean restrictedToInstitution;
 
     public WebUser() {
     }
@@ -387,10 +389,10 @@ public class WebUser implements Serializable {
     }
 
     public boolean isInstitutionSuperUser() {
-        if(getWebUserRole()==WebUserRole.Institution_Super_User){
-            institutionSuperUser=true;
-        }else{
-            institutionSuperUser=false;
+        if (getWebUserRole() == WebUserRole.Institution_Super_User) {
+            institutionSuperUser = true;
+        } else {
+            institutionSuperUser = false;
         }
         return institutionSuperUser;
     }
@@ -463,6 +465,22 @@ public class WebUser implements Serializable {
 
     public void setAssumedArea(Area assumedArea) {
         this.assumedArea = assumedArea;
+    }
+
+    public boolean isRestrictedToInstitution() {
+        if(this.webUserRole==null){
+            return true;
+        }
+        switch (this.webUserRole) {
+            case Me_Admin:
+            case Me_Super_User:
+            case Institution_User:
+            case System_Administrator:
+            case Super_User:
+                return false;
+            default:
+                return true;
+        }
     }
 
 }
