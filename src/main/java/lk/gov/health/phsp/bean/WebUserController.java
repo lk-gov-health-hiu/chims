@@ -213,7 +213,6 @@ public class WebUserController implements Serializable {
         loggedUser.setAssumedArea(assumedArea);
         loggedUser.setAssumedInstitution(assumedInstitution);
         loggedUser.setAssumedRole(assumedRole);
-        loggedUser.setCurrentlyInAssumedState(true);
         loggedUserPrivileges = assumedPrivileges;
         return login(true);
     }
@@ -667,10 +666,7 @@ public class WebUserController implements Serializable {
             return false;
         }
         if (withoutPassword) {
-            loggedUser.setCurrentlyInAssumedState(true);
             return true;
-        }else{
-            loggedUser.setCurrentlyInAssumedState(false);
         }
         if (commonController.matchPassword(password, loggedUser.getWebUserPassword())) {
             return true;
