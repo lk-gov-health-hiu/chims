@@ -299,14 +299,14 @@ public class WebUserController implements Serializable {
     }
 
     public String toManagePrivileges() {
-        //System.out.println("toManagePrivileges = " + this);
+        ////System.out.println("toManagePrivileges = " + this);
         if (current == null) {
             JsfUtil.addErrorMessage("Nothing Selected");
             return "";
         }
         selectedNodes = new TreeNode[0];
         List<UserPrivilege> userps = userPrivilegeList(current);
-        //System.out.println("userps = " + userps);
+        ////System.out.println("userps = " + userps);
         for (TreeNode n : allPrivilegeRoot.getChildren()) {
             n.setSelected(false);
             for (TreeNode n1 : n.getChildren()) {
@@ -321,19 +321,19 @@ public class WebUserController implements Serializable {
             for (TreeNode n : allPrivilegeRoot.getChildren()) {
                 if (wup.getPrivilege().equals(((PrivilegeTreeNode) n).getP())) {
                     n.setSelected(true);
-                    //System.out.println("n = " + n);
+                    ////System.out.println("n = " + n);
                     temSelected.add(n);
                 }
                 for (TreeNode n1 : n.getChildren()) {
                     if (wup.getPrivilege().equals(((PrivilegeTreeNode) n1).getP())) {
                         n1.setSelected(true);
-                        //System.out.println("n1 = " + n1);
+                        ////System.out.println("n1 = " + n1);
                         temSelected.add(n1);
                     }
                     for (TreeNode n2 : n1.getChildren()) {
                         if (wup.getPrivilege().equals(((PrivilegeTreeNode) n2).getP())) {
                             n2.setSelected(true);
-                            //System.out.println("n2 = " + n2);
+                            ////System.out.println("n2 = " + n2);
                             temSelected.add(n2);
                         }
                     }
@@ -341,7 +341,7 @@ public class WebUserController implements Serializable {
             }
         }
         selectedNodes = temSelected.toArray(new TreeNode[temSelected.size()]);
-        //System.out.println("temSelected = " + temSelected);
+        ////System.out.println("temSelected = " + temSelected);
         return "/webUser/privileges";
     }
 
@@ -1115,8 +1115,8 @@ public class WebUserController implements Serializable {
             JsfUtil.addErrorMessage("Please select a user");
             return "";
         }
-        //System.out.println("selectedNodes = " + Arrays.toString(selectedNodes));
-        //System.out.println("selectedNodes.length = " + selectedNodes.length);
+        ////System.out.println("selectedNodes = " + Arrays.toString(selectedNodes));
+        ////System.out.println("selectedNodes.length = " + selectedNodes.length);
         List<UserPrivilege> userps = userPrivilegeList(current);
         List<Privilege> tps = new ArrayList<>();
         if (selectedNodes != null && selectedNodes.length > 0) {
@@ -1131,7 +1131,7 @@ public class WebUserController implements Serializable {
         for (Privilege p : tps) {
             boolean found = false;
             for (UserPrivilege tup : userps) {
-                //System.out.println("tup = " + tup);
+                ////System.out.println("tup = " + tup);
                 if (p != null && tup.getPrivilege() != null && p.equals(tup.getPrivilege())) {
                     found = true;
                 }
