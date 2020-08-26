@@ -91,6 +91,8 @@ public class ClientController implements Serializable {
     private String searchingNicNo;
     private String searchingName;
     private String searchingPhoneNumber;
+    private String searchingLocalReferanceNo;
+    private String searchingSsNumber;
     private String uploadDetails;
     private String errorCode;
     private YearMonthDay yearMonthDay;
@@ -106,6 +108,8 @@ public class ClientController implements Serializable {
     private Boolean phnExists;
     private Boolean passportExists;
     private Boolean dlExists;
+    private Boolean localReferanceExists;
+    private Boolean ssNumberExists;
     private String dateTimeFormat;
     private String dateFormat;
 
@@ -994,6 +998,14 @@ public class ClientController implements Serializable {
             selectedClients = listPatientsByNic(searchingNicNo);
         } else if (searchingPhoneNumber != null && !searchingPhoneNumber.trim().equals("")) {
             selectedClients = listPatientsByPhone(searchingPhoneNumber);
+        }else if (searchingPassportNo != null && !searchingPassportNo.trim().equals("")) {
+            selectedClients = listPatientsByPassportNo(searchingPassportNo);
+        } else if (searchingDrivingLicenceNo != null && !searchingDrivingLicenceNo.trim().equals("")) {
+            selectedClients = listPatientsByDrivingLicenseNo(searchingDrivingLicenceNo);
+        }else if (searchingLocalReferanceNo != null && !searchingLocalReferanceNo.trim().equals("")) {
+            selectedClients = listPatientsByLocalReferanceNo(searchingLocalReferanceNo);
+        } else if (searchingSsNumber != null && !searchingSsNumber.trim().equals("")) {
+            selectedClients = listPatientsBySsNo(searchingSsNumber);
         }
         if (selectedClients == null || selectedClients.isEmpty()) {
             JsfUtil.addErrorMessage("No Results Found. Try different search criteria.");
@@ -1043,6 +1055,8 @@ public class ClientController implements Serializable {
         searchingNicNo = "";
         searchingName = "";
         searchingPhoneNumber = "";
+        searchingLocalReferanceNo="";
+        searchingSsNumber="";
     }
 
     public List<Client> listPatientsByPhn(String phn) {
@@ -1065,7 +1079,50 @@ public class ClientController implements Serializable {
         m.put("q", phn.trim().toUpperCase());
         return getFacade().findByJpql(j, m);
     }
+    
+    public List<Client> listPatientsByLocalReferanceNo(String refNo) {
+        String j = "select c from Client c "
+                + " where c.retired=false "
+                + " and lower(c.person.localReferanceNo)=:q "
+                + " and c.createInstitution=:ins "
+                + " order by c.phn";
+        Map m = new HashMap();
+        m.put("q", refNo.trim().toLowerCase());
+        m.put("ins", webUserController.getLoggedUser().getInstitution());
+        return getFacade().findByJpql(j, m);
+    }
 
+    public List<Client> listPatientsBySsNo(String ssNo) {
+        String j = "select c from Client c "
+                + " where c.retired=false "
+                + " and lower(c.person.ssNumber)=:q "
+                + " order by c.phn";
+        Map m = new HashMap();
+        m.put("q", ssNo.trim().toLowerCase());
+        return getFacade().findByJpql(j, m);
+    }
+    
+    public List<Client> listPatientsByDrivingLicenseNo(String dlNo) {
+        String j = "select c from Client c "
+                + " where c.retired=false "
+                + " and lower(c.person.drivingLicenseNumber)=:q "
+                + " order by c.phn";
+        Map m = new HashMap();
+        m.put("q", dlNo.trim().toLowerCase());
+        return getFacade().findByJpql(j, m);
+    }
+    
+    public List<Client> listPatientsByPassportNo(String passportNo) {
+        String j = "select c from Client c "
+                + " where c.retired=false "
+                + " and lower(c.person.passportNumber)=:q "
+                + " order by c.phn";
+        Map m = new HashMap();
+        m.put("q", passportNo.trim().toLowerCase());
+        return getFacade().findByJpql(j, m);
+    }
+
+    
     public List<Client> listPatientsByIDsStepvice(String ids) {
         //System.out.println("ids = " + ids);
         if (ids == null || ids.trim().equals("")) {
@@ -1597,6 +1654,40 @@ public class ClientController implements Serializable {
     public void setDateFormat(String dateFormat) {
         this.dateFormat = dateFormat;
     }
+
+    public String getSearchingLocalReferanceNo() {
+        return searchingLocalReferanceNo;
+    }
+
+    public void setSearchingLocalReferanceNo(String searchingLocalReferanceNo) {
+        this.searchingLocalReferanceNo = searchingLocalReferanceNo;
+    }
+
+    public String getSearchingSsNumber() {
+        return searchingSsNumber;
+    }
+
+    public void setSearchingSsNumber(String searchingSsNumber) {
+        this.searchingSsNumber = searchingSsNumber;
+    }
+
+    public Boolean getLocalReferanceExists() {
+        return localReferanceExists;
+    }
+
+    public void setLocalReferanceExists(Boolean localReferanceExists) {
+        this.localReferanceExists = localReferanceExists;
+    }
+
+    public Boolean getSsNumberExists() {
+        return ssNumberExists;
+    }
+
+    public void setSsNumberExists(Boolean ssNumberExists) {
+        this.ssNumberExists = ssNumberExists;
+    }
+    
+    
 
     // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="Inner Classes">
