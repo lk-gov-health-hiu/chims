@@ -1,6 +1,3 @@
-select count(*), name, `ITEM_ID`
+select id,code, name
 from component
-where `DTYPE` = "ClientEncounterComponentItem"
-and `BOOLEANVALUE` =true
-group by name,`ITEM_ID`
-order by count(*) desc;
+where id=16885;

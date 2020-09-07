@@ -288,8 +288,8 @@ public class ReportController implements Serializable {
                 setToDate(CommonController.endOfQuarter(getYear(), getQuarter()));
                 break;
             case Monthly:
-                setFromDate(CommonController.startOfTheMonth(getYear(), getMonth() ));
-                setToDate(CommonController.endOfTheMonth(getYear(), getMonth() ));
+                setFromDate(CommonController.startOfTheMonth(getYear(), getMonth()));
+                setToDate(CommonController.endOfTheMonth(getYear(), getMonth()));
                 break;
             case Dates:
             //TODO: Add what happens when selected dates
@@ -372,10 +372,10 @@ public class ReportController implements Serializable {
         m.put("t", EncounterType.Clinic_Visit);
         m.put("fd", fromDate);
         m.put("td", toDate);
-        System.out.println("m = " + m);
-        System.out.println("j = " + j);
+        //System.out.println("m = " + m);
+        //System.out.println("j = " + j);
         List<ClientEncounterComponentItem> cis = clientEncounterComponentItemFacade.findByJpql(j, m);
-        System.out.println("cis = " + cis.size());
+        //System.out.println("cis = " + cis.size());
         //String phn, String gnArea, String institution, Date dataOfBirth, Date encounterAt, String sex
 //        List<Object> objs = getClientFacade().findAggregates(j, m);
 
@@ -527,19 +527,19 @@ public class ReportController implements Serializable {
 
                 Cell c12 = row.createCell(11);
 
-                if (i.getParentComponent()!= null && i.getParentComponent().getParentComponent() != null) {
+                if (i.getParentComponent() != null && i.getParentComponent().getParentComponent() != null) {
                     c12.setCellValue(i.getParentComponent().getParentComponent().isCompleted() ? "Complete" : "Not Completed");
                 }
                 serial++;
             }
         }
-        
-        cis=null;
+
+        cis = null;
 
         try (FileOutputStream outputStream = new FileOutputStream(newFile)) {
             workbook.write(outputStream);
         } catch (Exception e) {
-            System.out.println("e = " + e);
+            //System.out.println("e = " + e);
         }
 
         InputStream stream;
@@ -547,7 +547,7 @@ public class ReportController implements Serializable {
             stream = new FileInputStream(newFile);
             resultExcelFile = new DefaultStreamedContent(stream, mimeType, FILE_NAME);
         } catch (FileNotFoundException ex) {
-            System.out.println("ex = " + ex);
+            //System.out.println("ex = " + ex);
         }
     }
 
@@ -571,8 +571,8 @@ public class ReportController implements Serializable {
                 sqr.setResultQuarter(getQuarter());
                 break;
             case Monthly:
-                sqr.setResultFrom(CommonController.startOfTheMonth(getYear(), getMonth() ));
-                sqr.setResultTo(CommonController.endOfTheMonth(getYear(), getMonth() ));
+                sqr.setResultFrom(CommonController.startOfTheMonth(getYear(), getMonth()));
+                sqr.setResultTo(CommonController.endOfTheMonth(getYear(), getMonth()));
                 sqr.setResultYear(getYear());
                 sqr.setResultMonth(getMonth());
                 break;
@@ -661,13 +661,15 @@ public class ReportController implements Serializable {
                 sqr.setResultQuarter(getQuarter());
                 break;
             case Monthly:
-                System.out.println("getMonth() = " + getMonth());
+                //System.out.println("getMonth() = " + getMonth());
                 sqr.setResultFrom(CommonController.startOfTheMonth(getYear(), getMonth()));
                 sqr.setResultTo(CommonController.endOfTheMonth(getYear(), getMonth()));
                 sqr.setResultYear(getYear());
                 sqr.setResultMonth(getMonth());
-                System.out.println("sqr.getResultFrom() = " + sqr.getResultFrom());;
-                System.out.println("sqr.getResultTo() = " + sqr.getResultTo());;
+                //System.out.println("sqr.getResultFrom() = " + sqr.getResultFrom());
+                ;
+                //System.out.println("sqr.getResultTo() = " + sqr.getResultTo());
+                ;
                 break;
             case Dates:
             //TODO: Add what happens when selected dates
@@ -837,6 +839,44 @@ public class ReportController implements Serializable {
         return action;
     }
 
+    public String toConsolidateSummeries() {
+        String forSys = "/reports/summaries/consolidate_summaries_sa";
+        String forIns = "/reports/summaries/consolidate_summaries_ia";
+        String forMeu = "/reports/summaries/consolidate_meu";
+        String forMea = "/reports/summaries/consolidate_mea";
+        String forClient = "";
+        String noAction = "";
+        String action = "";
+        switch (webUserController.getLoggedUser().getWebUserRole()) {
+            case Client:
+                action = forClient;
+                break;
+            case Doctor:
+            case Institution_Administrator:
+            case Institution_Super_User:
+            case Institution_User:
+            case Nurse:
+            case Midwife:
+                action = forIns;
+                break;
+            case Me_Admin:
+                action = forMea;
+                break;
+            case Me_Super_User:
+                action = forMeu;
+                break;
+            case Me_User:
+            case User:
+                action = noAction;
+                break;
+            case Super_User:
+            case System_Administrator:
+                action = forSys;
+                break;
+        }
+        return action;
+    }
+
     public String toSingleVariableClinicalData() {
         String forSys = "/reports/clinical_data/single_variable_sa";
         String forIns = "/reports/clinical_data/single_variable_ia";
@@ -876,7 +916,9 @@ public class ReportController implements Serializable {
     }
 
     public String toViewMySummeries() {
+        //System.out.println("toViewMySummeries");
         listMyReports();
+        //System.out.println("list reports donw");
         return "/reports/summaries/my_summaries";
     }
 
@@ -925,8 +967,8 @@ public class ReportController implements Serializable {
         m.put("fd", fromDate);
         m.put("td", toDate);
 
-//        System.out.println("m = " + m);
-//        System.out.println("j = " + j);
+//        //System.out.println("m = " + m);
+//        //System.out.println("j = " + j);
         List<Encounter> encs = encounterFacade.findByJpql(j, m);
 
         return encs;
@@ -1032,7 +1074,7 @@ public class ReportController implements Serializable {
             myFirstWbook.write();
 
         } catch (IOException | WriteException e) {
-            System.out.println("e1 = " + e.getMessage());
+            //System.out.println("e1 = " + e.getMessage());
             mergingMessage = "Error - " + e.getMessage();
         } finally {
 
@@ -1041,7 +1083,7 @@ public class ReportController implements Serializable {
                     myFirstWbook.close();
                     mergingMessage = "Closing File.";
                 } catch (IOException | WriteException e) {
-//                    System.out.println("e2 = " + e.getMessage());
+//                    //System.out.println("e2 = " + e.getMessage());
                     mergingMessage = "Error - " + e.getMessage();
                 }
             }
@@ -1054,7 +1096,7 @@ public class ReportController implements Serializable {
             stream = new FileInputStream(newFile);
             file = new DefaultStreamedContent(stream, "application/xls", newFile.getAbsolutePath());
         } catch (FileNotFoundException ex) {
-            System.out.println("ex3 = " + ex.getMessage());
+            //System.out.println("ex3 = " + ex.getMessage());
             mergingMessage = "Error - " + ex.getMessage();
         }
         mergingMessage = "";
@@ -1103,7 +1145,7 @@ public class ReportController implements Serializable {
                 break;
             case Client_Count:
                 JsfUtil.addErrorMessage("Under Development");
-                System.out.println("clnts = " + clnts);
+                //System.out.println("clnts = " + clnts);
                 return;
             default:
                 JsfUtil.addErrorMessage("Under Development");
@@ -1126,7 +1168,7 @@ public class ReportController implements Serializable {
         try {
             FileUtils.writeByteArrayToFile(newFile, upload.getBaImage());
         } catch (IOException ex) {
-            System.out.println("ex = " + ex);
+            //System.out.println("ex = " + ex);
         }
 
         XSSFWorkbook workbook;
@@ -1141,7 +1183,7 @@ public class ReportController implements Serializable {
 
             Iterator<Row> iterator = sheet.iterator();
 
-            System.out.println("sheet.getSheetName() = " + sheet.getSheetName());
+            //System.out.println("sheet.getSheetName() = " + sheet.getSheetName());
 
             while (iterator.hasNext()) {
 
@@ -1178,7 +1220,7 @@ public class ReportController implements Serializable {
                     }
 
                 }
-                System.out.println();
+                //System.out.println();
 
                 excelFile.close();
 
@@ -1192,24 +1234,24 @@ public class ReportController implements Serializable {
 
             }
         } catch (FileNotFoundException e) {
-            System.out.println("e = " + e);
+            //System.out.println("e = " + e);
         } catch (IOException e) {
-            System.out.println("e = " + e);
+            //System.out.println("e = " + e);
         }
 
     }
 
     public Long findReplaceblesInCalculationString(String text, List<Encounter> ens) {
-        System.out.println("findReplaceblesInCalculationString");
+        //System.out.println("findReplaceblesInCalculationString");
 
         Long l = 0l;
 
         if (ens == null) {
-            System.out.println("No encounters");
+            //System.out.println("No encounters");
             return l;
         }
         if (ens.isEmpty()) {
-            System.out.println("Empty encounter list");
+            //System.out.println("Empty encounter list");
             l = 0l;
             return l;
         }
@@ -1225,18 +1267,18 @@ public class ReportController implements Serializable {
 
         while (m.find()) {
             String block = m.group(1);
-            System.out.println("block = " + block);
+            //System.out.println("block = " + block);
             QueryComponent qc = getQueryComponentController().findByCode(block);
             if (qc == null) {
-                System.out.println("No Such Query = ");
+                //System.out.println("No Such Query = ");
                 l = null;
                 return l;
 
             } else {
-                System.out.println("qc.getQueryType() = " + qc.getQueryType());
+                //System.out.println("qc.getQueryType() = " + qc.getQueryType());
                 if (qc.getQueryType() == QueryType.Encounter_Count) {
                     List<QueryComponent> criteria = getQueryComponentController().criteria(qc);
-                    System.out.println("criteria = " + criteria);
+                    //System.out.println("criteria = " + criteria);
                     if (criteria == null || criteria.isEmpty()) {
                         l = Long.valueOf(ens.size());
                         return l;
@@ -1252,7 +1294,7 @@ public class ReportController implements Serializable {
 
         }
 
-        System.out.println("End of while");
+        //System.out.println("End of while");
         return l;
 
     }
@@ -1267,8 +1309,8 @@ public class ReportController implements Serializable {
         if (!qi.getItem().getCode().equalsIgnoreCase(q.getItem().getCode())) {
             return false;
         }
-        System.out.println("qi.getItem().getCode() = " + qi.getItem().getCode());
-        System.out.println("q.getItem().getCode() = " + q.getItem().getCode());
+        //System.out.println("qi.getItem().getCode() = " + qi.getItem().getCode());
+        //System.out.println("q.getItem().getCode() = " + q.getItem().getCode());
 
         boolean m = false;
         Integer int1 = null;
@@ -1279,9 +1321,9 @@ public class ReportController implements Serializable {
         Long lng2 = null;
         Item itemVariable = null;
         Item itemValue = null;
-        System.out.println("q.getMatchType() = " + q.getMatchType());
+        //System.out.println("q.getMatchType() = " + q.getMatchType());
         if (q.getMatchType() == QueryCriteriaMatchType.Variable_Value_Check) {
-            System.out.println("q.getQueryDataType() = " + q.getQueryDataType());
+            //System.out.println("q.getQueryDataType() = " + q.getQueryDataType());
             switch (q.getQueryDataType()) {
                 case integer:
                     int1 = q.getIntegerNumberValue();
@@ -1315,10 +1357,10 @@ public class ReportController implements Serializable {
 
                     if (itemValue != null && itemVariable != null) {
 
-                        System.out.println("itemValue = " + itemValue.getCode());
-                        System.out.println("itemVariable = " + itemVariable.getCode());
-                        System.out.println("qi Item Name " + qi.getItem().getCode());
-                        System.out.println("qi Item Value = " + qi.getItemValue().getCode());
+                        //System.out.println("itemValue = " + itemValue.getCode());
+                        //System.out.println("itemVariable = " + itemVariable.getCode());
+                        //System.out.println("qi Item Name " + qi.getItem().getCode());
+                        //System.out.println("qi Item Value = " + qi.getItemValue().getCode());
 
                         if (itemValue.getCode().equals(qi.getItemValue().getCode())) {
                             m = true;
@@ -1395,12 +1437,12 @@ public class ReportController implements Serializable {
                     }
             }
         }
-        System.out.println("m = " + m);
+        //System.out.println("m = " + m);
         return m;
     }
 
     public Long findMatchingCount(List<Encounter> encs, List<QueryComponent> qrys) {
-        System.out.println("findMatchingCount");
+        //System.out.println("findMatchingCount");
         Long c = 0l;
         for (Encounter e : encs) {
             List<ClientEncounterComponentItem> is = clientEncounterComponentItemController.findClientEncounterComponentItems(e);
@@ -1452,10 +1494,10 @@ public class ReportController implements Serializable {
         rtp.setYear(CommonController.getYear(CommonController.startOfTheLastQuarter()));
         rtp.setQuarter(CommonController.getQuarter(CommonController.startOfTheLastQuarter()));
 
-        System.out.println("rtp.getFrom() = " + rtp.getFrom());
-        System.out.println("rtp.getTo() = " + rtp.getTo());
-        System.out.println("rtp.getYear() = " + rtp.getYear());
-        System.out.println("rtp.getQuarter() = " + rtp.getQuarter());
+        //System.out.println("rtp.getFrom() = " + rtp.getFrom());
+        //System.out.println("rtp.getTo() = " + rtp.getTo());
+        //System.out.println("rtp.getYear() = " + rtp.getYear());
+        //System.out.println("rtp.getQuarter() = " + rtp.getQuarter());
 
         toDownloadNcdReport(institution, rtp);
     }
@@ -1629,7 +1671,7 @@ public class ReportController implements Serializable {
         clients = clientController.getItems(j, m);
     }
 
-    public void downloadClientRegistrationsForSysAdmin() {
+    public void downloadClientRegistrations() {
         String j;
         Map m = new HashMap();
         j = "select new lk.gov.health.phsp.pojcs.ClientBasicData("
@@ -1647,14 +1689,22 @@ public class ReportController implements Serializable {
         m.put("fd", fromDate);
         m.put("td", toDate);
 
-        //phn, String gnArea, String createdInstitution, Date dataOfBirth, String sex
         if (institution != null) {
             j += " and c.createInstitution in :ins ";
             List<Institution> ins = institutionController.findChildrenInstitutions(institution);
             ins.add(institution);
             m.put("ins", ins);
+        } else {
+            if (webUserController.getLoggedUser().isRestrictedToInstitution()) {
+                j += " and c.createInstitution in :ins ";
+                List<Institution> ins = webUserController.getLoggableInstitutions();
+                m.put("ins", ins);
+            }
         }
 
+        //System.out.println("m = " + m);
+        //System.out.println("j = " + j);
+        
         List<Object> objs = getClientFacade().findAggregates(j, m);
 
         String FILE_NAME = "client_registrations" + "_" + (new Date()) + ".xlsx";
@@ -1757,7 +1807,7 @@ public class ReportController implements Serializable {
         try (FileOutputStream outputStream = new FileOutputStream(newFile)) {
             workbook.write(outputStream);
         } catch (Exception e) {
-            System.out.println("e = " + e);
+            //System.out.println("e = " + e);
         }
 
         InputStream stream;
@@ -1765,34 +1815,11 @@ public class ReportController implements Serializable {
             stream = new FileInputStream(newFile);
             resultExcelFile = new DefaultStreamedContent(stream, mimeType, FILE_NAME);
         } catch (FileNotFoundException ex) {
-            System.out.println("ex = " + ex);
+            //System.out.println("ex = " + ex);
         }
 
     }
 
-    public void fillClientRegistrationForSysAdminByInstitution() {
-        String j;
-        Map m = new HashMap();
-        j = "select new lk.gov.health.phsp.pojcs.InstitutionCount(c.createInstitution, count(c)) "
-                + " from Client c "
-                + " where c.retired=:ret "
-                + " and c.createdAt between :fd and :td "
-                + " group by c.createInstitution "
-                + " order by c.createInstitution.name";
-        m.put("ret", false);
-        m.put("fd", fromDate);
-        m.put("td", toDate);
-        List<Object> objs = getClientFacade().findAggregates(j, m);
-        institutionCounts = new ArrayList<>();
-        reportCount = 0l;
-        for (Object o : objs) {
-            if (o instanceof InstitutionCount) {
-                InstitutionCount ic = (InstitutionCount) o;
-                institutionCounts.add(ic);
-                reportCount += ic.getCount();
-            }
-        }
-    }
 
     public void fillRegistrationsOfClientsByInstitution() {
 
@@ -1803,8 +1830,10 @@ public class ReportController implements Serializable {
         m.put("ret", true);
         j = j + " and c.createdAt between :fd and :td ";
 
-        j = j + " and c.createInstitution in :ins ";
-        m.put("ins", webUserController.getLoggableInstitutions());
+        if (webUserController.getLoggedUser().isRestrictedToInstitution()) {
+            j = j + " and c.createInstitution in :ins ";
+            m.put("ins", webUserController.getLoggableInstitutions());
+        }
 
         j = j + " group by c.createInstitution ";
         j = j + " order by c.createInstitution.name ";
@@ -1823,7 +1852,7 @@ public class ReportController implements Serializable {
 
     }
 
-    public void fillClinicEnrollmentsForSysAdmin() {
+    public void fillClinicEnrollments() {
         String j;
         Map m = new HashMap();
         j = "select c from Encounter c "
@@ -1839,11 +1868,18 @@ public class ReportController implements Serializable {
             List<Institution> ins = institutionController.findChildrenInstitutions(institution);
             ins.add(institution);
             m.put("ins", ins);
+        } else {
+            if (webUserController.getLoggedUser().isRestrictedToInstitution()) {
+                j += " and c.institution in :ins ";
+                List<Institution> ins = webUserController.getLoggableInstitutions();
+                ins.add(institution);
+                m.put("ins", ins);
+            }
         }
         encounters = encounterController.getItems(j, m);
     }
 
-    public void downloadClinicEnrollmentsForSysAdmin() {
+    public void downloadClinicEnrollments() {
         String j;
         Map m = new HashMap();
 
@@ -1864,13 +1900,20 @@ public class ReportController implements Serializable {
         m.put("fd", fromDate);
         m.put("td", toDate);
         m.put("type", EncounterType.Clinic_Enroll);
+
         if (institution != null) {
             j += " and e.institution in :ins ";
             List<Institution> ins = institutionController.findChildrenInstitutions(institution);
             ins.add(institution);
             m.put("ins", ins);
+        } else {
+            if (webUserController.getLoggedUser().isRestrictedToInstitution()) {
+                j += " and e.institution in :ins ";
+                List<Institution> ins = webUserController.getLoggableInstitutions();
+                ins.add(institution);
+                m.put("ins", ins);
+            }
         }
-
         //String phn, String gnArea, String institution, Date dataOfBirth, Date encounterAt, String sex
         List<Object> objs = getClientFacade().findAggregates(j, m);
 
@@ -1974,7 +2017,7 @@ public class ReportController implements Serializable {
         try (FileOutputStream outputStream = new FileOutputStream(newFile)) {
             workbook.write(outputStream);
         } catch (Exception e) {
-            System.out.println("e = " + e);
+            //System.out.println("e = " + e);
         }
 
         InputStream stream;
@@ -1982,12 +2025,12 @@ public class ReportController implements Serializable {
             stream = new FileInputStream(newFile);
             resultExcelFile = new DefaultStreamedContent(stream, mimeType, FILE_NAME);
         } catch (FileNotFoundException ex) {
-            System.out.println("ex = " + ex);
+            //System.out.println("ex = " + ex);
         }
 
     }
 
-    public void downloadClinicVisitsForSysAdmin() {
+    public void downloadClinicVisits() {
         String j;
         Map m = new HashMap();
 
@@ -2013,6 +2056,13 @@ public class ReportController implements Serializable {
             List<Institution> ins = institutionController.findChildrenInstitutions(institution);
             ins.add(institution);
             m.put("ins", ins);
+        } else {
+            if (webUserController.getLoggedUser().isRestrictedToInstitution()) {
+                j += " and e.institution in :ins ";
+                List<Institution> ins = webUserController.getLoggableInstitutions();
+                ins.add(institution);
+                m.put("ins", ins);
+            }
         }
 
         //String phn, String gnArea, String institution, Date dataOfBirth, Date encounterAt, String sex
@@ -2115,13 +2165,13 @@ public class ReportController implements Serializable {
             }
         }
 
-        objs=null;
+        objs = null;
         System.gc();
-        
+
         try (FileOutputStream outputStream = new FileOutputStream(newFile)) {
             workbook.write(outputStream);
         } catch (Exception e) {
-            System.out.println("e = " + e);
+            //System.out.println("e = " + e);
         }
 
         InputStream stream;
@@ -2129,7 +2179,7 @@ public class ReportController implements Serializable {
             stream = new FileInputStream(newFile);
             resultExcelFile = new DefaultStreamedContent(stream, mimeType, FILE_NAME);
         } catch (FileNotFoundException ex) {
-            System.out.println("ex = " + ex);
+            //System.out.println("ex = " + ex);
         }
 
     }

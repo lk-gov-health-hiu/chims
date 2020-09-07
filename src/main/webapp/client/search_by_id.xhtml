@@ -30,6 +30,14 @@
                             <p:outputLabel value="Passport No" ></p:outputLabel>
                             <p:inputText value="#{clientController.searchingPassportNo}"  autocomplete="off" ></p:inputText>
                             
+                            
+                            <p:outputLabel value="Local Reference No" ></p:outputLabel>
+                            <p:inputText value="#{clientController.searchingLocalReferanceNo}"  autocomplete="off" ></p:inputText>
+                            
+                            <p:outputLabel value="Senior Citizen No" ></p:outputLabel>
+                            <p:inputText value="#{clientController.searchingSsNumber}"  autocomplete="off" ></p:inputText>
+                            
+                            
                             <p:commandButton ajax="false" value="Search" action="#{clientController.searchById()}" ></p:commandButton>
                             <p:commandButton ajax="false" value="Clear" action="#{clientController.clearSearchById()}" ></p:commandButton>
                             

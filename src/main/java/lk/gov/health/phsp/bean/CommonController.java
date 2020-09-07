@@ -131,9 +131,9 @@ public class CommonController implements Serializable {
         LocalDate date = new LocalDate(toWhichDate);
         Period period = new Period(dob, date, PeriodType.yearMonthDay());
         int age = period.getYears();
-        System.out.println("dateOfBirth = " + dateOfBirth);
-        System.out.println("toWhichDate = " + toWhichDate);
-        System.out.println("age = " + age);
+        //System.out.println("dateOfBirth = " + dateOfBirth);
+        //System.out.println("toWhichDate = " + toWhichDate);
+        //System.out.println("age = " + age);
         return age;
     }
 

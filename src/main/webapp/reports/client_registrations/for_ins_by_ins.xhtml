@@ -8,23 +8,20 @@
 
     <h:head >
         <ui:define name="head">
-            Client Registrations
+            Institution-vice Client Registrations
         </ui:define>
     </h:head>
 
     <h:body>
 
-        <ui:composition template="./../../template.xhtml">
-
-
-
-            <ui:define name="content">
+        <ui:composition template="/reports/index.xhtml">
+            <ui:define name="reports">
                 <h:form>
                     <p:panelGrid columns="2" styleClass="alignTop" >
                         <f:facet name="header" >
-                            <p:outputLabel value="Client Registrations" ></p:outputLabel>
+                            <p:outputLabel value="Institution-vice Client Registrations" ></p:outputLabel>
                         </f:facet>
-                        <p:panelGrid columns="1" >
+                        <p:panelGrid columns="1"   >
                             <f:facet name="header" >
                                 <p:outputLabel value="Filters" >
                                 </p:outputLabel>

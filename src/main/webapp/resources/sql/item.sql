@@ -1,3 +1,3 @@
-select *
+select `ID`,`name`,code
 from Item
-where code='investigation_fbs'
+where `ID`=16885;

@@ -91,6 +91,8 @@ public class ClientController implements Serializable {
     private String searchingNicNo;
     private String searchingName;
     private String searchingPhoneNumber;
+    private String searchingLocalReferanceNo;
+    private String searchingSsNumber;
     private String uploadDetails;
     private String errorCode;
     private YearMonthDay yearMonthDay;
@@ -106,6 +108,8 @@ public class ClientController implements Serializable {
     private Boolean phnExists;
     private Boolean passportExists;
     private Boolean dlExists;
+    private Boolean localReferanceExists;
+    private Boolean ssNumberExists;
     private String dateTimeFormat;
     private String dateFormat;
 
@@ -590,8 +594,8 @@ public class ClientController implements Serializable {
                         colNo++;
                     }
                     Area gnArea = null;
-//                    System.out.println("gnAreaName = " + gnAreaName);
-//                    System.out.println("gnAreaCode = " + gnAreaCode);
+//                    //System.out.println("gnAreaName = " + gnAreaName);
+//                    //System.out.println("gnAreaCode = " + gnAreaCode);
                     if (gnAreaName != null && gnAreaCode != null) {
                         gnArea = areaController.getGnAreaByNameAndCode(gnAreaName, gnAreaCode);
                     } else if (gnAreaName != null) {
@@ -600,7 +604,7 @@ public class ClientController implements Serializable {
                         gnArea = areaController.getGnAreaByCode(gnAreaCode);
                     }
                     if (gnArea != null) {
-//                        System.out.println("gnArea = " + gnArea.getName());
+//                        //System.out.println("gnArea = " + gnArea.getName());
                     }
 
                     colNo = 0;
@@ -728,9 +732,9 @@ public class ClientController implements Serializable {
                                     Calendar tc = Calendar.getInstance();
                                     thisYear = tc.get(Calendar.YEAR);
                                     ageInYears = thisYear - birthYear;
-//                                    System.out.println("ageInYears = " + ageInYears);
+//                                    //System.out.println("ageInYears = " + ageInYears);
                                 } catch (Exception e) {
-//                                    System.out.println("e = " + e);
+//                                    //System.out.println("e = " + e);
                                 }
                                 if (ageInYears < 0) {
                                     tdob = today;
@@ -758,8 +762,8 @@ public class ClientController implements Serializable {
                                 c.setCreatedAt(reg);
                                 break;
                             case "client_gn_area":
-                                System.out.println("GN");
-                                System.out.println("cellString = " + cellString);
+                                //System.out.println("GN");
+                                //System.out.println("cellString = " + cellString);
 
                                 Area tgn;
                                 if (gnArea == null) {
@@ -772,7 +776,7 @@ public class ClientController implements Serializable {
                         colNo++;
                     }
 
-                    System.out.println("tgn = " + gnArea);
+                    //System.out.println("tgn = " + gnArea);
                     if (gnArea != null) {
                         c.getPerson().setGnArea(gnArea);
                         c.getPerson().setDsArea(gnArea.getDsd());
@@ -818,7 +822,7 @@ public class ClientController implements Serializable {
 
     public void onTabChange(TabChangeEvent event) {
 
-        // //System.out.println("profileTabActiveIndex = " + profileTabActiveIndex);
+        // ////System.out.println("profileTabActiveIndex = " + profileTabActiveIndex);
         TabView tabView = (TabView) event.getComponent();
 
         profileTabActiveIndex = tabView.getChildren().indexOf(event.getTab());
@@ -826,7 +830,7 @@ public class ClientController implements Serializable {
     }
 
     public List<Encounter> fillEncounters(Client client, InstitutionType insType, EncounterType encType, boolean excludeCompleted) {
-        // //System.out.println("fillEncounters");
+        // ////System.out.println("fillEncounters");
         String j = "select e from Encounter e where e.retired=false ";
         Map m = new HashMap();
         if (client != null) {
@@ -845,7 +849,7 @@ public class ClientController implements Serializable {
             j += " and e.completed=:com ";
             m.put("com", false);
         }
-        // //System.out.println("m = " + m);
+        // ////System.out.println("m = " + m);
         return encounterFacade.findByJpql(j, m);
     }
 
@@ -889,7 +893,7 @@ public class ClientController implements Serializable {
             JsfUtil.addErrorMessage("You do not have an Institution. Please contact support.");
             return;
         }
-        System.out.println("webUserController.getLoggedUser().getInstitution() = " + webUserController.getLoggedUser().getInstitution().getLastHin());
+        //System.out.println("webUserController.getLoggedUser().getInstitution() = " + webUserController.getLoggedUser().getInstitution().getLastHin());
         if (webUserController.getLoggedUser().getInstitution().getPoiInstitution() != null) {
             poiIns = webUserController.getLoggedUser().getInstitution().getPoiInstitution();
         } else {
@@ -903,10 +907,10 @@ public class ClientController implements Serializable {
 
         if (webUserController.getLoggedUser().getInstitution().getPoiInstitution() != null) {
             webUserController.getLoggedUser().getInstitution().setPoiInstitution(institutionController.getInstitutionById(webUserController.getLoggedUser().getInstitution().getPoiInstitution().getId()));
-//            System.out.println(webUserController.getLoggedUser().getInstitution().getPoiInstitution().getLastHin());
+//            //System.out.println(webUserController.getLoggedUser().getInstitution().getPoiInstitution().getLastHin());
         } else {
             webUserController.getLoggedUser().setInstitution(institutionController.getInstitutionById(webUserController.getLoggedUser().getInstitution().getId()));
-//            System.out.println("Last HIN Case 2 = " + webUserController.getLoggedUser().getInstitution().getLastHin());
+//            //System.out.println("Last HIN Case 2 = " + webUserController.getLoggedUser().getInstitution().getLastHin());
         }
 
     }
@@ -945,7 +949,7 @@ public class ClientController implements Serializable {
     }
 
     public Date guessDob(YearMonthDay yearMonthDay) {
-        // ////// //System.out.println("year string is " + docStr);
+        // ////// ////System.out.println("year string is " + docStr);
         int years = 0;
         int month = 0;
         int day = 0;
@@ -968,7 +972,7 @@ public class ClientController implements Serializable {
 
             return now.getTime();
         } catch (Exception e) {
-            ////// //System.out.println("Error is " + e.getMessage());
+            ////// ////System.out.println("Error is " + e.getMessage());
             return new Date();
 
         }
@@ -994,6 +998,14 @@ public class ClientController implements Serializable {
             selectedClients = listPatientsByNic(searchingNicNo);
         } else if (searchingPhoneNumber != null && !searchingPhoneNumber.trim().equals("")) {
             selectedClients = listPatientsByPhone(searchingPhoneNumber);
+        }else if (searchingPassportNo != null && !searchingPassportNo.trim().equals("")) {
+            selectedClients = listPatientsByPassportNo(searchingPassportNo);
+        } else if (searchingDrivingLicenceNo != null && !searchingDrivingLicenceNo.trim().equals("")) {
+            selectedClients = listPatientsByDrivingLicenseNo(searchingDrivingLicenceNo);
+        }else if (searchingLocalReferanceNo != null && !searchingLocalReferanceNo.trim().equals("")) {
+            selectedClients = listPatientsByLocalReferanceNo(searchingLocalReferanceNo);
+        } else if (searchingSsNumber != null && !searchingSsNumber.trim().equals("")) {
+            selectedClients = listPatientsBySsNo(searchingSsNumber);
         }
         if (selectedClients == null || selectedClients.isEmpty()) {
             JsfUtil.addErrorMessage("No Results Found. Try different search criteria.");
@@ -1043,6 +1055,8 @@ public class ClientController implements Serializable {
         searchingNicNo = "";
         searchingName = "";
         searchingPhoneNumber = "";
+        searchingLocalReferanceNo="";
+        searchingSsNumber="";
     }
 
     public List<Client> listPatientsByPhn(String phn) {
@@ -1065,9 +1079,52 @@ public class ClientController implements Serializable {
         m.put("q", phn.trim().toUpperCase());
         return getFacade().findByJpql(j, m);
     }
+    
+    public List<Client> listPatientsByLocalReferanceNo(String refNo) {
+        String j = "select c from Client c "
+                + " where c.retired=false "
+                + " and lower(c.person.localReferanceNo)=:q "
+                + " and c.createInstitution=:ins "
+                + " order by c.phn";
+        Map m = new HashMap();
+        m.put("q", refNo.trim().toLowerCase());
+        m.put("ins", webUserController.getLoggedUser().getInstitution());
+        return getFacade().findByJpql(j, m);
+    }
 
+    public List<Client> listPatientsBySsNo(String ssNo) {
+        String j = "select c from Client c "
+                + " where c.retired=false "
+                + " and lower(c.person.ssNumber)=:q "
+                + " order by c.phn";
+        Map m = new HashMap();
+        m.put("q", ssNo.trim().toLowerCase());
+        return getFacade().findByJpql(j, m);
+    }
+    
+    public List<Client> listPatientsByDrivingLicenseNo(String dlNo) {
+        String j = "select c from Client c "
+                + " where c.retired=false "
+                + " and lower(c.person.drivingLicenseNumber)=:q "
+                + " order by c.phn";
+        Map m = new HashMap();
+        m.put("q", dlNo.trim().toLowerCase());
+        return getFacade().findByJpql(j, m);
+    }
+    
+    public List<Client> listPatientsByPassportNo(String passportNo) {
+        String j = "select c from Client c "
+                + " where c.retired=false "
+                + " and lower(c.person.passportNumber)=:q "
+                + " order by c.phn";
+        Map m = new HashMap();
+        m.put("q", passportNo.trim().toLowerCase());
+        return getFacade().findByJpql(j, m);
+    }
+
+    
     public List<Client> listPatientsByIDsStepvice(String ids) {
-        System.out.println("ids = " + ids);
+        //System.out.println("ids = " + ids);
         if (ids == null || ids.trim().equals("")) {
             return null;
         }
@@ -1084,12 +1141,12 @@ public class ClientController implements Serializable {
                 + " and upper(c.phn)=:q "
                 + " order by c.phn";
         m.put("q", ids.trim().toUpperCase());
-        System.out.println("m = " + m);
-        System.out.println("j = " + j);
+        //System.out.println("m = " + m);
+        //System.out.println("j = " + j);
         cs = getFacade().findByJpql(j, m);
         
         if (cs != null && !cs.isEmpty()) {
-            System.out.println("cs.size() = " + cs.size());
+            //System.out.println("cs.size() = " + cs.size());
             return cs;
         }
 
@@ -1104,10 +1161,10 @@ public class ClientController implements Serializable {
                 + " ) "
                 + " order by c.phn";
         cs = getFacade().findByJpql(j, m);
-        System.out.println("m = " + m);
-        System.out.println("j = " + j);
+        //System.out.println("m = " + m);
+        //System.out.println("j = " + j);
         if (cs != null && !cs.isEmpty()) {
-            System.out.println("cs.size() = " + cs.size());
+            //System.out.println("cs.size() = " + cs.size());
             return cs;
         }
 
@@ -1597,6 +1654,40 @@ public class ClientController implements Serializable {
     public void setDateFormat(String dateFormat) {
         this.dateFormat = dateFormat;
     }
+
+    public String getSearchingLocalReferanceNo() {
+        return searchingLocalReferanceNo;
+    }
+
+    public void setSearchingLocalReferanceNo(String searchingLocalReferanceNo) {
+        this.searchingLocalReferanceNo = searchingLocalReferanceNo;
+    }
+
+    public String getSearchingSsNumber() {
+        return searchingSsNumber;
+    }
+
+    public void setSearchingSsNumber(String searchingSsNumber) {
+        this.searchingSsNumber = searchingSsNumber;
+    }
+
+    public Boolean getLocalReferanceExists() {
+        return localReferanceExists;
+    }
+
+    public void setLocalReferanceExists(Boolean localReferanceExists) {
+        this.localReferanceExists = localReferanceExists;
+    }
+
+    public Boolean getSsNumberExists() {
+        return ssNumberExists;
+    }
+
+    public void setSsNumberExists(Boolean ssNumberExists) {
+        this.ssNumberExists = ssNumberExists;
+    }
+    
+    
 
     // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="Inner Classes">

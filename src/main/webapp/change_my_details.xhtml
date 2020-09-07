@@ -11,8 +11,8 @@
         <ui:composition template="./template.xhtml">
 
             <ui:define name="content">
-                
-                   <h:form>
+
+                <h:form>
                     <p:panelGrid columns="2" columnClasses="alignLeft alignLeft" class="pageCenter">
 
                         <f:facet name="header" >
@@ -21,17 +21,17 @@
 
 
                         <h:outputLabel value="Name" for="webUserPerson" />
-                        <h:inputText id="webUserPerson" value="#{webUserController.selected.webUserPerson.name}" title="#{bundle.EditWebUserTitle_webUserPerson}" >
+                        <h:inputText id="webUserPerson" value="#{webUserController.selected.person.name}" title="#{bundle.EditWebUserTitle_webUserPerson}" >
                         </h:inputText>
 
-                        
+
                         <h:outputLabel value="Username" for="name" />
                         <h:inputText disabled="true" id="name" value="#{webUserController.selected.name}" title="#{bundle.EditWebUserTitle_name}" required="true" requiredMessage="#{bundle.EditWebUserRequiredMessage_name}"/>
 
 
                         <h:outputLabel value="Email" for="email" />
                         <h:inputText id="email" value="#{webUserController.selected.email}" title="#{bundle.EditWebUserTitle_email}" />
-                        
+
                         <h:outputLabel value="Phone" for="telNo" />
                         <h:inputText id="telNo" value="#{webUserController.selected.telNo}" title="#{bundle.EditWebUserTitle_telNo}" />
 
@@ -56,8 +56,8 @@
                     </p:panelGrid>
 
                 </h:form>
-                
-                
+
+
             </ui:define>
 
         </ui:composition>

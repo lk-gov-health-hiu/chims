@@ -12,8 +12,8 @@
     </head>
     <body>
 
-        <ui:composition template="/template.xhtml">
-            <ui:define name="content">
+        <ui:composition template="/reports/index.xhtml">
+            <ui:define name="reports">
                 <h:form>
                     <p:panelGrid columns="1" style="width: 100%">
                         <f:facet name="header" >
@@ -40,7 +40,7 @@
                                                 requiredMessage="Please select a clinic. Selecting a Hospital will not give results."
 
                                                 required="true"
-                                                completeMethod="#{institutionController.completeInstitutions}"
+                                                completeMethod="#{webUserController.completeLoggableInstitutions}"
                                                 var="i"
                                                 itemLabel="#{i.name}"
                                                 itemValue="#{i}">

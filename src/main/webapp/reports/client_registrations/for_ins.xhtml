@@ -14,46 +14,36 @@
 
     <h:body>
 
-        <ui:composition template="./../../template.xhtml">
-
-
-
-            <ui:define name="content">
+        <ui:composition template="/reports/index.xhtml">
+            <ui:define name="reports">
                 <h:form>
-                    <p:panel styleClass="alignTop" >
+
+                    <p:panelGrid columns="1"  class="w3-border w3-margin w3-card" >
                         <f:facet name="header" >
-                            <p:outputLabel value="Download Client Registrations" ></p:outputLabel>
+                            <p:outputLabel value="Client Registrations" >
+                            </p:outputLabel>
                         </f:facet>
-                        <p:panelGrid columns="1" >
-                            <f:facet name="header" >
-                                <p:outputLabel value="Filters" >
-                                </p:outputLabel>
+                        <p:outputLabel value="From" ></p:outputLabel>
+                        <p:calendar value="#{reportController.fromDate}" pattern="dd MM yyyy hh:mm a" ></p:calendar>
+                        <p:outputLabel value="To" ></p:outputLabel>
+                        <p:calendar value="#{reportController.toDate}" pattern="dd MM yyyy hh:mm a" ></p:calendar>
+                        <p:outputLabel value="Institution / Unit" ></p:outputLabel>
+                        <p:autoComplete   value="#{reportController.institution}" 
+                                          completeMethod="#{webUserController.completeLoggableInstitutions}"
+                                          var="i" itemLabel="#{i.name}" itemValue="#{i}">
+                        </p:autoComplete >
 
-                            </f:facet>
-                            <p:outputLabel value="From" ></p:outputLabel>
-                            <p:calendar value="#{clientController.from}" pattern="dd MM yyyy hh:mm a" ></p:calendar>
-                            <p:outputLabel value="To" ></p:outputLabel>
-                            <p:calendar value="#{clientController.to}" pattern="dd MM yyyy hh:mm a" ></p:calendar>
-                            <p:outputLabel value="Institution / Unit" ></p:outputLabel>
-                            <p:selectOneMenu   value="#{clientController.institution}" >
-                                <f:selectItem itemLabel="All" ></f:selectItem>
-                                <f:selectItems value="#{webUserController.loggableInstitutions}"
-                                               var="i" itemLabel="#{i.name}" itemValue="#{i}"></f:selectItems>
-                            </p:selectOneMenu >
+                        <p:commandButton value="Download" 
+                                         ajax="false" 
+                                         oncomplete ="PrimeFaces.monitorDownload(start, stop);" 
+                                         icon="ui-icon-arrowthick-1-s"
+                                         actionListener="#{reportController.downloadClientRegistrations()}">
+                            <p:fileDownload value="#{reportController.resultExcelFile}" />
+                        </p:commandButton>    
 
-                            <p:commandButton value="Download" 
-                                             ajax="false" 
-                                             oncomplete ="PrimeFaces.monitorDownload(start, stop);" 
-                                             icon="ui-icon-arrowthick-1-s"
-                                             actionListener="#{reportController.downloadClientRegistrationsForSysAdmin()}">
-                                <p:fileDownload value="#{reportController.resultExcelFile}" />
-                            </p:commandButton>    
+                    </p:panelGrid>
 
-                        </p:panelGrid>
 
-                    
-
-                    </p:panel>
 
 
 

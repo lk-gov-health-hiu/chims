@@ -12,8 +12,8 @@
 
             <ui:define name="content">
                 <h:form >
-                    
-                    
+
+
                     <p:panelGrid style="height: 100%;text-align: center;" columns="2">
                         <f:facet name="header" >
                             <p:outputLabel value="User List" ></p:outputLabel>
@@ -80,22 +80,28 @@
                                 <f:facet name="header">
                                     <h:outputText value="Actions"/>
                                 </f:facet>
-                                <p:commandLink  value="Edit" ajax="false"
-                                                action="#{webUserController.prepareEdit()}" >
-                                    <f:setPropertyActionListener value="#{item}" target="#{webUserController.current}" ></f:setPropertyActionListener>
-                                </p:commandLink>
-                                <p:spacer height="1" width="10" ></p:spacer>
-                                <p:commandLink  value="Privileges" ajax="false"
-                                                action="#{webUserController.toManagePrivileges()}" >
-                                    <f:setPropertyActionListener value="#{item}" 
-                                                                 target="#{webUserController.current}" >
-                                    </f:setPropertyActionListener>
-                                </p:commandLink>
-                                <p:spacer height="1" width="10" ></p:spacer>
-                                <p:commandLink  value="Password" ajax="false"
-                                                action="#{webUserController.prepareEditPassword()}" >
-                                    <f:setPropertyActionListener value="#{item}" target="#{webUserController.current}" ></f:setPropertyActionListener>
-                                </p:commandLink>
+                                <p:panelGrid columns="4" >
+                                    <p:commandLink  value="Edit" ajax="false"
+                                                    action="#{webUserController.prepareEdit()}" >
+                                        <f:setPropertyActionListener value="#{item}" target="#{webUserController.current}" ></f:setPropertyActionListener>
+                                    </p:commandLink>
+                                    <p:commandLink  value="Privileges" ajax="false"
+                                                    action="#{webUserController.toManagePrivileges()}" >
+                                        <f:setPropertyActionListener value="#{item}" 
+                                                                     target="#{webUserController.current}" >
+                                        </f:setPropertyActionListener>
+                                    </p:commandLink>
+                                    <p:commandLink  value="Password" ajax="false"
+                                                    action="#{webUserController.prepareEditPassword()}" >
+                                        <f:setPropertyActionListener value="#{item}" target="#{webUserController.current}" ></f:setPropertyActionListener>
+                                    </p:commandLink>
+                                    <p:commandLink value="Log as" ajax="false" action="#{webUserController.assumeUser()}" >
+                                        <f:setPropertyActionListener value="#{item}" target="#{webUserController.current}" ></f:setPropertyActionListener>
+                                    </p:commandLink>
+
+                                </p:panelGrid>
+
+
                             </p:column>
                         </p:dataTable>
 

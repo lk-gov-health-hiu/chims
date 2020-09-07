@@ -135,9 +135,9 @@ public class DesignComponentFormController implements Serializable {
     }
 
     public void addFormToTheSelectedSet() {
-//        // //System.out.println("addFormToTheSelectedSet");
-//        // //System.out.println("designComponentFormSet = " + designComponentFormSet);
-//        // //System.out.println("addingForm = " + addingForm);
+//        // ////System.out.println("addFormToTheSelectedSet");
+//        // ////System.out.println("designComponentFormSet = " + designComponentFormSet);
+//        // ////System.out.println("addingForm = " + addingForm);
         if (designComponentFormSet == null) {
             JsfUtil.addErrorMessage("No Formset");
             return;

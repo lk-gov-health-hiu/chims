@@ -13,18 +13,13 @@
     </head>
     <body>
 
-        <ui:composition template="/template.xhtml">
-
-
-            <ui:define name="content">
+        <ui:composition template="/reports/index.xhtml">
+            <ui:define name="reports">
                 <h:form>
-                    <p:panel  >
-                        <f:facet name="header" >
-                            <p:outputLabel value="Clinic Enrollments" ></p:outputLabel>
-                        </f:facet>
-                        <p:panelGrid columns="2" >
+                    
+                        <p:panelGrid columns="2"  class="w3-border w3-margin w3-card" >
                             <f:facet name="header" >
-                                <p:outputLabel value="Filters" >
+                                <p:outputLabel value="Clinic Enrollments" >
                                 </p:outputLabel>
                             </f:facet>
                             <p:outputLabel value="From" ></p:outputLabel>
@@ -44,15 +39,13 @@
                                              ajax="false" 
                                              oncomplete ="PrimeFaces.monitorDownload(start, stop);" 
                                              icon="ui-icon-arrowthick-1-s"
-                                             actionListener="#{reportController.downloadClinicEnrollmentsForSysAdmin()}">
+                                             actionListener="#{reportController.downloadClinicEnrollments()}">
                                 <p:fileDownload value="#{reportController.resultExcelFile}" />
                             </p:commandButton>
 
                         </p:panelGrid>
 
 
-
-                    </p:panel>
 
                 </h:form>
             </ui:define>

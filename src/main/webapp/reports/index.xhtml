@@ -15,74 +15,83 @@
         <ui:composition template="/template.xhtml">
             <ui:define name="content">
 
-                <h:form>
-                    <p:panelGrid columns="1" style="width: 100%;" >
-                        <f:facet name="header" >
-                            <h:outputLabel value="Reports" ></h:outputLabel>
-                        </f:facet>
 
-                        <p:tabView orientation="left" >
-                            <p:tab title="Summeries" >
-                                <p:panelGrid columns="1" >
-                                    <p:commandButton value="Monthly Institution Summeries"   style="width:30em;margin:auto;"
+                <p:panelGrid columns="2" style="width: 100%;" styleClass="alignTop">
+                    <f:facet name="header" >
+                        <h:outputLabel value="Reports" ></h:outputLabel>
+                    </f:facet>
+                    <h:form>
+                        <p:accordionPanel style="width: 24rem;" activeIndex="#{webUserController.reportTabIndex}"
+                                          
+                                          >
+                            
+                            <p:ajax event="tabChange" update="@this" />
+                            <p:tab title="Summeries"  >
+                                <h:panelGrid columns="1" >
+                                    <p:commandButton value="Monthly Institution Summeries"   style="width:20em;margin:auto;"
                                                      action="#{reportController.toInstitutionMonthlySummeries()}"
                                                      ajax="false"></p:commandButton>
 
-                                    <p:commandButton value="Consolidated Summeries"   style="width:30em;margin:auto;"
-                                                     action="#{reportController.toInstitutionMonthlySummeries()}"
+                                    <p:commandButton value="Consolidated Summeries"   style="width:20em;margin:auto;"
+                                                     action="#{reportController.toConsolidateSummeries()}"
                                                      ajax="false"></p:commandButton>
 
-                                    <p:commandButton value="My Summeries"   style="width:30em;margin:auto;"
+                                    <p:commandButton value="My Summeries"   style="width:20em;margin:auto;"
                                                      action="#{reportController.toViewMySummeries()}"
                                                      ajax="false"></p:commandButton>
 
-                                    <p:commandButton value="Institution-vice Client Registrations"   style="width:30em;margin:auto;"
+                                    <p:commandButton value="Institution-vice Client Registrations"   style="width:20em;margin:auto;"
                                                      action="#{reportController.toViewClientRegistrationsByInstitution()}"
                                                      ajax="false"></p:commandButton>
-                                </p:panelGrid>
+                                </h:panelGrid>
 
                             </p:tab>
 
                             <p:tab title="Lists" >
 
-                                <p:panelGrid columns="1" >
-                                    <p:commandButton value="Client Registrations"   style="width:30em;margin:auto;"
+                                <h:panelGrid columns="1" >
+                                    <p:commandButton value="Client Registrations"   style="width:20em;margin:auto;"
                                                      action="#{reportController.toViewClientRegistrations()}"
                                                      ajax="false"></p:commandButton>
 
-                                    <p:commandButton value="Clinic Enrollments"   style="width:30em;margin:auto;"
+                                    <p:commandButton value="Clinic Enrollments"   style="width:20em;margin:auto;"
                                                      action="#{reportController.toViewClinicEnrollments()}"
                                                      ajax="false"></p:commandButton>
 
-                                    <p:commandButton value="Clinic Visits"   style="width:30em;margin:auto;"
+                                    <p:commandButton value="Clinic Visits"   style="width:20em;margin:auto;"
                                                      action="#{reportController.toViewClinicVisits()}"
                                                      ajax="false"></p:commandButton>
 
-                                </p:panelGrid>
+                                </h:panelGrid>
 
 
                             </p:tab>
 
                             <p:tab title="Data" >
-                                <p:panelGrid columns="1" >
+                                <h:panelGrid columns="1" >
 
 
-                                    <p:commandButton value="Clinical Data"   style="width:30em;margin:auto;"
+                                    <p:commandButton value="Clinical Data"   style="width:20em;margin:auto;"
                                                      action="#{reportController.toSingleVariableClinicalData()}"
                                                      ajax="false"></p:commandButton>
 
-                                </p:panelGrid>
+                                </h:panelGrid>
 
 
 
                             </p:tab>
 
-                        </p:tabView>
+                        </p:accordionPanel>
+                    </h:form>
+                    <p:panel style="width: calc(100vw - 28rem);">
+                        <ui:insert name="reports">
+
+                        </ui:insert>
+                    </p:panel>
+
+                </p:panelGrid>
 
 
-
-                    </p:panelGrid>
-                </h:form>
 
 
             </ui:define>
