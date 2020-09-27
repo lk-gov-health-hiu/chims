@@ -1,0 +1,33 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+    <body>
+
+        <ui:composition template="./../template.xhtml">
+
+            <ui:define name="content">
+                
+                 <h:form>
+                    <p:panel header="Manage Areas" >
+                        <p:tabView orientation="left" >
+                            <p:tab title="GN Areas" >
+                                <p:panelGrid columns="1" >
+                                    <p:commandButton ajax="false" action="/insAdmin/gn_areas_for_pmci" value="Draining GN Areas" ></p:commandButton>
+                                    <p:commandButton ajax="false" action="/insAdmin/gn_data" value="Data for GN Areas" ></p:commandButton>
+                                </p:panelGrid>
+                            </p:tab> 
+
+                        </p:tabView>
+                    </p:panel>
+                </h:form>
+                
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

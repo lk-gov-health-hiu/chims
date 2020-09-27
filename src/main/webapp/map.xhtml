@@ -1,0 +1,52 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+    <h:head>
+        <title>Graph</title>
+        <script type='text/javascript' src='https://www.gstatic.com/charts/loader.js'></script>
+        <script type='text/javascript'>
+            google.charts.load('current', {
+                'packages': ['geochart'],
+                // Note: you will need to get a mapsApiKey for your project.
+                // See: https://developers.google.com/chart/interactive/docs/basic_load_libs#load-settings
+                'mapsApiKey': 'AIzaSyD-9tSrke72PouQMnMX-a7eZSW0jkFMBWY'
+            });
+            google.charts.setOnLoadCallback(drawMarkersMap);
+
+            function drawMarkersMap() {
+                var data = google.visualization.arrayToDataTable([
+                    ['City', 'Population', 'Area'],
+                    ['Rome', 2761477, 1285.31],
+                    ['Milan', 1324110, 181.76],
+                    ['Naples', 959574, 117.27],
+                    ['Turin', 907563, 130.17],
+                    ['Palermo', 655875, 158.9],
+                    ['Genoa', 607906, 243.60],
+                    ['Bologna', 380181, 140.7],
+                    ['Florence', 371282, 102.41],
+                    ['Fiumicino', 67370, 213.44],
+                    ['Anzio', 52192, 43.43],
+                    ['Ciampino', 38262, 11]
+                ]);
+
+                var options = {
+                    region: 'IT',
+                    displayMode: 'markers',
+                    colorAxis: {colors: ['green', 'blue']}
+                };
+
+                var chart = new google.visualization.GeoChart(document.getElementById('chart_div'));
+                chart.draw(data, options);
+            }
+            ;
+        </script>
+    </h:head>
+    <h:body>
+
+        <div id="chart_div"></div>
+
+
+    </h:body>
+</html>
+

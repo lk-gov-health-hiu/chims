@@ -1,0 +1,3 @@
+select id,`name`,`ITEM_ID`,`ITEMVALUE_ID`,`CREATEDAT`,`LASTEDITEAT`,`DTYPE`
+from component 
+WHERE id=3774841 or `ID`=5199623;

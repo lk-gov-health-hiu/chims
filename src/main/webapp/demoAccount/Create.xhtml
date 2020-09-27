@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="DemoAccountCreateDlg" widgetVar="DemoAccountCreateDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundleDemo.CreateDemoAccountTitle}">
+            <h:form id="DemoAccountCreateForm">
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" rendered="#{demoAccountController.selected != null}">
+                        <p:outputLabel value="#{bundleDemo.CreateDemoAccountLabel_name}" for="name" />
+                        <p:inputText id="name" value="#{demoAccountController.selected.name}" title="#{bundleDemo.CreateDemoAccountTitle_name}" />
+                        <p:outputLabel value="#{bundleDemo.CreateDemoAccountLabel_userName}" for="userName" />
+                        <p:inputText id="userName" value="#{demoAccountController.selected.userName}" title="#{bundleDemo.CreateDemoAccountTitle_userName}" />
+                        <p:outputLabel value="#{bundleDemo.CreateDemoAccountLabel_password}" for="password" />
+                        <p:inputText id="password" value="#{demoAccountController.selected.password}" title="#{bundleDemo.CreateDemoAccountTitle_password}" />
+                        <p:outputLabel value="#{bundleDemo.CreateDemoAccountLabel_comments}" for="comments" />
+                        <p:inputText id="comments" value="#{demoAccountController.selected.comments}" title="#{bundleDemo.CreateDemoAccountTitle_comments}" />
+                    </p:panelGrid>
+                    <p:commandButton actionListener="#{demoAccountController.create}" value="#{bundleDemo.Save}" update="display,:DemoAccountListForm:datalist" oncomplete="handleSubmit(args,'DemoAccountCreateDialog');"/>
+                    <p:commandButton value="#{bundleDemo.Cancel}" onclick="DemoAccountCreateDialog.hide()"/>
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+
+    </ui:composition>
+</html>

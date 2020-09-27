@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition template="/template.xhtml">
+
+
+        <ui:define name="title">
+            <h:outputText value="#{bundleQuery.ListQueryComponentTitle}"></h:outputText>
+        </ui:define>
+
+        <ui:define name="content">
+
+            <p:growl id="growl" showDetail="true" sticky="true" /> 
+
+            <h:form id="QueryComponentListForm">
+                <p:panel header="#{bundleQuery.ListQueryComponentTitle}">
+                    <p:dataTable id="datalist" value="#{queryComponentController.items}" var="item"
+                                 selectionMode="single" selection="#{queryComponentController.selectedQuery}"
+                                 paginator="true"
+                                 rowKey="#{item.id}"
+                                 rows="10"
+                                 rowsPerPageTemplate="10,20,30,40,50"
+                                 >
+
+                        <p:ajax event="rowSelect"   update="createButton viewButton editButton deleteButton duplicateButton manage"/>
+                        <p:ajax event="rowUnselect" update="createButton viewButton editButton deleteButton duplicateButton manage"/>
+
+                        
+                        <p:column width="200" sortBy="#{item.queryLevel}" filterBy="#{item.queryLevel}" filterMatchMode="contains">
+                            <f:facet name="header">
+                                <h:outputText value="Level"/>
+                            </f:facet>
+                             <h:outputText value="#{item.queryLevel}"/>
+                        </p:column>
+                        
+                        <p:column width="200" sortBy="#{item.parentComponent.name}" filterBy="#{item.parentComponent.name}" filterMatchMode="contains">
+                            <f:facet name="header">
+                                <h:outputText value="Category"/>
+                            </f:facet>
+                            <h:outputText value="#{item.parentComponent.name}"/>
+                        </p:column>
+                        
+                        <p:column width="400" sortBy="#{item.name}" filterBy="#{item.name}" filterMatchMode="contains">
+                            <f:facet name="header">
+                                <h:outputText value="Name"/>
+                            </f:facet>
+                            <h:outputText value="#{item.name}"/>
+                        </p:column>
+                        <p:column  width="200" sortBy="#{item.code}" filterBy="#{item.code}" filterMatchMode="contains" >
+                            <f:facet name="header">
+                                <h:outputText value="Code"/>
+                            </f:facet>
+                            <h:outputText value="#{item.code}"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="Descreption"/>
+                            </f:facet>
+                            <h:outputText value="#{item.descreption}"/>
+                        </p:column>
+                        <f:facet name="footer">
+                            <p:commandButton id="createButton" icon="ui-icon-plus"   value="#{bundleQuery.Create}" actionListener="#{queryComponentController.prepareCreate}" update=":QueryComponentCreateForm" oncomplete="PF('QueryComponentCreateDialog').show()"/>
+                            <p:commandButton id="viewButton"   icon="ui-icon-search" value="#{bundleQuery.View}" update=":QueryComponentViewForm" oncomplete="PF('QueryComponentViewDialog').show()" disabled="#{empty queryComponentController.selectedQuery}"/>
+                            <p:commandButton id="editButton"   icon="ui-icon-pencil" value="#{bundleQuery.Edit}" update=":QueryComponentEditForm" oncomplete="PF('QueryComponentEditDialog').show()" disabled="#{empty queryComponentControselectedQueryected}"/>
+                            <p:commandButton id="duplicateButton" icon="ui-icon-arrowrefresh-1-n"  value="Duplicate" action="#{queryComponentController.duplicate()}" ajax="false" disabled="#{empty queryComponentCselectedQueryr.selected}"/>
+                            <p:commandButton id="manage" style="display: none;" icon="ui-icon-arrowrefresh-1-n"  value="Manage" action="/queryComponent/manage_query" ajax="false" disabled="#{empty queryComposelectedQueryroller.selected}"/>
+                            <p:commandButton id="deleteButton" icon="ui-icon-trash"  value="#{bundleQuery.Delete}" actionListener="#{queryComponentController.retire()}" ajax="false" disabled="#{empty queryselectedQuerytController.selected}"/>
+                        </f:facet>
+                    </p:dataTable>
+                </p:panel>
+            </h:form>
+
+            <ui:include src="Create.xhtml"/>
+            <ui:include src="Edit.xhtml"/>
+            <ui:include src="View.xhtml"/>
+        </ui:define>
+    </ui:composition>
+
+</html>

@@ -1,0 +1,148 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+    <body>
+
+        <ui:composition template="./../template.xhtml">
+
+            <ui:define name="content">
+
+                <p:panel header="Select an Area" >
+
+                    <h:form>
+                        <p:panelGrid >
+
+                            <p:row >
+                                <p:column colspan="2" >
+
+                                    <p:panelGrid columns="2" >
+                                        <p:outputLabel value="Area" ></p:outputLabel>
+                                        <p:autoComplete id="acPmci"
+                                                        value="#{relationshipController.area}"
+                                                        completeMethod="#{areaController.completeAreas}"
+                                                        var="p" itemLabel="#{p.name}" itemValue="#{p}"
+                                                        >
+                                            <p:ajax event="itemSelect" process="acPmci"
+                                                    update="tbl"
+                                                    listener="#{relationshipController.fillRelationshipData()}" ></p:ajax>
+                                        </p:autoComplete>
+
+                                        <p:outputLabel value="Year" ></p:outputLabel>
+                                        <p:inputText id="searchYear" value="#{relationshipController.year}" >
+                                            <p:ajax  event="keyup" process="searchYear"
+                                                    update="tbl"
+                                                    listener="#{relationshipController.fillRelationshipData()}" ></p:ajax>
+                                        </p:inputText>
+
+                                    </p:panelGrid>
+
+                                </p:column>
+                            </p:row>
+                            <p:row >
+                                <p:column >
+
+                                    <p:dataTable id="tbl" value="#{relationshipController.items}" var="gn" >
+                                        <p:column >
+                                            <f:facet name="header" >
+                                                <p:outputLabel value="Area" ></p:outputLabel>
+                                            </f:facet>
+                                            <p:outputLabel value="#{gn.area.name}" ></p:outputLabel>
+                                        </p:column>
+                                        <p:column >
+                                            <f:facet name="header" >
+                                                <p:outputLabel value="Year" ></p:outputLabel>
+                                            </f:facet>
+                                            <p:outputLabel value="#{gn.yearInt}" ></p:outputLabel>
+                                        </p:column>
+                                        <p:column >
+                                            <f:facet name="header" >
+                                                <p:outputLabel value="Type" ></p:outputLabel>
+                                            </f:facet>
+                                            <p:outputLabel value="#{gn.relationshipType}" ></p:outputLabel>
+                                        </p:column>
+                                        <p:column >
+                                            <f:facet name="header" >
+                                                <p:outputLabel value="Population" ></p:outputLabel>
+                                            </f:facet>
+                                            <p:inputText id="txtPop" value="#{gn.longValue1}" >
+                                                <f:ajax execute="@this" event="blur" listener="#{relationshipController.save(gn)}" ></f:ajax>
+                                            </p:inputText>
+                                        </p:column>
+                                        <p:column >
+                                            <f:facet name="header" >
+                                                <p:outputLabel value="Remove" ></p:outputLabel>
+                                            </f:facet>
+                                            <p:commandButton id="btnRemove" value="Remove" action="#{relationshipController.removeRelationship()}"
+                                                             process="@this" update="tbl" >
+                                                <f:setPropertyActionListener value="#{gn}" target="#{relationshipController.removing}" ></f:setPropertyActionListener>
+                                            </p:commandButton>
+                                        </p:column>
+
+                                    </p:dataTable>
+
+                                </p:column>
+
+                                <p:column >
+
+                                    <p:panelGrid columns="3" >
+                                        <f:facet name="header" >
+                                            <p:outputLabel value="Add Another Data" ></p:outputLabel>
+                                        </f:facet>
+                                        
+                                        <p:outputLabel value="Year" ></p:outputLabel>
+                                        <p:inputText id="year" value="#{relationshipController.adding.yearInt}" >
+                                        </p:inputText>
+                                        <p:spacer ></p:spacer>
+                                        
+                                        <p:outputLabel value="Area" ></p:outputLabel>
+                                        <p:autoComplete id="acGn" value="#{relationshipController.adding.area}"
+                                                        completeMethod="#{areaController.completeAreas}"
+                                                        var="gn" maxResults="20" forceSelection="true"
+                                                        itemValue="#{gn}"
+                                                        itemLabel="#{gn.name}" ></p:autoComplete>
+                                        <p:spacer ></p:spacer>
+                                        
+                                        <p:outputLabel value="Population" ></p:outputLabel>
+                                        <p:inputText id="pop" value="#{relationshipController.adding.longValue1}" >
+                                        </p:inputText>
+                                        <p:spacer ></p:spacer>
+                                        
+                                         <p:outputLabel value="Type" ></p:outputLabel>
+                                         <p:selectOneMenu id="type" value="#{relationshipController.adding.relationshipType}" >
+                                             <f:selectItems value="#{commonController.relationshipTypes}" ></f:selectItems>
+                                         </p:selectOneMenu>
+                                                        
+                                        <p:commandButton value="Add" 
+                                                         id="btnAdd"
+                                                         process="type acGn btnAdd year pop"
+                                                         update="tbl type acGn btnAdd year pop"
+                                                         action="#{relationshipController.addEmpowerementData()}">
+                                        </p:commandButton>
+
+                                    </p:panelGrid>
+
+                                </p:column>
+
+                            </p:row>
+
+
+                        </p:panelGrid>
+
+                    </h:form>
+
+
+
+
+                </p:panel>
+
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

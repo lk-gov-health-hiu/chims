@@ -1,0 +1,195 @@
+
+.printOnly  {
+   display : none;
+   color: red;
+}
+
+@media print {
+    .printOnly  {
+       display : block;
+       color: green;
+    }
+}
+
+
+.ui-widget {
+    font-family: 'Poppins',Arial,sans-serif;
+    font-size: 1.0em;
+}
+.ui-widget input,
+.ui-widget select,
+.ui-widget textarea,
+.ui-widget button {
+  font-family: 'Poppins',Arial,sans-serif;
+}
+
+
+.ui-menubar .ui-widget  {
+    font-family: 'Poppins', sans-serif;
+}
+
+
+
+.logoFont1, .logoFont2, .logoFont3{
+    font-family: 'Poppins', sans-serif;
+    font-size:1.5vw;
+}
+
+.logoFont1, .logoFont3{
+    color: darkturquoise;
+}
+
+.logoFont2{
+    color: orange;
+    font-weight: 800;
+}
+
+
+.poppinText{
+    font-family: 'Poppins', sans-serif;
+    font-size:3vw;
+}
+
+.menuContainer{
+    vertical-align: middle;
+    font-family: 'Poppins', sans-serif;
+    font-size:1.5vw;
+}
+
+.menuSpaceLeft{
+    float: left;
+    margin: 1vw;
+}
+
+.menuSpaceRight{
+    float: right;
+    margin: 1vw;
+}
+
+.nonUnderline{
+    text-decoration: none;
+}
+
+.menuText:hover{
+    color: darkslategrey;
+}
+
+.menuText{
+    color: lightslategray;
+}
+
+.btn150{
+    width: 150px;
+}
+
+.btn200{
+    width: 200px;
+}
+
+.btn300{
+    width: 300px;
+}
+
+.btn350{
+    width: 350px;
+}
+
+.btn600{
+    width: 350px;
+}
+
+
+.redTable th{
+    background-color: #56acff;
+    color: #faf3f3;
+}
+
+.cardSpace{
+    float: left;
+    margin: 1vw;
+    height: 12vw;
+    width: 12vw;
+    padding: 1vw;
+}
+
+.cardHeading{
+    font-family: 'Poppins', sans-serif;
+    font-size:1.2vw;
+    font-weight: 400;
+}
+
+.cardText{
+    font-family: 'Poppins', sans-serif;
+    font-size:0.9vw;
+}
+
+.borderThin{
+    border: 1px solid red;
+}
+
+.cardIncon{
+    margin: 3px;
+    padding: 3px;
+}
+
+.material-icons.md-18 { font-size: 18px; }
+.material-icons.md-24 { font-size: 24px; }
+.material-icons.md-36 { font-size: 36px; }
+.material-icons.md-48 { font-size: 48px; }
+
+
+.footer {
+   position: fixed;
+   left: 0;
+   bottom: 0;
+   width: 100%;
+   /*background-color: red;*/
+   color: white;
+   text-align: center;
+}
+
+.pageRootPanel{
+    width: 100%;
+    text-align: center;
+}
+
+.pageInnerPanel{
+    margin: auto!important;
+    text-align: left;
+}
+
+.alignTop{
+    vertical-align: top;
+}
+
+.alignTop td {
+    vertical-align: top;
+}
+
+.noClass select{
+    float: none;
+}
+
+@media screen and (min-width : 1000px) {
+    .verticalmenu {
+        display: none !important;
+    }
+}
+@media screen and (max-width : 1000px) {
+    .horizontalmenu {
+        display: none !important;
+    }
+}
+
+
+.width25rem{
+    width: 25rem;
+    margin: 0.2rem;
+    padding: 0.2rem;
+    text-align: left!important;
+}
+
+
+.width50percent{
+    width: 50%;
+}

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition template="/template.xhtml">
+
+
+        
+
+        <ui:define name="content">
+            <h:form id="DesignComponentFormListForm">
+                <p:panel header="#{bundleClinical.ListDesignComponentFormTitle}">
+                    <p:dataTable id="datalist" value="#{designComponentFormController.items}" var="item"
+                                 selectionMode="single" selection="#{designComponentFormController.selected}"
+                                 paginator="true"
+                                 rowKey="#{item.id}"
+                                 rows="10"
+                                 rowsPerPageTemplate="10,20,30,40,50"
+                                 >
+
+                        <p:ajax event="rowSelect"   update="  editButton "/>
+                        <p:ajax event="rowUnselect" update="  editButton "/>
+
+                        <p:column sortBy="#{item.parentComponent.name}" filterBy="#{item.parentComponent.name}" filterMatchMode="contains">
+                            <f:facet name="header">
+                                <h:outputText value="Formset"/>
+                            </f:facet>
+                            <h:outputText value="#{item.parentComponent.name}"/>
+                        </p:column>
+                        <p:column sortBy="#{item.parentComponent.name}" filterBy="#{item.parentComponent.name}" filterMatchMode="contains">
+                            <f:facet name="header">
+                                <h:outputText value="#{bundleClinical.ListDesignComponentFormTitle_name}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.name}"/>
+                        </p:column>
+                        <p:column sortBy="#{item.retired}">
+                            <f:facet name="header">
+                                <h:outputText value="Retired"/>
+                            </f:facet>
+                            <h:outputText value="#{item.retired?'Yes':'No'}"/>
+                        </p:column>
+                        <f:facet name="footer">
+                            <p:commandButton id="editButton"   icon="ui-icon-pencil" value="#{bundleClinical.Edit}" update=":DesignComponentFormEditForm"
+                                             oncomplete="PF('DesignComponentFormEditDialog').show()" disabled="#{empty designComponentFormController.selected}"/>
+                            
+                        </f:facet>
+                    </p:dataTable>
+                </p:panel>
+            </h:form>
+
+           
+            <ui:include src="Edit.xhtml"/>
+            
+        </ui:define>
+    </ui:composition>
+
+</html>

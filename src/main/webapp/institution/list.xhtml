@@ -1,0 +1,76 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <body>
+
+        <ui:composition template="./index.xhtml">
+
+            <ui:define name="insContents">
+
+
+                <h:form id="InstitutionListForm">
+
+
+
+                    <p:panel header="Manage Institutions">
+                        <p:dataTable id="datalist" value="#{institutionController.items}" var="item"
+                                     selectionMode="single" selection="#{institutionController.selected}"
+                                     paginator="true"
+                                     rowKey="#{item.id}"
+                                     rows="10"
+                                     rowsPerPageTemplate="10,20,30,40,50"
+                                     >
+
+                            <p:column sortBy="#{item.institutionType}" filterBy="#{item.institutionType}" filterMatchMode="contains" >
+                                <f:facet name="header">
+                                    <h:outputText value="Type"/>
+                                </f:facet>
+                                <h:outputText value="#{item.institutionType}"/>
+                            </p:column>
+                            <p:column sortBy="#{item.name}" filterBy="#{item.name}" filterMatchMode="contains" >
+                                <f:facet name="header">
+                                    <h:outputText value="Name"/>
+                                </f:facet>
+                                <h:outputText value="#{item.name}"/>
+                            </p:column>
+                            <p:column sortBy="#{item.parent.name}" filterBy="#{item.parent.name}" filterMatchMode="contains" >
+                                <f:facet name="header">
+                                    <h:outputText value="Governed By"/>
+                                </f:facet>
+                                <h:outputText value="#{item.parent.name}"/>
+                            </p:column>
+                            <p:column sortBy="#{item.district.name}" filterBy="#{item.district.name}" filterMatchMode="contains" >
+                                <f:facet name="header">
+                                    <h:outputText value="District"/>
+                                </f:facet>
+                                <h:outputText value="#{item.district.name}"/>
+                            </p:column>
+                            <p:column  >
+                                <f:facet name="header">
+                                    <h:outputText value="Actions"/>
+                                </f:facet>
+                                <p:commandButton ajax="false" value="Edit" action="#{institutionController.toEditInstitution()}" >
+                                    <f:setPropertyActionListener value="#{item}" target="#{institutionController.selected}" ></f:setPropertyActionListener>
+                                </p:commandButton>
+                                <p:commandButton ajax="false" value="Delete"
+                                                 action="#{institutionController.deleteInstitution()}" >
+                                    <f:setPropertyActionListener value="#{item}" target="#{institutionController.deleting}" ></f:setPropertyActionListener>
+                                </p:commandButton>
+                            </p:column>
+
+                        </p:dataTable>
+                    </p:panel>
+                </h:form>
+
+
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

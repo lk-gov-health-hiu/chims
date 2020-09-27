@@ -1,0 +1,1 @@
+SELECT * from client WHERE `PHN` = '06980004961';

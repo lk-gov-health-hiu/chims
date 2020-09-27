@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="QueryComponentCreateDlg" widgetVar="QueryComponentCreateDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundleQuery.CreateQueryComponentTitle}">
+            <h:form id="QueryComponentCreateForm">
+                <h:panelGroup id="display">
+                    <p:tabView rendered="#{queryComponentController.selected != null}">
+                        <p:tab title="Basic Details" >
+
+                            <p:panelGrid columns="2" >
+
+
+
+                                <p:outputLabel value="#{bundleQuery.CreateQueryComponentLabel_name}" for="name" />
+                                <p:inputText id="name" value="#{queryComponentController.selected.name}" title="#{bundleQuery.CreateQueryComponentTitle_name}" />
+
+                                <p:outputLabel value="Code" for="code" />
+                                <p:inputText id="code" value="#{queryComponentController.selected.code}" title="Code" />
+
+                                <p:outputLabel value="Parent" for="parent" />
+                                <p:autoComplete id="parent" value="#{queryComponentController.selected.parentComponent}" 
+                                                completeMethod="#{queryComponentController.completeQueries}" 
+                                                var="q" itemLabel="#{q.name}" itemValue="#{q}" forceSelection="true"
+                                                >
+                                </p:autoComplete>
+
+                                <p:outputLabel value="Descreption" for="descreption" />
+                                <p:inputTextarea rows="4" cols="30" id="descreption" 
+                                                 value="#{queryComponentController.selected.descreption}" 
+                                                 title="#{bundleQuery.CreateQueryComponentTitle_descreption}" />
+
+                                <p:outputLabel value="Level" for="queryLevel" />
+                                <p:selectOneMenu id="queryLevel"  value="#{queryComponentController.selected.queryLevel}" >
+                                    <f:selectItem itemLabel="Select" ></f:selectItem>
+                                    <f:selectItems value="#{commonController.queryLevels}" ></f:selectItems>
+                                </p:selectOneMenu>
+
+
+                            </p:panelGrid>
+
+
+                        </p:tab>
+                        <p:tab title="Query Details" >
+
+                            <p:panelGrid columns="2" >
+
+
+                                <p:outputLabel value="Type" for="queryType" />
+                                <p:selectOneMenu id="queryType"  value="#{queryComponentController.selected.queryType}" >
+                                    <f:selectItem itemLabel="Select" ></f:selectItem>
+                                    <f:selectItems value="#{commonController.queryType}" ></f:selectItems>
+                                </p:selectOneMenu>
+
+                                <p:outputLabel value="Output" for="outputType" />
+                                <p:selectOneMenu id="outputType"  value="#{queryComponentController.selected.outputType}" >
+                                    <f:selectItem itemLabel="Select" ></f:selectItem>
+                                    <f:selectItems value="#{commonController.queryOutputTypes}" ></f:selectItems>
+                                </p:selectOneMenu>
+
+                                <p:outputLabel value="Population Type" for="populationType" />
+                                <p:selectOneMenu id="populationType"  value="#{queryComponentController.selected.populationType}" >
+                                    <f:selectItem itemLabel="Select" ></f:selectItem>
+                                    <f:selectItems value="#{commonController.populationTypes}" ></f:selectItems>
+                                </p:selectOneMenu>
+
+                                <p:outputLabel value="Filter By" />
+                                <p:panelGrid columns="4" >
+                                    <p:selectBooleanCheckbox value="#{queryComponentController.selected.filterByProvince}" itemLabel="Province" ></p:selectBooleanCheckbox>
+                                    <p:selectBooleanCheckbox value="#{queryComponentController.selected.filterByDistrict}" itemLabel="District" ></p:selectBooleanCheckbox>
+                                    <p:selectBooleanCheckbox value="#{queryComponentController.selected.filterByRdhs}" itemLabel="RDHS" ></p:selectBooleanCheckbox>
+                                    <p:selectBooleanCheckbox value="#{queryComponentController.selectedQuery.filterByMoh}" itemLabel="MOH" ></p:selectBooleanCheckbox>
+                                    <p:selectBooleanCheckbox value="#{queryComponentController.selected.filterByGn}" itemLabel="GN" ></p:selectBooleanCheckbox>
+
+                                    <p:selectBooleanCheckbox value="#{queryComponentController.selected.filterByFrom}" itemLabel="From" ></p:selectBooleanCheckbox>
+                                    <p:selectBooleanCheckbox value="#{queryComponentController.selected.filterByTo}" itemLabel="To" ></p:selectBooleanCheckbox>
+                                    <p:selectBooleanCheckbox value="#{queryComponentController.selected.filterByDate}" itemLabel="Date" ></p:selectBooleanCheckbox>
+                                    <p:selectBooleanCheckbox value="#{queryComponentController.selected.filterByYear}" itemLabel="Year" ></p:selectBooleanCheckbox>
+                                    <p:selectBooleanCheckbox value="#{queryComponentController.selected.filterByQuarter}" itemLabel="Quarter" ></p:selectBooleanCheckbox>
+                                    <p:selectBooleanCheckbox value="#{queryComponentController.selected.filterByMonth}" itemLabel="Month" ></p:selectBooleanCheckbox>
+
+
+
+                                    <p:selectBooleanCheckbox value="#{queryComponentController.selected.filterByInstitution}" itemLabel="Institution" ></p:selectBooleanCheckbox>
+
+
+                                </p:panelGrid>
+
+                                <p:outputLabel value="Indicator Query" for="indicatorQuery" />
+                                <p:inputTextarea rows="4" cols="30" id="indicatorQuery" value="#{queryComponentController.selected.indicatorQuery}" 
+                                                 title="Indicator Query" />
+                            </p:panelGrid>
+                        </p:tab>
+                        <p:tab title="Criteria Details" >
+
+                            <p:panelGrid columns="2">
+
+                                <p:outputLabel value="MatchType:" for="matchType" />
+                                <p:selectOneMenu id="matchType"  value="#{queryComponentController.selected.matchType}" >
+                                    <f:selectItem itemLabel="Select" ></f:selectItem>
+                                    <f:selectItems value="#{commonController.queryCriteriaMatchTypes}" ></f:selectItems>
+                                </p:selectOneMenu>
+
+
+                                <p:outputLabel value="EvaluationType:" for="evaluationType" />
+                                <p:selectOneMenu id="evaluationType"  value="#{queryComponentController.selected.evaluationType}" >
+                                    <f:selectItem itemLabel="Select" ></f:selectItem>
+                                    <f:selectItems value="#{commonController.queryVariableEvaluationType}" ></f:selectItems>
+                                </p:selectOneMenu>
+
+                                <p:outputLabel value="Item:" for="item" />
+                                <p:autoComplete  id="item" completeMethod="#{itemController.completeDictionaryItems}" 
+                                                 value="#{queryComponentController.selected.item}" itemValue="#{i}"
+                                                 itemLabel="#{i.name}" var="i" 
+                                                 forceSelection="true"
+                                                 >
+                                    <p:column headerText="Name" >
+                                        <p:outputLabel value="#{i.name}" ></p:outputLabel>
+                                    </p:column>
+                                    <p:column headerText="Code" >
+                                        <p:outputLabel value="#{i.code}" ></p:outputLabel>
+                                    </p:column>
+                                </p:autoComplete>
+
+                                <p:outputLabel value="Data Type:" for="queryDataType" />
+                                <p:selectOneMenu id="queryDataType"  value="#{queryComponentController.selected.queryDataType}" >
+                                    <f:selectItem itemLabel="Select" ></f:selectItem>
+                                    <f:selectItems value="#{commonController.queryDataTypes}" ></f:selectItems>
+                                </p:selectOneMenu>
+
+                                <p:outputLabel value="Item Value:" for="itemValue" />
+                                <p:autoComplete  id="itemValue" completeMethod="#{itemController.completeDictionaryItems}" 
+                                                 value="#{queryComponentController.selected.itemValue}" itemValue="#{iv}"
+                                                 itemLabel="#{iv.name}" var="iv" 
+                                                 forceSelection="true"
+                                                 >
+                                    <p:column headerText="Name" >
+                                        <p:outputLabel value="#{iv.name}" ></p:outputLabel>
+                                    </p:column>
+                                    <p:column headerText="Code" >
+                                        <p:outputLabel value="#{iv.code}" ></p:outputLabel>
+                                    </p:column>
+                                </p:autoComplete>
+
+                                <p:outputLabel value="Integer Number Value:" for="integerNumberValue" />
+                                <p:inputText id="integerNumberValue" value="#{queryComponentController.selected.integerNumberValue}" title="IntegerNumberValue" />
+
+                                <p:outputLabel value="Long Number Value:" for="longNumberValue" />
+                                <p:inputText id="longNumberValue" value="#{queryComponentController.selected.longNumberValue}" title="LongNumberValue" />
+
+                                <p:outputLabel value="Real Number Value:" for="realNumberValue" />
+                                <p:inputText id="realNumberValue" value="#{queryComponentController.selected.realNumberValue}" title="RealNumberValue" />
+
+
+                                <p:outputLabel value="Integer Number Value 2:" for="integerNumberValue2" />
+                                <p:inputText id="integerNumberValue2" value="#{queryComponentController.selected.integerNumberValue2}" title="IntegerNumberValue2" />
+
+                                <p:outputLabel value="Long Number Value 2:" for="longNumberValue2" />
+                                <p:inputText id="longNumberValue2" value="#{queryComponentController.selected.longNumberValue2}" title="LongNumberValue2" />
+
+                                <p:outputLabel value="Real Number Value 2:" for="realNumberValue2" />
+                                <p:inputText id="realNumberValue2" value="#{queryComponentController.selected.realNumberValue2}" title="RealNumberValue2" />
+
+
+
+
+                            </p:panelGrid>
+
+
+
+
+
+                        </p:tab>
+                    </p:tabView>
+                    <p:commandButton action="#{queryComponentController.create}" value="#{bundleQuery.Save}" ajax="false"/>
+                    
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+
+    </ui:composition>
+</html>

@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition template="/template.xhtml">
+
+
+        <ui:define name="title">
+            <h:outputText value="#{bundleClinical.ListEncounterTitle}"></h:outputText>
+        </ui:define>
+
+        <ui:define name="body">
+            <h:form id="EncounterListForm">
+                <p:panel header="#{bundleClinical.ListEncounterTitle}">
+                    <p:dataTable id="datalist" value="#{encounterController.items}" var="item"
+                                 selectionMode="single" selection="#{encounterController.selected}"
+                                 paginator="true"
+                                 rowKey="#{item.id}"
+                                 rows="10"
+                                 rowsPerPageTemplate="10,20,30,40,50"
+                                 >
+
+                        <p:ajax event="rowSelect"   update="createButton viewButton editButton deleteButton"/>
+                        <p:ajax event="rowUnselect" update="createButton viewButton editButton deleteButton"/>
+
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundleClinical.ListEncounterTitle_id}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.id}"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundleClinical.ListEncounterTitle_project}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.project}"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundleClinical.ListEncounterTitle_area}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.area}"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundleClinical.ListEncounterTitle_encounterDate}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.encounterDate}">
+                                <f:convertDateTime pattern="MM/dd/yyyy" />
+                            </h:outputText>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundleClinical.ListEncounterTitle_encounterFrom}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.encounterFrom}">
+                                <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                            </h:outputText>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundleClinical.ListEncounterTitle_encounterTo}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.encounterTo}">
+                                <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                            </h:outputText>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundleClinical.ListEncounterTitle_encounterType}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.encounterType}"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundleClinical.ListEncounterTitle_parentEncounter}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.parentEncounter}"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundleClinical.ListEncounterTitle_completed}"/>
+                            </f:facet>
+                            <p:selectBooleanCheckbox value="#{item.completed}" disabled="true"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundleClinical.ListEncounterTitle_createdBy}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.createdBy}"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundleClinical.ListEncounterTitle_createdAt}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.createdAt}">
+                                <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                            </h:outputText>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundleClinical.ListEncounterTitle_retiredBy}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.retiredBy}"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundleClinical.ListEncounterTitle_retiredAt}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.retiredAt}">
+                                <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                            </h:outputText>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundleClinical.ListEncounterTitle_retiredReversedBy}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.retiredReversedBy}"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundleClinical.ListEncounterTitle_retiredReversedAt}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.retiredReversedAt}">
+                                <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                            </h:outputText>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundleClinical.ListEncounterTitle_institution}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.institution}"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundleClinical.ListEncounterTitle_referalInstitution}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.referalInstitution}"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundleClinical.ListEncounterTitle_completedBy}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.completedBy}"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="#{bundleClinical.ListEncounterTitle_completedAt}"/>
+                            </f:facet>
+                            <h:outputText value="#{item.completedAt}">
+                                <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                            </h:outputText>
+                        </p:column>
+                        <f:facet name="footer">
+                            <p:commandButton id="createButton" icon="ui-icon-plus"   value="#{bundleClinical.Create}" actionListener="#{encounterController.prepareCreate}" update=":EncounterCreateForm" oncomplete="PF('EncounterCreateDialog').show()"/>
+                            <p:commandButton id="viewButton"   icon="ui-icon-search" value="#{bundleClinical.View}" update=":EncounterViewForm" oncomplete="PF('EncounterViewDialog').show()" disabled="#{empty encounterController.selected}"/>
+                            <p:commandButton id="editButton"   icon="ui-icon-pencil" value="#{bundleClinical.Edit}" update=":EncounterEditForm" oncomplete="PF('EncounterEditDialog').show()" disabled="#{empty encounterController.selected}"/>
+                            <p:commandButton id="deleteButton" icon="ui-icon-trash"  value="#{bundleClinical.Delete}" actionListener="#{encounterController.destroy}" update=":growl,datalist" disabled="#{empty encounterController.selected}"/>
+                        </f:facet>
+                    </p:dataTable>
+                </p:panel>
+            </h:form>
+
+            <ui:include src="Create.xhtml"/>
+            <ui:include src="Edit.xhtml"/>
+            <ui:include src="View.xhtml"/>
+        </ui:define>
+    </ui:composition>
+
+</html>

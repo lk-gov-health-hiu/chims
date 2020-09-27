@@ -1,0 +1,85 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <title>Clients with wrong PHN Length</title>
+    </h:head>
+    <h:body>
+        <h:form  >
+
+
+            <h:panelGrid columns="5" >
+                <p:commandButton value="Fill Clients with Wrong PHN Length" ajax="false"
+                                 action="#{clientController.fillClientsWithWrongPhnLength()}">
+                </p:commandButton>
+
+            </h:panelGrid>
+
+            <p:dataTable value="#{clientController.items}"
+                         var="c" 
+                         rowKey="#{c.id}"
+                         paginator="true"
+                         rows="20" rowIndexVar="n"
+                         rowsPerPageTemplate="10,20,30,40,50"
+                         resizeMode="expand"
+                         >
+                
+                 <p:column headerText="No" width="50" >
+                    <p:outputLabel value="#{n+1}" ></p:outputLabel>
+                </p:column>
+
+                <p:column headerText="PHN" width="100" sortBy="#{c.phn}" filterBy="#{c.phn}" filterMatchMode="contains">
+                    <p:outputLabel value="#{c.phn}" ></p:outputLabel>
+                </p:column>
+
+                <p:column headerText="Name" width="200"  sortBy="#{c.person.name}" filterBy="#{c.person.name}" filterMatchMode="contains">
+                    <p:outputLabel value="#{c.person.name}" ></p:outputLabel>
+                </p:column>
+
+
+                <p:column headerText="District" width="200"  
+                          sortBy="#{c.person.district.name}" 
+                          filterBy="#{c.person.district.name}" 
+                          filterMatchMode="contains">
+                    <p:outputLabel value="#{c.person.district.name}" ></p:outputLabel>
+                </p:column>
+
+                <p:column  headerText="Registered in" width="200"  
+                           sortBy="#{c.createInstitution.name}" 
+                           filterBy="#{c.createInstitution.name}" filterMatchMode="contains">
+                    <p:outputLabel value="#{c.createInstitution.name}" ></p:outputLabel>
+                </p:column>
+
+                <p:column  headerText="Register at" width="200" sortBy="#{c.createdAt}" 
+                           filterBy="#{c.createdAt}" filterMatchMode="contains">
+                    <p:outputLabel value="#{c.createdAt}" >
+                        <f:convertDateTime pattern="dd MMMM yyyy" ></f:convertDateTime>
+                    </p:outputLabel>
+                </p:column>
+                
+                 <p:column  headerText="Registered Institute" width="300" sortBy="#{c.createInstitution.name}" 
+                            filterBy="#{c.createInstitution.name}" filterMatchMode="contains">
+                     <p:outputLabel value="#{c.createInstitution.name}" >
+                    </p:outputLabel>
+                </p:column>
+
+                <p:column  headerText="Actions" >
+                    <p:commandButton value="View" action="#{clientController.toClientProfile()}" ajax="false" >
+                        <f:setPropertyActionListener value="#{c}" target="#{clientController.selected}" ></f:setPropertyActionListener>
+                    </p:commandButton>
+                </p:column>
+
+
+
+
+            </p:dataTable>
+
+
+
+        </h:form>
+    </h:body>
+</html>
+

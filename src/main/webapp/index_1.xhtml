@@ -1,0 +1,45 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ez="http://xmlns.jcp.org/jsf/composite/ezcomp"
+      xmlns:p="http://primefaces.org/ui">
+
+    <h:body>
+
+        <ui:composition template="./template.xhtml">
+
+
+
+            <ui:define name="content">
+
+
+                <ez:dashboardSystemAdministrator rendered="#{webUserController.loggedUser.systemAdministrator}"/>
+                <ez:dashboardSuperUser rendered="#{webUserController.loggedUser.superUser}"/>
+                <ez:dashboardUser rendered="#{webUserController.loggedUser.user}"/>
+
+
+                <ez:dashboardMeAdministrator rendered="#{webUserController.loggedUser.meAdministrator}"/>
+                <ez:dashboardMeSuperUser rendered="#{webUserController.loggedUser.meSuperUser}"/>
+                <ez:dashboardMeUser rendered="#{webUserController.loggedUser.meUser}"/>
+
+                <ez:dashboardInstItutionAdministrator rendered="#{webUserController.loggedUser.institutionAdministrator}"/>
+                <ez:dashboardInstitutionSuperUser rendered="#{webUserController.loggedUser.institutionSuperUser}"/>
+                <ez:dashboardInstitutionUser rendered="#{webUserController.loggedUser.institutionUser}"/>
+                <ez:dashboardDoctor rendered="#{webUserController.loggedUser.doctor}"/>
+                <ez:dashboardNurse rendered="#{webUserController.loggedUser.nurse}"/>
+                <ez:dashboardMidwife rendered="#{webUserController.loggedUser.midwife}"/>
+            </ui:define>
+
+
+
+
+        </ui:composition>
+
+
+    </h:body>
+
+
+
+</html>

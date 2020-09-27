@@ -1,0 +1,286 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <body>
+
+        <ui:composition template="./../template.xhtml">
+
+            <ui:define name="content">
+
+
+
+                <f:view>
+
+                    <p:panel header="Form Item Details" style="width: 100%; text-align: center;" >
+
+                        <h:form>
+
+                            <p:panelGrid columns="1" rendered="#{designComponentFormItemController.selected ne null}"
+                                         style="margin: auto; text-align: left; width: 80%;">
+                                <f:facet name="header" >
+                                    <div>
+                                        <p:outputLabel value="Form" for="parentComponent" />
+                                        <p:outputLabel id="parentComponent" 
+                                                       value="#{designComponentFormItemController.selected.parentComponent.name}" >
+                                        </p:outputLabel>
+                                    </div>
+                                    <p:commandButton action="/designComponentFormItem/manage_items" value="Save" actionListener="#{designComponentFormItemController.saveItem()}" ajax="false" >
+                                    </p:commandButton>
+                                    <p:commandButton ajax="false" action="/designComponentFormItem/manage_items" value="Back" style="float: right;" ></p:commandButton>
+                                </f:facet>
+
+                                <p:tabView >
+                                    <p:tab title="Basic" >
+
+                                        <p:panelGrid columns="2" >
+
+
+                                            <p:outputLabel value="Name:" for="name" />
+                                            <p:inputText id="name" required="true" rendered="true"
+                                                         value="#{designComponentFormItemController.selected.name}" title="Name" />
+
+                                            <p:outputLabel value="Descreption:" for="descreption" />
+                                            <p:inputTextarea id="descreption"
+                                                             value="#{designComponentFormItemController.selected.descreption}" title="Name" />
+
+
+                                            <p:outputLabel value="Item:" for="item" />
+                                            <p:autoComplete id="item" value="#{designComponentFormItemController.selected.item}"
+                                                            completeMethod="#{itemController.completeDictionaryItems}" forceSelection="true"
+                                                            required="true"   var="dic" itemLabel="#{dic.code}" itemValue="#{dic}">
+                                                <p:column headerText="ID" >
+                                                    <p:outputLabel value="#{dic.id}" ></p:outputLabel>
+                                                </p:column>
+                                                <p:column headerText="Name" >
+                                                    <p:outputLabel value="#{dic.name}" ></p:outputLabel>
+                                                </p:column>
+                                                <p:column headerText="Code" >
+                                                    <p:outputLabel value="#{dic.code}" ></p:outputLabel>
+                                                </p:column>
+                                            </p:autoComplete>
+
+                                            <p:outputLabel value="Order No:" for="orderNo" />
+                                            <p:inputText id="orderNo" value="#{designComponentFormItemController.selected.orderNo}" title="OrderNo" />
+
+                                            <p:outputLabel value="Multiple Entries per Form" for="multipleEntiesPerForm" />
+                                            <p:selectBooleanCheckbox id="multipleEntiesPerForm" value="#{designComponentFormItemController.selected.multipleEntiesPerForm}" ></p:selectBooleanCheckbox>
+
+
+                                            <p:outputLabel value="ComponentSex:" for="componentSex" />
+                                            <p:selectOneMenu id="componentSex" 
+                                                             value="#{designComponentFormItemController.selected.componentSex}" 
+                                                             title="ComponentSex" >
+                                                <f:selectItems value="#{commonController.componentSex}" ></f:selectItems>
+                                            </p:selectOneMenu>
+
+                                            <p:outputLabel value="RenderType:" for="renderType" />
+                                            <p:selectOneMenu id="renderType" required="true"
+                                                             value="#{designComponentFormItemController.selected.renderType}" 
+                                                             title="RenderType" >
+                                                <f:selectItem itemLabel="Select" ></f:selectItem>
+                                                <f:selectItems value="#{commonController.renderTypes}" ></f:selectItems>
+                                            </p:selectOneMenu>
+
+                                            <p:outputLabel value="Enable a Details Box" for="displayDetailsBox" />
+                                            <p:selectBooleanCheckbox id="displayDetailsBox" value="#{designComponentFormItemController.selected.displayDetailsBox}" ></p:selectBooleanCheckbox>
+
+
+                                            <p:outputLabel value="Discreption as a Tooltip" for="discreptionAsAToolTip" />
+                                            <p:selectBooleanCheckbox id="discreptionAsAToolTip" value="#{designComponentFormItemController.selected.discreptionAsAToolTip}" ></p:selectBooleanCheckbox>
+
+
+                                            <p:outputLabel value="Discreption as a Side Label" for="discreptionAsASideLabel" />
+                                            <p:selectBooleanCheckbox id="discreptionAsASideLabel" value="#{designComponentFormItemController.selected.discreptionAsASideLabel}" ></p:selectBooleanCheckbox>
+
+
+                                        </p:panelGrid>
+
+                                    </p:tab>
+                                    <p:tab title="Data" >
+
+                                        <p:panelGrid columns="2" >
+
+                                            <p:outputLabel value="Data Type:" for="selectionDataType" />
+                                            <p:selectOneMenu id="selectionDataType" required="true"
+                                                             value="#{designComponentFormItemController.selected.selectionDataType}" title="SelectionDataType" >
+                                                <f:selectItem itemLabel="Select" ></f:selectItem>
+                                                <f:selectItems value="#{commonController.selectionDataTypes}" ></f:selectItems>
+                                            </p:selectOneMenu>
+
+                                            <p:outputLabel value="Data Population Strategy:" for="dataPopulationStrategy" />
+                                            <p:selectOneMenu id="dataPopulationStrategy" 
+                                                             value="#{designComponentFormItemController.selected.dataPopulationStrategy}" 
+                                                             title="DataPopulationStrategy" >
+                                                <f:selectItems value="#{commonController.dataPopulationStrategies}" ></f:selectItems>
+                                            </p:selectOneMenu>
+
+                                            <p:outputLabel value="Data Completion Strategy:" for="dataCompletionStrategy" />
+                                            <p:selectOneMenu id="dataCompletionStrategy" 
+                                                             value="#{designComponentFormItemController.selected.dataCompletionStrategy}" 
+                                                             title="DataCompletionStrategy" >
+                                                <f:selectItems value="#{commonController.dataCompletionStrategies}" ></f:selectItems>
+                                            </p:selectOneMenu>
+
+                                            <p:outputLabel value="Data Modification Strategy:" for="dataModificationStrategy" />
+                                            <p:selectOneMenu id="dataModificationStrategy" 
+                                                             value="#{designComponentFormItemController.selected.dataModificationStrategy}" 
+                                                             title="DataModificationStrategy" >
+                                                <f:selectItems value="#{commonController.dataModificationStrategies}" ></f:selectItems>
+                                            </p:selectOneMenu>
+
+                                            <p:outputLabel value="Category of Available Items:" for="categoryOfAvailableItems" />
+                                            <p:autoComplete id="categoryOfAvailableItems"
+                                                            value="#{designComponentFormItemController.selected.categoryOfAvailableItems}"
+                                                            completeMethod="#{itemController.completeItems}" 
+                                                            var="ic" itemLabel="#{ic.name}" forceSelection="true"
+                                                            itemValue="#{ic}" >
+                                                <p:column headerText="Name">
+                                                    <p:outputLabel value="#{ic.name}" ></p:outputLabel>
+                                                </p:column>
+                                                <p:column headerText="Code">
+                                                    <p:outputLabel value="#{ic.code}" ></p:outputLabel>
+                                                </p:column>
+                                            </p:autoComplete>
+
+
+                                            <p:outputLabel value="Display Last Results" for="displayLastResults" />
+                                            <p:selectBooleanCheckbox id="displayLastResults" value="#{designComponentFormItemController.selected.displayLastResult}" ></p:selectBooleanCheckbox>
+
+                                            <p:outputLabel value="Result Display Strategy:" for="resultDisplayStrategy" />
+                                            <p:selectOneMenu id="resultDisplayStrategy" 
+                                                             value="#{designComponentFormItemController.selected.resultDisplayStrategy}" 
+                                                             title="DataPopulationStrategy" >
+                                                <f:selectItems value="#{commonController.dataPopulationStrategies}" ></f:selectItems>
+                                            </p:selectOneMenu>
+
+                                            <p:outputLabel value="Display Link to Clients' Current Data" for="linkToClientData" />
+                                            <p:selectBooleanCheckbox id="linkToClientData" value="#{designComponentFormItemController.selected.displayLinkToClientValues}" ></p:selectBooleanCheckbox>
+
+
+                                            <p:outputLabel value="Display Link to Clients' Previous Visit Data" for="linkToPreviousResults" />
+                                            <p:selectBooleanCheckbox id="linkToPreviousResults" value="#{designComponentFormItemController.selected.displayLinkToResultList}" ></p:selectBooleanCheckbox>
+
+
+                                        </p:panelGrid>
+
+                                    </p:tab>
+
+                                    <p:tab title="Calculation" >
+                                        <p:panelGrid columns="2" >
+                                            <p:outputLabel value="Calculate on Focus:" for="calculateOnFocus" />
+                                            <p:selectBooleanCheckbox  id="calculateOnFocus" value="#{designComponentFormItemController.selected.calculateOnFocus}" ></p:selectBooleanCheckbox>
+
+                                            <p:outputLabel value="Calculate button:" for="calculateButton" />
+                                            <p:selectBooleanCheckbox id="calculateButton" value="#{designComponentFormItemController.selected.calculateButton}" ></p:selectBooleanCheckbox>
+
+                                            <p:outputLabel value="Calculation Script:" for="calculationScript" />
+                                            <p:inputTextarea id="calculationScript" 
+                                                             value="#{designComponentFormItemController.selected.calculationScript}" title="Name"
+                                                             autoResize="true"
+                                                             cols="100"
+                                                             rows="10"/>
+
+
+                                            <p:outputLabel value="Calculation Script - Colour:" for="calculationScriptForColour" />
+                                            <p:inputTextarea id="calculationScriptForColour"
+                                                             value="#{designComponentFormItemController.selected.calculationScriptForColour}" 
+                                                             autoResize="true"
+                                                             cols="100"
+                                                             rows="10"
+                                                             />
+
+                                            <p:outputLabel value="Calculation Script - Background Colour:" for="calculationScriptForBackgroundColour" />
+                                            <p:inputTextarea id="calculationScriptForBackgroundColour"
+                                                             value="#{designComponentFormItemController.selected.calculationScriptForBackgroundColour}" 
+                                                             autoResize="true"
+                                                             cols="100"
+                                                             rows="10"/>
+
+
+                                            <p:outputLabel value="Available Codes:" for="availableCode" />
+                                            <p:autoComplete id="availableCode"
+                                                            completeMethod="#{itemController.completeItems}" 
+                                                            var="ic" itemLabel="#{ic.code}" forceSelection="true"
+                                                            itemValue="#{ic}" >
+                                                <p:column headerText="Name">
+                                                    <p:outputLabel value="#{ic.name}" ></p:outputLabel>
+                                                </p:column>
+                                                <p:column headerText="Code">
+                                                    <p:outputLabel value="#{ic.code}" ></p:outputLabel>
+                                                </p:column>
+                                            </p:autoComplete>
+
+                                        </p:panelGrid>
+
+                                    </p:tab>
+
+                                    <p:tab title="Validation" >
+                                        <p:panelGrid columns="2" >
+
+                                            <p:outputLabel value="Required or Not" for="required" />
+                                            <p:selectBooleanCheckbox id="required" value="#{designComponentFormItemController.selected.required}" ></p:selectBooleanCheckbox>
+
+                                            <p:outputLabel value="Message" for="requiredErrorMsg" />
+                                            <p:inputTextarea id="requiredErrorMsg" value="#{designComponentFormItemController.selected.requiredErrorMessage}" title="Required Error Message" />
+
+                                            <p:outputLabel value="Regex Validation String" for="regex" />
+                                            <p:inputText id="regex" value="#{designComponentFormItemController.selected.regexValidationString}" title="Name" />
+
+                                            <p:outputLabel value="Regex Error Message" for="regexErrorMesage" />
+                                            <p:inputTextarea id="regexErrorMesage" value="#{designComponentFormItemController.selected.regexValidationFailedMessage}" title="Name" />
+                                        </p:panelGrid>
+                                    </p:tab>
+                                    <p:tab title="CSS" >
+                                        <p:panelGrid columns="2" >
+                                            <p:outputLabel value="Top Percent:" for="topPercent" />
+                                            <p:inputText id="topPercent" value="#{designComponentFormItemController.selected.topPercent}" title="TopPercent" />
+                                            <p:outputLabel value="Left Percent:" for="leftPercent" />
+                                            <p:inputText id="leftPercent" value="#{designComponentFormItemController.selected.leftPercent}" title="LeftPercent" />
+                                            <p:outputLabel value="Width Percent:" for="widthPercent" />
+                                            <p:inputText id="widthPercent" value="#{designComponentFormItemController.selected.widthPercent}" title="WidthPercent" />
+                                            <p:outputLabel value="Height Percent:" for="heightPercent" />
+                                            <p:inputText id="heightPercent" value="#{designComponentFormItemController.selected.heightPercent}" title="HeightPercent" />
+
+                                            <p:outputLabel value="Background Color:" />
+                                            <p:colorPicker value="#{designComponentFormItemController.selected.backgroundColour}" ></p:colorPicker>
+
+                                            <p:outputLabel value="Foreground Color:" />
+                                            <p:colorPicker value="#{designComponentFormItemController.selected.foregroundColour}" ></p:colorPicker>
+
+                                            <p:outputLabel value="Border Color:" />
+                                            <p:colorPicker value="#{designComponentFormItemController.selected.borderColour}" ></p:colorPicker>
+
+
+                                        </p:panelGrid>
+                                    </p:tab>
+                                </p:tabView>
+
+
+
+
+
+
+
+
+                            </p:panelGrid>
+                        </h:form>
+
+                        <p:spacer height="10" ></p:spacer>
+
+                    </p:panel>
+
+
+                </f:view>
+
+
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

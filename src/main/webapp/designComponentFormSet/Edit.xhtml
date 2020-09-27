@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="DesignComponentFormSetEditDlg" widgetVar="DesignComponentFormSetEditDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundleClinical.EditDesignComponentFormSetTitle}">
+            <h:form id="DesignComponentFormSetEditForm">
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" rendered="#{designComponentFormSetController.selected != null}">
+                        <p:outputLabel value="#{bundleClinical.CreateDesignComponentFormSetLabel_name}" for="name" />
+                        <p:inputText id="name" value="#{designComponentFormSetController.selected.name}" title="#{bundleClinical.CreateDesignComponentFormSetTitle_name}" />
+
+                        <p:outputLabel value="Type" for="type" />
+                        <p:selectOneMenu id="type" value="#{designComponentFormSetController.selected.componentSetType}" 
+                                         title="#{bundleClinical.CreateDesignComponentFormSetTitle_renderType}" >
+                            <f:selectItems value="#{commonController.componentSetTypes}" ></f:selectItems>
+                        </p:selectOneMenu>
+
+
+                        <p:outputLabel value="Panel" for="panel" />
+                        <p:selectOneMenu id="panel" value="#{designComponentFormSetController.selected.panelType}" 
+                                         title="Panel" >
+                            <f:selectItems value="#{commonController.panelTypes}" ></f:selectItems>
+                        </p:selectOneMenu>                        
+
+                        <p:outputLabel value="Sex" for="sex" />
+                        <p:selectOneMenu id="sex" value="#{designComponentFormSetController.selected.componentSex}" 
+                                         title="Sex" >
+                            <f:selectItems value="#{commonController.componentSex}" ></f:selectItems>
+                        </p:selectOneMenu>
+
+                    </p:panelGrid>
+                    <p:commandButton ajax="false" action="#{designComponentFormSetController.update}" value="#{bundleClinical.Save}" 
+                                     />
+                    <p:commandButton ajax="false" value="#{bundleClinical.Cancel}" />
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+
+    </ui:composition>
+</html>

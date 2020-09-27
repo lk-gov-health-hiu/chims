@@ -1,0 +1,91 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <body>
+
+        <ui:composition template="./../template.xhtml">
+
+            <ui:define name="content">
+
+                <f:view>
+                    <h:form>
+                        <p:panelGrid columns="2" styleClass="alignTop" >
+                            <f:facet name="header" >
+                                <p:outputLabel value="Manage Subcategories of #{queryComponentController.selectedCategory.name}">
+                                </p:outputLabel>
+                                <p:commandButton ajax="false" value="Back" action="category" style="float: right;" ></p:commandButton>
+                            </f:facet>
+
+                            <p:dataTable value="#{queryComponentController.subcategories()}" var="item">
+
+                                <p:column>
+                                    <f:facet name="header">
+                                        <h:outputText value="Name"/>
+                                    </f:facet>
+                                    <h:outputText value="#{item.name}"/>
+                                </p:column>
+                                <p:column>
+                                    <f:facet name="header">
+                                        <h:outputText value="Descreption"/>
+                                    </f:facet>
+                                    <h:outputText value="#{item.descreption}"/>
+                                </p:column>
+                                <p:column>
+                                    <f:facet name="header">
+                                        <h:outputText value="Actions"/>
+                                    </f:facet>
+
+                                    <p:commandButton ajax="false" value="Edit" action="edit_subcategory" >
+                                        <f:setPropertyActionListener value="#{item}" target="#{queryComponentController.selected}" ></f:setPropertyActionListener>
+                                    </p:commandButton>
+
+                                    <p:commandButton ajax="false" value="Queries" action="query" >
+                                        <f:setPropertyActionListener value="#{item}" target="#{queryComponentController.selectedSubcategory}" ></f:setPropertyActionListener>
+                                    </p:commandButton>
+
+                                    <p:commandButton ajax="false" value="Remove" action="#{queryComponentController.remove()}" 
+                                                     onclick="if (!confirm('Really want to do that?'))
+                                                                 return false">
+                                        <f:setPropertyActionListener value="#{item}" target="#{queryComponentController.removing}" ></f:setPropertyActionListener>
+                                    </p:commandButton>
+                                </p:column>
+                            </p:dataTable>  
+
+                            <p:panelGrid  columns="2">
+                                <f:facet name="header" >
+                                    <p:outputLabel value="Add New Subcategory" >
+                                    </p:outputLabel>
+                                </f:facet>
+                                <p:outputLabel value="Name" >
+                                </p:outputLabel>
+                                <p:inputText value="#{queryComponentController.addingSubcategory.name}">
+                                </p:inputText>
+                                <p:outputLabel value="Descreption" >
+                                </p:outputLabel>
+                                <p:inputTextarea value="#{queryComponentController.addingSubcategory.descreption}">
+                                </p:inputTextarea>
+
+                                <p:spacer></p:spacer>
+                                <p:commandButton ajax="false" action="#{queryComponentController.saveSubCategory()}" value="Save" >
+                                </p:commandButton>
+
+
+                            </p:panelGrid>
+
+                        </p:panelGrid>
+                    </h:form>
+                </f:view>
+
+
+
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

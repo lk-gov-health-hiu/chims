@@ -1,0 +1,86 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <body>
+
+        <ui:composition template="./index.xhtml">
+
+            <ui:define name="insTopic">
+                <p:outputLabel value="Import Draining GN Areas of Institutions" ></p:outputLabel>
+            </ui:define>
+
+            <ui:define name="insContents">
+
+                <h:form enctype="multipart/form-data" >
+                    <p:panelGrid columns="3" >
+
+                        <f:facet name="header" >
+                            <p:outputLabel value="This will add GN Areas as drainig areas for Healthcare Institutions." ></p:outputLabel>
+                            <p:outputLabel value="Upload GN Areas by xls file. NOT as XLSX files. That feature will be added soon." ></p:outputLabel>
+                            <p:outputLabel value="Column Numbers are Zero Based. For example, Column A is 0. Column B is 1." ></p:outputLabel>
+                        </f:facet>
+
+                        <p:outputLabel value="Start Row" ></p:outputLabel>
+                        <p:spacer height="1" width="10"></p:spacer>
+                        <p:inputText value="#{areaController.startRow}" ></p:inputText>
+
+                        <p:outputLabel value="Institution Name Column No." ></p:outputLabel>
+                        <p:spacer height="1" width="10"></p:spacer>
+                        <p:inputText value="#{areaController.districtNameColumnNumber}" ></p:inputText>
+
+                        <p:outputLabel value="GN Area Name Column No." ></p:outputLabel>
+                        <p:spacer height="1" width="10"></p:spacer>
+                        <p:inputText value="#{areaController.gnNameColumnNumber}" ></p:inputText>
+
+                        <p:outputLabel value="GN Area Code Column No." ></p:outputLabel>
+                        <p:spacer height="1" width="10"></p:spacer>
+                        <p:inputText value="#{areaController.gnCodeColumnNumber}" ></p:inputText>
+
+                        <p:outputLabel value="DS Division Name Column No." ></p:outputLabel>
+                        <p:spacer height="1" width="10"></p:spacer>
+                        <p:inputText value="#{areaController.dsdNameColumnNumber}" ></p:inputText>
+
+                        <p:outputLabel value="District Column No." ></p:outputLabel>
+                        <p:spacer height="1" width="10"></p:spacer>
+                        <p:inputText value="#{areaController.districtNameColumnNumber}" ></p:inputText>
+
+                        <p:outputLabel value="Province Column No." ></p:outputLabel>
+                        <p:spacer height="1" width="10"></p:spacer>
+                        <p:inputText value="#{areaController.provinceNameColumnNumber}" ></p:inputText>
+
+                        <p:outputLabel value="GN Area Total Population Column No." ></p:outputLabel>
+                        <p:spacer height="1" width="10"></p:spacer>
+                        <p:inputText value="#{areaController.totalPopulationColumnNumber}" ></p:inputText>
+
+                        <p:outputLabel value="GN Area Male Population Column No." ></p:outputLabel>
+                        <p:spacer height="1" width="10"></p:spacer>
+                        <p:inputText value="#{areaController.malePopulationColumnNumber}" ></p:inputText>
+
+                        <p:outputLabel value="GN Area Female Population Column No." ></p:outputLabel>
+                        <p:spacer height="1" width="10"></p:spacer>
+                        <p:inputText value="#{areaController.femalePopulationColumnNumber}" ></p:inputText>
+
+                        <p:outputLabel value="GN Area Surfacearea Column No." ></p:outputLabel>
+                        <p:spacer height="1" width="10"></p:spacer>
+                        <p:inputText value="#{areaController.areaColumnNumber}" ></p:inputText>
+
+
+                        <p:fileUpload value="#{areaController.file}" mode="simple"/>
+                        <p:spacer></p:spacer>
+                        <p:commandButton ajax="false" value="Upload All GN Areas at once" 
+                                         action="#{areaController.importAreasFromExcel()}"  ></p:commandButton>
+                    </p:panelGrid>
+                </h:form>
+
+
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

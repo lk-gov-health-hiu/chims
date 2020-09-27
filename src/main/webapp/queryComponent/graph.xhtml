@@ -1,0 +1,174 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+    <h:head>
+        <title>#{queryComponentController.selectedForQuery.name}</title>
+
+
+        <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/0.2.0/Chart.min.js" type="text/javascript"></script>-->
+
+        <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+
+
+
+    </h:head>
+    <h:body>
+
+        <h:form id="form">
+
+            <p:panelGrid columns="1" style="height: 70vh; width: 100%;" >
+                <f:facet name="header" >
+                    <p:outputLabel value="#{queryComponentController.selectedForQuery.name}" ></p:outputLabel>
+                </f:facet>
+
+                <h:panelGrid columns="2" styleClass="align-top" >
+
+                    <p:panelGrid columns="2" >
+
+
+                        <p:outputLabel value="Name"></p:outputLabel>
+                        <p:outputLabel id="name" value="#{queryComponentController.selectedForQuery.name}">
+                        </p:outputLabel>
+
+                        <p:outputLabel value="Descreption">
+                        </p:outputLabel>
+                        <p:outputLabel id="des" value="#{queryComponentController.selectedForQuery.descreption}">
+                        </p:outputLabel>
+
+                        <p:outputLabel value="Year" rendered="#{queryComponentController.filterYear}"></p:outputLabel>
+                        <p:outputLabel value="#{queryComponentController.year}" 
+                                       rendered="#{queryComponentController.filterYear}"></p:outputLabel>
+
+                        <p:outputLabel value="Quarter"  rendered="#{queryComponentController.filterQuarter}"></p:outputLabel>
+                        <p:outputLabel value="#{queryComponentController.quarter}" 
+                                       rendered="#{queryComponentController.filterQuarter}">
+                        </p:outputLabel>
+
+                        <p:outputLabel value="From"  rendered="#{queryComponentController.filterFrom}"></p:outputLabel>
+                        <p:outputLabel value="#{queryComponentController.from}" 
+                                       rendered="#{queryComponentController.filterFrom}">
+                            <f:convertDateTime pattern="dd MMMM yyyy" ></f:convertDateTime>
+                        </p:outputLabel>
+
+                        <p:outputLabel value="To"  rendered="#{queryComponentController.filterTo}"></p:outputLabel>
+                        <p:outputLabel value="#{queryComponentController.to}" 
+                                       rendered="#{queryComponentController.filterTo}">
+                            <f:convertDateTime pattern="dd MMMM yyyy" ></f:convertDateTime>
+                        </p:outputLabel>
+
+                        <p:outputLabel value="Province"  rendered="#{queryComponentController.filterProvices}"></p:outputLabel>
+                        <p:outputLabel id="province" value="#{queryComponentController.province.name}"
+                                       rendered="#{queryComponentController.filterProvices}">
+                        </p:outputLabel>
+
+                        <p:outputLabel value="District"  rendered="#{queryComponentController.filterDistricts}"></p:outputLabel>
+                        <p:outputLabel id="district" value="#{queryComponentController.district}"
+                                       rendered="#{queryComponentController.filterDistricts}">
+                        </p:outputLabel>
+
+                        <p:outputLabel value="MOH"  rendered="#{queryComponentController.filterMoh}"></p:outputLabel>
+                        <p:outputLabel id="moh" value="#{queryComponentController.moh}"
+                                       rendered="#{queryComponentController.filterMoh}">
+                        </p:outputLabel>
+
+
+                        <p:outputLabel value="PHM"  rendered="#{queryComponentController.filterPhm}"></p:outputLabel>
+                        <p:outputLabel id="phm" value="#{queryComponentController.phm}"
+                                       rendered="#{queryComponentController.filterPhm}">
+                        </p:outputLabel>
+
+                        <p:outputLabel value="GN"  rendered="#{queryComponentController.filterGn}"></p:outputLabel>
+                        <p:outputLabel id="gn" value="#{queryComponentController.gn}"
+                                       rendered="#{queryComponentController.filterGn}">
+                        </p:outputLabel>
+                    </p:panelGrid>
+
+                    <p:panelGrid columns="1" >
+                        <p:commandButton value="Export to Excel" ajax="false" style="width: 15em;" >
+                            <p:dataExporter target="tbl" type="xls" fileName="#{queryComponentController.selectedForQuery.name}" ></p:dataExporter>
+                        </p:commandButton>
+                        <p:commandButton value="Export to PDF" ajax="false"  style="width: 15em;" >
+                            <p:dataExporter target="tbl" type="pdf" fileName="#{queryComponentController.selectedForQuery.name}" ></p:dataExporter>
+                        </p:commandButton>
+                        <p:commandButton value="Print" ajax="false"  style="width: 15em;" >
+                            <p:printer target="tbl"  ></p:printer>
+                        </p:commandButton>
+                    </p:panelGrid>
+                </h:panelGrid>
+
+
+                <h:panelGroup rendered="#{queryComponentController.qrs.size() gt 1}" >
+                    <div style="width: 100%; height: 100%;" >
+                        <canvas id="myChart" ></canvas>   
+                    </div> 
+                    <script  type="text/javascript">
+                        #{queryComponentController.barChartStringForChartJs}
+                    </script>
+                </h:panelGroup>
+
+
+                <h:panelGroup rendered="#{queryComponentController.qrs ne null}" >
+
+
+
+                    <p:dataTable id="tbl" value="#{queryComponentController.qrs}" var="r" rowIndexVar="n">
+                        <p:column headerText="No" width="100">
+                            <p:outputLabel value="#{n + 1}" ></p:outputLabel>
+                        </p:column>
+                        <p:column headerText="Area">
+                            <p:outputLabel value="#{r.area.name}" ></p:outputLabel>
+                        </p:column>
+                        <p:column headerText="Value" rendered="#{queryComponentController.selectedForQuery.queryType eq 'Indicator'}">
+                            <p:outputLabel value="#{r.dblResult}" >
+                                <f:convertNumber pattern="#,##0.#####"></f:convertNumber>
+                            </p:outputLabel>
+                        </p:column>
+                        <p:column headerText="Value" rendered="#{queryComponentController.selectedForQuery.queryType ne 'Indicator'}">
+                            <p:outputLabel value="#{r.longResult}" >
+                                <f:convertNumber pattern="#,##0"></f:convertNumber>
+                            </p:outputLabel>
+                        </p:column>
+                    </p:dataTable>
+
+                </h:panelGroup>
+
+                <h:panelGroup rendered="#{queryComponentController.qrs.size() eq 1}" >
+                    <div style="text-align: center;width: 100%;">
+                        <ui:repeat value="#{queryComponentController.qrs}" var="q" >
+                            <div style="text-align: center; width: 100%; margin: auto;">
+                                <h1>
+                                    <h:outputLabel value="#{q.resultString}" rendered="#{q.resultString ne null}" style="margin: auto;"></h:outputLabel>
+                                </h1>
+                                <h1>
+                                    <h:outputLabel value="#{q.dblResult}" rendered="#{q.dblResult ne null}" >
+                                        <f:convertNumber pattern="#,##0.#####"></f:convertNumber>
+                                    </h:outputLabel>
+                                </h1>
+                                <h1>
+                                    <h:outputLabel value="#{q.longResult}" rendered="#{q.longResult ne null}" ></h:outputLabel>
+                                </h1>
+                            </div>
+                        </ui:repeat>
+                    </div>
+                </h:panelGroup>
+
+            </p:panelGrid>
+
+        </h:form>
+
+
+
+
+
+
+
+
+
+
+    </h:body>
+</html>
+

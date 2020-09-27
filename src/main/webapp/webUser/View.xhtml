@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="WebUserViewDlg" widgetVar="WebUserViewDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundleClinical.ViewWebUserTitle}">
+            <h:form id="WebUserViewForm">
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" rendered="#{webUserController.selected != null}">
+                        <h:outputText value="#{bundleClinical.ViewWebUserLabel_serialVersionUID}"/>
+                        <h:outputText value="#{webUserController.selected.serialVersionUID}" title="#{bundleClinical.ViewWebUserTitle_serialVersionUID}"/>
+                        <h:outputText value="#{bundleClinical.ViewWebUserLabel_institution}"/>
+                        <h:outputText value="#{webUserController.selected.institution}" title="#{bundleClinical.ViewWebUserTitle_institution}"/>
+                        <h:outputText value="#{bundleClinical.ViewWebUserLabel_email}"/>
+                        <h:outputText value="#{webUserController.selected.email}" title="#{bundleClinical.ViewWebUserTitle_email}"/>
+                        <h:outputText value="#{bundleClinical.ViewWebUserLabel_telNo}"/>
+                        <h:outputText value="#{webUserController.selected.telNo}" title="#{bundleClinical.ViewWebUserTitle_telNo}"/>
+                        <h:outputText value="#{bundleClinical.ViewWebUserLabel_defLocale}"/>
+                        <h:outputText value="#{webUserController.selected.defLocale}" title="#{bundleClinical.ViewWebUserTitle_defLocale}"/>
+                        <h:outputText value="#{bundleClinical.ViewWebUserLabel_primeTheme}"/>
+                        <h:outputText value="#{webUserController.selected.primeTheme}" title="#{bundleClinical.ViewWebUserTitle_primeTheme}"/>
+                        <h:outputText value="#{bundleClinical.ViewWebUserLabel_createdAt}"/>
+                        <h:outputText value="#{webUserController.selected.createdAt}" title="#{bundleClinical.ViewWebUserTitle_createdAt}">
+                            <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                        </h:outputText>
+                        <h:outputText value="#{bundleClinical.ViewWebUserLabel_creater}"/>
+                        <h:outputText value="#{webUserController.selected.creater}" title="#{bundleClinical.ViewWebUserTitle_creater}"/>
+                        <h:outputText value="#{bundleClinical.ViewWebUserLabel_description}"/>
+                        <h:outputText value="#{webUserController.selected.description}" title="#{bundleClinical.ViewWebUserTitle_description}"/>
+                        <h:outputText value="#{bundleClinical.ViewWebUserLabel_name}"/>
+                        <h:outputText value="#{webUserController.selected.name}" title="#{bundleClinical.ViewWebUserTitle_name}"/>
+                        <h:outputText value="#{bundleClinical.ViewWebUserLabel_retireComments}"/>
+                        <h:outputText value="#{webUserController.selected.retireComments}" title="#{bundleClinical.ViewWebUserTitle_retireComments}"/>
+                        <h:outputText value="#{bundleClinical.ViewWebUserLabel_retiredAt}"/>
+                        <h:outputText value="#{webUserController.selected.retiredAt}" title="#{bundleClinical.ViewWebUserTitle_retiredAt}">
+                            <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                        </h:outputText>
+                        <h:outputText value="#{bundleClinical.ViewWebUserLabel_retirer}"/>
+                        <h:outputText value="#{webUserController.selected.retirer}" title="#{bundleClinical.ViewWebUserTitle_retirer}"/>
+                        <h:outputText value="#{bundleClinical.ViewWebUserLabel_id}"/>
+                        <h:outputText value="#{webUserController.selected.id}" title="#{bundleClinical.ViewWebUserTitle_id}"/>
+                        <h:outputText value="#{bundleClinical.ViewWebUserLabel_webUserPassword}"/>
+                        <h:outputText value="#{webUserController.selected.webUserPassword}" title="#{bundleClinical.ViewWebUserTitle_webUserPassword}"/>
+                        <h:outputText value="#{bundleClinical.ViewWebUserLabel_person}"/>
+                        <h:outputText value="#{webUserController.selected.person}" title="#{bundleClinical.ViewWebUserTitle_person}"/>
+                        <h:outputText value="#{bundleClinical.ViewWebUserLabel_activateComments}"/>
+                        <h:outputText value="#{webUserController.selected.activateComments}" title="#{bundleClinical.ViewWebUserTitle_activateComments}"/>
+                        <h:outputText value="#{bundleClinical.ViewWebUserLabel_activatedAt}"/>
+                        <h:outputText value="#{webUserController.selected.activatedAt}" title="#{bundleClinical.ViewWebUserTitle_activatedAt}">
+                            <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                        </h:outputText>
+                        <h:outputText value="#{bundleClinical.ViewWebUserLabel_activator}"/>
+                        <h:outputText value="#{webUserController.selected.activator}" title="#{bundleClinical.ViewWebUserTitle_activator}"/>
+                        <h:outputText value="#{bundleClinical.ViewWebUserLabel_webUserRole}"/>
+                        <h:outputText value="#{webUserController.selected.webUserRole}" title="#{bundleClinical.ViewWebUserTitle_webUserRole}"/>
+                        <h:outputText value="#{bundleClinical.ViewWebUserLabel_code}"/>
+                        <h:outputText value="#{webUserController.selected.code}" title="#{bundleClinical.ViewWebUserTitle_code}"/>
+                    </p:panelGrid>
+                    <p:commandButton value="#{bundleClinical.Close}" onclick="WebUserViewDialog.hide()"/>
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+
+    </ui:composition>
+</html>

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="InstitutionViewDlg" widgetVar="InstitutionViewDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundleClinical.ViewInstitutionTitle}">
+            <h:form id="InstitutionViewForm">
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" rendered="#{institutionController.selected != null}">
+                        <h:outputText value="#{bundleClinical.ViewInstitutionLabel_id}"/>
+                        <h:outputText value="#{institutionController.selected.id}" title="#{bundleClinical.ViewInstitutionTitle_id}"/>
+                        <h:outputText value="#{bundleClinical.ViewInstitutionLabel_institutionType}"/>
+                        <h:outputText value="#{institutionController.selected.institutionType}" title="#{bundleClinical.ViewInstitutionTitle_institutionType}"/>
+                        <h:outputText value="#{bundleClinical.ViewInstitutionLabel_name}"/>
+                        <h:outputText value="#{institutionController.selected.name}" title="#{bundleClinical.ViewInstitutionTitle_name}"/>
+                        <h:outputText value="#{bundleClinical.ViewInstitutionLabel_address}"/>
+                        <h:outputText value="#{institutionController.selected.address}" title="#{bundleClinical.ViewInstitutionTitle_address}"/>
+                        <h:outputText value="#{bundleClinical.ViewInstitutionLabel_fax}"/>
+                        <h:outputText value="#{institutionController.selected.fax}" title="#{bundleClinical.ViewInstitutionTitle_fax}"/>
+                        <h:outputText value="#{bundleClinical.ViewInstitutionLabel_email}"/>
+                        <h:outputText value="#{institutionController.selected.email}" title="#{bundleClinical.ViewInstitutionTitle_email}"/>
+                        <h:outputText value="#{bundleClinical.ViewInstitutionLabel_phone}"/>
+                        <h:outputText value="#{institutionController.selected.phone}" title="#{bundleClinical.ViewInstitutionTitle_phone}"/>
+                        <h:outputText value="#{bundleClinical.ViewInstitutionLabel_mobile}"/>
+                        <h:outputText value="#{institutionController.selected.mobile}" title="#{bundleClinical.ViewInstitutionTitle_mobile}"/>
+                        <h:outputText value="#{bundleClinical.ViewInstitutionLabel_web}"/>
+                        <h:outputText value="#{institutionController.selected.web}" title="#{bundleClinical.ViewInstitutionTitle_web}"/>
+                        <h:outputText value="#{bundleClinical.ViewInstitutionLabel_coordinate}"/>
+                        <h:outputText value="#{institutionController.selected.coordinate}" title="#{bundleClinical.ViewInstitutionTitle_coordinate}"/>
+                        <h:outputText value="#{bundleClinical.ViewInstitutionLabel_code}"/>
+                        <h:outputText value="#{institutionController.selected.code}" title="#{bundleClinical.ViewInstitutionTitle_code}"/>
+                        <h:outputText value="#{bundleClinical.ViewInstitutionLabel_creater}"/>
+                        <h:outputText value="#{institutionController.selected.creater}" title="#{bundleClinical.ViewInstitutionTitle_creater}"/>
+                        <h:outputText value="#{bundleClinical.ViewInstitutionLabel_createdAt}"/>
+                        <h:outputText value="#{institutionController.selected.createdAt}" title="#{bundleClinical.ViewInstitutionTitle_createdAt}">
+                            <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                        </h:outputText>
+                        <h:outputText value="#{bundleClinical.ViewInstitutionLabel_editer}"/>
+                        <h:outputText value="#{institutionController.selected.editer}" title="#{bundleClinical.ViewInstitutionTitle_editer}"/>
+                        <h:outputText value="#{bundleClinical.ViewInstitutionLabel_editedAt}"/>
+                        <h:outputText value="#{institutionController.selected.editedAt}" title="#{bundleClinical.ViewInstitutionTitle_editedAt}">
+                            <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                        </h:outputText>
+                        <h:outputText value="#{bundleClinical.ViewInstitutionLabel_retirer}"/>
+                        <h:outputText value="#{institutionController.selected.retirer}" title="#{bundleClinical.ViewInstitutionTitle_retirer}"/>
+                        <h:outputText value="#{bundleClinical.ViewInstitutionLabel_retiredAt}"/>
+                        <h:outputText value="#{institutionController.selected.retiredAt}" title="#{bundleClinical.ViewInstitutionTitle_retiredAt}">
+                            <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                        </h:outputText>
+                        <h:outputText value="#{bundleClinical.ViewInstitutionLabel_retireComments}"/>
+                        <h:outputText value="#{institutionController.selected.retireComments}" title="#{bundleClinical.ViewInstitutionTitle_retireComments}"/>
+                        <h:outputText value="#{bundleClinical.ViewInstitutionLabel_lastPartOfName}"/>
+                        <h:outputText value="#{institutionController.selected.lastPartOfName}" title="#{bundleClinical.ViewInstitutionTitle_lastPartOfName}"/>
+                    </p:panelGrid>
+                    <p:commandButton value="#{bundleClinical.Close}" onclick="InstitutionViewDialog.hide()"/>
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+
+    </ui:composition>
+</html>

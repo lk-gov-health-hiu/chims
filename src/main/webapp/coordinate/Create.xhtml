@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="CoordinateCreateDlg" widgetVar="CoordinateCreateDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundleClinical.CreateCoordinateTitle}">
+            <h:form id="CoordinateCreateForm">
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" rendered="#{coordinateController.selected != null}">
+                        <p:outputLabel value="#{bundleClinical.CreateCoordinateLabel_institution}" for="institution" />
+                        <p:selectOneMenu id="institution" value="#{coordinateController.selected.institution}" >
+                            <f:selectItems value="#{institutionController.itemsAvailableSelectOne}"
+                                           var="institutionItem"
+                                           itemValue="#{institutionItem}"/>
+                        </p:selectOneMenu>
+                        <p:outputLabel value="#{bundleClinical.CreateCoordinateLabel_longitude}" for="longitude" />
+                        <p:inputText id="longitude" value="#{coordinateController.selected.longitude}" title="#{bundleClinical.CreateCoordinateTitle_longitude}" />
+                        <p:outputLabel value="#{bundleClinical.CreateCoordinateLabel_latitude}" for="latitude" />
+                        <p:inputText id="latitude" value="#{coordinateController.selected.latitude}" title="#{bundleClinical.CreateCoordinateTitle_latitude}" />
+                        <p:outputLabel value="#{bundleClinical.CreateCoordinateLabel_elevation}" for="elevation" />
+                        <p:inputText id="elevation" value="#{coordinateController.selected.elevation}" title="#{bundleClinical.CreateCoordinateTitle_elevation}" />
+                        <p:outputLabel value="#{bundleClinical.CreateCoordinateLabel_id}" for="id" />
+                        <p:inputText id="id" value="#{coordinateController.selected.id}" title="#{bundleClinical.CreateCoordinateTitle_id}" />
+                        <p:outputLabel value="#{bundleClinical.CreateCoordinateLabel_area}" for="area" />
+                        <p:selectOneMenu id="area" value="#{coordinateController.selected.area}" >
+                            <f:selectItems value="#{areaController.itemsAvailableSelectOne}"
+                                           var="areaItem"
+                                           itemValue="#{areaItem}"/>
+                        </p:selectOneMenu>
+                        <p:outputLabel value="#{bundleClinical.CreateCoordinateLabel_createdBy}" for="createdBy" />
+                        <p:selectOneMenu id="createdBy" value="#{coordinateController.selected.createdBy}" >
+                            <f:selectItems value="#{webUserController.itemsAvailableSelectOne}"
+                                           var="createdByItem"
+                                           itemValue="#{createdByItem}"/>
+                        </p:selectOneMenu>
+                        <p:outputLabel value="#{bundleClinical.CreateCoordinateLabel_retiredBy}" for="retiredBy" />
+                        <p:selectOneMenu id="retiredBy" value="#{coordinateController.selected.retiredBy}" >
+                            <f:selectItems value="#{webUserController.itemsAvailableSelectOne}"
+                                           var="retiredByItem"
+                                           itemValue="#{retiredByItem}"/>
+                        </p:selectOneMenu>
+                        <p:outputLabel value="#{bundleClinical.CreateCoordinateLabel_retiredAt}" for="retiredAt" />
+                        <p:calendar id="retiredAt" pattern="MM/dd/yyyy HH:mm:ss" value="#{coordinateController.selected.retiredAt}" title="#{bundleClinical.EditCoordinateTitle_retiredAt}"  showOn="button"/>
+                        <p:outputLabel value="#{bundleClinical.CreateCoordinateLabel_retiredReversedBy}" for="retiredReversedBy" />
+                        <p:selectOneMenu id="retiredReversedBy" value="#{coordinateController.selected.retiredReversedBy}" >
+                            <f:selectItems value="#{webUserController.itemsAvailableSelectOne}"
+                                           var="retiredReversedByItem"
+                                           itemValue="#{retiredReversedByItem}"/>
+                        </p:selectOneMenu>
+                        <p:outputLabel value="#{bundleClinical.CreateCoordinateLabel_retiredReversedAt}" for="retiredReversedAt" />
+                        <p:calendar id="retiredReversedAt" pattern="MM/dd/yyyy HH:mm:ss" value="#{coordinateController.selected.retiredReversedAt}" title="#{bundleClinical.EditCoordinateTitle_retiredReversedAt}"  showOn="button"/>
+                        <p:outputLabel value="#{bundleClinical.CreateCoordinateLabel_createdAt}" for="createdAt" />
+                        <p:calendar id="createdAt" pattern="MM/dd/yyyy HH:mm:ss" value="#{coordinateController.selected.createdAt}" title="#{bundleClinical.EditCoordinateTitle_createdAt}"  showOn="button"/>
+                        <p:outputLabel value="#{bundleClinical.CreateCoordinateLabel_lastEditBy}" for="lastEditBy" />
+                        <p:selectOneMenu id="lastEditBy" value="#{coordinateController.selected.lastEditBy}" >
+                            <f:selectItems value="#{webUserController.itemsAvailableSelectOne}"
+                                           var="lastEditByItem"
+                                           itemValue="#{lastEditByItem}"/>
+                        </p:selectOneMenu>
+                        <p:outputLabel value="#{bundleClinical.CreateCoordinateLabel_lastEditeAt}" for="lastEditeAt" />
+                        <p:calendar id="lastEditeAt" pattern="MM/dd/yyyy HH:mm:ss" value="#{coordinateController.selected.lastEditeAt}" title="#{bundleClinical.EditCoordinateTitle_lastEditeAt}"  showOn="button"/>
+                        <p:outputLabel value="#{bundleClinical.CreateCoordinateLabel_retireComments}" for="retireComments" />
+                        <p:inputText id="retireComments" value="#{coordinateController.selected.retireComments}" title="#{bundleClinical.CreateCoordinateTitle_retireComments}" />
+                    </p:panelGrid>
+                    <p:commandButton actionListener="#{coordinateController.create}" value="#{bundleClinical.Save}" update="display,:CoordinateListForm:datalist,:growl" oncomplete="handleSubmit(args,'CoordinateCreateDialog');"/>
+                    <p:commandButton value="#{bundleClinical.Cancel}" onclick="CoordinateCreateDialog.hide()"/>
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+
+    </ui:composition>
+</html>

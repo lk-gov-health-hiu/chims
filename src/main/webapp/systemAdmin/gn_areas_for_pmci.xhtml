@@ -1,0 +1,117 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+    <body>
+
+        <ui:composition template="./../template.xhtml">
+
+            <ui:define name="content">
+
+                <p:panel header="Select GN Areas for a PMCI" >
+
+                    <h:form>
+
+                        <p:panelGrid columns="6" >
+                            <p:outputLabel value="PMCI" ></p:outputLabel>
+                            <p:autoComplete id="acPmci"
+                                            value="#{institutionController.selected}"
+                                            completeMethod="#{institutionController.completePmcis}"
+                                            var="p" itemLabel="#{p.name}" itemValue="#{p}"
+                                            >
+                            </p:autoComplete>
+                            <p:commandButton ajax="false" value="List" 
+                                             action="#{institutionController.fillGnAreasOfSelected()}" ></p:commandButton>
+                            <p:spacer ></p:spacer>
+                            <p:commandButton ajax="false" action="Excel" value="Download" >
+                                <p:dataExporter fileName="Draining_Areas.xls" target="tbl" type="xls" ></p:dataExporter>
+                            </p:commandButton>
+                            <p:commandButton ajax="false" action="Print" value="Print" >
+                                <p:printer  target="tbl" ></p:printer>
+                            </p:commandButton>
+                        </p:panelGrid>
+
+
+                        <p:panelGrid columns="2" styleClass="alignTop" >
+
+
+                            <p:dataTable id="tbl" value="#{institutionController.gnAreasOfSelected}" var="gn" >
+                                <p:column >
+                                    <f:facet name="header" >
+                                        <p:outputLabel value="Name" ></p:outputLabel>
+                                    </f:facet>
+                                    <p:outputLabel value="#{gn.name}" ></p:outputLabel>
+                                </p:column>
+                                <p:column >
+                                    <f:facet name="header" >
+                                        <p:outputLabel value="Code" ></p:outputLabel>
+                                    </f:facet>
+                                    <p:outputLabel value="#{gn.code}" ></p:outputLabel>
+                                </p:column>
+                                <p:column >
+                                    <f:facet name="header" >
+                                        <p:outputLabel value="DS Division" ></p:outputLabel>
+                                    </f:facet>
+                                    <p:outputLabel value="#{gn.dsd.name}" ></p:outputLabel>
+                                </p:column>
+                                <p:column >
+                                    <f:facet name="header" >
+                                        <p:outputLabel value="District" ></p:outputLabel>
+                                    </f:facet>
+                                    <p:outputLabel value="#{gn.district.name}" ></p:outputLabel>
+                                </p:column>
+                                <p:column >
+                                    <f:facet name="header" >
+                                        <p:outputLabel value="Remove" ></p:outputLabel>
+                                    </f:facet>
+                                    <p:commandButton id="btnRemove" value="Remove" action="#{institutionController.removeGnFromPmc()}"
+                                                     process="@this" update="tbl" >
+                                        <f:setPropertyActionListener value="#{gn}" target="#{institutionController.removingArea}" ></f:setPropertyActionListener>
+                                    </p:commandButton>
+                                </p:column>
+
+                            </p:dataTable>
+
+
+                            <p:panelGrid columns="3" >
+                                <f:facet name="header" >
+                                    <p:outputLabel value="Add Another GN" ></p:outputLabel>
+                                </f:facet>
+                                <p:outputLabel value="GN Area" ></p:outputLabel>
+
+                                <p:autoComplete id="acGn" value="#{institutionController.area}"
+                                                completeMethod="#{areaController.completeGnAreas}"
+                                                var="gn" maxResults="20" forceSelection="true"
+                                                itemValue="#{gn}"
+                                                itemLabel="#{gn.name}" ></p:autoComplete>
+                                <p:commandButton value="Add" 
+                                                 id="btnAdd"
+                                                 process="acGn btnAdd"
+                                                 update="tbl acGn"
+                                                 action="#{institutionController.addGnToPmc()}">
+                                </p:commandButton>
+
+                            </p:panelGrid>
+
+
+
+
+                        </p:panelGrid>
+
+                    </h:form>
+
+
+
+
+                </p:panel>
+
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="CoordinateViewDlg" widgetVar="CoordinateViewDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundleClinical.ViewCoordinateTitle}">
+            <h:form id="CoordinateViewForm">
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" rendered="#{coordinateController.selected != null}">
+                        <h:outputText value="#{bundleClinical.ViewCoordinateLabel_institution}"/>
+                        <h:outputText value="#{coordinateController.selected.institution}" title="#{bundleClinical.ViewCoordinateTitle_institution}"/>
+                        <h:outputText value="#{bundleClinical.ViewCoordinateLabel_longitude}"/>
+                        <h:outputText value="#{coordinateController.selected.longitude}" title="#{bundleClinical.ViewCoordinateTitle_longitude}"/>
+                        <h:outputText value="#{bundleClinical.ViewCoordinateLabel_latitude}"/>
+                        <h:outputText value="#{coordinateController.selected.latitude}" title="#{bundleClinical.ViewCoordinateTitle_latitude}"/>
+                        <h:outputText value="#{bundleClinical.ViewCoordinateLabel_elevation}"/>
+                        <h:outputText value="#{coordinateController.selected.elevation}" title="#{bundleClinical.ViewCoordinateTitle_elevation}"/>
+                        <h:outputText value="#{bundleClinical.ViewCoordinateLabel_id}"/>
+                        <h:outputText value="#{coordinateController.selected.id}" title="#{bundleClinical.ViewCoordinateTitle_id}"/>
+                        <h:outputText value="#{bundleClinical.ViewCoordinateLabel_area}"/>
+                        <h:outputText value="#{coordinateController.selected.area}" title="#{bundleClinical.ViewCoordinateTitle_area}"/>
+                        <h:outputText value="#{bundleClinical.ViewCoordinateLabel_createdBy}"/>
+                        <h:outputText value="#{coordinateController.selected.createdBy}" title="#{bundleClinical.ViewCoordinateTitle_createdBy}"/>
+                        <h:outputText value="#{bundleClinical.ViewCoordinateLabel_retiredBy}"/>
+                        <h:outputText value="#{coordinateController.selected.retiredBy}" title="#{bundleClinical.ViewCoordinateTitle_retiredBy}"/>
+                        <h:outputText value="#{bundleClinical.ViewCoordinateLabel_retiredAt}"/>
+                        <h:outputText value="#{coordinateController.selected.retiredAt}" title="#{bundleClinical.ViewCoordinateTitle_retiredAt}">
+                            <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                        </h:outputText>
+                        <h:outputText value="#{bundleClinical.ViewCoordinateLabel_retiredReversedBy}"/>
+                        <h:outputText value="#{coordinateController.selected.retiredReversedBy}" title="#{bundleClinical.ViewCoordinateTitle_retiredReversedBy}"/>
+                        <h:outputText value="#{bundleClinical.ViewCoordinateLabel_retiredReversedAt}"/>
+                        <h:outputText value="#{coordinateController.selected.retiredReversedAt}" title="#{bundleClinical.ViewCoordinateTitle_retiredReversedAt}">
+                            <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                        </h:outputText>
+                        <h:outputText value="#{bundleClinical.ViewCoordinateLabel_createdAt}"/>
+                        <h:outputText value="#{coordinateController.selected.createdAt}" title="#{bundleClinical.ViewCoordinateTitle_createdAt}">
+                            <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                        </h:outputText>
+                        <h:outputText value="#{bundleClinical.ViewCoordinateLabel_lastEditBy}"/>
+                        <h:outputText value="#{coordinateController.selected.lastEditBy}" title="#{bundleClinical.ViewCoordinateTitle_lastEditBy}"/>
+                        <h:outputText value="#{bundleClinical.ViewCoordinateLabel_lastEditeAt}"/>
+                        <h:outputText value="#{coordinateController.selected.lastEditeAt}" title="#{bundleClinical.ViewCoordinateTitle_lastEditeAt}">
+                            <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                        </h:outputText>
+                        <h:outputText value="#{bundleClinical.ViewCoordinateLabel_retireComments}"/>
+                        <h:outputText value="#{coordinateController.selected.retireComments}" title="#{bundleClinical.ViewCoordinateTitle_retireComments}"/>
+                    </p:panelGrid>
+                    <p:commandButton value="#{bundleClinical.Close}" onclick="CoordinateViewDialog.hide()"/>
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+
+    </ui:composition>
+</html>

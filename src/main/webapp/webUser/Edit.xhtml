@@ -1,0 +1,71 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <body>
+
+        <ui:composition template="/template.xhtml">
+
+            <ui:define name="content">
+                <p:panel id="WebUserEditDlg" header="Edit User Detais" style="text-align: center; height: 100%;">
+                    <h:form id="WebUserEditForm">
+
+                        <p:panelGrid columns="2" rendered="#{webUserController.selected != null}" style="margin: auto; text-align: left;">
+                            <f:facet name="header" >
+                                <p:commandButton actionListener="#{webUserController.update}" value="#{bundleClinical.Save}" />
+                                <p:commandButton value="Back" action="manage_users"/>
+                            </f:facet>
+
+                            <p:outputLabel value="Username" for="username" />
+                            <p:inputText  id="username" value="#{webUserController.selected.name}" title="#{bundleClinical.EditWebUserTitle_name}"
+                                          readonly="true" required="true" requiredMessage="#{bundleClinical.EditWebUserRequiredMessage_name}"/>
+
+
+                            <p:outputLabel value="Title" for="title" />
+                            <p:selectOneMenu id="title"  value="#{webUserController.selected.person.title}"  >
+                                <f:selectItems value="#{itemController.titles}" var="t" itemLabel="#{t.name}"
+                                               itemValue="#{t}" ></f:selectItems>
+                            </p:selectOneMenu>
+
+                            <p:outputLabel value="Name" for="name" />
+                            <p:inputText 
+                                autocomplete="off" 
+                                id="name" 
+                                value="#{webUserController.selected.person.name}"
+                                title="Name" />
+
+
+                            <p:outputLabel value="Institution" for="institution" />
+                            <p:autoComplete  id="institution" value="#{webUserController.selected.institution}" 
+                                             completeMethod="#{institutionController.completeInstitutions}"
+                                             var="i" itemLabel="#{i.name}" itemValue="#{i}">
+                            </p:autoComplete >
+
+                            <p:outputLabel value="Email" for="email" />
+                            <p:inputText id="email" value="#{webUserController.selected.email}" title="#{bundleClinical.EditWebUserTitle_email}" />
+
+                            <p:outputLabel value="Telephone No." for="telNo" />
+                            <p:inputText id="telNo" value="#{webUserController.selected.telNo}" title="#{bundleClinical.EditWebUserTitle_telNo}" />
+
+
+                            <p:outputLabel value="Role" for="webUserRole" />
+                            <p:selectOneMenu  id="webUserRole" value="#{webUserController.selected.webUserRole}"  >
+                                <f:selectItems value="#{applicationController.webUserRoles}" ></f:selectItems>
+                            </p:selectOneMenu>
+
+                        </p:panelGrid>
+
+
+                    </h:form>
+                </p:panel>
+
+            </ui:define>
+        </ui:composition>
+
+    </body>
+</html>
+

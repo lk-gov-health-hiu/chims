@@ -1,0 +1,50 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <h:body>
+
+        <ui:composition template="/template.xhtml">
+
+            <ui:define name="content">
+
+                <h:form>
+                    <p:panel header="Manage Privileges" >
+
+                        <f:facet name="header" >
+                            <p:commandButton id="btnUpdate" 
+                                             process="tree btnUpdate" ajax="false" 
+                                             action="#{webUserController.updateUserPrivileges()}" 
+                                             value="#{bundleClinical.Save}" />
+                            <p:commandButton ajax="false" value="Back" action="manage_users"/>
+                        </f:facet>
+
+                        <p:tree id="tree"  value="#{webUserController.allPrivilegeRoot}" var="node"  
+                                selectionMode="checkbox" 
+                                selection="#{webUserController.selectedNodes}">  
+                            <p:treeNode>  
+                                <h:outputText value="#{node}" />  
+                            </p:treeNode> 
+                        </p:tree>  
+
+
+                    </p:panel>
+
+                </h:form>
+
+         
+
+
+            </ui:define>
+
+        </ui:composition>
+
+
+    </h:body>
+
+
+</html>

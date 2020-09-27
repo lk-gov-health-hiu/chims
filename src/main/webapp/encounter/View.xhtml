@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="EncounterViewDlg" widgetVar="EncounterViewDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundleClinical.ViewEncounterTitle}">
+            <h:form id="EncounterViewForm">
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" rendered="#{encounterController.selected != null}">
+                        <h:outputText value="#{bundleClinical.ViewEncounterLabel_id}"/>
+                        <h:outputText value="#{encounterController.selected.id}" title="#{bundleClinical.ViewEncounterTitle_id}"/>
+                        <h:outputText value="#{bundleClinical.ViewEncounterLabel_project}"/>
+                        <h:outputText value="#{encounterController.selected.project}" title="#{bundleClinical.ViewEncounterTitle_project}"/>
+                        <h:outputText value="#{bundleClinical.ViewEncounterLabel_area}"/>
+                        <h:outputText value="#{encounterController.selected.area}" title="#{bundleClinical.ViewEncounterTitle_area}"/>
+                        <h:outputText value="#{bundleClinical.ViewEncounterLabel_encounterDate}"/>
+                        <h:outputText value="#{encounterController.selected.encounterDate}" title="#{bundleClinical.ViewEncounterTitle_encounterDate}">
+                            <f:convertDateTime pattern="MM/dd/yyyy" />
+                        </h:outputText>
+                        <h:outputText value="#{bundleClinical.ViewEncounterLabel_encounterFrom}"/>
+                        <h:outputText value="#{encounterController.selected.encounterFrom}" title="#{bundleClinical.ViewEncounterTitle_encounterFrom}">
+                            <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                        </h:outputText>
+                        <h:outputText value="#{bundleClinical.ViewEncounterLabel_encounterTo}"/>
+                        <h:outputText value="#{encounterController.selected.encounterTo}" title="#{bundleClinical.ViewEncounterTitle_encounterTo}">
+                            <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                        </h:outputText>
+                        <h:outputText value="#{bundleClinical.ViewEncounterLabel_encounterType}"/>
+                        <h:outputText value="#{encounterController.selected.encounterType}" title="#{bundleClinical.ViewEncounterTitle_encounterType}"/>
+                        <h:outputText value="#{bundleClinical.ViewEncounterLabel_parentEncounter}"/>
+                        <h:outputText value="#{encounterController.selected.parentEncounter}" title="#{bundleClinical.ViewEncounterTitle_parentEncounter}"/>
+                        <h:outputText value="#{bundleClinical.ViewEncounterLabel_completed}"/>
+                        <p:selectBooleanCheckbox value="#{encounterController.selected.completed}" disabled="true"/>
+                        <h:outputText value="#{bundleClinical.ViewEncounterLabel_createdBy}"/>
+                        <h:outputText value="#{encounterController.selected.createdBy}" title="#{bundleClinical.ViewEncounterTitle_createdBy}"/>
+                        <h:outputText value="#{bundleClinical.ViewEncounterLabel_createdAt}"/>
+                        <h:outputText value="#{encounterController.selected.createdAt}" title="#{bundleClinical.ViewEncounterTitle_createdAt}">
+                            <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                        </h:outputText>
+                        <h:outputText value="#{bundleClinical.ViewEncounterLabel_retiredBy}"/>
+                        <h:outputText value="#{encounterController.selected.retiredBy}" title="#{bundleClinical.ViewEncounterTitle_retiredBy}"/>
+                        <h:outputText value="#{bundleClinical.ViewEncounterLabel_retiredAt}"/>
+                        <h:outputText value="#{encounterController.selected.retiredAt}" title="#{bundleClinical.ViewEncounterTitle_retiredAt}">
+                            <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                        </h:outputText>
+                        <h:outputText value="#{bundleClinical.ViewEncounterLabel_retiredReversedBy}"/>
+                        <h:outputText value="#{encounterController.selected.retiredReversedBy}" title="#{bundleClinical.ViewEncounterTitle_retiredReversedBy}"/>
+                        <h:outputText value="#{bundleClinical.ViewEncounterLabel_retiredReversedAt}"/>
+                        <h:outputText value="#{encounterController.selected.retiredReversedAt}" title="#{bundleClinical.ViewEncounterTitle_retiredReversedAt}">
+                            <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                        </h:outputText>
+                        <h:outputText value="#{bundleClinical.ViewEncounterLabel_institution}"/>
+                        <h:outputText value="#{encounterController.selected.institution}" title="#{bundleClinical.ViewEncounterTitle_institution}"/>
+                        <h:outputText value="#{bundleClinical.ViewEncounterLabel_referalInstitution}"/>
+                        <h:outputText value="#{encounterController.selected.referalInstitution}" title="#{bundleClinical.ViewEncounterTitle_referalInstitution}"/>
+                        <h:outputText value="#{bundleClinical.ViewEncounterLabel_completedBy}"/>
+                        <h:outputText value="#{encounterController.selected.completedBy}" title="#{bundleClinical.ViewEncounterTitle_completedBy}"/>
+                        <h:outputText value="#{bundleClinical.ViewEncounterLabel_completedAt}"/>
+                        <h:outputText value="#{encounterController.selected.completedAt}" title="#{bundleClinical.ViewEncounterTitle_completedAt}">
+                            <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                        </h:outputText>
+                    </p:panelGrid>
+                    <p:commandButton value="#{bundleClinical.Close}" onclick="EncounterViewDialog.hide()"/>
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+
+    </ui:composition>
+</html>

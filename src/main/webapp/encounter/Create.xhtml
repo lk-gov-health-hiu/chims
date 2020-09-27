@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="EncounterCreateDlg" widgetVar="EncounterCreateDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundleClinical.CreateEncounterTitle}">
+            <h:form id="EncounterCreateForm">
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" rendered="#{encounterController.selected != null}">
+                        <p:outputLabel value="#{bundleClinical.CreateEncounterLabel_id}" for="id" />
+                        <p:inputText id="id" value="#{encounterController.selected.id}" title="#{bundleClinical.CreateEncounterTitle_id}" />
+                        <p:outputLabel value="#{bundleClinical.CreateEncounterLabel_project}" for="project" />
+                        <p:selectOneMenu id="project" value="#{encounterController.selected.project}" >
+                            <f:selectItems value="#{clientController.itemsAvailableSelectOne}"
+                                           var="projectItem"
+                                           itemValue="#{projectItem}"/>
+                        </p:selectOneMenu>
+                        <p:outputLabel value="#{bundleClinical.CreateEncounterLabel_area}" for="area" />
+                        <p:selectOneMenu id="area" value="#{encounterController.selected.area}" >
+                            <f:selectItems value="#{areaController.itemsAvailableSelectOne}"
+                                           var="areaItem"
+                                           itemValue="#{areaItem}"/>
+                        </p:selectOneMenu>
+                        <p:outputLabel value="#{bundleClinical.CreateEncounterLabel_encounterDate}" for="encounterDate" />
+                        <p:calendar id="encounterDate" pattern="MM/dd/yyyy" value="#{encounterController.selected.encounterDate}" title="#{bundleClinical.EditEncounterTitle_encounterDate}"  showOn="button"/>
+                        <p:outputLabel value="#{bundleClinical.CreateEncounterLabel_encounterFrom}" for="encounterFrom" />
+                        <p:calendar id="encounterFrom" pattern="MM/dd/yyyy HH:mm:ss" value="#{encounterController.selected.encounterFrom}" title="#{bundleClinical.EditEncounterTitle_encounterFrom}"  showOn="button"/>
+                        <p:outputLabel value="#{bundleClinical.CreateEncounterLabel_encounterTo}" for="encounterTo" />
+                        <p:calendar id="encounterTo" pattern="MM/dd/yyyy HH:mm:ss" value="#{encounterController.selected.encounterTo}" title="#{bundleClinical.EditEncounterTitle_encounterTo}"  showOn="button"/>
+                        <p:outputLabel value="#{bundleClinical.CreateEncounterLabel_encounterType}" for="encounterType" />
+                        <p:inputText id="encounterType" value="#{encounterController.selected.encounterType}" title="#{bundleClinical.CreateEncounterTitle_encounterType}" />
+                        <p:outputLabel value="#{bundleClinical.CreateEncounterLabel_parentEncounter}" for="parentEncounter" />
+                        <p:selectOneMenu id="parentEncounter" value="#{encounterController.selected.parentEncounter}" >
+                            <f:selectItems value="#{encounterController.itemsAvailableSelectOne}"
+                                           var="parentEncounterItem"
+                                           itemValue="#{parentEncounterItem}"/>
+                        </p:selectOneMenu>
+                        <p:outputLabel value="#{bundleClinical.CreateEncounterLabel_completed}" for="completed" />
+                        <p:selectBooleanCheckbox id="completed" value="#{encounterController.selected.completed}" />
+                        <p:outputLabel value="#{bundleClinical.CreateEncounterLabel_createdBy}" for="createdBy" />
+                        <p:selectOneMenu id="createdBy" value="#{encounterController.selected.createdBy}" >
+                            <f:selectItems value="#{webUserController.itemsAvailableSelectOne}"
+                                           var="createdByItem"
+                                           itemValue="#{createdByItem}"/>
+                        </p:selectOneMenu>
+                        <p:outputLabel value="#{bundleClinical.CreateEncounterLabel_createdAt}" for="createdAt" />
+                        <p:calendar id="createdAt" pattern="MM/dd/yyyy HH:mm:ss" value="#{encounterController.selected.createdAt}" title="#{bundleClinical.EditEncounterTitle_createdAt}"  showOn="button"/>
+                        <p:outputLabel value="#{bundleClinical.CreateEncounterLabel_retiredBy}" for="retiredBy" />
+                        <p:selectOneMenu id="retiredBy" value="#{encounterController.selected.retiredBy}" >
+                            <f:selectItems value="#{webUserController.itemsAvailableSelectOne}"
+                                           var="retiredByItem"
+                                           itemValue="#{retiredByItem}"/>
+                        </p:selectOneMenu>
+                        <p:outputLabel value="#{bundleClinical.CreateEncounterLabel_retiredAt}" for="retiredAt" />
+                        <p:calendar id="retiredAt" pattern="MM/dd/yyyy HH:mm:ss" value="#{encounterController.selected.retiredAt}" title="#{bundleClinical.EditEncounterTitle_retiredAt}"  showOn="button"/>
+                        <p:outputLabel value="#{bundleClinical.CreateEncounterLabel_retiredReversedBy}" for="retiredReversedBy" />
+                        <p:selectOneMenu id="retiredReversedBy" value="#{encounterController.selected.retiredReversedBy}" >
+                            <f:selectItems value="#{webUserController.itemsAvailableSelectOne}"
+                                           var="retiredReversedByItem"
+                                           itemValue="#{retiredReversedByItem}"/>
+                        </p:selectOneMenu>
+                        <p:outputLabel value="#{bundleClinical.CreateEncounterLabel_retiredReversedAt}" for="retiredReversedAt" />
+                        <p:calendar id="retiredReversedAt" pattern="MM/dd/yyyy HH:mm:ss" value="#{encounterController.selected.retiredReversedAt}" title="#{bundleClinical.EditEncounterTitle_retiredReversedAt}"  showOn="button"/>
+                        <p:outputLabel value="#{bundleClinical.CreateEncounterLabel_institution}" for="institution" />
+                        <p:selectOneMenu id="institution" value="#{encounterController.selected.institution}" >
+                            <f:selectItems value="#{institutionController.itemsAvailableSelectOne}"
+                                           var="institutionItem"
+                                           itemValue="#{institutionItem}"/>
+                        </p:selectOneMenu>
+                        <p:outputLabel value="#{bundleClinical.CreateEncounterLabel_referalInstitution}" for="referalInstitution" />
+                        <p:selectOneMenu id="referalInstitution" value="#{encounterController.selected.referalInstitution}" >
+                            <f:selectItems value="#{institutionController.itemsAvailableSelectOne}"
+                                           var="referalInstitutionItem"
+                                           itemValue="#{referalInstitutionItem}"/>
+                        </p:selectOneMenu>
+                        <p:outputLabel value="#{bundleClinical.CreateEncounterLabel_completedBy}" for="completedBy" />
+                        <p:selectOneMenu id="completedBy" value="#{encounterController.selected.completedBy}" >
+                            <f:selectItems value="#{webUserController.itemsAvailableSelectOne}"
+                                           var="completedByItem"
+                                           itemValue="#{completedByItem}"/>
+                        </p:selectOneMenu>
+                        <p:outputLabel value="#{bundleClinical.CreateEncounterLabel_completedAt}" for="completedAt" />
+                        <p:calendar id="completedAt" pattern="MM/dd/yyyy HH:mm:ss" value="#{encounterController.selected.completedAt}" title="#{bundleClinical.EditEncounterTitle_completedAt}"  showOn="button"/>
+                    </p:panelGrid>
+                    <p:commandButton actionListener="#{encounterController.create}" value="#{bundleClinical.Save}" update="display,:EncounterListForm:datalist,:growl" oncomplete="handleSubmit(args,'EncounterCreateDialog');"/>
+                    <p:commandButton value="#{bundleClinical.Cancel}" onclick="EncounterCreateDialog.hide()"/>
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+
+    </ui:composition>
+</html>

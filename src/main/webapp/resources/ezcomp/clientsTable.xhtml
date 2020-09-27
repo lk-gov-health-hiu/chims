@@ -1,0 +1,85 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:cc="http://xmlns.jcp.org/jsf/composite"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+
+    <!-- INTERFACE -->
+    <cc:interface>
+    </cc:interface>
+
+    <!-- IMPLEMENTATION -->
+    <cc:implementation>
+        <p:panelGrid columns="1" >
+            <f:facet name="header">
+                <p:outputLabel value="Client List" ></p:outputLabel>
+                <p:commandButton ajax="false" value="Excel" style="float: right;"  >
+                    <p:dataExporter target="tblClients" type="xls" fileName="clients" >
+                    </p:dataExporter>
+                </p:commandButton>
+            </f:facet>
+            <p:dataTable value="#{queryComponentController.resultClientList}" var="item"
+                         rows="10" id="tblClients"
+                         paginator="true"
+                         paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                         rowsPerPageTemplate="5,10,15"
+                         rowKey="#{item.id}"
+                         rowIndexVar="n"
+                         >
+                <p:column width="50">
+                    <f:facet name="header">
+                        <h:outputText value="No"/>
+                    </f:facet>
+                    <h:outputText value="#{n+1}"/>
+                </p:column>
+                <p:column>
+                    <f:facet name="header">
+                        <h:outputText value="PHN"/>
+                    </f:facet>
+                    <h:outputText value="#{item.phn}"/>
+                </p:column>
+                <p:column>
+                    <f:facet name="header">
+                        <h:outputText value="Name"/>
+                    </f:facet>
+                    <h:outputText value="#{item.person.nameWithTitle}"/>
+                </p:column>
+                <p:column>
+                    <f:facet name="header">
+                        <h:outputText value="Sex"/>
+                    </f:facet>
+                    <h:outputText value="#{item.person.sex.name}"/>
+                </p:column>
+                <p:column>
+                    <f:facet name="header">
+                        <h:outputText value="Age"/>
+                    </f:facet>
+                    <h:outputText value="#{item.person.age}"/>
+                </p:column>
+                <p:column>
+                    <f:facet name="header">
+                        <h:outputText value="GN"/>
+                    </f:facet>
+                    <h:outputText value="#{item.person.gnArea.name}">
+                    </h:outputText>
+                </p:column>
+                <p:column>
+                    <f:facet name="header">
+                        <h:outputText value="Phone"/>
+                    </f:facet>
+                    <h:outputText value="#{item.person.phone1} / #{item.person.phone1}"/>
+                </p:column>
+                <p:column exportable="false">
+                    <f:facet name="header">
+                        <h:outputText value="Actions"/>
+                    </f:facet>
+                    <p:commandButton value="View" ajax="false" action="#{clientController.toClientProfile()}" >
+                        <f:setPropertyActionListener value="#{item}" target="#{clientController.selected}" ></f:setPropertyActionListener>
+                    </p:commandButton>
+                </p:column>
+            </p:dataTable>
+        </p:panelGrid>
+    </cc:implementation>
+</html>

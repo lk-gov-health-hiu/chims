@@ -1,0 +1,126 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <body>
+
+        <ui:composition template="/template.xhtml">
+
+            <ui:define name="content" >
+                
+                <p:panel style="height: 100%; text-align: center;" rendered="#{!webUserController.loggedUser.systemAdministrator}">
+                    <h1>You are NOT authorized</h1>
+                </p:panel>
+                
+                <p:panel id="WebUserEditDlg" header="Edit User Detais" style="text-align: center; height: 100%;" rendered="#{webUserController.loggedUser.systemAdministrator}">
+                    <h:form id="WebUserEditForm">
+
+                        <p:panelGrid  columns="3" rendered="#{webUserController.selected != null}" style="margin: auto; text-align: left;">
+                            <f:facet name="header" >
+                                <p:commandButton action="#{webUserController.saveNewWebUserBySysAdmin()}" value="#{bundleClinical.Save}" />
+                                <p:commandButton value="Back" action="index" process="@this" update="@all">
+                                </p:commandButton>
+                            </f:facet>
+
+                            <p:outputLabel value="Title" for="title" />
+                            <p:selectOneMenu id="title"  value="#{webUserController.selected.person.title}"  >
+                                <f:selectItems value="#{itemController.titles}" var="t" itemLabel="#{t.name}"
+                                               itemValue="#{t}" ></f:selectItems>
+                            </p:selectOneMenu>
+                            <p:spacer ></p:spacer>
+
+                            <p:outputLabel value="Name" for="name" />
+                            <p:inputText 
+                                autocomplete="off" 
+                                id="name"  
+                                required="true"
+                                value="#{webUserController.selected.person.name}"
+                                title="Name" />
+                            <p:spacer ></p:spacer>
+
+
+
+                            <p:outputLabel value="Username" for="username" />
+                            <p:inputText  id="username" value="#{webUserController.selected.name}" title="#{bundleClinical.EditWebUserTitle_name}"
+                                        autocomplete="false"   required="true" requiredMessage="#{bundleClinical.EditWebUserRequiredMessage_name}">
+                                <f:ajax execute="@this" render="lblune" event="blur" ></f:ajax>
+                            </p:inputText>
+                            <p:outputLabel id="lblune"
+                                           style="color: red;"
+                                           value="#{webUserController.userNameExsists()?'Username is already taken. Please try another.':''}" ></p:outputLabel>
+
+                            <p:outputLabel value="Password" for="password" />
+                            <p:inputText  id="password" value="#{webUserController.password}" title="Password"
+                                          required="true" requiredMessage="Password is required."/>
+                            <p:spacer ></p:spacer>
+
+
+                            <p:outputLabel value="Re-enter Password" for="passwordReenter" />
+                            <p:inputText  id="passwordReenter" value="#{webUserController.passwordReenter}" title="Re-enter Password"
+                                      autocomplete="false"     required="true" requiredMessage="Password is required."/>
+                            <p:spacer ></p:spacer>
+
+
+
+
+                            <p:outputLabel value="#{bundleClinical.EditWebUserLabel_institution}" for="institution" />
+                            <p:autoComplete  id="institution" value="#{webUserController.selected.institution}" 
+                                             completeMethod="#{institutionController.completeInstitutions}"
+                                             var="i" itemLabel="#{i.name}" itemValue="#{i}"
+                                             forceSelection="true" required="true"
+                                             minQueryLength="4" maxResults="30">
+                            </p:autoComplete >
+                            <p:spacer ></p:spacer>
+
+                            <p:outputLabel value="Area" for="area" />
+                            <p:autoComplete  id="area" value="#{webUserController.selected.area}" 
+                                             completeMethod="#{areaController.completeAreas}"
+                                             var="i" itemLabel="#{i.name}" itemValue="#{i}"
+                                             minQueryLength="4" maxResults="30"
+                                             forceSelection="true" required="true">
+                                <p:column headerText="Name">
+                                    <p:outputLabel value="#{i.name}"></p:outputLabel>
+                                </p:column>
+                                  <p:column headerText="Parent">
+                                    <p:outputLabel value="#{i.parentArea.name}"></p:outputLabel>
+                                </p:column>
+                                 <p:column headerText="Type">
+                                    <p:outputLabel value="#{i.type}"></p:outputLabel>
+                                </p:column>
+                                
+                                
+                            </p:autoComplete >
+                            <p:spacer ></p:spacer>
+
+                            <p:outputLabel value="#{bundleClinical.EditWebUserLabel_email}" for="email" />
+                            <p:inputText  autocomplete="false" id="email" value="#{webUserController.selected.email}" title="#{bundleClinical.EditWebUserTitle_email}" />
+                            <p:spacer ></p:spacer>
+
+                            <p:outputLabel value="Telephone Number" for="telNo" />
+                            <p:inputText id="telNo"
+                                          autocomplete="false"
+                                          value="#{webUserController.selected.telNo}" title="#{bundleClinical.EditWebUserTitle_telNo}" />
+                            <p:spacer ></p:spacer>
+
+                            <p:outputLabel value="Role" for="webUserRole" />
+                            <p:selectOneMenu  id="webUserRole" value="#{webUserController.selected.webUserRole}"  required="true">
+                                <f:selectItem itemLabel="Select" ></f:selectItem>
+                                <f:selectItems value="#{applicationController.webUserRoles}" var="r" itemLabel="#{r.label}" itemValue="#{r}" ></f:selectItems>
+                            </p:selectOneMenu>
+                            <p:spacer ></p:spacer>
+                        </p:panelGrid>
+
+
+                    </h:form>
+                </p:panel>
+
+            </ui:define>
+        </ui:composition>
+
+    </body>
+</html>
+

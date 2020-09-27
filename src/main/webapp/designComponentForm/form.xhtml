@@ -1,0 +1,87 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <body>
+
+        <ui:composition template="./../template.xhtml">
+
+            <ui:define name="content">
+
+
+
+                <f:view>
+
+                    <p:panel header="Edit Form Details" style="width: 100%; text-align: center;" >
+
+                        <h:form>
+
+                            <p:panelGrid columns="2" rendered="#{designComponentFormController.selected ne null}" style="margin: auto; text-align: left;">
+
+                                <f:facet name="header" >
+                                    <p:outputLabel value="Form Set - "  style="float: left;" />
+                                    <p:outputLabel value="&nbsp;#{designComponentFormController.selected.parentComponent.name}" style="float: left;" ></p:outputLabel>
+                                    <p:commandButton ajax="false" action="/designComponentFormSet/manage_forms"
+                                                     value="Save" icon="ui-icon-circle-check"    
+                                                     style="float: right;" 
+                                                     actionListener="#{designComponentFormController.saveSelected()}" ></p:commandButton>
+                                </f:facet>
+
+                                <p:outputLabel value="Name:" for="name" />
+                                <p:inputText id="name" value="#{designComponentFormController.selected.name}" title="Name" />
+
+                                <p:outputLabel value="ComponentSex:" for="componentSex" />
+                                <p:selectOneMenu id="componentSex" required="true"
+                                                 value="#{designComponentFormController.selected.componentSex}" 
+                                                 title="ComponentSex" >
+                                    <f:selectItem itemLabel="Please select" ></f:selectItem>
+                                    <f:selectItems value="#{commonController.componentSex}" ></f:selectItems>
+                                </p:selectOneMenu>
+
+                                <p:outputLabel value="Colour as Hexadecimal:" for="hexHtmlColour" />
+                                <p:inputText id="hexHtmlColour" value="#{designComponentFormController.selected.hexHtmlColour}" title="HexHtmlColour" />
+
+                                <p:outputLabel value="Order No:" for="orderNo" />
+                                <p:inputText id="orderNo" value="#{designComponentFormController.selected.orderNo}" title="OrderNo" />
+
+                                <p:outputLabel value="html:" for="html" />
+                                <p:inputText id="html" value="#{designComponentFormController.selected.html}" title="HTML" />
+
+                                <p:outputLabel value="Item Arrangement Strategy:" for="itemArrangementStrategy" />
+                                <p:selectOneMenu id="itemArrangementStrategy" required="true"
+                                                 value="#{designComponentFormController.selected.itemArrangementStrategy}" 
+                                                 title="DataModificationStrategy" >
+                                    <f:selectItem itemLabel="Please select" ></f:selectItem>
+                                    <f:selectItems value="#{commonController.itemArrangementStrategies}" ></f:selectItems>
+                                </p:selectOneMenu>
+
+                                <p:outputLabel value="Background Color:" />
+                                <p:colorPicker value="#{designComponentFormController.selected.backgroundColour}" ></p:colorPicker>
+
+                                <p:outputLabel value="Foreground Color:" />
+                                <p:colorPicker value="#{designComponentFormController.selected.foregroundColour}" ></p:colorPicker>
+
+                                <p:outputLabel value="Border Color:" />
+                                <p:colorPicker value="#{designComponentFormController.selected.borderColour}" ></p:colorPicker>
+
+
+
+                            </p:panelGrid>
+                        </h:form>
+
+                    </p:panel>
+
+
+                </f:view>
+
+
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

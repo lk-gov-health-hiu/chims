@@ -1,0 +1,122 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <body>
+
+        <ui:composition template="./../template.xhtml">
+
+            <ui:define name="content">
+
+
+                <f:view>
+
+
+                    <h:form>
+                        
+                        <p:commandButton ajax="false" value="Excel" >
+                            <p:dataExporter target="tbl" type="csv" fileName="items" ></p:dataExporter>
+                        </p:commandButton>
+                        
+                        <p:dataTable id="tbl" value="#{designComponentFormSetController.exportItems}" var="item">
+                            
+                            
+                              <p:column sortBy="#{item.parentComponent.name}" 
+                                      filterBy="#{item.parentComponent.name}"
+                                      filterMatchMode="#{item.parentComponent.name}">
+                                <f:facet name="header">
+                                    <h:outputText value="Form"/>
+                                </f:facet>
+                                <h:outputText value="#{item.parentComponent.name}"/>
+                            </p:column>
+                            
+                            
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Name"/>
+                                </f:facet>
+                                <h:outputText value="#{item.name}"/>
+                            </p:column>
+                            
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="RenderType"/>
+                                </f:facet>
+                                <h:outputText value="#{item.renderType}"/>
+                            </p:column>
+                            
+                            
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Selection DataType"/>
+                                </f:facet>
+                                <h:outputText value="#{item.selectionDataType}"/>
+                            </p:column>
+                            
+                            
+                            
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="CategoryOfAvailableItems"/>
+                                </f:facet>
+                                <h:outputText value="#{item.categoryOfAvailableItems.name}"/>
+                            </p:column>
+                            
+                            
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Data Population Strategy"/>
+                                </f:facet>
+                                <h:outputText value="#{item.dataPopulationStrategy}"/>
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Data Completion Strategy"/>
+                                </f:facet>
+                                <h:outputText value="#{item.dataCompletionStrategy}"/>
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Data Modification Strategy"/>
+                                </f:facet>
+                                <h:outputText value="#{item.dataModificationStrategy}"/>
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="ItemArrangementStrategy"/>
+                                </f:facet>
+                                <h:outputText value="#{item.itemArrangementStrategy}"/>
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="ReferenceComponent"/>
+                                </f:facet>
+                                <h:outputText value="#{item.referenceComponent}"/>
+                            </p:column>
+                            
+                            
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Item"/>
+                                </f:facet>
+                                <h:outputText value="#{item.item}"/>
+                            </p:column>
+                            
+                            
+                            
+                            
+                        </p:dataTable>
+                    </h:form>
+                </f:view>
+
+
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

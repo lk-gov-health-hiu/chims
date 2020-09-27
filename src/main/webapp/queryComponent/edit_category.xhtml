@@ -1,0 +1,53 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <body>
+
+        <ui:composition template="./../template.xhtml">
+
+            <ui:define name="content">
+                <f:view>
+
+                    <p:panel header="Edit Category Details" style="width: 100%; text-align: center;" >
+
+                        <h:form>
+
+                            <p:panelGrid columns="1" rendered="#{queryComponentController.selected ne null}"
+                                         style="margin: auto; text-align: left; width: 80%;">
+                                <f:facet name="header" >
+                                    <p:commandButton action="category" value="Save" actionListener="#{queryComponentController.saveSelectedItem()}" ajax="false" >
+                                    </p:commandButton>
+                                    <p:commandButton ajax="false" action="category" value="Back" style="float: right;" ></p:commandButton>
+                                </f:facet>
+                                <p:panelGrid columns="2" >
+                                    <p:outputLabel value="Name:" for="name" />
+                                    <p:inputText id="name" required="true" rendered="true"
+                                                 value="#{queryComponentController.selected.name}" title="Name" />
+
+                                    <p:outputLabel value="Descreption:" for="descreption" />
+                                    <p:inputTextarea id="descreption"
+                                                     value="#{queryComponentController.selected.descreption}" title="Name" />
+
+                                </p:panelGrid>
+                            </p:panelGrid>
+                        </h:form>
+
+                        <p:spacer height="10" ></p:spacer>
+
+                    </p:panel>
+
+
+                </f:view>
+
+
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

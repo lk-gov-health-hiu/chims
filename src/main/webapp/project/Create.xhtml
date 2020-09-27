@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:composition template="/template.xhtml">
+        <ui:define name="title">
+            <h:outputText value="#{bundle.CreateProjectTitle}"></h:outputText>
+        </ui:define>
+        <ui:define name="body">
+            <h:panelGroup id="messagePanel" layout="block">
+                <h:messages errorStyle="color: red" infoStyle="color: green" layout="table"/>
+            </h:panelGroup>
+            <h:form>
+                <h:panelGrid columns="2">
+                    <h:outputLabel value="#{bundle.CreateProjectLabel_id}" for="id" />
+                    <h:inputText id="id" value="#{projectController.selected.id}" title="#{bundle.CreateProjectTitle_id}" />
+                    <h:outputLabel value="#{bundle.CreateProjectLabel_comments}" for="comments" />
+                    <h:inputTextarea rows="4" cols="30" id="comments" value="#{projectController.selected.comments}" title="#{bundle.CreateProjectTitle_comments}" />
+                    <h:outputLabel value="#{bundle.CreateProjectLabel_currentStageType}" for="currentStageType" />
+                    <h:inputText id="currentStageType" value="#{projectController.selected.currentStageType}" title="#{bundle.CreateProjectTitle_currentStageType}" />
+                    <h:outputLabel value="#{bundle.CreateProjectLabel_client}" for="client" />
+                    <h:selectOneMenu id="client" value="#{projectController.selected.client}" title="#{bundle.CreateProjectTitle_client}" >
+                        <f:selectItems value="#{institutionController.itemsAvailableSelectOne}"/>
+                    </h:selectOneMenu>
+                    <h:outputLabel value="#{bundle.CreateProjectLabel_referenceNo}" for="referenceNo" />
+                    <h:inputText id="referenceNo" value="#{projectController.selected.referenceNo}" title="#{bundle.CreateProjectTitle_referenceNo}" />
+                    <h:outputLabel value="#{bundle.CreateProjectLabel_creater}" for="creater" />
+                    <h:selectOneMenu id="creater" value="#{projectController.selected.creater}" title="#{bundle.CreateProjectTitle_creater}" >
+                        <f:selectItems value="#{webUserController.itemsAvailableSelectOne}"/>
+                    </h:selectOneMenu>
+                    <h:outputLabel value="#{bundle.CreateProjectLabel_createdAt}" for="createdAt" />
+                    <h:inputText id="createdAt" value="#{projectController.selected.createdAt}" title="#{bundle.CreateProjectTitle_createdAt}" >
+                        <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                    </h:inputText>
+                    <h:outputLabel value="#{bundle.CreateProjectLabel_retirer}" for="retirer" />
+                    <h:selectOneMenu id="retirer" value="#{projectController.selected.retirer}" title="#{bundle.CreateProjectTitle_retirer}" >
+                        <f:selectItems value="#{webUserController.itemsAvailableSelectOne}"/>
+                    </h:selectOneMenu>
+                    <h:outputLabel value="#{bundle.CreateProjectLabel_retiredAt}" for="retiredAt" />
+                    <h:inputText id="retiredAt" value="#{projectController.selected.retiredAt}" title="#{bundle.CreateProjectTitle_retiredAt}" >
+                        <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                    </h:inputText>
+                    <h:outputLabel value="#{bundle.CreateProjectLabel_retireComments}" for="retireComments" />
+                    <h:inputText id="retireComments" value="#{projectController.selected.retireComments}" title="#{bundle.CreateProjectTitle_retireComments}" />
+                    <h:outputLabel value="#{bundle.CreateProjectLabel_billDate}" for="billDate" />
+                    <h:inputText id="billDate" value="#{projectController.selected.billDate}" title="#{bundle.CreateProjectTitle_billDate}" >
+                        <f:convertDateTime pattern="MM/dd/yyyy" />
+                    </h:inputText>
+                    <h:outputLabel value="#{bundle.CreateProjectLabel_billTime}" for="billTime" />
+                    <h:inputText id="billTime" value="#{projectController.selected.billTime}" title="#{bundle.CreateProjectTitle_billTime}" >
+                        <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                    </h:inputText>
+                    <h:outputLabel value="#{bundle.CreateProjectLabel_billClass}" for="billClass" />
+                    <h:inputText id="billClass" value="#{projectController.selected.billClass}" title="#{bundle.CreateProjectTitle_billClass}" />
+                    <h:outputLabel value="#{bundle.CreateProjectLabel_editor}" for="editor" />
+                    <h:selectOneMenu id="editor" value="#{projectController.selected.editor}" title="#{bundle.CreateProjectTitle_editor}" >
+                        <f:selectItems value="#{webUserController.itemsAvailableSelectOne}"/>
+                    </h:selectOneMenu>
+                    <h:outputLabel value="#{bundle.CreateProjectLabel_editedAt}" for="editedAt" />
+                    <h:inputText id="editedAt" value="#{projectController.selected.editedAt}" title="#{bundle.CreateProjectTitle_editedAt}" >
+                        <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                    </h:inputText>
+                    <h:outputLabel value="#{bundle.CreateProjectLabel_checkedBy}" for="checkedBy" />
+                    <h:selectOneMenu id="checkedBy" value="#{projectController.selected.checkedBy}" title="#{bundle.CreateProjectTitle_checkedBy}" >
+                        <f:selectItems value="#{webUserController.itemsAvailableSelectOne}"/>
+                    </h:selectOneMenu>
+                    <h:outputLabel value="#{bundle.CreateProjectLabel_checkeAt}" for="checkeAt" />
+                    <h:inputText id="checkeAt" value="#{projectController.selected.checkeAt}" title="#{bundle.CreateProjectTitle_checkeAt}" >
+                        <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                    </h:inputText>
+                </h:panelGrid>
+                <br />
+                <h:commandLink action="#{projectController.create}" value="#{bundle.CreateProjectSaveLink}" />
+                <br />
+                <br />
+                <h:commandLink action="#{projectController.prepareList}" value="#{bundle.CreateProjectShowAllLink}" immediate="true"/>
+                <br />
+                <br />
+                <h:link outcome="/index" value="#{bundle.CreateProjectIndexLink}"/>
+            </h:form>
+        </ui:define>
+    </ui:composition>
+
+</html>

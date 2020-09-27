@@ -1,0 +1,123 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <body>
+
+        <ui:composition template="./../template.xhtml">
+
+            <ui:define name="content">
+
+                <p:panel style="width: 100%; text-align: center;" >
+                    <f:facet name="header" >
+                        <h:outputLabel value="Manage Forms of Form Set" ></h:outputLabel>
+                        <h:outputLabel value=" - " ></h:outputLabel>
+                        <h:outputLabel value="#{designComponentFormController.designComponentFormSet.name}" ></h:outputLabel>
+                    </f:facet>
+
+                    <h:form >
+
+                        <p:panelGrid columns="2" styleClass="alignTop" >
+                            <f:facet name="header" >
+                                <p:commandButton ajax="false" value="Back to Manage Form Sets" action="#{designComponentFormSetController.backToManageFormSets()}" style="float: right;" ></p:commandButton>
+                            </f:facet>
+
+
+                            <p:panel header="Existing Forms" >
+                                <p:dataTable id="lst" value="#{designComponentFormController.formsOfTheSelectedSet}" var="f" >
+                                    <p:column headerText="Order No" width="40" >
+                                        <p:outputLabel value="#{f.orderNo}" >
+                                            <f:convertNumber pattern="0" ></f:convertNumber>
+                                        </p:outputLabel>
+                                    </p:column>
+                                    <p:column headerText="Name" >
+                                        <p:outputLabel id="txtName" value="#{f.name}" >
+                                        </p:outputLabel>
+                                    </p:column>
+                                    <p:column headerText="Sex" width="80" >
+                                        <p:outputLabel value="#{f.componentSex.label()}" ></p:outputLabel>
+                                    </p:column>
+                                    <p:column headerText="Actions" width="260" >
+                                        <p:commandButton id="btnEdit" value="Edit"  icon="ui-icon-pencil"  
+                                                         action="#{designComponentFormController.toEditDesignComponentFrom()}" 
+                                                         ajax="false" >
+                                            <f:setPropertyActionListener value="#{f}" target="#{designComponentFormController.selected}" ></f:setPropertyActionListener>
+                                        </p:commandButton>
+                                        <p:commandButton id="btnComponents" value="Components"  icon="ui-icon-note"       
+                                                         action="#{designComponentFormController.toManageDesignComponentItems()}" 
+                                                         ajax="false" >
+                                            <f:setPropertyActionListener value="#{f}" target="#{designComponentFormController.selected}" ></f:setPropertyActionListener>
+                                        </p:commandButton>
+                                    </p:column>
+                                    <p:column headerText="Change Order" width="100" >
+                                        <p:commandButton id="btnUp"  icon="ui-icon-arrowthick-1-n"  
+                                                         action="#{designComponentFormController.moveUpTheSelectedSet()}" 
+                                                         process="@this" update="lst" >
+                                            <f:setPropertyActionListener value="#{f}" target="#{designComponentFormController.movingForm}" ></f:setPropertyActionListener>
+                                        </p:commandButton>
+                                        <p:commandButton id="btnDown" icon="ui-icon-arrowthick-1-s" 
+                                                         action="#{designComponentFormController.moveDownTheSelectedSet()}" 
+                                                         process="@this" update="lst" >
+                                            <f:setPropertyActionListener value="#{f}" target="#{designComponentFormController.movingForm}" ></f:setPropertyActionListener>
+                                        </p:commandButton>
+                                    </p:column>
+                                    <p:column headerText="Remove" width="50" >
+                                        <p:commandButton id="btnRemove" icon="ui-icon-trash"  onclick="if (!confirm('Really want to do that?'))
+                                                    return false"
+                                                         action="#{designComponentFormController.removeFromFromTheSelectedSet()}" 
+                                                         process="@this" update="lst" >
+                                            <f:setPropertyActionListener value="#{f}" target="#{designComponentFormController.removingForm}" ></f:setPropertyActionListener>
+                                        </p:commandButton>
+                                    </p:column>
+                                </p:dataTable>
+
+                            </p:panel>
+
+                            <p:panel header="Add New Form" >
+                                <p:panelGrid id="gridAddingForm" columns="2" rendered="#{designComponentFormController.addingForm ne null}">
+                                    <p:outputLabel value="Name" ></p:outputLabel>
+                                    <p:inputText id="name" value="#{designComponentFormController.addingForm.name}" ></p:inputText>
+
+                                    <p:outputLabel value="Order No" ></p:outputLabel>
+                                    <p:inputText id="orderNo" value="#{designComponentFormController.addingForm.orderNo}" ></p:inputText>
+
+                                    <p:outputLabel value="Sex" ></p:outputLabel>
+                                    <p:selectOneMenu id="sex" value="#{designComponentFormController.addingForm.componentSex}" 
+                                                     title="Sex" >
+                                        <f:selectItems value="#{commonController.componentSex}" ></f:selectItems>
+                                    </p:selectOneMenu>
+
+                                    <p:spacer ></p:spacer>
+                                    <p:commandButton process="name orderNo sex btnAdd" update="gridAddingForm lst" value="Add" id="btnAdd"
+                                                     action="#{designComponentFormController.addFormToTheSelectedSet()}" ></p:commandButton>
+                                </p:panelGrid>
+
+                            </p:panel>
+
+
+                        </p:panelGrid>
+
+
+                    </h:form>
+
+
+                </p:panel>
+                <div>
+                    <br/>
+                    <br/>
+                    <br/>
+                    <br/>
+                </div>
+
+            </ui:define>
+
+
+
+        </ui:composition>
+
+    </body>
+</html>

@@ -1,0 +1,77 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:cc="http://xmlns.jcp.org/jsf/composite"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+
+    <!-- INTERFACE -->
+    <cc:interface>
+    </cc:interface>
+
+    <!-- IMPLEMENTATION -->
+    <cc:implementation>
+
+        <h:form>
+
+            <h:panelGroup rendered="#{applicationController.demoSetup}" >
+
+                <p:dataTable id="datalist" value="#{demoAccountController.items}" var="item"
+                             rowKey="#{item.id}"
+                             >
+                    <f:facet name="header" >
+                        Demo Version Only.
+                    </f:facet>
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="#{bundleDemo.ListDemoAccountTitle_name}"/>
+                        </f:facet>
+                        <h:outputText value="#{item.name}"/>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="#{bundleDemo.ListDemoAccountTitle_userName}"/>
+                        </f:facet>
+                        <h:outputText value="#{item.userName}"/>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="#{bundleDemo.ListDemoAccountTitle_password}"/>
+                        </f:facet>
+                        <h:outputText value="#{item.password}"/>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="#{bundleDemo.ListDemoAccountTitle_comments}"/>
+                        </f:facet>
+                        <h:outputText value="#{item.comments}"/>
+                    </p:column>
+                    <p:column>
+                        <p:commandButton ajax="false" value="Login"
+                                         action="#{demoAccountController.loginUseingDemoAccount()}">
+                            <f:setPropertyActionListener value="#{item}" target="#{demoAccountController.selected}" ></f:setPropertyActionListener>
+                        </p:commandButton>
+                    </p:column>
+                </p:dataTable>
+
+                <div>
+                    <br/>
+                    &nbsp;
+                     <br/>
+                    &nbsp;
+                     <br/>
+                    &nbsp;
+                     <br/>
+                    &nbsp;
+                </div>
+                
+
+            </h:panelGroup>
+
+        </h:form>
+
+
+
+    </cc:implementation>
+</html>

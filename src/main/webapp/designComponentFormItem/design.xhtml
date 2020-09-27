@@ -1,0 +1,117 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <body>
+
+        <ui:composition template="./../template.xhtml">
+
+            <ui:define name="content">
+
+
+
+                <f:view>
+
+                    <p:panel header="Form Item Details" style="width: 100%; text-align: center;" >
+
+                        <h:form>
+
+                            <p:panelGrid columns="2" rendered="#{designComponentFormItemController.designComponentForm ne null}">
+                                <p:outputLabel value="Form Set" for="parentComponent" />
+                                <p:outputLabel id="parentComponent" 
+                                               value="#{designComponentFormItemController.designComponentForm.parentComponent.name}" >
+                                </p:outputLabel>
+
+                                <p:outputLabel value="Name:" for="name" />
+                                <p:inputText id="name" value="#{designComponentFormItemController.designComponentForm.name}" title="Name" />
+
+                                <p:outputLabel value="ComponentSex:" for="componentSex" />
+                                <p:inputText id="componentSex" value="#{designComponentFormItemController.designComponentForm.componentSex}" title="ComponentSex" />
+
+                                <p:outputLabel value="RenderType:" for="renderType" />
+                                <p:selectOneMenu id="renderType" 
+                                                 value="#{designComponentFormItemController.designComponentForm.renderType}" 
+                                                 title="RenderType" >
+                                    <f:selectItems value="#{commonController.renderTypes}" ></f:selectItems>
+                                </p:selectOneMenu>
+
+                                <p:outputLabel value="MimeType:" for="mimeType" />
+                                <p:selectOneMenu id="mimeType" 
+                                                 value="#{designComponentFormItemController.designComponentForm.mimeType}" >
+                                    <f:selectItem itemLabel="Select" ></f:selectItem>
+                                    <f:selectItems value="#{itemController.mimeTypes}" var="m" itemLabel="#{m.name}" itemLabelEscaped="#{m}" ></f:selectItems>
+                                </p:selectOneMenu>
+
+                                <p:outputLabel value="SelectionDataType:" for="selectionDataType" />
+                                <p:selectOneMenu id="selectionDataType" 
+                                                 value="#{designComponentFormItemController.designComponentForm.selectionDataType}" title="SelectionDataType" >
+                                    <f:selectItems value="#{commonController.selectionDataTypes}" ></f:selectItems>
+                                </p:selectOneMenu>
+
+                                <p:outputLabel value="Top Percent:" for="topPercent" />
+                                <p:inputText id="topPercent" value="#{designComponentFormItemController.designComponentForm.topPercent}" title="TopPercent" />
+                                <p:outputLabel value="Left Percent:" for="leftPercent" />
+                                <p:inputText id="leftPercent" value="#{designComponentFormItemController.designComponentForm.leftPercent}" title="LeftPercent" />
+                                <p:outputLabel value="Width Percent:" for="widthPercent" />
+                                <p:inputText id="widthPercent" value="#{designComponentFormItemController.designComponentForm.widthPercent}" title="WidthPercent" />
+                                <p:outputLabel value="Height Percent:" for="heightPercent" />
+                                <p:inputText id="heightPercent" value="#{designComponentFormItemController.designComponentForm.heightPercent}" title="HeightPercent" />
+
+                                <p:outputLabel value="Color as Integer:" for="intHtmlColor" />
+                                <p:inputText id="intHtmlColor" value="#{designComponentFormItemController.designComponentForm.intHtmlColor}" title="IntHtmlColor" />
+
+                                <p:outputLabel value="Colour as Hexadecimal:" for="hexHtmlColour" />
+                                <p:inputText id="hexHtmlColour" value="#{designComponentFormItemController.designComponentForm.hexHtmlColour}" title="HexHtmlColour" />
+
+                                <p:outputLabel value="Category of Available Items:" for="categoryOfAvailableItems" />
+                                <p:selectOneMenu id="categoryOfAvailableItems" value="#{designComponentFormItemController.designComponentForm.categoryOfAvailableItems}" >
+                                    <f:selectItem itemLabel="Select" ></f:selectItem>
+                                    <f:selectItems value="#{itemController.categories}" var="ic" itemLabel="#{ic.name}" itemLabelEscaped="#{ic}" ></f:selectItems>
+
+                                </p:selectOneMenu>
+
+
+
+                                <p:outputLabel value="Order No:" for="orderNo" />
+                                <p:inputText id="orderNo" value="#{designComponentFormItemController.designComponentForm.orderNo}" title="OrderNo" />
+
+
+                                <p:outputLabel value="Data Population Strategy:" for="dataPopulationStrategy" />
+                                <p:selectOneMenu id="dataPopulationStrategy" 
+                                                 value="#{designComponentFormItemController.designComponentForm.dataPopulationStrategy}" 
+                                                 title="DataPopulationStrategy" >
+                                    <f:selectItems value="#{commonController.dataPopulationStrategies}" ></f:selectItems>
+                                </p:selectOneMenu>
+
+                                <p:outputLabel value="Data Completion Strategy:" for="dataCompletionStrategy" />
+                                <p:selectOneMenu id="dataCompletionStrategy" 
+                                                 value="#{designComponentFormItemController.designComponentForm.dataCompletionStrategy}" 
+                                                 title="DataCompletionStrategy" >
+                                    <f:selectItems value="#{commonController.dataCompletionStrategies}" ></f:selectItems>
+                                </p:selectOneMenu>
+
+                                <p:outputLabel value="Data Modification Strategy:" for="dataModificationStrategy" />
+                                <p:inputText id="dataModificationStrategy" 
+                                             value="#{designComponentFormItemController.designComponentForm.dataModificationStrategy}" 
+                                             title="DataModificationStrategy" >
+                                    <f:selectItems value="#{commonController.dataModificationStrategies}" ></f:selectItems>
+                                </p:inputText>
+                            </p:panelGrid>
+                        </h:form>
+
+                    </p:panel>
+
+
+                </f:view>
+
+
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>
