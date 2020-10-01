@@ -34,6 +34,10 @@
                                 <p:inputText id="name" value="#{queryComponentController.selected.name}" title="#{bundleQuery.CreateQueryComponentTitle_name}" />
 
 
+                                <p:outputLabel value="Order No." for="orderNo" />
+                                <p:inputText id="orderNo" value="#{queryComponentController.selected.orderNo}" title="#{bundleQuery.CreateQueryComponentTitle_name}" />
+
+                                
                                 <p:outputLabel value="MatchType:" for="matchType" />
                                 <p:selectOneMenu id="matchType"  value="#{queryComponentController.selected.matchType}" >
                                     <f:selectItem itemLabel="Select" ></f:selectItem>

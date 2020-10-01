@@ -30,4 +30,8 @@ package lk.gov.health.phsp.enums;
 public enum QueryCriteriaMatchType {
     Variable_Value_Check,
     Variable_Range_check,
+    Opening_Bracket,
+    Closing_Bracket,
+    Operator_OR,
+    Operator_AND,
 }

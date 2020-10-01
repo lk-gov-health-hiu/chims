@@ -808,7 +808,7 @@ public class QueryComponentController implements Serializable {
                 + " where q.retired=false "
                 + " and q.queryLevel =:l "
                 + " and q.parentComponent =:p "
-                + " order by q.name";
+                + " order by q.orderNo, q.id";
         Map m = new HashMap();
         m.put("p", p);
         m.put("l", QueryLevel.Criterian);
