@@ -95,7 +95,9 @@
                                     <p:outputLabel value="Year" rendered="#{queryComponentController.filterYear}"></p:outputLabel>
                                     <p:inputText value="#{queryComponentController.year}" 
                                                  required="true"
-                                                 rendered="#{queryComponentController.filterYear}"></p:inputText>
+                                                 rendered="#{queryComponentController.filterYear}">
+                                        <p:ajax event="blur" process="@this" ></p:ajax>
+                                    </p:inputText>
 
                                     <p:outputLabel value="Quarter"  rendered="#{queryComponentController.filterQuarter}"></p:outputLabel>
                                     <p:selectOneMenu value="#{queryComponentController.quarter}"  rendered="#{queryComponentController.filterQuarter}"
