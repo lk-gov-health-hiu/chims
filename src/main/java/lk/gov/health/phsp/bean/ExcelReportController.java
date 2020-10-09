@@ -44,6 +44,9 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.ejb.EJB;
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
+import javax.script.ScriptException;
 import lk.gov.health.phsp.bean.util.JsfUtil;
 import lk.gov.health.phsp.entity.ClientEncounterComponentItem;
 import lk.gov.health.phsp.entity.Institution;
@@ -523,7 +526,197 @@ public class ExcelReportController implements Serializable {
         return result;
     }
 
+    private String evaluateScript(String script) {
+        ScriptEngineManager mgr = new ScriptEngineManager();
+        ScriptEngine engine = mgr.getEngineByName("JavaScript");
+        try {
+            return engine.eval(script) + "";
+        } catch (ScriptException ex) {
+            ////System.out.println("ex = " + ex.getMessage());
+            return null;
+        }
+    }
+
     private boolean findMatch(List<ClientEncounterComponentItem> ccs, QueryWithCriteria qrys) {
+        if (needCheckLogin) {
+            //System.out.println("Find Match");
+        }
+        if (qrys == null) {
+            //System.out.println("No Query with Components = " + qrys);
+            return false;
+        }
+        if (qrys.getQuery() == null) {
+            //System.out.println("No Query for Query with Components = " + qrys.getQuery());
+            return false;
+        }
+        if (qrys.getQuery().getCode() == null) {
+            //System.out.println("No Code for the Query for Query with Components = " + qrys.getQuery().getCode());
+            return false;
+        }
+        if (qrys.getQuery().getCode().trim().equals("")) {
+            //System.out.println("Empty Code for the Query for Query with Components = " + qrys.getQuery().getCode());
+            return false;
+        }
+
+        boolean suitableForInclusion = true;
+
+        if (needCheckLogin) {
+            //System.out.println("finding matches");
+        }
+
+        boolean isComplexQuery = false;
+
+        for (QueryComponent qc : qrys.getCriteria()) {
+            switch (qc.getMatchType()) {
+                case Closing_Bracket:
+                case Opening_Bracket:
+                case Operator_AND:
+                case Operator_OR:
+                    isComplexQuery = true;
+                    break;
+            }
+        }
+
+        System.out.println("isComplexQuery = " + isComplexQuery);
+
+        if (isComplexQuery) {
+            String evaluationString = "";
+            for (QueryComponent qc : qrys.getCriteria()) {
+                if (qc.getMatchType() == QueryCriteriaMatchType.Opening_Bracket) {
+                    evaluationString += "(";
+                    continue;
+                } else if (qc.getMatchType() == QueryCriteriaMatchType.Closing_Bracket) {
+                    evaluationString += ")";
+                    continue;
+                } else if (qc.getMatchType() == QueryCriteriaMatchType.Operator_AND) {
+                    evaluationString += " && ";
+                    continue;
+                } else if (qc.getMatchType() == QueryCriteriaMatchType.Operator_OR) {
+                    evaluationString += " || ";
+                    continue;
+                } else {
+                    if (qc.getItem() == null) {
+                        if (logActivity) {
+                            //System.out.println("No Item for Criteria for " + qc.getName());
+                        }
+                        continue;
+                    }
+                    if (qc.getItem().getCode() == null) {
+                        if (logActivity) {
+                            //System.out.println("No Item code for Criteria for " + qc.getName());
+                        }
+                        continue;
+                    }
+                    for (ClientEncounterComponentItem cei : ccs) {
+                        if (needCheckLogin) {
+                            //System.out.println("cei Id" + cei.getId() + " Item " + cei.getItem());
+                        }
+
+                        if (cei.getItem() == null) {
+                            if (logActivity) {
+                                //System.out.println("No Item for Client Component");
+                            }
+                            continue;
+                        }
+                        if (cei.getItem().getCode() == null) {
+                            if (logActivity) {
+                                //System.out.println("No Item for Client Component");
+                            }
+                            continue;
+                        }
+
+//                //System.out.println("cei.getItem().getCode() = " + cei.getItem().getCode());
+//                //System.out.println("qc.getItem().getCode() = " + qc.getItem().getCode());
+                        if (cei.getItem().getCode().trim().equalsIgnoreCase(qc.getItem().getCode().trim())) {
+                            if (matchQuery(qc, cei)) {
+                                evaluationString += "true";
+                            } else {
+                                evaluationString += "false";
+                            }
+                        }
+                    }
+
+                }
+
+            }
+            String evaluationResult = evaluateScript(evaluationString);
+            System.out.println("evaluationString = " + evaluationString);
+            System.out.println("evaluationResult = " + evaluationResult);
+            if (evaluationResult == null) {
+                suitableForInclusion = false;
+            } else if (evaluationResult.trim().equalsIgnoreCase("true")) {
+                suitableForInclusion = true;
+            } else {
+                suitableForInclusion = false;
+            }
+        } else {
+
+            for (QueryComponent qc : qrys.getCriteria()) {
+                if (qc.getItem() == null) {
+                    if (logActivity) {
+                        //System.out.println("No Item for Criteria for " + qc.getName());
+                    }
+                    continue;
+                }
+                if (qc.getItem().getCode() == null) {
+                    if (logActivity) {
+                        //System.out.println("No Item code for Criteria for " + qc.getName());
+                    }
+                    continue;
+                }
+
+                boolean thisMatchOk = false;
+                boolean componentFound = false;
+
+                for (ClientEncounterComponentItem cei : ccs) {
+                    if (needCheckLogin) {
+                        //System.out.println("cei Id" + cei.getId() + " Item " + cei.getItem());
+                    }
+
+                    if (cei.getItem() == null) {
+                        if (logActivity) {
+                            //System.out.println("No Item for Client Component");
+                        }
+                        continue;
+                    }
+                    if (cei.getItem().getCode() == null) {
+                        if (logActivity) {
+                            //System.out.println("No Item for Client Component");
+                        }
+                        continue;
+                    }
+
+//                //System.out.println("cei.getItem().getCode() = " + cei.getItem().getCode());
+//                //System.out.println("qc.getItem().getCode() = " + qc.getItem().getCode());
+                    if (cei.getItem().getCode().trim().equalsIgnoreCase(qc.getItem().getCode().trim())) {
+                        componentFound = true;
+                        if (matchQuery(qc, cei)) {
+                            thisMatchOk = true;
+                        }
+                    }
+                }
+                if (!componentFound) {
+                    if (logActivity) {
+                        //System.out.println("Client component Item NOT found for " + qc);
+                        for (ClientEncounterComponentItem ci : ccs) {
+//                        //System.out.println("Client Component Item Item Code = " + ci.getItem().getCode());
+                        }
+                        for (QueryComponent tqc : qrys.getCriteria()) {
+//                        //System.out.println("qc Item Code " + tqc.getItem().getCode());
+                        }
+                    }
+                }
+                if (!thisMatchOk) {
+                    suitableForInclusion = false;
+                }
+            }
+
+        }
+//        //System.out.println("suitableForInclusion = " + suitableForInclusion);
+        return suitableForInclusion;
+    }
+
+    private boolean findMatchOld(List<ClientEncounterComponentItem> ccs, QueryWithCriteria qrys) {
         if (needCheckLogin) {
             //System.out.println("Find Match");
         }
@@ -1067,13 +1260,11 @@ public class ExcelReportController implements Serializable {
         return ts;
     }
 
-    
-    
     public long findClientCountEncounterComponentItemMatchCount(
-            List<Institution> ins, 
+            List<Institution> ins,
             Date fromDate,
             Date toDate,
-            String itemCode, 
+            String itemCode,
             List<String> valueStrings) {
         if (logActivity) {
 //            //System.out.println("Finding ENcounter Component Items for Querying");
@@ -1085,18 +1276,18 @@ public class ExcelReportController implements Serializable {
                 + " from ClientEncounterComponentItem f "
                 + " where f.retired<>:ret "
                 + " and f.encounter.retired<>:ret ";
-                j+= " and f.item.code=:ic ";
-                j+= " and f.shortTextValue in :ivs";
+        j += " and f.item.code=:ic ";
+        j += " and f.shortTextValue in :ivs";
         m.put("ic", itemCode);
         m.put("ret", true);
         m.put("ivs", valueStrings);
-        if(ins!=null && !ins.isEmpty()){
+        if (ins != null && !ins.isEmpty()) {
             m.put("ins", ins);
             j += " and f.encounter.institution in :ins ";
         }
-        if(fromDate!=null && toDate!=null){
-             m.put("fd", fromDate);
-             m.put("td", toDate);
+        if (fromDate != null && toDate != null) {
+            m.put("fd", fromDate);
+            m.put("td", toDate);
             j += " and f.encounter.encounterDate between :fd and :td ";
         }
 //        j += " group by e";
@@ -1105,14 +1296,14 @@ public class ExcelReportController implements Serializable {
         //System.out.println("m = " + m);
         //System.out.println("count = " + count);
         long val;
-        if(count!=null){
+        if (count != null) {
             val = (long) count;
-        }else{
+        } else {
             val = 0l;
         }
         return val;
     }
-    
+
     private String currentTimeAsString() {
         Date date = Calendar.getInstance().getTime();
         DateFormat dateFormat = new SimpleDateFormat("hh:mm:ss");
@@ -1310,7 +1501,8 @@ public class ExcelReportController implements Serializable {
 
     private List<QueryComponent> findAllQueryComponents() {
         String j = "select q from QueryComponent q "
-                + " where q.retired=false ";
+                + " where q.retired=false "
+                + " order by q.orderNo, q.id";
         List<QueryComponent> c = getQueryComponentFacade().findByJpql(j);
         return c;
     }
