@@ -94,6 +94,7 @@ public class QueryComponentController implements Serializable {
 
     private List<QueryComponent> items = null;
     private List<QueryComponent> categories = null;
+    private List<QueryComponent> excels = null;
     private QueryComponent selected;
     private QueryComponent selectedQuery;
     private QueryComponent selectedToDuplicateQuery;
@@ -161,13 +162,8 @@ public class QueryComponentController implements Serializable {
     }
 
     public String toListAnalysis() {
-        String j;
-        Map m = new HashMap();
-        j = "select q from QueryComponent q "
-                + " where q.retired<>:ret ";
-        m.put("ret", true);
-        j = j + " order by q.name";
-        items = getFacade().findByJpql(j, m);
+        items = getApplicationController().getQueryComponents();
+        getApplicationController().getQueryComponents();
         return "/analysis/list";
     }
 
@@ -182,10 +178,9 @@ public class QueryComponentController implements Serializable {
         return "/analysis/analysis";
     }
 
-    public void listQueries() {
-        listQueries(searchText);
-    }
-
+//    public void listQueries() {
+//        listQueries(searchText);
+//    }
     public List<Item> getItemsInDesignFormItemValues() {
         if (getSelected() == null || getSelected().getItem() == null) {
             return new ArrayList<>();
@@ -223,21 +218,20 @@ public class QueryComponentController implements Serializable {
         return temItsm;
     }
 
-    public void listQueries(String strSearch) {
-        String j;
-        Map m = new HashMap();
-        j = "select q from QueryComponent q "
-                + " where q.retired<>:ret ";
-        m.put("ret", true);
-        if (strSearch != null && !strSearch.trim().equals("")) {
-            j = j + " lower(q.name) like :n or lower(q.code) like :q ";
-            m.put("n", "%" + strSearch.trim().toLowerCase() + "%");
-        }
-        j = j + " order by q.name";
-        items = getFacade().findByJpql(j, m);
-
-    }
-
+//    public void listQueries(String strSearch) {
+//        String j;
+//        Map m = new HashMap();
+//        j = "select q from QueryComponent q "
+//                + " where q.retired<>:ret ";
+//        m.put("ret", true);
+//        if (strSearch != null && !strSearch.trim().equals("")) {
+//            j = j + " lower(q.name) like :n or lower(q.code) like :q ";
+//            m.put("n", "%" + strSearch.trim().toLowerCase() + "%");
+//        }
+//        j = j + " order by q.name";
+//        items = getFacade().findByJpql(j, m);
+//
+//    }
     public void clearSearchText() {
         searchText = "";
     }
@@ -318,13 +312,16 @@ public class QueryComponentController implements Serializable {
         if (set == null) {
             return new ArrayList<>();
         }
-        String j = "Select f from QueryComponent f "
-                + "where f.retired=false "
-                + " and f.parentComponent=:pc "
-                + " order by f.orderNo";
-        Map m = new HashMap();
-        m.put("pc", set);
-        return getFacade().findByJpql(j, m);
+
+        List<QueryComponent> tqcs = applicationController.getQueryComponents();
+        List<QueryComponent> nqs = new ArrayList<>();
+        for (QueryComponent q : tqcs) {
+            if (q.getParentComponent().equals(set)) {
+                nqs.add(q);
+            }
+        }
+        return nqs;
+
     }
 
     public void addCriterianToTheSelectedQueriesCriteria() {
@@ -553,26 +550,60 @@ public class QueryComponentController implements Serializable {
     }
 
     public List<QueryComponent> completeQueryCategories(String qry) {
-        ////System.out.println("completeQueryCategories");
-        String j = "select q from QueryComponent q "
-                + " where q.retired=false "
-                + " and q.queryLevel=:l "
-                + " and (lower(q.name) like :qry or lower(q.code) like :qry) "
-                + " order by q.name";
-        Map m = new HashMap();
-        m.put("qry", "%" + qry.toLowerCase() + "%");
-        m.put("l", QueryLevel.Category);
-        return getFacade().findByJpql(j, m);
+        List<QueryComponent> nqs = new ArrayList<>();
+        if (qry == null) {
+            return nqs;
+        }
+        if (qry.trim().equals("")) {
+            return nqs;
+        } else {
+            qry = qry.trim();
+        }
+        List<QueryComponent> tqcs = applicationController.getQueryComponents();
+
+        for (QueryComponent q : tqcs) {
+            if (q.getQueryLevel() == QueryLevel.Category) {
+                String name;
+                String code;
+                if (q.getName() != null) {
+                    name = q.getName().trim();
+                } else {
+                    name = "";
+                }
+                if (q.getCode() != null) {
+                    code = q.getCode().trim();
+                } else {
+                    code = "";
+                }
+                if (name.equalsIgnoreCase(qry) || code.equalsIgnoreCase(qry)) {
+                    nqs.add(q);
+                }
+            }
+        }
+        return nqs;
+
     }
 
     public List<QueryComponent> fillCategories() {
-        String j = "select q from QueryComponent q "
-                + " where q.retired=false "
-                + " and q.queryLevel=:l "
-                + " order by q.name";
-        Map m = new HashMap();
-        m.put("l", QueryLevel.Category);
-        return getFacade().findByJpql(j, m);
+        List<QueryComponent> tqcs = applicationController.getQueryComponents();
+        List<QueryComponent> nqs = new ArrayList<>();
+        for (QueryComponent q : tqcs) {
+            if (q.getQueryLevel() == QueryLevel.Category) {
+                nqs.add(q);
+            }
+        }
+        return nqs;
+    }
+
+    public List<QueryComponent> fillExcels() {
+        List<QueryComponent> tqcs = applicationController.getQueryComponents();
+        List<QueryComponent> nqs = new ArrayList<>();
+        for (QueryComponent q : tqcs) {
+            if (q.getQueryType() == QueryType.Excel_Report) {
+                nqs.add(q);
+            }
+        }
+        return nqs;
     }
 
     public List<QueryComponent> subcategories() {
@@ -580,15 +611,15 @@ public class QueryComponentController implements Serializable {
     }
 
     public List<QueryComponent> subcategories(QueryComponent p) {
-        String j = "select q from QueryComponent q "
-                + " where q.retired=false "
-                + " and q.queryLevel =:l "
-                + " and q.parentComponent =:p "
-                + " order by q.name";
-        Map m = new HashMap();
-        m.put("p", p);
-        m.put("l", QueryLevel.Subcategory);
-        return getFacade().findByJpql(j, m);
+        List<QueryComponent> tqcs = applicationController.getQueryComponents();
+        List<QueryComponent> nqs = new ArrayList<>();
+        for (QueryComponent q : tqcs) {
+            if (q.getQueryLevel() == QueryLevel.Subcategory
+                    && q.getParentComponent().equals(p)) {
+                nqs.add(q);
+            }
+        }
+        return nqs;
     }
 
     public List<QueryComponent> queries() {
@@ -786,15 +817,15 @@ public class QueryComponentController implements Serializable {
     }
 
     public List<QueryComponent> queries(QueryComponent p) {
-        String j = "select q from QueryComponent q "
-                + " where q.retired=false "
-                + " and q.queryLevel =:l "
-                + " and q.parentComponent =:p "
-                + " order by q.name";
-        Map m = new HashMap();
-        m.put("p", p);
-        m.put("l", QueryLevel.Query);
-        return getFacade().findByJpql(j, m);
+        List<QueryComponent> tqcs = applicationController.getQueryComponents();
+        List<QueryComponent> nqs = new ArrayList<>();
+        for (QueryComponent q : tqcs) {
+            if (q.getQueryLevel() == QueryLevel.Query
+                    && q.getParentComponent().equals(p)) {
+                nqs.add(q);
+            }
+        }
+        return nqs;
     }
 
     public List<QueryComponent> criteria() {
@@ -802,29 +833,37 @@ public class QueryComponentController implements Serializable {
     }
 
     public List<QueryComponent> criteria(QueryComponent p) {
-        ////System.out.println("finding criteria");
-        ////System.out.println("p = " + p);
-        String j = "select q from QueryComponent q "
-                + " where q.retired=false "
-                + " and q.queryLevel =:l "
-                + " and q.parentComponent =:p "
-                + " order by q.orderNo, q.id";
-        Map m = new HashMap();
-        m.put("p", p);
-        m.put("l", QueryLevel.Criterian);
-        List<QueryComponent> c = getFacade().findByJpql(j, m);
-        ////System.out.println("c = " + c);
-        return c;
+        List<QueryComponent> tqcs = applicationController.getQueryComponents();
+        List<QueryComponent> nqs = new ArrayList<>();
+        for (QueryComponent q : tqcs) {
+            if (q.getQueryLevel() == QueryLevel.Criterian
+                    && q.getParentComponent().equals(p)) {
+                nqs.add(q);
+            }
+        }
+        return nqs;
     }
 
     public QueryComponent findLastQuery(String qry) {
-        String j = "select q from QueryComponent q "
-                + " where q.retired=false "
-                + " and lower(q.code)=:qry "
-                + " order by q.id desc";
-        Map m = new HashMap();
-        m.put("qry", qry.toLowerCase());
-        return getFacade().findFirstByJpql(j, m);
+        if (qry == null) {
+            return null;
+        }
+        QueryComponent nq = null;
+        List<QueryComponent> tqcs = applicationController.getQueryComponents();
+        List<QueryComponent> nqs = new ArrayList<>();
+        for (QueryComponent q : tqcs) {
+            if (q.getCode() != null && q.getCode().equalsIgnoreCase(qry)) {
+                if (nq == null) {
+                    nq = q;
+                } else {
+                    if (nq.getId() < q.getId()) {
+                        nq = q;
+                    }
+                }
+            }
+        }
+        return nq;
+
     }
 
     public String testQuery() {
@@ -891,11 +930,20 @@ public class QueryComponentController implements Serializable {
                     break;
                 case Quarter:
                     tQuater = quarter;
+                    tfrom = CommonController.startOfQuarter(year, quarter);
+
+                    tTo = CommonController.endOfQuarter(year, quarter);
+                    break;
                 case Year:
                     tYear = year;
+                    tfrom = CommonController.startOfTheYear(year);
+                    tTo = CommonController.endOfYear(year);
                     break;
             }
         }
+
+        from = tfrom;
+        to = tTo;
 
         qr.setAreaType(areaType);
         qr.setPeriodType(periodType);
@@ -1045,7 +1093,8 @@ public class QueryComponentController implements Serializable {
         }
 
         for (QueryResult tqr : qrs) {
-
+            System.out.println("tqr.getTfrom() = " + tqr.getTfrom());
+            System.out.println("tqr.gettTo() = " + tqr.gettTo());
 //            //System.out.println("selectedForQuery.getQueryType() = " + selectedForQuery.getQueryType());
             switch (selectedForQuery.getQueryType()) {
                 case Population:
@@ -1689,6 +1738,38 @@ public class QueryComponentController implements Serializable {
                         case longNumber:
                             bq += "  i" + prefix + ".longNumberValue" + eval + ":d" + prefix + "";
                             m.put("d" + prefix + "", c.getLongNumberValue());
+                            break;
+
+                    }
+                    break;
+                case Not_null:
+                    switch (c.getQueryDataType()) {
+                        case Boolean:
+                            bq += "  i" + prefix + ".booleanValue is NOT null ";
+                            break;
+                        case DateTime:
+                            bq += "  i" + prefix + ".dateValue is NOT null ";
+                            break;
+                        case String:
+                            bq += "  i" + prefix + ".shortTextValue is NOT null ";
+                            break;
+                        case area:
+                            bq += "  i" + prefix + ".areaValue is NOT null ";
+                            break;
+                        case institution:
+                            bq += "  i" + prefix + ".institutionValue is NOT null ";
+                            break;
+                        case integer:
+                            bq += "  i" + prefix + ".integerNumberValue is NOT null ";
+                            break;
+                        case item:
+                            bq += "  i" + prefix + ".itemValue is NOT null ";
+                            break;
+                        case real:
+                            bq += "  i" + prefix + ".realNumberValue is NOT null ";
+                            break;
+                        case longNumber:
+                            bq += "  i" + prefix + ".longNumberValue is NOT null ";
                             break;
 
                     }
@@ -2600,13 +2681,23 @@ public class QueryComponentController implements Serializable {
     }
 
     public QueryComponent findByCode(String code) {
-        String j = "select q from QueryComponent q "
-                + " where q.retired <> :ret "
-                + " and q.code=:code";
-        Map m = new HashMap();
-        m.put("ret", true);
-        m.put("code", code);
-        return getFacade().findFirstByJpql(j, m);
+        if (code == null) {
+            return null;
+        }
+        QueryComponent newQ = null;
+        List<QueryComponent> tqcs = applicationController.getQueryComponents();
+        for (QueryComponent q : tqcs) {
+            if (q.getCode() != null && q.getCode().equalsIgnoreCase(code)) {
+                if (newQ == null) {
+                    newQ = q;
+                } else {
+                    if (newQ.getId() < q.getId()) {
+                        newQ = q;
+                    }
+                }
+            }
+        }
+        return newQ;
     }
 
     public QueryComponent getSelectedToDuplicateQuery() {
@@ -2627,6 +2718,17 @@ public class QueryComponentController implements Serializable {
 
     public void setResultExcelFile(StreamedContent resultExcelFile) {
         this.resultExcelFile = resultExcelFile;
+    }
+
+    public List<QueryComponent> getExcels() {
+        if (excels == null) {
+            excels = fillExcels();
+        }
+        return excels;
+    }
+
+    public void setExcels(List<QueryComponent> excels) {
+        this.excels = excels;
     }
 
     @FacesConverter(forClass = QueryComponent.class)

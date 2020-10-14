@@ -49,11 +49,10 @@ public class ApplicationController {
 // <editor-fold defaultstate="collapsed" desc="EJBs">
     @EJB
     private InstitutionFacade institutionFacade;
-       @EJB
+    @EJB
     private QueryComponentFacade queryComponentFacade;
-    
-// </editor-fold>    
 
+// </editor-fold>    
 // <editor-fold defaultstate="collapsed" desc="Class Variables">
     private boolean demoSetup = false;
     private String versionNo = "1.1.4";
@@ -69,7 +68,7 @@ public class ApplicationController {
             return null;
         }
         Institution ins = getInstitutionFacade().find(pins.getId());
-        if(ins==null){
+        if (ins == null) {
             return null;
         }
         Long lastHinIssued = ins.getLastHin();
@@ -83,7 +82,7 @@ public class ApplicationController {
         String phn = poi + num + checkDigit;
         ins.setLastHin(thisHin);
         getInstitutionFacade().edit(ins);
-        
+
         return phn;
     }
 
@@ -128,24 +127,20 @@ public class ApplicationController {
         return digit.substring(digit.length() - 1);
     }
 
-    
-    public List<QueryComponent> findQueryComponents() {
+    private List<QueryComponent> findQueryComponents() {
         String j = "select q from QueryComponent q "
                 + " where q.retired=false "
-                + " order by q.name";
+                + " order by q.orderNo, q.name";
         Map m = new HashMap();
-        return getQueryComponentFacade().findByJpql(j, m);
-    }    
-    
-    public void reloadQueryComponents(){
+        return queryComponents = getQueryComponentFacade().findByJpql(j, m);
+
+    }
+
+    public void reloadQueryComponents() {
         queryComponents = null;
     }
-    
+
     // </editor-fold>
-    
-
-
-
 // <editor-fold defaultstate="collapsed" desc="Enums">
     public InstitutionType[] getInstitutionTypes() {
         return InstitutionType.values();
@@ -160,11 +155,8 @@ public class ApplicationController {
     private InstitutionFacade getInstitutionFacade() {
         return institutionFacade;
     }
-    
-    
-    
-// </editor-fold>
 
+// </editor-fold>
     public boolean isDemoSetup() {
         return demoSetup;
     }
@@ -182,7 +174,7 @@ public class ApplicationController {
     }
 
     public List<QueryComponent> getQueryComponents() {
-        if(queryComponents==null){
+        if (queryComponents == null) {
             queryComponents = findQueryComponents();
         }
         return queryComponents;
@@ -196,6 +188,4 @@ public class ApplicationController {
         this.queryComponentFacade = queryComponentFacade;
     }
 
-    
-    
 }

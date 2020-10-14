@@ -39,24 +39,24 @@
                         <p:outputLabel id="des" value="#{queryComponentController.selectedForQuery.descreption}">
                         </p:outputLabel>
 
-                        <p:outputLabel value="Year" rendered="#{queryComponentController.filterYear}"></p:outputLabel>
+<!--                        <p:outputLabel value="Year" rendered="#{queryComponentController.filterYear}"></p:outputLabel>
                         <p:outputLabel value="#{queryComponentController.year}" 
                                        rendered="#{queryComponentController.filterYear}"></p:outputLabel>
 
                         <p:outputLabel value="Quarter"  rendered="#{queryComponentController.filterQuarter}"></p:outputLabel>
                         <p:outputLabel value="#{queryComponentController.quarter}" 
                                        rendered="#{queryComponentController.filterQuarter}">
-                        </p:outputLabel>
+                        </p:outputLabel>-->
 
-                        <p:outputLabel value="From"  rendered="#{queryComponentController.filterFrom}"></p:outputLabel>
+                        <p:outputLabel value="From"  ></p:outputLabel>
                         <p:outputLabel value="#{queryComponentController.from}" 
-                                       rendered="#{queryComponentController.filterFrom}">
+                                       >
                             <f:convertDateTime pattern="dd MMMM yyyy" ></f:convertDateTime>
                         </p:outputLabel>
 
-                        <p:outputLabel value="To"  rendered="#{queryComponentController.filterTo}"></p:outputLabel>
+                        <p:outputLabel value="To"  ></p:outputLabel>
                         <p:outputLabel value="#{queryComponentController.to}" 
-                                       rendered="#{queryComponentController.filterTo}">
+                                       >
                             <f:convertDateTime pattern="dd MMMM yyyy" ></f:convertDateTime>
                         </p:outputLabel>
 

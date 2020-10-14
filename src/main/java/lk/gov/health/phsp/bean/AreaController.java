@@ -1717,7 +1717,7 @@ public class AreaController implements Serializable {
             m.put("t", areaType);
         }
         j += " order by a.code";
-        return getFacade().findByJpql(j, m);
+        return getFacade().findByJpql(j, m,30);
     }
 
     public Area getAreaByCode(String code, AreaType areaType) {
@@ -2292,7 +2292,11 @@ public class AreaController implements Serializable {
 
         java.lang.Long getKey(String value) {
             java.lang.Long key;
-            key = Long.valueOf(value);
+            try {
+                key = Long.valueOf(value);
+            } catch (NumberFormatException e) {
+                key =0l;
+            }
             return key;
         }
 

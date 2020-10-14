@@ -141,8 +141,6 @@ public class ClientController implements Serializable {
         selectedClientsClinics = null;
         return "/client/profile";
     }
-    
-   
 
     public String toAddNewClient() {
         selected = new Client();
@@ -382,9 +380,6 @@ public class ClientController implements Serializable {
         return "/systemAdmin/all_clients";
     }
 
-    
-   
-    
     public void fillRegisterdClientsWithDatesForInstitution() {
         String j = "select c from Client c "
                 + " where c.retired<>:ret ";
@@ -862,6 +857,14 @@ public class ClientController implements Serializable {
             JsfUtil.addErrorMessage("Please select a client to enroll.");
             return;
         }
+        if (selectedClinic.getId() == null) {
+            JsfUtil.addErrorMessage("Please select a valid clinic to enroll.");
+            return;
+        }
+        if (selected.getId() == null) {
+            JsfUtil.addErrorMessage("Please save the client first before enrolling.");
+            return;
+        }
         if (encounterController.clinicEnrolmentExists(selectedClinic, selected)) {
             JsfUtil.addErrorMessage("This client is already enrolled.");
             return;
@@ -998,11 +1001,11 @@ public class ClientController implements Serializable {
             selectedClients = listPatientsByNic(searchingNicNo);
         } else if (searchingPhoneNumber != null && !searchingPhoneNumber.trim().equals("")) {
             selectedClients = listPatientsByPhone(searchingPhoneNumber);
-        }else if (searchingPassportNo != null && !searchingPassportNo.trim().equals("")) {
+        } else if (searchingPassportNo != null && !searchingPassportNo.trim().equals("")) {
             selectedClients = listPatientsByPassportNo(searchingPassportNo);
         } else if (searchingDrivingLicenceNo != null && !searchingDrivingLicenceNo.trim().equals("")) {
             selectedClients = listPatientsByDrivingLicenseNo(searchingDrivingLicenceNo);
-        }else if (searchingLocalReferanceNo != null && !searchingLocalReferanceNo.trim().equals("")) {
+        } else if (searchingLocalReferanceNo != null && !searchingLocalReferanceNo.trim().equals("")) {
             selectedClients = listPatientsByLocalReferanceNo(searchingLocalReferanceNo);
         } else if (searchingSsNumber != null && !searchingSsNumber.trim().equals("")) {
             selectedClients = listPatientsBySsNo(searchingSsNumber);
@@ -1055,8 +1058,8 @@ public class ClientController implements Serializable {
         searchingNicNo = "";
         searchingName = "";
         searchingPhoneNumber = "";
-        searchingLocalReferanceNo="";
-        searchingSsNumber="";
+        searchingLocalReferanceNo = "";
+        searchingSsNumber = "";
     }
 
     public List<Client> listPatientsByPhn(String phn) {
@@ -1079,7 +1082,7 @@ public class ClientController implements Serializable {
         m.put("q", phn.trim().toUpperCase());
         return getFacade().findByJpql(j, m);
     }
-    
+
     public List<Client> listPatientsByLocalReferanceNo(String refNo) {
         String j = "select c from Client c "
                 + " where c.retired=false "
@@ -1101,7 +1104,7 @@ public class ClientController implements Serializable {
         m.put("q", ssNo.trim().toLowerCase());
         return getFacade().findByJpql(j, m);
     }
-    
+
     public List<Client> listPatientsByDrivingLicenseNo(String dlNo) {
         String j = "select c from Client c "
                 + " where c.retired=false "
@@ -1111,7 +1114,7 @@ public class ClientController implements Serializable {
         m.put("q", dlNo.trim().toLowerCase());
         return getFacade().findByJpql(j, m);
     }
-    
+
     public List<Client> listPatientsByPassportNo(String passportNo) {
         String j = "select c from Client c "
                 + " where c.retired=false "
@@ -1122,14 +1125,13 @@ public class ClientController implements Serializable {
         return getFacade().findByJpql(j, m);
     }
 
-    
     public List<Client> listPatientsByIDsStepvice(String ids) {
         //System.out.println("ids = " + ids);
         if (ids == null || ids.trim().equals("")) {
             return null;
         }
         List<Client> cs;
-        if(ids==null || ids.trim().equals("")){
+        if (ids == null || ids.trim().equals("")) {
             cs = new ArrayList<>();
             return cs;
         }
@@ -1144,7 +1146,7 @@ public class ClientController implements Serializable {
         //System.out.println("m = " + m);
         //System.out.println("j = " + j);
         cs = getFacade().findByJpql(j, m);
-        
+
         if (cs != null && !cs.isEmpty()) {
             //System.out.println("cs.size() = " + cs.size());
             return cs;
@@ -1177,7 +1179,6 @@ public class ClientController implements Serializable {
                 + " ) "
                 + " order by c.phn";
 
-        
         return getFacade().findByJpql(j, m);
     }
 
@@ -1686,8 +1687,6 @@ public class ClientController implements Serializable {
     public void setSsNumberExists(Boolean ssNumberExists) {
         this.ssNumberExists = ssNumberExists;
     }
-    
-    
 
     // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="Inner Classes">

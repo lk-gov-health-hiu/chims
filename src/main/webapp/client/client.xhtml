@@ -34,7 +34,8 @@
                             </p:selectOneMenu>
 
                             <p:outputLabel value="Name:" for="name" />
-                            <p:inputText autocomplete="off" id="name" required="true" value="#{clientController.selected.person.name}" title="Name" />
+                            <p:inputText autocomplete="off" 
+                                         id="name" required="true" value="#{clientController.selected.person.name}" title="Name" />
 
                             <p:outputLabel value="Sex:" for="sex" />
                             <p:selectOneMenu id="sex"  value="#{clientController.selected.person.sex}" required="true" >
