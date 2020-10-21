@@ -35,6 +35,7 @@ import jxl.Sheet;
 import jxl.Workbook;
 import jxl.read.biff.BiffException;
 import lk.gov.health.phsp.entity.Area;
+import lk.gov.health.phsp.entity.ClientEncounterComponentFormSet;
 import lk.gov.health.phsp.entity.Encounter;
 import lk.gov.health.phsp.entity.Institution;
 import lk.gov.health.phsp.entity.Item;
@@ -74,6 +75,8 @@ public class ClientController implements Serializable {
     private CommonController commonController;
     @Inject
     private AreaController areaController;
+    @Inject
+    ClientEncounterComponentFormSetController  clientEncounterComponentFormSetController;
     // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="Variables">
     private List<Client> items = null;
@@ -143,7 +146,7 @@ public class ClientController implements Serializable {
     }
 
     public String toAddNewClient() {
-        selected = new Client();
+        setSelected(new Client());
         selectedClientsClinics = null;
         selectedClinic = null;
         yearMonthDay = new YearMonthDay();
@@ -931,6 +934,10 @@ public class ClientController implements Serializable {
         }
     }
 
+    public void selectedClientChanged(){
+        clientEncounterComponentFormSetController.setLastFiveClinicVisits(null);
+    }
+    
     public void updateYearDateMonth() {
         getYearMonthDay();
         if (selected != null) {
@@ -1370,6 +1377,7 @@ public class ClientController implements Serializable {
     public void setSelected(Client selected) {
         this.selected = selected;
         updateYearDateMonth();
+        selectedClientChanged();
         selectedClientsClinics = null;
     }
 

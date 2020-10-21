@@ -573,7 +573,7 @@ public class WebUserController implements Serializable {
     }
 
     public String toHome() {
-        prepareDashboards();
+//        prepareDashboards();
         return "/index";
     }
 

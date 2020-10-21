@@ -378,9 +378,14 @@ public class InstitutionController implements Serializable {
     public List<Institution> getMyClinics() {
         if (myClinics == null) {
             myClinics = new ArrayList<>();
+            int count = 0;
             for (Institution i : webUserController.getLoggableInstitutions()) {
                 if (i.getInstitutionType().equals(InstitutionType.Clinic)) {
                     myClinics.add(i);
+                    count++;
+                }
+                if(count>50){
+                    return myClinics;
                 }
             }
         }

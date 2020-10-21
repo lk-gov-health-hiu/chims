@@ -95,6 +95,9 @@ public class ClientEncounterComponentFormSetController implements Serializable {
     private Integer selectedTabIndex;
     private Date from;
     private Date to;
+    
+    private List<ClientEncounterComponentFormSet> lastFiveClinicVisits;
+    
 // </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="Constructors">
 
@@ -529,6 +532,22 @@ public class ClientEncounterComponentFormSetController implements Serializable {
             fs = new ArrayList<>();
         }
         return fs;
+    }
+    
+    public void fillLastFiveVisits() {
+        System.out.println("fillLastFiveVisits = " + this);
+        Map m = new HashMap();
+        String j = "select s from ClientEncounterComponentFormSet s where "
+                + " s.retired=false "
+                + " and s.encounter.encounterType=:t "
+                + " and s.encounter.client=:c ";
+        j += " order by s.encounter.encounterFrom desc";
+        m.put("c", getClientController().getSelected());
+        m.put("t", EncounterType.Clinic_Visit);
+        lastFiveClinicVisits = getFacade().findByJpql(j, m, 5);
+        if (lastFiveClinicVisits == null) {
+            lastFiveClinicVisits = new ArrayList<>();
+        }
     }
 
     public List<ClientEncounterComponentFormSet> fillLastFiveEncountersFormSets(EncounterType type) {
@@ -1596,6 +1615,9 @@ public class ClientEncounterComponentFormSetController implements Serializable {
 
 // </editor-fold>    
 // <editor-fold defaultstate="collapsed" desc="Getters & Setters">
+    
+    
+    
     public ClientEncounterComponentFormSet getSelected() {
         return selected;
     }
@@ -1762,6 +1784,17 @@ public class ClientEncounterComponentFormSetController implements Serializable {
 
     public void setTo(Date to) {
         this.to = to;
+    }
+
+    public List<ClientEncounterComponentFormSet> getLastFiveClinicVisits() {
+        if(lastFiveClinicVisits==null){
+            fillLastFiveVisits();
+        }
+        return lastFiveClinicVisits;
+    }
+
+    public void setLastFiveClinicVisits(List<ClientEncounterComponentFormSet> lastFiveClinicVisits) {
+        this.lastFiveClinicVisits = lastFiveClinicVisits;
     }
 
 // </editor-fold>    

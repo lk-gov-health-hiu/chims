@@ -23,7 +23,7 @@
             <p:menubar  rendered="#{webUserController.loggedUser ne null}"  autoDisplay="true"   styleClass="horizontalmenu">
 
 
-                <p:menuitem ajax="false" value="Home" icon="ui-icon-home" action="#{webUserController.toHome()}" />
+                <p:menuitem ajax="false" value="Home" icon="ui-icon-home" action="/index" />
 
                 <p:submenu label="Clients" rendered="#{webUserController.hasPrivilege('Client_Management')}" >
                     <p:menuitem ajax="false" value="Search by IDs" action="#{clientController.toSearchClientById()}" />
@@ -97,7 +97,7 @@
             <p:menubar  rendered="#{webUserController.loggedUser ne null}"  autoDisplay="false"   styleClass="verticalmenu">
 
 
-                <p:menuitem ajax="false" value="Home" icon="ui-icon-home" action="#{webUserController.toHome()}" />
+                <p:menuitem ajax="false" value="Home" icon="ui-icon-home" action="/index" />
 
                 <p:submenu label="Clients" rendered="#{webUserController.hasPrivilege('Client_Management')}" >
                     <p:menuitem ajax="false" value="Search by IDs" action="#{clientController.toSearchClientById()}" />
