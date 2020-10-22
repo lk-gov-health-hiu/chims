@@ -29,7 +29,7 @@
 
                         <h:panelGrid columns="4" >
                             <p:commandButton ajax="false" value="Fill Clients" 
-                                             action="#{clientController.toRegisterdClientsWithDatesForSystemAdmin()}" ></p:commandButton>
+                                             action="#{clientController.fillClients()}" ></p:commandButton>
 
                             <p:commandButton value="Fill Retired Clients" ajax="false"
                                              action="#{clientController.fillRetiredClients()}">
@@ -53,13 +53,13 @@
 
 
 
-                        <p:dataTable value="#{clientController.items}"
+                        <p:dataTable value="#{clientController.clients}"
                                      id="tbl"
                                      var="c" 
                                      rowKey="#{c.id}"
                                      paginator="true"
                                      rows="10"
-                                     selection="#{clientController.selectedClients}"
+                                     selection="#{clientController.selectedClientsBasic}"
                                      rowsPerPageTemplate="10,20,30,40,50"
                                      >
 
@@ -76,35 +76,29 @@
                             <p:column  headerText="PHN" sortBy="#{c.phn}" filterBy="#{c.phn}" filterMatchMode="contains">
                                 <p:outputLabel value="#{c.phn}" ></p:outputLabel>
                             </p:column>
-                            <p:column  headerText="Name" sortBy="#{c.person.name}" filterBy="#{c.person.name}" filterMatchMode="contains">
-                                <p:outputLabel value="#{c.person.name}" ></p:outputLabel>
+                            <p:column  headerText="Name" sortBy="#{c.name}" filterBy="#{c.name}" filterMatchMode="contains">
+                                <p:outputLabel value="#{c.name}" ></p:outputLabel>
                             </p:column>
 
-                            <p:column  headerText="NIC" sortBy="#{c.person.nic}" filterBy="#{c.person.nic}" filterMatchMode="contains">
-                                <p:outputLabel value="#{c.person.nic}" ></p:outputLabel>
+                            <p:column  headerText="NIC" sortBy="#{c.nic}" filterBy="#{c.nic}" filterMatchMode="contains">
+                                <p:outputLabel value="#{c.nic}" ></p:outputLabel>
                             </p:column>
 
-                            <p:column  headerText="Phone" sortBy="#{c.person.transPhoneNumbers}" 
-                                       filterBy="#{c.person.transPhoneNumbers}" filterMatchMode="contains">
-                                <p:outputLabel value="#{c.person.transPhoneNumbers}" ></p:outputLabel>
-                            </p:column>
-
-
-                            <p:column headerText="GN Area" sortBy="#{c.person.gnArea.name}" 
-                                      filterBy="#{c.person.gnArea.name}"
+                            <p:column headerText="GN Area" sortBy="#{c.gnArea}" 
+                                      filterBy="#{c.gnArea}"
                                       filterMatchMode="contains">
-                                <p:outputLabel value="#{c.person.gnArea.name}" ></p:outputLabel>
+                                <p:outputLabel value="#{c.gnArea}" ></p:outputLabel>
                             </p:column>
                             
-                             <p:column headerText="Registerd At" sortBy="#{c.createInstitution.name}" 
-                                      filterBy="#{c.createInstitution.name}"
+                            <p:column headerText="Registerd At" sortBy="#{c.createdInstitution}" 
+                                      filterBy="#{c.createdInstitution}"
                                       filterMatchMode="contains">
-                                 <p:outputLabel value="#{c.createInstitution.name}" ></p:outputLabel>
+                                 <p:outputLabel value="#{c.createdInstitution}" ></p:outputLabel>
                             </p:column>
 
                             <p:column headerText="Edit" >
                                 <p:commandButton ajax="false" action="#{clientController.toClientProfile()}" value="Edit" >
-                                    <f:setPropertyActionListener value="#{c}" target="#{clientController.selected}" ></f:setPropertyActionListener>
+                                    <f:setPropertyActionListener value="#{c.id}" target="#{clientController.selectedId}" ></f:setPropertyActionListener>
                                 </p:commandButton>
                             </p:column>
 

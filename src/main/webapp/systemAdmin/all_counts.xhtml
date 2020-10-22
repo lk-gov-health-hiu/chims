@@ -27,12 +27,14 @@
 
                         </p:panelGrid>
 
-                        <h:panelGrid columns="2" >
+                        <h:panelGrid columns="3" >
                             <p:outputLabel value="Clients" ></p:outputLabel>
                             <p:outputLabel value="#{analysisController.clientCount}" ></p:outputLabel>
+                            <p:commandButton ajax="false" value="Find" action="#{analysisController.findClientCount()}" ></p:commandButton>
                             
                             <p:outputLabel value="Encounters" ></p:outputLabel>
                             <p:outputLabel value="#{analysisController.encounterCount}" ></p:outputLabel>
+                            <p:commandButton ajax="false" value="Find" action="#{analysisController.findEncounterCount()}" ></p:commandButton>
                             
                             
                         </h:panelGrid>

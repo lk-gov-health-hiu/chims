@@ -23,16 +23,13 @@
  */
 package lk.gov.health.phsp.bean;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import javax.ejb.EJB;
 import javax.inject.Named;
 import javax.enterprise.context.ApplicationScoped;
-import javax.persistence.TemporalType;
-import lk.gov.health.phsp.entity.ClientEncounterComponentFormSet;
+import lk.gov.health.phsp.enums.EncounterType;
 import lk.gov.health.phsp.facade.ClientFacade;
 import lk.gov.health.phsp.facade.EncounterFacade;
 
@@ -61,24 +58,19 @@ public class AnalysisController {
     }
 
     public String toCountsForSystemAdmin() {
-        findClientCount();
-        findEncounterCount();
         return "/systemAdmin/all_counts";
     }
 
     public void findEncounterCount() {
         Long fs;
         Map m = new HashMap();
-        String j = "select count(s) from ClientEncounterComponentFormSet s ";
+        String j = "select count(s) from Encounter s ";
         j += " where s.retired<>:ret ";
-
-        if (from != null && to != null) {
-            j += " and s.encounter.encounterFrom between :fd and :td ";
-            m.put("fd", getFrom());
-            m.put("td", getTo());
-        }
-
-       
+        j += " and s.encounterType=:t ";
+        j += " and s.encounterDate between :fd and :td ";
+        m.put("fd", getFrom());
+        m.put("td", getTo());
+        m.put("t", EncounterType.Clinic_Visit);
         m.put("ret", true);
 
         fs = getEncounterFacade().findLongByJpql(j, m);
@@ -91,11 +83,11 @@ public class AnalysisController {
                 + " where c.retired<>:ret ";
         Map m = new HashMap();
         m.put("ret", true);
-        if (from != null && to != null) {
-            j = j + " and c.createdAt between :fd and :td ";
-            m.put("fd", getFrom());
-            m.put("td", getTo());
-        }
+
+        j = j + " and c.createdAt between :fd and :td ";
+        m.put("fd", getFrom());
+        m.put("td", getTo());
+
         clientCount = getClientFacade().findLongByJpql(j, m);
     }
 
@@ -132,6 +124,9 @@ public class AnalysisController {
     }
 
     public Date getFrom() {
+        if (from == null) {
+            from = CommonController.startOfTheMonth();
+        }
         return from;
     }
 
@@ -140,6 +135,9 @@ public class AnalysisController {
     }
 
     public Date getTo() {
+        if (to == null) {
+            to = new Date();
+        }
         return to;
     }
 

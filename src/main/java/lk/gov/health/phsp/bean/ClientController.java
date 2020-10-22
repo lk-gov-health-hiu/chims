@@ -44,6 +44,7 @@ import lk.gov.health.phsp.enums.AreaType;
 import lk.gov.health.phsp.enums.EncounterType;
 import lk.gov.health.phsp.enums.InstitutionType;
 import lk.gov.health.phsp.facade.EncounterFacade;
+import lk.gov.health.phsp.pojcs.ClientBasicData;
 import lk.gov.health.phsp.pojcs.YearMonthDay;
 import org.primefaces.component.tabview.TabView;
 import org.primefaces.event.TabChangeEvent;
@@ -76,13 +77,18 @@ public class ClientController implements Serializable {
     @Inject
     private AreaController areaController;
     @Inject
-    ClientEncounterComponentFormSetController  clientEncounterComponentFormSetController;
+    private ClientEncounterComponentFormSetController clientEncounterComponentFormSetController;
     // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="Variables">
     private List<Client> items = null;
+    private List<ClientBasicData> clients = null;
     private List<Client> selectedClients = null;
     private List<Client> importedClients = null;
+
+    private List<ClientBasicData> selectedClientsBasic = null;
+
     private Client selected;
+    private Long selectedId;
     private Long idFrom;
     private Long idTo;
     private Institution institution;
@@ -370,7 +376,22 @@ public class ClientController implements Serializable {
     }
 
     public String toRegisterdClientsWithDatesForSystemAdmin() {
-        String j = "select c from Client c "
+        return "/systemAdmin/all_clients";
+    }
+
+    public void fillClients() {
+        String j = "select new lk.gov.health.phsp.pojcs.ClientBasicData("
+                + "c.id, "
+                + "c.phn, "
+                + "c.person.gnArea.name, "
+                + "c.createInstitution.name, "
+                + "c.person.dateOfBirth, "
+                + "c.createdAt, "
+                + "c.person.sex.name, "
+                + "c.person.nic,"
+                + "c.person.name "
+                + ") "
+                + "from Client c "
                 + " where c.retired=:ret ";
         Map m = new HashMap();
         m.put("ret", false);
@@ -378,9 +399,8 @@ public class ClientController implements Serializable {
         j = j + " order by c.id desc";
         m.put("fd", getFrom());
         m.put("td", getTo());
-        selectedClients = null;
-        items = getFacade().findByJpql(j, m, TemporalType.TIMESTAMP);
-        return "/systemAdmin/all_clients";
+        selectedClientsBasic = null;
+        clients = getFacade().findByJpql(j, m, TemporalType.TIMESTAMP);
     }
 
     public void fillRegisterdClientsWithDatesForInstitution() {
@@ -424,8 +444,19 @@ public class ClientController implements Serializable {
         items = getFacade().findByJpql(j);
     }
 
-    public String fillRetiredClients() {
-        String j = "select c from Client c "
+    public void fillRetiredClients() {
+        String j = "select new lk.gov.health.phsp.pojcs.ClientBasicData("
+                + "c.id, "
+                + "c.phn, "
+                + "c.person.gnArea.name, "
+                + "c.createInstitution.name, "
+                + "c.person.dateOfBirth, "
+                + "c.createdAt, "
+                + "c.person.sex.name, "
+                + "c.person.nic,"
+                + "c.person.name "
+                + ") "
+                + "from Client c "
                 + " where c.retired=:ret ";
         Map m = new HashMap();
         m.put("ret", true);
@@ -433,13 +464,19 @@ public class ClientController implements Serializable {
         j = j + " order by c.id desc";
         m.put("fd", getFrom());
         m.put("td", getTo());
-        selectedClients = null;
-        items = getFacade().findByJpql(j, m, TemporalType.TIMESTAMP);
-        return "/systemAdmin/all_clients";
+        selectedClientsBasic = null;
+        clients = getFacade().findByJpql(j, m, TemporalType.TIMESTAMP);
     }
 
     public String retireSelectedClients() {
-        for (Client c : selectedClients) {
+        for (ClientBasicData cb : selectedClientsBasic) {
+
+            Client c = getFacade().find(cb.getId());
+
+            if (c == null) {
+                continue;
+            };
+
             c.setRetired(true);
             c.setRetireComments("Bulk Delete");
             c.setRetiredAt(new Date());
@@ -457,7 +494,13 @@ public class ClientController implements Serializable {
     }
 
     public String unretireSelectedClients() {
-        for (Client c : selectedClients) {
+        for (ClientBasicData cb : selectedClientsBasic) {
+
+            Client c = getFacade().find(cb.getId());
+
+            if (c == null) {
+                continue;
+            };
             c.setRetired(false);
             c.setRetireComments("Bulk Un Delete");
             c.setLastEditBy(webUserController.getLoggedUser());
@@ -934,10 +977,10 @@ public class ClientController implements Serializable {
         }
     }
 
-    public void selectedClientChanged(){
+    public void selectedClientChanged() {
         clientEncounterComponentFormSetController.setLastFiveClinicVisits(null);
     }
-    
+
     public void updateYearDateMonth() {
         getYearMonthDay();
         if (selected != null) {
@@ -1694,6 +1737,39 @@ public class ClientController implements Serializable {
 
     public void setSsNumberExists(Boolean ssNumberExists) {
         this.ssNumberExists = ssNumberExists;
+    }
+
+    public ClientEncounterComponentFormSetController getClientEncounterComponentFormSetController() {
+        return clientEncounterComponentFormSetController;
+    }
+
+    public void setClientEncounterComponentFormSetController(ClientEncounterComponentFormSetController clientEncounterComponentFormSetController) {
+        this.clientEncounterComponentFormSetController = clientEncounterComponentFormSetController;
+    }
+
+    public Long getSelectedId() {
+        return selectedId;
+    }
+
+    public void setSelectedId(Long selectedId) {
+        selected = getFacade().find(selectedId);
+        this.selectedId = selectedId;
+    }
+
+    public List<ClientBasicData> getClients() {
+        return clients;
+    }
+
+    public void setClients(List<ClientBasicData> clients) {
+        this.clients = clients;
+    }
+
+    public List<ClientBasicData> getSelectedClientsBasic() {
+        return selectedClientsBasic;
+    }
+
+    public void setSelectedClientsBasic(List<ClientBasicData> selectedClientsBasic) {
+        this.selectedClientsBasic = selectedClientsBasic;
     }
 
     // </editor-fold>

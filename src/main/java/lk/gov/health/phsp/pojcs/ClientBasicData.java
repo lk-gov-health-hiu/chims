@@ -23,6 +23,7 @@
  */
 package lk.gov.health.phsp.pojcs;
 
+import java.io.Serializable;
 import java.util.Date;
 import lk.gov.health.phsp.bean.CommonController;
 
@@ -30,7 +31,8 @@ import lk.gov.health.phsp.bean.CommonController;
  *
  * @author buddhika
  */
-public class ClientBasicData {
+public class ClientBasicData implements Serializable {
+
     private String phn;
     private String gnArea;
     private String createdInstitution;
@@ -40,6 +42,8 @@ public class ClientBasicData {
     private Date createdAt;
     private String sex;
     private int ageInYears;
+    private Long id;
+    private String nic;
 
     public ClientBasicData() {
     }
@@ -61,8 +65,29 @@ public class ClientBasicData {
         this.sex = sex;
     }
 
+    public ClientBasicData(Long id, String phn, String gnArea, String createdInstitution, Date dataOfBirth, Date createdAt, String sex, String nic) {
+        this.id = id;
+        this.phn = phn;
+        this.gnArea = gnArea;
+        this.createdInstitution = createdInstitution;
+        this.dataOfBirth = dataOfBirth;
+        this.createdAt = createdAt;
+        this.sex = sex;
+        this.nic = nic;
+    }
     
-    
+    public ClientBasicData(Long id, String phn, String gnArea, String createdInstitution, Date dataOfBirth, Date createdAt, String sex, String nic, String name) {
+        this.id = id;
+        this.phn = phn;
+        this.gnArea = gnArea;
+        this.createdInstitution = createdInstitution;
+        this.dataOfBirth = dataOfBirth;
+        this.createdAt = createdAt;
+        this.sex = sex;
+        this.nic = nic;
+        this.name = name;
+    }
+
     public String getPhn() {
         return phn;
     }
@@ -111,8 +136,6 @@ public class ClientBasicData {
         this.dataOfBirth = dataOfBirth;
     }
 
-    
-    
     public String getSex() {
         return sex;
     }
@@ -137,7 +160,21 @@ public class ClientBasicData {
     public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
     }
-    
-    
-    
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getNic() {
+        return nic;
+    }
+
+    public void setNic(String nic) {
+        this.nic = nic;
+    }
+
 }
