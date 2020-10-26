@@ -41,11 +41,11 @@
                             </p:inputText>
 
                             <p:outputLabel value="From"  />
-                            <p:calendar value="#{userTransactionController.fromDate}" pattern="dd/mm/yyyy hh:mm">
+                            <p:calendar value="#{userTransactionController.fromDate}" pattern="dd/MM/yyyy hh:mm">
                             </p:calendar>
 
                             <p:outputLabel value="To"  />
-                            <p:calendar value="#{userTransactionController.fromDate}" pattern="dd/mm/yyyy hh:mm">
+                            <p:calendar value="#{userTransactionController.toDate}"  pattern="dd/MM/yyyy hh:mm">
                             </p:calendar>
 
                             <p:commandButton ajax="false" action="#{userTransactionController.clearSearch()}" value="Clear" >
