@@ -310,6 +310,10 @@ public class CommonController implements Serializable {
         return startOfTheMonth(new Date());
     }
 
+    public static Date startOfTheDate() {
+        return startOfTheDate(new Date());
+    }
+
     public static Date startOfTheLastMonth() {
         Calendar c = Calendar.getInstance();
         c.add(Calendar.MONTH, -1);
@@ -338,6 +342,15 @@ public class CommonController implements Serializable {
         Calendar c = Calendar.getInstance();
         c.setTime(d);
         c.set(Calendar.DAY_OF_MONTH, 1);
+        c.set(Calendar.HOUR, 0);
+        c.set(Calendar.MINUTE, 0);
+        c.set(Calendar.MILLISECOND, 1);
+        return c.getTime();
+    }
+
+    public static Date startOfTheDate(Date d) {
+        Calendar c = Calendar.getInstance();
+        c.setTime(d);
         c.set(Calendar.HOUR, 0);
         c.set(Calendar.MINUTE, 0);
         c.set(Calendar.MILLISECOND, 1);
@@ -494,6 +507,19 @@ public class CommonController implements Serializable {
         Calendar c = Calendar.getInstance();
         c.setTime(d);
         c.set(Calendar.DAY_OF_MONTH, c.getActualMaximum(Calendar.DAY_OF_MONTH));
+        c.set(Calendar.HOUR, c.getActualMaximum(Calendar.HOUR));
+        c.set(Calendar.MINUTE, c.getActualMaximum(Calendar.MINUTE));
+        c.set(Calendar.MILLISECOND, c.getActualMaximum(Calendar.MILLISECOND));
+        return c.getTime();
+    }
+
+    public static Date endOfTheDate() {
+        return endOfTheDate(new Date());
+    }
+
+    public static Date endOfTheDate(Date d) {
+        Calendar c = Calendar.getInstance();
+        c.setTime(d);
         c.set(Calendar.HOUR, c.getActualMaximum(Calendar.HOUR));
         c.set(Calendar.MINUTE, c.getActualMaximum(Calendar.MINUTE));
         c.set(Calendar.MILLISECOND, c.getActualMaximum(Calendar.MILLISECOND));

@@ -40,9 +40,15 @@
                                                    value="Add New User" styleClass="btn300"
                                                    action="#{webUserController.toCreateNewUserBySysAdmin()}">
                                 </p:commandButton>
+                                
                                 <p:commandButton  icon="fa fa-users" 
                                                   value="View Users"  styleClass="btn300"
                                                   action="/webUser/manage_users">
+                                </p:commandButton>
+                                
+                                  <p:commandButton  icon="fa fa-users" 
+                                                  value="View Transactions"  styleClass="btn300"
+                                                  action="#{userTransactionController.toSearchUserTransactions()}">
                                 </p:commandButton>
 
 

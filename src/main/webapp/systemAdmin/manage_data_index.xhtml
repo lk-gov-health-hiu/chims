@@ -31,7 +31,7 @@
                                     <p:commandButton ajax="false" 
                                                      action="#{clientController.toRegisterdClientsWithDatesForSystemAdmin()}" 
                                                      value="Client List"   ></p:commandButton>
-                                    <p:commandButton ajax="false" disabled="false"
+                                    <p:commandButton ajax="false" disabled="true"
                                                      action="#{clientEncounterComponentFormSetController.fillEncountersFormSetsForSysadmin}" 
                                                      value="Encounter List"   ></p:commandButton>
                                 </p:panelGrid>
@@ -39,8 +39,12 @@
 
                             <p:tab title="Areas &amp; Populations" >
                                 <p:panelGrid columns="1" >
-                                    <p:commandButton ajax="false" action="/systemAdmin/gn_areas_for_pmci" value="GN Areas of PMCI" ></p:commandButton>
-                                    <p:commandButton ajax="false" action="/systemAdmin/area_empanellement" value="Empanelled Population Data" ></p:commandButton>
+                                    <p:commandButton ajax="false"
+                                                      disabled="true"
+                                                      action="/systemAdmin/gn_areas_for_pmci" value="GN Areas of PMCI" ></p:commandButton>
+                                    <p:commandButton ajax="false" 
+                                                      disabled="true"
+                                                      action="/systemAdmin/area_empanellement" value="Empanelled Population Data" ></p:commandButton>
                                 </p:panelGrid>
                             </p:tab>
 

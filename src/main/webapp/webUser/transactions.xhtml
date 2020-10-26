@@ -1,0 +1,109 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <body>
+
+        <ui:composition template="/template.xhtml">
+
+            <ui:define name="content">
+
+                <h:form id="WebUserEditForm">
+
+                    <p:panelGrid columns="2" rendered="#{webUserController.loggedUser != null}"
+                                 style="margin: auto; text-align: left; width: 100%;" styleClass="alignTop">
+                        <f:facet name="header" >
+                            <p:commandButton value="Back" action="/webUser/index"/>
+                        </f:facet>
+
+                        <p:panelGrid columns="2" >
+                            <p:outputLabel value="Action"  />
+                            <p:inputText  value="#{userTransactionController.searchText}" >
+                            </p:inputText>
+
+                            <p:outputLabel value="IP"  />
+                            <p:inputText  value="#{userTransactionController.ip}" >
+                            </p:inputText>
+
+                            <p:outputLabel value="User"  />
+                            <p:autoComplete value="#{userTransactionController.user}"
+                                            completeMethod="#{webUserController.completeUsers}"
+                                            var="u"
+                                            itemLabel="#{u.name}"
+                                            itemValue="#{u}"></p:autoComplete>
+
+                            <p:outputLabel value="Data"  />
+                            <p:inputText  value="#{userTransactionController.data}" >
+                            </p:inputText>
+
+                            <p:outputLabel value="From"  />
+                            <p:calendar value="#{userTransactionController.fromDate}" pattern="dd/mm/yyyy hh:mm">
+                            </p:calendar>
+
+                            <p:outputLabel value="To"  />
+                            <p:calendar value="#{userTransactionController.fromDate}" pattern="dd/mm/yyyy hh:mm">
+                            </p:calendar>
+
+                            <p:commandButton ajax="false" action="#{userTransactionController.clearSearch()}" value="Clear" >
+                            </p:commandButton>
+                            <p:commandButton ajax="false" action="#{userTransactionController.search()}" value="Search" >
+                            </p:commandButton>
+
+                        </p:panelGrid>
+
+
+                        <p:dataTable value="#{userTransactionController.items}" var="item">
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Date / Time"/>
+                                </f:facet>
+                                <h:outputText value="#{item.transactionStart}">
+                                    <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                                </h:outputText>
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Transaction"/>
+                                </f:facet>
+                                <h:outputText value="#{item.transactionName}"/>
+                            </p:column>
+
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="IP"/>
+                                </f:facet>
+                                <h:outputText value="#{item.ipAddress}"/>
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="User"/>
+                                </f:facet>
+                                <h:outputText value="#{item.webUser.name}"/>
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Details"/>
+                                </f:facet>
+                                <h:outputText value="#{item.transactionData}"/>
+                            </p:column>
+                        </p:dataTable>
+
+
+
+
+                    </p:panelGrid>
+
+
+                </h:form>
+
+
+            </ui:define>
+        </ui:composition>
+
+    </body>
+</html>
+

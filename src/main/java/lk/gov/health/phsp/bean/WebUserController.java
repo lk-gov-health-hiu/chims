@@ -25,8 +25,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import javax.ejb.EJB;
-import javax.inject.Named;
 import javax.enterprise.context.SessionScoped;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
@@ -34,12 +34,13 @@ import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
 import javax.faces.model.SelectItem;
 import javax.inject.Inject;
+import javax.inject.Named;
+import javax.servlet.http.HttpServletRequest;
 import lk.gov.health.phsp.entity.UserPrivilege;
 import lk.gov.health.phsp.enums.EncounterType;
 import lk.gov.health.phsp.enums.Privilege;
 import lk.gov.health.phsp.enums.PrivilegeTreeNode;
 import lk.gov.health.phsp.facade.UserPrivilegeFacade;
-import org.primefaces.event.TabChangeEvent;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 import org.primefaces.model.TreeNode;
@@ -49,7 +50,7 @@ import org.primefaces.model.map.LatLng;
 import org.primefaces.model.map.MapModel;
 import org.primefaces.model.map.Marker;
 
-@Named("webUserController")
+@Named
 @SessionScoped
 public class WebUserController implements Serializable {
 
@@ -71,6 +72,7 @@ public class WebUserController implements Serializable {
     /*
     Controllers
      */
+
     @Inject
     private CommonController commonController;
     @Inject
@@ -85,6 +87,9 @@ public class WebUserController implements Serializable {
     private EncounterController encounterController;
     @Inject
     ExcelReportController reportController;
+    @Inject
+    private UserTransactionController userTransactionController;
+
     /*
     Variables
      */
@@ -160,6 +165,8 @@ public class WebUserController implements Serializable {
 
     int reportTabIndex;
 
+    private String ipAddress;
+
     /**
      *
      * Privileges
@@ -173,6 +180,21 @@ public class WebUserController implements Serializable {
     public void init() {
         emptyModel = new DefaultMapModel();
         createAllPrivilege();
+        findIpAddress();
+    }
+
+    @PreDestroy
+    public void sessionDestroy() {
+        userTransactionController.recordTransaction("Invalidating the Session",this.toString());
+    }
+
+    private void findIpAddress() {
+        HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
+        ipAddress = request.getHeader("X-FORWARDED-FOR");
+        if (ipAddress == null) {
+            ipAddress = request.getRemoteAddr();
+        }
+
     }
 
     public String assumeUser() {
@@ -187,7 +209,6 @@ public class WebUserController implements Serializable {
         return assumeRoles();
 
     }
-
 
     public String assumeRoles() {
         if (assumedRole == null) {
@@ -516,6 +537,7 @@ public class WebUserController implements Serializable {
     }
 
     public String logOut() {
+        userTransactionController.recordTransaction("Logout");
         loggedUser = null;
         return "/index";
     }
@@ -542,6 +564,7 @@ public class WebUserController implements Serializable {
         if (!isFirstVisit()) {
             if (!checkLogin(withoutPassword)) {
                 JsfUtil.addErrorMessage("Username/Password Error. Please retry.");
+                userTransactionController.recordTransaction("Failed Login Attempt", userName);
                 return "";
             }
         }
@@ -550,6 +573,7 @@ public class WebUserController implements Serializable {
         }
 //        prepareDashboards();
         JsfUtil.addSuccessMessage("Successfully Logged");
+        userTransactionController.recordTransaction("Successful Login");
         return "/index";
     }
 
@@ -1230,21 +1254,6 @@ public class WebUserController implements Serializable {
         return rs;
     }
 
-    public String destroy() {
-        performDestroy();
-        recreateModel();
-        return "manage_users";
-    }
-
-    private void performDestroy() {
-        try {
-            getFacade().remove(current);
-            JsfUtil.addSuccessMessage(("WebUserDeleted"));
-        } catch (Exception e) {
-            JsfUtil.addErrorMessage(e, ("PersistenceErrorOccured"));
-        }
-    }
-
     public List<WebUser> getItems() {
         if (items == null) {
             items = getFacade().findAll();
@@ -1768,6 +1777,14 @@ public class WebUserController implements Serializable {
 
     public void setTotalNumberOfCvsRiskClients(Long totalNumberOfCvsRiskClients) {
         this.totalNumberOfCvsRiskClients = totalNumberOfCvsRiskClients;
+    }
+
+    public String getIpAddress() {
+        return ipAddress;
+    }
+
+    private UserTransactionController getUserTransactionController() {
+        return userTransactionController;
     }
 
     @FacesConverter(forClass = WebUser.class)

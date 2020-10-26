@@ -23,6 +23,7 @@
  */
 package lk.gov.health.phsp.bean;
 
+// <editor-fold defaultstate="collapsed" desc="Imports">
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -32,35 +33,38 @@ import javax.enterprise.context.ApplicationScoped;
 import lk.gov.health.phsp.enums.EncounterType;
 import lk.gov.health.phsp.facade.ClientFacade;
 import lk.gov.health.phsp.facade.EncounterFacade;
+// </editor-fold>
 
-/**
- *
- * @author chims
- */
-@Named(value = "analysisController")
+@Named
 @ApplicationScoped
 public class AnalysisController {
+// <editor-fold defaultstate="collapsed" desc="EJBs">
 
     @EJB
     private ClientFacade clientFacade;
     @EJB
     private EncounterFacade encounterFacade;
+// </editor-fold>
 
+// <editor-fold defaultstate="collapsed" desc="Class Variables">
     private Long clientCount;
     private Long encounterCount;
     private Date from;
     private Date to;
+// </editor-fold>
 
-    /**
-     * Creates a new instance of AnalysisController
-     */
+// <editor-fold defaultstate="collapsed" desc="Constructors">
     public AnalysisController() {
     }
+// </editor-fold>
 
+// <editor-fold defaultstate="collapsed" desc="Navigation Methods">
     public String toCountsForSystemAdmin() {
         return "/systemAdmin/all_counts";
     }
+// </editor-fold>    
 
+// <editor-fold defaultstate="collapsed" desc="Main Methods">
     public void findEncounterCount() {
         Long fs;
         Map m = new HashMap();
@@ -90,7 +94,9 @@ public class AnalysisController {
 
         clientCount = getClientFacade().findLongByJpql(j, m);
     }
+// </editor-fold>
 
+// <editor-fold defaultstate="collapsed" desc="Getters and Setters">
     public ClientFacade getClientFacade() {
         return clientFacade;
     }
@@ -144,5 +150,6 @@ public class AnalysisController {
     public void setTo(Date to) {
         this.to = to;
     }
+// </editor-fold>
 
 }
