@@ -88,6 +88,7 @@ public class UserTransactionController implements Serializable {
     public void search() {
         String j = "select u "
                 + " from UserTrancaction u "
+                + " where "
                 + " u.transactionStart between :fd and :td ";
         Map m = new HashMap();
         m.put("fd", getFromDate());
