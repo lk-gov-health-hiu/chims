@@ -32,6 +32,9 @@ public class Client implements Serializable {
     private Person person;
 
     private String phn;
+    
+    
+    private String comments;
     /*
     Create Properties
      */
@@ -215,6 +218,8 @@ public class Client implements Serializable {
         return clientEncounterComponentItems;
     }
 
+    
+    
     public void setClientEncounterComponentItems(List<ClientEncounterComponentItem> clientEncounterComponentItems) {
         this.clientEncounterComponentItems = clientEncounterComponentItems;
     }
@@ -225,6 +230,14 @@ public class Client implements Serializable {
 
     public void setCreateInstitution(Institution createInstitution) {
         this.createInstitution = createInstitution;
+    }
+
+    public String getComments() {
+        return comments;
+    }
+
+    public void setComments(String comments) {
+        this.comments = comments;
     }
     
 }

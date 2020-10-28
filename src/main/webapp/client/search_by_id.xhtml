@@ -14,31 +14,40 @@
                 <h:form >
                     
                     <p:panel header="Search by IDs" >
-                        <h:panelGrid columns="2" >
+                        <h:panelGrid columns="3" >
                             <p:outputLabel value="PHN No" ></p:outputLabel>
                             <p:inputText value="#{clientController.searchingPhn}"  autocomplete="off"  ></p:inputText>
+                            <p:commandButton ajax="false" value="Search" action="#{clientController.searchByPhn()}" ></p:commandButton>
+                            
                             
                             <p:outputLabel value="NIC No" ></p:outputLabel>
                             <p:inputText value="#{clientController.searchingNicNo}"  autocomplete="off" ></p:inputText>
+                            <p:commandButton ajax="false" value="Search" action="#{clientController.searchByNic()}" ></p:commandButton>
+                            
                             
                             <p:outputLabel value="Telephone No" ></p:outputLabel>
                             <p:inputText value="#{clientController.searchingPhoneNumber}"  autocomplete="off"  ></p:inputText>
+                            <p:commandButton ajax="false" value="Search" action="#{clientController.searchByPhoneNumber()}" ></p:commandButton>
                             
                             <p:outputLabel value="Driving License No" ></p:outputLabel>
                             <p:inputText value="#{clientController.searchingDrivingLicenceNo}"  autocomplete="off" ></p:inputText>
+                            <p:commandButton ajax="false" value="Search" action="#{clientController.searchByDrivingLicenseNo()}" ></p:commandButton>
                             
                             <p:outputLabel value="Passport No" ></p:outputLabel>
                             <p:inputText value="#{clientController.searchingPassportNo}"  autocomplete="off" ></p:inputText>
+                            <p:commandButton ajax="false" value="Search" action="#{clientController.searchByPassportNo()}" ></p:commandButton>
                             
                             
                             <p:outputLabel value="Local Reference No" ></p:outputLabel>
                             <p:inputText value="#{clientController.searchingLocalReferanceNo}"  autocomplete="off" ></p:inputText>
+                            <p:commandButton ajax="false" value="Search" action="#{clientController.searchByLocalReferanceNo()}" ></p:commandButton>
                             
                             <p:outputLabel value="Senior Citizen No" ></p:outputLabel>
                             <p:inputText value="#{clientController.searchingSsNumber}"  autocomplete="off" ></p:inputText>
+                            <p:commandButton ajax="false" value="Search" action="#{clientController.searchBySsNo()}" ></p:commandButton>
                             
-                            
-                            <p:commandButton ajax="false" value="Search" action="#{clientController.searchById()}" ></p:commandButton>
+                            <p:commandButton ajax="false" value="Search By ID - Priority" action="#{clientController.searchById()}" ></p:commandButton>
+                            <p:commandButton ajax="false" value="Search By Any ID" action="#{clientController.searchByAllId()}" ></p:commandButton>
                             <p:commandButton ajax="false" value="Clear" action="#{clientController.clearSearchById()}" ></p:commandButton>
                             
                             
