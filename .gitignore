@@ -1,5 +1,5 @@
 /build/
 /dist/
 /target/
-/src/main/webapp/WEB-INF/glassfish-resources.xml
-glassfish-resources.xml
+*/WEB-INF/glassfish-resources.xml
+*/META-INF/*
