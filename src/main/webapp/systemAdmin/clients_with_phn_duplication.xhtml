@@ -1,0 +1,95 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <body>
+
+        <ui:composition template="/template.xhtml">
+
+            <ui:define name="content">
+                <h:form  >
+
+                    <h:panelGrid columns="3" >
+                        <p:outputLabel value="Number of Clients to correct" ></p:outputLabel>
+                        <p:inputText value="#{clientController.intNo}" ></p:inputText>
+                        <p:commandButton value="Correct" ajax="false" action="#{clientController.correctPhnDuplicates()}" >
+                        </p:commandButton>
+
+                    </h:panelGrid>
+                    <h:panelGrid columns="1" >
+                        <p:commandButton value="Download" ajax="false" >
+                            <p:dataExporter target="tbl" type="xls" fileName="duplicate phn" ></p:dataExporter>
+                        </p:commandButton>
+                    </h:panelGrid>
+
+
+
+                    <p:dataTable value="#{clientController.items}"
+                                 var="c" id="tbl"
+                                 rowKey="#{c.id}"
+                                 paginator="true"
+                                 rows="20" rowIndexVar="n"
+                                 rowsPerPageTemplate="10,20,30,40,50"
+                                 resizeMode="expand"
+                                 >
+
+                        <f:facet name="header" >
+                            Fill Clients with Duplicate PHN
+                        </f:facet>
+
+                        <p:column headerText="No" width="50" >
+                            <p:outputLabel value="#{n+1}" ></p:outputLabel>
+                        </p:column>
+
+                        <p:column headerText="PHN" width="120" sortBy="#{c.phn}" filterBy="#{c.phn}" filterMatchMode="contains">
+                            <p:outputLabel value="#{c.phn}" ></p:outputLabel>
+                        </p:column>
+
+                        <p:column headerText="Name" width="200"  sortBy="#{c.person.name}" filterBy="#{c.person.name}" filterMatchMode="contains">
+                            <p:outputLabel value="#{c.person.name}" ></p:outputLabel>
+                        </p:column>
+
+                        <p:column headerText="Retired" width="100"  sortBy="#{c.retired}">
+                            <p:outputLabel value="#{c.retired?'Yes':'No'}" ></p:outputLabel>
+                        </p:column>
+
+
+
+                        <p:column  headerText="Registered in" width="200"  
+                                   sortBy="#{c.createInstitution.name}" 
+                                   filterBy="#{c.createInstitution.name}" filterMatchMode="contains">
+                            <p:outputLabel value="#{c.createInstitution.name}" ></p:outputLabel>
+                        </p:column>
+
+                        <p:column  headerText="Register at" width="200" sortBy="#{c.createdAt}" 
+                                   filterBy="#{c.createdAt}" filterMatchMode="contains">
+                            <p:outputLabel value="#{c.createdAt}" >
+                                <f:convertDateTime pattern="dd MMM yy hh:mm a" ></f:convertDateTime>
+                            </p:outputLabel>
+                        </p:column>
+
+                        <p:column  headerText="Actions" width="200" >
+                            <p:commandButton value="View" action="#{clientController.toClientProfile()}" ajax="false" >
+                                <f:setPropertyActionListener value="#{c}" target="#{clientController.selected}" ></f:setPropertyActionListener>
+                            </p:commandButton>
+                        </p:column>
+
+
+
+
+                    </p:dataTable>
+
+
+
+                </h:form>
+
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

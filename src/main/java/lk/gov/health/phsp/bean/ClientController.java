@@ -122,6 +122,8 @@ public class ClientController implements Serializable {
     private String dateTimeFormat;
     private String dateFormat;
 
+    private int intNo;
+
     // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="Constructors">
     public ClientController() {
@@ -157,6 +159,88 @@ public class ClientController implements Serializable {
         selectedClinic = null;
         yearMonthDay = new YearMonthDay();
         return "/client/client";
+    }
+
+    public String toViewCorrectedDuplicates() {
+        String j;
+        j = "select c"
+                + " from Client c "
+                + " where c.comments is not null";
+        items = getFacade().findByJpql(j);
+        return "/systemAdmin/clients_with_corrected_duplicate_phn";
+    }
+
+    public String toDetectPhnDuplicates() {
+        String j;
+        Map m = new HashMap();
+        j = "SELECT c.phn "
+                + " FROM Client c "
+                + " "
+                + " GROUP BY c.phn"
+                + " HAVING COUNT(c.phn) > 1 ";
+        List<String> duplicatedPhnNumbers = getFacade().findString(j);
+        items = new ArrayList<>();
+        for (String dupPhn : duplicatedPhnNumbers) {
+            j = "select c"
+                    + " from Client c "
+                    + " where c.phn=:phn";
+            m = new HashMap();
+            m.put("phn", dupPhn);
+            List<Client> temClients = getFacade().findByJpql(j, m);
+            items.addAll(temClients);
+        }
+        return "/systemAdmin/clients_with_phn_duplication";
+    }
+
+    public String correctPhnDuplicates() {
+        String j;
+        Map m = new HashMap();
+        j = "SELECT c.phn "
+                + " FROM Client c "
+                + " "
+                + " GROUP BY c.phn"
+                + " HAVING COUNT(c.phn) > 1 ";
+        List<String> duplicatedPhnNumbers = getFacade().findString(j, intNo);
+        items = new ArrayList<>();
+        for (String dupPhn : duplicatedPhnNumbers) {
+            System.out.println("dupPhn = " + dupPhn);
+            j = "select c"
+                    + " from Client c "
+                    + " where c.phn=:phn";
+            m = new HashMap();
+            m.put("phn", dupPhn);
+            List<Client> temClients = getFacade().findByJpql(j, m);
+            int n = 0;
+            for (Client c : temClients) {
+                if (n == 0) {
+
+                } else {
+                    if (c.getPerson().getLocalReferanceNo() == null || c.getPerson().getLocalReferanceNo().trim().equals("")) {
+                        c.setComments("Duplicate PHN. Old PHN Stored as Local Ref");
+                        System.out.println("Duplicate PHN. Old PHN Stored as Local Ref");
+                        System.out.println("c.getPhn()");
+                        c.getPerson().setLocalReferanceNo(c.getPhn());
+                        System.out.println("c.getPerson().getLocalReferanceNo() = " + c.getPerson().getLocalReferanceNo());
+                        c.setPhn(generateNewPhn(c.getCreateInstitution()));
+                        System.out.println("c.getPhn()");
+                    } else if (c.getPerson().getSsNumber() == null || c.getPerson().getSsNumber().trim().equals("")) {
+                        c.setComments("Duplicate PHN. Old PHN Stored as SC No");
+                        System.out.println("Duplicate PHN. Old PHN Stored as SC No");
+                        System.out.println("c.getPhn()");
+                        c.getPerson().setSsNumber(c.getPhn());
+                        System.out.println("c.getPerson().getSsNumber() = " + c.getPerson().getSsNumber());
+                        c.setPhn(generateNewPhn(c.getCreateInstitution()));
+                        System.out.println("c.getPhn()");
+                    } else {
+                        System.out.println("No Space to Store Old PHN");
+                    }
+                    getFacade().edit(c);
+                }
+                n++;
+            }
+            items.addAll(temClients);
+        }
+        return "/systemAdmin/clients_with_corrected_duplicate_phn";
     }
 
     // </editor-fold>
@@ -964,6 +1048,24 @@ public class ClientController implements Serializable {
 
     }
 
+    public String generateNewPhn(Institution ins) {
+        Institution poiIns;
+        if (ins == null) {
+            System.out.println("Ins is null");
+            return null;
+        }
+        if (ins.getPoiInstitution() != null) {
+            poiIns = ins.getPoiInstitution();
+        } else {
+            poiIns = ins;
+        }
+        if (poiIns.getPoiNumber() == null || poiIns.getPoiNumber().trim().equals("")) {
+            System.out.println("A Point of Issue is NOT assigned to the Institution. Please discuss with the System Administrator.");
+            return null;
+        }
+        return applicationController.createNewPersonalHealthNumber(poiIns);
+    }
+
     public void gnAreaChanged() {
         if (selected == null) {
             return;
@@ -1041,6 +1143,148 @@ public class ClientController implements Serializable {
             return;
         }
         selected.setPhn(applicationController.createNewPersonalHealthNumber(webUserController.getLoggedUser().getInstitution()));
+    }
+
+    public String searchByPhn() {
+        selectedClients = listPatientsByPhn(searchingPhn);
+        if (selectedClients.size() == 1) {
+            selected = selectedClients.get(0);
+            selectedClients = null;
+            clearSearchById();
+            return toClientProfile();
+        } else {
+            selected = null;
+            clearSearchById();
+            return toSelectClient();
+        }
+    }
+
+    public String searchByNic() {
+        selectedClients = listPatientsByNic(searchingNicNo);
+        if (selectedClients.size() == 1) {
+            selected = selectedClients.get(0);
+            selectedClients = null;
+            clearSearchById();
+            return toClientProfile();
+        } else {
+            selected = null;
+            clearSearchById();
+            return toSelectClient();
+        }
+    }
+
+    public String searchByPhoneNumber() {
+        selectedClients = listPatientsByPhone(searchingPhoneNumber);
+        if (selectedClients.size() == 1) {
+            selected = selectedClients.get(0);
+            selectedClients = null;
+            clearSearchById();
+            return toClientProfile();
+        } else {
+            selected = null;
+            clearSearchById();
+            return toSelectClient();
+        }
+    }
+
+    public String searchByPassportNo() {
+        selectedClients = listPatientsByPassportNo(searchingPassportNo);
+        if (selectedClients.size() == 1) {
+            selected = selectedClients.get(0);
+            selectedClients = null;
+            clearSearchById();
+            return toClientProfile();
+        } else {
+            selected = null;
+            clearSearchById();
+            return toSelectClient();
+        }
+    }
+
+    public String searchByDrivingLicenseNo() {
+        selectedClients = listPatientsByDrivingLicenseNo(searchingDrivingLicenceNo);
+        if (selectedClients.size() == 1) {
+            selected = selectedClients.get(0);
+            selectedClients = null;
+            clearSearchById();
+            return toClientProfile();
+        } else {
+            selected = null;
+            clearSearchById();
+            return toSelectClient();
+        }
+    }
+
+    public String searchByLocalReferanceNo() {
+        if (webUserController.getLoggedUser().isSystemAdministrator()) {
+            selectedClients = listPatientsByLocalReferanceNoForSystemAdmin(searchingLocalReferanceNo);
+        } else {
+            selectedClients = listPatientsByLocalReferanceNo(searchingLocalReferanceNo);
+        }
+        if (selectedClients.size() == 1) {
+            selected = selectedClients.get(0);
+            selectedClients = null;
+            clearSearchById();
+            return toClientProfile();
+        } else {
+            selected = null;
+            clearSearchById();
+            return toSelectClient();
+        }
+    }
+
+    public String searchBySsNo() {
+        selectedClients = listPatientsBySsNo(searchingSsNumber);
+        if (selectedClients.size() == 1) {
+            selected = selectedClients.get(0);
+            selectedClients = null;
+            clearSearchById();
+            return toClientProfile();
+        } else {
+            selected = null;
+            clearSearchById();
+            return toSelectClient();
+        }
+    }
+
+    public String searchByAllId() {
+        selectedClients = new ArrayList<>();
+        if (searchingPhn != null && !searchingPhn.trim().equals("")) {
+            selectedClients.addAll(listPatientsByPhn(searchingPhn));
+        }
+        if (searchingNicNo != null && !searchingNicNo.trim().equals("")) {
+            selectedClients.addAll(listPatientsByNic(searchingNicNo));
+        }
+        if (searchingPhoneNumber != null && !searchingPhoneNumber.trim().equals("")) {
+            selectedClients.addAll(listPatientsByPhone(searchingPhoneNumber));
+        }
+        if (searchingPassportNo != null && !searchingPassportNo.trim().equals("")) {
+            selectedClients.addAll(listPatientsByPassportNo(searchingPassportNo));
+        }
+        if (searchingDrivingLicenceNo != null && !searchingDrivingLicenceNo.trim().equals("")) {
+            selectedClients.addAll(listPatientsByDrivingLicenseNo(searchingDrivingLicenceNo));
+        }
+        if (searchingLocalReferanceNo != null && !searchingLocalReferanceNo.trim().equals("")) {
+            selectedClients.addAll(listPatientsByLocalReferanceNo(searchingLocalReferanceNo));
+        }
+        if (searchingSsNumber != null && !searchingSsNumber.trim().equals("")) {
+            selectedClients.addAll(listPatientsBySsNo(searchingSsNumber));
+        }
+
+        if (selectedClients == null || selectedClients.isEmpty()) {
+            JsfUtil.addErrorMessage("No Results Found. Try different search criteria.");
+            return "";
+        }
+        if (selectedClients.size() == 1) {
+            selected = selectedClients.get(0);
+            selectedClients = null;
+            clearSearchById();
+            return toClientProfile();
+        } else {
+            selected = null;
+            clearSearchById();
+            return toSelectClient();
+        }
     }
 
     public String searchById() {
@@ -1142,6 +1386,16 @@ public class ClientController implements Serializable {
         Map m = new HashMap();
         m.put("q", refNo.trim().toLowerCase());
         m.put("ins", webUserController.getLoggedUser().getInstitution());
+        return getFacade().findByJpql(j, m);
+    }
+
+    public List<Client> listPatientsByLocalReferanceNoForSystemAdmin(String refNo) {
+        String j = "select c from Client c "
+                + " where c.retired=false "
+                + " and lower(c.person.localReferanceNo)=:q "
+                + " order by c.phn";
+        Map m = new HashMap();
+        m.put("q", refNo.trim().toLowerCase());
         return getFacade().findByJpql(j, m);
     }
 
@@ -1770,6 +2024,14 @@ public class ClientController implements Serializable {
 
     public void setSelectedClientsBasic(List<ClientBasicData> selectedClientsBasic) {
         this.selectedClientsBasic = selectedClientsBasic;
+    }
+
+    public int getIntNo() {
+        return intNo;
+    }
+
+    public void setIntNo(int intNo) {
+        this.intNo = intNo;
     }
 
     // </editor-fold>

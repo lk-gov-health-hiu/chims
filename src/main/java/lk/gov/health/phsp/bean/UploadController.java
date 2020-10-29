@@ -111,9 +111,9 @@ public class UploadController implements Serializable {
     }
 
     public List<Upload> getItems() {
-        if (items == null) {
-            items = getFacade().findAll();
-        }
+//        if (items == null) {
+//            items = getFacade().findAll();
+//        }
         return items;
     }
     

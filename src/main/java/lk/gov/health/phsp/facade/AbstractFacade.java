@@ -881,6 +881,17 @@ public abstract class AbstractFacade<T> {
             return null;
         }
     }
+    
+    public List<String> findString(String strJQL, int maxRecords) {
+        Query q = getEntityManager().createQuery(strJQL);
+        q.setMaxResults(maxRecords);
+        try {
+            return q.getResultList();
+        } catch (Exception e) {
+//            ////// ////System.out.println(e.getMessage());
+            return null;
+        }
+    }
 
     public List<String> findString(String strJQL, Map map) {
         return findString(strJQL, map, TemporalType.DATE);

@@ -391,9 +391,9 @@ public class RelationshipController implements Serializable {
     }
 
     public List<Relationship> getItems() {
-        if (items == null) {
-            items = new ArrayList<>();
-        }
+//        if (items == null) {
+//            items = new ArrayList<>();
+//        }
         return items;
     }
 

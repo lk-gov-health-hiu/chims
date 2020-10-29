@@ -1,0 +1,83 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <body>
+
+        <ui:composition template="/template.xhtml">
+
+            <ui:define name="content">
+                <h:form  >
+
+                    <p:commandButton value="Download" ajax="false" >
+                        <p:dataExporter target="tbl" type="xls" fileName="corrected duplicate phn" ></p:dataExporter>
+                    </p:commandButton>
+
+                    <p:dataTable value="#{clientController.items}"
+                                 var="c" id="tbl"
+                                 rowKey="#{c.id}"
+                                 paginator="true"
+                                 rows="20" rowIndexVar="n"
+                                 rowsPerPageTemplate="10,20,30,40,50"
+                                 resizeMode="expand"
+                                 >
+
+                        <f:facet name="header" >
+                            Fill Clients with Duplicate PHN
+                        </f:facet>
+
+                        <p:column headerText="No" width="50" >
+                            <p:outputLabel value="#{n+1}" ></p:outputLabel>
+                        </p:column>
+
+                        <p:column headerText="Current PHN" width="120" sortBy="#{c.phn}" filterBy="#{c.phn}" filterMatchMode="contains">
+                            <p:outputLabel value="#{c.phn}" ></p:outputLabel>
+                        </p:column>
+
+                        <p:column headerText="Name" width="250"  sortBy="#{c.person.name}" filterBy="#{c.person.name}" filterMatchMode="contains">
+                            <p:outputLabel value="#{c.person.name}" ></p:outputLabel>
+                        </p:column>
+
+                        <p:column headerText="Comments"  sortBy="#{c.comments}">
+                            <p:outputLabel value="#{c.comments}" ></p:outputLabel>
+                        </p:column>
+
+
+
+                        <p:column  headerText="Local Ref No" width="120"  
+                                   sortBy="#{c.person.localReferanceNo}" 
+                                   filterBy="#{c.person.localReferanceNo}" filterMatchMode="contains">
+                            <p:outputLabel value="#{c.person.localReferanceNo}" ></p:outputLabel>
+                        </p:column>
+
+                        <p:column  headerText="Senior Citizenship No" width="120" sortBy="#{c.person.ssNumber}" 
+                                   filterBy="#{c.person.ssNumber}" filterMatchMode="contains">
+                            <p:outputLabel value="#{c.person.ssNumber}" >
+                            </p:outputLabel>
+                        </p:column>
+
+                        <p:column  headerText="Actions" width="160" >
+                            <p:commandButton value="View" action="#{clientController.toClientProfile()}" ajax="false" >
+                                <f:setPropertyActionListener value="#{c}" target="#{clientController.selected}" ></f:setPropertyActionListener>
+                            </p:commandButton>
+                        </p:column>
+
+
+
+
+                    </p:dataTable>
+
+
+
+                </h:form>
+
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

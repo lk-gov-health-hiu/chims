@@ -75,9 +75,9 @@ public class CoordinateController implements Serializable {
     }
 
     public List<Coordinate> getItems() {
-        if (items == null) {
-            items = getFacade().findAll();
-        }
+//        if (items == null) {
+//            items = getFacade().findAll();
+//        }
         return items;
     }
 

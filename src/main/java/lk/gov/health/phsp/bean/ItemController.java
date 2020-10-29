@@ -548,9 +548,9 @@ public class ItemController implements Serializable {
     }
 
     public List<Item> getItems() {
-        if (items == null) {
-            items = getFacade().findAll();
-        }
+//        if (items == null) {
+//            items = getFacade().findAll();
+//        }
         return items;
     }
 

@@ -569,9 +569,9 @@ public class ClientEncounterComponentItemController implements Serializable {
     }
 
     public List<ClientEncounterComponentItem> getItems() {
-        if (items == null) {
-            items = getFacade().findAll();
-        }
+//        if (items == null) {
+//            items = getFacade().findAll();
+//        }
         return items;
     }
 

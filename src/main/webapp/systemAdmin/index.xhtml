@@ -60,8 +60,16 @@
                                     <p:commandButton ajax="false" action="/systemAdmin/clients_with_phn_error" value="Client with wrong PHN"  onclick="this.form.target = '_blank'" ></p:commandButton>
                                     <p:commandButton ajax="false" action="#{designComponentFormItemController.addDataTypesToDictionaryItemsFromFormItems}" value="Transfer Data Type from FormItem to Item" ></p:commandButton>
                                     <p:commandButton ajax="false" action="#{itemController.generateDisplayNames()}" value="Generate Display Names" ></p:commandButton>
+                                    <p:commandButton ajax="false" value="Detect Duplicate PHN numbers" 
+                                                     action="#{clientController.toDetectPhnDuplicates()}">
+                                        
+                                    </p:commandButton>
                                 </p:panelGrid>
                             </p:tab> 
+                            
+                            
+                            
+                            
                         </p:tabView>
                     </p:panel>
                 </h:form>
