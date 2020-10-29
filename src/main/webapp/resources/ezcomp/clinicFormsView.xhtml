@@ -24,12 +24,14 @@
                     <h:panelGroup id="gpDataAndButtons" >
                         <tr>
 <!--                            <td>
-                                #{ii.encounter.id}
+                              Selection Data Type -   #{ii.selectionDataType}
+                              <br/> comment 
+                              Item Data Type -   #{ii.item.dataType}
                             </td>-->
 
                             <h:panelGroup id="gpData" >
                                 <h:panelGroup rendered="#{ii.renderType eq 'Input_Text'}" >
-                                    <h:panelGroup rendered="#{ii.selectionDataType eq'Short_Text'}" >
+                                    <h:panelGroup rendered="#{ii.item.dataType eq'Short_Text'}" >
                                         <td>
                                             <p:outputLabel value="#{ii.name}" ></p:outputLabel>
                                         </td>
@@ -38,7 +40,7 @@
                                             </p:outputLabel>
                                         </td>
                                     </h:panelGroup>
-                                    <h:panelGroup rendered="#{ii.selectionDataType eq 'Integer_Number'}" >
+                                    <h:panelGroup rendered="#{ii.item.dataType eq 'Integer_Number'}" >
                                         <td>
                                             <p:outputLabel  value="#{ii.name}" ></p:outputLabel>
                                         </td>
@@ -47,7 +49,7 @@
                                             </p:outputLabel>
                                         </td>
                                     </h:panelGroup>
-                                    <h:panelGroup rendered="#{ii.selectionDataType eq 'Real_Number'}" >
+                                    <h:panelGroup rendered="#{ii.item.dataType eq 'Real_Number'}" >
                                         <td>
                                             <p:outputLabel  value="#{ii.name}" ></p:outputLabel>
                                         </td>
@@ -56,7 +58,7 @@
                                             </p:outputLabel>
                                         </td>
                                     </h:panelGroup>
-                                    <h:panelGroup rendered="#{ii.selectionDataType eq 'Long_Number'}" >
+                                    <h:panelGroup rendered="#{ii.item.dataType eq 'Long_Number'}" >
                                         <td>
                                             <p:outputLabel  value="#{ii.name}" ></p:outputLabel>
                                         </td>
@@ -75,7 +77,7 @@
                                         </p:outputLabel>
                                     </td>
                                 </h:panelGroup>
-                                <h:panelGroup rendered="#{ii.selectionDataType eq 'DateTime'}" >
+                                <h:panelGroup rendered="#{ii.item.dataType eq 'DateTime'}" >
                                     <h:panelGroup rendered="#{ii.renderType eq 'Date_Picker'}" >
                                         <td>
                                             <p:outputLabel  value="#{ii.name}" ></p:outputLabel>
@@ -101,7 +103,7 @@
 
                                     </h:panelGroup>
                                 </h:panelGroup>
-                                <h:panelGroup rendered="#{ii.selectionDataType eq 'Item_Reference'}" >
+                                <h:panelGroup rendered="#{ii.item.dataType eq 'Item_Reference'}" >
                                     <h:panelGroup rendered="#{ii.renderType eq 'Drop_Down_Menu'}" >
                                         <td>
                                             <p:outputLabel  value="#{ii.name}" ></p:outputLabel>
@@ -131,7 +133,7 @@
                                     </td>
                                 </h:panelGroup>
 
-                                <h:panelGroup rendered="#{ii.renderType eq 'Autocomplete' and ii.selectionDataType eq 'Area_Reference'}" >
+                                <h:panelGroup rendered="#{ii.renderType eq 'Autocomplete' and ii.item.dataType eq 'Area_Reference'}" >
                                     <td>
                                         <p:outputLabel  value="#{ii.name}" ></p:outputLabel>
                                     </td>

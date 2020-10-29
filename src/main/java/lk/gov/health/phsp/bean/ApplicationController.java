@@ -31,6 +31,7 @@ import javax.ejb.EJB;
 import javax.inject.Named;
 import javax.enterprise.context.ApplicationScoped;
 import lk.gov.health.phsp.entity.Institution;
+import lk.gov.health.phsp.entity.Item;
 import lk.gov.health.phsp.entity.QueryComponent;
 import lk.gov.health.phsp.enums.InstitutionType;
 import lk.gov.health.phsp.enums.WebUserRole;
@@ -57,6 +58,7 @@ public class ApplicationController {
     private boolean demoSetup = false;
     private String versionNo = "1.1.4";
     private List<QueryComponent> queryComponents;
+    private List<Item> items;
 
 // </editor-fold>
     public ApplicationController() {
@@ -160,6 +162,8 @@ public class ApplicationController {
     public boolean isDemoSetup() {
         return demoSetup;
     }
+    
+    
 
     public void setDemoSetup(boolean demoSetup) {
         this.demoSetup = demoSetup;
@@ -186,6 +190,14 @@ public class ApplicationController {
 
     public void setQueryComponentFacade(QueryComponentFacade queryComponentFacade) {
         this.queryComponentFacade = queryComponentFacade;
+    }
+
+    public List<Item> getItems() {
+        return items;
+    }
+
+    public void setItems(List<Item> items) {
+        this.items = items;
     }
 
 }

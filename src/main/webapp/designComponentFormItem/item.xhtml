@@ -258,6 +258,34 @@
 
                                         </p:panelGrid>
                                     </p:tab>
+
+
+
+                                    <p:tab title="Log" >
+                                        <p:panelGrid columns="2" >
+
+                                            <p:outputLabel value="Created at"  />
+                                            <p:outputLabel value="#{designComponentFormItemController.selected.createdAt}">
+                                                <f:convertDateTime parent="dd MMMM yyyy hh:mm:ss" ></f:convertDateTime>
+                                            </p:outputLabel>
+
+                                            <p:outputLabel value="Created by"  />
+                                            <p:outputLabel value="#{designComponentFormItemController.selected.createdBy.person.name}">
+                                            </p:outputLabel>
+
+                                            <p:outputLabel value="Last Edit at"  />
+                                            <p:outputLabel value="#{designComponentFormItemController.selected.lastEditeAt}">
+                                                <f:convertDateTime parent="dd MMMM yyyy hh:mm:ss" ></f:convertDateTime>
+                                            </p:outputLabel>
+
+                                            <p:outputLabel value="Last Edit by"  />
+                                            <p:outputLabel value="#{designComponentFormItemController.selected.lastEditBy.person.name}">
+                                            </p:outputLabel>
+
+
+                                        </p:panelGrid>
+                                    </p:tab>
+
                                 </p:tabView>
 
 

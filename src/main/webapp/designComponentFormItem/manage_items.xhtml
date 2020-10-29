@@ -46,7 +46,7 @@
                                     <p:column headerText="Sex" width="80" >
                                         <p:outputLabel value="#{f.componentSex.label()}" ></p:outputLabel>
                                     </p:column>
-                                    <p:column headerText="Actions" width="200" >
+                                    <p:column headerText="Actions" width="260" >
                                         <p:commandButton id="btnEdit" value="Edit"  icon="ui-icon-pencil"  
                                                          action="#{designComponentFormItemController.toEditDesignComponentFromItem()}" 
                                                          ajax="false" >
@@ -57,6 +57,17 @@
                                                          ajax="false" >
                                             <f:setPropertyActionListener value="#{f}" target="#{designComponentFormItemController.selected}" ></f:setPropertyActionListener>
                                         </p:commandButton>
+                                        
+                                        <p:commandButton value="Fix Item Data Type" action="#{designComponentFormItemController.fixItemDataTypeToMatchSelectionDataType}"
+                                                         ajax="false"     rendered="#{f.selectionDataType ne f.item.dataType}" >
+                                            <f:setPropertyActionListener value="#{f}" target="#{designComponentFormItemController.selected}" ></f:setPropertyActionListener>
+                                       
+                                        </p:commandButton>
+                                        
+                                    </p:column>
+                                    <p:column rendered="false" >
+                                      f.selectionDataType =  #{f.selectionDataType} <br/>
+                                      f.item.dataType =  #{f.item.dataType}
                                     </p:column>
                                     <p:column headerText="Change Order" width="100" >
                                         <p:commandButton id="btnUp"  icon="ui-icon-arrowthick-1-n"  
