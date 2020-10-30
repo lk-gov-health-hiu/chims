@@ -59,8 +59,9 @@ public class ApplicationController {
     private String versionNo = "1.1.4";
     private List<QueryComponent> queryComponents;
     private List<Item> items;
-
+    private List<String> userTransactionTypes;
 // </editor-fold>
+
     public ApplicationController() {
     }
 
@@ -198,6 +199,14 @@ public class ApplicationController {
 
     public void setItems(List<Item> items) {
         this.items = items;
+    }
+
+    public List<String> getUserTransactionTypes() {
+        return userTransactionTypes;
+    }
+
+    public void setUserTransactionTypes(List<String> userTransactionTypes) {
+        this.userTransactionTypes = userTransactionTypes;
     }
 
 }
