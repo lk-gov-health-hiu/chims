@@ -14,10 +14,13 @@
 
 
         <h:panelGroup rendered="#{webUserController.loggedUser ne null}" >
-             <table style="width: 98%; margin: auto;">
+            <table style="width: 98%; margin: auto;">
                 <tr>
                     <td>
-                        &copy; Ministry of Health, Nutrition &amp; Indigenous Medicine, <script type="text/javascript">document.write( new Date().getFullYear() );</script>
+                        &copy; Ministry of Health, Nutrition &amp; Indigenous Medicine, 
+                        <h:outputText value="#{session.lastAccessedTime}">
+                            <f:convertDateTime pattern="yyyy" type="date" />
+                        </h:outputText>
                     </td>
                 </tr>
             </table>
@@ -27,7 +30,10 @@
             <table style="width: 98%; margin: auto;">
                 <tr>
                     <td>
-                        &copy; Ministry of Health, Nutrition &amp; Indigenous Medicine, 2019
+                        &copy; Ministry of Health, Nutrition &amp; Indigenous Medicine, 
+                        <h:outputText value="#{session.lastAccessedTime}">
+                            <f:convertDateTime pattern="yyyy" type="date" />
+                        </h:outputText>
                     </td>
                 </tr>
             </table>
