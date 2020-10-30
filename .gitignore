@@ -3,3 +3,5 @@
 /target/
 /src/main/webapp/WEB-INF/glassfish-resources.xml
 glassfish-resources.xml
+*/META-INF/*
+src/main/resources/META-INF/persistence.xml
