@@ -40,7 +40,7 @@
                                         <p:panelGrid columns="2" >
 
 
-                                            <p:outputLabel value="Name:" for="name" />
+                                            <p:outputLabel value="Name:" for="name"/>
                                             <p:inputText id="name" required="true" rendered="true"
                                                          value="#{designComponentFormItemController.selected.name}" title="Name" />
 
@@ -50,7 +50,7 @@
 
 
                                             <p:outputLabel value="Item:" for="item" />
-                                            <p:autoComplete id="item" value="#{designComponentFormItemController.selected.item}"
+                                            <p:autoComplete id="item" value="#{designComponentFormItemController.selected.item}" 
                                                             completeMethod="#{itemController.completeDictionaryItems}" forceSelection="true"
                                                             required="true"   var="dic" itemLabel="#{dic.code}" itemValue="#{dic}">
                                                 <p:column headerText="ID" >
