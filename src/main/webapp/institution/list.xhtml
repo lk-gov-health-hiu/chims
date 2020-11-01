@@ -13,17 +13,18 @@
             <ui:define name="insContents">
 
 
+                
                 <h:form id="InstitutionListForm">
-
-
-
-                    <p:panel header="Manage Institutions">
-                        <p:dataTable id="datalist" value="#{institutionController.items}" var="item"
+                        
+                        <p:dataTable id="datalist" 
+                                     value="#{institutionController.items}" 
+                                     var="item"
                                      selectionMode="single" selection="#{institutionController.selected}"
                                      paginator="true"
                                      rowKey="#{item.id}"
                                      rows="10"
                                      rowsPerPageTemplate="10,20,30,40,50"
+                                     
                                      >
 
                             <p:column sortBy="#{item.institutionType}" filterBy="#{item.institutionType}" filterMatchMode="contains" >
@@ -65,7 +66,7 @@
                             </p:column>
 
                         </p:dataTable>
-                    </p:panel>
+                        
                 </h:form>
 
 

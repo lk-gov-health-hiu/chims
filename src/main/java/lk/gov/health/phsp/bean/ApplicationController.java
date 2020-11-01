@@ -60,8 +60,9 @@ public class ApplicationController {
     private List<QueryComponent> queryComponents;
     private List<Item> items;
     private List<String> userTransactionTypes;
-// </editor-fold>
+    private List<Institution> institutions;
 
+// </editor-fold>
     public ApplicationController() {
     }
 
@@ -163,8 +164,6 @@ public class ApplicationController {
     public boolean isDemoSetup() {
         return demoSetup;
     }
-    
-    
 
     public void setDemoSetup(boolean demoSetup) {
         this.demoSetup = demoSetup;
@@ -208,5 +207,16 @@ public class ApplicationController {
     public void setUserTransactionTypes(List<String> userTransactionTypes) {
         this.userTransactionTypes = userTransactionTypes;
     }
+
+    public List<Institution> getInstitutions() {
+        return institutions;
+    }
+
+    public void setInstitutions(List<Institution> institutions) {
+        this.institutions = institutions;
+    }
+    
+    
+    
 
 }
