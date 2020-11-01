@@ -85,9 +85,27 @@ public class InstitutionController implements Serializable {
         return "/institution/institution";
     }
 
+    public boolean thisIsAParentInstitution(Institution checkingInstitution){
+        boolean flag=false;
+        if(checkingInstitution==null){
+            return false;
+        }
+        for(Institution i:getItems()){
+            if(i.getParent()!=null && i.getParent().equals(checkingInstitution)){
+                flag=true;
+                return flag;
+            }
+        }
+        return flag;
+    }
+    
     public String deleteInstitution() {
         if (deleting == null) {
             JsfUtil.addErrorMessage("Please select");
+            return "";
+        }
+        if(thisIsAParentInstitution(deleting)){
+            JsfUtil.addErrorMessage("Can't delete. This has child institutions.");
             return "";
         }
         deleting.setRetired(true);
