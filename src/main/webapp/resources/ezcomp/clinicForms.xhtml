@@ -73,7 +73,7 @@
                                                  Selection Data Type
                                              </td>
                                               <td>
-                                                 #{ii.selectionDataType}"
+                                                 #{ii.item.dataType}"
                                              </td>
                                          </tr>
                                           <tr>
@@ -90,7 +90,7 @@
                             </h:panelGroup>
                             <h:panelGroup id="gpData" >
                                 <h:panelGroup rendered="#{ii.renderType eq 'Input_Text'}" >
-                                    <h:panelGroup rendered="#{ii.selectionDataType eq'Short_Text'}" >
+                                    <h:panelGroup rendered="#{ii.item.dataType eq'Short_Text'}" >
                                         <td>
                                             <p:outputLabel for="itStC" value="#{ii.name}" style="#{ii.generatedCss}" ></p:outputLabel>
                                         </td>
@@ -109,7 +109,7 @@
                                         </td>
 
                                     </h:panelGroup>
-                                    <h:panelGroup rendered="#{ii.selectionDataType eq 'Integer_Number'}" >
+                                    <h:panelGroup rendered="#{ii.item.dataType eq 'Integer_Number'}" >
                                         <td>
                                             <p:outputLabel for="itIntC" value="#{ii.name}"  style="#{ii.generatedCss}" ></p:outputLabel>
                                         </td>
@@ -129,7 +129,7 @@
                                         </td>
 
                                     </h:panelGroup>
-                                    <h:panelGroup rendered="#{ii.selectionDataType eq 'Real_Number'}" >
+                                    <h:panelGroup rendered="#{ii.item.dataType eq 'Real_Number'}" >
                                         <td>
                                             <p:outputLabel for="itRnC" value="#{ii.name}"  style="#{ii.generatedCss}" ></p:outputLabel>
                                         </td>
@@ -147,7 +147,7 @@
                                             </h:panelGroup>
                                         </td>
                                     </h:panelGroup>
-                                    <h:panelGroup rendered="#{ii.selectionDataType eq 'Long_Number'}" >
+                                    <h:panelGroup rendered="#{ii.item.dataType eq 'Long_Number'}" >
                                         <td>
                                             <p:outputLabel for="itLongC" value="#{ii.name}"  style="#{ii.generatedCss}" ></p:outputLabel>
                                         </td>
@@ -179,7 +179,7 @@
                                         </p:inputTextarea>
                                     </td>
                                 </h:panelGroup>
-                                <h:panelGroup rendered="#{ii.selectionDataType eq 'DateTime'}" >
+                                <h:panelGroup rendered="#{ii.item.dataType eq 'DateTime'}" >
                                     <h:panelGroup rendered="#{ii.renderType eq 'Date_Picker'}" >
                                         <td>
                                             <p:outputLabel for="calDp" value="#{ii.name}"  style="#{ii.generatedCss}" ></p:outputLabel>
@@ -208,7 +208,7 @@
 
                                     </h:panelGroup>
                                 </h:panelGroup>
-                                <h:panelGroup rendered="#{ii.selectionDataType eq 'Item_Reference'}" >
+                                <h:panelGroup rendered="#{ii.item.dataType eq 'Item_Reference'}" >
                                     <h:panelGroup rendered="#{ii.renderType eq 'Drop_Down_Menu'}" >
                                         <td>
                                             <p:outputLabel for="domIc" value="#{ii.name}"  style="#{ii.generatedCss}" ></p:outputLabel>
@@ -258,7 +258,7 @@
                                         </p:selectBooleanCheckbox>
                                     </td>
                                 </h:panelGroup>
-                                <h:panelGroup rendered="#{ii.renderType eq 'Autocomplete' and ii.selectionDataType eq 'Area_Reference'}" >
+                                <h:panelGroup rendered="#{ii.renderType eq 'Autocomplete' and ii.item.dataType eq 'Area_Reference'}" >
                                     <td>
                                         <p:outputLabel for="acA" value="#{ii.name}"  style="#{ii.generatedCss}" ></p:outputLabel>
                                     </td>
@@ -295,7 +295,7 @@
                                         <p:outputLabel value="renderType" ></p:outputLabel>
                                         <p:outputLabel value="#{ii.renderType}" ></p:outputLabel>
                                         <p:outputLabel value="selectionDataType" ></p:outputLabel>
-                                        <p:outputLabel value="#{ii.selectionDataType}" ></p:outputLabel>
+                                        <p:outputLabel value="#{ii.item.dataType}" ></p:outputLabel>
                                     </p:panelGrid>
                                 </h:panelGroup>
                             </td>

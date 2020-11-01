@@ -27,6 +27,7 @@ import lk.gov.health.phsp.entity.Component;
 import lk.gov.health.phsp.entity.DesignComponentForm;
 import lk.gov.health.phsp.entity.DesignComponentFormSet;
 import lk.gov.health.phsp.entity.Item;
+import lk.gov.health.phsp.enums.SelectionDataType;
 import lk.gov.health.phsp.facade.ItemFacade;
 import org.apache.commons.lang3.SerializationUtils;
 // </editor-fold>
@@ -124,6 +125,24 @@ public class DesignComponentFormItemController implements Serializable {
             return "";
         }
         return "/designComponentFormItem/design";
+    }
+    
+    public void fixItemDataTypeToMatchSelectionDataType() {
+        if (selected == null) {
+            JsfUtil.addErrorMessage("No form item selected.");
+            return ;
+        }
+        if(selected.getItem()==null){
+            JsfUtil.addErrorMessage("No item available for form item.");
+            return ;
+        }
+        if(selected.getSelectionDataType() ==null){
+            JsfUtil.addErrorMessage("No selection data type available for form item.");
+            return ;
+        }
+        selected.getItem().setDataType(selected.getSelectionDataType());
+        getItemFacade().edit(selected.getItem());
+        JsfUtil.addSuccessMessage("Updated");
     }
 
 // </editor-fold>

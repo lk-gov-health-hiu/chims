@@ -75,9 +75,9 @@ public class PersonController implements Serializable {
     }
 
     public List<Person> getItems() {
-        if (items == null) {
-            items = getFacade().findAll();
-        }
+//        if (items == null) {
+//            items = getFacade().findAll();
+//        }
         return items;
     }
 

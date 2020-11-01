@@ -54,6 +54,30 @@
                                 </f:facet>
                                 <h:outputText value="#{item.componentSex}"/>
                             </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Created at"/>
+                                </f:facet>
+                                <h:outputText value="#{item.createdAt}">
+                                    <f:convertDateTime parent="dd MMM yy hh:mm a" ></f:convertDateTime>
+                                </h:outputText>
+                            </p:column><!-- comment -->
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Last Edited at"/>
+                                </f:facet>
+                                <h:outputText value="#{item.lastEditeAt}">
+                                    <f:convertDateTime parent="dd MMM yy hh:mm a" ></f:convertDateTime>
+                                </h:outputText>
+                            </p:column>
+                             <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Institution"/>
+                                </f:facet>
+                                 <h:outputText value="#{item.institution.name}">
+                                    <f:convertDateTime parent="dd MMM yy hh:mm a" ></f:convertDateTime>
+                                </h:outputText>
+                            </p:column>
                             <f:facet name="footer">
                                 <p:commandButton id="createButton" icon="ui-icon-plus"   value="#{bundleClinical.Create}" actionListener="#{designComponentFormSetController.prepareCreate}" update=":DesignComponentFormSetCreateForm" oncomplete="PF('DesignComponentFormSetCreateDialog').show()"/>
                                 <p:commandButton id="viewButton"   icon="ui-icon-search" value="#{bundleClinical.View}" update=":DesignComponentFormSetViewForm" oncomplete="PF('DesignComponentFormSetViewDialog').show()" disabled="#{empty designComponentFormSetController.selected}"/>

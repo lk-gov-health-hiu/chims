@@ -75,9 +75,9 @@ public class DesignComponentController implements Serializable {
     }
 
     public List<DesignComponent> getItems() {
-        if (items == null) {
-            items = getFacade().findAll();
-        }
+//        if (items == null) {
+//            items = getFacade().findAll();
+//        }
         return items;
     }
 

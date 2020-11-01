@@ -28,18 +28,21 @@ import lk.gov.health.phsp.enums.AreaType;
 import lk.gov.health.phsp.enums.InstitutionType;
 import lk.gov.health.phsp.facade.AreaFacade;
 
-@Named("institutionController")
+@Named
 @SessionScoped
 public class InstitutionController implements Serializable {
 
     @EJB
-    private lk.gov.health.phsp.facade.InstitutionFacade ejbFacade;
+    private InstitutionFacade ejbFacade;
 
     @EJB
     private AreaFacade areaFacade;
 
     @Inject
     private WebUserController webUserController;
+
+    @Inject
+    ApplicationController applicationController;
 
     private List<Institution> items = null;
     private Institution selected;
@@ -49,11 +52,10 @@ public class InstitutionController implements Serializable {
     private Area area;
     private Area removingArea;
 
-    
-    public Institution getInstitutionById(Long id){
+    public Institution getInstitutionById(Long id) {
         return getFacade().find(id);
     }
-    
+
     public void addGnToPmc() {
         if (selected == null) {
             JsfUtil.addErrorMessage("No PMC is selected");
@@ -74,18 +76,36 @@ public class InstitutionController implements Serializable {
         selected = new Institution();
         return "/institution/institution";
     }
-    
+
     public String toEditInstitution() {
-        if(selected==null){
+        if (selected == null) {
             JsfUtil.addErrorMessage("Please select");
             return "";
         }
         return "/institution/institution";
     }
+
+    public boolean thisIsAParentInstitution(Institution checkingInstitution){
+        boolean flag=false;
+        if(checkingInstitution==null){
+            return false;
+        }
+        for(Institution i:getItems()){
+            if(i.getParent()!=null && i.getParent().equals(checkingInstitution)){
+                flag=true;
+                return flag;
+            }
+        }
+        return flag;
+    }
     
     public String deleteInstitution() {
-        if(deleting==null){
+        if (deleting == null) {
             JsfUtil.addErrorMessage("Please select");
+            return "";
+        }
+        if(thisIsAParentInstitution(deleting)){
+            JsfUtil.addErrorMessage("Can't delete. This has child institutions.");
             return "";
         }
         deleting.setRetired(true);
@@ -93,16 +113,16 @@ public class InstitutionController implements Serializable {
         deleting.setRetirer(webUserController.getLoggedUser());
         getFacade().edit(deleting);
         JsfUtil.addSuccessMessage("Deleted");
-        items = null;
-        getItems();
+        applicationController.getInstitutions().remove(deleting);
+        fillItems();
         return "/institution/list";
     }
-    
-    public String toListInstitutions(){
+
+    public String toListInstitutions() {
         return "/institution/list";
     }
-    
-     public String toSearchInstitutions(){
+
+    public String toSearchInstitutions() {
         return "/institution/search";
     }
 
@@ -148,10 +168,6 @@ public class InstitutionController implements Serializable {
         gns = areaFacade.findByJpql(j, m);
         return gns;
     }
-    
-    
-    
-    
 
     public InstitutionController() {
     }
@@ -221,7 +237,6 @@ public class InstitutionController implements Serializable {
         return fillInstitutions(null, nameQry, null);
     }
 
-    
     public Institution findInstitutionByName(String name) {
         String j = "Select i from Institution i where i.retired=:ret ";
         Map m = new HashMap();
@@ -232,7 +247,7 @@ public class InstitutionController implements Serializable {
         m.put("ret", false);
         return getFacade().findFirstByJpql(j, m);
     }
-    
+
     public Institution findInstitutionById(Long id) {
         String j = "Select i from Institution i where i.retired=:ret ";
         Map m = new HashMap();
@@ -243,7 +258,7 @@ public class InstitutionController implements Serializable {
         m.put("ret", false);
         return getFacade().findFirstByJpql(j, m);
     }
-    
+
     public List<Institution> completePmcis(String nameQry) {
         String j = "Select i from Institution i where i.retired=false and i.pmci=true ";
         Map m = new HashMap();
@@ -253,6 +268,21 @@ public class InstitutionController implements Serializable {
         }
         j += " order by i.name";
         return getFacade().findByJpql(j, m);
+    }
+
+    public void fillItems() {
+        if(applicationController.getInstitutions()!=null){
+            items = applicationController.getInstitutions();
+            return;
+        }
+        String j = "select i "
+                + " from Institution i "
+                + " where i.retired=:ret "
+                + " order by i.name";
+        Map m = new HashMap<>();
+        m.put("ret", false);
+        items = getFacade().findByJpql(j, m);
+        applicationController.setInstitutions(items);
     }
 
     public List<Institution> fillInstitutions(InstitutionType type, String nameQry, Institution parent) {
@@ -289,8 +319,8 @@ public class InstitutionController implements Serializable {
             selected.setCreatedAt(new Date());
             selected.setCreater(webUserController.getLoggedUser());
             getFacade().create(selected);
-            items = null;
-            getItems();
+            applicationController.getInstitutions().add(selected);
+            fillItems();
             JsfUtil.addSuccessMessage("Saved");
         } else {
             selected.setEditedAt(new Date());
@@ -305,7 +335,8 @@ public class InstitutionController implements Serializable {
     public void create() {
         persist(PersistAction.CREATE, ResourceBundle.getBundle("/BundleClinical").getString("InstitutionCreated"));
         if (!JsfUtil.isValidationFailed()) {
-            items = null;    // Invalidate list of items to trigger re-query.
+            applicationController.getInstitutions().add(selected);
+            fillItems();
         }
     }
 
@@ -323,10 +354,7 @@ public class InstitutionController implements Serializable {
 
     public List<Institution> getItems() {
         if (items == null) {
-            String j = "select i from Institution i where i.retired=:ret order by i.name";
-            Map m = new HashMap<>();
-            m.put("ret", false);
-            items = getFacade().findByJpql(j, m);
+            fillItems();
         }
         return items;
     }
@@ -384,7 +412,7 @@ public class InstitutionController implements Serializable {
                     myClinics.add(i);
                     count++;
                 }
-                if(count>50){
+                if (count > 50) {
                     return myClinics;
                 }
             }
@@ -444,9 +472,6 @@ public class InstitutionController implements Serializable {
         this.deleting = deleting;
     }
 
-    
-    
-    
     @FacesConverter(forClass = Institution.class)
     public static class InstitutionControllerConverter implements Converter {
 

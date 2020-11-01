@@ -40,17 +40,23 @@
                             <p:tab title="Areas &amp; Populations" >
                                 <p:panelGrid columns="1" >
                                     <p:commandButton ajax="false"
-                                                      disabled="true"
-                                                      action="/systemAdmin/gn_areas_for_pmci" value="GN Areas of PMCI" ></p:commandButton>
+                                                     disabled="true"
+                                                     action="/systemAdmin/gn_areas_for_pmci" value="GN Areas of PMCI" ></p:commandButton>
                                     <p:commandButton ajax="false" 
-                                                      disabled="true"
-                                                      action="/systemAdmin/area_empanellement" value="Empanelled Population Data" ></p:commandButton>
+                                                     disabled="true"
+                                                     action="/systemAdmin/area_empanellement" value="Empanelled Population Data" ></p:commandButton>
                                 </p:panelGrid>
                             </p:tab>
 
                             <p:tab title="Corrections" >
                                 <p:panelGrid columns="1" >
                                     <p:commandButton ajax="false" action="/systemAdmin/clients_with_phn_error" value="Client with wrong PHN"  onclick="this.form.target = '_blank'" ></p:commandButton>
+                                    <p:commandButton ajax="false" value="Detect Duplicate PHN numbers" 
+                                                     action="#{clientController.toDetectPhnDuplicates()}">
+                                    </p:commandButton>
+                                    <p:commandButton ajax="false" value="List Corrected Duplicate PHN numbers" 
+                                                     action="#{clientController.toViewCorrectedDuplicates()}">
+                                    </p:commandButton>
                                 </p:panelGrid>
                             </p:tab> 
 

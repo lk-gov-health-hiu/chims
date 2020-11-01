@@ -35,6 +35,7 @@ import lk.gov.health.phsp.entity.Client;
 import lk.gov.health.phsp.entity.Component;
 import lk.gov.health.phsp.entity.Encounter;
 import lk.gov.health.phsp.entity.Person;
+import lk.gov.health.phsp.enums.SelectionDataType;
 
 @Named("clientEncounterComponentItemController")
 @SessionScoped
@@ -87,7 +88,7 @@ public class ClientEncounterComponentItemController implements Serializable {
         }
         return t;
     }
-    
+
     public List<ClientEncounterComponentItem> findClientEncounterComponentItems(Encounter enc) {
         String j = "select f from ClientEncounterComponentItem f "
                 + " where f.retired=false "
@@ -133,21 +134,21 @@ public class ClientEncounterComponentItemController implements Serializable {
     }
 
     public void calculate(ClientEncounterComponentItem i) {
-//        //System.out.println("Calculating " + i.getName());
+        System.out.println("Calculating " + i.getName());
         if (i == null) {
             return;
         }
 
         if (i.getCalculationScript() == null || i.getCalculationScript().trim().equals("")) {
-            //System.out.println("Calculation script is null. Quitting");
+           // System.out.println("Calculation script is null. Quitting");
             return;
         }
         if (i.getParentComponent() == null || i.getParentComponent().getParentComponent() == null) {
-            //System.out.println("Parent Component is null. Quitting");
+           // System.out.println("Parent Component is null. Quitting");
             return;
         }
         if (!(i.getParentComponent().getParentComponent() instanceof ClientEncounterComponentFormSet)) {
-            //System.out.println("Formset is null. Quitting");
+           // System.out.println("Formset is null. Quitting");
             return;
         }
 
@@ -158,18 +159,18 @@ public class ClientEncounterComponentItemController implements Serializable {
             i.setRealNumberValue(Double.valueOf(p.getAgeYears()));
             i.setIntegerNumberValue(p.getAgeYears());
             getFacade().edit(i);
-//            //System.out.println("Age is calculated. Quitting");
+           // System.out.println("Age is calculated. Quitting");
             return;
         } else {
         }
 
         List<Replaceable> replacingBlocks = findReplaceblesInCalculationString(i.getCalculationScript());
-//        //System.out.println("replacingBlocks Size = " + replacingBlocks.size());
+       // System.out.println("replacingBlocks Size = " + replacingBlocks.size());
 
         for (Replaceable r : replacingBlocks) {
-//            //System.out.println("PEF Value = " + r.getPef());
-//            //System.out.println("SM Value = " + r.getSm());
-//            //System.out.println("Default Value = " + r.getDefaultValue());
+           // System.out.println("PEF Value = " + r.getPef());
+           // System.out.println("SM Value = " + r.getSm());
+           // System.out.println("Default Value = " + r.getDefaultValue());
             if (r.getPef().equalsIgnoreCase("f")) {
                 if (r.getSm().equalsIgnoreCase("s")) {
                     r.setClientEncounterComponentItem(findFormsetValue(i, r.getVariableCode()));
@@ -181,24 +182,47 @@ public class ClientEncounterComponentItemController implements Serializable {
             }
             if (r.getClientEncounterComponentItem() != null) {
                 ClientEncounterComponentItem c = r.getClientEncounterComponentItem();
-                
-                if(c.getItem()==null){
-                    //System.out.println("Item is Null. ID of ClientEncounterComponentItem is " + c.getId());
+
+                if (c.getItem() == null) {
+                   // System.out.println("Item is Null. ID of ClientEncounterComponentItem is " + c.getId());
                     continue;
-                }else{
-                    if(c.getItem().getDataType()==null){
-                        //System.out.println("Items data type is null.");
+                } else {
+                    if (c.getItem().getDataType() == null) {
+                       // System.out.println("Items data type is null.");
                         continue;
                     }
                 }
-                
-//                //System.out.println("c.getBooleanValue() = " + c.getBooleanValue());
-//                //System.out.println("c.getRealNumberValue() = " + c.getRealNumberValue());
-//                //System.out.println("c.getLongNumberValue() = " + c.getLongNumberValue());
-//                //System.out.println("c.getItemValue().getItemValue() = " + c.getItemValue());
-//                //System.out.println("c.getItem().getDataType() = " + c.getItem().getDataType());
 
-                switch (c.getItem().getDataType()) {
+                System.out.println("c.getBooleanValue() = " + c.getBooleanValue());
+                System.out.println("c.getRealNumberValue() = " + c.getRealNumberValue());
+                System.out.println("c.getLongNumberValue() = " + c.getLongNumberValue());
+                System.out.println("c.getItemValue().getItemValue() = " + c.getItemValue());
+                System.out.println("c.getItem().getDataType() = " + c.getItem().getDataType());
+                System.out.println("c.getItem().getDataType() = " + c.getSelectionDataType());
+
+                SelectionDataType dataType = null;
+                if (c.getSelectionDataType() == null && c.getItem().getDataType() == null) {
+                    dataType = SelectionDataType.Real_Number;
+                } else if (c.getSelectionDataType() != null && c.getItem().getDataType() == null) {
+                    dataType = c.getSelectionDataType();
+                } else if (c.getSelectionDataType() == null && c.getItem().getDataType() != null) {
+                    dataType = c.getItem().getDataType();
+                } else {
+                    if(c.getSelectionDataType() == c.getItem().getDataType()){
+                        dataType = c.getItem().getDataType();
+                    }else{
+                        dataType = c.getItem().getDataType();
+                        System.err.println("Error in data types");
+                        System.err.println("c.getSelectionDataType() = " + c.getSelectionDataType());
+                        System.err.println("c.getItem().getDataType() = " + c.getItem().getDataType());
+                    }
+                }
+
+                if (dataType == null) {
+                    dataType = SelectionDataType.Real_Number;
+                }
+
+                switch (dataType) {
                     case Short_Text:
                         if (c.getShortTextValue() != null) {
                             r.setSelectedValue(c.getShortTextValue());
@@ -225,22 +249,23 @@ public class ClientEncounterComponentItemController implements Serializable {
                         }
                         break;
                 }
-//                //System.out.println("Found Value is r.getSelectedValue() = " + r.getSelectedValue());
+               // System.out.println("Found Value is r.getSelectedValue() = " + r.getSelectedValue());
             } else {
                 r.setSelectedValue(r.getDefaultValue());
-//                //System.out.println("No Value Found - Default Value is r.getSelectedValue() = " + r.getSelectedValue());
+               // System.out.println("No Value Found - Default Value is r.getSelectedValue() = " + r.getSelectedValue());
             }
         }
 
         String javaStringToEvaluate = addTemplateToReport(i.getCalculationScript().trim(), replacingBlocks);
-//        //System.out.println("javaString To Evaluate = \n" + javaStringToEvaluate);
+        System.out.println("javaString To Evaluate = \n" + javaStringToEvaluate);
 
         String result = evaluateScript(javaStringToEvaluate);
 
-//        //System.out.println("Assigning Found Calculation Results");
-//        //System.out.println("i.getId() = " + i.getId());
-//        //System.out.println("result = " + result);
-//        //System.out.println("i.getSelectionDataType() = " + i.getSelectionDataType());
+        System.out.println("Assigning Found Calculation Results");
+        System.out.println("i.getId() = " + i.getId());
+        System.out.println("result = " + result);
+        System.out.println("i.getItem().getDataType() = " + i.getItem().getDataType());
+         System.out.println("i.getSelectionDataType() = " + i.getSelectionDataType());
 
         if (null == i.getItem().getDataType()) {
             i.setShortTextValue(result);
@@ -248,21 +273,21 @@ public class ClientEncounterComponentItemController implements Serializable {
             switch (i.getItem().getDataType()) {
                 case Real_Number:
                     i.setRealNumberValue(commonController.getDoubleValue(result));
-//                    //System.out.println("i.getRealNumberValue() = " + i.getRealNumberValue());
+                   // System.out.println("i.getRealNumberValue() = " + i.getRealNumberValue());
                     getFacade().edit(i);
                     break;
                 case Integer_Number:
                     i.setIntegerNumberValue(commonController.getIntegerValue(result));
-//                    //System.out.println("i.getIntegerNumberValue() = " + i.getIntegerNumberValue());
+                   // System.out.println("i.getIntegerNumberValue() = " + i.getIntegerNumberValue());
                     getFacade().edit(i);
                     break;
                 case Short_Text:
                     i.setShortTextValue(result);
-//                    //System.out.println("i.getShortTextValue() = " + i.getShortTextValue());
+                   // System.out.println("i.getShortTextValue() = " + i.getShortTextValue());
                     getFacade().edit(i);
                     break;
                 case Long_Text:
-//                    //System.out.println("i.getLongTextValue() = " + i.getLongTextValue());
+                   // System.out.println("i.getLongTextValue() = " + i.getLongTextValue());
                     i.setLongTextValue(result);
                     getFacade().edit(i);
                     break;
@@ -272,7 +297,7 @@ public class ClientEncounterComponentItemController implements Serializable {
             getFacade().edit(i);
         }
 
-//        //System.out.println("javaStringToEvaluate = " + javaStringToEvaluate);
+        // System.out.println("javaStringToEvaluate = " + javaStringToEvaluate);
     }
 
     public String evaluateScript(String script) {
@@ -281,7 +306,7 @@ public class ClientEncounterComponentItemController implements Serializable {
         try {
             return engine.eval(script) + "";
         } catch (ScriptException ex) {
-            ////System.out.println("ex = " + ex.getMessage());
+            // System.out.println("ex = " + ex.getMessage());
             return null;
         }
     }
@@ -569,9 +594,9 @@ public class ClientEncounterComponentItemController implements Serializable {
     }
 
     public List<ClientEncounterComponentItem> getItems() {
-        if (items == null) {
-            items = getFacade().findAll();
-        }
+//        if (items == null) {
+//            items = getFacade().findAll();
+//        }
         return items;
     }
 
@@ -701,7 +726,7 @@ public class ClientEncounterComponentItemController implements Serializable {
                 fountVal = ageItem;
 //                //System.out.println("Patient age created. ID is " + fountVal);
             }
-            
+
         }
         return fountVal;
 
@@ -726,8 +751,6 @@ public class ClientEncounterComponentItemController implements Serializable {
     public ItemController getItemController() {
         return itemController;
     }
-    
-    
 
     @FacesConverter(forClass = ClientEncounterComponentItem.class)
     public static class ClientEncounterComponentItemControllerConverter implements Converter {
