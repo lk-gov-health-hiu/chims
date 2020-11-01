@@ -61,13 +61,13 @@ public enum WebUserRole {
             case Me_User:
                 return "Monitoring & Evaluation User";
             case Midwife:
-                return "Widwife";
+                return "Midwife";
             case Nurse:
                 return "Nurse";
             case Super_User:
                 return "Super User";
             case System_Administrator:
-                return "Syetem Administrator";
+                return "System Administrator";
             case User:
                 return "User";
             default:
