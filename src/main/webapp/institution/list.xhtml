@@ -57,10 +57,11 @@
                                 <p:commandButton ajax="false" value="Edit" action="#{institutionController.toEditInstitution()}" >
                                     <f:setPropertyActionListener value="#{item}" target="#{institutionController.selected}" ></f:setPropertyActionListener>
                                 </p:commandButton>
-                                <p:commandButton ajax="false" value="Delete"
+                                <p:commandButton ajax="false" value="Delete" onclick="return confirm('Are you sure?')"
                                                  action="#{institutionController.deleteInstitution()}" >
                                     <f:setPropertyActionListener value="#{item}" target="#{institutionController.deleting}" ></f:setPropertyActionListener>
                                 </p:commandButton>
+                                <p:growl id="message" showDetail="true" />
                             </p:column>
 
                         </p:dataTable>
