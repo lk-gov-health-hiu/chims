@@ -37,7 +37,7 @@
                                 <p:outputLabel value="Order No." for="orderNo" />
                                 <p:inputText id="orderNo" value="#{queryComponentController.selected.orderNo}" title="#{bundleQuery.CreateQueryComponentTitle_name}" />
 
-
+                                
                                 <p:outputLabel value="MatchType:" for="matchType" />
                                 <p:selectOneMenu id="matchType"  value="#{queryComponentController.selected.matchType}" >
                                     <f:selectItem itemLabel="Select" ></f:selectItem>
@@ -49,7 +49,7 @@
                                 <p:selectOneMenu id="evaluationType"  value="#{queryComponentController.selected.evaluationType}" >
                                     <f:selectItem itemLabel="Select" ></f:selectItem>
                                     <f:selectItems value="#{commonController.queryVariableEvaluationType}" ></f:selectItems>
-                                    <f:ajax event="change" execute="evaluationType" render="values" ></f:ajax>
+                                    <f:ajax event="change" execute="evaluationType" render="values"></f:ajax>
                                 </p:selectOneMenu>
 
                                 <p:outputLabel value="Item:" for="item" />
@@ -72,15 +72,16 @@
 
 
                                 <p:outputLabel value="Data Type:" for="queryDataType" />
-                                <p:selectOneMenu id="queryDataType"  
-                                                 value="#{queryComponentController.selected.queryDataType}" >
+                                <p:selectOneMenu id="queryDataType"  value="#{queryComponentController.selected.queryDataType}" >
                                     <f:selectItem itemLabel="Select" ></f:selectItem>
                                     <f:selectItems value="#{commonController.queryDataTypes}" ></f:selectItems>
-                                    <f:ajax event="change" execute="queryDataType" render="values" ></f:ajax>
-                                </p:selectOneMenu>
+                                    <f:ajax event="change" execute="queryDataType" render="values itemValue boolValue strVal"></f:ajax>
+                              </p:selectOneMenu>
 
                                 <p:outputLabel value="Item Value:" for="itemValue" />
-                                <p:selectOneMenu id="itemValue" value="#{queryComponentController.selected.itemValue}" >
+                                <p:selectOneMenu id="itemValue" 
+                                                 disabled="#{queryComponentController.selected.queryDataType ne 'item'}"
+                                                 value="#{queryComponentController.selected.itemValue}" >
                                     <f:selectItem itemLabel="Select" ></f:selectItem>
                                     <f:selectItems value="#{queryComponentController.itemsInDesignFormItemValues}" itemValue="#{iv}"
                                                    itemLabel="#{iv.name}" var="iv" ></f:selectItems>
@@ -91,75 +92,63 @@
                                         <p:outputLabel value="#{iv.code}" ></p:outputLabel>
                                     </p:column>
                                 </p:selectOneMenu>
-
-
+                                
                                 <p:outputLabel value="Boolean Value:" for="boolValue" />
-                                <p:selectBooleanButton id="boolValue" value="#{queryComponentController.selected.booleanValue}" offLabel="Unchecked" onLabel="Checked" ></p:selectBooleanButton>
+                                <p:selectBooleanButton id="boolValue" 
+                                                       disabled="#{queryComponentController.selected.queryDataType ne 'Boolean'}"
+                                                       value="#{queryComponentController.selected.booleanValue}" offLabel="Unchecked" onLabel="Checked" ></p:selectBooleanButton>
 
 
                                 <p:outputLabel value="String Value:" for="strVal" />
-                                <p:inputText id="strVal" value="#{queryComponentController.selected.shortTextValue}" title="String Value" />
-
+                                <p:inputText id="strVal" 
+                                             disabled="#{queryComponentController.selected.queryDataType ne 'String'}"
+                                             value="#{queryComponentController.selected.shortTextValue}" title="String Value" />
 
                             </p:panelGrid>
-
-
-
-
-                            <h:panelGroup id="values" >
-
-                                <p:panelGrid id="between" columns="2" rendered="#{queryComponentController.selected.evaluationType eq 'Between'}" >
-
-                                    <p:outputLabel value="From" ></p:outputLabel>
-                                    <p:inputText id="integerNumberValue"
+                            
+                            
+                            <h:panelGroup id="values">
+                                <p:panelGrid id="between" columns="2" rendered="#{queryComponentController.selected.evaluationType eq 'Between'}">
+                                    
+                                    <p:outputLabel value="From"></p:outputLabel>                                        
+                                        <p:inputText id="integerNumberValue" 
                                                  rendered="#{queryComponentController.selected.queryDataType eq 'integer'}"
                                                  value="#{queryComponentController.selected.integerNumberValue}" title="IntegerNumberValue" />
-                                    <p:inputText id="longNumberValue" 
+                                         <p:inputText id="longNumberValue" 
                                                  rendered="#{queryComponentController.selected.queryDataType eq 'longNumber'}"
                                                  value="#{queryComponentController.selected.longNumberValue}" title="LongNumberValue" />
-                                    <p:inputText id="realNumberValue"
+                                        <p:inputText id="realNumberValue" 
                                                  rendered="#{queryComponentController.selected.queryDataType eq 'real'}"
                                                  value="#{queryComponentController.selected.realNumberValue}" title="RealNumberValue" />
-
-
-                                    <p:outputLabel value="To" ></p:outputLabel>
-                                    <p:inputText id="integerNumberValue2" 
+                                    
+                                    <p:outputLabel value="To"></p:outputLabel>
+                                        <p:inputText id="integerNumberValue2" 
                                                  rendered="#{queryComponentController.selected.queryDataType eq 'integer'}"
                                                  value="#{queryComponentController.selected.integerNumberValue2}" title="IntegerNumberValue2" />
-                                    <p:inputText id="longNumberValue2" 
-                                                 rendered="#{queryComponentController.selected.queryDataType eq 'longNumber'}"
+                                        <p:inputText id="longNumberValue2" 
+                                                rendered="#{queryComponentController.selected.queryDataType eq 'longNumber'}"
                                                  value="#{queryComponentController.selected.longNumberValue2}" title="LongNumberValue2" />
-                                    <p:inputText id="realNumberValue2"
+                                        <p:inputText id="realNumberValue2" 
                                                  rendered="#{queryComponentController.selected.queryDataType eq 'real'}"
                                                  value="#{queryComponentController.selected.realNumberValue2}" title="RealNumberValue2" />
-
-
+                                    
                                 </p:panelGrid>
                                 
-                                <p:panelGrid id="singleValue" columns="2" rendered="#{queryComponentController.selected.evaluationType ne 'Between'}" >
-
-                                    <p:outputLabel value="Value" ></p:outputLabel>
-                                    <p:inputText id="integerNumberValueS"
+                                
+                                <p:panelGrid id="singleValue" columns="2" rendered="#{queryComponentController.selected.evaluationType ne 'Between'}">
+                                    
+                                    <p:outputLabel value="value"></p:outputLabel>                                        
+                                        <p:inputText id="integerNumberValue1" 
                                                  rendered="#{queryComponentController.selected.queryDataType eq 'integer'}"
                                                  value="#{queryComponentController.selected.integerNumberValue}" title="IntegerNumberValue" />
-                                    <p:inputText id="longNumberValueS" 
+                                         <p:inputText id="longNumberValue1" 
                                                  rendered="#{queryComponentController.selected.queryDataType eq 'longNumber'}"
-                                                 value="#{queryComponentController.selected.longNumberValue}" title="LongNumberValue" />
-                                    <p:inputText id="realNumberValueS"
+                                                 value="#{queryComponentController.selected.longNumberValue}" title="LongNumberValue"/>
+                                        <p:inputText id="realNumberValue1" 
                                                  rendered="#{queryComponentController.selected.queryDataType eq 'real'}"
                                                  value="#{queryComponentController.selected.realNumberValue}" title="RealNumberValue" />
-
-
-                                    
-
-
-                                </p:panelGrid>
-
+                                 </p:panelGrid>
                             </h:panelGroup>
-
-
-
-
 
 
                         </h:panelGroup>

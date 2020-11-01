@@ -12,6 +12,8 @@
 
             <ui:define name="content">
 
+
+
                 <f:view>
 
                     <p:panel header="Form Item Details" style="width: 100%; text-align: center;" >
@@ -33,24 +35,22 @@
                                 </f:facet>
 
                                 <p:tabView >
-                                    
-                                    
                                     <p:tab title="Basic" >
 
-                                        <p:panelGrid columns="2" columnClasses="fieldColumn labelColumn"  >
+                                        <p:panelGrid columns="2" >
 
 
-                                            <p:outputLabel value="Name:" for="name" />
-                                            <p:inputText id="name" required="true" rendered="true" styleClass="fullWidth"
+                                            <p:outputLabel value="Name:" for="name"/>
+                                            <p:inputText id="name" required="true" rendered="true"
                                                          value="#{designComponentFormItemController.selected.name}" title="Name" />
 
                                             <p:outputLabel value="Descreption:" for="descreption" />
-                                            <p:inputTextarea id="descreption" cols="100" rows="5"
+                                            <p:inputTextarea id="descreption"
                                                              value="#{designComponentFormItemController.selected.descreption}" title="Name" />
 
 
                                             <p:outputLabel value="Item:" for="item" />
-                                            <p:autoComplete id="item" value="#{designComponentFormItemController.selected.item}" inputStyle="width:50rem;"
+                                            <p:autoComplete id="item" value="#{designComponentFormItemController.selected.item}" 
                                                             completeMethod="#{itemController.completeDictionaryItems}" forceSelection="true"
                                                             required="true"   var="dic" itemLabel="#{dic.code}" itemValue="#{dic}">
                                                 <p:column headerText="ID" >
@@ -258,34 +258,6 @@
 
                                         </p:panelGrid>
                                     </p:tab>
-
-
-
-                                    <p:tab title="Log" >
-                                        <p:panelGrid columns="2" >
-
-                                            <p:outputLabel value="Created at"  />
-                                            <p:outputLabel value="#{designComponentFormItemController.selected.createdAt}">
-                                                <f:convertDateTime parent="dd MMMM yyyy hh:mm:ss" ></f:convertDateTime>
-                                            </p:outputLabel>
-
-                                            <p:outputLabel value="Created by"  />
-                                            <p:outputLabel value="#{designComponentFormItemController.selected.createdBy.person.name}">
-                                            </p:outputLabel>
-
-                                            <p:outputLabel value="Last Edit at"  />
-                                            <p:outputLabel value="#{designComponentFormItemController.selected.lastEditeAt}">
-                                                <f:convertDateTime parent="dd MMMM yyyy hh:mm:ss" ></f:convertDateTime>
-                                            </p:outputLabel>
-
-                                            <p:outputLabel value="Last Edit by"  />
-                                            <p:outputLabel value="#{designComponentFormItemController.selected.lastEditBy.person.name}">
-                                            </p:outputLabel>
-
-
-                                        </p:panelGrid>
-                                    </p:tab>
-
                                 </p:tabView>
 
 
