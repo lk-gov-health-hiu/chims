@@ -35,5 +35,27 @@ public enum ComponentSetType {
     Encounters_Arranged_Vertically,
     Encounters_Annual_Summery_page,
     Encounters_Annual_summery_Arranged_Horizontally,
-    Encounters_Annual_summery_Arranged_Vertically,
+    Encounters_Annual_summery_Arranged_Vertically;
+    
+    public String getLabel() {
+        switch (this) {
+            case Patient_Pages:
+                return "Patient Pages";
+            case Encounter_Pages:
+                return "Encounter Pages";
+            case Encounters_Arranged_Horizontally:
+                return "Encounters Arranged Horizontally";
+            case Encounters_Arranged_Vertically:
+                return "Encounters Arranged Vertically";
+            case Encounters_Annual_Summery_page:
+                return "Encounters Annual Summery Page";
+            case Encounters_Annual_summery_Arranged_Horizontally:
+                return "Encounters Annual Summery Arranged Horizontally";
+            case Encounters_Annual_summery_Arranged_Vertically:
+                return "Encounters Annual Summery Arranged Vertically";            
+            default:
+                return "";
+        }
+    }
 }
+
