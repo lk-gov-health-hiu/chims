@@ -28,11 +28,11 @@
                             <p:ajax event="rowUnselect" update="createButton viewButton editButton deleteButton"/>
 
                             
-                            <p:column sortBy="#{item.institutionType}" filterBy="#{item.institutionType}" filterMatchMode="contains" >
+                            <p:column sortBy="#{item.institutionType.label}" filterBy="#{item.institutionType.label}" filterMatchMode="contains" >
                                 <f:facet name="header">
                                     <h:outputText value="Type"/>
                                 </f:facet>
-                                <h:outputText value="#{item.institutionType}"/>
+                                <h:outputText value="#{item.institutionType.label}"/>
                             </p:column>
                             <p:column sortBy="#{item.name}" filterBy="#{item.name}" filterMatchMode="contains" >
                                 <f:facet name="header">
