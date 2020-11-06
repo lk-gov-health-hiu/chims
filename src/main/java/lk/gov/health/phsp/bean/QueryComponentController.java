@@ -91,6 +91,8 @@ public class QueryComponentController implements Serializable {
     private AreaController areaController;
     @Inject
     private ApplicationController applicationController;
+    @Inject
+    UserTransactionController userTransactionController;
 
     private List<QueryComponent> items = null;
     private List<QueryComponent> categories = null;
@@ -156,6 +158,20 @@ public class QueryComponentController implements Serializable {
     private String searchText;
 
     private StreamedContent resultExcelFile;
+    
+    
+    
+    
+    public String toManageExcelTemplates(){
+        userTransactionController.recordTransaction("Manage Excel Templates");
+        return "/queryComponent/excel";
+    }
+    
+    public String toEditExcelTemplate(){
+        userTransactionController.recordTransaction("Edit Excel Templates");
+        return "/queryComponent/edit_excel";
+    }
+    
 
     public String toManageAnalysis() {
         return "/analysis/index";
@@ -247,6 +263,17 @@ public class QueryComponentController implements Serializable {
         }
         saveItem(addingCategory);
         categories = null;
+        addingCategory = null;
+    }
+    
+    public void saveExcel() {
+        if (addingCategory == null) {
+            JsfUtil.addErrorMessage("Nothing to save");
+            return;
+        }
+        addingCategory.setQueryType(QueryType.Excel_Report);
+        saveItem(addingCategory);
+        excels = null;
         addingCategory = null;
     }
 
