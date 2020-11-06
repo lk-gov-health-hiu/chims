@@ -28,7 +28,10 @@
                                     <p:selectOneMenu id="institutionType" 
                                                      value="#{institutionController.selected.institutionType}" title="InstitutionType" 
                                                      >
-                                        <f:selectItems value="#{applicationController.institutionTypes}" ></f:selectItems>
+                                        <f:selectItems value="#{applicationController.institutionTypes}" 
+                                                       var="institutionTypes"
+                                                       itemValue="#{institutionTypes}"
+                                                       itemLabel="#{institutionTypes.label}"></f:selectItems>
                                     </p:selectOneMenu>
                                     <p:outputLabel value="Name:" for="name" />
                                     <p:inputText id="name" 
