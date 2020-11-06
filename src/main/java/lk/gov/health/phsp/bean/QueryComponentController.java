@@ -413,6 +413,7 @@ public class QueryComponentController implements Serializable {
             saving.setCreatedAt(new Date());
             saving.setCreatedBy(webUserController.getLoggedUser());
             getFacade().create(saving);
+            applicationController.getQueryComponents().add(saving);
             JsfUtil.addSuccessMessage("Saved Successfully.");
         } else {
             saving.setLastEditBy(webUserController.getLoggedUser());
