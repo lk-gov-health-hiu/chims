@@ -92,7 +92,11 @@
                                 <p:inputText id="dataModificationStrategy" 
                                              value="#{designComponentFormItemController.designComponentForm.dataModificationStrategy}" 
                                              title="DataModificationStrategy" >
-                                    <f:selectItems value="#{commonController.dataModificationStrategies}" ></f:selectItems>
+                                    <f:selectItems value="#{commonController.dataModificationStrategies}"
+                                                   var="dataModificationStrategies"
+                                                   itemValue="#{dataModificationStrategies}"
+                                                   itemLabel="#{dataModificationStrategies.label}">
+                                    </f:selectItems>
                                 </p:inputText>
                             </p:panelGrid>
                         </h:form>

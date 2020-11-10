@@ -124,7 +124,11 @@
                                             <p:selectOneMenu id="dataModificationStrategy" 
                                                              value="#{designComponentFormItemController.selected.dataModificationStrategy}" 
                                                              title="DataModificationStrategy" >
-                                                <f:selectItems value="#{commonController.dataModificationStrategies}" ></f:selectItems>
+                                                <f:selectItems value="#{commonController.dataModificationStrategies}"
+                                                               var="dataModificationStrategies"
+                                                               itemValue="#{dataModificationStrategies}"
+                                                               itemLabel="#{dataModificationStrategies.label}">
+                                                </f:selectItems>
                                             </p:selectOneMenu>
 
                                             <p:outputLabel value="Category of Available Items:" for="categoryOfAvailableItems" />
