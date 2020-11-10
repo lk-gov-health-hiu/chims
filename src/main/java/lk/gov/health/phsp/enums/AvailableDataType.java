@@ -29,16 +29,25 @@ package lk.gov.health.phsp.enums;
  * @author User
  */
 public enum AvailableDataType {
-    Free_Text,
+    Free_Text("Free Text"),    
+    Long_Text("Long Text"),
+    Byte_Array("Byte Array"),
+    Date("Date"),
+    Time("Time"),
+    Date_and_Time("Date & Time"),
+    Months("Months"),
+    Item_List("Item List"),
+    Client_List("Client List"),
+    Area_List("Area List"),
+    Institution_List("Institution List");
     
-    Long_Text,
-    Byte_Array,
-    Date,
-    Time,
-    Date_and_Time,
-    Months,
-    Item_List,
-    Client_List,
-    Area_List,
-    Institution_List,
+    private final String label;
+    
+    private AvailableDataType(String label){
+        this.label = label;
+    }
+    
+    public String getLabel(){
+        return label;
+    }
 }
