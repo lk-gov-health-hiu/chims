@@ -75,7 +75,11 @@
                                 <p:selectOneMenu id="dataPopulationStrategy" 
                                                  value="#{designComponentFormItemController.designComponentForm.dataPopulationStrategy}" 
                                                  title="DataPopulationStrategy" >
-                                    <f:selectItems value="#{commonController.dataPopulationStrategies}" ></f:selectItems>
+                                    <f:selectItems value="#{commonController.dataPopulationStrategies}"
+                                                   var="dataPopulationStrategies"
+                                                   itemValue="#{dataPopulationStrategies}"
+                                                   itemLabel="#{dataPopulationStrategies.label}">
+                                    </f:selectItems>
                                 </p:selectOneMenu>
 
                                 <p:outputLabel value="Data Completion Strategy:" for="dataCompletionStrategy" />
