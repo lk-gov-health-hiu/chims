@@ -7,19 +7,11 @@
       xmlns:p="http://primefaces.org/ui">
 
     <body>
-
         <ui:composition template="./../template.xhtml">
-
             <ui:define name="content">
-
-
-
                 <f:view>
-
                     <p:panel header="Form Item Details" style="width: 100%; text-align: center;" >
-
                         <h:form>
-
                             <p:panelGrid columns="2" rendered="#{designComponentFormItemController.designComponentForm ne null}">
                                 <p:outputLabel value="Form Set" for="parentComponent" />
                                 <p:outputLabel id="parentComponent" 
@@ -30,7 +22,7 @@
                                 <p:inputText id="name" value="#{designComponentFormItemController.designComponentForm.name}" title="Name" />
 
                                 <p:outputLabel value="ComponentSex:" for="componentSex" />
-                                <p:inputText id="componentSex" value="#{designComponentFormItemController.designComponentForm.componentSex}" title="ComponentSex" />
+                                <p:inputText id="componentSex" value="#{designComponentFormItemController.designComponentForm.componentSex.label}" title="ComponentSex" />
 
                                 <p:outputLabel value="RenderType:" for="renderType" />
                                 <p:selectOneMenu id="renderType" 
@@ -102,16 +94,9 @@
                                 </p:inputText>
                             </p:panelGrid>
                         </h:form>
-
                     </p:panel>
-
-
                 </f:view>
-
-
             </ui:define>
-
         </ui:composition>
-
     </body>
 </html>
