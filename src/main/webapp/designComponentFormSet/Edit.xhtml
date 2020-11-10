@@ -17,7 +17,11 @@
                         <p:outputLabel value="Type" for="type" />
                         <p:selectOneMenu id="type" value="#{designComponentFormSetController.selected.componentSetType}" 
                                          title="#{bundleClinical.CreateDesignComponentFormSetTitle_renderType}" >
-                            <f:selectItems value="#{commonController.componentSetTypes}" ></f:selectItems>
+                            <f:selectItems value="#{commonController.componentSetTypes}"
+                                           var="componentSetTypes"
+                                           itemValue="#{componentSetTypes}"
+                                           itemLabel="#{componentSetTypes.label}">
+                            </f:selectItems>
                         </p:selectOneMenu>
 
                         <p:outputLabel value="Panel" for="panel" />
