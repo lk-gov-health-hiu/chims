@@ -23,7 +23,11 @@
                         <p:outputLabel value="Panel" for="panel" />
                         <p:selectOneMenu id="panel" value="#{designComponentFormSetController.selected.panelType}" 
                                          title="Panel" >
-                            <f:selectItems value="#{commonController.panelTypes}" ></f:selectItems>
+                            <f:selectItems value="#{commonController.panelTypes}"
+                                           var="panelTypes"
+                                           itemValue="#{panelTypes}"
+                                           itemLabel="#{panelTypes.label}">
+                            </f:selectItems>
                         </p:selectOneMenu>                        
 
                         <p:outputLabel value="Sex" for="sex" />
