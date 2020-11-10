@@ -28,10 +28,19 @@ package lk.gov.health.phsp.enums;
  * @author Dr M H B Ariyaratne<buddhika.ari@gmail.com>
  */
 public enum PanelType {
-    Accordion_Basic,
-    Accordion_Multiple,
-    Tabview_Top_Oriented,
-    TabView_Bottom_Oriented,
-    TabView_Left_Oriented,
-    TabView_Right_Oriented,
+    Accordion_Basic("Accordion Basic"),
+    Accordion_Multiple("Accordion Multiple"),
+    Tabview_Top_Oriented("Tabview Top Oriented"),
+    TabView_Bottom_Oriented("TabView Bottom Oriented"),
+    TabView_Left_Oriented("TabView Left Oriented"),
+    TabView_Right_Oriented("TabView Right Oriented");
+    
+    private final String label;    
+    private PanelType(String label){
+        this.label = label;
+    }
+    
+    public String getLabel(){
+        return label;
+    }
 }
