@@ -35,11 +35,11 @@
                             <h:outputText value="#{item.id}"/>
                         </p:column>
                         
-                        <p:column filterBy="#{item.itemType}" filterMatchMode="contains" sortBy="#{item.itemType}">
+                        <p:column filterBy="#{item.itemType.label}" filterMatchMode="contains" sortBy="#{item.itemType.label}">
                             <f:facet name="header">
                                 <h:outputText value="#{bundleClinical.ListItemTitle_itemType}"/>
                             </f:facet>
-                            <h:outputText value="#{item.itemType}"/>
+                            <h:outputText value="#{item.itemType.label}"/>
                         </p:column>
 
                         <p:column  filterBy="#{item.name}" filterMatchMode="contains" sortBy="#{item.name}">
@@ -64,11 +64,11 @@
                             <h:outputText value="#{item.code}"/>
                         </p:column>
 
-                        <p:column  filterBy="#{item.dataType}" filterMatchMode="contains" sortBy="#{item.dataType}">
+                        <p:column  filterBy="#{item.dataType.label}" filterMatchMode="contains" sortBy="#{item.dataType.label}">
                             <f:facet name="header">
                                 <h:outputText value="Data Type"/>
                             </f:facet>
-                            <h:outputText value="#{item.dataType}"/>
+                            <h:outputText value="#{item.dataType.label}"/>
                         </p:column>
 
                         <p:column  filterBy="#{item.parent.name}" filterMatchMode="contains" sortBy="#{item.parent.name}">

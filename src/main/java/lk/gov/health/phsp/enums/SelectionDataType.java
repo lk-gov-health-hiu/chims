@@ -28,30 +28,39 @@ package lk.gov.health.phsp.enums;
  * @author User
  */
 public enum SelectionDataType {
-    Short_Text,
-    Long_Text,
-    Byte_Array,
-    Integer_Number,
-    Real_Number,
-    Long_Number,
-    DateTime,
-    Boolean,
-    Item_Reference,
-    Client_Reference,
-    Area_Reference,
-    Prescreption_Reference,
+    Short_Text("Short Text"),
+    Long_Text("Long Text"),
+    Byte_Array("Byte Array"),
+    Integer_Number("Integer Number"),
+    Real_Number("Real Number"),
+    Long_Number("Long Number"),
+    DateTime("Date Time"),
+    Boolean("Boolean"),
+    Item_Reference("Item Reference"),
+    Client_Reference("Client Reference"),
+    Area_Reference("Area Reference"),
+    Prescreption_Reference("Prescreption Reference"),
     @Deprecated
-    Institution_Reference,
+    Institution_Reference("Institution Reference"),
     @Deprecated
-    Item_List_Reference,
+    Item_List_Reference("Item List Reference"),
     @Deprecated
-    Client_List_Reference,
+    Client_List_Reference("Client List Reference"),
     @Deprecated
-    Area_List_Reference,
+    Area_List_Reference("Area List Reference"),
     @Deprecated
-    Institution_List_Reference,
+    Institution_List_Reference("Institution List Reference"),
     @Deprecated
-    Free_Entry,
+    Free_Entry("Free Entry"),
     @Deprecated
-    Calculation,
+    Calculation("Calculation");
+    
+    public final String label;    
+    private SelectionDataType(String label){
+        this.label = label;
+    }
+    
+    public String getLabel(){
+        return label;
+    }
 }

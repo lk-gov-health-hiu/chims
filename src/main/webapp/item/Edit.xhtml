@@ -20,7 +20,10 @@
                                 <p:outputLabel value="#{bundleClinical.EditItemLabel_itemType}" for="itemType" />
                                 <p:selectOneMenu
                                     id="itemType" value="#{itemController.selected.itemType}" title="#{bundleClinical.EditItemTitle_itemType}" >
-                                    <f:selectItems value="#{commonController.itemTypes}" ></f:selectItems>
+                                    <f:selectItems value="#{commonController.itemTypes}"
+                                                   var="itemTypes"
+                                                   itemValue="#{itemTypes}"
+                                                   itemLabel="#{itemTypes.label}"></f:selectItems>
                                 </p:selectOneMenu>
 
                                 <p:outputLabel value="#{bundleClinical.EditItemLabel_name}" for="name" />
