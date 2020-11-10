@@ -28,14 +28,24 @@ package lk.gov.health.phsp.enums;
  * @author Dr M H B Ariyaratne<buddhika.ari@gmail.com>
  */
 public enum QueryType {
-    Population,
-    Indicator,
-    Client,
-    First_Encounter,
-    Any_Encounter,
-    Formset,
-    Client_Count,
-    Encounter_Count,
-    Formset_Count,
-    Excel_Report,
+    Population("Population"),
+    Indicator("Indicator"),
+    Client("Client"),
+    First_Encounter("First Encounter"),
+    Any_Encounter("Any Encounter"),
+    Formset("Formset"),
+    Client_Count("Client Count"),
+    Encounter_Count("Encounter Count"),
+    Formset_Count("Formset Count"),
+    Excel_Report("Excel_Report");
+    
+    private final String label;
+
+    private QueryType(String label) {
+        this.label = label;
+    }
+
+    public String getLabel() {
+        return label;
+    }
 }

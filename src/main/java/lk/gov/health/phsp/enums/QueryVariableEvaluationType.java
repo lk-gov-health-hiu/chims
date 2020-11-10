@@ -28,12 +28,22 @@ package lk.gov.health.phsp.enums;
  * @author Dr M H B Ariyaratne<buddhika.ari@gmail.com>
  */
 public enum QueryVariableEvaluationType {
-    Equal,
-    Between,
-    Grater_than,
-    Grater_than_or_equal,
-    Less_than,
-    Less_than_or_equal,
-    Not_null,
-    Is_null,
+    Equal("Equal"),
+    Between("Between"),
+    Grater_than("Grater than"),
+    Grater_than_or_equal("Grater than or equal"),
+    Less_than("Less than"),
+    Less_than_or_equal("Less than or equal"),
+    Not_null("Not null"),
+    Is_null("Is_null");
+    
+    private final String label;
+
+    private QueryVariableEvaluationType(String label) {
+        this.label = label;
+    }
+
+    public String getLabel() {
+        return label;
+    }
 }

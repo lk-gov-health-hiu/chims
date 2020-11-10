@@ -28,6 +28,16 @@ package lk.gov.health.phsp.enums;
  * @author Dr M H B Ariyaratne<buddhika.ari@gmail.com>
  */
 public enum QueryOutputType {
-    Count,
-    List,
+    Count("Count"),
+    List("List");
+
+    private final String label;
+
+    private QueryOutputType(String label) {
+        this.label = label;
+    }
+
+    public String getLabel() {
+        return label;
+    }
 }
