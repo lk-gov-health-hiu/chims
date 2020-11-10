@@ -45,9 +45,11 @@
                                                 <p:column headerText="ID" >
                                                     <p:outputLabel value="#{dic.id}" ></p:outputLabel>
                                                 </p:column>
+
                                                 <p:column headerText="Name" >
                                                     <p:outputLabel value="#{dic.name}" ></p:outputLabel>
                                                 </p:column>
+
                                                 <p:column headerText="Code" >
                                                     <p:outputLabel value="#{dic.code}" ></p:outputLabel>
                                                 </p:column>
@@ -63,7 +65,11 @@
                                             <p:selectOneMenu id="componentSex" 
                                                              value="#{designComponentFormItemController.selected.componentSex}" 
                                                              title="ComponentSex" >
-                                                <f:selectItems value="#{commonController.componentSex}" ></f:selectItems>
+                                                <f:selectItems value="#{commonController.componentSex}"
+                                                               var="componentSex"
+                                                               itemValue="#{componentSex}"
+                                                               itemLabel="#{componentSex.label}">
+                                                </f:selectItems>
                                             </p:selectOneMenu>
 
                                             <p:outputLabel value="RenderType:" for="renderType" />
@@ -210,6 +216,7 @@
                                             <p:inputTextarea id="regexErrorMesage" value="#{designComponentFormItemController.selected.regexValidationFailedMessage}" title="Name" />
                                         </p:panelGrid>
                                     </p:tab>
+                                    
                                     <p:tab title="CSS" >
                                         <p:panelGrid columns="2" >
                                             <p:outputLabel value="Top Percent:" for="topPercent" />
@@ -229,8 +236,6 @@
 
                                             <p:outputLabel value="Border Color:" />
                                             <p:colorPicker value="#{designComponentFormItemController.selected.borderColour}" ></p:colorPicker>
-
-
                                         </p:panelGrid>
                                     </p:tab>
                                 </p:tabView>

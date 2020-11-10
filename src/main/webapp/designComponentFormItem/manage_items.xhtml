@@ -7,45 +7,36 @@
       xmlns:f="http://xmlns.jcp.org/jsf/core">
 
     <body>
-
         <ui:composition template="./../template.xhtml">
-
             <ui:define name="content">
-
-                <p:panel style="width: 100%; text-align: center;" >
-                    
+                <p:panel style="width: 100%; text-align: center;" >                    
                     <f:facet name="header" >
                         <h:outputLabel value="Manage Items of Form" ></h:outputLabel>
                         <h:outputLabel value=" - " ></h:outputLabel>
                         <h:outputLabel value="#{designComponentFormItemController.designComponentForm.name}" ></h:outputLabel>
-                    
-                    
                     </f:facet>
-
                     <h:form >
-
                         <p:panelGrid columns="2" styleClass="alignTop" style="margin: auto; text-align: left;" >
                             <f:facet name="header" >
                                 <p:commandButton ajax="false" value="Back to Manage Forms" action="/designComponentFormSet/manage_forms" style="float: right;" ></p:commandButton>
                             </f:facet>
-
-                            <p:panel header="Existing Forms Items" >
-                                
-                                
-                                
+                            <p:panel header="Existing Forms Items" >  
                                 <p:dataTable id="lst" value="#{designComponentFormItemController.designComponentFormItems}" var="f" >
                                     <p:column headerText="Order No" width="60" >
                                         <p:outputLabel value="#{f.orderNo}" >
                                             <f:convertNumber pattern="0" ></f:convertNumber>
                                         </p:outputLabel>
                                     </p:column>
+                                    
                                     <p:column headerText="Name" >
                                         <p:outputLabel id="txtName" value="#{f.name}" >
                                         </p:outputLabel>
                                     </p:column>
+                                    
                                     <p:column headerText="Sex" width="80" >
-                                        <p:outputLabel value="#{f.componentSex.label()}" ></p:outputLabel>
+                                        <p:outputLabel value="#{f.componentSex.label}" ></p:outputLabel>
                                     </p:column>
+                                    
                                     <p:column headerText="Actions" width="260" >
                                         <p:commandButton id="btnEdit" value="Edit"  icon="ui-icon-pencil"  
                                                          action="#{designComponentFormItemController.toEditDesignComponentFromItem()}" 
@@ -69,6 +60,7 @@
                                       f.selectionDataType =  #{f.selectionDataType} <br/>
                                       f.item.dataType =  #{f.item.dataType}
                                     </p:column>
+                                    
                                     <p:column headerText="Change Order" width="100" >
                                         <p:commandButton id="btnUp"  icon="ui-icon-arrowthick-1-n"  
                                                          action="#{designComponentFormItemController.moveItemUpInForm()}" 
@@ -81,6 +73,7 @@
                                             <f:setPropertyActionListener value="#{f}" target="#{designComponentFormItemController.movingItem}" ></f:setPropertyActionListener>
                                         </p:commandButton>
                                     </p:column>
+                                    
                                     <p:column headerText="Delete" width="50" >
                                         <p:commandButton id="btnRemove" icon="ui-icon-trash"  onclick="if (!confirm('Really want to do that?'))
                                                     return false"
@@ -90,7 +83,6 @@
                                         </p:commandButton>
                                     </p:column>
                                 </p:dataTable>
-
                             </p:panel>
 
                             <p:panel header="Add New Form" >
@@ -104,29 +96,22 @@
                                     <p:outputLabel value="Sex" ></p:outputLabel>
                                     <p:selectOneMenu id="sex" value="#{designComponentFormItemController.addingItem.componentSex}" 
                                                      title="Sex" >
-                                        <f:selectItems value="#{commonController.componentSex}" ></f:selectItems>
+                                        <f:selectItems value="#{commonController.componentSex}"
+                                                       var="componentSex"
+                                                       itemValue="#{componentSex}"
+                                                       itemLabel="#{componentSex.label}">
+                                        </f:selectItems>
                                     </p:selectOneMenu>
 
                                     <p:spacer ></p:spacer>
                                     <p:commandButton process="name orderNo sex btnAdd" update="gridAddingForm lst" value="Add" id="btnAdd"
                                                      action="#{designComponentFormItemController.addNewItemToForm()}" ></p:commandButton>
                                 </p:panelGrid>
-
                             </p:panel>
-
-
                         </p:panelGrid>
-
-
                     </h:form>
-
-
                 </p:panel>
-
-
             </ui:define>
-
         </ui:composition>
-
     </body>
 </html>

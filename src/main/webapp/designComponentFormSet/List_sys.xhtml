@@ -7,32 +7,25 @@
       xmlns:p="http://primefaces.org/ui">
 
     <ui:composition template="/template.xhtml">
-
-
         <ui:define name="title">
             <h:outputText value="#{bundleClinical.ListDesignComponentFormSetTitle}"></h:outputText>
-
         </ui:define>
 
         <ui:define name="content">
             <h:form id="DesignComponentFormSetListForm">
                 <p:panel header="Form Sets">
-
-
                     <p:panelGrid columns="1" >
                         <f:facet name="header" >
                             <p:commandButton ajax="false" value="Back to Manage Metadata"
                                              action="#{designComponentFormSetController.back()}" style="float: right;" ></p:commandButton>
                         </f:facet>
-
-
+                        
                         <p:dataTable id="datalist" value="#{designComponentFormSetController.items}" var="item"
                                      selectionMode="single" selection="#{designComponentFormSetController.selected}"
                                      paginator="true"
                                      rowKey="#{item.id}"
                                      rows="10"
-                                     rowsPerPageTemplate="10,20,30,40,50"
-                                     >
+                                     rowsPerPageTemplate="10,20,30,40,50">
 
                             <p:ajax event="rowSelect"   update="createButton viewButton editButton deleteButton addForm reloadButton"/>
                             <p:ajax event="rowUnselect" update="createButton viewButton editButton deleteButton addForm reloadButton"/>
@@ -52,26 +45,29 @@
                                 </f:facet>
                                  <h:outputText value="#{item.institution.name}"/>
                             </p:column>
+                            
                             <p:column>
                                 <f:facet name="header">
                                     <h:outputText value="Type"/>
                                 </f:facet>
                                 <h:outputText value="#{item.componentSetType}"/>
                             </p:column>
+                            
                             <p:column>
                                 <f:facet name="header">
                                     <h:outputText value="Sex"/>
                                 </f:facet>
-                                <h:outputText value="#{item.componentSex}"/>
+                                <h:outputText value="#{item.componentSex.label}"/>
                             </p:column>
+                            
                             <p:column>
                                 <f:facet name="header">
                                     <h:outputText value="Derived From"/>
                                 </f:facet>
                                 <h:outputText value="#{item.referenceComponent.name}"/>
                             </p:column>
-                            <f:facet name="footer">
-                               
+                            
+                            <f:facet name="footer">                               
                                 <p:commandButton id="reloadButton"   icon="ui-icon-arrowrefresh-1-n" value="Reload" ajax="false"
                                                  disabled="#{empty designComponentFormSetController.selected}"
                                                  action="#{designComponentFormSetController.reloadSet()}"/>
@@ -88,7 +84,6 @@
                                                  disabled="#{empty designComponentFormSetController.selected}"/>
                             </f:facet>
                         </p:dataTable>
-
                     </p:panelGrid>
                 </p:panel>
             </h:form>
@@ -96,10 +91,6 @@
             <ui:include src="Create.xhtml"/>
             <ui:include src="Edit.xhtml"/>
             <ui:include src="View.xhtml"/>
-
-
-
         </ui:define>
     </ui:composition>
-
 </html>

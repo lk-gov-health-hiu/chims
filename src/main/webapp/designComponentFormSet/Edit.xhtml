@@ -7,7 +7,6 @@
       xmlns:p="http://primefaces.org/ui">
 
     <ui:composition>
-
         <p:dialog id="DesignComponentFormSetEditDlg" widgetVar="DesignComponentFormSetEditDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundleClinical.EditDesignComponentFormSetTitle}">
             <h:form id="DesignComponentFormSetEditForm">
                 <h:panelGroup id="display">
@@ -21,7 +20,6 @@
                             <f:selectItems value="#{commonController.componentSetTypes}" ></f:selectItems>
                         </p:selectOneMenu>
 
-
                         <p:outputLabel value="Panel" for="panel" />
                         <p:selectOneMenu id="panel" value="#{designComponentFormSetController.selected.panelType}" 
                                          title="Panel" >
@@ -31,7 +29,11 @@
                         <p:outputLabel value="Sex" for="sex" />
                         <p:selectOneMenu id="sex" value="#{designComponentFormSetController.selected.componentSex}" 
                                          title="Sex" >
-                            <f:selectItems value="#{commonController.componentSex}" ></f:selectItems>
+                            <f:selectItems value="#{commonController.componentSex}"
+                                           var="componentSex"
+                                           itemValue="#{componentSex}"
+                                           itemLabel="#{componentSex.label}">
+                            </f:selectItems>
                         </p:selectOneMenu>
 
                     </p:panelGrid>
@@ -41,6 +43,5 @@
                 </h:panelGroup>
             </h:form>
         </p:dialog>
-
     </ui:composition>
 </html>

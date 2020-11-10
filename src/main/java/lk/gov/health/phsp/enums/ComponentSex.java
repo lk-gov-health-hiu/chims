@@ -28,19 +28,17 @@ package lk.gov.health.phsp.enums;
  * @author Dr M H B Ariyaratne<buddhika.ari@gmail.com>
  */
 public enum ComponentSex {
-    For_Males,
-    For_Females,
-    For_Both;
+    For_Males("Male"),
+    For_Females("Female"),
+    For_Both("Both");
     
-    public String label(){
-        switch (this){
-            case For_Both: return "Both";
-                
-            case For_Females:return "Females";
-                
-            case For_Males:return "Males";
-                
-        }
-        return "";
+    private final String label;
+    
+    private ComponentSex(String label){
+        this.label = label;
+    }
+    
+    public String getLabel(){
+        return label;
     }
 }
