@@ -7,8 +7,6 @@
       xmlns:p="http://primefaces.org/ui">
 
     <ui:composition template="/template.xhtml">
-
-
         <ui:define name="title">
             <h:outputText value="#{bundleClinical.ListUploadTitle}"></h:outputText>
         </ui:define>
@@ -21,8 +19,7 @@
                                  paginator="true"
                                  rowKey="#{item.id}"
                                  rows="10"
-                                 rowsPerPageTemplate="10,20,30,40,50"
-                                 >
+                                 rowsPerPageTemplate="10,20,30,40,50">
 
                         <p:ajax event="rowSelect"   update="createButton viewButton editButton deleteButton"/>
                         <p:ajax event="rowUnselect" update="createButton viewButton editButton deleteButton"/>
@@ -113,7 +110,7 @@
                             <f:facet name="header">
                                 <h:outputText value="#{bundleClinical.ListUploadTitle_uploadType}"/>
                             </f:facet>
-                            <h:outputText value="#{item.uploadType}"/>
+                            <h:outputText value="#{item.uploadType.label}"/>
                         </p:column>
                         <f:facet name="footer">
                             <p:commandButton id="createButton" icon="ui-icon-plus"   value="#{bundleClinical.Create}" actionListener="#{uploadController.prepareCreate}" update=":UploadCreateForm" oncomplete="PF('UploadCreateDialog').show()"/>

@@ -29,6 +29,16 @@ package lk.gov.health.phsp.enums;
  * @author buddhika
  */
 public enum UploadType {
-    Client_Upload_Prior_To_Proposal,
-    Company_Design_Upload,
+    Client_Upload_Prior_To_Proposal("Client Upload Prior to Proposal"),
+    Company_Design_Upload("Company Design Upload");
+    
+    private final String label;
+    
+    private UploadType(String label){
+        this.label = label;
+    }
+    
+    public String getLabel(){
+        return label;
+    } 
 }
