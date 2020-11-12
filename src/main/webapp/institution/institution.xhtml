@@ -8,7 +8,7 @@
 
     <body>
 
-        <ui:composition template="./index.xhtml">
+        <ui:composition template="/institution/index.xhtml">
 
             <ui:define name="insContents">
 
@@ -28,16 +28,27 @@
                                     <p:selectOneMenu id="institutionType" 
                                                      value="#{institutionController.selected.institutionType}" title="InstitutionType" 
                                                      >
-                                        <f:selectItems value="#{applicationController.institutionTypes}" ></f:selectItems>
+                                        <f:selectItems value="#{applicationController.institutionTypes}" 
+                                                       var="institutionTypes"
+                                                       itemValue="#{institutionTypes}"
+                                                       itemLabel="#{institutionTypes.label}"></f:selectItems>
                                     </p:selectOneMenu>
                                     <p:outputLabel value="Name:" for="name" />
-                                    <p:inputText id="name" value="#{institutionController.selected.name}" title="Name" />
+                                    <p:inputText id="name" 
+                                                 autocomplete="off"
+                                                 value="#{institutionController.selected.name}" title="Name" />
 
                                     <p:outputLabel value="Is a PMCI:" for="pmci" />
                                     <p:selectBooleanCheckbox id="pmci" value="#{institutionController.selected.pmci}" ></p:selectBooleanCheckbox>
 
                                     <p:outputLabel value="Code:" for="code" />
-                                    <p:inputText id="code" value="#{institutionController.selected.code}" title="Code" />
+                                    <p:inputText id="code" 
+                                                 autocomplete="off"
+                                                 value="#{institutionController.selected.code}" 
+                                                 title="Code" />
+                                    
+                                    
+                                    
                                     <p:outputLabel value="Parent:" for="parent" />
                                     <p:autoComplete  id="parent" value="#{institutionController.selected.parent}" 
                                                      completeMethod="#{institutionController.completeInstitutions}"

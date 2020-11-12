@@ -28,12 +28,21 @@ package lk.gov.health.phsp.enums;
  * @author Dr M H B Ariyaratne<buddhika.ari@gmail.com>
  */
 public enum Evaluation {
-    eq,
-    ne,
-    lt,
-    gt,
-    le,
-    ge,
-    in,
-    nn,
+    eq("Equal"),
+    ne("Not Equal"),
+    lt("Less than"),
+    gt("Greater than"),
+    le("Less than or Equal"),
+    ge("Greater than or Equal"),
+    in("In"),
+    nn("Not Null");
+    
+    private final String label;    
+    private Evaluation(String label){
+        this.label = label;
+    }
+    
+    public String getLabel(){
+        return label;
+    }
 }

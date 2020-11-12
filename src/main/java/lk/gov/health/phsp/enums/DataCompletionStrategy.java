@@ -28,7 +28,16 @@ package lk.gov.health.phsp.enums;
  * @author Dr M H B Ariyaratne<buddhika.ari@gmail.com>
  */
 public enum DataCompletionStrategy {
-    Do_nothing,
-    Replace_Values_of_client,
-    Add_to_values_of_client,
+    Do_nothing("Do Nothing"),
+    Replace_Values_of_client("Replace Values of Client"),
+    Add_to_values_of_client("Add to Values of Client");
+    
+    private final String label;    
+    private DataCompletionStrategy(String label){
+        this.label = label;
+    }
+    
+    public String getLabel(){
+        return label;
+    }
 }

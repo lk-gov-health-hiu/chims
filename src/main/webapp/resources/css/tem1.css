@@ -190,6 +190,26 @@
 }
 
 
+.width80percent{
+    width: 80%;
+}
+
+.width20percent{
+    width: 20%;
+}
+
 .width50percent{
     width: 50%;
+}
+
+.labelColumn{
+    width: 20rem;
+}
+
+.fieldColumn{
+    width: 70rem; 
+}
+
+.fullWidth{
+    width: 95%;
 }

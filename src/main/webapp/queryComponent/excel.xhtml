@@ -20,7 +20,7 @@
                                 </p:outputLabel>
                             </f:facet>
 
-                            <p:dataTable value="#{queryComponentController.categories}" var="item">
+                            <p:dataTable value="#{queryComponentController.excels}" var="item">
 
                                 <p:column>
                                     <f:facet name="header">
@@ -39,12 +39,10 @@
                                         <h:outputText value="Actions"/>
                                     </f:facet>
 
-                                    <p:commandButton ajax="false" value="Edit" action="edit_category" >
-                                        <f:setPropertyActionListener value="#{item}" target="#{queryComponentController.selected}" ></f:setPropertyActionListener>
-                                    </p:commandButton>
-
-                                    <p:commandButton ajax="false" value="Subcategories" action="subcategory" >
-                                        <f:setPropertyActionListener value="#{item}" target="#{queryComponentController.selectedCategory}" ></f:setPropertyActionListener>
+                                     <p:commandButton ajax="false" 
+                                                      value="Edit" 
+                                                      action="#{queryComponentController.toEditExcelTemplate()}" >
+                                         <f:setPropertyActionListener value="#{item}" target="#{queryComponentController.selected}" ></f:setPropertyActionListener>
                                     </p:commandButton>
 
                                     <p:commandButton ajax="false" value="Remove" action="#{queryComponentController.remove()}" 
@@ -57,7 +55,7 @@
 
                             <p:panelGrid  columns="2">
                                 <f:facet name="header" >
-                                    <p:outputLabel value="Add New Category" >
+                                    <p:outputLabel value="Add New Excel" >
                                     </p:outputLabel>
                                 </f:facet>
                                 <p:outputLabel value="Name" >
@@ -70,7 +68,8 @@
                                 </p:inputTextarea>
 
                                 <p:spacer></p:spacer>
-                                <p:commandButton ajax="false" action="#{queryComponentController.saveCategory()}" value="Save" >
+                                <p:commandButton ajax="false" action="#{queryComponentController.saveExcel()}" 
+                                                 value="Save" >
                                 </p:commandButton>
 
 

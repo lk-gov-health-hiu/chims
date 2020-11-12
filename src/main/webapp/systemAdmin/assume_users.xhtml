@@ -8,9 +8,9 @@
 
     <body>
 
-        <ui:composition template="/template.xhtml">
+        <ui:composition template="/webUser/index.xhtml">
 
-            <ui:define name="content">
+            <ui:define name="webUserContents">
 
                 <p:panel style="height: 100%; text-align: center;" 
                          rendered="#{!webUserController.loggedUser.systemAdministrator}">

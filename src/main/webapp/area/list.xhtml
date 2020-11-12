@@ -22,7 +22,9 @@
                         <p:dataExporter target="datalist" type="xls" fileName="areas" ></p:dataExporter>
                     </p:commandButton>
                     
-                    <p:dataTable id="datalist" value="#{areaController.items}" var="item" rowKey="#{item.id}"
+                    <p:dataTable id="datalist" value="#{areaController.items}" 
+                                 var="item" 
+                                 rowKey="#{item.id}"
                                  paginator="true"
                                  rows="10"
                                  rowsPerPageTemplate="10,20,30,40,50"
@@ -69,7 +71,9 @@
                             </p:commandButton>
                             <p:commandButton ajax="false" value="Delete" action="#{areaController.deleteAreaForSysAdmin()}"
                                              onclick="return confirm('Are you sure?')">
-                                <f:setPropertyActionListener value="#{item}" target="#{areaController.deleting}" ></f:setPropertyActionListener>
+                                <f:setPropertyActionListener 
+                                    value="#{item}" 
+                                    target="#{areaController.deleting}" ></f:setPropertyActionListener>
                             </p:commandButton>
                         </p:column>
                         

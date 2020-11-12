@@ -7,19 +7,11 @@
       xmlns:p="http://primefaces.org/ui">
 
     <body>
-
         <ui:composition template="./../template.xhtml">
-
             <ui:define name="content">
-
-
-
                 <f:view>
-
                     <p:panel header="Form Item Details" style="width: 100%; text-align: center;" >
-
                         <h:form>
-
                             <p:panelGrid columns="2" rendered="#{designComponentFormItemController.designComponentForm ne null}">
                                 <p:outputLabel value="Form Set" for="parentComponent" />
                                 <p:outputLabel id="parentComponent" 
@@ -30,7 +22,7 @@
                                 <p:inputText id="name" value="#{designComponentFormItemController.designComponentForm.name}" title="Name" />
 
                                 <p:outputLabel value="ComponentSex:" for="componentSex" />
-                                <p:inputText id="componentSex" value="#{designComponentFormItemController.designComponentForm.componentSex}" title="ComponentSex" />
+                                <p:inputText id="componentSex" value="#{designComponentFormItemController.designComponentForm.componentSex.label}" title="ComponentSex" />
 
                                 <p:outputLabel value="RenderType:" for="renderType" />
                                 <p:selectOneMenu id="renderType" 
@@ -49,7 +41,10 @@
                                 <p:outputLabel value="SelectionDataType:" for="selectionDataType" />
                                 <p:selectOneMenu id="selectionDataType" 
                                                  value="#{designComponentFormItemController.designComponentForm.selectionDataType}" title="SelectionDataType" >
-                                    <f:selectItems value="#{commonController.selectionDataTypes}" ></f:selectItems>
+                                    <f:selectItems value="#{commonController.selectionDataTypes}"
+                                                   var="selectionDataTypes"
+                                                   itemValue="#{selectionDataTypes}"
+                                                   itemLabel="#{selectionDataTypes.label}"></f:selectItems>
                                 </p:selectOneMenu>
 
                                 <p:outputLabel value="Top Percent:" for="topPercent" />
@@ -71,47 +66,47 @@
                                 <p:selectOneMenu id="categoryOfAvailableItems" value="#{designComponentFormItemController.designComponentForm.categoryOfAvailableItems}" >
                                     <f:selectItem itemLabel="Select" ></f:selectItem>
                                     <f:selectItems value="#{itemController.categories}" var="ic" itemLabel="#{ic.name}" itemLabelEscaped="#{ic}" ></f:selectItems>
-
                                 </p:selectOneMenu>
-
-
 
                                 <p:outputLabel value="Order No:" for="orderNo" />
                                 <p:inputText id="orderNo" value="#{designComponentFormItemController.designComponentForm.orderNo}" title="OrderNo" />
-
 
                                 <p:outputLabel value="Data Population Strategy:" for="dataPopulationStrategy" />
                                 <p:selectOneMenu id="dataPopulationStrategy" 
                                                  value="#{designComponentFormItemController.designComponentForm.dataPopulationStrategy}" 
                                                  title="DataPopulationStrategy" >
-                                    <f:selectItems value="#{commonController.dataPopulationStrategies}" ></f:selectItems>
+                                    <f:selectItems value="#{commonController.dataPopulationStrategies}"
+                                                   var="dataPopulationStrategies"
+                                                   itemValue="#{dataPopulationStrategies}"
+                                                   itemLabel="#{dataPopulationStrategies.label}">
+                                    </f:selectItems>
                                 </p:selectOneMenu>
 
                                 <p:outputLabel value="Data Completion Strategy:" for="dataCompletionStrategy" />
                                 <p:selectOneMenu id="dataCompletionStrategy" 
                                                  value="#{designComponentFormItemController.designComponentForm.dataCompletionStrategy}" 
                                                  title="DataCompletionStrategy" >
-                                    <f:selectItems value="#{commonController.dataCompletionStrategies}" ></f:selectItems>
+                                    <f:selectItems value="#{commonController.dataCompletionStrategies}"
+                                                   var="dataCompletionStrategies"
+                                                   itemValue="#{dataCompletionStrategies}"
+                                                   itemLabel="#{dataCompletionStrategies.label}"></f:selectItems>
                                 </p:selectOneMenu>
 
                                 <p:outputLabel value="Data Modification Strategy:" for="dataModificationStrategy" />
                                 <p:inputText id="dataModificationStrategy" 
                                              value="#{designComponentFormItemController.designComponentForm.dataModificationStrategy}" 
                                              title="DataModificationStrategy" >
-                                    <f:selectItems value="#{commonController.dataModificationStrategies}" ></f:selectItems>
+                                    <f:selectItems value="#{commonController.dataModificationStrategies}"
+                                                   var="dataModificationStrategies"
+                                                   itemValue="#{dataModificationStrategies}"
+                                                   itemLabel="#{dataModificationStrategies.label}">
+                                    </f:selectItems>
                                 </p:inputText>
                             </p:panelGrid>
                         </h:form>
-
                     </p:panel>
-
-
                 </f:view>
-
-
             </ui:define>
-
         </ui:composition>
-
     </body>
 </html>
