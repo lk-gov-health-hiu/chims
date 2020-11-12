@@ -42,7 +42,6 @@ import lk.gov.health.phsp.facade.UserTransactionFacade;
 @SessionScoped
 public class UserTransactionController implements Serializable {
 // <editor-fold defaultstate="collapsed" desc="EJBs">
-
     @EJB
     private UserTransactionFacade facede;
 // </editor-fold>
@@ -50,6 +49,8 @@ public class UserTransactionController implements Serializable {
 // <editor-fold defaultstate="collapsed" desc="CDIs">
     @Inject
     private WebUserController webUserController;
+    @Inject
+    ApplicationController applicationController;
 // </editor-fold>
 
 // <editor-fold defaultstate="collapsed" desc="Class Variables">
@@ -61,6 +62,7 @@ public class UserTransactionController implements Serializable {
     private String ip;
     private String data;
     private WebUser user;
+    private List<String> userTransactionTypes;
 // </editor-fold>
 
 // <editor-fold defaultstate="collapsed" desc="Constructors">
@@ -85,6 +87,18 @@ public class UserTransactionController implements Serializable {
         data = null;
     }
 
+    public void fillUserTransaction(){
+        if(applicationController.getUserTransactionTypes()!=null){
+            userTransactionTypes = applicationController.getUserTransactionTypes();
+            return;
+        }
+        String jpql = "select distinct(t.transactionName) "
+                + " from UserTransaction t "
+                + "group by t.transactionName";
+        userTransactionTypes = getFacede().findString(jpql);
+        applicationController.setUserTransactionTypes(userTransactionTypes);
+    }
+    
     public void search() {
         String j = "select u "
                 + " from UserTransaction u "
@@ -149,7 +163,16 @@ public class UserTransactionController implements Serializable {
     public UserTransaction getSelected() {
         return selected;
     }
+    
+    
+     public String getData() {
+        return data;
+    }
 
+    public void setData(String data) {
+        this.data = data;
+    }
+    
     public void setSelected(UserTransaction selected) {
         this.selected = selected;
     }
@@ -217,12 +240,17 @@ public class UserTransactionController implements Serializable {
     }
 
 // </editor-fold>
-    public String getData() {
-        return data;
+
+    public List<String> getUserTransactionTypes() {
+        if(userTransactionTypes==null){
+            fillUserTransaction();
+        }
+        return userTransactionTypes;
     }
 
-    public void setData(String data) {
-        this.data = data;
+    public void setUserTransactionTypes(List<String> userTransactionTypes) {
+        this.userTransactionTypes = userTransactionTypes;
     }
+   
 
 }

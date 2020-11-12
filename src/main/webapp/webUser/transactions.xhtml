@@ -8,9 +8,9 @@
 
     <body>
 
-        <ui:composition template="/template.xhtml">
+        <ui:composition template="/webUser/index.xhtml">
 
-            <ui:define name="content">
+            <ui:define name="webUserContents">
 
                 <h:form id="WebUserEditForm">
 
@@ -20,43 +20,63 @@
                             <p:commandButton value="Back" action="/webUser/index"/>
                         </f:facet>
 
-                        <p:panelGrid columns="2" >
-                            <p:outputLabel value="Action"  />
-                            <p:inputText  value="#{userTransactionController.searchText}" >
-                            </p:inputText>
+                        <p:panelGrid columns="1" >
+                            <p:panelGrid columns="2" >
+                                <p:outputLabel value="Action"  />
+                                <p:selectOneMenu  value="#{userTransactionController.searchText}" >
+                                    <f:selectItem itemLabel="All" ></f:selectItem>
+                                    <f:selectItems value="#{userTransactionController.userTransactionTypes}" >
+                                    </f:selectItems>
+                                </p:selectOneMenu>
 
-                            <p:outputLabel value="IP"  />
-                            <p:inputText  value="#{userTransactionController.ip}" >
-                            </p:inputText>
+                                <p:outputLabel value="IP"  />
+                                <p:inputText  value="#{userTransactionController.ip}" >
+                                </p:inputText>
 
-                            <p:outputLabel value="User"  />
-                            <p:autoComplete value="#{userTransactionController.user}"
-                                            completeMethod="#{webUserController.completeUsers}"
-                                            var="u"
-                                            itemLabel="#{u.name}"
-                                            itemValue="#{u}"></p:autoComplete>
+                                <p:outputLabel value="User"  />
+                                <p:autoComplete value="#{userTransactionController.user}"
+                                                completeMethod="#{webUserController.completeUsers}"
+                                                var="u"
+                                                itemLabel="#{u.name}"
+                                                itemValue="#{u}"></p:autoComplete>
 
-                            <p:outputLabel value="Data"  />
-                            <p:inputText  value="#{userTransactionController.data}" >
-                            </p:inputText>
+                                <p:outputLabel value="Data"  />
+                                <p:inputText  value="#{userTransactionController.data}" >
+                                </p:inputText>
 
-                            <p:outputLabel value="From"  />
-                            <p:calendar value="#{userTransactionController.fromDate}" pattern="dd/MM/yyyy hh:mm">
-                            </p:calendar>
+                                <p:outputLabel value="From"  />
+                                <p:calendar value="#{userTransactionController.fromDate}" pattern="dd/MM/yyyy hh:mm">
+                                </p:calendar>
 
-                            <p:outputLabel value="To"  />
-                            <p:calendar value="#{userTransactionController.toDate}"  pattern="dd/MM/yyyy hh:mm">
-                            </p:calendar>
+                                <p:outputLabel value="To"  />
+                                <p:calendar value="#{userTransactionController.toDate}"  pattern="dd/MM/yyyy hh:mm">
+                                </p:calendar>
 
-                            <p:commandButton ajax="false" action="#{userTransactionController.clearSearch()}" value="Clear" >
-                            </p:commandButton>
-                            <p:commandButton ajax="false" action="#{userTransactionController.search()}" value="Search" >
-                            </p:commandButton>
 
+
+                            </p:panelGrid>
+                            <p:panelGrid columns="3" >
+                                <p:commandButton ajax="false" action="#{userTransactionController.clearSearch()}" value="Clear" >
+                                </p:commandButton>
+                                <p:commandButton ajax="false" action="#{userTransactionController.search()}" value="Search" >
+                                </p:commandButton>
+                                <p:commandButton ajax="false" value="Download" >
+                                    <p:dataExporter target="tbl" type="xls" fileName="user transaction list" >
+                                    </p:dataExporter>
+                                </p:commandButton>
+                            </p:panelGrid>
                         </p:panelGrid>
 
 
-                        <p:dataTable value="#{userTransactionController.items}" var="item">
+
+
+                        <p:dataTable id="tbl" value="#{userTransactionController.items}" var="item"
+                                     rowKey="#{item.id}"
+                                     paginator="true"
+                                     rows="10"
+                                     rowsPerPageTemplate="10,20,30,40,50"
+
+                                     >
                             <p:column>
                                 <f:facet name="header">
                                     <h:outputText value="Date / Time"/>
@@ -78,13 +98,18 @@
                                 </f:facet>
                                 <h:outputText value="#{item.ipAddress}"/>
                             </p:column>
-                            <p:column>
+                            <p:column sortBy="#{item.webUser.name}" filterBy="#{item.webUser.name}">
                                 <f:facet name="header">
-                                    <h:outputText value="User"/>
+                                    <h:outputText value="User" />
                                 </f:facet>
                                 <h:outputText value="#{item.webUser.name}"/>
                             </p:column>
-                            <p:column>
+                            <p:column headerText="Institution" sortBy="#{item.webUser.institution.name}"
+                                      filterBy="#{item.webUser.institution.name}"
+                                      filterMatchMode="contains">
+                                <p:outputLabel value="#{item.webUser.institution.name}" ></p:outputLabel>
+                            </p:column>
+                            <p:column >
                                 <f:facet name="header">
                                     <h:outputText value="Details"/>
                                 </f:facet>

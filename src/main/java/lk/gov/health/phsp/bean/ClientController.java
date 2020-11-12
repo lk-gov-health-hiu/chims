@@ -78,6 +78,8 @@ public class ClientController implements Serializable {
     private AreaController areaController;
     @Inject
     private ClientEncounterComponentFormSetController clientEncounterComponentFormSetController;
+    @Inject
+    UserTransactionController userTransactionController;
     // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="Variables">
     private List<Client> items = null;
@@ -158,6 +160,7 @@ public class ClientController implements Serializable {
         selectedClientsClinics = null;
         selectedClinic = null;
         yearMonthDay = new YearMonthDay();
+        userTransactionController.recordTransaction("to add a new client");
         return "/client/client";
     }
 

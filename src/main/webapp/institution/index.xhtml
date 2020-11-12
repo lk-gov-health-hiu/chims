@@ -11,31 +11,29 @@
         <ui:composition template="./../template.xhtml">
 
             <ui:define name="content">
-             
 
 
-                    <p:panelGrid style="width: 100%;" columns="2" styleClass="alignTop">
-                        <f:facet name="header" >
-                            <p:outputLabel value="Manage Institutions" ></p:outputLabel>
-                        </f:facet>
-                        <h:form>
-                        <p:panelGrid columns="1" >
-                            <p:commandButton value="Add Institution" ajax="false"
+
+                <p:panelGrid style="width: 100%;" columns="2" styleClass="alignTop" columnClasses="width80percent width20percent">
+                    <f:facet name="header" >
+                        <p:outputLabel value="Manage Institutions" ></p:outputLabel>
+                    </f:facet>
+                    <h:form>
+                        <p:panelGrid columns="1" style="width: 20%;" >
+                            <p:commandButton value="Add Institution" ajax="false" style="width: 20rem;"
                                              action="#{institutionController.toAddInstitution}"></p:commandButton>
-                            <p:commandButton value="Search Institutions" ajax="false"
-                                             action="#{institutionController.toSearchInstitutions()}"></p:commandButton>
-                            <p:commandButton value="List Institutions" ajax="false"
+                            <p:commandButton value="List Institutions" ajax="false"  style="width: 20rem;"
                                              action="#{institutionController.toListInstitutions()}"></p:commandButton>
                         </p:panelGrid>
-                        </h:form>
-                        <p:panelGrid columns="1" styleClass="alignTop" >
-                            <ui:insert name="insContents" >
-                                
-                            </ui:insert>
-                        </p:panelGrid>
-                    </p:panelGrid>
+                    </h:form>
+                    <p:panelGrid columns="1" styleClass="alignTop" style="width: 80%;" >
+                        <ui:insert name="insContents" >
 
-               
+                        </ui:insert>
+                    </p:panelGrid>
+                </p:panelGrid>
+
+
             </ui:define>
 
         </ui:composition>

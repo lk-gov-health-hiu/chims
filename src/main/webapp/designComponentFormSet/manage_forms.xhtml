@@ -19,14 +19,12 @@
                         <h:outputLabel value="#{designComponentFormController.designComponentFormSet.name}" ></h:outputLabel>
                     </f:facet>
 
-                    <h:form >
-
+                    <h:form>
                         <p:panelGrid columns="2" styleClass="alignTop" >
                             <f:facet name="header" >
                                 <p:commandButton ajax="false" value="Back to Manage Form Sets" action="#{designComponentFormSetController.backToManageFormSets()}" style="float: right;" ></p:commandButton>
                             </f:facet>
-
-
+                            
                             <p:panel header="Existing Forms" >
                                 <p:dataTable id="lst" value="#{designComponentFormController.formsOfTheSelectedSet}" var="f" >
                                     <p:column headerText="Order No" width="40" >
@@ -34,13 +32,16 @@
                                             <f:convertNumber pattern="0" ></f:convertNumber>
                                         </p:outputLabel>
                                     </p:column>
+                                    
                                     <p:column headerText="Name" >
                                         <p:outputLabel id="txtName" value="#{f.name}" >
                                         </p:outputLabel>
                                     </p:column>
+                                    
                                     <p:column headerText="Sex" width="80" >
-                                        <p:outputLabel value="#{f.componentSex.label()}" ></p:outputLabel>
+                                        <p:outputLabel value="#{f.componentSex.label}" ></p:outputLabel>
                                     </p:column>
+                                    
                                     <p:column headerText="Actions" width="260" >
                                         <p:commandButton id="btnEdit" value="Edit"  icon="ui-icon-pencil"  
                                                          action="#{designComponentFormController.toEditDesignComponentFrom()}" 
@@ -53,6 +54,7 @@
                                             <f:setPropertyActionListener value="#{f}" target="#{designComponentFormController.selected}" ></f:setPropertyActionListener>
                                         </p:commandButton>
                                     </p:column>
+                                    
                                     <p:column headerText="Change Order" width="100" >
                                         <p:commandButton id="btnUp"  icon="ui-icon-arrowthick-1-n"  
                                                          action="#{designComponentFormController.moveUpTheSelectedSet()}" 
@@ -65,6 +67,7 @@
                                             <f:setPropertyActionListener value="#{f}" target="#{designComponentFormController.movingForm}" ></f:setPropertyActionListener>
                                         </p:commandButton>
                                     </p:column>
+                                    
                                     <p:column headerText="Remove" width="50" >
                                         <p:commandButton id="btnRemove" icon="ui-icon-trash"  onclick="if (!confirm('Really want to do that?'))
                                                     return false"
@@ -74,7 +77,6 @@
                                         </p:commandButton>
                                     </p:column>
                                 </p:dataTable>
-
                             </p:panel>
 
                             <p:panel header="Add New Form" >
@@ -88,23 +90,20 @@
                                     <p:outputLabel value="Sex" ></p:outputLabel>
                                     <p:selectOneMenu id="sex" value="#{designComponentFormController.addingForm.componentSex}" 
                                                      title="Sex" >
-                                        <f:selectItems value="#{commonController.componentSex}" ></f:selectItems>
+                                        <f:selectItems value="#{commonController.componentSex}"
+                                                       var="componentSex"
+                                                       itemValue="#{componentSex}"
+                                                       itemLabel="#{componentSex.label}">
+                                        </f:selectItems>
                                     </p:selectOneMenu>
 
                                     <p:spacer ></p:spacer>
                                     <p:commandButton process="name orderNo sex btnAdd" update="gridAddingForm lst" value="Add" id="btnAdd"
                                                      action="#{designComponentFormController.addFormToTheSelectedSet()}" ></p:commandButton>
                                 </p:panelGrid>
-
                             </p:panel>
-
-
                         </p:panelGrid>
-
-
                     </h:form>
-
-
                 </p:panel>
                 <div>
                     <br/>
@@ -112,12 +111,7 @@
                     <br/>
                     <br/>
                 </div>
-
             </ui:define>
-
-
-
         </ui:composition>
-
     </body>
 </html>

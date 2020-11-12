@@ -28,11 +28,20 @@ package lk.gov.health.phsp.enums;
  * @author Dr M H B Ariyaratne<buddhika.ari@gmail.com>
  */
 public enum DataPopulationStrategy {
-    None,
-    From_Last_Encounter,
-    From_Client_Value,
-    From_Last_Encounter_of_same_formset,
-    From_Last_Encounter_of_same_clinic,
+    None("None"),
+    From_Last_Encounter("From Last Encounter"),
+    From_Client_Value("From Client Value"),
+    From_Last_Encounter_of_same_formset("From Last Encounter of Same Formset"),
+    From_Last_Encounter_of_same_clinic("From Last Encounter of Same Clinic"),
     @Deprecated
-    From_Last_Data_Entered_Encounter,
+    From_Last_Data_Entered_Encounter("From Last Data Entered Encounter");
+    
+    private final String label;    
+    private DataPopulationStrategy(String label){
+        this.label = label;
+    }
+    
+    public String getLabel(){
+        return label;
+    }
 }
