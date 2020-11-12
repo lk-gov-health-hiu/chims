@@ -52,7 +52,11 @@
                                                  value="#{designComponentFormController.selected.itemArrangementStrategy}" 
                                                  title="DataModificationStrategy" >
                                     <f:selectItem itemLabel="Please select" ></f:selectItem>
-                                    <f:selectItems value="#{commonController.itemArrangementStrategies}" ></f:selectItems>
+                                    <f:selectItems value="#{commonController.itemArrangementStrategies}"
+                                                   var="itemArrangementStrategies"
+                                                   itemValue="#{itemArrangementStrategies}"
+                                                   itemLabel="#{itemArrangementStrategies.label}">
+                                    </f:selectItems>
                                 </p:selectOneMenu>
 
                                 <p:outputLabel value="Background Color:" />

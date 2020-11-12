@@ -75,21 +75,32 @@
                                 <p:selectOneMenu id="dataPopulationStrategy" 
                                                  value="#{designComponentFormItemController.designComponentForm.dataPopulationStrategy}" 
                                                  title="DataPopulationStrategy" >
-                                    <f:selectItems value="#{commonController.dataPopulationStrategies}" ></f:selectItems>
+                                    <f:selectItems value="#{commonController.dataPopulationStrategies}"
+                                                   var="dataPopulationStrategies"
+                                                   itemValue="#{dataPopulationStrategies}"
+                                                   itemLabel="#{dataPopulationStrategies.label}">
+                                    </f:selectItems>
                                 </p:selectOneMenu>
 
                                 <p:outputLabel value="Data Completion Strategy:" for="dataCompletionStrategy" />
                                 <p:selectOneMenu id="dataCompletionStrategy" 
                                                  value="#{designComponentFormItemController.designComponentForm.dataCompletionStrategy}" 
                                                  title="DataCompletionStrategy" >
-                                    <f:selectItems value="#{commonController.dataCompletionStrategies}" ></f:selectItems>
+                                    <f:selectItems value="#{commonController.dataCompletionStrategies}"
+                                                   var="dataCompletionStrategies"
+                                                   itemValue="#{dataCompletionStrategies}"
+                                                   itemLabel="#{dataCompletionStrategies.label}"></f:selectItems>
                                 </p:selectOneMenu>
 
                                 <p:outputLabel value="Data Modification Strategy:" for="dataModificationStrategy" />
                                 <p:inputText id="dataModificationStrategy" 
                                              value="#{designComponentFormItemController.designComponentForm.dataModificationStrategy}" 
                                              title="DataModificationStrategy" >
-                                    <f:selectItems value="#{commonController.dataModificationStrategies}" ></f:selectItems>
+                                    <f:selectItems value="#{commonController.dataModificationStrategies}"
+                                                   var="dataModificationStrategies"
+                                                   itemValue="#{dataModificationStrategies}"
+                                                   itemLabel="#{dataModificationStrategies.label}">
+                                    </f:selectItems>
                                 </p:inputText>
                             </p:panelGrid>
                         </h:form>

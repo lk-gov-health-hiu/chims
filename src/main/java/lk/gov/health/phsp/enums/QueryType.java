@@ -37,8 +37,8 @@ public enum QueryType {
     Client_Count("Client Count"),
     Encounter_Count("Encounter Count"),
     Formset_Count("Formset Count"),
-    Excel_Report("Excel_Report");
-    
+    Excel_Report("Excel Template");
+
     private final String label;
 
     private QueryType(String label) {

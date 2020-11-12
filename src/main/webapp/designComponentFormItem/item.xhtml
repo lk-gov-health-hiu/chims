@@ -113,14 +113,22 @@
                                             <p:selectOneMenu id="dataCompletionStrategy" 
                                                              value="#{designComponentFormItemController.selected.dataCompletionStrategy}" 
                                                              title="DataCompletionStrategy" >
-                                                <f:selectItems value="#{commonController.dataCompletionStrategies}" ></f:selectItems>
+                                                <f:selectItems value="#{commonController.dataCompletionStrategies}"
+                                                               var="dataCompletionStrategies"
+                                                               itemValue="#{dataCompletionStrategies}"
+                                                               itemLabel="#{dataCompletionStrategies.label}">
+                                                </f:selectItems>
                                             </p:selectOneMenu>
 
                                             <p:outputLabel value="Data Modification Strategy:" for="dataModificationStrategy" />
                                             <p:selectOneMenu id="dataModificationStrategy" 
                                                              value="#{designComponentFormItemController.selected.dataModificationStrategy}" 
                                                              title="DataModificationStrategy" >
-                                                <f:selectItems value="#{commonController.dataModificationStrategies}" ></f:selectItems>
+                                                <f:selectItems value="#{commonController.dataModificationStrategies}"
+                                                               var="dataModificationStrategies"
+                                                               itemValue="#{dataModificationStrategies}"
+                                                               itemLabel="#{dataModificationStrategies.label}">
+                                                </f:selectItems>
                                             </p:selectOneMenu>
 
                                             <p:outputLabel value="Category of Available Items:" for="categoryOfAvailableItems" />
@@ -144,7 +152,11 @@
                                             <p:selectOneMenu id="resultDisplayStrategy" 
                                                              value="#{designComponentFormItemController.selected.resultDisplayStrategy}" 
                                                              title="DataPopulationStrategy" >
-                                                <f:selectItems value="#{commonController.dataPopulationStrategies}" ></f:selectItems>
+                                                <f:selectItems value="#{commonController.dataPopulationStrategies}"
+                                                               var="dataPopulationStrategies"
+                                                               itemValue="#{dataPopulationStrategies}"
+                                                               itemLabel="#{dataPopulationStrategies.label}">
+                                                </f:selectItems>
                                             </p:selectOneMenu>
 
                                             <p:outputLabel value="Display Link to Clients' Current Data" for="linkToClientData" />
@@ -216,7 +228,7 @@
                                             <p:inputTextarea id="regexErrorMesage" value="#{designComponentFormItemController.selected.regexValidationFailedMessage}" title="Name" />
                                         </p:panelGrid>
                                     </p:tab>
-                                    
+
                                     <p:tab title="CSS" >
                                         <p:panelGrid columns="2" >
                                             <p:outputLabel value="Top Percent:" for="topPercent" />
