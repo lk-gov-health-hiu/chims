@@ -28,51 +28,28 @@ package lk.gov.health.phsp.enums;
  * @author Dr M H B Ariyaratne
  */
 public enum WebUserRole {
-    System_Administrator,
-    Super_User,
-    User,
-    Institution_User,
-    Institution_Super_User,
-    Institution_Administrator,
-    Me_User,
-    Me_Super_User,
-    Me_Admin,
-    Doctor,
-    Nurse,
-    Midwife,
-    Client;
+    System_Administrator("System Administrator"),
+    Super_User("Super User"),
+    User("User"),
+    Institution_User("Institution User"),
+    Institution_Super_User("Institution Super User"),
+    Institution_Administrator("Institution Administrator"),
+    Me_User("Monitoring & Evaluation Administrator"),
+    Me_Super_User("Monitoring & Evaluation Super User"),
+    Me_Admin("Monitoring & Evaluation User"),
+    Doctor("Doctor"),
+    Nurse("Nurse"),
+    Midwife("Midwife"),
+    Client("Client");
 
-    public String getLabel() {
-        switch (this) {
-            case Client:
-                return "Client";
-            case Doctor:
-                return "Doctor";
-            case Institution_Administrator:
-                return "Institution Administrator";
-            case Institution_Super_User:
-                return "Institution Super User";
-            case Institution_User:
-                return "Institution User";
-            case Me_Admin:
-                return "Monitoring & Evaluation Administrator";
-            case Me_Super_User:
-                return "Monitoring & Evaluation Super User";
-            case Me_User:
-                return "Monitoring & Evaluation User";
-            case Midwife:
-                return "Midwife";
-            case Nurse:
-                return "Nurse";
-            case Super_User:
-                return "Super User";
-            case System_Administrator:
-                return "System Administrator";
-            case User:
-                return "User";
-            default:
-                return "None";
-        }
+    private final String label;
+    
+    private WebUserRole(String label){
+        this.label = label;
     }
+    
+    public String getLabel(){
+        return label;
+    } 
 
 }

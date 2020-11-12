@@ -7,8 +7,6 @@
       xmlns:p="http://primefaces.org/ui">
 
     <ui:composition template="/template.xhtml">
-
-
         <ui:define name="title">
             <h:outputText value="#{bundleClinical.ListClientEncounterComponentFormSetTitle}"></h:outputText>
         </ui:define>
@@ -21,8 +19,7 @@
                                  paginator="true"
                                  rowKey="#{item.id}"
                                  rows="10"
-                                 rowsPerPageTemplate="10,20,30,40,50"
-                                 >
+                                 rowsPerPageTemplate="10,20,30,40,50">
 
                         <p:ajax event="rowSelect"   update="createButton viewButton editButton deleteButton"/>
                         <p:ajax event="rowUnselect" update="createButton viewButton editButton deleteButton"/>
@@ -33,150 +30,175 @@
                             </f:facet>
                             <h:outputText value="#{item.encounter}"/>
                         </p:column>
+                        
                         <p:column>
                             <f:facet name="header">
                                 <h:outputText value="#{bundleClinical.ListClientEncounterComponentFormSetTitle_client}"/>
                             </f:facet>
                             <h:outputText value="#{item.client}"/>
                         </p:column>
+                        
                         <p:column>
                             <f:facet name="header">
                                 <h:outputText value="#{bundleClinical.ListClientEncounterComponentFormSetTitle_longTextValue}"/>
                             </f:facet>
                             <h:outputText value="#{item.longTextValue}"/>
                         </p:column>
+                        
                         <p:column>
                             <f:facet name="header">
                                 <h:outputText value="#{bundleClinical.ListClientEncounterComponentFormSetTitle_shortTextValue}"/>
                             </f:facet>
                             <h:outputText value="#{item.shortTextValue}"/>
                         </p:column>
+                        
                         <p:column>
                             <f:facet name="header">
                                 <h:outputText value="#{bundleClinical.ListClientEncounterComponentFormSetTitle_byteArrayValue}"/>
                             </f:facet>
                             <h:outputText value="#{item.byteArrayValue}"/>
                         </p:column>
+                        
                         <p:column>
                             <f:facet name="header">
                                 <h:outputText value="#{bundleClinical.ListClientEncounterComponentFormSetTitle_integerNumberValue}"/>
                             </f:facet>
                             <h:outputText value="#{item.integerNumberValue}"/>
                         </p:column>
+                        
                         <p:column>
                             <f:facet name="header">
                                 <h:outputText value="#{bundleClinical.ListClientEncounterComponentFormSetTitle_realNumberValue}"/>
                             </f:facet>
                             <h:outputText value="#{item.realNumberValue}"/>
                         </p:column>
+                        
                         <p:column>
                             <f:facet name="header">
                                 <h:outputText value="#{bundleClinical.ListClientEncounterComponentFormSetTitle_booleanValue}"/>
                             </f:facet>
                             <p:selectBooleanCheckbox value="#{item.booleanValue}" disabled="true"/>
                         </p:column>
+                        
                         <p:column>
                             <f:facet name="header">
                                 <h:outputText value="#{bundleClinical.ListClientEncounterComponentFormSetTitle_itemValue}"/>
                             </f:facet>
                             <h:outputText value="#{item.itemValue}"/>
                         </p:column>
+                        
                         <p:column>
                             <f:facet name="header">
                                 <h:outputText value="#{bundleClinical.ListClientEncounterComponentFormSetTitle_areaValue}"/>
                             </f:facet>
                             <h:outputText value="#{item.areaValue}"/>
                         </p:column>
+                        
                         <p:column>
                             <f:facet name="header">
                                 <h:outputText value="#{bundleClinical.ListClientEncounterComponentFormSetTitle_institutionValue}"/>
                             </f:facet>
                             <h:outputText value="#{item.institutionValue}"/>
                         </p:column>
+                        
                         <p:column>
                             <f:facet name="header">
                                 <h:outputText value="#{bundleClinical.ListClientEncounterComponentFormSetTitle_clientValue}"/>
                             </f:facet>
                             <h:outputText value="#{item.clientValue}"/>
                         </p:column>
+                        
                         <p:column>
                             <f:facet name="header">
                                 <h:outputText value="#{bundleClinical.ListClientEncounterComponentFormSetTitle_id}"/>
                             </f:facet>
                             <h:outputText value="#{item.id}"/>
                         </p:column>
+                        
                         <p:column>
                             <f:facet name="header">
                                 <h:outputText value="#{bundleClinical.ListClientEncounterComponentFormSetTitle_name}"/>
                             </f:facet>
                             <h:outputText value="#{item.name}"/>
                         </p:column>
+                        
                         <p:column>
                             <f:facet name="header">
                                 <h:outputText value="#{bundleClinical.ListClientEncounterComponentFormSetTitle_renderType}"/>
                             </f:facet>
-                            <h:outputText value="#{item.renderType}"/>
+                            <h:outputText value="#{item.renderType.label}"/>
                         </p:column>
+                        
                         <p:column>
                             <f:facet name="header">
                                 <h:outputText value="#{bundleClinical.ListClientEncounterComponentFormSetTitle_parentComponent}"/>
                             </f:facet>
                             <h:outputText value="#{item.parentComponent}"/>
                         </p:column>
+                        
                         <p:column>
                             <f:facet name="header">
                                 <h:outputText value="#{bundleClinical.ListClientEncounterComponentFormSetTitle_mimeType}"/>
                             </f:facet>
                             <h:outputText value="#{item.mimeType}"/>
                         </p:column>
+                        
                         <p:column>
                             <f:facet name="header">
                                 <h:outputText value="#{bundleClinical.ListClientEncounterComponentFormSetTitle_selectionDataType}"/>
                             </f:facet>
-                            <h:outputText value="#{item.selectionDataType}"/>
+                            <h:outputText value="#{item.selectionDataType.label}"/>
                         </p:column>
+                        
                         <p:column>
                             <f:facet name="header">
                                 <h:outputText value="#{bundleClinical.ListClientEncounterComponentFormSetTitle_topPercent}"/>
                             </f:facet>
                             <h:outputText value="#{item.topPercent}"/>
                         </p:column>
+                        
                         <p:column>
                             <f:facet name="header">
                                 <h:outputText value="#{bundleClinical.ListClientEncounterComponentFormSetTitle_leftPercent}"/>
                             </f:facet>
                             <h:outputText value="#{item.leftPercent}"/>
                         </p:column>
+                        
                         <p:column>
                             <f:facet name="header">
                                 <h:outputText value="#{bundleClinical.ListClientEncounterComponentFormSetTitle_widthPercent}"/>
                             </f:facet>
                             <h:outputText value="#{item.widthPercent}"/>
                         </p:column>
+                        
                         <p:column>
                             <f:facet name="header">
                                 <h:outputText value="#{bundleClinical.ListClientEncounterComponentFormSetTitle_heightPercent}"/>
                             </f:facet>
                             <h:outputText value="#{item.heightPercent}"/>
                         </p:column>
+                        
                         <p:column>
                             <f:facet name="header">
                                 <h:outputText value="#{bundleClinical.ListClientEncounterComponentFormSetTitle_intHtmlColor}"/>
                             </f:facet>
                             <h:outputText value="#{item.intHtmlColor}"/>
                         </p:column>
+                        
                         <p:column>
                             <f:facet name="header">
                                 <h:outputText value="#{bundleClinical.ListClientEncounterComponentFormSetTitle_hexHtmlColour}"/>
                             </f:facet>
                             <h:outputText value="#{item.hexHtmlColour}"/>
                         </p:column>
+                        
                         <p:column>
                             <f:facet name="header">
                                 <h:outputText value="#{bundleClinical.ListClientEncounterComponentFormSetTitle_createdBy}"/>
                             </f:facet>
                             <h:outputText value="#{item.createdBy}"/>
                         </p:column>
+                        
                         <p:column>
                             <f:facet name="header">
                                 <h:outputText value="#{bundleClinical.ListClientEncounterComponentFormSetTitle_createdAt}"/>
@@ -185,12 +207,14 @@
                                 <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
                             </h:outputText>
                         </p:column>
+                        
                         <p:column>
                             <f:facet name="header">
                                 <h:outputText value="#{bundleClinical.ListClientEncounterComponentFormSetTitle_lastEditBy}"/>
                             </f:facet>
                             <h:outputText value="#{item.lastEditBy}"/>
                         </p:column>
+                        
                         <p:column>
                             <f:facet name="header">
                                 <h:outputText value="#{bundleClinical.ListClientEncounterComponentFormSetTitle_lastEditeAt}"/>
@@ -199,12 +223,14 @@
                                 <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
                             </h:outputText>
                         </p:column>
+                        
                         <p:column>
                             <f:facet name="header">
                                 <h:outputText value="#{bundleClinical.ListClientEncounterComponentFormSetTitle_retiredReversedBy}"/>
                             </f:facet>
                             <h:outputText value="#{item.retiredReversedBy}"/>
                         </p:column>
+                        
                         <p:column>
                             <f:facet name="header">
                                 <h:outputText value="#{bundleClinical.ListClientEncounterComponentFormSetTitle_retiredReversedAt}"/>
@@ -213,12 +239,14 @@
                                 <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
                             </h:outputText>
                         </p:column>
+                        
                         <p:column>
                             <f:facet name="header">
                                 <h:outputText value="#{bundleClinical.ListClientEncounterComponentFormSetTitle_retiredBy}"/>
                             </f:facet>
                             <h:outputText value="#{item.retiredBy}"/>
                         </p:column>
+                        
                         <p:column>
                             <f:facet name="header">
                                 <h:outputText value="#{bundleClinical.ListClientEncounterComponentFormSetTitle_retiredAt}"/>
@@ -227,42 +255,49 @@
                                 <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
                             </h:outputText>
                         </p:column>
+                        
                         <p:column>
                             <f:facet name="header">
                                 <h:outputText value="#{bundleClinical.ListClientEncounterComponentFormSetTitle_retireComments}"/>
                             </f:facet>
                             <h:outputText value="#{item.retireComments}"/>
                         </p:column>
+                        
                         <p:column>
                             <f:facet name="header">
                                 <h:outputText value="#{bundleClinical.ListClientEncounterComponentFormSetTitle_html}"/>
                             </f:facet>
                             <h:outputText value="#{item.html}"/>
                         </p:column>
+                        
                         <p:column>
                             <f:facet name="header">
                                 <h:outputText value="#{bundleClinical.ListClientEncounterComponentFormSetTitle_availableDataType}"/>
                             </f:facet>
                             <h:outputText value="#{item.availableDataType}"/>
                         </p:column>
+                        
                         <p:column>
                             <f:facet name="header">
                                 <h:outputText value="#{bundleClinical.ListClientEncounterComponentFormSetTitle_parentAreaOfAvailableAreas}"/>
                             </f:facet>
                             <h:outputText value="#{item.parentAreaOfAvailableAreas}"/>
                         </p:column>
+                        
                         <p:column>
                             <f:facet name="header">
                                 <h:outputText value="#{bundleClinical.ListClientEncounterComponentFormSetTitle_categoryOfAvailableItems}"/>
                             </f:facet>
                             <h:outputText value="#{item.categoryOfAvailableItems}"/>
                         </p:column>
+                        
                         <p:column>
                             <f:facet name="header">
                                 <h:outputText value="#{bundleClinical.ListClientEncounterComponentFormSetTitle_parentInstitutionOfAvailableInstitutions}"/>
                             </f:facet>
                             <h:outputText value="#{item.parentInstitutionOfAvailableInstitutions}"/>
                         </p:column>
+                        
                         <f:facet name="footer">
                             <p:commandButton id="createButton" icon="ui-icon-plus"   value="#{bundleClinical.Create}" actionListener="#{clientEncounterComponentFormSetController.prepareCreate}" update=":ClientEncounterComponentFormSetCreateForm" oncomplete="PF('ClientEncounterComponentFormSetCreateDialog').show()"/>
                             <p:commandButton id="viewButton"   icon="ui-icon-search" value="#{bundleClinical.View}" update=":ClientEncounterComponentFormSetViewForm" oncomplete="PF('ClientEncounterComponentFormSetViewDialog').show()" disabled="#{empty clientEncounterComponentFormSetController.selected}"/>

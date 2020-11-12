@@ -116,7 +116,11 @@
                             <p:selectOneMenu  id="webUserRole" value="#{webUserController.selected.webUserRole}"
                                               required="true">
                                 <f:selectItem itemLabel="Select" ></f:selectItem>
-                                <f:selectItems value="#{webUserController.webUserRolesForInsAdmin}" var="r" itemLabel="#{r.label}" itemValue="#{r}" ></f:selectItems>
+                                <f:selectItems value="#{webUserController.webUserRolesForInsAdmin}" 
+                                               var="r" 
+                                               itemLabel="#{r.label}" 
+                                               itemValue="#{r}" >
+                                </f:selectItems>
                             </p:selectOneMenu>
                             <p:spacer ></p:spacer>
 

@@ -1294,6 +1294,8 @@ public class ClientController implements Serializable {
         clearExistsValues();
         if (searchingPhn != null && !searchingPhn.trim().equals("")) {
             selectedClients = listPatientsByPhn(searchingPhn);
+        } else if (searchingName != null && !searchingName.trim().equals("")) {
+            selectedClients = listPatientsByName(searchingName);
         } else if (searchingNicNo != null && !searchingNicNo.trim().equals("")) {
             selectedClients = listPatientsByNic(searchingNicNo);
         } else if (searchingPhoneNumber != null && !searchingPhoneNumber.trim().equals("")) {
@@ -1365,7 +1367,14 @@ public class ClientController implements Serializable {
         m.put("q", phn.trim().toUpperCase());
         return getFacade().findByJpql(j, m);
     }
-
+        
+     public List<Client> listPatientsByName(String phn) {
+        String j = "select c from Client c where c.retired=false and upper(c.person.name)=:q order by c.phn";
+        Map m = new HashMap();
+        m.put("q", phn.trim().toUpperCase());
+        return getFacade().findByJpql(j, m);
+    }
+     
     public List<Client> listPatientsByNic(String phn) {
         String j = "select c from Client c where c.retired=false and upper(c.person.nic)=:q order by c.phn";
         Map m = new HashMap();
@@ -1467,6 +1476,8 @@ public class ClientController implements Serializable {
                 + " upper(c.person.phone2)=:q "
                 + " or "
                 + " upper(c.person.nic)=:q "
+                + " or "
+                + " upper(c.person.name)=:q "
                 + " ) "
                 + " order by c.phn";
         cs = getFacade().findByJpql(j, m);
@@ -1501,6 +1512,8 @@ public class ClientController implements Serializable {
                 + " upper(c.person.phone2)=:q "
                 + " or "
                 + " upper(c.person.nic)=:q "
+                + " or "
+                + " upper(c.person.name)=:q "
                 + " or "
                 + " upper(c.phn)=:q "
                 + " or "

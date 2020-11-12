@@ -28,10 +28,20 @@ package lk.gov.health.phsp.enums;
  * @author User
  */
 public enum QueryFilterPeriodType {
-    Year,
-    Quarter,
-    After,
-    Before,
-    Period,
-    All,
+    Year("Year"),
+    Quarter("Quarter"),
+    After("After"),
+    Before("Before"),
+    Period("Period"),
+    All("All");
+
+    private final String label;
+
+    private QueryFilterPeriodType(String label) {
+        this.label = label;
+    }
+
+    public String getLabel() {
+        return label;
+    }
 }

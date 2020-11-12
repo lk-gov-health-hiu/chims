@@ -29,14 +29,23 @@ package lk.gov.health.phsp.enums;
  * @author User
  */
 public enum EncounterType {
-    OPD_Visit,
-    Clinic_Visit,
-    HLC_Visit,
-    Clinic_Enroll,
-    Clinic_Discharge,
-    Admission,
-    Pharmacy_Issue,
-    Testing,
-    Procedure,
-    Other,
+    OPD_Visit("OPD Visit"),
+    Clinic_Visit("Clinic Visit"),
+    HLC_Visit("HLC Visit"),
+    Clinic_Enroll("Clinic Enroll"),
+    Clinic_Discharge("Clinic Discharge"),
+    Admission("Admission"),
+    Pharmacy_Issue("Pharmacy Issue"),
+    Testing("Testing"),
+    Procedure("Procedure"),
+    Other("Other");
+    
+    private final String label;    
+    private EncounterType(String label){
+        this.label = label;
+    }
+    
+    public String getLabel(){
+        return label;
+    }
 }

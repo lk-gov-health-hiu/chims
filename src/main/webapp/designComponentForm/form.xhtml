@@ -7,19 +7,11 @@
       xmlns:p="http://primefaces.org/ui">
 
     <body>
-
         <ui:composition template="./../template.xhtml">
-
             <ui:define name="content">
-
-
-
                 <f:view>
-
                     <p:panel header="Edit Form Details" style="width: 100%; text-align: center;" >
-
                         <h:form>
-
                             <p:panelGrid columns="2" rendered="#{designComponentFormController.selected ne null}" style="margin: auto; text-align: left;">
 
                                 <f:facet name="header" >
@@ -39,7 +31,11 @@
                                                  value="#{designComponentFormController.selected.componentSex}" 
                                                  title="ComponentSex" >
                                     <f:selectItem itemLabel="Please select" ></f:selectItem>
-                                    <f:selectItems value="#{commonController.componentSex}" ></f:selectItems>
+                                    <f:selectItems value="#{commonController.componentSex}"
+                                                   var="componentSex"
+                                                   itemValue="#{componentSex}"
+                                                   itemLabel="#{componentSex.label}">
+                                    </f:selectItems>
                                 </p:selectOneMenu>
 
                                 <p:outputLabel value="Colour as Hexadecimal:" for="hexHtmlColour" />
@@ -56,7 +52,11 @@
                                                  value="#{designComponentFormController.selected.itemArrangementStrategy}" 
                                                  title="DataModificationStrategy" >
                                     <f:selectItem itemLabel="Please select" ></f:selectItem>
-                                    <f:selectItems value="#{commonController.itemArrangementStrategies}" ></f:selectItems>
+                                    <f:selectItems value="#{commonController.itemArrangementStrategies}"
+                                                   var="itemArrangementStrategies"
+                                                   itemValue="#{itemArrangementStrategies}"
+                                                   itemLabel="#{itemArrangementStrategies.label}">
+                                    </f:selectItems>
                                 </p:selectOneMenu>
 
                                 <p:outputLabel value="Background Color:" />
@@ -67,21 +67,11 @@
 
                                 <p:outputLabel value="Border Color:" />
                                 <p:colorPicker value="#{designComponentFormController.selected.borderColour}" ></p:colorPicker>
-
-
-
                             </p:panelGrid>
                         </h:form>
-
                     </p:panel>
-
-
                 </f:view>
-
-
             </ui:define>
-
         </ui:composition>
-
     </body>
 </html>
