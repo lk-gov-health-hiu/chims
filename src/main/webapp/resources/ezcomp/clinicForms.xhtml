@@ -26,67 +26,67 @@
                     <h:panelGroup id="gpDataAndButtons" >
                         <tr>
                             <h:panelGroup rendered="false">
-                                 <td>
-                                     <table >
-                                         <tr>
-                                             <td>
-                                                 Active Index
-                                             </td>
-                                              <td>
+                                <td>
+                                    <table >
+                                        <tr>
+                                            <td>
+                                                Active Index
+                                            </td>
+                                            <td>
                                                 #{clientEncounterComponentFormSetController.selectedTabIndex}
-                                             </td>
-                                         </tr>
-                                         <tr>
-                                             <td>
-                                                 Name
-                                             </td>
-                                              <td>
-                                                 #{ii.name}
-                                             </td>
-                                         </tr>
-                                         <tr>
-                                             <td>
-                                                 Name
-                                             </td>
-                                              <td>
-                                                 #{ii.name}
-                                             </td>
-                                         </tr>
-                                         <tr>
-                                             <td>
-                                                 ID
-                                             </td>
-                                              <td>
-                                                 #{ii.id}"
-                                             </td>
-                                         </tr>
-                                          <tr>
-                                             <td>
-                                                 ID
-                                             </td>
-                                              <td>
-                                                 #{ii.itemValue.name}"
-                                             </td>
-                                         </tr>
-                                         <tr>
-                                             <td>
-                                                 Selection Data Type
-                                             </td>
-                                              <td>
-                                                 #{ii.item.dataType}"
-                                             </td>
-                                         </tr>
-                                          <tr>
-                                             <td>
-                                                 Colour
-                                             </td>
-                                              <td>
-                                                 #{ii.generatedCss}
-                                             </td>
-                                         </tr>
-                                     </table>
-                                
-                            </td>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                Name
+                                            </td>
+                                            <td>
+                                                #{ii.name}
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                Name
+                                            </td>
+                                            <td>
+                                                #{ii.name}
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                ID
+                                            </td>
+                                            <td>
+                                                #{ii.id}"
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                ID
+                                            </td>
+                                            <td>
+                                                #{ii.itemValue.name}"
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                Selection Data Type
+                                            </td>
+                                            <td>
+                                                #{ii.item.dataType}"
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                Colour
+                                            </td>
+                                            <td>
+                                                #{ii.generatedCss}
+                                            </td>
+                                        </tr>
+                                    </table>
+
+                                </td>
                             </h:panelGroup>
                             <h:panelGroup id="gpData" >
                                 <h:panelGroup rendered="#{ii.renderType eq 'Input_Text'}" >
@@ -227,7 +227,6 @@
                                             <p:outputLabel for="acItem" value="#{ii.name}"  style="#{ii.generatedCss}" ></p:outputLabel>
                                         </td>
                                         <td>
-
                                             <p:autoComplete id="acItem" value="#{ii.itemValue}"
                                                             completeMethod="#{itemController.completeItemsofParentWithFIlter}"
                                                             var="ai" itemLabel="#{ai.name}" itemValue="#{ai}"
@@ -293,9 +292,9 @@
                                         <p:outputLabel value="Name" ></p:outputLabel>
                                         <p:outputLabel value="#{ii.name}" ></p:outputLabel>
                                         <p:outputLabel value="renderType" ></p:outputLabel>
-                                        <p:outputLabel value="#{ii.renderType}" ></p:outputLabel>
+                                        <p:outputLabel value="#{ii.renderType.label}" ></p:outputLabel>
                                         <p:outputLabel value="selectionDataType" ></p:outputLabel>
-                                        <p:outputLabel value="#{ii.item.dataType}" ></p:outputLabel>
+                                        <p:outputLabel value="#{ii.item.dataType.label}" ></p:outputLabel>
                                     </p:panelGrid>
                                 </h:panelGroup>
                             </td>
@@ -303,7 +302,6 @@
                                 <h:panelGroup rendered="#{ii.multipleEntiesPerForm}" >
                                     <p:commandButton id="btnAdd"  value="Add Another" process="@this" update="@form :#{p:component('formset')}"
                                                      action="#{clientEncounterComponentItemController.addAnother(ii)}"></p:commandButton>
-
                                 </h:panelGroup>
                             </td>
                             <td>
@@ -311,13 +309,8 @@
                                     <h:outputText value="#{fn:replace(clientEncounterComponentFormSetController.lastData(ii),'\\n','&lt;br/&gt;')}" escape="false" />
                                 </h:panelGroup>
                             </td>
-
-
                         </tr>
-
                     </h:panelGroup>
-
-
                 </ui:repeat>
             </table>                
         </h:panelGroup>

@@ -109,7 +109,11 @@
                             <p:outputLabel value="Role" for="webUserRole" />
                             <p:selectOneMenu  id="webUserRole" value="#{webUserController.selected.webUserRole}"  required="true">
                                 <f:selectItem itemLabel="Select" ></f:selectItem>
-                                <f:selectItems value="#{applicationController.webUserRoles}" var="r" itemLabel="#{r.label}" itemValue="#{r}" ></f:selectItems>
+                                <f:selectItems value="#{applicationController.webUserRoles}" 
+                                               var="webUserRoles" 
+                                               itemLabel="#{webUserRoles.label}" 
+                                               itemValue="#{webUserRoles}" >
+                                </f:selectItems>
                             </p:selectOneMenu>
                             <p:spacer ></p:spacer>
                         </p:panelGrid>

@@ -8,25 +8,24 @@
 
     <body>
 
-        <ui:composition template="/webUser/index.xhtml">
-
-            <ui:define name="webUserContents">
-                
+        <ui:composition template="./../template.xhtml">
+            <ui:define name="content">                
         <p:panel style="height: 100%; text-align: center;" 
                  rendered="#{!webUserController.loggedUser.systemAdministrator}">
             <h1>You are NOT authorized</h1>
         </p:panel>
 
         <h:form rendered="#{webUserController.loggedUser.systemAdministrator}" >
-
             <p:panelGrid columns="2" >
-
                 <p:outputLabel value="Role" for="webUserRole" />
                 <p:selectOneMenu  id="webUserRole" value="#{webUserController.assumedRole}"  required="true">
                     <f:selectItem itemLabel="Select" ></f:selectItem>
-                    <f:selectItems value="#{applicationController.webUserRoles}" var="r" itemLabel="#{r.label}" itemValue="#{r}" ></f:selectItems>
+                    <f:selectItems value="#{applicationController.webUserRoles}" 
+                                   var="webUserRoles" 
+                                   itemLabel="#{webUserRoles.label}" 
+                                   itemValue="#{webUserRoles}" >
+                    </f:selectItems>
                 </p:selectOneMenu>
-
 
                 <p:outputLabel value="Institution" for="institution" />
                 <p:autoComplete  id="institution" value="#{webUserController.assumedInstitution}" 
@@ -55,15 +54,9 @@
                 <p:spacer ></p:spacer>
                 <p:commandButton value="Assume User Role" ajax="false" 
                                  action="#{webUserController.assumeRoles()}" ></p:commandButton>
-
             </p:panelGrid>
-
-
-
         </h:form>
             </ui:define>
-
         </ui:composition>
-
     </body>
 </html>
