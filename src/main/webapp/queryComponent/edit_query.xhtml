@@ -65,7 +65,8 @@
                                 <p:outputLabel value="Type" for="queryType" />
                                 <p:selectOneMenu id="queryType"  value="#{queryComponentController.selected.queryType}" required="true" >
                                     <f:selectItem itemLabel="Select" ></f:selectItem>
-                                    <f:selectItems value="#{commonController.queryType}" ></f:selectItems>
+                                    <!--<f:selectItems value="#{commonController.queryType}" ></f:selectItems>-->
+                                    <f:selectItems value="#{commonController.queryType}" var="r" itemLabel="#{r.label}" itemValue="#{r}" ></f:selectItems>
                                 </p:selectOneMenu>
 
                                 <p:outputLabel value="Population Type" for="populationType" />
