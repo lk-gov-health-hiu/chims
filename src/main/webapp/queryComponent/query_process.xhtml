@@ -76,7 +76,11 @@
                                 <p:outputLabel value="Period Filters" ></p:outputLabel>
                                 <p:selectOneMenu value="#{queryComponentController.periodType}" required="true" style="width: 400px;">
                                     <f:selectItem itemLabel="Select a Period Filter" ></f:selectItem>
-                                    <f:selectItems value="#{commonController.queryFilterPeriodTypes}" ></f:selectItems>
+                                    <f:selectItems value="#{commonController.queryFilterPeriodTypes}"
+                                                   var="queryFilterPeriodTypes"
+                                                   itemValue="#{queryFilterPeriodTypes}"
+                                                   itemLabel="#{queryFilterPeriodTypes.label}">
+                                    </f:selectItems>
                                     <p:ajax process="@this" update="filters" listener="#{queryComponentController.periodFilterSelectAction}" />
                                 </p:selectOneMenu>
                                 

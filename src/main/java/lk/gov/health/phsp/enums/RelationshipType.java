@@ -29,35 +29,44 @@ package lk.gov.health.phsp.enums;
  * @author User
  */
 public enum RelationshipType {
-    Primary_Care_Institute,
-    GN,
-    PHM,
-    PHI,
-    MOH,
-    DsArea,
-    District,
-    Province,
-    National,
-    Male_Population,
-    Female_Population,
-    Total_Population,
-    Estimated_Midyear_Population,
-    Estimated_Midyear_Male_Population,
-    Estimated_Midyear_Female_Population,
-    Empanelled_Male_Population,
-    Empanelled_Female_Population,
-    Empanelled_Population,
-    Registerd_Male_Population,
-    Registered_Female_Population,
-    Registered_Population,
-    Screened_Male_Population,
-    Screened_Female_Population,
-    Screened_Population,
-    Over_35_Male_Population,
-    Over_35_Female_Population,
-    Over_35_Population,
-    High_Risk_Male_Population,
-    High_Risk_Female_Population,
-    High_Risk_Population,
+    Primary_Care_Institute("Primary Care Institute"),
+    GN("GN"),
+    PHM("PHM"),
+    PHI("PHI"),
+    MOH("MOH"),
+    DsArea("Ds Area"),
+    District("District"),
+    Province("Province"),
+    National("National"),
+    Male_Population("Male Population"),
+    Female_Population("Female Population"),
+    Total_Population("Total Population"),
+    Estimated_Midyear_Population("Estimated Midyear Population"),
+    Estimated_Midyear_Male_Population("Estimated Midyear Male Population"),
+    Estimated_Midyear_Female_Population("Estimated Midyear Female Population"),
+    Empanelled_Male_Population("Empanelled Male Population"),
+    Empanelled_Female_Population("Empanelled Female Population"),
+    Empanelled_Population("Empanelled Population"),
+    Registerd_Male_Population("Registerd Male Population"),
+    Registered_Female_Population("Registered Female Population"),
+    Registered_Population("Registered_Population"),
+    Screened_Male_Population("Screened Male Population"),
+    Screened_Female_Population("Screened Female Population"),
+    Screened_Population("Screened Population"),
+    Over_35_Male_Population("Over 35 Male Population"),
+    Over_35_Female_Population("Over 35 Female Population"),
+    Over_35_Population("Over 35 Population"),
+    High_Risk_Male_Population("High Risk Male Population"),
+    High_Risk_Female_Population("High Risk Female Population"),
+    High_Risk_Population("High_Risk_Population");
     
+    private final String label;
+    
+    private RelationshipType(String label){
+        this.label = label;
+    }
+    
+    public String getLabel(){
+        return label;
+    }    
 }

@@ -28,8 +28,18 @@ package lk.gov.health.phsp.enums;
  * @author chims
  */
 public enum TimePeriodType {
-    Yearley,
-    Monthly,
-    Quarterly,
-    Dates,
+    Yearley("Yearly"),
+    Monthly("Monthly"),
+    Quarterly("Quarterly"),
+    Dates("Dates");
+    
+    private final String label;
+    
+    private TimePeriodType(String label){
+        this.label = label;
+    }
+    
+    public String getLabel(){
+        return label;
+    } 
 }

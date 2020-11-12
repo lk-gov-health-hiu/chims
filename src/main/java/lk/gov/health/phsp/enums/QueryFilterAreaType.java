@@ -28,18 +28,26 @@ package lk.gov.health.phsp.enums;
  * @author User
  */
 public enum QueryFilterAreaType {
-    National,
-    Province_List,
-    District_List,
-    Province,
-    Province_District_list,
-    Distirct,
-    District_MOH_List,
-    MOH,
-    MOH_PHM_List,
-    MOH_GN_List,
-    PHM,
-    PHM_GN_List,
-    GN,
-
+    National("National"),
+    Province_List("Province List"),
+    District_List("District List"),
+    Province("Province"),
+    Province_District_list("Province District List"),
+    Distirct("Distirct"),
+    District_MOH_List("District MOH List"),
+    MOH("MOH"),
+    MOH_PHM_List("MOH PHM List"),
+    MOH_GN_List("MOH GN List"),
+    PHM("PHM"),
+    PHM_GN_List("PHM GN List"),
+    GN("GN");
+    
+    private final String label;    
+    private QueryFilterAreaType(String label){
+        this.label = label;
+    }
+    
+    public String getLabel(){
+        return label;
+    }
 }

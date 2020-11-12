@@ -7,19 +7,13 @@
       xmlns:h="http://xmlns.jcp.org/jsf/html">
 
     <body>
-
         <ui:composition template="./../template.xhtml">
-
             <ui:define name="content">
-
                 <p:panel header="Select an Area" >
-
                     <h:form>
                         <p:panelGrid >
-
                             <p:row >
                                 <p:column colspan="2" >
-
                                     <p:panelGrid columns="2" >
                                         <p:outputLabel value="Area" ></p:outputLabel>
                                         <p:selectOneMenu id="acPmci"
@@ -40,22 +34,18 @@
                                                      update="tbl"
                                                      listener="#{relationshipController.fillRelationshipData()}" ></p:ajax>
                                         </p:inputText>
-
                                     </p:panelGrid>
-
                                 </p:column>
                             </p:row>
                         </p:panelGrid>
                         <p:panelGrid  columns="2" styleClass="alignTop">
-
                             <p:column >
-
                                 <p:dataTable id="tbl" value="#{relationshipController.items}" var="gn" >
                                     <p:column >
                                         <f:facet name="header" >
                                             <p:outputLabel value="Type" ></p:outputLabel>
                                         </f:facet>
-                                        <p:outputLabel value="#{gn.relationshipType}" ></p:outputLabel>
+                                        <p:outputLabel value="#{gn.relationshipType.label}" ></p:outputLabel>
                                     </p:column>
                                     <p:column >
                                         <f:facet name="header" >
@@ -82,13 +72,10 @@
                                             <f:setPropertyActionListener value="#{gn}" target="#{relationshipController.removing}" ></f:setPropertyActionListener>
                                         </p:commandButton>
                                     </p:column>
-
                                 </p:dataTable>
-
                             </p:column>
 
                             <p:column >
-
                                 <p:panelGrid columns="3" >
                                     <f:facet name="header" >
                                         <p:outputLabel value="Add Another Data" ></p:outputLabel>
@@ -111,34 +98,18 @@
                                     </p:inputText>
                                     <p:spacer ></p:spacer>
 
-
-
                                     <p:commandButton value="Add" ajax="false"
                                                      id="btnAdd"
                                                      process="btnAdd type pop comments"
                                                      update="tbl type pop comments"
                                                      action="#{relationshipController.addEmpowerementData()}">
                                     </p:commandButton>
-
                                 </p:panelGrid>
-
                             </p:column>
-
-
-
-
                         </p:panelGrid>
-
                     </h:form>
-
-
-
-
                 </p:panel>
-
             </ui:define>
-
         </ui:composition>
-
     </body>
 </html>

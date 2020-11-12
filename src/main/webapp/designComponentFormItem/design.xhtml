@@ -28,7 +28,11 @@
                                 <p:selectOneMenu id="renderType" 
                                                  value="#{designComponentFormItemController.designComponentForm.renderType}" 
                                                  title="RenderType" >
-                                    <f:selectItems value="#{commonController.renderTypes}" ></f:selectItems>
+                                    <f:selectItems value="#{commonController.renderTypes}"
+                                                   var="renderTypes"
+                                                   itemValue="#{renderTypes}"
+                                                   itemLabel="#{renderTypes.label}">
+                                    </f:selectItems>
                                 </p:selectOneMenu>
 
                                 <p:outputLabel value="MimeType:" for="mimeType" />
