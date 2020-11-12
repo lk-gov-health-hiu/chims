@@ -87,9 +87,9 @@ public class DemoAccountController implements Serializable {
     }
 
     public List<DemoAccount> getItems() {
-        if (items == null) {
-            items = getFacade().findAll();
-        }
+//        if (items == null) {
+//            items = getFacade().findAll();
+//        }
         return items;
     }
 

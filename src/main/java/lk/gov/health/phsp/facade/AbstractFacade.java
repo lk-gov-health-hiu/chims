@@ -205,18 +205,15 @@ public abstract class AbstractFacade<T> {
         TypedQuery<T> qry = getEntityManager().createQuery(jpql, entityClass);
         Set s = parameters.entrySet();
         Iterator it = s.iterator();
-//        ////// ////System.out.println("jpql = " + jpql);
         while (it.hasNext()) {
             Map.Entry m = (Map.Entry) it.next();
             String pPara = (String) m.getKey();
             if (m.getValue() instanceof Date) {
                 Date pVal = (Date) m.getValue();
                 qry.setParameter(pPara, pVal, TemporalType.DATE);
-//                ////// ////System.out.println("Parameter " + pPara + "\t Val =" + pVal);
             } else {
                 Object pVal = (Object) m.getValue();
                 qry.setParameter(pPara, pVal);
-//                ////// ////System.out.println("Parameter " + pPara + "\t Val =" + pVal);
             }
         }
         return qry.getResultList();
@@ -874,6 +871,17 @@ public abstract class AbstractFacade<T> {
 
     public List<String> findString(String strJQL) {
         Query q = getEntityManager().createQuery(strJQL);
+        try {
+            return q.getResultList();
+        } catch (Exception e) {
+//            ////// ////System.out.println(e.getMessage());
+            return null;
+        }
+    }
+    
+    public List<String> findString(String strJQL, int maxRecords) {
+        Query q = getEntityManager().createQuery(strJQL);
+        q.setMaxResults(maxRecords);
         try {
             return q.getResultList();
         } catch (Exception e) {

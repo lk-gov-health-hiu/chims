@@ -45,6 +45,8 @@ public class ItemController implements Serializable {
 
     @Inject
     private WebUserController webUserController;
+    @Inject
+    ApplicationController applicationController;
 
     private List<Item> items = null;
     private Item selected;
@@ -511,6 +513,23 @@ public class ItemController implements Serializable {
     public void setSelected(Item selected) {
         this.selected = selected;
     }
+    
+    public void save(){
+        save(selected);
+        JsfUtil.addSuccessMessage("Saved");
+    }
+    
+    public void save(Item i){
+        if(i.getId()==null){
+            i.setCreatedAt(new Date());
+            i.setCreatedBy(webUserController.getLoggedUser());
+            getFacade().create(i);
+        }else{
+            i.setEditedAt(new Date());
+            i.setEditedBy(webUserController.getLoggedUser());
+            getFacade().edit(i);
+        }
+    }
 
     protected void setEmbeddableKeys() {
     }
@@ -531,7 +550,8 @@ public class ItemController implements Serializable {
     public void create() {
         persist(PersistAction.CREATE, ResourceBundle.getBundle("/BundleClinical").getString("ItemCreated"));
         if (!JsfUtil.isValidationFailed()) {
-            items = null;    // Invalidate list of items to trigger re-query.
+            items = null; 
+            applicationController.setItems(null);
         }
     }
 
@@ -543,13 +563,16 @@ public class ItemController implements Serializable {
         persist(PersistAction.DELETE, ResourceBundle.getBundle("/BundleClinical").getString("ItemDeleted"));
         if (!JsfUtil.isValidationFailed()) {
             selected = null; // Remove selection
-            items = null;    // Invalidate list of items to trigger re-query.
+            items = null; 
+            applicationController.setItems(null);
         }
     }
 
     public List<Item> getItems() {
+        items = applicationController.getItems();
         if (items == null) {
             items = getFacade().findAll();
+            applicationController.setItems(items);
         }
         return items;
     }

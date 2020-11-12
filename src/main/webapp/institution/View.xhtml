@@ -11,11 +11,154 @@
         <p:dialog id="InstitutionViewDlg" widgetVar="InstitutionViewDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundleClinical.ViewInstitutionTitle}">
             <h:form id="InstitutionViewForm">
                 <h:panelGroup id="display">
-                    <p:panelGrid columns="2" rendered="#{institutionController.selected != null}">
+                    
+                     
+                     <p:tabView  rendered="#{institutionController.selected != null}">
+
+                        <p:tab title="Details" >
+                            <p:panelGrid columns="2">
+                                <p:outputLabel value="Type:" for="institutionType" />
+                                <p:selectOneMenu id="institutionType" 
+                                                 value="#{institutionController.selected.institutionType}" title="InstitutionType" 
+                                                 >
+                                    <f:selectItems value="#{applicationController.institutionTypes}" 
+                                                   var="institutionTypes"
+                                                   itemValue="#{institutionTypes}"
+                                                   itemLabel="#{institutionTypes.label}"></f:selectItems>
+                                </p:selectOneMenu>
+                                <p:outputLabel value="Name:" for="name" />
+                                <p:inputText id="name" value="#{institutionController.selected.name}" title="Name" />
+
+                                <p:outputLabel value="Is a PMCI:" for="pmci" />
+                                <p:selectBooleanCheckbox id="pmci" value="#{institutionController.selected.pmci}" ></p:selectBooleanCheckbox>
+
+
+                                <p:outputLabel value="Code:" for="code" />
+                                <p:inputText id="code" value="#{institutionController.selected.code}" title="Code" />
+                                <p:outputLabel value="Parent:" for="parent" />
+                                <p:autoComplete  id="parent" value="#{institutionController.selected.parent}" 
+                                                 completeMethod="#{institutionController.completeInstitutions}"
+                                                 var="i" itemLabel="#{i.name}" itemValue="#{i}"
+                                                 forceSelection="true" >
+                                </p:autoComplete >
+                            </p:panelGrid>
+                        </p:tab>
+                        <p:tab title="Contact Details" >
+                            <p:panelGrid columns="2">
+                                <p:outputLabel value="Address:" for="address" />
+                                <p:inputText id="address" value="#{institutionController.selected.address}" title="Address" />
+                                <p:outputLabel value="Fax:" for="fax" />
+                                <p:inputText id="fax" value="#{institutionController.selected.fax}" title="Fax" />
+                                <p:outputLabel value="Email:" for="email" />
+                                <p:inputText id="email" value="#{institutionController.selected.email}" title="Email" />
+                                <p:outputLabel value="Phone:" for="phone" />
+                                <p:inputText id="phone" value="#{institutionController.selected.phone}" title="Phone" />
+                                <p:outputLabel value="Mobile:" for="mobile" />
+                                <p:inputText id="mobile" value="#{institutionController.selected.mobile}" title="Mobile" />
+                                <p:outputLabel value="Web:" for="web" />
+                                <p:inputText id="web" value="#{institutionController.selected.web}" title="Web" />
+                            </p:panelGrid>
+                        </p:tab>
+                        <p:tab title="PHN Issue" >
+                            <p:panelGrid columns="2">
+                                <p:outputLabel value="Last Serial No of PHN:" for="lastHin" />
+                                <p:inputText id="lastHin" value="#{institutionController.selected.lastHin}" title="LastHin" />
+                                <p:outputLabel value="PoiNumber:" for="poiNumber" />
+                                <p:inputText id="poiNumber" value="#{institutionController.selected.poiNumber}" title="PoiNumber" />
+                                <p:outputLabel value="POI Issuing Institution" for="poii" />
+                                <p:autoComplete  id="poii" value="#{institutionController.selected.poiInstitution}" 
+                                                 completeMethod="#{institutionController.completeInstitutions}"
+                                                 var="pi" itemLabel="#{pi.name}" itemValue="#{pi}">
+                                </p:autoComplete >
+                            </p:panelGrid>                            
+                        </p:tab>
+                        <p:tab title="Location" >
+                            <p:panelGrid columns="2">
+                                <p:outputLabel value="Province:" for="province" />
+                                <p:autoComplete id="province" value="#{institutionController.selected.province}"
+                                                completeMethod="#{areaController.completeProvinces}"
+                                                var="province" itemLabel="#{province.name}" itemValue="#{province}"
+                                                maxResults="15" forceSelection="true"
+                                                minQueryLength="3">
+                                </p:autoComplete>
+
+                                <p:outputLabel value="PDHS Area:" for="pdhsArea" />
+                                <p:autoComplete id="pdhsArea" value="#{institutionController.selected.pdhsArea}"
+                                                completeMethod="#{areaController.completePdhsAreas}"
+                                                var="pdhsArea" itemLabel="#{pdhsArea.name}" itemValue="#{pdhsArea}"
+                                                maxResults="15" forceSelection="true"
+                                                minQueryLength="3">
+                                </p:autoComplete>
+
+                                <p:outputLabel value="District:" for="district" />
+                                <p:autoComplete id="district" value="#{institutionController.selected.district}"
+                                                completeMethod="#{areaController.completeDistricts}"
+                                                var="district" itemLabel="#{district.name}" itemValue="#{district}"
+                                                maxResults="15" forceSelection="true"
+                                                minQueryLength="3">
+                                </p:autoComplete>
+
+                                <p:outputLabel value="RDHS Area:" for="rdhsArea" />
+                                <p:autoComplete id="rdhsArea" value="#{institutionController.selected.rdhsArea}"
+                                                completeMethod="#{areaController.completeRdhsAreas}"
+                                                var="rdhsArea" itemLabel="#{rdhsArea.name}" itemValue="#{rdhsArea}"
+                                                maxResults="15" forceSelection="true"
+                                                minQueryLength="3">
+                                </p:autoComplete>
+
+                                <p:outputLabel value="DS Division:" for="dsDivision" />
+                                <p:autoComplete id="dsDivision" value="#{institutionController.selected.dsDivision}"
+                                                completeMethod="#{areaController.completeDsAreas}"
+                                                var="dsDivision" itemLabel="#{dsDivision.name}" itemValue="#{dsDivision}"
+                                                maxResults="15" forceSelection="true"
+                                                minQueryLength="3">
+                                </p:autoComplete>
+
+                                <p:outputLabel value="MOH Area:" for="moh" />
+                                <p:autoComplete id="moh" value="#{institutionController.selected.mohArea}"
+                                                completeMethod="#{areaController.completeMoh}"
+                                                var="moh" itemLabel="#{moh.name}" itemValue="#{moh}"
+                                                maxResults="15" forceSelection="true"
+                                                minQueryLength="3">
+                                </p:autoComplete>
+
+
+                                <p:outputLabel value="PHI Area:" for="phiArea" />
+                                <p:autoComplete id="phiArea" value="#{institutionController.selected.phiArea}"
+                                                completeMethod="#{areaController.completePhiAreas}"
+                                                var="phiArea" itemLabel="#{phiArea.name}" itemValue="#{phiArea}"
+                                                maxResults="15" forceSelection="true"
+                                                minQueryLength="3">
+                                </p:autoComplete>
+
+                                <p:outputLabel value="PHM Area:" for="phmArea" />
+                                <p:autoComplete id="phmArea" value="#{institutionController.selected.phmArea}"
+                                                completeMethod="#{areaController.completeGnAreas}"
+                                                var="phm" itemLabel="#{phm.name}" itemValue="#{phm}"
+                                                maxResults="15" forceSelection="true"
+                                                minQueryLength="3">
+                                </p:autoComplete>
+
+                                <p:outputLabel value="GN Area:" for="gnArea" />
+                                <p:autoComplete id="gnArea" value="#{institutionController.selected.gnArea}"
+                                                completeMethod="#{areaController.completeGnAreas}"
+                                                var="gn" itemLabel="#{gn.name}" itemValue="#{gn}"
+                                                maxResults="15" forceSelection="true"
+                                                minQueryLength="3">
+                                </p:autoComplete>
+
+
+                            </p:panelGrid>  
+
+                        </p:tab>
+                    </p:tabView>
+                     
+                     <!--
+                     <p:panelGrid columns="2" rendered="#{institutionController.selected != null}">
                         <h:outputText value="#{bundleClinical.ViewInstitutionLabel_id}"/>
                         <h:outputText value="#{institutionController.selected.id}" title="#{bundleClinical.ViewInstitutionTitle_id}"/>
                         <h:outputText value="#{bundleClinical.ViewInstitutionLabel_institutionType}"/>
-                        <h:outputText value="#{institutionController.selected.institutionType}" title="#{bundleClinical.ViewInstitutionTitle_institutionType}"/>
+                        <h:outputText value="#{institutionController.selected.institutionType.label}" title="#{bundleClinical.ViewInstitutionTitle_institutionType}"/>
                         <h:outputText value="#{bundleClinical.ViewInstitutionLabel_name}"/>
                         <h:outputText value="#{institutionController.selected.name}" title="#{bundleClinical.ViewInstitutionTitle_name}"/>
                         <h:outputText value="#{bundleClinical.ViewInstitutionLabel_address}"/>
@@ -57,10 +200,16 @@
                         <h:outputText value="#{bundleClinical.ViewInstitutionLabel_lastPartOfName}"/>
                         <h:outputText value="#{institutionController.selected.lastPartOfName}" title="#{bundleClinical.ViewInstitutionTitle_lastPartOfName}"/>
                     </p:panelGrid>
-                    <p:commandButton value="#{bundleClinical.Close}" onclick="InstitutionViewDialog.hide()"/>
+                    -->
+                    
+                     <!--
+                     <p:commandButton value="#{bundleClinical.Close}" onclick="InstitutionViewDialog.hide()"/>-->
+                     
                 </h:panelGroup>
             </h:form>
         </p:dialog>
 
     </ui:composition>
+   
+    
 </html>

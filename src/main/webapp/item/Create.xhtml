@@ -16,7 +16,10 @@
                         <p:outputLabel value="#{bundleClinical.EditItemLabel_itemType}" for="itemType" />
                         <p:selectOneMenu
                             id="itemType" value="#{itemController.selected.itemType}" title="#{bundleClinical.EditItemTitle_itemType}" >
-                            <f:selectItems value="#{commonController.itemTypes}" ></f:selectItems>
+                            <f:selectItems value="#{commonController.itemTypes}"
+                                           var="itemTypes"
+                                           itemValue="#{itemTypes}"
+                                           itemLabel="#{itemTypes.label}"></f:selectItems>
                         </p:selectOneMenu>
 
                         <p:outputLabel value="#{bundleClinical.EditItemLabel_name}" for="name" />
@@ -44,7 +47,10 @@
                         <p:outputLabel value="Data Type:" for="selectionDataType" />
                         <p:selectOneMenu id="selectionDataType" required="true"
                                          value="#{itemController.selected.dataType}" title="SelectionDataType" >
-                            <f:selectItems value="#{commonController.selectionDataTypes}" ></f:selectItems>
+                            <f:selectItems value="#{commonController.selectionDataTypes}"
+                                           var="selectionDataTypes"
+                                           itemValue="#{selectionDataTypes}"
+                                           itemLabel="#{selectionDataTypes.label}"></f:selectItems>
                         </p:selectOneMenu>
 
                         <p:outputLabel value="Absolute Minimum for Real Numbers:" for="minDbl" />

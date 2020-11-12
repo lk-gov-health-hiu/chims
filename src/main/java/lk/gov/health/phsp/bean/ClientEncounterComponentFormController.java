@@ -119,9 +119,9 @@ public class ClientEncounterComponentFormController implements Serializable {
     }
 
     public List<ClientEncounterComponentForm> getItems() {
-        if (items == null) {
-            items = getFacade().findAll();
-        }
+//        if (items == null) {
+//            items = getFacade().findAll();
+//        }
         return items;
     }
 

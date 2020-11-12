@@ -21,8 +21,10 @@
                             </f:facet>
 
                             <p:commandButton value="Manage Excel Templates"
-                                             action="/queryComponent/excel"
+                                             action="#{queryComponentController.toManageExcelTemplates()}"
                                              ajax="false" ></p:commandButton>
+                            
+                             
 
                             <p:commandButton value="Manage Counters"
                                              action="/queryComponent/excel"
