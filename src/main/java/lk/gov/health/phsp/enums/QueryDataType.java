@@ -28,13 +28,22 @@ package lk.gov.health.phsp.enums;
  * @author Dr M H B Ariyaratne<buddhika.ari@gmail.com>
  */
 public enum QueryDataType {
-    item,
-    real,
-    integer,
-    longNumber,
-    area,
-    institution,
-    String,
-    Boolean,
-    DateTime,
+    item("Item"),
+    real("Real"),
+    integer("Integer"),
+    longNumber("Long Number"),
+    area("Area"),
+    institution("Institution"),
+    String("String"),
+    Boolean("Boolean"),
+    DateTime("Date Time");
+    
+    private final String label;    
+    private QueryDataType(String label){
+        this.label = label;
+    }
+    
+    public String getLabel(){
+        return label;
+    }
 }

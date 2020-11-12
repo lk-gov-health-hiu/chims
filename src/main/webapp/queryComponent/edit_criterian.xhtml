@@ -7,14 +7,9 @@
       xmlns:p="http://primefaces.org/ui">
 
     <body>
-
         <ui:composition template="./../template.xhtml">
-
             <ui:define name="content">
-
                 <h:form >
-
-
                     <p:panelGrid columns="1" style="margin: auto;" >
                         <f:facet name="header" >
                             <p:outputLabel value="Edit Creterian" ></p:outputLabel>
@@ -23,32 +18,33 @@
                                              style="float: right;" />
                             <p:commandButton ajax="false" value="Back" action="criteria" style="float: right;" ></p:commandButton>
                         </f:facet>
-
-
                         <h:panelGroup id="display">
-
-
                             <p:panelGrid columns="2" rendered="#{queryComponentController.selected != null}">
 
                                 <p:outputLabel value="#{bundleQuery.CreateQueryComponentLabel_name}" for="name" />
                                 <p:inputText id="name" value="#{queryComponentController.selected.name}" title="#{bundleQuery.CreateQueryComponentTitle_name}" />
 
-
                                 <p:outputLabel value="Order No." for="orderNo" />
                                 <p:inputText id="orderNo" value="#{queryComponentController.selected.orderNo}" title="#{bundleQuery.CreateQueryComponentTitle_name}" />
-
                                 
                                 <p:outputLabel value="MatchType:" for="matchType" />
                                 <p:selectOneMenu id="matchType"  value="#{queryComponentController.selected.matchType}" >
                                     <f:selectItem itemLabel="Select" ></f:selectItem>
-                                    <f:selectItems value="#{commonController.queryCriteriaMatchTypes}" ></f:selectItems>
+                                    <f:selectItems value="#{commonController.queryCriteriaMatchTypes}" 
+                                                   var="queryCriteriaMatchTypes"
+                                                   itemValue="#{queryCriteriaMatchTypes}"
+                                                   itemLabel="#{queryCriteriaMatchTypes.label}">
+                                    </f:selectItems>
                                 </p:selectOneMenu>
-
 
                                 <p:outputLabel value="EvaluationType:" for="evaluationType" />
                                 <p:selectOneMenu id="evaluationType"  value="#{queryComponentController.selected.evaluationType}" >
                                     <f:selectItem itemLabel="Select" ></f:selectItem>
-                                    <f:selectItems value="#{commonController.queryVariableEvaluationType}" ></f:selectItems>
+                                    <f:selectItems value="#{commonController.queryVariableEvaluationType}"
+                                                   var="QueryVariableEvaluationType"
+                                                   itemValue="#{QueryVariableEvaluationType}"
+                                                   itemLabel="#{QueryVariableEvaluationType.label}">
+                                    </f:selectItems>
                                     <f:ajax event="change" execute="evaluationType" render="values"></f:ajax>
                                 </p:selectOneMenu>
 
@@ -70,11 +66,14 @@
                                     <f:ajax event="itemSelect" execute="item" render="itemValue" ></f:ajax>
                                 </p:autoComplete>
 
-
                                 <p:outputLabel value="Data Type:" for="queryDataType" />
                                 <p:selectOneMenu id="queryDataType"  value="#{queryComponentController.selected.queryDataType}" >
                                     <f:selectItem itemLabel="Select" ></f:selectItem>
-                                    <f:selectItems value="#{commonController.queryDataTypes}" ></f:selectItems>
+                                    <f:selectItems value="#{commonController.queryDataTypes}"
+                                                   var="queryDataTypes"
+                                                   itemValue="#{queryDataTypes}"
+                                                   itemLabel="#{queryDataTypes.label}">
+                                    </f:selectItems>
                                     <f:ajax event="change" execute="queryDataType" render="values itemValue boolValue strVal"></f:ajax>
                               </p:selectOneMenu>
 
@@ -104,8 +103,7 @@
                                              disabled="#{queryComponentController.selected.queryDataType ne 'String'}"
                                              value="#{queryComponentController.selected.shortTextValue}" title="String Value" />
 
-                            </p:panelGrid>
-                            
+                            </p:panelGrid>                            
                             
                             <h:panelGroup id="values">
                                 <p:panelGrid id="between" columns="2" rendered="#{queryComponentController.selected.evaluationType eq 'Between'}">
@@ -130,10 +128,8 @@
                                                  value="#{queryComponentController.selected.longNumberValue2}" title="LongNumberValue2" />
                                         <p:inputText id="realNumberValue2" 
                                                  rendered="#{queryComponentController.selected.queryDataType eq 'real'}"
-                                                 value="#{queryComponentController.selected.realNumberValue2}" title="RealNumberValue2" />
-                                    
-                                </p:panelGrid>
-                                
+                                                 value="#{queryComponentController.selected.realNumberValue2}" title="RealNumberValue2" />                                    
+                                </p:panelGrid>                                
                                 
                                 <p:panelGrid id="singleValue" columns="2" rendered="#{queryComponentController.selected.evaluationType ne 'Between'}">
                                     
@@ -149,20 +145,9 @@
                                                  value="#{queryComponentController.selected.realNumberValue}" title="RealNumberValue" />
                                  </p:panelGrid>
                             </h:panelGroup>
-
-
                         </h:panelGroup>
-
                     </p:panelGrid>   
-
                 </h:form>
-
-
-
-
-
-
-
             </ui:define>
         </ui:composition>
     </body>

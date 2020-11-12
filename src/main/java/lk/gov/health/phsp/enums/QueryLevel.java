@@ -29,8 +29,18 @@ package lk.gov.health.phsp.enums;
  * @author User
  */
 public enum QueryLevel {
-    Category,
-    Subcategory,
-    Query,
-    Criterian,
+    Category("Category"),
+    Subcategory("Sub Category"),
+    Query("Query"),
+    Criterian("Criterian");
+    
+    private final String label;
+
+    private QueryLevel(String label) {
+        this.label = label;
+    }
+
+    public String getLabel() {
+        return label;
+    }
 }

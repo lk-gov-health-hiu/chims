@@ -7,18 +7,12 @@
       xmlns:p="http://primefaces.org/ui">
 
     <body>
-
         <ui:composition template="./../template.xhtml">
-
-            <ui:define name="content">
-     
+            <ui:define name="content">     
             <h:form id="QueryComponentEditForm">
                 <p:panelGrid id="display" columns="1" style="margin: auto;">
-                     <f:facet name="header" >
-
+                    <f:facet name="header" >
                                 <p:outputLabel value="Edit Query" />
-
-
                                 <p:commandButton action="query" value="Save" 
                                                  actionListener="#{queryComponentController.saveSelectedItem()}" ajax="false" 
                                                  style="float: right;" >
@@ -32,7 +26,6 @@
 
                     <p:tabView rendered="#{queryComponentController.selected != null}">
                         <p:tab title="Basic Details" >
-
                             <p:panelGrid columns="2" >
 
 <!--                                <p:outputLabel value="Parent" for="parent" />
@@ -52,20 +45,18 @@
                                 <p:inputTextarea rows="4" cols="30" id="descreption" 
                                                  value="#{queryComponentController.selected.descreption}" 
                                                  title="#{bundleQuery.CreateQueryComponentTitle_descreption}" />
-
                             </p:panelGrid>
-
-
                         </p:tab>
                         <p:tab title="Query Details" >
-
                             <p:panelGrid columns="2" >
-
-
                                 <p:outputLabel value="Type" for="queryType" />
                                 <p:selectOneMenu id="queryType"  value="#{queryComponentController.selected.queryType}" required="true" >
                                     <f:selectItem itemLabel="Select" ></f:selectItem>
-                                    <f:selectItems value="#{commonController.queryType}" var="r" itemLabel="#{r.label}" itemValue="#{r}" ></f:selectItems>
+                                    <f:selectItems value="#{commonController.queryType}"
+                                                   var="queryType"
+                                                   itemValue="#{queryType}"
+                                                   itemLabel="#{queryType.label}">
+                                    </f:selectItems>
                                 </p:selectOneMenu>
 
                                 <p:outputLabel value="Population Type" for="populationType" />
@@ -85,7 +76,6 @@
 
                 </p:panelGrid>
             </h:form>
-
             </ui:define>
         </ui:composition>
     </body>
