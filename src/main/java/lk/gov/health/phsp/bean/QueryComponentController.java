@@ -167,6 +167,11 @@ public class QueryComponentController implements Serializable {
         return "/queryComponent/excel";
     }
     
+    public String toManageIndicators(){
+        userTransactionController.recordTransaction("Manage Indicators");
+        return "/queryComponent/excel";
+    }
+    
     public String toEditExcelTemplate(){
         userTransactionController.recordTransaction("Edit Excel Templates");
         return "/queryComponent/edit_excel";
