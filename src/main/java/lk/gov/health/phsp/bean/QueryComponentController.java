@@ -831,7 +831,7 @@ public class QueryComponentController implements Serializable {
         try (FileOutputStream outputStream = new FileOutputStream(newFile)) {
             workbook.write(outputStream);
         } catch (Exception e) {
-            //System.out.println("e = " + e);
+            
         }
 
         InputStream stream;
@@ -839,7 +839,7 @@ public class QueryComponentController implements Serializable {
             stream = new FileInputStream(newFile);
             resultExcelFile = new DefaultStreamedContent(stream, mimeType, FILE_NAME);
         } catch (FileNotFoundException ex) {
-            //System.out.println("ex = " + ex);
+            
         }
 
     }
@@ -895,8 +895,7 @@ public class QueryComponentController implements Serializable {
     }
 
     public String testQuery() {
-        ////System.out.println("processQuery");
-        ////System.out.println("selectedForQuery = " + selectedForQuery);
+       
         if (selectedForQuery == null) {
             JsfUtil.addErrorMessage("Nothing selected");
             return "";
@@ -921,8 +920,7 @@ public class QueryComponentController implements Serializable {
     }
 
     public String processQuery() {
-        ////System.out.println("processQuery");
-        ////System.out.println("selectedForQuery = " + selectedForQuery);
+        
         if (selectedForQuery == null) {
             JsfUtil.addErrorMessage("Nothing selected");
             return "";
@@ -1123,7 +1121,7 @@ public class QueryComponentController implements Serializable {
         for (QueryResult tqr : qrs) {
             System.out.println("tqr.getTfrom() = " + tqr.getTfrom());
             System.out.println("tqr.gettTo() = " + tqr.gettTo());
-//            //System.out.println("selectedForQuery.getQueryType() = " + selectedForQuery.getQueryType());
+
             switch (selectedForQuery.getQueryType()) {
                 case Population:
                     Integer ty = tqr.gettYear();
@@ -1182,16 +1180,16 @@ public class QueryComponentController implements Serializable {
         List<Replaceable> replaceables = findReplaceblesInIndicatorQuery(qc.getIndicatorQuery());
         Jpq j = new Jpq();
         for (Replaceable r : replaceables) {
-            ////System.out.println("r.getQryCode() = " + r.getQryCode());
+            
             QueryComponent temqc = findLastQuery(r.getQryCode());
-            ////System.out.println("temqc = " + temqc);
+            
             if (temqc == null) {
                 JsfUtil.addErrorMessage("Wrong Query. Check the names of queries");
                 return new Jpq();
             }
 
             j = new Jpq();
-            ////System.out.println("temqc.getQueryType() = " + temqc.getQueryType());
+            
             if (null == temqc.getQueryType()) {
                 JsfUtil.addErrorMessage("Wrong Query. Check the names of queries");
 
@@ -1210,18 +1208,18 @@ public class QueryComponentController implements Serializable {
                         return j;
                 }
             }
-            ////System.out.println("j.getLongResult() = " + j.getLongResult());
+            
             r.setSelectedValue(j.getLongResult() + "");
         }
         String javaStringToEvaluate = addTemplateToReport(qc.getIndicatorQuery().trim(), replaceables);
-        ////System.out.println("javaString To Evaluate = \n" + javaStringToEvaluate);
+        
         rs = "Formula \t" + javaStringToEvaluate + "\n";
         String res = evaluateScript(javaStringToEvaluate);
         rs += "Result : " + res;
         Double dbl = CommonController.getDoubleValue(res);
-        ////System.out.println("dbl = " + dbl);
+        
         Long lng = CommonController.getLongValue(res);
-        ////System.out.println("lng = " + lng);
+        
         j.setLongResult(lng);
         j.setDblResult(dbl);
         return j;
@@ -1233,7 +1231,7 @@ public class QueryComponentController implements Serializable {
         try {
             return engine.eval(script) + "";
         } catch (ScriptException ex) {
-            ////System.out.println("ex = " + ex.getMessage());
+            
             return null;
         }
     }
@@ -1244,13 +1242,11 @@ public class QueryComponentController implements Serializable {
             String patternEnd = "}";
             String toBeReplaced;
             toBeReplaced = patternStart + s.getFullText() + patternEnd;
-            ////System.out.println("toBeReplaced = " + toBeReplaced);
+            
             calculationScript = calculationScript.replace(toBeReplaced, s.getSelectedValue());
-            ////System.out.println("toBeReplaced = " + toBeReplaced);
-            ////System.out.println("s.getSelectedValue() = " + s.getSelectedValue());
-            ////System.out.println("calculationScript = " + calculationScript);
+           
         }
-        ////System.out.println("calculationScript = " + calculationScript);
+        
         return calculationScript;
     }
 
@@ -1325,7 +1321,7 @@ public class QueryComponentController implements Serializable {
     }
 
     public Jpq createAPopulationCountQuery(QueryComponent qc, Area qarea, Integer qyear) {
-        ////System.out.println("create A Population Count Query");
+        
         Jpq jpql = new Jpq();
         jpql.setQc(qc);
         jpql.setJselect("select r.longValue1  ");
@@ -1346,15 +1342,14 @@ public class QueryComponentController implements Serializable {
         jpql.getM().put("f", false);
         jpql.setJgroupby("");
 
-        ////System.out.println("jpql.getM() = " + jpql.getM());
-        ////System.out.println("jpql.getJpql() = " + jpql.getJpql());
+       
         jpql.setLongResult(getItemFacade().findLongByJpql(jpql.getJpql(), jpql.getM(), 1));
 
         return jpql;
     }
 
     public Jpq createClientQuery(QueryComponent qc, Area ccArea, Date ccFrom, Date ccTo, Integer ccYear, Integer ccQuarter) {
-//        //System.out.println("Create A Client Count Query");
+
         Jpq jpql = new Jpq();
         jpql.setQc(qc);
         List<QueryComponent> criterias = criteria(qc);
@@ -1808,7 +1803,7 @@ public class QueryComponentController implements Serializable {
     }
 
     public Jpq createAClientListQuery(QueryComponent qc) {
-        ////System.out.println("createAClientListQuery");
+        
         Jpq j = new Jpq();
         j.setQc(qc);
         j.setJselect("select distinct i.parentComponent.parentComponent.encounter.client  ");
@@ -1871,14 +1866,13 @@ public class QueryComponentController implements Serializable {
         }
 
         j.setJgroupby("");
-        ////System.out.println("j.getJpql() = " + j.getJpql());
-        ////System.out.println("j.getM() = " + j.getM());
+        
         j.setClientList(getClientFacade().findByJpql(j.getJpql(), j.getM()));
         return j;
     }
 
     public Jpq createAnEncounterListQuery(QueryComponent qc) {
-        ////System.out.println("createAClientListQuery");
+       
         Jpq j = new Jpq();
         j.setQc(qc);
         j.setJselect("select distinct i.parentComponent.parentComponent.encounter  ");
@@ -1941,10 +1935,9 @@ public class QueryComponentController implements Serializable {
         }
 
         j.setJgroupby("");
-        ////System.out.println("j.getJpql() = " + j.getJpql());
-        ////System.out.println("j.getM() = " + j.getM());
+        
         j.setEncounterList(getEncounterFacade().findByJpql(j.getJpql(), j.getM()));
-        ////System.out.println("j.getEncounterList() = " + j.getEncounterList());
+        
         return j;
     }
 
@@ -1998,8 +1991,7 @@ public class QueryComponentController implements Serializable {
     }
 
     public List<Replaceable> findReplaceblesInWhereQuery(String text) {
-        // ////System.out.println("findReplaceblesInWhereQuery");
-        // ////System.out.println("text = " + text);
+        
 
         List<Replaceable> ss = new ArrayList<>();
 
@@ -2052,8 +2044,7 @@ public class QueryComponentController implements Serializable {
     }
 
     public List<Replaceable> findReplaceblesInIndicatorQuery(String text) {
-        ////System.out.println("findReplaceblesInWhereQuery");
-        ////System.out.println("text = " + text);
+       
 
         List<Replaceable> ss = new ArrayList<>();
 
