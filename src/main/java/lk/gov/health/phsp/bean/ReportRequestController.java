@@ -206,8 +206,7 @@ public class ReportRequestController implements Serializable {
         m.put("fd", fromDate);
         m.put("td", toDate);
 
-//        //System.out.println("m = " + m);
-//        //System.out.println("j = " + j);
+
 
         List<Encounter> encs = encounterFacade.findByJpql(j, m);
 
@@ -314,7 +313,7 @@ public class ReportRequestController implements Serializable {
             myFirstWbook.write();
 
         } catch (IOException | WriteException e) {
-            //System.out.println("e1 = " + e.getMessage());
+           
             mergingMessage = "Error - " + e.getMessage();
         } finally {
 
@@ -323,7 +322,7 @@ public class ReportRequestController implements Serializable {
                     myFirstWbook.close();
                     mergingMessage = "Closing File.";
                 } catch (IOException | WriteException e) {
-                    //System.out.println("e2 = " + e.getMessage());
+                   
                     mergingMessage = "Error - " + e.getMessage();
                 }
             }
@@ -336,7 +335,7 @@ public class ReportRequestController implements Serializable {
             stream = new FileInputStream(newFile);
             file = new DefaultStreamedContent(stream, "application/xls", newFile.getAbsolutePath());
         } catch (FileNotFoundException ex) {
-            //System.out.println("ex3 = " + ex.getMessage());
+           
             mergingMessage = "Error - " + ex.getMessage();
         }
         mergingMessage = "";
@@ -385,7 +384,7 @@ public class ReportRequestController implements Serializable {
                 break;
             case Client_Count:
                 JsfUtil.addErrorMessage("Under Development");
-                //System.out.println("clnts = " + clnts);
+                
                 return;
             default:
                 JsfUtil.addErrorMessage("Under Development");
@@ -408,7 +407,7 @@ public class ReportRequestController implements Serializable {
         try {
             FileUtils.writeByteArrayToFile(newFile, upload.getBaImage());
         } catch (IOException ex) {
-            //System.out.println("ex = " + ex);
+            
         }
 
         XSSFWorkbook workbook;
@@ -423,7 +422,7 @@ public class ReportRequestController implements Serializable {
 
             Iterator<Row> iterator = sheet.iterator();
 
-            //System.out.println("sheet.getSheetName() = " + sheet.getSheetName());
+           
 
             while (iterator.hasNext()) {
 
@@ -460,7 +459,7 @@ public class ReportRequestController implements Serializable {
                     }
 
                 }
-                //System.out.println();
+                
 
                 excelFile.close();
 
@@ -474,24 +473,24 @@ public class ReportRequestController implements Serializable {
 
             }
         } catch (FileNotFoundException e) {
-            //System.out.println("e = " + e);
+           
         } catch (IOException e) {
-            //System.out.println("e = " + e);
+           
         }
 
     }
 
     public Long findReplaceblesInCalculationString(String text, List<Encounter> ens) {
-        //System.out.println("findReplaceblesInCalculationString");
+        
 
         Long l = 0l;
 
         if (ens == null) {
-            //System.out.println("No encounters");
+            
             return l;
         }
         if (ens.isEmpty()) {
-            //System.out.println("Empty encounter list");
+            
             l = 0l;
             return l;
         }
@@ -507,18 +506,18 @@ public class ReportRequestController implements Serializable {
 
         while (m.find()) {
             String block = m.group(1);
-            //System.out.println("block = " + block);
+            
             QueryComponent qc = getQueryComponentController().findByCode(block);
             if (qc == null) {
-                //System.out.println("No Such Query = ");
+               
                 l = null;
                 return l;
 
             } else {
-                //System.out.println("qc.getQueryType() = " + qc.getQueryType());
+               
                 if (qc.getQueryType() == QueryType.Encounter_Count) {
                     List<QueryComponent> criteria = getQueryComponentController().criteria(qc);
-                    //System.out.println("criteria = " + criteria);
+                   
                     if (criteria == null || criteria.isEmpty()) {
                         l = Long.valueOf(ens.size());
                         return l;
@@ -534,7 +533,7 @@ public class ReportRequestController implements Serializable {
 
         }
 
-        //System.out.println("End of while");
+       
         return l;
 
     }
@@ -555,8 +554,7 @@ public class ReportRequestController implements Serializable {
                 case integer:
                     qInt1 = q.getIntegerNumberValue();
                     qInt2 = q.getIntegerNumberValue2();
-                    //System.out.println("Query int1 = " + qInt1);
-                    //System.out.println("Query int2 = " + qInt2);
+                    
                     break;
                 case item:
                     itemValue = q.getItemValue();
@@ -574,7 +572,7 @@ public class ReportRequestController implements Serializable {
             }
             switch (q.getEvaluationType()) {
                 case Equal:
-                    //System.out.println("Equal");
+                   
 
                     if (qInt1 != null) {
                         m = qInt1.equals(clientValue.getIntegerNumberValue());
@@ -599,8 +597,7 @@ public class ReportRequestController implements Serializable {
                     }
                     break;
                 case Less_than:
-                    //System.out.println("Less than");
-                    //System.out.println("Client Value = " + clientValue.getIntegerNumberValue());
+                    
                     if (qInt1 != null && clientValue.getIntegerNumberValue() != null) {
                         m = clientValue.getIntegerNumberValue() < qInt1;
                     }
@@ -610,11 +607,10 @@ public class ReportRequestController implements Serializable {
                     if (real1 != null && clientValue.getRealNumberValue() != null) {
                         m = clientValue.getRealNumberValue() < real1;
                     }
-                    //System.out.println("Included = " + m);
+                   
                     break;
                 case Between:
-                    //System.out.println("Between");
-                    //System.out.println("Client Value = " + clientValue.getIntegerNumberValue());
+                    
                     if (qInt1 != null && qInt2 != null && clientValue.getIntegerNumberValue() != null) {
                         if (qInt1 > qInt2) {
                             Integer intTem = qInt1;
@@ -649,8 +645,7 @@ public class ReportRequestController implements Serializable {
                     }
                     break;
                 case Grater_than:
-                    //System.out.println("Grater than");
-                    //System.out.println("Client Value = " + clientValue.getIntegerNumberValue());
+                  
                     if (qInt1 != null && clientValue.getIntegerNumberValue() != null) {
                         m = clientValue.getIntegerNumberValue() > qInt1;
                     }
@@ -675,25 +670,25 @@ public class ReportRequestController implements Serializable {
                     break;
             }
         }
-        //System.out.println("Included= " + m);
+       
         return m;
     }
 
     public Long findMatchingCount(List<Encounter> encs, List<QueryComponent> qrys) {
-        //System.out.println("findMatchingCount");
+      
         Long c = 0l;
         for (Encounter e : encs) {
             List<ClientEncounterComponentItem> is = clientEncounterComponentItemController.findClientEncounterComponentItems(e);
             boolean suitableForInclusion = true;
             for (QueryComponent q : qrys) {
-                //System.out.println("query = " + q.getName());
+
                 boolean thisMatchOk = false;
                 for (ClientEncounterComponentItem i : is) {
                     if (i.getItem() == null || q.getItem() == null) {
                         continue;
                     }
                     if (i.getItem().getCode().trim().equalsIgnoreCase(q.getItem().getCode().trim())) {
-                        //System.out.println("i.getItem().getCode() = " + i.getItem().getCode());
+                       
                         if (matchQuery(q, i)) {
                             thisMatchOk = true;
                         }
@@ -758,10 +753,7 @@ public class ReportRequestController implements Serializable {
         rtp.setYear(CommonController.getYear(CommonController.startOfTheLastQuarter()));
         rtp.setQuarter(CommonController.getQuarter(CommonController.startOfTheLastQuarter()));
 
-        //System.out.println("rtp.getFrom() = " + rtp.getFrom());
-        //System.out.println("rtp.getTo() = " + rtp.getTo());
-        //System.out.println("rtp.getYear() = " + rtp.getYear());
-        //System.out.println("rtp.getQuarter() = " + rtp.getQuarter());
+       
 
         toDownloadNcdReport(institution, rtp);
     }
