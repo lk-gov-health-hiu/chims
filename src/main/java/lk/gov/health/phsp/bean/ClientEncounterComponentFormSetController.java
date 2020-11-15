@@ -530,7 +530,6 @@ public class ClientEncounterComponentFormSetController implements Serializable {
     }
     
     public void fillLastFiveVisits() {
-        System.out.println("fillLastFiveVisits = " + this);
         Map m = new HashMap();
         String j = "select s from ClientEncounterComponentFormSet s where "
                 + " s.retired=false "

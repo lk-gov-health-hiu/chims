@@ -918,6 +918,268 @@ public class QueryComponentController implements Serializable {
         qrs.add(qr);
         return "graph";
     }
+    
+    
+    
+    
+    
+    public String processQueryNew() {
+        
+        if (selectedForQuery == null) {
+            JsfUtil.addErrorMessage("Nothing selected");
+            return "";
+        }
+
+
+
+        qrs = new ArrayList<>();
+        QueryResult qr = new QueryResult();
+
+        Date tfrom = null;
+        Date tTo = null;
+        Integer tYear = null;
+        Integer tQuater = null;
+
+        if (periodType != null) {
+            switch (periodType) {
+                case After:
+                    tfrom = from;
+                    break;
+                case All:
+                    break;
+                case Before:
+                    tTo = to;
+                    break;
+                case Period:
+                    tfrom = from;
+                    tTo = to;
+                    break;
+                case Quarter:
+                    tQuater = quarter;
+                    tfrom = CommonController.startOfQuarter(year, quarter);
+
+                    tTo = CommonController.endOfQuarter(year, quarter);
+                    break;
+                case Year:
+                    tYear = year;
+                    tfrom = CommonController.startOfTheYear(year);
+                    tTo = CommonController.endOfYear(year);
+                    break;
+            }
+        }
+
+        from = tfrom;
+        to = tTo;
+
+        qr.setAreaType(areaType);
+        qr.setPeriodType(periodType);
+
+        switch (areaType) {
+            case Distirct:
+                qr.setArea(district);
+                qr.setTfrom(tfrom);
+                qr.settTo(tTo);
+                qr.settYear(tYear);
+                qr.settQuater(tQuater);
+                qrs.add(qr);
+                break;
+            case GN:
+                qr.setTfrom(tfrom);
+                qr.settTo(tTo);
+                qr.settYear(tYear);
+                qr.settQuater(tQuater);
+                qr.setArea(gn);
+                qrs.add(qr);
+                break;
+            case MOH:
+                qr.setTfrom(tfrom);
+                qr.settTo(tTo);
+                qr.settYear(tYear);
+                qr.settQuater(tQuater);
+                qr.setArea(moh);
+                qrs.add(qr);
+                break;
+            case National:
+                qr.setTfrom(tfrom);
+                qr.settTo(tTo);
+                qr.settYear(tYear);
+                qr.settQuater(tQuater);
+                qr.setArea(areaController.getNationalArea());
+                qrs.add(qr);
+                break;
+            case PHM:
+                qr.setTfrom(tfrom);
+                qr.settTo(tTo);
+                qr.settYear(tYear);
+                qr.settQuater(tQuater);
+                qr.setArea(phm);
+                qrs.add(qr);
+                break;
+            case Province:
+                qr.setTfrom(tfrom);
+                qr.settTo(tTo);
+                qr.settYear(tYear);
+                qr.settQuater(tQuater);
+                qr.setArea(province);
+                qrs.add(qr);
+                break;
+
+            case Province_List:
+                for (Area p : areaController.getProvinces()) {
+                    qr = new QueryResult();
+                    qr.setArea(p);
+                    qr.setAreaType(areaType);
+                    qr.setPeriodType(periodType);
+                    qr.setTfrom(tfrom);
+                    qr.settTo(tTo);
+                    qr.settYear(tYear);
+                    qr.settQuater(tQuater);
+                    qrs.add(qr);
+                }
+                break;
+            case District_List:
+                for (Area d : areaController.getDistricts()) {
+                    qr = new QueryResult();
+                    qr.setArea(d);
+                    qr.setAreaType(areaType);
+                    qr.setPeriodType(periodType);
+                    qr.setTfrom(tfrom);
+                    qr.settTo(tTo);
+                    qr.settYear(tYear);
+                    qr.settQuater(tQuater);
+                    qrs.add(qr);
+                }
+                break;
+            case District_MOH_List:
+                for (Area d : areaController.getMohAreasOfADistrict(district)) {
+                    qr = new QueryResult();
+                    qr.setArea(d);
+                    qr.setAreaType(areaType);
+                    qr.setPeriodType(periodType);
+                    qr.setTfrom(tfrom);
+                    qr.settTo(tTo);
+                    qr.settYear(tYear);
+                    qr.settQuater(tQuater);
+                    qrs.add(qr);
+                }
+                break;
+
+            case MOH_GN_List:
+                for (Area d : areaController.getGnAreasOfMoh(moh)) {
+                    qr = new QueryResult();
+                    qr.setArea(d);
+                    qr.setAreaType(areaType);
+                    qr.setPeriodType(periodType);
+                    qr.setTfrom(tfrom);
+                    qr.settTo(tTo);
+                    qr.settYear(tYear);
+                    qr.settQuater(tQuater);
+                    qrs.add(qr);
+                }
+                break;
+            case MOH_PHM_List:
+                for (Area d : areaController.getPhmAreasOfMoh(moh)) {
+                    qr = new QueryResult();
+                    qr.setArea(d);
+                    qr.setAreaType(areaType);
+                    qr.setPeriodType(periodType);
+                    qr.setTfrom(tfrom);
+                    qr.settTo(tTo);
+                    qr.settYear(tYear);
+                    qr.settQuater(tQuater);
+                    qrs.add(qr);
+                }
+                break;
+            case PHM_GN_List:
+                for (Area d : areaController.getGnAreasOfPhm(moh)) {
+                    qr = new QueryResult();
+                    qr.setArea(d);
+                    qr.setAreaType(areaType);
+                    qr.setPeriodType(periodType);
+                    qr.setTfrom(tfrom);
+                    qr.settTo(tTo);
+                    qr.settYear(tYear);
+                    qr.settQuater(tQuater);
+                    qrs.add(qr);
+                }
+                break;
+            case Province_District_list:
+                for (Area d : areaController.getDistrictsOfAProvince(province)) {
+                    qr = new QueryResult();
+                    qr.setArea(d);
+                    qr.setAreaType(areaType);
+                    qr.setPeriodType(periodType);
+                    qr.setTfrom(tfrom);
+                    qr.settTo(tTo);
+                    qr.settYear(tYear);
+                    qr.settQuater(tQuater);
+                    qrs.add(qr);
+                }
+                break;
+        }
+
+        for (QueryResult tqr : qrs) {
+
+            switch (selectedForQuery.getQueryType()) {
+                case Population:
+                    Integer ty = tqr.gettYear();
+                    if (ty == null) {
+                        Calendar c = Calendar.getInstance();
+                        if (tqr.getTfrom() != null) {
+                            c.setTime(tqr.getTfrom());
+                        } else if (tqr.gettTo() != null) {
+                            c.setTime(tqr.gettTo());
+                        }
+                        ty = c.get(Calendar.YEAR);
+                    }
+                    tqr.setJpq(createAPopulationCountQuery(selectedForQuery, tqr.getArea(), ty));
+                    if (tqr.getJpq().getLongResult() != null) {
+                        tqr.setResultString(tqr.getJpq().getQc().getName() + " = " + tqr.getJpq().getLongResult());
+                    }
+                    tqr.setResultRelationshipList(tqr.getJpq().getRelationshipList());
+                    break;
+
+                case Indicator:
+                    tqr.setJpq(handleIndicatorQuery(selectedForQuery, tqr.getArea(), tqr.getTfrom(), tqr.gettTo(),
+                            tqr.gettYear(), tqr.gettQuater()));
+                    tqr.setLongResult(tqr.getJpq().getLongResult());
+                    tqr.setDblResult(tqr.getJpq().getDblResult());
+                    break;
+                case Client:
+                    tqr.setJpq(createClientQuery(selectedForQuery, tqr.getArea(), tqr.getTfrom(), tqr.gettTo(),
+                            tqr.gettYear(), tqr.gettQuater()));
+                    if (tqr.getJpq().getLongResult() != null) {
+                        tqr.setResultString(tqr.getJpq().getQc().getName() + " = " + tqr.getJpq().getLongResult());
+                    }
+                    tqr.setLongResult(tqr.getJpq().getLongResult());
+                    tqr.setResultClientList(tqr.getJpq().getClientList());
+                    break;
+
+                case First_Encounter:
+                    break;
+
+                case Any_Encounter:
+                    break;
+
+                case Formset:
+                    break;
+
+            }
+
+        }
+
+        clearFilters();
+
+        return "graph";
+    }
+    
+    
+    
+    
+    
+    
+    
+    
 
     public String processQuery() {
         
@@ -1119,8 +1381,6 @@ public class QueryComponentController implements Serializable {
         }
 
         for (QueryResult tqr : qrs) {
-            System.out.println("tqr.getTfrom() = " + tqr.getTfrom());
-            System.out.println("tqr.gettTo() = " + tqr.gettTo());
 
             switch (selectedForQuery.getQueryType()) {
                 case Population:
@@ -1686,6 +1946,30 @@ public class QueryComponentController implements Serializable {
                 jpql.setLongResult(getItemFacade().findLongByJpql(jpql.getJpql(), jpql.getM(), 1));
             }
 
+            /**
+             * 
+             * 
+            
+            select count(distinct c) from Client c,  
+            ClientEncounterComponentItem i1,  ClientEncounterComponentItem i2   
+            
+            where  c.id=i1.itemClient.id 
+            and  c.id=i2.itemClient.id 
+            and  i1.item=:v1 
+            and  
+            and  i2.item=:v2 and i2.itemValue=:d2   and c.retired=:f  and c.createdAt between :date1 and :date2  and c.person.district=:area  
+            
+            * 
+            * 
+            * 
+             */
+            
+            //select count(distinct c) from Client c,
+            // ClientEncounterComponentItem i1,  ClientEncounterComponentItem i2   
+            // where  c.id=i1.itemClient.id and  
+             // c.id=i2.itemClient.id and  
+             // i1.item=:v1 and  and  i2.item=:v2 and i2.itemValue=:d2   and c.retired=:f  and c.createdAt between :date1 and :date2  and c.person.district=:area  
+            
             return jpql;
 
             // </editor-fold>

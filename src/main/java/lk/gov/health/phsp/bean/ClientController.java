@@ -206,7 +206,6 @@ public class ClientController implements Serializable {
         List<String> duplicatedPhnNumbers = getFacade().findString(j, intNo);
         items = new ArrayList<>();
         for (String dupPhn : duplicatedPhnNumbers) {
-            System.out.println("dupPhn = " + dupPhn);
             j = "select c"
                     + " from Client c "
                     + " where c.phn=:phn";
@@ -223,19 +222,14 @@ public class ClientController implements Serializable {
                         System.out.println("Duplicate PHN. Old PHN Stored as Local Ref");
                         System.out.println("c.getPhn()");
                         c.getPerson().setLocalReferanceNo(c.getPhn());
-                        System.out.println("c.getPerson().getLocalReferanceNo() = " + c.getPerson().getLocalReferanceNo());
                         c.setPhn(generateNewPhn(c.getCreateInstitution()));
-                        System.out.println("c.getPhn()");
                     } else if (c.getPerson().getSsNumber() == null || c.getPerson().getSsNumber().trim().equals("")) {
                         c.setComments("Duplicate PHN. Old PHN Stored as SC No");
                         System.out.println("Duplicate PHN. Old PHN Stored as SC No");
                         System.out.println("c.getPhn()");
                         c.getPerson().setSsNumber(c.getPhn());
-                        System.out.println("c.getPerson().getSsNumber() = " + c.getPerson().getSsNumber());
                         c.setPhn(generateNewPhn(c.getCreateInstitution()));
-                        System.out.println("c.getPhn()");
                     } else {
-                        System.out.println("No Space to Store Old PHN");
                     }
                     getFacade().edit(c);
                 }
@@ -1049,7 +1043,6 @@ public class ClientController implements Serializable {
     public String generateNewPhn(Institution ins) {
         Institution poiIns;
         if (ins == null) {
-            System.out.println("Ins is null");
             return null;
         }
         if (ins.getPoiInstitution() != null) {
@@ -1058,7 +1051,6 @@ public class ClientController implements Serializable {
             poiIns = ins;
         }
         if (poiIns.getPoiNumber() == null || poiIns.getPoiNumber().trim().equals("")) {
-            System.out.println("A Point of Issue is NOT assigned to the Institution. Please discuss with the System Administrator.");
             return null;
         }
         return applicationController.createNewPersonalHealthNumber(poiIns);

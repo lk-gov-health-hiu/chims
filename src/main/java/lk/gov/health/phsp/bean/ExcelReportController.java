@@ -575,7 +575,6 @@ public class ExcelReportController implements Serializable {
             }
         }
 
-        System.out.println("isComplexQuery = " + isComplexQuery);
 
         if (isComplexQuery) {
             String evaluationString = "";
@@ -637,8 +636,6 @@ public class ExcelReportController implements Serializable {
 
             }
             String evaluationResult = evaluateScript(evaluationString);
-            System.out.println("evaluationString = " + evaluationString);
-            System.out.println("evaluationResult = " + evaluationResult);
             if (evaluationResult == null) {
                 suitableForInclusion = false;
             } else if (evaluationResult.trim().equalsIgnoreCase("true")) {

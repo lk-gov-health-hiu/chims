@@ -185,8 +185,6 @@ public class ClientEncounterComponentItemController implements Serializable {
                 System.out.println("c.getRealNumberValue() = " + c.getRealNumberValue());
                 System.out.println("c.getLongNumberValue() = " + c.getLongNumberValue());
                 System.out.println("c.getItemValue().getItemValue() = " + c.getItemValue());
-                System.out.println("c.getItem().getDataType() = " + c.getItem().getDataType());
-                System.out.println("c.getItem().getDataType() = " + c.getSelectionDataType());
 
                 SelectionDataType dataType = null;
                 if (c.getSelectionDataType() == null && c.getItem().getDataType() == null) {
@@ -201,8 +199,6 @@ public class ClientEncounterComponentItemController implements Serializable {
                     }else{
                         dataType = c.getItem().getDataType();
                         System.err.println("Error in data types");
-                        System.err.println("c.getSelectionDataType() = " + c.getSelectionDataType());
-                        System.err.println("c.getItem().getDataType() = " + c.getItem().getDataType());
                     }
                 }
 
@@ -252,8 +248,6 @@ public class ClientEncounterComponentItemController implements Serializable {
         System.out.println("Assigning Found Calculation Results");
         System.out.println("i.getId() = " + i.getId());
         System.out.println("result = " + result);
-        System.out.println("i.getItem().getDataType() = " + i.getItem().getDataType());
-         System.out.println("i.getSelectionDataType() = " + i.getSelectionDataType());
 
         if (null == i.getItem().getDataType()) {
             i.setShortTextValue(result);
