@@ -1616,7 +1616,6 @@ public class QueryComponentController implements Serializable {
         jpql.getM().put("f", false);
         if (criterias == null || criterias.isEmpty()) {
             // <editor-fold defaultstate="collapsed" desc="No Criteria">
-//            //System.out.println("No Criteria");
 
             jpql.setJwhere(" where c.retired=:f ");
             jpql.setJfrom("  from Client c ");
@@ -1652,7 +1651,7 @@ public class QueryComponentController implements Serializable {
                 jpql.getM().put("d2", ccTo);
             }
 
-            ////System.out.println("ccArea = " + ccArea);
+            
             if (ccArea != null) {
                 switch (ccArea.getType()) {
                     case District:
@@ -1668,14 +1667,12 @@ public class QueryComponentController implements Serializable {
 
             }
 
-            ////System.out.println("j.getJpql() = " + jpql.getJpql());
-            ////System.out.println("j.getM() = " + jpql.getM());
+            
             if (qc.getOutputType() == QueryOutputType.List) {
                 jpql.setClientList(getClientFacade().findByJpql(jpql.getJpql(), jpql.getM()));
             } else {
                 jpql.setLongResult(getItemFacade().findLongByJpql(jpql.getJpql(), jpql.getM(), 1));
-                ////System.out.println("jpql.getLongResult() = " + jpql.getLongResult());
-
+                
             }
 
             return jpql;
@@ -1683,7 +1680,6 @@ public class QueryComponentController implements Serializable {
             // </editor-fold>
         } else if (criterias.size() == 1) {
             // <editor-fold defaultstate="collapsed" desc="Single Criteria">
-//            //System.out.println("Single Criteria");
 
             if (qc.getOutputType() == QueryOutputType.List) {
                 jpql.setJselect("select distinct(c)  ");
@@ -1696,8 +1692,7 @@ public class QueryComponentController implements Serializable {
 
             QueryComponent c = criterias.get(0);
 
-            ////System.out.println("criterias.get(0) = " + criterias.get(0));
-            ////System.out.println("c.getMatchType() = " + c.getMatchType());
+            
             if (c.getMatchType() == QueryCriteriaMatchType.Variable_Value_Check) {
                 jpql.setJwhere(jpql.getJwhere() + " and i.item=:v1 and i.itemValue=:d1 ");
                 jpql.getM().put("v1", c.getItem());
@@ -1706,7 +1701,7 @@ public class QueryComponentController implements Serializable {
                 jpql.setJwhere(jpql.getJwhere() + " and i.item=:v1 ");
                 jpql.getM().put("v1", c.getItem());
                 String eval = "";
-                ////System.out.println("c.getEvaluationType() = " + c.getEvaluationType());
+                
                 switch (c.getEvaluationType()) {
                     case Equal:
                         eval = "=";
@@ -1724,7 +1719,7 @@ public class QueryComponentController implements Serializable {
                         eval = "<=";
                         break;
                 }
-//                //System.out.println("c.getEvaluationType() = " + c.getEvaluationType());
+
                 switch (c.getEvaluationType()) {
                     case Equal:
                     case Grater_than_or_equal:
@@ -1827,7 +1822,7 @@ public class QueryComponentController implements Serializable {
                 jpql.getM().put("date2", ccTo);
             }
 
-            ////System.out.println("ccArea = " + ccArea);
+            
             if (ccArea != null) {
                 switch (ccArea.getType()) {
                     case District:
@@ -1843,13 +1838,11 @@ public class QueryComponentController implements Serializable {
 
             }
 
-//            //System.out.println("j.getJpql() = " + jpql.getJpql());
-//            //System.out.println("j.getM() = " + jpql.getM());
             if (qc.getOutputType() == QueryOutputType.List) {
                 jpql.setClientList(getClientFacade().findByJpql(jpql.getJpql(), jpql.getM()));
             } else {
                 jpql.setLongResult(getItemFacade().findLongByJpql(jpql.getJpql(), jpql.getM(), 1));
-                ////System.out.println("jpql.getLongResult() = " + jpql.getLongResult());
+               
             }
 
             return jpql;
@@ -1857,7 +1850,7 @@ public class QueryComponentController implements Serializable {
             // </editor-fold>
         } else {
             // <editor-fold defaultstate="collapsed" desc="Multiple Criteria">
-//            //System.out.println("Multiple Criteria");
+
             String ss = "";
             if (qc.getOutputType() == QueryOutputType.List) {
                 ss = "select distinct (c) from Client c, ";
@@ -1871,8 +1864,6 @@ public class QueryComponentController implements Serializable {
 
             int count = 1;
             for (QueryComponent qcm : criterias) {
-                ////System.out.println("count = " + count);
-                ////System.out.println("criterias.size() = " + criterias.size());
                 if (count != criterias.size()) {
                     ss += " ClientEncounterComponentItem i" + count + ", ";
                     w2 += " c.id=i" + count + ".itemClient.id and ";
@@ -1882,9 +1873,7 @@ public class QueryComponentController implements Serializable {
                     w2 += " c.id=i" + count + ".itemClient.id and ";
                     w3 += createJpqlBlockFromQueryComponentCriteria(qcm, jpql.getM(), count) + " ";
                 }
-                ////System.out.println("ss = " + ss);
-                ////System.out.println("w2 = " + w2);
-                ////System.out.println("w3 = " + w3);
+                
                 count++;
             }
 
@@ -1892,7 +1881,7 @@ public class QueryComponentController implements Serializable {
             jpql.setJfrom(ss);
             jpql.setJwhere(w1 + w2 + w3 + " and c.retired=:f ");
 
-            ////System.out.println("Adding Period Filters");
+            
             if (ccYear != null && ccQuarter != null) {
                 //TODO: Correct Code
                 jpql.setJwhere(jpql.getJwhere() + " and extract(year from c.createdAt)=:ey and "
@@ -1915,10 +1904,10 @@ public class QueryComponentController implements Serializable {
                 jpql.setJwhere(jpql.getJwhere() + " and c.createdAt < :date2 ");
                 jpql.getM().put("date2", ccTo);
             } else {
-                ////System.out.println("No valid Period Filter");
+               
             }
 
-            ////System.out.println("Adding Area Filters");
+            
             if (ccArea != null) {
                 switch (ccArea.getType()) {
                     case District:
@@ -1931,15 +1920,14 @@ public class QueryComponentController implements Serializable {
                         break;
                     //TODO: Add codes for other areas
                     default:
-                    ////System.out.println("Filter NOT supported.");
+                    
                 }
 
             }
 
             //TODO : More code needed for MOH, PHM ,etc
             jpql.setJgroupby("");
-            //System.out.println("j.getJpql() = " + jpql.getJpql());
-            //System.out.println("j.getM() = " + jpql.getM());
+            
             if (qc.getOutputType() == QueryOutputType.List) {
                 jpql.setClientList(getClientFacade().findByJpql(jpql.getJpql(), jpql.getM()));
             } else {
