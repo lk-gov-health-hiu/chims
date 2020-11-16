@@ -868,9 +868,7 @@ public class ClientEncounterComponentFormSetController implements Serializable {
     }
 
     public List<ClientEncounterComponentItem> fillClientValues(Client c, String code) {
-        ////System.out.println("fillClientValues");
-        ////System.out.println("code = " + code);
-        ////System.out.println("c = " + c);
+       
         Item i = itemController.findItemByCode(code);
         if (i == null) {
             return new ArrayList<>();
@@ -884,7 +882,6 @@ public class ClientEncounterComponentFormSetController implements Serializable {
         m.put("c", c);
         m.put("i", i.getCode());
         m.put("r", DataRepresentationType.Client);
-        ////System.out.println("m = " + m);
         return getItemFacade().findByJpql(j, m);
     }
 

@@ -198,8 +198,6 @@ public class ItemController implements Serializable {
     }
 
     public List<Item> completeItemsofParent(String qry) {
-        ////System.out.println("completeItemsofParent");
-        ////System.out.println("qry = " + qry);
         return findChildrenAndGrandchildrenItemList(selectedParent, null, qry);
     }
 
@@ -496,8 +494,6 @@ public class ItemController implements Serializable {
                     + " order by i.id";
             m = new HashMap();
             m.put("code", code.trim().toLowerCase());
-            // ////System.out.println("m = " + m);
-            // ////System.out.println("j = " + j);
             item = getFacade().findFirstByJpql(j, m);
         } else {
             item = null;
@@ -644,10 +640,7 @@ public class ItemController implements Serializable {
     }
 
     public List<Item> findChildrenAndGrandchildrenItemList(Item parent, ItemType t, String qry) {
-        ////System.out.println("findChildrenAndGrandchildrenItemList");
-        ////System.out.println("qry = " + qry);
-        ////System.out.println("parent = " + parent);
-        ////System.out.println("t = " + t);
+        
         String j = "select t from Item t where t.retired=false ";
         Map m = new HashMap();
 
@@ -664,8 +657,6 @@ public class ItemController implements Serializable {
             j += " and lower(t.name) like :n ";
         }
         j += " order by t.orderNo";
-        ////System.out.println("m = " + m);
-        ////System.out.println("j = " + j);
         List<Item> tis = getFacade().findByJpql(j, m);
         return tis;
     }

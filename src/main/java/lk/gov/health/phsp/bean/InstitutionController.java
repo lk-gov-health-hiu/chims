@@ -205,8 +205,6 @@ public class InstitutionController implements Serializable {
             return tins;
         } else {
             for (Institution i : cins) {
-                // ////System.out.println("i = " + i);
-                // ////System.out.println("tins before finding children " + tins);
                 tins.addAll(findChildrenPmcis(i));
             }
         }

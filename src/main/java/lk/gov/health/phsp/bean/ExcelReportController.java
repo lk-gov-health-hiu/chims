@@ -443,7 +443,6 @@ public class ExcelReportController implements Serializable {
             workbook.write(out);
             out.close();
 
-//               if(logActivity) //System.out.println("FILE_NAME = " + FILE_NAME);
             InputStream stream;
             stream = new FileInputStream(FILE_NAME);
 
@@ -457,7 +456,7 @@ public class ExcelReportController implements Serializable {
             byte[] byteArray = IOUtils.toByteArray(stream);
             u.setBaImage(byteArray);
 
-//                if(logActivity) //System.out.println("5 = " + 5);
+
             sqr.setUpload(u);
             getStoreQueryResultFacade().edit(sqr);
             getUploadFacade().edit(u);
@@ -942,17 +941,11 @@ public class ExcelReportController implements Serializable {
                 case Less_than:
                     if (qInt1 != null) {
                         Integer tmpIntVal = clientValue.getIntegerNumberValue();
-//                        if(logActivity) //System.out.println("1 tmpIntVal = " + tmpIntVal);
                         if (tmpIntVal == null) {
-//                            if(logActivity) //System.out.println("clientValue.getShortTextValue() = " + clientValue.getShortTextValue());
                             tmpIntVal = stringToInteger(clientValue.getShortTextValue());
-//                            if(logActivity) //System.out.println("2 tmpIntVal = " + tmpIntVal);
                         }
                         if (tmpIntVal != null) {
-//                            if(logActivity) //System.out.println("qInt1 = " + qInt1);
-
                             m = tmpIntVal < qInt1;
-//                            if(logActivity) //System.out.println("m = " + m);
                         }
                     }
                     if (lng1 != null) {

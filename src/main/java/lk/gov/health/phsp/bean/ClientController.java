@@ -852,9 +852,9 @@ public class ClientController implements Serializable {
                                     Calendar tc = Calendar.getInstance();
                                     thisYear = tc.get(Calendar.YEAR);
                                     ageInYears = thisYear - birthYear;
-//                                    //System.out.println("ageInYears = " + ageInYears);
+
                                 } catch (Exception e) {
-//                                    //System.out.println("e = " + e);
+
                                 }
                                 if (ageInYears < 0) {
                                     tdob = today;

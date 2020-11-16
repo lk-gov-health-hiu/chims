@@ -67,7 +67,6 @@ public class ImageController implements Serializable {
         if (context.getRenderResponse()) {
             return new DefaultStreamedContent();
         } else {
-            ////System.out.println("getPatientController().getSelected() = " + getClientController().getSelected());
             if (getClientController().getSelected() == null) {
                 return new DefaultStreamedContent();
             }
