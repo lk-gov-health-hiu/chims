@@ -25,7 +25,7 @@
                             <p:panelGrid columns="2" >
                                 <p:outputLabel value="Report" for="report" ></p:outputLabel>
                                 <p:autoComplete id="report"
-                                                required="true"
+                                                required="true" 
                                                 requiredMessage="Please select a report. To list reports, start entering few letters"
                                                 value="#{reportController.queryComponent}"
                                                 completeMethod="#{queryComponentController.completeExcelReports}"
@@ -39,7 +39,7 @@
                                                 id="ins"
                                                 requiredMessage="Please select a clinic. Selecting a Hospital will not give results."
 
-                                                required="true"
+                                                required="true" forceSelection="true"
                                                 completeMethod="#{institutionController.completeInstitutions}"
                                                 var="i"
                                                 itemLabel="#{i.name}"
