@@ -46,7 +46,7 @@
                                     <p:autoComplete id="acIns" value="#{webUserController.institution}"
                                                     completeMethod="#{institutionController.completeInstitutions}"
                                                     var="ins" itemLabel="#{ins.name}" itemValue="#{ins}"
-                                                    required="true"
+                                                    required="true" forceSelection="true"
                                                     requiredMessage="Please select your institution"
                                                     ></p:autoComplete>
 

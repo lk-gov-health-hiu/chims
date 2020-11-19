@@ -31,7 +31,8 @@
                         <p:outputLabel value="Institution" ></p:outputLabel>
                         <p:autoComplete   value="#{reportController.institution}" 
                                           completeMethod="#{webUserController.completeLoggableInstitutions}"
-                                          var="i" itemLabel="#{i.name}" itemValue="#{i}">
+                                          var="i" itemLabel="#{i.name}" itemValue="#{i}"
+                                          forceSelection="true">
                         </p:autoComplete >
 
 
