@@ -97,6 +97,7 @@ public class QueryComponentController implements Serializable {
     private List<QueryComponent> items = null;
     private List<QueryComponent> categories = null;
     private List<QueryComponent> excels = null;
+    private List<QueryComponent> indicators = null;
     private QueryComponent selected;
     private QueryComponent selectedQuery;
     private QueryComponent selectedToDuplicateQuery;
@@ -167,14 +168,33 @@ public class QueryComponentController implements Serializable {
         return "/queryComponent/excel";
     }
     
+    public String toAddExcelTemplates(){
+        userTransactionController.recordTransaction("Add New Excel Templates");
+        selected = new QueryComponent();
+        selected.setQueryType(QueryType.Excel_Report);
+        return "/queryComponent/edit_excel";
+    }
+    
+    public String toAddIndicator(){
+        userTransactionController.recordTransaction("Add New Indicator");
+        selected = new QueryComponent();
+        selected.setQueryType(QueryType.Indicator);
+        return "/queryComponent/edit_indicator";
+    }
+    
     public String toManageIndicators(){
         userTransactionController.recordTransaction("Manage Indicators");
-        return "/queryComponent/excel";
+        return "/queryComponent/indicators";
     }
     
     public String toEditExcelTemplate(){
         userTransactionController.recordTransaction("Edit Excel Templates");
         return "/queryComponent/edit_excel";
+    }
+    
+    public String toEditIndicator(){
+        userTransactionController.recordTransaction("Edit Indicator");
+        return "/queryComponent/edit_indicator";
     }
     
 
@@ -279,6 +299,17 @@ public class QueryComponentController implements Serializable {
         addingCategory.setQueryType(QueryType.Excel_Report);
         saveItem(addingCategory);
         excels = null;
+        addingCategory = null;
+    }
+    
+    public void saveIndicator() {
+        if (addingCategory == null) {
+            JsfUtil.addErrorMessage("Nothing to save");
+            return;
+        }
+        addingCategory.setQueryType(QueryType.Indicator);
+        saveItem(addingCategory);
+        indicators = null;
         addingCategory = null;
     }
 
@@ -633,6 +664,17 @@ public class QueryComponentController implements Serializable {
         List<QueryComponent> nqs = new ArrayList<>();
         for (QueryComponent q : tqcs) {
             if (q.getQueryType() == QueryType.Excel_Report) {
+                nqs.add(q);
+            }
+        }
+        return nqs;
+    }
+    
+    public List<QueryComponent> fillIndicators() {
+        List<QueryComponent> tqcs = applicationController.getQueryComponents();
+        List<QueryComponent> nqs = new ArrayList<>();
+        for (QueryComponent q : tqcs) {
+            if (q.getQueryType() == QueryType.Indicator) {
                 nqs.add(q);
             }
         }
@@ -2762,6 +2804,17 @@ public class QueryComponentController implements Serializable {
 
     public void setExcels(List<QueryComponent> excels) {
         this.excels = excels;
+    }
+    
+    public List<QueryComponent> getIndicators() {
+        if (indicators == null) {
+            indicators = fillIndicators();
+        }
+        return indicators;
+    }
+
+    public void setIndicators(List<QueryComponent> indicators) {
+        this.indicators = indicators;
     }
 
     @FacesConverter(forClass = QueryComponent.class)
