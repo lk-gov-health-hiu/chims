@@ -83,6 +83,8 @@ public class AreaController implements Serializable {
     private RelationshipController relationshipController;
     @Inject
     private InstitutionController institutionController;
+    @Inject
+    private UserTransactionController userTransactionController;
 
     private MapModel polygonModel;
 
@@ -115,6 +117,7 @@ public class AreaController implements Serializable {
 
     public String toAddArea() {
         selected = new Area();
+        userTransactionController.recordTransaction("Add Area By SysAdmin");
         return "/area/area";
     }
 
@@ -158,6 +161,7 @@ public class AreaController implements Serializable {
         }
         items = null;
         selected = null;
+        userTransactionController.recordTransaction("save Or Update Area For SystemAdmin");
         return toListAreasForSysAdmin();
     }
 
@@ -166,16 +170,17 @@ public class AreaController implements Serializable {
         Map m = new HashMap();
         m.put("ret", false);
         items = getFacade().findByJpql(j, m);
+        userTransactionController.recordTransaction("List Areas By SysAdmin");
         return "/area/list";
     }
 
     public String toBrowseAreasForSysAdmin() {
-
+        userTransactionController.recordTransaction("Browse Areas By SysAdmin");
         return "/area/browse";
     }
 
     public String toSearchAreasForSysAdmin() {
-
+        userTransactionController.recordTransaction("Search Areas By SysAdmin");
         return "/area/search";
     }
 
@@ -311,6 +316,7 @@ public class AreaController implements Serializable {
         startMessage += "Upload as an xls file. XLSX files are not currently supported. That feature will be added soon.<br/>";
         startMessage += "Column Numbers are Zero Based. For example, Column A is 0. Column B is 1.<br/>";
         startMessage += "Row Numbers are Zero Based. For example, Row 1 is 0. Row 2 is 1.<br/>";
+        userTransactionController.recordTransaction("Import Institution Draining Areas");
         return "/area/import_institution_draining_areas";
     }
 
@@ -325,6 +331,7 @@ public class AreaController implements Serializable {
         startMessage += "Upload as an xls file. XLSX files are not currently supported. That feature will be added soon.<br/>";
         startMessage += "Column Numbers are Zero Based. For example, Column A is 0. Column B is 1.<br/>";
         startMessage += "Row Numbers are Zero Based. For example, Row 1 is 0. Row 2 is 1.<br/>";
+        userTransactionController.recordTransaction("Import Population Of Gn Areas");
         return "/area/import_population_of_gn_areas";
     }
 

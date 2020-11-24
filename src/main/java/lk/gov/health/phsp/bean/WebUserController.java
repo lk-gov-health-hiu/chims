@@ -206,8 +206,9 @@ public class WebUserController implements Serializable {
         assumedInstitution = current.getInstitution();
         assumedRole = current.getWebUserRole();
         assumedPrivileges = userPrivilegeList(current);
+        userTransactionController.recordTransaction("assume User");
         return assumeRoles();
-
+        
     }
 
     public String assumeRoles() {
@@ -362,7 +363,7 @@ public class WebUserController implements Serializable {
             }
         }
         selectedNodes = temSelected.toArray(new TreeNode[temSelected.size()]);
-        
+        userTransactionController.recordTransaction("Manage Privileges in user list By SysAdmin or InsAdmin");
         return "/webUser/privileges";
     }
 
@@ -1003,6 +1004,7 @@ public class WebUserController implements Serializable {
         current = new WebUser();
         password = "";
         passwordReenter = "";
+        userTransactionController.recordTransaction("Create New User By SysAdmin");
         return "/webUser/create_new_user";
     }
 
@@ -1107,18 +1109,22 @@ public class WebUserController implements Serializable {
             getFacade().create(current);
             addWebUserPrivileges(current, getInitialPrivileges(current.getWebUserRole()));
             JsfUtil.addSuccessMessage(("A new User Created Successfully."));
+            userTransactionController.recordTransaction("NEW webUser Created");
         } catch (Exception e) {
             JsfUtil.addErrorMessage(e, ("Error Occured. Please change username and try again."));
             return "";
         }
+        userTransactionController.recordTransaction("New WebUser save BySysAdmin");
         return "/webUser/index";
     }
 
     public String prepareEdit() {
+        userTransactionController.recordTransaction("Edit user list By SysAdmin or InsAdmin");
         return "Edit";
     }
 
     public String prepareEditPassword() {
+        userTransactionController.recordTransaction("Edit Password user list By SysAdmin or InsAdmin");
         return "Password";
     }
 
@@ -1126,6 +1132,7 @@ public class WebUserController implements Serializable {
         try {
             getFacade().edit(current);
             JsfUtil.addSuccessMessage(("Updated"));
+            userTransactionController.recordTransaction("webUser Update");
             return "manage_users";
         } catch (Exception e) {
             JsfUtil.addErrorMessage(e, e.getMessage());
@@ -1179,6 +1186,7 @@ public class WebUserController implements Serializable {
                 getUserPrivilegeFacade().edit(tup);
             }
         }
+        userTransactionController.recordTransaction("update User Privileges By SysAdmin or InsAdmin");
         return "/webUser/manage_users";
     }
 
@@ -1186,6 +1194,7 @@ public class WebUserController implements Serializable {
         try {
             getFacade().edit(current);
             JsfUtil.addSuccessMessage(("Your details Updated."));
+            userTransactionController.recordTransaction("update My Details");
             return "/index";
         } catch (Exception e) {
             JsfUtil.addErrorMessage(e, e.getMessage());
@@ -1202,6 +1211,7 @@ public class WebUserController implements Serializable {
 
         if (!password.equals(passwordReenter)) {
             JsfUtil.addSuccessMessage(("Password Mismatch."));
+            userTransactionController.recordTransaction("My Password Mismatch");
             return "";
         }
         current.setWebUserPassword(commonController.hash(password));
@@ -1210,6 +1220,7 @@ public class WebUserController implements Serializable {
             JsfUtil.addSuccessMessage(("Password Updated"));
             password = "";
             passwordReenter = "";
+            userTransactionController.recordTransaction("My Password Updated");
             return "/index";
         } catch (Exception e) {
             JsfUtil.addErrorMessage(e, e.getMessage());
@@ -1232,6 +1243,7 @@ public class WebUserController implements Serializable {
     public String updatePassword() {
         if (!password.equals(passwordReenter)) {
             JsfUtil.addErrorMessage("Passwords do NOT match.");
+            userTransactionController.recordTransaction("webUser Password not match");
             return "";
         }
         try {
@@ -1239,9 +1251,11 @@ public class WebUserController implements Serializable {
             current.setWebUserPassword(hashedPassword);
             getFacade().edit(current);
             JsfUtil.addSuccessMessage(("Password Changed."));
+            userTransactionController.recordTransaction("webUser Password Changed");
             return "index";
         } catch (Exception e) {
             JsfUtil.addErrorMessage(e, ("PersistenceErrorOccured"));
+            userTransactionController.recordTransaction("webUser Password error");
             return null;
         }
     }
@@ -1594,6 +1608,7 @@ public class WebUserController implements Serializable {
     }
 
     public TreeNode getAllPrivilegeRoot() {
+        userTransactionController.recordTransaction("All Privilege Root");
         return allPrivilegeRoot;
     }
 
