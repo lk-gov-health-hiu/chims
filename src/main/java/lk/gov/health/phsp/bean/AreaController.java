@@ -83,6 +83,8 @@ public class AreaController implements Serializable {
     private RelationshipController relationshipController;
     @Inject
     private InstitutionController institutionController;
+    @Inject
+    private UserTransactionController userTransactionController;
 
     private MapModel polygonModel;
 
@@ -115,6 +117,7 @@ public class AreaController implements Serializable {
 
     public String toAddArea() {
         selected = new Area();
+        userTransactionController.recordTransaction("Add Area By SysAdmin");
         return "/area/area";
     }
 
@@ -158,6 +161,7 @@ public class AreaController implements Serializable {
         }
         items = null;
         selected = null;
+        userTransactionController.recordTransaction("save Or Update Area For SystemAdmin");
         return toListAreasForSysAdmin();
     }
 
@@ -166,16 +170,17 @@ public class AreaController implements Serializable {
         Map m = new HashMap();
         m.put("ret", false);
         items = getFacade().findByJpql(j, m);
+        userTransactionController.recordTransaction("List Areas By SysAdmin");
         return "/area/list";
     }
 
     public String toBrowseAreasForSysAdmin() {
-
+        userTransactionController.recordTransaction("Browse Areas By SysAdmin");
         return "/area/browse";
     }
 
     public String toSearchAreasForSysAdmin() {
-
+        userTransactionController.recordTransaction("Search Areas By SysAdmin");
         return "/area/search";
     }
 
@@ -311,6 +316,7 @@ public class AreaController implements Serializable {
         startMessage += "Upload as an xls file. XLSX files are not currently supported. That feature will be added soon.<br/>";
         startMessage += "Column Numbers are Zero Based. For example, Column A is 0. Column B is 1.<br/>";
         startMessage += "Row Numbers are Zero Based. For example, Row 1 is 0. Row 2 is 1.<br/>";
+        userTransactionController.recordTransaction("Import Institution Draining Areas");
         return "/area/import_institution_draining_areas";
     }
 
@@ -325,6 +331,7 @@ public class AreaController implements Serializable {
         startMessage += "Upload as an xls file. XLSX files are not currently supported. That feature will be added soon.<br/>";
         startMessage += "Column Numbers are Zero Based. For example, Column A is 0. Column B is 1.<br/>";
         startMessage += "Row Numbers are Zero Based. For example, Row 1 is 0. Row 2 is 1.<br/>";
+        userTransactionController.recordTransaction("Import Population Of Gn Areas");
         return "/area/import_population_of_gn_areas";
     }
 
@@ -783,17 +790,17 @@ public class AreaController implements Serializable {
 
     public void updateNationalAndProvincialPopulationFromDistrictPopulations() {
         for (RelationshipType t : getRts()) {
-            ////System.out.printegerln("t = " + t);
+            
             Area sl = getNationalArea();
-            ////System.out.printegerln("sl = " + sl);
+            
             Relationship slr = getRelationshipController().findRelationship(sl, t, year, true);
             Long pop = 0l;
             for (Area d : getDistricts()) {
-                ////System.out.printegerln("d = " + d + " " + d.getId());
+                
                 Relationship dr = getRelationshipController().findRelationship(d, t, year, false);
                 if (dr != null) {
                     if (dr.getLongValue1() != null) {
-                        ////System.out.printegerln("dr.getLongValue1() = " + dr.getLongValue1());
+                       
                         pop += dr.getLongValue1();
                     }
                 }
@@ -801,12 +808,12 @@ public class AreaController implements Serializable {
             slr.setLongValue1(pop);
             getRelationshipController().save(slr);
             for (Area p : getProvinces()) {
-                ////System.out.printegerln("p = " + p);
+                
                 List<Area> pds = getAreas(AreaType.District, p);
                 Relationship pr = getRelationshipController().findRelationship(p, t, year, true);
                 Long ppop = 0l;
                 for (Area d : pds) {
-                    ////System.out.printegerln("d = " + d);
+                    
                     Relationship pdr = getRelationshipController().findRelationship(d, t, year, false);
                     if (pdr != null) {
                         if (pdr.getLongValue1() != null) {
@@ -1112,7 +1119,6 @@ public class AreaController implements Serializable {
 
                             if (gnEdCount == 2) {
                                 coordinatesText = gnEdNode.getTextContent().trim();
-//                                // ////System.out.printegerln("coordinatesText = " + coordinatesText);
                             }
 
                             if (gnEdNode.hasChildNodes()) {
@@ -1236,7 +1242,6 @@ public class AreaController implements Serializable {
             NodeList nList = doc.getElementsByTagName("Placemark");
 
             for (Integer gnCount = 0; gnCount < nList.getLength(); gnCount++) {
-//            for (Integer gnCount = 0; gnCount < 3; gnCount++) {
                 Node gnNode = nList.item(gnCount);
                 NodeList gnNodes = gnNode.getChildNodes();
                 for (Integer gnElemantCount = 0; gnElemantCount < gnNodes.getLength(); gnElemantCount++) {
@@ -1276,7 +1281,6 @@ public class AreaController implements Serializable {
 
                             if (gnEdCount == 2) {
                                 coordinatesText = gnEdNode.getTextContent().trim();
-//                                // ////System.out.printegerln("coordinatesText = " + coordinatesText);
                             }
 
                             if (gnEdNode.hasChildNodes()) {
@@ -1334,7 +1338,6 @@ public class AreaController implements Serializable {
 
                 gn = getAreaByName(gnAreaCode, AreaType.GN, false, null);
                 if (gn == null) {
-                    // ////System.out.printegerln("GN = " + gn);
                     gn = new Area();
                     gn.setType(AreaType.GN);
                     gn.setCentreLatitude(Double.parseDouble(centreLat));
@@ -1344,7 +1347,6 @@ public class AreaController implements Serializable {
                     gn.setCode(gnAreaCode);
                     gn.setParentArea(moh);
                     getFacade().create(gn);
-                    // ////System.out.printegerln("gn = " + gn);
                     coordinatesText = coordinatesText.replaceAll("[\\t\\n\\r]", " ");
                     addCoordinates(gn, coordinatesText);
                 } else {
@@ -1625,7 +1627,6 @@ public class AreaController implements Serializable {
             m.put("qry", "%" + qry.toLowerCase() + "%");
         }
         j += " order by a.name";
-        // ////System.out.printegerln("m = " + m);
         List<Area> areas = getFacade().findByJpql(j, m);
         return areas;
     }
@@ -1777,7 +1778,7 @@ public class AreaController implements Serializable {
             m.put("t", areaType);
         }
         j += " order by a.code";
-//        // ////System.out.printegerln("m = " + m);
+
         Area ta = getFacade().findFirstByJpql(j, m);
         if (ta == null && createNew) {
             ta = new Area();
@@ -1898,7 +1899,7 @@ public class AreaController implements Serializable {
                 m.put("t", areaType);
             }
             j += " order by a.code";
-//            // ////System.out.printegerln("m = " + m);
+
             Area ta = getFacade().findFirstByJpql(j, m);
             if (ta == null && createNew) {
                 ta = new Area();
@@ -1911,8 +1912,6 @@ public class AreaController implements Serializable {
             }
             return ta;
         } catch (Exception e) {
-            // ////System.out.printegerln("e = " + e);
-            // ////System.out.printegerln("code = " + code);
             return null;
         }
     }
