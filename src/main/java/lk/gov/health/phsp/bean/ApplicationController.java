@@ -32,10 +32,12 @@ import javax.inject.Named;
 import javax.enterprise.context.ApplicationScoped;
 import lk.gov.health.phsp.entity.Institution;
 import lk.gov.health.phsp.entity.Item;
+import lk.gov.health.phsp.entity.Phn;
 import lk.gov.health.phsp.entity.QueryComponent;
 import lk.gov.health.phsp.enums.InstitutionType;
 import lk.gov.health.phsp.enums.WebUserRole;
 import lk.gov.health.phsp.facade.InstitutionFacade;
+import lk.gov.health.phsp.facade.PhnFacade;
 import lk.gov.health.phsp.facade.QueryComponentFacade;
 // </editor-fold>
 
@@ -52,7 +54,8 @@ public class ApplicationController {
     private InstitutionFacade institutionFacade;
     @EJB
     private QueryComponentFacade queryComponentFacade;
-
+    @EJB
+    PhnFacade phnFacade;
 // </editor-fold>    
 // <editor-fold defaultstate="collapsed" desc="Class Variables">
     private boolean demoSetup = false;
@@ -88,6 +91,51 @@ public class ApplicationController {
         getInstitutionFacade().edit(ins);
 
         return phn;
+    }
+
+    public String createNewPersonalHealthNumberRandomly(Institution pins) {
+        if (pins == null) {
+            return null;
+        }
+        Institution ins = getInstitutionFacade().find(pins.getId());
+        if (ins == null) {
+            return null;
+        }
+        
+        
+        String hex;
+        Double maxDbl = Math.pow(16, 7);
+        long leftLimit = 1L;
+        long rightLimit = maxDbl.longValue();
+        long generatedLong = leftLimit + (long) (Math.random() * (rightLimit - leftLimit));
+        hex = Long.toHexString(generatedLong);
+
+        hex = "0000000" + hex; 
+        hex = hex.substring(hex.length()-7, hex.length());
+
+        
+        
+        String poi = ins.getPoiNumber();
+        String checkDigit = calculateCheckDigit(poi + hex);
+        String phn = poi + hex + checkDigit;
+        
+
+        boolean creationFailed;
+        do{
+            creationFailed = !savePhn(phn, ins);
+        }while(creationFailed);
+        
+        return phn;
+    }
+
+    private boolean savePhn(String phn, Institution poi) {
+        try {
+            Phn p = new Phn(phn, poi);
+            phnFacade.create(p);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     public static boolean validateHin(String validatingHin) {
@@ -215,8 +263,5 @@ public class ApplicationController {
     public void setInstitutions(List<Institution> institutions) {
         this.institutions = institutions;
     }
-    
-    
-    
 
 }
