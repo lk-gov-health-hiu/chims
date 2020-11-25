@@ -34,8 +34,9 @@
                 <p:submenu label="Analysis" 
                            rendered="#{webUserController.hasPrivilege('Institution_Administration')}" >
                     <p:menuitem ajax="false" value="Queries" 
-                                action="#{queryComponentController.toProcessQuery()}"  />
-                    <p:menuitem ajax="false" value="Reports" action="#{reportController.toViewReports()}" ></p:menuitem>
+                                action="#{queryComponentController.toQueryIndex()}"  />
+                    <p:menuitem ajax="false" value="Reports" 
+                                action="#{reportController.toViewReports()}" ></p:menuitem>
                 </p:submenu>
 
 
@@ -108,7 +109,7 @@
                 <p:submenu label="Analysis" 
                            rendered="#{webUserController.hasPrivilege('Institution_Administration')}" >
                     <p:menuitem ajax="false" value="Queries" 
-                                action="#{queryComponentController.toProcessQuery()}"  />
+                                action="#{queryComponentController.toAllQueries()}"  />
                     <p:menuitem ajax="false" value="Reports" action="#{reportController.toViewReports()}" ></p:menuitem>
                 </p:submenu>
 
