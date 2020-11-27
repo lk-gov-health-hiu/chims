@@ -30,7 +30,8 @@
                         <p:outputLabel value="Institution / Unit" ></p:outputLabel>
                         <p:autoComplete   value="#{reportController.institution}" 
                                           completeMethod="#{webUserController.completeLoggableInstitutions}"
-                                          var="i" itemLabel="#{i.name}" itemValue="#{i}" forceSelection="true">
+                                          var="i" itemLabel="#{i.name}" itemValue="#{i}" forceSelection="true"
+                                          maxResults="15" minQueryLength="3">
                         </p:autoComplete >
 
                         <p:commandButton value="Download" 

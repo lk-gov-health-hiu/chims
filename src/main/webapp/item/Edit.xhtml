@@ -65,7 +65,7 @@
                                 <p:outputLabel value="Parent"  />
                                 <p:autoComplete completeMethod="#{itemController.completeItems}" 
                                                 value="#{itemController.selected.parent}" var="di"  itemLabel="#{di.name}" 
-                                                itemValue="#{di}" forceSelection="true">
+                                                itemValue="#{di}" forceSelection="true" maxResults="15" minQueryLength="3">
                                     <p:column headerText="Name">
                                         <p:outputLabel value="#{di.name}" ></p:outputLabel>
                                     </p:column>

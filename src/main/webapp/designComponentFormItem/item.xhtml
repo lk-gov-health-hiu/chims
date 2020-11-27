@@ -40,7 +40,8 @@
 
                                             <p:outputLabel value="Item:" for="item" />
                                             <p:autoComplete id="item" value="#{designComponentFormItemController.selected.item}" 
-                                                            completeMethod="#{itemController.completeDictionaryItems}" forceSelection="true"
+                                                            completeMethod="#{itemController.completeDictionaryItems}" 
+                                                            maxResults="20" minQueryLength="3"
                                                             required="true"   var="dic" itemLabel="#{dic.code}" itemValue="#{dic}">
                                                 <p:column headerText="ID" >
                                                     <p:outputLabel value="#{dic.id}" ></p:outputLabel>
@@ -136,6 +137,7 @@
                                                             value="#{designComponentFormItemController.selected.categoryOfAvailableItems}"
                                                             completeMethod="#{itemController.completeItems}" 
                                                             var="ic" itemLabel="#{ic.name}" forceSelection="true"
+                                                            maxResults="20" minQueryLength="3"
                                                             itemValue="#{ic}" >
                                                 <p:column headerText="Name">
                                                     <p:outputLabel value="#{ic.name}" ></p:outputLabel>
@@ -201,6 +203,7 @@
                                             <p:autoComplete id="availableCode"
                                                             completeMethod="#{itemController.completeItems}" 
                                                             var="ic" itemLabel="#{ic.code}" forceSelection="true"
+                                                            maxResults="20" minQueryLength="3"
                                                             itemValue="#{ic}" >
                                                 <p:column headerText="Name">
                                                     <p:outputLabel value="#{ic.name}" ></p:outputLabel>
