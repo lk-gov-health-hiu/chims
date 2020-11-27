@@ -32,7 +32,7 @@
                         <p:autoComplete   value="#{reportController.institution}" 
                                           completeMethod="#{webUserController.completeLoggableInstitutions}"
                                           var="i" itemLabel="#{i.name}" itemValue="#{i}"
-                                          forceSelection="true">
+                                          forceSelection="true" maxResults="15" minQueryLength="3">
                         </p:autoComplete >
 
 

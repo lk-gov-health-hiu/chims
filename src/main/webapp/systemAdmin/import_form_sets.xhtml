@@ -66,7 +66,7 @@
                                     <p:autoComplete id="refSet" value="#{designComponentFormSetController.referanceSet}" 
                                                     var="s" itemLabel="#{s.name}" itemValue="#{s}"
                                                     completeMethod="#{designComponentFormSetController.completeFormSets}"
-                                                    forceSelection="true">
+                                                    forceSelection="true" maxResults="15" minQueryLength="3">
                                     </p:autoComplete>
 
                                     <p:outputLabel value="For" ></p:outputLabel>
@@ -74,7 +74,7 @@
                                                     var="i" id="forIns" 
                                                        itemLabel="#{i.name}" itemValue="#{i}"
                                                         value="#{designComponentFormSetController.institution}"
-                                                        forceSelection="true">
+                                                        forceSelection="true" maxResults="15" minQueryLength="3">
                                     </p:autoComplete>
                                     
                                     

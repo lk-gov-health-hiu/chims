@@ -37,7 +37,8 @@
                                 <p:autoComplete value="#{userTransactionController.user}"
                                                 completeMethod="#{webUserController.completeUsers}"
                                                 var="u" itemLabel="#{u.name}" itemValue="#{u}"
-                                                forceSelection="true"></p:autoComplete>
+                                                forceSelection="true"maxResults="15" minQueryLength="3">
+                                </p:autoComplete>
 
                                 <p:outputLabel value="Data"  />
                                 <p:inputText  value="#{userTransactionController.data}" >

@@ -26,7 +26,7 @@
                             <p:autoComplete value="#{reportController.institution}"
                                             id="ins"
                                             requiredMessage="Please select a clinic. Selecting a Hospital will not give results."
-                                            required="true" forceSelection="true"
+                                            required="true" forceSelection="true" maxResults="15" minQueryLength="3"
                                             completeMethod="#{institutionController.completeInstitutions}"
                                             var="i"
                                             itemLabel="#{i.name}"
