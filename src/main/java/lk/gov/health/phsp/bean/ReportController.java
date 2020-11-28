@@ -372,10 +372,9 @@ public class ReportController implements Serializable {
         m.put("t", EncounterType.Clinic_Visit);
         m.put("fd", fromDate);
         m.put("td", toDate);
-        //System.out.println("m = " + m);
-        //System.out.println("j = " + j);
+        
         List<ClientEncounterComponentItem> cis = clientEncounterComponentItemFacade.findByJpql(j, m);
-        //System.out.println("cis = " + cis.size());
+        
         //String phn, String gnArea, String institution, Date dataOfBirth, Date encounterAt, String sex
 //        List<Object> objs = getClientFacade().findAggregates(j, m);
 

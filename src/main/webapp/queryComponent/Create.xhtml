@@ -23,7 +23,7 @@
                                 <p:autoComplete id="parent" value="#{queryComponentController.selected.parentComponent}" 
                                                 completeMethod="#{queryComponentController.completeQueries}" 
                                                 var="q" itemLabel="#{q.name}" itemValue="#{q}" forceSelection="true"
-                                                >
+                                                maxResults="15" minQueryLength="3">
                                 </p:autoComplete>
 
                                 <p:outputLabel value="Descreption" for="descreption" />
@@ -119,7 +119,7 @@
                                 <p:autoComplete  id="item" completeMethod="#{itemController.completeDictionaryItems}" 
                                                  value="#{queryComponentController.selected.item}" itemValue="#{i}"
                                                  itemLabel="#{i.name}" var="i" 
-                                                 forceSelection="true"
+                                                 forceSelection="true" maxResults="15" minQueryLength="3"
                                                  >
                                     <p:column headerText="Name" >
                                         <p:outputLabel value="#{i.name}" ></p:outputLabel>
@@ -143,7 +143,7 @@
                                 <p:autoComplete  id="itemValue" completeMethod="#{itemController.completeDictionaryItems}" 
                                                  value="#{queryComponentController.selected.itemValue}" itemValue="#{iv}"
                                                  itemLabel="#{iv.name}" var="iv" 
-                                                 forceSelection="true"
+                                                 forceSelection="true" maxResults="15" minQueryLength="3"
                                                  >
                                     <p:column headerText="Name" >
                                         <p:outputLabel value="#{iv.name}" ></p:outputLabel>

@@ -335,7 +335,8 @@
                                                                                 
                                                                                 <p:autoComplete completeMethod="#{institutionController.completeInstitutions}" 
                                                                                                 rendered="#{webUserController.loggedUser.systemAdministrator eq true or webUserController.loggedUser.superUser eq true}"
-                                                                                                value="#{clientController.selectedClinic}"  forceSelection="true" 
+                                                                                                value="#{clientController.selectedClinic}"  forceSelection="true"
+                                                                                                maxResults="15" minQueryLength="4"
                                                                                                 var="shlc" itemValue="#{shlc}" itemLabel="#{shlc.name}">
                                                                                 </p:autoComplete>
                                                                                 

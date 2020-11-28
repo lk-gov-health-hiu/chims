@@ -42,7 +42,8 @@
                             <p:outputLabel value="Institution" for="institution" />
                             <p:autoComplete  id="institution" value="#{webUserController.selected.institution}" 
                                              completeMethod="#{institutionController.completeInstitutions}"
-                                             var="i" itemLabel="#{i.name}" itemValue="#{i}">
+                                             var="i" itemLabel="#{i.name}" itemValue="#{i}"
+                                             forceSelection="true" maxResults="15" minQueryLength="3">
                             </p:autoComplete >
 
                             <p:outputLabel value="Email" for="email" />

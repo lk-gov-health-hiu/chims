@@ -53,6 +53,8 @@ public class RelationshipController implements Serializable {
     private WebUserController webUserController;
     @Inject
     private AreaController areaController;
+    @Inject
+    private UserTransactionController userTransactionController;
 
     private List<Relationship> items = null;
     private Relationship selected;
@@ -283,6 +285,7 @@ public class RelationshipController implements Serializable {
 
     public String toFillAreaData() {
         items = null;
+        userTransactionController.recordTransaction("Fill Area Data");
         return "/area/view_population_data";
     }
 
@@ -326,8 +329,6 @@ public class RelationshipController implements Serializable {
         m.put("a", relArea.getId());
         m.put("t", relType);
         j += " order by r.id desc";
-        ////System.out.println("j = " + j);
-        ////System.out.println("m = " + m);
 
         Relationship r = getFacade().findFirstByJpql(j, m);
         if (r == null && create) {
@@ -549,6 +550,7 @@ public class RelationshipController implements Serializable {
     }
 
     public String getErrorCode() {
+    userTransactionController.recordTransaction("Import District Data Error Code");
         return errorCode;
     }
 

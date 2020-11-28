@@ -29,7 +29,7 @@
                                                 requiredMessage="Please select a report. To list reports, start entering few letters"
                                                 value="#{reportController.queryComponent}"
                                                 completeMethod="#{queryComponentController.completeExcelReports}"
-                                                var="q" forceSelection="true"
+                                                var="q" forceSelection="true" maxResults="15" minQueryLength="3"
                                                 itemLabel="#{q.name}"
                                                 itemValue="#{q}">
                                 </p:autoComplete>
@@ -38,8 +38,7 @@
                                 <p:autoComplete value="#{reportController.institution}"
                                                 id="ins"
                                                 requiredMessage="Please select a clinic. Selecting a Hospital will not give results."
-
-                                                required="true"
+                                                required="true" forceSelection="true" maxResults="15" minQueryLength="3"
                                                 completeMethod="#{webUserController.completeLoggableInstitutions}"
                                                 var="i"
                                                 itemLabel="#{i.name}"

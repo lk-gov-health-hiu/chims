@@ -22,7 +22,7 @@
                         <p:outputLabel value="Institution" ></p:outputLabel>
                         <p:autoComplete value="#{clientController.institution}"
                                         completeMethod="#{institutionController.completeInstitutions}"
-                                        var="ins"  forceSelection="true" 
+                                        var="ins"  forceSelection="true" maxResults="15" minQueryLength="4"
                                         itemLabel="#{ins.name}"
                                         itemValue="#{ins}">
                         </p:autoComplete>
