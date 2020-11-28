@@ -7,19 +7,16 @@
       xmlns:f="http://xmlns.jcp.org/jsf/core">
 
     <body>
-
         <ui:composition template="/institution/index.xhtml">
-
             <ui:define name="insContents">
 
-
-                <h:form id="InstitutionCreateForm">
+                <h:form id="InstitutionCreateForm" style="padding-top: 1rem;">
 
                     <h:panelGroup id="display">
                         <p:commandButton ajax="false" 
                                          actionListener="#{institutionController.saveOrUpdateInstitution()}" 
-                                         value="Save" 
-                                         />
+                                         value="Save"/>
+                        
                         <p:tabView  rendered="#{institutionController.selected != null}">
 
                             <p:tab title="Details" >
@@ -45,9 +42,7 @@
                                     <p:inputText id="code" 
                                                  autocomplete="off"
                                                  value="#{institutionController.selected.code}" 
-                                                 title="Code" />
-                                    
-                                    
+                                                 title="Code" />  
                                     
                                     <p:outputLabel value="Parent:" for="parent" />
                                     <p:autoComplete  id="parent" value="#{institutionController.selected.parent}" 
@@ -161,18 +156,12 @@
                                                     maxResults="15" forceSelection="true"
                                                     minQueryLength="3">
                                     </p:autoComplete>
-
-
                                 </p:panelGrid>                            
                             </p:tab>
                         </p:tabView>
-
                     </h:panelGroup>
                 </h:form>
-
-
             </ui:define>
-
         </ui:composition>
 
     </body>
