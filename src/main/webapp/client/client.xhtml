@@ -113,7 +113,21 @@
                                             listener="#{clientController.checkNicExists}" ></f:ajax>
                                 </p:inputText>
                                 <h:panelGroup id="nicExists" >
-                                    <p:outputLabel value="NIC already Exists" style="color: red;" rendered="#{clientController.nicExists}" ></p:outputLabel>
+                                    <p:commandLink value="NIC already Exists" 
+                                                   style="color: red;" onclick="PF('dlgNicClients').show();"
+                                                   rendered="#{clientController.nicExists}" 
+                                                   >
+                                        
+                                    </p:commandLink>
+                                    <p:dialog id="dlgNicClients" widgetVar="dlgNicClients" >
+                                        <p:dataTable value="#{clientRequestController.clientsWithSameNic(clientController.selected.person.nic)}" var="c" >
+                                            <p:column headerText="Name" >
+                                                <h:outputLabel value="#{c.person.name}" ></h:outputLabel>
+                                            </p:column>
+                                        
+                                        </p:dataTable>
+                                        
+                                    </p:dialog>
                                 </h:panelGroup>
                             </h:panelGroup>
                             <p:outputLabel value="Citizenship:" for="citizenship" />
