@@ -270,20 +270,20 @@ public class ClientController implements Serializable {
     }
 
     public Boolean checkPhnExists(String phn, Client c) {
-        Map param_map = new HashMap();
+        Map m = new HashMap();
 
         String jpql = "select count(c) from Client c "
                 + " where c.retired=:ret "
                 + " and c.phn=:phn ";
 
-        param_map.put("ret", false);
-        param_map.put("phn", phn);
+        m.put("ret", false);
+        m.put("phn", phn);
 
         if (c != null && c.getId() != null) {
             jpql += " and c <> :client";
-            param_map.put("client", c);
+            m.put("client", c);
         }
-        Long count = getFacade().countByJpql(jpql, param_map);
+        Long count = getFacade().countByJpql(jpql, m);
         return !(count == null || count == 0l);
     }
 
@@ -298,20 +298,20 @@ public class ClientController implements Serializable {
     }
 
     public Boolean checkNicExists(String nic, Client c) {
-        Map param_map = new HashMap();
+        Map m = new HashMap();
 
         String jpql = "select count(c) from Client c "
                 + " where c.retired=:ret "
                 + " and c.person.nic=:nic ";
 
-        param_map.put("ret", false);
-        param_map.put("nic", nic);
+        m.put("ret", false);
+        m.put("nic", nic);
 
         if (c != null && c.getPerson() != null && c.getPerson().getId() != null) {
             jpql += " and c.person <> :person";
-            param_map.put("person", c.getPerson());
+            m.put("person", c.getPerson());
         }
-        Long count = getFacade().countByJpql(jpql, param_map);
+        Long count = getFacade().countByJpql(jpql, m);
         return !(count == null || count == 0l);
     }
 
@@ -455,7 +455,7 @@ public class ClientController implements Serializable {
     }
 
     public void fillClients() {
-        Map param_map = new HashMap();
+        Map m = new HashMap();
 
         String jpql = "select new lk.gov.health.phsp.pojcs.ClientBasicData("
                 + "c.id, "
@@ -473,12 +473,12 @@ public class ClientController implements Serializable {
                 + " and c.createdAt between :fd and :td "
                 + " order by c.id desc";
 
-        param_map.put("ret", false);
-        param_map.put("fd", getFrom());
-        param_map.put("td", getTo());
+        m.put("ret", false);
+        m.put("fd", getFrom());
+        m.put("td", getTo());
 
         selectedClientsBasic = null;
-        clients = getFacade().findByJpql(jpql, param_map, TemporalType.TIMESTAMP);
+        clients = getFacade().findByJpql(jpql, m, TemporalType.TIMESTAMP);
     }
 
     public void fillRegisterdClientsWithDatesForInstitution() {
