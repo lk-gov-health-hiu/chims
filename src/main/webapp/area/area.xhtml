@@ -44,14 +44,13 @@
                             
                             
                             <p:outputLabel value="#{bundleClinical.EditAreaLabel_parentArea}" for="parentArea" />
-                            <p:selectOneMenu id="parentArea"
-                                             filter="true"
-                                             filterMatchMode="contains"
-                                             value="#{areaController.selected.parentArea}" >
-                                <f:selectItem itemLabel="#{bundleClinical.SelectOneMessage}"/>
-                                <f:selectItems value="#{areaController.dsAreas}"
+                            <p:autoComplete id="parentArea" value="#{areaController.selected.parentArea}"
+                                            completeMethod="#{areaController.completeAreas}"
+                                            value="#{areaController.selected.parentArea}"
                                                var="parentAreaItem"
-                                               itemValue="#{parentAreaItem}"/>
+                                               itemValue="#{parentAreaItem}"></p:autoComplete>
+                            
+                           
                             </p:selectOneMenu>
                             <p:outputLabel value="#{bundleClinical.EditAreaLabel_centreLongitude}" for="centreLongitude" />
                             <p:inputText id="centreLongitude" value="#{areaController.selected.centreLongitude}" autocomplete="off" title="#{bundleClinical.EditAreaTitle_centreLongitude}" />
