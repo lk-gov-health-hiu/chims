@@ -117,6 +117,7 @@ public class ClientController implements Serializable {
 
     private Boolean nicExists;
     private Boolean phnExists;
+    private Boolean phone1Exists;
     private Boolean passportExists;
     private Boolean dlExists;
     private Boolean localReferanceExists;
@@ -257,6 +258,8 @@ public class ClientController implements Serializable {
     public void clearExistsValues() {
         phnExists = false;
         nicExists = false;
+        ssNumberExists = false;
+        phone1Exists =false;
         passportExists = false;
         dlExists = false;
     }
@@ -331,7 +334,83 @@ public class ClientController implements Serializable {
         }
 
     }
+    
+    public void checkSsNumberExists() {
+        ssNumberExists = null;
+        if (selected == null) {
+            return;
+        }
+        if (selected.getPerson() == null) {
+            return;
+        }
+        if (selected.getPerson().getSsNumber()== null) {
+            return;
+        }
+        if (selected.getPerson().getSsNumber().trim().equals("")) {
+            return;
+        }
+        ssNumberExists = checkSsNumberExists(selected.getPerson().getSsNumber(), selected);
+    }
 
+    public Boolean checkSsNumberExists(String ssNumber, Client c) {
+        String jpql = "select count(c) from Client c "
+                + " where c.retired=:ret "
+                + " and c.person.ssNumber=:ssNumber ";
+        Map m = new HashMap();
+        m.put("ret", false);
+        m.put("ssNumber", ssNumber);
+          if (c != null && c.getPerson() != null && c.getPerson().getId() != null) {
+            jpql += " and c.person <> :person";
+            m.put("person", c.getPerson());
+        }
+        Long count = getFacade().countByJpql(jpql, m);
+        if (count == null || count == 0l) {
+            return false;
+        } else {
+            return true;
+        }
+
+    }
+    
+    public void checkphone1Exists() {
+        phone1Exists = null;
+        if (selected == null) {
+            return;
+        }
+        if (selected.getPerson() == null) {
+            return;
+        }
+        if (selected.getPerson().getPhone1() == null) {
+            return;
+        }
+        if (selected.getPerson().getPhone1().trim().equals("")) {
+            return;
+        }
+        phone1Exists = checkphone1Exists(selected.getPerson().getPhone1(), selected);
+    }
+    
+    public Boolean checkphone1Exists(String phone1, Client c) {
+        String jpql = "select count(c) from Client c "
+                + " where c.retired=:ret "
+                + " and c.person.phone1=:phone1 ";
+        Map m = new HashMap();
+        m.put("ret", false);
+        m.put("phone1", phone1);
+          if (c != null && c.getPerson() != null && c.getPerson().getId() != null) {
+            jpql += " and c.person <> :person";
+            m.put("person", c.getPerson());
+        }
+        Long count = getFacade().countByJpql(jpql, m);
+        if (count == null || count == 0l) {
+            return false;
+        } else {
+            return true;
+        }
+
+    }
+
+     
+     
     public void fixClientPersonCreatedAt() {
         String j = "select c from Client c "
                 + " where c.retired=:ret ";
@@ -2032,6 +2111,16 @@ public class ClientController implements Serializable {
     public void setIntNo(int intNo) {
         this.intNo = intNo;
     }
+
+    public Boolean getPhone1Exists() {
+        return phone1Exists;
+    }
+
+    public void setPhone1Exists(Boolean phone1Exists) {
+        this.phone1Exists = phone1Exists;
+    }
+
+    
 
     // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="Inner Classes">

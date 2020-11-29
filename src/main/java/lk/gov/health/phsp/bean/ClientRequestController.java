@@ -64,7 +64,7 @@ public class ClientRequestController {
     
     //</editor-fold>
 
-    //<editor-fold desc="class variables" defaultstate="collapsed">
+    // <editor-fold defaultstate="collapsed" desc="Functions">
     public List<Client> clientsWithSameNic(String nic) {
         if(nic==null || nic.trim().equals("")){
             return null;
@@ -78,6 +78,49 @@ public class ClientRequestController {
         m.put("nic", nic.toLowerCase());
         return clientFacade.findByJpql(j, m);
     }
+    
+     public List<Client> clientsWithSamePhn(String phn) {
+        if(phn==null || phn.trim().equals("")){
+            return null;
+        }
+        Map m = new HashMap();
+        String j = "select c "
+                + " from Client c "
+                + " where c.retired<>:ret "
+                + " and c.phn=:phn ";
+        m.put("ret", true);
+        m.put("phn", phn);
+        return clientFacade.findByJpql(j, m);
+    }
+  
+      public List<Client> clientsWithSameSSNumber(String ssNumber) {
+        if(ssNumber==null || ssNumber.trim().equals("")){
+            return null;
+        }
+        Map m = new HashMap();
+        String j = "select c "
+                + " from Client c "
+                + " where c.retired<>:ret "
+                + " and c.person.ssNumber=:ssNumber ";
+        m.put("ret", true);
+        m.put("ssNumber", ssNumber);
+        return clientFacade.findByJpql(j, m);
+    } 
+      
+     public List<Client> clientsWithSameMobileNo(String phone1) {
+        if(phone1==null || phone1.trim().equals("")){
+            return null;
+        }
+        Map m = new HashMap();
+        String j = "select c "
+                + " from Client c "
+                + " where c.retired<>:ret "
+                + " and c.person.phone1=:phone1 ";
+        m.put("ret", true);
+        m.put("phone1", phone1);
+        return clientFacade.findByJpql(j, m);
+    } 
+      
     //</editor-fold>
 
 }
