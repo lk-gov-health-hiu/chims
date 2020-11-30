@@ -117,6 +117,7 @@ public class ClientController implements Serializable {
 
     private Boolean nicExists;
     private Boolean phnExists;
+    private Boolean emailExists;
     private Boolean phone1Exists;
     private Boolean passportExists;
     private Boolean dlExists;
@@ -258,6 +259,7 @@ public class ClientController implements Serializable {
     public void clearExistsValues() {
         phnExists = false;
         nicExists = false;
+        emailExists =false;
         ssNumberExists = false;
         phone1Exists =false;
         passportExists = false;
@@ -323,6 +325,43 @@ public class ClientController implements Serializable {
         m.put("ret", false);
         m.put("nic", nic);
         if (c != null && c.getPerson() != null && c.getPerson().getId() != null) {
+            jpql += " and c.person <> :person";
+            m.put("person", c.getPerson());
+        }
+        Long count = getFacade().countByJpql(jpql, m);
+        if (count == null || count == 0l) {
+            return false;
+        } else {
+            return true;
+        }
+
+    }
+    
+    public void checkEmailExists() {
+        emailExists = null;
+        if (selected == null) {
+            return;
+        }
+        if (selected.getPerson() == null) {
+            return;
+        }
+        if (selected.getPerson().getEmail()== null) {
+            return;
+        }
+        if (selected.getPerson().getEmail().trim().equals("")) {
+            return;
+        }
+        emailExists = checkEmailExists(selected.getPerson().getEmail(), selected);
+    }
+    
+    public Boolean checkEmailExists(String email, Client c) {
+        String jpql = "select count(c) from Client c "
+                + " where c.retired=:ret "
+                + " and c.person.email=:email ";
+        Map m = new HashMap();
+        m.put("ret", false);
+        m.put("email", email);
+          if (c != null && c.getPerson() != null && c.getPerson().getId() != null) {
             jpql += " and c.person <> :person";
             m.put("person", c.getPerson());
         }
@@ -2118,6 +2157,14 @@ public class ClientController implements Serializable {
 
     public void setPhone1Exists(Boolean phone1Exists) {
         this.phone1Exists = phone1Exists;
+    }
+
+    public Boolean getEmailExists() {
+        return emailExists;
+    }
+
+    public void setEmailExists(Boolean emailExists) {
+        this.emailExists = emailExists;
     }
 
     

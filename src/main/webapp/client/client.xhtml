@@ -145,9 +145,43 @@
                             <p:inputText id="passportNumber"  autocomplete="off" value="#{clientController.selected.person.passportNumber}" title="PassportNumber" />
 
                             <p:outputLabel value="Email:" for="email" />
+                            <h:panelGroup >
                             <p:inputText id="email"  autocomplete="off" value="#{clientController.selected.person.email}" title="Email" validatorMessage="Please check email" >
                                 <f:validateRegex pattern="^([a-zA-Z0-9.!#$%&amp;'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*)?$" ></f:validateRegex>
-                            </p:inputText>
+                                <f:ajax event="change" execute="@this" render="emailExists" 
+                                        listener="#{clientController.checkEmailExists()}" ></f:ajax>
+                            </p:inputText><br ></br>
+                                     <h:panelGroup id="emailExists" >
+                                        <p:commandLink value="Already Exists" 
+                                                   style="color: red;" onclick="PF('dlgEmailClients').show();"
+                                                   rendered="#{clientController.emailExists}" >
+                                        
+                                        </p:commandLink>
+                                        <p:dialog id="dlgEmailClients" widgetVar="dlgEmailClients" >
+                                            <p:dataTable value="#{clientRequestController.clientsWithSameEmail(clientController.selected.person.email)}" var="c" >
+                                            <p:column headerText="PHN" >
+                                                <h:outputLabel value="#{c.phn}" ></h:outputLabel>
+                                            </p:column>
+                                            <p:column headerText="Name" >
+                                                <h:outputLabel value="#{c.person.name}" ></h:outputLabel>
+                                            </p:column>
+                                            <p:column headerText="NIC" >
+                                                <h:outputLabel value="#{c.person.nic}" ></h:outputLabel>
+                                            </p:column>
+                                            <p:column headerText="Gender" >
+                                                <h:outputLabel value="#{c.person.sex.name}" ></h:outputLabel>
+                                            </p:column>
+                                            <p:column headerText="Age" >
+                                                <h:outputLabel value="#{c.person.age}" ></h:outputLabel>
+                                            </p:column>
+                                            <p:column headerText="Mobile No" >
+                                                <h:outputLabel value="#{c.person.phone1}" ></h:outputLabel>
+                                            </p:column>
+                                        </p:dataTable>  
+                                    </p:dialog>
+                                     </h:panelGroup>
+                            </h:panelGroup>
+
 
                             <p:outputLabel value="Driving License Number:" for="drivingLicenseNumber" />
                             <p:inputText id="drivingLicenseNumber"  autocomplete="off"  value="#{clientController.selected.person.drivingLicenseNumber}" title="DrivingLicenseNumber" />

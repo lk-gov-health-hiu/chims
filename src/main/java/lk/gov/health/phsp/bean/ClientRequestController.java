@@ -79,7 +79,7 @@ public class ClientRequestController {
         return clientFacade.findByJpql(j, m);
     }
     
-     public List<Client> clientsWithSamePhn(String phn) {
+    public List<Client> clientsWithSamePhn(String phn) {
         if(phn==null || phn.trim().equals("")){
             return null;
         }
@@ -93,7 +93,21 @@ public class ClientRequestController {
         return clientFacade.findByJpql(j, m);
     }
   
-      public List<Client> clientsWithSameSSNumber(String ssNumber) {
+    public List<Client> clientsWithSameEmail(String email) {
+        if(email==null || email.trim().equals("")){
+            return null;
+        }
+        Map m = new HashMap();
+        String j = "select c "
+                + " from Client c "
+                + " where c.retired<>:ret "
+                + " and lower(c.person.email)=:email ";
+        m.put("ret", true);
+        m.put("email", email.toLowerCase());
+        return clientFacade.findByJpql(j, m);
+    }
+    
+    public List<Client> clientsWithSameSSNumber(String ssNumber) {
         if(ssNumber==null || ssNumber.trim().equals("")){
             return null;
         }
@@ -107,7 +121,7 @@ public class ClientRequestController {
         return clientFacade.findByJpql(j, m);
     } 
       
-     public List<Client> clientsWithSameMobileNo(String phone1) {
+    public List<Client> clientsWithSameMobileNo(String phone1) {
         if(phone1==null || phone1.trim().equals("")){
             return null;
         }
