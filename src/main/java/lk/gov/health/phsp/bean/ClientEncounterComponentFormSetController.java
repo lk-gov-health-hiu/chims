@@ -83,6 +83,8 @@ public class ClientEncounterComponentFormSetController implements Serializable {
     private ItemController itemController;
     @Inject
     private CommonController commonController;
+    @Inject
+    UserTransactionController userTransactionController;
 
 // </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="Class Variables">
@@ -579,6 +581,7 @@ public class ClientEncounterComponentFormSetController implements Serializable {
             fs = new ArrayList<>();
         }
         items = fs;
+        userTransactionController.recordTransaction("fill All Encounters Form Sets Of Selected Client");
         return "/client/client_encounters";
     }
 

@@ -154,6 +154,7 @@ public class ClientController implements Serializable {
 
     public String toClientProfile() {
         selectedClientsClinics = null;
+        userTransactionController.recordTransaction("To Client Profile");
         return "/client/profile";
     }
 
@@ -634,6 +635,7 @@ public class ClientController implements Serializable {
             if (!checkPhnExists(c.getPhn(), null)) {
                 c.setId(null);
                 saveClient(c);
+                userTransactionController.recordTransaction("save Selected Imports"); 
             }
         }
     }
@@ -1033,6 +1035,7 @@ public class ClientController implements Serializable {
 
                 lk.gov.health.phsp.facade.util.JsfUtil.addSuccessMessage("Succesful. All the data in Excel File Impoted to the database");
                 errorCode = "";
+                userTransactionController.recordTransaction("Import Clients from Excel");
                 return "save_imported_clients";
             } catch (IOException ex) {
                 errorCode = ex.getMessage();
@@ -1050,6 +1053,7 @@ public class ClientController implements Serializable {
     }
 
     public void prepareToCapturePhotoWithWebCam() {
+        userTransactionController.recordTransaction("prepare To Capture Photo With WebCam");
         goingToCaptureWebCamPhoto = true;
     }
 
@@ -1126,6 +1130,7 @@ public class ClientController implements Serializable {
         encounter.setCompleted(false);
         encounterFacade.create(encounter);
         JsfUtil.addSuccessMessage(selected.getPerson().getNameWithTitle() + " was Successfully Enrolled in " + selectedClinic.getName() + "\nThe Clinic number is " + encounter.getEncounterNumber());
+        userTransactionController.recordTransaction("Enroll In Clinic");
         selectedClientsClinics = null;
     }
 
@@ -1261,6 +1266,7 @@ public class ClientController implements Serializable {
         } else {
             selected = null;
             clearSearchById();
+            userTransactionController.recordTransaction("search By Phn"); 
             return toSelectClient();
         }
     }
@@ -1275,6 +1281,7 @@ public class ClientController implements Serializable {
         } else {
             selected = null;
             clearSearchById();
+            userTransactionController.recordTransaction("search By NIC"); 
             return toSelectClient();
         }
     }
@@ -1289,6 +1296,7 @@ public class ClientController implements Serializable {
         } else {
             selected = null;
             clearSearchById();
+            userTransactionController.recordTransaction("search By PhoneNumber"); 
             return toSelectClient();
         }
     }
@@ -1303,6 +1311,7 @@ public class ClientController implements Serializable {
         } else {
             selected = null;
             clearSearchById();
+            userTransactionController.recordTransaction("search By PassportNo");
             return toSelectClient();
         }
     }
@@ -1317,6 +1326,7 @@ public class ClientController implements Serializable {
         } else {
             selected = null;
             clearSearchById();
+            userTransactionController.recordTransaction("search By Driving License No");
             return toSelectClient();
         }
     }
@@ -1331,10 +1341,12 @@ public class ClientController implements Serializable {
             selected = selectedClients.get(0);
             selectedClients = null;
             clearSearchById();
+            userTransactionController.recordTransaction("search By Local Referance No");
             return toClientProfile();
         } else {
             selected = null;
             clearSearchById();
+            userTransactionController.recordTransaction("search By Local Referance No");
             return toSelectClient();
         }
     }
@@ -1349,6 +1361,7 @@ public class ClientController implements Serializable {
         } else {
             selected = null;
             clearSearchById();
+            userTransactionController.recordTransaction("search By Senior Citizen No");
             return toSelectClient();
         }
     }
@@ -1385,10 +1398,12 @@ public class ClientController implements Serializable {
             selected = selectedClients.get(0);
             selectedClients = null;
             clearSearchById();
+            userTransactionController.recordTransaction("search By All Id to Client Profile");
             return toClientProfile();
         } else {
             selected = null;
             clearSearchById();
+            userTransactionController.recordTransaction("search By All Id to Select Client");
             return toSelectClient();
         }
     }
@@ -1420,10 +1435,12 @@ public class ClientController implements Serializable {
             selected = selectedClients.get(0);
             selectedClients = null;
             clearSearchById();
+            userTransactionController.recordTransaction("search By ID to Client Profile");
             return toClientProfile();
         } else {
             selected = null;
             clearSearchById();
+            userTransactionController.recordTransaction("search By ID to Select Client");
             return toSelectClient();
         }
     }
@@ -1645,6 +1662,7 @@ public class ClientController implements Serializable {
         }
         saveClient(selected);
         JsfUtil.addSuccessMessage("Saved.");
+        userTransactionController.recordTransaction("save Client");
         return toClientProfile();
     }
 
@@ -1889,6 +1907,7 @@ public class ClientController implements Serializable {
     }
 
     public boolean isGoingToCaptureWebCamPhoto() {
+        userTransactionController.recordTransaction("Going To Capture Web Cam Photo");
         return goingToCaptureWebCamPhoto;
     }
 
