@@ -43,6 +43,8 @@ public class InstitutionController implements Serializable {
 
     @Inject
     ApplicationController applicationController;
+    @Inject
+    UserTransactionController userTransactionController;
 
     private List<Institution> items = null;
     private Institution selected;
@@ -398,6 +400,7 @@ public class InstitutionController implements Serializable {
     }
 
     public void refreshMyInstitutions() {
+      userTransactionController.recordTransaction("refresh My Institutions");  
         myClinics = null;
     }
 
