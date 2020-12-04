@@ -30,6 +30,7 @@ import java.util.Map;
 import javax.ejb.EJB;
 import javax.inject.Named;
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 import lk.gov.health.phsp.entity.Institution;
 import lk.gov.health.phsp.entity.Item;
 import lk.gov.health.phsp.entity.QueryComponent;
@@ -54,6 +55,8 @@ public class ApplicationController {
     private QueryComponentFacade queryComponentFacade;
 
 // </editor-fold>    
+    @Inject
+    private UserTransactionController userTransactionController;
 // <editor-fold defaultstate="collapsed" desc="Class Variables">
     private boolean demoSetup = false;
     private String versionNo = "1.1.4";
@@ -142,6 +145,7 @@ public class ApplicationController {
 
     public void reloadQueryComponents() {
         queryComponents = null;
+        userTransactionController.recordTransaction("Reload Query Components");
     }
 
     // </editor-fold>

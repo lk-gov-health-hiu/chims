@@ -79,6 +79,7 @@ public class RelationshipController implements Serializable {
 
     public void fillAll() {
         items = getFacade().findAll();
+        userTransactionController.recordTransaction("Fill All-Relationship");
     }
 
     public String importDistrictPopulationDataFromExcel() {
@@ -226,6 +227,7 @@ public class RelationshipController implements Serializable {
         fillRelationshipData();
         adding = null;
         JsfUtil.addSuccessMessage("Updated");
+        userTransactionController.recordTransaction("Add Empowerement Data");
     }
 
     public void removeRelationship() {
@@ -239,6 +241,7 @@ public class RelationshipController implements Serializable {
         getFacade().edit(removing);
         removing = null;
         items = null;
+        userTransactionController.recordTransaction("Remove Relationship GnData");
     }
 
     public void save() {
