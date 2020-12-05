@@ -222,14 +222,10 @@ public class ClientController implements Serializable {
                 } else {
                     if (c.getPerson().getLocalReferanceNo() == null || c.getPerson().getLocalReferanceNo().trim().equals("")) {
                         c.setComments("Duplicate PHN. Old PHN Stored as Local Ref");
-                        System.out.println("Duplicate PHN. Old PHN Stored as Local Ref");
-                        System.out.println("c.getPhn()");
                         c.getPerson().setLocalReferanceNo(c.getPhn());
                         c.setPhn(generateNewPhn(c.getCreateInstitution()));
                     } else if (c.getPerson().getSsNumber() == null || c.getPerson().getSsNumber().trim().equals("")) {
                         c.setComments("Duplicate PHN. Old PHN Stored as SC No");
-                        System.out.println("Duplicate PHN. Old PHN Stored as SC No");
-                        System.out.println("c.getPhn()");
                         c.getPerson().setSsNumber(c.getPhn());
                         c.setPhn(generateNewPhn(c.getCreateInstitution()));
                     } else {
