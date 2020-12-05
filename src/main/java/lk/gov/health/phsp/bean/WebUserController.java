@@ -368,6 +368,10 @@ public class WebUserController implements Serializable {
         userTransactionController.recordTransaction("Manage Privileges in user list By SysAdmin or InsAdmin");
         return "/webUser/privileges";
     }
+    
+    public String toOpdModule(){
+        return "/opd/index_opd";
+    }
 
     private void createAllPrivilege() {
         allPrivilegeRoot = new PrivilegeTreeNode("Root", null);
