@@ -1650,7 +1650,6 @@ public class AreaController implements Serializable {
 //            m.put("qry", "%" + qry.toLowerCase() + "%");
 //        }
 //        j += " order by a.name";
-//        // ////System.out.printegerln("m = " + m);
 //        List<Area> areas = getFacade().findByJpql(j, m);
 //        return areas;
 //    }

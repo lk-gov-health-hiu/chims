@@ -665,10 +665,6 @@ public class ReportController implements Serializable {
                 sqr.setResultTo(CommonController.endOfTheMonth(getYear(), getMonth()));
                 sqr.setResultYear(getYear());
                 sqr.setResultMonth(getMonth());
-                //System.out.println("sqr.getResultFrom() = " + sqr.getResultFrom());
-                ;
-                //System.out.println("sqr.getResultTo() = " + sqr.getResultTo());
-                ;
                 break;
             case Dates:
             //TODO: Add what happens when selected dates

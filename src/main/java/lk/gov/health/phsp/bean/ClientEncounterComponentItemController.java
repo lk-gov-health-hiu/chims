@@ -132,7 +132,6 @@ public class ClientEncounterComponentItemController implements Serializable {
     }
 
     public void calculate(ClientEncounterComponentItem i) {
-        System.out.println("Calculating " + i.getName());
         if (i == null) {
             return;
         }
@@ -180,12 +179,6 @@ public class ClientEncounterComponentItemController implements Serializable {
                         continue;
                     }
                 }
-
-                System.out.println("c.getBooleanValue() = " + c.getBooleanValue());
-                System.out.println("c.getRealNumberValue() = " + c.getRealNumberValue());
-                System.out.println("c.getLongNumberValue() = " + c.getLongNumberValue());
-                System.out.println("c.getItemValue().getItemValue() = " + c.getItemValue());
-
                 SelectionDataType dataType = null;
                 if (c.getSelectionDataType() == null && c.getItem().getDataType() == null) {
                     dataType = SelectionDataType.Real_Number;
@@ -241,14 +234,8 @@ public class ClientEncounterComponentItemController implements Serializable {
         }
 
         String javaStringToEvaluate = addTemplateToReport(i.getCalculationScript().trim(), replacingBlocks);
-        System.out.println("javaString To Evaluate = \n" + javaStringToEvaluate);
-
         String result = evaluateScript(javaStringToEvaluate);
-
-        System.out.println("Assigning Found Calculation Results");
-        System.out.println("i.getId() = " + i.getId());
-        System.out.println("result = " + result);
-
+        
         if (null == i.getItem().getDataType()) {
             i.setShortTextValue(result);
         } else {
