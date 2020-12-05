@@ -264,6 +264,7 @@ public class QueryComponentController implements Serializable {
         saveItem(addingCategory);
         categories = null;
         addingCategory = null;
+        userTransactionController.recordTransaction("Save Category Query Component");
     }
     
     public void saveExcel() {
@@ -289,6 +290,7 @@ public class QueryComponentController implements Serializable {
         addingSubcategory.setParentComponent(selectedCategory);
         saveItem(addingSubcategory);
         addingSubcategory = null;
+        userTransactionController.recordTransaction("Save SubCategory");
     }
 
     public void saveQuery() {
@@ -333,6 +335,7 @@ public class QueryComponentController implements Serializable {
         addingCriterian.setParentComponent(selectedQuery);
         saveItem(addingCriterian);
         addingCriterian = null;
+        userTransactionController.recordTransaction("Save Criterian");
     }
 
     public List<QueryComponent> fillCriteriaofTheSelectedQuery(QueryComponent set) {
@@ -366,6 +369,7 @@ public class QueryComponentController implements Serializable {
         getFacade().create(addingQuery);
         fillCriteriaofTheSelectedQuery();
         addingQuery = null;
+        userTransactionController.recordTransaction("Add Criterian To The Selected Queries Criteria");
     }
 
     public void remove() {
@@ -382,6 +386,7 @@ public class QueryComponentController implements Serializable {
         }
         removing = null;
         JsfUtil.addSuccessMessage("Removed");
+        userTransactionController.recordTransaction("Remove Query Component");
     }
 
     public void moveUpTheSelectedSet() {
@@ -401,6 +406,7 @@ public class QueryComponentController implements Serializable {
         fillCriteriaofTheSelectedQuery();
         moving = null;
         JsfUtil.addSuccessMessage("Item Moved Up");
+        userTransactionController.recordTransaction("Query Component-Item Moved Up");
     }
 
     public void moveDownTheSelectedSet() {
@@ -419,9 +425,11 @@ public class QueryComponentController implements Serializable {
         }
         fillCriteriaofTheSelectedQuery();
         JsfUtil.addSuccessMessage("Item Moved Down");
+        userTransactionController.recordTransaction("Query Component-Item Moved Down");
     }
 
     public void saveSelectedItem() {
+        userTransactionController.recordTransaction("Save Selected Item Query Component");
         saveItem(selected);
     }
 
@@ -451,6 +459,7 @@ public class QueryComponentController implements Serializable {
     }
 
     public String backToManageQueries() {
+        userTransactionController.recordTransaction("Back To Manage Queries");
         return "/queryComponent/List";
     }
 
@@ -459,7 +468,7 @@ public class QueryComponentController implements Serializable {
             JsfUtil.addErrorMessage("Nothing to Edit");
             return "";
         }
-
+        userTransactionController.recordTransaction("To Edit Criterian");
         return "/queryComponent/item";
     }
 
@@ -1172,14 +1181,7 @@ public class QueryComponentController implements Serializable {
 
         return "graph";
     }
-    
-    
-    
-    
-    
-    
-    
-    
+ 
 
     public String processQuery() {
         
@@ -1431,7 +1433,7 @@ public class QueryComponentController implements Serializable {
         }
 
         clearFilters();
-
+        userTransactionController.recordTransaction("Process Query");
         return "graph";
     }
 
@@ -1536,6 +1538,7 @@ public class QueryComponentController implements Serializable {
         items = null;
         selectedToDuplicateQuery = q;
         JsfUtil.addSuccessMessage("Duplicated");
+        userTransactionController.recordTransaction("Duplicate Query Component");
     }
 
     public void duplicate() {
@@ -1564,6 +1567,7 @@ public class QueryComponentController implements Serializable {
         items = null;
         selectedQuery = q;
         JsfUtil.addSuccessMessage("Duplicated");
+        userTransactionController.recordTransaction("Duplicate Query Component");
     }
 
     public void retire() {
@@ -2368,12 +2372,14 @@ public class QueryComponentController implements Serializable {
     public void create() {
         persist(PersistAction.CREATE, ResourceBundle.getBundle("/BundleQuery").getString("QueryComponentCreated"));
         if (!JsfUtil.isValidationFailed()) {
+            userTransactionController.recordTransaction("Create Query Component");
             items = null;    // Invalidate list of items to trigger re-query.
         }
     }
 
     public void update() {
         persist(PersistAction.UPDATE, ResourceBundle.getBundle("/BundleQuery").getString("QueryComponentUpdated"));
+        userTransactionController.recordTransaction("Update Query Component");
     }
 
     public void destroy() {

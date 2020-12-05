@@ -36,6 +36,9 @@ public class UploadController implements Serializable {
     private lk.gov.health.phsp.facade.UploadFacade ejbFacade;
     @Inject
     private WebUserController webUserController;
+    @Inject
+    private UserTransactionController userTransactionController;
+    
     private List<Upload> items = null;
     private Upload selected;
     private Component selectedComponent;
@@ -61,6 +64,7 @@ public class UploadController implements Serializable {
             selected.setComponent(selectedComponent);
             getFacade().create(selected);
         }
+        userTransactionController.recordTransaction("To Upload Component Upload Single");
         return "/queryComponent/upload_query";
     }
 
@@ -188,6 +192,7 @@ public class UploadController implements Serializable {
         if (selected == null) {
             
             JsfUtil.addErrorMessage("No file. Error");
+            userTransactionController.recordTransaction("Upload File-Query Component");
             return "/queryComponent/query";
         }
 
@@ -216,7 +221,7 @@ public class UploadController implements Serializable {
 
 
         getFacade().edit(selected);
-
+        userTransactionController.recordTransaction("Upload File-Query Component");
         return "/queryComponent/query";
 
     }

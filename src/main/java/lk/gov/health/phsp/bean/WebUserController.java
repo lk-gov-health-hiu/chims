@@ -303,6 +303,7 @@ public class WebUserController implements Serializable {
         Map m = new HashMap();
         m.put("inss", getLoggableInstitutions());
         items = getFacade().findByJpql(j, m);
+        userTransactionController.recordTransaction("To Manage Institution Users");
         return "/insAdmin/manage_users";
     }
 
@@ -310,6 +311,7 @@ public class WebUserController implements Serializable {
         current = new WebUser();
         password = "";
         passwordReenter = "";
+        userTransactionController.recordTransaction("To Add New User By InsAdmin");
         return "/insAdmin/create_new_user";
     }
 
@@ -1034,10 +1036,12 @@ public class WebUserController implements Serializable {
         }
         if (!password.equals(passwordReenter)) {
             JsfUtil.addErrorMessage("Passwords do NOT match");
+            userTransactionController.recordTransaction("Save NewWebUser By InsAdmin-Passwords do NOT match");
             return "";
         }
         if (userNameExsists(current.getName())) {
             JsfUtil.addErrorMessage("Username already exists. Please try another.");
+            userTransactionController.recordTransaction("Save NewWebUser By InsAdmin-Username already exists");
             return "";
         }
         if (current.getId() != null) {
@@ -1045,6 +1049,7 @@ public class WebUserController implements Serializable {
             current.setLastEditeAt(new Date());
             getFacade().edit(current);
             JsfUtil.addSuccessMessage("User Details Updated");
+            userTransactionController.recordTransaction("Save NewWebUser By InsAdmin-User Details Updated");
             return "";
         }
         try {
@@ -1054,10 +1059,12 @@ public class WebUserController implements Serializable {
             getFacade().create(current);
             addWebUserPrivileges(current, getInitialPrivileges(current.getWebUserRole()));
             JsfUtil.addSuccessMessage(("A new User Created Successfully."));
+            userTransactionController.recordTransaction("Save NewWebUser By InsAdmin-Successfully");
         } catch (Exception e) {
             JsfUtil.addErrorMessage(e, ("Error Occured. Please change username and try again."));
             return "";
         }
+        userTransactionController.recordTransaction("Save NewWebUser By InsAdmin");
         return "/insAdmin/user_index";
     }
 

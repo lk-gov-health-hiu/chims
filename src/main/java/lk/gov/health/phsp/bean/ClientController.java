@@ -572,6 +572,7 @@ public class ClientController implements Serializable {
         m.put("fd", getFrom());
         m.put("td", getTo());
         items = getFacade().findByJpql(j, m, TemporalType.TIMESTAMP);
+        userTransactionController.recordTransaction("To Registerd Clients With Dates");
         return "/insAdmin/registered_clients";
     }
 

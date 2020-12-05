@@ -224,6 +224,7 @@ public class ClientEncounterComponentFormSetController implements Serializable {
     public String completeFormset() {
         if (selected == null) {
             JsfUtil.addErrorMessage("Nothing to Complete.");
+            userTransactionController.recordTransaction("Nothing to Complete in formset");
             return "";
         }
         save(selected);
@@ -234,6 +235,7 @@ public class ClientEncounterComponentFormSetController implements Serializable {
         executePostCompletionStrategies(selected);
         formEditable = false;
         JsfUtil.addSuccessMessage("Completed");
+        userTransactionController.recordTransaction("Formset Completed");
         return toViewFormset();
     }
 

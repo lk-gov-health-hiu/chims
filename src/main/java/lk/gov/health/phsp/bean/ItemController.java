@@ -47,6 +47,8 @@ public class ItemController implements Serializable {
     private WebUserController webUserController;
     @Inject
     ApplicationController applicationController;
+    @Inject
+    private UserTransactionController userTransactionController;
 
     private List<Item> items = null;
     private Item selected;
@@ -176,6 +178,7 @@ public class ItemController implements Serializable {
                 }
 
                 lk.gov.health.phsp.facade.util.JsfUtil.addSuccessMessage("Succesful. All the data in Excel File Impoted to the database");
+                userTransactionController.recordTransaction("Import Item");
                 return "";
             } catch (IOException ex) {
                 lk.gov.health.phsp.facade.util.JsfUtil.addErrorMessage(ex.getMessage());
@@ -548,11 +551,13 @@ public class ItemController implements Serializable {
         if (!JsfUtil.isValidationFailed()) {
             items = null; 
             applicationController.setItems(null);
+            userTransactionController.recordTransaction("Create Item");
         }
     }
 
     public void update() {
         persist(PersistAction.UPDATE, ResourceBundle.getBundle("/BundleClinical").getString("ItemUpdated"));
+        userTransactionController.recordTransaction("Update Item");
     }
 
     public void destroy() {

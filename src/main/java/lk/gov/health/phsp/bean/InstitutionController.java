@@ -72,10 +72,12 @@ public class InstitutionController implements Serializable {
         area = null;
         fillGnAreasOfSelected();
         JsfUtil.addSuccessMessage("Successfully added.");
+        userTransactionController.recordTransaction("Add Gn To Pmc");
     }
 
     public String toAddInstitution() {
         selected = new Institution();
+        userTransactionController.recordTransaction("To Add Institution");
         return "/institution/institution";
     }
 
@@ -121,6 +123,7 @@ public class InstitutionController implements Serializable {
     }
 
     public String toListInstitutions() {
+        userTransactionController.recordTransaction("To List Institutions");
         return "/institution/list";
     }
 
@@ -137,6 +140,7 @@ public class InstitutionController implements Serializable {
         getAreaFacade().edit(removingArea);
         fillGnAreasOfSelected();
         removingArea = null;
+        userTransactionController.recordTransaction("Remove Gn From Pmc");
     }
 
     public void fillGnAreasOfSelected() {
