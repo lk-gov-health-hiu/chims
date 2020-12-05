@@ -6,45 +6,29 @@
       xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:p="http://primefaces.org/ui">
 
-    <h:body>
+    <ui:composition>
+        <p:dialog id="WebUserPrivilegesDlg" widgetVar="WebUserPrivilegesDialog" modal="true" resizable="false" appendTo="@(body)" header="Manage Privileges">            
 
-        <ui:composition template="/template.xhtml">
+            <h:form id="WebUserPrivilegesForm">
 
-            <ui:define name="content">
+                <p:panelGrid id="display" columns="1" rendered="#{webUserController.selected != null}">
+                    <f:facet name="header" >
+                        <p:commandButton id="btnUpdate" 
+                                         process="tree btnUpdate" ajax="false" 
+                                         action="#{webUserController.updateUserPrivileges()}" 
+                                         value="#{bundleClinical.Save}" />
+                        <p:commandButton ajax="false" value="Back" action="WebUserPrivilegesDialog.hide()"/>
+                    </f:facet>
 
-                <h:form>
-                    <p:panel header="Manage Privileges" >
-
-                        <f:facet name="header" >
-                            <p:commandButton id="btnUpdate" 
-                                             process="tree btnUpdate" ajax="false" 
-                                             action="#{webUserController.updateUserPrivileges()}" 
-                                             value="#{bundleClinical.Save}" />
-                            <p:commandButton ajax="false" value="Back" action="manage_users"/>
-                        </f:facet>
-
-                        <p:tree id="tree"  value="#{webUserController.allPrivilegeRoot}" var="node"  
-                                selectionMode="checkbox" 
-                                selection="#{webUserController.selectedNodes}">  
-                            <p:treeNode>  
-                                <h:outputText value="#{node}" />  
-                            </p:treeNode> 
-                        </p:tree>  
-
-
-                    </p:panel>
-
-                </h:form>
-
-         
-
-
-            </ui:define>
-
-        </ui:composition>
-
-
-    </h:body>
-
-
+                    <p:tree id="tree"  value="#{webUserController.allPrivilegeRoot}" var="node"  
+                            selectionMode="checkbox" 
+                            selection="#{webUserController.selectedNodes}">  
+                        <p:treeNode>  
+                            <h:outputText value="#{node}" />  
+                        </p:treeNode> 
+                    </p:tree> 
+                </p:panelGrid>
+            </h:form>
+        </p:dialog>
+    </ui:composition>
 </html>
