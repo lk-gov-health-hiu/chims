@@ -1256,7 +1256,7 @@ public class ClientController implements Serializable {
     public String searchByPhn() {
         selectedClients = listPatientsByPhn(searchingPhn);
         if (selectedClients.size() == 1) {
-            selected = selectedClients.get(0);
+            setSelected(selectedClients.get(0));
             selectedClients = null;
             clearSearchById();
             return toClientProfile();
@@ -1271,7 +1271,7 @@ public class ClientController implements Serializable {
     public String searchByNic() {
         selectedClients = listPatientsByNic(searchingNicNo);
         if (selectedClients.size() == 1) {
-            selected = selectedClients.get(0);
+            setSelected(selectedClients.get(0));
             selectedClients = null;
             clearSearchById();
             return toClientProfile();
@@ -1286,7 +1286,7 @@ public class ClientController implements Serializable {
     public String searchByPhoneNumber() {
         selectedClients = listPatientsByPhone(searchingPhoneNumber);
         if (selectedClients.size() == 1) {
-            selected = selectedClients.get(0);
+            setSelected(selectedClients.get(0));
             selectedClients = null;
             clearSearchById();
             return toClientProfile();
@@ -1301,7 +1301,7 @@ public class ClientController implements Serializable {
     public String searchByPassportNo() {
         selectedClients = listPatientsByPassportNo(searchingPassportNo);
         if (selectedClients.size() == 1) {
-            selected = selectedClients.get(0);
+            setSelected(selectedClients.get(0));
             selectedClients = null;
             clearSearchById();
             return toClientProfile();
@@ -1316,7 +1316,7 @@ public class ClientController implements Serializable {
     public String searchByDrivingLicenseNo() {
         selectedClients = listPatientsByDrivingLicenseNo(searchingDrivingLicenceNo);
         if (selectedClients.size() == 1) {
-            selected = selectedClients.get(0);
+            setSelected(selectedClients.get(0));
             selectedClients = null;
             clearSearchById();
             return toClientProfile();
@@ -1335,7 +1335,7 @@ public class ClientController implements Serializable {
             selectedClients = listPatientsByLocalReferanceNo(searchingLocalReferanceNo);
         }
         if (selectedClients.size() == 1) {
-            selected = selectedClients.get(0);
+            setSelected(selectedClients.get(0));
             selectedClients = null;
             clearSearchById();
             userTransactionController.recordTransaction("search By Local Referance No");
@@ -1351,7 +1351,7 @@ public class ClientController implements Serializable {
     public String searchBySsNo() {
         selectedClients = listPatientsBySsNo(searchingSsNumber);
         if (selectedClients.size() == 1) {
-            selected = selectedClients.get(0);
+            setSelected(selectedClients.get(0));
             selectedClients = null;
             clearSearchById();
             return toClientProfile();
@@ -1392,7 +1392,7 @@ public class ClientController implements Serializable {
             return "";
         }
         if (selectedClients.size() == 1) {
-            selected = selectedClients.get(0);
+            setSelected(selectedClients.get(0));
             selectedClients = null;
             clearSearchById();
             userTransactionController.recordTransaction("search By All Id to Client Profile");
@@ -1429,7 +1429,7 @@ public class ClientController implements Serializable {
             return "";
         }
         if (selectedClients.size() == 1) {
-            selected = selectedClients.get(0);
+            setSelected(selectedClients.get(0));
             selectedClients = null;
             clearSearchById();
             userTransactionController.recordTransaction("search By ID to Client Profile");
@@ -1455,7 +1455,7 @@ public class ClientController implements Serializable {
             return "/client/search_by_id";
         }
         if (selectedClients.size() == 1) {
-            selected = selectedClients.get(0);
+            setSelected(selectedClients.get(0));
             selectedClients = null;
             searchingId = "";
             return toClientProfile();
