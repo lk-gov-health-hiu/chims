@@ -26,33 +26,45 @@
                         <p:panelGrid columns="2" rendered="#{areaController.selected != null}">
                             <p:outputLabel value="#{bundleClinical.EditAreaLabel_type}" for="type" />
                             <p:selectOneMenu id="type" 
-                                         value="#{areaController.selected.type}" 
-                                         title="#{bundleClinical.CreateAreaTitle_type}" >
-                            <f:selectItem itemLabel="Select" ></f:selectItem>
-                            <f:selectItems value="#{commonController.areaTypes}" ></f:selectItems>
-                        </p:selectOneMenu>
-                            
-                            
+                                             value="#{areaController.selected.type}" 
+                                             title="#{bundleClinical.CreateAreaTitle_type}" >
+                                <f:selectItem itemLabel="Select" ></f:selectItem>
+                                <f:selectItems value="#{commonController.areaTypes}" ></f:selectItems>
+                            </p:selectOneMenu>
+
+
                             <p:outputLabel value="#{bundleClinical.EditAreaLabel_name}" for="name" />
                             <p:inputText id="name" value="#{areaController.selected.name}" title="#{bundleClinical.EditAreaTitle_name}" />
                             <p:outputLabel value="#{bundleClinical.EditAreaLabel_code}" for="code" />
                             <p:inputText id="code" value="#{areaController.selected.code}" title="#{bundleClinical.EditAreaTitle_code}" />
-                            
-                            <p:outputLabel value="ID" for="id" />
-                            <p:inputText id="id" value="#{areaController.selected.areauid}" 
-                                         title="ID" />
-                            
-                            
+
+
                             <p:outputLabel value="#{bundleClinical.EditAreaLabel_parentArea}" for="parentArea" />
-                            <p:selectOneMenu id="parentArea"
-                                             filter="true"
-                                             filterMatchMode="contains"
-                                             value="#{areaController.selected.parentArea}" >
-                                <f:selectItem itemLabel="#{bundleClinical.SelectOneMessage}"/>
-                                <f:selectItems value="#{areaController.dsAreas}"
-                                               var="parentAreaItem"
-                                               itemValue="#{parentAreaItem}"/>
-                            </p:selectOneMenu>
+                            <p:autoComplete id="parentArea" 
+                                            completeMethod="#{areaController.completeAreas}"
+                                            value="#{areaController.selected.parentArea}"
+                                            var="pa"
+                                            itemLabel="#{pa.name}"
+                                            itemValue="#{pa}"></p:autoComplete>
+
+                            <p:outputLabel value="District" 
+                                           for="parentDistrict" />
+                            <p:autoComplete id="parentDistrict" 
+                                            value="#{areaController.selected.district}"
+                                            completeMethod="#{areaController.completeDistricts}"
+                                            var="d" 
+                                            itemLabel="#{d.name}"
+                                            itemValue="#{d}"></p:autoComplete>
+
+                            <p:outputLabel value="Province" 
+                                           for="parentProvince" />
+                            <p:autoComplete id="parentProvince" 
+                                            value="#{areaController.selected.province}"
+                                            completeMethod="#{areaController.completeProvinces}"
+                                            var="p" itemLabel="#{p.name}"
+                                            itemValue="#{p}">
+                            </p:autoComplete>
+                            
                             <p:outputLabel value="#{bundleClinical.EditAreaLabel_centreLongitude}" for="centreLongitude" />
                             <p:inputText id="centreLongitude" value="#{areaController.selected.centreLongitude}" title="#{bundleClinical.EditAreaTitle_centreLongitude}" />
                             <p:outputLabel value="#{bundleClinical.EditAreaLabel_centreLatitude}" for="centreLatitude" />

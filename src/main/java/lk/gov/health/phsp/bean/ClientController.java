@@ -1336,7 +1336,7 @@ public class ClientController implements Serializable {
             return "/client/search_by_id";
         }
         if (selectedClients.size() == 1) {
-            selected = selectedClients.get(0);
+            setSelected(selectedClients.get(0));
             selectedClients = null;
             searchingId = "";
             return toClientProfile();
