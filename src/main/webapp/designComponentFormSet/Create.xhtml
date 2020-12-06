@@ -19,19 +19,31 @@
                         <p:outputLabel value="Type" for="type" />
                         <p:selectOneMenu id="type" value="#{designComponentFormSetController.selected.componentSetType}" 
                                          title="#{bundleClinical.CreateDesignComponentFormSetTitle_renderType}" >
-                            <f:selectItems value="#{commonController.componentSetTypes}" ></f:selectItems>
+                            <f:selectItems value="#{commonController.componentSetTypes}"
+                                           var="componentSetTypes"
+                                           itemValue="#{componentSetTypes}"
+                                           itemLabel="#{componentSetTypes.label}">
+                            </f:selectItems>
                         </p:selectOneMenu>
                         
                         <p:outputLabel value="Panel" for="panel" />
                         <p:selectOneMenu id="panel" value="#{designComponentFormSetController.selected.panelType}" 
                                          title="Panel" >
-                            <f:selectItems value="#{commonController.panelTypes}" ></f:selectItems>
+                            <f:selectItems value="#{commonController.panelTypes}"
+                                           var="panelTypes"
+                                           itemValue="#{panelTypes}"
+                                           itemLabel="#{panelTypes.label}">
+                            </f:selectItems>
                         </p:selectOneMenu>
                         
                          <p:outputLabel value="Sex" for="sex" />
                          <p:selectOneMenu id="sex" value="#{designComponentFormSetController.selected.componentSex}" 
                                          title="Sex" >
-                             <f:selectItems value="#{commonController.componentSex}" ></f:selectItems>
+                             <f:selectItems value="#{commonController.componentSex}"
+                                            var="componentSex"
+                                            itemValue="#{componentSex}"
+                                            itemLabel="#{componentSex.label}">
+                             </f:selectItems>
                         </p:selectOneMenu>
 
                     </p:panelGrid>

@@ -8,9 +8,9 @@
 
     <body>
 
-        <ui:composition template="/template.xhtml">
+        <ui:composition template="/webUser/index.xhtml">
 
-            <ui:define name="content">
+            <ui:define name="webUserContents">
 
                 <h:form id="WebUserEditForm">
 
@@ -36,9 +36,10 @@
                                 <p:outputLabel value="User"  />
                                 <p:autoComplete value="#{userTransactionController.user}"
                                                 completeMethod="#{webUserController.completeUsers}"
-                                                var="u"
-                                                itemLabel="#{u.name}"
-                                                itemValue="#{u}"></p:autoComplete>
+                                                var="u" itemLabel="#{u.name}" itemValue="#{u}"
+                                                maxResults="15" minQueryLength="3"
+                                                forceSelection="true">
+                                </p:autoComplete>
 
                                 <p:outputLabel value="Data"  />
                                 <p:inputText  value="#{userTransactionController.data}" >

@@ -22,7 +22,7 @@
                                             value="#{institutionController.selected}"
                                             completeMethod="#{institutionController.completePmcis}"
                                             var="p" itemLabel="#{p.name}" itemValue="#{p}"
-                                            >
+                                            forceSelection="true" maxResults="15" minQueryLength="3">
                             </p:autoComplete>
                             <p:commandButton ajax="false" value="List" 
                                              action="#{institutionController.fillGnAreasOfSelected()}" ></p:commandButton>

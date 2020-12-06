@@ -20,6 +20,9 @@
                             <p:commandButton ajax="false" value="Search" action="#{clientController.searchByPhn()}" ></p:commandButton>
                             
                             
+                            <p:outputLabel value="Name" ></p:outputLabel>
+                            <p:inputText value="#{clientController.searchingName}"  autocomplete="off"  ></p:inputText>
+                            
                             <p:outputLabel value="NIC No" ></p:outputLabel>
                             <p:inputText value="#{clientController.searchingNicNo}"  autocomplete="off" ></p:inputText>
                             <p:commandButton ajax="false" value="Search" action="#{clientController.searchByNic()}" ></p:commandButton>

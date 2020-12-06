@@ -7,18 +7,12 @@
       xmlns:p="http://primefaces.org/ui">
 
     <ui:composition>
-
         <p:dialog id="QueryComponentEditDlg" widgetVar="QueryComponentEditDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundleQuery.EditQueryComponentTitle}">
             <h:form id="QueryComponentEditForm">
                 <h:panelGroup id="display">
-
                     <p:tabView rendered="#{queryComponentController.selected != null}">
                         <p:tab title="Basic Details" >
-
                             <p:panelGrid columns="2" >
-
-
-
                                 <p:outputLabel value="#{bundleQuery.CreateQueryComponentLabel_name}" for="name" />
                                 <p:inputText id="name" value="#{queryComponentController.selected.name}" title="#{bundleQuery.CreateQueryComponentTitle_name}" />
 
@@ -29,7 +23,7 @@
                                 <p:autoComplete id="parent" value="#{queryComponentController.selectedQuery.parentComponent}" 
                                                 completeMethod="#{queryComponentController.completeQueries}" 
                                                 var="q" itemLabel="#{q.name}" itemValue="#{q}" forceSelection="true"
-                                                >
+                                                maxResults="15" minQueryLength="3">
                                 </p:autoComplete>
 
                                 <p:outputLabel value="Descreption" for="descreption" />
@@ -40,29 +34,35 @@
                                 <p:outputLabel value="Level" for="queryLevel" />
                                 <p:selectOneMenu id="queryLevel"  value="#{queryComponentController.selected.queryLevel}" >
                                     <f:selectItem itemLabel="Select" ></f:selectItem>
-                                    <f:selectItems value="#{commonController.queryLevels}" ></f:selectItems>
+                                    <f:selectItems value="#{commonController.queryLevels}"
+                                                   var="queryLevels"
+                                                   itemValue="#{queryLevels}"
+                                                   itemLabel="#{queryLevels.label}">
+                                    </f:selectItems>
                                 </p:selectOneMenu>
-
-
                             </p:panelGrid>
-
 
                         </p:tab>
                         <p:tab title="Query Details" >
-
                             <p:panelGrid columns="2" >
-
-
                                 <p:outputLabel value="Type" for="queryType" />
                                 <p:selectOneMenu id="queryType"  value="#{queryComponentController.selected.queryType}" >
                                     <f:selectItem itemLabel="Select" ></f:selectItem>
-                                    <f:selectItems value="#{commonController.queryType}" ></f:selectItems>
+                                    <f:selectItems value="#{commonController.queryType}"
+                                                   var="queryType"
+                                                   itemValue="#{queryType}"
+                                                   itemLabel="#{queryType.label}">
+                                    </f:selectItems>
                                 </p:selectOneMenu>
 
                                 <p:outputLabel value="Output" for="outputType" />
                                 <p:selectOneMenu id="outputType"  value="#{queryComponentController.selected.outputType}" >
                                     <f:selectItem itemLabel="Select" ></f:selectItem>
-                                    <f:selectItems value="#{commonController.queryOutputTypes}" ></f:selectItems>
+                                    <f:selectItems value="#{commonController.queryOutputTypes}" 
+                                                   var="queryOutputTypes"
+                                                   itemValue="#{queryOutputTypes}"
+                                                   itemLabel="#{queryOutputTypes.label}">
+                                    </f:selectItems>
                                 </p:selectOneMenu>
 
                                 <p:outputLabel value="Population Type" for="populationType" />
@@ -85,12 +85,7 @@
                                     <p:selectBooleanCheckbox value="#{queryComponentController.selected.filterByYear}" itemLabel="Year" ></p:selectBooleanCheckbox>
                                     <p:selectBooleanCheckbox value="#{queryComponentController.selected.filterByQuarter}" itemLabel="Quarter" ></p:selectBooleanCheckbox>
                                     <p:selectBooleanCheckbox value="#{queryComponentController.selected.filterByMonth}" itemLabel="Month" ></p:selectBooleanCheckbox>
-
-
-
                                     <p:selectBooleanCheckbox value="#{queryComponentController.selected.filterByInstitution}" itemLabel="Institution" ></p:selectBooleanCheckbox>
-
-
                                 </p:panelGrid>
 
                                 <p:outputLabel value="Indicator Query" for="indicatorQuery" />
@@ -99,48 +94,57 @@
                             </p:panelGrid>
                         </p:tab>
                         <p:tab title="Criteria Details" >
-
                             <p:panelGrid columns="2">
-
                                 <p:outputLabel value="MatchType:" for="matchType" />
                                 <p:selectOneMenu id="matchType"  value="#{queryComponentController.selected.matchType}" >
                                     <f:selectItem itemLabel="Select" ></f:selectItem>
-                                    <f:selectItems value="#{commonController.queryCriteriaMatchTypes}" ></f:selectItems>
+                                    <f:selectItems value="#{commonController.queryCriteriaMatchTypes}"
+                                                   var="queryCriteriaMatchTypes"
+                                                   itemValue="#{queryCriteriaMatchTypes}"
+                                                   itemLabel="#{queryCriteriaMatchTypes.label}">
+                                    </f:selectItems>
                                 </p:selectOneMenu>
-
 
                                 <p:outputLabel value="EvaluationType:" for="evaluationType" />
                                 <p:selectOneMenu id="evaluationType"  value="#{queryComponentController.selected.evaluationType}" >
                                     <f:selectItem itemLabel="Select" ></f:selectItem>
-                                    <f:selectItems value="#{commonController.queryVariableEvaluationType}" ></f:selectItems>
+                                    <f:selectItems value="#{commonController.queryVariableEvaluationType}"
+                                                   var="QueryVariableEvaluationType"
+                                                   itemValue="#{QueryVariableEvaluationType}"
+                                                   itemLabel="#{QueryVariableEvaluationType.label}">
+                                    </f:selectItems>
                                 </p:selectOneMenu>
 
                                 <p:outputLabel value="Item:" for="item" />
                                 <p:autoComplete  id="item" completeMethod="#{itemController.completeDictionaryItems}" 
                                                  value="#{queryComponentController.selected.item}" itemValue="#{i}"
                                                  itemLabel="#{i.name}" var="i" 
-                                                 forceSelection="true"
+                                                 forceSelection="true" maxResults="15" minQueryLength="3"
                                                  >
                                     <p:column headerText="Name" >
                                         <p:outputLabel value="#{i.name}" ></p:outputLabel>
                                     </p:column>
+                                    
                                     <p:column headerText="Code" >
                                         <p:outputLabel value="#{i.code}" ></p:outputLabel>
                                     </p:column>
                                 </p:autoComplete>
 
-
                                 <p:outputLabel value="Data Type:" for="queryDataType" />
                                 <p:selectOneMenu id="queryDataType"  value="#{queryComponentController.selected.queryDataType}" >
                                     <f:selectItem itemLabel="Select" ></f:selectItem>
-                                    <f:selectItems value="#{commonController.queryDataTypes}" ></f:selectItems>
+                                    <f:selectItems value="#{commonController.queryDataTypes}"
+                                                   var="queryDataTypes"
+                                                   itemValue="#{queryDataTypes}"
+                                                   itemLabel="#{queryDataTypes.label}">
+                                    </f:selectItems>
                                 </p:selectOneMenu>
 
                                 <p:outputLabel value="Item Value:" for="itemValue" />
                                 <p:autoComplete  id="itemValue" completeMethod="#{itemController.completeDictionaryItems}" 
                                                  value="#{queryComponentController.selected.itemValue}" itemValue="#{iv}"
                                                  itemLabel="#{iv.name}" var="iv" 
-                                                 forceSelection="true"
+                                                 forceSelection="true" maxResults="15" minQueryLength="3"
                                                  >
                                     <p:column headerText="Name" >
                                         <p:outputLabel value="#{iv.name}" ></p:outputLabel>
@@ -168,24 +172,13 @@
 
                                 <p:outputLabel value="Real Number Value 2:" for="realNumberValue2" />
                                 <p:inputText id="realNumberValue2" value="#{queryComponentController.selected.realNumberValue2}" title="RealNumberValue2" />
-
-
-
-
                             </p:panelGrid>
-
-
-
-
-
                         </p:tab>
                     </p:tabView>
-
                     <p:commandButton action="#{queryComponentController.update}" value="#{bundleQuery.Save}" ajax="false"/>
                     
                 </h:panelGroup>
             </h:form>
         </p:dialog>
-
     </ui:composition>
 </html>

@@ -264,6 +264,7 @@ public class QueryComponentController implements Serializable {
         saveItem(addingCategory);
         categories = null;
         addingCategory = null;
+        userTransactionController.recordTransaction("Save Category Query Component");
     }
     
     public void saveExcel() {
@@ -289,6 +290,7 @@ public class QueryComponentController implements Serializable {
         addingSubcategory.setParentComponent(selectedCategory);
         saveItem(addingSubcategory);
         addingSubcategory = null;
+        userTransactionController.recordTransaction("Save SubCategory");
     }
 
     public void saveQuery() {
@@ -333,6 +335,7 @@ public class QueryComponentController implements Serializable {
         addingCriterian.setParentComponent(selectedQuery);
         saveItem(addingCriterian);
         addingCriterian = null;
+        userTransactionController.recordTransaction("Save Criterian");
     }
 
     public List<QueryComponent> fillCriteriaofTheSelectedQuery(QueryComponent set) {
@@ -366,6 +369,7 @@ public class QueryComponentController implements Serializable {
         getFacade().create(addingQuery);
         fillCriteriaofTheSelectedQuery();
         addingQuery = null;
+        userTransactionController.recordTransaction("Add Criterian To The Selected Queries Criteria");
     }
 
     public void remove() {
@@ -382,6 +386,7 @@ public class QueryComponentController implements Serializable {
         }
         removing = null;
         JsfUtil.addSuccessMessage("Removed");
+        userTransactionController.recordTransaction("Remove Query Component");
     }
 
     public void moveUpTheSelectedSet() {
@@ -401,6 +406,7 @@ public class QueryComponentController implements Serializable {
         fillCriteriaofTheSelectedQuery();
         moving = null;
         JsfUtil.addSuccessMessage("Item Moved Up");
+        userTransactionController.recordTransaction("Query Component-Item Moved Up");
     }
 
     public void moveDownTheSelectedSet() {
@@ -419,9 +425,11 @@ public class QueryComponentController implements Serializable {
         }
         fillCriteriaofTheSelectedQuery();
         JsfUtil.addSuccessMessage("Item Moved Down");
+        userTransactionController.recordTransaction("Query Component-Item Moved Down");
     }
 
     public void saveSelectedItem() {
+        userTransactionController.recordTransaction("Save Selected Item Query Component");
         saveItem(selected);
     }
 
@@ -451,6 +459,7 @@ public class QueryComponentController implements Serializable {
     }
 
     public String backToManageQueries() {
+        userTransactionController.recordTransaction("Back To Manage Queries");
         return "/queryComponent/List";
     }
 
@@ -459,7 +468,7 @@ public class QueryComponentController implements Serializable {
             JsfUtil.addErrorMessage("Nothing to Edit");
             return "";
         }
-
+        userTransactionController.recordTransaction("To Edit Criterian");
         return "/queryComponent/item";
     }
 
@@ -831,7 +840,7 @@ public class QueryComponentController implements Serializable {
         try (FileOutputStream outputStream = new FileOutputStream(newFile)) {
             workbook.write(outputStream);
         } catch (Exception e) {
-            //System.out.println("e = " + e);
+            
         }
 
         InputStream stream;
@@ -839,7 +848,7 @@ public class QueryComponentController implements Serializable {
             stream = new FileInputStream(newFile);
             resultExcelFile = new DefaultStreamedContent(stream, mimeType, FILE_NAME);
         } catch (FileNotFoundException ex) {
-            //System.out.println("ex = " + ex);
+            
         }
 
     }
@@ -895,8 +904,7 @@ public class QueryComponentController implements Serializable {
     }
 
     public String testQuery() {
-        ////System.out.println("processQuery");
-        ////System.out.println("selectedForQuery = " + selectedForQuery);
+       
         if (selectedForQuery == null) {
             JsfUtil.addErrorMessage("Nothing selected");
             return "";
@@ -919,10 +927,264 @@ public class QueryComponentController implements Serializable {
         qrs.add(qr);
         return "graph";
     }
+    
+    
+    
+    
+    
+    public String processQueryNew() {
+        
+        if (selectedForQuery == null) {
+            JsfUtil.addErrorMessage("Nothing selected");
+            return "";
+        }
+
+
+
+        qrs = new ArrayList<>();
+        QueryResult qr = new QueryResult();
+
+        Date tfrom = null;
+        Date tTo = null;
+        Integer tYear = null;
+        Integer tQuater = null;
+
+        if (periodType != null) {
+            switch (periodType) {
+                case After:
+                    tfrom = from;
+                    break;
+                case All:
+                    break;
+                case Before:
+                    tTo = to;
+                    break;
+                case Period:
+                    tfrom = from;
+                    tTo = to;
+                    break;
+                case Quarter:
+                    tQuater = quarter;
+                    tfrom = CommonController.startOfQuarter(year, quarter);
+
+                    tTo = CommonController.endOfQuarter(year, quarter);
+                    break;
+                case Year:
+                    tYear = year;
+                    tfrom = CommonController.startOfTheYear(year);
+                    tTo = CommonController.endOfYear(year);
+                    break;
+            }
+        }
+
+        from = tfrom;
+        to = tTo;
+
+        qr.setAreaType(areaType);
+        qr.setPeriodType(periodType);
+
+        switch (areaType) {
+            case Distirct:
+                qr.setArea(district);
+                qr.setTfrom(tfrom);
+                qr.settTo(tTo);
+                qr.settYear(tYear);
+                qr.settQuater(tQuater);
+                qrs.add(qr);
+                break;
+            case GN:
+                qr.setTfrom(tfrom);
+                qr.settTo(tTo);
+                qr.settYear(tYear);
+                qr.settQuater(tQuater);
+                qr.setArea(gn);
+                qrs.add(qr);
+                break;
+            case MOH:
+                qr.setTfrom(tfrom);
+                qr.settTo(tTo);
+                qr.settYear(tYear);
+                qr.settQuater(tQuater);
+                qr.setArea(moh);
+                qrs.add(qr);
+                break;
+            case National:
+                qr.setTfrom(tfrom);
+                qr.settTo(tTo);
+                qr.settYear(tYear);
+                qr.settQuater(tQuater);
+                qr.setArea(areaController.getNationalArea());
+                qrs.add(qr);
+                break;
+            case PHM:
+                qr.setTfrom(tfrom);
+                qr.settTo(tTo);
+                qr.settYear(tYear);
+                qr.settQuater(tQuater);
+                qr.setArea(phm);
+                qrs.add(qr);
+                break;
+            case Province:
+                qr.setTfrom(tfrom);
+                qr.settTo(tTo);
+                qr.settYear(tYear);
+                qr.settQuater(tQuater);
+                qr.setArea(province);
+                qrs.add(qr);
+                break;
+
+            case Province_List:
+                for (Area p : areaController.getProvinces()) {
+                    qr = new QueryResult();
+                    qr.setArea(p);
+                    qr.setAreaType(areaType);
+                    qr.setPeriodType(periodType);
+                    qr.setTfrom(tfrom);
+                    qr.settTo(tTo);
+                    qr.settYear(tYear);
+                    qr.settQuater(tQuater);
+                    qrs.add(qr);
+                }
+                break;
+            case District_List:
+                for (Area d : areaController.getDistricts()) {
+                    qr = new QueryResult();
+                    qr.setArea(d);
+                    qr.setAreaType(areaType);
+                    qr.setPeriodType(periodType);
+                    qr.setTfrom(tfrom);
+                    qr.settTo(tTo);
+                    qr.settYear(tYear);
+                    qr.settQuater(tQuater);
+                    qrs.add(qr);
+                }
+                break;
+            case District_MOH_List:
+                for (Area d : areaController.getMohAreasOfADistrict(district)) {
+                    qr = new QueryResult();
+                    qr.setArea(d);
+                    qr.setAreaType(areaType);
+                    qr.setPeriodType(periodType);
+                    qr.setTfrom(tfrom);
+                    qr.settTo(tTo);
+                    qr.settYear(tYear);
+                    qr.settQuater(tQuater);
+                    qrs.add(qr);
+                }
+                break;
+
+            case MOH_GN_List:
+                for (Area d : areaController.getGnAreasOfMoh(moh)) {
+                    qr = new QueryResult();
+                    qr.setArea(d);
+                    qr.setAreaType(areaType);
+                    qr.setPeriodType(periodType);
+                    qr.setTfrom(tfrom);
+                    qr.settTo(tTo);
+                    qr.settYear(tYear);
+                    qr.settQuater(tQuater);
+                    qrs.add(qr);
+                }
+                break;
+            case MOH_PHM_List:
+                for (Area d : areaController.getPhmAreasOfMoh(moh)) {
+                    qr = new QueryResult();
+                    qr.setArea(d);
+                    qr.setAreaType(areaType);
+                    qr.setPeriodType(periodType);
+                    qr.setTfrom(tfrom);
+                    qr.settTo(tTo);
+                    qr.settYear(tYear);
+                    qr.settQuater(tQuater);
+                    qrs.add(qr);
+                }
+                break;
+            case PHM_GN_List:
+                for (Area d : areaController.getGnAreasOfPhm(moh)) {
+                    qr = new QueryResult();
+                    qr.setArea(d);
+                    qr.setAreaType(areaType);
+                    qr.setPeriodType(periodType);
+                    qr.setTfrom(tfrom);
+                    qr.settTo(tTo);
+                    qr.settYear(tYear);
+                    qr.settQuater(tQuater);
+                    qrs.add(qr);
+                }
+                break;
+            case Province_District_list:
+                for (Area d : areaController.getDistrictsOfAProvince(province)) {
+                    qr = new QueryResult();
+                    qr.setArea(d);
+                    qr.setAreaType(areaType);
+                    qr.setPeriodType(periodType);
+                    qr.setTfrom(tfrom);
+                    qr.settTo(tTo);
+                    qr.settYear(tYear);
+                    qr.settQuater(tQuater);
+                    qrs.add(qr);
+                }
+                break;
+        }
+
+        for (QueryResult tqr : qrs) {
+
+            switch (selectedForQuery.getQueryType()) {
+                case Population:
+                    Integer ty = tqr.gettYear();
+                    if (ty == null) {
+                        Calendar c = Calendar.getInstance();
+                        if (tqr.getTfrom() != null) {
+                            c.setTime(tqr.getTfrom());
+                        } else if (tqr.gettTo() != null) {
+                            c.setTime(tqr.gettTo());
+                        }
+                        ty = c.get(Calendar.YEAR);
+                    }
+                    tqr.setJpq(createAPopulationCountQuery(selectedForQuery, tqr.getArea(), ty));
+                    if (tqr.getJpq().getLongResult() != null) {
+                        tqr.setResultString(tqr.getJpq().getQc().getName() + " = " + tqr.getJpq().getLongResult());
+                    }
+                    tqr.setResultRelationshipList(tqr.getJpq().getRelationshipList());
+                    break;
+
+                case Indicator:
+                    tqr.setJpq(handleIndicatorQuery(selectedForQuery, tqr.getArea(), tqr.getTfrom(), tqr.gettTo(),
+                            tqr.gettYear(), tqr.gettQuater()));
+                    tqr.setLongResult(tqr.getJpq().getLongResult());
+                    tqr.setDblResult(tqr.getJpq().getDblResult());
+                    break;
+                case Client:
+                    tqr.setJpq(createClientQuery(selectedForQuery, tqr.getArea(), tqr.getTfrom(), tqr.gettTo(),
+                            tqr.gettYear(), tqr.gettQuater()));
+                    if (tqr.getJpq().getLongResult() != null) {
+                        tqr.setResultString(tqr.getJpq().getQc().getName() + " = " + tqr.getJpq().getLongResult());
+                    }
+                    tqr.setLongResult(tqr.getJpq().getLongResult());
+                    tqr.setResultClientList(tqr.getJpq().getClientList());
+                    break;
+
+                case First_Encounter:
+                    break;
+
+                case Any_Encounter:
+                    break;
+
+                case Formset:
+                    break;
+
+            }
+
+        }
+
+        clearFilters();
+
+        return "graph";
+    }
+ 
 
     public String processQuery() {
-        ////System.out.println("processQuery");
-        ////System.out.println("selectedForQuery = " + selectedForQuery);
+        
         if (selectedForQuery == null) {
             JsfUtil.addErrorMessage("Nothing selected");
             return "";
@@ -1121,9 +1383,7 @@ public class QueryComponentController implements Serializable {
         }
 
         for (QueryResult tqr : qrs) {
-            System.out.println("tqr.getTfrom() = " + tqr.getTfrom());
-            System.out.println("tqr.gettTo() = " + tqr.gettTo());
-//            //System.out.println("selectedForQuery.getQueryType() = " + selectedForQuery.getQueryType());
+
             switch (selectedForQuery.getQueryType()) {
                 case Population:
                     Integer ty = tqr.gettYear();
@@ -1173,7 +1433,7 @@ public class QueryComponentController implements Serializable {
         }
 
         clearFilters();
-
+        userTransactionController.recordTransaction("Process Query");
         return "graph";
     }
 
@@ -1182,16 +1442,16 @@ public class QueryComponentController implements Serializable {
         List<Replaceable> replaceables = findReplaceblesInIndicatorQuery(qc.getIndicatorQuery());
         Jpq j = new Jpq();
         for (Replaceable r : replaceables) {
-            ////System.out.println("r.getQryCode() = " + r.getQryCode());
+            
             QueryComponent temqc = findLastQuery(r.getQryCode());
-            ////System.out.println("temqc = " + temqc);
+            
             if (temqc == null) {
                 JsfUtil.addErrorMessage("Wrong Query. Check the names of queries");
                 return new Jpq();
             }
 
             j = new Jpq();
-            ////System.out.println("temqc.getQueryType() = " + temqc.getQueryType());
+            
             if (null == temqc.getQueryType()) {
                 JsfUtil.addErrorMessage("Wrong Query. Check the names of queries");
 
@@ -1210,18 +1470,18 @@ public class QueryComponentController implements Serializable {
                         return j;
                 }
             }
-            ////System.out.println("j.getLongResult() = " + j.getLongResult());
+            
             r.setSelectedValue(j.getLongResult() + "");
         }
         String javaStringToEvaluate = addTemplateToReport(qc.getIndicatorQuery().trim(), replaceables);
-        ////System.out.println("javaString To Evaluate = \n" + javaStringToEvaluate);
+        
         rs = "Formula \t" + javaStringToEvaluate + "\n";
         String res = evaluateScript(javaStringToEvaluate);
         rs += "Result : " + res;
         Double dbl = CommonController.getDoubleValue(res);
-        ////System.out.println("dbl = " + dbl);
+        
         Long lng = CommonController.getLongValue(res);
-        ////System.out.println("lng = " + lng);
+        
         j.setLongResult(lng);
         j.setDblResult(dbl);
         return j;
@@ -1233,7 +1493,7 @@ public class QueryComponentController implements Serializable {
         try {
             return engine.eval(script) + "";
         } catch (ScriptException ex) {
-            ////System.out.println("ex = " + ex.getMessage());
+            
             return null;
         }
     }
@@ -1244,13 +1504,11 @@ public class QueryComponentController implements Serializable {
             String patternEnd = "}";
             String toBeReplaced;
             toBeReplaced = patternStart + s.getFullText() + patternEnd;
-            ////System.out.println("toBeReplaced = " + toBeReplaced);
+            
             calculationScript = calculationScript.replace(toBeReplaced, s.getSelectedValue());
-            ////System.out.println("toBeReplaced = " + toBeReplaced);
-            ////System.out.println("s.getSelectedValue() = " + s.getSelectedValue());
-            ////System.out.println("calculationScript = " + calculationScript);
+           
         }
-        ////System.out.println("calculationScript = " + calculationScript);
+        
         return calculationScript;
     }
 
@@ -1280,6 +1538,7 @@ public class QueryComponentController implements Serializable {
         items = null;
         selectedToDuplicateQuery = q;
         JsfUtil.addSuccessMessage("Duplicated");
+        userTransactionController.recordTransaction("Duplicate Query Component");
     }
 
     public void duplicate() {
@@ -1308,6 +1567,7 @@ public class QueryComponentController implements Serializable {
         items = null;
         selectedQuery = q;
         JsfUtil.addSuccessMessage("Duplicated");
+        userTransactionController.recordTransaction("Duplicate Query Component");
     }
 
     public void retire() {
@@ -1325,7 +1585,7 @@ public class QueryComponentController implements Serializable {
     }
 
     public Jpq createAPopulationCountQuery(QueryComponent qc, Area qarea, Integer qyear) {
-        ////System.out.println("create A Population Count Query");
+        
         Jpq jpql = new Jpq();
         jpql.setQc(qc);
         jpql.setJselect("select r.longValue1  ");
@@ -1346,22 +1606,20 @@ public class QueryComponentController implements Serializable {
         jpql.getM().put("f", false);
         jpql.setJgroupby("");
 
-        ////System.out.println("jpql.getM() = " + jpql.getM());
-        ////System.out.println("jpql.getJpql() = " + jpql.getJpql());
+       
         jpql.setLongResult(getItemFacade().findLongByJpql(jpql.getJpql(), jpql.getM(), 1));
 
         return jpql;
     }
 
     public Jpq createClientQuery(QueryComponent qc, Area ccArea, Date ccFrom, Date ccTo, Integer ccYear, Integer ccQuarter) {
-//        //System.out.println("Create A Client Count Query");
+
         Jpq jpql = new Jpq();
         jpql.setQc(qc);
         List<QueryComponent> criterias = criteria(qc);
         jpql.getM().put("f", false);
         if (criterias == null || criterias.isEmpty()) {
             // <editor-fold defaultstate="collapsed" desc="No Criteria">
-//            //System.out.println("No Criteria");
 
             jpql.setJwhere(" where c.retired=:f ");
             jpql.setJfrom("  from Client c ");
@@ -1397,7 +1655,7 @@ public class QueryComponentController implements Serializable {
                 jpql.getM().put("d2", ccTo);
             }
 
-            ////System.out.println("ccArea = " + ccArea);
+            
             if (ccArea != null) {
                 switch (ccArea.getType()) {
                     case District:
@@ -1413,14 +1671,12 @@ public class QueryComponentController implements Serializable {
 
             }
 
-            ////System.out.println("j.getJpql() = " + jpql.getJpql());
-            ////System.out.println("j.getM() = " + jpql.getM());
+            
             if (qc.getOutputType() == QueryOutputType.List) {
                 jpql.setClientList(getClientFacade().findByJpql(jpql.getJpql(), jpql.getM()));
             } else {
                 jpql.setLongResult(getItemFacade().findLongByJpql(jpql.getJpql(), jpql.getM(), 1));
-                ////System.out.println("jpql.getLongResult() = " + jpql.getLongResult());
-
+                
             }
 
             return jpql;
@@ -1428,7 +1684,6 @@ public class QueryComponentController implements Serializable {
             // </editor-fold>
         } else if (criterias.size() == 1) {
             // <editor-fold defaultstate="collapsed" desc="Single Criteria">
-//            //System.out.println("Single Criteria");
 
             if (qc.getOutputType() == QueryOutputType.List) {
                 jpql.setJselect("select distinct(c)  ");
@@ -1441,8 +1696,7 @@ public class QueryComponentController implements Serializable {
 
             QueryComponent c = criterias.get(0);
 
-            ////System.out.println("criterias.get(0) = " + criterias.get(0));
-            ////System.out.println("c.getMatchType() = " + c.getMatchType());
+            
             if (c.getMatchType() == QueryCriteriaMatchType.Variable_Value_Check) {
                 jpql.setJwhere(jpql.getJwhere() + " and i.item=:v1 and i.itemValue=:d1 ");
                 jpql.getM().put("v1", c.getItem());
@@ -1451,7 +1705,7 @@ public class QueryComponentController implements Serializable {
                 jpql.setJwhere(jpql.getJwhere() + " and i.item=:v1 ");
                 jpql.getM().put("v1", c.getItem());
                 String eval = "";
-                ////System.out.println("c.getEvaluationType() = " + c.getEvaluationType());
+                
                 switch (c.getEvaluationType()) {
                     case Equal:
                         eval = "=";
@@ -1469,7 +1723,7 @@ public class QueryComponentController implements Serializable {
                         eval = "<=";
                         break;
                 }
-//                //System.out.println("c.getEvaluationType() = " + c.getEvaluationType());
+
                 switch (c.getEvaluationType()) {
                     case Equal:
                     case Grater_than_or_equal:
@@ -1572,7 +1826,7 @@ public class QueryComponentController implements Serializable {
                 jpql.getM().put("date2", ccTo);
             }
 
-            ////System.out.println("ccArea = " + ccArea);
+            
             if (ccArea != null) {
                 switch (ccArea.getType()) {
                     case District:
@@ -1588,13 +1842,11 @@ public class QueryComponentController implements Serializable {
 
             }
 
-//            //System.out.println("j.getJpql() = " + jpql.getJpql());
-//            //System.out.println("j.getM() = " + jpql.getM());
             if (qc.getOutputType() == QueryOutputType.List) {
                 jpql.setClientList(getClientFacade().findByJpql(jpql.getJpql(), jpql.getM()));
             } else {
                 jpql.setLongResult(getItemFacade().findLongByJpql(jpql.getJpql(), jpql.getM(), 1));
-                ////System.out.println("jpql.getLongResult() = " + jpql.getLongResult());
+               
             }
 
             return jpql;
@@ -1602,7 +1854,7 @@ public class QueryComponentController implements Serializable {
             // </editor-fold>
         } else {
             // <editor-fold defaultstate="collapsed" desc="Multiple Criteria">
-//            //System.out.println("Multiple Criteria");
+
             String ss = "";
             if (qc.getOutputType() == QueryOutputType.List) {
                 ss = "select distinct (c) from Client c, ";
@@ -1616,8 +1868,6 @@ public class QueryComponentController implements Serializable {
 
             int count = 1;
             for (QueryComponent qcm : criterias) {
-                ////System.out.println("count = " + count);
-                ////System.out.println("criterias.size() = " + criterias.size());
                 if (count != criterias.size()) {
                     ss += " ClientEncounterComponentItem i" + count + ", ";
                     w2 += " c.id=i" + count + ".itemClient.id and ";
@@ -1627,9 +1877,7 @@ public class QueryComponentController implements Serializable {
                     w2 += " c.id=i" + count + ".itemClient.id and ";
                     w3 += createJpqlBlockFromQueryComponentCriteria(qcm, jpql.getM(), count) + " ";
                 }
-                ////System.out.println("ss = " + ss);
-                ////System.out.println("w2 = " + w2);
-                ////System.out.println("w3 = " + w3);
+                
                 count++;
             }
 
@@ -1637,7 +1885,7 @@ public class QueryComponentController implements Serializable {
             jpql.setJfrom(ss);
             jpql.setJwhere(w1 + w2 + w3 + " and c.retired=:f ");
 
-            ////System.out.println("Adding Period Filters");
+            
             if (ccYear != null && ccQuarter != null) {
                 //TODO: Correct Code
                 jpql.setJwhere(jpql.getJwhere() + " and extract(year from c.createdAt)=:ey and "
@@ -1660,10 +1908,10 @@ public class QueryComponentController implements Serializable {
                 jpql.setJwhere(jpql.getJwhere() + " and c.createdAt < :date2 ");
                 jpql.getM().put("date2", ccTo);
             } else {
-                ////System.out.println("No valid Period Filter");
+               
             }
 
-            ////System.out.println("Adding Area Filters");
+            
             if (ccArea != null) {
                 switch (ccArea.getType()) {
                     case District:
@@ -1676,21 +1924,44 @@ public class QueryComponentController implements Serializable {
                         break;
                     //TODO: Add codes for other areas
                     default:
-                    ////System.out.println("Filter NOT supported.");
+                    
                 }
 
             }
 
             //TODO : More code needed for MOH, PHM ,etc
             jpql.setJgroupby("");
-            //System.out.println("j.getJpql() = " + jpql.getJpql());
-            //System.out.println("j.getM() = " + jpql.getM());
+            
             if (qc.getOutputType() == QueryOutputType.List) {
                 jpql.setClientList(getClientFacade().findByJpql(jpql.getJpql(), jpql.getM()));
             } else {
                 jpql.setLongResult(getItemFacade().findLongByJpql(jpql.getJpql(), jpql.getM(), 1));
             }
 
+            /**
+             * 
+             * 
+            
+            select count(distinct c) from Client c,  
+            ClientEncounterComponentItem i1,  ClientEncounterComponentItem i2   
+            
+            where  c.id=i1.itemClient.id 
+            and  c.id=i2.itemClient.id 
+            and  i1.item=:v1 
+            and  
+            and  i2.item=:v2 and i2.itemValue=:d2   and c.retired=:f  and c.createdAt between :date1 and :date2  and c.person.district=:area  
+            
+            * 
+            * 
+            * 
+             */
+            
+            //select count(distinct c) from Client c,
+            // ClientEncounterComponentItem i1,  ClientEncounterComponentItem i2   
+            // where  c.id=i1.itemClient.id and  
+             // c.id=i2.itemClient.id and  
+             // i1.item=:v1 and  and  i2.item=:v2 and i2.itemValue=:d2   and c.retired=:f  and c.createdAt between :date1 and :date2  and c.person.district=:area  
+            
             return jpql;
 
             // </editor-fold>
@@ -1808,7 +2079,7 @@ public class QueryComponentController implements Serializable {
     }
 
     public Jpq createAClientListQuery(QueryComponent qc) {
-        ////System.out.println("createAClientListQuery");
+        
         Jpq j = new Jpq();
         j.setQc(qc);
         j.setJselect("select distinct i.parentComponent.parentComponent.encounter.client  ");
@@ -1871,14 +2142,13 @@ public class QueryComponentController implements Serializable {
         }
 
         j.setJgroupby("");
-        ////System.out.println("j.getJpql() = " + j.getJpql());
-        ////System.out.println("j.getM() = " + j.getM());
+        
         j.setClientList(getClientFacade().findByJpql(j.getJpql(), j.getM()));
         return j;
     }
 
     public Jpq createAnEncounterListQuery(QueryComponent qc) {
-        ////System.out.println("createAClientListQuery");
+       
         Jpq j = new Jpq();
         j.setQc(qc);
         j.setJselect("select distinct i.parentComponent.parentComponent.encounter  ");
@@ -1941,10 +2211,9 @@ public class QueryComponentController implements Serializable {
         }
 
         j.setJgroupby("");
-        ////System.out.println("j.getJpql() = " + j.getJpql());
-        ////System.out.println("j.getM() = " + j.getM());
+        
         j.setEncounterList(getEncounterFacade().findByJpql(j.getJpql(), j.getM()));
-        ////System.out.println("j.getEncounterList() = " + j.getEncounterList());
+        
         return j;
     }
 
@@ -1998,8 +2267,7 @@ public class QueryComponentController implements Serializable {
     }
 
     public List<Replaceable> findReplaceblesInWhereQuery(String text) {
-        // ////System.out.println("findReplaceblesInWhereQuery");
-        // ////System.out.println("text = " + text);
+        
 
         List<Replaceable> ss = new ArrayList<>();
 
@@ -2052,8 +2320,7 @@ public class QueryComponentController implements Serializable {
     }
 
     public List<Replaceable> findReplaceblesInIndicatorQuery(String text) {
-        ////System.out.println("findReplaceblesInWhereQuery");
-        ////System.out.println("text = " + text);
+       
 
         List<Replaceable> ss = new ArrayList<>();
 
@@ -2105,12 +2372,14 @@ public class QueryComponentController implements Serializable {
     public void create() {
         persist(PersistAction.CREATE, ResourceBundle.getBundle("/BundleQuery").getString("QueryComponentCreated"));
         if (!JsfUtil.isValidationFailed()) {
+            userTransactionController.recordTransaction("Create Query Component");
             items = null;    // Invalidate list of items to trigger re-query.
         }
     }
 
     public void update() {
         persist(PersistAction.UPDATE, ResourceBundle.getBundle("/BundleQuery").getString("QueryComponentUpdated"));
+        userTransactionController.recordTransaction("Update Query Component");
     }
 
     public void destroy() {

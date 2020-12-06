@@ -7,19 +7,12 @@
       xmlns:p="http://primefaces.org/ui">
 
     <body>
-
         <ui:composition template="./../template.xhtml">
 
             <ui:define name="content">
-
-
-
                 <f:view>
-
                     <p:panel header="Form Item Details" style="width: 100%; text-align: center;" >
-
                         <h:form>
-
                             <p:panelGrid columns="1" rendered="#{designComponentFormItemController.selected ne null}"
                                          style="margin: auto; text-align: left; width: 80%;">
                                 <f:facet name="header" >
@@ -36,10 +29,7 @@
 
                                 <p:tabView >
                                     <p:tab title="Basic" >
-
                                         <p:panelGrid columns="2" >
-
-
                                             <p:outputLabel value="Name:" for="name" />
                                             <p:inputText id="name" required="true" rendered="true"
                                                          value="#{designComponentFormItemController.selected.name}" title="Name" />
@@ -48,10 +38,10 @@
                                             <p:inputTextarea id="descreption"
                                                              value="#{designComponentFormItemController.selected.descreption}" title="Name" />
 
-
                                             <p:outputLabel value="Item:" for="item" />
                                             <p:autoComplete id="item" value="#{designComponentFormItemController.selected.item}"
                                                             completeMethod="#{itemController.completeDictionaryItems}" forceSelection="true"
+                                                            maxResults="15" minQueryLength="3"
                                                             required="true"   var="dic" itemLabel="#{dic.code}" itemValue="#{dic}">
                                                 <p:column headerText="Name" >
                                                     <p:outputLabel value="#{dic.name}" ></p:outputLabel>
@@ -63,20 +53,19 @@
 
                                             <p:outputLabel value="Order No:" for="orderNo" />
                                             <p:inputText id="orderNo" value="#{designComponentFormItemController.selected.orderNo}" title="OrderNo" />
-
-                                            
-
                                         </p:panelGrid>
 
                                     </p:tab>
                                     <p:tab title="Data" >
-
                                         <p:panelGrid columns="2" >
 
                                             <p:outputLabel value="Data Type:" for="selectionDataType" />
                                             <p:selectOneMenu id="selectionDataType" required="true"
                                                              value="#{designComponentFormItemController.selected.selectionDataType}" title="SelectionDataType" >
-                                                <f:selectItems value="#{commonController.selectionDataTypes}" ></f:selectItems>
+                                                <f:selectItems value="#{commonController.selectionDataTypes}"
+                                                               var="selectionDataTypes"
+                                                               itemValue="#{selectionDataTypes}"
+                                                               itemLabel="#{selectionDataTypes.label}" ></f:selectItems>
                                             </p:selectOneMenu>
 
                                             <p:outputLabel value="Data Population Strategy:" for="dataPopulationStrategy" />
@@ -90,7 +79,11 @@
                                             <p:selectOneMenu id="dataCompletionStrategy" 
                                                              value="#{designComponentFormItemController.selected.dataCompletionStrategy}" 
                                                              title="DataCompletionStrategy" >
-                                                <f:selectItems value="#{commonController.dataCompletionStrategies}" ></f:selectItems>
+                                                <f:selectItems value="#{commonController.dataCompletionStrategies}"
+                                                               var="dataCompletionStrategies"
+                                                               itemValue="#{dataCompletionStrategies}"
+                                                               itemLabel="#{dataCompletionStrategies.label}">
+                                                </f:selectItems>
                                             </p:selectOneMenu>
 
                                             <p:outputLabel value="Data Modification Strategy:" for="dataModificationStrategy" />
@@ -105,7 +98,7 @@
                                                             value="#{designComponentFormItemController.selected.categoryOfAvailableItems}"
                                                             completeMethod="#{itemController.completeItems}" 
                                                             var="ic" itemLabel="#{ic.name}" forceSelection="true"
-                                                            itemValue="#{ic}" >
+                                                            itemValue="#{ic}" maxResults="15" minQueryLength="3" >
                                                 <p:column headerText="Name">
                                                     <p:outputLabel value="#{ic.name}" ></p:outputLabel>
                                                 </p:column>
@@ -133,7 +126,6 @@
                                                              cols="100"
                                                              rows="10"/>
 
-
                                             <p:outputLabel value="Calculation Script - Colour:" for="calculationScriptForColour" />
                                             <p:inputTextarea id="calculationScriptForColour"
                                                              value="#{designComponentFormItemController.selected.calculationScriptForColour}" 
@@ -149,12 +141,11 @@
                                                              cols="100"
                                                              rows="10"/>
 
-
                                             <p:outputLabel value="Available Codes:" for="availableCode" />
-                                             <p:autoComplete id="availableCode"
+                                            <p:autoComplete id="availableCode"
                                                             completeMethod="#{itemController.completeItems}" 
                                                             var="ic" itemLabel="#{ic.code}" forceSelection="true"
-                                                            itemValue="#{ic}" >
+                                                            itemValue="#{ic}" maxResults="15" minQueryLength="3" >
                                                 <p:column headerText="Name">
                                                     <p:outputLabel value="#{ic.name}" ></p:outputLabel>
                                                 </p:column>
@@ -162,7 +153,7 @@
                                                     <p:outputLabel value="#{ic.code}" ></p:outputLabel>
                                                 </p:column>
                                             </p:autoComplete>
-                                            
+
                                         </p:panelGrid>
 
                                     </p:tab>
@@ -202,33 +193,15 @@
 
                                             <p:outputLabel value="Border Color:" />
                                             <p:colorPicker value="#{designComponentFormItemController.selected.borderColour}" ></p:colorPicker>
-
-
                                         </p:panelGrid>
                                     </p:tab>
                                 </p:tabView>
-
-
-
-
-
-
-
-
                             </p:panelGrid>
                         </h:form>
-
                         <p:spacer height="10" ></p:spacer>
-
                     </p:panel>
-
-
                 </f:view>
-
-
             </ui:define>
-
         </ui:composition>
-
     </body>
 </html>

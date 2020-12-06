@@ -28,7 +28,16 @@ package lk.gov.health.phsp.enums;
  * @author Dr M H B Ariyaratne<buddhika.ari@gmail.com>
  */
 public enum ItemArrangementStrategy {
-    Label_Value_Unit_Sets,
-    Absolute_Positioning,
-    Relative_Positioning,
+    Label_Value_Unit_Sets("Label Value Unit Sets"),
+    Absolute_Positioning("Absolute Positioning"),
+    Relative_Positioning("Relative Positioning");
+    
+    private final String label;    
+    private ItemArrangementStrategy(String label){
+        this.label = label;
+    }
+    
+    public String getLabel(){
+        return label;
+    }
 }

@@ -117,6 +117,8 @@ public class ClientController implements Serializable {
 
     private Boolean nicExists;
     private Boolean phnExists;
+    private Boolean emailExists;
+    private Boolean phone1Exists;
     private Boolean passportExists;
     private Boolean dlExists;
     private Boolean localReferanceExists;
@@ -152,6 +154,7 @@ public class ClientController implements Serializable {
 
     public String toClientProfile() {
         selectedClientsClinics = null;
+        userTransactionController.recordTransaction("To Client Profile");
         return "/client/profile";
     }
 
@@ -206,7 +209,6 @@ public class ClientController implements Serializable {
         List<String> duplicatedPhnNumbers = getFacade().findString(j, intNo);
         items = new ArrayList<>();
         for (String dupPhn : duplicatedPhnNumbers) {
-            System.out.println("dupPhn = " + dupPhn);
             j = "select c"
                     + " from Client c "
                     + " where c.phn=:phn";
@@ -220,22 +222,13 @@ public class ClientController implements Serializable {
                 } else {
                     if (c.getPerson().getLocalReferanceNo() == null || c.getPerson().getLocalReferanceNo().trim().equals("")) {
                         c.setComments("Duplicate PHN. Old PHN Stored as Local Ref");
-                        System.out.println("Duplicate PHN. Old PHN Stored as Local Ref");
-                        System.out.println("c.getPhn()");
                         c.getPerson().setLocalReferanceNo(c.getPhn());
-                        System.out.println("c.getPerson().getLocalReferanceNo() = " + c.getPerson().getLocalReferanceNo());
                         c.setPhn(generateNewPhn(c.getCreateInstitution()));
-                        System.out.println("c.getPhn()");
                     } else if (c.getPerson().getSsNumber() == null || c.getPerson().getSsNumber().trim().equals("")) {
                         c.setComments("Duplicate PHN. Old PHN Stored as SC No");
-                        System.out.println("Duplicate PHN. Old PHN Stored as SC No");
-                        System.out.println("c.getPhn()");
                         c.getPerson().setSsNumber(c.getPhn());
-                        System.out.println("c.getPerson().getSsNumber() = " + c.getPerson().getSsNumber());
                         c.setPhn(generateNewPhn(c.getCreateInstitution()));
-                        System.out.println("c.getPhn()");
                     } else {
-                        System.out.println("No Space to Store Old PHN");
                     }
                     getFacade().edit(c);
                 }
@@ -263,6 +256,9 @@ public class ClientController implements Serializable {
     public void clearExistsValues() {
         phnExists = false;
         nicExists = false;
+        emailExists =false;
+        ssNumberExists = false;
+        phone1Exists =false;
         passportExists = false;
         dlExists = false;
     }
@@ -337,7 +333,120 @@ public class ClientController implements Serializable {
         }
 
     }
+    
+    public void checkEmailExists() {
+        emailExists = null;
+        if (selected == null) {
+            return;
+        }
+        if (selected.getPerson() == null) {
+            return;
+        }
+        if (selected.getPerson().getEmail()== null) {
+            return;
+        }
+        if (selected.getPerson().getEmail().trim().equals("")) {
+            return;
+        }
+        emailExists = checkEmailExists(selected.getPerson().getEmail(), selected);
+    }
+    
+    public Boolean checkEmailExists(String email, Client c) {
+        String jpql = "select count(c) from Client c "
+                + " where c.retired=:ret "
+                + " and c.person.email=:email ";
+        Map m = new HashMap();
+        m.put("ret", false);
+        m.put("email", email);
+          if (c != null && c.getPerson() != null && c.getPerson().getId() != null) {
+            jpql += " and c.person <> :person";
+            m.put("person", c.getPerson());
+        }
+        Long count = getFacade().countByJpql(jpql, m);
+        if (count == null || count == 0l) {
+            return false;
+        } else {
+            return true;
+        }
 
+    }
+    
+    public void checkSsNumberExists() {
+        ssNumberExists = null;
+        if (selected == null) {
+            return;
+        }
+        if (selected.getPerson() == null) {
+            return;
+        }
+        if (selected.getPerson().getSsNumber()== null) {
+            return;
+        }
+        if (selected.getPerson().getSsNumber().trim().equals("")) {
+            return;
+        }
+        ssNumberExists = checkSsNumberExists(selected.getPerson().getSsNumber(), selected);
+    }
+
+    public Boolean checkSsNumberExists(String ssNumber, Client c) {
+        String jpql = "select count(c) from Client c "
+                + " where c.retired=:ret "
+                + " and c.person.ssNumber=:ssNumber ";
+        Map m = new HashMap();
+        m.put("ret", false);
+        m.put("ssNumber", ssNumber);
+          if (c != null && c.getPerson() != null && c.getPerson().getId() != null) {
+            jpql += " and c.person <> :person";
+            m.put("person", c.getPerson());
+        }
+        Long count = getFacade().countByJpql(jpql, m);
+        if (count == null || count == 0l) {
+            return false;
+        } else {
+            return true;
+        }
+
+    }
+    
+    public void checkphone1Exists() {
+        phone1Exists = null;
+        if (selected == null) {
+            return;
+        }
+        if (selected.getPerson() == null) {
+            return;
+        }
+        if (selected.getPerson().getPhone1() == null) {
+            return;
+        }
+        if (selected.getPerson().getPhone1().trim().equals("")) {
+            return;
+        }
+        phone1Exists = checkphone1Exists(selected.getPerson().getPhone1(), selected);
+    }
+    
+    public Boolean checkphone1Exists(String phone1, Client c) {
+        String jpql = "select count(c) from Client c "
+                + " where c.retired=:ret "
+                + " and c.person.phone1=:phone1 ";
+        Map m = new HashMap();
+        m.put("ret", false);
+        m.put("phone1", phone1);
+          if (c != null && c.getPerson() != null && c.getPerson().getId() != null) {
+            jpql += " and c.person <> :person";
+            m.put("person", c.getPerson());
+        }
+        Long count = getFacade().countByJpql(jpql, m);
+        if (count == null || count == 0l) {
+            return false;
+        } else {
+            return true;
+        }
+
+    }
+
+     
+     
     public void fixClientPersonCreatedAt() {
         String j = "select c from Client c "
                 + " where c.retired=:ret ";
@@ -459,6 +568,7 @@ public class ClientController implements Serializable {
         m.put("fd", getFrom());
         m.put("td", getTo());
         items = getFacade().findByJpql(j, m, TemporalType.TIMESTAMP);
+        userTransactionController.recordTransaction("To Registerd Clients With Dates");
         return "/insAdmin/registered_clients";
     }
 
@@ -522,6 +632,7 @@ public class ClientController implements Serializable {
             if (!checkPhnExists(c.getPhn(), null)) {
                 c.setId(null);
                 saveClient(c);
+                userTransactionController.recordTransaction("save Selected Imports"); 
             }
         }
     }
@@ -722,8 +833,6 @@ public class ClientController implements Serializable {
                         colNo++;
                     }
                     Area gnArea = null;
-//                    //System.out.println("gnAreaName = " + gnAreaName);
-//                    //System.out.println("gnAreaCode = " + gnAreaCode);
                     if (gnAreaName != null && gnAreaCode != null) {
                         gnArea = areaController.getGnAreaByNameAndCode(gnAreaName, gnAreaCode);
                     } else if (gnAreaName != null) {
@@ -732,7 +841,7 @@ public class ClientController implements Serializable {
                         gnArea = areaController.getGnAreaByCode(gnAreaCode);
                     }
                     if (gnArea != null) {
-//                        //System.out.println("gnArea = " + gnArea.getName());
+
                     }
 
                     colNo = 0;
@@ -860,9 +969,9 @@ public class ClientController implements Serializable {
                                     Calendar tc = Calendar.getInstance();
                                     thisYear = tc.get(Calendar.YEAR);
                                     ageInYears = thisYear - birthYear;
-//                                    //System.out.println("ageInYears = " + ageInYears);
+
                                 } catch (Exception e) {
-//                                    //System.out.println("e = " + e);
+
                                 }
                                 if (ageInYears < 0) {
                                     tdob = today;
@@ -890,8 +999,7 @@ public class ClientController implements Serializable {
                                 c.setCreatedAt(reg);
                                 break;
                             case "client_gn_area":
-                                //System.out.println("GN");
-                                //System.out.println("cellString = " + cellString);
+                                
 
                                 Area tgn;
                                 if (gnArea == null) {
@@ -904,7 +1012,7 @@ public class ClientController implements Serializable {
                         colNo++;
                     }
 
-                    //System.out.println("tgn = " + gnArea);
+                   
                     if (gnArea != null) {
                         c.getPerson().setGnArea(gnArea);
                         c.getPerson().setDsArea(gnArea.getDsd());
@@ -924,6 +1032,7 @@ public class ClientController implements Serializable {
 
                 lk.gov.health.phsp.facade.util.JsfUtil.addSuccessMessage("Succesful. All the data in Excel File Impoted to the database");
                 errorCode = "";
+                userTransactionController.recordTransaction("Import Clients from Excel");
                 return "save_imported_clients";
             } catch (IOException ex) {
                 errorCode = ex.getMessage();
@@ -941,6 +1050,7 @@ public class ClientController implements Serializable {
     }
 
     public void prepareToCapturePhotoWithWebCam() {
+        userTransactionController.recordTransaction("prepare To Capture Photo With WebCam");
         goingToCaptureWebCamPhoto = true;
     }
 
@@ -950,7 +1060,7 @@ public class ClientController implements Serializable {
 
     public void onTabChange(TabChangeEvent event) {
 
-        // ////System.out.println("profileTabActiveIndex = " + profileTabActiveIndex);
+        
         TabView tabView = (TabView) event.getComponent();
 
         profileTabActiveIndex = tabView.getChildren().indexOf(event.getTab());
@@ -958,7 +1068,7 @@ public class ClientController implements Serializable {
     }
 
     public List<Encounter> fillEncounters(Client client, InstitutionType insType, EncounterType encType, boolean excludeCompleted) {
-        // ////System.out.println("fillEncounters");
+        
         String j = "select e from Encounter e where e.retired=false ";
         Map m = new HashMap();
         if (client != null) {
@@ -977,7 +1087,7 @@ public class ClientController implements Serializable {
             j += " and e.completed=:com ";
             m.put("com", false);
         }
-        // ////System.out.println("m = " + m);
+        
         return encounterFacade.findByJpql(j, m);
     }
 
@@ -1017,6 +1127,7 @@ public class ClientController implements Serializable {
         encounter.setCompleted(false);
         encounterFacade.create(encounter);
         JsfUtil.addSuccessMessage(selected.getPerson().getNameWithTitle() + " was Successfully Enrolled in " + selectedClinic.getName() + "\nThe Clinic number is " + encounter.getEncounterNumber());
+        userTransactionController.recordTransaction("Enroll In Clinic");
         selectedClientsClinics = null;
     }
 
@@ -1029,7 +1140,7 @@ public class ClientController implements Serializable {
             JsfUtil.addErrorMessage("You do not have an Institution. Please contact support.");
             return;
         }
-        //System.out.println("webUserController.getLoggedUser().getInstitution() = " + webUserController.getLoggedUser().getInstitution().getLastHin());
+        
         if (webUserController.getLoggedUser().getInstitution().getPoiInstitution() != null) {
             poiIns = webUserController.getLoggedUser().getInstitution().getPoiInstitution();
         } else {
@@ -1043,18 +1154,15 @@ public class ClientController implements Serializable {
 
         if (webUserController.getLoggedUser().getInstitution().getPoiInstitution() != null) {
             webUserController.getLoggedUser().getInstitution().setPoiInstitution(institutionController.getInstitutionById(webUserController.getLoggedUser().getInstitution().getPoiInstitution().getId()));
-//            //System.out.println(webUserController.getLoggedUser().getInstitution().getPoiInstitution().getLastHin());
-        } else {
+            } else {
             webUserController.getLoggedUser().setInstitution(institutionController.getInstitutionById(webUserController.getLoggedUser().getInstitution().getId()));
-//            //System.out.println("Last HIN Case 2 = " + webUserController.getLoggedUser().getInstitution().getLastHin());
-        }
+            }
 
     }
 
     public String generateNewPhn(Institution ins) {
         Institution poiIns;
         if (ins == null) {
-            System.out.println("Ins is null");
             return null;
         }
         if (ins.getPoiInstitution() != null) {
@@ -1063,7 +1171,6 @@ public class ClientController implements Serializable {
             poiIns = ins;
         }
         if (poiIns.getPoiNumber() == null || poiIns.getPoiNumber().trim().equals("")) {
-            System.out.println("A Point of Issue is NOT assigned to the Institution. Please discuss with the System Administrator.");
             return null;
         }
         return applicationController.createNewPersonalHealthNumber(poiIns);
@@ -1107,7 +1214,6 @@ public class ClientController implements Serializable {
     }
 
     public Date guessDob(YearMonthDay yearMonthDay) {
-        // ////// ////System.out.println("year string is " + docStr);
         int years = 0;
         int month = 0;
         int day = 0;
@@ -1130,7 +1236,6 @@ public class ClientController implements Serializable {
 
             return now.getTime();
         } catch (Exception e) {
-            ////// ////System.out.println("Error is " + e.getMessage());
             return new Date();
 
         }
@@ -1158,6 +1263,7 @@ public class ClientController implements Serializable {
         } else {
             selected = null;
             clearSearchById();
+            userTransactionController.recordTransaction("search By Phn"); 
             return toSelectClient();
         }
     }
@@ -1172,6 +1278,7 @@ public class ClientController implements Serializable {
         } else {
             selected = null;
             clearSearchById();
+            userTransactionController.recordTransaction("search By NIC"); 
             return toSelectClient();
         }
     }
@@ -1186,6 +1293,7 @@ public class ClientController implements Serializable {
         } else {
             selected = null;
             clearSearchById();
+            userTransactionController.recordTransaction("search By PhoneNumber"); 
             return toSelectClient();
         }
     }
@@ -1200,6 +1308,7 @@ public class ClientController implements Serializable {
         } else {
             selected = null;
             clearSearchById();
+            userTransactionController.recordTransaction("search By PassportNo");
             return toSelectClient();
         }
     }
@@ -1214,6 +1323,7 @@ public class ClientController implements Serializable {
         } else {
             selected = null;
             clearSearchById();
+            userTransactionController.recordTransaction("search By Driving License No");
             return toSelectClient();
         }
     }
@@ -1228,10 +1338,12 @@ public class ClientController implements Serializable {
             setSelected(selectedClients.get(0));
             selectedClients = null;
             clearSearchById();
+            userTransactionController.recordTransaction("search By Local Referance No");
             return toClientProfile();
         } else {
             selected = null;
             clearSearchById();
+            userTransactionController.recordTransaction("search By Local Referance No");
             return toSelectClient();
         }
     }
@@ -1246,6 +1358,7 @@ public class ClientController implements Serializable {
         } else {
             selected = null;
             clearSearchById();
+            userTransactionController.recordTransaction("search By Senior Citizen No");
             return toSelectClient();
         }
     }
@@ -1282,10 +1395,12 @@ public class ClientController implements Serializable {
             setSelected(selectedClients.get(0));
             selectedClients = null;
             clearSearchById();
+            userTransactionController.recordTransaction("search By All Id to Client Profile");
             return toClientProfile();
         } else {
             selected = null;
             clearSearchById();
+            userTransactionController.recordTransaction("search By All Id to Select Client");
             return toSelectClient();
         }
     }
@@ -1294,6 +1409,8 @@ public class ClientController implements Serializable {
         clearExistsValues();
         if (searchingPhn != null && !searchingPhn.trim().equals("")) {
             selectedClients = listPatientsByPhn(searchingPhn);
+        } else if (searchingName != null && !searchingName.trim().equals("")) {
+            selectedClients = listPatientsByName(searchingName);
         } else if (searchingNicNo != null && !searchingNicNo.trim().equals("")) {
             selectedClients = listPatientsByNic(searchingNicNo);
         } else if (searchingPhoneNumber != null && !searchingPhoneNumber.trim().equals("")) {
@@ -1315,10 +1432,12 @@ public class ClientController implements Serializable {
             setSelected(selectedClients.get(0));
             selectedClients = null;
             clearSearchById();
+            userTransactionController.recordTransaction("search By ID to Client Profile");
             return toClientProfile();
         } else {
             selected = null;
             clearSearchById();
+            userTransactionController.recordTransaction("search By ID to Select Client");
             return toSelectClient();
         }
     }
@@ -1365,7 +1484,14 @@ public class ClientController implements Serializable {
         m.put("q", phn.trim().toUpperCase());
         return getFacade().findByJpql(j, m);
     }
-
+        
+     public List<Client> listPatientsByName(String phn) {
+        String j = "select c from Client c where c.retired=false and upper(c.person.name)=:q order by c.phn";
+        Map m = new HashMap();
+        m.put("q", phn.trim().toUpperCase());
+        return getFacade().findByJpql(j, m);
+    }
+     
     public List<Client> listPatientsByNic(String phn) {
         String j = "select c from Client c where c.retired=false and upper(c.person.nic)=:q order by c.phn";
         Map m = new HashMap();
@@ -1433,7 +1559,7 @@ public class ClientController implements Serializable {
     }
 
     public List<Client> listPatientsByIDsStepvice(String ids) {
-        //System.out.println("ids = " + ids);
+        
         if (ids == null || ids.trim().equals("")) {
             return null;
         }
@@ -1450,12 +1576,11 @@ public class ClientController implements Serializable {
                 + " and upper(c.phn)=:q "
                 + " order by c.phn";
         m.put("q", ids.trim().toUpperCase());
-        //System.out.println("m = " + m);
-        //System.out.println("j = " + j);
+        
         cs = getFacade().findByJpql(j, m);
 
         if (cs != null && !cs.isEmpty()) {
-            //System.out.println("cs.size() = " + cs.size());
+            
             return cs;
         }
 
@@ -1467,13 +1592,14 @@ public class ClientController implements Serializable {
                 + " upper(c.person.phone2)=:q "
                 + " or "
                 + " upper(c.person.nic)=:q "
+                + " or "
+                + " upper(c.person.name)=:q "
                 + " ) "
                 + " order by c.phn";
         cs = getFacade().findByJpql(j, m);
-        //System.out.println("m = " + m);
-        //System.out.println("j = " + j);
+        
         if (cs != null && !cs.isEmpty()) {
-            //System.out.println("cs.size() = " + cs.size());
+            
             return cs;
         }
 
@@ -1501,6 +1627,8 @@ public class ClientController implements Serializable {
                 + " upper(c.person.phone2)=:q "
                 + " or "
                 + " upper(c.person.nic)=:q "
+                + " or "
+                + " upper(c.person.name)=:q "
                 + " or "
                 + " upper(c.phn)=:q "
                 + " or "
@@ -1531,6 +1659,7 @@ public class ClientController implements Serializable {
         }
         saveClient(selected);
         JsfUtil.addSuccessMessage("Saved.");
+        userTransactionController.recordTransaction("save Client");
         return toClientProfile();
     }
 
@@ -1775,6 +1904,7 @@ public class ClientController implements Serializable {
     }
 
     public boolean isGoingToCaptureWebCamPhoto() {
+        userTransactionController.recordTransaction("Going To Capture Web Cam Photo");
         return goingToCaptureWebCamPhoto;
     }
 
@@ -2036,6 +2166,24 @@ public class ClientController implements Serializable {
     public void setIntNo(int intNo) {
         this.intNo = intNo;
     }
+
+    public Boolean getPhone1Exists() {
+        return phone1Exists;
+    }
+
+    public void setPhone1Exists(Boolean phone1Exists) {
+        this.phone1Exists = phone1Exists;
+    }
+
+    public Boolean getEmailExists() {
+        return emailExists;
+    }
+
+    public void setEmailExists(Boolean emailExists) {
+        this.emailExists = emailExists;
+    }
+
+    
 
     // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="Inner Classes">

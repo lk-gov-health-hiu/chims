@@ -28,7 +28,16 @@ package lk.gov.health.phsp.enums;
  * @author Dr M H B Ariyaratne<buddhika.ari@gmail.com>
  */
 public enum DataModificationStrategy {
-    Not_allowed_after_completion,
-    Allowed_after_completion,
-    Populate_with_latest_encounter,
+    Not_allowed_after_completion("Not allowed after completion"),
+    Allowed_after_completion("Allowed after completion"),
+    Populate_with_latest_encounter("Populate with latest encounter");
+    
+    private final String label;    
+    private DataModificationStrategy(String label){
+        this.label = label;
+    }
+    
+    public String getLabel(){
+        return label;
+    }
 }

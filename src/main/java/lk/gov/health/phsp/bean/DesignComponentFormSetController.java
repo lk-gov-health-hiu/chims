@@ -48,6 +48,8 @@ public class DesignComponentFormSetController implements Serializable {
     private DesignComponentFormItemController designComponentFormItemController;
     @Inject
     private WebUserController webUserController;
+    @Inject
+    private UserTransactionController userTransactionController;
     // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="Class Variables">
     private List<DesignComponentFormSet> items = null;
@@ -66,10 +68,12 @@ public class DesignComponentFormSetController implements Serializable {
     // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="Navigation Functions">
     public String backToManageFormSets() {
+        userTransactionController.recordTransaction("Back To Manage FormSets");
         return backString;
     }
     
     public String back(){
+        userTransactionController.recordTransaction("Back to Manage Metadata");
         return backString;
     }
     
@@ -99,6 +103,7 @@ public class DesignComponentFormSetController implements Serializable {
         m.put("r", false);
         m.put("p", selected);
         exportItems = getItemFacade().findByJpql(j, m);
+        userTransactionController.recordTransaction("To Export Design Component FormSet");
         return "/designComponentFormSet/export";
     }
     
@@ -111,6 +116,7 @@ public class DesignComponentFormSetController implements Serializable {
         institution = selected.getInstitution();
         retire();
         importFormSet();
+        userTransactionController.recordTransaction("To reload Design Component FormSet");
     }
     
     public void retire(){
@@ -180,6 +186,7 @@ public class DesignComponentFormSetController implements Serializable {
         referanceSet = null;
         institution = null;
         JsfUtil.addSuccessMessage("Formset Successfully Imported.");
+        userTransactionController.recordTransaction("Import Formset");
 
     }
 
@@ -195,6 +202,7 @@ public class DesignComponentFormSetController implements Serializable {
         designComponentFormController.setDesignComponentFormSet(selected);
         designComponentFormController.fillFormsofTheSelectedSet();
         designComponentFormController.getAddingForm();
+        userTransactionController.recordTransaction("To Add Design Component Forms For The Selected Set");
         return "/designComponentFormSet/manage_forms";
     }
 
@@ -266,18 +274,21 @@ public class DesignComponentFormSetController implements Serializable {
     public DesignComponentFormSet prepareCreate() {
         selected = new DesignComponentFormSet();
         initializeEmbeddableKey();
+        userTransactionController.recordTransaction("Prepare Create Design Component FormSet");
         return selected;
     }
 
     public void create() {
         persist(PersistAction.CREATE, ResourceBundle.getBundle("/BundleClinical").getString("DesignComponentFormSetCreated"));
         if (!JsfUtil.isValidationFailed()) {
+            userTransactionController.recordTransaction("Create Design Component FormSet");
             items = null;    // Invalidate list of items to trigger re-query.
         }
     }
 
     public void update() {
         persist(PersistAction.UPDATE, ResourceBundle.getBundle("/BundleClinical").getString("DesignComponentFormSetUpdated"));
+         userTransactionController.recordTransaction("Update Design Component FormSet");
     }
 
     
@@ -296,6 +307,7 @@ public class DesignComponentFormSetController implements Serializable {
         insItems=null;
         getItems();
         getInsItems();
+        userTransactionController.recordTransaction("Destroy() Design Component FormSet");
     }
 
     private void persist(PersistAction persistAction, String successMessage) {

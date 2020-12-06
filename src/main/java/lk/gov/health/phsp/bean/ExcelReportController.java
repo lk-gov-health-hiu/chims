@@ -112,7 +112,7 @@ public class ExcelReportController implements Serializable {
 
     public boolean processReport(StoredQueryResult storedQueryResult) {
         if (logActivity) {
-            //System.out.println("Going to run reports at " + currentTimeAsString() + ".");
+            
         }
 
         if (storedQueryResult != null) {
@@ -156,11 +156,11 @@ public class ExcelReportController implements Serializable {
 
     public List<EncounterWithComponents> findEncountersWithComponents(List<Long> ids) {
         if (logActivity) {
-//            //System.out.println("Finding Encounters and Components ");
+
         }
         if (ids == null) {
             if (logActivity) {
-                //System.out.println("No Encounters IDs");
+               
             }
             return null;
         }
@@ -213,7 +213,7 @@ public class ExcelReportController implements Serializable {
 
     private List<QueryWithCriteria> findQueriesWithCriteria(StoredQueryResult sqr) {
         if (logActivity) {
-            //System.out.println("Finding Queries");
+            
         }
         if (sqr == null) {
             getStoreQueryResultFacade().edit(sqr);
@@ -291,17 +291,17 @@ public class ExcelReportController implements Serializable {
                             QueryWithCriteria qwc = new QueryWithCriteria();
                             qwc.setQuery(qc);
                             if (qc.getCode().equalsIgnoreCase(checkingString)) {
-//                                //System.out.println("qc = " + qc.getCode());
+
                             }
 
                             qwc.setCriteria(findCriteriaForQueryComponent(qc.getCode()));
                             if (qc.getCode().equalsIgnoreCase(checkingString)) {
-//                                //System.out.println("qc = " + qwc.getCriteria());
+
                             }
                             qs.add(qwc);
                         } else {
                             if (logActivity) {
-                                //System.out.println("No qc found for " + cellString);
+                                
                             }
                         }
                     }
@@ -325,7 +325,7 @@ public class ExcelReportController implements Serializable {
             List<QueryWithCriteria> qwcs) {
 
         if (logActivity) {
-            //System.out.println("Generating File.");
+            
         }
 
         Boolean success = false;
@@ -414,11 +414,11 @@ public class ExcelReportController implements Serializable {
                             }
                         } else {
                             if (logActivity) {
-//                                //System.out.println("cellString = " + cellString);
+
                             }
                             String qryCode = findQueryComponentCodeByCellString(cellString);
                             if (logActivity) {
-//                                //System.out.println("qryCode = " + qryCode);
+
                             }
                             if (qryCode != null) {
                                 QueryWithCriteria qwc = findQwcFromQwcs(qwcs, qryCode);
@@ -427,7 +427,7 @@ public class ExcelReportController implements Serializable {
                                     currentCell.setCellValue(value);
                                 }
                             } else {
-                                //System.out.println("Query not found for " + cellString);
+                                
                                 currentCell.setCellValue("");
                             }
 
@@ -443,7 +443,6 @@ public class ExcelReportController implements Serializable {
             workbook.write(out);
             out.close();
 
-////                if(logActivity) //System.out.println("FILE_NAME = " + FILE_NAME);
             InputStream stream;
             stream = new FileInputStream(FILE_NAME);
 
@@ -457,16 +456,14 @@ public class ExcelReportController implements Serializable {
             byte[] byteArray = IOUtils.toByteArray(stream);
             u.setBaImage(byteArray);
 
-//                if(logActivity) //System.out.println("5 = " + 5);
+
             sqr.setUpload(u);
             getStoreQueryResultFacade().edit(sqr);
             getUploadFacade().edit(u);
             for (int i = 0; i < 10000; i++) {
 
             }
-//            //System.out.println("u ID " + u.getId());
-//            //System.out.println("u BA " + u.getBaImage().toString());
-//            //System.out.println("byteArray = " + byteArray.toString());
+
 
         } catch (FileNotFoundException e) {
             sqr.setErrorMessage("IO Exception. " + e.getMessage());
@@ -485,19 +482,19 @@ public class ExcelReportController implements Serializable {
 
     private Long calculateIndividualQueryResult(List<EncounterWithComponents> ewcs, QueryWithCriteria qwc) {
         if (logActivity) {
-            //System.out.println("Calculating Individual Query Results for Query " + qwc);
+            
         }
 
         Long result = 0l;
         if (ewcs == null) {
             if (logActivity) {
-                //System.out.println("No encounters.");
+                
             }
             return result;
         }
         if (qwc == null) {
             if (logActivity) {
-                //System.out.println("No Query With Criteria.");
+                
             }
             return result;
         }
@@ -513,7 +510,7 @@ public class ExcelReportController implements Serializable {
             Integer ti = ewcs.size();
             result = ti.longValue();
             if (needCheckLogin) {
-                //System.out.println("result when no criteria " + result);
+                
             }
             return result;
         } else {
@@ -532,36 +529,36 @@ public class ExcelReportController implements Serializable {
         try {
             return engine.eval(script) + "";
         } catch (ScriptException ex) {
-            ////System.out.println("ex = " + ex.getMessage());
+            
             return null;
         }
     }
 
     private boolean findMatch(List<ClientEncounterComponentItem> ccs, QueryWithCriteria qrys) {
         if (needCheckLogin) {
-            //System.out.println("Find Match");
+            
         }
         if (qrys == null) {
-            //System.out.println("No Query with Components = " + qrys);
+            
             return false;
         }
         if (qrys.getQuery() == null) {
-            //System.out.println("No Query for Query with Components = " + qrys.getQuery());
+            
             return false;
         }
         if (qrys.getQuery().getCode() == null) {
-            //System.out.println("No Code for the Query for Query with Components = " + qrys.getQuery().getCode());
+            
             return false;
         }
         if (qrys.getQuery().getCode().trim().equals("")) {
-            //System.out.println("Empty Code for the Query for Query with Components = " + qrys.getQuery().getCode());
+           
             return false;
         }
 
         boolean suitableForInclusion = true;
 
         if (needCheckLogin) {
-            //System.out.println("finding matches");
+           
         }
 
         boolean isComplexQuery = false;
@@ -577,7 +574,6 @@ public class ExcelReportController implements Serializable {
             }
         }
 
-        System.out.println("isComplexQuery = " + isComplexQuery);
 
         if (isComplexQuery) {
             String evaluationString = "";
@@ -597,36 +593,35 @@ public class ExcelReportController implements Serializable {
                 } else {
                     if (qc.getItem() == null) {
                         if (logActivity) {
-                            //System.out.println("No Item for Criteria for " + qc.getName());
+                           
                         }
                         continue;
                     }
                     if (qc.getItem().getCode() == null) {
                         if (logActivity) {
-                            //System.out.println("No Item code for Criteria for " + qc.getName());
+                            
                         }
                         continue;
                     }
                     for (ClientEncounterComponentItem cei : ccs) {
                         if (needCheckLogin) {
-                            //System.out.println("cei Id" + cei.getId() + " Item " + cei.getItem());
+                           
                         }
 
                         if (cei.getItem() == null) {
                             if (logActivity) {
-                                //System.out.println("No Item for Client Component");
+                                
                             }
                             continue;
                         }
                         if (cei.getItem().getCode() == null) {
                             if (logActivity) {
-                                //System.out.println("No Item for Client Component");
+                                
                             }
                             continue;
                         }
 
-//                //System.out.println("cei.getItem().getCode() = " + cei.getItem().getCode());
-//                //System.out.println("qc.getItem().getCode() = " + qc.getItem().getCode());
+
                         if (cei.getItem().getCode().trim().equalsIgnoreCase(qc.getItem().getCode().trim())) {
                             if (matchQuery(qc, cei)) {
                                 evaluationString += "true";
@@ -640,8 +635,6 @@ public class ExcelReportController implements Serializable {
 
             }
             String evaluationResult = evaluateScript(evaluationString);
-            System.out.println("evaluationString = " + evaluationString);
-            System.out.println("evaluationResult = " + evaluationResult);
             if (evaluationResult == null) {
                 suitableForInclusion = false;
             } else if (evaluationResult.trim().equalsIgnoreCase("true")) {
@@ -654,13 +647,13 @@ public class ExcelReportController implements Serializable {
             for (QueryComponent qc : qrys.getCriteria()) {
                 if (qc.getItem() == null) {
                     if (logActivity) {
-                        //System.out.println("No Item for Criteria for " + qc.getName());
+                      
                     }
                     continue;
                 }
                 if (qc.getItem().getCode() == null) {
                     if (logActivity) {
-                        //System.out.println("No Item code for Criteria for " + qc.getName());
+                        
                     }
                     continue;
                 }
@@ -670,24 +663,23 @@ public class ExcelReportController implements Serializable {
 
                 for (ClientEncounterComponentItem cei : ccs) {
                     if (needCheckLogin) {
-                        //System.out.println("cei Id" + cei.getId() + " Item " + cei.getItem());
+                        
                     }
 
                     if (cei.getItem() == null) {
                         if (logActivity) {
-                            //System.out.println("No Item for Client Component");
+                            
                         }
                         continue;
                     }
                     if (cei.getItem().getCode() == null) {
                         if (logActivity) {
-                            //System.out.println("No Item for Client Component");
+                          
                         }
                         continue;
                     }
 
-//                //System.out.println("cei.getItem().getCode() = " + cei.getItem().getCode());
-//                //System.out.println("qc.getItem().getCode() = " + qc.getItem().getCode());
+             
                     if (cei.getItem().getCode().trim().equalsIgnoreCase(qc.getItem().getCode().trim())) {
                         componentFound = true;
                         if (matchQuery(qc, cei)) {
@@ -697,12 +689,12 @@ public class ExcelReportController implements Serializable {
                 }
                 if (!componentFound) {
                     if (logActivity) {
-                        //System.out.println("Client component Item NOT found for " + qc);
+                        
                         for (ClientEncounterComponentItem ci : ccs) {
-//                        //System.out.println("Client Component Item Item Code = " + ci.getItem().getCode());
+
                         }
                         for (QueryComponent tqc : qrys.getCriteria()) {
-//                        //System.out.println("qc Item Code " + tqc.getItem().getCode());
+
                         }
                     }
                 }
@@ -712,47 +704,47 @@ public class ExcelReportController implements Serializable {
             }
 
         }
-//        //System.out.println("suitableForInclusion = " + suitableForInclusion);
+
         return suitableForInclusion;
     }
 
     private boolean findMatchOld(List<ClientEncounterComponentItem> ccs, QueryWithCriteria qrys) {
         if (needCheckLogin) {
-            //System.out.println("Find Match");
+          
         }
         if (qrys == null) {
-            //System.out.println("No Query with Components = " + qrys);
+           
             return false;
         }
         if (qrys.getQuery() == null) {
-            //System.out.println("No Query for Query with Components = " + qrys.getQuery());
+            
             return false;
         }
         if (qrys.getQuery().getCode() == null) {
-            //System.out.println("No Code for the Query for Query with Components = " + qrys.getQuery().getCode());
+            
             return false;
         }
         if (qrys.getQuery().getCode().trim().equals("")) {
-            //System.out.println("Empty Code for the Query for Query with Components = " + qrys.getQuery().getCode());
+           
             return false;
         }
 
         boolean suitableForInclusion = true;
 
         if (needCheckLogin) {
-            //System.out.println("finding matches");
+            
         }
 
         for (QueryComponent qc : qrys.getCriteria()) {
             if (qc.getItem() == null) {
                 if (logActivity) {
-                    //System.out.println("No Item for Criteria for " + qc.getName());
+                    
                 }
                 continue;
             }
             if (qc.getItem().getCode() == null) {
                 if (logActivity) {
-                    //System.out.println("No Item code for Criteria for " + qc.getName());
+                   
                 }
                 continue;
             }
@@ -762,24 +754,23 @@ public class ExcelReportController implements Serializable {
 
             for (ClientEncounterComponentItem cei : ccs) {
                 if (needCheckLogin) {
-                    //System.out.println("cei Id" + cei.getId() + " Item " + cei.getItem());
+                    
                 }
 
                 if (cei.getItem() == null) {
                     if (logActivity) {
-                        //System.out.println("No Item for Client Component");
+                       
                     }
                     continue;
                 }
                 if (cei.getItem().getCode() == null) {
                     if (logActivity) {
-                        //System.out.println("No Item for Client Component");
+                       
                     }
                     continue;
                 }
 
-//                //System.out.println("cei.getItem().getCode() = " + cei.getItem().getCode());
-//                //System.out.println("qc.getItem().getCode() = " + qc.getItem().getCode());
+
                 if (cei.getItem().getCode().trim().equalsIgnoreCase(qc.getItem().getCode().trim())) {
                     componentFound = true;
                     if (matchQuery(qc, cei)) {
@@ -789,12 +780,12 @@ public class ExcelReportController implements Serializable {
             }
             if (!componentFound) {
                 if (logActivity) {
-                    //System.out.println("Client component Item NOT found for " + qc);
+                 
                     for (ClientEncounterComponentItem ci : ccs) {
-//                        //System.out.println("Client Component Item Item Code = " + ci.getItem().getCode());
+
                     }
                     for (QueryComponent tqc : qrys.getCriteria()) {
-//                        //System.out.println("qc Item Code " + tqc.getItem().getCode());
+
                     }
                 }
             }
@@ -802,13 +793,13 @@ public class ExcelReportController implements Serializable {
                 suitableForInclusion = false;
             }
         }
-//        //System.out.println("suitableForInclusion = " + suitableForInclusion);
+
         return suitableForInclusion;
     }
 
     private boolean matchQuery(QueryComponent q, ClientEncounterComponentItem clientValue) {
         if (needCheckLogin) {
-            //System.out.println("matchQuery - q=" + q + " cv=" + clientValue);
+            
         }
         if (clientValue == null) {
             return false;
@@ -827,32 +818,31 @@ public class ExcelReportController implements Serializable {
 
         if (q.getMatchType() == QueryCriteriaMatchType.Variable_Value_Check) {
             if (needCheckLogin) {
-                //System.out.println("q.getQueryDataType() = " + q.getQueryDataType());
+                
             }
             switch (q.getQueryDataType()) {
                 case integer:
                     if (needCheckLogin) {
-                        //System.out.println("clientValue.getIntegerNumberValue() = " + clientValue.getIntegerNumberValue());
+                        
                     }
 
                     qInt1 = q.getIntegerNumberValue();
                     qInt2 = q.getIntegerNumberValue2();
                     if (needCheckLogin) {
-                        //System.out.println("Query int1 = " + qInt1);
+                        
                     }
                     if (needCheckLogin) {
-                        //System.out.println("Query int2 = " + qInt2);
+                        
                     }
                     break;
                 case item:
                     if (needCheckLogin && clientValue.getItem() != null) {
-//                        //System.out.println("clientValue.getItemCode() = " + clientValue.getItem().getCode());
+//                        
                     }
                     if (needCheckLogin && clientValue.getItemValue() != null) {
-//                        //System.out.println("clientValue.getItemValueCode() = " + clientValue.getItemValue().getCode());
+//                        
                     } else {
-//                        //System.out.println("CLient Item Value is NULL");
-//                        //System.out.println("clietnValue ID is " + clientValue.getId());
+//                        
                     }
 
                     itemValue = q.getItemValue();
@@ -860,7 +850,7 @@ public class ExcelReportController implements Serializable {
                     break;
                 case real:
                     if (needCheckLogin) {
-                        //System.out.println("clientValue.getRealNumberValue() = " + clientValue.getRealNumberValue());
+                        
                     }
 
                     real1 = q.getRealNumberValue();
@@ -868,14 +858,14 @@ public class ExcelReportController implements Serializable {
                     break;
                 case longNumber:
                     if (needCheckLogin) {
-                        //System.out.println("clientValue.getLongNumberValue() = " + clientValue.getLongNumberValue());
+                        
                     }
                     lng1 = q.getLongNumberValue();
                     lng2 = q.getLongNumberValue2();
                     break;
                 case Boolean:
                     if (needCheckLogin) {
-                        //System.out.println("clientValue.getBooleanValue() = " + clientValue.getBooleanValue());
+                        
                     }
                     qBool = q.getBooleanValue();
                     break;
@@ -885,7 +875,7 @@ public class ExcelReportController implements Serializable {
 
             }
             if (needCheckLogin) {
-                //System.out.println("q.getEvaluationType() = " + q.getEvaluationType());
+                
             }
             switch (q.getEvaluationType()) {
 
@@ -951,17 +941,11 @@ public class ExcelReportController implements Serializable {
                 case Less_than:
                     if (qInt1 != null) {
                         Integer tmpIntVal = clientValue.getIntegerNumberValue();
-//                        if(logActivity) //System.out.println("1 tmpIntVal = " + tmpIntVal);
                         if (tmpIntVal == null) {
-//                            if(logActivity) //System.out.println("clientValue.getShortTextValue() = " + clientValue.getShortTextValue());
                             tmpIntVal = stringToInteger(clientValue.getShortTextValue());
-//                            if(logActivity) //System.out.println("2 tmpIntVal = " + tmpIntVal);
                         }
                         if (tmpIntVal != null) {
-//                            if(logActivity) //System.out.println("qInt1 = " + qInt1);
-
                             m = tmpIntVal < qInt1;
-//                            if(logActivity) //System.out.println("m = " + m);
                         }
                     }
                     if (lng1 != null) {
@@ -1085,9 +1069,7 @@ public class ExcelReportController implements Serializable {
                         }
                         if (temDbl != null) {
                             m = temDbl >= real1;
-//                            //System.out.println("Client value = temDbl = " + temDbl);
-//                            //System.out.println("Query Value = real1 = " + real1);
-//                            //System.out.println("m = " + m);
+
                         }
 
                     }
@@ -1132,20 +1114,20 @@ public class ExcelReportController implements Serializable {
                     break;
             }
         }
-//        //System.out.println("match is  = " + m);
+
         return m;
     }
 
     public boolean clientValueIsNotNull(QueryComponent q, ClientEncounterComponentItem clientValue) {
         boolean valueNotNull = false;
         if (needCheckLogin) {
-            //System.out.println("clientValueIsNotNull");
+            
         }
         if (q.getMatchType() == QueryCriteriaMatchType.Variable_Value_Check) {
             switch (q.getQueryDataType()) {
                 case integer:
                     if (needCheckLogin) {
-                        //System.out.println("clientValue.getIntegerNumberValue() = " + clientValue.getIntegerNumberValue());
+                        
                     }
                     if (clientValue.getIntegerNumberValue() != null) {
                         valueNotNull = true;
@@ -1153,7 +1135,7 @@ public class ExcelReportController implements Serializable {
                     break;
                 case item:
                     if (needCheckLogin) {
-                        //System.out.println("clientValue.getItemValue() = " + clientValue.getItemValue());
+                        
                     }
                     if (clientValue.getItemValue() != null) {
                         valueNotNull = true;
@@ -1161,7 +1143,7 @@ public class ExcelReportController implements Serializable {
                     break;
                 case real:
                     if (needCheckLogin) {
-                        //System.out.println("clientValue.getIntegerNumberValue() = " + clientValue.getRealNumberValue());
+                        
                     }
                     if (clientValue.getRealNumberValue() != null) {
                         valueNotNull = true;
@@ -1169,7 +1151,7 @@ public class ExcelReportController implements Serializable {
                     break;
                 case longNumber:
                     if (needCheckLogin) {
-                        //System.out.println("clientValue.getIntegerNumberValue() = " + clientValue.getLongNumberValue());
+                       
                     }
                     if (clientValue.getLongNumberValue() != null) {
                         valueNotNull = true;
@@ -1177,7 +1159,7 @@ public class ExcelReportController implements Serializable {
                     break;
                 case Boolean:
                     if (needCheckLogin) {
-                        //System.out.println("clientValue.getIntegerNumberValue() = " + clientValue.getBooleanValue());
+                       
                     }
                     if (clientValue.getBooleanValue() != null) {
                         valueNotNull = true;
@@ -1195,7 +1177,7 @@ public class ExcelReportController implements Serializable {
 
     private List<Long> findEncounterIds(Date fromDate, Date toDate, Institution institution) {
         if (logActivity) {
-            //System.out.println("Finding Encounter IDs");
+           
         }
         String j = "select e.id "
                 + " from  ClientEncounterComponentFormSet f join f.encounter e"
@@ -1220,7 +1202,7 @@ public class ExcelReportController implements Serializable {
 
     private Long findCountOfEncounterDates(Date fromDate, Date toDate, Institution institution) {
         if (logActivity) {
-            //System.out.println("Finding Encounter Date count");
+            
         }
         String j = "select count(e.encounterDate) "
                 + " from  ClientEncounterComponentFormSet f join f.encounter e"
@@ -1239,15 +1221,14 @@ public class ExcelReportController implements Serializable {
         m.put("fc", true);
         m.put("fd", fromDate);
         m.put("td", toDate);
-        //System.out.println("m = " + m);
-        //System.out.println("j = " + j);
+        
         Long encs = encounterFacade.findLongByJpql(j, m);
         return encs;
     }
 
     private List<ClientEncounterComponentItem> findClientEncounterComponentItems(Long endId) {
         if (logActivity) {
-//            //System.out.println("Finding ENcounter Component Items for Querying");
+
         }
         String j;
         Map m;
@@ -1267,7 +1248,7 @@ public class ExcelReportController implements Serializable {
             String itemCode,
             List<String> valueStrings) {
         if (logActivity) {
-//            //System.out.println("Finding ENcounter Component Items for Querying");
+
         }
         String j;
         Map m;
@@ -1292,9 +1273,7 @@ public class ExcelReportController implements Serializable {
         }
 //        j += " group by e";
         Long count = getClientEncounterComponentItemFacade().findLongByJpql(j, m);
-        //System.out.println("j = " + j);
-        //System.out.println("m = " + m);
-        //System.out.println("count = " + count);
+       
         long val;
         if (count != null) {
             val = (long) count;
@@ -1334,8 +1313,7 @@ public class ExcelReportController implements Serializable {
     }
 
     private String findQueryComponentCodeByCellString(String text) {
-//        //System.out.println("findQueryComponentCodeByCellString");
-//        //System.out.println("text = " + text);
+
         String str = null;
         String patternStart = "#{";
         String patternEnd = "}";
@@ -1345,9 +1323,9 @@ public class ExcelReportController implements Serializable {
         while (m.find()) {
             String block = m.group(1);
             str = block;
-//            //System.out.println("block = " + block);
+
         }
-//        //System.out.println("str = " + str);
+
         return str;
     }
 
@@ -1402,7 +1380,7 @@ public class ExcelReportController implements Serializable {
             outInt = null;
         }
         if (logActivity) {
-            //System.out.println("stringToInteger " + str + " > " + outInt);
+            
         }
         return outInt;
     }
@@ -1420,7 +1398,7 @@ public class ExcelReportController implements Serializable {
             outLong = null;
         }
         if (logActivity) {
-            //System.out.println("stringToLong " + str + " > " + outLong);
+            
         }
         return outLong;
     }
@@ -1439,7 +1417,7 @@ public class ExcelReportController implements Serializable {
             outDbl = null;
         }
         if (logActivity) {
-            //System.out.println("stringToDouble " + str + " > " + outDbl);
+            
         }
         return outDbl;
     }
@@ -1508,8 +1486,7 @@ public class ExcelReportController implements Serializable {
     }
 
     private QueryWithCriteria findQwcFromQwcs(List<QueryWithCriteria> qwcs, String qryCode) {
-//        //System.out.println("findQwcFromQwcs");
-//        //System.out.println("qryCode = " + qryCode);
+
 
         QueryWithCriteria q = null;
 
@@ -1521,12 +1498,12 @@ public class ExcelReportController implements Serializable {
                     }
                 } else {
                     if (logActivity) {
-                        //System.out.println("No code for query in QueryWithCriteria");
+                        
                     }
                 }
             } else {
                 if (logActivity) {
-                    //System.out.println("No query in QueryWithCriteria");
+                    
                 }
             }
         }

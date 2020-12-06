@@ -6,15 +6,14 @@
       xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:p="http://primefaces.org/ui">
 
-    <ui:composition template="/template.xhtml">
-
+    <ui:composition template="/webUser/index.xhtml">
 
         <ui:define name="title">
             <h:outputText value="#{bundleClinical.ListDesignComponentFormSetTitle}"></h:outputText>
 
         </ui:define>
 
-        <ui:define name="content">
+        <ui:define name="webUserContents">
             <h:form id="DemoAccountListForm">
                 <p:panel header="#{bundleDemo.ListDemoAccountTitle}">
                     <p:dataTable id="datalist" value="#{demoAccountController.items}" var="item"
@@ -72,6 +71,7 @@
             <ui:include src="Edit.xhtml"/>
             <ui:include src="View.xhtml"/>
         </ui:define>
+   
     </ui:composition>
 
 </html>

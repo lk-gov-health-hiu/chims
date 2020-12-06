@@ -29,33 +29,21 @@ package lk.gov.health.phsp.enums;
  * @author User
  */
 public enum ComponentSetType {
-    Patient_Pages,
-    Encounter_Pages,
-    Encounters_Arranged_Horizontally,
-    Encounters_Arranged_Vertically,
-    Encounters_Annual_Summery_page,
-    Encounters_Annual_summery_Arranged_Horizontally,
-    Encounters_Annual_summery_Arranged_Vertically;
+    Patient_Pages("Patient Pages"),
+    Encounter_Pages("Encounter Pages"),
+    Encounters_Arranged_Horizontally("Encounters Arranged Horizontally"),
+    Encounters_Arranged_Vertically("Encounters Arranged Vertically"),
+    Encounters_Annual_Summery_page("Encounters Annual Summery Page"),
+    Encounters_Annual_summery_Arranged_Horizontally("Encounters Annual Summery Arranged Horizontally"),
+    Encounters_Annual_summery_Arranged_Vertically("Encounters Annual Summery Arranged Vertically");
     
-    public String getLabel() {
-        switch (this) {
-            case Patient_Pages:
-                return "Patient Pages";
-            case Encounter_Pages:
-                return "Encounter Pages";
-            case Encounters_Arranged_Horizontally:
-                return "Encounters Arranged Horizontally";
-            case Encounters_Arranged_Vertically:
-                return "Encounters Arranged Vertically";
-            case Encounters_Annual_Summery_page:
-                return "Encounters Annual Summery Page";
-            case Encounters_Annual_summery_Arranged_Horizontally:
-                return "Encounters Annual Summery Arranged Horizontally";
-            case Encounters_Annual_summery_Arranged_Vertically:
-                return "Encounters Annual Summery Arranged Vertically";            
-            default:
-                return "";
-        }
+    private final String label;    
+    private ComponentSetType(String label){
+        this.label = label;
+    }
+    
+    public String getLabel(){
+        return label;
     }
 }
 

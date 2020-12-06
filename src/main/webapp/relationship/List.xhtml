@@ -7,8 +7,6 @@
       xmlns:p="http://primefaces.org/ui">
 
     <ui:composition template="/template.xhtml">
-
-
         <ui:define name="title">
             <h:outputText value="#{bundleClinical.ListRelationshipTitle}"></h:outputText>
         </ui:define>
@@ -17,17 +15,13 @@
             <p:growl id="growl" ></p:growl>
             <h:form id="RelationshipListForm">
                 <p:commandButton ajax="false" value="Fill" action="#{relationshipController.fillAll()}" ></p:commandButton>
-                <p:panel header="#{bundleClinical.ListRelationshipTitle}">
-                    
-                    
-                    
+                <p:panel header="#{bundleClinical.ListRelationshipTitle}">                     
                     <p:dataTable id="datalist" value="#{relationshipController.items}" var="item"
                                  selectionMode="single" selection="#{relationshipController.selected}"
                                  paginator="true"
                                  rowKey="#{item.id}"
                                  rows="10"
-                                 rowsPerPageTemplate="10,20,30,40,50"
-                                 >
+                                 rowsPerPageTemplate="10,20,30,40,50">
 
                         <p:ajax event="rowSelect"   update="createButton viewButton editButton deleteButton"/>
                         <p:ajax event="rowUnselect" update="createButton viewButton editButton deleteButton"/>
@@ -42,7 +36,7 @@
                             <f:facet name="header">
                                 <h:outputText value="#{bundleClinical.ListRelationshipTitle_relationshipType}"/>
                             </f:facet>
-                            <h:outputText value="#{item.relationshipType}"/>
+                            <h:outputText value="#{item.relationshipType.label}"/>
                         </p:column>
                         <p:column>
                             <f:facet name="header">
@@ -65,5 +59,4 @@
             <ui:include src="View.xhtml"/>
         </ui:define>
     </ui:composition>
-
 </html>

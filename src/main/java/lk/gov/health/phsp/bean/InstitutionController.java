@@ -43,6 +43,8 @@ public class InstitutionController implements Serializable {
 
     @Inject
     ApplicationController applicationController;
+    @Inject
+    UserTransactionController userTransactionController;
 
     private List<Institution> items = null;
     private Institution selected;
@@ -70,10 +72,12 @@ public class InstitutionController implements Serializable {
         area = null;
         fillGnAreasOfSelected();
         JsfUtil.addSuccessMessage("Successfully added.");
+        userTransactionController.recordTransaction("Add Gn To Pmc");
     }
 
     public String toAddInstitution() {
         selected = new Institution();
+        userTransactionController.recordTransaction("To Add Institution");
         return "/institution/institution";
     }
 
@@ -119,6 +123,7 @@ public class InstitutionController implements Serializable {
     }
 
     public String toListInstitutions() {
+        userTransactionController.recordTransaction("To List Institutions");
         return "/institution/list";
     }
 
@@ -135,6 +140,7 @@ public class InstitutionController implements Serializable {
         getAreaFacade().edit(removingArea);
         fillGnAreasOfSelected();
         removingArea = null;
+        userTransactionController.recordTransaction("Remove Gn From Pmc");
     }
 
     public void fillGnAreasOfSelected() {
@@ -205,8 +211,6 @@ public class InstitutionController implements Serializable {
             return tins;
         } else {
             for (Institution i : cins) {
-                // ////System.out.println("i = " + i);
-                // ////System.out.println("tins before finding children " + tins);
                 tins.addAll(findChildrenPmcis(i));
             }
         }
@@ -400,6 +404,7 @@ public class InstitutionController implements Serializable {
     }
 
     public void refreshMyInstitutions() {
+      userTransactionController.recordTransaction("refresh My Institutions");  
         myClinics = null;
     }
 

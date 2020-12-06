@@ -29,14 +29,23 @@ package lk.gov.health.phsp.enums;
  * @author User
  */
 public enum PrescriptionType {
-    VTM_Based,
-    ATM_Based,
-    VMP_Based,
-    AMP_Based,
-    VMPP_Based,
-    AMPP_Based,
-    VTM_AND_ATM_Based,
-    VMP_AND_AMP_Based,
-    VMPP_AND_AMPP_Based,
-    Pharmacy_Issue,
+    VTM_Based("VTM Based"),
+    ATM_Based("ATM Based"),
+    VMP_Based("VMP Based"),
+    AMP_Based("AMP Based"),
+    VMPP_Based("VMPP Based"),
+    AMPP_Based("AMPP Based"),
+    VTM_AND_ATM_Based("VTM & ATM Based"),
+    VMP_AND_AMP_Based("VMP & AMP Based"),
+    VMPP_AND_AMPP_Based("VMPP & AMPP_Based"),
+    Pharmacy_Issue("Pharmacy Issue");
+    
+    public final String label;    
+    private PrescriptionType(String label){
+        this.label = label;
+    }
+    
+    public String getLabel(){
+        return label;
+    }
 }
