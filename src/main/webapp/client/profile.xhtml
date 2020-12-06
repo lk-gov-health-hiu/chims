@@ -115,8 +115,9 @@
                                 <p:commandButton action="#{clientEncounterComponentFormSetController.fillAllEncountersFormSetsOfSelectedClient('Clinic_Visit')}"
                                                  class="small-box-footer" value="To View All Clinic Visits" >
                                 </p:commandButton>
-                                <p:dataTable value="#{clientEncounterComponentFormSetController.lastFiveClinicVisits}" 
-                                             var="rcv">
+                                <p:remoteCommand name="onLoadPage" action="#{clientEncounterComponentFormSetController.lastFiveClinicVisits}" update="lastFiveVisitTable" />
+                                <p:dataTable id="lastFiveVisitTable" value="#{clientEncounterComponentFormSetController.lastFiveClinicVisits}" 
+                                             var="rcv"> 
                                     <p:column headerText="Date" >
                                         <p:outputLabel value="#{rcv.encounter.encounterDate}" >
                                             <f:convertDateTime pattern="dd MMMM yyyy" ></f:convertDateTime>

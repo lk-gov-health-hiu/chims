@@ -97,12 +97,11 @@ public class ClientEncounterComponentFormSetController implements Serializable {
     private Integer selectedTabIndex;
     private Date from;
     private Date to;
-    
+
     private List<ClientEncounterComponentFormSet> lastFiveClinicVisits;
-    
+
 // </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="Constructors">
-
     public ClientEncounterComponentFormSetController() {
     }
 // </editor-fold>    
@@ -256,26 +255,26 @@ public class ClientEncounterComponentFormSetController implements Serializable {
 
     //TODO:Save Values to client Component
     public void updateToClientValue(ClientEncounterComponentItem vi) {
-        
+
         if (vi == null) {
-            
+
             return;
         }
         if (vi.getParentComponent() == null) {
-            
+
             return;
         }
         if (vi.getParentComponent().getParentComponent() == null) {
-            
+
             return;
         }
         ClientEncounterComponentFormSet s;
         Client c;
         if (vi.getParentComponent().getParentComponent() instanceof ClientEncounterComponentFormSet) {
             s = (ClientEncounterComponentFormSet) vi.getParentComponent().getParentComponent();
-            
+
         } else {
-            
+
             return;
         }
 
@@ -293,7 +292,6 @@ public class ClientEncounterComponentFormSetController implements Serializable {
         m.put("i", vi.getItem());
 
         ti = getItemFacade().findFirstByJpql(j, m);
-        
 
         if (ti == null) {
             ti = new ClientEncounterComponentItem();
@@ -457,7 +455,7 @@ public class ClientEncounterComponentFormSetController implements Serializable {
     }
 
     public List<ClientEncounterComponentFormSet> fillEncountersFormSets(String type, int count, boolean completedOnly) {
-        
+
         EncounterType ec = null;
         try {
             ec = EncounterType.valueOf(type);
@@ -501,7 +499,7 @@ public class ClientEncounterComponentFormSetController implements Serializable {
     }
 
     public List<ClientEncounterComponentFormSet> fillEncountersFormSets(Client c, EncounterType type, int count, Boolean completeOnly) {
-        
+
         List<ClientEncounterComponentFormSet> fs;
         Map m = new HashMap();
         String j = "select s from ClientEncounterComponentFormSet s where "
@@ -532,7 +530,7 @@ public class ClientEncounterComponentFormSetController implements Serializable {
         }
         return fs;
     }
-    
+
     public void fillLastFiveVisits() {
         Map m = new HashMap();
         String j = "select s from ClientEncounterComponentFormSet s where "
@@ -549,7 +547,7 @@ public class ClientEncounterComponentFormSetController implements Serializable {
     }
 
     public List<ClientEncounterComponentFormSet> fillLastFiveEncountersFormSets(EncounterType type) {
-        
+
         List<ClientEncounterComponentFormSet> fs;
         Map m = new HashMap();
         String j = "select s from ClientEncounterComponentFormSet s where "
@@ -724,7 +722,6 @@ public class ClientEncounterComponentFormSetController implements Serializable {
 
         getFacade().create(cfs);
 
-        
         List<DesignComponentForm> dfList = designComponentFormController.fillFormsofTheSelectedSet(dfs);
 
         for (DesignComponentForm df : dfList) {
@@ -838,7 +835,7 @@ public class ClientEncounterComponentFormSetController implements Serializable {
                         }
 
                         clientEncounterComponentItemController.save(ci);
-                        
+
                     }
 
                 }
@@ -873,7 +870,7 @@ public class ClientEncounterComponentFormSetController implements Serializable {
     }
 
     public List<ClientEncounterComponentItem> fillClientValues(Client c, String code) {
-       
+
         Item i = itemController.findItemByCode(code);
         if (i == null) {
             return new ArrayList<>();
@@ -1775,9 +1772,7 @@ public class ClientEncounterComponentFormSetController implements Serializable {
     }
 
     public List<ClientEncounterComponentFormSet> getLastFiveClinicVisits() {
-        if(lastFiveClinicVisits==null){
-            fillLastFiveVisits();
-        }
+        fillLastFiveVisits();
         return lastFiveClinicVisits;
     }
 
