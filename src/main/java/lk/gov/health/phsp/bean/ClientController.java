@@ -960,7 +960,7 @@ public class ClientController implements Serializable {
 
     }
 
-    public List<Encounter> fillEncounters(Client client, InstitutionType insType, EncounterType encType, boolean excludeCompleted) {
+    public List<Encounter> fillEncounters(Client client, InstitutionType insType, EncounterType encType, boolean excludeCompleted, Integer maxRecordCount) {
         // ////System.out.println("fillEncounters");
         String j = "select e from Encounter e where e.retired=false ";
         Map m = new HashMap();
@@ -980,8 +980,16 @@ public class ClientController implements Serializable {
             j += " and e.completed=:com ";
             m.put("com", false);
         }
-        // ////System.out.println("m = " + m);
-        return encounterFacade.findByJpql(j, m);
+        if (maxRecordCount == null) {
+            return encounterFacade.findByJpql(j, m);
+        } else {
+            return encounterFacade.findByJpql(j, m, maxRecordCount);
+        }
+
+    }
+
+    public List<Encounter> fillEncounters(Client client, InstitutionType insType, EncounterType encType, boolean excludeCompleted) {
+        return fillEncounters(client, insType, encType, true, null);
     }
 
     public void enrollInClinic() {
@@ -1761,9 +1769,6 @@ public class ClientController implements Serializable {
     public void setSelectedClientsClinics(List<Encounter> selectedClientsClinics) {
         this.selectedClientsClinics = selectedClientsClinics;
     }
-    
-    
-    
 
     public int getProfileTabActiveIndex() {
         return profileTabActiveIndex;
@@ -2045,9 +2050,9 @@ public class ClientController implements Serializable {
     }
 
     public List<Encounter> getSelectedClientsLastFiveClinicVisits() {
-        if(selectedClientsLastFiveClinicVisits==null){
-            selectedClientsLastFiveClinicVisits  = fillEncounters(selected, InstitutionType.Clinic, EncounterType.Clinic_Visit, true);
-        
+        if (selectedClientsLastFiveClinicVisits == null) {
+            selectedClientsLastFiveClinicVisits = fillEncounters(selected, InstitutionType.Clinic, EncounterType.Clinic_Visit, true,5);
+
         }
         return selectedClientsLastFiveClinicVisits;
     }
