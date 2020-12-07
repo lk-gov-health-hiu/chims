@@ -59,6 +59,7 @@ public class ApplicationController {
     private UserTransactionController userTransactionController;
 // <editor-fold defaultstate="collapsed" desc="Class Variables">
     private boolean demoSetup = false;
+    private boolean production = true;
     private String versionNo = "1.1.4";
     private List<QueryComponent> queryComponents;
     private List<Item> items;
@@ -168,6 +169,8 @@ public class ApplicationController {
     public boolean isDemoSetup() {
         return demoSetup;
     }
+    
+    
 
     public void setDemoSetup(boolean demoSetup) {
         this.demoSetup = demoSetup;
@@ -219,8 +222,13 @@ public class ApplicationController {
     public void setInstitutions(List<Institution> institutions) {
         this.institutions = institutions;
     }
-    
-    
-    
+
+    public boolean isProduction() {
+        return production;
+    }
+
+    public void setProduction(boolean production) {
+        this.production = production;
+    }
 
 }
