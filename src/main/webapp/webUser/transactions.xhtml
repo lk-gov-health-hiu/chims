@@ -14,17 +14,13 @@
 
                 <h:form id="WebUserEditForm">
 
-                    <p:panelGrid columns="2" rendered="#{webUserController.loggedUser != null}"
+                    <p:panelGrid columns="1" rendered="#{webUserController.loggedUser != null}"
                                  style="margin: auto; text-align: left; width: 100%;" styleClass="alignTop">
-                        <f:facet name="header" >
-                            <p:commandButton value="Back" action="/webUser/index"/>
-                        </f:facet>
 
-                        <p:panelGrid columns="1" >
-                            <p:panelGrid columns="2" >
+                            <p:panelGrid columns="6" >
                                 <p:outputLabel value="Action"  />
-                                <p:selectOneMenu  value="#{userTransactionController.searchText}" >
-                                    <f:selectItem itemLabel="All" ></f:selectItem>
+                                <p:selectOneMenu  value="#{userTransactionController.searchText}" style="width:200px;" >
+                                    <f:selectItem itemLabel="All"  ></f:selectItem>
                                     <f:selectItems value="#{userTransactionController.userTransactionTypes}" >
                                     </f:selectItems>
                                 </p:selectOneMenu>
@@ -52,11 +48,10 @@
                                 <p:outputLabel value="To"  />
                                 <p:calendar value="#{userTransactionController.toDate}"  pattern="dd/MM/yyyy hh:mm">
                                 </p:calendar>
+                                </p:panelGrid>
 
-
-
-                            </p:panelGrid>
-                            <p:panelGrid columns="3" >
+                            <p:panelGrid > 
+                            
                                 <p:commandButton ajax="false" action="#{userTransactionController.clearSearch()}" value="Clear" >
                                 </p:commandButton>
                                 <p:commandButton ajax="false" action="#{userTransactionController.search()}" value="Search" >
@@ -65,13 +60,11 @@
                                     <p:dataExporter target="tbl" type="xls" fileName="user transaction list" >
                                     </p:dataExporter>
                                 </p:commandButton>
+                
+                                
                             </p:panelGrid>
-                        </p:panelGrid>
-
-
-
-
-                        <p:dataTable id="tbl" value="#{userTransactionController.items}" var="item"
+                        
+                    <p:dataTable id="tbl" value="#{userTransactionController.items}" var="item"
                                      rowKey="#{item.id}"
                                      paginator="true"
                                      rows="10"
@@ -117,9 +110,6 @@
                                 <h:outputText value="#{item.transactionData}"/>
                             </p:column>
                         </p:dataTable>
-
-
-
 
                     </p:panelGrid>
 
