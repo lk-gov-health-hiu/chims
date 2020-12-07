@@ -112,34 +112,21 @@
 
                         <p:tab title="Visits" >
                             <h:form>
-                                <p:commandButton action="#{clientEncounterComponentFormSetController.fillAllEncountersFormSetsOfSelectedClient('Clinic_Visit')}"
-                                                 class="small-box-footer" value="To View All Clinic Visits" >
+                                <p:commandButton 
+                                    ajax="false"
+                                    action="#{clientEncounterComponentFormSetController.fillAllEncountersFormSetsOfSelectedClient('Clinic_Visit')}"
+                                    class="small-box-footer" value="To View All Clinic Visits" >
                                 </p:commandButton>
-                                <p:dataTable value="#{clientEncounterComponentFormSetController.lastFiveClinicVisits}" 
+                                <p:dataTable value="#{clientController.selectedClientsLastFiveClinicVisits}" 
                                              var="rcv">
                                     <p:column headerText="Date" >
-                                        <p:outputLabel value="#{rcv.encounter.encounterDate}" >
+                                        <p:outputLabel value="#{rcv.encounterDate}" >
                                             <f:convertDateTime pattern="dd MMMM yyyy" ></f:convertDateTime>
                                         </p:outputLabel>
                                     </p:column>
                                     <p:column headerText="Place" >
                                         <p:outputLabel value="#{rcv.institution.name}" >
                                         </p:outputLabel>
-                                    </p:column>
-                                    <p:column headerText="Name" >
-                                        <p:outputLabel value="#{rcv.name}" >
-                                        </p:outputLabel>
-                                    </p:column>
-                                    <p:column headerText="Completed" >
-                                        <p:outputLabel value="#{rcv.completed?'Yes':'No'}" style="color: #{rcv.completed?'green':'red'};">
-                                        </p:outputLabel>
-                                    </p:column>
-                                    <p:column headerText="Actions">
-                                        <h:commandLink action="#{clientEncounterComponentFormSetController.toViewOrEditFormset()}"
-                                                       value="View Details"
-                                                       style="color: #{rcv.completed?'green':'red'};">
-                                            <f:setPropertyActionListener value="#{rcv}" target="#{clientEncounterComponentFormSetController.selected}" ></f:setPropertyActionListener>
-                                        </h:commandLink>
                                     </p:column>
                                 </p:dataTable>
 

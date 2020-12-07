@@ -95,6 +95,7 @@ public class ClientController implements Serializable {
     private Long idTo;
     private Institution institution;
     private List<Encounter> selectedClientsClinics;
+    private List<Encounter> selectedClientsLastFiveClinicVisits;
     private String searchingId;
     private String searchingPhn;
     private String searchingPassportNo;
@@ -152,12 +153,14 @@ public class ClientController implements Serializable {
 
     public String toClientProfile() {
         selectedClientsClinics = null;
+        selectedClientsLastFiveClinicVisits = null;
         return "/client/profile";
     }
 
     public String toAddNewClient() {
         setSelected(new Client());
         selectedClientsClinics = null;
+        selectedClientsLastFiveClinicVisits = null;
         selectedClinic = null;
         yearMonthDay = new YearMonthDay();
         userTransactionController.recordTransaction("to add a new client");
@@ -1679,6 +1682,7 @@ public class ClientController implements Serializable {
         updateYearDateMonth();
         selectedClientChanged();
         selectedClientsClinics = null;
+        selectedClientsLastFiveClinicVisits = null;
     }
 
     private ClientFacade getFacade() {
@@ -1757,6 +1761,9 @@ public class ClientController implements Serializable {
     public void setSelectedClientsClinics(List<Encounter> selectedClientsClinics) {
         this.selectedClientsClinics = selectedClientsClinics;
     }
+    
+    
+    
 
     public int getProfileTabActiveIndex() {
         return profileTabActiveIndex;
@@ -2035,6 +2042,18 @@ public class ClientController implements Serializable {
 
     public void setIntNo(int intNo) {
         this.intNo = intNo;
+    }
+
+    public List<Encounter> getSelectedClientsLastFiveClinicVisits() {
+        if(selectedClientsLastFiveClinicVisits==null){
+            selectedClientsLastFiveClinicVisits  = fillEncounters(selected, InstitutionType.Clinic, EncounterType.Clinic_Visit, true);
+        
+        }
+        return selectedClientsLastFiveClinicVisits;
+    }
+
+    public void setSelectedClientsLastFiveClinicVisits(List<Encounter> selectedClientsLastFiveClinicVisits) {
+        this.selectedClientsLastFiveClinicVisits = selectedClientsLastFiveClinicVisits;
     }
 
     // </editor-fold>

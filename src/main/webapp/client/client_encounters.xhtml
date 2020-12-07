@@ -42,15 +42,21 @@
                                     <f:convertDateTime pattern="hh:mm a" ></f:convertDateTime>
                                 </p:outputLabel>
                             </p:column>
-                            <p:column headerText="Institution" sortBy="#{s.encounter.institution.name}"
-                                      filterBy="#{s.encounter.institution.name}" filterMatchMode="contains">
+                            <p:column headerText="Institution" sortBy="#{s.encounter.institution.name}">
                                 <p:outputLabel value="#{s.encounter.institution.name}" style="color: #{s.completed?'white':'red'};" >
                                 </p:outputLabel>
                             </p:column>
-                            <p:column headerText="Encounter" sortBy="#{s.name}"
-                                      filterBy="#{s.name}" filterMatchMode="contains">
+                            <p:column headerText="Encounter" sortBy="#{s.name}">
                                 <p:outputLabel value="#{s.name}" style="color: #{s.completed?'white':'red'};" >
                                 </p:outputLabel>
+                            </p:column>
+
+                            <p:column headerText="Actions">
+                                <h:commandLink action="#{clientEncounterComponentFormSetController.toViewOrEditFormset()}"
+                                               value="View Details"
+                                               style="color: #{s.completed?'green':'red'};">
+                                    <f:setPropertyActionListener value="#{s}" target="#{clientEncounterComponentFormSetController.selected}" ></f:setPropertyActionListener>
+                                </h:commandLink>
                             </p:column>
 
                         </p:dataTable>
