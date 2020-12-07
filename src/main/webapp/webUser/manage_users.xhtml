@@ -6,113 +6,103 @@
       xmlns:p="http://primefaces.org/ui"
       xmlns:f="http://xmlns.jcp.org/jsf/core">
 
+    <head>
+        <style type="text/css">
+            .value {
+                font-weight: bold;
+            }
+
+            .ui-datatable {
+                margin-bottom: 25px
+            }
+
+            .ui-datatable .ui-datatable-footer {
+                text-align:left;
+            }
+
+            .ui-datalist ul {
+                padding: 0 0 0 10px;
+                margin: 5px 0;
+            }
+
+            .ui-datatable .ui-button-icon-only .ui-button-text {
+                padding: 0;
+                line-height: 1.2;
+            }
+        </style>
+    </head>
+
     <body>
-
-        <ui:composition template="/template.xhtml">
-
-            <ui:define name="content">
-                <h:form >
-
-
-                    <p:panelGrid style="height: 100%;text-align: center;" columns="2">
-                        <f:facet name="header" >
-                            <p:outputLabel value="User List" ></p:outputLabel>
-                            <p:commandButton ajax="false" value="Back" action="index" style="float: right;"/>
+        <ui:composition template="/webUser/index.xhtml">
+            <ui:define name="webUserContents">
+                <h:form id="userListForm" >
+                    <p:dataTable id="userListTab" var="item" value="#{webUserController.items}" selectionMode="single" selection="#{webUserController.current}" rowKey="#{item.id}"
+                                 paginator="true"                                 
+                                 rowsPerPageTemplate="10,20,25">
+                        <f:facet name="header">
+                            User List
                         </f:facet>
 
+                        <p:ajax event="rowSelect"   update="editButton"/>
+                        <p:ajax event="rowUnselect" update="editButton"/>
 
-                        <p:dataTable value="#{webUserController.items}" var="item"  
+                        <p:column sortBy="#{item.person.name}" filterBy="#{item.person.name}" filterMatchMode="contains">
+                            <f:facet name="header">
+                                <h:outputText value="Name"/>
+                            </f:facet>
+                            <h:outputText value="#{item.person.name}"/>
+                        </p:column>
 
-                                     rowKey="#{item.id}" 
+                        <p:column sortBy="#{item.name}" filterBy="#{item.name}" filterMatchMode="contains">
+                            <f:facet name="header">
+                                <h:outputText value="Username"/>
+                            </f:facet>
+                            <h:outputText value="#{item.name}"/>
+                        </p:column>
 
-                                     selection="#{webUserController.current}" 
+                        <p:column sortBy="#{item.institution.name}" filterBy="#{item.institution.name}" filterMatchMode="contains">
+                            <f:facet name="header">
+                                <h:outputText value="Institution"/>
+                            </f:facet>
+                            <h:outputText value="#{item.institution.name}"/>
+                        </p:column>
 
-                                     rows="10"
-                                     paginator="true"
-                                     paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-                                     rowsPerPageTemplate="10,20,25"
+                        <p:column sortBy="#{item.email}" filterBy="#{item.email}" filterMatchMode="contains">
+                            <f:facet name="header">
+                                <h:outputText value="Email"/>
+                            </f:facet>
+                            <h:outputText value="#{item.email}"/>
+                        </p:column>
 
-                                     >
+                        <p:column sortBy="#{item.telNo}" filterBy="#{item.telNo}" filterMatchMode="contains">
+                            <f:facet name="header">
+                                <h:outputText value="Phone"/>
+                            </f:facet>
+                            <h:outputText value="#{item.telNo}"/>
+                        </p:column>
 
-                            <p:column sortBy="#{item.person.name}" filterBy="#{item.person.name}" filterMatchMode="contains">
-                                <f:facet name="header">
-                                    <h:outputText value="Name"/>
-                                </f:facet>
-                                <h:outputText value="#{item.person.name}"/>
-                            </p:column>
-
-                            <p:column sortBy="#{item.name}" filterBy="#{item.name}" filterMatchMode="contains">
-                                <f:facet name="header">
-                                    <h:outputText value="Username"/>
-                                </f:facet>
-                                <h:outputText value="#{item.name}"/>
-                            </p:column>
-
-
-                            <p:column sortBy="#{item.institution.name}" filterBy="#{item.institution.name}" filterMatchMode="contains">
-                                <f:facet name="header">
-                                    <h:outputText value="Institution"/>
-                                </f:facet>
-                                <h:outputText value="#{item.institution.name}"/>
-                            </p:column>
-                            <p:column sortBy="#{item.email}" filterBy="#{item.email}" filterMatchMode="contains">
-                                <f:facet name="header">
-                                    <h:outputText value="Email"/>
-                                </f:facet>
-                                <h:outputText value="#{item.email}"/>
-                            </p:column>
-                            <p:column sortBy="#{item.telNo}" filterBy="#{item.telNo}" filterMatchMode="contains">
-                                <f:facet name="header">
-                                    <h:outputText value="Phone"/>
-                                </f:facet>
-                                <h:outputText value="#{item.telNo}"/>
-                            </p:column>
+                        <p:column sortBy="#{item.webUserRole.label}" filterBy="#{item.webUserRole.label}" filterMatchMode="contains">
+                            <f:facet name="header">
+                                <h:outputText value="Role"/>
+                            </f:facet>
+                            <h:outputText value="#{item.webUserRole.label}"/>
+                        </p:column>
 
 
-                            <p:column sortBy="#{item.webUserRole.label}" filterBy="#{item.webUserRole.label}" filterMatchMode="contains">
-                                <f:facet name="header">
-                                    <h:outputText value="Role"/>
-                                </f:facet>
-                                <h:outputText value="#{item.webUserRole.label}"/>
-                            </p:column>
-
-                            <p:column >
-                                <f:facet name="header">
-                                    <h:outputText value="Actions"/>
-                                </f:facet>
-                                <p:panelGrid columns="4" >
-                                    <p:commandLink  value="Edit" ajax="false"
-                                                    action="#{webUserController.prepareEdit()}" >
-                                        <f:setPropertyActionListener value="#{item}" target="#{webUserController.current}" ></f:setPropertyActionListener>
-                                    </p:commandLink>
-                                    <p:commandLink  value="Privileges" ajax="false"
-                                                    action="#{webUserController.toManagePrivileges()}" >
-                                        <f:setPropertyActionListener value="#{item}" 
-                                                                     target="#{webUserController.current}" >
-                                        </f:setPropertyActionListener>
-                                    </p:commandLink>
-                                    <p:commandLink  value="Password" ajax="false"
-                                                    action="#{webUserController.prepareEditPassword()}" >
-                                        <f:setPropertyActionListener value="#{item}" target="#{webUserController.current}" ></f:setPropertyActionListener>
-                                    </p:commandLink>
-                                    <p:commandLink value="Log as" ajax="false" action="#{webUserController.assumeUser()}" >
-                                        <f:setPropertyActionListener value="#{item}" target="#{webUserController.current}" ></f:setPropertyActionListener>
-                                    </p:commandLink>
-
-                                </p:panelGrid>
-
-
-                            </p:column>
-                        </p:dataTable>
-
-
-                    </p:panelGrid>
+                        <f:facet name="footer">
+                            <p:commandButton id="editButton"   icon="fa fa-pencil" value="Edit" update=":WebUserEditForm" oncomplete="PF('WebUserEditDialog').show()" disabled="#{empty webUserController.selected}"/>
+                            <p:commandButton id="privilegesButton"   icon="fa fa-link" value="Privileges" update=":WebUserPrivilegesForm" oncomplete="PF('WebUserPrivilegesDialog').show()" disabled="#{empty webUserController.selected}"/>
+                            <p:commandButton id="chgPasswordButton"   icon="fa fa-key" value="Change Password" update=":changePasswordForm" oncomplete="PF('WebUserChangePwDialog').show()" disabled="#{empty webUserController.selected}"/>
+                            <p:commandButton id="logAsButton"   icon="fa fa-user" value="Log As" action="#{webUserController.assumeUser()}" disabled="#{empty webUserController.selected}"/>
+                        </f:facet>
+                    </p:dataTable>
                 </h:form>
+                <ui:include src="Edit.xhtml"/>
+                <ui:include src="privileges.xhtml"/>
+                <ui:include src="Password.xhtml"/>
                 <br/>
                 <br/>
-
             </ui:define>
         </ui:composition>
-
     </body>
 </html>

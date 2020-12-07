@@ -36,6 +36,9 @@ public class UploadController implements Serializable {
     private lk.gov.health.phsp.facade.UploadFacade ejbFacade;
     @Inject
     private WebUserController webUserController;
+    @Inject
+    private UserTransactionController userTransactionController;
+    
     private List<Upload> items = null;
     private Upload selected;
     private Component selectedComponent;
@@ -61,6 +64,7 @@ public class UploadController implements Serializable {
             selected.setComponent(selectedComponent);
             getFacade().create(selected);
         }
+        userTransactionController.recordTransaction("To Upload Component Upload Single");
         return "/queryComponent/upload_query";
     }
 
@@ -122,19 +126,19 @@ public class UploadController implements Serializable {
 
 
         if (file == null) {
-            //System.out.println("file is null");
+            
             lk.gov.health.phsp.facade.util.JsfUtil.addErrorMessage("Error in Uploading file. No such file");
             return ;
         }
 
         if (file.getFileName() == null) {
-            //System.out.println("file name is null = " );
+            
             lk.gov.health.phsp.facade.util.JsfUtil.addErrorMessage("Error in Uploading file. No such file name.");
             return ;
         }
 
         if (selected == null) {
-            //System.out.println("selected is null = " );
+            
             JsfUtil.addErrorMessage("No file. Error");
             return ;
         }
@@ -148,9 +152,9 @@ public class UploadController implements Serializable {
         try {
             in = getFile().getInputstream();
             selected.setBaImage(IOUtils.toByteArray(in));
-            //System.out.println("Done");
+            
         } catch (IOException e) {
-            //System.out.println("e = " + e.getMessage());
+            
         }
 
         if (selected.getId() == null) {
@@ -174,20 +178,21 @@ public class UploadController implements Serializable {
 
 
         if (file == null) {
-            //System.out.println("file is null");
+            
             lk.gov.health.phsp.facade.util.JsfUtil.addErrorMessage("Error in Uploading file. No such file");
             return "";
         }
 
         if (file.getFileName() == null) {
-            //System.out.println("file name is null = " );
+            
             lk.gov.health.phsp.facade.util.JsfUtil.addErrorMessage("Error in Uploading file. No such file name.");
             return "";
         }
 
         if (selected == null) {
-            //System.out.println("selected is null = " );
+            
             JsfUtil.addErrorMessage("No file. Error");
+            userTransactionController.recordTransaction("Upload File-Query Component");
             return "/queryComponent/query";
         }
 
@@ -200,9 +205,9 @@ public class UploadController implements Serializable {
         try {
             in = getFile().getInputstream();
             selected.setBaImage(IOUtils.toByteArray(in));
-            //System.out.println("Done");
+            
         } catch (IOException e) {
-            //System.out.println("e = " + e.getMessage());
+            
         }
 
         if (selected.getId() == null) {
@@ -216,7 +221,7 @@ public class UploadController implements Serializable {
 
 
         getFacade().edit(selected);
-
+        userTransactionController.recordTransaction("Upload File-Query Component");
         return "/queryComponent/query";
 
     }

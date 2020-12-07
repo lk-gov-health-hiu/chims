@@ -7,19 +7,11 @@
       xmlns:p="http://primefaces.org/ui">
 
     <body>
-
         <ui:composition template="./../template.xhtml">
-
             <ui:define name="content">
-
-
-
                 <f:view>
-
                     <p:panel header="Form Item Details" style="width: 100%; text-align: center;" >
-
                         <h:form>
-
                             <p:panelGrid columns="1" rendered="#{designComponentFormItemController.selected ne null}"
                                          style="margin: auto; text-align: left; width: 80%;">
                                 <f:facet name="header" >
@@ -36,10 +28,7 @@
 
                                 <p:tabView >
                                     <p:tab title="Basic" >
-
                                         <p:panelGrid columns="2" >
-
-
                                             <p:outputLabel value="Name:" for="name"/>
                                             <p:inputText id="name" required="true" rendered="true"
                                                          value="#{designComponentFormItemController.selected.name}" title="Name" />
@@ -51,14 +40,17 @@
 
                                             <p:outputLabel value="Item:" for="item" />
                                             <p:autoComplete id="item" value="#{designComponentFormItemController.selected.item}" 
-                                                            completeMethod="#{itemController.completeDictionaryItems}" forceSelection="true"
+                                                            completeMethod="#{itemController.completeDictionaryItems}" 
+                                                            maxResults="20" minQueryLength="3"
                                                             required="true"   var="dic" itemLabel="#{dic.code}" itemValue="#{dic}">
                                                 <p:column headerText="ID" >
                                                     <p:outputLabel value="#{dic.id}" ></p:outputLabel>
                                                 </p:column>
+
                                                 <p:column headerText="Name" >
                                                     <p:outputLabel value="#{dic.name}" ></p:outputLabel>
                                                 </p:column>
+
                                                 <p:column headerText="Code" >
                                                     <p:outputLabel value="#{dic.code}" ></p:outputLabel>
                                                 </p:column>
@@ -70,12 +62,15 @@
                                             <p:outputLabel value="Multiple Entries per Form" for="multipleEntiesPerForm" />
                                             <p:selectBooleanCheckbox id="multipleEntiesPerForm" value="#{designComponentFormItemController.selected.multipleEntiesPerForm}" ></p:selectBooleanCheckbox>
 
-
                                             <p:outputLabel value="ComponentSex:" for="componentSex" />
                                             <p:selectOneMenu id="componentSex" 
                                                              value="#{designComponentFormItemController.selected.componentSex}" 
                                                              title="ComponentSex" >
-                                                <f:selectItems value="#{commonController.componentSex}" ></f:selectItems>
+                                                <f:selectItems value="#{commonController.componentSex}"
+                                                               var="componentSex"
+                                                               itemValue="#{componentSex}"
+                                                               itemLabel="#{componentSex.label}">
+                                                </f:selectItems>
                                             </p:selectOneMenu>
 
                                             <p:outputLabel value="RenderType:" for="renderType" />
@@ -89,27 +84,23 @@
                                             <p:outputLabel value="Enable a Details Box" for="displayDetailsBox" />
                                             <p:selectBooleanCheckbox id="displayDetailsBox" value="#{designComponentFormItemController.selected.displayDetailsBox}" ></p:selectBooleanCheckbox>
 
-
                                             <p:outputLabel value="Discreption as a Tooltip" for="discreptionAsAToolTip" />
                                             <p:selectBooleanCheckbox id="discreptionAsAToolTip" value="#{designComponentFormItemController.selected.discreptionAsAToolTip}" ></p:selectBooleanCheckbox>
 
-
                                             <p:outputLabel value="Discreption as a Side Label" for="discreptionAsASideLabel" />
                                             <p:selectBooleanCheckbox id="discreptionAsASideLabel" value="#{designComponentFormItemController.selected.discreptionAsASideLabel}" ></p:selectBooleanCheckbox>
-
-
                                         </p:panelGrid>
-
                                     </p:tab>
                                     <p:tab title="Data" >
-
                                         <p:panelGrid columns="2" >
-
                                             <p:outputLabel value="Data Type:" for="selectionDataType" />
                                             <p:selectOneMenu id="selectionDataType" required="true"
                                                              value="#{designComponentFormItemController.selected.selectionDataType}" title="SelectionDataType" >
                                                 <f:selectItem itemLabel="Select" ></f:selectItem>
-                                                <f:selectItems value="#{commonController.selectionDataTypes}" ></f:selectItems>
+                                                <f:selectItems value="#{commonController.selectionDataTypes}"
+                                                               var="selectionDataTypes"
+                                                               itemValue="#{selectionDataTypes}"
+                                                               itemLabel="#{selectionDataTypes.label}"></f:selectItems>
                                             </p:selectOneMenu>
 
                                             <p:outputLabel value="Data Population Strategy:" for="dataPopulationStrategy" />
@@ -123,14 +114,22 @@
                                             <p:selectOneMenu id="dataCompletionStrategy" 
                                                              value="#{designComponentFormItemController.selected.dataCompletionStrategy}" 
                                                              title="DataCompletionStrategy" >
-                                                <f:selectItems value="#{commonController.dataCompletionStrategies}" ></f:selectItems>
+                                                <f:selectItems value="#{commonController.dataCompletionStrategies}"
+                                                               var="dataCompletionStrategies"
+                                                               itemValue="#{dataCompletionStrategies}"
+                                                               itemLabel="#{dataCompletionStrategies.label}">
+                                                </f:selectItems>
                                             </p:selectOneMenu>
 
                                             <p:outputLabel value="Data Modification Strategy:" for="dataModificationStrategy" />
                                             <p:selectOneMenu id="dataModificationStrategy" 
                                                              value="#{designComponentFormItemController.selected.dataModificationStrategy}" 
                                                              title="DataModificationStrategy" >
-                                                <f:selectItems value="#{commonController.dataModificationStrategies}" ></f:selectItems>
+                                                <f:selectItems value="#{commonController.dataModificationStrategies}"
+                                                               var="dataModificationStrategies"
+                                                               itemValue="#{dataModificationStrategies}"
+                                                               itemLabel="#{dataModificationStrategies.label}">
+                                                </f:selectItems>
                                             </p:selectOneMenu>
 
                                             <p:outputLabel value="Category of Available Items:" for="categoryOfAvailableItems" />
@@ -138,6 +137,7 @@
                                                             value="#{designComponentFormItemController.selected.categoryOfAvailableItems}"
                                                             completeMethod="#{itemController.completeItems}" 
                                                             var="ic" itemLabel="#{ic.name}" forceSelection="true"
+                                                            maxResults="20" minQueryLength="3"
                                                             itemValue="#{ic}" >
                                                 <p:column headerText="Name">
                                                     <p:outputLabel value="#{ic.name}" ></p:outputLabel>
@@ -147,7 +147,6 @@
                                                 </p:column>
                                             </p:autoComplete>
 
-
                                             <p:outputLabel value="Display Last Results" for="displayLastResults" />
                                             <p:selectBooleanCheckbox id="displayLastResults" value="#{designComponentFormItemController.selected.displayLastResult}" ></p:selectBooleanCheckbox>
 
@@ -155,7 +154,11 @@
                                             <p:selectOneMenu id="resultDisplayStrategy" 
                                                              value="#{designComponentFormItemController.selected.resultDisplayStrategy}" 
                                                              title="DataPopulationStrategy" >
-                                                <f:selectItems value="#{commonController.dataPopulationStrategies}" ></f:selectItems>
+                                                <f:selectItems value="#{commonController.dataPopulationStrategies}"
+                                                               var="dataPopulationStrategies"
+                                                               itemValue="#{dataPopulationStrategies}"
+                                                               itemLabel="#{dataPopulationStrategies.label}">
+                                                </f:selectItems>
                                             </p:selectOneMenu>
 
                                             <p:outputLabel value="Display Link to Clients' Current Data" for="linkToClientData" />
@@ -164,10 +167,7 @@
 
                                             <p:outputLabel value="Display Link to Clients' Previous Visit Data" for="linkToPreviousResults" />
                                             <p:selectBooleanCheckbox id="linkToPreviousResults" value="#{designComponentFormItemController.selected.displayLinkToResultList}" ></p:selectBooleanCheckbox>
-
-
                                         </p:panelGrid>
-
                                     </p:tab>
 
                                     <p:tab title="Calculation" >
@@ -185,14 +185,12 @@
                                                              cols="100"
                                                              rows="10"/>
 
-
                                             <p:outputLabel value="Calculation Script - Colour:" for="calculationScriptForColour" />
                                             <p:inputTextarea id="calculationScriptForColour"
                                                              value="#{designComponentFormItemController.selected.calculationScriptForColour}" 
                                                              autoResize="true"
                                                              cols="100"
-                                                             rows="10"
-                                                             />
+                                                             rows="10"/>
 
                                             <p:outputLabel value="Calculation Script - Background Colour:" for="calculationScriptForBackgroundColour" />
                                             <p:inputTextarea id="calculationScriptForBackgroundColour"
@@ -201,11 +199,11 @@
                                                              cols="100"
                                                              rows="10"/>
 
-
                                             <p:outputLabel value="Available Codes:" for="availableCode" />
                                             <p:autoComplete id="availableCode"
                                                             completeMethod="#{itemController.completeItems}" 
                                                             var="ic" itemLabel="#{ic.code}" forceSelection="true"
+                                                            maxResults="20" minQueryLength="3"
                                                             itemValue="#{ic}" >
                                                 <p:column headerText="Name">
                                                     <p:outputLabel value="#{ic.name}" ></p:outputLabel>
@@ -214,9 +212,7 @@
                                                     <p:outputLabel value="#{ic.code}" ></p:outputLabel>
                                                 </p:column>
                                             </p:autoComplete>
-
                                         </p:panelGrid>
-
                                     </p:tab>
 
                                     <p:tab title="Validation" >
@@ -235,6 +231,7 @@
                                             <p:inputTextarea id="regexErrorMesage" value="#{designComponentFormItemController.selected.regexValidationFailedMessage}" title="Name" />
                                         </p:panelGrid>
                                     </p:tab>
+
                                     <p:tab title="CSS" >
                                         <p:panelGrid columns="2" >
                                             <p:outputLabel value="Top Percent:" for="topPercent" />
@@ -254,33 +251,15 @@
 
                                             <p:outputLabel value="Border Color:" />
                                             <p:colorPicker value="#{designComponentFormItemController.selected.borderColour}" ></p:colorPicker>
-
-
                                         </p:panelGrid>
                                     </p:tab>
                                 </p:tabView>
-
-
-
-
-
-
-
-
                             </p:panelGrid>
                         </h:form>
-
                         <p:spacer height="10" ></p:spacer>
-
                     </p:panel>
-
-
                 </f:view>
-
-
             </ui:define>
-
         </ui:composition>
-
     </body>
 </html>

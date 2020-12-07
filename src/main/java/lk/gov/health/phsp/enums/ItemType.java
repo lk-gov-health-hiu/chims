@@ -29,8 +29,18 @@ package lk.gov.health.phsp.enums;
  * @author User
  */
 public enum ItemType {
-    Dictionary_Item,
-    Dictionary_Category,
-    Mime_Type,
-    Other,
+    Dictionary_Item("Dictionary Item"),
+    Dictionary_Category("Dictionary Category"),
+    Mime_Type("Mime Type"),
+    Other("Other");
+    
+    public final String label;
+    
+    private ItemType(String label){
+        this.label = label;
+    }
+    
+    public String getLabel(){
+        return label;
+    }
 }

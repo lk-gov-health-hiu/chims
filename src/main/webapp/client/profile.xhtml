@@ -12,14 +12,10 @@
 
             <ui:define name="content">
                 <h:outputStylesheet library="css" name="tem1.css"/>
-
                 <p:panelGrid columns="1" style="width: 100%;" styleClass="alignTop" >
                     <f:facet name="header" >
-
                         <h:form >
-
-
-                            <p:outputLabel value="Profile" ></p:outputLabel>
+                            <p:outputLabel value="Summery - #{clientController.selected.phn}" ></p:outputLabel>
                             <p:spacer height="1" width="30"></p:spacer>
                             <p:commandButton value="To Edit Details" action="/client/client"
                                              style="float: right;">
@@ -34,32 +30,26 @@
                                              actionListener="#{clientController.prepareToCapturePhotoWithWebCam()}"
                                              value="To Upload Photo"  rendered="false"
                                              action="upload" style="float: right;"/>
-
                         </h:form>
                     </f:facet>
-
                     <h:panelGroup >
-
                     </h:panelGroup>
 
-
-
                     <p:tabView dynamic="true" >
-                        <p:tab title="Summery" >
+                        <p:tab title="Profile" >
                             <p:panelGrid columns="2" >
-
 
                                 <h:form>
                                     <p:panelGrid rendered="true" columns="1" >
                                         <p:graphicImage  rendered="#{clientController.selected.person.sex.name eq 'Male'}"
                                                          library="image" name="male.jpg" 
                                                          class="profile-user-img img-fluid img-circle"
-                                                         style="width: 20rem;  margin: auto;" ></p:graphicImage>
+                                                         style="width: 20rem;  margin: auto;" >
+                                        </p:graphicImage>
                                         <p:graphicImage  rendered="#{clientController.selected.person.sex.name eq 'Female'}"
                                                          class="profile-user-img img-fluid img-circle"
-                                                         library="image" name="female.png" style="width: 20rem;  margin: auto;" ></p:graphicImage>
-
-
+                                                         library="image" name="female.png" style="width: 20rem;  margin: auto;" >
+                                        </p:graphicImage>
                                     </p:panelGrid>
                                 </h:form>
 
@@ -85,14 +75,11 @@
                                         <f:convertDateTime pattern="dd MMMM yyyy" ></f:convertDateTime>
                                     </h:outputLabel>
 
-
                                     <h:outputLabel value="Phone 1" ></h:outputLabel>
                                     <h:outputLabel value="#{clientController.selected.person.phone1}" ></h:outputLabel>
 
-
                                     <h:outputLabel value="Phone 2" ></h:outputLabel>
                                     <h:outputLabel value="#{clientController.selected.person.phone2}" ></h:outputLabel>
-
 
                                     <h:outputLabel value="Local Ref. No." ></h:outputLabel>
                                     <h:outputLabel value="#{clientController.selected.person.localReferanceNo}" ></h:outputLabel>
@@ -104,9 +91,6 @@
                                     <h:outputLabel value="#{clientController.selected.person.address}" ></h:outputLabel>
 
                                 </p:panelGrid>
-
-
-
                             </p:panelGrid>
                         </p:tab>
 
@@ -129,16 +113,11 @@
                                         </p:outputLabel>
                                     </p:column>
                                 </p:dataTable>
-
-
-
                             </h:form>
                         </p:tab>
 
                         <p:tab title="Current Clinics"  >
                             <h:form >
-
-
                                 <p:dataTable id="tblClinics" value="#{clientController.selectedClientsClinics}" var="chlce" >
                                     <p:column headerText="Clinic" >
                                         <p:outputLabel value="#{chlce.institution.name}" ></p:outputLabel>
@@ -187,6 +166,7 @@
                                                             rendered="#{webUserController.loggedUser.systemAdministrator eq true 
                                                                         or webUserController.loggedUser.superUser eq true}"
                                                             value="#{clientController.selectedClinic}"  forceSelection="true" 
+                                                            maxResults="15" minQueryLength="4"
                                                             var="shlc" itemValue="#{shlc}" itemLabel="#{shlc.name}">
                                             </p:autoComplete>
 
@@ -202,22 +182,11 @@
 
                             </h:form>
                         </p:tab>
-
                     </p:tabView>
-
-
-
                     <p:panel >
-
                     </p:panel>
-
-
                 </p:panelGrid>
-
-
-
             </ui:define>
-
         </ui:composition>
 
     </body>

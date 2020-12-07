@@ -39,6 +39,8 @@ public class DesignComponentFormController implements Serializable {
     WebUserController webUserController;
     @Inject
     DesignComponentFormItemController designComponentFormItemController;
+    @Inject
+    private UserTransactionController userTransactionController;
 // </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="Class Variables">
     private List<DesignComponentForm> items = null;
@@ -67,7 +69,7 @@ public class DesignComponentFormController implements Serializable {
             JsfUtil.addErrorMessage("Nothing to Edit");
             return "";
         }
-
+        userTransactionController.recordTransaction("To Edit Design Component From");
         return "/designComponentForm/form";
     }
 
@@ -79,6 +81,7 @@ public class DesignComponentFormController implements Serializable {
         designComponentFormItemController.setDesignComponentForm(selected);
         designComponentFormItemController.fillItemsOfTheForm();
         designComponentFormItemController.createNewAddingItem();
+        userTransactionController.recordTransaction("To Manage Design Component Items");
         return "/designComponentFormItem/manage_items";
     }
 
@@ -135,9 +138,6 @@ public class DesignComponentFormController implements Serializable {
     }
 
     public void addFormToTheSelectedSet() {
-//        // ////System.out.println("addFormToTheSelectedSet");
-//        // ////System.out.println("designComponentFormSet = " + designComponentFormSet);
-//        // ////System.out.println("addingForm = " + addingForm);
         if (designComponentFormSet == null) {
             JsfUtil.addErrorMessage("No Formset");
             return;
@@ -150,9 +150,9 @@ public class DesignComponentFormController implements Serializable {
         addingForm.setCreatedAt(new Date());
         addingForm.setCreatedBy(webUserController.getLoggedUser());
         getFacade().create(addingForm);
-
         fillFormsofTheSelectedSet();
         addingForm = null;
+        userTransactionController.recordTransaction("Add Form To The Selected Set");
     }
 
     public void removeFromFromTheSelectedSet() {
@@ -166,6 +166,7 @@ public class DesignComponentFormController implements Serializable {
         getFacade().edit(removingForm);
         fillFormsofTheSelectedSet();
         JsfUtil.addSuccessMessage("Item Removed");
+        userTransactionController.recordTransaction("Remove Form From The Selected Set");
     }
 
     public void moveUpTheSelectedSet() {
@@ -185,6 +186,7 @@ public class DesignComponentFormController implements Serializable {
         fillFormsofTheSelectedSet();
         movingForm = null;
         JsfUtil.addSuccessMessage("Item Moved Up");
+        userTransactionController.recordTransaction("Change Order-Item Moved Up");
     }
 
     public void moveDownTheSelectedSet() {
@@ -203,6 +205,7 @@ public class DesignComponentFormController implements Serializable {
         }
         fillFormsofTheSelectedSet();
         JsfUtil.addSuccessMessage("Item Moved Down");
+        userTransactionController.recordTransaction("Change Order-Item Moved Down");
     }
 
 // </editor-fold>

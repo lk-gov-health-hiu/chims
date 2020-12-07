@@ -5,53 +5,27 @@ package lk.gov.health.phsp.enums;
  * @author Dr M H B Ariyaratne
  */
 public enum ProjectStageType {
-    Awaiting_PEC_Approval,
-    Incomplete_Pcp,
-    PEC_Rejected,
-    Awaiting_DNP_Submission,
-    Awaiting_DNP_Approval,
-    DNP_Revision,
-    DNP_Rejected,
-    Awaiting_Cabinet_Submission,
-    Awaiting_Cabinet_Approval,
-    Cabinet_Approved,
-    Cabinet_Rejected,
-    Funds_Allocated,
-    Ongoing,
-    Completed;
+    Awaiting_PEC_Approval("Awaiting PEC Approval"),
+    Incomplete_Pcp("Incomplete PCP"),
+    PEC_Rejected("Rejected by PEC"),
+    Awaiting_DNP_Submission("Awaiting NDP Submission"),
+    Awaiting_DNP_Approval("Awaiting NDP Approval"),
+    DNP_Revision("Under NDP Revision"),
+    DNP_Rejected("Rejected by NDP"),
+    Awaiting_Cabinet_Submission("Awaiting Cabinet Submission"),
+    Awaiting_Cabinet_Approval("Awaiting Cabinet Approval"),
+    Cabinet_Approved("Approved by the Cabinet"),
+    Cabinet_Rejected("Rejected by the Cabinet"),
+    Funds_Allocated("Funds Allocated"),
+    Ongoing("Ongoing"),
+    Completed("Completed");
 
-    public String getLabel() {
-        switch (this) {
-            case Awaiting_PEC_Approval:
-                return "Awaiting PEC Approval";
-            case Incomplete_Pcp:
-                return "Incomplete PCP";
-            case PEC_Rejected:
-                return "Rejected by PEC";
-            case Awaiting_DNP_Submission:
-                return "Awaiting NDP Submission";
-            case Awaiting_DNP_Approval:
-                return "Awaiting NDP Approval";
-            case DNP_Revision:
-                return "Under NDP Revision";
-            case DNP_Rejected:
-                return "Rejected by NDP";
-            case Awaiting_Cabinet_Submission:
-                return "Awaiting Cabinet Submission";
-            case Awaiting_Cabinet_Approval:
-                return "Awaiting Cabinet Approval";
-            case Cabinet_Approved:
-                return "Approved by the Cabinet";
-            case Cabinet_Rejected:
-                return "Rejected by the Cabinet";
-            case Funds_Allocated:
-                return "Funds Allocated";
-            case Ongoing:
-                return "Ongoing";
-            case Completed:
-                return "Completed";
-            default:
-                return this.toString();
-        }
+    public final String label;    
+    private ProjectStageType(String label){
+        this.label = label;
+    }
+    
+    public String getLabel(){
+        return label;
     }
 }

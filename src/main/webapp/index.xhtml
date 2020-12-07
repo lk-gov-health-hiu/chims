@@ -9,16 +9,13 @@
     <h:body>
 
         <ui:composition template="./template.xhtml">
-
-
-
+            
             <ui:define name="content">
 
                 <h:panelGroup rendered="false" >
                     <ez:dashboardSystemAdministrator rendered="#{webUserController.loggedUser.systemAdministrator}"/>
                     <ez:dashboardSuperUser rendered="#{webUserController.loggedUser.superUser}"/>
                     <ez:dashboardUser rendered="#{webUserController.loggedUser.user}"/>
-
 
                     <ez:dashboardMeAdministrator rendered="#{webUserController.loggedUser.meAdministrator}"/>
                     <ez:dashboardMeSuperUser rendered="#{webUserController.loggedUser.meSuperUser}"/>
@@ -31,17 +28,11 @@
                     <ez:dashboardNurse rendered="#{webUserController.loggedUser.nurse}"/>
                     <ez:dashboardMidwife rendered="#{webUserController.loggedUser.midwife}"/>
                 </h:panelGroup>
-
+           
+                <h:panelGroup>
+                    <ez:userModules rendered="#{webUserController.loggedUser.systemAdministrator}"/>
+                </h:panelGroup>
             </ui:define>
-
-
-
-
         </ui:composition>
-
-
     </h:body>
-
-
-
 </html>

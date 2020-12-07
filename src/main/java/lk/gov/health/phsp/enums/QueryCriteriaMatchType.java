@@ -28,10 +28,19 @@ package lk.gov.health.phsp.enums;
  * @author Dr M H B Ariyaratne<buddhika.ari@gmail.com>
  */
 public enum QueryCriteriaMatchType {
-    Variable_Value_Check,
-    Variable_Range_check,
-    Opening_Bracket,
-    Closing_Bracket,
-    Operator_OR,
-    Operator_AND,
+    Variable_Value_Check("Variable Value Check"),
+    Variable_Range_check("Variable Range Check"),
+    Opening_Bracket("Opening Bracket"),
+    Closing_Bracket("Closing Bracket"),
+    Operator_OR("Or"),
+    Operator_AND("And");
+    
+    private final String label;    
+    private QueryCriteriaMatchType(String label){
+        this.label = label;
+    }
+    
+    public String getLabel(){
+        return label;
+    }
 }
