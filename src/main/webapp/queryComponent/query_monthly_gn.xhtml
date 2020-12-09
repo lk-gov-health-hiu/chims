@@ -1,0 +1,114 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <body>
+
+        <ui:composition template="./query_index.xhtml">
+            
+            <ui:define name="query">
+                <h:form>
+                    <p:panelGrid columns="1"  styleClass="alignTop" style="width: 100%;">
+                        <f:facet name="header" >
+                            <p:outputLabel value="Process Query - #{queryComponentController.selectedForQuery.name}">
+                            </p:outputLabel>
+                            <p:commandButton ajax="false" value="Back" action="query_process_subcategory" style="float: right;" ></p:commandButton>
+                        </f:facet>
+                        <p:panelGrid columns="2" style="margin: auto; width: 90%;" columnClasses="btn300 btn300">
+                            <f:facet name="header" >
+                                <p:outputLabel value="Query">
+                                </p:outputLabel>
+                            </f:facet>
+                            <p:outputLabel value="Category">
+                            </p:outputLabel>
+                            <p:selectOneMenu id="cat" value="#{queryComponentController.selectedCategory}" >
+                                <f:selectItem itemLabel="Select a Category" ></f:selectItem>
+                                <f:selectItems value="#{queryComponentController.categories}" var="c" itemLabel="#{c.name}" 
+                                               itemValue="#{c}"
+                                               ></f:selectItems>
+                                <f:ajax execute="@this" render="sc q name des" ></f:ajax>
+                            </p:selectOneMenu>
+                            <p:outputLabel value="sub-Category">
+                            </p:outputLabel>
+                            <p:selectOneMenu id="sc" value="#{queryComponentController.selectedSubcategory}" >
+                                <f:selectItem itemLabel="Select a Category" ></f:selectItem>
+                                <f:selectItems value="#{queryComponentController.subcategories()}" var="c" itemLabel="#{c.name}" 
+                                               itemValue="#{c}"
+                                               ></f:selectItems>
+                                <f:ajax execute="@this" render="q name des" ></f:ajax>
+                            </p:selectOneMenu>
+                            <p:outputLabel value="Query">
+                            </p:outputLabel>
+                            <p:selectOneMenu id="q" value="#{queryComponentController.selectedForQuery}" >
+                                <f:selectItem itemLabel="Select a Category" ></f:selectItem>
+                                <f:selectItems value="#{queryComponentController.queries()}" var="c" itemLabel="#{c.name}" 
+                                               itemValue="#{c}"
+                                               ></f:selectItems>
+                                <f:ajax execute="@this" render="name des" ></f:ajax>
+                            </p:selectOneMenu>
+
+                            <p:outputLabel value="Name"></p:outputLabel>
+                            <p:outputLabel id="name" value="#{queryComponentController.selectedForQuery.name}">
+                            </p:outputLabel>
+
+                            <p:outputLabel value="Descreption">
+                            </p:outputLabel>
+                            <p:outputLabel id="des" value="#{queryComponentController.selectedForQuery.descreption}">
+                            </p:outputLabel>
+
+
+
+
+                            <p:outputLabel value="Year"></p:outputLabel>
+                            <p:inputText value="#{queryComponentController.year}" 
+                                         required="true"
+                                         rendered="#{queryComponentController.filterYear}">
+                            </p:inputText>
+
+                            <p:outputLabel value="Month"></p:outputLabel>
+                            <p:selectOneMenu value="#{queryComponentController.month}" 
+                                             required="true">
+                                <f:selectItems value="#{commonController.months}"  var="q"
+                                               itemValue="#{q.value}" itemLabel="#{q}"></f:selectItems>
+                            </p:selectOneMenu>
+
+
+
+                            <p:outputLabel value="GN" ></p:outputLabel>
+                            <p:autoComplete id="gn" value="#{queryComponentController.gn}"
+                                            completeMethod="#{areaController.completeGn}"
+                                            var="gn" itemLabel="#{gn.name}" itemValue="#{gn}" 
+                                            required="true"
+                                            maxResults="15" forceSelection="true" 
+                                            minQueryLength="3">
+                            </p:autoComplete>
+
+
+                            <p:spacer></p:spacer>
+                            <p:commandButton value="Execute" 
+                                             action="#{queryComponentController.processQueryMonthlyGn()}" ajax="false"
+                                             >
+                            </p:commandButton>
+
+                        </p:panelGrid>
+
+
+
+
+
+                    </p:panelGrid>
+                </h:form>
+
+
+
+
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

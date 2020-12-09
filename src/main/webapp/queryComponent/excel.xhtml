@@ -8,19 +8,26 @@
 
     <body>
 
-        <ui:composition template="./../template.xhtml">
+        <ui:composition template="/queryComponent/index.xhtml">
 
-            <ui:define name="content">
+            <ui:define name="analysis">
 
                 <f:view>
                     <h:form>
                         <p:panelGrid columns="2" styleClass="alignTop" >
                             <f:facet name="header" >
-                                <p:outputLabel value="Manage Excel Templates">
+                                <p:outputLabel value="Excel Templates">
                                 </p:outputLabel>
                             </f:facet>
 
-                            <p:dataTable value="#{queryComponentController.excels}" var="item">
+                            <p:dataTable value="#{queryComponentController.excels}" var="item"
+
+                                         rowKey="#{item.id}"
+                                         paginator="true"
+                                         rows="10"
+                                         rowsPerPageTemplate="10,20,30,40,50"
+
+                                         >
 
                                 <p:column>
                                     <f:facet name="header">
@@ -39,10 +46,10 @@
                                         <h:outputText value="Actions"/>
                                     </f:facet>
 
-                                     <p:commandButton ajax="false" 
-                                                      value="Edit" 
-                                                      action="#{queryComponentController.toEditExcelTemplate()}" >
-                                         <f:setPropertyActionListener value="#{item}" target="#{queryComponentController.selected}" ></f:setPropertyActionListener>
+                                    <p:commandButton ajax="false" 
+                                                     value="Edit" 
+                                                     action="#{queryComponentController.toEditExcelTemplate()}" >
+                                        <f:setPropertyActionListener value="#{item}" target="#{queryComponentController.selected}" ></f:setPropertyActionListener>
                                     </p:commandButton>
 
                                     <p:commandButton ajax="false" value="Remove" action="#{queryComponentController.remove()}" 
@@ -75,13 +82,8 @@
 
                             </p:panelGrid>
 
-                            
-                            
-                        </p:panelGrid>
-                        <p:panelGrid columns="2" styleClass="alignTop" >
-                            <p:commandButton ajax="false" value="Refresh for User" 
-                                             action="#{applicationController.reloadQueryComponents()}"
-                                             ></p:commandButton>
+
+
                         </p:panelGrid>
                     </h:form>
                 </f:view>

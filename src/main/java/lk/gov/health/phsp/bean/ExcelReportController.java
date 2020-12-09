@@ -890,7 +890,7 @@ public class ExcelReportController implements Serializable {
                     if (qInt1 != null) {
                         Integer tmpIntVal = clientValue.getIntegerNumberValue();
                         if (tmpIntVal == null) {
-                            tmpIntVal = stringToInteger(clientValue.getShortTextValue());
+                            tmpIntVal = CommonController.stringToInteger(clientValue.getShortTextValue());
                         }
                         if (tmpIntVal != null) {
                             m = qInt1.equals(tmpIntVal);
@@ -899,7 +899,7 @@ public class ExcelReportController implements Serializable {
                     if (lng1 != null) {
                         Long tmpLLongVal = clientValue.getLongNumberValue();
                         if (tmpLLongVal == null) {
-                            tmpLLongVal = stringToLong(clientValue.getShortTextValue());
+                            tmpLLongVal = CommonController.stringToLong(clientValue.getShortTextValue());
                         }
                         if (tmpLLongVal != null) {
                             m = lng1.equals(tmpLLongVal);
@@ -908,7 +908,7 @@ public class ExcelReportController implements Serializable {
                     if (real1 != null) {
                         Double tmpDbl = clientValue.getRealNumberValue();
                         if (tmpDbl == null) {
-                            tmpDbl = stringToDouble(clientValue.getShortTextValue());
+                            tmpDbl = CommonController.stringToDouble(clientValue.getShortTextValue());
                         }
                         if (tmpDbl != null) {
                             m = real1.equals(tmpDbl);
@@ -942,7 +942,7 @@ public class ExcelReportController implements Serializable {
                     if (qInt1 != null) {
                         Integer tmpIntVal = clientValue.getIntegerNumberValue();
                         if (tmpIntVal == null) {
-                            tmpIntVal = stringToInteger(clientValue.getShortTextValue());
+                            tmpIntVal = CommonController.stringToInteger(clientValue.getShortTextValue());
                         }
                         if (tmpIntVal != null) {
                             m = tmpIntVal < qInt1;
@@ -951,7 +951,7 @@ public class ExcelReportController implements Serializable {
                     if (lng1 != null) {
                         Long tmpLong = clientValue.getLongNumberValue();
                         if (tmpLong == null) {
-                            tmpLong = stringToLong(clientValue.getShortTextValue());
+                            tmpLong = CommonController.stringToLong(clientValue.getShortTextValue());
                         }
                         if (tmpLong != null) {
                             m = tmpLong < lng1;
@@ -960,7 +960,7 @@ public class ExcelReportController implements Serializable {
                     if (real1 != null) {
                         Double tmpDbl = clientValue.getRealNumberValue();
                         if (tmpDbl == null) {
-                            tmpDbl = stringToDouble(clientValue.getShortTextValue());
+                            tmpDbl = CommonController.stringToDouble(clientValue.getShortTextValue());
                         }
                         if (tmpDbl != null) {
                             m = tmpDbl < real1;
@@ -977,7 +977,7 @@ public class ExcelReportController implements Serializable {
 
                         Integer tmpInt = clientValue.getIntegerNumberValue();
                         if (tmpInt == null) {
-                            tmpInt = stringToInteger(clientValue.getShortTextValue());
+                            tmpInt = CommonController.stringToInteger(clientValue.getShortTextValue());
                         }
                         if (tmpInt != null) {
                             if (tmpInt > qInt1 && tmpInt < qInt2) {
@@ -996,7 +996,7 @@ public class ExcelReportController implements Serializable {
 
                         Long tmpLong = clientValue.getLongNumberValue();
                         if (tmpLong == null) {
-                            tmpLong = stringToLong(clientValue.getShortTextValue());
+                            tmpLong = CommonController.stringToLong(clientValue.getShortTextValue());
                         }
                         if (tmpLong != null) {
                             if (tmpLong > lng1 && tmpLong < lng2) {
@@ -1014,7 +1014,7 @@ public class ExcelReportController implements Serializable {
 
                         Double tmpDbl = clientValue.getRealNumberValue();
                         if (tmpDbl == null) {
-                            tmpDbl = stringToDouble(clientValue.getShortTextValue());
+                            tmpDbl = CommonController.stringToDouble(clientValue.getShortTextValue());
                         }
                         if (tmpDbl != null) {
                             if (tmpDbl > real1 && tmpDbl < real2) {
@@ -1027,7 +1027,7 @@ public class ExcelReportController implements Serializable {
                     if (qInt1 != null) {
                         Integer tmpInt = clientValue.getIntegerNumberValue();
                         if (tmpInt == null) {
-                            tmpInt = stringToInteger(clientValue.getShortTextValue());
+                            tmpInt = CommonController.stringToInteger(clientValue.getShortTextValue());
                         }
                         if (tmpInt != null) {
                             m = tmpInt > qInt1;
@@ -1036,7 +1036,7 @@ public class ExcelReportController implements Serializable {
                     if (real1 != null) {
                         Double tmpDbl = clientValue.getRealNumberValue();
                         if (tmpDbl == null) {
-                            tmpDbl = stringToDouble(clientValue.getShortTextValue());
+                            tmpDbl = CommonController.stringToDouble(clientValue.getShortTextValue());
                         }
                         if (tmpDbl != null) {
                             m = tmpDbl > real1;
@@ -1045,7 +1045,7 @@ public class ExcelReportController implements Serializable {
                     if (lng1 != null) {
                         Long tmpLng = clientValue.getLongNumberValue();
                         if (tmpLng == null) {
-                            tmpLng = stringToLong(clientValue.getShortTextValue());
+                            tmpLng = CommonController.stringToLong(clientValue.getShortTextValue());
                         }
                         if (tmpLng != null) {
                             m = tmpLng > lng1;
@@ -1056,7 +1056,7 @@ public class ExcelReportController implements Serializable {
                     if (qInt1 != null) {
                         Integer tmpInt = clientValue.getIntegerNumberValue();
                         if (tmpInt == null) {
-                            tmpInt = stringToInteger(clientValue.getShortTextValue());
+                            tmpInt = CommonController.stringToInteger(clientValue.getShortTextValue());
                         }
                         if (tmpInt != null) {
                             m = tmpInt >= qInt1;
@@ -1065,7 +1065,7 @@ public class ExcelReportController implements Serializable {
                     if (real1 != null) {
                         Double temDbl = clientValue.getRealNumberValue();
                         if (temDbl == null) {
-                            temDbl = stringToDouble(clientValue.getShortTextValue());
+                            temDbl = CommonController.stringToDouble(clientValue.getShortTextValue());
                         }
                         if (temDbl != null) {
                             m = temDbl >= real1;
@@ -1076,7 +1076,7 @@ public class ExcelReportController implements Serializable {
                     if (lng1 != null) {
                         Long tmpLng = clientValue.getLongNumberValue();
                         if (tmpLng == null) {
-                            tmpLng = stringToLong(clientValue.getShortTextValue());
+                            tmpLng = CommonController.stringToLong(clientValue.getShortTextValue());
                         }
                         if (tmpLng != null) {
                             m = tmpLng >= lng1;
@@ -1087,7 +1087,7 @@ public class ExcelReportController implements Serializable {
                     if (qInt1 != null) {
                         Integer tmpInt = clientValue.getIntegerNumberValue();
                         if (tmpInt == null) {
-                            tmpInt = stringToInteger(clientValue.getShortTextValue());
+                            tmpInt = CommonController.stringToInteger(clientValue.getShortTextValue());
                         }
                         if (tmpInt != null) {
                             m = tmpInt <= qInt1;
@@ -1096,7 +1096,7 @@ public class ExcelReportController implements Serializable {
                     if (real1 != null) {
                         Double tmpDbl = clientValue.getRealNumberValue();
                         if (tmpDbl == null) {
-                            tmpDbl = stringToDouble(clientValue.getShortTextValue());
+                            tmpDbl = CommonController.stringToDouble(clientValue.getShortTextValue());
                         }
                         if (tmpDbl != null) {
                             m = tmpDbl <= real1;
@@ -1105,7 +1105,7 @@ public class ExcelReportController implements Serializable {
                     if (lng1 != null) {
                         Long tmpLng = clientValue.getLongNumberValue();
                         if (tmpLng == null) {
-                            tmpLng = stringToLong(clientValue.getShortTextValue());
+                            tmpLng = CommonController.stringToLong(clientValue.getShortTextValue());
                         }
                         if (tmpLng != null) {
                             m = tmpLng <= lng1;
@@ -1366,72 +1366,7 @@ public class ExcelReportController implements Serializable {
         return output;
     }
 
-    private Integer stringToInteger(String str) {
-        Integer outInt;
-        if (str == null) {
-            outInt = null;
-            return outInt;
-        }
-        str = removeNonNumericCharactors(str);
-
-        try {
-            outInt = Integer.parseInt(str);
-        } catch (NumberFormatException e) {
-            outInt = null;
-        }
-        if (logActivity) {
-            
-        }
-        return outInt;
-    }
-
-    private Long stringToLong(String str) {
-        Long outLong;
-        if (str == null) {
-            outLong = null;
-            return outLong;
-        }
-        str = removeNonNumericCharactors(str);
-        try {
-            outLong = Long.parseLong(str);
-        } catch (NumberFormatException e) {
-            outLong = null;
-        }
-        if (logActivity) {
-            
-        }
-        return outLong;
-    }
-
-    private Double stringToDouble(String str) {
-        Double outDbl;
-        if (str == null) {
-            outDbl = null;
-            return outDbl;
-        }
-        str = removeNonNumericCharactors(str);
-
-        try {
-            outDbl = Double.parseDouble(str);
-        } catch (NumberFormatException e) {
-            outDbl = null;
-        }
-        if (logActivity) {
-            
-        }
-        return outDbl;
-    }
-
-    private String removeNonNumericCharactors(String str) {
-        if (str == null) {
-            return "";
-        }
-        if (str.contains("-")) {
-            String[] parts = str.split("-");
-            str = parts[0];
-        }
-        return str.replaceAll("[^\\d.]", "");
-    }
+    
 
     public boolean isLogActivity() {
         return logActivity;

@@ -34,8 +34,9 @@
                 <p:submenu label="Analysis" 
                            rendered="#{webUserController.hasPrivilege('Institution_Administration')}" >
                     <p:menuitem ajax="false" value="Queries" 
-                                action="#{queryComponentController.toProcessQuery()}"  />
-                    <p:menuitem ajax="false" value="Reports" action="#{reportController.toViewReports()}" ></p:menuitem>
+                                action="#{queryComponentController.toQueryIndex()}"  />
+                    <p:menuitem ajax="false" value="Reports" 
+                                action="#{reportController.toViewReports()}" ></p:menuitem>
                 </p:submenu>
 
 
@@ -58,7 +59,7 @@
                     <p:menuitem value="Manage Metadata" action="/systemAdmin/manage_metadata_index"    ajax="false" />
                     <p:menuitem value="Manage Data" action="/systemAdmin/manage_data_index"    ajax="false" />
 
-                    <p:menuitem value="Manage Queries"  action="/queryComponent/index"     ajax="false" />
+                    <p:menuitem value="Manage Analysis"  action="/queryComponent/index"     ajax="false" />
                 </p:submenu>
 
                 <p:submenu label="Settings"  rendered="#{webUserController.hasPrivilege('User')}" >
@@ -108,7 +109,7 @@
                 <p:submenu label="Analysis" 
                            rendered="#{webUserController.hasPrivilege('Institution_Administration')}" >
                     <p:menuitem ajax="false" value="Queries" 
-                                action="#{queryComponentController.toProcessQuery()}"  />
+                                action="#{queryComponentController.toAllQueries()}"  />
                     <p:menuitem ajax="false" value="Reports" action="#{reportController.toViewReports()}" ></p:menuitem>
                 </p:submenu>
 

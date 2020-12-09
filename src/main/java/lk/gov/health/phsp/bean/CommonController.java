@@ -65,6 +65,69 @@ public class CommonController implements Serializable {
     public CommonController() {
     }
 
+    
+    
+    
+    
+    public static Integer stringToInteger(String str) {
+        Integer outInt;
+        if (str == null) {
+            outInt = null;
+            return outInt;
+        }
+        str = removeNonNumericCharactors(str);
+
+        try {
+            outInt = Integer.parseInt(str);
+        } catch (NumberFormatException e) {
+            outInt = null;
+        }
+        return outInt;
+    }
+
+    public static Long stringToLong(String str) {
+        Long outLong;
+        if (str == null) {
+            outLong = null;
+            return outLong;
+        }
+        str = removeNonNumericCharactors(str);
+        try {
+            outLong = Long.parseLong(str);
+        } catch (NumberFormatException e) {
+            outLong = null;
+        }
+        return outLong;
+    }
+
+    public static Double stringToDouble(String str) {
+        Double outDbl;
+        if (str == null) {
+            outDbl = null;
+            return outDbl;
+        }
+        str = removeNonNumericCharactors(str);
+
+        try {
+            outDbl = Double.parseDouble(str);
+        } catch (NumberFormatException e) {
+            outDbl = null;
+        }
+        return outDbl;
+    }
+
+    private static String removeNonNumericCharactors(String str) {
+        if (str == null) {
+            return "";
+        }
+        if (str.contains("-")) {
+            String[] parts = str.split("-");
+            str = parts[0];
+        }
+        return str.replaceAll("[^\\d.]", "");
+    }
+    
+    
     public Date dateFromString(String dateString, String format) {
         if (format == null || format.trim().equals("")) {
             format = "dd/MM/yyyy";

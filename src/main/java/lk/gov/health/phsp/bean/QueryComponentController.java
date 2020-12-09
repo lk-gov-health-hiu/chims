@@ -37,11 +37,14 @@ import javax.script.ScriptException;
 import lk.gov.health.phsp.entity.Area;
 import lk.gov.health.phsp.entity.Client;
 import lk.gov.health.phsp.entity.ClientEncounterComponentForm;
+import lk.gov.health.phsp.entity.ClientEncounterComponentItem;
 import lk.gov.health.phsp.entity.Encounter;
 import lk.gov.health.phsp.entity.Institution;
 import lk.gov.health.phsp.entity.Item;
 import lk.gov.health.phsp.entity.Relationship;
+import lk.gov.health.phsp.enums.EncounterType;
 import lk.gov.health.phsp.enums.Evaluation;
+import lk.gov.health.phsp.enums.Month;
 import lk.gov.health.phsp.enums.QueryCriteriaMatchType;
 import lk.gov.health.phsp.enums.QueryFilterAreaType;
 import lk.gov.health.phsp.enums.QueryFilterPeriodType;
@@ -55,8 +58,10 @@ import lk.gov.health.phsp.facade.ClientFacade;
 import lk.gov.health.phsp.facade.EncounterFacade;
 import lk.gov.health.phsp.facade.RelationshipFacade;
 import lk.gov.health.phsp.pojcs.EncounterBasicData;
+import lk.gov.health.phsp.pojcs.EncounterWithComponents;
 import lk.gov.health.phsp.pojcs.Jpq;
 import lk.gov.health.phsp.pojcs.QueryResult;
+import lk.gov.health.phsp.pojcs.QueryWithCriteria;
 import lk.gov.health.phsp.pojcs.Replaceable;
 import org.apache.commons.lang3.SerializationUtils;
 import org.apache.poi.ss.usermodel.Cell;
@@ -82,6 +87,8 @@ public class QueryComponentController implements Serializable {
     private EncounterFacade encounterFacade;
     @EJB
     private RelationshipFacade relationshipFacade;
+    @EJB
+    private ClientEncounterComponentItemFacade clientEncounterComponentItemFacade;
 
     @Inject
     private WebUserController webUserController;
@@ -92,11 +99,12 @@ public class QueryComponentController implements Serializable {
     @Inject
     private ApplicationController applicationController;
     @Inject
-    UserTransactionController userTransactionController;
+    private UserTransactionController userTransactionController;
 
     private List<QueryComponent> items = null;
     private List<QueryComponent> categories = null;
     private List<QueryComponent> excels = null;
+    private List<QueryComponent> indicators = null;
     private QueryComponent selected;
     private QueryComponent selectedQuery;
     private QueryComponent selectedToDuplicateQuery;
@@ -138,6 +146,7 @@ public class QueryComponentController implements Serializable {
     private Integer year;
     private Integer quarter;
     private Integer month;
+    private Month monthEnum;
 
     private boolean filterInstitutions;
     private boolean filterDistricts;
@@ -158,20 +167,40 @@ public class QueryComponentController implements Serializable {
     private String searchText;
 
     private StreamedContent resultExcelFile;
-    
-    
-    
-    
-    public String toManageExcelTemplates(){
+
+    public String toManageExcelTemplates() {
         userTransactionController.recordTransaction("Manage Excel Templates");
         return "/queryComponent/excel";
     }
-    
-    public String toEditExcelTemplate(){
+
+    public String toAddExcelTemplates() {
+        userTransactionController.recordTransaction("Add New Excel Templates");
+        selected = new QueryComponent();
+        selected.setQueryType(QueryType.Excel_Report);
+        return "/queryComponent/edit_excel";
+    }
+
+    public String toAddIndicator() {
+        userTransactionController.recordTransaction("Add New Indicator");
+        selected = new QueryComponent();
+        selected.setQueryType(QueryType.Indicator);
+        return "/queryComponent/edit_indicator";
+    }
+
+    public String toManageIndicators() {
+        userTransactionController.recordTransaction("Manage Indicators");
+        return "/queryComponent/indicators";
+    }
+
+    public String toEditExcelTemplate() {
         userTransactionController.recordTransaction("Edit Excel Templates");
         return "/queryComponent/edit_excel";
     }
-    
+
+    public String toEditIndicator() {
+        userTransactionController.recordTransaction("Edit Indicator");
+        return "/queryComponent/edit_indicator";
+    }
 
     public String toManageAnalysis() {
         return "/analysis/index";
@@ -264,9 +293,8 @@ public class QueryComponentController implements Serializable {
         saveItem(addingCategory);
         categories = null;
         addingCategory = null;
-        userTransactionController.recordTransaction("Save Category Query Component");
     }
-    
+
     public void saveExcel() {
         if (addingCategory == null) {
             JsfUtil.addErrorMessage("Nothing to save");
@@ -275,6 +303,17 @@ public class QueryComponentController implements Serializable {
         addingCategory.setQueryType(QueryType.Excel_Report);
         saveItem(addingCategory);
         excels = null;
+        addingCategory = null;
+    }
+
+    public void saveIndicator() {
+        if (addingCategory == null) {
+            JsfUtil.addErrorMessage("Nothing to save");
+            return;
+        }
+        addingCategory.setQueryType(QueryType.Indicator);
+        saveItem(addingCategory);
+        indicators = null;
         addingCategory = null;
     }
 
@@ -290,7 +329,6 @@ public class QueryComponentController implements Serializable {
         addingSubcategory.setParentComponent(selectedCategory);
         saveItem(addingSubcategory);
         addingSubcategory = null;
-        userTransactionController.recordTransaction("Save SubCategory");
     }
 
     public void saveQuery() {
@@ -335,7 +373,6 @@ public class QueryComponentController implements Serializable {
         addingCriterian.setParentComponent(selectedQuery);
         saveItem(addingCriterian);
         addingCriterian = null;
-        userTransactionController.recordTransaction("Save Criterian");
     }
 
     public List<QueryComponent> fillCriteriaofTheSelectedQuery(QueryComponent set) {
@@ -369,7 +406,6 @@ public class QueryComponentController implements Serializable {
         getFacade().create(addingQuery);
         fillCriteriaofTheSelectedQuery();
         addingQuery = null;
-        userTransactionController.recordTransaction("Add Criterian To The Selected Queries Criteria");
     }
 
     public void remove() {
@@ -386,7 +422,6 @@ public class QueryComponentController implements Serializable {
         }
         removing = null;
         JsfUtil.addSuccessMessage("Removed");
-        userTransactionController.recordTransaction("Remove Query Component");
     }
 
     public void moveUpTheSelectedSet() {
@@ -406,7 +441,6 @@ public class QueryComponentController implements Serializable {
         fillCriteriaofTheSelectedQuery();
         moving = null;
         JsfUtil.addSuccessMessage("Item Moved Up");
-        userTransactionController.recordTransaction("Query Component-Item Moved Up");
     }
 
     public void moveDownTheSelectedSet() {
@@ -425,11 +459,9 @@ public class QueryComponentController implements Serializable {
         }
         fillCriteriaofTheSelectedQuery();
         JsfUtil.addSuccessMessage("Item Moved Down");
-        userTransactionController.recordTransaction("Query Component-Item Moved Down");
     }
 
     public void saveSelectedItem() {
-        userTransactionController.recordTransaction("Save Selected Item Query Component");
         saveItem(selected);
     }
 
@@ -459,7 +491,6 @@ public class QueryComponentController implements Serializable {
     }
 
     public String backToManageQueries() {
-        userTransactionController.recordTransaction("Back To Manage Queries");
         return "/queryComponent/List";
     }
 
@@ -468,15 +499,26 @@ public class QueryComponentController implements Serializable {
             JsfUtil.addErrorMessage("Nothing to Edit");
             return "";
         }
-        userTransactionController.recordTransaction("To Edit Criterian");
+
         return "/queryComponent/item";
     }
 
     public QueryComponentController() {
     }
 
-    public String toProcessQuery() {
+    public String toQueriesAll() {
+        userTransactionController.recordTransaction("To Queries - All");
         return "/queryComponent/query_process";
+    }
+
+    public String toQueriesMonthlyGn() {
+        userTransactionController.recordTransaction("To Monthly Queries - GN Areas");
+        return "/queryComponent/query_monthly_gn";
+    }
+
+    public String toQueryIndex() {
+        userTransactionController.recordTransaction("To Query Index");
+        return "/queryComponent/query_index";
     }
 
     public void clearFilters() {
@@ -637,6 +679,17 @@ public class QueryComponentController implements Serializable {
         List<QueryComponent> nqs = new ArrayList<>();
         for (QueryComponent q : tqcs) {
             if (q.getQueryType() == QueryType.Excel_Report) {
+                nqs.add(q);
+            }
+        }
+        return nqs;
+    }
+
+    public List<QueryComponent> fillIndicators() {
+        List<QueryComponent> tqcs = applicationController.getQueryComponents();
+        List<QueryComponent> nqs = new ArrayList<>();
+        for (QueryComponent q : tqcs) {
+            if (q.getQueryType() == QueryType.Indicator) {
                 nqs.add(q);
             }
         }
@@ -840,7 +893,7 @@ public class QueryComponentController implements Serializable {
         try (FileOutputStream outputStream = new FileOutputStream(newFile)) {
             workbook.write(outputStream);
         } catch (Exception e) {
-            
+
         }
 
         InputStream stream;
@@ -848,7 +901,7 @@ public class QueryComponentController implements Serializable {
             stream = new FileInputStream(newFile);
             resultExcelFile = new DefaultStreamedContent(stream, mimeType, FILE_NAME);
         } catch (FileNotFoundException ex) {
-            
+
         }
 
     }
@@ -904,7 +957,7 @@ public class QueryComponentController implements Serializable {
     }
 
     public String testQuery() {
-       
+
         if (selectedForQuery == null) {
             JsfUtil.addErrorMessage("Nothing selected");
             return "";
@@ -927,19 +980,13 @@ public class QueryComponentController implements Serializable {
         qrs.add(qr);
         return "graph";
     }
-    
-    
-    
-    
-    
+
     public String processQueryNew() {
-        
+
         if (selectedForQuery == null) {
             JsfUtil.addErrorMessage("Nothing selected");
             return "";
         }
-
-
 
         qrs = new ArrayList<>();
         QueryResult qr = new QueryResult();
@@ -1181,10 +1228,633 @@ public class QueryComponentController implements Serializable {
 
         return "graph";
     }
- 
+
+    private List<Long> findEncounterIds(Date fromDate, Date toDate, Area gnArea) {
+        String j = "select e.id "
+                + " from  ClientEncounterComponentFormSet f join f.encounter e"
+                + " where e.retired<>:er"
+                + " and f.retired<>:fr ";
+        j += " and f.completed=:fc ";
+        j += " and e.client.gnArea=:i "
+                + " and e.encounterType=:t "
+                + " and e.encounterDate between :fd and :td"
+                + " order by e.id";
+        Map m = new HashMap();
+        m.put("i", gnArea);
+        m.put("t", EncounterType.Clinic_Visit);
+        m.put("er", true);
+        m.put("fr", true);
+        m.put("fc", true);
+        m.put("fd", fromDate);
+        m.put("td", toDate);
+        List<Long> encs = encounterFacade.findLongList(j, m);
+        return encs;
+    }
+
+    private List<ClientEncounterComponentItem> findClientEncounterComponentItems(Long endId) {
+        String j;
+        Map m;
+        m = new HashMap();
+        j = "select f from ClientEncounterComponentItem f "
+                + " where f.retired=false "
+                + " and f.encounter.id=:eid";
+        m.put("eid", endId);
+        List<ClientEncounterComponentItem> ts = getClientEncounterComponentItemFacade().findByJpql(j, m);
+        return ts;
+    }
+
+    public List<EncounterWithComponents> findEncountersWithComponents(List<Long> ids) {
+        if (ids == null) {
+            return null;
+        }
+        List<EncounterWithComponents> cs = new ArrayList<>();
+        for (Long enId : ids) {
+            EncounterWithComponents ewc = new EncounterWithComponents();
+            ewc.setEncounterId(enId);
+            ewc.setComponents(findClientEncounterComponentItems(enId));
+            cs.add(ewc);
+        }
+        return cs;
+    }
+
+    private Long calculateIndividualQueryResult(List<EncounterWithComponents> ewcs, QueryWithCriteria qwc) {
+
+        Long result = 0l;
+        if (ewcs == null) {
+
+            return result;
+        }
+        if (qwc == null) {
+
+            return result;
+        }
+        List<QueryComponent> criteria = qwc.getCriteria();
+
+        if (criteria == null || criteria.isEmpty()) {
+            Integer ti = ewcs.size();
+            result = ti.longValue();
+
+            return result;
+        } else {
+            for (EncounterWithComponents ewc : ewcs) {
+                if (findMatch(ewc.getComponents(), qwc)) {
+                    result++;
+                }
+            }
+        }
+        return result;
+    }
+
+    private boolean findMatch(List<ClientEncounterComponentItem> ccs, QueryWithCriteria qrys) {
+
+        if (qrys == null) {
+
+            return false;
+        }
+        if (qrys.getQuery() == null) {
+
+            return false;
+        }
+        if (qrys.getQuery().getCode() == null) {
+
+            return false;
+        }
+        if (qrys.getQuery().getCode().trim().equals("")) {
+
+            return false;
+        }
+
+        boolean suitableForInclusion = true;
+
+        boolean isComplexQuery = false;
+
+        for (QueryComponent qc : qrys.getCriteria()) {
+            switch (qc.getMatchType()) {
+                case Closing_Bracket:
+                case Opening_Bracket:
+                case Operator_AND:
+                case Operator_OR:
+                    isComplexQuery = true;
+                    break;
+            }
+        }
+
+        if (isComplexQuery) {
+            String evaluationString = "";
+            for (QueryComponent qc : qrys.getCriteria()) {
+                if (qc.getMatchType() == QueryCriteriaMatchType.Opening_Bracket) {
+                    evaluationString += "(";
+                    continue;
+                } else if (qc.getMatchType() == QueryCriteriaMatchType.Closing_Bracket) {
+                    evaluationString += ")";
+                    continue;
+                } else if (qc.getMatchType() == QueryCriteriaMatchType.Operator_AND) {
+                    evaluationString += " && ";
+                    continue;
+                } else if (qc.getMatchType() == QueryCriteriaMatchType.Operator_OR) {
+                    evaluationString += " || ";
+                    continue;
+                } else {
+                    if (qc.getItem() == null) {
+
+                        continue;
+                    }
+                    if (qc.getItem().getCode() == null) {
+
+                        continue;
+                    }
+                    for (ClientEncounterComponentItem cei : ccs) {
+
+                        if (cei.getItem() == null) {
+
+                            continue;
+                        }
+                        if (cei.getItem().getCode() == null) {
+
+                            continue;
+                        }
+
+                        if (cei.getItem().getCode().trim().equalsIgnoreCase(qc.getItem().getCode().trim())) {
+                            if (matchQuery(qc, cei)) {
+                                evaluationString += "true";
+                            } else {
+                                evaluationString += "false";
+                            }
+                        }
+                    }
+
+                }
+
+            }
+            String evaluationResult = evaluateScript(evaluationString);
+            if (evaluationResult == null) {
+                suitableForInclusion = false;
+            } else if (evaluationResult.trim().equalsIgnoreCase("true")) {
+                suitableForInclusion = true;
+            } else {
+                suitableForInclusion = false;
+            }
+        } else {
+
+            for (QueryComponent qc : qrys.getCriteria()) {
+                if (qc.getItem() == null) {
+
+                    continue;
+                }
+                if (qc.getItem().getCode() == null) {
+
+                    continue;
+                }
+
+                boolean thisMatchOk = false;
+                boolean componentFound = false;
+
+                for (ClientEncounterComponentItem cei : ccs) {
+
+                    if (cei.getItem() == null) {
+
+                        continue;
+                    }
+                    if (cei.getItem().getCode() == null) {
+
+                        continue;
+                    }
+
+                    if (cei.getItem().getCode().trim().equalsIgnoreCase(qc.getItem().getCode().trim())) {
+                        componentFound = true;
+                        if (matchQuery(qc, cei)) {
+                            thisMatchOk = true;
+                        }
+                    }
+                }
+                if (!componentFound) {
+                    System.out.println("componentFound = " + componentFound);
+                }
+                if (!thisMatchOk) {
+                    suitableForInclusion = false;
+                }
+            }
+
+        }
+
+        return suitableForInclusion;
+    }
+
+    public boolean clientValueIsNotNull(QueryComponent q, ClientEncounterComponentItem clientValue) {
+        boolean valueNotNull = false;
+
+        if (q.getMatchType() == QueryCriteriaMatchType.Variable_Value_Check) {
+            switch (q.getQueryDataType()) {
+                case integer:
+
+                    if (clientValue.getIntegerNumberValue() != null) {
+                        valueNotNull = true;
+                    }
+                    break;
+                case item:
+
+                    if (clientValue.getItemValue() != null) {
+                        valueNotNull = true;
+                    }
+                    break;
+                case real:
+
+                    if (clientValue.getRealNumberValue() != null) {
+                        valueNotNull = true;
+                    }
+                    break;
+                case longNumber:
+
+                    if (clientValue.getLongNumberValue() != null) {
+                        valueNotNull = true;
+                    }
+                    break;
+                case Boolean:
+
+                    if (clientValue.getBooleanValue() != null) {
+                        valueNotNull = true;
+                    }
+                    break;
+                case String:
+                    if (clientValue.getShortTextValue() != null) {
+                        valueNotNull = true;
+                    }
+                    break;
+            }
+        }
+        return valueNotNull;
+    }
+
+    private boolean matchQuery(QueryComponent q, ClientEncounterComponentItem clientValue) {
+
+        if (clientValue == null) {
+            return false;
+        }
+        boolean m = false;
+        Integer qInt1 = null;
+        Integer qInt2 = null;
+        Double real1 = null;
+        Double real2 = null;
+        Long lng1 = null;
+        Long lng2 = null;
+        Item itemVariable = null;
+        Item itemValue = null;
+        Boolean qBool = null;
+        String qStr = null;
+
+        if (q.getMatchType() == QueryCriteriaMatchType.Variable_Value_Check) {
+
+            switch (q.getQueryDataType()) {
+                case integer:
+
+                    qInt1 = q.getIntegerNumberValue();
+                    qInt2 = q.getIntegerNumberValue2();
+
+                    break;
+                case item:
+                    itemValue = q.getItemValue();
+                    itemVariable = q.getItem();
+                    break;
+                case real:
+                    real2 = q.getRealNumberValue2();
+                    break;
+                case longNumber:
+
+                    lng1 = q.getLongNumberValue();
+                    lng2 = q.getLongNumberValue2();
+                    break;
+                case Boolean:
+
+                    qBool = q.getBooleanValue();
+                    break;
+                case String:
+                    qStr = q.getShortTextValue();
+                    break;
+
+            }
+
+            switch (q.getEvaluationType()) {
+
+                case Not_null:
+                    m = clientValueIsNotNull(q, clientValue);
+                    break;
+
+                case Is_null:
+                    m = !clientValueIsNotNull(q, clientValue);
+                    break;
+                case Equal:
+                    if (qInt1 != null) {
+                        Integer tmpIntVal = clientValue.getIntegerNumberValue();
+                        if (tmpIntVal == null) {
+                            tmpIntVal = CommonController.stringToInteger(clientValue.getShortTextValue());
+                        }
+                        if (tmpIntVal != null) {
+                            m = qInt1.equals(tmpIntVal);
+                        }
+                    }
+                    if (lng1 != null) {
+                        Long tmpLLongVal = clientValue.getLongNumberValue();
+                        if (tmpLLongVal == null) {
+                            tmpLLongVal = CommonController.stringToLong(clientValue.getShortTextValue());
+                        }
+                        if (tmpLLongVal != null) {
+                            m = lng1.equals(tmpLLongVal);
+                        }
+                    }
+                    if (real1 != null) {
+                        Double tmpDbl = clientValue.getRealNumberValue();
+                        if (tmpDbl == null) {
+                            tmpDbl = CommonController.stringToDouble(clientValue.getShortTextValue());
+                        }
+                        if (tmpDbl != null) {
+                            m = real1.equals(tmpDbl);
+                        }
+                    }
+                    if (qBool != null) {
+                        if (clientValue.getBooleanValue() != null) {
+                            m = qBool.equals(clientValue.getBooleanValue());
+                        }
+                    }
+                    if (itemValue != null && itemVariable != null) {
+
+                        if (itemValue != null
+                                && itemValue.getCode() != null
+                                && clientValue != null
+                                && clientValue.getItemValue() != null
+                                && clientValue.getItemValue().getCode() != null) {
+
+                            if (itemValue.getCode().equals(clientValue.getItemValue().getCode())) {
+                                m = true;
+                            }
+                        }
+                    }
+                    if (qStr != null) {
+                        if (clientValue.getShortTextValue() != null) {
+                            m = qStr.equals(clientValue.getShortTextValue());
+                        }
+                    }
+                    break;
+                case Less_than:
+                    if (qInt1 != null) {
+                        Integer tmpIntVal = clientValue.getIntegerNumberValue();
+                        if (tmpIntVal == null) {
+                            tmpIntVal = CommonController.stringToInteger(clientValue.getShortTextValue());
+                        }
+                        if (tmpIntVal != null) {
+                            m = tmpIntVal < qInt1;
+                        }
+                    }
+                    if (lng1 != null) {
+                        Long tmpLong = clientValue.getLongNumberValue();
+                        if (tmpLong == null) {
+                            tmpLong = CommonController.stringToLong(clientValue.getShortTextValue());
+                        }
+                        if (tmpLong != null) {
+                            m = tmpLong < lng1;
+                        }
+                    }
+                    if (real1 != null) {
+                        Double tmpDbl = clientValue.getRealNumberValue();
+                        if (tmpDbl == null) {
+                            tmpDbl = CommonController.stringToDouble(clientValue.getShortTextValue());
+                        }
+                        if (tmpDbl != null) {
+                            m = tmpDbl < real1;
+                        }
+                    }
+                    break;
+                case Between:
+                    if (qInt1 != null && qInt2 != null) {
+                        if (qInt1 > qInt2) {
+                            Integer intTem = qInt1;
+                            qInt1 = qInt2;
+                            qInt2 = intTem;
+                        }
+
+                        Integer tmpInt = clientValue.getIntegerNumberValue();
+                        if (tmpInt == null) {
+                            tmpInt = CommonController.stringToInteger(clientValue.getShortTextValue());
+                        }
+                        if (tmpInt != null) {
+                            if (tmpInt > qInt1 && tmpInt < qInt2) {
+                                m = true;
+                            }
+                        }
+
+                    }
+                    if (lng1 != null && lng2 != null) {
+                        if (lng1 > lng2) {
+                            Long intTem = lng1;
+                            intTem = lng1;
+                            lng1 = lng2;
+                            lng2 = intTem;
+                        }
+
+                        Long tmpLong = clientValue.getLongNumberValue();
+                        if (tmpLong == null) {
+                            tmpLong = CommonController.stringToLong(clientValue.getShortTextValue());
+                        }
+                        if (tmpLong != null) {
+                            if (tmpLong > lng1 && tmpLong < lng2) {
+                                m = true;
+                            }
+                        }
+                    }
+                    if (real1 != null && real2 != null) {
+                        if (real1 > real2) {
+                            Double realTem = real1;
+                            realTem = real1;
+                            real1 = real2;
+                            real2 = realTem;
+                        }
+
+                        Double tmpDbl = clientValue.getRealNumberValue();
+                        if (tmpDbl == null) {
+                            tmpDbl = CommonController.stringToDouble(clientValue.getShortTextValue());
+                        }
+                        if (tmpDbl != null) {
+                            if (tmpDbl > real1 && tmpDbl < real2) {
+                                m = true;
+                            }
+                        }
+                    }
+                    break;
+                case Grater_than:
+                    if (qInt1 != null) {
+                        Integer tmpInt = clientValue.getIntegerNumberValue();
+                        if (tmpInt == null) {
+                            tmpInt = CommonController.stringToInteger(clientValue.getShortTextValue());
+                        }
+                        if (tmpInt != null) {
+                            m = tmpInt > qInt1;
+                        }
+                    }
+                    if (real1 != null) {
+                        Double tmpDbl = clientValue.getRealNumberValue();
+                        if (tmpDbl == null) {
+                            tmpDbl = CommonController.stringToDouble(clientValue.getShortTextValue());
+                        }
+                        if (tmpDbl != null) {
+                            m = tmpDbl > real1;
+                        }
+                    }
+                    if (lng1 != null) {
+                        Long tmpLng = clientValue.getLongNumberValue();
+                        if (tmpLng == null) {
+                            tmpLng = CommonController.stringToLong(clientValue.getShortTextValue());
+                        }
+                        if (tmpLng != null) {
+                            m = tmpLng > lng1;
+                        }
+                    }
+                    break;
+                case Grater_than_or_equal:
+                    if (qInt1 != null) {
+                        Integer tmpInt = clientValue.getIntegerNumberValue();
+                        if (tmpInt == null) {
+                            tmpInt = CommonController.stringToInteger(clientValue.getShortTextValue());
+                        }
+                        if (tmpInt != null) {
+                            m = tmpInt >= qInt1;
+                        }
+                    }
+                    if (real1 != null) {
+                        Double temDbl = clientValue.getRealNumberValue();
+                        if (temDbl == null) {
+                            temDbl = CommonController.stringToDouble(clientValue.getShortTextValue());
+                        }
+                        if (temDbl != null) {
+                            m = temDbl >= real1;
+
+                        }
+
+                    }
+                    if (lng1 != null) {
+                        Long tmpLng = clientValue.getLongNumberValue();
+                        if (tmpLng == null) {
+                            tmpLng = CommonController.stringToLong(clientValue.getShortTextValue());
+                        }
+                        if (tmpLng != null) {
+                            m = tmpLng >= lng1;
+                        }
+                    }
+                    break;
+                case Less_than_or_equal:
+                    if (qInt1 != null) {
+                        Integer tmpInt = clientValue.getIntegerNumberValue();
+                        if (tmpInt == null) {
+                            tmpInt = CommonController.stringToInteger(clientValue.getShortTextValue());
+                        }
+                        if (tmpInt != null) {
+                            m = tmpInt <= qInt1;
+                        }
+                    }
+                    if (real1 != null) {
+                        Double tmpDbl = clientValue.getRealNumberValue();
+                        if (tmpDbl == null) {
+                            tmpDbl = CommonController.stringToDouble(clientValue.getShortTextValue());
+                        }
+                        if (tmpDbl != null) {
+                            m = tmpDbl <= real1;
+                        }
+                    }
+                    if (lng1 != null) {
+                        Long tmpLng = clientValue.getLongNumberValue();
+                        if (tmpLng == null) {
+                            tmpLng = CommonController.stringToLong(clientValue.getShortTextValue());
+                        }
+                        if (tmpLng != null) {
+                            m = tmpLng <= lng1;
+                        }
+                    }
+                    break;
+            }
+        }
+
+        return m;
+    }
+
+    public String processQueryMonthlyGn() {
+        List<QueryWithCriteria> queriesWithCriteria = new ArrayList<>();
+        if (selectedForQuery
+                == null) {
+            JsfUtil.addErrorMessage("Nothing selected");
+            return "";
+        }
+
+        from = CommonController.startOfQuarter(year, month);
+        ;
+        to = CommonController.endOfQuarter(year, month);
+        ;
+
+        List<Long> encounterIds = findEncounterIds(from, date, gn);
+        List<EncounterWithComponents> encountersWithComponents;
+        encountersWithComponents = findEncountersWithComponents(encounterIds);
+        if (encountersWithComponents
+                == null) {
+            JsfUtil.addErrorMessage("No Data");
+            return "";
+        }
+        
+        
+
+        for (QueryResult tqr : qrs) {
+
+            switch (selectedForQuery.getQueryType()) {
+                case Population:
+                    Integer ty = tqr.gettYear();
+                    if (ty == null) {
+                        Calendar c = Calendar.getInstance();
+                        if (tqr.getTfrom() != null) {
+                            c.setTime(tqr.getTfrom());
+                        } else if (tqr.gettTo() != null) {
+                            c.setTime(tqr.gettTo());
+                        }
+                        ty = c.get(Calendar.YEAR);
+                    }
+                    tqr.setJpq(createAPopulationCountQuery(selectedForQuery, tqr.getArea(), ty));
+                    if (tqr.getJpq().getLongResult() != null) {
+                        tqr.setResultString(tqr.getJpq().getQc().getName() + " = " + tqr.getJpq().getLongResult());
+                    }
+                    tqr.setResultRelationshipList(tqr.getJpq().getRelationshipList());
+                    break;
+
+                case Indicator:
+                    tqr.setJpq(handleIndicatorQuery(selectedForQuery, tqr.getArea(), tqr.getTfrom(), tqr.gettTo(),
+                            tqr.gettYear(), tqr.gettQuater()));
+                    tqr.setLongResult(tqr.getJpq().getLongResult());
+                    tqr.setDblResult(tqr.getJpq().getDblResult());
+                    break;
+                case Client:
+                    tqr.setJpq(createClientQuery(selectedForQuery, tqr.getArea(), tqr.getTfrom(), tqr.gettTo(),
+                            tqr.gettYear(), tqr.gettQuater()));
+                    if (tqr.getJpq().getLongResult() != null) {
+                        tqr.setResultString(tqr.getJpq().getQc().getName() + " = " + tqr.getJpq().getLongResult());
+                    }
+                    tqr.setLongResult(tqr.getJpq().getLongResult());
+                    tqr.setResultClientList(tqr.getJpq().getClientList());
+                    break;
+
+                case First_Encounter:
+                    break;
+
+                case Any_Encounter:
+                    break;
+
+                case Formset:
+                    break;
+
+            }
+
+        }
+
+        clearFilters();
+
+        return "graph";
+    }
 
     public String processQuery() {
-        
+
         if (selectedForQuery == null) {
             JsfUtil.addErrorMessage("Nothing selected");
             return "";
@@ -1433,7 +2103,7 @@ public class QueryComponentController implements Serializable {
         }
 
         clearFilters();
-        userTransactionController.recordTransaction("Process Query");
+
         return "graph";
     }
 
@@ -1442,16 +2112,16 @@ public class QueryComponentController implements Serializable {
         List<Replaceable> replaceables = findReplaceblesInIndicatorQuery(qc.getIndicatorQuery());
         Jpq j = new Jpq();
         for (Replaceable r : replaceables) {
-            
+
             QueryComponent temqc = findLastQuery(r.getQryCode());
-            
+
             if (temqc == null) {
                 JsfUtil.addErrorMessage("Wrong Query. Check the names of queries");
                 return new Jpq();
             }
 
             j = new Jpq();
-            
+
             if (null == temqc.getQueryType()) {
                 JsfUtil.addErrorMessage("Wrong Query. Check the names of queries");
 
@@ -1470,18 +2140,18 @@ public class QueryComponentController implements Serializable {
                         return j;
                 }
             }
-            
+
             r.setSelectedValue(j.getLongResult() + "");
         }
         String javaStringToEvaluate = addTemplateToReport(qc.getIndicatorQuery().trim(), replaceables);
-        
+
         rs = "Formula \t" + javaStringToEvaluate + "\n";
         String res = evaluateScript(javaStringToEvaluate);
         rs += "Result : " + res;
         Double dbl = CommonController.getDoubleValue(res);
-        
+
         Long lng = CommonController.getLongValue(res);
-        
+
         j.setLongResult(lng);
         j.setDblResult(dbl);
         return j;
@@ -1493,7 +2163,7 @@ public class QueryComponentController implements Serializable {
         try {
             return engine.eval(script) + "";
         } catch (ScriptException ex) {
-            
+
             return null;
         }
     }
@@ -1504,11 +2174,11 @@ public class QueryComponentController implements Serializable {
             String patternEnd = "}";
             String toBeReplaced;
             toBeReplaced = patternStart + s.getFullText() + patternEnd;
-            
+
             calculationScript = calculationScript.replace(toBeReplaced, s.getSelectedValue());
-           
+
         }
-        
+
         return calculationScript;
     }
 
@@ -1538,7 +2208,6 @@ public class QueryComponentController implements Serializable {
         items = null;
         selectedToDuplicateQuery = q;
         JsfUtil.addSuccessMessage("Duplicated");
-        userTransactionController.recordTransaction("Duplicate Query Component");
     }
 
     public void duplicate() {
@@ -1567,7 +2236,6 @@ public class QueryComponentController implements Serializable {
         items = null;
         selectedQuery = q;
         JsfUtil.addSuccessMessage("Duplicated");
-        userTransactionController.recordTransaction("Duplicate Query Component");
     }
 
     public void retire() {
@@ -1585,7 +2253,7 @@ public class QueryComponentController implements Serializable {
     }
 
     public Jpq createAPopulationCountQuery(QueryComponent qc, Area qarea, Integer qyear) {
-        
+
         Jpq jpql = new Jpq();
         jpql.setQc(qc);
         jpql.setJselect("select r.longValue1  ");
@@ -1606,7 +2274,6 @@ public class QueryComponentController implements Serializable {
         jpql.getM().put("f", false);
         jpql.setJgroupby("");
 
-       
         jpql.setLongResult(getItemFacade().findLongByJpql(jpql.getJpql(), jpql.getM(), 1));
 
         return jpql;
@@ -1655,7 +2322,6 @@ public class QueryComponentController implements Serializable {
                 jpql.getM().put("d2", ccTo);
             }
 
-            
             if (ccArea != null) {
                 switch (ccArea.getType()) {
                     case District:
@@ -1671,12 +2337,11 @@ public class QueryComponentController implements Serializable {
 
             }
 
-            
             if (qc.getOutputType() == QueryOutputType.List) {
                 jpql.setClientList(getClientFacade().findByJpql(jpql.getJpql(), jpql.getM()));
             } else {
                 jpql.setLongResult(getItemFacade().findLongByJpql(jpql.getJpql(), jpql.getM(), 1));
-                
+
             }
 
             return jpql;
@@ -1696,7 +2361,6 @@ public class QueryComponentController implements Serializable {
 
             QueryComponent c = criterias.get(0);
 
-            
             if (c.getMatchType() == QueryCriteriaMatchType.Variable_Value_Check) {
                 jpql.setJwhere(jpql.getJwhere() + " and i.item=:v1 and i.itemValue=:d1 ");
                 jpql.getM().put("v1", c.getItem());
@@ -1705,7 +2369,7 @@ public class QueryComponentController implements Serializable {
                 jpql.setJwhere(jpql.getJwhere() + " and i.item=:v1 ");
                 jpql.getM().put("v1", c.getItem());
                 String eval = "";
-                
+
                 switch (c.getEvaluationType()) {
                     case Equal:
                         eval = "=";
@@ -1826,7 +2490,6 @@ public class QueryComponentController implements Serializable {
                 jpql.getM().put("date2", ccTo);
             }
 
-            
             if (ccArea != null) {
                 switch (ccArea.getType()) {
                     case District:
@@ -1846,7 +2509,7 @@ public class QueryComponentController implements Serializable {
                 jpql.setClientList(getClientFacade().findByJpql(jpql.getJpql(), jpql.getM()));
             } else {
                 jpql.setLongResult(getItemFacade().findLongByJpql(jpql.getJpql(), jpql.getM(), 1));
-               
+
             }
 
             return jpql;
@@ -1877,7 +2540,7 @@ public class QueryComponentController implements Serializable {
                     w2 += " c.id=i" + count + ".itemClient.id and ";
                     w3 += createJpqlBlockFromQueryComponentCriteria(qcm, jpql.getM(), count) + " ";
                 }
-                
+
                 count++;
             }
 
@@ -1885,7 +2548,6 @@ public class QueryComponentController implements Serializable {
             jpql.setJfrom(ss);
             jpql.setJwhere(w1 + w2 + w3 + " and c.retired=:f ");
 
-            
             if (ccYear != null && ccQuarter != null) {
                 //TODO: Correct Code
                 jpql.setJwhere(jpql.getJwhere() + " and extract(year from c.createdAt)=:ey and "
@@ -1908,10 +2570,9 @@ public class QueryComponentController implements Serializable {
                 jpql.setJwhere(jpql.getJwhere() + " and c.createdAt < :date2 ");
                 jpql.getM().put("date2", ccTo);
             } else {
-               
+
             }
 
-            
             if (ccArea != null) {
                 switch (ccArea.getType()) {
                     case District:
@@ -1924,14 +2585,14 @@ public class QueryComponentController implements Serializable {
                         break;
                     //TODO: Add codes for other areas
                     default:
-                    
+
                 }
 
             }
 
             //TODO : More code needed for MOH, PHM ,etc
             jpql.setJgroupby("");
-            
+
             if (qc.getOutputType() == QueryOutputType.List) {
                 jpql.setClientList(getClientFacade().findByJpql(jpql.getJpql(), jpql.getM()));
             } else {
@@ -1939,29 +2600,24 @@ public class QueryComponentController implements Serializable {
             }
 
             /**
-             * 
-             * 
-            
-            select count(distinct c) from Client c,  
-            ClientEncounterComponentItem i1,  ClientEncounterComponentItem i2   
-            
-            where  c.id=i1.itemClient.id 
-            and  c.id=i2.itemClient.id 
-            and  i1.item=:v1 
-            and  
-            and  i2.item=:v2 and i2.itemValue=:d2   and c.retired=:f  and c.createdAt between :date1 and :date2  and c.person.district=:area  
-            
-            * 
-            * 
-            * 
+             *
+             *
+             *
+             * select count(distinct c) from Client c,
+             * ClientEncounterComponentItem i1, ClientEncounterComponentItem i2
+             * * where c.id=i1.itemClient.id and c.id=i2.itemClient.id and
+             * i1.item=:v1 and and i2.item=:v2 and i2.itemValue=:d2 and
+             * c.retired=:f and c.createdAt between :date1 and :date2 and
+             * c.person.district=:area *
+             *
+             *
+             *
              */
-            
             //select count(distinct c) from Client c,
             // ClientEncounterComponentItem i1,  ClientEncounterComponentItem i2   
             // where  c.id=i1.itemClient.id and  
-             // c.id=i2.itemClient.id and  
-             // i1.item=:v1 and  and  i2.item=:v2 and i2.itemValue=:d2   and c.retired=:f  and c.createdAt between :date1 and :date2  and c.person.district=:area  
-            
+            // c.id=i2.itemClient.id and  
+            // i1.item=:v1 and  and  i2.item=:v2 and i2.itemValue=:d2   and c.retired=:f  and c.createdAt between :date1 and :date2  and c.person.district=:area  
             return jpql;
 
             // </editor-fold>
@@ -2079,7 +2735,7 @@ public class QueryComponentController implements Serializable {
     }
 
     public Jpq createAClientListQuery(QueryComponent qc) {
-        
+
         Jpq j = new Jpq();
         j.setQc(qc);
         j.setJselect("select distinct i.parentComponent.parentComponent.encounter.client  ");
@@ -2142,13 +2798,13 @@ public class QueryComponentController implements Serializable {
         }
 
         j.setJgroupby("");
-        
+
         j.setClientList(getClientFacade().findByJpql(j.getJpql(), j.getM()));
         return j;
     }
 
     public Jpq createAnEncounterListQuery(QueryComponent qc) {
-       
+
         Jpq j = new Jpq();
         j.setQc(qc);
         j.setJselect("select distinct i.parentComponent.parentComponent.encounter  ");
@@ -2211,9 +2867,9 @@ public class QueryComponentController implements Serializable {
         }
 
         j.setJgroupby("");
-        
+
         j.setEncounterList(getEncounterFacade().findByJpql(j.getJpql(), j.getM()));
-        
+
         return j;
     }
 
@@ -2267,7 +2923,6 @@ public class QueryComponentController implements Serializable {
     }
 
     public List<Replaceable> findReplaceblesInWhereQuery(String text) {
-        
 
         List<Replaceable> ss = new ArrayList<>();
 
@@ -2320,7 +2975,6 @@ public class QueryComponentController implements Serializable {
     }
 
     public List<Replaceable> findReplaceblesInIndicatorQuery(String text) {
-       
 
         List<Replaceable> ss = new ArrayList<>();
 
@@ -2372,14 +3026,12 @@ public class QueryComponentController implements Serializable {
     public void create() {
         persist(PersistAction.CREATE, ResourceBundle.getBundle("/BundleQuery").getString("QueryComponentCreated"));
         if (!JsfUtil.isValidationFailed()) {
-            userTransactionController.recordTransaction("Create Query Component");
             items = null;    // Invalidate list of items to trigger re-query.
         }
     }
 
     public void update() {
         persist(PersistAction.UPDATE, ResourceBundle.getBundle("/BundleQuery").getString("QueryComponentUpdated"));
-        userTransactionController.recordTransaction("Update Query Component");
     }
 
     public void destroy() {
@@ -3026,6 +3678,34 @@ public class QueryComponentController implements Serializable {
 
     public void setExcels(List<QueryComponent> excels) {
         this.excels = excels;
+    }
+
+    public List<QueryComponent> getIndicators() {
+        if (indicators == null) {
+            indicators = fillIndicators();
+        }
+        return indicators;
+    }
+
+    public void setIndicators(List<QueryComponent> indicators) {
+        this.indicators = indicators;
+    }
+
+    public Month getMonthEnum() {
+        return monthEnum;
+    }
+
+    public void setMonthEnum(Month monthEnum) {
+        this.monthEnum = monthEnum;
+    }
+
+    public UserTransactionController getUserTransactionController() {
+        return userTransactionController;
+    }
+
+    public ClientEncounterComponentItemFacade getClientEncounterComponentItemFacade() {
+        return clientEncounterComponentItemFacade;
+
     }
 
     @FacesConverter(forClass = QueryComponent.class)
