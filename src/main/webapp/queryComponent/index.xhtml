@@ -21,32 +21,38 @@
                             </f:facet>
 
                             <p:panelGrid columns="1" styleClass="fullWidth">
-                                <p:commandButton value="Add New Excel Template" styleClass="fullWidth"
+                                <p:commandButton value="New Excel Template" styleClass="fullWidth"
+                                                 immediate="true"
                                                  action="#{queryComponentController.toAddExcelTemplates()}"
                                                  ajax="false" ></p:commandButton>
-                                
+
                                 <p:commandButton value="List Excel Templates" styleClass="fullWidth"
+                                                 immediate="true"
                                                  action="#{queryComponentController.toManageExcelTemplates()}"
                                                  ajax="false" ></p:commandButton>
 
                                 <p:separator ></p:separator>
-                                
-                                <p:commandButton value="Add New Indicator" styleClass="fullWidth"
+
+                                <p:commandButton value="New Indicator" styleClass="fullWidth"
+                                                 immediate="true"
                                                  action="#{queryComponentController.toAddExcelTemplates()}"
                                                  ajax="false" ></p:commandButton>
-                                
-                                <p:commandButton value="Manage Indicators" styleClass="fullWidth"
+
+                                <p:commandButton value="List Indicators" styleClass="fullWidth"
+                                                 immediate="true"
                                                  action="#{queryComponentController.toManageIndicators()}"
                                                  ajax="false" ></p:commandButton>
 
-                                
+
                                 <p:separator ></p:separator>
                                 <p:commandButton value="Manage Queries" styleClass="fullWidth"
                                                  action="/queryComponent/excel"
+                                                 immediate="true"
                                                  ajax="false" ></p:commandButton>
 
-                                <p:commandButton value="Manage All" styleClass="fullWidth"
+                                <p:commandButton value="List All" styleClass="fullWidth"
                                                  action="/queryComponent/category"
+                                                 immediate="true"
                                                  ajax="false" ></p:commandButton>
 
                                 <p:commandButton ajax="false" value="Reload"  styleClass="fullWidth"

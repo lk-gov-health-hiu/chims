@@ -29,7 +29,7 @@
 
                                          >
 
-                                <p:column>
+                                <p:column style="width: 20rem; ">
                                     <f:facet name="header">
                                         <h:outputText value="Name"/>
                                     </f:facet>
@@ -41,12 +41,12 @@
                                     </f:facet>
                                     <h:outputText value="#{item.descreption}"/>
                                 </p:column>
-                                <p:column>
+                                <p:column style="width: 17rem; text-align: center;">
                                     <f:facet name="header">
                                         <h:outputText value="Actions"/>
                                     </f:facet>
 
-                                    <p:commandButton ajax="false" 
+                                    <p:commandButton ajax="false" style="width: 7rem;"
                                                      value="Edit" 
                                                      action="#{queryComponentController.toEditExcelTemplate()}" >
                                         <f:setPropertyActionListener value="#{item}" target="#{queryComponentController.selected}" ></f:setPropertyActionListener>
@@ -54,33 +54,14 @@
 
                                     <p:commandButton ajax="false" value="Remove" action="#{queryComponentController.remove()}" 
                                                      onclick="if (!confirm('Really want to do that?'))
-                                                                 return false">
+                                                                 return false"
+                                                                          style="width: 7rem;">
                                         <f:setPropertyActionListener value="#{item}" target="#{queryComponentController.removing}" ></f:setPropertyActionListener>
                                     </p:commandButton>
                                 </p:column>
                             </p:dataTable>  
 
-                            <p:panelGrid  columns="2">
-                                <f:facet name="header" >
-                                    <p:outputLabel value="Add New Excel" >
-                                    </p:outputLabel>
-                                </f:facet>
-                                <p:outputLabel value="Name" >
-                                </p:outputLabel>
-                                <p:inputText value="#{queryComponentController.addingCategory.name}">
-                                </p:inputText>
-                                <p:outputLabel value="Descreption" >
-                                </p:outputLabel>
-                                <p:inputTextarea value="#{queryComponentController.addingCategory.descreption}">
-                                </p:inputTextarea>
 
-                                <p:spacer></p:spacer>
-                                <p:commandButton ajax="false" action="#{queryComponentController.saveExcel()}" 
-                                                 value="Save" >
-                                </p:commandButton>
-
-
-                            </p:panelGrid>
 
 
 

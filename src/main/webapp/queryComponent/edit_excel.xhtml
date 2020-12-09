@@ -14,17 +14,12 @@
                 <h:form id="QueryComponentEditForm">
                     <p:panelGrid id="display" columns="1" style="margin: auto;">
                         <f:facet name="header" >
-                            <p:outputLabel value="Edit Query" />
+                            <p:outputLabel value="Excel Template" />
                             <p:commandButton value="Save" 
-                                             action="#{queryComponentController.saveSelectedItem()}" 
+                                             action="#{queryComponentController.saveExcel()}" 
                                              ajax="false" 
                                              style="float: right;" >
                             </p:commandButton>
-                            <p:commandButton value="Save &nbsp; Criteria" 
-                                             action="#{queryComponentController.saveSelectedItemAndCriteria()}" ajax="false" 
-                                             style="float: right;" >
-                            </p:commandButton>
-                            <p:commandButton ajax="false" action="query" value="Back" style="float: right;" ></p:commandButton>
                         </f:facet>
 
 
@@ -45,8 +40,8 @@
                             <p:inputTextarea rows="4" cols="30" id="descreption" 
                                              value="#{queryComponentController.selected.descreption}" 
                                              title="#{bundleQuery.CreateQueryComponentTitle_descreption}" />
-                            
-                            
+
+
 
                         </p:panelGrid>
 
