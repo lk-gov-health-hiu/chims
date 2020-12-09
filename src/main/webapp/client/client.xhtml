@@ -94,17 +94,11 @@
                                 <f:validateRegex pattern="^((?:0|94|\+94|0094)?(?:(11|21|23|24|25|26|27|31|32|33|34|35|36|37|38|41|45|47|51|52|54|55|57|63|65|66|67|81|91)(0|2|3|4|5|7|9)|7(0|1|2|5|6|7|8)\d)\d{6})?$"
                                                  ></f:validateRegex>
                                 
-                                <f:ajax event="change" execute="@this" render="MobileNoExists" 
-                                        listener="#{clientController.checkphone1Exists()}" ></f:ajax>
+
                             </p:inputText><br ></br>
                                      
                             <h:panelGroup id="MobileNoExists" >
-                                        <p:commandLink value="Already Exists" 
-                                                   style="color: red;" onclick="PF('dlgMobileNoClients').show();"
-                                                   rendered="#{clientController.phone1Exists}" 
-                                                   >
-                                        
-                                    </p:commandLink>
+                                       
                                         <p:dialog id="dlgMobileNoClients" widgetVar="dlgMobileNoClients" >
                                             <p:dataTable value="#{clientRequestController.clientsWithSameMobileNo(clientController.selected.person.phone1)}" var="c" >
                                             <p:column headerText="PHN" >
@@ -148,15 +142,10 @@
                             <h:panelGroup >
                             <p:inputText id="email"  autocomplete="off" value="#{clientController.selected.person.email}" title="Email" validatorMessage="Please check email" >
                                 <f:validateRegex pattern="^([a-zA-Z0-9.!#$%&amp;'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*)?$" ></f:validateRegex>
-                                <f:ajax event="change" execute="@this" render="emailExists" 
-                                        listener="#{clientController.checkEmailExists()}" ></f:ajax>
+                               
                             </p:inputText><br ></br>
                                      <h:panelGroup id="emailExists" >
-                                        <p:commandLink value="Already Exists" 
-                                                   style="color: red;" onclick="PF('dlgEmailClients').show();"
-                                                   rendered="#{clientController.emailExists}" >
                                         
-                                        </p:commandLink>
                                         <p:dialog id="dlgEmailClients" widgetVar="dlgEmailClients" >
                                             <p:dataTable value="#{clientRequestController.clientsWithSameEmail(clientController.selected.person.email)}" var="c" >
                                             <p:column headerText="PHN" >
@@ -197,8 +186,7 @@
                             <p:outputLabel value="Senior Citizen Number:" for="ssNumber" />
                             <h:panelGroup >
                                 <p:inputText id="ssNumber"  autocomplete="off"  value="#{clientController.selected.person.ssNumber}" title="Senior Citizen Number" >
-                            <f:ajax event="change" execute="@this" render="ssNumberExists" 
-                                    listener="#{clientController.checkSsNumberExists()}" ></f:ajax>
+                           
                             </p:inputText><br ></br>
                                      <h:panelGroup id="ssNumberExists" >
                                         <p:commandLink value="Already Exists" 
