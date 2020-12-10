@@ -65,10 +65,6 @@ public class CommonController implements Serializable {
     public CommonController() {
     }
 
-    
-    
-    
-    
     public static Integer stringToInteger(String str) {
         Integer outInt;
         if (str == null) {
@@ -126,8 +122,7 @@ public class CommonController implements Serializable {
         }
         return str.replaceAll("[^\\d.]", "");
     }
-    
-    
+
     public Date dateFromString(String dateString, String format) {
         if (format == null || format.trim().equals("")) {
             format = "dd/MM/yyyy";
@@ -871,6 +866,11 @@ public class CommonController implements Serializable {
 
     public QueryType[] getQueryType() {
         return QueryType.values();
+    }
+
+    public QueryType[] getQueryTypeForCounts() {
+        QueryType[] qtfcs = {QueryType.Encounter_Count, QueryType.Client_Count, QueryType.Population};
+        return qtfcs;
     }
 
     public QueryLevel[] getQueryLevels() {

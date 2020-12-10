@@ -67,6 +67,30 @@ public class UploadController implements Serializable {
         userTransactionController.recordTransaction("To Upload Component Upload Single");
         return "/queryComponent/upload_query";
     }
+    
+    public String toUploadExcelTemplate() {
+        if (selectedComponent == null) {
+            JsfUtil.addErrorMessage("No Component");
+            return "";
+        }
+        String j = "select u from Upload u "
+                + " where u.retired<>:ret "
+                + " and u.component=:com";
+        Map m = new HashMap();
+        m.put("ret", true);
+        m.put("com", selectedComponent);
+
+        selected = getFacade().findFirstByJpql(j, m);
+        if (selected == null) {
+            selected = new Upload();
+            selected.setCreatedAt(new Date());
+            selected.setCreater(webUserController.getLoggedUser());
+            selected.setComponent(selectedComponent);
+            getFacade().create(selected);
+        }
+        userTransactionController.recordTransaction("To Upload Excel Template");
+        return "/queryComponent/excel_upload";
+    }
 
     public UploadController() {
     }

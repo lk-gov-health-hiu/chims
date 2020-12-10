@@ -105,11 +105,15 @@ public class QueryComponentController implements Serializable {
     private List<QueryComponent> categories = null;
     private List<QueryComponent> excels = null;
     private List<QueryComponent> indicators = null;
+    private List<QueryComponent> counts = null;
+
     private QueryComponent selected;
+    private QueryComponent selectedCountCriteria;
     private QueryComponent selectedQuery;
     private QueryComponent selectedToDuplicateQuery;
     private QueryComponent selectedCretirian;
     private List<QueryComponent> selectedCretiria = null;
+    private List<QueryComponent> criteriaOfSelectedCount;
 
     private QueryComponent selectedCategory;
     private QueryComponent selectedSubcategory;
@@ -187,9 +191,21 @@ public class QueryComponentController implements Serializable {
         return "/queryComponent/edit_indicator";
     }
 
+    public String toAddCount() {
+        userTransactionController.recordTransaction("Add New Count");
+        selected = new QueryComponent();
+        selected.setQueryType(QueryType.Encounter_Count);
+        return "/queryComponent/edit_count";
+    }
+
     public String toManageIndicators() {
         userTransactionController.recordTransaction("Manage Indicators");
         return "/queryComponent/indicators";
+    }
+
+    public String toManageCounts() {
+        userTransactionController.recordTransaction("Manage Counts");
+        return "/queryComponent/counts";
     }
 
     public String toEditExcelTemplate() {
@@ -200,6 +216,11 @@ public class QueryComponentController implements Serializable {
     public String toEditIndicator() {
         userTransactionController.recordTransaction("Edit Indicator");
         return "/queryComponent/edit_indicator";
+    }
+
+    public String toEditCount() {
+        userTransactionController.recordTransaction("Edit Count");
+        return "/queryComponent/edit_count";
     }
 
     public String toManageAnalysis() {
@@ -223,6 +244,12 @@ public class QueryComponentController implements Serializable {
         return "/analysis/analysis";
     }
 
+    
+    public String toAddNewCriteriaeForCount(){
+        selectedCountCriteria = new QueryComponent();
+        return toEditCountCriteriea();
+    }
+    
 //    public void listQueries() {
 //        listQueries(searchText);
 //    }
@@ -303,7 +330,7 @@ public class QueryComponentController implements Serializable {
         addingCategory.setQueryType(QueryType.Excel_Report);
         saveItem(addingCategory);
         excels = null;
-        addingCategory = null;
+//        addingCategory = null;
     }
 
     public void saveIndicator() {
@@ -314,7 +341,19 @@ public class QueryComponentController implements Serializable {
         addingCategory.setQueryType(QueryType.Indicator);
         saveItem(addingCategory);
         indicators = null;
-        addingCategory = null;
+//        addingCategory = null;
+    }
+
+    public void saveCount() {
+        if (selected == null) {
+            JsfUtil.addErrorMessage("Nothing to save");
+            return;
+        }
+        if (selected.getQueryType() == null) {
+            selected.setQueryType(QueryType.Encounter_Count);
+        }
+        saveItem(selected);
+        counts = null;
     }
 
     public void saveSubCategory() {
@@ -408,6 +447,26 @@ public class QueryComponentController implements Serializable {
         addingQuery = null;
     }
 
+    public void removeExcel() {
+        remove();
+        fillExcels();
+    }
+
+    public void removeIndicator() {
+        remove();
+        fillIndicators();
+    }
+
+    public void removeCount() {
+        remove();
+        fillCounts();
+    }
+
+    public void removeQuery() {
+        remove();
+
+    }
+
     public void remove() {
         if (removing == null) {
             JsfUtil.addErrorMessage("No form to remove.");
@@ -421,6 +480,11 @@ public class QueryComponentController implements Serializable {
             categories = null;
         }
         removing = null;
+        try {
+            applicationController.getQueryComponents().remove(removing);
+        } catch (Exception e) {
+            JsfUtil.addErrorMessage(e.getMessage());
+        }
         JsfUtil.addSuccessMessage("Removed");
     }
 
@@ -465,10 +529,28 @@ public class QueryComponentController implements Serializable {
         saveItem(selected);
     }
 
+    public void saveSelectedCountCriteria() {
+        saveItem(selectedCountCriteria);
+    }
+
     public String saveSelectedItemAndCriteria() {
         saveItem(selected);
         selectedQuery = selected;
         return "criteria";
+    }
+
+    public String saveCountAndToManageCriteria() {
+        saveCount();
+        selectedQuery = selected;
+        return "/queryComponent/count_criteria";
+    }
+    
+    public String toCountCriteria() {
+        return "/queryComponent/count_criteria";
+    }
+    
+    public String toEditCountCriteriea() {
+        return "/queryComponent/edit_count_criteriea";
     }
 
     public void saveItem(QueryComponent saving) {
@@ -690,6 +772,19 @@ public class QueryComponentController implements Serializable {
         List<QueryComponent> nqs = new ArrayList<>();
         for (QueryComponent q : tqcs) {
             if (q.getQueryType() == QueryType.Indicator) {
+                nqs.add(q);
+            }
+        }
+        return nqs;
+    }
+
+    public List<QueryComponent> fillCounts() {
+        List<QueryComponent> tqcs = applicationController.getQueryComponents();
+        List<QueryComponent> nqs = new ArrayList<>();
+        for (QueryComponent q : tqcs) {
+            if (q.getQueryType() == QueryType.Client_Count
+                    || q.getQueryType() == QueryType.Encounter_Count
+                    || q.getQueryType() == QueryType.Population) {
                 nqs.add(q);
             }
         }
@@ -922,7 +1017,14 @@ public class QueryComponentController implements Serializable {
         return criteria(selectedQuery);
     }
 
+    public List<QueryComponent> getCriteriaOfSelectedCount() {
+        System.out.println("getCriteriaOfSelectedCount");
+        return criteriaOfSelectedCount = criteria(selected);
+    }
+
     public List<QueryComponent> criteria(QueryComponent p) {
+        System.out.println("criteria");
+        System.out.println("p = " + p);
         List<QueryComponent> tqcs = applicationController.getQueryComponents();
         List<QueryComponent> nqs = new ArrayList<>();
         for (QueryComponent q : tqcs) {
@@ -931,6 +1033,7 @@ public class QueryComponentController implements Serializable {
                 nqs.add(q);
             }
         }
+        System.out.println("nqs = " + nqs.size());
         return nqs;
     }
 
@@ -1795,8 +1898,6 @@ public class QueryComponentController implements Serializable {
             JsfUtil.addErrorMessage("No Data");
             return "";
         }
-        
-        
 
         for (QueryResult tqr : qrs) {
 
@@ -3706,6 +3807,25 @@ public class QueryComponentController implements Serializable {
     public ClientEncounterComponentItemFacade getClientEncounterComponentItemFacade() {
         return clientEncounterComponentItemFacade;
 
+    }
+
+    public List<QueryComponent> getCounts() {
+        if (counts == null) {
+            counts = fillCounts();
+        }
+        return counts;
+    }
+
+    public void setCounts(List<QueryComponent> counts) {
+        this.counts = counts;
+    }
+
+    public QueryComponent getSelectedCountCriteria() {
+        return selectedCountCriteria;
+    }
+
+    public void setSelectedCountCriteria(QueryComponent selectedCountCriteria) {
+        this.selectedCountCriteria = selectedCountCriteria;
     }
 
     @FacesConverter(forClass = QueryComponent.class)

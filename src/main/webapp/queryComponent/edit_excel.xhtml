@@ -12,7 +12,7 @@
 
             <ui:define name="analysis">    
                 <h:form id="QueryComponentEditForm">
-                    <p:panelGrid id="display" columns="1" style="margin: auto;">
+                    <p:panelGrid id="display" columns="1" style="margin: auto;"  styleClass="fullWidth">
                         <f:facet name="header" >
                             <p:outputLabel value="Excel Template" />
                             <p:commandButton value="Save" 
@@ -45,6 +45,28 @@
 
                         </p:panelGrid>
 
+                        <p:panelGrid columns="2" >
+                            <p:outputLabel value="Created by" >
+                            </p:outputLabel>
+                            <p:outputLabel value="#{queryComponentController.selected.createdBy.person.nameWithTitle}" >
+                            </p:outputLabel>
+                            <p:outputLabel value="Created at" >
+                            </p:outputLabel>
+                            <p:outputLabel value="#{queryComponentController.selected.createdAt}" >
+                                <f:convertDateTime pattern="dd MMMM yyyy hh:mm" ></f:convertDateTime>
+                            </p:outputLabel>
+                            
+                            <p:outputLabel value="Last Edit by" >
+                            </p:outputLabel>
+                            <p:outputLabel value="#{queryComponentController.selected.lastEditBy.person.nameWithTitle}" >
+                            </p:outputLabel>
+                            <p:outputLabel value="Last Edit at" >
+                            </p:outputLabel>
+                            <p:outputLabel value="#{queryComponentController.selected.lastEditeAt}" >
+                                <f:convertDateTime pattern="dd MMMM yyyy hh:mm" ></f:convertDateTime>
+                            </p:outputLabel>
+
+                        </p:panelGrid>
 
 
                     </p:panelGrid>

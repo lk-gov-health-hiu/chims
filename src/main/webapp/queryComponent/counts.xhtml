@@ -14,12 +14,12 @@
 
                 <p:panelGrid columns="2" styleClass="alignTop"  >
                     <f:facet name="header" >
-                        <p:outputLabel value="Manage Indicators">
+                        <p:outputLabel value="Manage Counts">
                         </p:outputLabel>
                     </f:facet>
 
                     <h:form>
-                        <p:dataTable value="#{queryComponentController.indicators}" var="item"
+                        <p:dataTable value="#{queryComponentController.counts}" var="item"
 
                                      rowKey="#{item.id}"
                                      paginator="true"
@@ -28,17 +28,17 @@
 
                                      >
 
-                            <p:column>
+                            <p:column sortBy="#{item.name}" filterBy="#{item.name}" filterMatchMode="contains">
                                 <f:facet name="header">
                                     <h:outputText value="Name"/>
                                 </f:facet>
                                 <h:outputText value="#{item.name}"/>
                             </p:column>
-                            <p:column>
+                            <p:column sortBy="#{item.code}" filterBy="#{item.code}" filterMatchMode="contains">
                                 <f:facet name="header">
-                                    <h:outputText value="Descreption"/>
+                                    <h:outputText value="Code"/>
                                 </f:facet>
-                                <h:outputText value="#{item.descreption}"/>
+                                <h:outputText value="#{item.code}"/>
                             </p:column>
                             <p:column style="width: 17rem; text-align: center;">
                                 <f:facet name="header">
@@ -47,9 +47,11 @@
 
                                 <p:commandButton ajax="false" 
                                                  value="Edit" 
-                                                 action="#{queryComponentController.toEditIndicator()}" >
+                                                 action="#{queryComponentController.toEditCount()}" >
                                     <f:setPropertyActionListener value="#{item}" target="#{queryComponentController.selected}" ></f:setPropertyActionListener>
                                 </p:commandButton>
+
+
 
                                 <p:commandButton ajax="false" value="Remove" action="#{queryComponentController.remove()}" 
                                                  onclick="if (!confirm('Really want to do that?'))

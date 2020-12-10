@@ -41,7 +41,7 @@
                                     </f:facet>
                                     <h:outputText value="#{item.descreption}"/>
                                 </p:column>
-                                <p:column style="width: 17rem; text-align: center;">
+                                <p:column style="width: 25rem; text-align: center;">
                                     <f:facet name="header">
                                         <h:outputText value="Actions"/>
                                     </f:facet>
@@ -52,12 +52,22 @@
                                         <f:setPropertyActionListener value="#{item}" target="#{queryComponentController.selected}" ></f:setPropertyActionListener>
                                     </p:commandButton>
 
+                                    <p:commandButton  ajax="false"
+                                                      style="width: 7rem;"
+                                                      value="Upload" action="#{uploadController.toUploadExcelTemplate()}" >
+                                        <f:setPropertyActionListener value="#{item}" target="#{uploadController.selectedComponent}" ></f:setPropertyActionListener>
+                                        <f:setPropertyActionListener value="#{item}" target="#{queryComponentController.selected}" ></f:setPropertyActionListener>
+                                    </p:commandButton>
+
                                     <p:commandButton ajax="false" value="Remove" action="#{queryComponentController.remove()}" 
                                                      onclick="if (!confirm('Really want to do that?'))
                                                                  return false"
-                                                                          style="width: 7rem;">
+                                                     style="width: 7rem;">
                                         <f:setPropertyActionListener value="#{item}" target="#{queryComponentController.removing}" ></f:setPropertyActionListener>
                                     </p:commandButton>
+
+
+
                                 </p:column>
                             </p:dataTable>  
 

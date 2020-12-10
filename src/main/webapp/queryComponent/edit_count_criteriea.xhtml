@@ -1,0 +1,178 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <body>
+
+        <ui:composition template="/queryComponent/index.xhtml">
+
+            <ui:define name="analysis">   
+
+
+                <h:form>
+                    <p:panelGrid columns="1" styleClass="alignTop" >
+                        <f:facet name="header" >
+                            <p:outputLabel value="Criteria">
+                            </p:outputLabel>
+                        </f:facet>
+
+
+                        <p:panelGrid columns="2" >
+                            <p:commandButton action="#{queryComponentController.saveSelectedCountCriteria()}" 
+                                             value="Save" 
+                                             ajax="false"/>
+                            <p:commandButton action="#{queryComponentController.toCountCriteria}"
+                                             value="Back" 
+                                             ajax="false"/>
+                        </p:panelGrid>
+
+                        <p:panelGrid columns="1" style="margin: auto;" >
+
+                            <h:panelGroup id="display">
+                                <p:panelGrid columns="2" rendered="#{queryComponentController.selectedCountCriteria != null}">
+
+                                    <p:outputLabel value="Name" for="name" />
+                                    <p:inputText id="name" value="#{queryComponentController.selectedCountCriteria.name}" 
+                                                 title="Name" />
+
+                                    <p:outputLabel value="Order No." for="orderNo" />
+                                    <p:inputText id="orderNo" value="#{queryComponentController.selectedCountCriteria.orderNo}"
+                                                 title="Order No." />
+
+                                    <p:outputLabel value="MatchType:" for="matchType" />
+                                    <p:selectOneMenu id="matchType"  value="#{queryComponentController.selectedCountCriteria.matchType}" >
+                                        <f:selectItem itemLabel="Select" ></f:selectItem>
+                                        <f:selectItems value="#{commonController.queryCriteriaMatchTypes}" 
+                                                       var="queryCriteriaMatchTypes"
+                                                       itemValue="#{queryCriteriaMatchTypes}"
+                                                       itemLabel="#{queryCriteriaMatchTypes.label}">
+                                        </f:selectItems>
+                                    </p:selectOneMenu>
+
+                                    <p:outputLabel value="EvaluationType:" for="evaluationType" />
+                                    <p:selectOneMenu id="evaluationType"  value="#{queryComponentController.selectedCountCriteria.evaluationType}" >
+                                        <f:selectItem itemLabel="Select" ></f:selectItem>
+                                        <f:selectItems value="#{commonController.queryVariableEvaluationType}"
+                                                       var="QueryVariableEvaluationType"
+                                                       itemValue="#{QueryVariableEvaluationType}"
+                                                       itemLabel="#{QueryVariableEvaluationType.label}">
+                                        </f:selectItems>
+                                        <f:ajax event="change" execute="evaluationType" render="values"></f:ajax>
+                                    </p:selectOneMenu>
+
+                                    <p:outputLabel value="Item:" for="item" />
+                                    <p:autoComplete  id="item" completeMethod="#{designComponentFormItemController.completeItemsInDesignFormItems}" 
+                                                     value="#{queryComponentController.selectedCountCriteria.item}" itemValue="#{i}"
+                                                     itemLabel="#{i.name}" var="i" minQueryLength="3"
+                                                     forceSelection="true"
+                                                     >
+                                        <p:column headerText="ID" >
+                                            <p:outputLabel value="#{i.id}" ></p:outputLabel>
+                                        </p:column>
+                                        <p:column headerText="Name" >
+                                            <p:outputLabel value="#{i.name}" ></p:outputLabel>
+                                        </p:column>
+                                        <p:column headerText="Code" >
+                                            <p:outputLabel value="#{i.code}" ></p:outputLabel>
+                                        </p:column>
+                                        <f:ajax event="itemSelect" execute="item" render="itemValue" ></f:ajax>
+                                    </p:autoComplete>
+
+                                    <p:outputLabel value="Data Type:" for="queryDataType" />
+                                    <p:selectOneMenu id="queryDataType"  value="#{queryComponentController.selectedCountCriteria.queryDataType}" >
+                                        <f:selectItem itemLabel="Select" ></f:selectItem>
+                                        <f:selectItems value="#{commonController.queryDataTypes}"
+                                                       var="queryDataTypes"
+                                                       itemValue="#{queryDataTypes}"
+                                                       itemLabel="#{queryDataTypes.label}">
+                                        </f:selectItems>
+                                        <f:ajax event="change" execute="queryDataType" render="values itemValue boolValue strVal"></f:ajax>
+                                    </p:selectOneMenu>
+
+                                    <p:outputLabel value="Item Value:" for="itemValue" />
+                                    <p:selectOneMenu id="itemValue" 
+                                                     disabled="#{queryComponentController.selectedCountCriteria.queryDataType ne 'item'}"
+                                                     value="#{queryComponentController.selectedCountCriteria.itemValue}" >
+                                        <f:selectItem itemLabel="Select" ></f:selectItem>
+                                        <f:selectItems value="#{queryComponentController.itemsInDesignFormItemValues}" itemValue="#{iv}"
+                                                       itemLabel="#{iv.name}" var="iv" ></f:selectItems>
+                                        <p:column headerText="Name" >
+                                            <p:outputLabel value="#{iv.name}" ></p:outputLabel>
+                                        </p:column>
+                                        <p:column headerText="Code" >
+                                            <p:outputLabel value="#{iv.code}" ></p:outputLabel>
+                                        </p:column>
+                                    </p:selectOneMenu>
+
+                                    <p:outputLabel value="Boolean Value:" for="boolValue" />
+                                    <p:selectBooleanButton id="boolValue" 
+                                                           disabled="#{queryComponentController.selectedCountCriteria.queryDataType ne 'Boolean'}"
+                                                           value="#{queryComponentController.selectedCountCriteria.booleanValue}" offLabel="Unchecked" onLabel="Checked" ></p:selectBooleanButton>
+
+
+                                    <p:outputLabel value="String Value:" for="strVal" />
+                                    <p:inputText id="strVal" 
+                                                 disabled="#{queryComponentController.selectedCountCriteria.queryDataType ne 'String'}"
+                                                 value="#{queryComponentController.selectedCountCriteria.shortTextValue}" title="String Value" />
+
+                                </p:panelGrid>                            
+
+                                <h:panelGroup id="values">
+                                    <p:panelGrid id="between" columns="2" rendered="#{queryComponentController.selectedCountCriteria.evaluationType eq 'Between'}">
+
+                                        <p:outputLabel value="From"></p:outputLabel>                                        
+                                        <p:inputText id="integerNumberValue" 
+                                                     rendered="#{queryComponentController.selectedCountCriteria.queryDataType eq 'integer'}"
+                                                     value="#{queryComponentController.selectedCountCriteria.integerNumberValue}" title="IntegerNumberValue" />
+                                        <p:inputText id="longNumberValue" 
+                                                     rendered="#{queryComponentController.selectedCountCriteria.queryDataType eq 'longNumber'}"
+                                                     value="#{queryComponentController.selectedCountCriteria.longNumberValue}" title="LongNumberValue" />
+                                        <p:inputText id="realNumberValue" 
+                                                     rendered="#{queryComponentController.selectedCountCriteria.queryDataType eq 'real'}"
+                                                     value="#{queryComponentController.selectedCountCriteria.realNumberValue}" title="RealNumberValue" />
+
+                                        <p:outputLabel value="To"></p:outputLabel>
+                                        <p:inputText id="integerNumberValue2" 
+                                                     rendered="#{queryComponentController.selectedCountCriteria.queryDataType eq 'integer'}"
+                                                     value="#{queryComponentController.selectedCountCriteria.integerNumberValue2}" title="IntegerNumberValue2" />
+                                        <p:inputText id="longNumberValue2" 
+                                                     rendered="#{queryComponentController.selectedCountCriteria.queryDataType eq 'longNumber'}"
+                                                     value="#{queryComponentController.selectedCountCriteria.longNumberValue2}" title="LongNumberValue2" />
+                                        <p:inputText id="realNumberValue2" 
+                                                     rendered="#{queryComponentController.selectedCountCriteria.queryDataType eq 'real'}"
+                                                     value="#{queryComponentController.selectedCountCriteria.realNumberValue2}" title="RealNumberValue2" />                                    
+                                    </p:panelGrid>                                
+
+                                    <p:panelGrid id="singleValue" columns="2" rendered="#{queryComponentController.selectedCountCriteria.evaluationType ne 'Between'}">
+
+                                        <p:outputLabel value="value"></p:outputLabel>                                        
+                                        <p:inputText id="integerNumberValue1" 
+                                                     rendered="#{queryComponentController.selectedCountCriteria.queryDataType eq 'integer'}"
+                                                     value="#{queryComponentController.selectedCountCriteria.integerNumberValue}" title="IntegerNumberValue" />
+                                        <p:inputText id="longNumberValue1" 
+                                                     rendered="#{queryComponentController.selectedCountCriteria.queryDataType eq 'longNumber'}"
+                                                     value="#{queryComponentController.selectedCountCriteria.longNumberValue}" title="LongNumberValue"/>
+                                        <p:inputText id="realNumberValue1" 
+                                                     rendered="#{queryComponentController.selectedCountCriteria.queryDataType eq 'real'}"
+                                                     value="#{queryComponentController.selectedCountCriteria.realNumberValue}" title="RealNumberValue" />
+                                    </p:panelGrid>
+                                </h:panelGroup>
+                            </h:panelGroup>
+                        </p:panelGrid>  
+
+                    </p:panelGrid>
+                </h:form>
+
+
+
+
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>
