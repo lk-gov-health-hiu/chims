@@ -224,10 +224,6 @@
                                 </h:panelGroup>
                             </h:panelGroup>
 
-
-
-
-
                             <p:outputLabel value="NIC No.:" for="nic" />
                             <h:panelGroup >
                                 <p:inputText id="nic"  autocomplete="off" value="#{clientController.selected.person.nic}" title="Nic" validatorMessage="Please check the number">
@@ -372,13 +368,11 @@
                                             minQueryLength="3">
                             </p:autoComplete>
 
-
-
                             <p:outputLabel value="District:" for="district" />
-                            <p:autoComplete id="district" value="#{clientController.selected.person.district}"
+                            <p:autoComplete required="true" id="district" value="#{clientController.selected.person.district}"
                                             completeMethod="#{areaController.completeDistricts}"
                                             var="d" itemLabel="#{d.name}" itemValue="#{d}"
-                                            maxResults="15" forceSelection="true"  disabled="true"
+                                            maxResults="15" forceSelection="true"
                                             minQueryLength="3">
                             </p:autoComplete>
 
