@@ -161,6 +161,7 @@ public class ClientController implements Serializable {
 
     public String toAddNewClient() {
         setSelected(new Client());
+        clearRegisterNewExistsValues();
         selectedClientsClinics = null;
         selectedClientsLastFiveClinicVisits = null;
         selectedClinic = null;
@@ -265,6 +266,13 @@ public class ClientController implements Serializable {
         }
     }
 
+    public void clearRegisterNewExistsValues(){
+        phnExists = false;
+        nicExists = false;
+        emailExists = false;
+        phone1Exists = false;
+        ssNumberExists = false;
+    }
     public void clearExistsValues() {
         phnExists = false;
         nicExists = false;
