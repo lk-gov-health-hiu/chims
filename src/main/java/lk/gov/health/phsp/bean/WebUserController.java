@@ -214,6 +214,7 @@ public class WebUserController implements Serializable {
     public String assumeRoles() {
         if (assumedRole == null) {
             JsfUtil.addErrorMessage("Please select a Role");
+            userTransactionController.recordTransaction("Assume Roles");
             return "";
         }
 
@@ -251,6 +252,7 @@ public class WebUserController implements Serializable {
         assumedArea = null;
         assumedPrivileges = null;
         logOut();
+        userTransactionController.recordTransaction("End Assuming Roles");
         return login(true);
     }
 
@@ -319,6 +321,7 @@ public class WebUserController implements Serializable {
         String j = "select u from WebUser u "
                 + " where u.retired=false ";
         items = getFacade().findByJpql(j);
+        userTransactionController.recordTransaction("To Manage All Users");
         return "/webUser/index";
     }
 
@@ -370,6 +373,7 @@ public class WebUserController implements Serializable {
     }
     
     public String toOpdModule(){
+        userTransactionController.recordTransaction("To Opd Module");
         return "/opd/index_opd";
     }
 
@@ -418,6 +422,7 @@ public class WebUserController implements Serializable {
             return "";
         }
         current = loggedUser;
+        userTransactionController.recordTransaction("To Change My Details");
         return "/change_my_details";
     }
 
@@ -428,6 +433,7 @@ public class WebUserController implements Serializable {
         password = "";
         passwordReenter = "";
         current = loggedUser;
+        userTransactionController.recordTransaction("To Change My Password");
         return "/change_my_password";
     }
 
@@ -550,6 +556,7 @@ public class WebUserController implements Serializable {
     }
 
     public String login() {
+        userTransactionController.recordTransaction("login");
         return login(false);
     }
 
@@ -605,6 +612,7 @@ public class WebUserController implements Serializable {
 
     public String toHome() {
 //        prepareDashboards();
+        userTransactionController.recordTransaction("To Home-Dashboard");
         return "/index";
     }
 

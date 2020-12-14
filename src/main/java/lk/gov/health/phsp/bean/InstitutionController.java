@@ -156,6 +156,7 @@ public class InstitutionController implements Serializable {
         m.put("t", AreaType.GN);
         m.put("p", selected);
         gnAreasOfSelected = areaFacade.findByJpql(j, m);
+        userTransactionController.recordTransaction("Fill Gn Areas Of Selected");
     }
 
     public List<Area> findDrainingGnAreas(Institution ins) {

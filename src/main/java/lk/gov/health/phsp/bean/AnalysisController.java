@@ -30,6 +30,7 @@ import java.util.Map;
 import javax.ejb.EJB;
 import javax.inject.Named;
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 import lk.gov.health.phsp.enums.EncounterType;
 import lk.gov.health.phsp.facade.ClientFacade;
 import lk.gov.health.phsp.facade.EncounterFacade;
@@ -45,7 +46,10 @@ public class AnalysisController {
     @EJB
     private EncounterFacade encounterFacade;
 // </editor-fold>
-
+// <editor-fold defaultstate="collapsed" desc="Controllers">
+    @Inject
+    private UserTransactionController userTransactionController;
+// </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="Class Variables">
     private Long clientCount;
     private Long encounterCount;
@@ -60,6 +64,7 @@ public class AnalysisController {
 
 // <editor-fold defaultstate="collapsed" desc="Navigation Methods">
     public String toCountsForSystemAdmin() {
+        userTransactionController.recordTransaction("To Counts For SystemAdmin");
         return "/systemAdmin/all_counts";
     }
 // </editor-fold>    
@@ -80,6 +85,7 @@ public class AnalysisController {
         fs = getEncounterFacade().findLongByJpql(j, m);
 
         encounterCount = fs;
+        userTransactionController.recordTransaction("Find Encounter Count");
     }
 
     public void findClientCount() {
@@ -93,6 +99,7 @@ public class AnalysisController {
         m.put("td", getTo());
 
         clientCount = getClientFacade().findLongByJpql(j, m);
+        userTransactionController.recordTransaction("findClientCount");
     }
 // </editor-fold>
 
