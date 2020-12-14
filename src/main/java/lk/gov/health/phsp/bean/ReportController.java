@@ -161,6 +161,8 @@ public class ReportController implements Serializable {
     private ExcelReportController excelReportController;
     @Inject
     private DesignComponentFormItemController designComponentFormItemController;
+    @Inject
+    private UserTransactionController userTransactionController;
 // </editor-fold>  
 // <editor-fold defaultstate="collapsed" desc="Class Variables">
     private List<Encounter> encounters;
@@ -265,6 +267,7 @@ public class ReportController implements Serializable {
     public void listExistingMonthlyReports() {
         setTimePeriodType(TimePeriodType.Monthly);
         listExistingReports();
+        userTransactionController.recordTransaction("List Existing Monthly Reports");
     }
 
     public void listExistingReports() {
@@ -333,6 +336,7 @@ public class ReportController implements Serializable {
         JsfUtil.addSuccessMessage("Removed");
         listExistingReports();
         listMyReports();
+        userTransactionController.recordTransaction("Remove Report");
     }
 
     public void fillItemsofTheSelectedSet() {
@@ -624,6 +628,7 @@ public class ReportController implements Serializable {
         setTimePeriodType(TimePeriodType.Monthly);
         createNewReport();
         System.gc();
+        userTransactionController.recordTransaction("Create New Monthly Report");
     }
 
     public void createNewReport() {
@@ -793,6 +798,7 @@ public class ReportController implements Serializable {
 
 // <editor-fold defaultstate="collapsed" desc="Navigation">
     public String toViewReports() {
+        userTransactionController.recordTransaction("To View Reports");
         return "/reports/index";
     }
 
@@ -831,6 +837,7 @@ public class ReportController implements Serializable {
                 action = forSys;
                 break;
         }
+        userTransactionController.recordTransaction("To Institution Monthly Summeries");
         return action;
     }
 
@@ -869,6 +876,7 @@ public class ReportController implements Serializable {
                 action = forSys;
                 break;
         }
+        userTransactionController.recordTransaction("To Consolidate Summeries");
         return action;
     }
 
@@ -907,13 +915,14 @@ public class ReportController implements Serializable {
                 action = forSys;
                 break;
         }
+        userTransactionController.recordTransaction("To Single Variable Clinical Data");
         return action;
     }
 
     public String toViewMySummeries() {
         
         listMyReports();
-        
+        userTransactionController.recordTransaction("To View My Summeries");
         return "/reports/summaries/my_summaries";
     }
 
@@ -1518,6 +1527,7 @@ public class ReportController implements Serializable {
                 action = forSys;
                 break;
         }
+        userTransactionController.recordTransaction("To View Client Registrations By Institution");
         return action;
     }
 
@@ -1554,6 +1564,7 @@ public class ReportController implements Serializable {
                 action = forSys;
                 break;
         }
+        userTransactionController.recordTransaction("To View Client Registrations");
         return action;
     }
 
@@ -1590,6 +1601,7 @@ public class ReportController implements Serializable {
                 action = forSys;
                 break;
         }
+        userTransactionController.recordTransaction("To View Clinic Enrollments");
         return action;
     }
 
@@ -1626,6 +1638,7 @@ public class ReportController implements Serializable {
                 action = forSys;
                 break;
         }
+        userTransactionController.recordTransaction("To View Clinic Visits");
         return action;
     }
 
@@ -1827,7 +1840,7 @@ public class ReportController implements Serializable {
                 reportCount += ic.getCount();
             }
         }
-
+    userTransactionController.recordTransaction("Fill Registrations Of Clients By Institution");
     }
 
     public void fillClinicEnrollments() {
@@ -1855,6 +1868,7 @@ public class ReportController implements Serializable {
             }
         }
         encounters = encounterController.getItems(j, m);
+        userTransactionController.recordTransaction("Fill Clinic Enrollments");
     }
 
     public void downloadClinicEnrollments() {
