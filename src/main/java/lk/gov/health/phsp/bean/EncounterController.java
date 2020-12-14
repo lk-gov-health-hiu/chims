@@ -38,6 +38,8 @@ public class EncounterController implements Serializable {
     private Encounter selected;
     @Inject
     private WebUserController webUserController;
+    @Inject
+    private UserTransactionController userTransactionController;
 
     public EncounterController() {
     }
@@ -89,6 +91,7 @@ public class EncounterController implements Serializable {
         selected.setRetiredAt(new Date());
         selected.setRetiredBy(webUserController.getLoggedUser());
         JsfUtil.addSuccessMessage("Retired Successfully");
+        userTransactionController.recordTransaction("Retire Selected Encounter");
         selected = null;
     }
 
