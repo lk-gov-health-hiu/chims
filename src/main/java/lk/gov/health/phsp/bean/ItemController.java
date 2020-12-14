@@ -219,7 +219,7 @@ public class ItemController implements Serializable {
                 getFacade().edit(i);
             }
         }
-
+        userTransactionController.recordTransaction("Generate Display Names");
     }
 
     public void addInitialMetadata() {
@@ -232,6 +232,7 @@ public class ItemController implements Serializable {
         addCitizenship();
         addClientData();
         addMedicines();
+        userTransactionController.recordTransaction("Add Initial Metadata");
     }
 
     public void addMedicines() {

@@ -42,6 +42,10 @@ public class DesignComponentFormItemController implements Serializable {
     @EJB
     private ItemFacade itemFacade;
 // </editor-fold>
+// <editor-fold defaultstate="collapsed" desc="Controllers">
+    @Inject
+    UserTransactionController userTransactionController;
+    // </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="Main Functions">
     @Inject
     private WebUserController webUserController;
@@ -88,6 +92,7 @@ public class DesignComponentFormItemController implements Serializable {
                 getItemFacade().edit(i);
             }
         }
+        userTransactionController.recordTransaction("Add Data Types To Dictionary Items From Form Items");
     }
 
 // </editor-fold>    

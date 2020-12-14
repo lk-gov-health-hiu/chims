@@ -28,6 +28,8 @@ public class DemoAccountController implements Serializable {
     private lk.gov.health.phsp.facade.DemoAccountFacade ejbFacade;
     @Inject
     WebUserController webUserController;
+    @Inject
+    private UserTransactionController userTransactionController;
     private List<DemoAccount> items = null;
     private DemoAccount selected;
 
@@ -37,6 +39,7 @@ public class DemoAccountController implements Serializable {
         }
         webUserController.setUserName(selected.getUserName());
         webUserController.setPassword(selected.getPassword());
+        userTransactionController.recordTransaction("Login Useing DemoAccount");
         return webUserController.login();
     }
 

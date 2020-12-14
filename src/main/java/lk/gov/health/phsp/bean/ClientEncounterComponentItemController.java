@@ -50,6 +50,8 @@ public class ClientEncounterComponentItemController implements Serializable {
     private CommonController commonController;
     @Inject
     private ItemController itemController;
+    @Inject
+    private UserTransactionController userTransactionController;
 
     private List<ClientEncounterComponentItem> items = null;
     private List<ClientEncounterComponentItem> formsetItems = null;
@@ -261,8 +263,8 @@ public class ClientEncounterComponentItemController implements Serializable {
             }
             getFacade().edit(i);
         }
-
-        
+        userTransactionController.recordTransaction("Calculate - Clinic Forms");
+         
     }
 
     public String evaluateScript(String script) {
@@ -512,7 +514,7 @@ public class ClientEncounterComponentItemController implements Serializable {
         getFacade().create(ci);
         
         findClientEncounterComponentItemOfAForm((ClientEncounterComponentForm) i.getParentComponent());
-
+        userTransactionController.recordTransaction("Add Another - Clinic Forms");
     }
 
     public void create() {

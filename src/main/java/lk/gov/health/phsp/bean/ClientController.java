@@ -137,6 +137,7 @@ public class ClientController implements Serializable {
     // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="Navigation">
     public String toSearchClientById() {
+        userTransactionController.recordTransaction("To Search Client By Id");
         return "/client/search_by_id";
     }
 
@@ -156,6 +157,7 @@ public class ClientController implements Serializable {
     public String toClientProfile() {
         selectedClientsClinics = null;
         selectedClientsLastFiveClinicVisits = null;
+        userTransactionController.recordTransaction("To Client Profile");
         return "/client/profile";
     }
 
@@ -176,6 +178,7 @@ public class ClientController implements Serializable {
                 + " from Client c "
                 + " where c.comments is not null";
         items = getFacade().findByJpql(j);
+        userTransactionController.recordTransaction("To View Corrected Duplicates");
         return "/systemAdmin/clients_with_corrected_duplicate_phn";
     }
 
@@ -198,6 +201,7 @@ public class ClientController implements Serializable {
             List<Client> temClients = getFacade().findByJpql(j, m);
             items.addAll(temClients);
         }
+        userTransactionController.recordTransaction("To Detect PHN Duplicates");
         return "/systemAdmin/clients_with_phn_duplication";
     }
 
@@ -249,6 +253,7 @@ public class ClientController implements Serializable {
             }
             items.addAll(temClients);
         }
+        userTransactionController.recordTransaction("Correct PHN Duplicates");
         return "/systemAdmin/clients_with_corrected_duplicate_phn";
     }
 
@@ -483,7 +488,7 @@ public class ClientController implements Serializable {
             }
 
         }
-
+        userTransactionController.recordTransaction("Fix Client Person Created At");
     }
 
     public void updateClientCreatedInstitution() {
@@ -504,7 +509,7 @@ public class ClientController implements Serializable {
             c.setCreateInstitution(institution);
             getFacade().edit(c);
         }
-
+        userTransactionController.recordTransaction("Update Client Created Institution");
     }
 
     public void updateClientDateOfBirth() {
@@ -534,7 +539,7 @@ public class ClientController implements Serializable {
 
             }
         }
-
+        userTransactionController.recordTransaction("Update Client Date Of Birth");
     }
 
     public Long countOfRegistedClients(Institution ins, Area gn) {
@@ -587,6 +592,7 @@ public class ClientController implements Serializable {
     }
 
     public String toRegisterdClientsWithDatesForSystemAdmin() {
+        userTransactionController.recordTransaction("To Registerd Clients With Dates For SystemAdmin");
         return "/systemAdmin/all_clients";
     }
 
@@ -612,6 +618,7 @@ public class ClientController implements Serializable {
         m.put("td", getTo());
         selectedClientsBasic = null;
         clients = getFacade().findByJpql(j, m, TemporalType.TIMESTAMP);
+        userTransactionController.recordTransaction("Fill Clients - SysAdmin");
     }
 
     public void fillRegisterdClientsWithDatesForInstitution() {
@@ -653,6 +660,7 @@ public class ClientController implements Serializable {
     public void fillClientsWithWrongPhnLength() {
         String j = "select c from Client c where length(c.phn) <>11 order by c.id";
         items = getFacade().findByJpql(j);
+        userTransactionController.recordTransaction("Fill Clients With Wrong PHN Length");
     }
 
     public void fillRetiredClients() {
@@ -677,6 +685,7 @@ public class ClientController implements Serializable {
         m.put("td", getTo());
         selectedClientsBasic = null;
         clients = getFacade().findByJpql(j, m, TemporalType.TIMESTAMP);
+        userTransactionController.recordTransaction("Fill Retired Clients - SysAdmin");
     }
 
     public String retireSelectedClients() {
@@ -701,6 +710,7 @@ public class ClientController implements Serializable {
             getFacade().edit(c);
         }
         selectedClients = null;
+        userTransactionController.recordTransaction("Retire Selected Clients - SysAdmin");
         return toRegisterdClientsWithDatesForSystemAdmin();
     }
 
@@ -725,6 +735,7 @@ public class ClientController implements Serializable {
             getFacade().edit(c);
         }
         selectedClients = null;
+        userTransactionController.recordTransaction("Unretire Selected Clients - SysAdmin");
         return toRegisterdClientsWithDatesForSystemAdmin();
     }
 
@@ -1465,16 +1476,19 @@ public class ClientController implements Serializable {
 
         if (selectedClients == null || selectedClients.isEmpty()) {
             JsfUtil.addErrorMessage("No Results Found. Try different search criteria.");
+            userTransactionController.recordTransaction("Search By Any Id");
             return "/client/search_by_id";
         }
         if (selectedClients.size() == 1) {
             setSelected(selectedClients.get(0));
             selectedClients = null;
             searchingId = "";
+            userTransactionController.recordTransaction("Search By Any Id");
             return toClientProfile();
         } else {
             selected = null;
             searchingId = "";
+            userTransactionController.recordTransaction("Search By Any Id");
             return toSelectClient();
         }
     }

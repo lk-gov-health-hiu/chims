@@ -123,6 +123,7 @@ public class ClientEncounterComponentFormSetController implements Serializable {
             return "";
         }
         if (selected.isCompleted()) {
+            userTransactionController.recordTransaction("To View Or Edit Formset");
             return toViewFormset();
         } else {
             return toEditFormset();
@@ -169,6 +170,7 @@ public class ClientEncounterComponentFormSetController implements Serializable {
             s.setRetiredBy(webUserController.getLoggedUser());
             getFacade().edit(s);
         }
+        userTransactionController.recordTransaction("Retire Selected Items");
         selectedItems = null;
         items = null;
     }
@@ -193,6 +195,7 @@ public class ClientEncounterComponentFormSetController implements Serializable {
             s.setLastEditBy(webUserController.getLoggedUser());
             getFacade().edit(s);
         }
+        userTransactionController.recordTransaction("Retire Selected Items As Uncomplete");
         selectedItems = null;
         items = null;
     }
@@ -217,6 +220,7 @@ public class ClientEncounterComponentFormSetController implements Serializable {
             s.setCompletedBy(webUserController.getLoggedUser());
             getFacade().edit(s);
         }
+        userTransactionController.recordTransaction("Retire Selected Items As Complete");
         selectedItems = null;
         items = null;
     }
@@ -588,10 +592,12 @@ public class ClientEncounterComponentFormSetController implements Serializable {
     }
 
     public String fillRetiredEncountersFormSets() {
+        userTransactionController.recordTransaction("Fill Retired Encounters FormSets");
         return fillEncountersFormSetsForSysadmin(true);
     }
 
     public String fillEncountersFormSetsForSysadmin() {
+        userTransactionController.recordTransaction("Fill Encounters FormSets For SysAdmin");
         return fillEncountersFormSetsForSysadmin(false);
     }
 

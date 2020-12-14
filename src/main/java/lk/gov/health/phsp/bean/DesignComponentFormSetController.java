@@ -86,6 +86,7 @@ public class DesignComponentFormSetController implements Serializable {
         m.put("ret", false);
         backString = "/systemAdmin/index";
         items = getFacade().findByJpql(j, m);
+        userTransactionController.recordTransaction("To Manage Institution Formssets");
         return "/designComponentFormSet/List_sys";
     }
 
@@ -137,6 +138,7 @@ public class DesignComponentFormSetController implements Serializable {
     public void importFormSet() {
         if (referanceSet == null) {
             JsfUtil.addErrorMessage("Formset to Import is NOT selected");
+            userTransactionController.recordTransaction("Import FormSet");
             return;
         }
         if (institution == null) {

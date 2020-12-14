@@ -61,6 +61,7 @@ public class DesignComponentFormController implements Serializable {
     public String toListSystemForms(){
         String j = "select f from DesignComponentForm f where f.parentComponent.institution is null order by f.name";
         items = getFacade().findByJpql(j);
+        userTransactionController.recordTransaction("To List System Forms");
         return "/designComponentForm/List";
     }
     
