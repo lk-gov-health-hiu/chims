@@ -36,15 +36,17 @@
         <ui:composition template="/webUser/index.xhtml">
             <ui:define name="webUserContents">
                 <h:form id="userListForm" >
-                    <p:dataTable id="userListTab" var="item" value="#{webUserController.items}" selectionMode="single" selection="#{webUserController.current}" rowKey="#{item.id}"
+                    <p:dataTable id="userListTab" var="item" value="#{webUserController.items}"
+                                 rows="10"
+                                 selectionMode="single" selection="#{webUserController.current}" rowKey="#{item.id}"
                                  paginator="true"                                 
                                  rowsPerPageTemplate="10,20,25">
                         <f:facet name="header">
                             User List
                         </f:facet>
 
-                        <p:ajax event="rowSelect"   update="editButton"/>
-                        <p:ajax event="rowUnselect" update="editButton"/>
+                        <p:ajax event="rowSelect"   update="editButton logAsButton chgPasswordButton privilegesButton"/>
+                        <p:ajax event="rowUnselect" update="editButton  logAsButton chgPasswordButton privilegesButton"/>
 
                         <p:column sortBy="#{item.person.name}" filterBy="#{item.person.name}" filterMatchMode="contains">
                             <f:facet name="header">
