@@ -27,6 +27,7 @@ package lk.gov.health.phsp.bean;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import javax.ejb.EJB;
 import javax.inject.Named;
 import javax.enterprise.context.ApplicationScoped;
@@ -96,7 +97,38 @@ public class ApplicationController {
         return phn;
     }
 
-     public String createNewPersonalHealthNumberRandomly(Institution pins) {
+    public String createNewPersonalHealthNumberformat(Institution pins) {
+        if (pins == null) {
+            return null;
+        }
+        Institution ins = getInstitutionFacade().find(pins.getId());
+        if (ins == null) {
+            return null;
+        }
+        String alpha = "BCDFGHJKMPQRTVWXY";
+        String numeric = "23456789";
+        String alphanum = alpha + numeric;
+        
+        StringBuilder sb = new StringBuilder();
+        Random random = new Random();
+   
+        int length = 6;
+        for(int i = 0; i < length; i++) {
+        int index = random.nextInt(alphanum.length());
+        char randomChar = alphanum.charAt(index);
+        sb.append(randomChar);
+        }
+        
+        String randomString = sb.toString();
+        
+        String poi = ins.getPoiNumber();
+        String checkDigit = calculateCheckDigit(poi + randomString);
+        String phn = poi + randomString + checkDigit;
+
+        return phn;
+    }
+     
+    public String createNewPersonalHealthNumberRandomly(Institution pins) {
         if (pins == null) {
             return null;
         }
@@ -107,14 +139,14 @@ public class ApplicationController {
         
         
         String hex;
-        Double maxDbl = Math.pow(16, 6);
+        Double maxDbl = Math.pow(16, 7);
         long leftLimit = 1L;
         long rightLimit = maxDbl.longValue();
         long generatedLong = leftLimit + (long) (Math.random() * (rightLimit - leftLimit));
         hex = Long.toHexString(generatedLong);
 
-        hex = "000000" + hex; 
-        hex = hex.substring(hex.length()-6, hex.length());
+        hex = "0000000" + hex; 
+        hex = hex.substring(hex.length()-7, hex.length());
 
         
         
@@ -129,7 +161,7 @@ public class ApplicationController {
         }while(creationFailed);
         
         return phn;
-    }
+}
 
     private boolean savePhn(String phn, Institution poi) {
         try {
