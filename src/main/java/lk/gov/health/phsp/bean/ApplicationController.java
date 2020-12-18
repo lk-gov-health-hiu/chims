@@ -33,10 +33,12 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import lk.gov.health.phsp.entity.Institution;
 import lk.gov.health.phsp.entity.Item;
+import lk.gov.health.phsp.entity.Phn;
 import lk.gov.health.phsp.entity.QueryComponent;
 import lk.gov.health.phsp.enums.InstitutionType;
 import lk.gov.health.phsp.enums.WebUserRole;
 import lk.gov.health.phsp.facade.InstitutionFacade;
+import lk.gov.health.phsp.facade.PhnFacade;
 import lk.gov.health.phsp.facade.QueryComponentFacade;
 // </editor-fold>
 
@@ -94,6 +96,51 @@ public class ApplicationController {
         return phn;
     }
 
+     public String createNewPersonalHealthNumberRandomly(Institution pins) {
+        if (pins == null) {
+            return null;
+        }
+        Institution ins = getInstitutionFacade().find(pins.getId());
+        if (ins == null) {
+            return null;
+        }
+        
+        
+        String hex;
+        Double maxDbl = Math.pow(16, 6);
+        long leftLimit = 1L;
+        long rightLimit = maxDbl.longValue();
+        long generatedLong = leftLimit + (long) (Math.random() * (rightLimit - leftLimit));
+        hex = Long.toHexString(generatedLong);
+
+        hex = "000000" + hex; 
+        hex = hex.substring(hex.length()-6, hex.length());
+
+        
+        
+        String poi = ins.getPoiNumber();
+        String checkDigit = calculateCheckDigit(poi + hex);
+        String phn = poi + hex + checkDigit;
+        
+
+        boolean creationFailed;
+        do{
+            creationFailed = !savePhn(phn, ins);
+        }while(creationFailed);
+        
+        return phn;
+    }
+
+    private boolean savePhn(String phn, Institution poi) {
+        try {
+            Phn p = new Phn(phn, poi);
+            phnFacade.create(p);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+}
+    
     public static boolean validateHin(String validatingHin) {
         if (validatingHin == null) {
             return false;
