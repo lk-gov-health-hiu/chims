@@ -31,6 +31,7 @@ import javax.ejb.EJB;
 import javax.inject.Named;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import lk.gov.health.phsp.entity.Area;
 import lk.gov.health.phsp.entity.Institution;
 import lk.gov.health.phsp.entity.Item;
 import lk.gov.health.phsp.entity.QueryComponent;
@@ -57,6 +58,9 @@ public class ApplicationController {
 // </editor-fold>    
     @Inject
     private UserTransactionController userTransactionController;
+
+    @Inject
+    private ClientController clientController;
 // <editor-fold defaultstate="collapsed" desc="Class Variables">
     private boolean demoSetup = false;
     private boolean production = true;
@@ -65,12 +69,20 @@ public class ApplicationController {
     private List<Item> items;
     private List<String> userTransactionTypes;
     private List<Institution> institutions;
+    private List<Area> gnAreas;
 
 // </editor-fold>
     public ApplicationController() {
     }
 
     // <editor-fold defaultstate="collapsed" desc="Functions">
+    public List<Area> getGnAreas(String qry) {
+        if (gnAreas == null) {
+            this.setGnAreas(clientController.getGnAreasForTheSelectedClient(qry));
+        }
+        return gnAreas;        
+    }
+
     public String createNewPersonalHealthNumber(Institution pins) {
         if (pins == null) {
             return null;
@@ -169,7 +181,7 @@ public class ApplicationController {
     public boolean isDemoSetup() {
         return demoSetup;
     }
-    
+
     
 
     public void setDemoSetup(boolean demoSetup) {
@@ -231,4 +243,11 @@ public class ApplicationController {
         this.production = production;
     }
 
+    public List<Area> getGnAreas() {
+        return gnAreas;
+    }
+
+    public void setGnAreas(List<Area> gnAreas) {
+        this.gnAreas = gnAreas;
+    }
 }

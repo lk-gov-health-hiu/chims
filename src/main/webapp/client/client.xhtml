@@ -329,7 +329,7 @@
 
                             <p:outputLabel value="GN Area:" for="gn" />
                             <p:autoComplete id="gn" value="#{clientController.selected.person.gnArea}"
-                                            completeMethod="#{clientController.getGnAreasForTheSelectedClient}"
+                                            completeMethod="#{applicationController.getGnAreas}"
                                             var="gn" itemLabel="#{gn.name}" itemValue="#{gn}"
                                             maxResults="15" forceSelection="true" placeholder="Not Known"
                                             minQueryLength="3">
