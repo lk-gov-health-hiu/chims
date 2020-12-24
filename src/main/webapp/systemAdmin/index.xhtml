@@ -22,7 +22,8 @@
                             <p:tab title="Metadata" >
                                 <p:panelGrid columns="1" >
                                     <p:commandButton ajax="false" action="/item/List" value="Manage Dictionaty" ></p:commandButton>
-                                    <p:commandButton ajax="false" action="/designComponentFormSet/List" value="Fromset Management" ></p:commandButton>
+                                    <p:commandButton ajax="false" action="#{designComponentFormSetController.toManageSystemFormssets()}" 
+                                                     value="Fromset Management" ></p:commandButton>
                                     <p:commandButton ajax="false" action="/systemAdmin/import_form_sets" value="Import Forms" ></p:commandButton>
                                     <p:commandButton ajax="false" action="#{designComponentFormSetController.toManageInstitutionFormssets()}" value="Manage Forms" ></p:commandButton>
                                 </p:panelGrid>

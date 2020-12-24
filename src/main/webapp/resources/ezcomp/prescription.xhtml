@@ -61,17 +61,7 @@
                         <p:ajax  event="blur" process="@this"   listener="#{clientEncounterComponentItemController.save(ii)}" ></p:ajax>
                     </p:selectOneMenu>
                 </td>
-                <td>
-                    <p:inputText  style="width: 50px;" value="#{ii.prescriptionValue.issueQuantity}" placeholder="issue qty" ></p:inputText>
-                </td>
-                <td>
-                    <p:selectOneMenu id="issueUnit" value="#{ii.prescriptionValue.issueUnit}" >
-                        <f:selectItem itemLabel="Select Issue Qty Unit" ></f:selectItem>
-                        <f:selectItems value="#{itemController.findItemListByCode('measurement_unit_issue_quantity')}" var="li"
-                                       itemLabel="#{li.name}" itemValue="#{li}" ></f:selectItems>
-                        <p:ajax  event="blur" process="@this"   listener="#{clientEncounterComponentItemController.save(ii)}" ></p:ajax>
-                    </p:selectOneMenu>
-                </td>
+                
             </tr>
         </table>
 
