@@ -7,9 +7,11 @@
       xmlns:f="http://xmlns.jcp.org/jsf/core">
 
     <body>
+        
+        <ui:composition template="/webUser/index.xhtml">
 
-        <ui:composition template="./../template.xhtml">
-            <ui:define name="content">                
+            <ui:define name="webUserContents">
+                
         <p:panel style="height: 100%; text-align: center;" 
                  rendered="#{!webUserController.loggedUser.systemAdministrator}">
             <h1>You are NOT authorized</h1>
