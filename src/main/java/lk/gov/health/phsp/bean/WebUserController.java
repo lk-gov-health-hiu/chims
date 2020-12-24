@@ -89,6 +89,8 @@ public class WebUserController implements Serializable {
     ExcelReportController reportController;
     @Inject
     private UserTransactionController userTransactionController;
+    @Inject
+    private ApplicationController applicationController;
 
     /*
     Variables
@@ -585,7 +587,7 @@ public class WebUserController implements Serializable {
         if (assumedPrivileges == null) {
             loggedUserPrivileges = userPrivilegeList(loggedUser);
         }
-//        prepareDashboards();
+        prepareDashboards();
         JsfUtil.addSuccessMessage("Successfully Logged");
         userTransactionController.recordTransaction("Successful Login");
         return "/index";
@@ -611,25 +613,23 @@ public class WebUserController implements Serializable {
     }
 
     public String toHome() {
-//        prepareDashboards();
+        prepareDashboards();
         userTransactionController.recordTransaction("To Home-Dashboard");
         return "/index";
     }
 
     public void prepareSysAdminDashboard() {
-        totalNumberOfRegisteredClients = clientController.countOfRegistedClients(null, null);
-        totalNumberOfClinicEnrolments = encounterController.countOfEncounters(null, EncounterType.Clinic_Enroll);
-        totalNumberOfClinicVisits = encounterController.countOfEncounters(null, EncounterType.Clinic_Visit);
-        totalNumberOfCvsRiskClients = reportController.findClientCountEncounterComponentItemMatchCount(
-                null, CommonController.startOfTheYear(), new Date(), riskVariable, riskVals);
+        totalNumberOfRegisteredClients = applicationController.getTotalNumberOfRegisteredClientsForAdmin();
+        totalNumberOfClinicEnrolments = applicationController.getTotalNumberOfClinicEnrolmentsForAdmin();
+        totalNumberOfClinicVisits = applicationController.getTotalNumberOfClinicVisitsForAdmin();
+        totalNumberOfCvsRiskClients = applicationController.getTotalNumberOfCvsRiskClientsForAdmin();
     }
 
     public void prepareMeAdminDashboard() {
-        totalNumberOfRegisteredClients = clientController.countOfRegistedClients(null, null);
-        totalNumberOfClinicEnrolments = encounterController.countOfEncounters(null, EncounterType.Clinic_Enroll);
-        totalNumberOfClinicVisits = encounterController.countOfEncounters(null, EncounterType.Clinic_Visit);
-        totalNumberOfCvsRiskClients = reportController.findClientCountEncounterComponentItemMatchCount(
-                null, CommonController.startOfTheYear(), new Date(), riskVariable, riskVals);
+        totalNumberOfRegisteredClients = applicationController.getTotalNumberOfRegisteredClientsForAdmin();
+        totalNumberOfClinicEnrolments = applicationController.getTotalNumberOfClinicEnrolmentsForAdmin();
+        totalNumberOfClinicVisits = applicationController.getTotalNumberOfClinicVisitsForAdmin();
+        totalNumberOfCvsRiskClients = applicationController.getTotalNumberOfCvsRiskClientsForAdmin();
     }
 
     public void prepareInsAdminDashboard() {
