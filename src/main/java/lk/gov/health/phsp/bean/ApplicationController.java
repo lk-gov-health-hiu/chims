@@ -24,6 +24,7 @@
 package lk.gov.health.phsp.bean;
 
 // <editor-fold defaultstate="collapsed" desc="Import">
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,8 +36,10 @@ import lk.gov.health.phsp.entity.Area;
 import lk.gov.health.phsp.entity.Institution;
 import lk.gov.health.phsp.entity.Item;
 import lk.gov.health.phsp.entity.QueryComponent;
+import lk.gov.health.phsp.enums.AreaType;
 import lk.gov.health.phsp.enums.InstitutionType;
 import lk.gov.health.phsp.enums.WebUserRole;
+import lk.gov.health.phsp.facade.AreaFacade;
 import lk.gov.health.phsp.facade.InstitutionFacade;
 import lk.gov.health.phsp.facade.QueryComponentFacade;
 // </editor-fold>
@@ -51,6 +54,8 @@ public class ApplicationController {
 
 // <editor-fold defaultstate="collapsed" desc="EJBs">
     @EJB
+    private AreaFacade areaFacade;
+    @EJB
     private InstitutionFacade institutionFacade;
     @EJB
     private QueryComponentFacade queryComponentFacade;
@@ -59,8 +64,6 @@ public class ApplicationController {
     @Inject
     private UserTransactionController userTransactionController;
 
-    @Inject
-    private ClientController clientController;
 // <editor-fold defaultstate="collapsed" desc="Class Variables">
     private boolean demoSetup = false;
     private boolean production = true;
@@ -69,7 +72,7 @@ public class ApplicationController {
     private List<Item> items;
     private List<String> userTransactionTypes;
     private List<Institution> institutions;
-    private List<Area> gnAreas;
+    private List<Area> gnAreas = new ArrayList<>();
 
 // </editor-fold>
     public ApplicationController() {
@@ -78,7 +81,7 @@ public class ApplicationController {
     // <editor-fold defaultstate="collapsed" desc="Functions">
     public List<Area> getGnAreas(String qry) {
         if (gnAreas == null) {
-            this.setGnAreas(clientController.getGnAreasForTheSelectedClient(qry));
+            this.setGnAreas(getAllGnAreas(qry));
         }
         return gnAreas;        
     }
@@ -145,6 +148,25 @@ public class ApplicationController {
         /* convert to string to be easier to take the last digit */
         digit = sum + "";
         return digit.substring(digit.length() - 1);
+    }
+    
+    public List<Area> getAllGnAreas(String qry) {
+        String j;
+        Map m = new HashMap();
+        j = "select a "
+                + " from Area a "
+                + " where a.name is not null "
+                + " and a.type=:t";
+            
+        m.put("t", AreaType.GN);
+        
+        if (qry != null) {
+            j += " and lower(a.name) like :qry ";
+            m.put("qry", "%" + qry.toLowerCase() + "%");
+        }
+        
+        j += " order by a.name";
+        return getAreaFacade().findByJpql(j, m);
     }
 
     private List<QueryComponent> findQueryComponents() {
@@ -249,5 +271,13 @@ public class ApplicationController {
 
     public void setGnAreas(List<Area> gnAreas) {
         this.gnAreas = gnAreas;
+    }
+
+    public AreaFacade getAreaFacade() {
+        return areaFacade;
+    }
+
+    public void setAreaFacade(AreaFacade areaFacade) {
+        this.areaFacade = areaFacade;
     }
 }
