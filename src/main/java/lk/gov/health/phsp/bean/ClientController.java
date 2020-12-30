@@ -540,7 +540,7 @@ public class ClientController implements Serializable {
             }
         }
         userTransactionController.recordTransaction("Update Client Date Of Birth");
-    }
+    }   
 
     public Long countOfRegistedClients(Institution ins, Area gn) {
         String j = "select count(c) from Client c "
@@ -1158,6 +1158,7 @@ public class ClientController implements Serializable {
         }
         encounter.setEncounterNumber(encounterController.createClinicEnrollNumber(selectedClinic));
         encounter.setCompleted(false);
+        applicationController.setTotalNumberOfClinicEnrolmentsForAdmin(applicationController.getTotalNumberOfClinicEnrolmentsForAdmin()+1);
         encounterFacade.create(encounter);
         JsfUtil.addSuccessMessage(selected.getPerson().getNameWithTitle() + " was Successfully Enrolled in " + selectedClinic.getName() + "\nThe Clinic number is " + encounter.getEncounterNumber());
         selectedClientsClinics = null;
@@ -1676,7 +1677,10 @@ public class ClientController implements Serializable {
             }
             selected.setCreateInstitution(createdIns);
         }
-        saveClient(selected);
+        if (selected.getId() == null) {
+            applicationController.setTotalNumberOfRegisteredClientsForAdmin(applicationController.getTotalNumberOfRegisteredClientsForAdmin() + 1);
+        }
+        saveClient(selected);        
         JsfUtil.addSuccessMessage("Saved.");
         return toClientProfile();
     }

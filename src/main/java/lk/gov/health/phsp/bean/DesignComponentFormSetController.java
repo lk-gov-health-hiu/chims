@@ -89,6 +89,19 @@ public class DesignComponentFormSetController implements Serializable {
         userTransactionController.recordTransaction("To Manage Institution Formssets");
         return "/designComponentFormSet/List_sys";
     }
+    
+    public String toManageSystemFormssets(){
+        String j = "Select s from DesignComponentFormSet s "
+                + " where s.retired=:ret "
+                + " and s.institution is null"
+                + " order by s.name";
+        Map m = new HashMap();
+        m.put("ret", false);
+        backString = "/systemAdmin/index";
+        items = getFacade().findByJpql(j, m);
+        userTransactionController.recordTransaction("To Manage System Formssets");
+        return "/designComponentFormSet/List";
+    }
 
     // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="Main Functions">
@@ -192,6 +205,61 @@ public class DesignComponentFormSetController implements Serializable {
 
     }
 
+    
+    
+  public void duplicateFormSet() {
+        if (referanceSet == null) {
+            JsfUtil.addErrorMessage("Formset to Import is NOT selected");
+            userTransactionController.recordTransaction("Import FormSet");
+            return;
+        }
+        DesignComponentFormSet ns = (DesignComponentFormSet) SerializationUtils.clone(referanceSet);
+        ns.setId(null);
+        ns.setCreatedAt(new Date());
+        ns.setCreatedBy(webUserController.getLoggedUser());
+        ns.setLastEditBy(null);
+        ns.setLastEditeAt(null);
+        ns.setReferenceComponent(referanceSet);
+        ns.setInstitution(null);
+        getFacade().create(ns);
+
+        for (DesignComponentForm f : designComponentFormController.fillFormsofTheSelectedSet(referanceSet)) {
+            DesignComponentForm nf = (DesignComponentForm) SerializationUtils.clone(f);
+            nf.setId(null);
+            nf.setCreatedAt(new Date());
+            nf.setCreatedBy(webUserController.getLoggedUser());
+            nf.setLastEditBy(null);
+            nf.setLastEditeAt(null);
+            nf.setReferenceComponent(f);
+            nf.setParentComponent(ns);
+            nf.setInstitution(institution);
+            designComponentFormController.save(nf);
+
+            for (DesignComponentFormItem i : designComponentFormItemController.fillItemsOfTheForm(f)) {
+
+                DesignComponentFormItem ni = (DesignComponentFormItem) SerializationUtils.clone(i);
+                ni.setId(null);
+                ni.setCreatedAt(new Date());
+                ni.setCreatedBy(webUserController.getLoggedUser());
+                ni.setLastEditBy(null);
+                ni.setLastEditeAt(null);
+                ni.setReferenceComponent(i);
+                ni.setParentComponent(nf);
+                ni.setInstitution(institution);
+                designComponentFormItemController.saveItem(ni);
+
+            }
+        }
+        insItems = null;
+        referanceSet = null;
+        institution = null;
+        JsfUtil.addSuccessMessage("Formset Successfully Duplicated.");
+        userTransactionController.recordTransaction("Duplicate Formset");
+
+    }
+
+      
+    
     public void setBackStringToSysAdmin() {
         backString = "/designComponentFormSet/List";
     }

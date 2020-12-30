@@ -65,8 +65,13 @@
                                                     forceSelection="true" maxResults="15" minQueryLength="3">
                                     </p:autoComplete>
                                     <f:facet name="footer">
-                                        <p:commandButton id="btnImport" value="Save" ajax="false"
+                                        <p:commandButton id="btnImport" value="Import" ajax="false"
                                                          action="#{designComponentFormSetController.importFormSet()}"
+                                                         process="refSet forIns btnImport" update="datalist refSet forIns" 
+                                                         style="float: right;">
+                                        </p:commandButton>
+                                         <p:commandButton id="btnDup" value="Duplicate" ajax="false"
+                                                          action="#{designComponentFormSetController.duplicateFormSet()}"
                                                          process="refSet forIns btnImport" update="datalist refSet forIns" 
                                                          style="float: right;">
                                         </p:commandButton>
