@@ -28,6 +28,9 @@
                 <p:submenu label="Clients" rendered="#{webUserController.hasPrivilege('Client_Management')}" >
                     <p:menuitem ajax="false" value="Search by IDs" action="#{clientController.toSearchClientById()}" />
                     <p:menuitem ajax="false" value="Register New" action="#{clientController.toAddNewClient()}"  />
+                    <p:menuitem ajax="false" value="Reserver PHN" 
+                                action="#{clientController.toReserverPhn()}"  />
+
                 </p:submenu>
 
 
@@ -40,7 +43,7 @@
                 </p:submenu>
 
 
-<!--//Disabled the Menu-->
+                <!--//Disabled the Menu-->
                 <p:submenu label="Institution Administration"  
                            rendered="#{webUserController.hasPrivilege('Institution_Administration')}"  >
                     <p:menuitem value="Manage Users" 
@@ -51,7 +54,7 @@
                     <p:menuitem value="Manage Metadata" action="/insAdmin/data_index"   ajax="false"  />
                 </p:submenu>
 
-<!--//Disabled the Menu-->
+                <!--//Disabled the Menu-->
                 <p:submenu label="System Administration"  rendered="#{webUserController.hasPrivilege('System_Administration')}"  >
                     <p:menuitem value="Manage Users" action="#{webUserController.toManageAllUsers()}"  ajax="false" />
                     <p:menuitem value="Manage Institutions" action="/institution/index"     ajax="false" />
@@ -80,7 +83,7 @@
 
                 <f:facet name="options">
                     <p:inputText autocomplete="off"
-                        value="#{clientController.searchingId}"/>
+                                 value="#{clientController.searchingId}"/>
                     <p:commandButton ajax="false" action="#{clientController.searchByAnyId()}" icon="ui-icon-search" ></p:commandButton>
                     <p:spacer height="1" width="5" ></p:spacer>
                     <p:outputLabel value="|"></p:outputLabel>
@@ -103,6 +106,8 @@
                 <p:submenu label="Clients" rendered="#{webUserController.hasPrivilege('Client_Management')}" >
                     <p:menuitem ajax="false" value="Search by IDs" action="#{clientController.toSearchClientById()}" />
                     <p:menuitem ajax="false" value="Register New" action="#{clientController.toAddNewClient()}"  />
+                    <p:menuitem ajax="false" value="Reserver PHN" 
+                                action="#{clientController.toReserverPhn()}"  />
                 </p:submenu>
 
 
@@ -114,7 +119,7 @@
                 </p:submenu>
 
 
-<!--//Disabled the Menu-->
+                <!--//Disabled the Menu-->
                 <p:submenu label="Institution Administration"  
                            rendered="#{webUserController.hasPrivilege('Institution_Administration')}"  >
                     <p:menuitem value="Manage Users" 
@@ -125,7 +130,7 @@
                     <p:menuitem value="Manage Metadata" action="/insAdmin/data_index"   ajax="false"  />
                 </p:submenu>
 
-<!--//Disabled the Menu-->
+                <!--//Disabled the Menu-->
                 <p:submenu label="System Administration"  rendered="#{webUserController.hasPrivilege('System_Administration')}"  >
                     <p:menuitem value="Manage Users" action="#{webUserController.toManageAllUsers()}"  ajax="false" />
                     <p:menuitem value="Manage Institutions" action="/institution/index"     ajax="false" />

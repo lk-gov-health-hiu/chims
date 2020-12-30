@@ -45,14 +45,15 @@
 
                             <p:outputLabel value="PHN No.:" for="phn" />
                             <h:panelGroup >
-                                <p:inputText id="phn" required="true"  autocomplete="off" 
-                                             value="#{clientController.selected.phn}" title="Phn" >
+                                <p:inputText id="phn"  autocomplete="off" 
+                                             value="#{clientController.selected.phn}" title="Phn"
+                                             placeholder="Generate New PHN">
                                     <f:ajax event="change" execute="@this" render="phnExists" listener="#{clientController.checkPhnExists}" ></f:ajax>
                                 </p:inputText>
-                                <p:commandLink value="Generate" 
+<!--                                <p:commandLink value="Generate" 
                                                action="#{clientController.generateAndAssignNewPhn}" 
                                                process="@this" 
-                                               update="phn" ></p:commandLink><br ></br>
+                                               update="phn" ></p:commandLink><br ></br>-->
 
                                 <h:panelGroup id="phnExists" >
                                     <p:commandLink value="Already Exists, Click to see" 

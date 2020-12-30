@@ -110,6 +110,7 @@ public class ClientController implements Serializable {
     private YearMonthDay yearMonthDay;
     private Institution selectedClinic;
     private int profileTabActiveIndex;
+    private Integer numberOfPhnToReserve;
     private boolean goingToCaptureWebCamPhoto;
     private UploadedFile file;
     private Date clinicDate;
@@ -159,6 +160,11 @@ public class ClientController implements Serializable {
         selectedClientsLastFiveClinicVisits = null;
         userTransactionController.recordTransaction("To Client Profile");
         return "/client/profile";
+    }
+
+    public String toReserverPhn() {
+        numberOfPhnToReserve = 0;
+        return "/client/reserve_phn";
     }
 
     public String toAddNewClient() {
@@ -271,13 +277,14 @@ public class ClientController implements Serializable {
         }
     }
 
-    public void clearRegisterNewExistsValues(){
+    public void clearRegisterNewExistsValues() {
         phnExists = false;
         nicExists = false;
         emailExists = false;
         phone1Exists = false;
         ssNumberExists = false;
     }
+
     public void clearExistsValues() {
         phnExists = false;
         nicExists = false;
@@ -322,7 +329,7 @@ public class ClientController implements Serializable {
         selectedClients = listPatientsByNic(nic);
         if (selectedClients.size() > 0) {
             String old_phn = selectedClients.get(0).getPhn();
-            return old_phn == null ? phn == null : old_phn.equals(phn);            
+            return old_phn == null ? phn == null : old_phn.equals(phn);
         }
         return false;
     }
@@ -1166,7 +1173,7 @@ public class ClientController implements Serializable {
         }
         encounter.setEncounterNumber(encounterController.createClinicEnrollNumber(selectedClinic));
         encounter.setCompleted(false);
-        applicationController.setTotalNumberOfClinicEnrolmentsForAdmin(applicationController.getTotalNumberOfClinicEnrolmentsForAdmin()+1);
+        applicationController.setTotalNumberOfClinicEnrolmentsForAdmin(applicationController.getTotalNumberOfClinicEnrolmentsForAdmin() + 1);
         encounterFacade.create(encounter);
         JsfUtil.addSuccessMessage(selected.getPerson().getNameWithTitle() + " was Successfully Enrolled in " + selectedClinic.getName() + "\nThe Clinic number is " + encounter.getEncounterNumber());
         selectedClientsClinics = null;
@@ -1191,17 +1198,7 @@ public class ClientController implements Serializable {
             JsfUtil.addErrorMessage("A Point of Issue is NOT assigned to your Institution. Please discuss with the System Administrator.");
             return;
         }
-//        selected.setPhn(applicationController.createNewPersonalHealthNumber(poiIns));
         selected.setPhn(applicationController.createNewPersonalHealthNumberformat(poiIns));
-
-        if (webUserController.getLoggedUser().getInstitution().getPoiInstitution() != null) {
-            webUserController.getLoggedUser().getInstitution().setPoiInstitution(institutionController.getInstitutionById(webUserController.getLoggedUser().getInstitution().getPoiInstitution().getId()));
-//            //System.out.println(webUserController.getLoggedUser().getInstitution().getPoiInstitution().getLastHin());
-        } else {
-            webUserController.getLoggedUser().setInstitution(institutionController.getInstitutionById(webUserController.getLoggedUser().getInstitution().getId()));
-//            //System.out.println("Last HIN Case 2 = " + webUserController.getLoggedUser().getInstitution().getLastHin());
-        }
-
     }
 
     public String generateNewPhn(Institution ins) {
@@ -1686,20 +1683,39 @@ public class ClientController implements Serializable {
             selected.setCreateInstitution(createdIns);
         }
 
+        if (selected.getPhn() == null) {
+            generateAndAssignNewPhn();
+            int count = 0;
+            while (checkPhnExists(searchingId, null)) {
+                generateAndAssignNewPhn();
+                count++;
+                if (count > 100) {
+                    JsfUtil.addErrorMessage("Generating New PHN Failed. Client NOT saved. Please contact System Administrator.");
+                }
+            }
+        }
+
         if (selected.getId() == null) {
             if (checkPhnExists(selected.getPhn(), null)) {
                 JsfUtil.addErrorMessage("PHN already exists.");
                 return null;
             }
-            if (checkNicExists(selected.getPerson().getNic(), null)) {
-                JsfUtil.addErrorMessage("NIC already exists.");
-                return null;
+            if (selected.getPerson().getNic() != null && !selected.getPerson().getNic().trim().equals("")) {
+
+                if (checkNicExists(selected.getPerson().getNic(), null)) {
+                    JsfUtil.addErrorMessage("NIC already exists.");
+                    return null;
+                }
             }
             applicationController.setTotalNumberOfRegisteredClientsForAdmin(applicationController.getTotalNumberOfRegisteredClientsForAdmin() + 1);
         } else {
-            if (selected.getPhn()!=null && checkNicExists(selected.getPerson().getNic(), null)) {
-                if (!checkPhnChangedForNic(selected.getPhn(), selected.getPerson().getNic())) {
-                    JsfUtil.addErrorMessage("A PHN already exists for the given NIC.");
+            if (checkPhnExists(selected.getPhn(), selected)) {
+                JsfUtil.addErrorMessage("PHN already exists.");
+                return null;
+            }
+            if (selected.getPerson().getNic() != null && !selected.getPerson().getNic().trim().equals("")) {
+                if (checkNicExists(selected.getPerson().getNic(), selected)) {
+                    JsfUtil.addErrorMessage("NIC already exists.");
                     return null;
                 }
             }
@@ -1707,6 +1723,31 @@ public class ClientController implements Serializable {
         saveClient(selected);
         JsfUtil.addSuccessMessage("Saved.");
         return toClientProfile();
+    }
+
+    public void reserverPhn() {
+        Institution createdIns;
+
+        if (webUserController.getLoggedUser().getInstitution().getPoiInstitution() != null) {
+            createdIns = webUserController.getLoggedUser().getInstitution().getPoiInstitution();
+        } else {
+            createdIns = webUserController.getLoggedUser().getInstitution();
+        }
+       
+        if(createdIns==null){
+            JsfUtil.addErrorMessage("No POI");
+            return ;
+        }
+
+        if(numberOfPhnToReserve==null){
+            JsfUtil.addErrorMessage("No Numner of PHN to add");
+            return ;
+        }
+        
+        for(int i=0; i > numberOfPhnToReserve ; i++){
+            
+        }
+       
     }
 
     public String saveClient(Client c) {
@@ -2215,7 +2256,7 @@ public class ClientController implements Serializable {
 
     public List<Encounter> getSelectedClientsLastFiveClinicVisits() {
         if (selectedClientsLastFiveClinicVisits == null) {
-            selectedClientsLastFiveClinicVisits = fillEncounters(selected, InstitutionType.Clinic, EncounterType.Clinic_Visit, true,5);
+            selectedClientsLastFiveClinicVisits = fillEncounters(selected, InstitutionType.Clinic, EncounterType.Clinic_Visit, true, 5);
 
         }
         return selectedClientsLastFiveClinicVisits;
@@ -2239,6 +2280,14 @@ public class ClientController implements Serializable {
 
     public void setPhone1Exists(Boolean phone1Exists) {
         this.phone1Exists = phone1Exists;
+    }
+
+    public Integer getNumberOfPhnToReserve() {
+        return numberOfPhnToReserve;
+    }
+
+    public void setNumberOfPhnToReserve(Integer numberOfPhnToReserve) {
+        this.numberOfPhnToReserve = numberOfPhnToReserve;
     }
 
     // </editor-fold>

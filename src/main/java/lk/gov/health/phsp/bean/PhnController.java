@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+
 package lk.gov.health.phsp.bean;
 
 // <editor-fold defaultstate="collapsed" desc="Imports">
@@ -41,10 +42,12 @@ import lk.gov.health.phsp.entity.Institution;
 import lk.gov.health.phsp.entity.Phn;
 import lk.gov.health.phsp.facade.PhnFacade;
 // </editor-fold>
+
 /**
  *
  * @author rush
  */
+
 
 @Named
 @SessionScoped
@@ -124,4 +127,6 @@ public class PhnController implements Serializable {
     
     // </editor-fold>
 
+
 }
+

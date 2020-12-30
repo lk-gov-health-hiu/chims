@@ -1,7 +1,6 @@
 /*
  * The MIT License
  *
- * Copyright 2020 rush.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,16 +22,25 @@
  */
 package lk.gov.health.phsp.facade;
 
+
 // <editor-fold defaultstate="collapsed" desc="Imports">
+
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import lk.gov.health.phsp.entity.Area;
 import lk.gov.health.phsp.entity.Phn;
+
 // </editor-fold>
 /**
  *
  * @author rush
+=======
+
+/**
+ *
+ * @author Dr M H B Ariyaratne<buddhika.ari@gmail.com>
+>>>>>>> 645e03c4ac7494d724072107f50aa7f8ab948f37
  */
 @Stateless
 public class PhnFacade extends AbstractFacade<Phn> {

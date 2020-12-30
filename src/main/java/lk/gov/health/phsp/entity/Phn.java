@@ -1,7 +1,6 @@
 /*
  * The MIT License
  *
- * Copyright 2020 rush.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -35,7 +34,6 @@ import javax.persistence.OneToOne;
 
 /**
  *
- * @author rush
  */
 @Entity
 public class Phn implements Serializable {
@@ -45,7 +43,8 @@ public class Phn implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     
-    @Column(length = 11,unique = true,updatable = false,nullable = false)
+
+    @Column(length = 12,unique = true,updatable = false,nullable = false)
     private String phnNumber;
     
     @ManyToOne(fetch = FetchType.LAZY)

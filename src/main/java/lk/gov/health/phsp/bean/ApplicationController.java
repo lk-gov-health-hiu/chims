@@ -73,7 +73,8 @@ public class ApplicationController {
     private EncounterFacade encounterFacade;
     @EJB
     private ClientEncounterComponentItemFacade clientEncounterComponentItemFacade;    
-
+    @EJB
+    PhnFacade phnFacade;
 // </editor-fold>    
     @Inject
     private UserTransactionController userTransactionController;
@@ -132,6 +133,7 @@ public class ApplicationController {
         return phn;
     }
 
+
     public String createNewPersonalHealthNumberformat(Institution pins) {
         if (pins == null) {
             return null;
@@ -163,6 +165,7 @@ public class ApplicationController {
         return phn;
     }
      
+
     public String createNewPersonalHealthNumberRandomly(Institution pins) {
         if (pins == null) {
             return null;
@@ -196,7 +199,9 @@ public class ApplicationController {
         }while(creationFailed);
         
         return phn;
-}
+
+    }
+
 
     private boolean savePhn(String phn, Institution poi) {
         try {
@@ -206,8 +211,10 @@ public class ApplicationController {
         } catch (Exception e) {
             return false;
         }
-}
-    
+
+    }
+
+
     public static boolean validateHin(String validatingHin) {
         if (validatingHin == null) {
             return false;
