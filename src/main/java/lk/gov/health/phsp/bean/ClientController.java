@@ -265,7 +265,7 @@ public class ClientController implements Serializable {
             return areas;
         }
         if (selected.getPerson().getDsArea() == null) {
-            return areaController.getAreas(AreaType.GN, null, null, qry);
+            return applicationController.getAllGnAreas(qry);
         } else {
             return areaController.getAreas(AreaType.GN, selected.getPerson().getDsArea(), null, qry);
         }
