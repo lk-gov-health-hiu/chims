@@ -316,7 +316,15 @@ public class ClientController implements Serializable {
         } else {
             return true;
         }
+    }
 
+    public Boolean checkPhnChangedForNic(String phn, String nic) {
+        selectedClients = listPatientsByNic(nic);
+        if (selectedClients.size() > 0) {
+            String old_phn = selectedClients.get(0).getPhn();
+            return old_phn == null ? phn == null : old_phn.equals(phn);            
+        }
+        return false;
     }
 
     public void checkNicExists() {
@@ -355,7 +363,7 @@ public class ClientController implements Serializable {
         }
 
     }
-    
+
     public void checkEmailExists() {
         emailExists = null;
         if (selected == null) {
@@ -372,7 +380,7 @@ public class ClientController implements Serializable {
         }
         emailExists = checkEmailExists(selected.getPerson().getEmail(), selected);
     }
-    
+
     public Boolean checkEmailExists(String email, Client c) {
         String jpql = "select count(c) from Client c "
                 + " where c.retired=:ret "
@@ -392,7 +400,7 @@ public class ClientController implements Serializable {
         }
 
     }
-    
+
     public void checkPhone1Exists() {
         phone1Exists = null;
         if (selected == null) {
@@ -409,7 +417,7 @@ public class ClientController implements Serializable {
         }
         phone1Exists = checkPhone1Exists(selected.getPerson().getPhone1(), selected);
     }
-    
+
     public Boolean checkPhone1Exists(String phone1, Client c) {
         String jpql = "select count(c) from Client c "
                 + " where c.retired=:ret "
@@ -429,7 +437,7 @@ public class ClientController implements Serializable {
         }
 
     }
-    
+
     public void checkSsNumberExists() {
         ssNumberExists = null;
         if (selected == null) {
@@ -446,7 +454,7 @@ public class ClientController implements Serializable {
         }
         ssNumberExists = checkSsNumberExists(selected.getPerson().getSsNumber(), selected);
     }
-    
+
     public Boolean checkSsNumberExists(String ssNumber, Client c) {
         String jpql = "select count(c) from Client c "
                 + " where c.retired=:ret "
@@ -540,7 +548,7 @@ public class ClientController implements Serializable {
             }
         }
         userTransactionController.recordTransaction("Update Client Date Of Birth");
-    }   
+    }
 
     public Long countOfRegistedClients(Institution ins, Area gn) {
         String j = "select count(c) from Client c "
@@ -1677,10 +1685,26 @@ public class ClientController implements Serializable {
             }
             selected.setCreateInstitution(createdIns);
         }
+
         if (selected.getId() == null) {
+            if (checkPhnExists(selected.getPhn(), null)) {
+                JsfUtil.addErrorMessage("PHN already exists.");
+                return null;
+            }
+            if (checkNicExists(selected.getPerson().getNic(), null)) {
+                JsfUtil.addErrorMessage("NIC already exists.");
+                return null;
+            }
             applicationController.setTotalNumberOfRegisteredClientsForAdmin(applicationController.getTotalNumberOfRegisteredClientsForAdmin() + 1);
+        } else {
+            if (selected.getPhn()!=null && checkNicExists(selected.getPerson().getNic(), null)) {
+                if (!checkPhnChangedForNic(selected.getPhn(), selected.getPerson().getNic())) {
+                    JsfUtil.addErrorMessage("A PHN already exists for the given NIC.");
+                    return null;
+                }
+            }
         }
-        saveClient(selected);        
+        saveClient(selected);
         JsfUtil.addSuccessMessage("Saved.");
         return toClientProfile();
     }
