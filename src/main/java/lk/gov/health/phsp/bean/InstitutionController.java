@@ -323,9 +323,9 @@ public class InstitutionController implements Serializable {
         if (selected.getId() == null) {
             selected.setCreatedAt(new Date());
             selected.setCreater(webUserController.getLoggedUser());
+            fillItems();
             getFacade().create(selected);
             applicationController.getInstitutions().add(selected);
-            fillItems();
             JsfUtil.addSuccessMessage("Saved");
         } else {
             selected.setEditedAt(new Date());
