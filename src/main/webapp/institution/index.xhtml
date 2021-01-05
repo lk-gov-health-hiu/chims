@@ -13,13 +13,20 @@
                     <f:facet name="header" >
                         <p:outputLabel value="Manage Institutions" ></p:outputLabel>
                     </f:facet>
-                        <h:form>
+                    <h:form>
+                        <p:panelGrid columns="1" >
                             <p:commandButton value="Add Institution" ajax="false" style="width: 15rem; margin-top:1rem;"
                                              action="#{institutionController.toAddInstitution}"></p:commandButton>
 
                             <p:commandButton value="List Institutions" ajax="false"  style="width: 15rem; margin-top:1rem;"
                                              action="#{institutionController.toListInstitutions()}"></p:commandButton>
-                        </h:form>                   
+
+                            <p:commandButton value="Import Institutions" ajax="false" 
+                                             style="width: 15rem; margin-top:1rem;"
+                                             action="#{institutionController.toImportInstitution()}"></p:commandButton>
+
+                        </p:panelGrid>
+                    </h:form>                   
                     <ui:insert name="insContents" >
 
                     </ui:insert>

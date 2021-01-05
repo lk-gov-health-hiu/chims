@@ -1,0 +1,95 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <body>
+        <ui:composition template="/institution/index.xhtml">
+            <ui:define name="insContents">
+
+                <h:form id="InstitutionCreateForm" style="padding-top: 1rem;"  enctype="multipart/form-data">
+
+                    <h:panelGroup id="display">
+                        <p:commandButton ajax="false" 
+                                         action="#{institutionController.importInstitutions()}" 
+                                         value="Import"/>
+
+
+                        <p>Start Row - 1</p>
+                        <p>Institution Name Column - 1 / A</p><!-- comment -->
+                        <p>POI Column - 2 / B</p>
+
+                        <p:panelGrid columns="2">
+                            <p:outputLabel value="File" for="file" />
+                            <p:fileUpload id="file" value="#{institutionController.file}" mode="simple"/>
+
+                            <p:outputLabel value="Type:" for="institutionType" />
+                            <p:selectOneMenu id="institutionType" 
+                                             value="#{institutionController.institutionType}" title="InstitutionType" 
+                                             required="true" >
+                                <f:selectItems value="#{applicationController.institutionTypes}" 
+                                               var="institutionTypes"
+                                               itemValue="#{institutionTypes}"
+
+                                               itemLabel="#{institutionTypes.label}"></f:selectItems>
+                            </p:selectOneMenu>
+
+
+                            <p:outputLabel value="Parent:" for="parent" />
+                            <p:autoComplete  id="parent" value="#{institutionController.parent}" 
+                                             required="true"
+                                             completeMethod="#{institutionController.completeInstitutions}"
+                                             var="i" itemLabel="#{i.name}" itemValue="#{i}" forceSelection="true"
+                                             maxResults="15" minQueryLength="3">
+                            </p:autoComplete >
+
+
+
+                            <p:outputLabel value="Province:" for="province" />
+                            <p:autoComplete id="province" value="#{institutionController.province}"
+                                            completeMethod="#{areaController.completeProvinces}" required="true"
+                                            var="province" itemLabel="#{province.name}" itemValue="#{province}"
+                                            maxResults="15" forceSelection="true"
+                                            minQueryLength="3">
+                            </p:autoComplete>
+
+                            <p:outputLabel value="PDHS Area:" for="pdhsArea" />
+                            <p:autoComplete id="pdhsArea" value="#{institutionController.pdhsArea}"
+                                            completeMethod="#{areaController.completePdhsAreas}"
+                                            required="true"
+                                            var="pdhsArea" itemLabel="#{pdhsArea.name}" itemValue="#{pdhsArea}"
+                                            maxResults="15" forceSelection="true"
+                                            minQueryLength="3">
+                            </p:autoComplete>
+
+                            <p:outputLabel value="District:" for="district" />
+                            <p:autoComplete id="district" value="#{institutionController.district}"
+                                            completeMethod="#{areaController.completeDistricts}"
+                                            required="true"
+                                            var="district" itemLabel="#{district.name}" itemValue="#{district}"
+                                            maxResults="15" forceSelection="true"
+                                            minQueryLength="3">
+                            </p:autoComplete>
+
+                            <p:outputLabel value="RDHS Area:" for="rdhsArea" />
+                            <p:autoComplete id="rdhsArea" value="#{institutionController.rdhsArea}"
+                                            completeMethod="#{areaController.completeRdhsAreas}"
+                                            required="true"
+                                            var="rdhsArea" itemLabel="#{rdhsArea.name}" itemValue="#{rdhsArea}"
+                                            maxResults="15" forceSelection="true"
+                                            minQueryLength="3">
+                            </p:autoComplete>
+
+
+                        </p:panelGrid>                            
+
+                    </h:panelGroup>
+                </h:form>
+            </ui:define>
+        </ui:composition>
+
+    </body>
+</html>

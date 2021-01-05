@@ -1,5 +1,9 @@
 package lk.gov.health.phsp.bean;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import lk.gov.health.phsp.entity.Institution;
 import lk.gov.health.phsp.bean.util.JsfUtil;
 import lk.gov.health.phsp.bean.util.JsfUtil.PersistAction;
@@ -7,6 +11,7 @@ import lk.gov.health.phsp.facade.InstitutionFacade;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -23,10 +28,17 @@ import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
 import javax.inject.Inject;
+import javax.persistence.ManyToOne;
+import jxl.Cell;
+import jxl.Sheet;
+import jxl.Workbook;
+import jxl.read.biff.BiffException;
 import lk.gov.health.phsp.entity.Area;
+import lk.gov.health.phsp.entity.Relationship;
 import lk.gov.health.phsp.enums.AreaType;
 import lk.gov.health.phsp.enums.InstitutionType;
 import lk.gov.health.phsp.facade.AreaFacade;
+import org.primefaces.model.UploadedFile;
 
 @Named
 @SessionScoped
@@ -42,9 +54,9 @@ public class InstitutionController implements Serializable {
     private WebUserController webUserController;
 
     @Inject
-    ApplicationController applicationController;
+    private ApplicationController applicationController;
     @Inject
-    UserTransactionController userTransactionController;
+    private UserTransactionController userTransactionController;
 
     private List<Institution> items = null;
     private Institution selected;
@@ -53,6 +65,19 @@ public class InstitutionController implements Serializable {
     private List<Area> gnAreasOfSelected;
     private Area area;
     private Area removingArea;
+
+    private InstitutionType institutionType;
+    private Institution parent;
+    private Area province;
+    private Area pdhsArea;
+    private Area district;
+    private Area rdhsArea;
+
+    private String successMessage;
+    private String failureMessage;
+    private String startMessage;
+
+    private UploadedFile file;
 
     public Institution getInstitutionById(Long id) {
         return getFacade().find(id);
@@ -81,6 +106,12 @@ public class InstitutionController implements Serializable {
         return "/institution/institution";
     }
 
+    public String toImportInstitution() {
+        selected = new Institution();
+        userTransactionController.recordTransaction("To Add Institution");
+        return "/institution/import";
+    }
+
     public String toEditInstitution() {
         if (selected == null) {
             JsfUtil.addErrorMessage("Please select");
@@ -89,26 +120,26 @@ public class InstitutionController implements Serializable {
         return "/institution/institution";
     }
 
-    public boolean thisIsAParentInstitution(Institution checkingInstitution){
-        boolean flag=false;
-        if(checkingInstitution==null){
+    public boolean thisIsAParentInstitution(Institution checkingInstitution) {
+        boolean flag = false;
+        if (checkingInstitution == null) {
             return false;
         }
-        for(Institution i:getItems()){
-            if(i.getParent()!=null && i.getParent().equals(checkingInstitution)){
-                flag=true;
+        for (Institution i : getItems()) {
+            if (i.getParent() != null && i.getParent().equals(checkingInstitution)) {
+                flag = true;
                 return flag;
             }
         }
         return flag;
     }
-    
+
     public String deleteInstitution() {
         if (deleting == null) {
             JsfUtil.addErrorMessage("Please select");
             return "";
         }
-        if(thisIsAParentInstitution(deleting)){
+        if (thisIsAParentInstitution(deleting)) {
             JsfUtil.addErrorMessage("Can't delete. This has child institutions.");
             return "";
         }
@@ -276,7 +307,7 @@ public class InstitutionController implements Serializable {
     }
 
     public void fillItems() {
-        if(applicationController.getInstitutions()!=null){
+        if (applicationController.getInstitutions() != null) {
             items = applicationController.getInstitutions();
             return;
         }
@@ -313,6 +344,101 @@ public class InstitutionController implements Serializable {
         selected = new Institution();
         initializeEmbeddableKey();
         return selected;
+    }
+
+    public String importInstitutions() {
+        successMessage = "";
+        failureMessage = "";
+        
+        String newLine = "<br/>";
+
+        try {
+
+       
+
+            File inputWorkbook;
+            Workbook w;
+            Cell cell;
+            InputStream in;
+
+            lk.gov.health.phsp.facade.util.JsfUtil.addSuccessMessage(file.getFileName());
+
+            try {
+                lk.gov.health.phsp.facade.util.JsfUtil.addSuccessMessage(file.getFileName());
+                in = file.getInputstream();
+                File f;
+                f = new File(Calendar.getInstance().getTimeInMillis() + file.getFileName());
+                FileOutputStream out = new FileOutputStream(f);
+                Integer read = 0;
+                byte[] bytes = new byte[1024];
+                while ((read = in.read(bytes)) != -1) {
+                    out.write(bytes, 0, read);
+                }
+                in.close();
+                out.flush();
+                out.close();
+
+                inputWorkbook = new File(f.getAbsolutePath());
+
+                successMessage += "File Uploaded Successfully." + newLine;
+
+                w = Workbook.getWorkbook(inputWorkbook);
+                Sheet sheet = w.getSheet(0);
+                int startRow = 1;
+
+                for (Integer i = startRow; i < sheet.getRows(); i++) {
+
+                    Institution newIns = new Institution();
+                    Institution newClinic = new Institution();
+                    String insName;
+                    String poi;
+
+                    cell = sheet.getCell(0, i);
+                    insName = cell.getContents();
+
+                    cell = sheet.getCell(1, i);
+                    poi = cell.getContents();
+
+                    newIns.setPoiNumber(poi);
+                    newIns.setName(institutionType.getLabel() + insName);
+                    newIns.setInstitutionType(institutionType);
+                    newIns.setCreatedAt(new Date());
+                    newIns.setCreater(webUserController.getLoggedUser());
+                    newIns.setDistrict(district);
+                    newIns.setLastHin(0l);
+
+                    newIns.setParent(parent);
+                    newIns.setPdhsArea(pdhsArea);
+                    newIns.setProvince(province);
+                    newIns.setRdhsArea(rdhsArea);
+                    getFacade().create(newIns);
+
+                    newClinic.setName("HLC " + insName);
+                    newClinic.setInstitutionType(InstitutionType.Clinic);
+                    newClinic.setCreatedAt(new Date());
+                    newClinic.setCreater(webUserController.getLoggedUser());
+                    newClinic.setDistrict(district);
+                    newClinic.setLastHin(0l);
+                    newClinic.setPoiInstitution(newIns);
+                    newClinic.setParent(newIns);
+                    newClinic.setPdhsArea(pdhsArea);
+                    newClinic.setProvince(province);
+                    newClinic.setRdhsArea(rdhsArea);
+                    getFacade().create(newClinic);
+
+                }
+                lk.gov.health.phsp.facade.util.JsfUtil.addSuccessMessage("Completed. Please check success and failure messages.");
+                return "";
+            } catch (IOException | BiffException ex) {
+                lk.gov.health.phsp.facade.util.JsfUtil.addErrorMessage(ex.getMessage());
+                failureMessage += "Error. " + ex.getMessage() + ". Aborting the process." + newLine;
+                return "";
+            }
+        } catch (IndexOutOfBoundsException e) {
+            failureMessage += "Error. " + e.getMessage() + ". Aborting the process." + newLine;
+            return "";
+        }
+
     }
 
     public void saveOrUpdateInstitution() {
@@ -405,7 +531,7 @@ public class InstitutionController implements Serializable {
     }
 
     public void refreshMyInstitutions() {
-      userTransactionController.recordTransaction("refresh My Institutions");  
+        userTransactionController.recordTransaction("refresh My Institutions");
         myClinics = null;
     }
 
@@ -457,6 +583,8 @@ public class InstitutionController implements Serializable {
         this.area = area;
     }
 
+    
+    
     public Area getRemovingArea() {
         return removingArea;
     }
@@ -476,6 +604,102 @@ public class InstitutionController implements Serializable {
 
     public void setDeleting(Institution deleting) {
         this.deleting = deleting;
+    }
+
+    public ApplicationController getApplicationController() {
+        return applicationController;
+    }
+
+    public void setApplicationController(ApplicationController applicationController) {
+        this.applicationController = applicationController;
+    }
+
+    public UserTransactionController getUserTransactionController() {
+        return userTransactionController;
+    }
+
+    public void setUserTransactionController(UserTransactionController userTransactionController) {
+        this.userTransactionController = userTransactionController;
+    }
+
+    public InstitutionType getInstitutionType() {
+        return institutionType;
+    }
+
+    public void setInstitutionType(InstitutionType institutionType) {
+        this.institutionType = institutionType;
+    }
+
+    public Institution getParent() {
+        return parent;
+    }
+
+    public void setParent(Institution parent) {
+        this.parent = parent;
+    }
+
+    public Area getProvince() {
+        return province;
+    }
+
+    public void setProvince(Area province) {
+        this.province = province;
+    }
+
+    public Area getPdhsArea() {
+        return pdhsArea;
+    }
+
+    public void setPdhsArea(Area pdhsArea) {
+        this.pdhsArea = pdhsArea;
+    }
+
+    public Area getDistrict() {
+        return district;
+    }
+
+    public void setDistrict(Area district) {
+        this.district = district;
+    }
+
+    public Area getRdhsArea() {
+        return rdhsArea;
+    }
+
+    public void setRdhsArea(Area rdhsArea) {
+        this.rdhsArea = rdhsArea;
+    }
+
+    public String getSuccessMessage() {
+        return successMessage;
+    }
+
+    public void setSuccessMessage(String successMessage) {
+        this.successMessage = successMessage;
+    }
+
+    public String getFailureMessage() {
+        return failureMessage;
+    }
+
+    public void setFailureMessage(String failureMessage) {
+        this.failureMessage = failureMessage;
+    }
+
+    public String getStartMessage() {
+        return startMessage;
+    }
+
+    public void setStartMessage(String startMessage) {
+        this.startMessage = startMessage;
+    }
+
+    public UploadedFile getFile() {
+        return file;
+    }
+
+    public void setFile(UploadedFile file) {
+        this.file = file;
     }
 
     @FacesConverter(forClass = Institution.class)
