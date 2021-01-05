@@ -1695,14 +1695,7 @@ public class ClientController implements Serializable {
                 return null;
             }
             applicationController.setTotalNumberOfRegisteredClientsForAdmin(applicationController.getTotalNumberOfRegisteredClientsForAdmin() + 1);
-        } else {
-            if (selected.getPhn()!=null && checkNicExists(selected.getPerson().getNic(), null)) {
-                if (!checkPhnChangedForNic(selected.getPhn(), selected.getPerson().getNic())) {
-                    JsfUtil.addErrorMessage("A PHN already exists for the given NIC.");
-                    return null;
-                }
-            }
-        }
+        } 
         saveClient(selected);
         JsfUtil.addSuccessMessage("Saved.");
         return toClientProfile();
