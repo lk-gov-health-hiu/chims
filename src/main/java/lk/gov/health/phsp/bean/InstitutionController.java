@@ -400,7 +400,7 @@ public class InstitutionController implements Serializable {
                     poi = cell.getContents();
 
                     newIns.setPoiNumber(poi);
-                    newIns.setName(institutionType.getLabel() + insName);
+                    newIns.setName(institutionType.getLabel() + " " + insName);
                     newIns.setInstitutionType(institutionType);
                     newIns.setCreatedAt(new Date());
                     newIns.setCreater(webUserController.getLoggedUser());
@@ -425,6 +425,8 @@ public class InstitutionController implements Serializable {
                     newClinic.setProvince(province);
                     newClinic.setRdhsArea(rdhsArea);
                     getFacade().create(newClinic);
+                    
+                    applicationController.setInstitutions(null);
 
                 }
                 lk.gov.health.phsp.facade.util.JsfUtil.addSuccessMessage("Completed. Please check success and failure messages.");
