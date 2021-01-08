@@ -85,6 +85,7 @@ import lk.gov.health.phsp.entity.StoredQueryResult;
 import lk.gov.health.phsp.entity.Upload;
 import lk.gov.health.phsp.enums.Quarter;
 import lk.gov.health.phsp.enums.QueryCriteriaMatchType;
+import lk.gov.health.phsp.enums.QueryFilterAreaType;
 import lk.gov.health.phsp.enums.QueryType;
 import lk.gov.health.phsp.enums.TimePeriodType;
 import lk.gov.health.phsp.facade.ClientEncounterComponentItemFacade;
@@ -170,7 +171,15 @@ public class ReportController implements Serializable {
     private Date fromDate;
     private Date toDate;
     private Institution institution;
+    
     private Area area;
+    private Area district;
+    private Area province;
+    private QueryFilterAreaType areaType;
+    
+    private boolean filter_Districts;
+    private boolean filter_Provices;
+    
     private NcdReportTem ncdReportTem;
     private StreamedContent file;
     private String mergingMessage;
@@ -187,6 +196,7 @@ public class ReportController implements Serializable {
 // </editor-fold> 
     private List<StoredQueryResult> myResults;
     private List<StoredQueryResult> reportResults;
+    private List<StoredQueryResult> districtreportResults;
     private List<InstitutionCount> institutionCounts;
     private Long reportCount;
     private DesignComponentFormSet designingComponentFormSet;
@@ -207,7 +217,192 @@ public class ReportController implements Serializable {
     private Integer month;
     private Integer dateOfMonth;
     private Quarter quarterEnum;
+    
+    
+    public QueryFilterAreaType[] getQueryFilterAreaTypeProvinceAndDistrict() {
+        QueryFilterAreaType[] ts = new QueryFilterAreaType[]{QueryFilterAreaType.Province, QueryFilterAreaType.Distirct};
+        return ts;
+    }
+    
+    public void provinceAndDistrictAreaFilterSelectAction() {
+        filter_Provices = false;
+        filter_Districts = false;
+       
+        switch (areaType) {
+            case Province:
+                filter_Provices = true;
+                break;
+            case Distirct:
+                filter_Districts = true;
+        }
+      }
+//    consolidate_summaries_sa
+    
+    public void districtlistExistingMonthlyReports() {
+        setTimePeriodType(TimePeriodType.Monthly);
+        districtlistExistingReports();
+        userTransactionController.recordTransaction("List Existing Monthly Reports");
+    }
+    
+    public void districtlistExistingReports() {
+        if (areaType == null) {
+            JsfUtil.addErrorMessage("Please select a area22");
+            return;
+        }
 
+        if (queryComponent == null) {
+            JsfUtil.addErrorMessage("Please select a report");
+            return;
+        }
+
+        switch (getTimePeriodType()) {
+            case Yearley:
+                setFromDate(CommonController.startOfTheYear(getYear()));
+                setToDate(CommonController.endOfYear(getYear()));
+                break;
+            case Quarterly:
+                setFromDate(CommonController.startOfQuarter(getYear(), getQuarter()));
+                setToDate(CommonController.endOfQuarter(getYear(), getQuarter()));
+                break;
+            case Monthly:
+                setFromDate(CommonController.startOfTheMonth(getYear(), getMonth()));
+                setToDate(CommonController.endOfTheMonth(getYear(), getMonth()));
+                break;
+            case Dates:
+            //TODO: Add what happens when selected dates
+
+        }
+
+//        String j;
+//        Map m = new HashMap();
+//        j = "select s "
+//                + " from StoredQueryResult s "
+//                + " where s.retired=false "
+//                + " and s.district=:dis "
+//                + " and s.queryComponent=:qc "
+//                + " and s.resultFrom=:f "
+//                + " and s.resultTo=:t "
+//                + " order by s.id desc";
+//
+//        m.put("dis", district);
+//        m.put("qc", queryComponent);
+//        m.put("f", getFromDate());
+//        m.put("t", getToDate());
+
+        String j;
+        Map m = new HashMap();
+        j = "select s "
+                + " from StoredQueryResult s "
+                + " where s.retired=false "
+                + " and s.creater=:me "
+                + " order by s.id desc";
+        
+        m.put("me", webUserController.getLoggedUser());
+        districtreportResults = getStoredQueryResultFacade().findByJpql(j, m);
+
+    }
+    
+    public void districtcreateNewMonthlyReport() {
+        setTimePeriodType(TimePeriodType.Monthly);
+        districtcreateNewReport();
+        System.gc();
+        userTransactionController.recordTransaction("Create New Monthly Report");
+    }
+
+    public void districtcreateNewReport() {
+        if (areaType == null) {
+            JsfUtil.addErrorMessage("Please select a areaty1");
+            return;
+        }
+
+        if (queryComponent == null) {
+            JsfUtil.addErrorMessage("Please select a report");
+            return;
+        }
+
+        StoredQueryResult sqr = new StoredQueryResult();
+        sqr.setCreatedAt(new Date());
+        sqr.setCreater(webUserController.getLoggedUser());
+
+        
+        //sqr.setArea(district);
+        //sqr.setArea(province);
+        //sqr.setAreaType(areaType);
+        
+
+        switch (areaType) {
+            case Distirct:
+                sqr.setArea(district);
+                break;
+            
+            case Province:
+                sqr.setArea(province);
+                break;
+        }
+
+        sqr.setRequestCreatedAt(new Date());
+        sqr.setTimePeriodType(getTimePeriodType());
+        sqr.setQueryComponent(queryComponent);
+
+        switch (getTimePeriodType()) {
+            case Yearley:
+                sqr.setResultFrom(CommonController.startOfTheYear(getYear()));
+                sqr.setResultTo(CommonController.endOfYear(getYear()));
+                sqr.setResultYear(getYear());
+
+                break;
+            case Quarterly:
+                sqr.setResultFrom(CommonController.startOfQuarter(getYear(), getQuarter()));
+                sqr.setResultTo(CommonController.endOfQuarter(getYear(), getQuarter()));
+                sqr.setResultYear(getYear());
+                sqr.setResultQuarter(getQuarter());
+                break;
+            case Monthly:
+                
+                sqr.setResultFrom(CommonController.startOfTheMonth(getYear(), getMonth()));
+                sqr.setResultTo(CommonController.endOfTheMonth(getYear(), getMonth()));
+                sqr.setResultYear(getYear());
+                sqr.setResultMonth(getMonth());
+                break;
+            case Dates:
+            //TODO: Add what happens when selected dates
+
+        }
+
+        getStoredQueryResultFacade().create(sqr);
+
+        setFromDate(sqr.getResultFrom());
+        setToDate(sqr.getResultTo());
+        JsfUtil.addSuccessMessage("Added to the Queue to Process");
+        boolean reportDone = getExcelReportController().processReport(sqr);
+        if (reportDone) {
+            JsfUtil.addSuccessMessage("Report Created. Please click the list button to list it.");
+        } else {
+            JsfUtil.addErrorMessage("Error");
+        }
+
+    }
+    
+    public void districtremoveReport() {
+        if (removingResult == null) {
+            JsfUtil.addErrorMessage("Nothing to remove");
+            return;
+        }
+        if (removingResult.isProcessCompleted()
+                && !removingResult.getCreater().equals(webUserController.getLoggedUser())) {
+            JsfUtil.addErrorMessage("You can not remove others successful reports.");
+            return;
+        }
+        removingResult.setRetired(true);
+        removingResult.setRetirer(webUserController.getLoggedUser());
+        removingResult.setRetiredAt(new Date());
+        getStoredQueryResultFacade().edit(removingResult);
+        JsfUtil.addSuccessMessage("Removed");
+        districtlistExistingReports();
+        listMyReports();
+        userTransactionController.recordTransaction("Remove Report");
+    }
+    
     public StreamedContent getDownloadingFile() {
         if (getDownloadingResult() == null) {
             JsfUtil.addErrorMessage("No Download file");
@@ -2332,6 +2527,47 @@ public class ReportController implements Serializable {
         this.area = area;
     }
 
+    public Area getDistrict() {
+        return district;
+    }
+
+    public void setDistrict(Area district) {
+        this.district = district;
+    }
+
+    public Area getProvince() {
+        return province;
+    }
+
+    public void setProvince(Area province) {
+        this.province = province;
+    }
+
+    public QueryFilterAreaType getAreaType() {
+        return areaType;
+    }
+
+    public void setAreaType(QueryFilterAreaType areaType) {
+        this.areaType = areaType;
+    }
+
+    public boolean isFilter_Districts() {
+        return filter_Districts;
+    }
+
+    public void setFilter_Districts(boolean filter_Districts) {
+        this.filter_Districts = filter_Districts;
+    }
+
+    public boolean isFilter_Provices() {
+        return filter_Provices;
+    }
+
+    public void setFilter_Provices(boolean filter_Provices) {
+        this.filter_Provices = filter_Provices;
+    }
+
+    
 // </editor-fold> 
     public InstitutionController getInstitutionController() {
         return institutionController;
@@ -2519,6 +2755,14 @@ public class ReportController implements Serializable {
 
     public void setDesignComponentFormItem(DesignComponentFormItem designComponentFormItem) {
         this.designComponentFormItem = designComponentFormItem;
+    }
+
+    public List<StoredQueryResult> getDistrictreportResults() {
+        return districtreportResults;
+    }
+
+    public void setDistrictreportResults(List<StoredQueryResult> districtreportResults) {
+        this.districtreportResults = districtreportResults;
     }
 
 }
