@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+The MIT License
+
+Copyright 2021 user.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <head>
+        <ui:define name="head">
+            Client Registration Count - Province
+        </ui:define>
+    </head>
+    <body>
+
+        <ui:composition template="/reports/index.xhtml">
+            <ui:define name="reports">
+                <h:form>
+                    <p:panelGrid columns="2" styleClass="alignTop" >
+                        <f:facet name="header" >
+                            <p:outputLabel value="Client Registration Count - Province" ></p:outputLabel>
+                        </f:facet>
+                        <p:panelGrid columns="1"   >
+                            <f:facet name="header" >
+                                <p:outputLabel value="Filters" >
+                                </p:outputLabel>
+                            </f:facet>
+                            <p:outputLabel value="From" ></p:outputLabel>
+                            <p:calendar value="#{reportController.fromDate}" pattern="dd MM yyyy" ></p:calendar>
+
+                            <p:outputLabel value="To" ></p:outputLabel>
+                            <p:calendar value="#{reportController.toDate}" pattern="dd MM yyyy" ></p:calendar>
+
+                            <p:commandButton value="Process" ajax="false"
+                                             action="#{reportController.fillRegistrationsOfClientsByProvince()}"></p:commandButton>
+
+
+                            <p:commandButton value="Download" id="btnDe" ajax="false">
+                                <p:dataExporter id="de" type="xlsx" target=":#{p:component('tbl')}" fileName="Client Registrations by Province" ></p:dataExporter>
+                            </p:commandButton>
+
+
+                        </p:panelGrid>
+
+
+                        <p:dataTable id="tbl" 
+                                     value="#{reportController.areaCounts}" var="c"
+                                     rowIndexVar="n"
+                                     paginator="true"
+                                     rows="10"
+                                     rowsPerPageTemplate="10,20,30,40,50"
+                                     >
+                            <f:facet name="header"   >
+                                <p:outputLabel value="Client Registrations by Province" ></p:outputLabel>
+                                <p:outputLabel value="From : " ></p:outputLabel>
+                                <p:outputLabel value="#{reportController.fromDate}" >
+                                    <f:convertDateTime pattern="dd MMMM yyyy" ></f:convertDateTime>
+                                </p:outputLabel>
+                                <p:outputLabel value=" To :" ></p:outputLabel>
+                                <p:outputLabel value="#{reportController.toDate}" >
+                                    <f:convertDateTime pattern="dd MMMM yyyy" ></f:convertDateTime>
+                                </p:outputLabel>
+                            </f:facet>
+                            <p:column headerText="No" width="50" >
+                                <p:outputLabel value="#{n+1}" >
+                                </p:outputLabel>
+                            </p:column>
+                            
+                            <p:column headerText="Province" 
+                                      filterBy="#{c.area.name}" 
+                                      filterMatchMode="contains" 
+                                      sortBy="#{c.area.name}"
+                                      >
+                                <p:outputLabel value="#{c.area.name}" ></p:outputLabel>
+                            </p:column>
+                            
+                            <p:column headerText="Count"  
+                                      sortBy="#{c.count}">
+                                <p:outputLabel value="#{c.count}" ></p:outputLabel>
+                            </p:column>
+                            <f:facet name="footer" >
+                                <p:outputLabel value="Total - #{reportController.areaRepCount}" ></p:outputLabel>
+                            </f:facet>
+                        </p:dataTable>
+
+
+                    </p:panelGrid>
+
+                </h:form>
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>
