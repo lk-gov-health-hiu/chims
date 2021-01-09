@@ -37,8 +37,8 @@
                                 <p:selectOneMenu value="#{reportController.areaType}" 
                                              required="true"  style="width: 200px;">
                                 <f:selectItem itemLabel="Select" ></f:selectItem>
-                                <f:selectItems value="#{reportController.queryFilterAreaTypeProvinceAndDistrict}" ></f:selectItems>
-                                <p:ajax process="@this" update="filters" listener="#{reportController.provinceAndDistrictAreaFilterSelectAction()}" />
+                                <f:selectItems value="#{reportController.queryFilterAreaTypeconsolidateSummaries}" ></f:selectItems>
+                                <p:ajax process="@this" update="filters" listener="#{reportController.consolidateSummariesAreaFilterSelectAction()}" />
                                 </p:selectOneMenu>
                                  <p:panelGrid id="filters" columns="2">
                                 <p:autoComplete id="province" value="#{reportController.province}"
@@ -61,48 +61,6 @@
 
                             </p:panelGrid>
 
-<!--                                <p:selectOneMenu value="#{reportController.areaType}"
-                                             required="true"  style="width: 200px;">
-                                <f:selectItem itemLabel="Select " ></f:selectItem>
-                                <f:selectItems value="#{reportController.queryFilterAreaTypeProvinceAndDistrict}" ></f:selectItems>
-                                 <p:ajax process="@this" update="filters" listener="#{queryComponentController.areaFilterSelectAction()}" />
-                            </p:selectOneMenu>
-
-                                <p:panelGrid id="filters" columns="2">
-                                
-                                <p:outputLabel value="Province"  rendered="#{queryComponentController.filterProvices}"></p:outputLabel>
-                                
-                                <p:autoComplete id="province" value="#{reportController.province}"
-                                                completeMethod="#{areaController.completeProvinces}"
-                                                var="p" itemLabel="#{p.name}" itemValue="#{p}" required="true"
-                                                maxResults="15" forceSelection="true" 
-                                                rendered="#{queryComponentController.filterProvices}"
-                                                minQueryLength="2">
-                                </p:autoComplete>
-
-                                <p:outputLabel value="District"  rendered="#{queryComponentController.filterDistricts}"></p:outputLabel>
-
-                                <p:autoComplete id="district" value="#{reportController.district}"
-                                                completeMethod="#{areaController.completeDistricts}"
-                                                var="d" itemLabel="#{d.name}" itemValue="#{d}" required="true"
-                                                maxResults="15" forceSelection="true" 
-                                                rendered="#{queryComponentController.filterDistricts}"
-                                                minQueryLength="2">
-                                </p:autoComplete>
-                            </p:panelGrid>-->
-                                   
-                                
-                                
-<!--                                <p:outputLabel value="District" for="district"></p:outputLabel>
-
-                                <p:autoComplete id="district" value="#{reportController.district}"
-                                                completeMethod="#{areaController.completeDistricts}"
-                                                var="d" itemLabel="#{d.name}" itemValue="#{d}" 
-                                                required="true" maxResults="15" forceSelection="true" minQueryLength="2"
-                                                requiredMessage="Please select a district. Selecting an Institution or Hospital will not give results.">
-                                </p:autoComplete>-->
-                                
-                                
                                 <p:outputLabel id="lblYear" value="Year" for="txtYear" ></p:outputLabel>
                                 <p:inputText id="txtYear"
                                              required="true"
@@ -122,12 +80,12 @@
                             </p:panelGrid>
                             <p:panelGrid columns="1" >
                                 <p:commandButton value="List Existing"  style="width:20em;margin:auto;"
-                                                 action="#{reportController.districtlistExistingMonthlyReports()}"
+                                                 action="#{reportController.consolidateSummarieslistExistingMonthlyReports()}"
                                                  ajax="false">
                                 </p:commandButton>
 
                                 <p:commandButton value="Create New"  style="width:20em;margin:auto;"
-                                                 action="#{reportController.districtcreateNewMonthlyReport()}"
+                                                 action="#{reportController.consolidateSummariescreateNewMonthlyReport()}"
                                                  ajax="false">
                                 </p:commandButton>
 
@@ -177,7 +135,7 @@
                                                                      ></f:setPropertyActionListener>
                                         <p:fileDownload value="#{reportController.downloadingFile}" />
                                     </p:commandButton>
-                                    <p:commandButton ajax="false" action="#{reportController.districtremoveReport()}"
+                                    <p:commandButton ajax="false" action="#{reportController.consolidateSummariesremoveReport()}"
                                                      value="Remove">
                                         <f:setPropertyActionListener value="#{r}" target="#{reportController.removingResult}" ></f:setPropertyActionListener>
                                     </p:commandButton>

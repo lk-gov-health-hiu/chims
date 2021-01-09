@@ -36,7 +36,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.Transient;
 import lk.gov.health.phsp.bean.CommonController;
-import lk.gov.health.phsp.enums.QueryFilterAreaType;
 import lk.gov.health.phsp.enums.TimePeriodType;
 import org.eclipse.persistence.annotations.Cache;
 import org.eclipse.persistence.annotations.CacheType;
@@ -57,7 +56,7 @@ public class StoredQueryResult implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    
+
     @ManyToOne
     private Institution institution;
     @ManyToOne
@@ -158,7 +157,7 @@ public class StoredQueryResult implements Serializable {
     public String toString() {
         return "lk.gov.health.phsp.enums.StoreQueryResults[ id=" + id + " ]";
     }
-    
+
     public Institution getInstitution() {
         return institution;
     }
@@ -462,6 +461,6 @@ public class StoredQueryResult implements Serializable {
     public void setReadyAfterConsolidationAt(Date readyAfterConsolidationAt) {
         this.readyAfterConsolidationAt = readyAfterConsolidationAt;
     }
-
+    
     
 }

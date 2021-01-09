@@ -219,12 +219,12 @@ public class ReportController implements Serializable {
     private Quarter quarterEnum;
     
     
-    public QueryFilterAreaType[] getQueryFilterAreaTypeProvinceAndDistrict() {
+    public QueryFilterAreaType[] getQueryFilterAreaTypeconsolidateSummaries() {
         QueryFilterAreaType[] ts = new QueryFilterAreaType[]{QueryFilterAreaType.Province, QueryFilterAreaType.Distirct};
         return ts;
     }
     
-    public void provinceAndDistrictAreaFilterSelectAction() {
+    public void consolidateSummariesAreaFilterSelectAction() {
         filter_Provices = false;
         filter_Districts = false;
        
@@ -238,13 +238,13 @@ public class ReportController implements Serializable {
       }
 //    consolidate_summaries_sa
     
-    public void districtlistExistingMonthlyReports() {
+    public void consolidateSummarieslistExistingMonthlyReports() {
         setTimePeriodType(TimePeriodType.Monthly);
-        districtlistExistingReports();
+        consolidateSummarieslistExistingReports();
         userTransactionController.recordTransaction("List Existing Monthly Reports");
     }
     
-    public void districtlistExistingReports() {
+    public void consolidateSummarieslistExistingReports() {
         if (areaType == null) {
             JsfUtil.addErrorMessage("Please select a area22");
             return;
@@ -273,22 +273,6 @@ public class ReportController implements Serializable {
 
         }
 
-//        String j;
-//        Map m = new HashMap();
-//        j = "select s "
-//                + " from StoredQueryResult s "
-//                + " where s.retired=false "
-//                + " and s.district=:dis "
-//                + " and s.queryComponent=:qc "
-//                + " and s.resultFrom=:f "
-//                + " and s.resultTo=:t "
-//                + " order by s.id desc";
-//
-//        m.put("dis", district);
-//        m.put("qc", queryComponent);
-//        m.put("f", getFromDate());
-//        m.put("t", getToDate());
-
         String j;
         Map m = new HashMap();
         j = "select s "
@@ -297,19 +281,20 @@ public class ReportController implements Serializable {
                 + " and s.creater=:me "
                 + " order by s.id desc";
         
+       // m.put("at", areaType);
         m.put("me", webUserController.getLoggedUser());
         districtreportResults = getStoredQueryResultFacade().findByJpql(j, m);
 
     }
     
-    public void districtcreateNewMonthlyReport() {
+    public void consolidateSummariescreateNewMonthlyReport() {
         setTimePeriodType(TimePeriodType.Monthly);
-        districtcreateNewReport();
+        consolidateSummariescreateNewReport();
         System.gc();
         userTransactionController.recordTransaction("Create New Monthly Report");
     }
 
-    public void districtcreateNewReport() {
+    public void consolidateSummariescreateNewReport() {
         if (areaType == null) {
             JsfUtil.addErrorMessage("Please select a areaty1");
             return;
@@ -323,12 +308,6 @@ public class ReportController implements Serializable {
         StoredQueryResult sqr = new StoredQueryResult();
         sqr.setCreatedAt(new Date());
         sqr.setCreater(webUserController.getLoggedUser());
-
-        
-        //sqr.setArea(district);
-        //sqr.setArea(province);
-        //sqr.setAreaType(areaType);
-        
 
         switch (areaType) {
             case Distirct:
@@ -383,7 +362,7 @@ public class ReportController implements Serializable {
 
     }
     
-    public void districtremoveReport() {
+    public void consolidateSummariesremoveReport() {
         if (removingResult == null) {
             JsfUtil.addErrorMessage("Nothing to remove");
             return;
@@ -398,7 +377,7 @@ public class ReportController implements Serializable {
         removingResult.setRetiredAt(new Date());
         getStoredQueryResultFacade().edit(removingResult);
         JsfUtil.addSuccessMessage("Removed");
-        districtlistExistingReports();
+        consolidateSummarieslistExistingReports();
         listMyReports();
         userTransactionController.recordTransaction("Remove Report");
     }
