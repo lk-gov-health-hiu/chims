@@ -319,7 +319,7 @@
 
                             <p:outputLabel value="Date of Birth:"  />
                             <p:calendar  value="#{clientController.selected.person.dateOfBirth}" 
-                                         id="calDob"  navigator="true" pattern="dd/MM/yyyy" 
+                                         id="calDob"  navigator="true" pattern="dd/MM/yyyy" yearRange="1900:today"
                                          inputStyle="width: 124px!important;" required="true"
                                          styleClass="shortinput">
                                 <f:ajax event="dateSelect" listener="#{clientController.updateYearDateMonth}"
