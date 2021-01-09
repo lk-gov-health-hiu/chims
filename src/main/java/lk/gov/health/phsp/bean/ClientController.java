@@ -325,14 +325,6 @@ public class ClientController implements Serializable {
         }
     }
 
-    public Boolean checkPhnChangedForNic(String phn, String nic) {
-        selectedClients = listPatientsByNic(nic);
-        if (selectedClients.size() > 0) {
-            String old_phn = selectedClients.get(0).getPhn();
-            return old_phn == null ? phn == null : old_phn.equals(phn);
-        }
-        return false;
-    }
 
     public void checkNicExists() {
         nicExists = null;
@@ -1694,15 +1686,14 @@ public class ClientController implements Serializable {
             createdIns = selected.getCreateInstitution();
         }
 
-        System.out.println("createdIns = " + createdIns);
+       
         
         if (createdIns == null || createdIns.getPoiNumber() == null || createdIns.getPoiNumber().trim().equals("")) {
             JsfUtil.addErrorMessage("The institution you logged has no POI. Can not generate a PHN.");
             return "";
         }
 
-        System.out.println("selected = " + selected);
-        System.out.println("selected.getPhn() = **" + selected.getPhn() + "**");
+        
         if (selected.getPhn() == null || selected.getPhn().trim().equals("")) {
             String newPhn = applicationController.createNewPersonalHealthNumberformat(createdIns);
 
