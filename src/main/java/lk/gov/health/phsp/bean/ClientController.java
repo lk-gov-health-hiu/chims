@@ -265,15 +265,15 @@ public class ClientController implements Serializable {
 
     // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="Functions">
-    public List<Area> getGnAreasForTheSelectedClient(String qry) {
+    public List<Area> completeClientsGnArea(String qry) {
         List<Area> areas = new ArrayList<>();
         if (selected == null) {
             return areas;
         }
         if (selected.getPerson().getDsArea() == null) {
-            return applicationController.getAllGnAreas(qry);
+            return applicationController.completeGnAreas(qry);
         } else {
-            return areaController.getAreas(AreaType.GN, selected.getPerson().getDsArea(), null, qry);
+            return applicationController.completeGnAreas(qry,selected.getPerson().getDsArea());
         }
     }
 
@@ -1216,7 +1216,7 @@ public class ClientController implements Serializable {
             System.out.println("A Point of Issue is NOT assigned to the Institution. Please discuss with the System Administrator.");
             return null;
         }
-        return applicationController.createNewPersonalHealthNumber(poiIns);
+        return applicationController.createNewPersonalHealthNumberformat(poiIns);
     }
 
     public void gnAreaChanged() {
@@ -1673,7 +1673,16 @@ public class ClientController implements Serializable {
     }
 
     public String saveClient() {
-        Institution createdIns;
+
+        System.out.println("saveClient");
+        
+        if (selected == null) {
+            JsfUtil.addErrorMessage("Nothing to save");
+            return "";
+        }
+
+        Institution createdIns = null;
+
         if (selected.getCreateInstitution() == null) {
             if (webUserController.getLoggedUser().getInstitution().getPoiInstitution() != null) {
                 createdIns = webUserController.getLoggedUser().getInstitution().getPoiInstitution();
@@ -1681,18 +1690,32 @@ public class ClientController implements Serializable {
                 createdIns = webUserController.getLoggedUser().getInstitution();
             }
             selected.setCreateInstitution(createdIns);
+        }else{
+            createdIns = selected.getCreateInstitution();
         }
 
-        if (selected.getPhn() == null) {
-            generateAndAssignNewPhn();
+        System.out.println("createdIns = " + createdIns);
+        
+        if (createdIns == null || createdIns.getPoiNumber() == null || createdIns.getPoiNumber().trim().equals("")) {
+            JsfUtil.addErrorMessage("The institution you logged has no POI. Can not generate a PHN.");
+            return "";
+        }
+
+        System.out.println("selected = " + selected);
+        System.out.println("selected.getPhn() = **" + selected.getPhn() + "**");
+        if (selected.getPhn() == null || selected.getPhn().trim().equals("")) {
+            String newPhn = applicationController.createNewPersonalHealthNumberformat(createdIns);
+
             int count = 0;
-            while (checkPhnExists(searchingId, null)) {
-                generateAndAssignNewPhn();
+            while (checkPhnExists(newPhn, null)) {
+                newPhn = applicationController.createNewPersonalHealthNumberformat(createdIns);
                 count++;
                 if (count > 100) {
                     JsfUtil.addErrorMessage("Generating New PHN Failed. Client NOT saved. Please contact System Administrator.");
+                    return "";
                 }
             }
+            selected.setPhn(newPhn);
         }
 
         if (selected.getId() == null) {
@@ -1733,21 +1756,21 @@ public class ClientController implements Serializable {
         } else {
             createdIns = webUserController.getLoggedUser().getInstitution();
         }
-       
-        if(createdIns==null){
+
+        if (createdIns == null) {
             JsfUtil.addErrorMessage("No POI");
-            return ;
+            return;
         }
 
-        if(numberOfPhnToReserve==null){
+        if (numberOfPhnToReserve == null) {
             JsfUtil.addErrorMessage("No Numner of PHN to add");
-            return ;
+            return;
         }
-        
-        for(int i=0; i > numberOfPhnToReserve ; i++){
-            
+
+        for (int i = 0; i > numberOfPhnToReserve; i++) {
+
         }
-       
+
     }
 
     public String saveClient(Client c) {
