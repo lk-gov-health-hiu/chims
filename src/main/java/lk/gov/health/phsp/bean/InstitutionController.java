@@ -78,6 +78,7 @@ public class InstitutionController implements Serializable {
     public String toAddInstitution() {
         selected = new Institution();
         userTransactionController.recordTransaction("To Add Institution");
+        fillItems();
         return "/institution/institution";
     }
 
@@ -323,16 +324,16 @@ public class InstitutionController implements Serializable {
         if (selected.getId() == null) {
             selected.setCreatedAt(new Date());
             selected.setCreater(webUserController.getLoggedUser());
-            fillItems();
             getFacade().create(selected);
-            applicationController.getInstitutions().add(selected);            
+
+            applicationController.getInstitutions().add(selected);  
+            items = null;
             JsfUtil.addSuccessMessage("Saved");
         } else {
             selected.setEditedAt(new Date());
             selected.setEditer(webUserController.getLoggedUser());
             getFacade().edit(selected);
             items = null;
-            getItems();
             JsfUtil.addSuccessMessage("Updates");
         }
     }
