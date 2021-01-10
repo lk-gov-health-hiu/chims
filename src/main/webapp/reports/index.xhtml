@@ -43,6 +43,16 @@
                                     <p:commandButton value="Institution-vice Client Registrations"   style="width:20em;margin:auto;"
                                                      action="#{reportController.toViewClientRegistrationsByInstitution()}"
                                                      ajax="false"></p:commandButton>
+                                    
+                                    <p:commandButton value="District vice Client Registrations" style="width:20em;margin:auto;"
+                                                     action="#{reportController.toViewClientRegistrationsByDistrict()}"
+                                                     rendered="#{webUserController.hasPrivilege('System_Administration')}"
+                                                     ajax="false"></p:commandButton>
+                                    
+                                    <p:commandButton value="Province vice Client Registrations" style="width:20em;margin:auto;"
+                                                     action="#{reportController.toViewClientRegistrationsByProvince()}"
+                                                     rendered="#{webUserController.hasPrivilege('System_Administration')}"
+                                                     ajax="false"></p:commandButton>
                                 </h:panelGrid>
 
                             </p:tab>

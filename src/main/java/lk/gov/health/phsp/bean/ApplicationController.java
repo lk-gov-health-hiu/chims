@@ -24,6 +24,8 @@
 package lk.gov.health.phsp.bean;
 
 // <editor-fold defaultstate="collapsed" desc="Import">
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,11 +33,16 @@ import javax.ejb.EJB;
 import javax.inject.Named;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import lk.gov.health.phsp.entity.Area;
 import lk.gov.health.phsp.entity.Institution;
 import lk.gov.health.phsp.entity.Item;
 import lk.gov.health.phsp.entity.QueryComponent;
+import lk.gov.health.phsp.enums.EncounterType;
 import lk.gov.health.phsp.enums.InstitutionType;
 import lk.gov.health.phsp.enums.WebUserRole;
+import lk.gov.health.phsp.facade.ClientEncounterComponentItemFacade;
+import lk.gov.health.phsp.facade.ClientFacade;
+import lk.gov.health.phsp.facade.EncounterFacade;
 import lk.gov.health.phsp.facade.InstitutionFacade;
 import lk.gov.health.phsp.facade.QueryComponentFacade;
 // </editor-fold>
@@ -52,7 +59,13 @@ public class ApplicationController {
     @EJB
     private InstitutionFacade institutionFacade;
     @EJB
-    private QueryComponentFacade queryComponentFacade;
+    private QueryComponentFacade queryComponentFacade;    
+    @EJB
+    private ClientFacade clientFacade;
+    @EJB
+    private EncounterFacade encounterFacade;
+    @EJB
+    private ClientEncounterComponentItemFacade clientEncounterComponentItemFacade;    
 
 // </editor-fold>    
     @Inject
@@ -65,8 +78,18 @@ public class ApplicationController {
     private List<Item> items;
     private List<String> userTransactionTypes;
     private List<Institution> institutions;
+    private final boolean logActivity = true;
+    private Long totalNumberOfRegisteredClientsForAdmin = null;
+    private Long totalNumberOfClinicEnrolmentsForAdmin = null;
+    private Long totalNumberOfClinicVisitsForAdmin = null;
+    private Long totalNumberOfCvsRiskClientsForAdmin = null;
 
-// </editor-fold>
+    String riskVariable = "cvs_risk_factor";
+    String riskVal1 = "30-40%";
+    String riskVal2 = ">40%";
+    List<String> riskVals;    
+    // </editor-fold>
+    
     public ApplicationController() {
     }
 
@@ -143,6 +166,73 @@ public class ApplicationController {
         return queryComponents = getQueryComponentFacade().findByJpql(j, m);
 
     }
+    
+    public Long countOfRegistedClients(Institution ins, Area gn) {
+        String j = "select count(c) from Client c "
+                + " where c.retired=:ret ";
+        Map m = new HashMap();
+        m.put("ret", false);
+        if (ins != null) {
+            j += " and c.createInstitution=:ins ";
+            m.put("ins", ins);
+        }
+        if (gn != null) {
+            j += " and c.person.gnArea=:gn ";
+            m.put("gn", gn);
+        }
+        return getClientFacade().countByJpql(j, m);
+    }
+    
+    public Long countOfEncounters(List<Institution> clinics, EncounterType ec) {
+        String j = "select count(e) from Encounter e "
+                + " where e.retired=:ret "
+                + " and e.encounterType=:ec "
+                + " and e.createdAt>:d";
+        Map m = new HashMap();
+        m.put("d", CommonController.startOfTheYear());
+        m.put("ec", ec);
+        m.put("ret", false);
+        if (clinics != null && !clinics.isEmpty()) {
+            m.put("ins", clinics);
+            j += " and e.institution in :ins ";
+        }
+        return getEncounterFacade().findLongByJpql(j, m);
+    }
+    
+    public long findClientCountEncounterComponentItemMatchCount(
+            List<Institution> ins,
+            Date fromDate,
+            Date toDate,
+            String itemCode,
+            List<String> valueStrings) {
+        
+        if (logActivity) {
+
+        }
+        String j;
+        Map m = new HashMap();
+        
+        j = "select count(f.encounter) "
+                + " from ClientEncounterComponentItem f "
+                + " where f.retired<>:ret "
+                + " and f.encounter.retired<>:ret ";
+        j += " and f.item.code=:ic ";
+        j += " and f.shortTextValue in :ivs";
+        m.put("ic", itemCode);
+        m.put("ret", true);
+        m.put("ivs", valueStrings);
+        if (ins != null && !ins.isEmpty()) {
+            m.put("ins", ins);
+            j += " and f.encounter.institution in :ins ";
+        }
+        if (fromDate != null && toDate != null) {
+            m.put("fd", fromDate);
+            m.put("td", toDate);
+            j += " and f.encounter.encounterDate between :fd and :td ";
+        }
+//        j += " group by e";
+        return getClientEncounterComponentItemFacade().findLongByJpql(j, m);
+    }
 
     public void reloadQueryComponents() {
         queryComponents = null;
@@ -169,7 +259,7 @@ public class ApplicationController {
     public boolean isDemoSetup() {
         return demoSetup;
     }
-    
+
     
 
     public void setDemoSetup(boolean demoSetup) {
@@ -231,4 +321,75 @@ public class ApplicationController {
         this.production = production;
     }
 
+    public Long getTotalNumberOfRegisteredClientsForAdmin() {
+        if (totalNumberOfRegisteredClientsForAdmin == null) {
+            setTotalNumberOfRegisteredClientsForAdmin(countOfRegistedClients(null, null));
+        }
+        return totalNumberOfRegisteredClientsForAdmin;
+    }
+
+    public void setTotalNumberOfRegisteredClientsForAdmin(Long totalNumberOfRegisteredClientsForAdmin) {
+        this.totalNumberOfRegisteredClientsForAdmin = totalNumberOfRegisteredClientsForAdmin;
+    }
+
+    public Long getTotalNumberOfClinicEnrolmentsForAdmin() {
+        if (totalNumberOfClinicEnrolmentsForAdmin == null) {
+            setTotalNumberOfClinicEnrolmentsForAdmin(countOfEncounters(null, EncounterType.Clinic_Enroll));
+        }
+        return totalNumberOfClinicEnrolmentsForAdmin;
+    }
+
+    public void setTotalNumberOfClinicEnrolmentsForAdmin(Long totalNumberOfClinicEnrolmentsForAdmin) {
+        this.totalNumberOfClinicEnrolmentsForAdmin = totalNumberOfClinicEnrolmentsForAdmin;
+    }
+
+    public Long getTotalNumberOfClinicVisitsForAdmin() {
+        if (totalNumberOfClinicVisitsForAdmin == null) {
+            setTotalNumberOfClinicVisitsForAdmin(countOfEncounters(null, EncounterType.Clinic_Visit));
+        }
+        return totalNumberOfClinicVisitsForAdmin;
+    }
+
+    public void setTotalNumberOfClinicVisitsForAdmin(Long totalNumberOfClinicVisitsForAdmin) {
+        this.totalNumberOfClinicVisitsForAdmin = totalNumberOfClinicVisitsForAdmin;
+    }
+
+    public Long getTotalNumberOfCvsRiskClientsForAdmin() {
+        riskVals = new ArrayList<>();
+        riskVals.add(riskVal1);
+        riskVals.add(riskVal2);
+        if (totalNumberOfCvsRiskClientsForAdmin == null) {
+            setTotalNumberOfCvsRiskClientsForAdmin(findClientCountEncounterComponentItemMatchCount(
+                    null, CommonController.startOfTheYear(), new Date(), riskVariable, riskVals));
+        }
+        return totalNumberOfCvsRiskClientsForAdmin;
+    }
+
+    public void setTotalNumberOfCvsRiskClientsForAdmin(Long totalNumberOfCvsRiskClientsForAdmin) {
+        this.totalNumberOfCvsRiskClientsForAdmin = totalNumberOfCvsRiskClientsForAdmin;
+    }
+
+    public ClientFacade getClientFacade() {
+        return clientFacade;
+    }
+
+    public void setClientFacade(ClientFacade clientFacade) {
+        this.clientFacade = clientFacade;
+    }
+
+    public EncounterFacade getEncounterFacade() {
+        return encounterFacade;
+    }
+
+    public void setEncounterFacade(EncounterFacade encounterFacade) {
+        this.encounterFacade = encounterFacade;
+    }
+
+    public ClientEncounterComponentItemFacade getClientEncounterComponentItemFacade() {
+        return clientEncounterComponentItemFacade;
+    }
+
+    public void setClientEncounterComponentItemFacade(ClientEncounterComponentItemFacade clientEncounterComponentItemFacade) {
+        this.clientEncounterComponentItemFacade = clientEncounterComponentItemFacade;
+    }
 }
