@@ -591,7 +591,23 @@ public class CommonController implements Serializable {
         c.set(Calendar.MILLISECOND, 1);
         return c.getTime();
     }
+    
+    public static Date startOfTheLastYear(Date d) {
+        Calendar c = Calendar.getInstance();
+        c.setTime(d);
+        c.set(Calendar.MONTH, Calendar.JANUARY);
+        c.set(Calendar.DAY_OF_MONTH, 1);
+        c.set(Calendar.HOUR, 0);
+        c.set(Calendar.MINUTE, 0);
+        c.set(Calendar.MILLISECOND, 1);
+        c.set(Calendar.YEAR, c.get(Calendar.YEAR)-1);
+        return c.getTime();
+    }
 
+    public static Date startOfTheLastYear() {
+        return startOfTheLastYear(new Date());
+    }
+    
     public static Date startOfTheYear(Integer year) {
         Calendar c = Calendar.getInstance();
         c.set(Calendar.YEAR, year);
