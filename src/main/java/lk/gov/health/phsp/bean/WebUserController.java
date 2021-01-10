@@ -616,7 +616,7 @@ public class WebUserController implements Serializable {
 
         loggedUserPrivileges = userPrivilegeList(loggedUser);
 
-        prepareDashboards();
+//        prepareDashboards();
         JsfUtil.addSuccessMessage("Successfully Logged");
         userTransactionController.recordTransaction("Successful Login");
         return "/index";
