@@ -90,15 +90,6 @@ public class ApplicationController {
     private List<Area> gnAreas;
     private List<Area> allAreas;
     private final boolean logActivity = true;
-    private Long totalNumberOfRegisteredClientsForAdmin = null;
-    private Long totalNumberOfClinicEnrolmentsForAdmin = null;
-    private Long totalNumberOfClinicVisitsForAdmin = null;
-    private Long totalNumberOfCvsRiskClientsForAdmin = null;
-
-    String riskVariable = "cvs_risk_factor";
-    String riskVal1 = "30-40%";
-    String riskVal2 = ">40%";
-    List<String> riskVals;
 
     // </editor-fold>
     public ApplicationController() {
@@ -284,72 +275,7 @@ public class ApplicationController {
 
     }
 
-    public Long countOfRegistedClients(Institution ins, Area gn) {
-        String j = "select count(c) from Client c "
-                + " where c.retired=:ret ";
-        Map m = new HashMap();
-        m.put("ret", false);
-        if (ins != null) {
-            j += " and c.createInstitution=:ins ";
-            m.put("ins", ins);
-        }
-        if (gn != null) {
-            j += " and c.person.gnArea=:gn ";
-            m.put("gn", gn);
-        }
-        return getClientFacade().countByJpql(j, m);
-    }
-
-    public Long countOfEncounters(List<Institution> clinics, EncounterType ec) {
-        String j = "select count(e) from Encounter e "
-                + " where e.retired=:ret "
-                + " and e.encounterType=:ec "
-                + " and e.createdAt>:d";
-        Map m = new HashMap();
-        m.put("d", CommonController.startOfTheYear());
-        m.put("ec", ec);
-        m.put("ret", false);
-        if (clinics != null && !clinics.isEmpty()) {
-            m.put("ins", clinics);
-            j += " and e.institution in :ins ";
-        }
-        return getEncounterFacade().findLongByJpql(j, m);
-    }
-
-    public long findClientCountEncounterComponentItemMatchCount(
-            List<Institution> ins,
-            Date fromDate,
-            Date toDate,
-            String itemCode,
-            List<String> valueStrings) {
-
-        if (logActivity) {
-
-        }
-        String j;
-        Map m = new HashMap();
-
-        j = "select count(f.encounter) "
-                + " from ClientEncounterComponentItem f "
-                + " where f.retired<>:ret "
-                + " and f.encounter.retired<>:ret ";
-        j += " and f.item.code=:ic ";
-        j += " and f.shortTextValue in :ivs";
-        m.put("ic", itemCode);
-        m.put("ret", true);
-        m.put("ivs", valueStrings);
-        if (ins != null && !ins.isEmpty()) {
-            m.put("ins", ins);
-            j += " and f.encounter.institution in :ins ";
-        }
-        if (fromDate != null && toDate != null) {
-            m.put("fd", fromDate);
-            m.put("td", toDate);
-            j += " and f.encounter.encounterDate between :fd and :td ";
-        }
-//        j += " group by e";
-        return getClientEncounterComponentItemFacade().findLongByJpql(j, m);
-    }
+    
 
     public void reloadQueryComponents() {
         queryComponents = null;
@@ -455,54 +381,7 @@ public class ApplicationController {
         this.areaFacade = areaFacade;
     }
 
-    public Long getTotalNumberOfRegisteredClientsForAdmin() {
-        if (totalNumberOfRegisteredClientsForAdmin == null) {
-            setTotalNumberOfRegisteredClientsForAdmin(countOfRegistedClients(null, null));
-        }
-        return totalNumberOfRegisteredClientsForAdmin;
-    }
-
-    public void setTotalNumberOfRegisteredClientsForAdmin(Long totalNumberOfRegisteredClientsForAdmin) {
-        this.totalNumberOfRegisteredClientsForAdmin = totalNumberOfRegisteredClientsForAdmin;
-    }
-
-    public Long getTotalNumberOfClinicEnrolmentsForAdmin() {
-        if (totalNumberOfClinicEnrolmentsForAdmin == null) {
-            setTotalNumberOfClinicEnrolmentsForAdmin(countOfEncounters(null, EncounterType.Clinic_Enroll));
-        }
-        return totalNumberOfClinicEnrolmentsForAdmin;
-    }
-
-    public void setTotalNumberOfClinicEnrolmentsForAdmin(Long totalNumberOfClinicEnrolmentsForAdmin) {
-        this.totalNumberOfClinicEnrolmentsForAdmin = totalNumberOfClinicEnrolmentsForAdmin;
-    }
-
-    public Long getTotalNumberOfClinicVisitsForAdmin() {
-        if (totalNumberOfClinicVisitsForAdmin == null) {
-            setTotalNumberOfClinicVisitsForAdmin(countOfEncounters(null, EncounterType.Clinic_Visit));
-        }
-        return totalNumberOfClinicVisitsForAdmin;
-    }
-
-    public void setTotalNumberOfClinicVisitsForAdmin(Long totalNumberOfClinicVisitsForAdmin) {
-        this.totalNumberOfClinicVisitsForAdmin = totalNumberOfClinicVisitsForAdmin;
-    }
-
-    public Long getTotalNumberOfCvsRiskClientsForAdmin() {
-        riskVals = new ArrayList<>();
-        riskVals.add(riskVal1);
-        riskVals.add(riskVal2);
-        if (totalNumberOfCvsRiskClientsForAdmin == null) {
-            setTotalNumberOfCvsRiskClientsForAdmin(findClientCountEncounterComponentItemMatchCount(
-                    null, CommonController.startOfTheYear(), new Date(), riskVariable, riskVals));
-        }
-        return totalNumberOfCvsRiskClientsForAdmin;
-    }
-
-    public void setTotalNumberOfCvsRiskClientsForAdmin(Long totalNumberOfCvsRiskClientsForAdmin) {
-        this.totalNumberOfCvsRiskClientsForAdmin = totalNumberOfCvsRiskClientsForAdmin;
-    }
-
+    
     public ClientFacade getClientFacade() {
         return clientFacade;
     }

@@ -1167,7 +1167,6 @@ public class ClientController implements Serializable {
         }
         encounter.setEncounterNumber(encounterController.createClinicEnrollNumber(selectedClinic));
         encounter.setCompleted(false);
-        applicationController.setTotalNumberOfClinicEnrolmentsForAdmin(applicationController.getTotalNumberOfClinicEnrolmentsForAdmin() + 1);
         encounterFacade.create(encounter);
         JsfUtil.addSuccessMessage(selected.getPerson().getNameWithTitle() + " was Successfully Enrolled in " + selectedClinic.getName() + "\nThe Clinic number is " + encounter.getEncounterNumber());
         selectedClientsClinics = null;
@@ -1723,7 +1722,6 @@ public class ClientController implements Serializable {
                     return null;
                 }
             }
-            applicationController.setTotalNumberOfRegisteredClientsForAdmin(applicationController.getTotalNumberOfRegisteredClientsForAdmin() + 1);
         } else {
             if (checkPhnExists(selected.getPhn(), selected)) {
                 JsfUtil.addErrorMessage("PHN already exists.");

@@ -33,7 +33,7 @@
                         <div class="container-fluid">
                             <div class="row mb-2">
                                 <div class="col-sm-6">
-                                    <h1 class="m-0 text-dark">System Administrator's Dashboard</h1>
+                                    <!--<h1 class="m-0 text-dark">System Administrator's Dashboard</h1>-->
                                 </div><!-- /.col -->
                                 <div class="col-sm-6">
                                     <ol class="breadcrumb float-sm-right">
@@ -61,7 +61,7 @@
                                     <div class="small-box bg-info">
                                         <div class="inner">
                                             <h3>
-                                                <h:outputLabel value="#{webUserController.totalNumberOfRegisteredClients}" >
+                                                <h:outputLabel value="#{dashboardController.totalNumberOfRegisteredClients}" >
                                                     <f:convertNumber pattern="#,##0" ></f:convertNumber>
                                                 </h:outputLabel>
                                             </h3>
@@ -85,7 +85,7 @@
                                     <div class="small-box bg-success">
                                         <div class="inner">
                                             <h3>
-                                                <h:outputLabel value="#{webUserController.totalNumberOfClinicEnrolments}" >
+                                                <h:outputLabel value="#{dashboardController.totalNumberOfClinicEnrolments}" >
                                                     <f:convertNumber pattern="#,##0" ></f:convertNumber>
                                                 </h:outputLabel>
                                             </h3>
@@ -108,7 +108,7 @@
                                     <div class="small-box bg-warning">
                                         <div class="inner">
                                             <h3>
-                                                <h:outputLabel value="#{webUserController.totalNumberOfClinicVisits}" >
+                                                <h:outputLabel value="#{dashboardController.totalNumberOfClinicVisits}" >
                                                     <f:convertNumber pattern="#,##0" ></f:convertNumber>
                                                 </h:outputLabel>
                                             </h3>
@@ -131,7 +131,7 @@
                                     <div class="small-box bg-danger">
                                         <div class="inner">
                                             <h3>
-                                                <h:outputLabel value="#{webUserController.totalNumberOfCvsRiskClients}" >
+                                                <h:outputLabel value="#{dashboardController.totalNumberOfCvsRiskClients}" >
                                                     <f:convertNumber pattern="#,##0" ></f:convertNumber>
                                                 </h:outputLabel>
                                             </h3>

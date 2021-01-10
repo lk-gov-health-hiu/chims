@@ -150,20 +150,13 @@ public class WebUserController implements Serializable {
 
     private String locale;
 
-    Long totalNumberOfRegisteredClients;
-    private Long totalNumberOfClinicVisits;
-    private Long totalNumberOfClinicEnrolments;
-    private Long totalNumberOfCvsRiskClients;
+    
 
     private WebUserRole assumedRole;
     private Institution assumedInstitution;
     private Area assumedArea;
     private List<UserPrivilege> assumedPrivileges;
 
-    String riskVariable = "cvs_risk_factor";
-    String riskVal1 = "30-40%";
-    String riskVal2 = ">40%";
-    List<String> riskVals;
 
     int reportTabIndex;
 
@@ -587,7 +580,6 @@ public class WebUserController implements Serializable {
         if (assumedPrivileges == null) {
             loggedUserPrivileges = userPrivilegeList(loggedUser);
         }
-        prepareDashboards();
         JsfUtil.addSuccessMessage("Successfully Logged");
         userTransactionController.recordTransaction("Successful Login");
         return "/index";
@@ -616,7 +608,7 @@ public class WebUserController implements Serializable {
 
         loggedUserPrivileges = userPrivilegeList(loggedUser);
 
-//        prepareDashboards();
+       
         JsfUtil.addSuccessMessage("Successfully Logged");
         userTransactionController.recordTransaction("Successful Login");
         return "/index";
@@ -645,71 +637,14 @@ public class WebUserController implements Serializable {
         }
     }
 
-    public void prepareDashboards() {
-        riskVals = new ArrayList<>();
-        riskVals.add(riskVal1);
-        riskVals.add(riskVal2);
-        if (loggedUser.isInstitutionAdministrator()) {
-            prepareInsAdminDashboard();
-        } else if (loggedUser.isSystemAdministrator()) {
-            prepareSysAdminDashboard();
-        } else if (loggedUser.isMeAdministrator()) {
-            prepareMeAdminDashboard();
-        } else if (loggedUser.isMeSuperUser()) {
-            prepareMeAdminDashboard();
-        } else if (loggedUser.isDoctor()) {
-            prepareDocDashboard();
-        } else if (loggedUser.isNurse()) {
-            prepareNurseDashboard();
-        }
-    }
+   
 
     public String toHome() {
-        prepareDashboards();
-        userTransactionController.recordTransaction("To Home-Dashboard");
+        userTransactionController.recordTransaction("To Home");
         return "/index";
     }
 
-    public void prepareSysAdminDashboard() {
-        totalNumberOfRegisteredClients = applicationController.getTotalNumberOfRegisteredClientsForAdmin();
-        totalNumberOfClinicEnrolments = applicationController.getTotalNumberOfClinicEnrolmentsForAdmin();
-        totalNumberOfClinicVisits = applicationController.getTotalNumberOfClinicVisitsForAdmin();
-        totalNumberOfCvsRiskClients = applicationController.getTotalNumberOfCvsRiskClientsForAdmin();
-    }
-
-    public void prepareMeAdminDashboard() {
-        totalNumberOfRegisteredClients = applicationController.getTotalNumberOfRegisteredClientsForAdmin();
-        totalNumberOfClinicEnrolments = applicationController.getTotalNumberOfClinicEnrolmentsForAdmin();
-        totalNumberOfClinicVisits = applicationController.getTotalNumberOfClinicVisitsForAdmin();
-        totalNumberOfCvsRiskClients = applicationController.getTotalNumberOfCvsRiskClientsForAdmin();
-    }
-
-    public void prepareInsAdminDashboard() {
-        totalNumberOfRegisteredClients = clientController.countOfRegistedClients(loggedUser.getInstitution(), null);
-        totalNumberOfClinicEnrolments = encounterController.countOfEncounters(getInstitutionController().getMyClinics(), EncounterType.Clinic_Enroll);
-        totalNumberOfClinicVisits = encounterController.countOfEncounters(getInstitutionController().getMyClinics(), EncounterType.Clinic_Visit);
-        totalNumberOfCvsRiskClients = reportController.findClientCountEncounterComponentItemMatchCount(
-                getInstitutionController().getMyClinics(), CommonController.startOfTheYear(), new Date(), riskVariable, riskVals);
-    }
-
-    public void prepareDocDashboard() {
-        totalNumberOfRegisteredClients = clientController.countOfRegistedClients(loggedUser.getInstitution().getPoiInstitution(), null);
-        totalNumberOfClinicEnrolments = encounterController.countOfEncounters(getInstitutionController().getMyClinics(), EncounterType.Clinic_Enroll);
-        totalNumberOfClinicVisits = encounterController.countOfEncounters(getInstitutionController().getMyClinics(), EncounterType.Clinic_Visit);
-
-        totalNumberOfCvsRiskClients = reportController.findClientCountEncounterComponentItemMatchCount(
-                getInstitutionController().getMyClinics(), CommonController.startOfTheYear(), new Date(), riskVariable, riskVals);
-
-    }
-
-    public void prepareNurseDashboard() {
-        totalNumberOfRegisteredClients = clientController.countOfRegistedClients(loggedUser.getInstitution().getPoiInstitution(), null);
-        totalNumberOfClinicEnrolments = encounterController.countOfEncounters(getInstitutionController().getMyClinics(), EncounterType.Clinic_Enroll);
-        totalNumberOfClinicVisits = encounterController.countOfEncounters(getInstitutionController().getMyClinics(), EncounterType.Clinic_Visit);
-        totalNumberOfCvsRiskClients = reportController.findClientCountEncounterComponentItemMatchCount(
-                getInstitutionController().getMyClinics(), CommonController.startOfTheYear(), new Date(), riskVariable, riskVals);
-
-    }
+   
 
     public String loginForMobile() {
         loginRequestResponse = "";
@@ -1667,13 +1602,7 @@ public class WebUserController implements Serializable {
         return myPrivilegeRoot;
     }
 
-    public Long getTotalNumberOfRegisteredClients() {
-        return totalNumberOfRegisteredClients;
-    }
-
-    public void setTotalNumberOfRegisteredClients(Long totalNumberOfRegisteredClients) {
-        this.totalNumberOfRegisteredClients = totalNumberOfRegisteredClients;
-    }
+   
 
     public void setMyPrivilegeRoot(TreeNode myPrivilegeRoot) {
         this.myPrivilegeRoot = myPrivilegeRoot;
@@ -1748,9 +1677,7 @@ public class WebUserController implements Serializable {
         this.loggableGnAreas = loggableGnAreas;
     }
 
-    public Long getTotalNumberOfClinicVisits() {
-        return totalNumberOfClinicVisits;
-    }
+  
 
     public int getReportTabIndex() {
         return reportTabIndex;
@@ -1760,9 +1687,7 @@ public class WebUserController implements Serializable {
         this.reportTabIndex = reportTabIndex;
     }
 
-    public void setTotalNumberOfClinicVisits(Long totalNumberOfClinicVisits) {
-        this.totalNumberOfClinicVisits = totalNumberOfClinicVisits;
-    }
+    
 
     public ClientController getClientController() {
         return clientController;
@@ -1772,13 +1697,7 @@ public class WebUserController implements Serializable {
         return encounterController;
     }
 
-    public Long getTotalNumberOfClinicEnrolments() {
-        return totalNumberOfClinicEnrolments;
-    }
-
-    public void setTotalNumberOfClinicEnrolments(Long totalNumberOfClinicEnrolments) {
-        this.totalNumberOfClinicEnrolments = totalNumberOfClinicEnrolments;
-    }
+    
 
     public WebUserRole getAssumedRole() {
         return assumedRole;
@@ -1823,14 +1742,7 @@ public class WebUserController implements Serializable {
         return ups;
     }
 
-    public Long getTotalNumberOfCvsRiskClients() {
-        return totalNumberOfCvsRiskClients;
-    }
-
-    public void setTotalNumberOfCvsRiskClients(Long totalNumberOfCvsRiskClients) {
-        this.totalNumberOfCvsRiskClients = totalNumberOfCvsRiskClients;
-    }
-
+    
     public String getIpAddress() {
         return ipAddress;
     }
