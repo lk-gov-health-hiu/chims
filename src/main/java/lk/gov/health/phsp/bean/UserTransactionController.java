@@ -26,6 +26,7 @@ package lk.gov.health.phsp.bean;
 // <editor-fold defaultstate="collapsed" desc="Imports">
 import javax.enterprise.context.SessionScoped;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -35,15 +36,20 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import lk.gov.health.phsp.entity.UserTransaction;
 import lk.gov.health.phsp.entity.WebUser;
+import lk.gov.health.phsp.facade.ClientFacade;
 import lk.gov.health.phsp.facade.UserTransactionFacade;
+import lk.gov.health.phsp.pojcs.UserTransactionsCount;
 // </editor-fold>
 
 @Named
 @SessionScoped
 public class UserTransactionController implements Serializable {
 // <editor-fold defaultstate="collapsed" desc="EJBs">
+
     @EJB
     private UserTransactionFacade facede;
+    @EJB
+    private ClientFacade clientFacade;
 // </editor-fold>
 
 // <editor-fold defaultstate="collapsed" desc="CDIs">
@@ -56,6 +62,8 @@ public class UserTransactionController implements Serializable {
 // <editor-fold defaultstate="collapsed" desc="Class Variables">
     private UserTransaction selected;
     private List<UserTransaction> items;
+    private List<UserTransactionsCount> suspiciousLogins = new ArrayList<>();
+    private Long loginCount;
     private Date fromDate;
     private Date toDate;
     private String searchText;
@@ -71,11 +79,16 @@ public class UserTransactionController implements Serializable {
 // </editor-fold>
 
 // <editor-fold defaultstate="collapsed" desc="Navigation Functions">
-    public String toSearchUserTransactions(){
+    public String toSearchUserTransactions() {
         items = null;
         return "/webUser/transactions";
     }
-    
+
+    public String toSuspiciousLoginAttempts() {
+        suspiciousLogins = null;
+        return "/webUser/suspicious_logins";
+    }
+
 // </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="Main Functions">
     public void clearSearch() {
@@ -87,8 +100,8 @@ public class UserTransactionController implements Serializable {
         data = null;
     }
 
-    public void fillUserTransaction(){
-        if(applicationController.getUserTransactionTypes()!=null){
+    public void fillUserTransaction() {
+        if (applicationController.getUserTransactionTypes() != null) {
             userTransactionTypes = applicationController.getUserTransactionTypes();
             return;
         }
@@ -98,7 +111,39 @@ public class UserTransactionController implements Serializable {
         userTransactionTypes = getFacede().findString(jpql);
         applicationController.setUserTransactionTypes(userTransactionTypes);
     }
-    
+
+    public void searchSuspiciousLogins() {
+        String j = "select new lk.gov.health.phsp.pojcs.UserTransactionsCount(c, c.webUser, count(c)) "
+                + " from UserTransaction c "
+                + " where c.transactionName='Fail Login Attempt'";
+
+        Map m = new HashMap();
+        j = j + " and c.transactionStart between :fd and :td ";
+
+        m.put("fd", getFromDate());
+        m.put("td", getToDate());
+        
+        if (ip != null && !ip.trim().equals("")) {
+            j += " and c.ipAddress=:ip ";
+            m.put("ip", ip.trim());
+        }
+
+        j = j + " group by c.ipAddress having count(c)>5";
+        j = j + " order by c.webUser.name ";
+
+        List<Object> objs = getClientFacade().findAggregates(j, m);
+        suspiciousLogins = new ArrayList<>();
+        loginCount = 0l;
+        
+        for (Object o : objs) {
+            if (o instanceof UserTransactionsCount) {
+                UserTransactionsCount ic = (UserTransactionsCount) o;
+                suspiciousLogins.add(ic);
+                loginCount += ic.getCount();
+            }
+        }
+    }
+
     public void search() {
         String j = "select u "
                 + " from UserTransaction u "
@@ -124,15 +169,15 @@ public class UserTransactionController implements Serializable {
             j += " and u.transactionData=:data ";
             m.put("data", data.trim());
         }
-        
-        j+=" order by u.id";
+
+        j += " order by u.id";
         items = getFacede().findByJpql(j, m, 1000);
     }
 
     public void recordTransaction(String action) {
         recordTransaction(action, "");
     }
-    
+
     public void recordTransaction(String action, String sessionId) {
         UserTransaction t = new UserTransaction();
         t.setTransactionName(action);
@@ -163,16 +208,15 @@ public class UserTransactionController implements Serializable {
     public UserTransaction getSelected() {
         return selected;
     }
-    
-    
-     public String getData() {
+
+    public String getData() {
         return data;
     }
 
     public void setData(String data) {
         this.data = data;
     }
-    
+
     public void setSelected(UserTransaction selected) {
         this.selected = selected;
     }
@@ -240,9 +284,8 @@ public class UserTransactionController implements Serializable {
     }
 
 // </editor-fold>
-
     public List<String> getUserTransactionTypes() {
-        if(userTransactionTypes==null){
+        if (userTransactionTypes == null) {
             fillUserTransaction();
         }
         return userTransactionTypes;
@@ -251,6 +294,29 @@ public class UserTransactionController implements Serializable {
     public void setUserTransactionTypes(List<String> userTransactionTypes) {
         this.userTransactionTypes = userTransactionTypes;
     }
-   
+
+    public ClientFacade getClientFacade() {
+        return clientFacade;
+    }
+
+    public void setClientFacade(ClientFacade clientFacade) {
+        this.clientFacade = clientFacade;
+    }
+
+    public Long getLoginCount() {
+        return loginCount;
+    }
+
+    public void setLoginCount(Long loginCount) {
+        this.loginCount = loginCount;
+    }
+
+    public List<UserTransactionsCount> getSuspiciousLogins() {
+        return suspiciousLogins;
+    }
+
+    public void setSuspiciousLogins(List<UserTransactionsCount> suspiciousLogins) {
+        this.suspiciousLogins = suspiciousLogins;
+    }
 
 }

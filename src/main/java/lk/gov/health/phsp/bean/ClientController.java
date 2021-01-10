@@ -65,6 +65,8 @@ public class ClientController implements Serializable {
     @Inject
     ApplicationController applicationController;
     @Inject
+    InstitutionApplicationController institutionApplicationController;
+    @Inject
     private WebUserController webUserController;
     @Inject
     private EncounterController encounterController;
