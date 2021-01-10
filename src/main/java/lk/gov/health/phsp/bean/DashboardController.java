@@ -70,13 +70,22 @@ public class DashboardController {
     }
 
     public void prepareSystemDashboard() {
-        riskVals = new ArrayList<>();
-        riskVals.add(riskVal1);
-        riskVals.add(riskVal2);
-        totalNumberOfRegisteredClients = findTotalNumberOfRegisteredClientsForAdmin();
-        totalNumberOfClinicEnrolments = findTotalNumberOfClinicEnrolmentsForAdmin();
-        totalNumberOfClinicVisits = findTotalNumberOfClinicVisitsForAdmin();
-        totalNumberOfCvsRiskClients = findTotalNumberOfCvsRiskClientsForAdmin();
+
+        if (totalNumberOfRegisteredClients == null) {
+            totalNumberOfRegisteredClients = findTotalNumberOfRegisteredClientsForAdmin();
+        }
+        if (totalNumberOfClinicEnrolments == null) {
+            totalNumberOfClinicEnrolments = findTotalNumberOfClinicEnrolmentsForAdmin();
+        }
+        if (totalNumberOfClinicVisits == null) {
+            totalNumberOfClinicVisits = findTotalNumberOfClinicVisitsForAdmin();
+        }
+        if (totalNumberOfCvsRiskClients == null) {
+            riskVals = new ArrayList<>();
+            riskVals.add(riskVal1);
+            riskVals.add(riskVal2);
+            totalNumberOfCvsRiskClients = findTotalNumberOfCvsRiskClientsForAdmin();
+        }
     }
 
     public Long findTotalNumberOfRegisteredClientsForAdmin() {
@@ -149,21 +158,16 @@ public class DashboardController {
         m.put("ic", itemCode);
         m.put("ret", true);
         m.put("ivs", valueStrings);
-//        if (ins != null && !ins.isEmpty()) {
-//            m.put("ins", ins);
-//            j += " and f.encounter.institution in :ins ";
-//        }
         if (fromDate != null && toDate != null) {
             m.put("fd", fromDate);
             m.put("td", toDate);
             j += " and f.createdAt between :fd and :td ";
         }
-//        j += " group by e";
         return clientEncounterComponentItemFacade.findLongByJpql(j, m);
     }
 
     public Long getTotalNumberOfRegisteredClients() {
-        if(totalNumberOfRegisteredClients==null){
+        if (totalNumberOfRegisteredClients == null) {
             prepareSystemDashboard();
         }
         return totalNumberOfRegisteredClients;
@@ -174,7 +178,7 @@ public class DashboardController {
     }
 
     public Long getTotalNumberOfClinicVisits() {
-        if(totalNumberOfClinicVisits==null){
+        if (totalNumberOfClinicVisits == null) {
             prepareSystemDashboard();
         }
         return totalNumberOfClinicVisits;
@@ -185,7 +189,7 @@ public class DashboardController {
     }
 
     public Long getTotalNumberOfClinicEnrolments() {
-        if(totalNumberOfClinicEnrolments==null){
+        if (totalNumberOfClinicEnrolments == null) {
             prepareSystemDashboard();
         }
         return totalNumberOfClinicEnrolments;
