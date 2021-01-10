@@ -593,6 +593,58 @@ public class WebUserController implements Serializable {
         return "/index";
     }
 
+    public String loginNew() {
+        loggableInstitutions = null;
+        loggablePmcis = null;
+        loggableGnAreas = null;
+        institutionController.setMyClinics(null);
+        if (userName == null || userName.trim().equals("")) {
+            JsfUtil.addErrorMessage("Please enter a Username");
+            return "";
+        }
+
+        if (password == null || password.trim().equals("")) {
+            JsfUtil.addErrorMessage("Please enter the Password");
+            return "";
+        }
+
+        if (!checkLoginNew()) {
+            JsfUtil.addErrorMessage("Username/Password Error. Please retry.");
+            userTransactionController.recordTransaction("Failed Login Attempt", userName);
+            return "";
+        }
+
+        loggedUserPrivileges = userPrivilegeList(loggedUser);
+
+        prepareDashboards();
+        JsfUtil.addSuccessMessage("Successfully Logged");
+        userTransactionController.recordTransaction("Successful Login");
+        return "/index";
+    }
+
+    private boolean checkLoginNew() {
+        if (getFacade() == null) {
+            JsfUtil.addErrorMessage("Server Error");
+            return false;
+        }
+
+        String temSQL;
+        temSQL = "SELECT u FROM WebUser u WHERE lower(u.name)=:userName and u.retired =:ret";
+        Map m = new HashMap();
+        m.put("userName", userName.trim().toLowerCase());
+        m.put("ret", false);
+        loggedUser = getFacade().findFirstByJpql(temSQL, m);
+        if (loggedUser == null) {
+            return false;
+        }
+        if (commonController.matchPassword(password, loggedUser.getWebUserPassword())) {
+            return true;
+        } else {
+            loggedUser = null;
+            return false;
+        }
+    }
+
     public void prepareDashboards() {
         riskVals = new ArrayList<>();
         riskVals.add(riskVal1);
