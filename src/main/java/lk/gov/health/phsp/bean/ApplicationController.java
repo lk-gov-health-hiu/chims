@@ -29,6 +29,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import javax.ejb.EJB;
 import javax.inject.Named;
 import javax.enterprise.context.ApplicationScoped;
@@ -36,7 +37,10 @@ import javax.inject.Inject;
 import lk.gov.health.phsp.entity.Area;
 import lk.gov.health.phsp.entity.Institution;
 import lk.gov.health.phsp.entity.Item;
+import lk.gov.health.phsp.entity.Phn;
 import lk.gov.health.phsp.entity.QueryComponent;
+import lk.gov.health.phsp.enums.AreaType;
+import lk.gov.health.phsp.facade.AreaFacade;
 import lk.gov.health.phsp.enums.EncounterType;
 import lk.gov.health.phsp.enums.InstitutionType;
 import lk.gov.health.phsp.enums.WebUserRole;
@@ -44,6 +48,7 @@ import lk.gov.health.phsp.facade.ClientEncounterComponentItemFacade;
 import lk.gov.health.phsp.facade.ClientFacade;
 import lk.gov.health.phsp.facade.EncounterFacade;
 import lk.gov.health.phsp.facade.InstitutionFacade;
+import lk.gov.health.phsp.facade.PhnFacade;
 import lk.gov.health.phsp.facade.QueryComponentFacade;
 // </editor-fold>
 
@@ -57,19 +62,23 @@ public class ApplicationController {
 
 // <editor-fold defaultstate="collapsed" desc="EJBs">
     @EJB
+    private AreaFacade areaFacade;
+    @EJB
     private InstitutionFacade institutionFacade;
     @EJB
-    private QueryComponentFacade queryComponentFacade;    
+    private QueryComponentFacade queryComponentFacade;
     @EJB
     private ClientFacade clientFacade;
     @EJB
     private EncounterFacade encounterFacade;
     @EJB
-    private ClientEncounterComponentItemFacade clientEncounterComponentItemFacade;    
-
+    private ClientEncounterComponentItemFacade clientEncounterComponentItemFacade;
+    @EJB
+    PhnFacade phnFacade;
 // </editor-fold>    
     @Inject
     private UserTransactionController userTransactionController;
+
 // <editor-fold defaultstate="collapsed" desc="Class Variables">
     private boolean demoSetup = false;
     private boolean production = true;
@@ -78,6 +87,8 @@ public class ApplicationController {
     private List<Item> items;
     private List<String> userTransactionTypes;
     private List<Institution> institutions;
+    private List<Area> gnAreas;
+    private List<Area> allAreas;
     private final boolean logActivity = true;
     private Long totalNumberOfRegisteredClientsForAdmin = null;
     private Long totalNumberOfClinicEnrolmentsForAdmin = null;
@@ -87,9 +98,9 @@ public class ApplicationController {
     String riskVariable = "cvs_risk_factor";
     String riskVal1 = "30-40%";
     String riskVal2 = ">40%";
-    List<String> riskVals;    
+    List<String> riskVals;
+
     // </editor-fold>
-    
     public ApplicationController() {
     }
 
@@ -115,6 +126,80 @@ public class ApplicationController {
         getInstitutionFacade().edit(ins);
 
         return phn;
+    }
+
+    public String createNewPersonalHealthNumberformat(Institution pins) {
+        if (pins == null) {
+            return null;
+        }
+        Institution ins = getInstitutionFacade().find(pins.getId());
+        if (ins == null) {
+            return null;
+        }
+        String alpha = "BCDFGHJKMPQRTVWXY";
+        String numeric = "23456789";
+        String alphanum = alpha + numeric;
+
+        StringBuilder sb = new StringBuilder();
+        Random random = new Random();
+
+        int length = 6;
+        for (int i = 0; i < length; i++) {
+            int index = random.nextInt(alphanum.length());
+            char randomChar = alphanum.charAt(index);
+            sb.append(randomChar);
+        }
+
+        String randomString = sb.toString();
+
+        String poi = ins.getPoiNumber();
+        String checkDigit = calculateCheckDigit(poi + randomString);
+        String phn = poi + randomString + checkDigit;
+
+        return phn;
+    }
+
+    public String createNewPersonalHealthNumberRandomly(Institution pins) {
+        if (pins == null) {
+            return null;
+        }
+        Institution ins = getInstitutionFacade().find(pins.getId());
+        if (ins == null) {
+            return null;
+        }
+
+        String hex;
+        Double maxDbl = Math.pow(16, 7);
+        long leftLimit = 1L;
+        long rightLimit = maxDbl.longValue();
+        long generatedLong = leftLimit + (long) (Math.random() * (rightLimit - leftLimit));
+        hex = Long.toHexString(generatedLong);
+
+        hex = "0000000" + hex;
+        hex = hex.substring(hex.length() - 7, hex.length());
+
+        String poi = ins.getPoiNumber();
+        String checkDigit = calculateCheckDigit(poi + hex);
+        String phn = poi + hex + checkDigit;
+
+        boolean creationFailed;
+        do {
+            creationFailed = !savePhn(phn, ins);
+        } while (creationFailed);
+
+        return phn;
+
+    }
+
+    private boolean savePhn(String phn, Institution poi) {
+        try {
+            Phn p = new Phn(phn, poi);
+            phnFacade.create(p);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+
     }
 
     public static boolean validateHin(String validatingHin) {
@@ -158,6 +243,38 @@ public class ApplicationController {
         return digit.substring(digit.length() - 1);
     }
 
+    public List<Area> getAllGnAreas() {
+        List<Area> tas = new ArrayList<>();
+        for (Area a : getAllAreas()) {
+            if (a.getType() == AreaType.GN) {
+                tas.add(a);
+            }
+        }
+        return tas;
+    }
+
+    public List<Area> completeGnAreas(String qry) {
+        List<Area> tas = new ArrayList<>();
+        for (Area a : getGnAreas()) {
+            if (a.getName().toLowerCase().contains(qry.trim().toLowerCase())) {
+                tas.add(a);
+            }
+        }
+        return tas;
+    }
+
+    public List<Area> completeGnAreas(String qry, Area dsArea) {
+        List<Area> tas = new ArrayList<>();
+        for (Area a : getGnAreas()) {
+            if (a.getName().toLowerCase().contains(qry.trim().toLowerCase())) {
+                if (a.getParentArea().equals(dsArea)) {
+                    tas.add(a);
+                }
+            }
+        }
+        return tas;
+    }
+
     private List<QueryComponent> findQueryComponents() {
         String j = "select q from QueryComponent q "
                 + " where q.retired=false "
@@ -166,7 +283,7 @@ public class ApplicationController {
         return queryComponents = getQueryComponentFacade().findByJpql(j, m);
 
     }
-    
+
     public Long countOfRegistedClients(Institution ins, Area gn) {
         String j = "select count(c) from Client c "
                 + " where c.retired=:ret ";
@@ -182,7 +299,7 @@ public class ApplicationController {
         }
         return getClientFacade().countByJpql(j, m);
     }
-    
+
     public Long countOfEncounters(List<Institution> clinics, EncounterType ec) {
         String j = "select count(e) from Encounter e "
                 + " where e.retired=:ret "
@@ -198,20 +315,20 @@ public class ApplicationController {
         }
         return getEncounterFacade().findLongByJpql(j, m);
     }
-    
+
     public long findClientCountEncounterComponentItemMatchCount(
             List<Institution> ins,
             Date fromDate,
             Date toDate,
             String itemCode,
             List<String> valueStrings) {
-        
+
         if (logActivity) {
 
         }
         String j;
         Map m = new HashMap();
-        
+
         j = "select count(f.encounter) "
                 + " from ClientEncounterComponentItem f "
                 + " where f.retired<>:ret "
@@ -259,8 +376,6 @@ public class ApplicationController {
     public boolean isDemoSetup() {
         return demoSetup;
     }
-
-    
 
     public void setDemoSetup(boolean demoSetup) {
         this.demoSetup = demoSetup;
@@ -319,6 +434,25 @@ public class ApplicationController {
 
     public void setProduction(boolean production) {
         this.production = production;
+    }
+
+    public List<Area> getGnAreas() {
+        if (gnAreas == null) {
+            gnAreas = getAllGnAreas();
+        }
+        return gnAreas;
+    }
+
+    public void setGnAreas(List<Area> gnAreas) {
+        this.gnAreas = gnAreas;
+    }
+
+    public AreaFacade getAreaFacade() {
+        return areaFacade;
+    }
+
+    public void setAreaFacade(AreaFacade areaFacade) {
+        this.areaFacade = areaFacade;
     }
 
     public Long getTotalNumberOfRegisteredClientsForAdmin() {
@@ -391,5 +525,25 @@ public class ApplicationController {
 
     public void setClientEncounterComponentItemFacade(ClientEncounterComponentItemFacade clientEncounterComponentItemFacade) {
         this.clientEncounterComponentItemFacade = clientEncounterComponentItemFacade;
+    }
+
+    public List<Area> getAllAreas() {
+        if (allAreas == null) {
+            allAreas = fillAllAreas();
+        }
+        return allAreas;
+    }
+
+    private List<Area> fillAllAreas() {
+        String j;
+        Map m = new HashMap();
+        j = "select a "
+                + " from Area a "
+                + " where a.name is not null "
+                + " and a.type=:t";
+
+        m.put("t", AreaType.GN);
+        j += " order by a.name";
+        return getAreaFacade().findByJpql(j, m);
     }
 }

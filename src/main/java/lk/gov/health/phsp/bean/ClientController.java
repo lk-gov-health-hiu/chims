@@ -112,6 +112,7 @@ public class ClientController implements Serializable {
     private YearMonthDay yearMonthDay;
     private Institution selectedClinic;
     private int profileTabActiveIndex;
+    private Integer numberOfPhnToReserve;
     private boolean goingToCaptureWebCamPhoto;
     private UploadedFile file;
     private Date clinicDate;
@@ -161,6 +162,11 @@ public class ClientController implements Serializable {
         selectedClientsLastFiveClinicVisits = null;
         userTransactionController.recordTransaction("To Client Profile");
         return "/client/profile";
+    }
+
+    public String toReserverPhn() {
+        numberOfPhnToReserve = 0;
+        return "/client/reserve_phn";
     }
 
     public String toAddNewClient() {
@@ -261,25 +267,26 @@ public class ClientController implements Serializable {
 
     // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="Functions">
-    public List<Area> getGnAreasForTheSelectedClient(String qry) {
+    public List<Area> completeClientsGnArea(String qry) {
         List<Area> areas = new ArrayList<>();
         if (selected == null) {
             return areas;
         }
         if (selected.getPerson().getDsArea() == null) {
-            return areaController.getAreas(AreaType.GN, null, null, qry);
+            return applicationController.completeGnAreas(qry);
         } else {
-            return areaController.getAreas(AreaType.GN, selected.getPerson().getDsArea(), null, qry);
+            return applicationController.completeGnAreas(qry,selected.getPerson().getDsArea());
         }
     }
 
-    public void clearRegisterNewExistsValues(){
+    public void clearRegisterNewExistsValues() {
         phnExists = false;
         nicExists = false;
         emailExists = false;
         phone1Exists = false;
         ssNumberExists = false;
     }
+
     public void clearExistsValues() {
         phnExists = false;
         nicExists = false;
@@ -318,8 +325,8 @@ public class ClientController implements Serializable {
         } else {
             return true;
         }
-
     }
+
 
     public void checkNicExists() {
         nicExists = null;
@@ -357,7 +364,7 @@ public class ClientController implements Serializable {
         }
 
     }
-    
+
     public void checkEmailExists() {
         emailExists = null;
         if (selected == null) {
@@ -374,7 +381,7 @@ public class ClientController implements Serializable {
         }
         emailExists = checkEmailExists(selected.getPerson().getEmail(), selected);
     }
-    
+
     public Boolean checkEmailExists(String email, Client c) {
         String jpql = "select count(c) from Client c "
                 + " where c.retired=:ret "
@@ -394,7 +401,7 @@ public class ClientController implements Serializable {
         }
 
     }
-    
+
     public void checkPhone1Exists() {
         phone1Exists = null;
         if (selected == null) {
@@ -411,7 +418,7 @@ public class ClientController implements Serializable {
         }
         phone1Exists = checkPhone1Exists(selected.getPerson().getPhone1(), selected);
     }
-    
+
     public Boolean checkPhone1Exists(String phone1, Client c) {
         String jpql = "select count(c) from Client c "
                 + " where c.retired=:ret "
@@ -431,7 +438,7 @@ public class ClientController implements Serializable {
         }
 
     }
-    
+
     public void checkSsNumberExists() {
         ssNumberExists = null;
         if (selected == null) {
@@ -448,7 +455,7 @@ public class ClientController implements Serializable {
         }
         ssNumberExists = checkSsNumberExists(selected.getPerson().getSsNumber(), selected);
     }
-    
+
     public Boolean checkSsNumberExists(String ssNumber, Client c) {
         String jpql = "select count(c) from Client c "
                 + " where c.retired=:ret "
@@ -542,7 +549,7 @@ public class ClientController implements Serializable {
             }
         }
         userTransactionController.recordTransaction("Update Client Date Of Birth");
-    }   
+    }
 
     public Long countOfRegistedClients(Institution ins, Area gn) {
         String j = "select count(c) from Client c "
@@ -1160,7 +1167,7 @@ public class ClientController implements Serializable {
         }
         encounter.setEncounterNumber(encounterController.createClinicEnrollNumber(selectedClinic));
         encounter.setCompleted(false);
-        applicationController.setTotalNumberOfClinicEnrolmentsForAdmin(applicationController.getTotalNumberOfClinicEnrolmentsForAdmin()+1);
+        applicationController.setTotalNumberOfClinicEnrolmentsForAdmin(applicationController.getTotalNumberOfClinicEnrolmentsForAdmin() + 1);
         encounterFacade.create(encounter);
         JsfUtil.addSuccessMessage(selected.getPerson().getNameWithTitle() + " was Successfully Enrolled in " + selectedClinic.getName() + "\nThe Clinic number is " + encounter.getEncounterNumber());
         selectedClientsClinics = null;
@@ -1185,16 +1192,7 @@ public class ClientController implements Serializable {
             JsfUtil.addErrorMessage("A Point of Issue is NOT assigned to your Institution. Please discuss with the System Administrator.");
             return;
         }
-        selected.setPhn(applicationController.createNewPersonalHealthNumber(poiIns));
-
-        if (webUserController.getLoggedUser().getInstitution().getPoiInstitution() != null) {
-            webUserController.getLoggedUser().getInstitution().setPoiInstitution(institutionController.getInstitutionById(webUserController.getLoggedUser().getInstitution().getPoiInstitution().getId()));
-//            //System.out.println(webUserController.getLoggedUser().getInstitution().getPoiInstitution().getLastHin());
-        } else {
-            webUserController.getLoggedUser().setInstitution(institutionController.getInstitutionById(webUserController.getLoggedUser().getInstitution().getId()));
-//            //System.out.println("Last HIN Case 2 = " + webUserController.getLoggedUser().getInstitution().getLastHin());
-        }
-
+        selected.setPhn(applicationController.createNewPersonalHealthNumberformat(poiIns));
     }
 
     public String generateNewPhn(Institution ins) {
@@ -1212,7 +1210,7 @@ public class ClientController implements Serializable {
             System.out.println("A Point of Issue is NOT assigned to the Institution. Please discuss with the System Administrator.");
             return null;
         }
-        return applicationController.createNewPersonalHealthNumber(poiIns);
+        return applicationController.createNewPersonalHealthNumberformat(poiIns);
     }
 
     public void gnAreaChanged() {
@@ -1669,7 +1667,16 @@ public class ClientController implements Serializable {
     }
 
     public String saveClient() {
-        Institution createdIns;
+
+        System.out.println("saveClient");
+        
+        if (selected == null) {
+            JsfUtil.addErrorMessage("Nothing to save");
+            return "";
+        }
+
+        Institution createdIns = null;
+
         if (selected.getCreateInstitution() == null) {
             if (webUserController.getLoggedUser().getInstitution().getPoiInstitution() != null) {
                 createdIns = webUserController.getLoggedUser().getInstitution().getPoiInstitution();
@@ -1677,13 +1684,86 @@ public class ClientController implements Serializable {
                 createdIns = webUserController.getLoggedUser().getInstitution();
             }
             selected.setCreateInstitution(createdIns);
+        }else{
+            createdIns = selected.getCreateInstitution();
         }
+
+       
+        
+        if (createdIns == null || createdIns.getPoiNumber() == null || createdIns.getPoiNumber().trim().equals("")) {
+            JsfUtil.addErrorMessage("The institution you logged has no POI. Can not generate a PHN.");
+            return "";
+        }
+
+        
+        if (selected.getPhn() == null || selected.getPhn().trim().equals("")) {
+            String newPhn = applicationController.createNewPersonalHealthNumberformat(createdIns);
+
+            int count = 0;
+            while (checkPhnExists(newPhn, null)) {
+                newPhn = applicationController.createNewPersonalHealthNumberformat(createdIns);
+                count++;
+                if (count > 100) {
+                    JsfUtil.addErrorMessage("Generating New PHN Failed. Client NOT saved. Please contact System Administrator.");
+                    return "";
+                }
+            }
+            selected.setPhn(newPhn);
+        }
+
         if (selected.getId() == null) {
+            if (checkPhnExists(selected.getPhn(), null)) {
+                JsfUtil.addErrorMessage("PHN already exists.");
+                return null;
+            }
+            if (selected.getPerson().getNic() != null && !selected.getPerson().getNic().trim().equals("")) {
+
+                if (checkNicExists(selected.getPerson().getNic(), null)) {
+                    JsfUtil.addErrorMessage("NIC already exists.");
+                    return null;
+                }
+            }
             applicationController.setTotalNumberOfRegisteredClientsForAdmin(applicationController.getTotalNumberOfRegisteredClientsForAdmin() + 1);
+        } else {
+            if (checkPhnExists(selected.getPhn(), selected)) {
+                JsfUtil.addErrorMessage("PHN already exists.");
+                return null;
+            }
+            if (selected.getPerson().getNic() != null && !selected.getPerson().getNic().trim().equals("")) {
+                if (checkNicExists(selected.getPerson().getNic(), selected)) {
+                    JsfUtil.addErrorMessage("NIC already exists.");
+                    return null;
+                }
+            }
         }
-        saveClient(selected);        
+        saveClient(selected);
         JsfUtil.addSuccessMessage("Saved.");
         return toClientProfile();
+    }
+
+    public void reserverPhn() {
+        Institution createdIns;
+
+        if (webUserController.getLoggedUser().getInstitution().getPoiInstitution() != null) {
+            createdIns = webUserController.getLoggedUser().getInstitution().getPoiInstitution();
+        } else {
+            createdIns = webUserController.getLoggedUser().getInstitution();
+        }
+
+        if (createdIns == null) {
+            JsfUtil.addErrorMessage("No POI");
+            return;
+        }
+
+        if (numberOfPhnToReserve == null) {
+            JsfUtil.addErrorMessage("No Numner of PHN to add");
+            return;
+        }
+
+        for (int i = 0; i > numberOfPhnToReserve; i++) {
+
+        }
+
     }
 
     public String saveClient(Client c) {
@@ -2192,7 +2272,7 @@ public class ClientController implements Serializable {
 
     public List<Encounter> getSelectedClientsLastFiveClinicVisits() {
         if (selectedClientsLastFiveClinicVisits == null) {
-            selectedClientsLastFiveClinicVisits = fillEncounters(selected, InstitutionType.Clinic, EncounterType.Clinic_Visit, true,5);
+            selectedClientsLastFiveClinicVisits = fillEncounters(selected, InstitutionType.Clinic, EncounterType.Clinic_Visit, true, 5);
 
         }
         return selectedClientsLastFiveClinicVisits;
@@ -2216,6 +2296,14 @@ public class ClientController implements Serializable {
 
     public void setPhone1Exists(Boolean phone1Exists) {
         this.phone1Exists = phone1Exists;
+    }
+
+    public Integer getNumberOfPhnToReserve() {
+        return numberOfPhnToReserve;
+    }
+
+    public void setNumberOfPhnToReserve(Integer numberOfPhnToReserve) {
+        this.numberOfPhnToReserve = numberOfPhnToReserve;
     }
 
     // </editor-fold>
