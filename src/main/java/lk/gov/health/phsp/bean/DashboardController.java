@@ -76,7 +76,7 @@ public class DashboardController {
         totalNumberOfRegisteredClients = findTotalNumberOfRegisteredClientsForAdmin();
         totalNumberOfClinicEnrolments = findTotalNumberOfClinicEnrolmentsForAdmin();
         totalNumberOfClinicVisits = findTotalNumberOfClinicVisitsForAdmin();
-        totalNumberOfCvsRiskClients = findTotalNumberOfCvsRiskClientsForAdmin();
+//        totalNumberOfCvsRiskClients = findTotalNumberOfCvsRiskClientsForAdmin();
     }
 
     public Long findTotalNumberOfRegisteredClientsForAdmin() {
@@ -197,9 +197,9 @@ public class DashboardController {
     }
 
     public Long getTotalNumberOfCvsRiskClients() {
-        if (totalNumberOfCvsRiskClients == null) {
-            prepareSystemDashboard();
-        }
+//        if (totalNumberOfCvsRiskClients == null) {
+//            prepareSystemDashboard();
+//        }
         return totalNumberOfCvsRiskClients;
     }
 
