@@ -22,11 +22,11 @@
                     </f:facet>
                     <h:form>
                         <p:accordionPanel style="width: 24rem;" activeIndex="#{webUserController.reportTabIndex}"
-                                          
+
                                           >
-                            
+
                             <p:ajax event="tabChange" update="@this" />
-                            <p:tab title="Summeries"  >
+                            <p:tab title="Excel Templates"  >
                                 <h:panelGrid columns="1" >
                                     <p:commandButton value="Monthly Institution Summeries"   style="width:20em;margin:auto;"
                                                      action="#{reportController.toInstitutionMonthlySummeries()}"
@@ -40,21 +40,27 @@
                                                      action="#{reportController.toViewMySummeries()}"
                                                      ajax="false"></p:commandButton>
 
+                                    
+                                </h:panelGrid>
+
+                            </p:tab>
+
+                            <p:tab title="Counts"  >
+                                <h:panelGrid columns="1" >
                                     <p:commandButton value="Institution-vice Client Registrations"   style="width:20em;margin:auto;"
                                                      action="#{reportController.toViewClientRegistrationsByInstitution()}"
                                                      ajax="false"></p:commandButton>
-                                    
+
                                     <p:commandButton value="District vice Client Registrations" style="width:20em;margin:auto;"
                                                      action="#{reportController.toViewClientRegistrationsByDistrict()}"
                                                      rendered="#{webUserController.hasPrivilege('System_Administration')}"
                                                      ajax="false"></p:commandButton>
-                                    
+
                                     <p:commandButton value="Province vice Client Registrations" style="width:20em;margin:auto;"
                                                      action="#{reportController.toViewClientRegistrationsByProvince()}"
                                                      rendered="#{webUserController.hasPrivilege('System_Administration')}"
                                                      ajax="false"></p:commandButton>
                                 </h:panelGrid>
-
                             </p:tab>
 
                             <p:tab title="Lists" >
