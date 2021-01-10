@@ -97,6 +97,7 @@ import lk.gov.health.phsp.facade.QueryComponentFacade;
 import lk.gov.health.phsp.facade.StoredQueryResultFacade;
 import lk.gov.health.phsp.facade.UploadFacade;
 import lk.gov.health.phsp.facade.util.JsfUtil;
+import lk.gov.health.phsp.pojcs.AreaCount;
 import lk.gov.health.phsp.pojcs.ClientBasicData;
 import lk.gov.health.phsp.pojcs.EncounterBasicData;
 import lk.gov.health.phsp.pojcs.InstitutionCount;
@@ -189,6 +190,8 @@ public class ReportController implements Serializable {
     private List<StoredQueryResult> reportResults;
     private List<InstitutionCount> institutionCounts;
     private Long reportCount;
+    private List<AreaCount> areaCounts;
+    private Long areaRepCount;
     private DesignComponentFormSet designingComponentFormSet;
     private List<DesignComponentFormItem> designComponentFormItems;
     private DesignComponentFormItem designComponentFormItem;
@@ -376,12 +379,11 @@ public class ReportController implements Serializable {
         m.put("t", EncounterType.Clinic_Visit);
         m.put("fd", fromDate);
         m.put("td", toDate);
-        
+
         List<ClientEncounterComponentItem> cis = clientEncounterComponentItemFacade.findByJpql(j, m);
-        
+
         //String phn, String gnArea, String institution, Date dataOfBirth, Date encounterAt, String sex
 //        List<Object> objs = getClientFacade().findAggregates(j, m);
-
         String FILE_NAME = "client_values" + "_" + (new Date()) + ".xlsx";
         String mimeType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
 
@@ -542,7 +544,7 @@ public class ReportController implements Serializable {
         try (FileOutputStream outputStream = new FileOutputStream(newFile)) {
             workbook.write(outputStream);
         } catch (Exception e) {
-           
+
         }
 
         InputStream stream;
@@ -550,7 +552,7 @@ public class ReportController implements Serializable {
             stream = new FileInputStream(newFile);
             resultExcelFile = new DefaultStreamedContent(stream, mimeType, FILE_NAME);
         } catch (FileNotFoundException ex) {
-            
+
         }
     }
 
@@ -665,7 +667,7 @@ public class ReportController implements Serializable {
                 sqr.setResultQuarter(getQuarter());
                 break;
             case Monthly:
-                
+
                 sqr.setResultFrom(CommonController.startOfTheMonth(getYear(), getMonth()));
                 sqr.setResultTo(CommonController.endOfTheMonth(getYear(), getMonth()));
                 sqr.setResultYear(getYear());
@@ -920,7 +922,7 @@ public class ReportController implements Serializable {
     }
 
     public String toViewMySummeries() {
-        
+
         listMyReports();
         userTransactionController.recordTransaction("To View My Summeries");
         return "/reports/summaries/my_summaries";
@@ -1180,7 +1182,6 @@ public class ReportController implements Serializable {
 
             Iterator<Row> iterator = sheet.iterator();
 
-
             while (iterator.hasNext()) {
 
                 Row currentRow = iterator.next();
@@ -1216,7 +1217,6 @@ public class ReportController implements Serializable {
                     }
 
                 }
-               
 
                 excelFile.close();
 
@@ -1230,24 +1230,23 @@ public class ReportController implements Serializable {
 
             }
         } catch (FileNotFoundException e) {
-            
+
         } catch (IOException e) {
-            
+
         }
 
     }
 
     public Long findReplaceblesInCalculationString(String text, List<Encounter> ens) {
-       
 
         Long l = 0l;
 
         if (ens == null) {
-           
+
             return l;
         }
         if (ens.isEmpty()) {
-           
+
             l = 0l;
             return l;
         }
@@ -1263,18 +1262,18 @@ public class ReportController implements Serializable {
 
         while (m.find()) {
             String block = m.group(1);
-           
+
             QueryComponent qc = getQueryComponentController().findByCode(block);
             if (qc == null) {
-              
+
                 l = null;
                 return l;
 
             } else {
-              
+
                 if (qc.getQueryType() == QueryType.Encounter_Count) {
                     List<QueryComponent> criteria = getQueryComponentController().criteria(qc);
-                   
+
                     if (criteria == null || criteria.isEmpty()) {
                         l = Long.valueOf(ens.size());
                         return l;
@@ -1290,7 +1289,6 @@ public class ReportController implements Serializable {
 
         }
 
-       
         return l;
 
     }
@@ -1305,7 +1303,6 @@ public class ReportController implements Serializable {
         if (!qi.getItem().getCode().equalsIgnoreCase(q.getItem().getCode())) {
             return false;
         }
-        
 
         boolean m = false;
         Integer int1 = null;
@@ -1316,9 +1313,9 @@ public class ReportController implements Serializable {
         Long lng2 = null;
         Item itemVariable = null;
         Item itemValue = null;
-    
+
         if (q.getMatchType() == QueryCriteriaMatchType.Variable_Value_Check) {
-          
+
             switch (q.getQueryDataType()) {
                 case integer:
                     int1 = q.getIntegerNumberValue();
@@ -1351,8 +1348,6 @@ public class ReportController implements Serializable {
                     }
 
                     if (itemValue != null && itemVariable != null) {
-
-                        
 
                         if (itemValue.getCode().equals(qi.getItemValue().getCode())) {
                             m = true;
@@ -1429,12 +1424,12 @@ public class ReportController implements Serializable {
                     }
             }
         }
-      
+
         return m;
     }
 
     public Long findMatchingCount(List<Encounter> encs, List<QueryComponent> qrys) {
-       
+
         Long c = 0l;
         for (Encounter e : encs) {
             List<ClientEncounterComponentItem> is = clientEncounterComponentItemController.findClientEncounterComponentItems(e);
@@ -1486,7 +1481,6 @@ public class ReportController implements Serializable {
         rtp.setYear(CommonController.getYear(CommonController.startOfTheLastQuarter()));
         rtp.setQuarter(CommonController.getQuarter(CommonController.startOfTheLastQuarter()));
 
-
         toDownloadNcdReport(institution, rtp);
     }
 
@@ -1529,6 +1523,18 @@ public class ReportController implements Serializable {
         }
         userTransactionController.recordTransaction("To View Client Registrations By Institution");
         return action;
+    }
+
+    public String toViewClientRegistrationsByDistrict() {
+        areaCounts = null;
+        areaRepCount = null;
+        return "/reports/client_registrations/for_system_by_dis";
+    }
+
+    public String toViewClientRegistrationsByProvince() {
+        areaCounts = null;
+        areaRepCount = null;
+        return "/reports/client_registrations/for_system_by_pro";
     }
 
     public String toViewClientRegistrations() {
@@ -1694,8 +1700,6 @@ public class ReportController implements Serializable {
             }
         }
 
-       
-        
         List<Object> objs = getClientFacade().findAggregates(j, m);
 
         String FILE_NAME = "client_registrations" + "_" + (new Date()) + ".xlsx";
@@ -1798,7 +1802,7 @@ public class ReportController implements Serializable {
         try (FileOutputStream outputStream = new FileOutputStream(newFile)) {
             workbook.write(outputStream);
         } catch (Exception e) {
-           
+
         }
 
         InputStream stream;
@@ -1806,11 +1810,10 @@ public class ReportController implements Serializable {
             stream = new FileInputStream(newFile);
             resultExcelFile = new DefaultStreamedContent(stream, mimeType, FILE_NAME);
         } catch (FileNotFoundException ex) {
-            
+
         }
 
     }
-
 
     public void fillRegistrationsOfClientsByInstitution() {
 
@@ -1840,7 +1843,59 @@ public class ReportController implements Serializable {
                 reportCount += ic.getCount();
             }
         }
-    userTransactionController.recordTransaction("Fill Registrations Of Clients By Institution");
+        userTransactionController.recordTransaction("Fill Registrations Of Clients By Institution");
+    }
+
+    public void fillRegistrationsOfClientsByDistrict() {
+
+        String j = "select new lk.gov.health.phsp.pojcs.AreaCount(c.createInstitution.district, count(c)) "
+                + " from Client c "
+                + " where c.retired<>:ret ";
+        Map m = new HashMap();
+        m.put("ret", true);
+        j = j + " and c.createdAt between :fd and :td ";
+
+        j = j + " group by c.createInstitution.district ";
+        j = j + " order by c.createInstitution.district.name ";
+
+        m.put("fd", getFromDate());
+        m.put("td", getToDate());
+        List<Object> objs = getClientFacade().findAggregates(j, m);
+        areaCounts = new ArrayList<>();
+        areaRepCount = 0l;
+        for (Object o : objs) {
+            if (o instanceof AreaCount) {
+                AreaCount ic = (AreaCount) o;
+                areaCounts.add(ic);
+                areaRepCount += ic.getCount();
+            }
+        }
+    }
+
+    public void fillRegistrationsOfClientsByProvince() {
+
+        String j = "select new lk.gov.health.phsp.pojcs.AreaCount(c.createInstitution.province, count(c)) "
+                + " from Client c "
+                + " where c.retired<>:ret ";
+        Map m = new HashMap();
+        m.put("ret", true);
+        j = j + " and c.createdAt between :fd and :td ";
+
+        j = j + " group by c.createInstitution.province ";
+        j = j + " order by c.createInstitution.province.name ";
+
+        m.put("fd", getFromDate());
+        m.put("td", getToDate());
+        List<Object> objs = getClientFacade().findAggregates(j, m);
+        areaCounts = new ArrayList<>();
+        areaRepCount = 0l;
+        for (Object o : objs) {
+            if (o instanceof AreaCount) {
+                AreaCount ic = (AreaCount) o;
+                areaCounts.add(ic);
+                areaRepCount += ic.getCount();
+            }
+        }
     }
 
     public void fillClinicEnrollments() {
@@ -2009,7 +2064,7 @@ public class ReportController implements Serializable {
         try (FileOutputStream outputStream = new FileOutputStream(newFile)) {
             workbook.write(outputStream);
         } catch (Exception e) {
-            
+
         }
 
         InputStream stream;
@@ -2017,7 +2072,7 @@ public class ReportController implements Serializable {
             stream = new FileInputStream(newFile);
             resultExcelFile = new DefaultStreamedContent(stream, mimeType, FILE_NAME);
         } catch (FileNotFoundException ex) {
-           
+
         }
 
     }
@@ -2163,7 +2218,7 @@ public class ReportController implements Serializable {
         try (FileOutputStream outputStream = new FileOutputStream(newFile)) {
             workbook.write(outputStream);
         } catch (Exception e) {
-            
+
         }
 
         InputStream stream;
@@ -2171,7 +2226,7 @@ public class ReportController implements Serializable {
             stream = new FileInputStream(newFile);
             resultExcelFile = new DefaultStreamedContent(stream, mimeType, FILE_NAME);
         } catch (FileNotFoundException ex) {
-            
+
         }
 
     }
@@ -2519,6 +2574,22 @@ public class ReportController implements Serializable {
 
     public void setDesignComponentFormItem(DesignComponentFormItem designComponentFormItem) {
         this.designComponentFormItem = designComponentFormItem;
+    }
+
+    public List<AreaCount> getAreaCounts() {
+        return areaCounts;
+    }
+
+    public void setAreaCounts(List<AreaCount> areaCounts) {
+        this.areaCounts = areaCounts;
+    }
+
+    public Long getAreaRepCount() {
+        return areaRepCount;
+    }
+
+    public void setAreaRepCount(Long areaRepCount) {
+        this.areaRepCount = areaRepCount;
     }
 
 }
