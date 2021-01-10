@@ -187,7 +187,7 @@ public class WebUserController implements Serializable {
 
     @PreDestroy
     public void sessionDestroy() {
-        userTransactionController.recordTransaction("Invalidating the Session",this.toString());
+        userTransactionController.recordTransaction("Invalidating the Session", this.toString());
     }
 
     private void findIpAddress() {
@@ -210,7 +210,7 @@ public class WebUserController implements Serializable {
         assumedPrivileges = userPrivilegeList(current);
         userTransactionController.recordTransaction("assume User");
         return assumeRoles();
-        
+
     }
 
     public String assumeRoles() {
@@ -328,14 +328,14 @@ public class WebUserController implements Serializable {
     }
 
     public String toManagePrivileges() {
-       
+
         if (current == null) {
             JsfUtil.addErrorMessage("Nothing Selected");
             return "";
         }
         selectedNodes = new TreeNode[0];
         List<UserPrivilege> userps = userPrivilegeList(current);
-       
+
         for (TreeNode n : allPrivilegeRoot.getChildren()) {
             n.setSelected(false);
             for (TreeNode n1 : n.getChildren()) {
@@ -350,19 +350,19 @@ public class WebUserController implements Serializable {
             for (TreeNode n : allPrivilegeRoot.getChildren()) {
                 if (wup.getPrivilege().equals(((PrivilegeTreeNode) n).getP())) {
                     n.setSelected(true);
-                   
+
                     temSelected.add(n);
                 }
                 for (TreeNode n1 : n.getChildren()) {
                     if (wup.getPrivilege().equals(((PrivilegeTreeNode) n1).getP())) {
                         n1.setSelected(true);
-                        
+
                         temSelected.add(n1);
                     }
                     for (TreeNode n2 : n1.getChildren()) {
                         if (wup.getPrivilege().equals(((PrivilegeTreeNode) n2).getP())) {
                             n2.setSelected(true);
-                            
+
                             temSelected.add(n2);
                         }
                     }
@@ -373,8 +373,8 @@ public class WebUserController implements Serializable {
         userTransactionController.recordTransaction("Manage Privileges in user list By SysAdmin or InsAdmin");
         return "/webUser/privileges";
     }
-    
-    public String toOpdModule(){
+
+    public String toOpdModule() {
         userTransactionController.recordTransaction("To Opd Module");
         return "/opd/index_opd";
     }
@@ -577,13 +577,13 @@ public class WebUserController implements Serializable {
                 return "";
             }
         }
-        if (!isFirstVisit()) {
-            if (!checkLogin(withoutPassword)) {
-                JsfUtil.addErrorMessage("Username/Password Error. Please retry.");
-                userTransactionController.recordTransaction("Failed Login Attempt", userName);
-                return "";
-            }
+
+        if (!checkLogin(withoutPassword)) {
+            JsfUtil.addErrorMessage("Username/Password Error. Please retry.");
+            userTransactionController.recordTransaction("Failed Login Attempt", userName);
+            return "";
         }
+
         if (assumedPrivileges == null) {
             loggedUserPrivileges = userPrivilegeList(loggedUser);
         }
@@ -711,38 +711,6 @@ public class WebUserController implements Serializable {
             return true;
         } else {
             loggedUser = null;
-            return false;
-        }
-
-    }
-
-    private boolean isFirstVisit() {
-        if (getFacade() == null) {
-            JsfUtil.addErrorMessage("Server Config Error.");
-            return false;
-        }
-        String j = "select c from WebUser c";
-        WebUser w = getFacade().findFirstByJpql(j);
-        if (w == null) {
-            JsfUtil.addSuccessMessage("First Visit");
-
-            Institution ins = new Institution();
-            ins.setName("Institution");
-            ins.setInstitutionType(InstitutionType.Ministry_of_Health);
-            getInstitutionFacade().create(ins);
-            WebUser wu = new WebUser();
-            wu.getPerson().setName(userName);
-            wu.setName(userName);
-            String tp = commonController.hash(password);
-            wu.setWebUserPassword(tp);
-            wu.setInstitution(ins);
-            wu.setWebUserRole(WebUserRole.System_Administrator);
-            getFacade().create(wu);
-            loggedUser = wu;
-            addAllWebUserPrivileges(wu);
-            itemController.addInitialMetadata();
-            return true;
-        } else {
             return false;
         }
 
@@ -1179,7 +1147,7 @@ public class WebUserController implements Serializable {
         for (Privilege p : tps) {
             boolean found = false;
             for (UserPrivilege tup : userps) {
-                
+
                 if (p != null && tup.getPrivilege() != null && p.equals(tup.getPrivilege())) {
                     found = true;
                 }
