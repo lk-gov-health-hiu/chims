@@ -141,23 +141,22 @@ public class DashboardController {
         String j;
         Map m = new HashMap();
 
-        j = "select count(f.encounter) "
+        j = "select count(f) "
                 + " from ClientEncounterComponentItem f "
-                + " where f.retired<>:ret "
-                + " and f.encounter.retired<>:ret ";
+                + " where f.retired<>:ret ";
         j += " and f.item.code=:ic ";
         j += " and f.shortTextValue in :ivs";
         m.put("ic", itemCode);
         m.put("ret", true);
         m.put("ivs", valueStrings);
-        if (ins != null && !ins.isEmpty()) {
-            m.put("ins", ins);
-            j += " and f.encounter.institution in :ins ";
-        }
+//        if (ins != null && !ins.isEmpty()) {
+//            m.put("ins", ins);
+//            j += " and f.encounter.institution in :ins ";
+//        }
         if (fromDate != null && toDate != null) {
             m.put("fd", fromDate);
             m.put("td", toDate);
-            j += " and f.encounter.encounterDate between :fd and :td ";
+            j += " and f.createdAt between :fd and :td ";
         }
 //        j += " group by e";
         return clientEncounterComponentItemFacade.findLongByJpql(j, m);
