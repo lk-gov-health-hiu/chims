@@ -1,7 +1,3 @@
-SELECT table_schema "chimsdemo",
-        ROUND(SUM(data_length + index_length) / 1024 / 1024, 1) "DB Size in MB" 
-FROM information_schema.tables 
-GROUP BY table_schema; 
 /* 
  * The MIT License
  *
@@ -30,7 +26,8 @@ GROUP BY table_schema;
  * Created: Jan 12, 2021
  */
 
-SELECT table_schema AS "Database", 
-ROUND(SUM(data_length + index_length) / 1024 / 1024, 2) AS "Size (MB)" 
-FROM information_schema.TABLES 
-GROUP BY table_schema;
+SELECT table_name AS "Table",
+ROUND(((data_length + index_length) / 1024 / 1024), 2) AS "Size (MB)"
+FROM information_schema.TABLES
+WHERE table_schema = "pssp"
+ORDER BY (data_length + index_length) DESC;
