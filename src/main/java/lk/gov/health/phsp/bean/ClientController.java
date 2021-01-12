@@ -87,6 +87,7 @@ public class ClientController implements Serializable {
     private List<Client> items = null;
     private List<ClientBasicData> clients = null;
     private List<Client> selectedClients = null;
+    private List<ClientBasicData> selectedClientsWithBasicData = null;
     private List<Client> importedClients = null;
 
     private List<ClientBasicData> selectedClientsBasic = null;
@@ -151,6 +152,10 @@ public class ClientController implements Serializable {
 
     public String toSelectClient() {
         return "/client/select";
+    }
+    
+    public String toSelectClientBasic() {
+        return "/client/select_basic";
     }
 
     public String toClient() {
@@ -275,7 +280,7 @@ public class ClientController implements Serializable {
         if (selected.getPerson().getDsArea() == null) {
             return applicationController.completeGnAreas(qry);
         } else {
-            return applicationController.completeGnAreas(qry,selected.getPerson().getDsArea());
+            return applicationController.completeGnAreas(qry, selected.getPerson().getDsArea());
         }
     }
 
@@ -326,7 +331,6 @@ public class ClientController implements Serializable {
             return true;
         }
     }
-
 
     public void checkNicExists() {
         nicExists = null;
@@ -1466,6 +1470,64 @@ public class ClientController implements Serializable {
         }
     }
 
+    public String searchByAnyIdWithBasicData() {
+        System.out.println("searchByAnyIdWithBasicData");
+        userTransactionController.recordTransaction("Search By Any Id");
+        clearExistsValues();
+        if (searchingId == null) {
+            searchingId = "";
+        }
+
+        selectedClientsWithBasicData = listPatientsByIDsStepviceWithBasicData(searchingId.trim().toUpperCase());
+
+        if (selectedClientsWithBasicData == null || selectedClientsWithBasicData.isEmpty()) {
+            JsfUtil.addErrorMessage("No Results Found. Try different search criteria.");
+            userTransactionController.recordTransaction("Search By Any Id Failed as no match");
+            return "/client/search_by_id";
+        }
+        if (selectedClientsWithBasicData.size() == 1) {
+            selected = getFacade().find(selectedClientsWithBasicData.get(0).getId());
+            selectedClients = null;
+            searchingId = "";
+            userTransactionController.recordTransaction("Search By Any Id returend single match");
+            return toClientProfile();
+        } else {
+            selected = null;
+            searchingId = "";
+            userTransactionController.recordTransaction("Search By Any Id returned multiple matches");
+            return toSelectClientBasic();
+        }
+    }
+    
+    public String searchByPhnWithBasicData() {
+        System.out.println("searchByPhnWithBasicData");
+        userTransactionController.recordTransaction("Search By PHN");
+        clearExistsValues();
+        if (searchingId == null) {
+            searchingId = "";
+        }
+
+        selectedClientsWithBasicData = listPatientsByPhnWithBasicData(searchingId.trim().toUpperCase());
+
+        if (selectedClientsWithBasicData == null || selectedClientsWithBasicData.isEmpty()) {
+            JsfUtil.addErrorMessage("No Results Found. Try different search criteria.");
+            userTransactionController.recordTransaction("Search By Any Id Failed as no match");
+            return "/client/search_by_id";
+        }
+        if (selectedClientsWithBasicData.size() == 1) {
+            selected = getFacade().find(selectedClientsWithBasicData.get(0).getId());
+            selectedClients = null;
+            searchingId = "";
+            userTransactionController.recordTransaction("Search By Any Id returend single match");
+            return toClientProfile();
+        } else {
+            selected = null;
+            searchingId = "";
+            userTransactionController.recordTransaction("Search By Any Id returned multiple matches");
+            return toSelectClientBasic();
+        }
+    }
+
     public String searchByAnyId() {
         clearExistsValues();
         if (searchingId == null) {
@@ -1635,6 +1697,149 @@ public class ClientController implements Serializable {
         return getFacade().findByJpql(j, m);
     }
 
+    public List<ClientBasicData> listPatientsByIDsStepviceWithBasicData(String ids) {
+        if (ids == null || ids.trim().equals("")) {
+            return null;
+        }
+        List<ClientBasicData> cs;
+        List<Object> objs;
+        if (ids.trim().equals("")) {
+            cs = new ArrayList<>();
+            return cs;
+        }
+        String j;
+        Map m;
+        m = new HashMap();
+        j = "select new lk.gov.health.phsp.pojcs.ClientBasicData("
+                + "c.id, "
+                + "c.phn, "
+                + "c.person.name, "
+                + "c.person.sex.name,"
+                + "c.person.nic, "
+                + "c.person.phone1, "
+                + "c.person.address "
+                + ") ";
+        j += " from Client c "
+                + " where c.retired=false "
+                + " and upper(c.phn)=:q "
+                + " order by c.phn";
+        m.put("q", ids.trim().toUpperCase());
+        //System.out.println("m = " + m);
+        //System.out.println("j = " + j);
+        objs = getFacade().findByJpql(j, m);
+
+        if (objs != null && !objs.isEmpty()) {
+            cs = objectsToClientBasicDataObjects(objs);
+            return cs;
+        }
+
+        j = "select new lk.gov.health.phsp.pojcs.ClientBasicData("
+                + "c.id, "
+                + "c.phn, "
+                + "c.person.name, "
+                + "c.person.sex.name,"
+                + "c.person.nic, "
+                + "c.person.phone1, "
+                + "c.person.address "
+                + ") "
+                + " from Client c "
+                + " where c.retired=false "
+                + " and ("
+                + " upper(c.person.phone1)=:q "
+                + " or "
+                + " upper(c.person.phone2)=:q "
+                + " or "
+                + " upper(c.person.nic)=:q "
+                + " ) "
+                + " order by c.phn";
+        objs = getFacade().findByJpql(j, m);
+        //System.out.println("m = " + m);
+        //System.out.println("j = " + j);
+        if (objs != null && !objs.isEmpty()) {
+            cs = objectsToClientBasicDataObjects(objs);
+            return cs;
+        }
+
+        j = "select new lk.gov.health.phsp.pojcs.ClientBasicData("
+                + "c.id, "
+                + "c.phn, "
+                + "c.person.name, "
+                + "c.person.sex.name,"
+                + "c.person.nic, "
+                + "c.person.phone1, "
+                + "c.person.address "
+                + ") "
+                + " from Client c "
+                + " where c.retired=false "
+                + " and ("
+                + " c.person.localReferanceNo=:q "
+                + " or "
+                + " c.person.ssNumber=:q "
+                + " ) "
+                + " order by c.phn";
+
+        objs = getFacade().findByJpql(j, m);
+        if (objs != null && !objs.isEmpty()) {
+            cs = objectsToClientBasicDataObjects(objs);
+            return cs;
+        }
+
+        cs = new ArrayList<>();
+        return cs;
+    }
+    
+    
+    public List<ClientBasicData> listPatientsByPhnWithBasicData(String ids) {
+        if (ids == null || ids.trim().equals("")) {
+            return null;
+        }
+        List<ClientBasicData> cs;
+        List<Object> objs;
+        if (ids.trim().equals("")) {
+            cs = new ArrayList<>();
+            return cs;
+        }
+        String j;
+        Map m;
+        m = new HashMap();
+        j = "select new lk.gov.health.phsp.pojcs.ClientBasicData("
+                + "c.id, "
+                + "c.phn, "
+                + "c.person.name, "
+                + "c.person.sex.name,"
+                + "c.person.nic, "
+                + "c.person.phone1, "
+                + "c.person.address "
+                + ") ";
+        j += " from Client c "
+                + " where c.retired=false "
+                + " and upper(c.phn)=:q "
+                + " order by c.phn";
+        m.put("q", ids.trim().toUpperCase());
+        objs = getFacade().findByJpql(j, m);
+
+        if (objs != null && !objs.isEmpty()) {
+            cs = objectsToClientBasicDataObjects(objs);
+            return cs;
+        }
+        cs = new ArrayList<>();
+        return cs;
+    }
+
+    public List<ClientBasicData> objectsToClientBasicDataObjects(List<Object> objs) {
+        List<ClientBasicData> cbds = new ArrayList<>();
+        if (objs == null || objs.isEmpty()) {
+            return cbds;
+        }
+        for (Object o : objs) {
+            if (o instanceof ClientBasicData) {
+                ClientBasicData c = (ClientBasicData) o;
+                cbds.add(c);
+            }
+        }
+        return cbds;
+    }
+
     public List<Client> listPatientsByIDs(String ids) {
         if (ids == null || ids.trim().equals("")) {
             return null;
@@ -1668,7 +1873,7 @@ public class ClientController implements Serializable {
     public String saveClient() {
 
         System.out.println("saveClient");
-        
+
         if (selected == null) {
             JsfUtil.addErrorMessage("Nothing to save");
             return "";
@@ -1683,18 +1888,15 @@ public class ClientController implements Serializable {
                 createdIns = webUserController.getLoggedUser().getInstitution();
             }
             selected.setCreateInstitution(createdIns);
-        }else{
+        } else {
             createdIns = selected.getCreateInstitution();
         }
 
-       
-        
         if (createdIns == null || createdIns.getPoiNumber() == null || createdIns.getPoiNumber().trim().equals("")) {
             JsfUtil.addErrorMessage("The institution you logged has no POI. Can not generate a PHN.");
             return "";
         }
 
-        
         if (selected.getPhn() == null || selected.getPhn().trim().equals("")) {
             String newPhn = applicationController.createNewPersonalHealthNumberformat(createdIns);
 
@@ -2302,6 +2504,14 @@ public class ClientController implements Serializable {
 
     public void setNumberOfPhnToReserve(Integer numberOfPhnToReserve) {
         this.numberOfPhnToReserve = numberOfPhnToReserve;
+    }
+
+    public List<ClientBasicData> getSelectedClientsWithBasicData() {
+        return selectedClientsWithBasicData;
+    }
+
+    public void setSelectedClientsWithBasicData(List<ClientBasicData> selectedClientsWithBasicData) {
+        this.selectedClientsWithBasicData = selectedClientsWithBasicData;
     }
 
     // </editor-fold>
