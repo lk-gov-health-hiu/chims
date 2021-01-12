@@ -29,7 +29,7 @@
 
                                          >
 
-                                <p:column style="width: 20rem; ">
+                                <p:column style="width: 15rem; ">
                                     <f:facet name="header">
                                         <h:outputText value="Name"/>
                                     </f:facet>
@@ -41,7 +41,7 @@
                                     </f:facet>
                                     <h:outputText value="#{item.descreption}"/>
                                 </p:column>
-                                <p:column style="width: 25rem; text-align: center;">
+                                <p:column style="width: 32rem; text-align: center;">
                                     <f:facet name="header">
                                         <h:outputText value="Actions"/>
                                     </f:facet>
@@ -50,6 +50,16 @@
                                                      value="Edit" 
                                                      action="#{queryComponentController.toEditExcelTemplate()}" >
                                         <f:setPropertyActionListener value="#{item}" target="#{queryComponentController.selected}" ></f:setPropertyActionListener>
+                                    </p:commandButton>
+
+                                    <p:commandButton value="Download" 
+                                                     ajax="false" 
+                                                     onclick="PrimeFaces.monitorDownload(start, stop);" 
+                                                     icon="ui-icon-arrowthick-1-s">
+                                        <f:setPropertyActionListener value="#{item}" 
+                                                                     target="#{queryComponentController.selected}" 
+                                                                     ></f:setPropertyActionListener>
+                                        <p:fileDownload value="#{queryComponentController.downloadingFile}" />
                                     </p:commandButton>
 
                                     <p:commandButton  ajax="false"

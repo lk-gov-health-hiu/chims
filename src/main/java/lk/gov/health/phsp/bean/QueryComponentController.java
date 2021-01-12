@@ -1,5 +1,6 @@
 package lk.gov.health.phsp.bean;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -42,6 +43,7 @@ import lk.gov.health.phsp.entity.Encounter;
 import lk.gov.health.phsp.entity.Institution;
 import lk.gov.health.phsp.entity.Item;
 import lk.gov.health.phsp.entity.Relationship;
+import lk.gov.health.phsp.entity.Upload;
 import lk.gov.health.phsp.enums.EncounterType;
 import lk.gov.health.phsp.enums.Evaluation;
 import lk.gov.health.phsp.enums.Month;
@@ -100,6 +102,8 @@ public class QueryComponentController implements Serializable {
     private ApplicationController applicationController;
     @Inject
     private UserTransactionController userTransactionController;
+    @Inject
+    UploadController uploadController;
 
     private List<QueryComponent> items = null;
     private List<QueryComponent> categories = null;
@@ -171,6 +175,8 @@ public class QueryComponentController implements Serializable {
     private String searchText;
 
     private StreamedContent resultExcelFile;
+
+    private StreamedContent downloadingFile;
 
     public String toManageExcelTemplates() {
         userTransactionController.recordTransaction("Manage Excel Templates");
@@ -244,12 +250,11 @@ public class QueryComponentController implements Serializable {
         return "/analysis/analysis";
     }
 
-    
-    public String toAddNewCriteriaeForCount(){
+    public String toAddNewCriteriaeForCount() {
         selectedCountCriteria = new QueryComponent();
         return toEditCountCriteriea();
     }
-    
+
 //    public void listQueries() {
 //        listQueries(searchText);
 //    }
@@ -544,11 +549,11 @@ public class QueryComponentController implements Serializable {
         selectedQuery = selected;
         return "/queryComponent/count_criteria";
     }
-    
+
     public String toCountCriteria() {
         return "/queryComponent/count_criteria";
     }
-    
+
     public String toEditCountCriteriea() {
         return "/queryComponent/edit_count_criteriea";
     }
@@ -3826,6 +3831,33 @@ public class QueryComponentController implements Serializable {
 
     public void setSelectedCountCriteria(QueryComponent selectedCountCriteria) {
         this.selectedCountCriteria = selectedCountCriteria;
+    }
+
+    public StreamedContent getDownloadingFile() {
+        if (selected == null) {
+            lk.gov.health.phsp.facade.util.JsfUtil.addErrorMessage("Nothing selected");
+            return null;
+        }
+        Upload u = uploadController.findUploadForComponent(selected);
+        if (u == null) {
+            lk.gov.health.phsp.facade.util.JsfUtil.addErrorMessage("Nothing selected");
+            return null;
+        }
+        
+        if (u.getBaImage() == null) {
+            lk.gov.health.phsp.facade.util.JsfUtil.addErrorMessage("No file is uploaded.");
+            return null;
+        }
+        InputStream stream = new ByteArrayInputStream(u.getBaImage());
+        if (u.getFileType() == null || u.getFileType().trim().equals("")) {
+            u.setFileType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        }
+        downloadingFile = new DefaultStreamedContent(stream, u.getFileType(), u.getFileName());
+        return downloadingFile;
+    }
+
+    public void setDownloadingFile(StreamedContent downloadingFile) {
+        this.downloadingFile = downloadingFile;
     }
 
     @FacesConverter(forClass = QueryComponent.class)

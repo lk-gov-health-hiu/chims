@@ -25,6 +25,7 @@ import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
 import javax.inject.Inject;
 import lk.gov.health.phsp.entity.Component;
+import lk.gov.health.phsp.entity.QueryComponent;
 import org.apache.commons.io.IOUtils;
 import org.primefaces.model.UploadedFile;
 
@@ -38,7 +39,7 @@ public class UploadController implements Serializable {
     private WebUserController webUserController;
     @Inject
     private UserTransactionController userTransactionController;
-    
+
     private List<Upload> items = null;
     private Upload selected;
     private Component selectedComponent;
@@ -67,7 +68,21 @@ public class UploadController implements Serializable {
         userTransactionController.recordTransaction("To Upload Component Upload Single");
         return "/queryComponent/upload_query";
     }
-    
+
+    public Upload findUploadForComponent(Component component) {
+        if (component == null) {
+            JsfUtil.addErrorMessage("No Component");
+            return null;
+        }
+        String j = "select u from Upload u "
+                + " where u.retired<>:ret "
+                + " and u.component=:com";
+        Map m = new HashMap();
+        m.put("ret", true);
+        m.put("com", component);
+        return getFacade().findFirstByJpql(j, m);
+    }
+
     public String toUploadExcelTemplate() {
         if (selectedComponent == null) {
             JsfUtil.addErrorMessage("No Component");
@@ -144,41 +159,38 @@ public class UploadController implements Serializable {
 //        }
         return items;
     }
-    
-    
+
     public void uploadFile1() {
 
-
         if (file == null) {
-            
+
             lk.gov.health.phsp.facade.util.JsfUtil.addErrorMessage("Error in Uploading file. No such file");
-            return ;
+            return;
         }
 
         if (file.getFileName() == null) {
-            
+
             lk.gov.health.phsp.facade.util.JsfUtil.addErrorMessage("Error in Uploading file. No such file name.");
-            return ;
+            return;
         }
 
         if (selected == null) {
-            
+
             JsfUtil.addErrorMessage("No file. Error");
-            return ;
+            return;
         }
 
         selected.setFileName(file.getFileName());
         selected.setFileType(file.getContentType());
-
 
         InputStream in;
 
         try {
             in = getFile().getInputstream();
             selected.setBaImage(IOUtils.toByteArray(in));
-            
+
         } catch (IOException e) {
-            
+
         }
 
         if (selected.getId() == null) {
@@ -190,31 +202,26 @@ public class UploadController implements Serializable {
         selected.setFileName(file.getFileName());
         selected.setFileType(file.getContentType());
 
-
         getFacade().edit(selected);
 
-        
-
     }
-    
 
     public String uploadFile() {
 
-
         if (file == null) {
-            
+
             lk.gov.health.phsp.facade.util.JsfUtil.addErrorMessage("Error in Uploading file. No such file");
             return "";
         }
 
         if (file.getFileName() == null) {
-            
+
             lk.gov.health.phsp.facade.util.JsfUtil.addErrorMessage("Error in Uploading file. No such file name.");
             return "";
         }
 
         if (selected == null) {
-            
+
             JsfUtil.addErrorMessage("No file. Error");
             userTransactionController.recordTransaction("Upload File-Query Component");
             return "/queryComponent/query";
@@ -223,15 +230,14 @@ public class UploadController implements Serializable {
         selected.setFileName(file.getFileName());
         selected.setFileType(file.getContentType());
 
-
         InputStream in;
 
         try {
             in = getFile().getInputstream();
             selected.setBaImage(IOUtils.toByteArray(in));
-            
+
         } catch (IOException e) {
-            
+
         }
 
         if (selected.getId() == null) {
@@ -242,7 +248,6 @@ public class UploadController implements Serializable {
 
         selected.setFileName(file.getFileName());
         selected.setFileType(file.getContentType());
-
 
         getFacade().edit(selected);
         userTransactionController.recordTransaction("Upload File-Query Component");
