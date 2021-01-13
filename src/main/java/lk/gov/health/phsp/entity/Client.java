@@ -18,8 +18,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class Client implements Serializable {
 
-    @OneToMany(mappedBy = "itemClient")
-    private List<ClientEncounterComponentItem> clientEncounterComponentItems;
+//    @OneToMany(mappedBy = "itemClient")
+//    private List<ClientEncounterComponentItem> clientEncounterComponentItems;
 
 // <editor-fold defaultstate="collapsed" desc="Attributes">
     @Id
@@ -214,15 +214,15 @@ public class Client implements Serializable {
 
 // </editor-fold>
 
-    public List<ClientEncounterComponentItem> getClientEncounterComponentItems() {
-        return clientEncounterComponentItems;
-    }
-
-    
-    
-    public void setClientEncounterComponentItems(List<ClientEncounterComponentItem> clientEncounterComponentItems) {
-        this.clientEncounterComponentItems = clientEncounterComponentItems;
-    }
+//    public List<ClientEncounterComponentItem> getClientEncounterComponentItems() {
+//        return clientEncounterComponentItems;
+//    }
+//
+//    
+//    
+//    public void setClientEncounterComponentItems(List<ClientEncounterComponentItem> clientEncounterComponentItems) {
+//        this.clientEncounterComponentItems = clientEncounterComponentItems;
+//    }
 
     public Institution getCreateInstitution() {
         return createInstitution;
