@@ -71,6 +71,10 @@ public class StoredQueryResultController implements Serializable {
         System.out.println("qc.getName() = " + qc.getName());
         System.out.println("qc.getId() = " + qc.getId());
         m = new HashMap();
+        m.put("fd", fromDate);
+        m.put("td", toDate);
+        m.put("ins", institution);
+        m.put("qc", qc);
         j = "select s "
                 + " from StoredQueryResult s "
                 + " where s.institution=:ins "
