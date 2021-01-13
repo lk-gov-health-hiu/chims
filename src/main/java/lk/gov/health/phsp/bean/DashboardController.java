@@ -110,9 +110,11 @@ public class DashboardController {
 
     public Long countOfRegistedClients(Institution ins, Area gn) {
         String j = "select count(c) from Client c "
-                + " where c.retired=:ret ";
+                + " where c.retired=:ret "
+                + " and c.reservedClient<>:res ";
         Map m = new HashMap();
         m.put("ret", false);
+        m.put("res", true);
         if (ins != null) {
             j += " and c.createInstitution=:ins ";
             m.put("ins", ins);

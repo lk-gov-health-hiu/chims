@@ -73,8 +73,10 @@ public class ClientRequestController {
         String j = "select c "
                 + " from Client c "
                 + " where c.retired<>:ret "
+                + " and c.reservedClient<>:res "
                 + " and lower(c.person.nic)=:nic ";
         m.put("ret", true);
+        m.put("res", true);
         m.put("nic", nic.toLowerCase());
         return clientFacade.findByJpql(j, m);
     }
@@ -87,8 +89,10 @@ public class ClientRequestController {
         String j = "select c "
                 + " from Client c "
                 + " where c.retired<>:ret "
+                + " and c.reservedClient<>:res "
                 + " and c.phn=:phn ";
         m.put("ret", true);
+        m.put("res", true);
         m.put("phn", phn);
         return clientFacade.findByJpql(j, m);
     }
@@ -101,8 +105,10 @@ public class ClientRequestController {
         String j = "select c "
                 + " from Client c "
                 + " where c.retired<>:ret "
+                + " and c.reservedClient<>:res "
                 + " and lower(c.person.email)=:email ";
         m.put("ret", true);
+        m.put("res", true);
         m.put("email", email.toLowerCase());
         return clientFacade.findByJpql(j, m);
     }
@@ -115,8 +121,10 @@ public class ClientRequestController {
         String j = "select c "
                 + " from Client c "
                 + " where c.retired<>:ret "
+                + " and c.reservedClient<>:res "
                 + " and c.person.ssNumber=:ssNumber ";
         m.put("ret", true);
+        m.put("res", true);
         m.put("ssNumber", ssNumber);
         return clientFacade.findByJpql(j, m);
     } 
@@ -129,8 +137,10 @@ public class ClientRequestController {
         String j = "select c "
                 + " from Client c "
                 + " where c.retired<>:ret "
+                + " and c.reservedClient<>:res "
                 + " and c.person.phone1=:phone1 ";
         m.put("ret", true);
+        m.put("res", true);
         m.put("phone1", phone1);
         return clientFacade.findByJpql(j, m);
     } 

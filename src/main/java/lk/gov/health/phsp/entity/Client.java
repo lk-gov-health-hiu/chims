@@ -5,7 +5,6 @@ import java.util.Date;
 import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -19,8 +18,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class Client implements Serializable {
 
-//    @OneToMany(mappedBy = "itemClient", fetch = FetchType.LAZY)
-//    private List<ClientEncounterComponentItem> clientEncounterComponentItems;
+    @OneToMany(mappedBy = "itemClient")
+    private List<ClientEncounterComponentItem> clientEncounterComponentItems;
 
 // <editor-fold defaultstate="collapsed" desc="Attributes">
     @Id
@@ -33,8 +32,7 @@ public class Client implements Serializable {
     private Person person;
 
     private String phn;
-    
-    
+
     private String comments;
     /*
     Create Properties
@@ -63,6 +61,7 @@ public class Client implements Serializable {
     Retire Properties
      */
     private boolean retired;
+    private boolean reservedClient;
     @ManyToOne
     private WebUser retiredBy;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
@@ -96,8 +95,6 @@ public class Client implements Serializable {
         return "Client{" + "phn=" + phn + '}';
     }
 
-    
-    
 // </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="Getters & Setters">
     public static long getSerialVersionUID() {
@@ -113,7 +110,7 @@ public class Client implements Serializable {
     }
 
     public Person getPerson() {
-        if(person==null){
+        if (person == null) {
             person = new Person();
         }
         return person;
@@ -210,20 +207,15 @@ public class Client implements Serializable {
     public void setPhn(String phn) {
         this.phn = phn;
     }
-    
-    
 
 // </editor-fold>
+    public List<ClientEncounterComponentItem> getClientEncounterComponentItems() {
+        return clientEncounterComponentItems;
+    }
 
-//    public List<ClientEncounterComponentItem> getClientEncounterComponentItems() {
-//        return clientEncounterComponentItems;
-//    }
-//
-//    
-//    
-//    public void setClientEncounterComponentItems(List<ClientEncounterComponentItem> clientEncounterComponentItems) {
-//        this.clientEncounterComponentItems = clientEncounterComponentItems;
-//    }
+    public void setClientEncounterComponentItems(List<ClientEncounterComponentItem> clientEncounterComponentItems) {
+        this.clientEncounterComponentItems = clientEncounterComponentItems;
+    }
 
     public Institution getCreateInstitution() {
         return createInstitution;
@@ -240,5 +232,13 @@ public class Client implements Serializable {
     public void setComments(String comments) {
         this.comments = comments;
     }
-    
+
+    public boolean isReservedClient() {
+        return reservedClient;
+    }
+
+    public void setReservedClient(boolean reservedClient) {
+        this.reservedClient = reservedClient;
+    }
+
 }

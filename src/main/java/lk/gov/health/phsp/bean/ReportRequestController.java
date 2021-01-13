@@ -837,8 +837,10 @@ public class ReportRequestController implements Serializable {
         Map m = new HashMap();
         j = "select c from Client c "
                 + " where c.retired=:ret "
+                + " and c.reservedClient<>:res "
                 + " and c.createdAt between :fd and :td ";
         m.put("ret", false);
+        m.put("res", true);
         m.put("fd", fromDate);
         m.put("td", toDate);
         if (institution != null) {

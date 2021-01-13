@@ -9,48 +9,52 @@
     <body>
 
         <ui:composition template="./../template.xhtml">
-
             <ui:define name="content">
-
-
                 <p:panel style="text-align: center;height: 100%;" >
                     <f:facet name="header" >
-                        <p:outputLabel value="Add Client Details" rendered="#{clientController.selected.id eq null}"></p:outputLabel>
-                        <p:outputLabel value="Edit Client Details" rendered="#{clientController.selected.id ne null}"></p:outputLabel>
+                        <p:outputLabel value="Reserve PHNs" ></p:outputLabel>
                     </f:facet>
 
                     <h:form>
-
-                        <p:panelGrid columns="4" style="text-align: left;margin: auto;">
-                            
-                            <p:outputLabel value="Number to Reserve"  />
-                            <p:inputText  autocomplete="off" 
+                        <p:panelGrid columns="2" style="text-align: left;margin: auto;">  
+                            <p:panel>
+                                <p:outputLabel value="Number to Reserve (Less than 100)"  />
+                                <p:inputText  autocomplete="off" 
                                           value="#{clientController.numberOfPhnToReserve}" 
                                           />
+                                <p:spacer ></p:spacer>
+                                <br/>
+                                <p:commandButton ajax="false" action="#{clientController.reserverPhn()}" value="Reserver PHN" ></p:commandButton>
+                            </p:panel>
+                            <p:panel>
+                                <p:dataTable id="tbl" 
+                                             value="#{clientController.reservePhnList}" var="c"
+                                             rowIndexVar="n"
+                                             paginator="true"
+                                             rows="10"
+                                             rowsPerPageTemplate="10,20,30,40,50">
 
+                                    <p:column headerText="No" width="50" >
+                                        <p:outputLabel value="#{n+1}" >
+                                        </p:outputLabel>
+                                    </p:column>
+                                    <p:column headerText="PHN" 
+                                              sortBy="#{c}"
+                                              >
+                                        <p:outputLabel value="#{c}" ></p:outputLabel>
+                                    </p:column>                           
 
-                            <p:spacer ></p:spacer>
-                            <p:commandButton ajax="false" action="#{clientController.reserverPhn()}" value="Reserver PHN" ></p:commandButton>
-
-
-                            
-                            
+                                </p:dataTable>
+                                <f:facet name="footer" >                                    
+                                    <p:commandButton value="Download" id="btnDe" ajax="false">
+                                        <p:dataExporter id="de" type="xlsx" target=":#{p:component('tbl')}" fileName="Reserved PHNs" ></p:dataExporter>
+                                    </p:commandButton>
+                                </f:facet>
+                            </p:panel>
                         </p:panelGrid>
-
-
                     </h:form>
-
                 </p:panel>
-
-
-
-
-
-
-
             </ui:define>
-
         </ui:composition>
-
     </body>
 </html>
