@@ -53,17 +53,23 @@ public class StoredQueryResultController implements Serializable {
     }
 
     public Long findStoredLongValue(QueryComponent qc, Date fromDate, Date toDate, Institution institution) {
+        System.out.println("findStoredLongValue");
         StoredQueryResult s;
         s = findStoredQueryResult(qc, fromDate, toDate, institution);
+        System.out.println("s = " + s);
         if (s == null) {
             return null;
         }
+        System.out.println("s.getLongValue() = " + s.getLongValue());
         return s.getLongValue();
     }
 
     public StoredQueryResult findStoredQueryResult(QueryComponent qc, Date fromDate, Date toDate, Institution institution) {
+        System.out.println("findStoredQueryResult");
         String j;
         Map m;
+        System.out.println("qc.getName() = " + qc.getName());
+        System.out.println("qc.getId() = " + qc.getId());
         m = new HashMap();
         j = "select s "
                 + " from StoredQueryResult s "
@@ -72,6 +78,8 @@ public class StoredQueryResultController implements Serializable {
                 + " and s.resultTo=:td "
                 + " and s.queryComponent=:qc "
                 + " order by s.id desc";
+        System.out.println("m = " + m);
+        System.out.println("j = " + j);
         return facade.findFirstByJpql(j, m);
 
     }

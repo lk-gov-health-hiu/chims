@@ -17,7 +17,7 @@
                             <p:outputLabel value="SIngle Institution Monthly Indicator" ></p:outputLabel>
                         </f:facet>
 
-                        <p:panelGrid columns="1" >
+                        <p:panelGrid columns="2" >
                             <p:commandButton value="Calculate"  style="width:30em;margin:auto;"
                                              action="#{indicatorController.runSingleInstitutionalMonthly()}"
                                              ajax="false">
@@ -74,11 +74,6 @@
                                     <f:selectItems value="#{commonController.months}" var="m" itemValue="#{m.value}" itemLabel="#{m}" ></f:selectItems>
                                 </p:selectOneMenu>
 
-                                <p:outputLabel id="lblRecal" value="Recalculate" for="btnRecal" ></p:outputLabel>
-                                <p:selectBooleanButton id="btnRecal"
-                                                       offLabel="Use Previous Counts if available"
-                                                       onLabel="Disregard Previous Calculations"
-                                                       value="#{indicatorController.recalculate}" ></p:selectBooleanButton>
 
                             </p:panelGrid>
 
