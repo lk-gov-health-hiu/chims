@@ -123,6 +123,9 @@ public class QueryComponentController implements Serializable {
     private QueryComponent selectedCategory;
     private QueryComponent selectedSubcategory;
     private QueryComponent selectedForQuery;
+    
+    private QueryComponent selectedCount;
+    private QueryComponent selectedPopulation;
 
     private QueryComponent addingQuery;
     QueryComponent addingCategory;
@@ -197,7 +200,7 @@ public class QueryComponentController implements Serializable {
         selected.setQueryType(QueryType.Indicator);
         return "/queryComponent/edit_indicator";
     }
-    
+
     public String toAddPopulation() {
         userTransactionController.recordTransaction("Add New Population");
         selected = new QueryComponent();
@@ -216,7 +219,7 @@ public class QueryComponentController implements Serializable {
         userTransactionController.recordTransaction("Manage Indicators");
         return "/queryComponent/indicators";
     }
-    
+
     public String toManagePopulations() {
         userTransactionController.recordTransaction("Manage Populations");
         return "/queryComponent/populations";
@@ -236,7 +239,7 @@ public class QueryComponentController implements Serializable {
         userTransactionController.recordTransaction("Edit Indicator");
         return "/queryComponent/edit_indicator";
     }
-    
+
     public String toEditPopulation() {
         userTransactionController.recordTransaction("Edit Population");
         return "/queryComponent/edit_population";
@@ -364,7 +367,7 @@ public class QueryComponentController implements Serializable {
         saveItem(selected);
         indicators = null;
     }
-    
+
     public void savePopulation() {
         if (selected == null) {
             JsfUtil.addErrorMessage("Nothing to save");
@@ -490,7 +493,7 @@ public class QueryComponentController implements Serializable {
 
     public void removeCount() {
         remove();
-        fillCounts();
+        fillCountsAndPopulations();
     }
 
     public void removeQuery() {
@@ -740,7 +743,7 @@ public class QueryComponentController implements Serializable {
         }
         return sls;
     }
-    
+
     public List<QueryComponent> completeIndicators(String qry) {
         List<QueryComponent> tls = applicationController.getQueryComponents();
         List<QueryComponent> sls = new ArrayList<>();
@@ -748,6 +751,36 @@ public class QueryComponentController implements Serializable {
 
         for (QueryComponent qc : tls) {
             if (qc.getQueryType() == QueryType.Indicator) {
+                if (qc.getName().toLowerCase().contains(qry) || qc.getName().toLowerCase().contains(qry)) {
+                    sls.add(qc);
+                }
+            }
+        }
+        return sls;
+    }
+
+    public List<QueryComponent> completePopulations(String qry) {
+        List<QueryComponent> tls = applicationController.getQueryComponents();
+        List<QueryComponent> sls = new ArrayList<>();
+        qry = qry.trim().toLowerCase();
+
+        for (QueryComponent qc : tls) {
+            if (qc.getQueryType() == QueryType.Population) {
+                if (qc.getName().toLowerCase().contains(qry) || qc.getName().toLowerCase().contains(qry)) {
+                    sls.add(qc);
+                }
+            }
+        }
+        return sls;
+    }
+
+    public List<QueryComponent> completeCounts(String qry) {
+        List<QueryComponent> tls = applicationController.getQueryComponents();
+        List<QueryComponent> sls = new ArrayList<>();
+        qry = qry.trim().toLowerCase();
+
+        for (QueryComponent qc : tls) {
+            if (qc.getQueryType() == QueryType.Encounter_Count || qc.getQueryType() == QueryType.Client_Count) {
                 if (qc.getName().toLowerCase().contains(qry) || qc.getName().toLowerCase().contains(qry)) {
                     sls.add(qc);
                 }
@@ -823,7 +856,7 @@ public class QueryComponentController implements Serializable {
         }
         return nqs;
     }
-    
+
     public List<QueryComponent> fillPopulations() {
         List<QueryComponent> tqcs = applicationController.getQueryComponents();
         List<QueryComponent> nqs = new ArrayList<>();
@@ -835,13 +868,25 @@ public class QueryComponentController implements Serializable {
         return nqs;
     }
 
-    public List<QueryComponent> fillCounts() {
+    public List<QueryComponent> fillCountsAndPopulations() {
         List<QueryComponent> tqcs = applicationController.getQueryComponents();
         List<QueryComponent> nqs = new ArrayList<>();
         for (QueryComponent q : tqcs) {
             if (q.getQueryType() == QueryType.Client_Count
                     || q.getQueryType() == QueryType.Encounter_Count
                     || q.getQueryType() == QueryType.Population) {
+                nqs.add(q);
+            }
+        }
+        return nqs;
+    }
+
+    public List<QueryComponent> fillCounts() {
+        List<QueryComponent> tqcs = applicationController.getQueryComponents();
+        List<QueryComponent> nqs = new ArrayList<>();
+        for (QueryComponent q : tqcs) {
+            if (q.getQueryType() == QueryType.Client_Count
+                    || q.getQueryType() == QueryType.Encounter_Count) {
                 nqs.add(q);
             }
         }
@@ -3189,6 +3234,9 @@ public class QueryComponentController implements Serializable {
         persist(PersistAction.UPDATE, ResourceBundle.getBundle("/BundleQuery").getString("QueryComponentUpdated"));
     }
 
+    
+    
+    
     public void destroy() {
         persist(PersistAction.DELETE, ResourceBundle.getBundle("/BundleQuery").getString("QueryComponentDeleted"));
         if (!JsfUtil.isValidationFailed()) {
@@ -3845,8 +3893,8 @@ public class QueryComponentController implements Serializable {
     public void setIndicators(List<QueryComponent> indicators) {
         this.indicators = indicators;
     }
-    
-     public List<QueryComponent> getPopulations() {
+
+    public List<QueryComponent> getPopulations() {
         if (populations == null) {
             populations = fillPopulations();
         }
@@ -3903,7 +3951,7 @@ public class QueryComponentController implements Serializable {
             lk.gov.health.phsp.facade.util.JsfUtil.addErrorMessage("Nothing selected");
             return null;
         }
-        
+
         if (u.getBaImage() == null) {
             lk.gov.health.phsp.facade.util.JsfUtil.addErrorMessage("No file is uploaded.");
             return null;
@@ -3918,6 +3966,22 @@ public class QueryComponentController implements Serializable {
 
     public void setDownloadingFile(StreamedContent downloadingFile) {
         this.downloadingFile = downloadingFile;
+    }
+
+    public QueryComponent getSelectedCount() {
+        return selectedCount;
+    }
+
+    public void setSelectedCount(QueryComponent selectedCount) {
+        this.selectedCount = selectedCount;
+    }
+
+    public QueryComponent getSelectedPopulation() {
+        return selectedPopulation;
+    }
+
+    public void setSelectedPopulation(QueryComponent selectedPopulation) {
+        this.selectedPopulation = selectedPopulation;
     }
 
     @FacesConverter(forClass = QueryComponent.class)
