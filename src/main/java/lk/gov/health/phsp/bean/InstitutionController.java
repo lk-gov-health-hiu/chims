@@ -158,6 +158,8 @@ public class InstitutionController implements Serializable {
         userTransactionController.recordTransaction("To List Institutions");
         return "/institution/list";
     }
+    
+    
 
     public String toSearchInstitutions() {
         return "/institution/search";
