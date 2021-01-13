@@ -52,7 +52,7 @@
 
                         <p:panelGrid columns="3"  styleClass="fullWidth">
                             <p:outputLabel value="Search Counts" />
-                            <p:autoComplete inputStyle="width:50em;"
+                            <p:autoComplete 
                                             value="#{queryComponentController.selectedCount}"
                                             completeMethod="#{queryComponentController.completeCounts}"
                                             var="c" itemLabel="#{c.name}"
@@ -68,7 +68,7 @@
                            
 
                             <p:outputLabel value="Search Populations" />
-                            <p:autoComplete  inputStyle="width:50em;"
+                            <p:autoComplete  
                                              value="#{queryComponentController.selectedPopulation}"
                                              completeMethod="#{queryComponentController.completePopulations}"
                                              var="c" itemLabel="#{c.name}"

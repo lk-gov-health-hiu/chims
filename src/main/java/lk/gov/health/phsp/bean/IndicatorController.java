@@ -33,6 +33,9 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.inject.Inject;
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
+import javax.script.ScriptException;
 import lk.gov.health.phsp.bean.util.JsfUtil;
 import lk.gov.health.phsp.entity.Area;
 import lk.gov.health.phsp.entity.Institution;
@@ -97,6 +100,7 @@ public class IndicatorController implements Serializable {
     }
 
     public void runSingleInstitutionalMonthly() {
+        System.out.println("runSingleInstitutionalMonthly");
         if (institution == null) {
             JsfUtil.addErrorMessage("Institution ?");
             return;
@@ -121,15 +125,17 @@ public class IndicatorController implements Serializable {
             JsfUtil.addErrorMessage("Month");
             return;
         }
-        
-        fromDate = CommonController.startOfTheMonth(year, month);
-        toDate=CommonController.endOfTheMonth(year, month);
 
+        fromDate = CommonController.startOfTheMonth(year, month);
+        System.out.println("fromDate = " + fromDate);
+        toDate = CommonController.endOfTheMonth(year, month);
+        System.out.println("toDate = " + toDate);
         Jpq j = new Jpq();
 
         List<Replaceable> rs = findReplaceblesInIndicatorQuery(queryComponent.getIndicatorQuery());
 
         for (Replaceable r : rs) {
+
             QueryComponent temqc = queryComponentController.findLastQuery(r.getQryCode());
             if (temqc == null) {
                 j.setError(true);
@@ -143,6 +149,7 @@ public class IndicatorController implements Serializable {
             } else {
                 switch (temqc.getQueryType()) {
                     case Population:
+                        System.out.println("Population");
                         if (temqc.getPopulationType() == null) {
                             j.setError(true);
                             j.setErrorMessage(j.getErrorMessage() + "\n" + "Type of Population " + r.getQryCode() + " in is not set. ");
@@ -154,33 +161,78 @@ public class IndicatorController implements Serializable {
                         temYear = c.get(Calendar.YEAR);
                         Long tp = relationshipController.findPopulationValue(temYear, institution, temqc.getPopulationType());
                         System.out.println("pop is " + tp);
-                        r.setTextReplacing(tp + "");
+                        if (tp != null) {
+                            r.setTextReplacing(tp + "");
+                            r.setSelectedValue(tp + "");
+                        } else {
+                            j.setError(true);
+                            j.setErrorMessage(j.getErrorMessage() + "\n" + "No Population data for " + r.getQryCode() + " in institution " + institution.getName());
+                        }
                         break;
-                    case Client:
-                        System.out.println("client");
-                        break;
+
                     case Client_Count:
-                        System.out.println("Client_Count");
-                        break;
                     case Encounter_Count:
-                        System.out.println("Encounter_Count");
+                        Long tv = storedQueryResultController.findStoredLongValue(temqc, fromDate, toDate, institution);
+                        System.out.println("Count");
+                        if (tv != null) {
+                            r.setTextReplacing(tv + "");
+                            r.setSelectedValue(tv + "");
+                        } else {
+                            j.setErrorMessage(j.getErrorMessage() + "\n" + "No data for " + r.getQryCode() + " in institution " + institution.getName());
+                        }
+
                         break;
                     default:
                         j.setError(true);
                         j.setErrorMessage(j.getErrorMessage() + "\n" + "Type of Population " + r.getQryCode() + " in is not set. ");
                         continue;
                 }
+
+                System.out.println("getTextReplacing = " + r.getTextReplacing());
+                System.out.println("getTextToBeReplaced = " + r.getTextToBeReplaced());
             }
 
         }
 
         if (j.isError()) {
             JsfUtil.addErrorMessage(j.getErrorMessage());
+            message = j.getErrorMessage();
             return;
         }
 
+        String script = generateScript(queryComponent.getIndicatorQuery(), rs);
+        System.out.println("script = " + script);
+
+        result = evaluateScript(script);
+        message = j.getErrorMessage();
+        
     }
 
+    public String generateScript(String calculationScript, List<Replaceable> selectables) {
+        for (Replaceable s : selectables) {
+            String patternStart = "#{";
+            String patternEnd = "}";
+            String toBeReplaced;
+            toBeReplaced = patternStart + s.getFullText() + patternEnd;
+
+            calculationScript = calculationScript.replace(toBeReplaced, s.getSelectedValue());
+
+        }
+
+        return calculationScript;
+    }
+
+    public String evaluateScript(String script) {
+        ScriptEngineManager mgr = new ScriptEngineManager();
+        ScriptEngine engine = mgr.getEngineByName("JavaScript");
+        try {
+            return engine.eval(script) + "";
+        } catch (ScriptException ex) {
+
+            return null;
+        }
+    }
+    
     public Jpq handleIndicatorQuery(QueryComponent qc,
             Institution ccIns,
             Date ccFrom,
@@ -267,7 +319,7 @@ public class IndicatorController implements Serializable {
             if (!block.trim().equals("")) {
                 Replaceable s = new Replaceable();
                 s.setFullText(block);
-                s.setTextToBeReplaced("#{" + block + "}");
+                s.setTextToBeReplaced(block);
                 s.setQryCode(block);
                 ss.add(s);
             }
