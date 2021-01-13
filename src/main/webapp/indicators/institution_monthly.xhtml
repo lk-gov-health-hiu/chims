@@ -81,13 +81,16 @@
 
                         </h:panelGrid>
 
-                        
-                        <h1>
-                            <p:inputText value="${indicatorController.result}" ></p:inputText>
-                        </h1>
-                        
 
-                        <p:outputLabel value="#{indicatorController.message}" ></p:outputLabel>
+                        <h:panelGrid columns="2" >
+                            <p:inputText value="Result" ></p:inputText>
+                            <p:inputText value="${indicatorController.result}" ></p:inputText>
+
+
+                            <p:inputText value="Message" ></p:inputText>
+                            <p:outputLabel value="#{indicatorController.message}" ></p:outputLabel>
+                        </h:panelGrid>
+
 
 
 
