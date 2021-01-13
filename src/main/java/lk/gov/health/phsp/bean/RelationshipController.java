@@ -314,6 +314,7 @@ public class RelationshipController implements Serializable {
             r = new Relationship();
             r.setInstitution(institution);
             r.setRelationshipType(rt);
+            r.setYearInt(year);
             r.setLongValue1(populationValue);
             r.setCreatedAt(new Date());
             r.setCreatedBy(webUserController.getLoggedUser());
@@ -331,13 +332,11 @@ public class RelationshipController implements Serializable {
     public Relationship findRelationship(int y, Institution ins, RelationshipType t) {
         String j = "select r from Relationship r "
                 + " where r.institution=:ins   "
-                + " and r.retired=:ret "
                 + " and r.relationshipType=:rt "
                 + " and r.yearInt=:y";
         Map m = new HashMap();
         m.put("ins", ins);
         m.put("y", y);
-        m.put("ret", false);
         m.put("rt", t);
         return getFacade().findFirstByJpql(j, m);
     }
@@ -365,12 +364,13 @@ public class RelationshipController implements Serializable {
     }
 
     public void fillInstitutionPopulationData() {
+        System.out.println("fillInstitutionPopulationData");
         if (getYear() == null) {
             JsfUtil.addErrorMessage("No Year Selected.");
             return;
         }
         String j = "select r from Relationship r "
-                + " where r.retired=:ret "
+                + " where r.retired<>:ret "
                 + " and r.yearInt=:y";
 
         Map m = new HashMap();
@@ -384,10 +384,12 @@ public class RelationshipController implements Serializable {
             j += " and r.relationshipType=:rt ";
             m.put("rt", rt);
         } else {
-            j += " and r.rt is not null  ";
+            j += " and r.relationshipType is not null  ";
         }
         m.put("y", getYear());
-        m.put("ret", false);
+        m.put("ret", true);
+        System.out.println("m = " + m);
+        System.out.println("j = " + j);
         items = getFacade().findByJpql(j, m);
     }
 

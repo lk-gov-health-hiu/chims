@@ -19,21 +19,18 @@
                 <h:form  >
 
 
-                    <p:panelGrid columns="3" >
+                    <p:panelGrid columns="2" >
 
                         <p:outputLabel value="Year" ></p:outputLabel>
-                        <p:spacer height="1" width="10"></p:spacer>
                         <p:inputText value="#{relationshipController.year}" ></p:inputText>
 
                         <p:outputLabel value="Population Data Type" ></p:outputLabel>
-                        <p:spacer height="1" width="10"></p:spacer>
                         <p:selectOneMenu value="#{relationshipController.rt}" >
                             <f:selectItem itemLabel="Please select" ></f:selectItem>
                             <f:selectItems value="#{areaController.rts}" ></f:selectItems>
                         </p:selectOneMenu>
 
                         <p:outputLabel value="Instituion" ></p:outputLabel>
-                        <p:spacer height="1" width="10"></p:spacer>
                         <p:autoComplete value="#{relationshipController.institution}"
                                         completeMethod="#{institutionController.completeInstitutions}"
                                         var="a" maxResults="20" minQueryLength="4"
@@ -43,14 +40,13 @@
                                 <p:outputLabel value="#{a.name}" ></p:outputLabel>
                             </p:column>
                             <p:column headerText="Type" >
-                                <p:outputLabel value="#{a.type}" ></p:outputLabel>
+                                <p:outputLabel value="#{a.institutionType}" ></p:outputLabel>
                             </p:column>
                         </p:autoComplete>
 
 
 
 
-                        <p:spacer></p:spacer>
                         <p:spacer></p:spacer>
                         <p:commandButton ajax="false" value="Fill" 
                                          action="#{relationshipController.fillInstitutionPopulationData()}"  ></p:commandButton>

@@ -43,7 +43,7 @@
                                 <p:outputLabel value="#{a.name}" ></p:outputLabel>
                             </p:column>
                             <p:column headerText="Type" >
-                                <p:outputLabel value="#{a.type}" ></p:outputLabel>
+                                <p:outputLabel value="#{a.institutionType}" ></p:outputLabel>
                             </p:column>
                         </p:autoComplete>
 
@@ -54,41 +54,10 @@
                         <p:spacer></p:spacer>
                         <p:spacer></p:spacer>
                         <p:commandButton ajax="false" value="Add" 
-                                         action="#{relationshipController.fillAreaRelationshipData()}"  ></p:commandButton>
+                                         action="#{relationshipController.saveInstitutionRelationshipDate()}"  ></p:commandButton>
                     </p:panelGrid>
 
-                    <p:panelGrid columns="1" >
-
-
-                        <p:dataTable value="#{relationshipController.items}"
-                                     var="r"
-                                     rowKey="#{r.id}"
-                                     rowIndexVar="n"
-
-                                     >
-                            <p:column width="50" headerText="No" 
-                                      >
-
-                                <p:outputLabel value="#{n+1}" >
-                                </p:outputLabel>  
-                            </p:column>
-                            <p:column headerText="Area" sortBy="#{r.area.name}"
-                                      filterBy="#{r.area.name}"
-                                      filterMatchMode="contains"
-                                      >
-                                <p:commandButton value="#{r.area.name}" ajax="false" action="#{relationshipController.fillAreaRelationshipData()}" >
-                                    <f:setPropertyActionListener value="#{r}" target="#{relationshipController.selected}" ></f:setPropertyActionListener>
-                                </p:commandButton>
-                            </p:column>
-                            <p:column headerText="Value" width="200"
-                                      sortBy="#{r.longValue1}">
-                                <p:outputLabel value="#{r.longValue1}" >
-                                </p:outputLabel>  
-                            </p:column>
-
-                        </p:dataTable>
-
-                    </p:panelGrid>
+                  
 
                 </h:form>
 
