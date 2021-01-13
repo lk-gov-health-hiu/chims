@@ -109,6 +109,7 @@ public class QueryComponentController implements Serializable {
     private List<QueryComponent> categories = null;
     private List<QueryComponent> excels = null;
     private List<QueryComponent> indicators = null;
+    private List<QueryComponent> populations = null;
     private List<QueryComponent> counts = null;
 
     private QueryComponent selected;
@@ -196,6 +197,13 @@ public class QueryComponentController implements Serializable {
         selected.setQueryType(QueryType.Indicator);
         return "/queryComponent/edit_indicator";
     }
+    
+    public String toAddPopulation() {
+        userTransactionController.recordTransaction("Add New Population");
+        selected = new QueryComponent();
+        selected.setQueryType(QueryType.Population);
+        return "/queryComponent/edit_population";
+    }
 
     public String toAddCount() {
         userTransactionController.recordTransaction("Add New Count");
@@ -207,6 +215,11 @@ public class QueryComponentController implements Serializable {
     public String toManageIndicators() {
         userTransactionController.recordTransaction("Manage Indicators");
         return "/queryComponent/indicators";
+    }
+    
+    public String toManagePopulations() {
+        userTransactionController.recordTransaction("Manage Populations");
+        return "/queryComponent/populations";
     }
 
     public String toManageCounts() {
@@ -347,6 +360,16 @@ public class QueryComponentController implements Serializable {
         saveItem(addingCategory);
         indicators = null;
 //        addingCategory = null;
+    }
+    
+    public void savePopulation() {
+        if (addingCategory == null) {
+            JsfUtil.addErrorMessage("Nothing to save");
+            return;
+        }
+        addingCategory.setQueryType(QueryType.Population);
+        saveItem(addingCategory);
+        populations = null;
     }
 
     public void saveCount() {
@@ -714,6 +737,21 @@ public class QueryComponentController implements Serializable {
         }
         return sls;
     }
+    
+    public List<QueryComponent> completeIndicators(String qry) {
+        List<QueryComponent> tls = applicationController.getQueryComponents();
+        List<QueryComponent> sls = new ArrayList<>();
+        qry = qry.trim().toLowerCase();
+
+        for (QueryComponent qc : tls) {
+            if (qc.getQueryType() == QueryType.Indicator) {
+                if (qc.getName().toLowerCase().contains(qry) || qc.getName().toLowerCase().contains(qry)) {
+                    sls.add(qc);
+                }
+            }
+        }
+        return sls;
+    }
 
     public List<QueryComponent> completeQueryCategories(String qry) {
         List<QueryComponent> nqs = new ArrayList<>();
@@ -777,6 +815,17 @@ public class QueryComponentController implements Serializable {
         List<QueryComponent> nqs = new ArrayList<>();
         for (QueryComponent q : tqcs) {
             if (q.getQueryType() == QueryType.Indicator) {
+                nqs.add(q);
+            }
+        }
+        return nqs;
+    }
+    
+    public List<QueryComponent> fillPopulations() {
+        List<QueryComponent> tqcs = applicationController.getQueryComponents();
+        List<QueryComponent> nqs = new ArrayList<>();
+        for (QueryComponent q : tqcs) {
+            if (q.getQueryType() == QueryType.Population) {
                 nqs.add(q);
             }
         }
@@ -2359,7 +2408,6 @@ public class QueryComponentController implements Serializable {
     }
 
     public Jpq createAPopulationCountQuery(QueryComponent qc, Area qarea, Integer qyear) {
-
         Jpq jpql = new Jpq();
         jpql.setQc(qc);
         jpql.setJselect("select r.longValue1  ");
@@ -2379,9 +2427,7 @@ public class QueryComponentController implements Serializable {
         jpql.setJorderBy(" order by r.id desc");
         jpql.getM().put("f", false);
         jpql.setJgroupby("");
-
         jpql.setLongResult(getItemFacade().findLongByJpql(jpql.getJpql(), jpql.getM(), 1));
-
         return jpql;
     }
 
@@ -3795,6 +3841,17 @@ public class QueryComponentController implements Serializable {
 
     public void setIndicators(List<QueryComponent> indicators) {
         this.indicators = indicators;
+    }
+    
+     public List<QueryComponent> getPopulations() {
+        if (populations == null) {
+            populations = fillPopulations();
+        }
+        return populations;
+    }
+
+    public void setPopulations(List<QueryComponent> populations) {
+        this.populations = populations;
     }
 
     public Month getMonthEnum() {
