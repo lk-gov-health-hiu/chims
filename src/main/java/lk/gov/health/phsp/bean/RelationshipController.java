@@ -56,9 +56,12 @@ public class RelationshipController implements Serializable {
     private AreaController areaController;
     @Inject
     private UserTransactionController userTransactionController;
+    @Inject
+    InstitutionController institutionController;
 
     private List<Relationship> items = null;
     private Relationship selected;
+    
 
     private RelationshipType rt;
 
@@ -310,7 +313,7 @@ public class RelationshipController implements Serializable {
         }
         Relationship r;
         r = findRelationship(year, institution, rt);
-        if(r==null){
+        if (r == null) {
             r = new Relationship();
             r.setInstitution(institution);
             r.setRelationshipType(rt);
@@ -320,7 +323,7 @@ public class RelationshipController implements Serializable {
             r.setCreatedBy(webUserController.getLoggedUser());
             getFacade().create(r);
             JsfUtil.addSuccessMessage("Data Added");
-        }else{
+        } else {
             r.setLongValue1(populationValue);
             r.setLastEditBy(webUserController.getLoggedUser());
             r.setLastEditeAt(new Date());
@@ -339,6 +342,22 @@ public class RelationshipController implements Serializable {
         m.put("y", y);
         m.put("rt", t);
         return getFacade().findFirstByJpql(j, m);
+    }
+
+    public Long findPopulationValue(int y, Institution ins, RelationshipType t) {
+        Long p = 0l;
+        Institution hospital = institutionController.findHospital(ins);
+        if(hospital==null){
+            System.out.println("A Hospital Not Found");
+            return 0l;
+        }
+        Relationship r = findRelationship(0, hospital, t);
+        if (r != null) {
+            p = r.getLongValue1();
+        } else {
+            p = 0l;
+        }
+        return p;
     }
 
     public void fillAreaRelationshipData() {

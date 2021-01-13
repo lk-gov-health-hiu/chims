@@ -26,8 +26,12 @@ package lk.gov.health.phsp.bean;
 import javax.inject.Named;
 import javax.enterprise.context.SessionScoped;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.inject.Inject;
 import lk.gov.health.phsp.bean.util.JsfUtil;
 import lk.gov.health.phsp.entity.Area;
@@ -35,6 +39,7 @@ import lk.gov.health.phsp.entity.Institution;
 import lk.gov.health.phsp.entity.QueryComponent;
 import lk.gov.health.phsp.enums.Quarter;
 import lk.gov.health.phsp.enums.QueryType;
+import lk.gov.health.phsp.enums.RelationshipType;
 import lk.gov.health.phsp.enums.TimePeriodType;
 import lk.gov.health.phsp.pojcs.Jpq;
 import lk.gov.health.phsp.pojcs.NcdReportTem;
@@ -56,6 +61,8 @@ public class IndicatorController implements Serializable {
     UserTransactionController userTransactionController;
     @Inject
     QueryComponentController queryComponentController;
+    @Inject
+    RelationshipController relationshipController;
 
     private Date fromDate;
     private Date toDate;
@@ -89,25 +96,103 @@ public class IndicatorController implements Serializable {
         return "/indicators/index";
     }
 
-
     public void runSingleInstitutionalMonthly() {
+        if (institution == null) {
+            JsfUtil.addErrorMessage("Institution ?");
+            return;
+        }
+        if (queryComponent == null) {
+            JsfUtil.addErrorMessage("Indicator ?");
+            return;
+        }
+        if (queryComponent.getQueryType() == null) {
+            JsfUtil.addErrorMessage("Indicator Type ?");
+            return;
+        }
+        if (!queryComponent.getQueryType().equals(QueryType.Indicator)) {
+            JsfUtil.addErrorMessage("Selected is not an indicator");
+            return;
+        }
 
+        Jpq j = new Jpq();
+
+        List<Replaceable> rs = findReplaceblesInIndicatorQuery(queryComponent.getIndicatorQuery());
+
+        for (Replaceable r : rs) {
+            QueryComponent temqc = queryComponentController.findLastQuery(r.getQryCode());
+            if (temqc == null) {
+                j.setError(true);
+                j.setErrorMessage(j.getErrorMessage() + "\n" + "Count " + r.getQryCode() + " in the indicator is not found. ");
+            }
+
+            if (null == temqc.getQueryType()) {
+                j.setError(true);
+                j.setErrorMessage(j.getErrorMessage() + "\n" + "Type of query " + r.getQryCode() + " in is not set. ");
+
+            } else {
+                switch (temqc.getQueryType()) {
+                    case Population:
+                        if (temqc.getPopulationType() == null) {
+                            j.setError(true);
+                            j.setErrorMessage(j.getErrorMessage() + "\n" + "Type of Population " + r.getQryCode() + " in is not set. ");
+                            continue;
+                        }
+                        int temYear;
+                        Calendar c = Calendar.getInstance();
+                        c.setTime(fromDate);
+                        temYear = c.get(Calendar.YEAR);
+                        Long tp = relationshipController.findPopulationValue(temYear, institution, temqc.getPopulationType());
+                        System.out.println("pop is " + tp);
+                        r.setTextReplacing(tp + "");
+                        break;
+                    case Client:
+                        System.out.println("client");
+                        break;
+                    case Client_Count:
+                        System.out.println("Client_Count");
+                        break;
+                    case Encounter_Count:
+                        System.out.println("Encounter_Count");
+                        break;
+                    default:
+                        j.setError(true);
+                        j.setErrorMessage(j.getErrorMessage() + "\n" + "Type of Population " + r.getQryCode() + " in is not set. ");
+                        continue;
+                }
+            }
+
+        }
+
+        if (j.isError()) {
+            JsfUtil.addErrorMessage(j.getErrorMessage());
+            return;
+        }
+
+       
     }
 
-    public Jpq handleIndicatorQuery(QueryComponent qc, Area ccArea, Date ccFrom, Date ccTo, Integer ccYear, Integer ccQuarter) {
-        List<Replaceable> replaceables = queryComponentController.findReplaceblesInIndicatorQuery(qc.getIndicatorQuery());
+    public Jpq handleIndicatorQuery(QueryComponent qc,
+            Institution ccIns,
+            Date ccFrom,
+            Date ccTo) {
         Jpq j = new Jpq();
         if (qc.getQueryType() != QueryType.Indicator) {
             j.setError(true);
             j.setErrorMessage("Query is not an indicator");
             return j;
         }
+
+        List<Replaceable> replaceables = queryComponentController.findReplaceblesInIndicatorQuery(qc.getIndicatorQuery());
+
         for (Replaceable r : replaceables) {
+
+            System.out.println("r.getQryCode() = " + r.getQryCode());
 
             QueryComponent temqc = queryComponentController.findLastQuery(r.getQryCode());
 
             if (temqc == null) {
-                JsfUtil.addErrorMessage("Wrong Query. Check the names of queries");
+                j.setError(true);
+                j.setErrorMessage("Count " + r.getQryCode() + " in the indicator is not found. ");
                 return new Jpq();
             }
 
@@ -120,11 +205,18 @@ public class IndicatorController implements Serializable {
             } else {
                 switch (temqc.getQueryType()) {
                     case Population:
-                        //TODO: Add Logic Here
-                        j = queryComponentController.createAPopulationCountQuery(temqc, ccArea, ccYear);
+//                        j = queryComponentController.createAPopulationCountQuery(temqc, ccArea, ccYear);
+                        System.out.println("pop");
                         break;
                     case Client:
-                        j = queryComponentController.createClientQuery(temqc, ccArea, ccFrom, ccTo, ccYear, ccQuarter);
+//                        j = queryComponentController.createClientQuery(temqc, ccArea, ccFrom, ccTo, ccYear, ccQuarter);
+                        System.out.println("client");
+                        break;
+                    case Client_Count:
+                        System.out.println("client");
+                        break;
+                    case Encounter_Count:
+                        System.out.println("client");
                         break;
                     default:
                         JsfUtil.addErrorMessage("Wrong Query. Check the names of queries");
@@ -148,6 +240,31 @@ public class IndicatorController implements Serializable {
         j.setSuccess(true);
         j.setSuccessMessage(rs);
         return j;
+    }
+
+    public List<Replaceable> findReplaceblesInIndicatorQuery(String text) {
+        List<Replaceable> ss = new ArrayList<>();
+
+        String patternStart = "#{";
+        String patternEnd = "}";
+        String regexString = Pattern.quote(patternStart) + "(.*?)" + Pattern.quote(patternEnd);
+
+        Pattern p = Pattern.compile(regexString);
+        Matcher m = p.matcher(text);
+
+        while (m.find()) {
+            String block = m.group(1);
+            if (!block.trim().equals("")) {
+                Replaceable s = new Replaceable();
+                s.setFullText(block);
+                s.setTextToBeReplaced("#{" + block + "}");
+                s.setQryCode(block);
+                ss.add(s);
+            }
+        }
+
+        return ss;
+
     }
 
     public StoredQueryResultController getStoredQueryResultController() {
