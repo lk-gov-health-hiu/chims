@@ -61,6 +61,12 @@
                                     <f:selectItem itemLabel="Select a month" ></f:selectItem>
                                     <f:selectItems value="#{commonController.months}" var="m" itemValue="#{m.value}" itemLabel="#{m}" ></f:selectItems>
                                 </p:selectOneMenu>
+                                
+                                <p:outputLabel id="lblRecal" value="Recalculate" for="btnRecal" ></p:outputLabel>
+                                <p:selectBooleanButton id="btnRecal"
+                                                       offLabel="Use Previous Counts if available"
+                                                       onLabel="Disregard Previous Calculations"
+                                                       value="#{reportController.recalculate}" ></p:selectBooleanButton>
 
                             </p:panelGrid>
                             <p:panelGrid columns="1" >

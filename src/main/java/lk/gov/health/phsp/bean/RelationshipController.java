@@ -33,6 +33,7 @@ import jxl.Sheet;
 import jxl.Workbook;
 import jxl.read.biff.BiffException;
 import lk.gov.health.phsp.entity.Area;
+import lk.gov.health.phsp.entity.Institution;
 import lk.gov.health.phsp.entity.Item;
 import lk.gov.health.phsp.enums.AreaType;
 import lk.gov.health.phsp.enums.ItemType;
@@ -55,15 +56,20 @@ public class RelationshipController implements Serializable {
     private AreaController areaController;
     @Inject
     private UserTransactionController userTransactionController;
+    @Inject
+    InstitutionController institutionController;
 
     private List<Relationship> items = null;
     private Relationship selected;
+    
 
     private RelationshipType rt;
 
     private Area area;
+    private Institution institution;
     private Integer year;
     private Integer month;
+    private Long populationValue;
 
     private Relationship adding;
     private Relationship removing;
@@ -292,6 +298,71 @@ public class RelationshipController implements Serializable {
         return "/area/view_population_data";
     }
 
+    public void saveInstitutionRelationshipDate() {
+        if (institution == null) {
+            JsfUtil.addErrorMessage("Institution ?");
+            return;
+        }
+        if (populationValue == null) {
+            JsfUtil.addErrorMessage("Population ?");
+            return;
+        }
+        if (rt == null) {
+            JsfUtil.addErrorMessage("Type ?");
+            return;
+        }
+        Relationship r;
+        r = findRelationship(year, institution, rt);
+        if (r == null) {
+            r = new Relationship();
+            r.setInstitution(institution);
+            r.setRelationshipType(rt);
+            r.setYearInt(year);
+            r.setLongValue1(populationValue);
+            r.setCreatedAt(new Date());
+            r.setCreatedBy(webUserController.getLoggedUser());
+            getFacade().create(r);
+            JsfUtil.addSuccessMessage("Data Added");
+        } else {
+            r.setLongValue1(populationValue);
+            r.setLastEditBy(webUserController.getLoggedUser());
+            r.setLastEditeAt(new Date());
+            getFacade().edit(r);
+            JsfUtil.addSuccessMessage("Data Updated");
+        }
+    }
+
+    public Relationship findRelationship(int y, Institution ins, RelationshipType t) {
+        String j = "select r from Relationship r "
+                + " where r.institution=:ins   "
+                + " and r.relationshipType=:rt "
+                + " and r.yearInt=:y";
+        Map m = new HashMap();
+        m.put("ins", ins);
+        m.put("y", y);
+        m.put("rt", t);
+        return getFacade().findFirstByJpql(j, m);
+    }
+
+    public Long findPopulationValue(int y, Institution ins, RelationshipType t) {
+        System.out.println("findPopulationValue");
+        Long p = 0l;
+        System.out.println("ins = " + ins);
+        Institution hospital = institutionController.findHospital(ins);
+        System.out.println("hospital = " + hospital);
+        if(hospital==null){
+            System.out.println("A Hospital Not Found");
+            return 0l;
+        }
+        Relationship r = findRelationship(y, hospital, t);
+        if (r != null) {
+            p = r.getLongValue1();
+        } else {
+            p = 0l;
+        }
+        return p;
+    }
+
     public void fillAreaRelationshipData() {
         if (area == null) {
             return;
@@ -312,6 +383,48 @@ public class RelationshipController implements Serializable {
         m.put("ret", false);
         m.put("rt", rt);
         items = getFacade().findByJpql(j, m);
+    }
+
+    public void fillInstitutionPopulationData() {
+        System.out.println("fillInstitutionPopulationData");
+        if (getYear() == null) {
+            JsfUtil.addErrorMessage("No Year Selected.");
+            return;
+        }
+        String j = "select r from Relationship r "
+                + " where r.retired<>:ret "
+                + " and r.yearInt=:y";
+
+        Map m = new HashMap();
+        if (institution != null) {
+            j += " and r.institution=:ins  ";
+            m.put("ins", institution);
+        } else {
+            j += " and r.institution is not null  ";
+        }
+        if (rt != null) {
+            j += " and r.relationshipType=:rt ";
+            m.put("rt", rt);
+        } else {
+            j += " and r.relationshipType is not null  ";
+        }
+        m.put("y", getYear());
+        m.put("ret", true);
+        System.out.println("m = " + m);
+        System.out.println("j = " + j);
+        items = getFacade().findByJpql(j, m);
+    }
+
+    public String toViewPopulationDataForInstitution() {
+        userTransactionController.recordTransaction("To View Population Data for Institution");
+        items = null;
+        return "/institution/view_population_data";
+    }
+
+    public String toAddPopulationDataForInstitution() {
+        userTransactionController.recordTransaction("To Add Population Data for Institution");
+        items = null;
+        return "/institution/add_population_data";
     }
 
     public Relationship findRelationship(Area a, RelationshipType type, Integer year) {
@@ -553,7 +666,7 @@ public class RelationshipController implements Serializable {
     }
 
     public String getErrorCode() {
-    userTransactionController.recordTransaction("Import District Data Error Code");
+        userTransactionController.recordTransaction("Import District Data Error Code");
         return errorCode;
     }
 
@@ -567,6 +680,22 @@ public class RelationshipController implements Serializable {
 
     public void setRt(RelationshipType rt) {
         this.rt = rt;
+    }
+
+    public Institution getInstitution() {
+        return institution;
+    }
+
+    public void setInstitution(Institution institution) {
+        this.institution = institution;
+    }
+
+    public Long getPopulationValue() {
+        return populationValue;
+    }
+
+    public void setPopulationValue(Long populationValue) {
+        this.populationValue = populationValue;
     }
 
     @FacesConverter(forClass = Relationship.class)

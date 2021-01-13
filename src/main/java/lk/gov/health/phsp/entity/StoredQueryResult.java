@@ -76,7 +76,8 @@ public class StoredQueryResult implements Serializable {
     private Date resultFrom;
     @Temporal(javax.persistence.TemporalType.DATE)
     private Date resultTo;
-
+    private boolean recalculate;
+    
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date requestCreatedAt;
 
@@ -132,6 +133,8 @@ public class StoredQueryResult implements Serializable {
     public void setId(Long id) {
         this.id = id;
     }
+    
+    
 
     @Override
     public int hashCode() {
@@ -461,6 +464,13 @@ public class StoredQueryResult implements Serializable {
     public void setReadyAfterConsolidationAt(Date readyAfterConsolidationAt) {
         this.readyAfterConsolidationAt = readyAfterConsolidationAt;
     }
-    
-    
+
+    public boolean isRecalculate() {
+        return recalculate;
+    }
+
+    public void setRecalculate(boolean recalculate) {
+        this.recalculate = recalculate;
+    }
+
 }

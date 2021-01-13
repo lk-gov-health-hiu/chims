@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -18,7 +19,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class Client implements Serializable {
 
-//    @OneToMany(mappedBy = "itemClient")
+//    @OneToMany(mappedBy = "itemClient", fetch = FetchType.LAZY)
 //    private List<ClientEncounterComponentItem> clientEncounterComponentItems;
 
 // <editor-fold defaultstate="collapsed" desc="Attributes">

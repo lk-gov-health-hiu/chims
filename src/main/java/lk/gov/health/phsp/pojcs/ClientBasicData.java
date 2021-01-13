@@ -44,6 +44,7 @@ public class ClientBasicData implements Serializable {
     private int ageInYears;
     private Long id;
     private String nic;
+    private String address;
 
     public ClientBasicData() {
     }
@@ -88,6 +89,19 @@ public class ClientBasicData implements Serializable {
         this.name = name;
     }
 
+    public ClientBasicData(Long id, String phn, String name, String sex, String nic, String phone, String address) {
+        this.phn = phn;
+        this.phone = phone;
+        this.name = name;
+        this.sex = sex;
+        this.id = id;
+        this.nic = nic;
+        this.address = address;
+    }
+
+    
+    
+    
     public String getPhn() {
         return phn;
     }
@@ -175,6 +189,14 @@ public class ClientBasicData implements Serializable {
 
     public void setNic(String nic) {
         this.nic = nic;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
     }
 
 }
