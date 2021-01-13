@@ -346,34 +346,32 @@ public class QueryComponentController implements Serializable {
     }
 
     public void saveExcel() {
-        if (addingCategory == null) {
+        if (selected == null) {
             JsfUtil.addErrorMessage("Nothing to save");
             return;
         }
-        addingCategory.setQueryType(QueryType.Excel_Report);
-        saveItem(addingCategory);
+        selected.setQueryType(QueryType.Excel_Report);
+        saveItem(selected);
         excels = null;
-//        addingCategory = null;
     }
 
     public void saveIndicator() {
-        if (addingCategory == null) {
+        if (selected == null) {
             JsfUtil.addErrorMessage("Nothing to save");
             return;
         }
-        addingCategory.setQueryType(QueryType.Indicator);
-        saveItem(addingCategory);
+        selected.setQueryType(QueryType.Indicator);
+        saveItem(selected);
         indicators = null;
-//        addingCategory = null;
     }
     
     public void savePopulation() {
-        if (addingCategory == null) {
+        if (selected == null) {
             JsfUtil.addErrorMessage("Nothing to save");
             return;
         }
-        addingCategory.setQueryType(QueryType.Population);
-        saveItem(addingCategory);
+        selected.setQueryType(QueryType.Population);
+        saveItem(selected);
         populations = null;
     }
 
