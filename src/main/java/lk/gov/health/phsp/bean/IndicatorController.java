@@ -89,11 +89,8 @@ public class IndicatorController implements Serializable {
         return "/indicators/index";
     }
 
-    public void checkInstitutionalMonthly() {
 
-    }
-
-    public void runInstitutionalMonthly() {
+    public void runSingleInstitutionalMonthly() {
 
     }
 

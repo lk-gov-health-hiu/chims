@@ -14,10 +14,25 @@
                 <h:form>
                     <p:panelGrid columns="1" style="width: 100%">
                         <f:facet name="header" >
-                            <p:outputLabel value="Institution Monthly Summeries" ></p:outputLabel>
+                            <p:outputLabel value="SIngle Institution Monthly Indicator" ></p:outputLabel>
                         </f:facet>
 
-                        <h:panelGrid columns="2" styleClass="alignTop" >
+                        <p:panelGrid columns="1" >
+                            <p:commandButton value="Calculate"  style="width:30em;margin:auto;"
+                                             action="#{indicatorController.runSingleInstitutionalMonthly()}"
+                                             ajax="false">
+                            </p:commandButton>
+
+                            <p:commandButton value="Back"  style="width:30em;margin:auto;"
+                                             immediate="true"
+                                             action="#{indicatorController.toIndicatorIndex()}"
+                                             ajax="false">
+                            </p:commandButton>
+
+
+                        </p:panelGrid>
+
+                        <h:panelGrid columns="1" styleClass="alignTop" >
 
                             <p:panelGrid columns="2" >
                                 <p:outputLabel value="Indicator" for="indicator" ></p:outputLabel>
@@ -58,7 +73,7 @@
                                     <f:selectItem itemLabel="Select a month" ></f:selectItem>
                                     <f:selectItems value="#{commonController.months}" var="m" itemValue="#{m.value}" itemLabel="#{m}" ></f:selectItems>
                                 </p:selectOneMenu>
-                                
+
                                 <p:outputLabel id="lblRecal" value="Recalculate" for="btnRecal" ></p:outputLabel>
                                 <p:selectBooleanButton id="btnRecal"
                                                        offLabel="Use Previous Counts if available"
@@ -66,29 +81,11 @@
                                                        value="#{indicatorController.recalculate}" ></p:selectBooleanButton>
 
                             </p:panelGrid>
-                            <p:panelGrid columns="1" >
-                                <p:commandButton value="Check"  style="width:30em;margin:auto;"
-                                                 action="#{reportController.listExistingMonthlyReports()}"
-                                                 ajax="false">
-                                </p:commandButton>
 
-                                <p:commandButton value="Create"  style="width:30em;margin:auto;"
-                                                 action="#{reportController.createNewMonthlyReport()}"
-                                                 ajax="false">
-                                </p:commandButton>
-
-                                <p:commandButton value="Back"  style="width:30em;margin:auto;"
-                                                 immediate="true"
-                                                 action="#{indicatorController.toIndicatorIndex()}"
-                                                 ajax="false">
-                                </p:commandButton>
-
-
-                            </p:panelGrid>
 
 
                         </h:panelGrid>
-                        
+
                         <p:outputLabel value="#{indicatorController.message}" ></p:outputLabel>
 
                         <p:inputText value="${indicatorController.result}" ></p:inputText>
