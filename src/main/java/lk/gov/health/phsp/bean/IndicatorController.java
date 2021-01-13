@@ -113,6 +113,17 @@ public class IndicatorController implements Serializable {
             JsfUtil.addErrorMessage("Selected is not an indicator");
             return;
         }
+        if (year == 0) {
+            JsfUtil.addErrorMessage("Year ?");
+            return;
+        }
+        if (month == null) {
+            JsfUtil.addErrorMessage("Month");
+            return;
+        }
+        
+        fromDate = CommonController.startOfTheMonth(year, month);
+        toDate=CommonController.endOfTheMonth(year, month);
 
         Jpq j = new Jpq();
 
@@ -168,7 +179,6 @@ public class IndicatorController implements Serializable {
             return;
         }
 
-       
     }
 
     public Jpq handleIndicatorQuery(QueryComponent qc,
