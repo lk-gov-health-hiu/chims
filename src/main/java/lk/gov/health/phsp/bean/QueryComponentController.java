@@ -236,6 +236,11 @@ public class QueryComponentController implements Serializable {
         userTransactionController.recordTransaction("Edit Indicator");
         return "/queryComponent/edit_indicator";
     }
+    
+    public String toEditPopulation() {
+        userTransactionController.recordTransaction("Edit Population");
+        return "/queryComponent/edit_population";
+    }
 
     public String toEditCount() {
         userTransactionController.recordTransaction("Edit Count");
