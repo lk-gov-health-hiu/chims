@@ -40,6 +40,7 @@ import lk.gov.health.phsp.bean.util.JsfUtil;
 import lk.gov.health.phsp.entity.Area;
 import lk.gov.health.phsp.entity.Institution;
 import lk.gov.health.phsp.entity.QueryComponent;
+import lk.gov.health.phsp.enums.InstitutionType;
 import lk.gov.health.phsp.enums.Quarter;
 import lk.gov.health.phsp.enums.QueryType;
 import lk.gov.health.phsp.enums.RelationshipType;
@@ -93,22 +94,22 @@ public class IndicatorController implements Serializable {
         message = "";
         return "/indicators/institution_monthly";
     }
-    
+
     public String toClinicMonthly() {
         message = "";
         return "/indicators/clinic_monthly";
     }
-    
+
     public String toDistrictMonthly() {
         message = "";
         return "/indicators/district_monthly";
     }
-    
+
     public String toProvinceMonthly() {
         message = "";
         return "/indicators/province_monthly";
     }
-    
+
     public String toNationalMonthly() {
         message = "";
         return "/indicators/national_monthly";
@@ -118,7 +119,7 @@ public class IndicatorController implements Serializable {
         userTransactionController.recordTransaction("To View Indicators");
         return "/indicators/index";
     }
-    
+
     public void runHlcMonthly() {
         if (institution == null) {
             JsfUtil.addErrorMessage("HLC ?");
@@ -144,12 +145,22 @@ public class IndicatorController implements Serializable {
             JsfUtil.addErrorMessage("Month");
             return;
         }
+        if (institution.getInstitutionType() == null) {
+            JsfUtil.addErrorMessage("No Type for the institution");
+            return;
+        }
+        if (institution.getInstitutionType() != InstitutionType.Clinic) {
+            JsfUtil.addErrorMessage("Selected institution is NOT a HLC?");
+            return;
+        }
 
         fromDate = CommonController.startOfTheMonth(year, month);
         System.out.println("fromDate = " + fromDate);
         toDate = CommonController.endOfTheMonth(year, month);
         System.out.println("toDate = " + toDate);
         Jpq j = new Jpq();
+        j.setMessage("");
+        j.setMessage("");
 
         List<Replaceable> rs = findReplaceblesInIndicatorQuery(queryComponent.getIndicatorQuery());
 
@@ -158,12 +169,12 @@ public class IndicatorController implements Serializable {
             QueryComponent temqc = queryComponentController.findLastQuery(r.getQryCode());
             if (temqc == null) {
                 j.setError(true);
-                j.setErrorMessage(j.getErrorMessage() + "\n" + "Count " + r.getQryCode() + " in the indicator is not found. ");
+                j.setMessage(j.getMessage() + "\n" + "Count " + r.getQryCode() + " in the indicator is not found. ");
             }
 
             if (null == temqc.getQueryType()) {
                 j.setError(true);
-                j.setErrorMessage(j.getErrorMessage() + "\n" + "Type of query " + r.getQryCode() + " in is not set. ");
+                j.setMessage(j.getMessage() + "\n" + "Type of query " + r.getQryCode() + " in is not set. ");
 
             } else {
                 switch (temqc.getQueryType()) {
@@ -171,7 +182,7 @@ public class IndicatorController implements Serializable {
                         System.out.println("Population");
                         if (temqc.getPopulationType() == null) {
                             j.setError(true);
-                            j.setErrorMessage(j.getErrorMessage() + "\n" + "Type of Population " + r.getQryCode() + " in is not set. ");
+                            j.setMessage(j.getMessage() + "\n" + "Type of Population " + r.getQryCode() + " in is not set. ");
                             continue;
                         }
                         int temYear;
@@ -183,9 +194,10 @@ public class IndicatorController implements Serializable {
                         if (tp != null) {
                             r.setTextReplacing(tp + "");
                             r.setSelectedValue(tp + "");
+                            j.setMessage(j.getMessage() + r.getQryCode() + " - " + tp + "\n");
                         } else {
                             j.setError(true);
-                            j.setErrorMessage(j.getErrorMessage() + "\n" + "No Population data for " + r.getQryCode() + " in institution " + institution.getName());
+                            j.setMessage(j.getMessage() + "No Population data for " + r.getQryCode() + "\n");
                         }
                         break;
 
@@ -196,35 +208,29 @@ public class IndicatorController implements Serializable {
                         if (tv != null) {
                             r.setTextReplacing(tv + "");
                             r.setSelectedValue(tv + "");
+                            j.setMessage(j.getMessage() + r.getQryCode() + " - " + tv + "\n");
                         } else {
-                            j.setErrorMessage(j.getErrorMessage() + "\n" + "No data for " + r.getQryCode() + " in institution " + institution.getName());
+                            j.setError(true);
+                            j.setMessage(j.getMessage() + "\n" + "No count for " + r.getQryCode() + "\n");
                         }
 
                         break;
                     default:
                         j.setError(true);
-                        j.setErrorMessage(j.getErrorMessage() + "\n" + "Type of Population " + r.getQryCode() + " in is not set. ");
+                        j.setMessage(j.getMessage() + "\n" + "Type of Population " + r.getQryCode() + " in is not set. ");
                         continue;
                 }
-
-                System.out.println("getTextReplacing = " + r.getTextReplacing());
-                System.out.println("getTextToBeReplaced = " + r.getTextToBeReplaced());
             }
 
         }
 
-        if (j.isError()) {
-            JsfUtil.addErrorMessage(j.getErrorMessage());
-            message = j.getErrorMessage();
-            return;
-        }
-
         String script = generateScript(queryComponent.getIndicatorQuery(), rs);
-        System.out.println("script = " + script);
-
         result = evaluateScript(script);
-        message = j.getErrorMessage();
         
+        j.setMessage(j.getMessage() + "\n" + "Calculation Script = " + script + "\nResult = " + result);
+        
+        message = j.getMessage();
+
     }
 
     public void runSingleInstitutionalMonthly() {
@@ -267,12 +273,12 @@ public class IndicatorController implements Serializable {
             QueryComponent temqc = queryComponentController.findLastQuery(r.getQryCode());
             if (temqc == null) {
                 j.setError(true);
-                j.setErrorMessage(j.getErrorMessage() + "\n" + "Count " + r.getQryCode() + " in the indicator is not found. ");
+                j.setMessage(j.getMessage() + "\n" + "Count " + r.getQryCode() + " in the indicator is not found. ");
             }
 
             if (null == temqc.getQueryType()) {
                 j.setError(true);
-                j.setErrorMessage(j.getErrorMessage() + "\n" + "Type of query " + r.getQryCode() + " in is not set. ");
+                j.setMessage(j.getMessage() + "\n" + "Type of query " + r.getQryCode() + " in is not set. ");
 
             } else {
                 switch (temqc.getQueryType()) {
@@ -280,7 +286,7 @@ public class IndicatorController implements Serializable {
                         System.out.println("Population");
                         if (temqc.getPopulationType() == null) {
                             j.setError(true);
-                            j.setErrorMessage(j.getErrorMessage() + "\n" + "Type of Population " + r.getQryCode() + " in is not set. ");
+                            j.setMessage(j.getMessage() + "\n" + "Type of Population " + r.getQryCode() + " in is not set. ");
                             continue;
                         }
                         int temYear;
@@ -294,7 +300,7 @@ public class IndicatorController implements Serializable {
                             r.setSelectedValue(tp + "");
                         } else {
                             j.setError(true);
-                            j.setErrorMessage(j.getErrorMessage() + "\n" + "No Population data for " + r.getQryCode() + " in institution " + institution.getName());
+                            j.setMessage(j.getMessage() + "\n" + "No Population data for " + r.getQryCode() + " in institution " + institution.getName());
                         }
                         break;
 
@@ -306,13 +312,13 @@ public class IndicatorController implements Serializable {
                             r.setTextReplacing(tv + "");
                             r.setSelectedValue(tv + "");
                         } else {
-                            j.setErrorMessage(j.getErrorMessage() + "\n" + "No data for " + r.getQryCode() + " in institution " + institution.getName());
+                            j.setMessage(j.getMessage() + "\n" + "No data for " + r.getQryCode() + " in institution " + institution.getName());
                         }
 
                         break;
                     default:
                         j.setError(true);
-                        j.setErrorMessage(j.getErrorMessage() + "\n" + "Type of Population " + r.getQryCode() + " in is not set. ");
+                        j.setMessage(j.getMessage() + "\n" + "Type of Population " + r.getQryCode() + " in is not set. ");
                         continue;
                 }
 
@@ -323,8 +329,8 @@ public class IndicatorController implements Serializable {
         }
 
         if (j.isError()) {
-            JsfUtil.addErrorMessage(j.getErrorMessage());
-            message = j.getErrorMessage();
+            JsfUtil.addErrorMessage(j.getMessage());
+            message = j.getMessage();
             return;
         }
 
@@ -332,8 +338,8 @@ public class IndicatorController implements Serializable {
         System.out.println("script = " + script);
 
         result = evaluateScript(script);
-        message = j.getErrorMessage();
-        
+        message = j.getMessage();
+
     }
 
     public String generateScript(String calculationScript, List<Replaceable> selectables) {
@@ -360,7 +366,7 @@ public class IndicatorController implements Serializable {
             return null;
         }
     }
-    
+
     public Jpq handleIndicatorQuery(QueryComponent qc,
             Institution ccIns,
             Date ccFrom,
@@ -368,7 +374,7 @@ public class IndicatorController implements Serializable {
         Jpq j = new Jpq();
         if (qc.getQueryType() != QueryType.Indicator) {
             j.setError(true);
-            j.setErrorMessage("Query is not an indicator");
+            j.setMessage("Query is not an indicator");
             return j;
         }
 
@@ -382,7 +388,7 @@ public class IndicatorController implements Serializable {
 
             if (temqc == null) {
                 j.setError(true);
-                j.setErrorMessage("Count " + r.getQryCode() + " in the indicator is not found. ");
+                j.setMessage("Count " + r.getQryCode() + " in the indicator is not found. ");
                 return new Jpq();
             }
 
@@ -428,7 +434,7 @@ public class IndicatorController implements Serializable {
         j.setLongResult(lng);
         j.setDblResult(dbl);
         j.setSuccess(true);
-        j.setSuccessMessage(rs);
+        j.setMessage(rs);
         return j;
     }
 

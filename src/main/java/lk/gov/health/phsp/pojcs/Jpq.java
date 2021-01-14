@@ -66,6 +66,8 @@ public class Jpq {
     
     private String successMessage;
     private boolean success;
+    
+    private String message;
 
     /**
      *
@@ -260,6 +262,14 @@ public class Jpq {
 
     public void setSuccess(boolean success) {
         this.success = success;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
     }
 
     
