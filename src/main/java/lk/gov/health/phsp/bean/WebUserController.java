@@ -159,6 +159,7 @@ public class WebUserController implements Serializable {
 
 
     int reportTabIndex;
+    private int indicatorTabIndex;
 
     private String ipAddress;
 
@@ -1404,6 +1405,8 @@ public class WebUserController implements Serializable {
         return selectedGnAreas;
     }
 
+    
+    
     public void setSelectedGnAreas(List<Area> selectedGnAreas) {
         if (selectedGnAreas == null) {
             selectedGnAreas = new ArrayList<>();
@@ -1749,6 +1752,14 @@ public class WebUserController implements Serializable {
 
     private UserTransactionController getUserTransactionController() {
         return userTransactionController;
+    }
+
+    public int getIndicatorTabIndex() {
+        return indicatorTabIndex;
+    }
+
+    public void setIndicatorTabIndex(int indicatorTabIndex) {
+        this.indicatorTabIndex = indicatorTabIndex;
     }
 
     @FacesConverter(forClass = WebUser.class)

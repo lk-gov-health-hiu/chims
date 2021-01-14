@@ -1,0 +1,70 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <body>
+
+        <ui:composition template="./index.xhtml">
+
+            <ui:define name="insTopic">
+                <p:outputLabel value="View Population Areas" ></p:outputLabel>
+            </ui:define>
+
+            <ui:define name="insContents">
+
+                <h:form  >
+
+
+                    <p:panelGrid columns="3" >
+
+                        <p:outputLabel value="Year" for="txtYear" ></p:outputLabel>
+                        <p:spacer height="1" width="10"></p:spacer>
+                        <p:inputText id="txtYear" required="true" value="#{relationshipController.year}" ></p:inputText>
+
+                        <p:outputLabel value="Population Data Type" for="cmbType" ></p:outputLabel>
+                        <p:spacer height="1" width="10"></p:spacer>
+                        <p:selectOneMenu id="cmbType" value="#{relationshipController.rt}" required="true">
+                            <f:selectItem itemLabel="Please select" ></f:selectItem>
+                            <f:selectItems value="#{areaController.rts}" ></f:selectItems>
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value="Institution" for="acIns" ></p:outputLabel>
+                        <p:spacer height="1" width="10"></p:spacer>
+                        <p:autoComplete id="acIns" value="#{relationshipController.institution}" required="true"
+                                        completeMethod="#{institutionController.completeInstitutions}"
+                                        var="a" maxResults="20" minQueryLength="4"
+                                        itemLabel="#{a.name}" forceSelection="true"
+                                        itemValue="#{a}">
+                            <p:column headerText="Name" >
+                                <p:outputLabel value="#{a.name}" ></p:outputLabel>
+                            </p:column>
+                            <p:column headerText="Type" >
+                                <p:outputLabel value="#{a.institutionType}" ></p:outputLabel>
+                            </p:column>
+                        </p:autoComplete>
+
+                        <p:outputLabel value="Population Value" for="txtPop" ></p:outputLabel>
+                        <p:spacer height="1" width="10"></p:spacer>
+                        <p:inputText id="txtPop" required="true" value="#{relationshipController.populationValue}" ></p:inputText>
+
+                        <p:spacer></p:spacer>
+                        <p:spacer></p:spacer>
+                        <p:commandButton ajax="false" value="Add" 
+                                         action="#{relationshipController.saveInstitutionRelationshipDate()}"  ></p:commandButton>
+                    </p:panelGrid>
+
+                  
+
+                </h:form>
+
+
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

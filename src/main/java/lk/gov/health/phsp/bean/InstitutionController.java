@@ -28,13 +28,11 @@ import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
 import javax.inject.Inject;
-import javax.persistence.ManyToOne;
 import jxl.Cell;
 import jxl.Sheet;
 import jxl.Workbook;
 import jxl.read.biff.BiffException;
 import lk.gov.health.phsp.entity.Area;
-import lk.gov.health.phsp.entity.Relationship;
 import lk.gov.health.phsp.enums.AreaType;
 import lk.gov.health.phsp.enums.InstitutionType;
 import lk.gov.health.phsp.facade.AreaFacade;
@@ -81,6 +79,39 @@ public class InstitutionController implements Serializable {
 
     public Institution getInstitutionById(Long id) {
         return getFacade().find(id);
+    }
+
+    public Institution findHospital(Institution unit) {
+        if (unit == null) {
+            return null;
+        }
+        switch (unit.getInstitutionType()) {
+            case Base_Hospital:
+            case District_General_Hospital:
+            case Divisional_Hospital:
+            case National_Hospital:
+            case Teaching_Hospital:
+            case Primary_Medical_Care_Unit:
+                return unit;
+            case Clinic:
+            case MOH_Office:
+            case Ministry_of_Health:
+            case Other:
+            case Partner:
+
+            case Private_Sector_Institute:
+            case Provincial_Department_of_Health_Services:
+            case Regional_Department_of_Health_Department:
+            case Stake_Holder:
+            case Unit:
+            case Ward:
+            default:
+                if (unit.getParent() != null) {
+                    return findHospital(unit.getParent());
+                } else {
+                    return null;
+                }
+        }
     }
 
     public void addGnToPmc() {
@@ -274,6 +305,10 @@ public class InstitutionController implements Serializable {
         return fillInstitutions(null, nameQry, null);
     }
 
+    public List<Institution> completeHlClinics(String nameQry) {
+        return fillInstitutions(InstitutionType.Clinic, nameQry, null);
+    }
+
     public Institution findInstitutionByName(String name) {
         String j = "Select i from Institution i where i.retired=:ret ";
         Map m = new HashMap();
@@ -350,12 +385,10 @@ public class InstitutionController implements Serializable {
     public String importInstitutions() {
         successMessage = "";
         failureMessage = "";
-        
+
         String newLine = "<br/>";
 
         try {
-
-       
 
             File inputWorkbook;
             Workbook w;
@@ -426,7 +459,7 @@ public class InstitutionController implements Serializable {
                     newClinic.setProvince(province);
                     newClinic.setRdhsArea(rdhsArea);
                     getFacade().create(newClinic);
-                    
+
                     applicationController.setInstitutions(null);
 
                 }
@@ -454,7 +487,7 @@ public class InstitutionController implements Serializable {
             selected.setCreater(webUserController.getLoggedUser());
             getFacade().create(selected);
 
-            applicationController.getInstitutions().add(selected);  
+            applicationController.getInstitutions().add(selected);
             items = null;
             JsfUtil.addSuccessMessage("Saved");
         } else {
@@ -586,8 +619,6 @@ public class InstitutionController implements Serializable {
         this.area = area;
     }
 
-    
-    
     public Area getRemovingArea() {
         return removingArea;
     }

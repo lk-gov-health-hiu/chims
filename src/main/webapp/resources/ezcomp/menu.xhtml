@@ -34,17 +34,19 @@
                 </p:submenu>
 
 
-                <p:submenu label="Analysis" disabled="true"
+                <p:submenu label="Analysis" 
                            rendered="#{webUserController.hasPrivilege('Institution_Administration')}" >
                     <p:menuitem ajax="false" value="Queries" 
                                 action="#{queryComponentController.toQueryIndex()}"  />
                     <p:menuitem ajax="false" value="Reports" 
                                 action="#{reportController.toViewReports()}" ></p:menuitem>
+                    <p:menuitem ajax="false" value="Indicators" 
+                                action="#{indicatorController.toIndicatorIndex}" ></p:menuitem>
                 </p:submenu>
 
 
                 <!--//Disabled the Menu-->
-                <p:submenu label="Institution Administration"  disabled="true"
+                <p:submenu label="Institution Administration"  
                            rendered="#{webUserController.hasPrivilege('Institution_Administration')}"  >
                     <p:menuitem value="Manage Users" 
                                 action="/insAdmin/user_index" ajax="false"
@@ -55,7 +57,7 @@
                 </p:submenu>
 
                 <!--//Disabled the Menu-->
-                <p:submenu label="System Administration" disabled="true" rendered="#{webUserController.hasPrivilege('System_Administration')}"  >
+                <p:submenu label="System Administration"  rendered="#{webUserController.hasPrivilege('System_Administration')}"  >
                     <p:menuitem value="Manage Users" action="#{webUserController.toManageAllUsers()}"  ajax="false" />
                     <p:menuitem value="Manage Institutions" action="/institution/index"     ajax="false" />
                     <p:menuitem value="Manage Areas" action="/area/index" ajax="false"    />
@@ -84,7 +86,9 @@
                 <f:facet name="options">
                     <p:inputText autocomplete="off"
                                  value="#{clientController.searchingId}"/>
-                    <p:commandButton ajax="false" action="#{clientController.searchByAnyId()}" icon="ui-icon-search" ></p:commandButton>
+                    <p:commandButton ajax="false" 
+                                     action="#{clientController.searchByPhnWithBasicData()}" 
+                                     icon="ui-icon-search" ></p:commandButton>
                     <p:spacer height="1" width="5" ></p:spacer>
                     <p:outputLabel value="|"></p:outputLabel>
                     <p:spacer height="1" width="5" ></p:spacer>
@@ -111,16 +115,20 @@
                 </p:submenu>
 
 
-                <p:submenu label="Analysis" disabled="true"
+
+                <p:submenu label="Analysis" 
                            rendered="#{webUserController.hasPrivilege('Institution_Administration')}" >
                     <p:menuitem ajax="false" value="Queries" 
-                                action="#{queryComponentController.toAllQueries()}"  />
-                    <p:menuitem ajax="false" value="Reports" action="#{reportController.toViewReports()}" ></p:menuitem>
+                                action="#{queryComponentController.toQueryIndex()}"  />
+                    <p:menuitem ajax="false" value="Reports" 
+                                action="#{reportController.toViewReports()}" ></p:menuitem>
+                    <p:menuitem ajax="false" value="Indicators" 
+                                action="#{indicatorController.toIndicatorIndex}" ></p:menuitem>
                 </p:submenu>
 
 
                 <!--//Disabled the Menu-->
-                <p:submenu label="Institution Administration"  disabled="true"
+                <p:submenu label="Institution Administration"  
                            rendered="#{webUserController.hasPrivilege('Institution_Administration')}"  >
                     <p:menuitem value="Manage Users" 
                                 action="/insAdmin/user_index" ajax="false"
@@ -131,7 +139,7 @@
                 </p:submenu>
 
                 <!--//Disabled the Menu-->
-                <p:submenu label="System Administration" disabled="true" rendered="#{webUserController.hasPrivilege('System_Administration')}"  >
+                <p:submenu label="System Administration"  rendered="#{webUserController.hasPrivilege('System_Administration')}"  >
                     <p:menuitem value="Manage Users" action="#{webUserController.toManageAllUsers()}"  ajax="false" />
                     <p:menuitem value="Manage Institutions" action="/institution/index"     ajax="false" />
                     <p:menuitem value="Manage Areas" action="/area/index" ajax="false"    />

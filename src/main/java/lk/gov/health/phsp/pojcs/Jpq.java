@@ -60,6 +60,14 @@ public class Jpq {
 
     private QueryFilterAreaType areType;
     private QueryFilterPeriodType periodType;
+    
+    private String errorMessage;
+    private boolean error;
+    
+    private String successMessage;
+    private boolean success;
+    
+    private String message;
 
     /**
      *
@@ -224,5 +232,46 @@ public class Jpq {
         this.periodType = periodType;
     }
 
+    public String getErrorMessage() {
+        return errorMessage;
+    }
+
+    public void setErrorMessage(String errorMessage) {
+        this.errorMessage = errorMessage;
+    }
+
+    public boolean isError() {
+        return error;
+    }
+
+    public void setError(boolean error) {
+        this.error = error;
+    }
+
+    public String getSuccessMessage() {
+        return successMessage;
+    }
+
+    public void setSuccessMessage(String successMessage) {
+        this.successMessage = successMessage;
+    }
+
+    public boolean isSuccess() {
+        return success;
+    }
+
+    public void setSuccess(boolean success) {
+        this.success = success;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    
     
 }

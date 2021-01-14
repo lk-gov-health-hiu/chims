@@ -1,0 +1,83 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <body>
+
+        <ui:composition template="./../template.xhtml">
+
+            <ui:define name="content">
+                
+                <p:panel header="Select Client" style="height: 100%; text-align: center;" >
+                    
+                    
+                    <h:form>
+
+                        <p:dataTable value="#{clientController.selectedClientsWithBasicData}" var="item">
+
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Name"/>
+                                </f:facet>
+                                <h:outputText value="#{item.name}"/>
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Gender"/>
+                                </f:facet>
+                                <h:outputText value="#{item.sex}"/>
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="PHN"/>
+                                </f:facet>
+                                <h:outputText value="#{item.phn}"/>
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Phone No"/>
+                                </f:facet>
+                                <h:outputText value="#{item.phone}">
+                                </h:outputText>
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="NIC"/>
+                                </f:facet>
+                                <h:outputText value="#{item.nic}"/>
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Address"/>
+                                </f:facet>
+                                <h:outputText value="#{item.address}"/>
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Actions"/>
+                                </f:facet>
+                                <p:commandButton ajax="false" action="#{clientController.toClientProfile()}" value="View Profile" >
+                                    <f:setPropertyActionListener target="#{clientController.selected}" value="#{item}" ></f:setPropertyActionListener>
+                                </p:commandButton>
+                            </p:column>
+
+                        </p:dataTable>
+                    </h:form>
+
+
+                    
+                </p:panel>
+
+
+              
+                
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

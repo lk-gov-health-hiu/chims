@@ -210,6 +210,7 @@ public class ReportController implements Serializable {
     private Integer month;
     private Integer dateOfMonth;
     private Quarter quarterEnum;
+    private boolean recalculate;
 
     public StreamedContent getDownloadingFile() {
         if (getDownloadingResult() == null) {
@@ -647,7 +648,7 @@ public class ReportController implements Serializable {
         StoredQueryResult sqr = new StoredQueryResult();
         sqr.setCreatedAt(new Date());
         sqr.setCreater(webUserController.getLoggedUser());
-
+        sqr.setRecalculate(recalculate);
         sqr.setInstitution(institution);
         sqr.setRequestCreatedAt(new Date());
         sqr.setTimePeriodType(getTimePeriodType());
@@ -2590,6 +2591,14 @@ public class ReportController implements Serializable {
 
     public void setAreaRepCount(Long areaRepCount) {
         this.areaRepCount = areaRepCount;
+    }
+
+    public boolean isRecalculate() {
+        return recalculate;
+    }
+
+    public void setRecalculate(boolean recalculate) {
+        this.recalculate = recalculate;
     }
 
 }

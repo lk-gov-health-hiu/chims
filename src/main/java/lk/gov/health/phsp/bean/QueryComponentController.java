@@ -1,5 +1,6 @@
 package lk.gov.health.phsp.bean;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -42,6 +43,7 @@ import lk.gov.health.phsp.entity.Encounter;
 import lk.gov.health.phsp.entity.Institution;
 import lk.gov.health.phsp.entity.Item;
 import lk.gov.health.phsp.entity.Relationship;
+import lk.gov.health.phsp.entity.Upload;
 import lk.gov.health.phsp.enums.EncounterType;
 import lk.gov.health.phsp.enums.Evaluation;
 import lk.gov.health.phsp.enums.Month;
@@ -100,11 +102,14 @@ public class QueryComponentController implements Serializable {
     private ApplicationController applicationController;
     @Inject
     private UserTransactionController userTransactionController;
+    @Inject
+    UploadController uploadController;
 
     private List<QueryComponent> items = null;
     private List<QueryComponent> categories = null;
     private List<QueryComponent> excels = null;
     private List<QueryComponent> indicators = null;
+    private List<QueryComponent> populations = null;
     private List<QueryComponent> counts = null;
 
     private QueryComponent selected;
@@ -118,6 +123,9 @@ public class QueryComponentController implements Serializable {
     private QueryComponent selectedCategory;
     private QueryComponent selectedSubcategory;
     private QueryComponent selectedForQuery;
+    
+    private QueryComponent selectedCount;
+    private QueryComponent selectedPopulation;
 
     private QueryComponent addingQuery;
     QueryComponent addingCategory;
@@ -172,6 +180,8 @@ public class QueryComponentController implements Serializable {
 
     private StreamedContent resultExcelFile;
 
+    private StreamedContent downloadingFile;
+
     public String toManageExcelTemplates() {
         userTransactionController.recordTransaction("Manage Excel Templates");
         return "/queryComponent/excel";
@@ -191,6 +201,13 @@ public class QueryComponentController implements Serializable {
         return "/queryComponent/edit_indicator";
     }
 
+    public String toAddPopulation() {
+        userTransactionController.recordTransaction("Add New Population");
+        selected = new QueryComponent();
+        selected.setQueryType(QueryType.Population);
+        return "/queryComponent/edit_population";
+    }
+
     public String toAddCount() {
         userTransactionController.recordTransaction("Add New Count");
         selected = new QueryComponent();
@@ -201,6 +218,11 @@ public class QueryComponentController implements Serializable {
     public String toManageIndicators() {
         userTransactionController.recordTransaction("Manage Indicators");
         return "/queryComponent/indicators";
+    }
+
+    public String toManagePopulations() {
+        userTransactionController.recordTransaction("Manage Populations");
+        return "/queryComponent/populations";
     }
 
     public String toManageCounts() {
@@ -216,6 +238,11 @@ public class QueryComponentController implements Serializable {
     public String toEditIndicator() {
         userTransactionController.recordTransaction("Edit Indicator");
         return "/queryComponent/edit_indicator";
+    }
+
+    public String toEditPopulation() {
+        userTransactionController.recordTransaction("Edit Population");
+        return "/queryComponent/edit_population";
     }
 
     public String toEditCount() {
@@ -244,12 +271,11 @@ public class QueryComponentController implements Serializable {
         return "/analysis/analysis";
     }
 
-    
-    public String toAddNewCriteriaeForCount(){
+    public String toAddNewCriteriaeForCount() {
         selectedCountCriteria = new QueryComponent();
         return toEditCountCriteriea();
     }
-    
+
 //    public void listQueries() {
 //        listQueries(searchText);
 //    }
@@ -323,25 +349,33 @@ public class QueryComponentController implements Serializable {
     }
 
     public void saveExcel() {
-        if (addingCategory == null) {
+        if (selected == null) {
             JsfUtil.addErrorMessage("Nothing to save");
             return;
         }
-        addingCategory.setQueryType(QueryType.Excel_Report);
-        saveItem(addingCategory);
+        selected.setQueryType(QueryType.Excel_Report);
+        saveItem(selected);
         excels = null;
-//        addingCategory = null;
     }
 
     public void saveIndicator() {
-        if (addingCategory == null) {
+        if (selected == null) {
             JsfUtil.addErrorMessage("Nothing to save");
             return;
         }
-        addingCategory.setQueryType(QueryType.Indicator);
-        saveItem(addingCategory);
+        selected.setQueryType(QueryType.Indicator);
+        saveItem(selected);
         indicators = null;
-//        addingCategory = null;
+    }
+
+    public void savePopulation() {
+        if (selected == null) {
+            JsfUtil.addErrorMessage("Nothing to save");
+            return;
+        }
+        selected.setQueryType(QueryType.Population);
+        saveItem(selected);
+        populations = null;
     }
 
     public void saveCount() {
@@ -459,7 +493,7 @@ public class QueryComponentController implements Serializable {
 
     public void removeCount() {
         remove();
-        fillCounts();
+        fillCountsAndPopulations();
     }
 
     public void removeQuery() {
@@ -544,11 +578,11 @@ public class QueryComponentController implements Serializable {
         selectedQuery = selected;
         return "/queryComponent/count_criteria";
     }
-    
+
     public String toCountCriteria() {
         return "/queryComponent/count_criteria";
     }
-    
+
     public String toEditCountCriteriea() {
         return "/queryComponent/edit_count_criteriea";
     }
@@ -710,6 +744,51 @@ public class QueryComponentController implements Serializable {
         return sls;
     }
 
+    public List<QueryComponent> completeIndicators(String qry) {
+        List<QueryComponent> tls = applicationController.getQueryComponents();
+        List<QueryComponent> sls = new ArrayList<>();
+        qry = qry.trim().toLowerCase();
+
+        for (QueryComponent qc : tls) {
+            if (qc.getQueryType() == QueryType.Indicator) {
+                if (qc.getName().toLowerCase().contains(qry) || qc.getName().toLowerCase().contains(qry)) {
+                    sls.add(qc);
+                }
+            }
+        }
+        return sls;
+    }
+
+    public List<QueryComponent> completePopulations(String qry) {
+        List<QueryComponent> tls = applicationController.getQueryComponents();
+        List<QueryComponent> sls = new ArrayList<>();
+        qry = qry.trim().toLowerCase();
+
+        for (QueryComponent qc : tls) {
+            if (qc.getQueryType() == QueryType.Population) {
+                if (qc.getName().toLowerCase().contains(qry) || qc.getName().toLowerCase().contains(qry)) {
+                    sls.add(qc);
+                }
+            }
+        }
+        return sls;
+    }
+
+    public List<QueryComponent> completeCounts(String qry) {
+        List<QueryComponent> tls = applicationController.getQueryComponents();
+        List<QueryComponent> sls = new ArrayList<>();
+        qry = qry.trim().toLowerCase();
+
+        for (QueryComponent qc : tls) {
+            if (qc.getQueryType() == QueryType.Encounter_Count || qc.getQueryType() == QueryType.Client_Count) {
+                if (qc.getName().toLowerCase().contains(qry) || qc.getName().toLowerCase().contains(qry)) {
+                    sls.add(qc);
+                }
+            }
+        }
+        return sls;
+    }
+
     public List<QueryComponent> completeQueryCategories(String qry) {
         List<QueryComponent> nqs = new ArrayList<>();
         if (qry == null) {
@@ -778,13 +857,36 @@ public class QueryComponentController implements Serializable {
         return nqs;
     }
 
-    public List<QueryComponent> fillCounts() {
+    public List<QueryComponent> fillPopulations() {
+        List<QueryComponent> tqcs = applicationController.getQueryComponents();
+        List<QueryComponent> nqs = new ArrayList<>();
+        for (QueryComponent q : tqcs) {
+            if (q.getQueryType() == QueryType.Population) {
+                nqs.add(q);
+            }
+        }
+        return nqs;
+    }
+
+    public List<QueryComponent> fillCountsAndPopulations() {
         List<QueryComponent> tqcs = applicationController.getQueryComponents();
         List<QueryComponent> nqs = new ArrayList<>();
         for (QueryComponent q : tqcs) {
             if (q.getQueryType() == QueryType.Client_Count
                     || q.getQueryType() == QueryType.Encounter_Count
                     || q.getQueryType() == QueryType.Population) {
+                nqs.add(q);
+            }
+        }
+        return nqs;
+    }
+
+    public List<QueryComponent> fillCounts() {
+        List<QueryComponent> tqcs = applicationController.getQueryComponents();
+        List<QueryComponent> nqs = new ArrayList<>();
+        for (QueryComponent q : tqcs) {
+            if (q.getQueryType() == QueryType.Client_Count
+                    || q.getQueryType() == QueryType.Encounter_Count) {
                 nqs.add(q);
             }
         }
@@ -1019,7 +1121,7 @@ public class QueryComponentController implements Serializable {
 
     public List<QueryComponent> getCriteriaOfSelectedCount() {
         System.out.println("getCriteriaOfSelectedCount");
-        return criteriaOfSelectedCount = criteria(selected);
+        return criteriaOfSelectedCount = criteria(selectedQuery);
     }
 
     public List<QueryComponent> criteria(QueryComponent p) {
@@ -2354,7 +2456,6 @@ public class QueryComponentController implements Serializable {
     }
 
     public Jpq createAPopulationCountQuery(QueryComponent qc, Area qarea, Integer qyear) {
-
         Jpq jpql = new Jpq();
         jpql.setQc(qc);
         jpql.setJselect("select r.longValue1  ");
@@ -2374,9 +2475,7 @@ public class QueryComponentController implements Serializable {
         jpql.setJorderBy(" order by r.id desc");
         jpql.getM().put("f", false);
         jpql.setJgroupby("");
-
         jpql.setLongResult(getItemFacade().findLongByJpql(jpql.getJpql(), jpql.getM(), 1));
-
         return jpql;
     }
 
@@ -3135,6 +3234,9 @@ public class QueryComponentController implements Serializable {
         persist(PersistAction.UPDATE, ResourceBundle.getBundle("/BundleQuery").getString("QueryComponentUpdated"));
     }
 
+    
+    
+    
     public void destroy() {
         persist(PersistAction.DELETE, ResourceBundle.getBundle("/BundleQuery").getString("QueryComponentDeleted"));
         if (!JsfUtil.isValidationFailed()) {
@@ -3792,6 +3894,17 @@ public class QueryComponentController implements Serializable {
         this.indicators = indicators;
     }
 
+    public List<QueryComponent> getPopulations() {
+        if (populations == null) {
+            populations = fillPopulations();
+        }
+        return populations;
+    }
+
+    public void setPopulations(List<QueryComponent> populations) {
+        this.populations = populations;
+    }
+
     public Month getMonthEnum() {
         return monthEnum;
     }
@@ -3826,6 +3939,49 @@ public class QueryComponentController implements Serializable {
 
     public void setSelectedCountCriteria(QueryComponent selectedCountCriteria) {
         this.selectedCountCriteria = selectedCountCriteria;
+    }
+
+    public StreamedContent getDownloadingFile() {
+        if (selected == null) {
+            lk.gov.health.phsp.facade.util.JsfUtil.addErrorMessage("Nothing selected");
+            return null;
+        }
+        Upload u = uploadController.findUploadForComponent(selected);
+        if (u == null) {
+            lk.gov.health.phsp.facade.util.JsfUtil.addErrorMessage("Nothing selected");
+            return null;
+        }
+
+        if (u.getBaImage() == null) {
+            lk.gov.health.phsp.facade.util.JsfUtil.addErrorMessage("No file is uploaded.");
+            return null;
+        }
+        InputStream stream = new ByteArrayInputStream(u.getBaImage());
+        if (u.getFileType() == null || u.getFileType().trim().equals("")) {
+            u.setFileType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        }
+        downloadingFile = new DefaultStreamedContent(stream, u.getFileType(), u.getFileName());
+        return downloadingFile;
+    }
+
+    public void setDownloadingFile(StreamedContent downloadingFile) {
+        this.downloadingFile = downloadingFile;
+    }
+
+    public QueryComponent getSelectedCount() {
+        return selectedCount;
+    }
+
+    public void setSelectedCount(QueryComponent selectedCount) {
+        this.selectedCount = selectedCount;
+    }
+
+    public QueryComponent getSelectedPopulation() {
+        return selectedPopulation;
+    }
+
+    public void setSelectedPopulation(QueryComponent selectedPopulation) {
+        this.selectedPopulation = selectedPopulation;
     }
 
     @FacesConverter(forClass = QueryComponent.class)

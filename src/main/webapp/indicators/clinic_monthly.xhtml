@@ -1,0 +1,104 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:fn="http://xmlns.jcp.org/jsp/jstl/functions">
+
+    <body>
+
+        <ui:composition template="./index.xhtml">
+
+            <ui:define name="reports">
+                <h:form>
+                    <p:panelGrid columns="1" style="width: 100%">
+                        <f:facet name="header" >
+                            <p:outputLabel value="Clinic Monthly Indicator" ></p:outputLabel>
+                        </f:facet>
+
+                        <p:panelGrid columns="2" >
+                            <p:commandButton value="Calculate"  style="width:30em;margin:auto;"
+                                             action="#{indicatorController.runHlcMonthly()}"
+                                             ajax="false">
+                            </p:commandButton>
+
+                            <p:commandButton value="Back"  style="width:30em;margin:auto;"
+                                             immediate="true"
+                                             action="#{indicatorController.toIndicatorIndex()}"
+                                             ajax="false">
+                            </p:commandButton>
+
+
+                        </p:panelGrid>
+
+                        <h:panelGrid columns="1" styleClass="alignTop" >
+
+                            <p:panelGrid columns="2" >
+                                <p:outputLabel value="Indicator" for="indicator" ></p:outputLabel>
+                                <p:autoComplete id="indicator"
+                                                required="true" 
+                                                requiredMessage="Please select a report. To list reports, start entering few letters"
+                                                value="#{indicatorController.queryComponent}"
+                                                completeMethod="#{queryComponentController.completeIndicators}"
+                                                var="q" forceSelection="true" maxResults="15" minQueryLength="3"
+                                                itemLabel="#{q.name}"
+                                                itemValue="#{q}">
+                                </p:autoComplete>
+
+                                <p:outputLabel value="Clinic" for="ins" ></p:outputLabel>
+                                <p:autoComplete value="#{indicatorController.institution}"
+                                                id="ins"
+                                                requiredMessage="Please select a clinic. Selecting a Hospital will not give results."
+                                                required="true" forceSelection="true" 
+                                                completeMethod="#{institutionController.completeHlClinics}"
+                                                var="i"
+                                                itemLabel="#{i.name}"
+                                                itemValue="#{i}">
+                                </p:autoComplete>
+
+
+                                <p:outputLabel id="lblYear" value="Year" for="txtYear" ></p:outputLabel>
+                                <p:inputText id="txtYear"
+                                             required="true"
+                                             requiredMessage="Enter the year. Ex. 2022"
+
+                                             value="#{indicatorController.year}" ></p:inputText>
+
+
+                                <p:outputLabel id="lblMonth" value="Month" for="mnuMonth" ></p:outputLabel>
+                                <p:selectOneMenu id="mnuMonth" value="#{indicatorController.month}" 
+                                                 requiredMessage="Please select a month."
+                                                 required="true">
+                                    <f:selectItem itemLabel="Select a month" ></f:selectItem>
+                                    <f:selectItems value="#{commonController.months}" var="m" itemValue="#{m.value}" itemLabel="#{m}" ></f:selectItems>
+                                </p:selectOneMenu>
+
+
+                            </p:panelGrid>
+
+
+
+                        </h:panelGrid>
+
+
+                        <h:panelGrid columns="2" >
+                            <p:inputText value="Result" ></p:inputText>
+                            <p:inputText value="${indicatorController.result}" ></p:inputText>
+
+
+                            <p:inputText value="Message" ></p:inputText>
+                            <h:outputText value="#{indicatorController.message}" escape="false" ></h:outputText>
+                        </h:panelGrid>
+
+
+
+                    </p:panelGrid>
+                </h:form>
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>
