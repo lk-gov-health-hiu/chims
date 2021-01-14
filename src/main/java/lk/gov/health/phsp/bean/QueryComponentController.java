@@ -1121,7 +1121,7 @@ public class QueryComponentController implements Serializable {
 
     public List<QueryComponent> getCriteriaOfSelectedCount() {
         System.out.println("getCriteriaOfSelectedCount");
-        return criteriaOfSelectedCount = criteria(selected);
+        return criteriaOfSelectedCount = criteria(selectedQuery);
     }
 
     public List<QueryComponent> criteria(QueryComponent p) {
