@@ -170,6 +170,7 @@ public class IndicatorController implements Serializable {
             if (temqc == null) {
                 j.setError(true);
                 j.setMessage(j.getMessage() + "\n" + "Count " + r.getQryCode() + " in the indicator is not found. ");
+                continue;
             }
 
             if (null == temqc.getQueryType()) {
@@ -217,8 +218,7 @@ public class IndicatorController implements Serializable {
                         break;
                     default:
                         j.setError(true);
-                        j.setMessage(j.getMessage() + "\n" + "Type of Population " + r.getQryCode() + " in is not set. ");
-                        continue;
+                        j.setMessage(j.getMessage() + "\n" + "Wrong Query - " + r.getQryCode() + "\n");
                 }
             }
 
@@ -229,7 +229,7 @@ public class IndicatorController implements Serializable {
         
         j.setMessage(j.getMessage() + "\n" + "Calculation Script = " + script + "\nResult = " + result);
         
-        message = j.getMessage();
+        message = CommonController.stringToHtml(j.getMessage());
 
     }
 
