@@ -93,10 +93,138 @@ public class IndicatorController implements Serializable {
         message = "";
         return "/indicators/institution_monthly";
     }
+    
+    public String toClinicMonthly() {
+        message = "";
+        return "/indicators/clinic_monthly";
+    }
+    
+    public String toDistrictMonthly() {
+        message = "";
+        return "/indicators/district_monthly";
+    }
+    
+    public String toProvinceMonthly() {
+        message = "";
+        return "/indicators/province_monthly";
+    }
+    
+    public String toNationalMonthly() {
+        message = "";
+        return "/indicators/national_monthly";
+    }
 
     public String toIndicatorIndex() {
         userTransactionController.recordTransaction("To View Indicators");
         return "/indicators/index";
+    }
+    
+    public void runHlcMonthly() {
+        if (institution == null) {
+            JsfUtil.addErrorMessage("HLC ?");
+            return;
+        }
+        if (queryComponent == null) {
+            JsfUtil.addErrorMessage("Indicator ?");
+            return;
+        }
+        if (queryComponent.getQueryType() == null) {
+            JsfUtil.addErrorMessage("Indicator Type ?");
+            return;
+        }
+        if (!queryComponent.getQueryType().equals(QueryType.Indicator)) {
+            JsfUtil.addErrorMessage("Selected is not an indicator");
+            return;
+        }
+        if (year == 0) {
+            JsfUtil.addErrorMessage("Year ?");
+            return;
+        }
+        if (month == null) {
+            JsfUtil.addErrorMessage("Month");
+            return;
+        }
+
+        fromDate = CommonController.startOfTheMonth(year, month);
+        System.out.println("fromDate = " + fromDate);
+        toDate = CommonController.endOfTheMonth(year, month);
+        System.out.println("toDate = " + toDate);
+        Jpq j = new Jpq();
+
+        List<Replaceable> rs = findReplaceblesInIndicatorQuery(queryComponent.getIndicatorQuery());
+
+        for (Replaceable r : rs) {
+
+            QueryComponent temqc = queryComponentController.findLastQuery(r.getQryCode());
+            if (temqc == null) {
+                j.setError(true);
+                j.setErrorMessage(j.getErrorMessage() + "\n" + "Count " + r.getQryCode() + " in the indicator is not found. ");
+            }
+
+            if (null == temqc.getQueryType()) {
+                j.setError(true);
+                j.setErrorMessage(j.getErrorMessage() + "\n" + "Type of query " + r.getQryCode() + " in is not set. ");
+
+            } else {
+                switch (temqc.getQueryType()) {
+                    case Population:
+                        System.out.println("Population");
+                        if (temqc.getPopulationType() == null) {
+                            j.setError(true);
+                            j.setErrorMessage(j.getErrorMessage() + "\n" + "Type of Population " + r.getQryCode() + " in is not set. ");
+                            continue;
+                        }
+                        int temYear;
+                        Calendar c = Calendar.getInstance();
+                        c.setTime(fromDate);
+                        temYear = c.get(Calendar.YEAR);
+                        Long tp = relationshipController.findPopulationValue(temYear, institution, temqc.getPopulationType());
+                        System.out.println("pop is " + tp);
+                        if (tp != null) {
+                            r.setTextReplacing(tp + "");
+                            r.setSelectedValue(tp + "");
+                        } else {
+                            j.setError(true);
+                            j.setErrorMessage(j.getErrorMessage() + "\n" + "No Population data for " + r.getQryCode() + " in institution " + institution.getName());
+                        }
+                        break;
+
+                    case Client_Count:
+                    case Encounter_Count:
+                        Long tv = storedQueryResultController.findStoredLongValue(temqc, fromDate, toDate, institution);
+                        System.out.println("Count");
+                        if (tv != null) {
+                            r.setTextReplacing(tv + "");
+                            r.setSelectedValue(tv + "");
+                        } else {
+                            j.setErrorMessage(j.getErrorMessage() + "\n" + "No data for " + r.getQryCode() + " in institution " + institution.getName());
+                        }
+
+                        break;
+                    default:
+                        j.setError(true);
+                        j.setErrorMessage(j.getErrorMessage() + "\n" + "Type of Population " + r.getQryCode() + " in is not set. ");
+                        continue;
+                }
+
+                System.out.println("getTextReplacing = " + r.getTextReplacing());
+                System.out.println("getTextToBeReplaced = " + r.getTextToBeReplaced());
+            }
+
+        }
+
+        if (j.isError()) {
+            JsfUtil.addErrorMessage(j.getErrorMessage());
+            message = j.getErrorMessage();
+            return;
+        }
+
+        String script = generateScript(queryComponent.getIndicatorQuery(), rs);
+        System.out.println("script = " + script);
+
+        result = evaluateScript(script);
+        message = j.getErrorMessage();
+        
     }
 
     public void runSingleInstitutionalMonthly() {
