@@ -54,6 +54,8 @@ public class InstitutionController implements Serializable {
     @Inject
     private ApplicationController applicationController;
     @Inject
+    InstitutionApplicationController institutionApplicationController;
+    @Inject
     private UserTransactionController userTransactionController;
 
     private List<Institution> items = null;
@@ -261,14 +263,16 @@ public class InstitutionController implements Serializable {
     }
 
     public List<Institution> findChildrenPmcis(Institution ins) {
-        String j;
-        Map m = new HashMap();
-        j = "select i from Institution i where i.retired=:ret and i.pmci=:pmci "
-                + " and i.parent=:p ";
-        m.put("p", ins);
-        m.put("pmci", true);
-        m.put("ret", false);
-        List<Institution> cins = getFacade().findByJpql(j, m);
+        List<Institution> allIns = institutionApplicationController.getInstitutions();
+        List<Institution> cins = new ArrayList<>();
+        for (Institution i : allIns) {
+            if (i.getParent() == null) {
+                continue;
+            }
+            if (i.getParent().equals(ins) && i.isPmci()) {
+                cins.add(i);
+            }
+        }
         List<Institution> tins = new ArrayList<>();
         tins.addAll(cins);
         if (cins.isEmpty()) {
@@ -282,13 +286,16 @@ public class InstitutionController implements Serializable {
     }
 
     public List<Institution> findChildrenInstitutions(Institution ins) {
-        String j;
-        Map m = new HashMap();
-        j = "select i from Institution i where i.retired=:ret "
-                + " and i.parent=:p ";
-        m.put("p", ins);
-        m.put("ret", false);
-        List<Institution> cins = getFacade().findByJpql(j, m);
+        List<Institution> allIns = institutionApplicationController.getInstitutions();
+        List<Institution> cins = new ArrayList<>();
+        for (Institution i : allIns) {
+            if (i.getParent() == null) {
+                continue;
+            }
+            if (i.getParent().equals(ins)) {
+                cins.add(i);
+            }
+        }
         List<Institution> tins = new ArrayList<>();
         tins.addAll(cins);
         if (cins.isEmpty()) {
