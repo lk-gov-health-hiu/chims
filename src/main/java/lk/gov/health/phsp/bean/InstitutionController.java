@@ -182,7 +182,7 @@ public class InstitutionController implements Serializable {
         deleting.setRetirer(webUserController.getLoggedUser());
         getFacade().edit(deleting);
         JsfUtil.addSuccessMessage("Deleted");
-        applicationController.getInstitutions().remove(deleting);
+        institutionApplicationController.getInstitutions().remove(deleting);
         fillItems();
         return "/institution/list";
     }
@@ -354,18 +354,10 @@ public class InstitutionController implements Serializable {
     }
 
     public void fillItems() {
-        if (applicationController.getInstitutions() != null) {
-            items = applicationController.getInstitutions();
+        if (institutionApplicationController.getInstitutions() != null) {
+            items = institutionApplicationController.getInstitutions();
             return;
         }
-        String j = "select i "
-                + " from Institution i "
-                + " where i.retired=:ret "
-                + " order by i.name";
-        Map m = new HashMap<>();
-        m.put("ret", false);
-        items = getFacade().findByJpql(j, m);
-        applicationController.setInstitutions(items);
     }
 
     public List<Institution> fillInstitutions(InstitutionType type, String nameQry, Institution parent) {
@@ -496,7 +488,7 @@ public class InstitutionController implements Serializable {
                     newClinic.setRdhsArea(rdhsArea);
                     getFacade().create(newClinic);
 
-                    applicationController.setInstitutions(null);
+                    institutionApplicationController.setInstitutions(null);
 
                 }
                 lk.gov.health.phsp.facade.util.JsfUtil.addSuccessMessage("Completed. Please check success and failure messages.");
@@ -523,7 +515,7 @@ public class InstitutionController implements Serializable {
             selected.setCreater(webUserController.getLoggedUser());
             getFacade().create(selected);
 
-            applicationController.getInstitutions().add(selected);
+            institutionApplicationController.getInstitutions().add(selected);
             items = null;
             JsfUtil.addSuccessMessage("Saved");
         } else {
@@ -538,7 +530,7 @@ public class InstitutionController implements Serializable {
     public void create() {
         persist(PersistAction.CREATE, ResourceBundle.getBundle("/BundleClinical").getString("InstitutionCreated"));
         if (!JsfUtil.isValidationFailed()) {
-            applicationController.getInstitutions().add(selected);
+            institutionApplicationController.getInstitutions().add(selected);
             fillItems();
         }
     }
