@@ -170,7 +170,7 @@ public class ClientController implements Serializable {
     }
     
     public String toClientProfileById() {
-        selected = getFacade().find(idTo);
+        selected = getFacade().find(selectedId);
         if(selected==null){
             JsfUtil.addErrorMessage("No such client");
             return "";
