@@ -67,22 +67,31 @@ public class InstitutionApplicationController {
     public InstitutionApplicationController() {
     }
 
-
     // <editor-fold defaultstate="collapsed" desc="Enums">
     public InstitutionType[] getInstitutionTypes() {
         return InstitutionType.values();
     }
     // </editor-fold>
-    
+
     // <editor-fold defaultstate="collapsed" desc="Getters & Setters">
-    private InstitutionFacade getInstitutionFacade() {
-        return institutionFacade;
+    private List<Institution> fillAllInstitutions() {
+        String j;
+        Map m = new HashMap();
+        j = "select i from Institution i where i.retired=:ret "
+                + " order by i.name ";
+        m.put("ret", false);
+        return institutionFacade.findByJpql(j, m);
+    }
+
+    public void resetAllInstitutions() {
+        institutions = null;
     }
 
 // </editor-fold>
-    
-
     public List<Institution> getInstitutions() {
+        if (institutions == null) {
+            institutions = fillAllInstitutions();
+        }
         return institutions;
     }
 
@@ -90,5 +99,4 @@ public class InstitutionApplicationController {
         this.institutions = institutions;
     }
 
-    
 }

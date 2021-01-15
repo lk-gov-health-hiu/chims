@@ -1,6 +1,3 @@
-select id, `BYTEARRAYVALUE` , name, code,`PARENTCOMPONENT_ID` from component 
+select id,  name, code,`PARENTCOMPONENT_ID`,`QUERYTYPE`,`QUERYLEVEL` from component 
 where `DTYPE` = "QueryComponent"
-and code is not null
-and `PARENTCOMPONENT_ID` = 1070853
-order by id desc limit 20;
-select name from component where id=1070853;
+and code = 'number_of_encounters_of_clients_between_20_to_34_years';

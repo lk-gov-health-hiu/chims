@@ -273,6 +273,8 @@ public class QueryComponentController implements Serializable {
 
     public String toAddNewCriteriaeForCount() {
         selectedCountCriteria = new QueryComponent();
+        selectedCountCriteria.setParentComponent(selectedCount);
+        selectedCountCriteria.setQueryLevel(QueryLevel.Criterian);
         return toEditCountCriteriea();
     }
 
@@ -575,7 +577,7 @@ public class QueryComponentController implements Serializable {
 
     public String saveCountAndToManageCriteria() {
         saveCount();
-        selectedQuery = selected;
+        selectedCount = selected;
         return "/queryComponent/count_criteria";
     }
 
@@ -1121,7 +1123,8 @@ public class QueryComponentController implements Serializable {
 
     public List<QueryComponent> getCriteriaOfSelectedCount() {
         System.out.println("getCriteriaOfSelectedCount");
-        return criteriaOfSelectedCount = criteria(selectedQuery);
+        System.out.println("selectedCount = " + selectedCount.getName());
+        return criteriaOfSelectedCount = criteria(selectedCount);
     }
 
     public List<QueryComponent> criteria(QueryComponent p) {

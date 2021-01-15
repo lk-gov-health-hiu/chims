@@ -54,6 +54,8 @@ public class InstitutionController implements Serializable {
     @Inject
     private ApplicationController applicationController;
     @Inject
+    InstitutionApplicationController institutionApplicationController;
+    @Inject
     private UserTransactionController userTransactionController;
 
     private List<Institution> items = null;
@@ -261,14 +263,16 @@ public class InstitutionController implements Serializable {
     }
 
     public List<Institution> findChildrenPmcis(Institution ins) {
-        String j;
-        Map m = new HashMap();
-        j = "select i from Institution i where i.retired=:ret and i.pmci=:pmci "
-                + " and i.parent=:p ";
-        m.put("p", ins);
-        m.put("pmci", true);
-        m.put("ret", false);
-        List<Institution> cins = getFacade().findByJpql(j, m);
+        List<Institution> allIns = institutionApplicationController.getInstitutions();
+        List<Institution> cins = new ArrayList<>();
+        for (Institution i : allIns) {
+            if (i.getParent() == null) {
+                continue;
+            }
+            if (i.getParent().equals(ins) && i.isPmci()) {
+                cins.add(i);
+            }
+        }
         List<Institution> tins = new ArrayList<>();
         tins.addAll(cins);
         if (cins.isEmpty()) {
@@ -282,13 +286,16 @@ public class InstitutionController implements Serializable {
     }
 
     public List<Institution> findChildrenInstitutions(Institution ins) {
-        String j;
-        Map m = new HashMap();
-        j = "select i from Institution i where i.retired=:ret "
-                + " and i.parent=:p ";
-        m.put("p", ins);
-        m.put("ret", false);
-        List<Institution> cins = getFacade().findByJpql(j, m);
+        List<Institution> allIns = institutionApplicationController.getInstitutions();
+        List<Institution> cins = new ArrayList<>();
+        for (Institution i : allIns) {
+            if (i.getParent() == null) {
+                continue;
+            }
+            if (i.getParent().equals(ins)) {
+                cins.add(i);
+            }
+        }
         List<Institution> tins = new ArrayList<>();
         tins.addAll(cins);
         if (cins.isEmpty()) {
@@ -306,6 +313,10 @@ public class InstitutionController implements Serializable {
     }
 
     public List<Institution> completeHlClinics(String nameQry) {
+        return fillInstitutions(InstitutionType.Clinic, nameQry, null);
+    }
+
+    public List<Institution> completeHospitals(String nameQry) {
         return fillInstitutions(InstitutionType.Clinic, nameQry, null);
     }
 
@@ -358,22 +369,47 @@ public class InstitutionController implements Serializable {
     }
 
     public List<Institution> fillInstitutions(InstitutionType type, String nameQry, Institution parent) {
-        String j = "Select i from Institution i where i.retired=false ";
-        Map m = new HashMap();
-        if (nameQry != null) {
-            j += " and lower(i.name) like :n ";
-            m.put("n", "%" + nameQry.trim().toLowerCase() + "%");
+        List<Institution> resIns = new ArrayList<>();
+        if (nameQry == null) {
+            return resIns;
         }
-        if (type != null) {
-            j += " and i.institutionType =:t ";
-            m.put("t", type);
+        if (nameQry.trim().equals("")) {
+            return resIns;
         }
-        if (parent != null) {
-            j += " and i.parent =:p ";
-            m.put("p", parent);
+        List<Institution> allIns = institutionApplicationController.getInstitutions();
+
+        for (Institution i : allIns) {
+            boolean canInclude = true;
+            if (parent != null) {
+                if (i.getParent() == null) {
+                    canInclude = false;
+                } else {
+                    if (!i.getParent().equals(parent)) {
+                        canInclude = false;
+                    }
+                }
+            }
+            if (type != null) {
+                if (i.getInstitutionType() == null) {
+                    canInclude = false;
+                } else {
+                    if (!i.getInstitutionType().equals(type)) {
+                        canInclude = false;
+                    }
+                }
+            }
+            if(i.getName()==null || i.getName().trim().equals("")){
+                canInclude=false;
+            }else{
+                if(!i.getName().toLowerCase().contains(nameQry.trim().toLowerCase())){
+                    canInclude=false;
+                }
+            }
+            if (canInclude) {
+                resIns.add(i);
+            }
         }
-        j += " order by i.name";
-        return getFacade().findByJpql(j, m);
+        return resIns;
     }
 
     public Institution prepareCreate() {
