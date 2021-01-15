@@ -43,6 +43,7 @@ import lk.gov.health.phsp.enums.AreaType;
 import lk.gov.health.phsp.facade.AreaFacade;
 import lk.gov.health.phsp.enums.EncounterType;
 import lk.gov.health.phsp.enums.InstitutionType;
+import lk.gov.health.phsp.enums.QueryType;
 import lk.gov.health.phsp.enums.WebUserRole;
 import lk.gov.health.phsp.facade.ClientEncounterComponentItemFacade;
 import lk.gov.health.phsp.facade.ClientFacade;
@@ -84,6 +85,8 @@ public class ApplicationController {
     private boolean production = true;
     private String versionNo = "1.1.4";
     private List<QueryComponent> queryComponents;
+    private List<QueryComponent> countLocations;
+    private String countCode;
     private List<Item> items;
     private List<String> userTransactionTypes;
     
@@ -274,8 +277,25 @@ public class ApplicationController {
         return queryComponents = getQueryComponentFacade().findByJpql(j, m);
 
     }
-
     
+    private List<QueryComponent> findCountUsage(String countCode) {
+        String j = "select q from QueryComponent q "
+                + " where q.retired=false "
+                + " and locate(:cc,q.indicatorQuery)>0"
+                + " order by q.orderNo, q.name";
+
+        Map m = new HashMap();
+        m.put("cc", countCode);
+        
+        List<QueryComponent> tqcs = getQueryComponentFacade().findByJpql(j, m);
+        List<QueryComponent> nqs = new ArrayList<>();
+        for (QueryComponent q : tqcs) {
+            if (q.getQueryType() == QueryType.Indicator) {
+                nqs.add(q);
+            }
+        }
+        return nqs;
+    }
 
     public void reloadQueryComponents() {
         queryComponents = null;
@@ -416,5 +436,21 @@ public class ApplicationController {
         m.put("t", AreaType.GN);
         j += " order by a.name";
         return getAreaFacade().findByJpql(j, m);
+    }
+
+    public List<QueryComponent> getCountLocations() {
+       return findCountUsage(countCode);        
+    }
+
+    public void setCountLocations(List<QueryComponent> countLocations) {
+        this.countLocations = countLocations;
+    }
+
+    public String getCountCode() {
+        return countCode;
+    }
+
+    public void setCountCode(String countCode) {
+        this.countCode = countCode;
     }
 }

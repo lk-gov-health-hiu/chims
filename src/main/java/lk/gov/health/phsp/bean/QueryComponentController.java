@@ -111,6 +111,8 @@ public class QueryComponentController implements Serializable {
     private List<QueryComponent> indicators = null;
     private List<QueryComponent> populations = null;
     private List<QueryComponent> counts = null;
+    private List<QueryComponent> countLocations = null;
+    private String countCode;
 
     private QueryComponent selected;
     private QueryComponent selectedCountCriteria;
@@ -228,6 +230,11 @@ public class QueryComponentController implements Serializable {
     public String toManageCounts() {
         userTransactionController.recordTransaction("Manage Counts");
         return "/queryComponent/counts";
+    }
+    
+    public String toLocateCount() {
+        userTransactionController.recordTransaction("Locate Counts");
+        return "/queryComponent/locate_count";
     }
 
     public String toEditExcelTemplate() {
@@ -848,6 +855,11 @@ public class QueryComponentController implements Serializable {
         return nqs;
     }
 
+    public void fillCountLocations() {
+        applicationController.setCountCode(getCountCode());
+        countLocations = applicationController.getCountLocations();
+    }
+    
     public List<QueryComponent> fillIndicators() {
         List<QueryComponent> tqcs = applicationController.getQueryComponents();
         List<QueryComponent> nqs = new ArrayList<>();
@@ -894,7 +906,7 @@ public class QueryComponentController implements Serializable {
         }
         return nqs;
     }
-
+    
     public List<QueryComponent> subcategories() {
         return subcategories(selectedCategory);
     }
@@ -3985,6 +3997,22 @@ public class QueryComponentController implements Serializable {
 
     public void setSelectedPopulation(QueryComponent selectedPopulation) {
         this.selectedPopulation = selectedPopulation;
+    }
+
+    public List<QueryComponent> getCountLocations() {
+        return countLocations;
+    }
+
+    public void setCountLocations(List<QueryComponent> countLocations) {
+        this.countLocations = countLocations;
+    }
+
+    public String getCountCode() {
+        return countCode;
+    }
+
+    public void setCountCode(String countCode) {
+        this.countCode = countCode;
     }
 
     @FacesConverter(forClass = QueryComponent.class)

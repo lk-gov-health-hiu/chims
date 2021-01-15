@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+The MIT License
+
+Copyright 2021 user.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <body>
+
+        <ui:composition template="/queryComponent/index.xhtml">
+            <ui:define name="analysis">
+                <p:panelGrid columns="2" styleClass="alignTop"  >
+                    <f:facet name="header" >
+                        <p:outputLabel value="Locate Count in Indicators">
+                        </p:outputLabel>
+                    </f:facet>
+
+                    <h:form>                       
+
+                        <p:panelGrid columns="2" style="width:100%" > 
+                            <p:outputLabel value="Count Code"  />
+                            <p:inputText style="width:100%" value="#{queryComponentController.countCode}"></p:inputText> 
+                        
+                            <p:commandButton ajax="false" action="#{queryComponentController.fillCountLocations()}" value="Search" ></p:commandButton>
+                            
+                        </p:panelGrid>
+
+                        <p:dataTable value="#{queryComponentController.countLocations}" var="item"
+                                     rowKey="#{item.id}"
+                                     paginator="true"
+                                     rows="10"
+                                     rowsPerPageTemplate="10,20,30,40,50">
+
+                            <p:column sortBy="#{item.name}" filterBy="#{item.name}" filterMatchMode="contains">
+                                <f:facet name="header">
+                                    <h:outputText value="Name"/>
+                                </f:facet>
+                                <h:outputText value="#{item.name}"/>
+                            </p:column>
+                            <p:column sortBy="#{item.code}" filterBy="#{item.code}" filterMatchMode="contains">
+                                <f:facet name="header">
+                                    <h:outputText value="Code"/>
+                                </f:facet>
+                                <h:outputText value="#{item.code}"/>
+                            </p:column>                            
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Formula"/>
+                                </f:facet>
+                                <h:outputText value="#{item.indicatorQuery}"/>
+                            </p:column>                            
+                        </p:dataTable>  
+                    </h:form>
+                </p:panelGrid>
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>
