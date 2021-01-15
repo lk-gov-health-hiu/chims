@@ -1,0 +1,150 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <head>
+        <ui:define name="head">
+            Institution Monthly Summaries
+        </ui:define>
+    </head>
+    <body>
+
+        <ui:composition template="/reports/index.xhtml">
+            <ui:define name="reports">
+                <h:form>
+                    <p:panelGrid columns="1" style="width: 100%">
+                        <f:facet name="header" >
+                            <p:outputLabel value="Institution Monthly Summeries" ></p:outputLabel>
+                        </f:facet>
+
+                        <h:panelGrid columns="2" styleClass="alignTop" >
+
+                            <p:panelGrid columns="2" >
+                                <p:outputLabel value="Report" for="report" ></p:outputLabel>
+                                <p:autoComplete id="report"
+                                                required="true" 
+                                                requiredMessage="Please select a report. To list reports, start entering few letters"
+                                                value="#{reportController.queryComponent}"
+                                                completeMethod="#{queryComponentController.completeExcelReports}"
+                                                var="q" forceSelection="true" maxResults="15" minQueryLength="3"
+                                                itemLabel="#{q.name}"
+                                                itemValue="#{q}">
+                                </p:autoComplete>
+
+                                <p:outputLabel value="Institution" for="ins" ></p:outputLabel>
+                                <p:autoComplete value="#{reportController.institution}"
+                                                id="ins"
+                                                requiredMessage="Please select a clinic. Selecting a Hospital will not give results."
+                                                required="true" forceSelection="true" maxResults="15" minQueryLength="3"
+                                                completeMethod="#{institutionController.completeHlClinics}"
+                                                var="i"
+                                                itemLabel="#{i.name}"
+                                                itemValue="#{i}">
+                                </p:autoComplete>
+
+
+                                <p:outputLabel id="lblYear" value="Year" for="txtYear" ></p:outputLabel>
+                                <p:inputText id="txtYear"
+                                             required="true"
+                                             requiredMessage="Enter the year. Ex. 2022"
+
+                                             value="#{reportController.year}" ></p:inputText>
+
+
+                                <p:outputLabel id="lblMonth" value="Month" for="mnuMonth" ></p:outputLabel>
+                                <p:selectOneMenu id="mnuMonth" value="#{reportController.month}" 
+                                                 requiredMessage="Please select a month."
+                                                 required="true">
+                                    <f:selectItem itemLabel="Select a month" ></f:selectItem>
+                                    <f:selectItems value="#{commonController.months}" var="m" itemValue="#{m.value}" itemLabel="#{m}" ></f:selectItems>
+                                </p:selectOneMenu>
+                                
+                                <p:outputLabel id="lblRecal" value="Recalculate" for="btnRecal" ></p:outputLabel>
+                                <p:selectBooleanButton id="btnRecal"
+                                                       offLabel="Use Previous Counts if available"
+                                                       onLabel="Disregard Previous Calculations"
+                                                       value="#{reportController.recalculate}" ></p:selectBooleanButton>
+
+                            </p:panelGrid>
+                            <p:panelGrid columns="1" >
+                                <p:commandButton value="List Existing"  style="width:30em;margin:auto;"
+                                                 action="#{reportController.listExistingMonthlyReports()}"
+                                                 ajax="false">
+                                </p:commandButton>
+
+                                <p:commandButton value="Create New"  style="width:30em;margin:auto;"
+                                                 action="#{reportController.createNewMonthlyReport()}"
+                                                 ajax="false">
+                                </p:commandButton>
+
+                                <p:commandButton value="Back"  style="width:30em;margin:auto;"
+                                                 immediate="true"
+                                                 action="#{reportController.toViewReports()}"
+                                                 ajax="false">
+                                </p:commandButton>
+
+
+                            </p:panelGrid>
+
+
+                        </h:panelGrid>
+
+                        <p:dataTable value="#{reportController.reportResults}" var="r" >
+                            <p:column headerText="Created Data" >
+                                <p:outputLabel value="#{r.createdAt}" >
+                                    <f:convertDateTime pattern="dd MMMM yyyy" ></f:convertDateTime>
+                                </p:outputLabel>
+                            </p:column>
+                            <p:column headerText="Created By" >
+                                <p:outputLabel value="#{r.creater.person.name}" >
+                                </p:outputLabel>
+                            </p:column>
+                            <p:column headerText="Period" >
+                                <p:outputLabel value="#{r.periodString}">
+                                </p:outputLabel>
+                            </p:column>
+                            <p:column headerText="Status" >
+                                <p:outputLabel value="#{r.processStatus}">
+                                </p:outputLabel>
+                                <p:outputLabel value="#{r.errorMessage}" 
+                                               rendered="#{r.errorMessage ne null}"
+                                               >
+                                </p:outputLabel>
+                            </p:column>
+                            <p:column headerText="Actions" >
+                                <h:panelGrid columns="2" >
+                                    <p:commandButton value="Download" 
+                                                     disabled="#{!r.processCompleted}"
+                                                     ajax="false" 
+                                                     onclick="PrimeFaces.monitorDownload(start, stop);" 
+                                                     icon="ui-icon-arrowthick-1-s">
+                                        <f:setPropertyActionListener value="#{r}" 
+                                                                     target="#{reportController.downloadingResult}" 
+                                                                     ></f:setPropertyActionListener>
+                                        <p:fileDownload value="#{reportController.downloadingFile}" />
+                                    </p:commandButton>
+                                    <p:commandButton ajax="false" action="#{reportController.removeReport()}"
+                                                     value="Remove">
+                                        <f:setPropertyActionListener value="#{r}" target="#{reportController.removingResult}" ></f:setPropertyActionListener>
+                                    </p:commandButton>
+                                </h:panelGrid>
+
+                            </p:column>
+                        </p:dataTable>
+
+
+
+
+
+
+
+                    </p:panelGrid>
+                </h:form>
+            </ui:define>
+        </ui:composition>
+
+    </body>
+</html>

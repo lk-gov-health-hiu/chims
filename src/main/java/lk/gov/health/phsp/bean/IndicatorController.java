@@ -86,27 +86,40 @@ public class IndicatorController implements Serializable {
     private Quarter quarterEnum;
     private boolean recalculate;
 
+    List<QueryComponent> selectedIndicators;
+    
+    
     /**
      * Creates a new instance of IndicatorController
      */
     public IndicatorController() {
     }
+    
+    public String toProcesCountsForSelectedIndicators(){
+        message = "";
+        result = "";
+        institution=null;
+        return "/indicators/clinic_counts_for_selected_indicators";
+    }
 
     public String toRdhsMonthly() {
         message = "";
         result = "";
+        institution=null;
         return "/indicators/rdhs_monthly";
     }
     
      public String toPdhsMonthly() {
         message = "";
         result = "";
+        institution=null;
         return "/indicators/rdhs_monthly";
     }
     
     public String toHospitalMonthly() {
         message = "";
         result = "";
+        institution=null;
         return "/indicators/hospital_monthly";
     }
 
@@ -125,6 +138,7 @@ public class IndicatorController implements Serializable {
     public String toProvinceMonthly() {
         message = "";
         result = "";
+        institution=null;
         return "/indicators/province_monthly";
     }
 
@@ -139,6 +153,41 @@ public class IndicatorController implements Serializable {
         return "/indicators/index";
     }
 
+    public void runClinicCountsForSelectedIndicators(){
+        if (institution == null) {
+            JsfUtil.addErrorMessage("HLC ?");
+            return;
+        }
+        if (selectedIndicators==null) {
+            JsfUtil.addErrorMessage("Indicators ?");
+            return;
+        }
+        if (selectedIndicators.isEmpty()) {
+            JsfUtil.addErrorMessage("Indicators?");
+            return;
+        }
+        if (!queryComponent.getQueryType().equals(QueryType.Indicator)) {
+            JsfUtil.addErrorMessage("Selected is not an indicator");
+            return;
+        }
+        if (year == 0) {
+            JsfUtil.addErrorMessage("Year ?");
+            return;
+        }
+        if (month == null) {
+            JsfUtil.addErrorMessage("Month");
+            return;
+        }
+        if (institution.getInstitutionType() == null) {
+            JsfUtil.addErrorMessage("No Type for the institution");
+            return;
+        }
+        if (institution.getInstitutionType() != InstitutionType.Clinic) {
+            JsfUtil.addErrorMessage("Selected institution is NOT a HLC?");
+            return;
+        }
+    }
+    
     public void runHlcMonthly() {
         if (institution == null) {
             JsfUtil.addErrorMessage("HLC ?");
