@@ -29,7 +29,9 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.inject.Inject;
@@ -49,6 +51,7 @@ import lk.gov.health.phsp.pojcs.Jpq;
 import lk.gov.health.phsp.pojcs.NcdReportTem;
 import lk.gov.health.phsp.pojcs.Replaceable;
 import lk.gov.health.phsp.pojcs.ReportTimePeriod;
+import org.bouncycastle.jcajce.provider.digest.GOST3411;
 import org.primefaces.model.StreamedContent;
 
 /**
@@ -166,10 +169,6 @@ public class IndicatorController implements Serializable {
             JsfUtil.addErrorMessage("Indicators?");
             return;
         }
-        if (!queryComponent.getQueryType().equals(QueryType.Indicator)) {
-            JsfUtil.addErrorMessage("Selected is not an indicator");
-            return;
-        }
         if (year == 0) {
             JsfUtil.addErrorMessage("Year ?");
             return;
@@ -186,6 +185,16 @@ public class IndicatorController implements Serializable {
             JsfUtil.addErrorMessage("Selected institution is NOT a HLC?");
             return;
         }
+        Map<Long, QueryComponent> qcs = new HashMap<>();
+        List<Replaceable> rs = new ArrayList<>();
+        for(QueryComponent qc:selectedIndicators){
+             List<Replaceable> trs = findReplaceblesInIndicatorQuery(queryComponent.getIndicatorQuery());
+             if(trs!=null && !trs.isEmpty()){
+                 rs.addAll(rs);
+             }
+        }
+        
+        
     }
     
     public void runHlcMonthly() {
