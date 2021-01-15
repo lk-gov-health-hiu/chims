@@ -33,24 +33,32 @@
                                                      style="width:20em;margin:auto;"
                                                      action="#{indicatorController.toClinicMonthly()}"
                                                      ajax="false"></p:commandButton>
-                                    <p:commandButton value="Institution Monthly" 
+                                    <p:commandButton value="Hospital Monthly" 
                                                      style="width:20em;margin:auto;"
-                                                     action="#{indicatorController.toInstitutionMonthly()}"
+                                                     action="#{indicatorController.toHospitalMonthly()}"
+                                                     ajax="false"></p:commandButton>
+                                     <p:commandButton value="RDHS Monthly" 
+                                                     style="width:20em;margin:auto;"
+                                                     action="#{indicatorController.toRdhsMonthly()}"
+                                                     ajax="false"></p:commandButton>
+                                     <p:commandButton value="PDHS Monthly" 
+                                                     style="width:20em;margin:auto;"
+                                                     action="#{indicatorController.toPdhsMonthly()}"
                                                      ajax="false"></p:commandButton>
 
                                     <p:commandButton value="District Monthly" 
                                                      style="width:20em;margin:auto;"
-                                                     action="#{indicatorController.to}"
+                                                     action="#{indicatorController.toDistrictMonthly()}"
                                                      ajax="false"></p:commandButton>
 
                                     <p:commandButton value="Province Monthly" 
                                                      style="width:20em;margin:auto;"
-                                                     action="#{indicatorController.toInstitutionMonthly()}"
+                                                     action="#{indicatorController.toProvinceMonthly()}"
                                                      ajax="false"></p:commandButton>
 
                                     <p:commandButton value="National Monthly" 
                                                      style="width:20em;margin:auto;"
-                                                     action="#{indicatorController.toInstitutionMonthly()}"
+                                                     action="#{indicatorController.toNationalMonthly()}"
                                                      ajax="false"></p:commandButton>
 
                                 </h:panelGrid>

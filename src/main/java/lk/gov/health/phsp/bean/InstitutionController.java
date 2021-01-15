@@ -368,6 +368,14 @@ public class InstitutionController implements Serializable {
     public List<Institution> completeHospitals(String nameQry) {
         return fillInstitutions(hospitalInstitutionTypes(), nameQry, null);
     }
+    
+    public List<Institution> completeRdhs(String nameQry) {
+        return fillInstitutions(InstitutionType.Regional_Department_of_Health_Department, nameQry, null);
+    }
+    
+    public List<Institution> completePdhs(String nameQry) {
+        return fillInstitutions(InstitutionType.Regional_Department_of_Health_Department, nameQry, null);
+    }
 
     public Institution findInstitutionByName(String name) {
         String j = "Select i from Institution i where i.retired=:ret ";
