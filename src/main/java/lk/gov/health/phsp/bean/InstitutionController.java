@@ -11,6 +11,7 @@ import lk.gov.health.phsp.facade.InstitutionFacade;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -307,7 +308,7 @@ public class InstitutionController implements Serializable {
         }
         return tins;
     }
-    
+
     public List<Institution> findChildrenInstitutions(Institution ins, InstitutionType type) {
         List<Institution> allIns = institutionApplicationController.getInstitutions();
         List<Institution> cins = new ArrayList<>();
@@ -315,7 +316,7 @@ public class InstitutionController implements Serializable {
             if (i.getParent() == null) {
                 continue;
             }
-            if(i.getInstitutionType()==null){
+            if (i.getInstitutionType() == null) {
                 continue;
             }
             if (i.getParent().equals(ins) && i.getInstitutionType().equals(type)) {
@@ -328,22 +329,44 @@ public class InstitutionController implements Serializable {
             return tins;
         } else {
             for (Institution i : cins) {
-                tins.addAll(findChildrenInstitutions(i,type));
+                tins.addAll(findChildrenInstitutions(i, type));
             }
         }
         return tins;
     }
 
     public List<Institution> completeInstitutions(String nameQry) {
-        return fillInstitutions(null, nameQry, null);
+        List<InstitutionType> ts = Arrays.asList(InstitutionType.values());
+        if (ts == null) {
+            ts = new ArrayList<>();
+        }
+        return fillInstitutions(ts, nameQry, null);
     }
 
     public List<Institution> completeHlClinics(String nameQry) {
         return fillInstitutions(InstitutionType.Clinic, nameQry, null);
     }
 
+    public List<InstitutionType> hospitalInstitutionTypes() {
+        List<InstitutionType> ts = new ArrayList<>();
+        InstitutionType[] ta = InstitutionType.values();
+        for (InstitutionType t : ta) {
+            switch(t){
+                case Base_Hospital:
+                case District_General_Hospital:
+                case National_Hospital:
+                case Primary_Medical_Care_Unit:
+                case Private_Sector_Institute:
+                case Teaching_Hospital:
+                    ts.add(t);
+                    break;
+            }
+        }
+        return ts;
+    }
+
     public List<Institution> completeHospitals(String nameQry) {
-        return fillInstitutions(InstitutionType.Clinic, nameQry, null);
+        return fillInstitutions(hospitalInstitutionTypes(), nameQry, null);
     }
 
     public Institution findInstitutionByName(String name) {
@@ -416,11 +439,57 @@ public class InstitutionController implements Serializable {
                     }
                 }
             }
-            if(i.getName()==null || i.getName().trim().equals("")){
-                canInclude=false;
-            }else{
-                if(!i.getName().toLowerCase().contains(nameQry.trim().toLowerCase())){
-                    canInclude=false;
+            if (i.getName() == null || i.getName().trim().equals("")) {
+                canInclude = false;
+            } else {
+                if (!i.getName().toLowerCase().contains(nameQry.trim().toLowerCase())) {
+                    canInclude = false;
+                }
+            }
+            if (canInclude) {
+                resIns.add(i);
+            }
+        }
+        return resIns;
+    }
+
+    public List<Institution> fillInstitutions(List<InstitutionType> types, String nameQry, Institution parent) {
+        List<Institution> resIns = new ArrayList<>();
+        if (nameQry == null) {
+            return resIns;
+        }
+        if (nameQry.trim().equals("")) {
+            return resIns;
+        }
+        List<Institution> allIns = institutionApplicationController.getInstitutions();
+
+        for (Institution i : allIns) {
+            boolean canInclude = true;
+            if (parent != null) {
+                if (i.getParent() == null) {
+                    canInclude = false;
+                } else {
+                    if (!i.getParent().equals(parent)) {
+                        canInclude = false;
+                    }
+                }
+            }
+            boolean typeFound = false;
+            for (InstitutionType type : types) {
+                if (type != null) {
+                    if (i.getInstitutionType() == null && i.getInstitutionType().equals(type)) {
+                        typeFound = true;
+                    }
+                }
+            }
+            if (!typeFound) {
+                canInclude = false;
+            }
+            if (i.getName() == null || i.getName().trim().equals("")) {
+                canInclude = false;
+            } else {
+                if (!i.getName().toLowerCase().contains(nameQry.trim().toLowerCase())) {
+                    canInclude = false;
                 }
             }
             if (canInclude) {
