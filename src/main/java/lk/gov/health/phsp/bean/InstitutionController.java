@@ -316,6 +316,10 @@ public class InstitutionController implements Serializable {
         return fillInstitutions(InstitutionType.Clinic, nameQry, null);
     }
 
+    public List<Institution> completeHospitals(String nameQry) {
+        return fillInstitutions(InstitutionType.Clinic, nameQry, null);
+    }
+
     public Institution findInstitutionByName(String name) {
         String j = "Select i from Institution i where i.retired=:ret ";
         Map m = new HashMap();
@@ -365,22 +369,47 @@ public class InstitutionController implements Serializable {
     }
 
     public List<Institution> fillInstitutions(InstitutionType type, String nameQry, Institution parent) {
-        String j = "Select i from Institution i where i.retired=false ";
-        Map m = new HashMap();
-        if (nameQry != null) {
-            j += " and lower(i.name) like :n ";
-            m.put("n", "%" + nameQry.trim().toLowerCase() + "%");
+        List<Institution> resIns = new ArrayList<>();
+        if (nameQry == null) {
+            return resIns;
         }
-        if (type != null) {
-            j += " and i.institutionType =:t ";
-            m.put("t", type);
+        if (nameQry.trim().equals("")) {
+            return resIns;
         }
-        if (parent != null) {
-            j += " and i.parent =:p ";
-            m.put("p", parent);
+        List<Institution> allIns = institutionApplicationController.getInstitutions();
+
+        for (Institution i : allIns) {
+            boolean canInclude = true;
+            if (parent != null) {
+                if (i.getParent() == null) {
+                    canInclude = false;
+                } else {
+                    if (!i.getParent().equals(parent)) {
+                        canInclude = false;
+                    }
+                }
+            }
+            if (type != null) {
+                if (i.getInstitutionType() == null) {
+                    canInclude = false;
+                } else {
+                    if (!i.getInstitutionType().equals(type)) {
+                        canInclude = false;
+                    }
+                }
+            }
+            if(i.getName()==null || i.getName().trim().equals("")){
+                canInclude=false;
+            }else{
+                if(!i.getName().toLowerCase().contains(nameQry.trim().toLowerCase())){
+                    canInclude=false;
+                }
+            }
+            if (canInclude) {
+                resIns.add(i);
+            }
         }
-        j += " order by i.name";
-        return getFacade().findByJpql(j, m);
+        return resIns;
     }
 
     public Institution prepareCreate() {

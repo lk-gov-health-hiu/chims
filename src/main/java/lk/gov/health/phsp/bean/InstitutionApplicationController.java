@@ -74,7 +74,7 @@ public class InstitutionApplicationController {
     // </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="Getters & Setters">
-    public List<Institution> fillAllInstitutions() {
+    private List<Institution> fillAllInstitutions() {
         String j;
         Map m = new HashMap();
         j = "select i from Institution i where i.retired=:ret "

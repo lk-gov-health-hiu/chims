@@ -92,26 +92,31 @@ public class IndicatorController implements Serializable {
 
     public String toInstitutionMonthly() {
         message = "";
+        result="";
         return "/indicators/institution_monthly";
     }
 
     public String toClinicMonthly() {
         message = "";
+        result="";
         return "/indicators/clinic_monthly";
     }
 
     public String toDistrictMonthly() {
         message = "";
+        result="";
         return "/indicators/district_monthly";
     }
 
     public String toProvinceMonthly() {
         message = "";
+        result="";
         return "/indicators/province_monthly";
     }
 
     public String toNationalMonthly() {
         message = "";
+        result="";
         return "/indicators/national_monthly";
     }
 
