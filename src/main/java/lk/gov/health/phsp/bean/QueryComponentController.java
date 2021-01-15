@@ -2488,10 +2488,11 @@ public class QueryComponentController implements Serializable {
         jpql.setQc(qc);
         List<QueryComponent> criterias = criteria(qc);
         jpql.getM().put("f", false);
+        jpql.getM().put("res", true);
         if (criterias == null || criterias.isEmpty()) {
             // <editor-fold defaultstate="collapsed" desc="No Criteria">
 
-            jpql.setJwhere(" where c.retired=:f ");
+            jpql.setJwhere(" where c.retired=:f and c.reservedClient<>:res ");
             jpql.setJfrom("  from Client c ");
             if (qc.getOutputType() == QueryOutputType.List) {
                 jpql.setJselect("select c ");
@@ -2560,7 +2561,7 @@ public class QueryComponentController implements Serializable {
             }
 
             jpql.setJfrom(" from ClientEncounterComponentItem i join i.itemClient c");
-            jpql.setJwhere(" where i.retired=:f ");
+            jpql.setJwhere(" where i.retired=:f and c.reservedClient<>:res ");
 
             QueryComponent c = criterias.get(0);
 
@@ -2749,7 +2750,7 @@ public class QueryComponentController implements Serializable {
 
             jpql.setJselect("");
             jpql.setJfrom(ss);
-            jpql.setJwhere(w1 + w2 + w3 + " and c.retired=:f ");
+            jpql.setJwhere(w1 + w2 + w3 + " and c.retired=:f and c.reservedClient<>:res ");
 
             if (ccYear != null && ccQuarter != null) {
                 //TODO: Correct Code
