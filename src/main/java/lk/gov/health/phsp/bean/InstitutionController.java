@@ -307,6 +307,32 @@ public class InstitutionController implements Serializable {
         }
         return tins;
     }
+    
+    public List<Institution> findChildrenInstitutions(Institution ins, InstitutionType type) {
+        List<Institution> allIns = institutionApplicationController.getInstitutions();
+        List<Institution> cins = new ArrayList<>();
+        for (Institution i : allIns) {
+            if (i.getParent() == null) {
+                continue;
+            }
+            if(i.getInstitutionType()==null){
+                continue;
+            }
+            if (i.getParent().equals(ins) && i.getInstitutionType().equals(type)) {
+                cins.add(i);
+            }
+        }
+        List<Institution> tins = new ArrayList<>();
+        tins.addAll(cins);
+        if (cins.isEmpty()) {
+            return tins;
+        } else {
+            for (Institution i : cins) {
+                tins.addAll(findChildrenInstitutions(i,type));
+            }
+        }
+        return tins;
+    }
 
     public List<Institution> completeInstitutions(String nameQry) {
         return fillInstitutions(null, nameQry, null);
