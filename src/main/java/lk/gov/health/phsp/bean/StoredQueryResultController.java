@@ -82,6 +82,7 @@ public class StoredQueryResultController implements Serializable {
                 r = null;
             } else {
                 r = s.getLongValue();
+                j.setMessage(j.getMessage() + "\n" + "Count for " + re.getQryCode() + " for " + institution.getName() + " is " + r + ".\n");
                 j.setMessage(j.getMessage() + re.getQryCode() + " - " + r + "\n");
             }
         }
@@ -89,6 +90,7 @@ public class StoredQueryResultController implements Serializable {
     }
 
     public Long findStoredLongValue(QueryComponent qc, Date fromDate, Date toDate, List<Institution> institutions, Replaceable re, Jpq j) {
+        System.out.println("findStoredLongValue");
         Long insSum = 0L;
         for (Institution i : institutions) {
             Long ic = findStoredLongValue(qc, fromDate, toDate, i, re, j);

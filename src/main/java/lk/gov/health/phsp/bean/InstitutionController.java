@@ -310,26 +310,17 @@ public class InstitutionController implements Serializable {
     }
 
     public List<Institution> findChildrenInstitutions(Institution ins, InstitutionType type) {
-        List<Institution> allIns = institutionApplicationController.getInstitutions();
-        List<Institution> cins = new ArrayList<>();
-        for (Institution i : allIns) {
+        List<Institution> cins = findChildrenInstitutions(ins);
+        List<Institution> tins = findChildrenInstitutions(ins);
+        for (Institution i : cins) {
             if (i.getParent() == null) {
                 continue;
             }
             if (i.getInstitutionType() == null) {
                 continue;
             }
-            if (i.getParent().equals(ins) && i.getInstitutionType().equals(type)) {
-                cins.add(i);
-            }
-        }
-        List<Institution> tins = new ArrayList<>();
-        tins.addAll(cins);
-        if (cins.isEmpty()) {
-            return tins;
-        } else {
-            for (Institution i : cins) {
-                tins.addAll(findChildrenInstitutions(i, type));
+            if (i.getInstitutionType().equals(type)) {
+                tins.add(i);
             }
         }
         return tins;

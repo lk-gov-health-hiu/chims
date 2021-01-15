@@ -254,6 +254,7 @@ public class IndicatorController implements Serializable {
 
     
     public void runInstitutionMonthly() {
+        System.out.println("runInstitutionMonthly");
         if (institution == null) {
             JsfUtil.addErrorMessage("HLC ?");
             return;
@@ -298,8 +299,12 @@ public class IndicatorController implements Serializable {
             JsfUtil.addErrorMessage("Selected institution do not have HLCs under that");
             return;
         }
+        
+        System.out.println("clinicsUnderInstitute = " + clinicsUnderInstitute);
 
         for (Replaceable r : rs) {
+            
+            System.out.println("r = " + r);
 
             QueryComponent temqc = queryComponentController.findLastQuery(r.getQryCode());
             if (temqc == null) {
