@@ -472,7 +472,7 @@ public class ClientController implements Serializable {
                 + " and c.person.ssNumber=:ssNumber ";
         Map m = new HashMap();
         m.put("ret", false);
-        m.put("ret", true);
+        m.put("res", true);
         m.put("ssNumber", ssNumber);
         if (c != null && c.getPerson() != null && c.getPerson().getId() != null) {
             jpql += " and c.person <> :person";
