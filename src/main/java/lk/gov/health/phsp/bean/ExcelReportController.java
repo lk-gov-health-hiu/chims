@@ -431,16 +431,42 @@ public class ExcelReportController implements Serializable {
                                 if (sqr.isRecalculate()) {
                                     featchAgain = true;
                                 } else {
-                                    value = storedQueryResultController.findStoredLongValue(qwc.getQuery(), sqr.getResultFrom(), sqr.getResultTo(), sqr.getInstitution());
+
+                                    if (qwc == null) {
+                                        System.out.println("No Query with criteria");
+                                    } else if (qwc.getQuery() == null) {
+                                        System.out.println("No Query for Query with criteria");
+                                    } else if (sqr.getResultTo() == null) {
+                                        System.out.println("sqr.getResultTo() null");
+                                    } else if (sqr.getResultFrom() == null) {
+                                        System.out.println("sqr.getResultFrom() null");
+                                    } else if (sqr.getInstitution() == null) {
+                                        System.out.println("sqr.getResultFrom() null");
+                                    } else {
+                                        value = storedQueryResultController.findStoredLongValue(qwc.getQuery(), sqr.getResultFrom(), sqr.getResultTo(), sqr.getInstitution());
+                                    }
+
                                     if (value == null) {
                                         featchAgain = true;
                                     }
                                 }
-                                
+
                                 if (featchAgain) {
                                     value = calculateIndividualQueryResult(ewcs, qwc);
                                     if (value != null) {
-                                        storedQueryResultController.saveValue(qwc.getQuery(), sqr.getResultFrom(), sqr.getResultTo(), sqr.getInstitution(), value);
+                                        if (qwc == null) {
+                                            System.out.println("No Query with criteria");
+                                        } else if (qwc.getQuery() == null) {
+                                            System.out.println("No Query for Query with criteria");
+                                        } else if (sqr.getResultTo() == null) {
+                                            System.out.println("sqr.getResultTo() null");
+                                        } else if (sqr.getResultFrom() == null) {
+                                            System.out.println("sqr.getResultFrom() null");
+                                        } else if (sqr.getInstitution() == null) {
+                                            System.out.println("sqr.getResultFrom() null");
+                                        } else {
+                                            storedQueryResultController.saveValue(qwc.getQuery(), sqr.getResultFrom(), sqr.getResultTo(), sqr.getInstitution(), value);
+                                        }
                                     }
                                 }
                                 if (value != null) {
