@@ -29,42 +29,34 @@
 
                             <p:tab title="Institution Indicators"  >
                                 <h:panelGrid columns="1" >
+                                    <p:commandButton value="Clinic Monthly" 
+                                                     style="width:20em;margin:auto;"
+                                                     action="#{indicatorController.toClinicMonthly()}"
+                                                     ajax="false"></p:commandButton>
                                     <p:commandButton value="Institution Monthly" 
                                                      style="width:20em;margin:auto;"
                                                      action="#{indicatorController.toInstitutionMonthly()}"
                                                      ajax="false"></p:commandButton>
 
+                                    <p:commandButton value="District Monthly" 
+                                                     style="width:20em;margin:auto;"
+                                                     action="#{indicatorController.to}"
+                                                     ajax="false"></p:commandButton>
 
+                                    <p:commandButton value="Province Monthly" 
+                                                     style="width:20em;margin:auto;"
+                                                     action="#{indicatorController.toInstitutionMonthly()}"
+                                                     ajax="false"></p:commandButton>
 
+                                    <p:commandButton value="National Monthly" 
+                                                     style="width:20em;margin:auto;"
+                                                     action="#{indicatorController.toInstitutionMonthly()}"
+                                                     ajax="false"></p:commandButton>
 
                                 </h:panelGrid>
 
                             </p:tab>
 
-                            <p:tab title="District Indicators"  >
-                                <h:panelGrid columns="1" >
-
-                                </h:panelGrid>
-                            </p:tab>
-
-                            <p:tab title="Provincial Indicators" >
-
-                                <h:panelGrid columns="1" >
-
-
-                                </h:panelGrid>
-
-
-                            </p:tab>
-
-                            <p:tab title="National Indicators" >
-                                <h:panelGrid columns="1" >
-
-                                </h:panelGrid>
-
-
-
-                            </p:tab>
 
                         </p:accordionPanel>
                     </h:form>

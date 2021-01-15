@@ -4,8 +4,7 @@
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:p="http://primefaces.org/ui"
-      xmlns:f="http://xmlns.jcp.org/jsf/core"
-      xmlns:fn="http://xmlns.jcp.org/jsp/jstl/functions">
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
 
     <body>
 
@@ -15,15 +14,23 @@
                 <h:form>
                     <p:panelGrid columns="1" style="width: 100%">
                         <f:facet name="header" >
-                            <p:outputLabel value="Indicator  - Institution Monthly" ></p:outputLabel>
-                            <p:spacer height="1" width="70" ></p:spacer>
-                            <p:commandButton value="Back"  
+                            <p:outputLabel value="SIngle Institution Monthly Indicator" ></p:outputLabel>
+                        </f:facet>
+
+                        <p:panelGrid columns="2" >
+                            <p:commandButton value="Calculate"  style="width:30em;margin:auto;"
+                                             action="#{indicatorController.runSingleInstitutionalMonthly()}"
+                                             ajax="false">
+                            </p:commandButton>
+
+                            <p:commandButton value="Back"  style="width:30em;margin:auto;"
                                              immediate="true"
                                              action="#{indicatorController.toIndicatorIndex()}"
                                              ajax="false">
                             </p:commandButton>
-                        </f:facet>
 
+
+                        </p:panelGrid>
 
                         <h:panelGrid columns="1" styleClass="alignTop" >
 
@@ -39,12 +46,12 @@
                                                 itemValue="#{q}">
                                 </p:autoComplete>
 
-                                <p:outputLabel value="Institution" for="ins" ></p:outputLabel>
+                                <p:outputLabel value="Province" for="ins" ></p:outputLabel>
                                 <p:autoComplete value="#{indicatorController.institution}"
                                                 id="ins"
                                                 requiredMessage="Please select a clinic. Selecting a Hospital will not give results."
-                                                required="true" forceSelection="true" 
-                                                completeMethod="#{institutionController.completeHospitals}"
+                                                required="true" forceSelection="true" maxResults="15" minQueryLength="3"
+                                                completeMethod="#{institutionController.completeInstitutions}"
                                                 var="i"
                                                 itemLabel="#{i.name}"
                                                 itemValue="#{i}">
@@ -67,11 +74,6 @@
                                     <f:selectItems value="#{commonController.months}" var="m" itemValue="#{m.value}" itemLabel="#{m}" ></f:selectItems>
                                 </p:selectOneMenu>
 
-                                <p:spacer ></p:spacer>
-                                <p:commandButton value="Calculate"  style="width:30em;margin:auto;"
-                                                 action="#{indicatorController.runInstitutionMonthly()}"
-                                                 ajax="false">
-                                </p:commandButton>
 
                             </p:panelGrid>
 
@@ -83,10 +85,14 @@
                         <h:panelGrid columns="2" >
                             <p:inputText value="Result" ></p:inputText>
                             <p:inputText value="${indicatorController.result}" ></p:inputText>
+
+
+                            <p:inputText value="Message" ></p:inputText>
+                            <p:outputLabel value="#{indicatorController.message}" ></p:outputLabel>
                         </h:panelGrid>
-                         <h:panelGrid columns="1" >
-                            <h:outputText value="#{indicatorController.message}" escape="false" ></h:outputText>
-                        </h:panelGrid>
+
+
+
 
 
 
