@@ -86,7 +86,7 @@ public class ApplicationController {
     private List<QueryComponent> queryComponents;
     private List<Item> items;
     private List<String> userTransactionTypes;
-    private List<Institution> institutions;
+    
     private List<Area> gnAreas;
     private List<Area> allAreas;
     private final boolean logActivity = true;
@@ -344,14 +344,6 @@ public class ApplicationController {
 
     public void setUserTransactionTypes(List<String> userTransactionTypes) {
         this.userTransactionTypes = userTransactionTypes;
-    }
-
-    public List<Institution> getInstitutions() {
-        return institutions;
-    }
-
-    public void setInstitutions(List<Institution> institutions) {
-        this.institutions = institutions;
     }
 
     public boolean isProduction() {

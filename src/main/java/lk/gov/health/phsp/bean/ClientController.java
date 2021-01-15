@@ -168,6 +168,18 @@ public class ClientController implements Serializable {
         userTransactionController.recordTransaction("To Client Profile");
         return "/client/profile";
     }
+    
+    public String toClientProfileById() {
+        selected = getFacade().find(idTo);
+        if(selected==null){
+            JsfUtil.addErrorMessage("No such client");
+            return "";
+        }
+        selectedClientsClinics = null;
+        selectedClientsLastFiveClinicVisits = null;
+        userTransactionController.recordTransaction("To Client Profile");
+        return "/client/profile";
+    }
 
     public String toReserverPhn() {
         numberOfPhnToReserve = 0;
