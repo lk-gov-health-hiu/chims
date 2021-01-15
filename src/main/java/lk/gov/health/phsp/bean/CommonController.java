@@ -919,5 +919,13 @@ public class CommonController implements Serializable {
             QueryFilterAreaType.District_List, QueryFilterAreaType.Province, QueryFilterAreaType.Distirct, QueryFilterAreaType.Province_District_list};
         return ts;
     }
+    
+    public static String stringToHtml(String str){
+        if(str==null){
+            str="";
+        }
+        str = str.replace("\n", "<br/>");
+        return str;
+    }
 
 }

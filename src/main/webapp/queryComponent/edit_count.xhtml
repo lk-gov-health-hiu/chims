@@ -51,10 +51,10 @@
                                                itemValue="#{queryType}"
                                                itemLabel="#{queryType.label}">
                                 </f:selectItems>
-                                <p:ajax event="change" process="queryType" update="gpPopLbl gpPopVal" ></p:ajax>
+                                <!--<p:ajax event="change" process="queryType" update="gpPopLbl gpPopVal" ></p:ajax>-->
                             </p:selectOneMenu>
 
-                            <h:panelGroup id="gpPopLbl" >
+<!--                            <h:panelGroup id="gpPopLbl" >
                                 <p:outputLabel rendered="#{queryComponentController.selected.queryType eq 'Population'}" 
                                                value="Population Type" />
                             </h:panelGroup>
@@ -63,7 +63,7 @@
                                     <f:selectItem itemLabel="Select" ></f:selectItem>
                                     <f:selectItems value="#{commonController.populationTypes}" ></f:selectItems>
                                 </p:selectOneMenu>
-                            </h:panelGroup>
+                            </h:panelGroup>-->
 
 
 

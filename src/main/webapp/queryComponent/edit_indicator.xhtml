@@ -50,6 +50,40 @@
                                              title="Indicator Query" />
                         </p:panelGrid>
 
+                        <p:panelGrid columns="3"  styleClass="fullWidth">
+                            <p:outputLabel value="Search Counts" />
+                            <p:autoComplete 
+                                            value="#{queryComponentController.selectedCount}"
+                                            completeMethod="#{queryComponentController.completeCounts}"
+                                            var="c" itemLabel="#{c.name}"
+                                            itemValue="#{c}">
+                                <f:ajax event="itemSelect" execute="@this" render="lblCountDetails" ></f:ajax>
+                            </p:autoComplete>
+                            <p:panelGrid id="lblCountDetails"  columns="2" >
+                                 <p:outputLabel value="Code" ></p:outputLabel>
+                                 <p:inputText readonly="true" value="#{queryComponentController.selectedCount.code}" ></p:inputText>
+                                 <p:outputLabel value="Descreption" ></p:outputLabel>
+                                 <p:outputLabel value="#{queryComponentController.selectedCount.descreption}" ></p:outputLabel>
+                            </p:panelGrid>
+                           
+
+                            <p:outputLabel value="Search Populations" />
+                            <p:autoComplete  
+                                             value="#{queryComponentController.selectedPopulation}"
+                                             completeMethod="#{queryComponentController.completePopulations}"
+                                             var="c" itemLabel="#{c.name}"
+                                             itemValue="#{c}">
+                                <f:ajax event="itemSelect" execute="@this" render="lblPopDetails" ></f:ajax>
+                            </p:autoComplete>
+                            <p:panelGrid id="lblPopDetails"  columns="2" >
+                                 <p:outputLabel value="Code" ></p:outputLabel>
+                                 <p:inputText readonly="true" value="#{queryComponentController.selectedPopulation.code}" ></p:inputText>
+                                 <p:outputLabel value="Descreption" ></p:outputLabel>
+                                 <p:outputLabel value="#{queryComponentController.selectedPopulation.descreption}" ></p:outputLabel>
+                            </p:panelGrid>
+                            
+                        </p:panelGrid>
+
                     </p:panelGrid>
                 </h:form>
             </ui:define>

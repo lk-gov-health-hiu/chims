@@ -26,15 +26,24 @@ package lk.gov.health.phsp.bean;
 import javax.inject.Named;
 import javax.enterprise.context.SessionScoped;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.inject.Inject;
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
+import javax.script.ScriptException;
 import lk.gov.health.phsp.bean.util.JsfUtil;
 import lk.gov.health.phsp.entity.Area;
 import lk.gov.health.phsp.entity.Institution;
 import lk.gov.health.phsp.entity.QueryComponent;
+import lk.gov.health.phsp.enums.InstitutionType;
 import lk.gov.health.phsp.enums.Quarter;
 import lk.gov.health.phsp.enums.QueryType;
+import lk.gov.health.phsp.enums.RelationshipType;
 import lk.gov.health.phsp.enums.TimePeriodType;
 import lk.gov.health.phsp.pojcs.Jpq;
 import lk.gov.health.phsp.pojcs.NcdReportTem;
@@ -56,6 +65,10 @@ public class IndicatorController implements Serializable {
     UserTransactionController userTransactionController;
     @Inject
     QueryComponentController queryComponentController;
+    @Inject
+    RelationshipController relationshipController;
+    @Inject
+    InstitutionController institutionController;
 
     private Date fromDate;
     private Date toDate;
@@ -81,7 +94,32 @@ public class IndicatorController implements Serializable {
 
     public String toInstitutionMonthly() {
         message = "";
+        result = "";
         return "/indicators/institution_monthly";
+    }
+
+    public String toClinicMonthly() {
+        message = "";
+        result = "";
+        return "/indicators/clinic_monthly";
+    }
+
+    public String toDistrictMonthly() {
+        message = "";
+        result = "";
+        return "/indicators/district_monthly";
+    }
+
+    public String toProvinceMonthly() {
+        message = "";
+        result = "";
+        return "/indicators/province_monthly";
+    }
+
+    public String toNationalMonthly() {
+        message = "";
+        result = "";
+        return "/indicators/national_monthly";
     }
 
     public String toIndicatorIndex() {
@@ -89,68 +127,285 @@ public class IndicatorController implements Serializable {
         return "/indicators/index";
     }
 
-    public void checkInstitutionalMonthly() {
-
-    }
-
-    public void runInstitutionalMonthly() {
-
-    }
-
-    public Jpq handleIndicatorQuery(QueryComponent qc, Area ccArea, Date ccFrom, Date ccTo, Integer ccYear, Integer ccQuarter) {
-        List<Replaceable> replaceables = queryComponentController.findReplaceblesInIndicatorQuery(qc.getIndicatorQuery());
-        Jpq j = new Jpq();
-        if (qc.getQueryType() != QueryType.Indicator) {
-            j.setError(true);
-            j.setErrorMessage("Query is not an indicator");
-            return j;
+    public void runHlcMonthly() {
+        if (institution == null) {
+            JsfUtil.addErrorMessage("HLC ?");
+            return;
         }
-        for (Replaceable r : replaceables) {
+        if (queryComponent == null) {
+            JsfUtil.addErrorMessage("Indicator ?");
+            return;
+        }
+        if (queryComponent.getQueryType() == null) {
+            JsfUtil.addErrorMessage("Indicator Type ?");
+            return;
+        }
+        if (!queryComponent.getQueryType().equals(QueryType.Indicator)) {
+            JsfUtil.addErrorMessage("Selected is not an indicator");
+            return;
+        }
+        if (year == 0) {
+            JsfUtil.addErrorMessage("Year ?");
+            return;
+        }
+        if (month == null) {
+            JsfUtil.addErrorMessage("Month");
+            return;
+        }
+        if (institution.getInstitutionType() == null) {
+            JsfUtil.addErrorMessage("No Type for the institution");
+            return;
+        }
+        if (institution.getInstitutionType() != InstitutionType.Clinic) {
+            JsfUtil.addErrorMessage("Selected institution is NOT a HLC?");
+            return;
+        }
+
+        fromDate = CommonController.startOfTheMonth(year, month);
+        System.out.println("fromDate = " + fromDate);
+        toDate = CommonController.endOfTheMonth(year, month);
+        System.out.println("toDate = " + toDate);
+        Jpq j = new Jpq();
+        j.setMessage("");
+        j.setMessage("");
+
+        List<Replaceable> rs = findReplaceblesInIndicatorQuery(queryComponent.getIndicatorQuery());
+
+        for (Replaceable r : rs) {
 
             QueryComponent temqc = queryComponentController.findLastQuery(r.getQryCode());
-
             if (temqc == null) {
-                JsfUtil.addErrorMessage("Wrong Query. Check the names of queries");
-                return new Jpq();
+                j.setError(true);
+                j.setMessage(j.getMessage() + "\n" + "Count " + r.getQryCode() + " in the indicator is not found. ");
+                continue;
             }
 
-            j = new Jpq();
-
             if (null == temqc.getQueryType()) {
-                JsfUtil.addErrorMessage("Wrong Query. Check the names of queries");
+                j.setError(true);
+                j.setMessage(j.getMessage() + "\n" + "Type of query " + r.getQryCode() + " in is not set. ");
 
-                return j;
             } else {
                 switch (temqc.getQueryType()) {
                     case Population:
-                        //TODO: Add Logic Here
-                        j = queryComponentController.createAPopulationCountQuery(temqc, ccArea, ccYear);
+                        System.out.println("Population");
+                        if (temqc.getPopulationType() == null) {
+                            j.setError(true);
+                            j.setMessage(j.getMessage() + "\n" + "Type of Population " + r.getQryCode() + " in is not set. ");
+                            continue;
+                        }
+                        int temYear;
+                        Calendar c = Calendar.getInstance();
+                        c.setTime(fromDate);
+                        temYear = c.get(Calendar.YEAR);
+                        Long tp = relationshipController.findPopulationValue(temYear, institution, temqc.getPopulationType());
+                        System.out.println("pop is " + tp);
+                        if (tp != null) {
+                            r.setTextReplacing(tp + "");
+                            r.setSelectedValue(tp + "");
+                            j.setMessage(j.getMessage() + r.getQryCode() + " - " + tp + "\n");
+                        } else {
+                            j.setError(true);
+                            j.setMessage(j.getMessage() + "No Population data for " + r.getQryCode() + "\n");
+                        }
                         break;
-                    case Client:
-                        j = queryComponentController.createClientQuery(temqc, ccArea, ccFrom, ccTo, ccYear, ccQuarter);
+
+                    case Client_Count:
+                    case Encounter_Count:
+                        Long tv = storedQueryResultController.findStoredLongValue(temqc, fromDate, toDate, institution, r, j);
+                        System.out.println("Count");
+                        if (tv != null) {
+                            r.setTextReplacing(tv + "");
+                            r.setSelectedValue(tv + "");
+                            j.setMessage(j.getMessage() + r.getQryCode() + " - " + tv + "\n");
+                        } else {
+                            j.setError(true);
+                            j.setMessage(j.getMessage() + "\n" + "No count for " + r.getQryCode() + "\n");
+                        }
+
                         break;
                     default:
-                        JsfUtil.addErrorMessage("Wrong Query. Check the names of queries");
-                        return j;
+                        j.setError(true);
+                        j.setMessage(j.getMessage() + "\n" + "Wrong Query - " + r.getQryCode() + "\n");
                 }
             }
 
-            r.setSelectedValue(j.getLongResult() + "");
         }
-        String javaStringToEvaluate = queryComponentController.addTemplateToReport(qc.getIndicatorQuery().trim(), replaceables);
-        String rs;
-        rs = "Formula \t" + javaStringToEvaluate + "\n";
-        String res = queryComponentController.evaluateScript(javaStringToEvaluate);
-        rs += "Result : " + res;
-        Double dbl = CommonController.getDoubleValue(res);
 
-        Long lng = CommonController.getLongValue(res);
+        String script = generateScript(queryComponent.getIndicatorQuery(), rs);
+        result = evaluateScript(script);
 
-        j.setLongResult(lng);
-        j.setDblResult(dbl);
-        j.setSuccess(true);
-        j.setSuccessMessage(rs);
-        return j;
+        j.setMessage(j.getMessage() + "\n" + "Calculation Script = " + script + "\nResult = " + result);
+
+        message = CommonController.stringToHtml(j.getMessage());
+
+    }
+
+    
+    public void runInstitutionMonthly() {
+        if (institution == null) {
+            JsfUtil.addErrorMessage("HLC ?");
+            return;
+        }
+        if (queryComponent == null) {
+            JsfUtil.addErrorMessage("Indicator ?");
+            return;
+        }
+        if (queryComponent.getQueryType() == null) {
+            JsfUtil.addErrorMessage("Indicator Type ?");
+            return;
+        }
+        if (!queryComponent.getQueryType().equals(QueryType.Indicator)) {
+            JsfUtil.addErrorMessage("Selected is not an indicator");
+            return;
+        }
+        if (year == 0) {
+            JsfUtil.addErrorMessage("Year ?");
+            return;
+        }
+        if (month == null) {
+            JsfUtil.addErrorMessage("Month");
+            return;
+        }
+        if (institution.getInstitutionType() == null) {
+            JsfUtil.addErrorMessage("No Type for the institution");
+            return;
+        }
+        
+
+        fromDate = CommonController.startOfTheMonth(year, month);
+        System.out.println("fromDate = " + fromDate);
+        toDate = CommonController.endOfTheMonth(year, month);
+        System.out.println("toDate = " + toDate);
+        Jpq j = new Jpq();
+        j.setMessage("");
+        j.setMessage("");
+
+        List<Replaceable> rs = findReplaceblesInIndicatorQuery(queryComponent.getIndicatorQuery());
+        List<Institution> clinicsUnderInstitute = institutionController.findChildrenInstitutions(institution, InstitutionType.Clinic);
+        if (clinicsUnderInstitute == null) {
+            JsfUtil.addErrorMessage("Selected institution do not have HLCs under that");
+            return;
+        }
+
+        for (Replaceable r : rs) {
+
+            QueryComponent temqc = queryComponentController.findLastQuery(r.getQryCode());
+            if (temqc == null) {
+                j.setError(true);
+                j.setMessage(j.getMessage() + "\n" + "Count " + r.getQryCode() + " in the indicator is not found. ");
+                continue;
+            }
+
+            if (null == temqc.getQueryType()) {
+                j.setError(true);
+                j.setMessage(j.getMessage() + "\n" + "Type of query " + r.getQryCode() + " in is not set. ");
+
+            } else {
+                switch (temqc.getQueryType()) {
+                    case Population:
+                        System.out.println("Population");
+                        if (temqc.getPopulationType() == null) {
+                            j.setError(true);
+                            j.setMessage(j.getMessage() + "\n" + "Type of Population " + r.getQryCode() + " in is not set. ");
+                            continue;
+                        }
+                        int temYear;
+                        Calendar c = Calendar.getInstance();
+                        c.setTime(fromDate);
+                        temYear = c.get(Calendar.YEAR);
+                        
+                        Long tp = relationshipController.findPopulationValue(temYear, institution, temqc.getPopulationType());
+                        System.out.println("pop is " + tp);
+                        if (tp != null) {
+                            r.setTextReplacing(tp + "");
+                            r.setSelectedValue(tp + "");
+                            j.setMessage(j.getMessage() + r.getQryCode() + " - " + tp + "\n");
+                        } else {
+                            j.setError(true);
+                            j.setMessage(j.getMessage() + "No Population data for " + r.getQryCode() + "\n");
+                        }
+                        break;
+
+                    case Client_Count:
+                    case Encounter_Count:
+                        Long tv = storedQueryResultController.findStoredLongValue(temqc, fromDate, toDate, clinicsUnderInstitute, r, j);
+                        System.out.println("Count");
+                        if (tv != null) {
+                            r.setTextReplacing(tv + "");
+                            r.setSelectedValue(tv + "");
+                            j.setMessage(j.getMessage() + r.getQryCode() + " - " + tv + "\n");
+                        } else {
+                            j.setError(true);
+                            j.setMessage(j.getMessage() + "\n" + "No count for " + r.getQryCode() + "\n");
+                        }
+
+                        break;
+                    default:
+                        j.setError(true);
+                        j.setMessage(j.getMessage() + "\n" + "Wrong Query - " + r.getQryCode() + "\n");
+                }
+            }
+
+        }
+
+        String script = generateScript(queryComponent.getIndicatorQuery(), rs);
+        result = evaluateScript(script);
+
+        j.setMessage(j.getMessage() + "\n" + "Calculation Script = " + script + "\nResult = " + result);
+
+        message = CommonController.stringToHtml(j.getMessage());
+
+    }
+
+    
+    public String generateScript(String calculationScript, List<Replaceable> selectables) {
+        for (Replaceable s : selectables) {
+            String patternStart = "#{";
+            String patternEnd = "}";
+            String toBeReplaced;
+            toBeReplaced = patternStart + s.getFullText() + patternEnd;
+
+            calculationScript = calculationScript.replace(toBeReplaced, s.getSelectedValue());
+
+        }
+
+        return calculationScript;
+    }
+
+    public String evaluateScript(String script) {
+        ScriptEngineManager mgr = new ScriptEngineManager();
+        ScriptEngine engine = mgr.getEngineByName("JavaScript");
+        try {
+            return engine.eval(script) + "";
+        } catch (ScriptException ex) {
+
+            return null;
+        }
+    }
+
+    public List<Replaceable> findReplaceblesInIndicatorQuery(String text) {
+        List<Replaceable> ss = new ArrayList<>();
+
+        String patternStart = "#{";
+        String patternEnd = "}";
+        String regexString = Pattern.quote(patternStart) + "(.*?)" + Pattern.quote(patternEnd);
+
+        Pattern p = Pattern.compile(regexString);
+        Matcher m = p.matcher(text);
+
+        while (m.find()) {
+            String block = m.group(1);
+            if (!block.trim().equals("")) {
+                Replaceable s = new Replaceable();
+                s.setFullText(block);
+                s.setTextToBeReplaced(block);
+                s.setQryCode(block);
+                ss.add(s);
+            }
+        }
+
+        return ss;
+
     }
 
     public StoredQueryResultController getStoredQueryResultController() {

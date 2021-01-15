@@ -36,6 +36,8 @@ public class Replaceable {
     
     private String qryCode;
     
+    private String textToBeReplaced;
+    private String textReplacing;
     
     private ClientEncounterComponentItem clientEncounterComponentItem;
     List<String> options;
@@ -45,6 +47,8 @@ public class Replaceable {
     String selectedValue;
     String fullText;
 
+    
+    
     public String getVariableCode() {
         return variableCode;
     }
@@ -285,6 +289,22 @@ public class Replaceable {
 
     public void setQryCode(String qryCode) {
         this.qryCode = qryCode;
+    }
+
+    public String getTextToBeReplaced() {
+        return textToBeReplaced;
+    }
+
+    public void setTextToBeReplaced(String textToBeReplaced) {
+        this.textToBeReplaced = textToBeReplaced;
+    }
+
+    public String getTextReplacing() {
+        return textReplacing;
+    }
+
+    public void setTextReplacing(String textReplacing) {
+        this.textReplacing = textReplacing;
     }
 
     

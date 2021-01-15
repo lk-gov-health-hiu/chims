@@ -40,6 +40,8 @@
                                 action="#{queryComponentController.toQueryIndex()}"  />
                     <p:menuitem ajax="false" value="Reports" 
                                 action="#{reportController.toViewReports()}" ></p:menuitem>
+                    <p:menuitem ajax="false" value="Indicators" 
+                                action="#{indicatorController.toIndicatorIndex}" ></p:menuitem>
                 </p:submenu>
 
 
@@ -85,7 +87,7 @@
                     <p:inputText autocomplete="off"
                                  value="#{clientController.searchingId}"/>
                     <p:commandButton ajax="false" 
-                                     action="#{clientController.searchByPhnWithBasicData()}" 
+                                     action="#{clientController.searchByAnyIdWithBasicData()}" 
                                      icon="ui-icon-search" ></p:commandButton>
                     <p:spacer height="1" width="5" ></p:spacer>
                     <p:outputLabel value="|"></p:outputLabel>
@@ -113,11 +115,15 @@
                 </p:submenu>
 
 
+
                 <p:submenu label="Analysis" 
                            rendered="#{webUserController.hasPrivilege('Institution_Administration')}" >
                     <p:menuitem ajax="false" value="Queries" 
-                                action="#{queryComponentController.toAllQueries()}"  />
-                    <p:menuitem ajax="false" value="Reports" action="#{reportController.toViewReports()}" ></p:menuitem>
+                                action="#{queryComponentController.toQueryIndex()}"  />
+                    <p:menuitem ajax="false" value="Reports" 
+                                action="#{reportController.toViewReports()}" ></p:menuitem>
+                    <p:menuitem ajax="false" value="Indicators" 
+                                action="#{indicatorController.toIndicatorIndex}" ></p:menuitem>
                 </p:submenu>
 
 

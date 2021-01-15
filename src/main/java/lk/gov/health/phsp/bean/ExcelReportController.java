@@ -425,21 +425,22 @@ public class ExcelReportController implements Serializable {
 
                             }
                             if (qryCode != null) {
+                                QueryWithCriteria qwc = findQwcFromQwcs(qwcs, qryCode);
                                 Long value = null;
                                 boolean featchAgain = true;
                                 if (sqr.isRecalculate()) {
                                     featchAgain = true;
                                 } else {
-                                    value = storedQueryResultController.findStoredLongValue(sqr.getQueryComponent(), sqr.getResultFrom(), sqr.getResultTo(), sqr.getInstitution());
+                                    value = storedQueryResultController.findStoredLongValue(qwc.getQuery(), sqr.getResultFrom(), sqr.getResultTo(), sqr.getInstitution());
                                     if (value == null) {
                                         featchAgain = true;
                                     }
                                 }
-                                QueryWithCriteria qwc = findQwcFromQwcs(qwcs, qryCode);
+                                
                                 if (featchAgain) {
                                     value = calculateIndividualQueryResult(ewcs, qwc);
                                     if (value != null) {
-                                        storedQueryResultController.saveValue(sqr.getQueryComponent(), sqr.getResultFrom(), sqr.getResultTo(), sqr.getInstitution(), value);
+                                        storedQueryResultController.saveValue(qwc.getQuery(), sqr.getResultFrom(), sqr.getResultTo(), sqr.getInstitution(), value);
                                     }
                                 }
                                 if (value != null) {

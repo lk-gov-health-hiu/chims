@@ -15,7 +15,7 @@
                 <h:form>
                     <p:panelGrid columns="1" style="width: 100%">
                         <f:facet name="header" >
-                            <p:outputLabel value="Indicator  - Institution Monthly" ></p:outputLabel>
+                            <p:outputLabel value="Indicator  - Clinic Monthly" ></p:outputLabel>
                             <p:spacer height="1" width="70" ></p:spacer>
                             <p:commandButton value="Back"  
                                              immediate="true"
@@ -39,12 +39,12 @@
                                                 itemValue="#{q}">
                                 </p:autoComplete>
 
-                                <p:outputLabel value="Institution" for="ins" ></p:outputLabel>
+                                <p:outputLabel value="Clinic" for="ins" ></p:outputLabel>
                                 <p:autoComplete value="#{indicatorController.institution}"
                                                 id="ins"
                                                 requiredMessage="Please select a clinic. Selecting a Hospital will not give results."
                                                 required="true" forceSelection="true" 
-                                                completeMethod="#{institutionController.completeHospitals}"
+                                                completeMethod="#{institutionController.completeHlClinics}"
                                                 var="i"
                                                 itemLabel="#{i.name}"
                                                 itemValue="#{i}">
@@ -69,7 +69,7 @@
 
                                 <p:spacer ></p:spacer>
                                 <p:commandButton value="Calculate"  style="width:30em;margin:auto;"
-                                                 action="#{indicatorController.runInstitutionMonthly()}"
+                                                 action="#{indicatorController.runHlcMonthly()}"
                                                  ajax="false">
                                 </p:commandButton>
 
