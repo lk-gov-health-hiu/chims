@@ -48,41 +48,41 @@
                                 <p:inputText id="phn"  autocomplete="off" 
                                              value="#{clientController.selected.phn}" title="Phn"
                                              placeholder="Generate New PHN">
-                                    <f:ajax event="change" execute="@this" render="phnExists" listener="#{clientController.checkPhnExists}" ></f:ajax>
+                                    <!--<f:ajax event="change" execute="@this" render="phnExists" listener="#{clientController.checkPhnExists}" ></f:ajax>-->
                                 </p:inputText>
-<!--                                <p:commandLink value="Generate" 
-                                               action="#{clientController.generateAndAssignNewPhn}" 
-                                               process="@this" 
-                                               update="phn" ></p:commandLink><br ></br>-->
+                                                                <p:commandLink value="Generate" 
+                                                                               action="#{clientController.generateAndAssignNewPhn}" 
+                                                                               process="@this" 
+                                                                               update="phn" ></p:commandLink><br ></br>
 
-                                <h:panelGroup id="phnExists" >
-                                    <p:commandLink value="Already Exists, Click to see" 
-                                                   style="color: red;" onclick="PF('dlgPhnClients').show();"
-                                                   rendered="#{clientController.phnExists}" >
-                                    </p:commandLink>
-                                    <p:dialog id="dlgPhnClients" widgetVar="dlgPhnClients" >
-                                        <p:dataTable value="#{clientRequestController.clientsWithSamePhn(clientController.selected.phn)}" var="c" >
-                                            <p:column headerText="PHN" >
-                                                <h:outputLabel value="#{c.phn}" ></h:outputLabel>
-                                            </p:column>
-                                            <p:column headerText="Name" >
-                                                <h:outputLabel value="#{c.person.name}" ></h:outputLabel>
-                                            </p:column>
-                                            <p:column headerText="NIC" >
-                                                <h:outputLabel value="#{c.person.nic}" ></h:outputLabel>
-                                            </p:column>
-                                            <p:column headerText="Gender" >
-                                                <h:outputLabel value="#{c.person.sex.name}" ></h:outputLabel>
-                                            </p:column>
-                                            <p:column headerText="Age" >
-                                                <h:outputLabel value="#{c.person.age}" ></h:outputLabel>
-                                            </p:column>
-                                            <p:column headerText="Mobile No" >
-                                                <h:outputLabel value="#{c.person.phone1}" ></h:outputLabel>
-                                            </p:column>
-                                        </p:dataTable>
-                                    </p:dialog>
-                                </h:panelGroup>
+                                <!--                                <h:panelGroup id="phnExists" >
+                                                                    <p:commandLink value="Already Exists, Click to see" 
+                                                                                   style="color: red;" onclick="PF('dlgPhnClients').show();"
+                                                                                   rendered="#{clientController.phnExists}" >
+                                                                    </p:commandLink>
+                                                                    <p:dialog id="dlgPhnClients" widgetVar="dlgPhnClients" >
+                                                                        <p:dataTable value="#{clientRequestController.clientsWithSamePhn(clientController.selected.phn)}" var="c" >
+                                                                            <p:column headerText="PHN" >
+                                                                                <h:outputLabel value="#{c.phn}" ></h:outputLabel>
+                                                                            </p:column>
+                                                                            <p:column headerText="Name" >
+                                                                                <h:outputLabel value="#{c.person.name}" ></h:outputLabel>
+                                                                            </p:column>
+                                                                            <p:column headerText="NIC" >
+                                                                                <h:outputLabel value="#{c.person.nic}" ></h:outputLabel>
+                                                                            </p:column>
+                                                                            <p:column headerText="Gender" >
+                                                                                <h:outputLabel value="#{c.person.sex.name}" ></h:outputLabel>
+                                                                            </p:column>
+                                                                            <p:column headerText="Age" >
+                                                                                <h:outputLabel value="#{c.person.age}" ></h:outputLabel>
+                                                                            </p:column>
+                                                                            <p:column headerText="Mobile No" >
+                                                                                <h:outputLabel value="#{c.person.phone1}" ></h:outputLabel>
+                                                                            </p:column>
+                                                                        </p:dataTable>
+                                                                    </p:dialog>
+                                                                </h:panelGroup>-->
                             </h:panelGroup>
 
 
@@ -90,39 +90,39 @@
                             <h:panelGroup >
                                 <p:inputText id="phone1"  autocomplete="off" value="#{clientController.selected.person.phone1}" title="Mobile" 
                                              validatorMessage="Please check the number">
-                                    <f:validateRegex pattern="^((?:0|94|\+94|0094)?(?:(11|21|23|24|25|26|27|31|32|33|34|35|36|37|38|41|45|47|51|52|54|55|57|63|65|66|67|81|91)(0|2|3|4|5|7|9)|7(0|1|2|5|6|7|8)\d)\d{6})?$"
-                                                     ></f:validateRegex>
-                                    <f:ajax event="change" execute="@this" render="mobileNoExists" listener="#{clientController.checkPhone1Exists()}" ></f:ajax>
+                                    <!--                                    <f:validateRegex pattern="^((?:0|94|\+94|0094)?(?:(11|21|23|24|25|26|27|31|32|33|34|35|36|37|38|41|45|47|51|52|54|55|57|63|65|66|67|81|91)(0|2|3|4|5|7|9)|7(0|1|2|5|6|7|8)\d)\d{6})?$"
+                                                                                         ></f:validateRegex>-->
+                                                                        <!--<f:ajax event="change" execute="@this" render="mobileNoExists" listener="#{clientController.checkPhone1Exists()}" ></f:ajax>-->
                                 </p:inputText><br ></br>
 
-                                <h:panelGroup id="mobileNoExists" >
-                                    <p:commandLink value="Already Exists, Click to see" 
-                                                   style="color: red;" onclick="PF('dlgMobileNoClients').show();"
-                                                   rendered="#{clientController.phone1Exists}" >
-                                    </p:commandLink>
-                                    <p:dialog id="dlgMobileNoClients" widgetVar="dlgMobileNoClients" >
-                                        <p:dataTable value="#{clientRequestController.clientsWithSameMobileNo(clientController.selected.person.phone1)}" var="c" >
-                                            <p:column headerText="PHN" >
-                                                <h:outputLabel value="#{c.phn}" ></h:outputLabel>
-                                            </p:column>
-                                            <p:column headerText="Name" >
-                                                <h:outputLabel value="#{c.person.name}" ></h:outputLabel>
-                                            </p:column>
-                                            <p:column headerText="NIC" >
-                                                <h:outputLabel value="#{c.person.nic}" ></h:outputLabel>
-                                            </p:column>
-                                            <p:column headerText="Gender" >
-                                                <h:outputLabel value="#{c.person.sex.name}" ></h:outputLabel>
-                                            </p:column>
-                                            <p:column headerText="Age" >
-                                                <h:outputLabel value="#{c.person.age}" ></h:outputLabel>
-                                            </p:column>
-                                            <p:column headerText="Mobile No" >
-                                                <h:outputLabel value="#{c.person.phone1}" ></h:outputLabel>
-                                            </p:column>
-                                        </p:dataTable>  
-                                    </p:dialog>
-                                </h:panelGroup>
+                                <!--                                <h:panelGroup id="mobileNoExists" >
+                                                                    <p:commandLink value="Already Exists, Click to see" 
+                                                                                   style="color: red;" onclick="PF('dlgMobileNoClients').show();"
+                                                                                   rendered="#{clientController.phone1Exists}" >
+                                                                    </p:commandLink>
+                                                                    <p:dialog id="dlgMobileNoClients" widgetVar="dlgMobileNoClients" >
+                                                                        <p:dataTable value="#{clientRequestController.clientsWithSameMobileNo(clientController.selected.person.phone1)}" var="c" >
+                                                                            <p:column headerText="PHN" >
+                                                                                <h:outputLabel value="#{c.phn}" ></h:outputLabel>
+                                                                            </p:column>
+                                                                            <p:column headerText="Name" >
+                                                                                <h:outputLabel value="#{c.person.name}" ></h:outputLabel>
+                                                                            </p:column>
+                                                                            <p:column headerText="NIC" >
+                                                                                <h:outputLabel value="#{c.person.nic}" ></h:outputLabel>
+                                                                            </p:column>
+                                                                            <p:column headerText="Gender" >
+                                                                                <h:outputLabel value="#{c.person.sex.name}" ></h:outputLabel>
+                                                                            </p:column>
+                                                                            <p:column headerText="Age" >
+                                                                                <h:outputLabel value="#{c.person.age}" ></h:outputLabel>
+                                                                            </p:column>
+                                                                            <p:column headerText="Mobile No" >
+                                                                                <h:outputLabel value="#{c.person.phone1}" ></h:outputLabel>
+                                                                            </p:column>
+                                                                        </p:dataTable>  
+                                                                    </p:dialog>
+                                                                </h:panelGroup>-->
                             </h:panelGroup>
 
 
@@ -143,38 +143,38 @@
                             <h:panelGroup >
                                 <p:inputText id="email"  autocomplete="off" value="#{clientController.selected.person.email}" title="Email" validatorMessage="Please check email" >
                                     <f:validateRegex pattern="^([a-zA-Z0-9.!#$%&amp;'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*)?$" ></f:validateRegex>
-                                    <f:ajax event="change" execute="@this" render="emailExists" listener="#{clientController.checkEmailExists()}" ></f:ajax>
+                                    <!--<f:ajax event="change" execute="@this" render="emailExists" listener="#{clientController.checkEmailExists()}" ></f:ajax>-->
                                 </p:inputText><br ></br>
 
-                                <h:panelGroup id="emailExists" >
-                                    <p:commandLink value="Already Exists, Click to see" 
-                                                   style="color: red;" onclick="PF('dlgEmailClients').show();"
-                                                   rendered="#{clientController.emailExists}" 
-                                                   >
-                                    </p:commandLink>
-                                    <p:dialog id="dlgEmailClients" widgetVar="dlgEmailClients" >
-                                        <p:dataTable value="#{clientRequestController.clientsWithSameEmail(clientController.selected.person.email)}" var="c" >
-                                            <p:column headerText="PHN" >
-                                                <h:outputLabel value="#{c.phn}" ></h:outputLabel>
-                                            </p:column>
-                                            <p:column headerText="Name" >
-                                                <h:outputLabel value="#{c.person.name}" ></h:outputLabel>
-                                            </p:column>
-                                            <p:column headerText="NIC" >
-                                                <h:outputLabel value="#{c.person.nic}" ></h:outputLabel>
-                                            </p:column>
-                                            <p:column headerText="Gender" >
-                                                <h:outputLabel value="#{c.person.sex.name}" ></h:outputLabel>
-                                            </p:column>
-                                            <p:column headerText="Age" >
-                                                <h:outputLabel value="#{c.person.age}" ></h:outputLabel>
-                                            </p:column>
-                                            <p:column headerText="Mobile No" >
-                                                <h:outputLabel value="#{c.person.phone1}" ></h:outputLabel>
-                                            </p:column>
-                                        </p:dataTable>  
-                                    </p:dialog>
-                                </h:panelGroup>
+                                <!--                                <h:panelGroup id="emailExists" >
+                                                                    <p:commandLink value="Already Exists, Click to see" 
+                                                                                   style="color: red;" onclick="PF('dlgEmailClients').show();"
+                                                                                   rendered="#{clientController.emailExists}" 
+                                                                                   >
+                                                                    </p:commandLink>
+                                                                    <p:dialog id="dlgEmailClients" widgetVar="dlgEmailClients" >
+                                                                        <p:dataTable value="#{clientRequestController.clientsWithSameEmail(clientController.selected.person.email)}" var="c" >
+                                                                            <p:column headerText="PHN" >
+                                                                                <h:outputLabel value="#{c.phn}" ></h:outputLabel>
+                                                                            </p:column>
+                                                                            <p:column headerText="Name" >
+                                                                                <h:outputLabel value="#{c.person.name}" ></h:outputLabel>
+                                                                            </p:column>
+                                                                            <p:column headerText="NIC" >
+                                                                                <h:outputLabel value="#{c.person.nic}" ></h:outputLabel>
+                                                                            </p:column>
+                                                                            <p:column headerText="Gender" >
+                                                                                <h:outputLabel value="#{c.person.sex.name}" ></h:outputLabel>
+                                                                            </p:column>
+                                                                            <p:column headerText="Age" >
+                                                                                <h:outputLabel value="#{c.person.age}" ></h:outputLabel>
+                                                                            </p:column>
+                                                                            <p:column headerText="Mobile No" >
+                                                                                <h:outputLabel value="#{c.person.phone1}" ></h:outputLabel>
+                                                                            </p:column>
+                                                                        </p:dataTable>  
+                                                                    </p:dialog>
+                                                                </h:panelGroup>-->
                             </h:panelGroup>
 
 
@@ -192,47 +192,47 @@
                             <p:outputLabel value="Senior Citizen Number:" for="ssNumber" />
                             <h:panelGroup >
                                 <p:inputText id="ssNumber"  autocomplete="off"  value="#{clientController.selected.person.ssNumber}" title="Senior Citizen Number" >
-                                    <f:ajax event="change" execute="@this" render="ssNumberExists" listener="#{clientController.checkSsNumberExists()}" ></f:ajax>
+                                    <!--<f:ajax event="change" execute="@this" render="ssNumberExists" listener="#{clientController.checkSsNumberExists()}" ></f:ajax>-->
                                 </p:inputText><br ></br>
 
-                                <h:panelGroup id="ssNumberExists" >
-                                    <p:commandLink value="Already Exists, Click to see" 
-                                                   style="color: red;" onclick="PF('dlgSsNumberClients').show();"
-                                                   rendered="#{clientController.ssNumberExists}">
-                                    </p:commandLink>
-                                    <p:dialog id="dlgSsNumberClients" widgetVar="dlgSsNumberClients" >
-                                        <p:dataTable value="#{clientRequestController.clientsWithSameSSNumber(clientController.selected.person.ssNumber)}" var="c" >
-                                            <p:column headerText="PHN" >
-                                                <h:outputLabel value="#{c.phn}" ></h:outputLabel>
-                                            </p:column>
-                                            <p:column headerText="Name" >
-                                                <h:outputLabel value="#{c.person.name}" ></h:outputLabel>
-                                            </p:column>
-                                            <p:column headerText="NIC" >
-                                                <h:outputLabel value="#{c.person.nic}" ></h:outputLabel>
-                                            </p:column>
-                                            <p:column headerText="Gender" >
-                                                <h:outputLabel value="#{c.person.sex.name}" ></h:outputLabel>
-                                            </p:column>
-                                            <p:column headerText="Age" >
-                                                <h:outputLabel value="#{c.person.age}" ></h:outputLabel>
-                                            </p:column>
-                                            <p:column headerText="Mobile No" >
-                                                <h:outputLabel value="#{c.person.phone1}" ></h:outputLabel>
-                                            </p:column>
-                                        </p:dataTable>  
-                                    </p:dialog>
-                                </h:panelGroup>
+                                <!--                                <h:panelGroup id="ssNumberExists" >
+                                                                    <p:commandLink value="Already Exists, Click to see" 
+                                                                                   style="color: red;" onclick="PF('dlgSsNumberClients').show();"
+                                                                                   rendered="#{clientController.ssNumberExists}">
+                                                                    </p:commandLink>
+                                                                    <p:dialog id="dlgSsNumberClients" widgetVar="dlgSsNumberClients" >
+                                                                        <p:dataTable value="#{clientRequestController.clientsWithSameSSNumber(clientController.selected.person.ssNumber)}" var="c" >
+                                                                            <p:column headerText="PHN" >
+                                                                                <h:outputLabel value="#{c.phn}" ></h:outputLabel>
+                                                                            </p:column>
+                                                                            <p:column headerText="Name" >
+                                                                                <h:outputLabel value="#{c.person.name}" ></h:outputLabel>
+                                                                            </p:column>
+                                                                            <p:column headerText="NIC" >
+                                                                                <h:outputLabel value="#{c.person.nic}" ></h:outputLabel>
+                                                                            </p:column>
+                                                                            <p:column headerText="Gender" >
+                                                                                <h:outputLabel value="#{c.person.sex.name}" ></h:outputLabel>
+                                                                            </p:column>
+                                                                            <p:column headerText="Age" >
+                                                                                <h:outputLabel value="#{c.person.age}" ></h:outputLabel>
+                                                                            </p:column>
+                                                                            <p:column headerText="Mobile No" >
+                                                                                <h:outputLabel value="#{c.person.phone1}" ></h:outputLabel>
+                                                                            </p:column>
+                                                                        </p:dataTable>  
+                                                                    </p:dialog>
+                                                                </h:panelGroup>-->
                             </h:panelGroup>
 
                             <p:outputLabel value="NIC No.:" for="nic" />
                             <h:panelGroup >
                                 <p:inputText id="nic"  autocomplete="off" value="#{clientController.selected.person.nic}" title="Nic" validatorMessage="Please check the number">
                                     <f:validateRegex pattern="^([0-9]{9}[x|X|v|V]|[0-9]{12})?$" ></f:validateRegex>
-                                    <f:ajax event="change" execute="@this" render="nicExists" 
-                                            listener="#{clientController.checkNicExists}" ></f:ajax>
+<!--                                    <f:ajax event="change" execute="@this" render="nicExists" 
+                                            listener="#{clientController.checkNicExists}" ></f:ajax>-->
                                 </p:inputText><br ></br>
-                                <h:panelGroup id="nicExists" >
+<!--                                <h:panelGroup id="nicExists" >
                                     <p:commandLink value="Already Exists, Click to see" 
                                                    style="color: red;" onclick="PF('dlgNicClients').show();"
                                                    rendered="#{clientController.nicExists}" 
@@ -261,7 +261,7 @@
                                             </p:column>
                                         </p:dataTable>  
                                     </p:dialog>
-                                </h:panelGroup>
+                                </h:panelGroup>-->
                             </h:panelGroup>
 
                             <p:outputLabel value="Citizenship:" for="citizenship" />
