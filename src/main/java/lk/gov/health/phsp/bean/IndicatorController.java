@@ -280,7 +280,7 @@ public class IndicatorController implements Serializable {
             }
         }
 
-        message = j.getMessage();
+        message = CommonController.stringToHtml(j.getMessage());
     }
 
     private Long calculateIndividualQueryResult(List<EncounterWithComponents> ewcs, QueryWithCriteria qwc) {
@@ -932,6 +932,11 @@ public class IndicatorController implements Serializable {
 
         String script = generateScript(queryComponent.getIndicatorQuery(), rs);
         result = evaluateScript(script);
+        
+        Long sv = CommonController.stringToLong(result);
+        if(sv==null){
+            storedQueryResultController.saveValue(queryComponent, fromDate, toDate, institution, sv);
+        }
 
         j.setMessage(j.getMessage() + "\n" + "Calculation Script = " + script + "\nResult = " + result);
 
@@ -1054,6 +1059,11 @@ public class IndicatorController implements Serializable {
         result = evaluateScript(script);
 
         j.setMessage(j.getMessage() + "\n" + "Calculation Script = " + script + "\nResult = " + result);
+        
+        Long sv = CommonController.stringToLong(result);
+        if(sv==null){
+            storedQueryResultController.saveValue(queryComponent, fromDate, toDate, institution, sv);
+        }
 
         message = CommonController.stringToHtml(j.getMessage());
 

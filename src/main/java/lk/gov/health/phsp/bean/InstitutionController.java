@@ -476,7 +476,7 @@ public class InstitutionController implements Serializable {
             boolean typeFound = false;
             for (InstitutionType type : types) {
                 if (type != null) {
-                    if (i.getInstitutionType() == null && i.getInstitutionType().equals(type)) {
+                    if (i.getInstitutionType() != null && i.getInstitutionType().equals(type)) {
                         typeFound = true;
                     }
                 }
