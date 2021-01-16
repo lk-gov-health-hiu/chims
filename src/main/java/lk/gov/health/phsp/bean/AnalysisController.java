@@ -90,9 +90,11 @@ public class AnalysisController {
 
     public void findClientCount() {
         String j = "select count(c) from Client c "
-                + " where c.retired<>:ret ";
+                + " where c.retired<>:ret "
+                + " and c.reservedClient <> :res ";
         Map m = new HashMap();
         m.put("ret", true);
+        m.put("res", true);
 
         j = j + " and c.createdAt between :fd and :td ";
         m.put("fd", getFrom());

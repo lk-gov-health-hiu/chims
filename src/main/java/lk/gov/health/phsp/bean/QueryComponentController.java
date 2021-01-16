@@ -281,18 +281,34 @@ public class QueryComponentController implements Serializable {
 //    public void listQueries() {
 //        listQueries(searchText);
 //    }
-    public List<Item> getItemsInDesignFormItemValues() {
-        if (getSelected() == null || getSelected().getItem() == null) {
+    
+    
+    
+    
+    
+    public List<Item> getItemsForCountCriteriaItems() {
+        System.out.println("getItemsInDesignFormItemValues");
+        System.out.println("getSelectedCountCriteria() = " + getSelectedCountCriteria());
+        if (getSelectedCountCriteria() == null || getSelectedCountCriteria().getItem() == null) {
+            System.out.println("Null Error Return back");
             return new ArrayList<>();
         }
+        System.out.println("getSelectedCountCriteria().getItem() = " + getSelectedCountCriteria().getItem());
         String j = "select distinct(di.categoryOfAvailableItems) "
                 + " from DesignComponentFormItem di "
                 + " where di.retired<>:ret "
                 + " and lower(di.item.code)=:qry ";
         Map m = new HashMap();
         m.put("ret", true);
-        m.put("qry", getSelected().getItem().getCode().trim().toLowerCase());
+        m.put("qry", getSelectedCountCriteria().getItem().getCode().trim().toLowerCase());
+        
+        System.out.println("m = " + m);
+        System.out.println("j = " + j);
+        
         List<Item> parentItems = getItemFacade().findByJpql(j, m);
+        
+        System.out.println("parentItems = " + parentItems);
+        
         List<Item> temItsm = new ArrayList<>();
 
         if (parentItems == null || parentItems.isEmpty()) {
@@ -310,11 +326,79 @@ public class QueryComponentController implements Serializable {
             m = new HashMap();
             m.put("ret", true);
             m.put("code", i.getCode());
+            
+            System.out.println("j 1 = " +j);
+            System.out.println("m 1 = " + m);
+            
             List<Item> temIt = getItemFacade().findByJpql(j, m);
+            
+            System.out.println("temIt = " + temIt);
+            
             if (temIt != null) {
                 temItsm.addAll(temIt);
             }
         }
+        
+        System.out.println("temItsm = " + temItsm);
+        
+        return temItsm;
+    }
+    
+    public List<Item> getItemsInDesignFormItemValues() {
+        System.out.println("getItemsInDesignFormItemValues");
+        System.out.println("getSelected() = " + getSelected());
+        if (getSelected() == null || getSelected().getItem() == null) {
+            System.out.println("Null Error Return back");
+            return new ArrayList<>();
+        }
+        System.out.println("getSelected().getItem() = " + getSelected().getItem());
+        String j = "select distinct(di.categoryOfAvailableItems) "
+                + " from DesignComponentFormItem di "
+                + " where di.retired<>:ret "
+                + " and lower(di.item.code)=:qry ";
+        Map m = new HashMap();
+        m.put("ret", true);
+        m.put("qry", getSelected().getItem().getCode().trim().toLowerCase());
+        
+        System.out.println("m = " + m);
+        System.out.println("j = " + j);
+        
+        List<Item> parentItems = getItemFacade().findByJpql(j, m);
+        
+        System.out.println("parentItems = " + parentItems);
+        
+        List<Item> temItsm = new ArrayList<>();
+
+        if (parentItems == null || parentItems.isEmpty()) {
+            return new ArrayList<>();
+        }
+
+        for (Item i : parentItems) {
+            if (i == null || i.getCode() == null) {
+                continue;
+            }
+            j = "select i from Item i "
+                    + "where i.retired<>:ret "
+                    + " and lower(i.parent.code)=:code "
+                    + "";
+            m = new HashMap();
+            m.put("ret", true);
+            m.put("code", i.getCode());
+            
+            System.out.println("j 1 = " +j);
+            System.out.println("m 1 = " + m);
+            
+            List<Item> temIt = getItemFacade().findByJpql(j, m);
+            
+            System.out.println("temIt = " + temIt);
+            
+            if (temIt != null) {
+                temItsm.addAll(temIt);
+            }
+        }
+        
+        System.out.println("temItsm = " + temItsm);
+        
         return temItsm;
     }
 
@@ -2488,10 +2572,11 @@ public class QueryComponentController implements Serializable {
         jpql.setQc(qc);
         List<QueryComponent> criterias = criteria(qc);
         jpql.getM().put("f", false);
+        jpql.getM().put("res", true);
         if (criterias == null || criterias.isEmpty()) {
             // <editor-fold defaultstate="collapsed" desc="No Criteria">
 
-            jpql.setJwhere(" where c.retired=:f ");
+            jpql.setJwhere(" where c.retired=:f and c.reservedClient<>:res ");
             jpql.setJfrom("  from Client c ");
             if (qc.getOutputType() == QueryOutputType.List) {
                 jpql.setJselect("select c ");
@@ -2560,7 +2645,7 @@ public class QueryComponentController implements Serializable {
             }
 
             jpql.setJfrom(" from ClientEncounterComponentItem i join i.itemClient c");
-            jpql.setJwhere(" where i.retired=:f ");
+            jpql.setJwhere(" where i.retired=:f and c.reservedClient<>:res ");
 
             QueryComponent c = criterias.get(0);
 
@@ -2749,7 +2834,7 @@ public class QueryComponentController implements Serializable {
 
             jpql.setJselect("");
             jpql.setJfrom(ss);
-            jpql.setJwhere(w1 + w2 + w3 + " and c.retired=:f ");
+            jpql.setJwhere(w1 + w2 + w3 + " and c.retired=:f and c.reservedClient<>:res ");
 
             if (ccYear != null && ccQuarter != null) {
                 //TODO: Correct Code

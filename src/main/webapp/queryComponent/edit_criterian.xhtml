@@ -21,8 +21,8 @@
                         <h:panelGroup id="display">
                             <p:panelGrid columns="2" rendered="#{queryComponentController.selected != null}">
 
-                                <p:outputLabel value="#{bundleQuery.CreateQueryComponentLabel_name}" for="name" />
-                                <p:inputText id="name" value="#{queryComponentController.selected.name}" title="#{bundleQuery.CreateQueryComponentTitle_name}" />
+                                <p:outputLabel value="#{bundleQuery.CreateQueryComponentLabel_name}"  />
+                                <p:outputLabel id="name" value="#{queryComponentController.selected.name}" />
 
                                 <p:outputLabel value="Order No." for="orderNo" />
                                 <p:inputText id="orderNo" value="#{queryComponentController.selected.orderNo}" title="#{bundleQuery.CreateQueryComponentTitle_name}" />

@@ -35,9 +35,9 @@
                             <h:panelGroup id="display">
                                 <p:panelGrid columns="2" rendered="#{queryComponentController.selectedCountCriteria != null}">
 
-                                     <p:outputLabel value="Count" for="count" />
-                                     <p:inputText id="count" value="#{queryComponentController.selectedCountCriteria.parentComponent.name}" 
-                                                 title="count" />
+                                     <p:outputLabel value="Count"  />
+                                     <p:outputLabel id="count" value="#{queryComponentController.selectedCountCriteria.parentComponent.name}" 
+                                                  />
                                     
                                     <p:outputLabel value="Name" for="name" />
                                     <p:inputText id="name" value="#{queryComponentController.selectedCountCriteria.name}" 
@@ -102,7 +102,7 @@
                                                      disabled="#{queryComponentController.selectedCountCriteria.queryDataType ne 'item'}"
                                                      value="#{queryComponentController.selectedCountCriteria.itemValue}" >
                                         <f:selectItem itemLabel="Select" ></f:selectItem>
-                                        <f:selectItems value="#{queryComponentController.itemsInDesignFormItemValues}" itemValue="#{iv}"
+                                        <f:selectItems value="#{queryComponentController.itemsForCountCriteriaItems}" itemValue="#{iv}"
                                                        itemLabel="#{iv.name}" var="iv" ></f:selectItems>
                                         <p:column headerText="Name" >
                                             <p:outputLabel value="#{iv.name}" ></p:outputLabel>

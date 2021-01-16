@@ -130,7 +130,7 @@ public class ClientController implements Serializable {
     private Boolean ssNumberExists;
     private String dateTimeFormat;
     private String dateFormat;
-
+    private List<String> reservePhnList;
     private int intNo;
 
     // </editor-fold>
@@ -163,7 +163,6 @@ public class ClientController implements Serializable {
     }
 
     public String toClientProfile() {
-        selectedClientsClinics = null;
         selectedClientsLastFiveClinicVisits = null;
         userTransactionController.recordTransaction("To Client Profile");
         return "/client/profile";
@@ -201,7 +200,7 @@ public class ClientController implements Serializable {
         String j;
         j = "select c"
                 + " from Client c "
-                + " where c.comments is not null";
+                + " where c.reservedClient <> true and c.comments is not null";
         items = getFacade().findByJpql(j);
         userTransactionController.recordTransaction("To View Corrected Duplicates");
         return "/systemAdmin/clients_with_corrected_duplicate_phn";
@@ -364,9 +363,11 @@ public class ClientController implements Serializable {
     public Boolean checkNicExists(String nic, Client c) {
         String jpql = "select count(c) from Client c "
                 + " where c.retired=:ret "
+                + " and c.reservedClient<>:res "
                 + " and c.person.nic=:nic ";
         Map m = new HashMap();
         m.put("ret", false);
+        m.put("res", true);
         m.put("nic", nic);
         if (c != null && c.getPerson() != null && c.getPerson().getId() != null) {
             jpql += " and c.person <> :person";
@@ -401,9 +402,11 @@ public class ClientController implements Serializable {
     public Boolean checkEmailExists(String email, Client c) {
         String jpql = "select count(c) from Client c "
                 + " where c.retired=:ret "
+                + " and c.reservedClient<>:res "
                 + " and c.person.email=:email ";
         Map m = new HashMap();
         m.put("ret", false);
+        m.put("res", true);
         m.put("email", email);
         if (c != null && c.getPerson() != null && c.getPerson().getId() != null) {
             jpql += " and c.person <> :person";
@@ -438,9 +441,11 @@ public class ClientController implements Serializable {
     public Boolean checkPhone1Exists(String phone1, Client c) {
         String jpql = "select count(c) from Client c "
                 + " where c.retired=:ret "
+                + " and c.reservedClient<>:res "
                 + " and c.person.phone1=:phone1 ";
         Map m = new HashMap();
         m.put("ret", false);
+        m.put("res", true);
         m.put("phone1", phone1);
         if (c != null && c.getPerson() != null && c.getPerson().getId() != null) {
             jpql += " and c.person <> :person";
@@ -475,9 +480,11 @@ public class ClientController implements Serializable {
     public Boolean checkSsNumberExists(String ssNumber, Client c) {
         String jpql = "select count(c) from Client c "
                 + " where c.retired=:ret "
+                + " and c.reservedClient<>:res "
                 + " and c.person.ssNumber=:ssNumber ";
         Map m = new HashMap();
         m.put("ret", false);
+        m.put("res", true);
         m.put("ssNumber", ssNumber);
         if (c != null && c.getPerson() != null && c.getPerson().getId() != null) {
             jpql += " and c.person <> :person";
@@ -494,9 +501,12 @@ public class ClientController implements Serializable {
 
     public void fixClientPersonCreatedAt() {
         String j = "select c from Client c "
-                + " where c.retired=:ret ";
+                + " where c.retired=:ret "
+                + " and c.reservedClient<>:res ";
+        
         Map m = new HashMap();
         m.put("ret", false);
+        m.put("res", true);
         List<Client> cs = getFacade().findByJpql(j, m);
         for (Client c : cs) {
 
@@ -523,10 +533,12 @@ public class ClientController implements Serializable {
         }
         String j = "select c from Client c "
                 + " where c.retired=:ret "
+                + " and c.reservedClient<>:res "
                 + " and c.id > :idf "
                 + " and c.id < :idt ";
         Map m = new HashMap();
         m.put("ret", false);
+        m.put("res", true);
         m.put("idf", idFrom);
         m.put("idt", idTo);
         List<Client> cs = getFacade().findByJpql(j, m);
@@ -540,10 +552,12 @@ public class ClientController implements Serializable {
     public void updateClientDateOfBirth() {
         String j = "select c from Client c "
                 + " where c.retired=:ret "
+                + " and c.reservedClient<>:res "
                 + " and c.id > :idf "
                 + " and c.id < :idt ";
         Map m = new HashMap();
         m.put("ret", false);
+        m.put("res", true);
         m.put("idf", idFrom);
         m.put("idt", idTo);
         List<Client> cs = getFacade().findByJpql(j, m);
@@ -569,9 +583,11 @@ public class ClientController implements Serializable {
 
     public Long countOfRegistedClients(Institution ins, Area gn) {
         String j = "select count(c) from Client c "
-                + " where c.retired=:ret ";
+                + " where c.retired=:ret "
+                + " and c.reservedClient<>:res ";
         Map m = new HashMap();
         m.put("ret", false);
+        m.put("res", true);
         if (ins != null) {
             j += " and c.createInstitution=:ins ";
             m.put("ins", ins);
@@ -585,9 +601,11 @@ public class ClientController implements Serializable {
 
     public String toRegisterdClientsDemo() {
         String j = "select c from Client c "
-                + " where c.retired=:ret ";
+                + " where c.retired=:ret "
+                + " and c.reservedClient<>:res ";
         Map m = new HashMap();
         m.put("ret", false);
+        m.put("res", true);
         if (webUserController.getLoggedUser().getInstitution() != null) {
             j += " and c.createInstitution=:ins ";
             m.put("ins", webUserController.getLoggedUser().getInstitution());
@@ -601,9 +619,11 @@ public class ClientController implements Serializable {
 
     public String toRegisterdClientsWithDates() {
         String j = "select c from Client c "
-                + " where c.retired=:ret ";
+                + " where c.retired=:ret "
+                + " and c.reservedClient<>:res ";
         Map m = new HashMap();
         m.put("ret", false);
+        m.put("res", true);
         if (webUserController.getLoggedUser().getInstitution() != null) {
             j += " and c.createInstitution=:ins ";
             m.put("ins", webUserController.getLoggedUser().getInstitution());
@@ -634,9 +654,11 @@ public class ClientController implements Serializable {
                 + "c.person.name "
                 + ") "
                 + "from Client c "
-                + " where c.retired=:ret ";
+                + " where c.retired=:ret "
+                + " and c.reservedClient<>:res ";
         Map m = new HashMap();
         m.put("ret", false);
+        m.put("res", true);
         j = j + " and c.createdAt between :fd and :td ";
         j = j + " order by c.id desc";
         m.put("fd", getFrom());
@@ -648,9 +670,11 @@ public class ClientController implements Serializable {
 
     public void fillRegisterdClientsWithDatesForInstitution() {
         String j = "select c from Client c "
-                + " where c.retired<>:ret ";
+                + " where c.retired<>:ret "
+                + " and c.reservedClient<>:res ";
         Map m = new HashMap();
         m.put("ret", true);
+        m.put("res", true);
         j = j + " and c.createdAt between :fd and :td ";
 
         if (institution != null) {
@@ -683,7 +707,7 @@ public class ClientController implements Serializable {
     }
 
     public void fillClientsWithWrongPhnLength() {
-        String j = "select c from Client c where length(c.phn) <>11 order by c.id";
+        String j = "select c from Client c where length(c.phn) <>11 and reservedClient<>true order by c.id";
         items = getFacade().findByJpql(j);
         userTransactionController.recordTransaction("Fill Clients With Wrong PHN Length");
     }
@@ -701,9 +725,11 @@ public class ClientController implements Serializable {
                 + "c.person.name "
                 + ") "
                 + "from Client c "
-                + " where c.retired=:ret ";
+                + " where c.retired=:ret "
+                + " and c.reservedClient<>:res ";
         Map m = new HashMap();
         m.put("ret", true);
+        m.put("res", true);
         j = j + " and c.createdAt between :fd and :td ";
         j = j + " order by c.id desc";
         m.put("fd", getFrom());
@@ -1313,6 +1339,9 @@ public class ClientController implements Serializable {
             setSelected(selectedClients.get(0));
             selectedClients = null;
             clearSearchById();
+            if(selected.isReservedClient()){
+                return "/client/client";
+            }
             return toClientProfile();
         } else {
             selected = null;
@@ -1587,15 +1616,17 @@ public class ClientController implements Serializable {
     }
 
     public List<Client> listPatientsByNic(String phn) {
-        String j = "select c from Client c where c.retired=false and upper(c.person.nic)=:q order by c.phn";
+        String j = "select c from Client c where c.retired=false and c.reservedClient<>:res and upper(c.person.nic)=:q order by c.phn";
         Map m = new HashMap();
+        m.put("res", true);
         m.put("q", phn.trim().toUpperCase());
         return getFacade().findByJpql(j, m);
     }
 
     public List<Client> listPatientsByPhone(String phn) {
-        String j = "select c from Client c where c.retired=false and (upper(c.person.phone1)=:q or upper(c.person.phone2)=:q) order by c.phn";
+        String j = "select c from Client c where c.retired=false and c.reservedClient<>:res and (upper(c.person.phone1)=:q or upper(c.person.phone2)=:q) order by c.phn";
         Map m = new HashMap();
+        m.put("res", true);
         m.put("q", phn.trim().toUpperCase());
         return getFacade().findByJpql(j, m);
     }
@@ -1603,10 +1634,12 @@ public class ClientController implements Serializable {
     public List<Client> listPatientsByLocalReferanceNo(String refNo) {
         String j = "select c from Client c "
                 + " where c.retired=false "
+                + " and c.reservedClient<>:res "
                 + " and lower(c.person.localReferanceNo)=:q "
                 + " and c.createInstitution=:ins "
                 + " order by c.phn";
         Map m = new HashMap();
+        m.put("res", true);
         m.put("q", refNo.trim().toLowerCase());
         m.put("ins", webUserController.getLoggedUser().getInstitution());
         return getFacade().findByJpql(j, m);
@@ -1615,9 +1648,11 @@ public class ClientController implements Serializable {
     public List<Client> listPatientsByLocalReferanceNoForSystemAdmin(String refNo) {
         String j = "select c from Client c "
                 + " where c.retired=false "
+                + " and c.reservedClient<>:res "
                 + " and lower(c.person.localReferanceNo)=:q "
                 + " order by c.phn";
         Map m = new HashMap();
+        m.put("res", true);
         m.put("q", refNo.trim().toLowerCase());
         return getFacade().findByJpql(j, m);
     }
@@ -1625,9 +1660,11 @@ public class ClientController implements Serializable {
     public List<Client> listPatientsBySsNo(String ssNo) {
         String j = "select c from Client c "
                 + " where c.retired=false "
+                + " and c.reservedClient<>:res "
                 + " and lower(c.person.ssNumber)=:q "
                 + " order by c.phn";
         Map m = new HashMap();
+        m.put("res", true);
         m.put("q", ssNo.trim().toLowerCase());
         return getFacade().findByJpql(j, m);
     }
@@ -1635,9 +1672,11 @@ public class ClientController implements Serializable {
     public List<Client> listPatientsByDrivingLicenseNo(String dlNo) {
         String j = "select c from Client c "
                 + " where c.retired=false "
+                + " and c.reservedClient<>:res "
                 + " and lower(c.person.drivingLicenseNumber)=:q "
                 + " order by c.phn";
         Map m = new HashMap();
+        m.put("res", true);
         m.put("q", dlNo.trim().toLowerCase());
         return getFacade().findByJpql(j, m);
     }
@@ -1645,9 +1684,11 @@ public class ClientController implements Serializable {
     public List<Client> listPatientsByPassportNo(String passportNo) {
         String j = "select c from Client c "
                 + " where c.retired=false "
+                + " and c.reservedClient<>:res "
                 + " and lower(c.person.passportNumber)=:q "
                 + " order by c.phn";
         Map m = new HashMap();
+        m.put("res", true);
         m.put("q", passportNo.trim().toLowerCase());
         return getFacade().findByJpql(j, m);
     }
@@ -1858,6 +1899,7 @@ public class ClientController implements Serializable {
         }
         String j = "select c from Client c "
                 + " where c.retired=false "
+                + " and c.reservedClient<>:res "
                 + " and ("
                 + " upper(c.person.phone1)=:q "
                 + " or "
@@ -1873,6 +1915,7 @@ public class ClientController implements Serializable {
                 + " ) "
                 + " order by c.phn";
         Map m = new HashMap();
+        m.put("res", true);
         m.put("q", ids.trim().toUpperCase());
         return getFacade().findByJpql(j, m);
     }
@@ -1948,6 +1991,8 @@ public class ClientController implements Serializable {
                 }
             }
         }
+        selected.setReservedClient(false);
+        
         saveClient(selected);
         JsfUtil.addSuccessMessage("Saved.");
         return toClientProfile();
@@ -1955,6 +2000,7 @@ public class ClientController implements Serializable {
 
     public void reserverPhn() {
         Institution createdIns;
+        int i = 0;
 
         if (webUserController.getLoggedUser().getInstitution().getPoiInstitution() != null) {
             createdIns = webUserController.getLoggedUser().getInstitution().getPoiInstitution();
@@ -1972,10 +2018,36 @@ public class ClientController implements Serializable {
             return;
         }
 
-        for (int i = 0; i > numberOfPhnToReserve; i++) {
-
+        if (numberOfPhnToReserve > 100) {
+            JsfUtil.addErrorMessage("Only upto 100 PHNs can reserve at a time.");
+            return;
         }
+        reservePhnList = new ArrayList<>();
+        
+        while (i < numberOfPhnToReserve) {
+            String newPhn = generateNewPhn(createdIns);
 
+            if (!checkPhnExists(newPhn, null)) {
+                reservePhnList.add(newPhn);
+
+                Client rc = new Client();
+
+                rc.setPhn(newPhn);
+                rc.setCreatedBy(webUserController.getLoggedUser());
+                rc.setCreatedAt(new Date());
+                rc.setCreateInstitution(createdIns);
+                if (rc.getPerson().getCreatedAt() == null) {
+                    rc.getPerson().setCreatedAt(new Date());
+                }
+                if (rc.getPerson().getCreatedBy() == null) {
+                    rc.getPerson().setCreatedBy(webUserController.getLoggedUser());
+                }
+                rc.setReservedClient(true);
+                
+                getFacade().create(rc);
+                i = i + 1;
+            }
+        }
     }
 
     public String saveClient(Client c) {
@@ -2524,6 +2596,14 @@ public class ClientController implements Serializable {
 
     public void setSelectedClientsWithBasicData(List<ClientBasicData> selectedClientsWithBasicData) {
         this.selectedClientsWithBasicData = selectedClientsWithBasicData;
+    }
+    
+    public List<String> getReservePhnList() {
+        return reservePhnList;
+    }
+
+    public void setReservePhnList(List<String> reservePhnList) {
+        this.reservePhnList = reservePhnList;
     }
 
     // </editor-fold>

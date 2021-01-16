@@ -29,7 +29,9 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.inject.Inject;
@@ -47,8 +49,10 @@ import lk.gov.health.phsp.enums.RelationshipType;
 import lk.gov.health.phsp.enums.TimePeriodType;
 import lk.gov.health.phsp.pojcs.Jpq;
 import lk.gov.health.phsp.pojcs.NcdReportTem;
+import lk.gov.health.phsp.pojcs.QueryWithCriteria;
 import lk.gov.health.phsp.pojcs.Replaceable;
 import lk.gov.health.phsp.pojcs.ReportTimePeriod;
+import org.bouncycastle.jcajce.provider.digest.GOST3411;
 import org.primefaces.model.StreamedContent;
 
 /**
@@ -86,27 +90,39 @@ public class IndicatorController implements Serializable {
     private Quarter quarterEnum;
     private boolean recalculate;
 
+    List<QueryComponent> selectedIndicators;
+
     /**
      * Creates a new instance of IndicatorController
      */
     public IndicatorController() {
     }
 
+    public String toProcesCountsForSelectedIndicators() {
+        message = "";
+        result = "";
+        institution = null;
+        return "/indicators/clinic_counts_for_selected_indicators";
+    }
+
     public String toRdhsMonthly() {
         message = "";
         result = "";
+        institution = null;
         return "/indicators/rdhs_monthly";
     }
-    
-     public String toPdhsMonthly() {
+
+    public String toPdhsMonthly() {
         message = "";
         result = "";
+        institution = null;
         return "/indicators/rdhs_monthly";
     }
-    
+
     public String toHospitalMonthly() {
         message = "";
         result = "";
+        institution = null;
         return "/indicators/hospital_monthly";
     }
 
@@ -125,6 +141,7 @@ public class IndicatorController implements Serializable {
     public String toProvinceMonthly() {
         message = "";
         result = "";
+        institution = null;
         return "/indicators/province_monthly";
     }
 
@@ -137,6 +154,71 @@ public class IndicatorController implements Serializable {
     public String toIndicatorIndex() {
         userTransactionController.recordTransaction("To View Indicators");
         return "/indicators/index";
+    }
+
+    public void runClinicCountsForSelectedIndicators() {
+        if (institution == null) {
+            JsfUtil.addErrorMessage("HLC ?");
+            return;
+        }
+        if (selectedIndicators == null) {
+            JsfUtil.addErrorMessage("Indicators ?");
+            return;
+        }
+        if (selectedIndicators.isEmpty()) {
+            JsfUtil.addErrorMessage("Indicators?");
+            return;
+        }
+        if (year == 0) {
+            JsfUtil.addErrorMessage("Year ?");
+            return;
+        }
+        if (month == null) {
+            JsfUtil.addErrorMessage("Month");
+            return;
+        }
+        if (institution.getInstitutionType() == null) {
+            JsfUtil.addErrorMessage("No Type for the institution");
+            return;
+        }
+        if (institution.getInstitutionType() != InstitutionType.Clinic) {
+            JsfUtil.addErrorMessage("Selected institution is NOT a HLC?");
+            return;
+        }
+        Jpq j = new Jpq();
+        Map<Long, QueryComponent> qcs = new HashMap<>();
+        List<Replaceable> rs = new ArrayList<>();
+        for (QueryComponent qc : selectedIndicators) {
+            List<Replaceable> trs = findReplaceblesInIndicatorQuery(queryComponent.getIndicatorQuery());
+            if (trs != null && !trs.isEmpty()) {
+                rs.addAll(rs);
+            }
+        }
+
+        for (Replaceable r : rs) {
+            QueryComponent temqc = queryComponentController.findLastQuery(r.getQryCode());
+            if (temqc == null) {
+                j.setError(true);
+                j.setMessage(j.getMessage() + "\n" + "Count " + r.getQryCode() + " in the indicator is not found. ");
+                continue;
+            }
+            if (null == temqc.getQueryType()) {
+                j.setError(true);
+                j.setMessage(j.getMessage() + "\n" + "Type of query " + r.getQryCode() + " in is not set. ");
+
+            } else {
+                switch (temqc.getQueryType()) {
+                    case Client_Count:
+                    case Encounter_Count:
+                        qcs.put(temqc.getId(), temqc);
+                        break;
+                    default:
+                        j.setError(true);
+                        j.setMessage(j.getMessage() + "\n" + "Wrong Query - " + r.getQryCode() + "\n");
+                }
+            }
+        }
+
     }
 
     public void runHlcMonthly() {
@@ -252,7 +334,6 @@ public class IndicatorController implements Serializable {
 
     }
 
-    
     public void runInstitutionMonthly() {
         System.out.println("runInstitutionMonthly");
         if (institution == null) {
@@ -283,7 +364,6 @@ public class IndicatorController implements Serializable {
             JsfUtil.addErrorMessage("No Type for the institution");
             return;
         }
-        
 
         fromDate = CommonController.startOfTheMonth(year, month);
         System.out.println("fromDate = " + fromDate);
@@ -299,11 +379,11 @@ public class IndicatorController implements Serializable {
             JsfUtil.addErrorMessage("Selected institution do not have HLCs under that");
             return;
         }
-        
+
         System.out.println("clinicsUnderInstitute = " + clinicsUnderInstitute);
 
         for (Replaceable r : rs) {
-            
+
             System.out.println("r = " + r);
 
             QueryComponent temqc = queryComponentController.findLastQuery(r.getQryCode());
@@ -330,7 +410,7 @@ public class IndicatorController implements Serializable {
                         Calendar c = Calendar.getInstance();
                         c.setTime(fromDate);
                         temYear = c.get(Calendar.YEAR);
-                        
+
                         Long tp = relationshipController.findPopulationValue(temYear, institution, temqc.getPopulationType());
                         System.out.println("pop is " + tp);
                         if (tp != null) {
@@ -374,7 +454,6 @@ public class IndicatorController implements Serializable {
 
     }
 
-    
     public String generateScript(String calculationScript, List<Replaceable> selectables) {
         for (Replaceable s : selectables) {
             String patternStart = "#{";

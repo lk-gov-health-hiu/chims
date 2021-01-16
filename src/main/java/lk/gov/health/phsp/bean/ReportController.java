@@ -1656,8 +1656,10 @@ public class ReportController implements Serializable {
         Map m = new HashMap();
         j = "select c from Client c "
                 + " where c.retired=:ret "
+                + " and c.reservedClient<>:res "
                 + " and c.createdAt between :fd and :td ";
         m.put("ret", false);
+        m.put("res", true);
         m.put("fd", fromDate);
         m.put("td", toDate);
         if (institution != null) {
@@ -1683,8 +1685,10 @@ public class ReportController implements Serializable {
                 + ") "
                 + " from Client c "
                 + " where c.retired=:ret "
+                + " and c.reservedClient<>:res "
                 + " and c.createdAt between :fd and :td ";
         m.put("ret", false);
+        m.put("res", true);
         m.put("fd", fromDate);
         m.put("td", toDate);
 
@@ -1820,9 +1824,11 @@ public class ReportController implements Serializable {
 
         String j = "select new lk.gov.health.phsp.pojcs.InstitutionCount(c.createInstitution, count(c)) "
                 + " from Client c "
-                + " where c.retired<>:ret ";
+                + " where c.retired<>:ret "
+                + " and c.reservedClient<>:res ";
         Map m = new HashMap();
         m.put("ret", true);
+        m.put("res", true);
         j = j + " and c.createdAt between :fd and :td ";
 
         if (webUserController.getLoggedUser().isRestrictedToInstitution()) {
@@ -1851,9 +1857,11 @@ public class ReportController implements Serializable {
 
         String j = "select new lk.gov.health.phsp.pojcs.AreaCount(c.createInstitution.district, count(c)) "
                 + " from Client c "
-                + " where c.retired<>:ret ";
+                + " where c.retired<>:ret "
+                + " and c.reservedClient<>:res ";
         Map m = new HashMap();
         m.put("ret", true);
+        m.put("res", true);
         j = j + " and c.createdAt between :fd and :td ";
 
         j = j + " group by c.createInstitution.district ";
@@ -1877,9 +1885,11 @@ public class ReportController implements Serializable {
 
         String j = "select new lk.gov.health.phsp.pojcs.AreaCount(c.createInstitution.province, count(c)) "
                 + " from Client c "
-                + " where c.retired<>:ret ";
+                + " where c.retired<>:ret "
+                + " and c.reservedClient<>:res ";
         Map m = new HashMap();
         m.put("ret", true);
+        m.put("res", true);
         j = j + " and c.createdAt between :fd and :td ";
 
         j = j + " group by c.createInstitution.province ";
