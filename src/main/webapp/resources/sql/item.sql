@@ -1,3 +1,3 @@
-select `ID`,`name`,code
+select `ID`,`name`,code, `RETIRED`,`RETIREDAT`
 from Item
-where `ID`=16885;
+where `name` = "Sex"

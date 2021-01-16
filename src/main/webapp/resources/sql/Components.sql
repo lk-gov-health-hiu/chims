@@ -1,3 +1,3 @@
-select `DTYPE`,`name`,`ENCOUNTER_ID` , `PARENTCOMPONENT_ID`
+select `DTYPE`,`name`,`ENCOUNTER_ID` , `PARENTCOMPONENT_ID`, `RETIRED`,`RETIREDAT`
 from component
-where `ID`=5407373
+where `name` = 'Sex'
