@@ -294,14 +294,7 @@ public class ExcelReportController implements Serializable {
                         if (qc != null) {
                             QueryWithCriteria qwc = new QueryWithCriteria();
                             qwc.setQuery(qc);
-                            if (qc.getCode().equalsIgnoreCase(checkingString)) {
-
-                            }
-
                             qwc.setCriteria(findCriteriaForQueryComponent(qc.getCode()));
-                            if (qc.getCode().equalsIgnoreCase(checkingString)) {
-
-                            }
                             qs.add(qwc);
                         } else {
                             if (logActivity) {
@@ -525,10 +518,6 @@ public class ExcelReportController implements Serializable {
     }
 
     private Long calculateIndividualQueryResult(List<EncounterWithComponents> ewcs, QueryWithCriteria qwc) {
-        if (logActivity) {
-
-        }
-
         Long result = 0l;
         if (ewcs == null) {
             if (logActivity) {

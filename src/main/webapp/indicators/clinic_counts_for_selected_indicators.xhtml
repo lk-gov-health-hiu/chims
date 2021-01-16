@@ -58,11 +58,12 @@
                                     <f:selectItems value="#{commonController.months}" var="m" itemValue="#{m.value}" itemLabel="#{m}" ></f:selectItems>
                                 </p:selectOneMenu>
 
-                                <p:outputLabel value="Indicator" for="indicator" ></p:outputLabel>
+                                <p:outputLabel value="Indicator" for="indicators" ></p:outputLabel>
 
-                                <p:dataTable value="#{queryComponentController.indicators}" var="i"
+                                <p:dataTable id="indicators" value="#{queryComponentController.indicators}" var="i"
                                              rowKey="#{i.id}"
                                              paginator="true"
+                                             selection="#{indicatorController.selectedIndicators}"
                                              rows="10"
                                              >
                                     <p:column selectionMode="multiple" width="50" ></p:column>
@@ -76,7 +77,7 @@
 
                                 <p:spacer ></p:spacer>
                                 <p:commandButton value="Calculate"  style="width:30em;margin:auto;"
-                                                 action="#{indicatorController.runHlcMonthly()}"
+                                                 action="#{indicatorController.runClinicCountsForSelectedIndicators()}"
                                                  ajax="false">
                                 </p:commandButton>
 

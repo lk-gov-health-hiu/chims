@@ -34,19 +34,28 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import javax.ejb.EJB;
 import javax.inject.Inject;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 import lk.gov.health.phsp.bean.util.JsfUtil;
 import lk.gov.health.phsp.entity.Area;
+import lk.gov.health.phsp.entity.ClientEncounterComponentItem;
 import lk.gov.health.phsp.entity.Institution;
+import lk.gov.health.phsp.entity.Item;
 import lk.gov.health.phsp.entity.QueryComponent;
+import lk.gov.health.phsp.enums.EncounterType;
 import lk.gov.health.phsp.enums.InstitutionType;
 import lk.gov.health.phsp.enums.Quarter;
+import lk.gov.health.phsp.enums.QueryCriteriaMatchType;
+import lk.gov.health.phsp.enums.QueryLevel;
 import lk.gov.health.phsp.enums.QueryType;
 import lk.gov.health.phsp.enums.RelationshipType;
 import lk.gov.health.phsp.enums.TimePeriodType;
+import lk.gov.health.phsp.facade.ClientEncounterComponentItemFacade;
+import lk.gov.health.phsp.facade.EncounterFacade;
+import lk.gov.health.phsp.pojcs.EncounterWithComponents;
 import lk.gov.health.phsp.pojcs.Jpq;
 import lk.gov.health.phsp.pojcs.NcdReportTem;
 import lk.gov.health.phsp.pojcs.QueryWithCriteria;
@@ -73,6 +82,13 @@ public class IndicatorController implements Serializable {
     RelationshipController relationshipController;
     @Inject
     InstitutionController institutionController;
+    @Inject
+    ApplicationController applicationController;
+
+    @EJB
+    ClientEncounterComponentItemFacade clientEncounterComponentItemFacade;
+    @EJB
+    EncounterFacade encounterFacade;
 
     private Date fromDate;
     private Date toDate;
@@ -90,7 +106,7 @@ public class IndicatorController implements Serializable {
     private Quarter quarterEnum;
     private boolean recalculate;
 
-    List<QueryComponent> selectedIndicators;
+    private List<QueryComponent> selectedIndicators;
 
     /**
      * Creates a new instance of IndicatorController
@@ -157,6 +173,7 @@ public class IndicatorController implements Serializable {
     }
 
     public void runClinicCountsForSelectedIndicators() {
+        System.out.println("runClinicCountsForSelectedIndicators");
         if (institution == null) {
             JsfUtil.addErrorMessage("HLC ?");
             return;
@@ -186,15 +203,37 @@ public class IndicatorController implements Serializable {
             return;
         }
         Jpq j = new Jpq();
+        fromDate = CommonController.startOfTheMonth(year, month);
+        toDate=CommonController.endOfTheMonth(year, month);
+
+        List<QueryWithCriteria> qs = new ArrayList<>();
+        List<EncounterWithComponents> encountersWithComponents;
+
+        List<Long> encounterIds = findEncounterIds(fromDate,
+                toDate,
+                institution);
+        
+        System.out.println("encounterIds = " + encounterIds.size());
+        
+        encountersWithComponents = findEncountersWithComponents(encounterIds);
+        if (encountersWithComponents == null) {
+            JsfUtil.addErrorMessage("No data?");
+            return;
+        }
+        
+        System.out.println("encountersWithComponents = " + encountersWithComponents.size());
+
         Map<Long, QueryComponent> qcs = new HashMap<>();
         List<Replaceable> rs = new ArrayList<>();
         for (QueryComponent qc : selectedIndicators) {
-            List<Replaceable> trs = findReplaceblesInIndicatorQuery(queryComponent.getIndicatorQuery());
+            List<Replaceable> trs = findReplaceblesInIndicatorQuery(qc.getIndicatorQuery());
             if (trs != null && !trs.isEmpty()) {
-                rs.addAll(rs);
+                rs.addAll(trs);
             }
         }
-
+       
+        System.out.println("rs = " + rs.size());
+        
         for (Replaceable r : rs) {
             QueryComponent temqc = queryComponentController.findLastQuery(r.getQryCode());
             if (temqc == null) {
@@ -218,7 +257,573 @@ public class IndicatorController implements Serializable {
                 }
             }
         }
+        
+         System.out.println("qcs = " + qcs.size());
 
+        for (QueryComponent qcc : qcs.values()) {
+            QueryWithCriteria qwc = new QueryWithCriteria();
+            qwc.setQuery(qcc);
+            qwc.setCriteria(findCriteriaForQueryComponent(qcc.getCode()));
+            qs.add(qwc);
+        }
+        
+        System.out.println("qs = " + qs.size());
+
+        for (QueryWithCriteria qwc : qs) {
+            Long value = calculateIndividualQueryResult(encountersWithComponents, qwc);
+            if (value != null) {
+                if (qwc != null) {
+                    storedQueryResultController.saveValue(qwc.getQuery(), fromDate, toDate, institution, value);
+                    System.out.println("qwc.getQuery() = " + qwc.getQuery().getName());
+                    System.out.println("value = " + value);
+                }
+            }
+        }
+
+        message = j.getMessage();
+    }
+
+    private Long calculateIndividualQueryResult(List<EncounterWithComponents> ewcs, QueryWithCriteria qwc) {
+        Long result = 0l;
+        if (ewcs == null) {
+            JsfUtil.addErrorMessage("No Encounters");
+            return result;
+        }
+        if (qwc == null) {
+            JsfUtil.addErrorMessage("No Counts to perform");
+            return result;
+        }
+        List<QueryComponent> criteria = qwc.getCriteria();
+        if (criteria == null || criteria.isEmpty()) {
+            Integer ti = ewcs.size();
+            result = ti.longValue();
+            return result;
+        } else {
+            for (EncounterWithComponents ewc : ewcs) {
+                if (findMatch(ewc.getComponents(), qwc)) {
+                    result++;
+                }
+            }
+        }
+        return result;
+    }
+
+    private boolean findMatch(List<ClientEncounterComponentItem> ccs, QueryWithCriteria qrys) {
+        if (qrys == null) {
+
+            return false;
+        }
+        if (qrys.getQuery() == null) {
+
+            return false;
+        }
+        if (qrys.getQuery().getCode() == null) {
+
+            return false;
+        }
+        if (qrys.getQuery().getCode().trim().equals("")) {
+
+            return false;
+        }
+
+        boolean suitableForInclusion = true;
+
+        boolean isComplexQuery = false;
+
+        for (QueryComponent qc : qrys.getCriteria()) {
+            switch (qc.getMatchType()) {
+                case Closing_Bracket:
+                case Opening_Bracket:
+                case Operator_AND:
+                case Operator_OR:
+                    isComplexQuery = true;
+                    break;
+            }
+        }
+
+        if (isComplexQuery) {
+            String evaluationString = "";
+            for (QueryComponent qc : qrys.getCriteria()) {
+                if (qc.getMatchType() == QueryCriteriaMatchType.Opening_Bracket) {
+                    evaluationString += "(";
+                    continue;
+                } else if (qc.getMatchType() == QueryCriteriaMatchType.Closing_Bracket) {
+                    evaluationString += ")";
+                    continue;
+                } else if (qc.getMatchType() == QueryCriteriaMatchType.Operator_AND) {
+                    evaluationString += " && ";
+                    continue;
+                } else if (qc.getMatchType() == QueryCriteriaMatchType.Operator_OR) {
+                    evaluationString += " || ";
+                    continue;
+                } else {
+                    if (qc.getItem() == null) {
+                        continue;
+                    }
+                    if (qc.getItem().getCode() == null) {
+                        continue;
+                    }
+                    for (ClientEncounterComponentItem cei : ccs) {
+                        if (cei.getItem() == null) {
+                            continue;
+                        }
+                        if (cei.getItem().getCode() == null) {
+                            continue;
+                        }
+
+                        if (cei.getItem().getCode().trim().equalsIgnoreCase(qc.getItem().getCode().trim())) {
+                            if (matchQuery(qc, cei)) {
+                                evaluationString += "true";
+                            } else {
+                                evaluationString += "false";
+                            }
+                        }
+                    }
+
+                }
+
+            }
+            String evaluationResult = evaluateScript(evaluationString);
+            if (evaluationResult == null) {
+                suitableForInclusion = false;
+            } else if (evaluationResult.trim().equalsIgnoreCase("true")) {
+                suitableForInclusion = true;
+            } else {
+                suitableForInclusion = false;
+            }
+        } else {
+
+            for (QueryComponent qc : qrys.getCriteria()) {
+                if (qc.getItem() == null) {
+                    continue;
+                }
+                if (qc.getItem().getCode() == null) {
+                    continue;
+                }
+
+                boolean thisMatchOk = false;
+                boolean componentFound = false;
+
+                for (ClientEncounterComponentItem cei : ccs) {
+                    if (cei.getItem() == null) {
+                        continue;
+                    }
+                    if (cei.getItem().getCode() == null) {
+                        continue;
+                    }
+
+                    if (cei.getItem().getCode().trim().equalsIgnoreCase(qc.getItem().getCode().trim())) {
+                        componentFound = true;
+                        if (matchQuery(qc, cei)) {
+                            thisMatchOk = true;
+                        }
+                    }
+                }
+                if (!thisMatchOk) {
+                    suitableForInclusion = false;
+                }
+            }
+
+        }
+
+        return suitableForInclusion;
+    }
+
+    private boolean matchQuery(QueryComponent q, ClientEncounterComponentItem clientValue) {
+        if (clientValue == null) {
+            return false;
+        }
+        boolean m = false;
+        Integer qInt1 = null;
+        Integer qInt2 = null;
+        Double real1 = null;
+        Double real2 = null;
+        Long lng1 = null;
+        Long lng2 = null;
+        Item itemVariable = null;
+        Item itemValue = null;
+        Boolean qBool = null;
+        String qStr = null;
+
+        if (q.getMatchType() == QueryCriteriaMatchType.Variable_Value_Check) {
+
+            switch (q.getQueryDataType()) {
+                case integer:
+                    qInt1 = q.getIntegerNumberValue();
+                    qInt2 = q.getIntegerNumberValue2();
+                    break;
+                case item:
+                    itemValue = q.getItemValue();
+                    itemVariable = q.getItem();
+                    break;
+                case real:
+                    real1 = q.getRealNumberValue();
+                    real2 = q.getRealNumberValue2();
+                    break;
+                case longNumber:
+                    lng1 = q.getLongNumberValue();
+                    lng2 = q.getLongNumberValue2();
+                    break;
+                case Boolean:
+                    qBool = q.getBooleanValue();
+                    break;
+                case String:
+                    qStr = q.getShortTextValue();
+                    break;
+
+            }
+            switch (q.getEvaluationType()) {
+
+                case Not_null:
+                    m = clientValueIsNotNull(q, clientValue);
+                    break;
+
+                case Is_null:
+                    m = !clientValueIsNotNull(q, clientValue);
+                    break;
+                case Equal:
+                    if (qInt1 != null) {
+                        Integer tmpIntVal = clientValue.getIntegerNumberValue();
+                        if (tmpIntVal == null) {
+                            tmpIntVal = CommonController.stringToInteger(clientValue.getShortTextValue());
+                        }
+                        if (tmpIntVal != null) {
+                            m = qInt1.equals(tmpIntVal);
+                        }
+                    }
+                    if (lng1 != null) {
+                        Long tmpLLongVal = clientValue.getLongNumberValue();
+                        if (tmpLLongVal == null) {
+                            tmpLLongVal = CommonController.stringToLong(clientValue.getShortTextValue());
+                        }
+                        if (tmpLLongVal != null) {
+                            m = lng1.equals(tmpLLongVal);
+                        }
+                    }
+                    if (real1 != null) {
+                        Double tmpDbl = clientValue.getRealNumberValue();
+                        if (tmpDbl == null) {
+                            tmpDbl = CommonController.stringToDouble(clientValue.getShortTextValue());
+                        }
+                        if (tmpDbl != null) {
+                            m = real1.equals(tmpDbl);
+                        }
+                    }
+                    if (qBool != null) {
+                        if (clientValue.getBooleanValue() != null) {
+                            m = qBool.equals(clientValue.getBooleanValue());
+                        }
+                    }
+                    if (itemValue != null && itemVariable != null) {
+
+                        if (itemValue != null
+                                && itemValue.getCode() != null
+                                && clientValue != null
+                                && clientValue.getItemValue() != null
+                                && clientValue.getItemValue().getCode() != null) {
+
+                            if (itemValue.getCode().equals(clientValue.getItemValue().getCode())) {
+                                m = true;
+                            }
+                        }
+                    }
+                    if (qStr != null) {
+                        if (clientValue.getShortTextValue() != null) {
+                            m = qStr.equals(clientValue.getShortTextValue());
+                        }
+                    }
+                    break;
+                case Less_than:
+                    if (qInt1 != null) {
+                        Integer tmpIntVal = clientValue.getIntegerNumberValue();
+                        if (tmpIntVal == null) {
+                            tmpIntVal = CommonController.stringToInteger(clientValue.getShortTextValue());
+                        }
+                        if (tmpIntVal != null) {
+                            m = tmpIntVal < qInt1;
+                        }
+                    }
+                    if (lng1 != null) {
+                        Long tmpLong = clientValue.getLongNumberValue();
+                        if (tmpLong == null) {
+                            tmpLong = CommonController.stringToLong(clientValue.getShortTextValue());
+                        }
+                        if (tmpLong != null) {
+                            m = tmpLong < lng1;
+                        }
+                    }
+                    if (real1 != null) {
+                        Double tmpDbl = clientValue.getRealNumberValue();
+                        if (tmpDbl == null) {
+                            tmpDbl = CommonController.stringToDouble(clientValue.getShortTextValue());
+                        }
+                        if (tmpDbl != null) {
+                            m = tmpDbl < real1;
+                        }
+                    }
+                    break;
+                case Between:
+                    if (qInt1 != null && qInt2 != null) {
+                        if (qInt1 > qInt2) {
+                            Integer intTem = qInt1;
+                            qInt1 = qInt2;
+                            qInt2 = intTem;
+                        }
+
+                        Integer tmpInt = clientValue.getIntegerNumberValue();
+                        if (tmpInt == null) {
+                            tmpInt = CommonController.stringToInteger(clientValue.getShortTextValue());
+                        }
+                        if (tmpInt != null) {
+                            if (tmpInt > qInt1 && tmpInt < qInt2) {
+                                m = true;
+                            }
+                        }
+
+                    }
+                    if (lng1 != null && lng2 != null) {
+                        if (lng1 > lng2) {
+                            Long intTem = lng1;
+                            intTem = lng1;
+                            lng1 = lng2;
+                            lng2 = intTem;
+                        }
+
+                        Long tmpLong = clientValue.getLongNumberValue();
+                        if (tmpLong == null) {
+                            tmpLong = CommonController.stringToLong(clientValue.getShortTextValue());
+                        }
+                        if (tmpLong != null) {
+                            if (tmpLong > lng1 && tmpLong < lng2) {
+                                m = true;
+                            }
+                        }
+                    }
+                    if (real1 != null && real2 != null) {
+                        if (real1 > real2) {
+                            Double realTem = real1;
+                            realTem = real1;
+                            real1 = real2;
+                            real2 = realTem;
+                        }
+
+                        Double tmpDbl = clientValue.getRealNumberValue();
+                        if (tmpDbl == null) {
+                            tmpDbl = CommonController.stringToDouble(clientValue.getShortTextValue());
+                        }
+                        if (tmpDbl != null) {
+                            if (tmpDbl > real1 && tmpDbl < real2) {
+                                m = true;
+                            }
+                        }
+                    }
+                    break;
+                case Grater_than:
+                    if (qInt1 != null) {
+                        Integer tmpInt = clientValue.getIntegerNumberValue();
+                        if (tmpInt == null) {
+                            tmpInt = CommonController.stringToInteger(clientValue.getShortTextValue());
+                        }
+                        if (tmpInt != null) {
+                            m = tmpInt > qInt1;
+                        }
+                    }
+                    if (real1 != null) {
+                        Double tmpDbl = clientValue.getRealNumberValue();
+                        if (tmpDbl == null) {
+                            tmpDbl = CommonController.stringToDouble(clientValue.getShortTextValue());
+                        }
+                        if (tmpDbl != null) {
+                            m = tmpDbl > real1;
+                        }
+                    }
+                    if (lng1 != null) {
+                        Long tmpLng = clientValue.getLongNumberValue();
+                        if (tmpLng == null) {
+                            tmpLng = CommonController.stringToLong(clientValue.getShortTextValue());
+                        }
+                        if (tmpLng != null) {
+                            m = tmpLng > lng1;
+                        }
+                    }
+                    break;
+                case Grater_than_or_equal:
+                    if (qInt1 != null) {
+                        Integer tmpInt = clientValue.getIntegerNumberValue();
+                        if (tmpInt == null) {
+                            tmpInt = CommonController.stringToInteger(clientValue.getShortTextValue());
+                        }
+                        if (tmpInt != null) {
+                            m = tmpInt >= qInt1;
+                        }
+                    }
+                    if (real1 != null) {
+                        Double temDbl = clientValue.getRealNumberValue();
+                        if (temDbl == null) {
+                            temDbl = CommonController.stringToDouble(clientValue.getShortTextValue());
+                        }
+                        if (temDbl != null) {
+                            m = temDbl >= real1;
+
+                        }
+
+                    }
+                    if (lng1 != null) {
+                        Long tmpLng = clientValue.getLongNumberValue();
+                        if (tmpLng == null) {
+                            tmpLng = CommonController.stringToLong(clientValue.getShortTextValue());
+                        }
+                        if (tmpLng != null) {
+                            m = tmpLng >= lng1;
+                        }
+                    }
+                    break;
+                case Less_than_or_equal:
+                    if (qInt1 != null) {
+                        Integer tmpInt = clientValue.getIntegerNumberValue();
+                        if (tmpInt == null) {
+                            tmpInt = CommonController.stringToInteger(clientValue.getShortTextValue());
+                        }
+                        if (tmpInt != null) {
+                            m = tmpInt <= qInt1;
+                        }
+                    }
+                    if (real1 != null) {
+                        Double tmpDbl = clientValue.getRealNumberValue();
+                        if (tmpDbl == null) {
+                            tmpDbl = CommonController.stringToDouble(clientValue.getShortTextValue());
+                        }
+                        if (tmpDbl != null) {
+                            m = tmpDbl <= real1;
+                        }
+                    }
+                    if (lng1 != null) {
+                        Long tmpLng = clientValue.getLongNumberValue();
+                        if (tmpLng == null) {
+                            tmpLng = CommonController.stringToLong(clientValue.getShortTextValue());
+                        }
+                        if (tmpLng != null) {
+                            m = tmpLng <= lng1;
+                        }
+                    }
+                    break;
+            }
+        }
+
+        return m;
+    }
+
+    public boolean clientValueIsNotNull(QueryComponent q, ClientEncounterComponentItem clientValue) {
+        boolean valueNotNull = false;
+        if (q.getMatchType() == QueryCriteriaMatchType.Variable_Value_Check) {
+            switch (q.getQueryDataType()) {
+                case integer:
+                    if (clientValue.getIntegerNumberValue() != null) {
+                        valueNotNull = true;
+                    }
+                    break;
+                case item:
+                    if (clientValue.getItemValue() != null) {
+                        valueNotNull = true;
+                    }
+                    break;
+                case real:
+                    if (clientValue.getRealNumberValue() != null) {
+                        valueNotNull = true;
+                    }
+                    break;
+                case longNumber:
+                    if (clientValue.getLongNumberValue() != null) {
+                        valueNotNull = true;
+                    }
+                    break;
+                case Boolean:
+                    if (clientValue.getBooleanValue() != null) {
+                        valueNotNull = true;
+                    }
+                    break;
+                case String:
+                    if (clientValue.getShortTextValue() != null) {
+                        valueNotNull = true;
+                    }
+                    break;
+            }
+        }
+        return valueNotNull;
+    }
+
+    public List<EncounterWithComponents> findEncountersWithComponents(List<Long> ids) {
+        if (ids == null) {
+            JsfUtil.addErrorMessage("No Encounter IDs");
+            return null;
+        }
+        List<EncounterWithComponents> cs = new ArrayList<>();
+        for (Long enId : ids) {
+            EncounterWithComponents ewc = new EncounterWithComponents();
+            ewc.setEncounterId(enId);
+            ewc.setComponents(findClientEncounterComponentItems(enId));
+            cs.add(ewc);
+        }
+        return cs;
+    }
+
+    private List<ClientEncounterComponentItem> findClientEncounterComponentItems(Long endId) {
+        String j;
+        Map m;
+        m = new HashMap();
+        j = "select f from ClientEncounterComponentItem f "
+                + " where f.retired=false "
+                + " and f.encounter.id=:eid";
+        m.put("eid", endId);
+        List<ClientEncounterComponentItem> ts = clientEncounterComponentItemFacade.findByJpql(j, m);
+        return ts;
+    }
+
+    private List<Long> findEncounterIds(Date fromDate, Date toDate, Institution institution) {
+        System.out.println("findEncounterIds");
+        String j = "select e.id "
+                + " from  ClientEncounterComponentFormSet f join f.encounter e"
+                + " where e.retired<>:er"
+                + " and f.retired<>:fr ";
+        j += " and f.completed=:fc ";
+        j += " and e.institution=:i "
+                + " and e.encounterType=:t "
+                + " and e.encounterDate between :fd and :td"
+                + " order by e.id";
+        Map m = new HashMap();
+        m.put("i", institution);
+        m.put("t", EncounterType.Clinic_Visit);
+        m.put("er", true);
+        m.put("fr", true);
+        m.put("fc", true);
+        m.put("fd", fromDate);
+        m.put("td", toDate);
+        List<Long> encs = encounterFacade.findLongList(j, m);
+        System.out.println("m = " + m);
+        System.out.println("j = " + j);
+        return encs;
+    }
+
+    private List<QueryComponent> findCriteriaForQueryComponent(String qryCode) {
+        if (qryCode == null) {
+            return null;
+        }
+        List<QueryComponent> output = new ArrayList<>();
+        for (QueryComponent qc : applicationController.getQueryComponents()) {
+            if (qc.getQueryLevel() == null) {
+                continue;
+            }
+            if (qc.getParentComponent() == null) {
+                continue;
+            }
+
+            if (qc.getQueryLevel() == QueryLevel.Criterian) {
+                if (qc.getParentComponent().getCode().equalsIgnoreCase(qryCode)) {
+                    output.add(qc);
+                }
+            }
+        }
+        return output;
     }
 
     public void runHlcMonthly() {
@@ -632,4 +1237,14 @@ public class IndicatorController implements Serializable {
         this.result = result;
     }
 
+    public List<QueryComponent> getSelectedIndicators() {
+        return selectedIndicators;
+    }
+
+    public void setSelectedIndicators(List<QueryComponent> selectedIndicators) {
+        this.selectedIndicators = selectedIndicators;
+    }
+
+    
+    
 }
