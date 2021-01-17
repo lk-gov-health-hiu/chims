@@ -597,6 +597,10 @@ public class ExcelReportController implements Serializable {
         boolean isComplexQuery = false;
 
         for (QueryComponent qc : qrys.getCriteria()) {
+            if(qc.getMatchType()==null){
+                JsfUtil.addErrorMessage("No match type for the query " + qc.getName());
+                continue;
+            }
             switch (qc.getMatchType()) {
                 case Closing_Bracket:
                 case Opening_Bracket:

@@ -66,34 +66,27 @@ public class StoredQueryResultController implements Serializable {
         System.out.println("s.getLongValue() = " + s.getLongValue());
         return s.getLongValue();
     }
-    
-    public Long findStoredLongValue(QueryComponent qc, Date fromDate, Date toDate, Institution institution, Replaceable re, Jpq j) {
+
+    public Long findStoredLongValue(QueryComponent qc, Date fromDate, Date toDate, Institution institution, Replaceable re) {
         StoredQueryResult s;
         s = findStoredQueryResult(qc, fromDate, toDate, institution);
         Long r;
         if (s == null) {
             r = null;
-            j.setError(true);
-            j.setMessage(j.getMessage() + "\n" + "No count for " + re.getQryCode() + " for " + institution.getName() + ".\n");
         } else {
             if (s.getLongValue() == null) {
-                j.setError(true);
-                j.setMessage(j.getMessage() + "\n" + "No count for " + re.getQryCode() + " for " + institution.getName() + ".\n");
                 r = null;
             } else {
                 r = s.getLongValue();
-                j.setMessage(j.getMessage() + "\n" + "Count for " + re.getQryCode() + " for " + institution.getName() + " is " + r + ".\n");
-                j.setMessage(j.getMessage() + re.getQryCode() + " - " + r + "\n");
             }
         }
         return r;
     }
 
-    public Long findStoredLongValue(QueryComponent qc, Date fromDate, Date toDate, List<Institution> institutions, Replaceable re, Jpq j) {
-        System.out.println("findStoredLongValue");
+    public Long findStoredLongValue(QueryComponent qc, Date fromDate, Date toDate, List<Institution> institutions, Replaceable re) {
         Long insSum = 0L;
         for (Institution i : institutions) {
-            Long ic = findStoredLongValue(qc, fromDate, toDate, i, re, j);
+            Long ic = findStoredLongValue(qc, fromDate, toDate, i, re);
             if (ic != null) {
                 insSum += ic;
             }
@@ -102,11 +95,8 @@ public class StoredQueryResultController implements Serializable {
     }
 
     public StoredQueryResult findStoredQueryResult(QueryComponent qc, Date fromDate, Date toDate, Institution institution) {
-        System.out.println("findStoredQueryResult");
         String j;
         Map m;
-        System.out.println("qc.getName() = " + qc.getName());
-        System.out.println("qc.getId() = " + qc.getId());
         m = new HashMap();
         m.put("fd", fromDate);
         m.put("td", toDate);

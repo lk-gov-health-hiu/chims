@@ -349,6 +349,7 @@ public class InstitutionController implements Serializable {
                 case Primary_Medical_Care_Unit:
                 case Private_Sector_Institute:
                 case Teaching_Hospital:
+                case Divisional_Hospital:
                     ts.add(t);
                     break;
             }

@@ -972,7 +972,9 @@ public class QueryComponentController implements Serializable {
         List<QueryComponent> nqs = new ArrayList<>();
         for (QueryComponent q : tqcs) {
             if (q.getQueryType() == QueryType.Client_Count
-                    || q.getQueryType() == QueryType.Encounter_Count) {
+                    || q.getQueryType() == QueryType.Encounter_Count
+                    || q.getQueryType() == QueryType.Formset_Count
+                    ) {
                 nqs.add(q);
             }
         }

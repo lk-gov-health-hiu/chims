@@ -1,3 +1,7 @@
-select id,  name, code,`PARENTCOMPONENT_ID`,`QUERYTYPE`,`QUERYLEVEL` from component 
+select distinct(`QUERYTYPE`), count(*) from component 
 where `DTYPE` = "QueryComponent"
-and code = 'number_of_encounters_of_clients_between_20_to_34_years';
+group by `QUERYTYPE`;
+update component
+set `QUERYTYPE` = 'Encounter_Count'
+where `QUERYTYPE` = 'Client'
+limit 10;

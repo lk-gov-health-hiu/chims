@@ -63,6 +63,8 @@
                                 <p:dataTable id="indicators" value="#{queryComponentController.indicators}" var="i"
                                              rowKey="#{i.id}"
                                              paginator="true"
+                                             paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                             rowsPerPageTemplate="5,10,25,100,1000"
                                              selection="#{indicatorController.selectedIndicators}"
                                              rows="10"
                                              >
@@ -89,11 +91,12 @@
 
 
                         <h:panelGrid columns="2" >
-                            <p:inputText value="Result" ></p:inputText>
-                            <p:inputText value="${indicatorController.result}" ></p:inputText>
-                        </h:panelGrid>
-                        <h:panelGrid columns="1" >
-                            <h:outputText value="#{indicatorController.message}" escape="false" ></h:outputText>
+                            <p:outputLabel value="Results" ></p:outputLabel>
+                            <h:outputText value="#{indicatorController.result}" escape="false" ></h:outputText>
+                       
+                        <p:outputLabel value="Errors" ></p:outputLabel>
+                         <h:outputText value="#{indicatorController.message}" escape="false" ></h:outputText>
+                       
                         </h:panelGrid>
 
 

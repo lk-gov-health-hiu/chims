@@ -173,7 +173,6 @@ public class IndicatorController implements Serializable {
     }
 
     public void runClinicCountsForSelectedIndicators() {
-        System.out.println("runClinicCountsForSelectedIndicators");
         if (institution == null) {
             JsfUtil.addErrorMessage("HLC ?");
             return;
@@ -213,16 +212,12 @@ public class IndicatorController implements Serializable {
                 toDate,
                 institution);
         
-        System.out.println("encounterIds = " + encounterIds.size());
-        
         encountersWithComponents = findEncountersWithComponents(encounterIds);
         if (encountersWithComponents == null) {
+            j.setErrorMessage("No data for the selected institution for the period");
             JsfUtil.addErrorMessage("No data?");
             return;
         }
-        
-        System.out.println("encountersWithComponents = " + encountersWithComponents.size());
-
         Map<Long, QueryComponent> qcs = new HashMap<>();
         List<Replaceable> rs = new ArrayList<>();
         for (QueryComponent qc : selectedIndicators) {
@@ -232,18 +227,16 @@ public class IndicatorController implements Serializable {
             }
         }
        
-        System.out.println("rs = " + rs.size());
-        
         for (Replaceable r : rs) {
             QueryComponent temqc = queryComponentController.findLastQuery(r.getQryCode());
             if (temqc == null) {
                 j.setError(true);
-                j.setMessage(j.getMessage() + "\n" + "Count " + r.getQryCode() + " in the indicator is not found. ");
+                j.setErrorMessage(j.getErrorMessage() + "\nCount " + r.getQryCode() + " used in indicators not found.\n");
                 continue;
             }
             if (null == temqc.getQueryType()) {
                 j.setError(true);
-                j.setMessage(j.getMessage() + "\n" + "Type of query " + r.getQryCode() + " in is not set. ");
+                j.setErrorMessage(j.getErrorMessage() + "\n" + "No Type set for the query " + r.getQryCode() + " is not set. \n");
 
             } else {
                 switch (temqc.getQueryType()) {
@@ -251,14 +244,13 @@ public class IndicatorController implements Serializable {
                     case Encounter_Count:
                         qcs.put(temqc.getId(), temqc);
                         break;
+                    case Population:
+                        break;
                     default:
-                        j.setError(true);
-                        j.setMessage(j.getMessage() + "\n" + "Wrong Query - " + r.getQryCode() + "\n");
+                        j.setErrorMessage(j.getErrorMessage() + "\n" + "Wrong Query Type for - " + r.getQryCode() + "\n");
                 }
             }
         }
-        
-         System.out.println("qcs = " + qcs.size());
 
         for (QueryComponent qcc : qcs.values()) {
             QueryWithCriteria qwc = new QueryWithCriteria();
@@ -266,21 +258,25 @@ public class IndicatorController implements Serializable {
             qwc.setCriteria(findCriteriaForQueryComponent(qcc.getCode()));
             qs.add(qwc);
         }
-        
-        System.out.println("qs = " + qs.size());
+
+        j.setMessage("Clinic : " + institution.getName());
+        j.setMessage(j.getMessage() + "From : " + fromDate + "\n");
+        j.setMessage(j.getMessage() + "To : " + toDate + "\n");
+        j.setMessage(j.getMessage() + "Number of Encounters : " + encountersWithComponents.size() + "\n");
+        j.setMessage(j.getMessage() + "Number of Counts : " + qs.size() + "\n");
 
         for (QueryWithCriteria qwc : qs) {
             Long value = calculateIndividualQueryResult(encountersWithComponents, qwc);
             if (value != null) {
                 if (qwc != null) {
                     storedQueryResultController.saveValue(qwc.getQuery(), fromDate, toDate, institution, value);
-                    System.out.println("qwc.getQuery() = " + qwc.getQuery().getName());
-                    System.out.println("value = " + value);
+                    j.setMessage(j.getMessage() + "" + "Count : " + qwc.getQuery().getName() + " = " + value + "\n");
                 }
             }
         }
 
-        message = CommonController.stringToHtml(j.getMessage());
+        message = CommonController.stringToHtml(j.getErrorMessage());
+        result =  CommonController.stringToHtml(j.getMessage());
     }
 
     private Long calculateIndividualQueryResult(List<EncounterWithComponents> ewcs, QueryWithCriteria qwc) {
@@ -897,7 +893,6 @@ public class IndicatorController implements Serializable {
                         c.setTime(fromDate);
                         temYear = c.get(Calendar.YEAR);
                         Long tp = relationshipController.findPopulationValue(temYear, institution, temqc.getPopulationType());
-                        System.out.println("pop is " + tp);
                         if (tp != null) {
                             r.setTextReplacing(tp + "");
                             r.setSelectedValue(tp + "");
@@ -910,8 +905,7 @@ public class IndicatorController implements Serializable {
 
                     case Client_Count:
                     case Encounter_Count:
-                        Long tv = storedQueryResultController.findStoredLongValue(temqc, fromDate, toDate, institution, r, j);
-                        System.out.println("Count");
+                        Long tv = storedQueryResultController.findStoredLongValue(temqc, fromDate, toDate, institution, r);
                         if (tv != null) {
                             r.setTextReplacing(tv + "");
                             r.setSelectedValue(tv + "");
@@ -938,7 +932,9 @@ public class IndicatorController implements Serializable {
             storedQueryResultController.saveValue(queryComponent, fromDate, toDate, institution, sv);
         }
 
-        j.setMessage(j.getMessage() + "\n" + "Calculation Script = " + script + "\nResult = " + result);
+        j.setMessage(j.getMessage() + "\n" + "Indicator Formula = " + queryComponent.getIndicatorQuery() + "\nResult = " + result);
+
+        j.setMessage(j.getMessage() + "\n" + "Formula with Values = " + script + "\nResult = " + result);
 
         message = CommonController.stringToHtml(j.getMessage());
 
@@ -1035,7 +1031,7 @@ public class IndicatorController implements Serializable {
 
                     case Client_Count:
                     case Encounter_Count:
-                        Long tv = storedQueryResultController.findStoredLongValue(temqc, fromDate, toDate, clinicsUnderInstitute, r, j);
+                        Long tv = storedQueryResultController.findStoredLongValue(temqc, fromDate, toDate, clinicsUnderInstitute, r);
                         System.out.println("Count");
                         if (tv != null) {
                             r.setTextReplacing(tv + "");
