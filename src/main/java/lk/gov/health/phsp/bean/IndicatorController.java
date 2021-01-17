@@ -781,7 +781,6 @@ public class IndicatorController implements Serializable {
     }
 
     private List<Long> findEncounterIds(Date fromDate, Date toDate, Institution institution) {
-        System.out.println("findEncounterIds");
         String j = "select e.id "
                 + " from  ClientEncounterComponentFormSet f join f.encounter e"
                 + " where e.retired<>:er"
@@ -800,8 +799,6 @@ public class IndicatorController implements Serializable {
         m.put("fd", fromDate);
         m.put("td", toDate);
         List<Long> encs = encounterFacade.findLongList(j, m);
-        System.out.println("m = " + m);
-        System.out.println("j = " + j);
         return encs;
     }
 
@@ -862,9 +859,7 @@ public class IndicatorController implements Serializable {
         }
 
         fromDate = CommonController.startOfTheMonth(year, month);
-        System.out.println("fromDate = " + fromDate);
         toDate = CommonController.endOfTheMonth(year, month);
-        System.out.println("toDate = " + toDate);
         Jpq j = new Jpq();
         j.setMessage("");
         j.setMessage("");
@@ -887,7 +882,6 @@ public class IndicatorController implements Serializable {
             } else {
                 switch (temqc.getQueryType()) {
                     case Population:
-                        System.out.println("Population");
                         if (temqc.getPopulationType() == null) {
                             j.setError(true);
                             j.setMessage(j.getMessage() + "\n" + "Type of Population " + r.getQryCode() + " in is not set. ");
@@ -967,9 +961,7 @@ public class IndicatorController implements Serializable {
             return;
         }
         fromDate = CommonController.startOfTheMonth(year, month);
-        System.out.println("fromDate = " + fromDate);
         toDate = CommonController.endOfTheMonth(year, month);
-        System.out.println("toDate = " + toDate);
         Jpq j = new Jpq();
         j.setMessage("");
         j.setMessage("");
@@ -980,7 +972,6 @@ public class IndicatorController implements Serializable {
             JsfUtil.addErrorMessage("Selected institution do not have HLCs under that");
             return;
         }
-        System.out.println("allClinics = " + allClinics.size());
         for (Replaceable r : rs) {
             QueryComponent temqc = queryComponentController.findLastQuery(r.getQryCode());
             if (temqc == null) {
@@ -996,7 +987,6 @@ public class IndicatorController implements Serializable {
             } else {
                 switch (temqc.getQueryType()) {
                     case Population:
-                        System.out.println("Population");
                         if (temqc.getPopulationType() == null) {
                             j.setError(true);
                             j.setMessage(j.getMessage() + "\n" + "Type of Population " + r.getQryCode() + " in is not set. ");
@@ -1008,7 +998,6 @@ public class IndicatorController implements Serializable {
                         temYear = c.get(Calendar.YEAR);
 
                         Long tp = relationshipController.findPopulationValue(temYear, institution, temqc.getPopulationType());
-                        System.out.println("pop is " + tp);
                         if (tp != null) {
                             r.setTextReplacing(tp + "");
                             r.setSelectedValue(tp + "");
@@ -1022,7 +1011,6 @@ public class IndicatorController implements Serializable {
                     case Client_Count:
                     case Encounter_Count:
                         Long tv = storedQueryResultController.findStoredLongValue(temqc, fromDate, toDate, allClinics, r);
-                        System.out.println("Count");
                         if (tv != null) {
                             r.setTextReplacing(tv + "");
                             r.setSelectedValue(tv + "");
@@ -1088,9 +1076,7 @@ public class IndicatorController implements Serializable {
         }
 
         fromDate = CommonController.startOfTheMonth(year, month);
-        System.out.println("fromDate = " + fromDate);
         toDate = CommonController.endOfTheMonth(year, month);
-        System.out.println("toDate = " + toDate);
         Jpq j = new Jpq();
         j.setMessage("");
         j.setMessage("");
@@ -1102,11 +1088,8 @@ public class IndicatorController implements Serializable {
             return;
         }
 
-        System.out.println("clinicsUnderInstitute = " + clinicsUnderInstitute);
 
         for (Replaceable r : rs) {
-
-            System.out.println("r = " + r);
 
             QueryComponent temqc = queryComponentController.findLastQuery(r.getQryCode());
             if (temqc == null) {
@@ -1122,7 +1105,6 @@ public class IndicatorController implements Serializable {
             } else {
                 switch (temqc.getQueryType()) {
                     case Population:
-                        System.out.println("Population");
                         if (temqc.getPopulationType() == null) {
                             j.setError(true);
                             j.setMessage(j.getMessage() + "\n" + "Type of Population " + r.getQryCode() + " in is not set. ");
@@ -1134,7 +1116,6 @@ public class IndicatorController implements Serializable {
                         temYear = c.get(Calendar.YEAR);
 
                         Long tp = relationshipController.findPopulationValue(temYear, institution, temqc.getPopulationType());
-                        System.out.println("pop is " + tp);
                         if (tp != null) {
                             r.setTextReplacing(tp + "");
                             r.setSelectedValue(tp + "");
@@ -1148,7 +1129,6 @@ public class IndicatorController implements Serializable {
                     case Client_Count:
                     case Encounter_Count:
                         Long tv = storedQueryResultController.findStoredLongValue(temqc, fromDate, toDate, clinicsUnderInstitute, r);
-                        System.out.println("Count");
                         if (tv != null) {
                             r.setTextReplacing(tv + "");
                             r.setSelectedValue(tv + "");
@@ -1238,7 +1218,6 @@ public class IndicatorController implements Serializable {
             } else {
                 switch (temqc.getQueryType()) {
                     case Population:
-                        System.out.println("Population");
                         if (temqc.getPopulationType() == null) {
                             j.setError(true);
                             j.setMessage(j.getMessage() + "\n" + "Type of Population " + r.getQryCode() + " in is not set. ");
@@ -1250,7 +1229,6 @@ public class IndicatorController implements Serializable {
                         temYear = c.get(Calendar.YEAR);
 
                         Long tp = relationshipController.findPopulationValue(temYear, area, temqc.getPopulationType());
-                        System.out.println("pop is " + tp);
                         if (tp != null) {
                             r.setTextReplacing(tp + "");
                             r.setSelectedValue(tp + "");
@@ -1264,7 +1242,6 @@ public class IndicatorController implements Serializable {
                     case Client_Count:
                     case Encounter_Count:
                         Long tv = storedQueryResultController.findStoredLongValue(temqc, fromDate, toDate, clinicsOfArea, r);
-                        System.out.println("Count");
                         if (tv != null) {
                             r.setTextReplacing(tv + "");
                             r.setSelectedValue(tv + "");
