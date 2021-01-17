@@ -132,7 +132,7 @@ public class IndicatorController implements Serializable {
         message = "";
         result = "";
         institution = null;
-        return "/indicators/rdhs_monthly";
+        return "/indicators/pdhs_monthly";
     }
 
     public String toHospitalMonthly() {
@@ -1215,8 +1215,8 @@ public class IndicatorController implements Serializable {
         j.setMessage("");
 
         List<Replaceable> rs = findReplaceblesInIndicatorQuery(queryComponent.getIndicatorQuery());
-        List<Institution> clinicsUnderInstitute = institutionController.findInstitutions(area, InstitutionType.Clinic);
-        if (clinicsUnderInstitute == null) {
+        List<Institution> clinicsOfArea = institutionController.findInstitutions(area, InstitutionType.Clinic);
+        if (clinicsOfArea == null) {
             JsfUtil.addErrorMessage("Selected area do not have HLCs under that");
             return;
         }
@@ -1260,7 +1260,7 @@ public class IndicatorController implements Serializable {
 
                     case Client_Count:
                     case Encounter_Count:
-                        Long tv = storedQueryResultController.findStoredLongValue(temqc, fromDate, toDate, clinicsUnderInstitute, r);
+                        Long tv = storedQueryResultController.findStoredLongValue(temqc, fromDate, toDate, clinicsOfArea, r);
                         System.out.println("Count");
                         if (tv != null) {
                             r.setTextReplacing(tv + "");

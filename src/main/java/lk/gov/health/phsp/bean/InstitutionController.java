@@ -340,10 +340,18 @@ public class InstitutionController implements Serializable {
         return tins;
     }
 
-    public List<Institution> findInstitutions(Area area) {
+    public List<Institution> findInstitutions(Area area, InstitutionType type) {
         List<Institution> cins = institutionApplicationController.getInstitutions();
         List<Institution> tins = new ArrayList<>();
         for (Institution i : cins) {
+            if (type != null) {
+                if (i.getInstitutionType() == null) {
+                    continue;
+                }
+                if (!i.getInstitutionType().equals(type)) {
+                    continue;
+                }
+            }
             if (area.getType() == AreaType.District) {
                 if (i.getDistrict() == null) {
                     continue;
