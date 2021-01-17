@@ -1525,6 +1525,43 @@ public class ReportController implements Serializable {
         userTransactionController.recordTransaction("To View Client Registrations By Institution");
         return action;
     }
+    
+    public String toViewClinicVisitsByInstitution() {
+        encounters = new ArrayList<>();
+        String forSys = "/reports/clinic_visits/for_ins_by_ins";
+        String forIns = "/reports/clinic_visits/for_ins_by_ins";
+        String forMe = "/reports/clinic_visits/for_ins_by_ins";
+        String forClient = "/reports/clinic_visits/for_ins_by_ins";
+        String noAction = "";
+        String action = "";
+        switch (webUserController.getLoggedUser().getWebUserRole()) {
+            case Client:
+                action = forClient;
+                break;
+            case Doctor:
+            case Institution_Administrator:
+            case Institution_Super_User:
+            case Institution_User:
+            case Nurse:
+            case Midwife:
+                action = forIns;
+                break;
+            case Me_Admin:
+            case Me_Super_User:
+                action = forMe;
+                break;
+            case Me_User:
+            case User:
+                action = noAction;
+                break;
+            case Super_User:
+            case System_Administrator:
+                action = forSys;
+                break;
+        }
+        userTransactionController.recordTransaction("To View Clinic Visits By Institution");
+        return action;
+    }
 
     public String toViewClientRegistrationsByDistrict() {
         areaCounts = null;
@@ -1853,6 +1890,36 @@ public class ReportController implements Serializable {
         userTransactionController.recordTransaction("Fill Registrations Of Clients By Institution");
     }
 
+    
+    public void fillClinicVisitsByInstitution() {
+
+        String j = "select new lk.gov.health.phsp.pojcs.InstitutionCount(e.institution, count(e)) "
+                + " from Encounter e "
+                + " where e.retired<>:ret "
+                + " and e.encounterType=:et ";
+        Map m = new HashMap();
+        m.put("ret", true);
+        m.put("et", EncounterType.Clinic_Visit);
+        j = j + " and e.encounterDate between :fd and :td ";
+
+        j = j + " group by e.institution ";
+        j = j + " order by e.institution.name ";
+        m.put("fd", getFromDate());
+        m.put("td", getToDate());
+        List<Object> objs = getClientFacade().findAggregates(j, m);
+        institutionCounts = new ArrayList<>();
+        reportCount = 0l;
+        for (Object o : objs) {
+            if (o instanceof InstitutionCount) {
+                InstitutionCount ic = (InstitutionCount) o;
+                institutionCounts.add(ic);
+                reportCount += ic.getCount();
+            }
+        }
+        userTransactionController.recordTransaction("Fill Clinic Visits By Institution");
+    }
+
+    
     public void fillRegistrationsOfClientsByDistrict() {
 
         String j = "select new lk.gov.health.phsp.pojcs.AreaCount(c.createInstitution.district, count(c)) "
