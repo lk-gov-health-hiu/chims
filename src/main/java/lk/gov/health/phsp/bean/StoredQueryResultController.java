@@ -88,6 +88,7 @@ public class StoredQueryResultController implements Serializable {
         Long insSum = 0L;
         for (Institution i : institutions) {
             Long ic = findStoredLongValue(qc, fromDate, toDate, i, re);
+            System.out.println("qc = " + qc.getName() + ", Ins = " + i.getName() + ", count = " + ic);
             if (ic != null) {
                 insSum += ic;
             }

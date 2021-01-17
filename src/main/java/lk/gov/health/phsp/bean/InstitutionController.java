@@ -311,7 +311,7 @@ public class InstitutionController implements Serializable {
 
     public List<Institution> findChildrenInstitutions(Institution ins, InstitutionType type) {
         List<Institution> cins = findChildrenInstitutions(ins);
-        List<Institution> tins = findChildrenInstitutions(ins);
+        List<Institution> tins = new ArrayList<>();
         for (Institution i : cins) {
             if (i.getParent() == null) {
                 continue;
