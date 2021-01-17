@@ -31,6 +31,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.ejb.EJB;
+import lk.gov.health.phsp.entity.Area;
 import lk.gov.health.phsp.entity.Institution;
 import lk.gov.health.phsp.entity.QueryComponent;
 import lk.gov.health.phsp.entity.StoredQueryResult;
@@ -114,6 +115,27 @@ public class StoredQueryResultController implements Serializable {
         return facade.findFirstByJpql(j, m);
 
     }
+    
+    public StoredQueryResult findStoredQueryResult(QueryComponent qc, Date fromDate, Date toDate, Area area) {
+        String j;
+        Map m;
+        m = new HashMap();
+        m.put("fd", fromDate);
+        m.put("td", toDate);
+        m.put("area", area);
+        m.put("qc", qc);
+        j = "select s "
+                + " from StoredQueryResult s "
+                + " where s.area=:area "
+                + " and s.resultFrom=:fd "
+                + " and s.resultTo=:td "
+                + " and s.queryComponent=:qc "
+                + " order by s.id desc";
+        System.out.println("m = " + m);
+        System.out.println("j = " + j);
+        return facade.findFirstByJpql(j, m);
+
+    }
 
     public void saveValue(QueryComponent qc, Date fromDate, Date toDate, Institution institution, Long value) {
         StoredQueryResult s;
@@ -121,6 +143,24 @@ public class StoredQueryResultController implements Serializable {
         if (s == null) {
             s = new StoredQueryResult();
             s.setInstitution(institution);
+            s.setResultFrom(fromDate);
+            s.setResultTo(toDate);
+            s.setQueryComponent(qc);
+            s.setLongValue(value);
+            facade.create(s);
+        } else {
+            s.setLongValue(value);
+            facade.edit(s);
+        }
+
+    }
+    
+    public void saveValue(QueryComponent qc, Date fromDate, Date toDate, Area area, Long value) {
+        StoredQueryResult s;
+        s = findStoredQueryResult(qc, fromDate, toDate, area);
+        if (s == null) {
+            s = new StoredQueryResult();
+            s.setArea(area);
             s.setResultFrom(fromDate);
             s.setResultTo(toDate);
             s.setQueryComponent(qc);

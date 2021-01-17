@@ -326,6 +326,44 @@ public class InstitutionController implements Serializable {
         return tins;
     }
 
+    public List<Institution> findInstitutions(InstitutionType type) {
+        List<Institution> cins = institutionApplicationController.getInstitutions();
+        List<Institution> tins = new ArrayList<>();
+        for (Institution i : cins) {
+            if (i.getInstitutionType() == null) {
+                continue;
+            }
+            if (i.getInstitutionType().equals(type)) {
+                tins.add(i);
+            }
+        }
+        return tins;
+    }
+
+    public List<Institution> findInstitutions(Area area) {
+        List<Institution> cins = institutionApplicationController.getInstitutions();
+        List<Institution> tins = new ArrayList<>();
+        for (Institution i : cins) {
+            if (area.getType() == AreaType.District) {
+                if (i.getDistrict() == null) {
+                    continue;
+                }
+                if (i.getDistrict().equals(area)) {
+                    tins.add(i);
+                }
+            } else if (area.getType() == AreaType.Province) {
+                if (i.getProvince() == null) {
+                    continue;
+                }
+                if (i.getProvince().equals(area)) {
+                    tins.add(i);
+                }
+            }
+
+        }
+        return tins;
+    }
+
     public List<Institution> completeInstitutions(String nameQry) {
         List<InstitutionType> ts = Arrays.asList(InstitutionType.values());
         if (ts == null) {
@@ -342,7 +380,7 @@ public class InstitutionController implements Serializable {
         List<InstitutionType> ts = new ArrayList<>();
         InstitutionType[] ta = InstitutionType.values();
         for (InstitutionType t : ta) {
-            switch(t){
+            switch (t) {
                 case Base_Hospital:
                 case District_General_Hospital:
                 case National_Hospital:
@@ -360,13 +398,13 @@ public class InstitutionController implements Serializable {
     public List<Institution> completeHospitals(String nameQry) {
         return fillInstitutions(hospitalInstitutionTypes(), nameQry, null);
     }
-    
+
     public List<Institution> completeRdhs(String nameQry) {
         return fillInstitutions(InstitutionType.Regional_Department_of_Health_Department, nameQry, null);
     }
-    
+
     public List<Institution> completePdhs(String nameQry) {
-        return fillInstitutions(InstitutionType.Regional_Department_of_Health_Department, nameQry, null);
+        return fillInstitutions(InstitutionType.Provincial_Department_of_Health_Services, nameQry, null);
     }
 
     public Institution findInstitutionByName(String name) {

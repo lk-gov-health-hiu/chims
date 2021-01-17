@@ -53,9 +53,15 @@
 
                                         <p:separator></p:separator>
 
+                                        <p:commandButton value="Add Population Data" ajax="false"  style="width: 15rem; margin-top:1rem;"
+                                                         action="#{relationshipController.toAddPopulationDataForArea()}"></p:commandButton>
+
+                                        <p:commandButton value="View Population Data" ajax="false"  style="width: 15rem; margin-top:1rem;"
+                                                         action="#{relationshipController.toViewPopulationDataForArea()}"></p:commandButton>
+
 
                                         <p:commandButton styleClass="width25rem"  ajax="false"
-                                                         value="View Population Data" 
+                                                         value="View Population Data of Under Selected" 
                                                          action="#{relationshipController.toFillAreaData()}"  ></p:commandButton>
 
 
@@ -79,7 +85,7 @@
 
 
                                         <p:commandButton styleClass="width25rem"  ajax="false" value="Import District Data" action="/area/import_district_population"  ></p:commandButton>                        
-                                        
+
                                         <p:commandButton styleClass="width25rem" disabled="true"  ajax="false" 
                                                          value="Calculate Provincial Data from District Data" 
                                                          action="/area/calculate_provincial_data_from_district_data"  ></p:commandButton>                        

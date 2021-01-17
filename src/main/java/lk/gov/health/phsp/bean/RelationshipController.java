@@ -298,6 +298,45 @@ public class RelationshipController implements Serializable {
         return "/area/view_population_data";
     }
 
+    
+    
+    
+    public void saveAreaRelationshipDate() {
+        if (area == null) {
+            JsfUtil.addErrorMessage("Area ?");
+            return;
+        }
+        if (populationValue == null) {
+            JsfUtil.addErrorMessage("Population ?");
+            return;
+        }
+        if (rt == null) {
+            JsfUtil.addErrorMessage("Type ?");
+            return;
+        }
+        Relationship r;
+        r = findRelationship(year, area, rt);
+        if (r == null) {
+            r = new Relationship();
+            r.setArea(area);
+            r.setRelationshipType(rt);
+            r.setYearInt(year);
+            r.setLongValue1(populationValue);
+            r.setCreatedAt(new Date());
+            r.setCreatedBy(webUserController.getLoggedUser());
+            getFacade().create(r);
+            JsfUtil.addSuccessMessage("Data Added");
+        } else {
+            r.setLongValue1(populationValue);
+            r.setLastEditBy(webUserController.getLoggedUser());
+            r.setLastEditeAt(new Date());
+            getFacade().edit(r);
+            JsfUtil.addSuccessMessage("Data Updated");
+        }
+    }
+    
+    
+    
     public void saveInstitutionRelationshipDate() {
         if (institution == null) {
             JsfUtil.addErrorMessage("Institution ?");
@@ -343,6 +382,18 @@ public class RelationshipController implements Serializable {
         m.put("rt", t);
         return getFacade().findFirstByJpql(j, m);
     }
+    
+    public Relationship findRelationship(int y, Area area, RelationshipType t) {
+        String j = "select r from Relationship r "
+                + " where r.area=:area   "
+                + " and r.relationshipType=:rt "
+                + " and r.yearInt=:y";
+        Map m = new HashMap();
+        m.put("area", area);
+        m.put("y", y);
+        m.put("rt", t);
+        return getFacade().findFirstByJpql(j, m);
+    }
 
     public Long findPopulationValue(int y, Institution ins, RelationshipType t) {
         System.out.println("findPopulationValue");
@@ -355,6 +406,17 @@ public class RelationshipController implements Serializable {
             return 0l;
         }
         Relationship r = findRelationship(y, hospital, t);
+        if (r != null) {
+            p = r.getLongValue1();
+        } else {
+            p = 0l;
+        }
+        return p;
+    }
+    
+    public Long findPopulationValue(int y, Area area, RelationshipType t) {
+        Long p = 0l;
+        Relationship r = findRelationship(y, area, t);
         if (r != null) {
             p = r.getLongValue1();
         } else {
@@ -414,8 +476,41 @@ public class RelationshipController implements Serializable {
         System.out.println("j = " + j);
         items = getFacade().findByJpql(j, m);
     }
+    
+    public void fillAreaPopulationData() {
+        if (getYear() == null) {
+            JsfUtil.addErrorMessage("No Year Selected.");
+            return;
+        }
+        String j = "select r from Relationship r "
+                + " where r.retired<>:ret "
+                + " and r.yearInt=:y";
+
+        Map m = new HashMap();
+        if (area != null) {
+            j += " and r.area=:area  ";
+            m.put("area", area);
+        } else {
+            j += " and r.institution is not null  ";
+        }
+        if (rt != null) {
+            j += " and r.relationshipType=:rt ";
+            m.put("rt", rt);
+        } else {
+            j += " and r.relationshipType is not null  ";
+        }
+        m.put("y", getYear());
+        m.put("ret", true);
+        items = getFacade().findByJpql(j, m);
+    }
 
     public String toViewPopulationDataForInstitution() {
+        userTransactionController.recordTransaction("To View Population Data for Institution");
+        items = null;
+        return "/institution/view_population_data";
+    }
+    
+    public String toViewPopulationDataForArea() {
         userTransactionController.recordTransaction("To View Population Data for Institution");
         items = null;
         return "/institution/view_population_data";
@@ -425,6 +520,12 @@ public class RelationshipController implements Serializable {
         userTransactionController.recordTransaction("To Add Population Data for Institution");
         items = null;
         return "/institution/add_population_data";
+    }
+    
+    public String toAddPopulationDataForArea() {
+        userTransactionController.recordTransaction("To Add Population Data for Area");
+        items = null;
+        return "/area/add_population_data";
     }
 
     public Relationship findRelationship(Area a, RelationshipType type, Integer year) {
