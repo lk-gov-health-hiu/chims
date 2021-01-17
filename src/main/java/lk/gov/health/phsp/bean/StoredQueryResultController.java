@@ -110,10 +110,7 @@ public class StoredQueryResultController implements Serializable {
                 + " and s.resultTo=:td "
                 + " and s.queryComponent=:qc "
                 + " order by s.id desc";
-        System.out.println("m = " + m);
-        System.out.println("j = " + j);
         return facade.findFirstByJpql(j, m);
-
     }
     
     public StoredQueryResult findStoredQueryResult(QueryComponent qc, Date fromDate, Date toDate, Area area) {

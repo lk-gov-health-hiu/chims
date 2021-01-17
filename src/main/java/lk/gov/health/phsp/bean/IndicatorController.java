@@ -975,11 +975,12 @@ public class IndicatorController implements Serializable {
         j.setMessage("");
 
         List<Replaceable> rs = findReplaceblesInIndicatorQuery(queryComponent.getIndicatorQuery());
-        List<Institution> clinicsUnderInstitute = institutionController.findInstitutions(InstitutionType.Clinic);
-        if (clinicsUnderInstitute == null) {
+        List<Institution> allClinics = institutionController.findInstitutions(InstitutionType.Clinic);
+        if (allClinics == null) {
             JsfUtil.addErrorMessage("Selected institution do not have HLCs under that");
             return;
         }
+        System.out.println("allClinics = " + allClinics.size());
         for (Replaceable r : rs) {
             QueryComponent temqc = queryComponentController.findLastQuery(r.getQryCode());
             if (temqc == null) {
@@ -1020,7 +1021,7 @@ public class IndicatorController implements Serializable {
 
                     case Client_Count:
                     case Encounter_Count:
-                        Long tv = storedQueryResultController.findStoredLongValue(temqc, fromDate, toDate, clinicsUnderInstitute, r);
+                        Long tv = storedQueryResultController.findStoredLongValue(temqc, fromDate, toDate, allClinics, r);
                         System.out.println("Count");
                         if (tv != null) {
                             r.setTextReplacing(tv + "");
@@ -1043,7 +1044,9 @@ public class IndicatorController implements Serializable {
         String script = generateScript(queryComponent.getIndicatorQuery(), rs);
         result = evaluateScript(script);
 
-        j.setMessage(j.getMessage() + "\n" + "Calculation Script = " + script + "\nResult = " + result);
+        j.setMessage(j.getMessage() + "\n\n" + "Indicator Formula = " + queryComponent.getIndicatorQuery());
+
+        j.setMessage(j.getMessage() + "\n\n" + "Formula with Values = " + script + "\n\nResult = " + result);
 
         Long sv = CommonController.stringToLong(result);
         if (sv == null) {
