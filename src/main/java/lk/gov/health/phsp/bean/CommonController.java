@@ -16,8 +16,10 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Named;
 import lk.gov.health.phsp.enums.ComponentSetType;
@@ -41,6 +43,7 @@ import lk.gov.health.phsp.enums.RelationshipType;
 import lk.gov.health.phsp.enums.RenderType;
 import lk.gov.health.phsp.enums.SelectionDataType;
 import lk.gov.health.phsp.enums.TimePeriodType;
+import lk.gov.health.phsp.pojcs.TimePeriod;
 import org.jasypt.util.password.BasicPasswordEncryptor;
 import org.jasypt.util.text.BasicTextEncryptor;
 import org.joda.time.Instant;
@@ -591,7 +594,7 @@ public class CommonController implements Serializable {
         c.set(Calendar.MILLISECOND, 1);
         return c.getTime();
     }
-    
+
     public static Date startOfTheLastYear(Date d) {
         Calendar c = Calendar.getInstance();
         c.setTime(d);
@@ -600,14 +603,14 @@ public class CommonController implements Serializable {
         c.set(Calendar.HOUR, 0);
         c.set(Calendar.MINUTE, 0);
         c.set(Calendar.MILLISECOND, 1);
-        c.set(Calendar.YEAR, c.get(Calendar.YEAR)-1);
+        c.set(Calendar.YEAR, c.get(Calendar.YEAR) - 1);
         return c.getTime();
     }
 
     public static Date startOfTheLastYear() {
         return startOfTheLastYear(new Date());
     }
-    
+
     public static Date startOfTheYear(Integer year) {
         Calendar c = Calendar.getInstance();
         c.set(Calendar.YEAR, year);
@@ -702,6 +705,54 @@ public class CommonController implements Serializable {
 
     public static String dateTimeToString(Date date) {
         return dateTimeToString(date, "dd MMMM yyyy");
+    }
+
+    public static List<TimePeriod> getMonthPeriodsForQuarter(Integer year, Integer q) {
+        List<lk.gov.health.phsp.pojcs.TimePeriod> ps = new ArrayList<>();
+        if (year == null) {
+            return ps;
+        }
+        if (q == null) {
+            return ps;
+        }
+        TimePeriod first = new TimePeriod();
+        TimePeriod second = new TimePeriod();
+        TimePeriod thired = new TimePeriod();
+        int firstMonth = 1;
+        int secondMonth = 2;
+        int thiredMonth = 3;
+        switch (q) {
+            case 1:
+                firstMonth = 1;
+                secondMonth = 2;
+                thiredMonth = 3;
+                break;
+            case 2:
+                firstMonth = 4;
+                secondMonth = 5;
+                thiredMonth = 6;
+                break;
+            case 3:
+                firstMonth = 7;
+                secondMonth = 8;
+                thiredMonth = 9;
+                break;
+            case 4:
+                firstMonth = 10;
+                secondMonth = 11;
+                thiredMonth = 12;
+                break;
+        }
+        first.setFromDate(startOfTheMonth(year, firstMonth));
+        first.setToDate(endOfTheMonth(year, firstMonth));
+        second.setFromDate(startOfTheMonth(year, secondMonth));
+        second.setToDate(endOfTheMonth(year, secondMonth));
+        thired.setFromDate(startOfTheMonth(year, thiredMonth));
+        thired.setToDate(endOfTheMonth(year, thiredMonth));
+        ps.add(first);
+        ps.add(second);
+        ps.add(thired);
+        return ps;
     }
 
     public static String quarterAsString(Integer q) {
@@ -919,10 +970,10 @@ public class CommonController implements Serializable {
             QueryFilterAreaType.District_List, QueryFilterAreaType.Province, QueryFilterAreaType.Distirct, QueryFilterAreaType.Province_District_list};
         return ts;
     }
-    
-    public static String stringToHtml(String str){
-        if(str==null){
-            str="";
+
+    public static String stringToHtml(String str) {
+        if (str == null) {
+            str = "";
         }
         str = str.replace("\n", "<br/>");
         return str;
