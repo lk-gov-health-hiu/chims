@@ -65,6 +65,8 @@ public class ClientController implements Serializable {
     @Inject
     ApplicationController applicationController;
     @Inject
+    AreaApplicationController areaApplicationController;
+    @Inject
     InstitutionApplicationController institutionApplicationController;
     @Inject
     private WebUserController webUserController;
@@ -289,9 +291,9 @@ public class ClientController implements Serializable {
             return areas;
         }
         if (selected.getPerson().getDsArea() == null) {
-            return applicationController.completeGnAreas(qry);
+            return areaApplicationController.completeGnAreas(qry);
         } else {
-            return applicationController.completeGnAreas(qry, selected.getPerson().getDsArea());
+            return areaApplicationController.completeGnAreas(qry, selected.getPerson().getDsArea());
         }
     }
 

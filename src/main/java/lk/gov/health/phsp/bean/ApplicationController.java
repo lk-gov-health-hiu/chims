@@ -61,8 +61,7 @@ import lk.gov.health.phsp.facade.QueryComponentFacade;
 public class ApplicationController {
 
 // <editor-fold defaultstate="collapsed" desc="EJBs">
-    @EJB
-    private AreaFacade areaFacade;
+
     @EJB
     private InstitutionFacade institutionFacade;
     @EJB
@@ -87,8 +86,7 @@ public class ApplicationController {
     private List<Item> items;
     private List<String> userTransactionTypes;
     
-    private List<Area> gnAreas;
-    private List<Area> allAreas;
+
     private final boolean logActivity = true;
 
     // </editor-fold>
@@ -234,37 +232,7 @@ public class ApplicationController {
         return digit.substring(digit.length() - 1);
     }
 
-    public List<Area> getAllGnAreas() {
-        List<Area> tas = new ArrayList<>();
-        for (Area a : getAllAreas()) {
-            if (a.getType() == AreaType.GN) {
-                tas.add(a);
-            }
-        }
-        return tas;
-    }
-
-    public List<Area> completeGnAreas(String qry) {
-        List<Area> tas = new ArrayList<>();
-        for (Area a : getGnAreas()) {
-            if (a.getName().toLowerCase().contains(qry.trim().toLowerCase())) {
-                tas.add(a);
-            }
-        }
-        return tas;
-    }
-
-    public List<Area> completeGnAreas(String qry, Area dsArea) {
-        List<Area> tas = new ArrayList<>();
-        for (Area a : getGnAreas()) {
-            if (a.getName().toLowerCase().contains(qry.trim().toLowerCase())) {
-                if (a.getParentArea().equals(dsArea)) {
-                    tas.add(a);
-                }
-            }
-        }
-        return tas;
-    }
+    
 
     private List<QueryComponent> findQueryComponents() {
         String j = "select q from QueryComponent q "
@@ -354,26 +322,7 @@ public class ApplicationController {
         this.production = production;
     }
 
-    public List<Area> getGnAreas() {
-        if (gnAreas == null) {
-            gnAreas = getAllGnAreas();
-        }
-        return gnAreas;
-    }
-
-    public void setGnAreas(List<Area> gnAreas) {
-        this.gnAreas = gnAreas;
-    }
-
-    public AreaFacade getAreaFacade() {
-        return areaFacade;
-    }
-
-    public void setAreaFacade(AreaFacade areaFacade) {
-        this.areaFacade = areaFacade;
-    }
-
-    
+   
     public ClientFacade getClientFacade() {
         return clientFacade;
     }
@@ -398,23 +347,5 @@ public class ApplicationController {
         this.clientEncounterComponentItemFacade = clientEncounterComponentItemFacade;
     }
 
-    public List<Area> getAllAreas() {
-        if (allAreas == null) {
-            allAreas = fillAllAreas();
-        }
-        return allAreas;
-    }
-
-    private List<Area> fillAllAreas() {
-        String j;
-        Map m = new HashMap();
-        j = "select a "
-                + " from Area a "
-                + " where a.name is not null "
-                + " and a.type=:t";
-
-        m.put("t", AreaType.GN);
-        j += " order by a.name";
-        return getAreaFacade().findByJpql(j, m);
-    }
+    
 }

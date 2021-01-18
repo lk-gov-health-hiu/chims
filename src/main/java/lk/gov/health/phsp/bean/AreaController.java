@@ -87,7 +87,7 @@ public class AreaController implements Serializable {
     private UserTransactionController userTransactionController;
     
     @Inject
-    private ApplicationController applicationController;
+    AreaApplicationController areaApplicationController;
 
     private MapModel polygonModel;
 
@@ -154,10 +154,6 @@ public class AreaController implements Serializable {
         if (selected.getId() == null) {
             selected.setCreatedAt(new Date());
             selected.setCreatedBy(webUserController.getLoggedUser());
-            
-            if(selected.getType()== AreaType.GN){
-                applicationController.getGnAreas().add(selected);
-            }
             getFacade().create(selected);
             JsfUtil.addSuccessMessage("Saved");
         } else {
