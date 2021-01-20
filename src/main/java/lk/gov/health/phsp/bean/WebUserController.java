@@ -317,7 +317,11 @@ public class WebUserController implements Serializable {
         String j = "select u from WebUser u "
                 + " where u.retired=false ";
         items = getFacade().findByJpql(j);
-        userTransactionController.recordTransaction("To Manage All Users");
+        userTransactionController.recordTransaction("To List All Users");
+        return "/webUser/manage_users";
+    }
+    
+    public String toManageUserIndexForSystemAdmin(){
         return "/webUser/index";
     }
 
