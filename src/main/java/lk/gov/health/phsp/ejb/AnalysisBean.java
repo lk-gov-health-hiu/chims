@@ -36,10 +36,10 @@ public class AnalysisBean {
 
     boolean nowTimeToProcessCounts;
 
-    @Schedule(dayOfWeek = "Mon-Fri", month = "*", hour = "9-17", dayOfMonth = "*", year = "*", minute = "*", second = "0", persistent = false)
-    public void myTimer() {
-        System.out.println("Timer event: " + new Date());
-    }
+//    @Schedule(dayOfWeek = "Mon-Fri", month = "*", hour = "9-17", dayOfMonth = "*", year = "*", minute = "*", second = "0", persistent = false)
+//    public void myTimer() {
+//        System.out.println("Timer event: " + new Date());
+//    }
 
     @Schedule(hour = "19-04", dayOfMonth = "*", year = "*", minute = "*/15", second = "0", persistent = false)
     public void startProcessingCounts() {
@@ -47,13 +47,13 @@ public class AnalysisBean {
         System.out.println("startProcessingCounts");
     }
 
-    @Schedule(dayOfWeek = "Mon-Fri", month = "*", hour = "05-18", dayOfMonth = "*", year = "*", minute = "*/15", second = "30", persistent = false)
+    @Schedule(month = "*", hour = "05-18", dayOfMonth = "*", year = "*", minute = "*/15", second = "30", persistent = false)
     public void endProcessingCounts() {
         nowTimeToProcessCounts = false;
         System.out.println("endProcessingCounts");
     }
 
-    @Schedule(dayOfWeek = "Mon-Fri", month = "*", hour = "9-17", dayOfMonth = "*", year = "*", minute = "*/5", second = "0", persistent = false)
+    @Schedule(month = "*", hour = "21-5", dayOfMonth = "*", year = "*", minute = "*/5", second = "0", persistent = false)
     public void processCounts() {
         System.out.println("processCounts");
         if (nowTimeToProcessCounts) {
