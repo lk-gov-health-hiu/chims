@@ -1769,14 +1769,13 @@ public class ClientController implements Serializable {
                 + "c.id, "
                 + "c.phn, "
                 + "c.person.name, "
-                + "c.person.sex.name,"
                 + "c.person.nic, "
                 + "c.person.phone1, "
                 + "c.person.address "
                 + ") ";
         j += " from Client c "
                 + " where c.retired=false "
-                + " and upper(c.phn)=:q "
+                + " and c.phn=:q "
                 + " order by c.phn";
         m.put("q", ids.trim().toUpperCase());
         //System.out.println("m = " + m);
@@ -1792,7 +1791,6 @@ public class ClientController implements Serializable {
                 + "c.id, "
                 + "c.phn, "
                 + "c.person.name, "
-                + "c.person.sex.name,"
                 + "c.person.nic, "
                 + "c.person.phone1, "
                 + "c.person.address "
@@ -1800,11 +1798,11 @@ public class ClientController implements Serializable {
                 + " from Client c "
                 + " where c.retired=false "
                 + " and ("
-                + " upper(c.person.phone1)=:q "
+                + " c.person.phone1=:q "
                 + " or "
-                + " upper(c.person.phone2)=:q "
+                + " c.person.phone2=:q "
                 + " or "
-                + " upper(c.person.nic)=:q "
+                + " c.person.nic=:q "
                 + " ) "
                 + " order by c.phn";
         objs = getFacade().findByJpql(j, m);
@@ -1819,7 +1817,6 @@ public class ClientController implements Serializable {
                 + "c.id, "
                 + "c.phn, "
                 + "c.person.name, "
-                + "c.person.sex.name,"
                 + "c.person.nic, "
                 + "c.person.phone1, "
                 + "c.person.address "

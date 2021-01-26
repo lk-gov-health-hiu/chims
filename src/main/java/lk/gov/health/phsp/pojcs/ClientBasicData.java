@@ -100,6 +100,14 @@ public class ClientBasicData implements Serializable {
     }
 
     
+    public ClientBasicData(Long id, String phn, String name, String nic, String phone, String address) {
+        this.phn = phn;
+        this.phone = phone;
+        this.name = name;
+        this.id = id;
+        this.nic = nic;
+        this.address = address;
+    }
     
     
     public String getPhn() {
