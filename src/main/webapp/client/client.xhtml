@@ -270,7 +270,7 @@
                                                itemValue="#{c}" ></f:selectItems>
                             </p:selectOneMenu>
 
-                            <p:outputLabel value="EthinicGroup:" for="ethinicGroup" />
+                            <p:outputLabel value="Ethinic Group:" for="ethinicGroup" />
                             <p:selectOneMenu id="ethinicGroup" value="#{clientController.selected.person.ethinicGroup}" >
                                 <f:selectItems value="#{itemController.ethinicities}" var="e" itemLabel="#{e.name}"
                                                itemValue="#{e}" ></f:selectItems>
@@ -292,7 +292,7 @@
                             <p:spacer></p:spacer>
                             <p:spacer></p:spacer>
 
-                            <p:outputLabel value="Age:"  />
+                            <p:outputLabel value="Age: *"  />
                             <h:panelGroup >
                                 <p:inputText autocomplete="off"  id="year"  
                                              value="#{clientController.yearMonthDay.year}" 
@@ -318,7 +318,7 @@
 
                             </h:panelGroup>
 
-                            <p:outputLabel value="Date of Birth:"  />
+                            <p:outputLabel value="Date of Birth: *"  />
                             <p:calendar  value="#{clientController.selected.person.dateOfBirth}" 
                                          id="calDob"  navigator="true" pattern="dd/MM/yyyy" yearRange="1900:today"
                                          inputStyle="width: 124px!important;" required="true"
