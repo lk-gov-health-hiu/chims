@@ -133,6 +133,7 @@ public class ClientController implements Serializable {
     private String dateTimeFormat;
     private String dateFormat;
     private List<String> reservePhnList;
+    private List<String> previousReservePhnList;
     private int intNo;
 
     // </editor-fold>
@@ -155,7 +156,7 @@ public class ClientController implements Serializable {
     public String toSelectClient() {
         return "/client/select";
     }
-    
+
     public String toSelectClientBasic() {
         return "/client/select_basic";
     }
@@ -169,10 +170,10 @@ public class ClientController implements Serializable {
         userTransactionController.recordTransaction("To Client Profile");
         return "/client/profile";
     }
-    
+
     public String toClientProfileById() {
         selected = getFacade().find(selectedId);
-        if(selected==null){
+        if (selected == null) {
             JsfUtil.addErrorMessage("No such client");
             return "";
         }
@@ -184,6 +185,7 @@ public class ClientController implements Serializable {
 
     public String toReserverPhn() {
         numberOfPhnToReserve = 0;
+        setReservePhnList(null);
         return "/client/reserve_phn";
     }
 
@@ -505,7 +507,7 @@ public class ClientController implements Serializable {
         String j = "select c from Client c "
                 + " where c.retired=:ret "
                 + " and c.reservedClient<>:res ";
-        
+
         Map m = new HashMap();
         m.put("ret", false);
         m.put("res", true);
@@ -1341,7 +1343,7 @@ public class ClientController implements Serializable {
             setSelected(selectedClients.get(0));
             selectedClients = null;
             clearSearchById();
-            if(selected.isReservedClient()){
+            if (selected.isReservedClient()) {
                 return "/client/client";
             }
             return toClientProfile();
@@ -1541,7 +1543,7 @@ public class ClientController implements Serializable {
             return toSelectClientBasic();
         }
     }
-    
+
     public String searchByPhnWithBasicData() {
         System.out.println("searchByPhnWithBasicData");
         userTransactionController.recordTransaction("Search By PHN");
@@ -1839,8 +1841,7 @@ public class ClientController implements Serializable {
         cs = new ArrayList<>();
         return cs;
     }
-    
-    
+
     public List<ClientBasicData> listPatientsByPhnWithBasicData(String ids) {
         if (ids == null || ids.trim().equals("")) {
             return null;
@@ -1919,6 +1920,19 @@ public class ClientController implements Serializable {
         return getFacade().findByJpql(j, m);
     }
 
+    public List<String> GetReservedPhns() {
+        String j = "select c.phn from Client c "
+                + " where c.retired=false "
+                + " and c.createInstitution=:ins "                
+                + " and c.reservedClient = :res "
+                + " order by c.phn";
+        
+        Map m = new HashMap();
+        m.put("ins", webUserController.getLoggedUser().getInstitution());
+        m.put("res", true);
+        return getFacade().findByJpql(j, m);
+    }
+
     public Client prepareCreate() {
         selected = new Client();
         return selected;
@@ -1991,7 +2005,7 @@ public class ClientController implements Serializable {
             }
         }
         selected.setReservedClient(false);
-        
+
         saveClient(selected);
         JsfUtil.addSuccessMessage("Saved.");
         return toClientProfile();
@@ -2022,29 +2036,38 @@ public class ClientController implements Serializable {
             return;
         }
         reservePhnList = new ArrayList<>();
+        previousReservePhnList = new ArrayList<>();
+        previousReservePhnList = GetReservedPhns();
         
-        while (i < numberOfPhnToReserve) {
-            String newPhn = generateNewPhn(createdIns);
+        if ((previousReservePhnList.size() - numberOfPhnToReserve) > 0) {            
+            reservePhnList = previousReservePhnList.subList(0, numberOfPhnToReserve);
+        } else {
+            int numberOfNewPhn = numberOfPhnToReserve - previousReservePhnList.size();
+            reservePhnList = previousReservePhnList;
+            
+            while (i < numberOfNewPhn) {
+                String newPhn = generateNewPhn(createdIns);
 
-            if (!checkPhnExists(newPhn, null)) {
-                reservePhnList.add(newPhn);
+                if (!checkPhnExists(newPhn, null)) {
+                    reservePhnList.add(newPhn);
 
-                Client rc = new Client();
+                    Client rc = new Client();
 
-                rc.setPhn(newPhn);
-                rc.setCreatedBy(webUserController.getLoggedUser());
-                rc.setCreatedAt(new Date());
-                rc.setCreateInstitution(createdIns);
-                if (rc.getPerson().getCreatedAt() == null) {
-                    rc.getPerson().setCreatedAt(new Date());
+                    rc.setPhn(newPhn);
+                    rc.setCreatedBy(webUserController.getLoggedUser());
+                    rc.setCreatedAt(new Date());
+                    rc.setCreateInstitution(createdIns);
+                    if (rc.getPerson().getCreatedAt() == null) {
+                        rc.getPerson().setCreatedAt(new Date());
+                    }
+                    if (rc.getPerson().getCreatedBy() == null) {
+                        rc.getPerson().setCreatedBy(webUserController.getLoggedUser());
+                    }
+                    rc.setReservedClient(true);
+
+                    getFacade().create(rc);
+                    i = i + 1;
                 }
-                if (rc.getPerson().getCreatedBy() == null) {
-                    rc.getPerson().setCreatedBy(webUserController.getLoggedUser());
-                }
-                rc.setReservedClient(true);
-                
-                getFacade().create(rc);
-                i = i + 1;
             }
         }
     }
@@ -2596,7 +2619,7 @@ public class ClientController implements Serializable {
     public void setSelectedClientsWithBasicData(List<ClientBasicData> selectedClientsWithBasicData) {
         this.selectedClientsWithBasicData = selectedClientsWithBasicData;
     }
-    
+
     public List<String> getReservePhnList() {
         return reservePhnList;
     }
