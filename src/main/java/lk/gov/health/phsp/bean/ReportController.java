@@ -54,27 +54,16 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.Iterator;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import javax.faces.context.FacesContext;
-import javax.persistence.TemporalType;
-import javax.servlet.ServletContext;
-import jxl.CellType;
-import jxl.DateCell;
-import jxl.NumberCell;
 import jxl.Workbook;
-import jxl.write.DateTime;
 import jxl.write.Label;
 import jxl.write.WritableSheet;
 import jxl.write.WritableWorkbook;
 import jxl.write.WriteException;
 import lk.gov.health.phsp.entity.ClientEncounterComponentItem;
 import lk.gov.health.phsp.entity.ConsolidatedQueryResult;
-import lk.gov.health.phsp.entity.DesignComponentForm;
 import lk.gov.health.phsp.entity.DesignComponentFormItem;
 import lk.gov.health.phsp.entity.DesignComponentFormSet;
 import lk.gov.health.phsp.entity.IndividualQueryResult;
@@ -104,10 +93,8 @@ import lk.gov.health.phsp.pojcs.InstitutionCount;
 import lk.gov.health.phsp.pojcs.Replaceable;
 import lk.gov.health.phsp.pojcs.ReportTimePeriod;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.CreationHelper;
-import org.apache.poi.ss.util.CellRangeAddress;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 // </editor-fold>   
@@ -1712,8 +1699,13 @@ public class ReportController implements Serializable {
     public void downloadClientRegistrations() {
         String j;
         Map m = new HashMap();
+        
         j = "select new lk.gov.health.phsp.pojcs.ClientBasicData("
                 + "c.phn, "
+                + "c.person.name, "
+                + "c.person.nic, "
+                + "c.person.address, "
+                + "c.person.phone1, "
                 + "c.person.gnArea.name, "
                 + "c.createInstitution.name, "
                 + "c.person.dateOfBirth, "
@@ -1728,7 +1720,7 @@ public class ReportController implements Serializable {
         m.put("res", true);
         m.put("fd", fromDate);
         m.put("td", toDate);
-
+        
         if (institution != null) {
             j += " and c.createInstitution in :ins ";
             List<Institution> ins = institutionController.findChildrenInstitutions(institution);
@@ -1787,27 +1779,44 @@ public class ReportController implements Serializable {
         Row t5 = sheet.createRow(rowCount++);
         Cell th5_1 = t5.createCell(0);
         th5_1.setCellValue("Serial");
+        
         Cell th5_2 = t5.createCell(1);
         th5_2.setCellValue("PHN");
+        
         Cell th5_3 = t5.createCell(2);
-        th5_3.setCellValue("Sex");
+        th5_3.setCellValue("Name");        
+        
         Cell th5_4 = t5.createCell(3);
-        th5_4.setCellValue("Age in Years");
+        th5_4.setCellValue("NIC");
+        
         Cell th5_5 = t5.createCell(4);
-        th5_5.setCellValue("Registered at");
+        th5_5.setCellValue("Birthday");
+        
         Cell th5_6 = t5.createCell(5);
-        th5_6.setCellValue("GN Areas");
+        th5_6.setCellValue("Age(yrs)");        
+        
+        Cell th5_7 = t5.createCell(6);
+        th5_7.setCellValue("Sex");
+        
+        Cell th5_8 = t5.createCell(7);
+        th5_8.setCellValue("Address");
+        
+        Cell th5_9 = t5.createCell(8);
+        th5_9.setCellValue("GN Areas");
+        
+        Cell th5_10 = t5.createCell(9);
+        th5_10.setCellValue("Phone");
+        
         if (institution == null) {
-            Cell th5_7 = t5.createCell(6);
-            th5_7.setCellValue("Institution");
+            Cell th5_11 = t5.createCell(10);
+            th5_11.setCellValue("Institution");
         }
 
         int serial = 1;
 
         CellStyle cellStyle = workbook.createCellStyle();
         CreationHelper createHelper = workbook.getCreationHelper();
-        cellStyle.setDataFormat(
-                createHelper.createDataFormat().getFormat("dd/MMMM/yyyy hh:mm"));
+        cellStyle.setDataFormat(createHelper.createDataFormat().getFormat("dd/MMMM/yyyy hh:mm"));
 
         for (Object o : objs) {
             if (o instanceof ClientBasicData) {
@@ -1821,20 +1830,32 @@ public class ReportController implements Serializable {
                 c2.setCellValue(cbd.getPhn());
 
                 Cell c3 = row.createCell(2);
-                c3.setCellValue(cbd.getSex());
-
+                c3.setCellValue(cbd.getName());
+                
                 Cell c4 = row.createCell(3);
-                c4.setCellValue(cbd.getAgeInYears());
+                c4.setCellValue(cbd.getNic());
 
                 Cell c5 = row.createCell(4);
-                c5.setCellValue(cbd.getCreatedAt());
-                c5.setCellStyle(cellStyle);
+                c5.setCellValue(cbd.getDataOfBirth());
 
                 Cell c6 = row.createCell(5);
-                c6.setCellValue(cbd.getGnArea());
+                c6.setCellValue(cbd.getAgeInYears());
+
+                Cell c7 = row.createCell(6);
+                c7.setCellValue(cbd.getSex());
+                
+                Cell c8 = row.createCell(7);
+                c8.setCellValue(cbd.getAddress());
+                
+                Cell c9 = row.createCell(8);
+                c9.setCellValue(cbd.getGnArea());
+                
+                Cell c10 = row.createCell(9);
+                c10.setCellValue(cbd.getPhone());
+                
                 if (institution == null) {
-                    Cell c7 = row.createCell(6);
-                    c7.setCellValue(cbd.getCreatedInstitution());
+                    Cell c11 = row.createCell(10);
+                    c11.setCellValue(cbd.getCreatedInstitution());
                 }
 
                 serial++;
@@ -1852,9 +1873,8 @@ public class ReportController implements Serializable {
             stream = new FileInputStream(newFile);
             resultExcelFile = new DefaultStreamedContent(stream, mimeType, FILE_NAME);
         } catch (FileNotFoundException ex) {
-
+            System.out.println("File not found exception -->"+ex.getMessage());
         }
-
     }
 
     public void fillRegistrationsOfClientsByInstitution() {
