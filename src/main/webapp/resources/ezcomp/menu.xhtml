@@ -34,8 +34,7 @@
                 </p:submenu>
 
 
-                <p:submenu label="Analysis" disabled="false"
-                           rendered="#{webUserController.hasPrivilege('Institution_Administration')}" >
+                <p:submenu label="Analysis" rendered="#{webUserController.hasPrivilege('Institution_Administration')}" >
                     <p:menuitem ajax="false" value="Queries" 
                                 action="#{queryComponentController.toQueryIndex()}"  />
                     <p:menuitem ajax="false" value="Reports" 
