@@ -1801,7 +1801,21 @@ public class ReportController implements Serializable {
             Cell th5_7 = t5.createCell(6);
             th5_7.setCellValue("Institution");
         }
-
+        Cell th5_8 = t5.createCell(7);
+        th5_8.setCellValue("NIC NO");
+        
+        Cell th5_9 = t5.createCell(8);
+        th5_9.setCellValue("Name");
+        
+        Cell th5_10 = t5.createCell(9);
+        th5_10.setCellValue("phone");
+        
+        Cell th5_11 = t5.createCell(10);
+        th5_11.setCellValue("Address");
+        	
+        Cell th5_12 = t5.createCell(11);
+        th5_12.setCellValue("DOB");
+        
         int serial = 1;
 
         CellStyle cellStyle = workbook.createCellStyle();
@@ -1836,6 +1850,26 @@ public class ReportController implements Serializable {
                     Cell c7 = row.createCell(6);
                     c7.setCellValue(cbd.getCreatedInstitution());
                 }
+                
+                Cell c9 = row.createCell(8);
+                c9.setCellValue(cbd.getNic());
+                c9.setCellStyle(cellStyle);
+                
+                Cell c10 = row.createCell(9);
+                c9.setCellValue(cbd.getName());
+                c9.setCellStyle(cellStyle);
+                
+                Cell c11 = row.createCell(10);
+                c9.setCellValue(cbd.getPhone());
+                c9.setCellStyle(cellStyle);
+                
+                Cell c12 = row.createCell(11);
+                c9.setCellValue(cbd.getAddress());
+                c9.setCellStyle(cellStyle);
+                
+                Cell c13 = row.createCell(12);
+                c9.setCellValue(cbd.getDataOfBirth());
+                c9.setCellStyle(cellStyle);
 
                 serial++;
             }
