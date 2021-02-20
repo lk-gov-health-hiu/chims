@@ -35,6 +35,7 @@ import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.xml.bind.annotation.XmlRootElement;
 import lk.gov.health.phsp.enums.EncounterType;
@@ -44,6 +45,7 @@ import lk.gov.health.phsp.enums.EncounterType;
  * @author buddhika
  */
 @Entity
+@Table(name = "encounter")
 @XmlRootElement
 public class Encounter implements Serializable {
 

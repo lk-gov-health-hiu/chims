@@ -35,6 +35,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.Transient;
 import lk.gov.health.phsp.enums.AvailableDataType;
@@ -52,6 +53,7 @@ import lk.gov.health.phsp.enums.RenderType;
  * @author buddhika
  */
 @Entity
+@Table(name = "component")
 public class Component implements Serializable {
 
     private static final long serialVersionUID = 1L;

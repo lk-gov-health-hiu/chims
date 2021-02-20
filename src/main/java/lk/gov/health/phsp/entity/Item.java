@@ -34,6 +34,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -44,6 +45,7 @@ import lk.gov.health.phsp.enums.SelectionDataType;
  * @author User
  */
 @Entity
+@Table(name = "item")
 @XmlRootElement
 public class Item implements Serializable {
 

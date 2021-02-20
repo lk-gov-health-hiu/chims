@@ -32,6 +32,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import javax.persistence.Temporal;
 import lk.gov.health.phsp.enums.Privilege;
 
@@ -40,6 +41,7 @@ import lk.gov.health.phsp.enums.Privilege;
  * @author Dr M H B Ariyaratne<buddhika.ari@gmail.com>
  */
 @Entity
+@Table(name = "userprivilege")
 public class UserPrivilege implements Serializable {
 
     private static final long serialVersionUID = 1L;

@@ -27,6 +27,7 @@ import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.Lob;
+import javax.persistence.Table;
 import lk.gov.health.phsp.enums.QueryCriteriaMatchType;
 import lk.gov.health.phsp.enums.QueryDataType;
 
@@ -41,6 +42,7 @@ import lk.gov.health.phsp.enums.RelationshipType;
  * @author buddhika
  */
 @Entity
+@Table(name = "querycomponent")
 public class QueryComponent extends Component {
 
     @Lob
