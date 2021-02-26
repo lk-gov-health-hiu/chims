@@ -315,7 +315,9 @@ public class Component implements Serializable {
         this.descreption = descreption;
     }
     
-    
+        public String getGeneratedCss() {
+            return css;
+        }
 
 //    public String getGeneratedCss() {
 //        generatedCss = "";
