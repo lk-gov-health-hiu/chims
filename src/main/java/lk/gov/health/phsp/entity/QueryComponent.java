@@ -55,6 +55,7 @@ import lk.gov.health.phsp.enums.SelectionDataType;
  * @author buddhika
  */
 @Entity
+@Table(name = "querycomponent")
 public class QueryComponent extends Component {
 
     @Lob

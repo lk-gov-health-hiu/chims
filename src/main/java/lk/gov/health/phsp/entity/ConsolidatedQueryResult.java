@@ -36,6 +36,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.Transient;
 import lk.gov.health.phsp.enums.AvailableDataType;
@@ -53,6 +54,7 @@ import lk.gov.health.phsp.enums.TimePeriodType;
  * @author buddhika
  */
 @Entity
+@Table(name = "consolidatedqueryresult")
 public class ConsolidatedQueryResult implements Serializable {
 
     private static final long serialVersionUID = 1L;

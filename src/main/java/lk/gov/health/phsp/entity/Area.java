@@ -36,6 +36,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -44,6 +45,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author User
  */
 @Entity
+@Table(name = "area")
 @XmlRootElement
 public class Area implements Serializable {
 

@@ -40,7 +40,7 @@ import javax.persistence.Temporal;
  * @author Dr M H B Ariyaratne<buddhika.ari@gmail.com>
  */
 @Entity
-@Table
+@Table(name = "movement")
 public class Movement implements Serializable {
 
     private static final long serialVersionUID = 1L;
