@@ -62,13 +62,16 @@
                                                      ajax="false"></p:commandButton>
                                     
                                     <hr/>
-                                    <p:commandButton value="Monthly Counts needed for indicators" 
-                                                     style="width:20em;margin:auto;"
-                                                     action="#{indicatorController.toProcesCountsForSelectedIndicators()}"
-                                                     ajax="false"></p:commandButton>
+                                   
 
                                 </h:panelGrid>
 
+                            </p:tab>
+                            <p:tab title="Counts" >
+                                 <p:commandButton value="Monthly Counts of Institutions" 
+                                                     style="width:20em;margin:auto;"
+                                                     action="#{indicatorController.toProcesCountsForSelectedIndicators()}"
+                                                     ajax="false"></p:commandButton>F
                             </p:tab>
 
 

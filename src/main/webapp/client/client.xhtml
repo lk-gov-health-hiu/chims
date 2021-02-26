@@ -48,6 +48,9 @@
                                 <p:inputText id="phn"  autocomplete="off" 
                                              value="#{clientController.selected.phn}" title="Phn"
                                              placeholder="Generate New PHN">
+                                    <!--<f:validateRegex pattern="^([0-9]{4}+[2|3|4|5|6|7|8|9|B|C|D|F|G|H|J|K|M|P|Q|R|T|V|W|X|Y]{6}+[0-9]{1})?$" ></f:validateRegex>-->
+                                     <!--<f:validateRegex pattern="^([0-9]{4}+[2|3|4|5|6|7|8|9|B|C|D|F|G|H|J|K|M|P|Q|R|T|V|W|X|Y|b|c|d|f|g|h|j|k|m|p|q|r|t|v|w|x|y]{6}+[0-9]{1})?$" ></f:validateRegex>-->
+                                    
                                     <!--<f:ajax event="change" execute="@this" render="phnExists" listener="#{clientController.checkPhnExists}" ></f:ajax>-->
                                 </p:inputText>
                                                                 <p:commandLink value="Generate" 
@@ -90,8 +93,8 @@
                             <h:panelGroup >
                                 <p:inputText id="phone1"  autocomplete="off" value="#{clientController.selected.person.phone1}" title="Mobile" 
                                              validatorMessage="Please check the number">
-                                    <!--                                    <f:validateRegex pattern="^((?:0|94|\+94|0094)?(?:(11|21|23|24|25|26|27|31|32|33|34|35|36|37|38|41|45|47|51|52|54|55|57|63|65|66|67|81|91)(0|2|3|4|5|7|9)|7(0|1|2|5|6|7|8)\d)\d{6})?$"
-                                                                                         ></f:validateRegex>-->
+                                                                     <f:validateRegex pattern="^((?:0|94|\+94|0094)?(?:(11|21|23|24|25|26|27|31|32|33|34|35|36|37|38|41|45|47|51|52|54|55|57|63|65|66|67|81|91)(0|2|3|4|5|7|9)|7(0|1|2|5|6|7|8)\d)\d{6})?$"
+                                                                                         ></f:validateRegex>
                                                                         <!--<f:ajax event="change" execute="@this" render="mobileNoExists" listener="#{clientController.checkPhone1Exists()}" ></f:ajax>-->
                                 </p:inputText><br ></br>
 
@@ -270,7 +273,7 @@
                                                itemValue="#{c}" ></f:selectItems>
                             </p:selectOneMenu>
 
-                            <p:outputLabel value="EthinicGroup:" for="ethinicGroup" />
+                            <p:outputLabel value="Ethinic Group:" for="ethinicGroup" />
                             <p:selectOneMenu id="ethinicGroup" value="#{clientController.selected.person.ethinicGroup}" >
                                 <f:selectItems value="#{itemController.ethinicities}" var="e" itemLabel="#{e.name}"
                                                itemValue="#{e}" ></f:selectItems>
@@ -292,11 +295,12 @@
                             <p:spacer></p:spacer>
                             <p:spacer></p:spacer>
 
-                            <p:outputLabel value="Age:"  />
+                            <p:outputLabel value="Age: *"  />
                             <h:panelGroup >
                                 <p:inputText autocomplete="off"  id="year"  
                                              value="#{clientController.yearMonthDay.year}" 
                                              style="width: 90px; ">
+                                    <f:validateRegex pattern="^((0|1|2|3|4|5|6|7|8|9){1}|(0|1|2|3|4|5|6|7|8|9){2}|(0|1|2|3|4|5|6|7|8|9){3})?$"></f:validateRegex>
                                     <f:ajax event="keyup" execute="@this month day" render="calDob" 
                                             listener="#{clientController.yearMonthDateChanged()}"  />
                                 </p:inputText>
@@ -318,7 +322,7 @@
 
                             </h:panelGroup>
 
-                            <p:outputLabel value="Date of Birth:"  />
+                            <p:outputLabel value="Date of Birth: *"  />
                             <p:calendar  value="#{clientController.selected.person.dateOfBirth}" 
                                          id="calDob"  navigator="true" pattern="dd/MM/yyyy" yearRange="1900:today"
                                          inputStyle="width: 124px!important;" required="true"

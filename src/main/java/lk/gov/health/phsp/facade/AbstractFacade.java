@@ -146,11 +146,6 @@ public abstract class AbstractFacade<T> {
         getEntityManager().merge(entity);
     }
 
-    public void editAndCommit(T entity) {
-        getEntityManager().merge(entity);
-        getEntityManager().getTransaction().commit();
-    }
-
     public void remove(T entity) {
         getEntityManager().remove(getEntityManager().merge(entity));
     }
@@ -602,8 +597,6 @@ public abstract class AbstractFacade<T> {
         return AbstractFacade.this.findByJpql(jpql, parameters, TemporalType.DATE, maxRecords);
     }
 
-    private void test(Class myClass, Object ob) {
-    }
 
     public Long countByJpql(String sql) {
         return countByJpql(sql, null, TemporalType.DATE);

@@ -82,6 +82,12 @@
                                 <h:outputLabel value="Address" ></h:outputLabel>
                                 <h:outputLabel value="#{clientController.selected.person.address}" ></h:outputLabel>
 
+                                <h:outputLabel value="Date of Registration" ></h:outputLabel>
+                                <h:outputLabel value="#{clientController.selected.createdAt}" >
+                                    <f:convertDateTime pattern="dd MMMM yyyy" ></f:convertDateTime>
+                                </h:outputLabel>
+
+                                
                             </p:panelGrid>
                         </p:panelGrid>
 
