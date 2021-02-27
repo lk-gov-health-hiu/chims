@@ -327,6 +327,8 @@ public class ClientEncounterComponentFormSetController implements Serializable {
         ti.setInstitution(vi.getInstitutionValue());
         ti.setPrescriptionValue(vi.getPrescriptionValue());
 
+        ti.setReferenceComponent(vi.getReferenceComponent());
+        
         getItemFacade().edit(ti);
 
         if (ti.getItem() == null || ti.getItem().getCode() == null) {
@@ -716,6 +718,9 @@ public class ClientEncounterComponentFormSetController implements Serializable {
 
         ClientEncounterComponentFormSet cfs = new ClientEncounterComponentFormSet();
 
+        cfs.setCreatedAt(new Date());
+        cfs.setCreatedBy(webUserController.getLoggedUser());
+        
         cfs.setEncounter(e);
         cfs.setInstitution(dfs.getInstitution());
 
@@ -1506,11 +1511,11 @@ public class ClientEncounterComponentFormSetController implements Serializable {
     protected void initializeEmbeddableKey() {
     }
 
-    public ClientEncounterComponentFormSet prepareCreate() {
-        selected = new ClientEncounterComponentFormSet();
-        initializeEmbeddableKey();
-        return selected;
-    }
+//    public ClientEncounterComponentFormSet prepareCreate() {
+//        selected = new ClientEncounterComponentFormSet();
+//        initializeEmbeddableKey();
+//        return selected;
+//    }
 
     public void create() {
         persist(PersistAction.CREATE, ResourceBundle.getBundle("/BundleClinical").getString("ClientEncounterComponentFormSetCreated"));

@@ -123,11 +123,11 @@ public class ClientEncounterComponentItemController implements Serializable {
         return ejbFacade;
     }
 
-    public ClientEncounterComponentItem prepareCreate() {
-        selected = new ClientEncounterComponentItem();
-        initializeEmbeddableKey();
-        return selected;
-    }
+//    public ClientEncounterComponentItem prepareCreate() {
+//        selected = new ClientEncounterComponentItem();
+//        initializeEmbeddableKey();
+//        return selected;
+//    }
 
     public void save() {
         save(selected);
@@ -174,25 +174,25 @@ public class ClientEncounterComponentItemController implements Serializable {
             if (r.getClientEncounterComponentItem() != null) {
                 ClientEncounterComponentItem c = r.getClientEncounterComponentItem();
 
-                if (c.getItem() == null) {
+                if (c==null || c.getReferanceDesignComponentFormItem()==null || c.getReferanceDesignComponentFormItem().getItem() == null) {
                     continue;
                 } else {
-                    if (c.getItem().getDataType() == null) {
+                    if (c.getReferanceDesignComponentFormItem().getItem().getDataType() == null) {
                         continue;
                     }
                 }
-                SelectionDataType dataType = null;
-                if (c.getReferanceDesignComponentFormItem().getSelectionDataType() == null && c.getItem().getDataType() == null) {
+                SelectionDataType dataType;
+                if (c.getReferanceDesignComponentFormItem().getSelectionDataType() == null && c.getReferanceDesignComponentFormItem().getItem().getDataType() == null) {
                     dataType = SelectionDataType.Real_Number;
-                } else if (c.getReferanceDesignComponentFormItem().getSelectionDataType() != null && c.getItem().getDataType() == null) {
+                } else if (c.getReferanceDesignComponentFormItem().getSelectionDataType() != null && c.getReferanceDesignComponentFormItem().getItem().getDataType() == null) {
                     dataType = c.getReferanceDesignComponentFormItem().getSelectionDataType();
-                } else if (c.getReferanceDesignComponentFormItem().getSelectionDataType() == null && c.getItem().getDataType() != null) {
+                } else if (c.getReferanceDesignComponentFormItem().getSelectionDataType() == null && c.getReferanceDesignComponentFormItem().getItem().getDataType() != null) {
                     dataType = c.getItem().getDataType();
                 } else {
-                    if(c.getReferanceDesignComponentFormItem().getSelectionDataType() == c.getItem().getDataType()){
-                        dataType = c.getItem().getDataType();
+                    if(c.getReferanceDesignComponentFormItem().getSelectionDataType() == c.getReferanceDesignComponentFormItem().getItem().getDataType()){
+                        dataType = c.getReferanceDesignComponentFormItem().getItem().getDataType();
                     }else{
-                        dataType = c.getItem().getDataType();
+                        dataType = c.getReferanceDesignComponentFormItem().getItem().getDataType();
                         System.err.println("Error in data types");
                     }
                 }
@@ -243,11 +243,11 @@ public class ClientEncounterComponentItemController implements Serializable {
         } else {
             switch (i.getItem().getDataType()) {
                 case Real_Number:
-                    i.setRealNumberValue(commonController.getDoubleValue(result));
+                    i.setRealNumberValue(CommonController.getDoubleValue(result));
                     getFacade().edit(i);
                     break;
                 case Integer_Number:
-                    i.setIntegerNumberValue(commonController.getIntegerValue(result));
+                    i.setIntegerNumberValue(CommonController.getIntegerValue(result));
                     getFacade().edit(i);
                     break;
                 case Short_Text:
