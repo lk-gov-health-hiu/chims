@@ -116,7 +116,7 @@ public class Component implements Serializable {
     private boolean completed;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date completedAt;
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     private WebUser completedBy;
 
     public Long getId() {

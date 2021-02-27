@@ -68,10 +68,14 @@
 
                             </p:tab>
                             <p:tab title="Counts" >
-                                 <p:commandButton value="Monthly Counts of Institutions" 
+                                 <p:commandButton value="Counts" 
+                                                     style="width:20em;margin:auto;"
+                                                     action="#{indicatorController.toProcesCounts()}"
+                                                     ajax="false"></p:commandButton>
+                                 <p:commandButton value="Counts for Indicators" 
                                                      style="width:20em;margin:auto;"
                                                      action="#{indicatorController.toProcesCountsForSelectedIndicators()}"
-                                                     ajax="false"></p:commandButton>F
+                                                     ajax="false"></p:commandButton>
                             </p:tab>
 
 

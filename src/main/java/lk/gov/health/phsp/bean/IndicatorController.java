@@ -121,6 +121,13 @@ public class IndicatorController implements Serializable {
         return "/indicators/clinic_counts_for_selected_indicators";
     }
 
+    public String toProcesCounts() {
+        message = "";
+        result = "";
+        institution = null;
+        return "/indicators/clinic_counts";
+    }
+
     public String toRdhsMonthly() {
         message = "";
         result = "";
@@ -175,6 +182,69 @@ public class IndicatorController implements Serializable {
     public String toIndicatorIndex() {
         userTransactionController.recordTransaction("To View Indicators");
         return "/indicators/index";
+    }
+
+    public void runClinicCounts() {
+        if (institution == null) {
+            JsfUtil.addErrorMessage("HLC ?");
+            return;
+        }
+        if (queryComponent == null) {
+            JsfUtil.addErrorMessage("Indicators ?");
+            return;
+        }
+        if (year == 0) {
+            JsfUtil.addErrorMessage("Year ?");
+            return;
+        }
+        if (month == null) {
+            JsfUtil.addErrorMessage("Month");
+            return;
+        }
+        if (institution.getInstitutionType() == null) {
+            JsfUtil.addErrorMessage("No Type for the institution");
+            return;
+        }
+        if (institution.getInstitutionType() != InstitutionType.Clinic) {
+            JsfUtil.addErrorMessage("Selected institution is NOT a HLC?");
+            return;
+        }
+        Jpq j = new Jpq();
+        fromDate = CommonController.startOfTheMonth(year, month);
+        toDate = CommonController.endOfTheMonth(year, month);
+
+        List<QueryWithCriteria> qs = new ArrayList<>();
+        List<EncounterWithComponents> encountersWithComponents;
+
+        List<Long> encounterIds = findEncounterIds(fromDate,
+                toDate,
+                institution);
+
+        encountersWithComponents = findEncountersWithComponents(encounterIds);
+        if (encountersWithComponents == null) {
+            j.setErrorMessage("No data for the selected institution for the period");
+            JsfUtil.addErrorMessage("No data?");
+            return;
+        }
+
+        QueryWithCriteria qwc = new QueryWithCriteria();
+        qwc.setQuery(queryComponent);
+        qwc.setCriteria(findCriteriaForQueryComponent(queryComponent.getCode()));
+
+        Long value = calculateIndividualQueryResult(encountersWithComponents, qwc);
+        j.setMessage("Clinic : " + institution.getName() + "\n");
+        j.setMessage(j.getMessage() + "From : " + CommonController.formatDate(fromDate) + "\n");
+        j.setMessage(j.getMessage() + "To : " + CommonController.formatDate(toDate) + "\n");
+        j.setMessage(j.getMessage() + "Number of Encounters : " + encountersWithComponents.size() + "\n");
+        j.setMessage(j.getMessage() + "Count : " + qwc.getQuery().getName() + "\n");
+        if (value != null) {
+            storedQueryResultController.saveValue(qwc.getQuery(), fromDate, toDate, institution, value);
+            j.setMessage(j.getMessage() + "Result : " + value + "\n");
+        }else{
+            j.setMessage(j.getMessage() + "Result : No Result\n");
+        }
+        message = CommonController.stringToHtml(j.getErrorMessage());
+        result = CommonController.stringToHtml(j.getMessage());
     }
 
     public void runClinicCountsForSelectedIndicators() {
@@ -938,7 +1008,7 @@ public class IndicatorController implements Serializable {
         message = CommonController.stringToHtml(j.getMessage());
 
     }
-    
+
     public void runHlcQuarterly() {
         if (institution == null) {
             JsfUtil.addErrorMessage("HLC ?");
@@ -1202,7 +1272,6 @@ public class IndicatorController implements Serializable {
             JsfUtil.addErrorMessage("Selected institution do not have HLCs under that");
             return;
         }
-
 
         for (Replaceable r : rs) {
 

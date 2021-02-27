@@ -123,7 +123,7 @@ public class QueryComponentController implements Serializable {
     private QueryComponent selectedCategory;
     private QueryComponent selectedSubcategory;
     private QueryComponent selectedForQuery;
-    
+
     private QueryComponent selectedCount;
     private QueryComponent selectedPopulation;
 
@@ -281,11 +281,6 @@ public class QueryComponentController implements Serializable {
 //    public void listQueries() {
 //        listQueries(searchText);
 //    }
-    
-    
-    
-    
-    
     public List<Item> getItemsForCountCriteriaItems() {
         System.out.println("getItemsInDesignFormItemValues");
         System.out.println("getSelectedCountCriteria() = " + getSelectedCountCriteria());
@@ -301,14 +296,14 @@ public class QueryComponentController implements Serializable {
         Map m = new HashMap();
         m.put("ret", true);
         m.put("qry", getSelectedCountCriteria().getItem().getCode().trim().toLowerCase());
-        
+
         System.out.println("m = " + m);
         System.out.println("j = " + j);
-        
+
         List<Item> parentItems = getItemFacade().findByJpql(j, m);
-        
+
         System.out.println("parentItems = " + parentItems);
-        
+
         List<Item> temItsm = new ArrayList<>();
 
         if (parentItems == null || parentItems.isEmpty()) {
@@ -326,24 +321,24 @@ public class QueryComponentController implements Serializable {
             m = new HashMap();
             m.put("ret", true);
             m.put("code", i.getCode());
-            
-            System.out.println("j 1 = " +j);
+
+            System.out.println("j 1 = " + j);
             System.out.println("m 1 = " + m);
-            
+
             List<Item> temIt = getItemFacade().findByJpql(j, m);
-            
+
             System.out.println("temIt = " + temIt);
-            
+
             if (temIt != null) {
                 temItsm.addAll(temIt);
             }
         }
-        
+
         System.out.println("temItsm = " + temItsm);
-        
+
         return temItsm;
     }
-    
+
     public List<Item> getItemsInDesignFormItemValues() {
         System.out.println("getItemsInDesignFormItemValues");
         System.out.println("getSelected() = " + getSelected());
@@ -359,14 +354,14 @@ public class QueryComponentController implements Serializable {
         Map m = new HashMap();
         m.put("ret", true);
         m.put("qry", getSelected().getItem().getCode().trim().toLowerCase());
-        
+
         System.out.println("m = " + m);
         System.out.println("j = " + j);
-        
+
         List<Item> parentItems = getItemFacade().findByJpql(j, m);
-        
+
         System.out.println("parentItems = " + parentItems);
-        
+
         List<Item> temItsm = new ArrayList<>();
 
         if (parentItems == null || parentItems.isEmpty()) {
@@ -384,21 +379,21 @@ public class QueryComponentController implements Serializable {
             m = new HashMap();
             m.put("ret", true);
             m.put("code", i.getCode());
-            
-            System.out.println("j 1 = " +j);
+
+            System.out.println("j 1 = " + j);
             System.out.println("m 1 = " + m);
-            
+
             List<Item> temIt = getItemFacade().findByJpql(j, m);
-            
+
             System.out.println("temIt = " + temIt);
-            
+
             if (temIt != null) {
                 temItsm.addAll(temIt);
             }
         }
-        
+
         System.out.println("temItsm = " + temItsm);
-        
+
         return temItsm;
     }
 
@@ -861,12 +856,54 @@ public class QueryComponentController implements Serializable {
     }
 
     public List<QueryComponent> completeCounts(String qry) {
-        List<QueryComponent> tls = applicationController.getQueryComponents();
+        if (qry == null || qry.equals("")) {
+            return null;
+        }
+        List<QueryComponent> allQcs = applicationController.getQueryComponents();
+
+        List<QueryComponent> tls = new ArrayList<>();
+
+        for (QueryComponent qc : allQcs) {
+            if (qc.getQueryType() == QueryType.Encounter_Count || qc.getQueryType() == QueryType.Client_Count) {
+                tls.add(qc);
+            }
+        }
+
         List<QueryComponent> sls = new ArrayList<>();
         qry = qry.trim().toLowerCase();
 
-        for (QueryComponent qc : tls) {
-            if (qc.getQueryType() == QueryType.Encounter_Count || qc.getQueryType() == QueryType.Client_Count) {
+        if (!qry.matches("\\S+") && (qry.length() > 0)) {
+            String[] splited = qry.split("\\s+");
+            
+
+            for (QueryComponent qc : tls) {
+                boolean canInclude = true;
+                for (String s : splited) {
+                    if (!qc.getName().toLowerCase().contains(s) && !qc.getCode().toLowerCase().contains(s)) {
+                        canInclude=false;
+                    }
+                }
+                if(canInclude){
+                    sls.add(qc);
+                }
+            }
+
+        } else {
+
+            for (QueryComponent qc : tls) {
+                if (qc.getCode().toLowerCase().equals(qry)) {
+                    sls.add(qc);
+                    return sls;
+                }
+            }
+
+            for (QueryComponent qc : tls) {
+                if (qc.getCode().toLowerCase().contains(qry) || qc.getCode().toLowerCase().contains(qry)) {
+                    sls.add(qc);
+                }
+            }
+
+            for (QueryComponent qc : tls) {
                 if (qc.getName().toLowerCase().contains(qry) || qc.getName().toLowerCase().contains(qry)) {
                     sls.add(qc);
                 }
@@ -973,8 +1010,7 @@ public class QueryComponentController implements Serializable {
         for (QueryComponent q : tqcs) {
             if (q.getQueryType() == QueryType.Client_Count
                     || q.getQueryType() == QueryType.Encounter_Count
-                    || q.getQueryType() == QueryType.Formset_Count
-                    ) {
+                    || q.getQueryType() == QueryType.Formset_Count) {
                 nqs.add(q);
             }
         }
@@ -3324,9 +3360,6 @@ public class QueryComponentController implements Serializable {
         persist(PersistAction.UPDATE, ResourceBundle.getBundle("/BundleQuery").getString("QueryComponentUpdated"));
     }
 
-    
-    
-    
     public void destroy() {
         persist(PersistAction.DELETE, ResourceBundle.getBundle("/BundleQuery").getString("QueryComponentDeleted"));
         if (!JsfUtil.isValidationFailed()) {
