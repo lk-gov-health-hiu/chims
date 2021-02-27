@@ -251,7 +251,7 @@ public class ClientEncounterComponentFormSetController implements Serializable {
         m.put("s", s);
         List<ClientEncounterComponentItem> is = getItemFacade().findByJpql(j, m);
         for (ClientEncounterComponentItem i : is) {
-            if (i.getDataCompletionStrategy() == DataCompletionStrategy.Replace_Values_of_client) {
+            if (i.getReferanceDesignComponentFormItem().getDataCompletionStrategy() == DataCompletionStrategy.Replace_Values_of_client) {
                 updateToClientValue(i);
             }
         }
@@ -720,13 +720,9 @@ public class ClientEncounterComponentFormSetController implements Serializable {
         cfs.setInstitution(dfs.getInstitution());
 
         cfs.setReferenceComponent(dfs);
-        cfs.setComponentSetType(dfs.getComponentSetType());
-        cfs.setPanelType(dfs.getPanelType());
         cfs.setName(dfs.getName());
         cfs.setDescreption(dfs.getDescreption());
-        cfs.setForegroundColour(dfs.getForegroundColour());
-        cfs.setBackgroundColour(dfs.getBackgroundColour());
-        cfs.setBorderColour(dfs.getBorderColour());
+        cfs.setCss(dfs.getCss());
 
         getFacade().create(cfs);
 
@@ -754,13 +750,9 @@ public class ClientEncounterComponentFormSetController implements Serializable {
                 cf.setReferenceComponent(df);
                 cf.setName(df.getName());
                 cf.setOrderNo(df.getOrderNo());
-                cf.setItemArrangementStrategy(df.getItemArrangementStrategy());
                 cf.setParentComponent(cfs);
-
-                cf.setBackgroundColour(df.getBackgroundColour());
-                cf.setForegroundColour(df.getForegroundColour());
-                cf.setBorderColour(df.getBorderColour());
-
+                cf.setCss(df.getCss());
+                
                 clientEncounterComponentFormController.save(cf);
 
                 List<DesignComponentFormItem> diList = designComponentFormItemController.fillItemsOfTheForm(df);
@@ -788,58 +780,18 @@ public class ClientEncounterComponentFormSetController implements Serializable {
                         ci.setItem(dis.getItem());
                         ci.setDescreption(dis.getDescreption());
 
-                        ci.setRequired(dis.isRequired());
-                        ci.setRequiredErrorMessage(dis.getRequiredErrorMessage());
-                        ci.setRegexValidationString(dis.getRegexValidationString());
-                        ci.setRegexValidationFailedMessage(dis.getRegexValidationFailedMessage());
-
                         ci.setReferenceComponent(dis);
                         ci.setParentComponent(cf);
                         ci.setName(dis.getName());
-                        ci.setRenderType(dis.getRenderType());
-                        ci.setMimeType(dis.getMimeType());
-                        ci.setSelectionDataType(dis.getSelectionDataType());
-                        ci.setTopPercent(dis.getTopPercent());
-                        ci.setLeftPercent(dis.getLeftPercent());
-                        ci.setWidthPercent(dis.getWidthPercent());
-                        ci.setHeightPercent(dis.getHeightPercent());
-                        ci.setCategoryOfAvailableItems(dis.getCategoryOfAvailableItems());
+                        ci.setCss(dis.getCss());
                         ci.setOrderNo(dis.getOrderNo());
-                        ci.setDataPopulationStrategy(dis.getDataPopulationStrategy());
-                        ci.setDataModificationStrategy(dis.getDataModificationStrategy());
-                        ci.setDataCompletionStrategy(dis.getDataCompletionStrategy());
-                        ci.setIntHtmlColor(dis.getIntHtmlColor());
-                        ci.setHexHtmlColour(dis.getHexHtmlColour());
-
-                        ci.setForegroundColour(dis.getForegroundColour());
-                        ci.setBackgroundColour(dis.getBackgroundColour());
-                        ci.setBorderColour(dis.getBorderColour());
-
-                        ci.setCalculateOnFocus(dis.isCalculateOnFocus());
-                        ci.setCalculationScript(dis.getCalculationScript());
-
-                        ci.setCalculateButton(dis.isCalculateButton());
-                        ci.setCalculationScriptForColour(dis.getCalculationScriptForColour());
-                        ci.setDisplayDetailsBox(dis.isDisplayDetailsBox());
-                        ci.setDiscreptionAsAToolTip(dis.isDiscreptionAsAToolTip());
-
-                        ci.setDisplayLastResult(dis.isDisplayLastResult());
-                        ci.setDisplayLinkToClientValues(dis.isDisplayLastResult());
-                        ci.setResultDisplayStrategy(dis.getResultDisplayStrategy());
-                        ci.setDisplayLinkToResultList(dis.isDisplayLinkToResultList());
-
-                        ci.setDiscreptionAsASideLabel(dis.isDiscreptionAsASideLabel());
-
-                        ci.setCalculationScriptForBackgroundColour(dis.getCalculationScriptForBackgroundColour());
-                        ci.setMultipleEntiesPerForm(dis.isMultipleEntiesPerForm());
-
                         ci.setDataRepresentationType(DataRepresentationType.Encounter);
 
                         clientEncounterComponentItemController.save(ci);
 
-                        if (ci.getDataPopulationStrategy() == DataPopulationStrategy.From_Client_Value) {
+                        if (ci.getReferanceDesignComponentFormItem().getDataPopulationStrategy() == DataPopulationStrategy.From_Client_Value) {
                             updateFromClientValueSingle(ci, e.getClient(), mapOfClientValues);
-                        } else if (ci.getDataPopulationStrategy() == DataPopulationStrategy.From_Last_Encounter) {
+                        } else if (ci.getReferanceDesignComponentFormItem().getDataPopulationStrategy() == DataPopulationStrategy.From_Last_Encounter) {
                             updateFromLastEncounter(ci);
                         }
 
@@ -1060,22 +1012,22 @@ public class ClientEncounterComponentFormSetController implements Serializable {
             return lr;
         }
         List<ClientEncounterComponentItem> lcis = null;
-        if (ci.getResultDisplayStrategy() == DataPopulationStrategy.From_Client_Value) {
+        if (ci.getReferanceDesignComponentFormItem().getResultDisplayStrategy() == DataPopulationStrategy.From_Client_Value) {
             lcis = dataFromClientValue(ci);
-        } else if (ci.getResultDisplayStrategy() == DataPopulationStrategy.From_Last_Encounter) {
+        } else if (ci.getReferanceDesignComponentFormItem().getResultDisplayStrategy() == DataPopulationStrategy.From_Last_Encounter) {
             lcis = dataFromLastEncounter(ci);
         }
-        if (ci.getResultDisplayStrategy() == DataPopulationStrategy.From_Last_Encounter_of_same_clinic) {
+        if (ci.getReferanceDesignComponentFormItem().getResultDisplayStrategy() == DataPopulationStrategy.From_Last_Encounter_of_same_clinic) {
 
         }
-        if (ci.getResultDisplayStrategy() == DataPopulationStrategy.From_Last_Encounter_of_same_formset) {
+        if (ci.getReferanceDesignComponentFormItem().getResultDisplayStrategy() == DataPopulationStrategy.From_Last_Encounter_of_same_formset) {
 
         }
         if (lcis == null) {
             return lr;
         }
 
-        switch (ci.getSelectionDataType()) {
+        switch (ci.getReferanceDesignComponentFormItem().getSelectionDataType()) {
             case Area_Reference:
                 lr = areaValueToString(lcis);
                 break;
@@ -1450,7 +1402,7 @@ public class ClientEncounterComponentFormSetController implements Serializable {
                 + " and vi.encounter.client=:c "
                 + " and vi.encounter <> :te "
                 + " and vi.dataRepresentationType=:r ";
-        switch (ti.getSelectionDataType()) {
+        switch (ti.getReferanceDesignComponentFormItem().getSelectionDataType()) {
             case Area_Reference:
                 j += "and vi.areaValue is not null ";
                 break;

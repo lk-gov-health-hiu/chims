@@ -48,6 +48,10 @@ import lk.gov.health.phsp.enums.RenderType;
 public class Component implements Serializable {
 
     private static final long serialVersionUID = 1L;
+
+    public static long getSerialVersionUID() {
+        return serialVersionUID;
+    }
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -73,14 +77,37 @@ public class Component implements Serializable {
     @ManyToOne(fetch = FetchType.LAZY)
     private Component referenceComponent;
 
-    @Enumerated(EnumType.STRING)
-    RenderType renderType;
-
     @Lob
     private String css;
 
     @Transient
     private String generatedCss;
+    @Transient
+    private DesignComponentFormSet referanceDesignComponentFormSet;
+    @Transient
+    private DesignComponentForm referanceDesignComponentForm;
+    @Transient
+    private DesignComponentFormItem referanceDesignComponentFormItem;
+    @Transient
+    private DesignComponentFormSet parentDesignComponentFormSet;
+    @Transient
+    private DesignComponentForm parentDesignComponentForm;
+    @Transient
+    private DesignComponentFormItem parentDesignComponentFormItem;
+
+    @Transient
+    private ClientEncounterComponentFormSet referanceClientEncounterComponentFormSet;
+    @Transient
+    private ClientEncounterComponentForm referanceClientEncounterComponentForm;
+    @Transient
+    private ClientEncounterComponentItem referanceClientEncounterComponentItem;
+    @Transient
+    private ClientEncounterComponentFormSet parentClientEncounterComponentFormSet;
+    @Transient
+    private ClientEncounterComponentForm parentClientEncounterComponentForm;
+    @Transient
+    private ClientEncounterComponentForm parentClientEncounterComponentItem;
+
 
     /*
     Create Properties
@@ -158,14 +185,6 @@ public class Component implements Serializable {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public RenderType getRenderType() {
-        return renderType;
-    }
-
-    public void setRenderType(RenderType renderType) {
-        this.renderType = renderType;
     }
 
     public Component getParentComponent() {
@@ -305,10 +324,11 @@ public class Component implements Serializable {
     public void setDescreption(String descreption) {
         this.descreption = descreption;
     }
-    
-        public String getGeneratedCss() {
-            return css;
-        }
+
+    public String getGeneratedCss() {
+        generatedCss = css;
+        return generatedCss;
+    }
 
 //    public String getGeneratedCss() {
 //        generatedCss = "";
@@ -380,6 +400,90 @@ public class Component implements Serializable {
 
     public void setCompletedBy(WebUser completedBy) {
         this.completedBy = completedBy;
+    }
+
+    public DesignComponentFormSet getReferanceDesignComponentFormSet() {
+        if (referenceComponent instanceof DesignComponentFormSet) {
+            referanceDesignComponentFormSet = (DesignComponentFormSet) referenceComponent;
+        }
+        return referanceDesignComponentFormSet;
+    }
+
+    public DesignComponentForm getReferanceDesignComponentForm() {
+        if (referenceComponent instanceof DesignComponentForm) {
+            referanceDesignComponentForm = (DesignComponentForm) referenceComponent;
+        }
+        return referanceDesignComponentForm;
+    }
+
+    public DesignComponentFormItem getReferanceDesignComponentFormItem() {
+        if (referenceComponent instanceof DesignComponentFormItem) {
+            referanceDesignComponentFormItem = (DesignComponentFormItem) referenceComponent;
+        }
+        return referanceDesignComponentFormItem;
+    }
+
+    public DesignComponentFormSet getParentDesignComponentFormSet() {
+        if (parentComponent instanceof DesignComponentFormSet) {
+            parentDesignComponentFormSet = (DesignComponentFormSet) parentComponent;
+        }
+        return parentDesignComponentFormSet;
+    }
+
+    public DesignComponentForm getParentDesignComponentForm() {
+        if (parentComponent instanceof DesignComponentForm) {
+            parentDesignComponentForm = (DesignComponentForm) parentComponent;
+        }
+        return parentDesignComponentForm;
+    }
+
+    public DesignComponentFormItem getParentDesignComponentFormItem() {
+        if (parentComponent instanceof DesignComponentFormItem) {
+            parentDesignComponentFormItem = (DesignComponentFormItem) parentComponent;
+        }
+        return parentDesignComponentFormItem;
+    }
+
+    public ClientEncounterComponentFormSet getReferanceClientEncounterComponentFormSet() {
+        if (referenceComponent instanceof ClientEncounterComponentFormSet) {
+            referanceClientEncounterComponentFormSet = (ClientEncounterComponentFormSet) referenceComponent;
+        }
+        return referanceClientEncounterComponentFormSet;
+    }
+
+    public ClientEncounterComponentForm getReferanceClientEncounterComponentForm() {
+        if (referenceComponent instanceof ClientEncounterComponentForm) {
+            referanceClientEncounterComponentForm = (ClientEncounterComponentForm) referenceComponent;
+        }
+        return referanceClientEncounterComponentForm;
+    }
+
+    public ClientEncounterComponentItem getReferanceClientEncounterComponentItem() {
+        if (referenceComponent instanceof ClientEncounterComponentItem) {
+            referanceClientEncounterComponentItem = (ClientEncounterComponentItem) referenceComponent;
+        }
+        return referanceClientEncounterComponentItem;
+    }
+
+    public ClientEncounterComponentFormSet getParentClientEncounterComponentFormSet() {
+        if (parentComponent instanceof ClientEncounterComponentFormSet) {
+            parentClientEncounterComponentFormSet = (ClientEncounterComponentFormSet) parentComponent;
+        }
+        return parentClientEncounterComponentFormSet;
+    }
+
+    public ClientEncounterComponentForm getParentClientEncounterComponentForm() {
+        if (parentComponent instanceof ClientEncounterComponentForm) {
+            parentClientEncounterComponentForm = (ClientEncounterComponentForm) parentComponent;
+        }
+        return parentClientEncounterComponentForm;
+    }
+
+    public ClientEncounterComponentForm getParentClientEncounterComponentItem() {
+        if (parentComponent instanceof ClientEncounterComponentForm) {
+            parentClientEncounterComponentItem = (ClientEncounterComponentForm) parentComponent;
+        }
+        return parentClientEncounterComponentItem;
     }
 
 }

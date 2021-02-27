@@ -138,7 +138,7 @@ public class ClientEncounterComponentItemController implements Serializable {
             return;
         }
 
-        if (i.getCalculationScript() == null || i.getCalculationScript().trim().equals("")) {
+        if (i.getReferanceDesignComponentFormItem().getCalculationScript() == null || i.getReferanceDesignComponentFormItem().getCalculationScript().trim().equals("")) {
            return;
         }
         if (i.getParentComponent() == null || i.getParentComponent().getParentComponent() == null) {
@@ -148,7 +148,7 @@ public class ClientEncounterComponentItemController implements Serializable {
            return;
         }
 
-        if (i.getCalculationScript().trim().equalsIgnoreCase("#{client_current_age_in_years}")) {
+        if (i.getReferanceDesignComponentFormItem().getCalculationScript().trim().equalsIgnoreCase("#{client_current_age_in_years}")) {
             ClientEncounterComponentFormSet s = (ClientEncounterComponentFormSet) i.getParentComponent().getParentComponent();
             Person p = s.getEncounter().getClient().getPerson();
             i.setShortTextValue(p.getAgeYears() + "");
@@ -159,7 +159,7 @@ public class ClientEncounterComponentItemController implements Serializable {
         } else {
         }
 
-        List<Replaceable> replacingBlocks = findReplaceblesInCalculationString(i.getCalculationScript());
+        List<Replaceable> replacingBlocks = findReplaceblesInCalculationString(i.getReferanceDesignComponentFormItem().getCalculationScript());
        
         for (Replaceable r : replacingBlocks) {
            if (r.getPef().equalsIgnoreCase("f")) {
@@ -182,14 +182,14 @@ public class ClientEncounterComponentItemController implements Serializable {
                     }
                 }
                 SelectionDataType dataType = null;
-                if (c.getSelectionDataType() == null && c.getItem().getDataType() == null) {
+                if (c.getReferanceDesignComponentFormItem().getSelectionDataType() == null && c.getItem().getDataType() == null) {
                     dataType = SelectionDataType.Real_Number;
-                } else if (c.getSelectionDataType() != null && c.getItem().getDataType() == null) {
-                    dataType = c.getSelectionDataType();
-                } else if (c.getSelectionDataType() == null && c.getItem().getDataType() != null) {
+                } else if (c.getReferanceDesignComponentFormItem().getSelectionDataType() != null && c.getItem().getDataType() == null) {
+                    dataType = c.getReferanceDesignComponentFormItem().getSelectionDataType();
+                } else if (c.getReferanceDesignComponentFormItem().getSelectionDataType() == null && c.getItem().getDataType() != null) {
                     dataType = c.getItem().getDataType();
                 } else {
-                    if(c.getSelectionDataType() == c.getItem().getDataType()){
+                    if(c.getReferanceDesignComponentFormItem().getSelectionDataType() == c.getItem().getDataType()){
                         dataType = c.getItem().getDataType();
                     }else{
                         dataType = c.getItem().getDataType();
@@ -235,7 +235,7 @@ public class ClientEncounterComponentItemController implements Serializable {
             }
         }
 
-        String javaStringToEvaluate = addTemplateToReport(i.getCalculationScript().trim(), replacingBlocks);
+        String javaStringToEvaluate = addTemplateToReport(i.getReferanceDesignComponentFormItem().getCalculationScript().trim(), replacingBlocks);
         String result = evaluateScript(javaStringToEvaluate);
         
         if (null == i.getItem().getDataType()) {
@@ -458,49 +458,11 @@ public class ClientEncounterComponentItemController implements Serializable {
 
         ci.setParentComponent(i.getParentComponent());
         ci.setReferenceComponent(i.getReferenceComponent());
-
         ci.setEncounter(i.getEncounter());
         ci.setInstitution(i.getInstitution());
-
         ci.setItem(i.getItem());
         ci.setDescreption(i.getDescreption());
-
-        ci.setRequired(i.isRequired());
-        ci.setRequiredErrorMessage(i.getRequiredErrorMessage());
-        ci.setRegexValidationString(i.getRegexValidationString());
-        ci.setRegexValidationFailedMessage(i.getRegexValidationFailedMessage());
-
         ci.setName(i.getName());
-        ci.setRenderType(i.getRenderType());
-        ci.setMimeType(i.getMimeType());
-//        ci.setSelectionDataType(i.getSelectionDataType());
-        ci.setTopPercent(i.getTopPercent());
-        ci.setLeftPercent(i.getLeftPercent());
-        ci.setWidthPercent(i.getWidthPercent());
-        ci.setHeightPercent(i.getHeightPercent());
-        ci.setCategoryOfAvailableItems(i.getCategoryOfAvailableItems());
-
-        ci.setDataPopulationStrategy(i.getDataPopulationStrategy());
-        ci.setDataModificationStrategy(i.getDataModificationStrategy());
-        ci.setDataCompletionStrategy(i.getDataCompletionStrategy());
-        ci.setIntHtmlColor(i.getIntHtmlColor());
-        ci.setHexHtmlColour(i.getHexHtmlColour());
-
-        ci.setForegroundColour(i.getForegroundColour());
-        ci.setBackgroundColour(i.getBackgroundColour());
-        ci.setBorderColour(i.getBorderColour());
-
-        ci.setCalculateOnFocus(i.isCalculateOnFocus());
-        ci.setCalculationScript(i.getCalculationScript());
-
-        ci.setCalculateButton(i.isCalculateButton());
-        ci.setCalculationScriptForColour(i.getCalculationScriptForColour());
-        ci.setDisplayDetailsBox(i.isDisplayDetailsBox());
-        ci.setDiscreptionAsAToolTip(i.isDiscreptionAsAToolTip());
-        ci.setDiscreptionAsASideLabel(i.isDiscreptionAsASideLabel());
-        ci.setCalculationScriptForBackgroundColour(i.getCalculationScriptForBackgroundColour());
-        ci.setMultipleEntiesPerForm(i.isMultipleEntiesPerForm());
-
         ci.setParentComponent(i.getParentComponent());
         ci.setReferenceComponent(i.getReferenceComponent());
         

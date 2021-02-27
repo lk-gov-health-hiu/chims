@@ -43,7 +43,7 @@
                             </div>
                         </f:facet>
 
-                        <h:panelGroup rendered="#{clientEncounterComponentFormSetController.selected.panelType eq 'TabView_Bottom_Oriented'}" >
+                        <h:panelGroup rendered="#{clientEncounterComponentFormSetController.selected.referanceDesignComponentFormSet.panelType eq 'TabView_Bottom_Oriented'}" >
                             <p:tabView orientation="bottom" style="width: 100%;" value="#{clientEncounterComponentFormController.findClientEncounterComponentFormOfAFormset(clientEncounterComponentFormSetController.selected)}" var="f">
                                 <p:tab title="#{f.name}" >
                                     <div style="#{f.generatedCss}" >
@@ -52,7 +52,7 @@
                                 </p:tab>
                             </p:tabView>
                         </h:panelGroup>
-                        <h:panelGroup rendered="#{clientEncounterComponentFormSetController.selected.panelType eq 'TabView_Left_Oriented'}" >
+                        <h:panelGroup rendered="#{clientEncounterComponentFormSetController.selected.referanceDesignComponentFormSet.panelType eq 'TabView_Left_Oriented'}" >
                             <p:tabView orientation="left" style="width: 100%;" value="#{clientEncounterComponentFormController.findClientEncounterComponentFormOfAFormset(clientEncounterComponentFormSetController.selected)}" var="f">
                                 <p:tab title="#{f.name}" >
                                     <div style="#{f.generatedCss}" >
@@ -61,7 +61,7 @@
                                 </p:tab>
                             </p:tabView>
                         </h:panelGroup>
-                        <h:panelGroup rendered="#{clientEncounterComponentFormSetController.selected.panelType eq 'Tabview_Top_Oriented'}" >
+                        <h:panelGroup rendered="#{clientEncounterComponentFormSetController.selected.referanceDesignComponentFormSet.panelType eq 'Tabview_Top_Oriented'}" >
                             <p:tabView orientation="top" style="width: 100%;" value="#{clientEncounterComponentFormController.findClientEncounterComponentFormOfAFormset(clientEncounterComponentFormSetController.selected)}" var="f">
                                 <p:tab title="#{f.name}" >
                                     <div style="#{f.generatedCss}" >
@@ -70,7 +70,7 @@
                                 </p:tab>
                             </p:tabView>
                         </h:panelGroup>
-                        <h:panelGroup rendered="#{clientEncounterComponentFormSetController.selected.panelType eq 'TabView_Right_Oriented'}" >
+                        <h:panelGroup rendered="#{clientEncounterComponentFormSetController.selected.referanceDesignComponentFormSet.panelType eq 'TabView_Right_Oriented'}" >
                             <p:tabView orientation="right" style="width: 100%;" value="#{clientEncounterComponentFormController.findClientEncounterComponentFormOfAFormset(clientEncounterComponentFormSetController.selected)}" var="f">
                                 <p:tab title="#{f.name}" >
                                     <div style="#{f.generatedCss}" >
@@ -79,7 +79,7 @@
                                 </p:tab>
                             </p:tabView>
                         </h:panelGroup>
-                        <h:panelGroup rendered="#{clientEncounterComponentFormSetController.selected.panelType eq 'Accordion_Basic'}" >
+                        <h:panelGroup rendered="#{clientEncounterComponentFormSetController.selected.referanceDesignComponentFormSet.panelType eq 'Accordion_Basic'}" >
                             <p:accordionPanel  style="width: 100%;" value="#{clientEncounterComponentFormController.findClientEncounterComponentFormOfAFormset(clientEncounterComponentFormSetController.selected)}" var="f">
                                 <p:tab title="#{f.name}" >
                                     <div style="#{f.generatedCss}" >
@@ -88,7 +88,7 @@
                                 </p:tab>
                             </p:accordionPanel>
                         </h:panelGroup>
-                        <h:panelGroup rendered="#{clientEncounterComponentFormSetController.selected.panelType eq 'Accordion_Multiple'}" >
+                        <h:panelGroup rendered="#{clientEncounterComponentFormSetController.selected.referanceDesignComponentFormSet.panelType eq 'Accordion_Multiple'}" >
                             <p:accordionPanel multiple="true" style="width: 100%;" value="#{clientEncounterComponentFormController.findClientEncounterComponentFormOfAFormset(clientEncounterComponentFormSetController.selected)}" var="f">
                                 <p:tab title="#{f.name}" >
                                     <div style="#{f.generatedCss}" >
