@@ -15,46 +15,46 @@
     <!-- IMPLEMENTATION -->
     <cc:implementation>
 
-        <h:panelGroup id="gpFormItems" rendered="#{cc.attrs.form.referanceDesignComponentForm.itemArrangementStrategy eq 'Label_Value_Unit_Sets'}" >
+        <h:panelGroup id="gpFormItems" rendered="#{cc.attrs.form.referanceDesignComponentFormItem.itemArrangementStrategy eq 'Label_Value_Unit_Sets'}" >
 
-            <table style="#{cc.attrs.form.referanceDesignComponentForm.generatedCss}" class="alignTop w3-table w3-bordered w3-border">
+            <table style="#{cc.attrs.form.referanceDesignComponentFormItem.generatedCss}" class="alignTop w3-table w3-bordered w3-border">
                 <ui:repeat id="rptItems" value="#{clientEncounterComponentItemController.findClientEncounterComponentItemOfAForm(cc.attrs.form)}" 
                            var="ii" >
 
                     <h:panelGroup id="gpDataAndButtons" >
                         <tr>
                             <h:panelGroup id="gpData" >
-                                <h:panelGroup rendered="#{ii.referanceDesignComponentForm.renderType eq 'Input_Text'}" >
-                                    <h:panelGroup rendered="#{ii.referanceDesignComponentForm.item.dataType eq'Short_Text'}" >
+                                <h:panelGroup rendered="#{ii.referanceDesignComponentFormItem.renderType eq 'Input_Text'}" >
+                                    <h:panelGroup rendered="#{ii.referanceDesignComponentFormItem.item.dataType eq'Short_Text'}" >
                                         <td>
-                                            <p:outputLabel value="#{ii.referanceDesignComponentForm.name}" ></p:outputLabel>
+                                            <p:outputLabel value="#{ii.referanceDesignComponentFormItem.name}" ></p:outputLabel>
                                         </td>
                                         <td>
                                             <p:outputLabel id="itStC" value="#{ii.shortTextValue}" >
                                             </p:outputLabel>
                                         </td>
                                     </h:panelGroup>
-                                    <h:panelGroup rendered="#{ii.referanceDesignComponentForm.item.dataType eq 'Integer_Number'}" >
+                                    <h:panelGroup rendered="#{ii.referanceDesignComponentFormItem.item.dataType eq 'Integer_Number'}" >
                                         <td>
-                                            <p:outputLabel  value="#{ii.referanceDesignComponentForm.name}" ></p:outputLabel>
+                                            <p:outputLabel  value="#{ii.referanceDesignComponentFormItem.name}" ></p:outputLabel>
                                         </td>
                                         <td>
                                             <p:outputLabel id="itIntC" value="#{ii.integerNumberValue}">
                                             </p:outputLabel>
                                         </td>
                                     </h:panelGroup>
-                                    <h:panelGroup rendered="#{ii.referanceDesignComponentForm.item.dataType eq 'Real_Number'}" >
+                                    <h:panelGroup rendered="#{ii.referanceDesignComponentFormItem.item.dataType eq 'Real_Number'}" >
                                         <td>
-                                            <p:outputLabel  value="#{ii.referanceDesignComponentForm.name}" ></p:outputLabel>
+                                            <p:outputLabel  value="#{ii.referanceDesignComponentFormItem.name}" ></p:outputLabel>
                                         </td>
                                         <td>
                                             <p:outputLabel id="itRnC" value="#{ii.realNumberValue}" >
                                             </p:outputLabel>
                                         </td>
                                     </h:panelGroup>
-                                    <h:panelGroup rendered="#{ii.referanceDesignComponentForm.item.dataType eq 'Long_Number'}" >
+                                    <h:panelGroup rendered="#{ii.referanceDesignComponentFormItem.item.dataType eq 'Long_Number'}" >
                                         <td>
-                                            <p:outputLabel  value="#{ii.referanceDesignComponentForm.name}" ></p:outputLabel>
+                                            <p:outputLabel  value="#{ii.referanceDesignComponentFormItem.name}" ></p:outputLabel>
                                         </td>
                                         <td>
                                             <p:outputLabel id="itLongC" value="#{ii.longNumberValue}" >
@@ -62,19 +62,19 @@
                                         </td>
                                     </h:panelGroup>
                                 </h:panelGroup>
-                                <h:panelGroup rendered="#{ii.referanceDesignComponentForm.renderType eq 'Input_Text_Area'}" >
+                                <h:panelGroup rendered="#{ii.referanceDesignComponentFormItem.renderType eq 'Input_Text_Area'}" >
                                     <td>
-                                        <p:outputLabel  value="#{ii.referanceDesignComponentForm.name}" ></p:outputLabel>
+                                        <p:outputLabel  value="#{ii.referanceDesignComponentFormItem.name}" ></p:outputLabel>
                                     </td>
                                     <td>
                                         <p:outputLabel id="txtItaL" value="#{ii.longTextValue}">
                                         </p:outputLabel>
                                     </td>
                                 </h:panelGroup>
-                                <h:panelGroup rendered="#{ii.referanceDesignComponentForm.item.dataType eq 'DateTime'}" >
-                                    <h:panelGroup rendered="#{ii.referanceDesignComponentForm.renderType eq 'Date_Picker'}" >
+                                <h:panelGroup rendered="#{ii.referanceDesignComponentFormItem.item.dataType eq 'DateTime'}" >
+                                    <h:panelGroup rendered="#{ii.referanceDesignComponentFormItem.renderType eq 'Date_Picker'}" >
                                         <td>
-                                            <p:outputLabel  value="#{ii.referanceDesignComponentForm.name}" ></p:outputLabel>
+                                            <p:outputLabel  value="#{ii.referanceDesignComponentFormItem.name}" ></p:outputLabel>
                                         </td>
                                         <td>
                                             <p:outputLabel  value="#{ii.dateValue}" >
@@ -84,9 +84,9 @@
                                         </td>
 
                                     </h:panelGroup>
-                                    <h:panelGroup rendered="#{ii.referanceDesignComponentForm.renderType eq 'Calendar'}" >
+                                    <h:panelGroup rendered="#{ii.referanceDesignComponentFormItem.renderType eq 'Calendar'}" >
                                         <td>
-                                            <p:outputLabel value="#{ii.referanceDesignComponentForm.name}" ></p:outputLabel>
+                                            <p:outputLabel value="#{ii.referanceDesignComponentFormItem.name}" ></p:outputLabel>
                                         </td>
                                         <td>
                                             <p:outputLabel  value="#{ii.dateValue}" >
@@ -96,19 +96,19 @@
 
                                     </h:panelGroup>
                                 </h:panelGroup>
-                                <h:panelGroup rendered="#{ii.referanceDesignComponentForm.item.dataType eq 'Item_Reference'}" >
-                                    <h:panelGroup rendered="#{ii.referanceDesignComponentForm.renderType eq 'Drop_Down_Menu'}" >
+                                <h:panelGroup rendered="#{ii.referanceDesignComponentFormItem.item.dataType eq 'Item_Reference'}" >
+                                    <h:panelGroup rendered="#{ii.referanceDesignComponentFormItem.renderType eq 'Drop_Down_Menu'}" >
                                         <td>
-                                            <p:outputLabel  value="#{ii.referanceDesignComponentForm.name}" ></p:outputLabel>
+                                            <p:outputLabel  value="#{ii.referanceDesignComponentFormItem.name}" ></p:outputLabel>
                                         </td>
                                         <td>
                                             <p:outputLabel  value="#{ii.itemValue.name}" >
                                             </p:outputLabel>
                                         </td>
                                     </h:panelGroup>
-                                    <h:panelGroup rendered="#{ii.referanceDesignComponentForm.renderType eq 'Autocomplete'}" >
+                                    <h:panelGroup rendered="#{ii.referanceDesignComponentFormItem.renderType eq 'Autocomplete'}" >
                                         <td>
-                                            <p:outputLabel  value="#{ii.referanceDesignComponentForm.name}" ></p:outputLabel>
+                                            <p:outputLabel  value="#{ii.referanceDesignComponentFormItem.name}" ></p:outputLabel>
                                         </td>
                                         <td>
                                             <p:outputLabel  value="#{ii.itemValue.name}" >
@@ -117,18 +117,18 @@
 
                                     </h:panelGroup>
                                 </h:panelGroup>
-                                <h:panelGroup rendered="#{ii.referanceDesignComponentForm.renderType eq 'Boolean_Checkbox'}" >
+                                <h:panelGroup rendered="#{ii.referanceDesignComponentFormItem.renderType eq 'Boolean_Checkbox'}" >
                                     <td>
-                                        <p:outputLabel  value="#{ii.referanceDesignComponentForm.name}" ></p:outputLabel>
+                                        <p:outputLabel  value="#{ii.referanceDesignComponentFormItem.name}" ></p:outputLabel>
                                     </td>
                                     <td>
                                         <p:outputLabel  value="#{ii.booleanValue?'Yes':'No'}" ></p:outputLabel>
                                     </td>
                                 </h:panelGroup>
 
-                                <h:panelGroup rendered="#{ii.referanceDesignComponentForm.renderType eq 'Autocomplete' and ii.referanceDesignComponentForm.item.dataType eq 'Area_Reference'}" >
+                                <h:panelGroup rendered="#{ii.referanceDesignComponentFormItem.renderType eq 'Autocomplete' and ii.referanceDesignComponentFormItem.item.dataType eq 'Area_Reference'}" >
                                     <td>
-                                        <p:outputLabel  value="#{ii.referanceDesignComponentForm.name}" ></p:outputLabel>
+                                        <p:outputLabel  value="#{ii.referanceDesignComponentFormItem.name}" ></p:outputLabel>
                                     </td>
                                     <td>
                                         <p:outputLabel  value="#{ii.areaValue.name}" ></p:outputLabel>
@@ -145,11 +145,11 @@
             </table>                
         </h:panelGroup>
 
-        <h:panelGroup rendered="#{cc.attrs.form.referanceDesignComponentForm.itemArrangementStrategy eq 'Absolute_Positioning'}" >
+        <h:panelGroup rendered="#{cc.attrs.form.referanceDesignComponentFormItem.itemArrangementStrategy eq 'Absolute_Positioning'}" >
             <p:outputLabel value="Still Under Construction. Please contact Development Team" ></p:outputLabel>
         </h:panelGroup>
 
-        <h:panelGroup rendered="#{cc.attrs.form.referanceDesignComponentForm.itemArrangementStrategy eq 'Relative_Positioning'}" >
+        <h:panelGroup rendered="#{cc.attrs.form.referanceDesignComponentFormItem.itemArrangementStrategy eq 'Relative_Positioning'}" >
             <p:outputLabel value="Still Under Construction. Please contact Development Team" ></p:outputLabel>
         </h:panelGroup>
 
