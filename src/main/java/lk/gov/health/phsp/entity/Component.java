@@ -60,7 +60,7 @@ public class Component implements Serializable {
 
     private String code;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private Item item;
 
     @Lob
@@ -71,10 +71,10 @@ public class Component implements Serializable {
     @ManyToOne
     private Institution institution;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private Component parentComponent;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private Component referenceComponent;
 
     @Lob
@@ -143,7 +143,7 @@ public class Component implements Serializable {
     private boolean completed;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date completedAt;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private WebUser completedBy;
 
     public Long getId() {

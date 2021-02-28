@@ -15,7 +15,7 @@
     <!-- IMPLEMENTATION -->
     <cc:implementation>
 
-        <h:panelGroup id="gpFormItems" rendered="#{cc.attrs.form.referanceDesignComponentFormItem.itemArrangementStrategy eq 'Label_Value_Unit_Sets'}" >
+        <h:panelGroup id="gpFormItems" rendered="#{cc.attrs.form.referanceDesignComponentForm.itemArrangementStrategy eq 'Label_Value_Unit_Sets'}" >
 
             <table style="#{cc.attrs.form.referanceDesignComponentFormItem.generatedCss}" class="alignTop w3-table w3-bordered w3-border">
                 <ui:repeat id="rptItems" value="#{clientEncounterComponentItemController.findClientEncounterComponentItemOfAForm(cc.attrs.form)}" 
@@ -145,11 +145,11 @@
             </table>                
         </h:panelGroup>
 
-        <h:panelGroup rendered="#{cc.attrs.form.referanceDesignComponentFormItem.itemArrangementStrategy eq 'Absolute_Positioning'}" >
+        <h:panelGroup rendered="#{cc.attrs.form.referanceDesignComponentForm.itemArrangementStrategy eq 'Absolute_Positioning'}" >
             <p:outputLabel value="Still Under Construction. Please contact Development Team" ></p:outputLabel>
         </h:panelGroup>
 
-        <h:panelGroup rendered="#{cc.attrs.form.referanceDesignComponentFormItem.itemArrangementStrategy eq 'Relative_Positioning'}" >
+        <h:panelGroup rendered="#{cc.attrs.form.referanceDesignComponentForm.itemArrangementStrategy eq 'Relative_Positioning'}" >
             <p:outputLabel value="Still Under Construction. Please contact Development Team" ></p:outputLabel>
         </h:panelGroup>
 

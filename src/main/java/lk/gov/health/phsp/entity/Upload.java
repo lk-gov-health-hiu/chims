@@ -74,7 +74,7 @@ public class Upload implements Serializable {
     String retireComments;
     @Lob
     @Column(columnDefinition = "LONGBLOB")
-    @Basic(fetch = FetchType.LAZY)
+    @Basic(fetch = FetchType.EAGER)
     byte[] baImage;
     String fileName;
     String fileType;

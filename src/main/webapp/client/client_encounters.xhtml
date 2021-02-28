@@ -43,11 +43,11 @@
                                 </p:outputLabel>
                             </p:column>
                             <p:column headerText="Institution" sortBy="#{s.encounter.institution.name}">
-                                <p:outputLabel value="#{s.encounter.institution.name}" style="color: #{s.completed?'white':'red'};" >
+                                <p:outputLabel value="#{s.encounter.institution.name}" style="color: #{s.completed?'green':'red'};" >
                                 </p:outputLabel>
                             </p:column>
                             <p:column headerText="Encounter" sortBy="#{s.name}">
-                                <p:outputLabel value="#{s.name}" style="color: #{s.completed?'white':'red'};" >
+                                <p:outputLabel value="#{s.name}" style="color: #{s.completed?'green':'red'};" >
                                 </p:outputLabel>
                             </p:column>
 

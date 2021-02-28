@@ -242,6 +242,23 @@ public class ClientEncounterComponentFormSetController implements Serializable {
         userTransactionController.recordTransaction("Formset Completed");
         return toViewFormset();
     }
+    
+    public String reverseCompleteFormset() {
+        if (selected == null) {
+            JsfUtil.addErrorMessage("Nothing to Complete.");
+            userTransactionController.recordTransaction("Nothing to Complete in formset");
+            return "";
+        }
+        save(selected);
+        selected.setCompleted(false);
+        selected.setCompletedAt(new Date());
+        selected.setCompletedBy(webUserController.getLoggedUser());
+        getFacade().edit(selected);
+        formEditable = true;
+        JsfUtil.addSuccessMessage("Reversed Completion");
+        userTransactionController.recordTransaction("Formset Complete Reversal");
+        return toViewFormset();
+    }
 
     public void executePostCompletionStrategies(ClientEncounterComponentFormSet s) {
         String j = "select f from ClientEncounterComponentItem f "
