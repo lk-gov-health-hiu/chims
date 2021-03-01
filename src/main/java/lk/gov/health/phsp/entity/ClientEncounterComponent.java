@@ -34,10 +34,10 @@ import lk.gov.health.phsp.enums.SelectionDataType;
 public class ClientEncounterComponent extends Component {
 
     
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     private Encounter encounter;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     private Client client;
 
     public Encounter getEncounter() {

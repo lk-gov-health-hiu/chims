@@ -49,10 +49,10 @@ public class Phn implements Serializable {
     @Column(length = 12,unique = true,updatable = false,nullable = false)
     private String phnNumber;
     
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     private Institution poi;
     
-    @OneToOne(fetch = FetchType.EAGER)
+    @OneToOne(fetch = FetchType.LAZY)
     private Client client;
 
     public Phn() {
