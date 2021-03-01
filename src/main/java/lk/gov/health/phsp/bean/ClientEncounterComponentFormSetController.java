@@ -226,20 +226,26 @@ public class ClientEncounterComponentFormSetController implements Serializable {
     }
 
     public String completeFormset() {
+        System.out.println("completeFormset" + new Date());
         if (selected == null) {
             JsfUtil.addErrorMessage("Nothing to Complete.");
             userTransactionController.recordTransaction("Nothing to Complete in formset");
             return "";
         }
+        System.out.println("1" + new Date());
         save(selected);
+        System.out.println("2" + new Date());
         selected.setCompleted(true);
         selected.setCompletedAt(new Date());
         selected.setCompletedBy(webUserController.getLoggedUser());
+        System.out.println("3" + new Date());
         getFacade().edit(selected);
 //        executePostCompletionStrategies(selected);
         formEditable = false;
         JsfUtil.addSuccessMessage("Completed");
+        System.out.println("4"+ new Date());
         userTransactionController.recordTransaction("Formset Completed");
+        System.out.println("5" + new Date());
         return toViewFormset();
     }
     
