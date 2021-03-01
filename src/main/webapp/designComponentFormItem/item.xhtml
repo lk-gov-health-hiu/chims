@@ -234,23 +234,9 @@
 
                                     <p:tab title="CSS" >
                                         <p:panelGrid columns="2" >
-                                            <p:outputLabel value="Top Percent:" for="topPercent" />
-                                            <p:inputText id="topPercent" value="#{designComponentFormItemController.selected.topPercent}" title="TopPercent" />
-                                            <p:outputLabel value="Left Percent:" for="leftPercent" />
-                                            <p:inputText id="leftPercent" value="#{designComponentFormItemController.selected.leftPercent}" title="LeftPercent" />
-                                            <p:outputLabel value="Width Percent:" for="widthPercent" />
-                                            <p:inputText id="widthPercent" value="#{designComponentFormItemController.selected.widthPercent}" title="WidthPercent" />
-                                            <p:outputLabel value="Height Percent:" for="heightPercent" />
-                                            <p:inputText id="heightPercent" value="#{designComponentFormItemController.selected.heightPercent}" title="HeightPercent" />
-
-                                            <p:outputLabel value="Background Color:" />
-                                            <p:colorPicker value="#{designComponentFormItemController.selected.backgroundColour}" ></p:colorPicker>
-
-                                            <p:outputLabel value="Foreground Color:" />
-                                            <p:colorPicker value="#{designComponentFormItemController.selected.foregroundColour}" ></p:colorPicker>
-
-                                            <p:outputLabel value="Border Color:" />
-                                            <p:colorPicker value="#{designComponentFormItemController.selected.borderColour}" ></p:colorPicker>
+                                            <p:outputLabel value="CSS:" for="css" />
+                                            <p:inputTextarea id="css" value="#{designComponentFormItemController.selected.css}" title="CSS"
+                                                             cols="90" rows="20"/>
                                         </p:panelGrid>
                                     </p:tab>
                                 </p:tabView>

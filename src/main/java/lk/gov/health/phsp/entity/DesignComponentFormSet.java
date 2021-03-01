@@ -37,4 +37,29 @@ import lk.gov.health.phsp.enums.PanelType;
 @Entity
 public class DesignComponentFormSet extends DesignComponent  {
     
+    @Enumerated(EnumType.STRING)
+    private ComponentSetType componentSetType;
+
+    @Enumerated(EnumType.STRING)
+    private PanelType panelType;
+
+    public ComponentSetType getComponentSetType() {
+        return componentSetType;
+    }
+
+    public void setComponentSetType(ComponentSetType componentSetType) {
+        this.componentSetType = componentSetType;
+    }
+
+    public PanelType getPanelType() {
+        return panelType;
+    }
+
+    public void setPanelType(PanelType panelType) {
+        this.panelType = panelType;
+    }
+
+   
+    
+    
 }

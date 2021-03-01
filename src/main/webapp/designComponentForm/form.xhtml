@@ -38,14 +38,9 @@
                                     </f:selectItems>
                                 </p:selectOneMenu>
 
-                                <p:outputLabel value="Colour as Hexadecimal:" for="hexHtmlColour" />
-                                <p:inputText id="hexHtmlColour" value="#{designComponentFormController.selected.hexHtmlColour}" title="HexHtmlColour" />
-
                                 <p:outputLabel value="Order No:" for="orderNo" />
                                 <p:inputText id="orderNo" value="#{designComponentFormController.selected.orderNo}" title="OrderNo" />
 
-                                <p:outputLabel value="html:" for="html" />
-                                <p:inputText id="html" value="#{designComponentFormController.selected.html}" title="HTML" />
 
                                 <p:outputLabel value="Item Arrangement Strategy:" for="itemArrangementStrategy" />
                                 <p:selectOneMenu id="itemArrangementStrategy" required="true"
@@ -59,14 +54,6 @@
                                     </f:selectItems>
                                 </p:selectOneMenu>
 
-                                <p:outputLabel value="Background Color:" />
-                                <p:colorPicker value="#{designComponentFormController.selected.backgroundColour}" ></p:colorPicker>
-
-                                <p:outputLabel value="Foreground Color:" />
-                                <p:colorPicker value="#{designComponentFormController.selected.foregroundColour}" ></p:colorPicker>
-
-                                <p:outputLabel value="Border Color:" />
-                                <p:colorPicker value="#{designComponentFormController.selected.borderColour}" ></p:colorPicker>
                             </p:panelGrid>
                         </h:form>
                     </p:panel>

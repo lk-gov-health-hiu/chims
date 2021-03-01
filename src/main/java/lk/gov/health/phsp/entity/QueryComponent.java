@@ -23,11 +23,24 @@
  */
 package lk.gov.health.phsp.entity;
 
+import java.util.Date;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.Lob;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.Transient;
+import lk.gov.health.phsp.enums.AvailableDataType;
+import lk.gov.health.phsp.enums.ComponentSetType;
+import lk.gov.health.phsp.enums.DataCompletionStrategy;
+import lk.gov.health.phsp.enums.DataModificationStrategy;
+import lk.gov.health.phsp.enums.DataPopulationStrategy;
+import lk.gov.health.phsp.enums.ItemArrangementStrategy;
+import lk.gov.health.phsp.enums.PanelType;
 import lk.gov.health.phsp.enums.QueryCriteriaMatchType;
 import lk.gov.health.phsp.enums.QueryDataType;
 
@@ -36,6 +49,7 @@ import lk.gov.health.phsp.enums.QueryOutputType;
 import lk.gov.health.phsp.enums.QueryType;
 import lk.gov.health.phsp.enums.QueryVariableEvaluationType;
 import lk.gov.health.phsp.enums.RelationshipType;
+import lk.gov.health.phsp.enums.SelectionDataType;
 
 /**
  *
@@ -95,6 +109,53 @@ public class QueryComponent extends Component {
     private boolean filterByYear;
     private boolean filterByMonth;
     private boolean filterByQuarter;
+    
+    private boolean required;
+
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    private Client client;
+
+    @Lob
+    private String longTextValue;
+    @Lob
+    private String descreptionValue;
+    private String shortTextValue;
+    private byte[] byteArrayValue;
+    private Integer integerNumberValue;
+    private Long longNumberValue;
+    private Double realNumberValue;
+    private Boolean booleanValue;
+    @Temporal(javax.persistence.TemporalType.DATE)
+    private Date dateValue;
+    @ManyToOne(fetch = FetchType.EAGER)
+    private Item itemValue;
+    @ManyToOne(fetch = FetchType.EAGER)
+    private Area areaValue;
+    @ManyToOne(fetch = FetchType.EAGER)
+    private Institution institutionValue;
+    @ManyToOne(fetch = FetchType.EAGER)
+    private Client clientValue;
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private Prescription prescriptionValue;
+    
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private Observation observationValue;
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private Procedure procedureValue;
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private Movement movementValue;
+    
+
+    private boolean completed;
+    @Temporal(javax.persistence.TemporalType.TIMESTAMP)
+    private Date completedAt;
+    @ManyToOne(fetch = FetchType.EAGER)
+    private WebUser completedBy;
+
+    private Integer integerNumberValue2;
+    private Long longNumberValue2;
+    private Double realNumberValue2;
 
     public String getIndicatorQuery() {
         return indicatorQuery;
@@ -312,4 +373,207 @@ public class QueryComponent extends Component {
         this.queryDataType = queryDataType;
     }
 
+    public boolean isRequired() {
+        return required;
+    }
+
+    public void setRequired(boolean required) {
+        this.required = required;
+    }
+
+    
+    public Client getClient() {
+        return client;
+    }
+
+    public void setClient(Client client) {
+        this.client = client;
+    }
+
+    public String getLongTextValue() {
+        return longTextValue;
+    }
+
+    public void setLongTextValue(String longTextValue) {
+        this.longTextValue = longTextValue;
+    }
+
+    public String getDescreptionValue() {
+        return descreptionValue;
+    }
+
+    public void setDescreptionValue(String descreptionValue) {
+        this.descreptionValue = descreptionValue;
+    }
+
+    public String getShortTextValue() {
+        return shortTextValue;
+    }
+
+    public void setShortTextValue(String shortTextValue) {
+        this.shortTextValue = shortTextValue;
+    }
+
+    public byte[] getByteArrayValue() {
+        return byteArrayValue;
+    }
+
+    public void setByteArrayValue(byte[] byteArrayValue) {
+        this.byteArrayValue = byteArrayValue;
+    }
+
+    public Integer getIntegerNumberValue() {
+        return integerNumberValue;
+    }
+
+    public void setIntegerNumberValue(Integer integerNumberValue) {
+        this.integerNumberValue = integerNumberValue;
+    }
+
+    public Long getLongNumberValue() {
+        return longNumberValue;
+    }
+
+    public void setLongNumberValue(Long longNumberValue) {
+        this.longNumberValue = longNumberValue;
+    }
+
+    public Double getRealNumberValue() {
+        return realNumberValue;
+    }
+
+    public void setRealNumberValue(Double realNumberValue) {
+        this.realNumberValue = realNumberValue;
+    }
+
+    public Boolean getBooleanValue() {
+        return booleanValue;
+    }
+
+    public void setBooleanValue(Boolean booleanValue) {
+        this.booleanValue = booleanValue;
+    }
+
+    public Date getDateValue() {
+        return dateValue;
+    }
+
+    public void setDateValue(Date dateValue) {
+        this.dateValue = dateValue;
+    }
+
+    public Item getItemValue() {
+        return itemValue;
+    }
+
+    public void setItemValue(Item itemValue) {
+        this.itemValue = itemValue;
+    }
+
+    public Area getAreaValue() {
+        return areaValue;
+    }
+
+    public void setAreaValue(Area areaValue) {
+        this.areaValue = areaValue;
+    }
+
+    public Institution getInstitutionValue() {
+        return institutionValue;
+    }
+
+    public void setInstitutionValue(Institution institutionValue) {
+        this.institutionValue = institutionValue;
+    }
+
+    public Client getClientValue() {
+        return clientValue;
+    }
+
+    public void setClientValue(Client clientValue) {
+        this.clientValue = clientValue;
+    }
+
+    public Prescription getPrescriptionValue() {
+        return prescriptionValue;
+    }
+
+    public void setPrescriptionValue(Prescription prescriptionValue) {
+        this.prescriptionValue = prescriptionValue;
+    }
+
+    public Observation getObservationValue() {
+        return observationValue;
+    }
+
+    public void setObservationValue(Observation observationValue) {
+        this.observationValue = observationValue;
+    }
+
+    public Procedure getProcedureValue() {
+        return procedureValue;
+    }
+
+    public void setProcedureValue(Procedure procedureValue) {
+        this.procedureValue = procedureValue;
+    }
+
+    public Movement getMovementValue() {
+        return movementValue;
+    }
+
+    public void setMovementValue(Movement movementValue) {
+        this.movementValue = movementValue;
+    }
+
+    public boolean isCompleted() {
+        return completed;
+    }
+
+    public void setCompleted(boolean completed) {
+        this.completed = completed;
+    }
+
+    public Date getCompletedAt() {
+        return completedAt;
+    }
+
+    public void setCompletedAt(Date completedAt) {
+        this.completedAt = completedAt;
+    }
+
+    public WebUser getCompletedBy() {
+        return completedBy;
+    }
+
+    public void setCompletedBy(WebUser completedBy) {
+        this.completedBy = completedBy;
+    }
+
+    public Integer getIntegerNumberValue2() {
+        return integerNumberValue2;
+    }
+
+    public void setIntegerNumberValue2(Integer integerNumberValue2) {
+        this.integerNumberValue2 = integerNumberValue2;
+    }
+
+    public Long getLongNumberValue2() {
+        return longNumberValue2;
+    }
+
+    public void setLongNumberValue2(Long longNumberValue2) {
+        this.longNumberValue2 = longNumberValue2;
+    }
+
+    public Double getRealNumberValue2() {
+        return realNumberValue2;
+    }
+
+    public void setRealNumberValue2(Double realNumberValue2) {
+        this.realNumberValue2 = realNumberValue2;
+    }
+
+    
+    
 }

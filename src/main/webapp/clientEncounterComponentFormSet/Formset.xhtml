@@ -51,12 +51,15 @@
                                                       onclick="if (!confirm('Really want to do complete the visit?'))
                                                               return false"
                                                       ></p:commandButton>
+                                     
                                     <p:commandButton  value="Client Profile" action="#{clientEncounterComponentFormSetController.toClientProfileFromEncounter()}" ajax="false" ></p:commandButton>
 
                                 </div>
                             </f:facet>
 
-                            <h:panelGroup rendered="#{clientEncounterComponentFormSetController.selected.panelType eq 'TabView_Bottom_Oriented'}" >
+                            
+                            
+                            <h:panelGroup rendered="#{clientEncounterComponentFormSetController.selected.referanceDesignComponentFormSet.panelType eq 'TabView_Bottom_Oriented'}" >
                                 <p:tabView 
                                     activeIndex="#{clientEncounterComponentFormSetController.selectedTabIndex}"  orientation="bottom" style="width: 100%; padding: 5px;" value="#{clientEncounterComponentFormController.findClientEncounterComponentFormOfAFormset(clientEncounterComponentFormSetController.selected)}" var="f">
                                     <p:tab title="#{f.name}" >
@@ -67,7 +70,7 @@
                                     <p:ajax event="tabChange" process="@this"/>
                                 </p:tabView>
                             </h:panelGroup>
-                            <h:panelGroup rendered="#{clientEncounterComponentFormSetController.selected.panelType eq 'TabView_Left_Oriented'}" >
+                            <h:panelGroup rendered="#{clientEncounterComponentFormSetController.selected.referanceDesignComponentFormSet.panelType eq 'TabView_Left_Oriented'}" >
                                 <p:tabView activeIndex="#{clientEncounterComponentFormSetController.selectedTabIndex}" orientation="left" style="width: 100%; padding: 5px;" value="#{clientEncounterComponentFormController.findClientEncounterComponentFormOfAFormset(clientEncounterComponentFormSetController.selected)}" var="f">
                                     <p:tab title="#{f.name}" >
                                         <div style="#{f.generatedCss}" >
@@ -77,7 +80,7 @@
                                     <p:ajax event="tabChange" process="@this"/>
                                 </p:tabView>
                             </h:panelGroup>
-                            <h:panelGroup rendered="#{clientEncounterComponentFormSetController.selected.panelType eq 'Tabview_Top_Oriented'}" >
+                            <h:panelGroup rendered="#{clientEncounterComponentFormSetController.selected.referanceDesignComponentFormSet.panelType eq 'Tabview_Top_Oriented'}" >
                                 <p:tabView activeIndex="#{clientEncounterComponentFormSetController.selectedTabIndex}"  orientation="top" style="width: 100%; padding: 5px;" value="#{clientEncounterComponentFormController.findClientEncounterComponentFormOfAFormset(clientEncounterComponentFormSetController.selected)}" var="f">
                                     <p:tab title="#{f.name}" >
                                         <div style="#{f.generatedCss}" >
@@ -87,7 +90,7 @@
                                     <p:ajax event="tabChange" process="@this"/>
                                 </p:tabView>
                             </h:panelGroup>
-                            <h:panelGroup rendered="#{clientEncounterComponentFormSetController.selected.panelType eq 'TabView_Right_Oriented'}" >
+                            <h:panelGroup rendered="#{clientEncounterComponentFormSetController.selected.referanceDesignComponentFormSet.panelType eq 'TabView_Right_Oriented'}" >
                                 <p:tabView  activeIndex="#{clientEncounterComponentFormSetController.selectedTabIndex}" orientation="right" style="width: 100%; padding: 5px;" value="#{clientEncounterComponentFormController.findClientEncounterComponentFormOfAFormset(clientEncounterComponentFormSetController.selected)}" var="f">
                                     <p:tab title="#{f.name}" >
                                         <div style="#{f.generatedCss}" >
@@ -97,7 +100,7 @@
                                     <p:ajax event="tabChange" process="@this"/>
                                 </p:tabView>
                             </h:panelGroup>
-                            <h:panelGroup rendered="#{clientEncounterComponentFormSetController.selected.panelType eq 'Accordion_Basic'}" >
+                            <h:panelGroup rendered="#{clientEncounterComponentFormSetController.selected.referanceDesignComponentFormSet.panelType eq 'Accordion_Basic'}" >
                                 <p:accordionPanel  activeIndex="#{clientEncounterComponentFormSetController.selectedTabIndex}"  style="width: 100%; padding: 5px;" value="#{clientEncounterComponentFormController.findClientEncounterComponentFormOfAFormset(clientEncounterComponentFormSetController.selected)}" var="f">
                                     <p:tab title="#{f.name}" >
                                         <div style="#{f.generatedCss}" >
@@ -107,7 +110,7 @@
                                     <p:ajax event="tabChange" process="@this"/>
                                 </p:accordionPanel>
                             </h:panelGroup>
-                            <h:panelGroup rendered="#{clientEncounterComponentFormSetController.selected.panelType eq 'Accordion_Multiple'}" >
+                            <h:panelGroup rendered="#{clientEncounterComponentFormSetController.selected.referanceDesignComponentFormSet.panelType eq 'Accordion_Multiple'}" >
                                 <p:accordionPanel multiple="true" style="width: 100%; padding: 5px;" value="#{clientEncounterComponentFormController.findClientEncounterComponentFormOfAFormset(clientEncounterComponentFormSetController.selected)}" var="f">
                                     <p:tab title="#{f.name}" >
                                         <div style="#{f.generatedCss}" >

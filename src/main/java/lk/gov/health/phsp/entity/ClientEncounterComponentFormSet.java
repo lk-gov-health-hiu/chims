@@ -24,9 +24,26 @@
 
 package lk.gov.health.phsp.entity;
 
+import java.util.Date;
 import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.Lob;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.Temporal;
+import javax.persistence.Transient;
+import lk.gov.health.phsp.enums.AvailableDataType;
+import lk.gov.health.phsp.enums.ComponentSetType;
+import lk.gov.health.phsp.enums.DataCompletionStrategy;
+import lk.gov.health.phsp.enums.DataModificationStrategy;
+import lk.gov.health.phsp.enums.DataPopulationStrategy;
+import lk.gov.health.phsp.enums.ItemArrangementStrategy;
+import lk.gov.health.phsp.enums.PanelType;
+import lk.gov.health.phsp.enums.SelectionDataType;
 
 /**
  *
@@ -46,7 +63,5 @@ public class ClientEncounterComponentFormSet extends ClientEncounterComponent {
         this.clientEncounterComponentItems = clientEncounterComponentItems;
     }
 
-    
-    
     
 }

@@ -34,10 +34,14 @@ import lk.gov.health.phsp.enums.ComponentSex;
  */
 @Entity
 public class DesignComponent extends Component {
+
     @Enumerated(EnumType.STRING)
-    protected ComponentSex componentSex;
+    private ComponentSex componentSex;
 
     public ComponentSex getComponentSex() {
+        if (componentSex == null) {
+            componentSex = ComponentSex.For_Both;
+        }
         return componentSex;
     }
 
@@ -45,6 +49,4 @@ public class DesignComponent extends Component {
         this.componentSex = componentSex;
     }
 
- 
-    
 }

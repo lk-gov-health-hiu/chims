@@ -16,8 +16,9 @@
 
     <!-- IMPLEMENTATION -->
     <cc:implementation>
+        
 
-        <h:panelGroup id="gpFormItems" rendered="#{cc.attrs.form.itemArrangementStrategy eq 'Label_Value_Unit_Sets'}" >
+        <h:panelGroup id="gpFormItems" rendered="#{cc.attrs.form.referanceDesignComponentForm.itemArrangementStrategy eq 'Label_Value_Unit_Sets'}" >
 
             <table style="#{cc.attrs.form.generatedCss}" class="alignTop w3-table w3-bordered w3-border">
                 <ui:repeat id="rptItems" value="#{clientEncounterComponentItemController.findClientEncounterComponentItemOfAForm(cc.attrs.form)}" 
@@ -42,6 +43,14 @@
                                             </td>
                                             <td>
                                                 #{ii.name}
+                                            </td>
+                                        </tr>
+                                         <tr>
+                                            <td>
+                                                Referance Item
+                                            </td>
+                                            <td>
+                                                #{ii.referanceDesignComponentFormItem.name}
                                             </td>
                                         </tr>
                                         <tr>
@@ -89,77 +98,77 @@
                                 </td>
                             </h:panelGroup>
                             <h:panelGroup id="gpData" >
-                                <h:panelGroup rendered="#{ii.renderType eq 'Input_Text'}" >
-                                    <h:panelGroup rendered="#{ii.item.dataType eq'Short_Text'}" >
+                                <h:panelGroup rendered="#{ii.referanceDesignComponentFormItem.renderType eq 'Input_Text'}" >
+                                    <h:panelGroup rendered="#{ii.referanceDesignComponentFormItem.item.dataType eq'Short_Text'}" >
                                         <td>
-                                            <p:outputLabel for="itStC" value="#{ii.name}" style="#{ii.generatedCss}" ></p:outputLabel>
+                                            <p:outputLabel for="itStC" value="#{ii.referanceDesignComponentFormItem.name}" style="#{ii.referanceDesignComponentFormItem.generatedCss}" ></p:outputLabel>
                                         </td>
                                         <td>
                                             <p:inputText id="itStC" value="#{ii.shortTextValue}" 
-                                                         required="#{ii.required}" 
-                                                         requiredMessage="#{ii.requiredErrorMessage}" >
+                                                         required="#{ii.referanceDesignComponentFormItem.required}" 
+                                                         requiredMessage="#{ii.referanceDesignComponentFormItem.requiredErrorMessage}" >
                                                 <p:ajax  event="blur" process="@this"   listener="#{clientEncounterComponentItemController.save(ii)}" ></p:ajax>
                                             </p:inputText>
                                         </td>
                                         <td>
-                                            <h:panelGroup rendered="#{ii.calculateButton}" >
+                                            <h:panelGroup rendered="#{ii.referanceDesignComponentFormItem.calculateButton}" >
                                                 <p:commandButton id="btnCalculateitStC"  value="Calculate" process="@this" update="itStC"
                                                                  action="#{clientEncounterComponentItemController.calculate(ii)}"></p:commandButton>
                                             </h:panelGroup>
                                         </td>
 
                                     </h:panelGroup>
-                                    <h:panelGroup rendered="#{ii.item.dataType eq 'Integer_Number'}" >
+                                    <h:panelGroup rendered="#{ii.referanceDesignComponentFormItem.item.dataType eq 'Integer_Number'}" >
                                         <td>
                                             <p:outputLabel for="itIntC" value="#{ii.name}"  style="#{ii.generatedCss}" ></p:outputLabel>
                                         </td>
                                         <td>
                                             <p:inputText id="itIntC" value="#{ii.integerNumberValue}" 
-                                                         required="#{ii.required}" 
-                                                         requiredMessage="#{ii.requiredErrorMessage}" >
+                                                         required="#{ii.referanceDesignComponentFormItem.required}" 
+                                                         requiredMessage="#{ii.referanceDesignComponentFormItem.requiredErrorMessage}" >
                                                 <p:ajax  event="blur" process="@this"   listener="#{clientEncounterComponentItemController.save(ii)}" ></p:ajax>
 
                                             </p:inputText>
                                         </td>
                                         <td>
-                                            <h:panelGroup rendered="#{ii.calculateButton}" >
+                                            <h:panelGroup rendered="#{ii.referanceDesignComponentFormItem.calculateButton}" >
                                                 <p:commandButton id="btnCalculateitIntC"  value="Calculate" process="@this" update="itIntC"
                                                                  action="#{clientEncounterComponentItemController.calculate(ii)}"></p:commandButton>
                                             </h:panelGroup>
                                         </td>
 
                                     </h:panelGroup>
-                                    <h:panelGroup rendered="#{ii.item.dataType eq 'Real_Number'}" >
+                                    <h:panelGroup rendered="#{ii.referanceDesignComponentFormItem.item.dataType eq 'Real_Number'}" >
                                         <td>
-                                            <p:outputLabel for="itRnC" value="#{ii.name}"  style="#{ii.generatedCss}" ></p:outputLabel>
+                                            <p:outputLabel for="itRnC" value="#{ii.referanceDesignComponentFormItem.name}"  style="#{ii.referanceDesignComponentFormItem.generatedCss}" ></p:outputLabel>
                                         </td>
                                         <td>
                                             <p:inputText id="itRnC" value="#{ii.realNumberValue}" 
-                                                         required="#{ii.required}" validatorMessage="#{ii.regexValidationFailedMessage}"
-                                                         requiredMessage="#{ii.requiredErrorMessage}" >
+                                                         required="#{ii.referanceDesignComponentFormItem.required}" validatorMessage="#{ii.referanceDesignComponentFormItem.regexValidationFailedMessage}"
+                                                         requiredMessage="#{ii.referanceDesignComponentFormItem.requiredErrorMessage}" >
                                                 <p:ajax  event="blur" process="@this"  listener="#{clientEncounterComponentItemController.save(ii)}" ></p:ajax>
                                             </p:inputText>
                                         </td>
                                         <td>
-                                            <h:panelGroup rendered="#{ii.calculateButton}" >
+                                            <h:panelGroup rendered="#{ii.referanceDesignComponentFormItem.calculateButton}" >
                                                 <p:commandButton id="btnCalculate_it_RnC"  value="Calculate" process="@this" update="itRnC"
                                                                  action="#{clientEncounterComponentItemController.calculate(ii)}"></p:commandButton>
                                             </h:panelGroup>
                                         </td>
                                     </h:panelGroup>
-                                    <h:panelGroup rendered="#{ii.item.dataType eq 'Long_Number'}" >
+                                    <h:panelGroup rendered="#{ii.referanceDesignComponentFormItem.item.dataType eq 'Long_Number'}" >
                                         <td>
-                                            <p:outputLabel for="itLongC" value="#{ii.name}"  style="#{ii.generatedCss}" ></p:outputLabel>
+                                            <p:outputLabel for="itLongC" value="#{ii.referanceDesignComponentFormItem.name}"  style="#{ii.referanceDesignComponentFormItem.generatedCss}" ></p:outputLabel>
                                         </td>
                                         <td>
                                             <p:inputText id="itLongC" value="#{ii.longNumberValue}" 
-                                                         required="#{ii.required}" 
-                                                         requiredMessage="#{ii.requiredErrorMessage}" >
+                                                         required="#{ii.referanceDesignComponentFormItem.required}" 
+                                                         requiredMessage="#{ii.referanceDesignComponentFormItem.requiredErrorMessage}" >
                                                 <p:ajax  event="blur" process="@this"   listener="#{clientEncounterComponentItemController.save(ii)}" ></p:ajax>
                                             </p:inputText>
                                         </td>
                                         <td>
-                                            <h:panelGroup rendered="#{ii.calculateButton}" >
+                                            <h:panelGroup rendered="#{ii.referanceDesignComponentFormItem.calculateButton}" >
                                                 <p:commandButton id="btnCalculate_itLongC"  value="Calculate" process="@this"
                                                                  update="itLongC"
                                                                  action="#{clientEncounterComponentItemController.calculate(ii)}"></p:commandButton>
@@ -167,64 +176,64 @@
                                         </td>
                                     </h:panelGroup>
                                 </h:panelGroup>
-                                <h:panelGroup rendered="#{ii.renderType eq 'Input_Text_Area'}" >
+                                <h:panelGroup rendered="#{ii.referanceDesignComponentFormItem.renderType eq 'Input_Text_Area'}" >
                                     <td>
-                                        <p:outputLabel for="txtItaL" value="#{ii.name}"  style="#{ii.generatedCss}" ></p:outputLabel>
+                                        <p:outputLabel for="txtItaL" value="#{ii.referanceDesignComponentFormItem.name}"  style="#{ii.generatedCss}" ></p:outputLabel>
                                     </td>
                                     <td>
                                         <p:inputTextarea id="txtItaL" value="#{ii.longTextValue}" 
-                                                         required="#{ii.required}" 
-                                                         requiredMessage="#{ii.requiredErrorMessage}" >
+                                                         required="#{ii.referanceDesignComponentFormItem.required}" 
+                                                         requiredMessage="#{ii.referanceDesignComponentFormItem.requiredErrorMessage}" >
                                             <p:ajax  event="blur" process="@this"   listener="#{clientEncounterComponentItemController.save(ii)}" ></p:ajax>
                                         </p:inputTextarea>
                                     </td>
                                 </h:panelGroup>
-                                <h:panelGroup rendered="#{ii.item.dataType eq 'DateTime'}" >
-                                    <h:panelGroup rendered="#{ii.renderType eq 'Date_Picker'}" >
+                                <h:panelGroup rendered="#{ii.referanceDesignComponentFormItem.item.dataType eq 'DateTime'}" >
+                                    <h:panelGroup rendered="#{ii.referanceDesignComponentFormItem.renderType eq 'Date_Picker'}" >
                                         <td>
                                             <p:outputLabel for="calDp" value="#{ii.name}"  style="#{ii.generatedCss}" ></p:outputLabel>
                                         </td>
                                         <td>
                                             <p:calendar id="calDp" value="#{ii.dateValue}" 
-                                                        required="#{ii.required}" navigator="true"
-                                                        requiredMessage="#{ii.requiredErrorMessage}" 
+                                                        required="#{ii.referanceDesignComponentFormItem.required}" navigator="true"
+                                                        requiredMessage="#{ii.referanceDesignComponentFormItem.requiredErrorMessage}" 
                                                         pattern="dd MMMM yyyy">
                                                 <p:ajax  event="blur" process="@this"   listener="#{clientEncounterComponentItemController.save(ii)}" ></p:ajax>
                                             </p:calendar>
                                         </td>
 
                                     </h:panelGroup>
-                                    <h:panelGroup rendered="#{ii.renderType eq 'Calendar'}" >
+                                    <h:panelGroup rendered="#{ii.referanceDesignComponentFormItem.renderType eq 'Calendar'}" >
                                         <td>
-                                            <p:outputLabel for="calC" value="#{ii.name}" ></p:outputLabel>
+                                            <p:outputLabel for="calC" value="#{ii.referanceDesignComponentFormItem.name}" ></p:outputLabel>
                                         </td>
                                         <td>
                                             <p:calendar id="calC" value="#{ii.dateValue}" 
-                                                        required="#{ii.required}" 
-                                                        requiredMessage="#{ii.requiredErrorMessage}" pattern="dd MMMM yyyy">
+                                                        required="#{ii.referanceDesignComponentFormItem.required}" 
+                                                        requiredMessage="#{ii.referanceDesignComponentFormItem.requiredErrorMessage}" pattern="dd MMMM yyyy">
                                                 <p:ajax  event="blur" process="@this"   listener="#{clientEncounterComponentItemController.save(ii)}" ></p:ajax>
                                             </p:calendar>
                                         </td>
 
                                     </h:panelGroup>
                                 </h:panelGroup>
-                                <h:panelGroup rendered="#{ii.item.dataType eq 'Item_Reference'}" >
-                                    <h:panelGroup rendered="#{ii.renderType eq 'Drop_Down_Menu'}" >
+                                <h:panelGroup rendered="#{ii.referanceDesignComponentFormItem.item.dataType eq 'Item_Reference'}" >
+                                    <h:panelGroup rendered="#{ii.referanceDesignComponentFormItem.renderType eq 'Drop_Down_Menu'}" >
                                         <td>
-                                            <p:outputLabel for="domIc" value="#{ii.name}"  style="#{ii.generatedCss}" ></p:outputLabel>
+                                            <p:outputLabel for="domIc" value="#{ii.referanceDesignComponentFormItem.name}"  style="#{ii.referanceDesignComponentFormItem.generatedCss}" ></p:outputLabel>
                                         </td>
                                         <td>
                                             <p:selectOneMenu id="domIc" value="#{ii.itemValue}" >
                                                 <f:selectItem itemLabel="Please select" ></f:selectItem>
-                                                <f:selectItems value="#{itemController.findItemList(ii.categoryOfAvailableItems)}" var="li"
+                                                <f:selectItems value="#{itemController.findItemList(ii.referanceDesignComponentFormItem.categoryOfAvailableItems)}" var="li"
                                                                itemLabel="#{li.displayName}" itemValue="#{li}" ></f:selectItems>
                                                 <p:ajax  event="blur" process="@this"   listener="#{clientEncounterComponentItemController.save(ii)}" ></p:ajax>
                                             </p:selectOneMenu>
                                         </td>
                                     </h:panelGroup>
-                                    <h:panelGroup rendered="#{ii.renderType eq 'Autocomplete'}" >
+                                    <h:panelGroup rendered="#{ii.referanceDesignComponentFormItem.renderType eq 'Autocomplete'}" >
                                         <td>
-                                            <p:outputLabel for="acItem" value="#{ii.name}"  style="#{ii.generatedCss}" ></p:outputLabel>
+                                            <p:outputLabel for="acItem" value="#{ii.referanceDesignComponentFormItem.name}"  style="#{ii.referanceDesignComponentFormItem.generatedCss}" ></p:outputLabel>
                                         </td>
                                         <td>
                                             <p:autoComplete id="acItem" value="#{ii.itemValue}"
@@ -234,7 +243,7 @@
                                                             minQueryLength="3"
                                                             required="#{ii.required}" 
                                                             requiredMessage="#{ii.requiredErrorMessage}">
-                                                <f:attribute name="filter" value="#{ii.categoryOfAvailableItems.code}" />
+                                                <f:attribute name="filter" value="#{ii.referanceDesignComponentFormItem.categoryOfAvailableItems.code}" />
                                                 <p:ajax  event="blur" process="@this"   
                                                          listener="#{clientEncounterComponentItemController.save(ii)}" >
                                                 </p:ajax>
@@ -243,21 +252,21 @@
 
                                     </h:panelGroup>
                                 </h:panelGroup>
-                                <h:panelGroup rendered="#{ii.renderType eq 'Boolean_Checkbox'}" >
+                                <h:panelGroup rendered="#{ii.referanceDesignComponentFormItem.renderType eq 'Boolean_Checkbox'}" >
                                     <td>
-                                        <p:outputLabel for="bcNc" value="#{ii.name}"  style="#{ii.generatedCss}" ></p:outputLabel>
+                                        <p:outputLabel for="bcNc" value="#{ii.referanceDesignComponentFormItem.name}"  style="#{ii.referanceDesignComponentFormItem.generatedCss}" ></p:outputLabel>
                                     </td>
                                     <td>
                                         <p:selectBooleanCheckbox id="bcNc" value="#{ii.booleanValue}" 
-                                                                 required="#{ii.required}" 
-                                                                 requiredMessage="#{ii.requiredErrorMessage}" >
+                                                                 required="#{ii.referanceDesignComponentFormItem.required}" 
+                                                                 requiredMessage="#{ii.referanceDesignComponentFormItem.requiredErrorMessage}" >
                                             <p:ajax  process="@this"   
                                                      listener="#{clientEncounterComponentItemController.save(ii)}" >
                                             </p:ajax>
                                         </p:selectBooleanCheckbox>
                                     </td>
                                 </h:panelGroup>
-                                <h:panelGroup rendered="#{ii.renderType eq 'Autocomplete' and ii.item.dataType eq 'Area_Reference'}" >
+                                <h:panelGroup rendered="#{ii.referanceDesignComponentFormItem.renderType eq 'Autocomplete' and ii.referanceDesignComponentFormItem.item.dataType eq 'Area_Reference'}" >
                                     <td>
                                         <p:outputLabel for="acA" value="#{ii.name}"  style="#{ii.generatedCss}" ></p:outputLabel>
                                     </td>
@@ -267,17 +276,17 @@
                                                         var="a" itemLabel="#{a.name}" itemValue="#{a}"
                                                         maxResults="15" forceSelection="true" 
                                                         minQueryLength="3"
-                                                        required="#{ii.required}" 
-                                                        requiredMessage="#{ii.requiredErrorMessage}">
+                                                        required="#{ii.referanceDesignComponentFormItem.required}" 
+                                                        requiredMessage="#{ii.referanceDesignComponentFormItem.requiredErrorMessage}">
                                             <p:ajax  event="blur" process="@this"   
                                                      listener="#{clientEncounterComponentItemController.save(ii)}" >
                                             </p:ajax>
                                         </p:autoComplete>
                                     </td>
                                 </h:panelGroup>
-                                <h:panelGroup rendered="#{ii.renderType eq 'Prescreption'}" >
+                                <h:panelGroup rendered="#{ii.referanceDesignComponentFormItem.renderType eq 'Prescreption'}" >
                                     <td>
-                                        <p:outputLabel value="#{ii.name}"  style="#{ii.generatedCss}" ></p:outputLabel>
+                                        <p:outputLabel value="#{ii.referanceDesignComponentFormItem.name}"  style="#{ii.referanceDesignComponentFormItem.generatedCss}" ></p:outputLabel>
                                     </td>
                                     <td>
                                         <ez:prescription/>
@@ -286,26 +295,26 @@
                             </h:panelGroup>
 
                             <td>
-                                <p:outputLabel value="#{ii.descreption}" ></p:outputLabel>
+                                <p:outputLabel value="#{ii.referanceDesignComponentFormItem.descreption}" ></p:outputLabel>
                                 <h:panelGroup rendered="true">
                                     <p:panelGrid columns="2" rendered="false" >
                                         <p:outputLabel value="Name" ></p:outputLabel>
-                                        <p:outputLabel value="#{ii.name}" ></p:outputLabel>
+                                        <p:outputLabel value="#{ii.referanceDesignComponentFormItem.name}" ></p:outputLabel>
                                         <p:outputLabel value="renderType" ></p:outputLabel>
-                                        <p:outputLabel value="#{ii.renderType.label}" ></p:outputLabel>
+                                        <p:outputLabel value="#{ii.referanceDesignComponentFormItem.renderType.label}" ></p:outputLabel>
                                         <p:outputLabel value="selectionDataType" ></p:outputLabel>
-                                        <p:outputLabel value="#{ii.item.dataType.label}" ></p:outputLabel>
+                                        <p:outputLabel value="#{ii.referanceDesignComponentFormItem.item.dataType.label}" ></p:outputLabel>
                                     </p:panelGrid>
                                 </h:panelGroup>
                             </td>
                             <td>
-                                <h:panelGroup rendered="#{ii.multipleEntiesPerForm}" >
+                                <h:panelGroup rendered="#{ii.referanceDesignComponentFormItem.multipleEntiesPerForm}" >
                                     <p:commandButton id="btnAdd"  value="Add Another" process="@this" update="@form :#{p:component('formset')}"
                                                      action="#{clientEncounterComponentItemController.addAnother(ii)}"></p:commandButton>
                                 </h:panelGroup>
                             </td>
                             <td>
-                                <h:panelGroup rendered="#{ii.displayLastResult}" >
+                                <h:panelGroup rendered="#{ii.referanceDesignComponentFormItem.displayLastResult}" >
                                     <h:outputText value="#{fn:replace(clientEncounterComponentFormSetController.lastData(ii),'\\n','&lt;br/&gt;')}" escape="false" />
                                 </h:panelGroup>
                             </td>
@@ -315,11 +324,11 @@
             </table>                
         </h:panelGroup>
 
-        <h:panelGroup rendered="#{cc.attrs.form.itemArrangementStrategy eq 'Absolute_Positioning'}" >
+        <h:panelGroup rendered="#{cc.attrs.form.referanceDesignComponentForm.itemArrangementStrategy eq 'Absolute_Positioning'}" >
             <p:outputLabel value="Still Under Construction. Please contact Development Team" ></p:outputLabel>
         </h:panelGroup>
 
-        <h:panelGroup rendered="#{cc.attrs.form.itemArrangementStrategy eq 'Relative_Positioning'}" >
+        <h:panelGroup rendered="#{cc.attrs.form.referanceDesignComponentForm.itemArrangementStrategy eq 'Relative_Positioning'}" >
             <p:outputLabel value="Still Under Construction. Please contact Development Team" ></p:outputLabel>
         </h:panelGroup>
 

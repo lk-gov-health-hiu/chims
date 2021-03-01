@@ -32,6 +32,5 @@ import javax.persistence.Entity;
  */
 @Entity
 public class ClientEncounterComponentForm extends ClientEncounterComponent {
-
     
 }

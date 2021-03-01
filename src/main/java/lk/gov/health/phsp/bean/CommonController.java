@@ -68,6 +68,27 @@ public class CommonController implements Serializable {
     public CommonController() {
     }
 
+    public static String formatDate() {
+        Date date = Calendar.getInstance().getTime();
+        return formatDate(date);
+    }
+
+    public static String formatDate(Date date, String formatString) {
+        DateFormat dateFormat = new SimpleDateFormat(formatString);
+        String strDate = dateFormat.format(date);
+        return strDate;
+    }
+
+    public static String formatDate(String formatString) {
+        Date date = Calendar.getInstance().getTime();
+        return formatDate(date, formatString);
+    }
+
+    public static String formatDate(Date date) {
+        String formatString = "dd MMMM yyyy";
+        return formatDate(date, formatString);
+    }
+
     public static Integer stringToInteger(String str) {
         Integer outInt;
         if (str == null) {
