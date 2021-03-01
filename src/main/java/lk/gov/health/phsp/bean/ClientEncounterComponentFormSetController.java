@@ -236,7 +236,7 @@ public class ClientEncounterComponentFormSetController implements Serializable {
         selected.setCompletedAt(new Date());
         selected.setCompletedBy(webUserController.getLoggedUser());
         getFacade().edit(selected);
-        executePostCompletionStrategies(selected);
+//        executePostCompletionStrategies(selected);
         formEditable = false;
         JsfUtil.addSuccessMessage("Completed");
         userTransactionController.recordTransaction("Formset Completed");
