@@ -34,6 +34,7 @@ import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
@@ -41,6 +42,7 @@ import javax.persistence.Temporal;
  */
 @Entity
 @Table(name = "movement")
+@XmlRootElement
 public class Movement implements Serializable {
 
     private static final long serialVersionUID = 1L;

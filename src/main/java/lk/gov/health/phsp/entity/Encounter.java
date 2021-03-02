@@ -38,6 +38,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 import lk.gov.health.phsp.enums.EncounterType;
 
 /**
@@ -362,6 +363,7 @@ public class Encounter implements Serializable {
         this.firstEncounter = firstEncounter;
     }
 
+    @XmlTransient
     public List<ClientEncounterComponentItem> getClientEncounterComponentItems() {
         return clientEncounterComponentItems;
     }

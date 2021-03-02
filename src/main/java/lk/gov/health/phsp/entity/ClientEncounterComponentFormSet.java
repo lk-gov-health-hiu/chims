@@ -36,6 +36,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.Transient;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 import lk.gov.health.phsp.enums.AvailableDataType;
 import lk.gov.health.phsp.enums.ComponentSetType;
 import lk.gov.health.phsp.enums.DataCompletionStrategy;
@@ -50,11 +52,13 @@ import lk.gov.health.phsp.enums.SelectionDataType;
  * @author buddhika
  */
 @Entity
+@XmlRootElement
 public class ClientEncounterComponentFormSet extends ClientEncounterComponent {
 
     @OneToMany(mappedBy = "itemFormset")
     private List<ClientEncounterComponentItem> clientEncounterComponentItems;
 
+    @XmlTransient
     public List<ClientEncounterComponentItem> getClientEncounterComponentItems() {
         return clientEncounterComponentItems;
     }

@@ -35,6 +35,7 @@ import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
+import javax.xml.bind.annotation.XmlRootElement;
 import lk.gov.health.phsp.enums.PrescriptionType;
 
 /**
@@ -43,6 +44,7 @@ import lk.gov.health.phsp.enums.PrescriptionType;
  */
 @Entity
 @Table(name = "prescription")
+@XmlRootElement
 public class Prescription implements Serializable {
 
     private static final long serialVersionUID = 1L;

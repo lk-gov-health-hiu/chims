@@ -39,6 +39,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.Transient;
+import javax.xml.bind.annotation.XmlRootElement;
 import lk.gov.health.phsp.enums.AvailableDataType;
 import lk.gov.health.phsp.enums.ComponentSetType;
 import lk.gov.health.phsp.enums.DataCompletionStrategy;
@@ -55,6 +56,7 @@ import lk.gov.health.phsp.enums.TimePeriodType;
  */
 @Entity
 @Table(name = "consolidatedqueryresult")
+@XmlRootElement
 public class ConsolidatedQueryResult implements Serializable {
 
     private static final long serialVersionUID = 1L;

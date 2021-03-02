@@ -36,6 +36,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.Transient;
+import javax.xml.bind.annotation.XmlRootElement;
 import lk.gov.health.phsp.bean.CommonController;
 import lk.gov.health.phsp.enums.TimePeriodType;
 import org.eclipse.persistence.annotations.Cache;
@@ -52,6 +53,7 @@ import org.eclipse.persistence.annotations.CacheType;
         alwaysRefresh = true
 )
 @Table(name = "storedqueryresult")
+@XmlRootElement
 public class StoredQueryResult implements Serializable {
 
     private static final long serialVersionUID = 1L;

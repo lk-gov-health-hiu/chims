@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2019 Dr M H B Ariyaratne<buddhika.ari@gmail.com>.
+ * Copyright 2021 buddhika.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,34 +21,19 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package lk.gov.health.phsp.entity;
+package org.netbeans.rest.application.config;
 
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.xml.bind.annotation.XmlRootElement;
-import lk.gov.health.phsp.enums.ComponentSex;
+import javax.ws.rs.core.Application;
 
 /**
  *
- * @author sunila_soft
+ * @author buddhika
  */
-@Entity
-@XmlRootElement
-public class DesignComponent extends Component {
+@javax.ws.rs.ApplicationPath("api")
+public class ApplicationConfig extends Application {
 
-    @Enumerated(EnumType.STRING)
-    private ComponentSex componentSex;
 
-    public ComponentSex getComponentSex() {
-        if (componentSex == null) {
-            componentSex = ComponentSex.For_Both;
-        }
-        return componentSex;
-    }
-
-    public void setComponentSex(ComponentSex componentSex) {
-        this.componentSex = componentSex;
-    }
-
+  
+   
+    
 }
