@@ -24,6 +24,7 @@
 package lk.gov.health.phsp.ws;
 
 import java.util.List;
+import javax.enterprise.context.Dependent;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.Produces;
@@ -47,7 +48,7 @@ import org.json.JSONObject;
  * @author buddhika
  */
 @Path("data")
-@RequestScoped
+@Dependent
 public class ApiResource {
 
     @Context
@@ -65,7 +66,6 @@ public class ApiResource {
     }
 
     @GET
-    @Path("list")
     @Produces(MediaType.APPLICATION_JSON)
     public String getJson(@QueryParam("name") String name) {
         JSONObject jSONObjectOut;
