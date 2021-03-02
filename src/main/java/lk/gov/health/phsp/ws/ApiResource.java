@@ -47,7 +47,7 @@ import org.json.JSONObject;
  *
  * @author buddhika
  */
-@Path("data")
+@Path("")
 @Dependent
 public class ApiResource {
 
