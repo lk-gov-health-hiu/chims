@@ -40,25 +40,11 @@
             <param-name>jersey.config.server.provider.packages</param-name>
             <param-value>lk.gov.health.phsp.ws</param-value>
         </init-param>
-<!--        <init-param>
-            <param-name>jersey.config.servlet.filter.staticContentRegex</param-name>
-            <param-value>/.*html</param-value>
-        </init-param>-->
     </filter> 
     <filter-mapping>
         <filter-name>Jersey Filter</filter-name>
         <url-pattern>/data/*</url-pattern> 
     </filter-mapping>
-    
-    <!--    <servlet>
-        <servlet-name>javax.ws.rs.core.Application</servlet-name>
-        <load-on-startup>1</load-on-startup>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>javax.ws.rs.core.Application</servlet-name>
-        <url-pattern>/data/*</url-pattern>
-    </servlet-mapping>-->
-    
     
     <session-config>
         <session-timeout>
