@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.netbeans.rest.application.config;
+package lk.gov.health.phsp.ws;
 
 import javax.ws.rs.core.Application;
 

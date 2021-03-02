@@ -40,14 +40,14 @@
             <param-name>jersey.config.server.provider.packages</param-name>
             <param-value>lk.gov.health.phsp.ws</param-value>
         </init-param>
-        <init-param>
+<!--        <init-param>
             <param-name>jersey.config.servlet.filter.staticContentRegex</param-name>
             <param-value>/.*html</param-value>
-        </init-param>
+        </init-param>-->
     </filter> 
     <filter-mapping>
         <filter-name>Jersey Filter</filter-name>
-        <url-pattern>/*</url-pattern> 
+        <url-pattern>/data/*</url-pattern> 
     </filter-mapping>
     
     <!--    <servlet>
