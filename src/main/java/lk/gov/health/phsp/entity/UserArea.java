@@ -34,6 +34,7 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
+import javax.xml.bind.annotation.XmlRootElement;
 import lk.gov.health.phsp.enums.Privilege;
 
 /**
@@ -42,6 +43,7 @@ import lk.gov.health.phsp.enums.Privilege;
  */
 @Entity
 @Table(name = "userarea")
+@XmlRootElement
 public class UserArea implements Serializable {
 
     private static final long serialVersionUID = 1L;

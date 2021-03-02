@@ -37,6 +37,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.Transient;
+import javax.xml.bind.annotation.XmlRootElement;
 import lk.gov.health.phsp.enums.RenderType;
 
 /**
@@ -45,6 +46,7 @@ import lk.gov.health.phsp.enums.RenderType;
  */
 @Entity
 @Table(name = "component")
+@XmlRootElement
 public class Component implements Serializable {
 
     private static final long serialVersionUID = 1L;

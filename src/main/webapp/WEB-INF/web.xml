@@ -31,6 +31,17 @@
         <servlet-name>Faces Servlet</servlet-name>
         <url-pattern>/app/*</url-pattern>
     </servlet-mapping>
+    
+<!--    <servlet>
+        <servlet-name>javax.ws.rs.core.Application</servlet-name>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>javax.ws.rs.core.Application</servlet-name>
+        <url-pattern>/data/*</url-pattern>
+    </servlet-mapping>-->
+    
+    
     <session-config>
         <session-timeout>
             60

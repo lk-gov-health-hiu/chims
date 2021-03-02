@@ -78,10 +78,7 @@ public class AreaApplicationController {
         Map m = new HashMap();
         j = "select a "
                 + " from Area a "
-                + " where a.name is not null "
-                + " and a.type=:t";
-
-        m.put("t", AreaType.GN);
+                + " where a.name is not null";
         j += " order by a.name";
         return areaFacade.findByJpql(j, m);
     }
@@ -95,6 +92,18 @@ public class AreaApplicationController {
         }
         return tas;
     }
+
+
+    public List<Area> getAllAreas(AreaType at) {
+        List<Area> tas = new ArrayList<>();
+        for (Area a : getAllAreas()) {
+            if (a.getType()!=null && a.getType().equals(at)) {
+                tas.add(a);
+            }
+        }
+        return tas;
+    }
+
 
     public List<Area> completeGnAreas(String qry) {
         List<Area> tas = new ArrayList<>();
