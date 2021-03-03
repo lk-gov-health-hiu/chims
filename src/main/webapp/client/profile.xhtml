@@ -132,7 +132,7 @@
                                                      var="cfs"  border="0" >
                                             <h:column >
                                                 <p:commandLink id="btnNewFormset" value="New #{cfs.name}" process="@this" update="@all"
-                                                               action="#{clientEncounterComponentFormSetController.createAndNavigateToClinicalEncounterComponentFormSetFromDesignComponentFormSetForClinicVisit(cfs)}" >
+                                                               action="#{clientEncounterComponentFormSetController.createNewAndNavigateToDataEntry(cfs)}" >
                                                 </p:commandLink>
                                                 <p:blockUI block=":#{p:component('tblClinics')}" trigger="btnNewFormset" >
                                                     LOADING Patient data.<br/>

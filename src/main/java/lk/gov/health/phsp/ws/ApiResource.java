@@ -104,7 +104,7 @@ public class ApiResource {
         jSONObjectOut.put("status", successMessage());
         return jSONObjectOut;
     }
-    
+
     private JSONObject instituteList() {
         JSONObject jSONObjectOut = new JSONObject();
         JSONArray array = new JSONArray();
@@ -117,8 +117,12 @@ public class ApiResource {
             ja.put("latitude", a.getCoordinate().getLatitude());
             ja.put("longitude", a.getCoordinate().getLongitude());
             ja.put("address", a.getAddress());
-            ja.put("province_id", a.getProvince().getCode());
-            ja.put("district_id", a.getDistrict().getCode());
+            if (a.getProvince() != null) {
+                ja.put("province_id", a.getProvince().getCode());
+            }
+            if (a.getDistrict() != null) {
+                ja.put("district_id", a.getDistrict().getCode());
+            }
             array.put(ja);
         }
         jSONObjectOut.put("data", array);

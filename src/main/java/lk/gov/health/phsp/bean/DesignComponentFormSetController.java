@@ -71,13 +71,13 @@ public class DesignComponentFormSetController implements Serializable {
         userTransactionController.recordTransaction("Back To Manage FormSets");
         return backString;
     }
-    
-    public String back(){
+
+    public String back() {
         userTransactionController.recordTransaction("Back to Manage Metadata");
         return backString;
     }
-    
-    public String toManageInstitutionFormssets(){
+
+    public String toManageInstitutionFormssets() {
         String j = "Select s from DesignComponentFormSet s "
                 + " where s.retired=:ret "
                 + " and s.institution is not null"
@@ -89,8 +89,8 @@ public class DesignComponentFormSetController implements Serializable {
         userTransactionController.recordTransaction("To Manage Institution Formssets");
         return "/designComponentFormSet/List_sys";
     }
-    
-    public String toManageSystemFormssets(){
+
+    public String toManageSystemFormssets() {
         String j = "Select s from DesignComponentFormSet s "
                 + " where s.retired=:ret "
                 + " and s.institution is null"
@@ -105,10 +105,7 @@ public class DesignComponentFormSetController implements Serializable {
 
     // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="Main Functions">
-    
-    
-    
-    public String toExport(){
+    public String toExport() {
         String j = "Select i from DesignComponentFormItem i where "
                 + " i.retired=:r "
                 + " and i.parentComponent.parentComponent=:p "
@@ -120,9 +117,9 @@ public class DesignComponentFormSetController implements Serializable {
         userTransactionController.recordTransaction("To Export Design Component FormSet");
         return "/designComponentFormSet/export";
     }
-    
-    public void reloadSet(){
-        if(selected==null){
+
+    public void reloadSet() {
+        if (selected == null) {
             JsfUtil.addErrorMessage("Noting is Selected");
             return;
         }
@@ -132,13 +129,13 @@ public class DesignComponentFormSetController implements Serializable {
         importFormSet();
         userTransactionController.recordTransaction("To reload Design Component FormSet");
     }
-    
-    public void retire(){
+
+    public void retire() {
         retire(selected);
     }
-    
-    public void retire(DesignComponentFormSet set){
-        if(set==null){
+
+    public void retire(DesignComponentFormSet set) {
+        if (set == null) {
             JsfUtil.addErrorMessage("Nothing is selected");
             return;
         }
@@ -147,7 +144,7 @@ public class DesignComponentFormSetController implements Serializable {
         set.setRetiredBy(webUserController.getLoggedUser());
         getFacade().edit(set);
     }
-    
+
     public void importFormSet() {
         if (referanceSet == null) {
             JsfUtil.addErrorMessage("Formset to Import is NOT selected");
@@ -159,15 +156,24 @@ public class DesignComponentFormSetController implements Serializable {
             return;
         }
 
+        System.out.println("referanceSet = " + referanceSet);
+
+        referanceSet.getReferenceComponent();
+        referanceSet.getParentComponent();
+                
+        
         DesignComponentFormSet ns = (DesignComponentFormSet) SerializationUtils.clone(referanceSet);
         ns.setId(null);
         ns.setCreatedAt(new Date());
         ns.setCreatedBy(webUserController.getLoggedUser());
         ns.setLastEditBy(null);
         ns.setLastEditeAt(null);
+
+        getFacade().create(ns);
+
         ns.setReferenceComponent(referanceSet);
         ns.setInstitution(institution);
-        getFacade().create(ns);
+        getFacade().edit(ns);
 
         for (DesignComponentForm f : designComponentFormController.fillFormsofTheSelectedSet(referanceSet)) {
             DesignComponentForm nf = (DesignComponentForm) SerializationUtils.clone(f);
@@ -205,9 +211,7 @@ public class DesignComponentFormSetController implements Serializable {
 
     }
 
-    
-    
-  public void duplicateFormSet() {
+    public void duplicateFormSet() {
         if (referanceSet == null) {
             JsfUtil.addErrorMessage("Formset to Import is NOT selected");
             userTransactionController.recordTransaction("Import FormSet");
@@ -258,8 +262,6 @@ public class DesignComponentFormSetController implements Serializable {
 
     }
 
-      
-    
     public void setBackStringToSysAdmin() {
         backString = "/designComponentFormSet/List";
     }
@@ -291,10 +293,7 @@ public class DesignComponentFormSetController implements Serializable {
         }
         return ss;
     }
-    
-    
-    
-    
+
     public List<DesignComponentFormSet> getClinicFormSets(Institution clinic) {
         String j = "Select s from DesignComponentFormSet s "
                 + " where s.retired=false "
@@ -308,7 +307,6 @@ public class DesignComponentFormSetController implements Serializable {
         }
         return ss;
     }
-
 
     public List<DesignComponentFormSet> fillInsItems(List<Institution> insLst) {
         String j = "Select s from DesignComponentFormSet s "
@@ -358,23 +356,20 @@ public class DesignComponentFormSetController implements Serializable {
 
     public void update() {
         persist(PersistAction.UPDATE, ResourceBundle.getBundle("/BundleClinical").getString("DesignComponentFormSetUpdated"));
-         userTransactionController.recordTransaction("Update Design Component FormSet");
+        userTransactionController.recordTransaction("Update Design Component FormSet");
     }
 
-    
-    
-    
     public void destroy() {
-        if(selected==null){
+        if (selected == null) {
             JsfUtil.addErrorMessage("Nothing to Delete");
-            return ;
+            return;
         }
         selected.setRetired(true);
         selected.setRetiredAt(new Date());
         selected.setRetiredBy(webUserController.getLoggedUser());
         getFacade().edit(selected);
         items = null;
-        insItems=null;
+        insItems = null;
         getItems();
         getInsItems();
         userTransactionController.recordTransaction("Destroy() Design Component FormSet");
@@ -410,10 +405,6 @@ public class DesignComponentFormSetController implements Serializable {
 
     // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="Getters & Setters">
-   
-    
-    
-    
     public DesignComponentFormSet getReferanceSet() {
         return referanceSet;
     }
@@ -500,8 +491,6 @@ public class DesignComponentFormSetController implements Serializable {
         return backString;
     }
 
-    
-    
     public void setBackString(String backString) {
         this.backString = backString;
     }
