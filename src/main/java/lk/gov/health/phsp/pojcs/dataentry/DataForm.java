@@ -41,18 +41,6 @@ public class DataForm {
     public DataFormset formset;
     List<DataItem> items;
 
-   
-    public List<DataItem> getItems() {
-        if(items==null){
-            items = new ArrayList<>();
-        }
-        return items;
-    }
-
-    public void setItems(List<DataItem> items) {
-        this.items = items;
-    }
-
     public int getId() {
         return id;
     }
@@ -91,6 +79,17 @@ public class DataForm {
 
     public void setFormset(DataFormset formset) {
         this.formset = formset;
+    }
+
+    public List<DataItem> getItems() {
+        if(items==null){
+            items = new ArrayList<>();
+        }
+        return items;
+    }
+
+    public void setItems(List<DataItem> items) {
+        this.items = items;
     }
 
     

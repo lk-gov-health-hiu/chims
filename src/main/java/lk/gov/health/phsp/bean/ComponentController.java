@@ -18,6 +18,15 @@ import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
+import lk.gov.health.phsp.entity.ClientEncounterComponent;
+import lk.gov.health.phsp.entity.ClientEncounterComponentForm;
+import lk.gov.health.phsp.entity.ClientEncounterComponentFormSet;
+import lk.gov.health.phsp.entity.ClientEncounterComponentItem;
+import lk.gov.health.phsp.entity.DesignComponent;
+import lk.gov.health.phsp.entity.DesignComponentForm;
+import lk.gov.health.phsp.entity.DesignComponentFormItem;
+import lk.gov.health.phsp.entity.DesignComponentFormSet;
+import lk.gov.health.phsp.entity.QueryComponent;
 
 @Named("componentController")
 @SessionScoped
@@ -33,6 +42,51 @@ public class ComponentController implements Serializable {
 
     public Component getSelected() {
         return selected;
+    }
+
+    public Component cloneComponent(Component c) {
+        Component nc = null;
+        if (c == null) {
+            return nc;
+        }
+        if (c instanceof ClientEncounterComponent) {
+
+        } else if (c instanceof ClientEncounterComponentFormSet) {
+
+        } else if (c instanceof ClientEncounterComponentForm) {
+
+        } else if (c instanceof ClientEncounterComponentItem) {
+
+        } else if (c instanceof DesignComponent) {
+
+        } else if (c instanceof DesignComponentFormSet) {
+
+        } else if (c instanceof DesignComponentForm) {
+
+        } else if (c instanceof DesignComponentFormItem) {
+
+        } else if (c instanceof QueryComponent) {
+
+        } else {
+            nc = new Component();
+            nc.setName(c.getName());
+            nc.setCode(c.getCode());
+            nc.setItem(c.getItem());
+            nc.setDescreption(c.getDescreption());
+            nc.setOrderNo(c.getOrderNo());
+            nc.setInstitution(c.getInstitution());
+            nc.setParentComponent(c.getParentComponent());
+            nc.setReferenceComponent(c.getReferenceComponent());
+            nc.setCss(c.getCss());
+
+        }
+        return nc;
+    }
+
+    private DesignComponent cloneComponent(DesignComponent c) {
+        DesignComponent nc = null;
+
+        return nc;
     }
 
     public void setSelected(Component selected) {
