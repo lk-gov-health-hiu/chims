@@ -83,9 +83,203 @@ public class ComponentController implements Serializable {
         return nc;
     }
 
-    private DesignComponent cloneComponent(DesignComponent c) {
-        DesignComponent nc = null;
+    public ClientEncounterComponent cloneComponent(ClientEncounterComponent c) {
+        ClientEncounterComponent nc = null;
+        if (c == null) {
+            return nc;
+        }
+        nc = new ClientEncounterComponent();
+        nc.setName(c.getName());
+        nc.setCode(c.getCode());
+        nc.setItem(c.getItem());
+        nc.setDescreption(c.getDescreption());
+        nc.setOrderNo(c.getOrderNo());
+        nc.setInstitution(c.getInstitution());
+        nc.setParentComponent(c.getParentComponent());
+        nc.setReferenceComponent(c.getReferenceComponent());
+        nc.setCss(c.getCss());
+//
+        nc.setEncounter(c.getEncounter());
+        nc.setClient(c.getClient());
+        return nc;
+    }
 
+    public ClientEncounterComponentFormSet cloneComponent(ClientEncounterComponentFormSet c) {
+        ClientEncounterComponentFormSet nc = null;
+        if (c == null) {
+            return nc;
+        }
+        nc = new ClientEncounterComponentFormSet();
+        nc.setName(c.getName());
+        nc.setCode(c.getCode());
+        nc.setItem(c.getItem());
+        nc.setDescreption(c.getDescreption());
+        nc.setOrderNo(c.getOrderNo());
+        nc.setInstitution(c.getInstitution());
+        nc.setParentComponent(c.getParentComponent());
+        nc.setReferenceComponent(c.getReferenceComponent());
+        nc.setCss(c.getCss());
+//
+        nc.setEncounter(c.getEncounter());
+        nc.setClient(c.getClient());
+//        
+        nc.setClientEncounterComponentItems(c.getClientEncounterComponentItems());
+        return nc;
+    }
+
+    public ClientEncounterComponentForm cloneComponent(ClientEncounterComponentForm c) {
+        ClientEncounterComponentForm nc = null;
+        if (c == null) {
+            return nc;
+        }
+        nc = new ClientEncounterComponentForm();
+        nc.setName(c.getName());
+        nc.setCode(c.getCode());
+        nc.setItem(c.getItem());
+        nc.setDescreption(c.getDescreption());
+        nc.setOrderNo(c.getOrderNo());
+        nc.setInstitution(c.getInstitution());
+        nc.setParentComponent(c.getParentComponent());
+        nc.setReferenceComponent(c.getReferenceComponent());
+        nc.setCss(c.getCss());
+//
+        nc.setEncounter(c.getEncounter());
+        nc.setClient(c.getClient());
+//        
+
+        return nc;
+    }
+
+    public ClientEncounterComponentItem cloneComponent(ClientEncounterComponentItem c) {
+        ClientEncounterComponentItem nc = null;
+        if (c == null) {
+            return nc;
+        }
+        nc = new ClientEncounterComponentItem();
+        nc.setName(c.getName());
+        nc.setCode(c.getCode());
+        nc.setItem(c.getItem());
+        nc.setDescreption(c.getDescreption());
+        nc.setOrderNo(c.getOrderNo());
+        nc.setInstitution(c.getInstitution());
+        nc.setParentComponent(c.getParentComponent());
+        nc.setReferenceComponent(c.getReferenceComponent());
+        nc.setCss(c.getCss());
+//
+        nc.setEncounter(c.getEncounter());
+        nc.setClient(c.getClient());
+//        
+        nc.setItemClient(c.getItemClient());
+        nc.setItemEncounter(c.getItemEncounter());
+        nc.setItemFormset(c.getItemFormset());
+        nc.setDataRepresentationType(c.getDataRepresentationType());
+        nc.setLongTextValue(c.getLongTextValue());
+        nc.setDescreptionValue(c.getDescreptionValue());
+        nc.setShortTextValue(c.getShortTextValue());
+        nc.setByteArrayValue(c.getByteArrayValue());
+        nc.setIntegerNumberValue(c.getIntegerNumberValue());
+        nc.setLongNumberValue(c.getLongNumberValue());
+        nc.setRealNumberValue(c.getRealNumberValue());
+        nc.setBooleanValue(c.getBooleanValue());
+        nc.setDateValue(c.getDateValue());
+        nc.setItemValue(c.getItemValue());
+        nc.setAreaValue(c.getAreaValue());
+        nc.setInstitutionValue(c.getInstitutionValue());
+        nc.setClientValue(c.getClientValue());
+        nc.setPrescriptionValue(c.getPrescriptionValue());
+        nc.setObservationValue(c.getObservationValue());
+        nc.setProcedureValue(c.getProcedureValue());
+        nc.setMovementValue(c.getMovementValue());
+        nc.setIntegerNumberValue2(c.getIntegerNumberValue2());
+        nc.setLongNumberValue2(c.getLongNumberValue2());
+        nc.setRealNumberValue2(c.getRealNumberValue2());
+        return nc;
+    }
+
+    public DesignComponent cloneComponent(DesignComponent c) {
+        DesignComponent nc = null;
+        if (c == null) {
+            return nc;
+        }
+        nc = new DesignComponent();
+        nc.setName(c.getName());
+        nc.setCode(c.getCode());
+        nc.setItem(c.getItem());
+        nc.setDescreption(c.getDescreption());
+        nc.setOrderNo(c.getOrderNo());
+        nc.setInstitution(c.getInstitution());
+        nc.setParentComponent(c.getParentComponent());
+        nc.setReferenceComponent(c.getReferenceComponent());
+        nc.setCss(c.getCss());
+        //
+        nc.setComponentSex(c.getComponentSex());
+        return nc;
+    }
+
+    public DesignComponentFormSet cloneComponent(DesignComponentFormSet c) {
+        DesignComponentFormSet nc = null;
+        if (c == null) {
+            return nc;
+        }
+        nc = new DesignComponentFormSet();
+        nc.setName(c.getName());
+        nc.setCode(c.getCode());
+        nc.setItem(c.getItem());
+        nc.setDescreption(c.getDescreption());
+        nc.setOrderNo(c.getOrderNo());
+        nc.setInstitution(c.getInstitution());
+        nc.setParentComponent(c.getParentComponent());
+        nc.setReferenceComponent(c.getReferenceComponent());
+        nc.setCss(c.getCss());
+        //
+        nc.setComponentSex(c.getComponentSex());
+        //
+        nc.setComponentSetType(c.getComponentSetType());
+        nc.setPanelType(c.getPanelType());
+        return nc;
+    }
+
+    public DesignComponentForm cloneComponent(DesignComponentForm c) {
+        DesignComponentForm nc = null;
+        if (c == null) {
+            return nc;
+        }
+        nc = new DesignComponentForm();
+        nc.setName(c.getName());
+        nc.setCode(c.getCode());
+        nc.setItem(c.getItem());
+        nc.setDescreption(c.getDescreption());
+        nc.setOrderNo(c.getOrderNo());
+        nc.setInstitution(c.getInstitution());
+        nc.setParentComponent(c.getParentComponent());
+        nc.setReferenceComponent(c.getReferenceComponent());
+        nc.setCss(c.getCss());
+        //
+        nc.setComponentSex(c.getComponentSex());
+        //
+        nc.setItemArrangementStrategy(c.getItemArrangementStrategy());
+        return nc;
+    }
+
+    public DesignComponentFormItem cloneComponent(DesignComponentFormItem c) {
+        DesignComponentFormItem nc = null;
+        if (c == null) {
+            return nc;
+        }
+        nc = new DesignComponentFormItem();
+        nc.setName(c.getName());
+        nc.setCode(c.getCode());
+        nc.setItem(c.getItem());
+        nc.setDescreption(c.getDescreption());
+        nc.setOrderNo(c.getOrderNo());
+        nc.setInstitution(c.getInstitution());
+        nc.setParentComponent(c.getParentComponent());
+        nc.setReferenceComponent(c.getReferenceComponent());
+        nc.setCss(c.getCss());
+        //
+        nc.setComponentSex(c.getComponentSex());
+        //
+        nc.setItemArrangementStrategy(c.getItemArrangementStrategy());
         return nc;
     }
 
