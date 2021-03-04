@@ -23,6 +23,8 @@
  */
 package lk.gov.health.phsp.pojcs.dataentry;
 
+import java.util.ArrayList;
+import java.util.List;
 import lk.gov.health.phsp.entity.ClientEncounterComponentFormSet;
 import lk.gov.health.phsp.entity.DesignComponentFormSet;
 
@@ -30,8 +32,22 @@ import lk.gov.health.phsp.entity.DesignComponentFormSet;
  *
  * @author buddhika
  */
-public class Dataformset {
-    DesignComponentFormSet dfs;
-    ClientEncounterComponentFormSet efs;
-    
+public class DataFormset {
+
+    public DesignComponentFormSet dfs;
+    public ClientEncounterComponentFormSet efs;
+    public List<DataForm> forms;
+
+    public List<DataForm> getForms() {
+        if (forms == null) {
+//            *74 Mobitel Voicemail
+            forms = new ArrayList<>();
+        }
+        return forms;
+    }
+
+    public void setForms(List<DataForm> forms) {
+        this.forms = forms;
+    }
+
 }
