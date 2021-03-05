@@ -2384,7 +2384,7 @@ public class ReportController implements Serializable {
                 + " from ClientEncounterComponentFormSet cfs"
                 + " join cfs.encounter e "
                 + " where e.retired=:ret "
-                + " and cfs.deferenceComponent=:dfs "
+                + " and cfs.referenceComponent=:dfs "
                 + " and e.encounterType=:type "
                 + " and e.encounterDate between :fd and :td ";
 
