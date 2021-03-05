@@ -62,6 +62,7 @@ import jxl.write.Label;
 import jxl.write.WritableSheet;
 import jxl.write.WritableWorkbook;
 import jxl.write.WriteException;
+import lk.gov.health.phsp.entity.ClientEncounterComponentFormSet;
 import lk.gov.health.phsp.entity.ClientEncounterComponentItem;
 import lk.gov.health.phsp.entity.ConsolidatedQueryResult;
 import lk.gov.health.phsp.entity.DesignComponentFormItem;
@@ -158,6 +159,7 @@ public class ReportController implements Serializable {
     private Date fromDate;
     private Date toDate;
     private Institution institution;
+    private DesignComponentFormSet fromSet;
     private Area area;
     private NcdReportTem ncdReportTem;
     private StreamedContent file;
@@ -1672,6 +1674,43 @@ public class ReportController implements Serializable {
         userTransactionController.recordTransaction("To View Clinic Visits");
         return action;
     }
+    
+    public String toViewDataForms() {
+        encounters = new ArrayList<>();
+        String forSys = "/reports/data_forms/for_system";
+        String forIns = "/reports/data_forms/for_ins";
+        String forMe = "/reports/data_forms/for_me";
+        String forClient = "/reports/data_forms/for_clients";
+        String noAction = "";
+        String action = "";
+        switch (webUserController.getLoggedUser().getWebUserRole()) {
+            case Client:
+                action = forClient;
+                break;
+            case Doctor:
+            case Institution_Administrator:
+            case Institution_Super_User:
+            case Institution_User:
+            case Nurse:
+            case Midwife:
+                action = forIns;
+                break;
+            case Me_Admin:
+            case Me_Super_User:
+                action = forMe;
+                break;
+            case Me_User:
+            case User:
+                action = noAction;
+                break;
+            case Super_User:
+            case System_Administrator:
+                action = forSys;
+                break;
+        }
+        userTransactionController.recordTransaction("To View Data Forms");
+        return action;
+    }
 
 // </editor-fold>   
 // <editor-fold defaultstate="collapsed" desc="Functions">
@@ -2328,6 +2367,170 @@ public class ReportController implements Serializable {
         }
 
     }
+    
+    
+    public void downloadFormsetDataEntries() {
+        String j;
+        Map m = new HashMap();
+
+        j = "select new lk.gov.health.phsp.pojcs.EncounterBasicData("
+                + "e.client.phn, "
+                + "e.client.person.gnArea.name, "
+                + "e.institution.name, "
+                + "e.client.person.dateOfBirth, "
+                + "e.encounterDate, "
+                + "e.client.person.sex.name "
+                + ") "
+                + " from ClientEncounterComponentFormSet cfs"
+                + " join cfs.encounter e "
+                + " where e.retired=:ret "
+                + " and cfs.deferenceComponent=:dfs "
+                + " and e.encounterType=:type "
+                + " and e.encounterDate between :fd and :td ";
+
+        m.put("ret", false);
+        m.put("fd", fromDate);
+        m.put("td", toDate);
+        m.put("dfs", designingComponentFormSet);
+        m.put("type", EncounterType.Clinic_Visit);
+        
+        ClientEncounterComponentFormSet cfs = new ClientEncounterComponentFormSet();
+        cfs.getEncounter();
+        cfs.getReferenceComponent();
+        
+        
+        if (institution != null) {
+            j += " and e.institution in :ins ";
+            List<Institution> ins = institutionController.findChildrenInstitutions(institution);
+            ins.add(institution);
+            m.put("ins", ins);
+        } else {
+            if (webUserController.getLoggedUser().isRestrictedToInstitution()) {
+                j += " and e.institution in :ins ";
+                List<Institution> ins = webUserController.getLoggableInstitutions();
+                ins.add(institution);
+                m.put("ins", ins);
+            }
+        }
+
+        //String phn, String gnArea, String institution, Date dataOfBirth, Date encounterAt, String sex
+        List<Object> objs = getClientFacade().findAggregates(j, m);
+
+        String FILE_NAME = "client_clinic_visits" + "_" + (new Date()) + ".xlsx";
+        String mimeType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+
+        String folder = "/tmp/";
+
+        File newFile = new File(folder + FILE_NAME);
+
+        XSSFWorkbook workbook = new XSSFWorkbook();
+        XSSFSheet sheet = workbook.createSheet("Java Books");
+
+        int rowCount = 0;
+
+        Row t1 = sheet.createRow(rowCount++);
+        Cell th1_lbl = t1.createCell(0);
+        th1_lbl.setCellValue("Report");
+        Cell th1_val = t1.createCell(1);
+        th1_val.setCellValue("List of Clinic Visits");
+
+        Row t2 = sheet.createRow(rowCount++);
+        Cell th2_lbl = t2.createCell(0);
+        th2_lbl.setCellValue("From");
+        Cell th2_val = t2.createCell(1);
+        th2_val.setCellValue(CommonController.dateTimeToString(fromDate, "dd MMMM yyyy"));
+
+        Row t3 = sheet.createRow(rowCount++);
+        Cell th3_lbl = t3.createCell(0);
+        th3_lbl.setCellValue("To");
+        Cell th3_val = t3.createCell(1);
+        th3_val.setCellValue(CommonController.dateTimeToString(toDate, "dd MMMM yyyy"));
+
+        if (institution != null) {
+            Row t4 = sheet.createRow(rowCount++);
+            Cell th4_lbl = t4.createCell(0);
+            th4_lbl.setCellValue("Institution");
+            Cell th4_val = t4.createCell(1);
+            th4_val.setCellValue(institution.getName());
+        }
+
+        rowCount++;
+
+        Row t5 = sheet.createRow(rowCount++);
+        Cell th5_1 = t5.createCell(0);
+        th5_1.setCellValue("Serial");
+        Cell th5_2 = t5.createCell(1);
+        th5_2.setCellValue("PHN");
+        Cell th5_3 = t5.createCell(2);
+        th5_3.setCellValue("Sex");
+        Cell th5_4 = t5.createCell(3);
+        th5_4.setCellValue("Age in Years at Encounter");
+        Cell th5_5 = t5.createCell(4);
+        th5_5.setCellValue("Encounter at");
+        Cell th5_6 = t5.createCell(5);
+        th5_6.setCellValue("GN Areas");
+        if (institution == null) {
+            Cell th5_7 = t5.createCell(6);
+            th5_7.setCellValue("Institution");
+        }
+
+        int serial = 1;
+
+        CellStyle cellStyle = workbook.createCellStyle();
+        CreationHelper createHelper = workbook.getCreationHelper();
+        cellStyle.setDataFormat(
+                createHelper.createDataFormat().getFormat("dd/MMMM/yyyy hh:mm"));
+
+        for (Object o : objs) {
+            if (o instanceof EncounterBasicData) {
+                EncounterBasicData cbd = (EncounterBasicData) o;
+                Row row = sheet.createRow(++rowCount);
+
+                Cell c1 = row.createCell(0);
+                c1.setCellValue(serial);
+
+                Cell c2 = row.createCell(1);
+                c2.setCellValue(cbd.getPhn());
+
+                Cell c3 = row.createCell(2);
+                c3.setCellValue(cbd.getSex());
+
+                Cell c4 = row.createCell(3);
+                c4.setCellValue(cbd.getAgeInYears());
+
+                Cell c5 = row.createCell(4);
+                c5.setCellValue(cbd.getEncounterAt());
+                c5.setCellStyle(cellStyle);
+
+                Cell c6 = row.createCell(5);
+                c6.setCellValue(cbd.getGnArea());
+                if (institution == null) {
+                    Cell c7 = row.createCell(6);
+                    c7.setCellValue(cbd.getInstitution());
+                }
+
+                serial++;
+            }
+        }
+
+        objs = null;
+        System.gc();
+
+        try (FileOutputStream outputStream = new FileOutputStream(newFile)) {
+            workbook.write(outputStream);
+        } catch (Exception e) {
+
+        }
+
+        InputStream stream;
+        try {
+            stream = new FileInputStream(newFile);
+            resultExcelFile = new DefaultStreamedContent(stream, mimeType, FILE_NAME);
+        } catch (FileNotFoundException ex) {
+
+        }
+
+    }
 
     public void fillClinicVisitsForSysAdmin() {
         String j;
@@ -2698,4 +2901,14 @@ public class ReportController implements Serializable {
         this.recalculate = recalculate;
     }
 
+    public DesignComponentFormSet getFromSet() {
+        return fromSet;
+    }
+
+    public void setFromSet(DesignComponentFormSet fromSet) {
+        this.fromSet = fromSet;
+    }
+
+    
+    
 }
