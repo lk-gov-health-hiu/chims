@@ -1514,7 +1514,7 @@ public class ReportController implements Serializable {
         userTransactionController.recordTransaction("To View Client Registrations By Institution");
         return action;
     }
-    
+
     public String toViewClinicVisitsByInstitution() {
         encounters = new ArrayList<>();
         String forSys = "/reports/clinic_visits/for_ins_by_ins";
@@ -1674,7 +1674,7 @@ public class ReportController implements Serializable {
         userTransactionController.recordTransaction("To View Clinic Visits");
         return action;
     }
-    
+
     public String toViewDataForms() {
         encounters = new ArrayList<>();
         String forSys = "/reports/data_forms/for_system";
@@ -1738,7 +1738,7 @@ public class ReportController implements Serializable {
     public void downloadClientRegistrations() {
         String j;
         Map m = new HashMap();
-        
+
         j = "select new lk.gov.health.phsp.pojcs.ClientBasicData("
                 + "c.phn, "
                 + "c.person.name, "
@@ -1759,7 +1759,7 @@ public class ReportController implements Serializable {
         m.put("res", true);
         m.put("fd", fromDate);
         m.put("td", toDate);
-        
+
         if (institution != null) {
             j += " and c.createInstitution in :ins ";
             List<Institution> ins = institutionController.findChildrenInstitutions(institution);
@@ -1818,34 +1818,34 @@ public class ReportController implements Serializable {
         Row t5 = sheet.createRow(rowCount++);
         Cell th5_1 = t5.createCell(0);
         th5_1.setCellValue("Serial");
-        
+
         Cell th5_2 = t5.createCell(1);
         th5_2.setCellValue("PHN");
-        
+
         Cell th5_3 = t5.createCell(2);
-        th5_3.setCellValue("Name");        
-        
+        th5_3.setCellValue("Name");
+
         Cell th5_4 = t5.createCell(3);
         th5_4.setCellValue("NIC");
-        
+
         Cell th5_5 = t5.createCell(4);
         th5_5.setCellValue("Birthday");
-        
+
         Cell th5_6 = t5.createCell(5);
-        th5_6.setCellValue("Age(yrs)");        
-        
+        th5_6.setCellValue("Age(yrs)");
+
         Cell th5_7 = t5.createCell(6);
         th5_7.setCellValue("Sex");
-        
+
         Cell th5_8 = t5.createCell(7);
         th5_8.setCellValue("Address");
-        
+
         Cell th5_9 = t5.createCell(8);
         th5_9.setCellValue("GN Areas");
-        
+
         Cell th5_10 = t5.createCell(9);
         th5_10.setCellValue("Phone");
-        
+
         if (institution == null) {
             Cell th5_11 = t5.createCell(10);
             th5_11.setCellValue("Institution");
@@ -1870,7 +1870,7 @@ public class ReportController implements Serializable {
 
                 Cell c3 = row.createCell(2);
                 c3.setCellValue(cbd.getName());
-                
+
                 Cell c4 = row.createCell(3);
                 c4.setCellValue(cbd.getNic());
 
@@ -1882,16 +1882,16 @@ public class ReportController implements Serializable {
 
                 Cell c7 = row.createCell(6);
                 c7.setCellValue(cbd.getSex());
-                
+
                 Cell c8 = row.createCell(7);
                 c8.setCellValue(cbd.getAddress());
-                
+
                 Cell c9 = row.createCell(8);
                 c9.setCellValue(cbd.getGnArea());
-                
+
                 Cell c10 = row.createCell(9);
                 c10.setCellValue(cbd.getPhone());
-                
+
                 if (institution == null) {
                     Cell c11 = row.createCell(10);
                     c11.setCellValue(cbd.getCreatedInstitution());
@@ -1912,7 +1912,7 @@ public class ReportController implements Serializable {
             stream = new FileInputStream(newFile);
             resultExcelFile = new DefaultStreamedContent(stream, mimeType, FILE_NAME);
         } catch (FileNotFoundException ex) {
-            System.out.println("File not found exception -->"+ex.getMessage());
+            System.out.println("File not found exception -->" + ex.getMessage());
         }
     }
 
@@ -1949,7 +1949,6 @@ public class ReportController implements Serializable {
         userTransactionController.recordTransaction("Fill Registrations Of Clients By Institution");
     }
 
-    
     public void fillClinicVisitsByInstitution() {
 
         String j = "select new lk.gov.health.phsp.pojcs.InstitutionCount(e.institution, count(e)) "
@@ -1978,7 +1977,6 @@ public class ReportController implements Serializable {
         userTransactionController.recordTransaction("Fill Clinic Visits By Institution");
     }
 
-    
     public void fillRegistrationsOfClientsByDistrict() {
 
         String j = "select new lk.gov.health.phsp.pojcs.AreaCount(c.createInstitution.district, count(c)) "
@@ -2367,8 +2365,7 @@ public class ReportController implements Serializable {
         }
 
     }
-    
-    
+
     public void downloadFormsetDataEntries() {
         String j;
         Map m = new HashMap();
@@ -2379,26 +2376,29 @@ public class ReportController implements Serializable {
                 + "e.institution.name, "
                 + "e.client.person.dateOfBirth, "
                 + "e.encounterDate, "
-                + "e.client.person.sex.name "
+                + "e.client.person.sex.name,"
+                + " cfs.deferenceComponent.name  "
                 + ") "
                 + " from ClientEncounterComponentFormSet cfs"
                 + " join cfs.encounter e "
                 + " where e.retired=:ret "
-                + " and cfs.deferenceComponent=:dfs "
                 + " and e.encounterType=:type "
                 + " and e.encounterDate between :fd and :td ";
 
         m.put("ret", false);
         m.put("fd", fromDate);
         m.put("td", toDate);
-        m.put("dfs", designingComponentFormSet);
+
+        if (designingComponentFormSet != null) {
+            j += " and cfs.deferenceComponent=:dfs ";
+            m.put("dfs", designingComponentFormSet);
+        }
         m.put("type", EncounterType.Clinic_Visit);
-        
+
         ClientEncounterComponentFormSet cfs = new ClientEncounterComponentFormSet();
         cfs.getEncounter();
         cfs.getReferenceComponent();
-        
-        
+
         if (institution != null) {
             j += " and e.institution in :ins ";
             List<Institution> ins = institutionController.findChildrenInstitutions(institution);
@@ -2469,9 +2469,16 @@ public class ReportController implements Serializable {
         th5_5.setCellValue("Encounter at");
         Cell th5_6 = t5.createCell(5);
         th5_6.setCellValue("GN Areas");
+        int col = 5;
         if (institution == null) {
-            Cell th5_7 = t5.createCell(6);
+            col++;
+            Cell th5_7 = t5.createCell(col);
             th5_7.setCellValue("Institution");
+        }
+        if (designingComponentFormSet == null) {
+            col++;
+            Cell th5_7 = t5.createCell(col);
+            th5_7.setCellValue("Formset");
         }
 
         int serial = 1;
@@ -2504,11 +2511,17 @@ public class ReportController implements Serializable {
 
                 Cell c6 = row.createCell(5);
                 c6.setCellValue(cbd.getGnArea());
+                col = 5;
                 if (institution == null) {
-                    Cell c7 = row.createCell(6);
+                    col++;
+                    Cell c7 = row.createCell(col);
                     c7.setCellValue(cbd.getInstitution());
                 }
-
+                if (designingComponentFormSet == null) {
+                    col++;
+                    Cell c7 = row.createCell(col);
+                    c7.setCellValue(cbd.getComponentName());
+                }
                 serial++;
             }
         }
@@ -2909,6 +2922,4 @@ public class ReportController implements Serializable {
         this.fromSet = fromSet;
     }
 
-    
-    
 }
