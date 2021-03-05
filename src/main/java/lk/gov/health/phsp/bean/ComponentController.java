@@ -18,6 +18,11 @@ import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.Lob;
+import javax.persistence.ManyToOne;
+import lk.gov.health.phsp.entity.Area;
 import lk.gov.health.phsp.entity.ClientEncounterComponent;
 import lk.gov.health.phsp.entity.ClientEncounterComponentForm;
 import lk.gov.health.phsp.entity.ClientEncounterComponentFormSet;
@@ -26,7 +31,17 @@ import lk.gov.health.phsp.entity.DesignComponent;
 import lk.gov.health.phsp.entity.DesignComponentForm;
 import lk.gov.health.phsp.entity.DesignComponentFormItem;
 import lk.gov.health.phsp.entity.DesignComponentFormSet;
+import lk.gov.health.phsp.entity.Institution;
+import lk.gov.health.phsp.entity.Item;
 import lk.gov.health.phsp.entity.QueryComponent;
+import lk.gov.health.phsp.enums.AvailableDataType;
+import lk.gov.health.phsp.enums.ComponentSetType;
+import lk.gov.health.phsp.enums.DataCompletionStrategy;
+import lk.gov.health.phsp.enums.DataModificationStrategy;
+import lk.gov.health.phsp.enums.DataPopulationStrategy;
+import lk.gov.health.phsp.enums.PanelType;
+import lk.gov.health.phsp.enums.RenderType;
+import lk.gov.health.phsp.enums.SelectionDataType;
 
 @Named("componentController")
 @SessionScoped
@@ -44,7 +59,7 @@ public class ComponentController implements Serializable {
         return selected;
     }
 
-    public Component cloneComponent(Component c) {
+    public static Component cloneComponent(Component c) {
         Component nc = null;
         if (c == null) {
             return nc;
@@ -83,7 +98,85 @@ public class ComponentController implements Serializable {
         return nc;
     }
 
-    public ClientEncounterComponent cloneComponent(ClientEncounterComponent c) {
+    public static QueryComponent cloneComponent(QueryComponent c) {
+        QueryComponent nc = null;
+        if (c == null) {
+            return nc;
+        }
+        nc = new QueryComponent();
+        nc.setName(c.getName());
+        nc.setCode(c.getCode());
+        nc.setItem(c.getItem());
+        nc.setDescreption(c.getDescreption());
+        nc.setOrderNo(c.getOrderNo());
+        nc.setInstitution(c.getInstitution());
+        nc.setParentComponent(c.getParentComponent());
+        nc.setReferenceComponent(c.getReferenceComponent());
+        nc.setCss(c.getCss());
+//
+        nc.setIndicatorQuery(c.getIndicatorQuery());
+        nc.setIndicatorQuery(c.getIndicatorQuery());
+        nc.setSelectQuery(c.getSelectQuery());
+        nc.setFromQuery(c.getFromQuery());
+        nc.setWhereQuery(c.getWhereQuery());
+        nc.setGroupQuery(c.getGroupQuery());
+        nc.setHavingQuery(c.getHavingQuery());
+        nc.setFilterQuery(c.getFilterQuery());
+        nc.setOrderQuery(c.getOrderQuery());
+        nc.setQueryType(c.getQueryType());
+        nc.setOutputType(c.getOutputType());
+        nc.setMatchType(c.getMatchType());
+        nc.setEvaluationType(c.getEvaluationType());
+        nc.setPopulationType(c.getPopulationType());
+        nc.setQueryLevel(c.getQueryLevel());
+        nc.setQueryDataType(c.getQueryDataType());
+
+        nc.setLongTextValue(c.getLongTextValue());
+        nc.setDescreptionValue(c.getDescreptionValue());
+        nc.setShortTextValue(c.getShortTextValue());
+        nc.setByteArrayValue(c.getByteArrayValue());
+        nc.setIntegerNumberValue(c.getIntegerNumberValue());
+        nc.setLongNumberValue(c.getLongNumberValue());
+        nc.setRealNumberValue(c.getRealNumberValue());
+        nc.setBooleanValue(c.getBooleanValue());
+        nc.setDateValue(c.getDateValue());
+        nc.setItemValue(c.getItemValue());
+        nc.setAreaValue(c.getAreaValue());
+        nc.setInstitutionValue(c.getInstitutionValue());
+        nc.setClientValue(c.getClientValue());
+        nc.setPrescriptionValue(c.getPrescriptionValue());
+        nc.setObservationValue(c.getObservationValue());
+        nc.setProcedureValue(c.getProcedureValue());
+        nc.setMovementValue(c.getMovementValue());
+
+        nc.setIntegerNumberValue2(c.getIntegerNumberValue2());
+        nc.setLongNumberValue2(c.getLongNumberValue2());
+        nc.setRealNumberValue2(c.getRealNumberValue2());
+
+//        nc.setCompleted(c.isCompleted());
+//        nc.setCompletedAt(c.getCompletedAt());
+//        nc.setCompletedBy(c.getCompletedBy());
+
+        nc.setFilterByDistrict(c.isFilterByDistrict());
+        nc.setFilterByProvince(c.isFilterByProvince());
+        nc.setFilterByRdhs(c.isFilterByRdhs());
+        nc.setFilterByMoh(c.isFilterByMoh());
+        nc.setFilterByFrom(c.isFilterByFrom());
+        nc.setFilterByDate(c.isFilterByDate());
+        nc.setFilterByTo(c.isFilterByTo());
+        nc.setFilterByInstitution(c.isFilterByInstitution());
+        nc.setFilterByGn(c.isFilterByGn());
+        nc.setFilterByYear(c.isFilterByYear());
+        nc.setFilterByMonth(c.isFilterByMonth());
+        nc.setFilterByQuarter(c.isFilterByQuarter());
+        nc.setRequired(c.isRequired());
+        nc.setRequired(c.isRequired());
+
+//        nc.setClient(c.getClient());
+        return nc;
+    }
+
+    public static ClientEncounterComponent cloneComponent(ClientEncounterComponent c) {
         ClientEncounterComponent nc = null;
         if (c == null) {
             return nc;
@@ -104,7 +197,7 @@ public class ComponentController implements Serializable {
         return nc;
     }
 
-    public ClientEncounterComponentFormSet cloneComponent(ClientEncounterComponentFormSet c) {
+    public static ClientEncounterComponentFormSet cloneComponent(ClientEncounterComponentFormSet c) {
         ClientEncounterComponentFormSet nc = null;
         if (c == null) {
             return nc;
@@ -127,7 +220,7 @@ public class ComponentController implements Serializable {
         return nc;
     }
 
-    public ClientEncounterComponentForm cloneComponent(ClientEncounterComponentForm c) {
+    public static ClientEncounterComponentForm cloneComponent(ClientEncounterComponentForm c) {
         ClientEncounterComponentForm nc = null;
         if (c == null) {
             return nc;
@@ -150,7 +243,7 @@ public class ComponentController implements Serializable {
         return nc;
     }
 
-    public ClientEncounterComponentItem cloneComponent(ClientEncounterComponentItem c) {
+    public static ClientEncounterComponentItem cloneComponent(ClientEncounterComponentItem c) {
         ClientEncounterComponentItem nc = null;
         if (c == null) {
             return nc;
@@ -196,7 +289,7 @@ public class ComponentController implements Serializable {
         return nc;
     }
 
-    public DesignComponent cloneComponent(DesignComponent c) {
+    public static DesignComponent cloneComponent(DesignComponent c) {
         DesignComponent nc = null;
         if (c == null) {
             return nc;
@@ -216,7 +309,7 @@ public class ComponentController implements Serializable {
         return nc;
     }
 
-    public DesignComponentFormSet cloneComponent(DesignComponentFormSet c) {
+    public static DesignComponentFormSet cloneComponent(DesignComponentFormSet c) {
         DesignComponentFormSet nc = null;
         if (c == null) {
             return nc;
@@ -239,7 +332,7 @@ public class ComponentController implements Serializable {
         return nc;
     }
 
-    public DesignComponentForm cloneComponent(DesignComponentForm c) {
+    public static DesignComponentForm cloneComponent(DesignComponentForm c) {
         DesignComponentForm nc = null;
         if (c == null) {
             return nc;
@@ -261,7 +354,7 @@ public class ComponentController implements Serializable {
         return nc;
     }
 
-    public DesignComponentFormItem cloneComponent(DesignComponentFormItem c) {
+    public static DesignComponentFormItem cloneComponent(DesignComponentFormItem c) {
         DesignComponentFormItem nc = null;
         if (c == null) {
             return nc;
@@ -279,7 +372,35 @@ public class ComponentController implements Serializable {
         //
         nc.setComponentSex(c.getComponentSex());
         //
-        nc.setItemArrangementStrategy(c.getItemArrangementStrategy());
+        nc.setRequired(c.isRequired());
+        nc.setCalculateOnFocus(c.isCalculateOnFocus());
+        nc.setCalculateButton(c.isCalculateButton());
+        nc.setCalculationScriptForColour(c.getCalculationScriptForColour());
+        nc.setCalculationScriptForBackgroundColour(c.getCalculationScriptForBackgroundColour());
+        nc.setDisplayDetailsBox(c.isDisplayDetailsBox());
+        nc.setDiscreptionAsAToolTip(c.isDiscreptionAsAToolTip());
+        nc.setDiscreptionAsASideLabel(c.isDiscreptionAsASideLabel());
+        nc.setDisplayLastResult(c.isDisplayLastResult());
+        nc.setDisplayLinkToResultList(c.isDisplayLinkToResultList());
+        nc.setDisplayLinkToClientValues(c.isDisplayLinkToClientValues());
+        nc.setMultipleEntiesPerForm(c.isMultipleEntiesPerForm());
+        nc.setCalculationScript(c.getCalculationScript());
+        nc.setRequiredErrorMessage(c.getRequiredErrorMessage());
+        nc.setRegexValidationString(c.getRegexValidationString());
+        nc.setRegexValidationFailedMessage(c.getRegexValidationFailedMessage());
+        nc.setMimeType(c.getMimeType());
+        nc.setRenderType(c.getRenderType());
+        nc.setComponentSetType(c.getComponentSetType());
+        nc.setPanelType(c.getPanelType());
+        nc.setSelectionDataType(c.getSelectionDataType());
+        nc.setAvailableDataType(c.getAvailableDataType());
+        nc.setDataPopulationStrategy(c.getDataPopulationStrategy());
+        nc.setResultDisplayStrategy(c.getResultDisplayStrategy());
+        nc.setDataCompletionStrategy(c.getDataCompletionStrategy());
+        nc.setDataModificationStrategy(c.getDataModificationStrategy());
+        nc.setParentAreaOfAvailableAreas(c.getParentAreaOfAvailableAreas());
+        nc.setCategoryOfAvailableItems(c.getCategoryOfAvailableItems());
+        nc.setParentInstitutionOfAvailableInstitutions(c.getParentInstitutionOfAvailableInstitutions());
         return nc;
     }
 

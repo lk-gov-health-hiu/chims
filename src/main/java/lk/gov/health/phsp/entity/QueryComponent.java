@@ -33,15 +33,7 @@ import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
-import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlRootElement;
-import lk.gov.health.phsp.enums.AvailableDataType;
-import lk.gov.health.phsp.enums.ComponentSetType;
-import lk.gov.health.phsp.enums.DataCompletionStrategy;
-import lk.gov.health.phsp.enums.DataModificationStrategy;
-import lk.gov.health.phsp.enums.DataPopulationStrategy;
-import lk.gov.health.phsp.enums.ItemArrangementStrategy;
-import lk.gov.health.phsp.enums.PanelType;
 import lk.gov.health.phsp.enums.QueryCriteriaMatchType;
 import lk.gov.health.phsp.enums.QueryDataType;
 
@@ -50,7 +42,6 @@ import lk.gov.health.phsp.enums.QueryOutputType;
 import lk.gov.health.phsp.enums.QueryType;
 import lk.gov.health.phsp.enums.QueryVariableEvaluationType;
 import lk.gov.health.phsp.enums.RelationshipType;
-import lk.gov.health.phsp.enums.SelectionDataType;
 
 /**
  *
@@ -115,8 +106,8 @@ public class QueryComponent extends Component {
     private boolean required;
 
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Client client;
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    private Client client;
 
     @Lob
     private String longTextValue;
@@ -148,12 +139,12 @@ public class QueryComponent extends Component {
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Movement movementValue;
     
-
-    private boolean completed;
-    @Temporal(javax.persistence.TemporalType.TIMESTAMP)
-    private Date completedAt;
-    @ManyToOne(fetch = FetchType.LAZY)
-    private WebUser completedBy;
+//
+//    private boolean completed;
+//    @Temporal(javax.persistence.TemporalType.TIMESTAMP)
+//    private Date completedAt;
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    private WebUser completedBy;
 
     private Integer integerNumberValue2;
     private Long longNumberValue2;
@@ -384,13 +375,13 @@ public class QueryComponent extends Component {
     }
 
     
-    public Client getClient() {
-        return client;
-    }
-
-    public void setClient(Client client) {
-        this.client = client;
-    }
+//    public Client getClient() {
+//        return client;
+//    }
+//
+//    public void setClient(Client client) {
+//        this.client = client;
+//    }
 
     public String getLongTextValue() {
         return longTextValue;
@@ -528,29 +519,29 @@ public class QueryComponent extends Component {
         this.movementValue = movementValue;
     }
 
-    public boolean isCompleted() {
-        return completed;
-    }
-
-    public void setCompleted(boolean completed) {
-        this.completed = completed;
-    }
-
-    public Date getCompletedAt() {
-        return completedAt;
-    }
-
-    public void setCompletedAt(Date completedAt) {
-        this.completedAt = completedAt;
-    }
-
-    public WebUser getCompletedBy() {
-        return completedBy;
-    }
-
-    public void setCompletedBy(WebUser completedBy) {
-        this.completedBy = completedBy;
-    }
+//    public boolean isCompleted() {
+//        return completed;
+//    }
+//
+//    public void setCompleted(boolean completed) {
+//        this.completed = completed;
+//    }
+//
+//    public Date getCompletedAt() {
+//        return completedAt;
+//    }
+//
+//    public void setCompletedAt(Date completedAt) {
+//        this.completedAt = completedAt;
+//    }
+//
+//    public WebUser getCompletedBy() {
+//        return completedBy;
+//    }
+//
+//    public void setCompletedBy(WebUser completedBy) {
+//        this.completedBy = completedBy;
+//    }
 
     public Integer getIntegerNumberValue2() {
         return integerNumberValue2;

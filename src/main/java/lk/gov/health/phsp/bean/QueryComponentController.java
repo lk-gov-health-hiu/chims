@@ -2516,7 +2516,7 @@ public class QueryComponentController implements Serializable {
             return;
         }
         List<QueryComponent> cs = criteria(selectedToDuplicateQuery);
-        QueryComponent q = SerializationUtils.clone(selectedToDuplicateQuery);
+        QueryComponent q = ComponentController.cloneComponent(selectedToDuplicateQuery);
         q.setId(null);
         q.setCreatedAt(new Date());
         q.setName(q.getName() + " Copy");
@@ -2524,7 +2524,7 @@ public class QueryComponentController implements Serializable {
         getFacade().create(q);
 
         for (QueryComponent c : cs) {
-            QueryComponent newC = SerializationUtils.clone(c);
+            QueryComponent newC = ComponentController.cloneComponent(c);
             newC.setId(null);
             newC.setName(newC.getName());
             newC.setParentComponent(q);
@@ -2544,7 +2544,7 @@ public class QueryComponentController implements Serializable {
             return;
         }
         List<QueryComponent> cs = criteria(selectedQuery);
-        QueryComponent q = SerializationUtils.clone(selectedQuery);
+        QueryComponent q = ComponentController.cloneComponent(selectedQuery);
         q.setId(null);
         q.setCreatedAt(new Date());
         q.setName(q.getName() + "1");
@@ -2552,7 +2552,7 @@ public class QueryComponentController implements Serializable {
         getFacade().create(q);
 
         for (QueryComponent c : cs) {
-            QueryComponent newC = SerializationUtils.clone(c);
+            QueryComponent newC = ComponentController.cloneComponent(c);
             newC.setId(null);
             newC.setName(newC.getName() + "1");
             newC.setParentComponent(q);

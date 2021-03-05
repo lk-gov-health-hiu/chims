@@ -162,7 +162,7 @@ public class DesignComponentFormSetController implements Serializable {
         referanceSet.getParentComponent();
                 
         
-        DesignComponentFormSet ns = (DesignComponentFormSet) SerializationUtils.clone(referanceSet);
+        DesignComponentFormSet ns = (DesignComponentFormSet) ComponentController.cloneComponent(referanceSet);
         ns.setId(null);
         ns.setCreatedAt(new Date());
         ns.setCreatedBy(webUserController.getLoggedUser());
@@ -176,7 +176,7 @@ public class DesignComponentFormSetController implements Serializable {
         getFacade().edit(ns);
 
         for (DesignComponentForm f : designComponentFormController.fillFormsofTheSelectedSet(referanceSet)) {
-            DesignComponentForm nf = (DesignComponentForm) SerializationUtils.clone(f);
+            DesignComponentForm nf = (DesignComponentForm) ComponentController.cloneComponent(f);
             nf.setId(null);
             nf.setCreatedAt(new Date());
             nf.setCreatedBy(webUserController.getLoggedUser());
@@ -189,7 +189,7 @@ public class DesignComponentFormSetController implements Serializable {
 
             for (DesignComponentFormItem i : designComponentFormItemController.fillItemsOfTheForm(f)) {
 
-                DesignComponentFormItem ni = (DesignComponentFormItem) SerializationUtils.clone(i);
+                DesignComponentFormItem ni = (DesignComponentFormItem) ComponentController.cloneComponent(i);
                 ni.setId(null);
                 ni.setCreatedAt(new Date());
                 ni.setCreatedBy(webUserController.getLoggedUser());
@@ -217,7 +217,7 @@ public class DesignComponentFormSetController implements Serializable {
             userTransactionController.recordTransaction("Import FormSet");
             return;
         }
-        DesignComponentFormSet ns = (DesignComponentFormSet) SerializationUtils.clone(referanceSet);
+        DesignComponentFormSet ns = (DesignComponentFormSet) ComponentController.cloneComponent(referanceSet);
         ns.setId(null);
         ns.setCreatedAt(new Date());
         ns.setCreatedBy(webUserController.getLoggedUser());
@@ -228,7 +228,7 @@ public class DesignComponentFormSetController implements Serializable {
         getFacade().create(ns);
 
         for (DesignComponentForm f : designComponentFormController.fillFormsofTheSelectedSet(referanceSet)) {
-            DesignComponentForm nf = (DesignComponentForm) SerializationUtils.clone(f);
+            DesignComponentForm nf = (DesignComponentForm) ComponentController.cloneComponent(f);
             nf.setId(null);
             nf.setCreatedAt(new Date());
             nf.setCreatedBy(webUserController.getLoggedUser());
@@ -241,7 +241,7 @@ public class DesignComponentFormSetController implements Serializable {
 
             for (DesignComponentFormItem i : designComponentFormItemController.fillItemsOfTheForm(f)) {
 
-                DesignComponentFormItem ni = (DesignComponentFormItem) SerializationUtils.clone(i);
+                DesignComponentFormItem ni = (DesignComponentFormItem) ComponentController.cloneComponent(i);
                 ni.setId(null);
                 ni.setCreatedAt(new Date());
                 ni.setCreatedBy(webUserController.getLoggedUser());

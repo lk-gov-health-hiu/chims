@@ -1063,7 +1063,7 @@ public class ClientEncounterComponentFormSetController implements Serializable {
                 getItemFacade().edit(ti);
                 listOfClientItems.add(ti);
             } else {
-                ClientEncounterComponentItem nti = SerializationUtils.clone(ti);
+                ClientEncounterComponentItem nti = ComponentController.cloneComponent(ti);
                 nti.setDateValue(tvi.getDateValue());
                 nti.setShortTextValue(tvi.getShortTextValue());
                 nti.setLongTextValue(tvi.getLongTextValue());
