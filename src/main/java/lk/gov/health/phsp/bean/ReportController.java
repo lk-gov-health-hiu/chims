@@ -2377,7 +2377,7 @@ public class ReportController implements Serializable {
                 + "e.client.person.dateOfBirth, "
                 + "e.encounterDate, "
                 + "e.client.person.sex.name,"
-                + " cfs.deferenceComponent.name  "
+                + " cfs.referenceComponent.name  "
                 + ") "
                 + " from ClientEncounterComponentFormSet cfs"
                 + " join cfs.encounter e "
@@ -2390,7 +2390,7 @@ public class ReportController implements Serializable {
         m.put("td", toDate);
 
         if (designingComponentFormSet != null) {
-            j += " and cfs.deferenceComponent=:dfs ";
+            j += " and cfs.referenceComponent=:dfs ";
             m.put("dfs", designingComponentFormSet);
         }
         m.put("type", EncounterType.Clinic_Visit);
