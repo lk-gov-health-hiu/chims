@@ -708,13 +708,23 @@ public class ClientEncounterComponentFormSetController implements Serializable {
     }
 
     public String createNewAndNavigateToDataEntry(DesignComponentFormSet dfs) {
+//        System.out.println("createNewAndNavigateToDataEntry");
+//        System.out.println("dfs = " + dfs);
+
         String navigationLink = "/dataentry/Formset";
+//        boolean test;
+//        test = true;
+//        if (test) {
+//            return "";
+//        }
         formEditable = true;
         if (clientController.getSelected() == null) {
             JsfUtil.addErrorMessage("Please select a client");
             return "";
         }
+        DataFormset fs = new DataFormset();
         Map<String, ClientEncounterComponentItem> mapOfClientValues = getClientValues(clientController.getSelected());
+        fs.setMapOfClientValues(mapOfClientValues);
         Date d = new Date();
         Encounter e = new Encounter();
         e.setClient(clientController.getSelected());
@@ -748,9 +758,9 @@ public class ClientEncounterComponentFormSetController implements Serializable {
         cfs.setCss(dfs.getCss());
         getFacade().create(cfs);
 
-        DataFormset fs = new DataFormset();
-        fs.dfs = dfs;
-        fs.efs = cfs;
+        
+        fs.setDfs(dfs);
+        fs.setEfs(cfs);
 
         List<DesignComponentForm> dfList = designComponentFormController.fillFormsofTheSelectedSet(dfs);
 
@@ -824,15 +834,14 @@ public class ClientEncounterComponentFormSetController implements Serializable {
                         ci.setOrderNo(dis.getOrderNo());
                         ci.setDataRepresentationType(DataRepresentationType.Encounter);
 
-                        clientEncounterComponentItemController.save(ci);
-
+//                        clientEncounterComponentItemController.save(ci);
                         if (ci.getReferanceDesignComponentFormItem().getDataPopulationStrategy() == DataPopulationStrategy.From_Client_Value) {
                             updateFromClientValueSingle(ci, e.getClient(), mapOfClientValues);
                         } else if (ci.getReferanceDesignComponentFormItem().getDataPopulationStrategy() == DataPopulationStrategy.From_Last_Encounter) {
                             updateFromLastEncounter(ci);
                         }
 
-                        clientEncounterComponentItemController.save(ci);
+//                        clientEncounterComponentItemController.save(ci);
                         DataItem i = new DataItem();
                         i.ci = ci;
                         i.di = dis;

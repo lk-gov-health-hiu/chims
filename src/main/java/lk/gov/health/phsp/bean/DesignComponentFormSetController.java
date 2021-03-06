@@ -54,10 +54,12 @@ public class DesignComponentFormSetController implements Serializable {
     // <editor-fold defaultstate="collapsed" desc="Class Variables">
     private List<DesignComponentFormSet> items = null;
     private List<DesignComponentFormSet> insItems = null;
+    private List<DesignComponentFormSet> clinicFormSets;
     private List<DesignComponentFormItem> exportItems = null;
     private DesignComponentFormSet selected;
     private DesignComponentFormSet referanceSet;
     private Institution institution;
+    private Institution clinicFormSetsInstitution;
     private String backString;
 
     // </editor-fold>
@@ -160,8 +162,7 @@ public class DesignComponentFormSetController implements Serializable {
 
         referanceSet.getReferenceComponent();
         referanceSet.getParentComponent();
-                
-        
+
         DesignComponentFormSet ns = (DesignComponentFormSet) ComponentController.cloneComponent(referanceSet);
         ns.setId(null);
         ns.setCreatedAt(new Date());
@@ -295,17 +296,28 @@ public class DesignComponentFormSetController implements Serializable {
     }
 
     public List<DesignComponentFormSet> getClinicFormSets(Institution clinic) {
+        boolean needRefill = false;
+        if (clinicFormSets == null) {
+            needRefill = true;
+        }
+        if (clinicFormSetsInstitution==null || !clinicFormSetsInstitution.equals(clinic)) {
+            clinicFormSetsInstitution = clinic;
+            needRefill = true;
+        }
+        if (!needRefill) {
+            return clinicFormSets;
+        }
         String j = "Select s from DesignComponentFormSet s "
                 + " where s.retired=false "
                 + " and s.institution = :inss "
                 + " order by s.name";
         Map m = new HashMap();
         m.put("inss", clinic);
-        List<DesignComponentFormSet> ss = getFacade().findByJpql(j, m);
-        if (ss == null) {
-            ss = new ArrayList<>();
+        clinicFormSets = getFacade().findByJpql(j, m);
+        if (clinicFormSets == null) {
+            clinicFormSets = new ArrayList<>();
         }
-        return ss;
+        return clinicFormSets;
     }
 
     public List<DesignComponentFormSet> fillInsItems(List<Institution> insLst) {
@@ -521,6 +533,30 @@ public class DesignComponentFormSetController implements Serializable {
 
     public DesignComponentFormItemFacade getItemFacade() {
         return itemFacade;
+    }
+
+    public UserTransactionController getUserTransactionController() {
+        return userTransactionController;
+    }
+
+    public void setUserTransactionController(UserTransactionController userTransactionController) {
+        this.userTransactionController = userTransactionController;
+    }
+
+    public List<DesignComponentFormSet> getClinicFormSets() {
+        return clinicFormSets;
+    }
+
+    public void setClinicFormSets(List<DesignComponentFormSet> clinicFormSets) {
+        this.clinicFormSets = clinicFormSets;
+    }
+
+    public Institution getClinicFormSetsInstitution() {
+        return clinicFormSetsInstitution;
+    }
+
+    public void setClinicFormSetsInstitution(Institution clinicFormSetsInstitution) {
+        this.clinicFormSetsInstitution = clinicFormSetsInstitution;
     }
 
     @FacesConverter(forClass = DesignComponentFormSet.class)

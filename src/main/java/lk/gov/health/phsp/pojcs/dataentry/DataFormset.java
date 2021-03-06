@@ -24,8 +24,11 @@
 package lk.gov.health.phsp.pojcs.dataentry;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import lk.gov.health.phsp.entity.ClientEncounterComponentFormSet;
+import lk.gov.health.phsp.entity.ClientEncounterComponentItem;
 import lk.gov.health.phsp.entity.DesignComponentFormSet;
 
 /**
@@ -34,9 +37,10 @@ import lk.gov.health.phsp.entity.DesignComponentFormSet;
  */
 public class DataFormset {
 
-    public DesignComponentFormSet dfs;
-    public ClientEncounterComponentFormSet efs;
+    private DesignComponentFormSet dfs;
+    private ClientEncounterComponentFormSet efs;
     public List<DataForm> forms;
+    private Map<String, ClientEncounterComponentItem> mapOfClientValues;
 
     public List<DataForm> getForms() {
         if (forms == null) {
@@ -46,8 +50,39 @@ public class DataFormset {
         return forms;
     }
 
+    
+    
     public void setForms(List<DataForm> forms) {
         this.forms = forms;
     }
+
+    public DesignComponentFormSet getDfs() {
+        return dfs;
+    }
+
+    public void setDfs(DesignComponentFormSet dfs) {
+        this.dfs = dfs;
+    }
+
+    public ClientEncounterComponentFormSet getEfs() {
+        return efs;
+    }
+
+    public void setEfs(ClientEncounterComponentFormSet efs) {
+        this.efs = efs;
+    }
+
+    public Map<String, ClientEncounterComponentItem> getMapOfClientValues() {
+        if(mapOfClientValues==null){
+            mapOfClientValues = new HashMap<>();
+        }
+        return mapOfClientValues;
+    }
+
+    public void setMapOfClientValues(Map<String, ClientEncounterComponentItem> mapOfClientValues) {
+        this.mapOfClientValues = mapOfClientValues;
+    }
+    
+    
 
 }
