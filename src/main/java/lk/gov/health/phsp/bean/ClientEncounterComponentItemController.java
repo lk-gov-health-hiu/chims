@@ -510,11 +510,38 @@ public class ClientEncounterComponentItemController implements Serializable {
         if (variableCode.trim().equals("")) {
             return null;
         }
+        if (valueCode == null) {
+            return null;
+        }
+        if (valueCode.trim().equals("")) {
+            return null;
+        }
 
         DataFormset s = i.getForm().getFormset();
         ClientEncounterComponentItem temc = null;
         for (DataForm f : s.getForms()) {
             for (DataItem di : f.getItems()) {
+                if(di==null){
+                    continue;
+                }
+                if(di.getDi()==null){
+                    continue;
+                }
+                 if(di.getDi().getItem()==null){
+                    continue;
+                }
+                if(di.getDi().getItem().getCode()==null){
+                    continue;
+                }
+                if(di.getCi()==null){
+                    continue;
+                }
+                if(di.getCi().getItemValue()==null){
+                    continue;
+                }
+                if(di.getCi().getItemValue().getCode()==null){
+                    continue;
+                }
                 if (di.getDi().getItem().getCode().equalsIgnoreCase(variableCode)
                         && di.getCi().getItemValue().getCode().equalsIgnoreCase(valueCode)) {
                     temc = di.getCi();
