@@ -40,14 +40,11 @@ public class DataItem {
     public DesignComponentFormItem di;
     public ClientEncounterComponentItem ci;
     public DataForm form;
-        private ClientEncounterComponentItem tmpCi;
-    
+    private ClientEncounterComponentItem tmpCi;
+
     private List<DataItem> addedItems;
     private DataItem addingItem;
     private Boolean multipleEntries;
-    
-    
-    
 
     public int getId() {
         return id;
@@ -90,23 +87,23 @@ public class DataItem {
     }
 
     public List<DataItem> getAddedItems() {
+        if (addedItems == null) {
+            addedItems = new ArrayList<>();
+        }
         return addedItems;
     }
 
     public void setAddedItems(List<DataItem> addedItems) {
-        if(addedItems==null){
-            addedItems = new ArrayList<>();
-        }
         this.addedItems = addedItems;
     }
 
     public DataItem getAddingItem() {
-        if(addingItem==null){
-            addingItem=new DataItem();
+        if (addingItem == null) {
+            addingItem = new DataItem();
             addingItem.setDi(di);
             addingItem.setForm(form);
-            addingItem.setId(getAddedItems().size()+1);
-            addingItem.setOrderNo(getAddedItems().size()+1);
+            addingItem.setId(getAddedItems().size() + 1);
+            addingItem.setOrderNo(getAddedItems().size() + 1);
             addingItem.setCi(ComponentController.cloneComponent(tmpCi));
         }
         return addingItem;
@@ -132,6 +129,4 @@ public class DataItem {
         this.multipleEntries = multipleEntries;
     }
 
-    
-    
 }
