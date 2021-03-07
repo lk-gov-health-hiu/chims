@@ -25,6 +25,7 @@ package lk.gov.health.phsp.pojcs.dataentry;
 
 import java.util.ArrayList;
 import java.util.List;
+import lk.gov.health.phsp.bean.ComponentController;
 import lk.gov.health.phsp.entity.ClientEncounterComponentItem;
 import lk.gov.health.phsp.entity.DesignComponentFormItem;
 
@@ -38,19 +39,15 @@ public class DataItem {
     public double orderNo;
     public DesignComponentFormItem di;
     public ClientEncounterComponentItem ci;
-    private List<ClientEncounterComponentItem> cis;
     public DataForm form;
-
-    public List<ClientEncounterComponentItem> getCis() {
-        if(cis==null){
-            cis = new ArrayList<>();
-        }
-        return cis;
-    }
-
-    public void setCis(List<ClientEncounterComponentItem> cis) {
-        this.cis = cis;
-    }
+        private ClientEncounterComponentItem tmpCi;
+    
+    private List<DataItem> addedItems;
+    private DataItem addingItem;
+    private Boolean multipleEntries;
+    
+    
+    
 
     public int getId() {
         return id;
@@ -90,6 +87,49 @@ public class DataItem {
 
     public void setForm(DataForm form) {
         this.form = form;
+    }
+
+    public List<DataItem> getAddedItems() {
+        return addedItems;
+    }
+
+    public void setAddedItems(List<DataItem> addedItems) {
+        if(addedItems==null){
+            addedItems = new ArrayList<>();
+        }
+        this.addedItems = addedItems;
+    }
+
+    public DataItem getAddingItem() {
+        if(addingItem==null){
+            addingItem=new DataItem();
+            addingItem.setDi(di);
+            addingItem.setForm(form);
+            addingItem.setId(getAddedItems().size()+1);
+            addingItem.setOrderNo(getAddedItems().size()+1);
+            addingItem.setCi(ComponentController.cloneComponent(tmpCi));
+        }
+        return addingItem;
+    }
+
+    public void setAddingItem(DataItem addingItem) {
+        this.addingItem = addingItem;
+    }
+
+    public ClientEncounterComponentItem getTmpCi() {
+        return tmpCi;
+    }
+
+    public void setTmpCi(ClientEncounterComponentItem tmpCi) {
+        this.tmpCi = tmpCi;
+    }
+
+    public Boolean getMultipleEntries() {
+        return multipleEntries;
+    }
+
+    public void setMultipleEntries(Boolean multipleEntries) {
+        this.multipleEntries = multipleEntries;
     }
 
     

@@ -758,7 +758,6 @@ public class ClientEncounterComponentFormSetController implements Serializable {
         cfs.setCss(dfs.getCss());
         getFacade().create(cfs);
 
-        
         fs.setDfs(dfs);
         fs.setEfs(cfs);
 
@@ -814,43 +813,70 @@ public class ClientEncounterComponentFormSetController implements Serializable {
                     }
 
                     if (!disSkipThisItem) {
-                        itemCounter++;
-                        ClientEncounterComponentItem ci = new ClientEncounterComponentItem();
 
-                        ci.setEncounter(e);
-                        ci.setInstitution(dfs.getInstitution());
+                        if (dis.isMultipleEntiesPerForm()) {
+                            itemCounter++;
+                            ClientEncounterComponentItem ci = new ClientEncounterComponentItem();
 
-                        ci.setItemFormset(cfs);
-                        ci.setItemEncounter(e);
-                        ci.setItemClient(e.getClient());
+                            ci.setEncounter(e);
+                            ci.setInstitution(dfs.getInstitution());
 
-                        ci.setItem(dis.getItem());
-                        ci.setDescreption(dis.getDescreption());
+                            ci.setItemFormset(cfs);
+                            ci.setItemEncounter(e);
+                            ci.setItemClient(e.getClient());
 
-                        ci.setReferenceComponent(dis);
-                        ci.setParentComponent(cf);
-                        ci.setName(dis.getName());
-                        ci.setCss(dis.getCss());
-                        ci.setOrderNo(dis.getOrderNo());
-                        ci.setDataRepresentationType(DataRepresentationType.Encounter);
+                            ci.setItem(dis.getItem());
+                            ci.setDescreption(dis.getDescreption());
 
-//                        clientEncounterComponentItemController.save(ci);
-                        if (ci.getReferanceDesignComponentFormItem().getDataPopulationStrategy() == DataPopulationStrategy.From_Client_Value) {
-                            updateFromClientValueSingle(ci, e.getClient(), mapOfClientValues);
-                        } else if (ci.getReferanceDesignComponentFormItem().getDataPopulationStrategy() == DataPopulationStrategy.From_Last_Encounter) {
-                            updateFromLastEncounter(ci);
+                            ci.setReferenceComponent(dis);
+                            ci.setParentComponent(cf);
+                            ci.setName(dis.getName());
+                            ci.setCss(dis.getCss());
+                            ci.setOrderNo(dis.getOrderNo());
+                            ci.setDataRepresentationType(DataRepresentationType.Encounter);
+                            if (ci.getReferanceDesignComponentFormItem().getDataPopulationStrategy() == DataPopulationStrategy.From_Client_Value) {
+                                updateFromClientValueSingle(ci, e.getClient(), mapOfClientValues);
+                            } else if (ci.getReferanceDesignComponentFormItem().getDataPopulationStrategy() == DataPopulationStrategy.From_Last_Encounter) {
+                                updateFromLastEncounter(ci);
+                            }
+                            DataItem i = new DataItem();
+                            i.setMultipleEntries(true);
+                            i.setTmpCi(ci);;
+                            i.di = dis;
+                            i.id = itemCounter;
+                            i.orderNo = itemCounter;
+                            i.form = f;
+                            f.getItems().add(i);
+                        } else {
+                            itemCounter++;
+                            ClientEncounterComponentItem ci = new ClientEncounterComponentItem();
+                            ci.setEncounter(e);
+                            ci.setInstitution(dfs.getInstitution());
+                            ci.setItemFormset(cfs);
+                            ci.setItemEncounter(e);
+                            ci.setItemClient(e.getClient());
+                            ci.setItem(dis.getItem());
+                            ci.setDescreption(dis.getDescreption());
+                            ci.setReferenceComponent(dis);
+                            ci.setParentComponent(cf);
+                            ci.setName(dis.getName());
+                            ci.setCss(dis.getCss());
+                            ci.setOrderNo(dis.getOrderNo());
+                            ci.setDataRepresentationType(DataRepresentationType.Encounter);
+                            if (ci.getReferanceDesignComponentFormItem().getDataPopulationStrategy() == DataPopulationStrategy.From_Client_Value) {
+                                updateFromClientValueSingle(ci, e.getClient(), mapOfClientValues);
+                            } else if (ci.getReferanceDesignComponentFormItem().getDataPopulationStrategy() == DataPopulationStrategy.From_Last_Encounter) {
+                                updateFromLastEncounter(ci);
+                            }
+                            DataItem i = new DataItem();
+                            i.setMultipleEntries(false);
+                            i.setCi(ci);
+                            i.di = dis;
+                            i.id = itemCounter;
+                            i.orderNo = itemCounter;
+                            i.form = f;
+                            f.getItems().add(i);
                         }
-
-//                        clientEncounterComponentItemController.save(ci);
-                        DataItem i = new DataItem();
-                        i.ci = ci;
-                        i.di = dis;
-                        i.id = itemCounter;
-                        i.orderNo = itemCounter;
-                        i.form = f;
-
-                        f.getItems().add(i);
-                        //0712755777 Mobitel Customer Care
 
                     }
 

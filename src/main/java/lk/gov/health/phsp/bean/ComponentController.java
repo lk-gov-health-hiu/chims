@@ -64,37 +64,16 @@ public class ComponentController implements Serializable {
         if (c == null) {
             return nc;
         }
-        if (c instanceof ClientEncounterComponent) {
-
-        } else if (c instanceof ClientEncounterComponentFormSet) {
-
-        } else if (c instanceof ClientEncounterComponentForm) {
-
-        } else if (c instanceof ClientEncounterComponentItem) {
-
-        } else if (c instanceof DesignComponent) {
-
-        } else if (c instanceof DesignComponentFormSet) {
-
-        } else if (c instanceof DesignComponentForm) {
-
-        } else if (c instanceof DesignComponentFormItem) {
-
-        } else if (c instanceof QueryComponent) {
-
-        } else {
-            nc = new Component();
-            nc.setName(c.getName());
-            nc.setCode(c.getCode());
-            nc.setItem(c.getItem());
-            nc.setDescreption(c.getDescreption());
-            nc.setOrderNo(c.getOrderNo());
-            nc.setInstitution(c.getInstitution());
-            nc.setParentComponent(c.getParentComponent());
-            nc.setReferenceComponent(c.getReferenceComponent());
-            nc.setCss(c.getCss());
-
-        }
+        nc = new Component();
+        nc.setName(c.getName());
+        nc.setCode(c.getCode());
+        nc.setItem(c.getItem());
+        nc.setDescreption(c.getDescreption());
+        nc.setOrderNo(c.getOrderNo());
+        nc.setInstitution(c.getInstitution());
+        nc.setParentComponent(c.getParentComponent());
+        nc.setReferenceComponent(c.getReferenceComponent());
+        nc.setCss(c.getCss());
         return nc;
     }
 
@@ -156,7 +135,6 @@ public class ComponentController implements Serializable {
 //        nc.setCompleted(c.isCompleted());
 //        nc.setCompletedAt(c.getCompletedAt());
 //        nc.setCompletedBy(c.getCompletedBy());
-
         nc.setFilterByDistrict(c.isFilterByDistrict());
         nc.setFilterByProvince(c.isFilterByProvince());
         nc.setFilterByRdhs(c.isFilterByRdhs());
