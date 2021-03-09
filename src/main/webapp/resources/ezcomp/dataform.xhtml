@@ -56,6 +56,23 @@
                                             </p:autoComplete>
                                         </td>
                                     </h:panelGroup>
+                                    <td>
+                                        <p:commandButton id="btnAddM"  value="Add" process="@this" update="@form :#{p:component('formset')}"
+                                                         action="#{clientEncounterComponentItemController.addAnother(ii)}"></p:commandButton>
+                                    </td>
+                                    <td>
+                                        <h:panelGroup rendered="#{ii.di.displayLastResult}" >
+                                            <h:outputText value="#{fn:replace(clientEncounterComponentFormSetController.lastData(ii.ci),'\\n','&lt;br/&gt;')}" escape="false" />
+                                        </h:panelGroup>
+                                    </td>
+                                    <td>
+                                        <p:dataTable value="#{ii.addedItems}" var="ai" emptyMessage="Nothing added Yet">
+                                            <p:column >
+                                                <p:outputLabel value="#{ai.ci.itemValue.name}" ></p:outputLabel>
+                                            </p:column>
+                                        </p:dataTable>
+                                    </td>
+
                                 </h:panelGroup>
                                 <h:panelGroup rendered="#{ii.di.renderType eq 'Autocomplete' and ii.di.item.dataType eq 'Area_Reference'}" >
                                     <td>
@@ -92,15 +109,7 @@
                                     </p:panelGrid>
                                 </h:panelGroup>
                             </td>
-                            <td>
-                                <p:commandButton id="btnAddM"  value="Add Another" process="@this" update="@form :#{p:component('formset')}"
-                                                 action="#{clientEncounterComponentItemController.addAnother(ii.ci)}"></p:commandButton>
-                            </td>
-                            <td>
-                                <h:panelGroup rendered="#{ii.di.displayLastResult}" >
-                                    <h:outputText value="#{fn:replace(clientEncounterComponentFormSetController.lastData(ii.ci),'\\n','&lt;br/&gt;')}" escape="false" />
-                                </h:panelGroup>
-                            </td>
+
                         </tr>
                     </h:panelGroup>
 
@@ -271,6 +280,9 @@
                                                                  required="#{ii.di.required}" 
                                                                  requiredMessage="#{ii.di.requiredErrorMessage}" >
                                             <p:ajax  process="@this"   
+                                                     listener="#{clientEncounterComponentItemController.save(ii.ci)}" >
+                                            </p:ajax>
+                                            <p:ajax  process="@this"  event="blur" 
                                                      listener="#{clientEncounterComponentItemController.save(ii.ci)}" >
                                             </p:ajax>
                                         </p:selectBooleanCheckbox>

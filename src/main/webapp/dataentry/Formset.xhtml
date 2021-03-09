@@ -7,20 +7,13 @@
       xmlns:p="http://primefaces.org/ui"
       xmlns:ez="http://xmlns.jcp.org/jsf/composite/ezcomp">
 
-    <h:body onload="confirmation.show()">
+    <h:body >
 
         <ui:composition template="/template.xhtml">
 
             <ui:define name="content">
 
                 <h:panelGroup id="formset">
-
-                    <p:confirmDialog message="Are you sure you want to edit customer"
-                                     header="Starting edit process" severity="alert" widgetVar="confirmation">
-                        <p:commandButton value="Yes"  oncomplete="confirmation.hide()"
-                                         />
-                        <p:commandButton value="No" onclick="confirmation.hide()" type="button" />
-                    </p:confirmDialog>
 
 
                     <h:form>

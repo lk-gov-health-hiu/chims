@@ -36,6 +36,8 @@ import lk.gov.health.phsp.entity.Component;
 import lk.gov.health.phsp.entity.DesignComponentFormItem;
 import lk.gov.health.phsp.entity.Encounter;
 import lk.gov.health.phsp.entity.Person;
+import lk.gov.health.phsp.enums.DataPopulationStrategy;
+import lk.gov.health.phsp.enums.DataRepresentationType;
 import lk.gov.health.phsp.enums.SelectionDataType;
 import lk.gov.health.phsp.pojcs.dataentry.DataForm;
 import lk.gov.health.phsp.pojcs.dataentry.DataFormset;
@@ -136,140 +138,147 @@ public class ClientEncounterComponentItemController implements Serializable {
         save(selected);
     }
 
-    public void calculate(ClientEncounterComponentItem i) {
-        if (i == null) {
-            return;
-        }
-
-        if (i.getReferanceDesignComponentFormItem().getCalculationScript() == null || i.getReferanceDesignComponentFormItem().getCalculationScript().trim().equals("")) {
-            return;
-        }
-        if (i.getParentComponent() == null || i.getParentComponent().getParentComponent() == null) {
-            return;
-        }
-        if (!(i.getParentComponent().getParentComponent() instanceof ClientEncounterComponentFormSet)) {
-            return;
-        }
-
-        if (i.getReferanceDesignComponentFormItem().getCalculationScript().trim().equalsIgnoreCase("#{client_current_age_in_years}")) {
-            ClientEncounterComponentFormSet s = (ClientEncounterComponentFormSet) i.getParentComponent().getParentComponent();
-            Person p = s.getEncounter().getClient().getPerson();
-            i.setShortTextValue(p.getAgeYears() + "");
-            i.setRealNumberValue(Double.valueOf(p.getAgeYears()));
-            i.setIntegerNumberValue(p.getAgeYears());
-            getFacade().edit(i);
-            return;
-        } else {
-        }
-
-        List<Replaceable> replacingBlocks = findReplaceblesInCalculationString(i.getReferanceDesignComponentFormItem().getCalculationScript());
-
-        for (Replaceable r : replacingBlocks) {
-            if (r.getPef().equalsIgnoreCase("f")) {
-                if (r.getSm().equalsIgnoreCase("s")) {
-                    r.setClientEncounterComponentItem(findFormsetValue(i, r.getVariableCode()));
-                } else {
-                    r.setClientEncounterComponentItem(findFormsetValue(i, r.getVariableCode(), r.getValueCode()));
-                }
-            } else if (r.getPef().equalsIgnoreCase("p")) {
-                r.setClientEncounterComponentItem(findClientValue(i, r.getVariableCode()));
-            }
-            if (r.getClientEncounterComponentItem() != null) {
-                ClientEncounterComponentItem c = r.getClientEncounterComponentItem();
-
-                if (c == null || c.getReferanceDesignComponentFormItem() == null || c.getReferanceDesignComponentFormItem().getItem() == null) {
-                    continue;
-                } else {
-                    if (c.getReferanceDesignComponentFormItem().getItem().getDataType() == null) {
-                        continue;
-                    }
-                }
-                SelectionDataType dataType;
-                if (c.getReferanceDesignComponentFormItem().getSelectionDataType() == null && c.getReferanceDesignComponentFormItem().getItem().getDataType() == null) {
-                    dataType = SelectionDataType.Real_Number;
-                } else if (c.getReferanceDesignComponentFormItem().getSelectionDataType() != null && c.getReferanceDesignComponentFormItem().getItem().getDataType() == null) {
-                    dataType = c.getReferanceDesignComponentFormItem().getSelectionDataType();
-                } else if (c.getReferanceDesignComponentFormItem().getSelectionDataType() == null && c.getReferanceDesignComponentFormItem().getItem().getDataType() != null) {
-                    dataType = c.getItem().getDataType();
-                } else {
-                    if (c.getReferanceDesignComponentFormItem().getSelectionDataType() == c.getReferanceDesignComponentFormItem().getItem().getDataType()) {
-                        dataType = c.getReferanceDesignComponentFormItem().getItem().getDataType();
-                    } else {
-                        dataType = c.getReferanceDesignComponentFormItem().getItem().getDataType();
-                        System.err.println("Error in data types");
-                    }
-                }
-
-                if (dataType == null) {
-                    dataType = SelectionDataType.Real_Number;
-                }
-
-                switch (dataType) {
-                    case Short_Text:
-                        if (c.getShortTextValue() != null) {
-                            r.setSelectedValue(c.getShortTextValue());
-                        }
-                        break;
-                    case Boolean:
-                        if (c.getBooleanValue() != null) {
-                            r.setSelectedValue(c.getBooleanValue().toString());
-                        }
-                        break;
-                    case Real_Number:
-                        if (c.getRealNumberValue() != null) {
-                            r.setSelectedValue(c.getRealNumberValue().toString());
-                        }
-                        break;
-                    case Integer_Number:
-                        if (c.getIntegerNumberValue() != null) {
-                            r.setSelectedValue(c.getIntegerNumberValue().toString());
-                        }
-                        break;
-                    case Item_Reference:
-                        if (c.getItemValue() != null) {
-                            r.setSelectedValue(c.getItemValue().getCode());
-                        }
-                        break;
-                }
-
-            } else {
-                r.setSelectedValue(r.getDefaultValue());
-
-            }
-        }
-
-        String javaStringToEvaluate = addTemplateToReport(i.getReferanceDesignComponentFormItem().getCalculationScript().trim(), replacingBlocks);
-        String result = evaluateScript(javaStringToEvaluate);
-
-        if (null == i.getItem().getDataType()) {
-            i.setShortTextValue(result);
-        } else {
-            switch (i.getItem().getDataType()) {
-                case Real_Number:
-                    i.setRealNumberValue(CommonController.getDoubleValue(result));
-                    getFacade().edit(i);
-                    break;
-                case Integer_Number:
-                    i.setIntegerNumberValue(CommonController.getIntegerValue(result));
-                    getFacade().edit(i);
-                    break;
-                case Short_Text:
-                    i.setShortTextValue(result);
-                    getFacade().edit(i);
-                    break;
-                case Long_Text:
-                    i.setLongTextValue(result);
-                    getFacade().edit(i);
-                    break;
-                default:
-                    break;
-            }
-            getFacade().edit(i);
-        }
-        userTransactionController.recordTransaction("Calculate - Clinic Forms");
-
-    }
-
+//
+//    public void calculate(ClientEncounterComponentItem i) {
+//        if (i == null) {
+//            return;
+//        }
+//
+//        if (i.getReferanceDesignComponentFormItem().getCalculationScript() == null || i.getReferanceDesignComponentFormItem().getCalculationScript().trim().equals("")) {
+//            return;
+//        }
+//        if (i.getParentComponent() == null || i.getParentComponent().getParentComponent() == null) {
+//            return;
+//        }
+//        if (!(i.getParentComponent().getParentComponent() instanceof ClientEncounterComponentFormSet)) {
+//            return;
+//        }
+//
+//        if (i.getReferanceDesignComponentFormItem().getCalculationScript().trim().equalsIgnoreCase("#{client_current_age_in_years}")) {
+//            ClientEncounterComponentFormSet s = (ClientEncounterComponentFormSet) i.getParentComponent().getParentComponent();
+//            Person p = s.getEncounter().getClient().getPerson();
+//            i.setShortTextValue(p.getAgeYears() + "");
+//            i.setRealNumberValue(Double.valueOf(p.getAgeYears()));
+//            i.setIntegerNumberValue(p.getAgeYears());
+//            getFacade().edit(i);
+//            return;
+//        } else {
+//        }
+//
+//        List<Replaceable> replacingBlocks = findReplaceblesInCalculationString(i.getReferanceDesignComponentFormItem().getCalculationScript());
+//
+//        for (Replaceable r : replacingBlocks) {
+//            if (r.getPef().equalsIgnoreCase("f")) {
+//                if (r.getSm().equalsIgnoreCase("s")) {
+//                    r.setClientEncounterComponentItem(findFormsetValue(i, r.getVariableCode()));
+//                } else {
+//                    r.setClientEncounterComponentItem(findFormsetValue(i, r.getVariableCode(), r.getValueCode()));
+//                }
+//            } else if (r.getPef().equalsIgnoreCase("p")) {
+//                r.setClientEncounterComponentItem(findClientValue(i, r.getVariableCode()));
+//            }
+//            if (r.getClientEncounterComponentItem() != null) {
+//                ClientEncounterComponentItem c = r.getClientEncounterComponentItem();
+//
+//                if (c == null || c.getReferanceDesignComponentFormItem() == null || c.getReferanceDesignComponentFormItem().getItem() == null) {
+//                    continue;
+//                } else {
+//                    if (c.getReferanceDesignComponentFormItem().getItem().getDataType() == null) {
+//                        continue;
+//                    }
+//                }
+//                SelectionDataType dataType;
+//                if (c.getReferanceDesignComponentFormItem().getSelectionDataType() == null && c.getReferanceDesignComponentFormItem().getItem().getDataType() == null) {
+//                    dataType = SelectionDataType.Real_Number;
+//                } else if (c.getReferanceDesignComponentFormItem().getSelectionDataType() != null && c.getReferanceDesignComponentFormItem().getItem().getDataType() == null) {
+//                    dataType = c.getReferanceDesignComponentFormItem().getSelectionDataType();
+//                } else if (c.getReferanceDesignComponentFormItem().getSelectionDataType() == null && c.getReferanceDesignComponentFormItem().getItem().getDataType() != null) {
+//                    dataType = c.getItem().getDataType();
+//                } else {
+//                    if (c.getReferanceDesignComponentFormItem().getSelectionDataType() == c.getReferanceDesignComponentFormItem().getItem().getDataType()) {
+//                        dataType = c.getReferanceDesignComponentFormItem().getItem().getDataType();
+//                    } else {
+//                        dataType = c.getReferanceDesignComponentFormItem().getItem().getDataType();
+//                        System.err.println("Error in data types");
+//                    }
+//                }
+//
+//                if (dataType == null) {
+//                    dataType = SelectionDataType.Real_Number;
+//                }
+//
+//                switch (dataType) {
+//                    case Short_Text:
+//                        if (c.getShortTextValue() != null) {
+//                            r.setSelectedValue(c.getShortTextValue());
+//                        }
+//                        break;
+//                    case Boolean:
+//                        if (c.getBooleanValue() != null) {
+//                            r.setSelectedValue(c.getBooleanValue().toString());
+//                        }
+//                        break;
+//                    case Real_Number:
+//                        if (c.getRealNumberValue() != null) {
+//                            r.setSelectedValue(c.getRealNumberValue().toString());
+//                        }
+//                        break;
+//                    case Integer_Number:
+//                        if (c.getIntegerNumberValue() != null) {
+//                            r.setSelectedValue(c.getIntegerNumberValue().toString());
+//                        }
+//                        break;
+//                    case Item_Reference:
+//                        if (c.getItemValue() != null) {
+//                            r.setSelectedValue(c.getItemValue().getCode());
+//                        }
+//                        break;
+//                }
+//
+//            } else {
+//                r.setSelectedValue(r.getDefaultValue());
+//
+//            }
+//        }
+//
+//        String javaStringToEvaluate = addTemplateToReport(i.getReferanceDesignComponentFormItem().getCalculationScript().trim(), replacingBlocks);
+//        String result = evaluateScript(javaStringToEvaluate);
+//
+//        if (null == i.getItem().getDataType()) {
+//            i.setShortTextValue(result);
+//        } else {
+//            switch (i.getItem().getDataType()) {
+//                case Real_Number:
+//                    i.setRealNumberValue(CommonController.getDoubleValue(result));
+////                    getFacade().edit(i);
+//                    save(i);
+//                    break;
+//                case Integer_Number:
+//                    i.setIntegerNumberValue(CommonController.getIntegerValue(result));
+////                    getFacade().edit(i);
+//                    save(i);
+//                    break;
+//                case Short_Text:
+//                    i.setShortTextValue(result);
+////                    getFacade().edit(i);
+//                    save(i);
+//                    break;
+//                case Long_Text:
+//                    i.setLongTextValue(result);
+////                    getFacade().edit(i);
+//                    save(i);
+//                    break;
+//                default:
+//                    break;
+//            }
+////            getFacade().edit(i);
+//            save(i);
+//        }
+//        userTransactionController.recordTransaction("Calculate - Clinic Forms");
+//
+//    }
+//
+//    
     public void calculate(DataItem i) {
         if (i == null) {
             return;
@@ -285,7 +294,7 @@ public class ClientEncounterComponentItemController implements Serializable {
             i.getCi().setShortTextValue(p.getAgeYears() + "");
             i.getCi().setRealNumberValue(Double.valueOf(p.getAgeYears()));
             i.getCi().setIntegerNumberValue(p.getAgeYears());
-            getFacade().edit(i.getCi());
+            save(i.getCi());
             return;
         } else {
         }
@@ -376,25 +385,26 @@ public class ClientEncounterComponentItemController implements Serializable {
             switch (i.getDi().getItem().getDataType()) {
                 case Real_Number:
                     i.getCi().setRealNumberValue(CommonController.getDoubleValue(result));
-                    getFacade().edit(i.getCi());
+                    save(i.getCi());
                     break;
                 case Integer_Number:
                     i.getCi().setIntegerNumberValue(CommonController.getIntegerValue(result));
-                    getFacade().edit(i.getCi());
+                    save(i.getCi());
                     break;
                 case Short_Text:
                     i.getCi().setShortTextValue(result);
-                    getFacade().edit(i.getCi());
+                    save(i.getCi());
                     break;
                 case Long_Text:
                     i.getCi().setLongTextValue(result);
-                    getFacade().edit(i.getCi());
+                    save(i.getCi());
                     break;
                 default:
                     break;
             }
-            getFacade().edit(i.getCi());
+            save(i.getCi());
         }
+        save(i.getCi());
         userTransactionController.recordTransaction("Calculate - Clinic Forms");
 
     }
@@ -521,25 +531,25 @@ public class ClientEncounterComponentItemController implements Serializable {
         ClientEncounterComponentItem temc = null;
         for (DataForm f : s.getForms()) {
             for (DataItem di : f.getItems()) {
-                if(di==null){
+                if (di == null) {
                     continue;
                 }
-                if(di.getDi()==null){
+                if (di.getDi() == null) {
                     continue;
                 }
-                 if(di.getDi().getItem()==null){
+                if (di.getDi().getItem() == null) {
                     continue;
                 }
-                if(di.getDi().getItem().getCode()==null){
+                if (di.getDi().getItem().getCode() == null) {
                     continue;
                 }
-                if(di.getCi()==null){
+                if (di.getCi() == null) {
                     continue;
                 }
-                if(di.getCi().getItemValue()==null){
+                if (di.getCi().getItemValue() == null) {
                     continue;
                 }
-                if(di.getCi().getItemValue().getCode()==null){
+                if (di.getCi().getItemValue().getCode() == null) {
                     continue;
                 }
                 if (di.getDi().getItem().getCode().equalsIgnoreCase(variableCode)
@@ -618,85 +628,89 @@ public class ClientEncounterComponentItemController implements Serializable {
     }
 
     public void save(ClientEncounterComponentItem i) {
-
+        System.out.println("save");
+        System.out.println("i = " + i);
         if (i == null) {
+            System.out.println("i is null. not saving");
             return;
         }
 
         if (i.getReferanceDesignComponentFormItem() == null) {
+            System.out.println("i.getReferanceDesignComponentFormItem() is null. Not saving");
             return;
         }
 
         if (i.getReferanceDesignComponentFormItem().getSelectionDataType() == null) {
+            System.out.println("i.getReferanceDesignComponentFormItem().getSelectionDataType() is null. Not saving");
             return;
         }
 
         SelectionDataType sdt = i.getReferanceDesignComponentFormItem().getSelectionDataType();
 
-        switch (sdt) {
-            case Area_Reference:
-                if (i.getAreaValue() == null) {
-                    return;
-                }
-                break;
-            case Boolean:
-                if (i.getBooleanValue() == null) {
-                    return;
-                }
-                break;
-            case Byte_Array:
-                return;
-            case Client_Reference:
-                if (i.getClientValue() == null) {
-                    return;
-                }
-                break;
-            case DateTime:
-                if (i.getDateValue() == null) {
-                    return;
-                }
-                break;
-            case Integer_Number:
-                if (i.getIntegerNumberValue() == null) {
-                    return;
-                }
-                break;
-            case Item_Reference:
-                if (i.getItemValue() == null) {
-                    return;
-                }
-                break;
-            case Long_Number:
-                if (i.getLongNumberValue() == null) {
-                    return;
-                }
-                break;
-            case Long_Text:
-                if (i.getLongTextValue() == null || i.getLongTextValue().trim().equals("")) {
-                    return;
-                }
-                break;
-            case Real_Number:
-                if (i.getRealNumberValue() == null) {
-                    return;
-                }
-                break;
-            case Short_Text:
-                if (i.getShortTextValue() == null || i.getShortTextValue().trim().equals("")) {
-                    return;
-                }
-                break;
-            default:
-                return;
-        }
-
+//        System.out.println("sdt = " + sdt);
+//        switch (sdt) {
+//            case Area_Reference:
+//                if (i.getAreaValue() == null) {
+//                    return;
+//                }
+//                break;
+//            case Boolean:
+//                if (i.getBooleanValue() == null) {
+//                    return;
+//                }
+//                break;
+//            case Byte_Array:
+//                return;
+//            case Client_Reference:
+//                if (i.getClientValue() == null) {
+//                    return;
+//                }
+//                break;
+//            case DateTime:
+//                if (i.getDateValue() == null) {
+//                    return;
+//                }
+//                break;
+//            case Integer_Number:
+//                if (i.getIntegerNumberValue() == null) {
+//                    return;
+//                }
+//                break;
+//            case Item_Reference:
+//                if (i.getItemValue() == null) {
+//                    return;
+//                }
+//                break;
+//            case Long_Number:
+//                if (i.getLongNumberValue() == null) {
+//                    return;
+//                }
+//                break;
+//            case Long_Text:
+//                if (i.getLongTextValue() == null || i.getLongTextValue().trim().equals("")) {
+//                    return;
+//                }
+//                break;
+//            case Real_Number:
+//                if (i.getRealNumberValue() == null) {
+//                    return;
+//                }
+//                break;
+//            case Short_Text:
+//                if (i.getShortTextValue() == null || i.getShortTextValue().trim().equals("")) {
+//                    return;
+//                }
+//                break;
+//            default:
+//                return;
+//        }
         if (i.getId() == null) {
             i.setCreatedAt(new Date());
             i.setCreatedBy(webUserController.getLoggedUser());
             getFacade().create(i);
         } else {
-            i.setLastEditBy(webUserController.getLoggedUser());
-            i.setLastEditeAt(new Date());
+//            i.setLastEditBy(webUserController.getLoggedUser());
+//            i.setLastEditeAt(new Date());
             getFacade().edit(i);
         }
     }
@@ -747,6 +761,60 @@ public class ClientEncounterComponentItemController implements Serializable {
         getFacade().create(ci);
 
         findClientEncounterComponentItemOfAForm((ClientEncounterComponentForm) i.getParentComponent());
+        userTransactionController.recordTransaction("Add Another - Clinic Forms");
+    }
+
+    public void addAnother(DataItem i) {
+        System.out.println("addAnother");
+        System.out.println("Dataitem i = " + i);
+
+        if (i == null) {
+            JsfUtil.addErrorMessage("No Data Item");
+            return;
+        }
+
+        if (i.getAddingItem() == null) {
+            JsfUtil.addErrorMessage("No Adding Item");
+            return;
+        }
+
+        if (i.getAddingItem().getTmpCi() == null) {
+            JsfUtil.addErrorMessage("No CI for Adding Item");
+            return;
+        }
+
+        save(i.getTmpCi());
+
+        i.getAddedItems().add(i);
+
+        ClientEncounterComponentItem nci = new ClientEncounterComponentItem();
+
+        nci.setEncounter(i.getForm().getFormset().getEfs().getEncounter());
+        nci.setInstitution(i.getForm().getFormset().getEfs().getInstitution());
+
+        nci.setItemFormset(i.getForm().getFormset().getEfs());
+        nci.setItemEncounter(i.getForm().getFormset().getEfs().getEncounter());
+        nci.setItemClient(i.getForm().getFormset().getEfs().getClient());
+
+        nci.setItem(i.getDi().getItem());
+
+        nci.setReferenceComponent(i.getDi());
+        nci.setParentComponent(i.getForm().getCf());
+        nci.setName(i.getDi().getName());
+        nci.setCss(i.getDi().getCss());
+        nci.setOrderNo(i.getAddedItems().size() + 1.0);
+        nci.setDataRepresentationType(DataRepresentationType.Encounter);
+       
+        DataItem ni = new DataItem();
+        ni.setMultipleEntries(true);
+        ni.setTmpCi(nci);
+        ni.di = i.getDi();
+        ni.id = (int) (i.getAddedItems().size() + 1.0);
+        ni.orderNo = i.getAddedItems().size() + 1.0;
+        ni.form = i.getForm();
+
+        i.setTmpCi(nci);
+        
         userTransactionController.recordTransaction("Add Another - Clinic Forms");
     }
 
@@ -912,7 +980,6 @@ public class ClientEncounterComponentItemController implements Serializable {
         }
         ClientEncounterComponentItem fountVal = i.getForm().getFormset().getMapOfClientValues().get(code.toLowerCase());
 
-       
         if (fountVal != null) {
             if (code.equalsIgnoreCase("client_current_age_in_years")) {
                 Person p = i.getForm().getFormset().getEfs().getClient().getPerson();

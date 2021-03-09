@@ -841,7 +841,7 @@ public class ClientEncounterComponentFormSetController implements Serializable {
                             }
                             DataItem i = new DataItem();
                             i.setMultipleEntries(true);
-                            i.setTmpCi(ci);;
+                            i.setTmpCi(ci);
                             i.di = dis;
                             i.id = itemCounter;
                             i.orderNo = itemCounter;
@@ -865,8 +865,10 @@ public class ClientEncounterComponentFormSetController implements Serializable {
                             ci.setDataRepresentationType(DataRepresentationType.Encounter);
                             if (ci.getReferanceDesignComponentFormItem().getDataPopulationStrategy() == DataPopulationStrategy.From_Client_Value) {
                                 updateFromClientValueSingle(ci, e.getClient(), mapOfClientValues);
+                                save(ci);
                             } else if (ci.getReferanceDesignComponentFormItem().getDataPopulationStrategy() == DataPopulationStrategy.From_Last_Encounter) {
                                 updateFromLastEncounter(ci);
+                                save(ci);
                             }
                             DataItem i = new DataItem();
                             i.setMultipleEntries(false);
@@ -891,6 +893,19 @@ public class ClientEncounterComponentFormSetController implements Serializable {
         return navigationLink;
     }
 
+    private void save(ClientEncounterComponentItem ci){
+        if(ci==null){
+            return;
+        }
+        if(ci.getId()==null){
+            ci.setCreatedAt(new Date());
+            ci.setCreatedBy(webUserController.getLoggedUser());
+            itemFacade.create(ci);
+        }else{
+            itemFacade.edit(ci);
+        }
+    }
+    
     public String createNewAndNavigateToClinicalEncounterComponentFormSetFromDesignComponentFormSetForClinicVisit(DesignComponentFormSet dfs) {
 
         String navigationLink = "/clientEncounterComponentFormSet/Formset";
