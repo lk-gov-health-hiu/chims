@@ -773,19 +773,29 @@ public class ClientEncounterComponentItemController implements Serializable {
             return;
         }
 
+        System.out.println("i.getAddingItem() = " + i.getAddingItem());
+        
         if (i.getAddingItem() == null) {
             JsfUtil.addErrorMessage("No Adding Item");
             return;
         }
 
-        if (i.getAddingItem().getTmpCi() == null) {
+        System.out.println("i.getAddingItem().getTmpCi() = " + i.getAddingItem().getTmpCi());
+        
+        if (i.getAddingItem().getCi() == null) {
             JsfUtil.addErrorMessage("No CI for Adding Item");
             return;
         }
 
-        save(i.getTmpCi());
+        System.out.println("going to save");
+        
+        save(i.getCi());
+        
+        System.out.println("saved");
 
         i.getAddedItems().add(i);
+        
+        System.out.println("before new nci");
 
         ClientEncounterComponentItem nci = new ClientEncounterComponentItem();
 
@@ -805,17 +815,22 @@ public class ClientEncounterComponentItemController implements Serializable {
         nci.setOrderNo(i.getAddedItems().size() + 1.0);
         nci.setDataRepresentationType(DataRepresentationType.Encounter);
        
+        System.out.println("before new ni");
+        
         DataItem ni = new DataItem();
         ni.setMultipleEntries(true);
-        ni.setTmpCi(nci);
+        ni.setCi(nci);
         ni.di = i.getDi();
         ni.id = (int) (i.getAddedItems().size() + 1.0);
         ni.orderNo = i.getAddedItems().size() + 1.0;
         ni.form = i.getForm();
 
-        i.setTmpCi(nci);
+        i.setAddingItem(ni);
         
+        
+        System.out.println("before recording user transaction");
         userTransactionController.recordTransaction("Add Another - Clinic Forms");
+        System.out.println("after saving user transaction");
     }
 
     public void create() {
