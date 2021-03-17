@@ -841,7 +841,7 @@ public class ClientEncounterComponentFormSetController implements Serializable {
                             }
                             DataItem i = new DataItem();
                             i.setMultipleEntries(true);
-                            i.setTmpCi(ci);
+                            i.setCi(ci);
                             i.di = dis;
                             i.id = itemCounter;
                             i.orderNo = itemCounter;

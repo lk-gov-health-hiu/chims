@@ -40,7 +40,7 @@ public class DataItem {
     public DesignComponentFormItem di;
     public ClientEncounterComponentItem ci;
     public DataForm form;
-    private ClientEncounterComponentItem tmpCi;
+
 
     private List<DataItem> addedItems;
     private DataItem addingItem;
@@ -104,7 +104,7 @@ public class DataItem {
             addingItem.setForm(form);
             addingItem.setId(getAddedItems().size() + 1);
             addingItem.setOrderNo(getAddedItems().size() + 1);
-            addingItem.setCi(ComponentController.cloneComponent(tmpCi));
+            addingItem.setCi(ComponentController.cloneComponent(ci));
         }
         return addingItem;
     }
@@ -113,13 +113,7 @@ public class DataItem {
         this.addingItem = addingItem;
     }
 
-    public ClientEncounterComponentItem getTmpCi() {
-        return tmpCi;
-    }
-
-    public void setTmpCi(ClientEncounterComponentItem tmpCi) {
-        this.tmpCi = tmpCi;
-    }
+    
 
     public Boolean getMultipleEntries() {
         return multipleEntries;

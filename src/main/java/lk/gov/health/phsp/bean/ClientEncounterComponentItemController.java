@@ -780,7 +780,7 @@ public class ClientEncounterComponentItemController implements Serializable {
             return;
         }
 
-        System.out.println("i.getAddingItem().getTmpCi() = " + i.getAddingItem().getTmpCi());
+        System.out.println("i.getAddingItem().getCi() = " + i.getAddingItem().getCi());
         
         if (i.getAddingItem().getCi() == null) {
             JsfUtil.addErrorMessage("No CI for Adding Item");
