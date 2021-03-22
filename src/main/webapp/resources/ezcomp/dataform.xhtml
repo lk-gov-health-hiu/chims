@@ -39,6 +39,10 @@
                                                                itemLabel="#{li.displayName}" itemValue="#{li}" ></f:selectItems>
                                             </p:selectOneMenu>
                                         </td>
+                                        <td>
+                                            <p:commandButton id="btnAddM1"  value="Add" process="domIcM btnAddM1" update="@form :#{p:component('formset')}"
+                                                             action="#{clientEncounterComponentItemController.addAnother(ii)}"></p:commandButton>
+                                        </td>
                                     </h:panelGroup>
                                     <h:panelGroup rendered="#{ii.di.renderType eq 'Autocomplete'}" >
                                         <td>
@@ -55,23 +59,11 @@
                                                 <f:attribute name="filter" value="#{ii.di.categoryOfAvailableItems.code}" />
                                             </p:autoComplete>
                                         </td>
+                                        <td>
+                                            <p:commandButton id="btnAddM2"  value="Add" process="acItemM btnAddM2" update="@form :#{p:component('formset')}"
+                                                             action="#{clientEncounterComponentItemController.addAnother(ii)}"></p:commandButton>
+                                        </td>
                                     </h:panelGroup>
-                                    <td>
-                                        <p:commandButton id="btnAddM"  value="Add" process="@this" update="@form :#{p:component('formset')}"
-                                                         action="#{clientEncounterComponentItemController.addAnother(ii)}"></p:commandButton>
-                                    </td>
-                                    <td>
-                                        <h:panelGroup rendered="#{ii.di.displayLastResult}" >
-                                            <h:outputText value="#{fn:replace(clientEncounterComponentFormSetController.lastData(ii.ci),'\\n','&lt;br/&gt;')}" escape="false" />
-                                        </h:panelGroup>
-                                    </td>
-                                    <td>
-                                        <p:dataTable value="#{ii.addedItems}" var="ai" emptyMessage="Nothing added Yet">
-                                            <p:column >
-                                                <p:outputLabel value="#{ai.ci}" ></p:outputLabel>
-                                            </p:column>
-                                        </p:dataTable>
-                                    </td>
 
                                 </h:panelGroup>
                                 <h:panelGroup rendered="#{ii.di.renderType eq 'Autocomplete' and ii.di.item.dataType eq 'Area_Reference'}" >
@@ -88,12 +80,25 @@
                                                         requiredMessage="#{ii.di.requiredErrorMessage}">
                                         </p:autoComplete>
                                     </td>
+                                    <td>
+                                        <p:commandButton id="btnAddM3"  value="Add" process="acAM btnAddM3" update="@form :#{p:component('formset')}"
+                                                         action="#{clientEncounterComponentItemController.addAnother(ii)}"></p:commandButton>
+                                    </td>
                                 </h:panelGroup>
                                 <h:panelGroup rendered="#{ii.di.renderType eq 'Prescreption'}" >
                                     <td>
                                         <!--<ez:prescription/>-->
                                     </td>
                                 </h:panelGroup>
+
+                                <td>
+                                    <p:dataTable value="#{ii.addedItems}" var="ai" emptyMessage="Nothing added Yet">
+                                        <p:column >
+                                            <p:outputLabel value="#{ai.ci.id}" ></p:outputLabel>
+                                        </p:column>
+                                    </p:dataTable>
+                                </td>
+
                             </h:panelGroup>
 
                             <td>
@@ -342,7 +347,7 @@
                             </td>
                         </tr>
                     </h:panelGroup>
-                
+
                 </ui:repeat>
             </table>                
         </h:panelGroup>

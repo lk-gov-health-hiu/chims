@@ -645,72 +645,12 @@ public class ClientEncounterComponentItemController implements Serializable {
             return;
         }
 
-        SelectionDataType sdt = i.getReferanceDesignComponentFormItem().getSelectionDataType();
-
-//        System.out.println("sdt = " + sdt);
-//        switch (sdt) {
-//            case Area_Reference:
-//                if (i.getAreaValue() == null) {
-//                    return;
-//                }
-//                break;
-//            case Boolean:
-//                if (i.getBooleanValue() == null) {
-//                    return;
-//                }
-//                break;
-//            case Byte_Array:
-//                return;
-//            case Client_Reference:
-//                if (i.getClientValue() == null) {
-//                    return;
-//                }
-//                break;
-//            case DateTime:
-//                if (i.getDateValue() == null) {
-//                    return;
-//                }
-//                break;
-//            case Integer_Number:
-//                if (i.getIntegerNumberValue() == null) {
-//                    return;
-//                }
-//                break;
-//            case Item_Reference:
-//                if (i.getItemValue() == null) {
-//                    return;
-//                }
-//                break;
-//            case Long_Number:
-//                if (i.getLongNumberValue() == null) {
-//                    return;
-//                }
-//                break;
-//            case Long_Text:
-//                if (i.getLongTextValue() == null || i.getLongTextValue().trim().equals("")) {
-//                    return;
-//                }
-//                break;
-//            case Real_Number:
-//                if (i.getRealNumberValue() == null) {
-//                    return;
-//                }
-//                break;
-//            case Short_Text:
-//                if (i.getShortTextValue() == null || i.getShortTextValue().trim().equals("")) {
-//                    return;
-//                }
-//                break;
-//            default:
-//                return;
-//        }
+ 
         if (i.getId() == null) {
             i.setCreatedAt(new Date());
             i.setCreatedBy(webUserController.getLoggedUser());
             getFacade().create(i);
         } else {
-//            i.setLastEditBy(webUserController.getLoggedUser());
-//            i.setLastEditeAt(new Date());
             getFacade().edit(i);
         }
     }
@@ -774,27 +714,38 @@ public class ClientEncounterComponentItemController implements Serializable {
         }
 
         System.out.println("i.getAddingItem() = " + i.getAddingItem());
-        
+
         if (i.getAddingItem() == null) {
             JsfUtil.addErrorMessage("No Adding Item");
             return;
         }
 
         System.out.println("i.getAddingItem().getCi() = " + i.getAddingItem().getCi());
-        
+
         if (i.getAddingItem().getCi() == null) {
             JsfUtil.addErrorMessage("No CI for Adding Item");
+            System.out.println("No CI for Adding Item");
             return;
         }
 
+        if (i.getAddingItem().getCi().getItemValue() == null) {
+            JsfUtil.addErrorMessage("No Item value for CI");
+            return;
+        } else {
+            System.out.println("i.getAddingItem().getCi().getItemValue() = " + i.getAddingItem().getCi().getItemValue().getName());
+        }
+
         System.out.println("going to save");
+
+        System.out.println("i.getCi().getId() = " + i.getCi().getId());
         
         save(i.getCi());
-        
+
         System.out.println("saved");
+        System.out.println("i.getCi().getId() = " + i.getCi().getId());
 
         i.getAddedItems().add(i);
-        
+
         System.out.println("before new nci");
 
         ClientEncounterComponentItem nci = new ClientEncounterComponentItem();
@@ -814,9 +765,9 @@ public class ClientEncounterComponentItemController implements Serializable {
         nci.setCss(i.getDi().getCss());
         nci.setOrderNo(i.getAddedItems().size() + 1.0);
         nci.setDataRepresentationType(DataRepresentationType.Encounter);
-       
+
         System.out.println("before new ni");
-        
+
         DataItem ni = new DataItem();
         ni.setMultipleEntries(true);
         ni.setCi(nci);
@@ -826,8 +777,7 @@ public class ClientEncounterComponentItemController implements Serializable {
         ni.form = i.getForm();
 
         i.setAddingItem(ni);
-        
-        
+
         System.out.println("before recording user transaction");
         userTransactionController.recordTransaction("Add Another - Clinic Forms");
         System.out.println("after saving user transaction");
