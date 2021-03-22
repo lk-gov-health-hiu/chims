@@ -846,6 +846,7 @@ public class ClientEncounterComponentFormSetController implements Serializable {
                             i.id = itemCounter;
                             i.orderNo = itemCounter;
                             i.form = f;
+                            i.setAvailableItemsForSelection(itemController.findItemList(dis.getCategoryOfAvailableItems()));
                             f.getItems().add(i);
                         } else {
                             itemCounter++;
@@ -877,6 +878,8 @@ public class ClientEncounterComponentFormSetController implements Serializable {
                             i.id = itemCounter;
                             i.orderNo = itemCounter;
                             i.form = f;
+                            i.setAvailableItemsForSelection(itemController.findItemList(dis.getCategoryOfAvailableItems()));
+                            
                             f.getItems().add(i);
                         }
 

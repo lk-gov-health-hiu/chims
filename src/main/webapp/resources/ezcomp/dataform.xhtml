@@ -35,7 +35,7 @@
                                         <td>
                                             <p:selectOneMenu id="domIcM" value="#{ii.addingItem.ci.itemValue}" >
                                                 <f:selectItem itemLabel="Please select" ></f:selectItem>
-                                                <f:selectItems value="#{itemController.findItemList(ii.di.categoryOfAvailableItems)}" var="li"
+                                                <f:selectItems value="#{ii.availableItemsForSelection}" var="li"
                                                                itemLabel="#{li.displayName}" itemValue="#{li}" ></f:selectItems>
                                             </p:selectOneMenu>
                                         </td>
@@ -46,17 +46,16 @@
                                     </h:panelGroup>
                                     <h:panelGroup rendered="#{ii.di.renderType eq 'Autocomplete'}" >
                                         <td>
-                                            <p:outputLabel for="acItemM" value="#{ii.di.name}"  style="#{ii.di.css}" ></p:outputLabel>
+                                            <p:outputLabel for="acItemcompleteAvailableItemsForSelectionM" value="#{ii.di.name}"  style="#{ii.di.css}" ></p:outputLabel>
                                         </td>
                                         <td>
                                             <p:autoComplete id="acItemM" value="#{ii.addingItem.ci.itemValue}"
-                                                            completeMethod="#{itemController.completeItemsofParentWithFIlter}"
+                                                            completeMethod="#{ii.completeAvailableItemsForSelection}"
                                                             var="ai" itemLabel="#{ai.name}" itemValue="#{ai}"
                                                             maxResults="15" forceSelection="true" 
                                                             minQueryLength="3"
                                                             required="#{ii.required}" 
                                                             requiredMessage="#{ii.requiredErrorMessage}">
-                                                <f:attribute name="filter" value="#{ii.di.categoryOfAvailableItems.code}" />
                                             </p:autoComplete>
                                         </td>
                                         <td>
@@ -82,7 +81,7 @@
                                     </td>
                                     <td>
                                         <p:commandButton id="btnAddM3"  value="Add" process="acAM btnAddM3" update="@form :#{p:component('formset')}"
-                                                         action="#{clientEncounterComponentItemController.addAnother(ii)}"></p:commandButton>
+                                                         action="#{clientEncounterComponentItemController.addAnother(ii.addingItem)}"></p:commandButton>
                                     </td>
                                 </h:panelGroup>
                                 <h:panelGroup rendered="#{ii.di.renderType eq 'Prescreption'}" >
@@ -94,7 +93,7 @@
                                 <td>
                                     <p:dataTable value="#{ii.addedItems}" var="ai" emptyMessage="Nothing added Yet">
                                         <p:column >
-                                            <p:outputLabel value="#{ai.ci.id}" ></p:outputLabel>
+                                            <p:outputLabel value="#{ai.ci.itemValue.name}" ></p:outputLabel>
                                         </p:column>
                                     </p:dataTable>
                                 </td>
@@ -249,7 +248,7 @@
                                         <td>
                                             <p:selectOneMenu id="domIc" value="#{ii.ci.itemValue}" >
                                                 <f:selectItem itemLabel="Please select" ></f:selectItem>
-                                                <f:selectItems value="#{itemController.findItemList(ii.di.categoryOfAvailableItems)}" var="li"
+                                                <f:selectItems value="#{ii.availableItemsForSelection}" var="li"
                                                                itemLabel="#{li.displayName}" itemValue="#{li}" ></f:selectItems>
                                                 <p:ajax  event="blur" process="@this"   listener="#{clientEncounterComponentItemController.save(ii.ci)}" ></p:ajax>
                                             </p:selectOneMenu>
@@ -261,13 +260,12 @@
                                         </td>
                                         <td>
                                             <p:autoComplete id="acItem" value="#{ii.ci.itemValue}"
-                                                            completeMethod="#{itemController.completeItemsofParentWithFIlter}"
+                                                            completeMethod="#{ii.completeItemsofParentWithFIlter}"
                                                             var="ai" itemLabel="#{ai.name}" itemValue="#{ai}"
                                                             maxResults="15" forceSelection="true" 
                                                             minQueryLength="3"
                                                             required="#{ii.required}" 
                                                             requiredMessage="#{ii.requiredErrorMessage}">
-                                                <f:attribute name="filter" value="#{ii.di.categoryOfAvailableItems.code}" />
                                                 <p:ajax  event="blur" process="@this"   
                                                          listener="#{clientEncounterComponentItemController.save(ii.ci)}" >
                                                 </p:ajax>

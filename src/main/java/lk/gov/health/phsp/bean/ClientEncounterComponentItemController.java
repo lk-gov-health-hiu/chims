@@ -744,7 +744,7 @@ public class ClientEncounterComponentItemController implements Serializable {
         System.out.println("saved");
         System.out.println("i.getCi().getId() = " + i.getCi().getId());
 
-        i.getAddedItems().add(i);
+        i.getAddedItems().add(i.getAddingItem());
 
         System.out.println("before new nci");
 
