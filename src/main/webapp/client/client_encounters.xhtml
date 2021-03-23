@@ -52,7 +52,7 @@
                             </p:column>
 
                             <p:column headerText="Actions">
-                                <h:commandLink action="#{clientEncounterComponentFormSetController.toViewOrEditFormset()}"
+                                <h:commandLink action="#{clientEncounterComponentFormSetController.toViewOrEditDataset()}"
                                                value="View Details"
                                                style="color: #{s.completed?'green':'red'};">
                                     <f:setPropertyActionListener value="#{s}" target="#{clientEncounterComponentFormSetController.selected}" ></f:setPropertyActionListener>

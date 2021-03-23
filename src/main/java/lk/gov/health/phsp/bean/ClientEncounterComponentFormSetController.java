@@ -133,6 +133,20 @@ public class ClientEncounterComponentFormSetController implements Serializable {
         }
     }
 
+    public String toViewOrEditDataset() {
+        if (selected == null) {
+            JsfUtil.addErrorMessage("Nothing selected.");
+            return "";
+        }
+        loadOldNavigateToDataEntry(selected);
+        if (selected.isCompleted()) {
+            userTransactionController.recordTransaction("To View Or Edit Formset");
+            return toViewFormset();
+        } else {
+            return toEditFormset();
+        }
+    }
+
     public String toViewFormset() {
         if (selected == null) {
             JsfUtil.addErrorMessage("Nothing selected.");
@@ -879,7 +893,7 @@ public class ClientEncounterComponentFormSetController implements Serializable {
                             i.orderNo = itemCounter;
                             i.form = f;
                             i.setAvailableItemsForSelection(itemController.findItemList(dis.getCategoryOfAvailableItems()));
-                            
+
                             f.getItems().add(i);
                         }
 
@@ -896,19 +910,210 @@ public class ClientEncounterComponentFormSetController implements Serializable {
         return navigationLink;
     }
 
-    private void save(ClientEncounterComponentItem ci){
-        if(ci==null){
+    public void loadOldNavigateToDataEntry(ClientEncounterComponentFormSet cfs) {
+        if (cfs == null) {
             return;
         }
-        if(ci.getId()==null){
+
+        DesignComponentFormSet dfs = cfs.getReferanceDesignComponentFormSet();
+
+        DataFormset fs = new DataFormset();
+
+        Encounter e = cfs.getEncounter();
+
+        fs.setDfs(dfs);
+        fs.setEfs(cfs);
+
+        List<DesignComponentForm> dfList = designComponentFormController.fillFormsofTheSelectedSet(dfs);
+
+        int formCounter = 0;
+
+        for (DesignComponentForm df : dfList) {
+
+            boolean skipThisForm = false;
+            if (df.getComponentSex() == ComponentSex.For_Females && clientController.getSelected().getPerson().getSex().getCode().equalsIgnoreCase("sex_male")) {
+                skipThisForm = true;
+            }
+            if (df.getComponentSex() == ComponentSex.For_Males && clientController.getSelected().getPerson().getSex().getCode().equalsIgnoreCase("sex_female")) {
+                skipThisForm = true;
+            }
+
+            if (!skipThisForm) {
+                formCounter++;
+                String j = "select cf "
+                        + " from ClientEncounterComponentForm cf "
+                        + " where cf.referenceComponent=:rf "
+                        + " and cf.parentComponent=:cfs "
+                        + "order by cf.id desc";
+                Map m = new HashMap();
+                m.put("rf", df);
+                m.put("cfs", df);
+
+                ClientEncounterComponentForm cf = clientEncounterComponentFormController.getClientEncounterComponentForm(j, m);
+
+                if (cf == null) {
+                    cf = new ClientEncounterComponentForm();
+
+                    cf.setEncounter(e);
+                    cf.setInstitution(dfs.getInstitution());
+                    cf.setItem(df.getItem());
+
+                    cf.setReferenceComponent(df);
+                    cf.setName(df.getName());
+                    cf.setOrderNo(df.getOrderNo());
+                    cf.setParentComponent(cfs);
+                    cf.setCss(df.getCss());
+
+                    clientEncounterComponentFormController.save(cf);
+                }
+
+                DataForm f = new DataForm();
+                f.cf = cf;
+                f.df = df;
+                f.formset = fs;
+                f.id = formCounter;
+                f.orderNo = formCounter;
+
+                List<DesignComponentFormItem> diList = designComponentFormItemController.fillItemsOfTheForm(df);
+
+                int itemCounter = 0;
+
+                for (DesignComponentFormItem dis : diList) {
+
+                    boolean disSkipThisItem = false;
+                    if (dis.getComponentSex() == ComponentSex.For_Females && clientController.getSelected().getPerson().getSex().getCode().equalsIgnoreCase("sex_male")) {
+                        disSkipThisItem = true;
+                    }
+                    if (dis.getComponentSex() == ComponentSex.For_Males && clientController.getSelected().getPerson().getSex().getCode().equalsIgnoreCase("sex_female")) {
+                        disSkipThisItem = true;
+                    }
+
+                    if (!disSkipThisItem) {
+
+                        if (dis.isMultipleEntiesPerForm()) {
+
+                            j = "Select ci "
+                                    + " from ClientEncounterComponentItem ci "
+                                    + " where ci.retired=:ret "
+                                    + " and ci.parentComponent=:cf "
+                                    + " and ci.referenceComponent=:dis "
+                                    + " order by ci.orderNo";
+                            m = new HashMap();
+                            m.put("ret", false);
+                            m.put("ci", cf);
+                            m.put("dis", dis);
+
+                            List<ClientEncounterComponentItem> cis = clientEncounterComponentItemController.getItems(j, m);
+
+                            if (cis != null && !cis.isEmpty()) {
+                                for (ClientEncounterComponentItem tci : cis) {
+                                    DataItem i = new DataItem();
+                                    i.setMultipleEntries(true);
+                                    i.setCi(tci);
+                                    i.di = dis;
+                                    i.id = itemCounter;
+                                    i.orderNo = tci.getOrderNo();
+                                    i.form = f;
+                                    i.setAvailableItemsForSelection(itemController.findItemList(dis.getCategoryOfAvailableItems()));
+                                    f.getItems().add(i);
+                                }
+                            } else {
+
+                            }
+
+                            itemCounter++;
+                            ClientEncounterComponentItem ci = new ClientEncounterComponentItem();
+
+                            ci.setEncounter(e);
+                            ci.setInstitution(dfs.getInstitution());
+
+                            ci.setItemFormset(cfs);
+                            ci.setItemEncounter(e);
+                            ci.setItemClient(e.getClient());
+
+                            ci.setItem(dis.getItem());
+                            ci.setDescreption(dis.getDescreption());
+
+                            ci.setReferenceComponent(dis);
+                            ci.setParentComponent(cf);
+                            ci.setName(dis.getName());
+                            ci.setCss(dis.getCss());
+                            ci.setOrderNo(dis.getOrderNo());
+                            ci.setDataRepresentationType(DataRepresentationType.Encounter);
+                            if (ci.getReferanceDesignComponentFormItem().getDataPopulationStrategy() == DataPopulationStrategy.From_Client_Value) {
+//                                updateFromClientValueSingle(ci, e.getClient(), mapOfClientValues);
+                            } else if (ci.getReferanceDesignComponentFormItem().getDataPopulationStrategy() == DataPopulationStrategy.From_Last_Encounter) {
+                                updateFromLastEncounter(ci);
+                            }
+                            DataItem i = new DataItem();
+                            i.setMultipleEntries(true);
+                            i.setCi(ci);
+                            i.di = dis;
+                            i.id = itemCounter;
+                            i.orderNo = itemCounter;
+                            i.form = f;
+                            i.setAvailableItemsForSelection(itemController.findItemList(dis.getCategoryOfAvailableItems()));
+                            f.getItems().add(i);
+                        } else {
+                            itemCounter++;
+                            ClientEncounterComponentItem ci = new ClientEncounterComponentItem();
+                            ci.setEncounter(e);
+                            ci.setInstitution(dfs.getInstitution());
+                            ci.setItemFormset(cfs);
+                            ci.setItemEncounter(e);
+                            ci.setItemClient(e.getClient());
+                            ci.setItem(dis.getItem());
+                            ci.setDescreption(dis.getDescreption());
+                            ci.setReferenceComponent(dis);
+                            ci.setParentComponent(cf);
+                            ci.setName(dis.getName());
+                            ci.setCss(dis.getCss());
+                            ci.setOrderNo(dis.getOrderNo());
+                            ci.setDataRepresentationType(DataRepresentationType.Encounter);
+                            if (ci.getReferanceDesignComponentFormItem().getDataPopulationStrategy() == DataPopulationStrategy.From_Client_Value) {
+//                                updateFromClientValueSingle(ci, e.getClient(), mapOfClientValues);
+                                save(ci);
+                            } else if (ci.getReferanceDesignComponentFormItem().getDataPopulationStrategy() == DataPopulationStrategy.From_Last_Encounter) {
+                                updateFromLastEncounter(ci);
+                                save(ci);
+                            }
+                            DataItem i = new DataItem();
+                            i.setMultipleEntries(false);
+                            i.setCi(ci);
+                            i.di = dis;
+                            i.id = itemCounter;
+                            i.orderNo = itemCounter;
+                            i.form = f;
+                            i.setAvailableItemsForSelection(itemController.findItemList(dis.getCategoryOfAvailableItems()));
+
+                            f.getItems().add(i);
+                        }
+
+                    }
+
+                }
+                fs.getForms().add(f);
+            }
+
+        }
+
+        dataFormset = fs;
+        selected = cfs;
+    }
+
+    private void save(ClientEncounterComponentItem ci) {
+        if (ci == null) {
+            return;
+        }
+        if (ci.getId() == null) {
             ci.setCreatedAt(new Date());
             ci.setCreatedBy(webUserController.getLoggedUser());
             itemFacade.create(ci);
-        }else{
+        } else {
             itemFacade.edit(ci);
         }
     }
-    
+
     public String createNewAndNavigateToClinicalEncounterComponentFormSetFromDesignComponentFormSetForClinicVisit(DesignComponentFormSet dfs) {
 
         String navigationLink = "/clientEncounterComponentFormSet/Formset";
