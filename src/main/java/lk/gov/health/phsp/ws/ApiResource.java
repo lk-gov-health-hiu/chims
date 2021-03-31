@@ -82,6 +82,9 @@ public class ApiResource {
                 case "get_institutes_list":
                     jSONObjectOut = instituteList();
                     break;
+                case "get_module_institutes_list":
+                    jSONObjectOut = moduleInstituteList();
+                    break;
                 default:
                     jSONObjectOut = errorMessage();
             }
@@ -111,11 +114,32 @@ public class ApiResource {
         List<Institution> ds = institutionApplicationController.getInstitutions();
         for (Institution a : ds) {
             JSONObject ja = new JSONObject();
-            ja.put("institute_id", a.getCode());
+            ja.put("institute_id", a.getCode());            
             ja.put("name", a.getName());
             ja.put("hin", a.getPoiNumber());
             ja.put("latitude", a.getCoordinate().getLatitude());
             ja.put("longitude", a.getCoordinate().getLongitude());
+            ja.put("address", a.getAddress());
+            ja.put("province_id", a.getProvince().getCode());
+            ja.put("district_id", a.getDistrict().getCode());
+            array.put(ja);
+        }
+        jSONObjectOut.put("data", array);
+        jSONObjectOut.put("status", successMessage());
+        return jSONObjectOut;
+    }
+    
+    private JSONObject moduleInstituteList() {
+        JSONObject jSONObjectOut = new JSONObject();
+        JSONArray array = new JSONArray();
+        List<Institution> ds = institutionApplicationController.getInstitutions();
+        for (Institution a : ds) {
+            JSONObject ja = new JSONObject();
+            ja.put("institute_id", a.getCode()); 
+            ja.put("institute_type_db",a.getInstitutionType());
+            ja.put("institute_type",a.getInstitutionType().getLabel());
+            ja.put("name", a.getName());
+            ja.put("hin", a.getPoiNumber());
             ja.put("address", a.getAddress());
             ja.put("province_id", a.getProvince().getCode());
             ja.put("district_id", a.getDistrict().getCode());
