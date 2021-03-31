@@ -39,6 +39,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
@@ -285,6 +286,7 @@ public class Area implements Serializable {
         this.retiredReversedAt = retiredReversedAt;
     }
 
+    @XmlTransient
     public List<Coordinate> getCoordinates() {
         if (coordinates == null) {
             coordinates = new ArrayList<>();

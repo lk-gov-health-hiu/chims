@@ -27,6 +27,7 @@ package lk.gov.health.phsp.entity;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.xml.bind.annotation.XmlRootElement;
 import lk.gov.health.phsp.enums.ComponentSetType;
 import lk.gov.health.phsp.enums.PanelType;
 
@@ -35,6 +36,7 @@ import lk.gov.health.phsp.enums.PanelType;
  * @author sunila_soft
  */
 @Entity
+@XmlRootElement
 public class DesignComponentFormSet extends DesignComponent  {
     
     @Enumerated(EnumType.STRING)

@@ -34,6 +34,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.Transient;
+import javax.xml.bind.annotation.XmlRootElement;
 import lk.gov.health.phsp.enums.AvailableDataType;
 import lk.gov.health.phsp.enums.ComponentSetType;
 import lk.gov.health.phsp.enums.DataCompletionStrategy;
@@ -57,6 +58,7 @@ import lk.gov.health.phsp.enums.SelectionDataType;
  */
 @Entity
 @Table(name = "querycomponent")
+@XmlRootElement
 public class QueryComponent extends Component {
 
     @Lob
