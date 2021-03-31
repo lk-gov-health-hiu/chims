@@ -33,9 +33,15 @@ import javax.script.ScriptEngine;
 import javax.script.ScriptException;
 import lk.gov.health.phsp.entity.Client;
 import lk.gov.health.phsp.entity.Component;
+import lk.gov.health.phsp.entity.DesignComponentFormItem;
 import lk.gov.health.phsp.entity.Encounter;
 import lk.gov.health.phsp.entity.Person;
+import lk.gov.health.phsp.enums.DataPopulationStrategy;
+import lk.gov.health.phsp.enums.DataRepresentationType;
 import lk.gov.health.phsp.enums.SelectionDataType;
+import lk.gov.health.phsp.pojcs.dataentry.DataForm;
+import lk.gov.health.phsp.pojcs.dataentry.DataFormset;
+import lk.gov.health.phsp.pojcs.dataentry.DataItem;
 
 @Named("clientEncounterComponentItemController")
 @SessionScoped
@@ -60,12 +66,12 @@ public class ClientEncounterComponentItemController implements Serializable {
     private Long searchId;
 
     public void searchById() {
-        
+
         selected = getFacade().find(searchId);
     }
 
     public void findClientEncounterComponentItemOfAFormset(ClientEncounterComponentFormSet fs) {
-        
+
         String j = "select f from ClientEncounterComponentItem f "
                 + " where f.retired=false "
                 + " and f.parentComponent.parentComponent=:p "
@@ -128,41 +134,175 @@ public class ClientEncounterComponentItemController implements Serializable {
 //        initializeEmbeddableKey();
 //        return selected;
 //    }
-
     public void save() {
         save(selected);
     }
 
-    public void calculate(ClientEncounterComponentItem i) {
+//
+//    public void calculate(ClientEncounterComponentItem i) {
+//        if (i == null) {
+//            return;
+//        }
+//
+//        if (i.getReferanceDesignComponentFormItem().getCalculationScript() == null || i.getReferanceDesignComponentFormItem().getCalculationScript().trim().equals("")) {
+//            return;
+//        }
+//        if (i.getParentComponent() == null || i.getParentComponent().getParentComponent() == null) {
+//            return;
+//        }
+//        if (!(i.getParentComponent().getParentComponent() instanceof ClientEncounterComponentFormSet)) {
+//            return;
+//        }
+//
+//        if (i.getReferanceDesignComponentFormItem().getCalculationScript().trim().equalsIgnoreCase("#{client_current_age_in_years}")) {
+//            ClientEncounterComponentFormSet s = (ClientEncounterComponentFormSet) i.getParentComponent().getParentComponent();
+//            Person p = s.getEncounter().getClient().getPerson();
+//            i.setShortTextValue(p.getAgeYears() + "");
+//            i.setRealNumberValue(Double.valueOf(p.getAgeYears()));
+//            i.setIntegerNumberValue(p.getAgeYears());
+//            getFacade().edit(i);
+//            return;
+//        } else {
+//        }
+//
+//        List<Replaceable> replacingBlocks = findReplaceblesInCalculationString(i.getReferanceDesignComponentFormItem().getCalculationScript());
+//
+//        for (Replaceable r : replacingBlocks) {
+//            if (r.getPef().equalsIgnoreCase("f")) {
+//                if (r.getSm().equalsIgnoreCase("s")) {
+//                    r.setClientEncounterComponentItem(findFormsetValue(i, r.getVariableCode()));
+//                } else {
+//                    r.setClientEncounterComponentItem(findFormsetValue(i, r.getVariableCode(), r.getValueCode()));
+//                }
+//            } else if (r.getPef().equalsIgnoreCase("p")) {
+//                r.setClientEncounterComponentItem(findClientValue(i, r.getVariableCode()));
+//            }
+//            if (r.getClientEncounterComponentItem() != null) {
+//                ClientEncounterComponentItem c = r.getClientEncounterComponentItem();
+//
+//                if (c == null || c.getReferanceDesignComponentFormItem() == null || c.getReferanceDesignComponentFormItem().getItem() == null) {
+//                    continue;
+//                } else {
+//                    if (c.getReferanceDesignComponentFormItem().getItem().getDataType() == null) {
+//                        continue;
+//                    }
+//                }
+//                SelectionDataType dataType;
+//                if (c.getReferanceDesignComponentFormItem().getSelectionDataType() == null && c.getReferanceDesignComponentFormItem().getItem().getDataType() == null) {
+//                    dataType = SelectionDataType.Real_Number;
+//                } else if (c.getReferanceDesignComponentFormItem().getSelectionDataType() != null && c.getReferanceDesignComponentFormItem().getItem().getDataType() == null) {
+//                    dataType = c.getReferanceDesignComponentFormItem().getSelectionDataType();
+//                } else if (c.getReferanceDesignComponentFormItem().getSelectionDataType() == null && c.getReferanceDesignComponentFormItem().getItem().getDataType() != null) {
+//                    dataType = c.getItem().getDataType();
+//                } else {
+//                    if (c.getReferanceDesignComponentFormItem().getSelectionDataType() == c.getReferanceDesignComponentFormItem().getItem().getDataType()) {
+//                        dataType = c.getReferanceDesignComponentFormItem().getItem().getDataType();
+//                    } else {
+//                        dataType = c.getReferanceDesignComponentFormItem().getItem().getDataType();
+//                        System.err.println("Error in data types");
+//                    }
+//                }
+//
+//                if (dataType == null) {
+//                    dataType = SelectionDataType.Real_Number;
+//                }
+//
+//                switch (dataType) {
+//                    case Short_Text:
+//                        if (c.getShortTextValue() != null) {
+//                            r.setSelectedValue(c.getShortTextValue());
+//                        }
+//                        break;
+//                    case Boolean:
+//                        if (c.getBooleanValue() != null) {
+//                            r.setSelectedValue(c.getBooleanValue().toString());
+//                        }
+//                        break;
+//                    case Real_Number:
+//                        if (c.getRealNumberValue() != null) {
+//                            r.setSelectedValue(c.getRealNumberValue().toString());
+//                        }
+//                        break;
+//                    case Integer_Number:
+//                        if (c.getIntegerNumberValue() != null) {
+//                            r.setSelectedValue(c.getIntegerNumberValue().toString());
+//                        }
+//                        break;
+//                    case Item_Reference:
+//                        if (c.getItemValue() != null) {
+//                            r.setSelectedValue(c.getItemValue().getCode());
+//                        }
+//                        break;
+//                }
+//
+//            } else {
+//                r.setSelectedValue(r.getDefaultValue());
+//
+//            }
+//        }
+//
+//        String javaStringToEvaluate = addTemplateToReport(i.getReferanceDesignComponentFormItem().getCalculationScript().trim(), replacingBlocks);
+//        String result = evaluateScript(javaStringToEvaluate);
+//
+//        if (null == i.getItem().getDataType()) {
+//            i.setShortTextValue(result);
+//        } else {
+//            switch (i.getItem().getDataType()) {
+//                case Real_Number:
+//                    i.setRealNumberValue(CommonController.getDoubleValue(result));
+////                    getFacade().edit(i);
+//                    save(i);
+//                    break;
+//                case Integer_Number:
+//                    i.setIntegerNumberValue(CommonController.getIntegerValue(result));
+////                    getFacade().edit(i);
+//                    save(i);
+//                    break;
+//                case Short_Text:
+//                    i.setShortTextValue(result);
+////                    getFacade().edit(i);
+//                    save(i);
+//                    break;
+//                case Long_Text:
+//                    i.setLongTextValue(result);
+////                    getFacade().edit(i);
+//                    save(i);
+//                    break;
+//                default:
+//                    break;
+//            }
+////            getFacade().edit(i);
+//            save(i);
+//        }
+//        userTransactionController.recordTransaction("Calculate - Clinic Forms");
+//
+//    }
+//
+//    
+    public void calculate(DataItem i) {
         if (i == null) {
             return;
         }
 
-        if (i.getReferanceDesignComponentFormItem().getCalculationScript() == null || i.getReferanceDesignComponentFormItem().getCalculationScript().trim().equals("")) {
-           return;
-        }
-        if (i.getParentComponent() == null || i.getParentComponent().getParentComponent() == null) {
-           return;
-        }
-        if (!(i.getParentComponent().getParentComponent() instanceof ClientEncounterComponentFormSet)) {
-           return;
+        if (i.getDi().getCalculationScript() == null || i.getDi().getCalculationScript().trim().equals("")) {
+            return;
         }
 
-        if (i.getReferanceDesignComponentFormItem().getCalculationScript().trim().equalsIgnoreCase("#{client_current_age_in_years}")) {
-            ClientEncounterComponentFormSet s = (ClientEncounterComponentFormSet) i.getParentComponent().getParentComponent();
+        if (i.getDi().getCalculationScript().trim().equalsIgnoreCase("#{client_current_age_in_years}")) {
+            ClientEncounterComponentFormSet s = i.getForm().getFormset().getEfs();
             Person p = s.getEncounter().getClient().getPerson();
-            i.setShortTextValue(p.getAgeYears() + "");
-            i.setRealNumberValue(Double.valueOf(p.getAgeYears()));
-            i.setIntegerNumberValue(p.getAgeYears());
-            getFacade().edit(i);
-           return;
+            i.getCi().setShortTextValue(p.getAgeYears() + "");
+            i.getCi().setRealNumberValue(Double.valueOf(p.getAgeYears()));
+            i.getCi().setIntegerNumberValue(p.getAgeYears());
+            save(i.getCi());
+            return;
         } else {
         }
 
-        List<Replaceable> replacingBlocks = findReplaceblesInCalculationString(i.getReferanceDesignComponentFormItem().getCalculationScript());
-       
+        List<Replaceable> replacingBlocks = findReplaceblesInCalculationString(i.getDi().getCalculationScript());
+
         for (Replaceable r : replacingBlocks) {
-           if (r.getPef().equalsIgnoreCase("f")) {
+            if (r.getPef().equalsIgnoreCase("f")) {
                 if (r.getSm().equalsIgnoreCase("s")) {
                     r.setClientEncounterComponentItem(findFormsetValue(i, r.getVariableCode()));
                 } else {
@@ -174,7 +314,7 @@ public class ClientEncounterComponentItemController implements Serializable {
             if (r.getClientEncounterComponentItem() != null) {
                 ClientEncounterComponentItem c = r.getClientEncounterComponentItem();
 
-                if (c==null || c.getReferanceDesignComponentFormItem()==null || c.getReferanceDesignComponentFormItem().getItem() == null) {
+                if (c == null || c.getReferanceDesignComponentFormItem() == null || c.getReferanceDesignComponentFormItem().getItem() == null) {
                     continue;
                 } else {
                     if (c.getReferanceDesignComponentFormItem().getItem().getDataType() == null) {
@@ -189,9 +329,9 @@ public class ClientEncounterComponentItemController implements Serializable {
                 } else if (c.getReferanceDesignComponentFormItem().getSelectionDataType() == null && c.getReferanceDesignComponentFormItem().getItem().getDataType() != null) {
                     dataType = c.getItem().getDataType();
                 } else {
-                    if(c.getReferanceDesignComponentFormItem().getSelectionDataType() == c.getReferanceDesignComponentFormItem().getItem().getDataType()){
+                    if (c.getReferanceDesignComponentFormItem().getSelectionDataType() == c.getReferanceDesignComponentFormItem().getItem().getDataType()) {
                         dataType = c.getReferanceDesignComponentFormItem().getItem().getDataType();
-                    }else{
+                    } else {
                         dataType = c.getReferanceDesignComponentFormItem().getItem().getDataType();
                         System.err.println("Error in data types");
                     }
@@ -228,43 +368,45 @@ public class ClientEncounterComponentItemController implements Serializable {
                         }
                         break;
                 }
-               
+
             } else {
                 r.setSelectedValue(r.getDefaultValue());
-               
+
             }
         }
 
-        String javaStringToEvaluate = addTemplateToReport(i.getReferanceDesignComponentFormItem().getCalculationScript().trim(), replacingBlocks);
+        String javaStringToEvaluate = addTemplateToReport(i.getDi().getCalculationScript().trim(), replacingBlocks);
+        System.out.println("javaStringToEvaluate = " + javaStringToEvaluate);
         String result = evaluateScript(javaStringToEvaluate);
-        
-        if (null == i.getItem().getDataType()) {
-            i.setShortTextValue(result);
+
+        if (null == i.getDi().getItem().getDataType()) {
+            i.getCi().setShortTextValue(result);
         } else {
-            switch (i.getItem().getDataType()) {
+            switch (i.getDi().getItem().getDataType()) {
                 case Real_Number:
-                    i.setRealNumberValue(CommonController.getDoubleValue(result));
-                    getFacade().edit(i);
+                    i.getCi().setRealNumberValue(CommonController.getDoubleValue(result));
+                    save(i.getCi());
                     break;
                 case Integer_Number:
-                    i.setIntegerNumberValue(CommonController.getIntegerValue(result));
-                    getFacade().edit(i);
+                    i.getCi().setIntegerNumberValue(CommonController.getIntegerValue(result));
+                    save(i.getCi());
                     break;
                 case Short_Text:
-                    i.setShortTextValue(result);
-                    getFacade().edit(i);
+                    i.getCi().setShortTextValue(result);
+                    save(i.getCi());
                     break;
                 case Long_Text:
-                   i.setLongTextValue(result);
-                    getFacade().edit(i);
+                    i.getCi().setLongTextValue(result);
+                    save(i.getCi());
                     break;
                 default:
                     break;
             }
-            getFacade().edit(i);
+            save(i.getCi());
         }
+        save(i.getCi());
         userTransactionController.recordTransaction("Calculate - Clinic Forms");
-         
+
     }
 
     public String evaluateScript(String script) {
@@ -273,7 +415,7 @@ public class ClientEncounterComponentItemController implements Serializable {
         try {
             return engine.eval(script) + "";
         } catch (ScriptException ex) {
-            
+
             return null;
         }
     }
@@ -301,18 +443,40 @@ public class ClientEncounterComponentItemController implements Serializable {
         m.put("pc", i.getParentComponent().getParentComponent().getId());
         m.put("r", false);
         m.put("c", code);
-        
+
         ClientEncounterComponentItem temc = getFacade().findFirstByJpql(j, m);
         if (temc == null) {
-           
+
         } else {
-            
+
+        }
+        return temc;
+    }
+
+    public ClientEncounterComponentItem findFormsetValue(DataItem i, String code) {
+        if (i == null) {
+            return null;
+        }
+        if (code == null) {
+            return null;
+        }
+        if (code.trim().equals("")) {
+            return null;
+        }
+        DataFormset s = i.getForm().getFormset();
+        ClientEncounterComponentItem temc = null;
+        for (DataForm f : s.getForms()) {
+            for (DataItem di : f.getItems()) {
+                if (di.getDi().getItem().getCode().equalsIgnoreCase(code)) {
+                    temc = di.getCi();
+                }
+            }
         }
         return temc;
     }
 
     public ClientEncounterComponentItem findFormsetValue(ClientEncounterComponentItem i, String variableCode, String valueCode) {
-       
+
         if (i == null) {
             return null;
         }
@@ -339,11 +503,62 @@ public class ClientEncounterComponentItemController implements Serializable {
         m.put("r", false);
         ClientEncounterComponentItem ti = getFacade().findFirstByJpql(j, m);
         if (ti == null) {
-           
+
         } else {
-            
+
         }
         return ti;
+    }
+
+    public ClientEncounterComponentItem findFormsetValue(DataItem i, String variableCode, String valueCode) {
+        if (i == null) {
+            return null;
+        }
+        if (variableCode == null) {
+            return null;
+        }
+        if (variableCode.trim().equals("")) {
+            return null;
+        }
+        if (valueCode == null) {
+            return null;
+        }
+        if (valueCode.trim().equals("")) {
+            return null;
+        }
+
+        DataFormset s = i.getForm().getFormset();
+        ClientEncounterComponentItem temc = null;
+        for (DataForm f : s.getForms()) {
+            for (DataItem di : f.getItems()) {
+                if (di == null) {
+                    continue;
+                }
+                if (di.getDi() == null) {
+                    continue;
+                }
+                if (di.getDi().getItem() == null) {
+                    continue;
+                }
+                if (di.getDi().getItem().getCode() == null) {
+                    continue;
+                }
+                if (di.getCi() == null) {
+                    continue;
+                }
+                if (di.getCi().getItemValue() == null) {
+                    continue;
+                }
+                if (di.getCi().getItemValue().getCode() == null) {
+                    continue;
+                }
+                if (di.getDi().getItem().getCode().equalsIgnoreCase(variableCode)
+                        && di.getCi().getItemValue().getCode().equalsIgnoreCase(valueCode)) {
+                    temc = di.getCi();
+                }
+            }
+        }
+        return temc;
     }
 
     public String addTemplateToReport(String calculationScript, List<Replaceable> selectables) {
@@ -358,7 +573,6 @@ public class ClientEncounterComponentItemController implements Serializable {
     }
 
     public List<Replaceable> findReplaceblesInCalculationString(String text) {
-        
 
         List<Replaceable> ss = new ArrayList<>();
 
@@ -414,24 +628,35 @@ public class ClientEncounterComponentItemController implements Serializable {
     }
 
     public void save(ClientEncounterComponentItem i) {
-        
+        System.out.println("save");
+        System.out.println("i = " + i);
         if (i == null) {
+            System.out.println("i is null. not saving");
             return;
         }
-        
+
+        if (i.getReferanceDesignComponentFormItem() == null) {
+            System.out.println("i.getReferanceDesignComponentFormItem() is null. Not saving");
+            return;
+        }
+
+        if (i.getReferanceDesignComponentFormItem().getSelectionDataType() == null) {
+            System.out.println("i.getReferanceDesignComponentFormItem().getSelectionDataType() is null. Not saving");
+            return;
+        }
+
+ 
         if (i.getId() == null) {
             i.setCreatedAt(new Date());
             i.setCreatedBy(webUserController.getLoggedUser());
             getFacade().create(i);
         } else {
-            i.setLastEditBy(webUserController.getLoggedUser());
-            i.setLastEditeAt(new Date());
             getFacade().edit(i);
         }
     }
 
     public void addAnother(ClientEncounterComponentItem i) {
-        
+
         if (i == null) {
             return;
         }
@@ -465,7 +690,7 @@ public class ClientEncounterComponentItemController implements Serializable {
         ci.setName(i.getName());
         ci.setParentComponent(i.getParentComponent());
         ci.setReferenceComponent(i.getReferenceComponent());
-        
+
         temporaryCurrentTimeInLong = (new Date()).getTime();
 
         ci.setOrderNo(i.getOrderNo() + ((temporaryCurrentTimeInLong - temporaryFormSetStartTimeInLong) / temporaryFormSetStartTimeInLong));
@@ -474,9 +699,88 @@ public class ClientEncounterComponentItemController implements Serializable {
         ci.setCreatedBy(webUserController.getLoggedUser());
 
         getFacade().create(ci);
-        
+
         findClientEncounterComponentItemOfAForm((ClientEncounterComponentForm) i.getParentComponent());
         userTransactionController.recordTransaction("Add Another - Clinic Forms");
+    }
+
+    public void addAnother(DataItem i) {
+        System.out.println("addAnother");
+        System.out.println("Dataitem i = " + i);
+
+        if (i == null) {
+            JsfUtil.addErrorMessage("No Data Item");
+            return;
+        }
+
+        System.out.println("i.getAddingItem() = " + i.getAddingItem());
+
+        if (i.getAddingItem() == null) {
+            JsfUtil.addErrorMessage("No Adding Item");
+            return;
+        }
+
+        System.out.println("i.getAddingItem().getCi() = " + i.getAddingItem().getCi());
+
+        if (i.getAddingItem().getCi() == null) {
+            JsfUtil.addErrorMessage("No CI for Adding Item");
+            System.out.println("No CI for Adding Item");
+            return;
+        }
+
+        if (i.getAddingItem().getCi().getItemValue() == null) {
+            JsfUtil.addErrorMessage("No Item value for CI");
+            return;
+        } else {
+            System.out.println("i.getAddingItem().getCi().getItemValue() = " + i.getAddingItem().getCi().getItemValue().getName());
+        }
+
+        System.out.println("going to save");
+
+        System.out.println("i.getCi().getId() = " + i.getCi().getId());
+        
+        save(i.getCi());
+
+        System.out.println("saved");
+        System.out.println("i.getCi().getId() = " + i.getCi().getId());
+
+        i.getAddedItems().add(i.getAddingItem());
+
+        System.out.println("before new nci");
+
+        ClientEncounterComponentItem nci = new ClientEncounterComponentItem();
+
+        nci.setEncounter(i.getForm().getFormset().getEfs().getEncounter());
+        nci.setInstitution(i.getForm().getFormset().getEfs().getInstitution());
+
+        nci.setItemFormset(i.getForm().getFormset().getEfs());
+        nci.setItemEncounter(i.getForm().getFormset().getEfs().getEncounter());
+        nci.setItemClient(i.getForm().getFormset().getEfs().getClient());
+
+        nci.setItem(i.getDi().getItem());
+
+        nci.setReferenceComponent(i.getDi());
+        nci.setParentComponent(i.getForm().getCf());
+        nci.setName(i.getDi().getName());
+        nci.setCss(i.getDi().getCss());
+        nci.setOrderNo(i.getAddedItems().size() + 1.0);
+        nci.setDataRepresentationType(DataRepresentationType.Encounter);
+
+        System.out.println("before new ni");
+
+        DataItem ni = new DataItem();
+        ni.setMultipleEntries(true);
+        ni.setCi(nci);
+        ni.di = i.getDi();
+        ni.id = (int) (i.getAddedItems().size() + 1.0);
+        ni.orderNo = i.getAddedItems().size() + 1.0;
+        ni.form = i.getForm();
+
+        i.setAddingItem(ni);
+
+        System.out.println("before recording user transaction");
+        userTransactionController.recordTransaction("Add Another - Clinic Forms");
+        System.out.println("after saving user transaction");
     }
 
     public void create() {
@@ -621,6 +925,44 @@ public class ClientEncounterComponentItemController implements Serializable {
                 ageItem.setCreatedBy(webUserController.getLoggedUser());
                 ageItem.setItem(itemController.findItemByCode("client_current_age_in_years"));
                 Person p = client.getPerson();
+                ageItem.setShortTextValue(p.getAgeYears() + "");
+                ageItem.setRealNumberValue(Double.valueOf(p.getAgeYears()));
+                ageItem.setIntegerNumberValue(p.getAgeYears());
+                getFacade().create(ageItem);
+                fountVal = ageItem;
+
+            }
+
+        }
+        return fountVal;
+
+    }
+
+    private ClientEncounterComponentItem findClientValue(DataItem i, String code) {
+
+        if (i == null) {
+            return null;
+        }
+        ClientEncounterComponentItem fountVal = i.getForm().getFormset().getMapOfClientValues().get(code.toLowerCase());
+
+        if (fountVal != null) {
+            if (code.equalsIgnoreCase("client_current_age_in_years")) {
+                Person p = i.getForm().getFormset().getEfs().getClient().getPerson();
+                fountVal.setLastEditeAt(new Date());
+                fountVal.setLastEditBy(webUserController.getLoggedUser());
+                fountVal.setShortTextValue(p.getAgeYears() + "");
+                fountVal.setRealNumberValue(Double.valueOf(p.getAgeYears()));
+                fountVal.setIntegerNumberValue(p.getAgeYears());
+                getFacade().edit(fountVal);
+            }
+        } else {
+            if (code.equalsIgnoreCase("client_current_age_in_years")) {
+                ClientEncounterComponentItem ageItem = new ClientEncounterComponentItem();
+                ageItem.setClient(i.getForm().getFormset().getEfs().getClient());
+                ageItem.setCreatedAt(new Date());
+                ageItem.setCreatedBy(webUserController.getLoggedUser());
+                ageItem.setItem(itemController.findItemByCode("client_current_age_in_years"));
+                Person p = i.getForm().getFormset().getEfs().getClient().getPerson();
                 ageItem.setShortTextValue(p.getAgeYears() + "");
                 ageItem.setRealNumberValue(Double.valueOf(p.getAgeYears()));
                 ageItem.setIntegerNumberValue(p.getAgeYears());

@@ -312,6 +312,10 @@ public class CommonController implements Serializable {
             RenderType.Input_Text_Area,
             RenderType.List_Box,
             RenderType.Prescreption,
+            RenderType.Observation,
+            RenderType.PlanOfAction,
+            RenderType.Referral,
+            RenderType.Order,
             RenderType.Boolean_Button,
             RenderType.Boolean_Checkbox,
             RenderType.Drop_Down_Menu};

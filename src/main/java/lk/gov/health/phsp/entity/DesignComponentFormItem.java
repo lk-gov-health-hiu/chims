@@ -108,9 +108,6 @@ public class DesignComponentFormItem extends DesignComponent {
     @Enumerated(EnumType.STRING)
     private DataModificationStrategy dataModificationStrategy;
 
-    @Enumerated(EnumType.STRING)
-    private ItemArrangementStrategy itemArrangementStrategy;
-
     @ManyToOne
     private Area parentAreaOfAvailableAreas;
     @ManyToOne
@@ -318,14 +315,6 @@ public class DesignComponentFormItem extends DesignComponent {
 
     public void setDataModificationStrategy(DataModificationStrategy dataModificationStrategy) {
         this.dataModificationStrategy = dataModificationStrategy;
-    }
-
-    public ItemArrangementStrategy getItemArrangementStrategy() {
-        return itemArrangementStrategy;
-    }
-
-    public void setItemArrangementStrategy(ItemArrangementStrategy itemArrangementStrategy) {
-        this.itemArrangementStrategy = itemArrangementStrategy;
     }
 
     public Area getParentAreaOfAvailableAreas() {

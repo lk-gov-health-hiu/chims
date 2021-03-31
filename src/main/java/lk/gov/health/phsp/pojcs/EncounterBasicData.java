@@ -25,6 +25,7 @@ package lk.gov.health.phsp.pojcs;
 
 import java.util.Date;
 import lk.gov.health.phsp.bean.CommonController;
+import lk.gov.health.phsp.entity.Component;
 
 /**
  *
@@ -40,6 +41,7 @@ public class EncounterBasicData {
     private Date encounterAt;
     private String sex;
     private int ageInYears;
+    private String componentName;
 
     public EncounterBasicData() {
     }
@@ -54,7 +56,15 @@ public class EncounterBasicData {
     }
 
     
-    
+    public EncounterBasicData(String phn, String gnArea, String institution, Date dataOfBirth, Date encounterAt, String sex, String componentName) {
+        this.phn = phn;
+        this.gnArea = gnArea;
+        this.institution = institution;
+        this.dataOfBirth = dataOfBirth;
+        this.encounterAt = encounterAt;
+        this.sex = sex;
+        this.componentName = componentName;
+    }
     
     
     
@@ -129,6 +139,14 @@ public class EncounterBasicData {
 
     public void setAgeInYears(int ageInYears) {
         this.ageInYears = ageInYears;
+    }
+
+    public String getComponentName() {
+        return componentName;
+    }
+
+    public void setComponentName(String componentName) {
+        this.componentName = componentName;
     }
     
     
