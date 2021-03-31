@@ -152,7 +152,7 @@ public class ClientEncounterComponentFormSetController implements Serializable {
             JsfUtil.addErrorMessage("Nothing selected.");
             return "";
         }
-        String navigationLink = "/clientEncounterComponentFormSet/Formset_view";
+        String navigationLink = "/dataentry/Formset_View";
         formEditable = false;
         return navigationLink;
     }
@@ -162,7 +162,7 @@ public class ClientEncounterComponentFormSetController implements Serializable {
             JsfUtil.addErrorMessage("Nothing selected.");
             return "";
         }
-        String navigationLink = "/clientEncounterComponentFormSet/Formset";
+        String navigationLink = "/dataentry/Formset";
 
         formEditable = !selected.isCompleted();
         return navigationLink;
@@ -1000,7 +1000,7 @@ public class ClientEncounterComponentFormSetController implements Serializable {
                                     + " order by ci.orderNo";
                             m = new HashMap();
                             m.put("ret", false);
-                            m.put("ci", cf);
+                            m.put("cf", cf);
                             m.put("dis", dis);
 
                             List<ClientEncounterComponentItem> cis = clientEncounterComponentItemController.getItems(j, m);
@@ -1018,75 +1018,92 @@ public class ClientEncounterComponentFormSetController implements Serializable {
                                     f.getItems().add(i);
                                 }
                             } else {
+                                itemCounter++;
+                                ClientEncounterComponentItem ci = new ClientEncounterComponentItem();
 
+                                ci.setEncounter(e);
+                                ci.setInstitution(dfs.getInstitution());
+
+                                ci.setItemFormset(cfs);
+                                ci.setItemEncounter(e);
+                                ci.setItemClient(e.getClient());
+
+                                ci.setItem(dis.getItem());
+                                ci.setDescreption(dis.getDescreption());
+
+                                ci.setReferenceComponent(dis);
+                                ci.setParentComponent(cf);
+                                ci.setName(dis.getName());
+                                ci.setCss(dis.getCss());
+                                ci.setOrderNo(dis.getOrderNo());
+                                ci.setDataRepresentationType(DataRepresentationType.Encounter);
+                                DataItem i = new DataItem();
+                                i.setMultipleEntries(true);
+                                i.setCi(ci);
+                                i.di = dis;
+                                i.id = itemCounter;
+                                i.orderNo = itemCounter;
+                                i.form = f;
+                                i.setAvailableItemsForSelection(itemController.findItemList(dis.getCategoryOfAvailableItems()));
+                                f.getItems().add(i);
                             }
 
-                            itemCounter++;
-                            ClientEncounterComponentItem ci = new ClientEncounterComponentItem();
-
-                            ci.setEncounter(e);
-                            ci.setInstitution(dfs.getInstitution());
-
-                            ci.setItemFormset(cfs);
-                            ci.setItemEncounter(e);
-                            ci.setItemClient(e.getClient());
-
-                            ci.setItem(dis.getItem());
-                            ci.setDescreption(dis.getDescreption());
-
-                            ci.setReferenceComponent(dis);
-                            ci.setParentComponent(cf);
-                            ci.setName(dis.getName());
-                            ci.setCss(dis.getCss());
-                            ci.setOrderNo(dis.getOrderNo());
-                            ci.setDataRepresentationType(DataRepresentationType.Encounter);
-                            if (ci.getReferanceDesignComponentFormItem().getDataPopulationStrategy() == DataPopulationStrategy.From_Client_Value) {
-//                                updateFromClientValueSingle(ci, e.getClient(), mapOfClientValues);
-                            } else if (ci.getReferanceDesignComponentFormItem().getDataPopulationStrategy() == DataPopulationStrategy.From_Last_Encounter) {
-                                updateFromLastEncounter(ci);
-                            }
-                            DataItem i = new DataItem();
-                            i.setMultipleEntries(true);
-                            i.setCi(ci);
-                            i.di = dis;
-                            i.id = itemCounter;
-                            i.orderNo = itemCounter;
-                            i.form = f;
-                            i.setAvailableItemsForSelection(itemController.findItemList(dis.getCategoryOfAvailableItems()));
-                            f.getItems().add(i);
                         } else {
-                            itemCounter++;
-                            ClientEncounterComponentItem ci = new ClientEncounterComponentItem();
-                            ci.setEncounter(e);
-                            ci.setInstitution(dfs.getInstitution());
-                            ci.setItemFormset(cfs);
-                            ci.setItemEncounter(e);
-                            ci.setItemClient(e.getClient());
-                            ci.setItem(dis.getItem());
-                            ci.setDescreption(dis.getDescreption());
-                            ci.setReferenceComponent(dis);
-                            ci.setParentComponent(cf);
-                            ci.setName(dis.getName());
-                            ci.setCss(dis.getCss());
-                            ci.setOrderNo(dis.getOrderNo());
-                            ci.setDataRepresentationType(DataRepresentationType.Encounter);
-                            if (ci.getReferanceDesignComponentFormItem().getDataPopulationStrategy() == DataPopulationStrategy.From_Client_Value) {
-//                                updateFromClientValueSingle(ci, e.getClient(), mapOfClientValues);
-                                save(ci);
-                            } else if (ci.getReferanceDesignComponentFormItem().getDataPopulationStrategy() == DataPopulationStrategy.From_Last_Encounter) {
-                                updateFromLastEncounter(ci);
-                                save(ci);
-                            }
-                            DataItem i = new DataItem();
-                            i.setMultipleEntries(false);
-                            i.setCi(ci);
-                            i.di = dis;
-                            i.id = itemCounter;
-                            i.orderNo = itemCounter;
-                            i.form = f;
-                            i.setAvailableItemsForSelection(itemController.findItemList(dis.getCategoryOfAvailableItems()));
 
-                            f.getItems().add(i);
+                            j = "Select ci "
+                                    + " from ClientEncounterComponentItem ci "
+                                    + " where ci.retired=:ret "
+                                    + " and ci.parentComponent=:cf "
+                                    + " and ci.referenceComponent=:dis "
+                                    + " order by ci.orderNo";
+                            m = new HashMap();
+                            m.put("ret", false);
+                            m.put("ci", cf);
+                            m.put("dis", dis);
+
+                            ClientEncounterComponentItem ci;
+                            ci = clientEncounterComponentItemController.getItem(j, m);
+
+                            if (ci != null) {
+                                DataItem i = new DataItem();
+                                i.setMultipleEntries(false);
+                                i.setCi(ci);
+                                i.di = dis;
+                                i.id = itemCounter;
+                                i.orderNo = itemCounter;
+                                i.form = f;
+                                i.setAvailableItemsForSelection(itemController.findItemList(dis.getCategoryOfAvailableItems()));
+
+                                f.getItems().add(i);
+                            } else {
+                                itemCounter++;
+                                ci = new ClientEncounterComponentItem();
+                                ci.setEncounter(e);
+                                ci.setInstitution(dfs.getInstitution());
+                                ci.setItemFormset(cfs);
+                                ci.setItemEncounter(e);
+                                ci.setItemClient(e.getClient());
+                                ci.setItem(dis.getItem());
+                                ci.setDescreption(dis.getDescreption());
+                                ci.setReferenceComponent(dis);
+                                ci.setParentComponent(cf);
+                                ci.setName(dis.getName());
+                                ci.setCss(dis.getCss());
+                                ci.setOrderNo(dis.getOrderNo());
+                                ci.setDataRepresentationType(DataRepresentationType.Encounter);
+                                
+                                DataItem i = new DataItem();
+                                i.setMultipleEntries(false);
+                                i.setCi(ci);
+                                i.di = dis;
+                                i.id = itemCounter;
+                                i.orderNo = itemCounter;
+                                i.form = f;
+                                i.setAvailableItemsForSelection(itemController.findItemList(dis.getCategoryOfAvailableItems()));
+
+                                f.getItems().add(i);
+                            }
+
                         }
 
                     }

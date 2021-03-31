@@ -808,6 +808,10 @@ public class ClientEncounterComponentItemController implements Serializable {
     public List<ClientEncounterComponentItem> getItems(String j, Map m) {
         return getFacade().findByJpql(j, m);
     }
+    
+    public ClientEncounterComponentItem getItem(String j, Map m) {
+        return getFacade().findFirstByJpql(j, m);
+    }
 
     private void persist(PersistAction persistAction, String successMessage) {
         if (selected != null) {
