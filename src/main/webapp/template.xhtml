@@ -21,8 +21,21 @@
 
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"></link>
 
-<!--          Global site tag (gtag.js) - Google Analytics 
-        <script async="true" src="https://www.googletagmanager.com/gtag/js?id=UA-167559394-1"></script>
+        <!--          Global site tag (gtag.js) - Google Analytics 
+                <script async="true" src="https://www.googletagmanager.com/gtag/js?id=UA-167559394-1"></script>
+                <script>
+                    window.dataLayer = window.dataLayer || [];
+                    function gtag() {
+                        dataLayer.push(arguments);
+                    }
+                    gtag('js', new Date());
+        
+                    gtag('config', 'UA-167559394-1');
+                </script>-->
+
+
+        <!-- Global site tag (gtag.js) - Google Analytics -->
+        <script async="true" src="https://www.googletagmanager.com/gtag/js?id=G-VFXVJY37FG"></script>
         <script>
             window.dataLayer = window.dataLayer || [];
             function gtag() {
@@ -30,9 +43,10 @@
             }
             gtag('js', new Date());
 
-            gtag('config', 'UA-167559394-1');
-        </script>-->
-        
+            gtag('config', 'G-VFXVJY37FG');
+        </script>
+
+
         <title>#{bundle.Title}</title>
 
 
@@ -40,10 +54,10 @@
         </ui:insert>
 
         <h:outputStylesheet library="css" name="tem1.css"/>
-        
-        
-        
-        
+
+
+
+
     </h:head>
 
     <h:body style="font-family: 'Poppins', sans-serif!important;">
@@ -83,11 +97,15 @@
             <div class="w3-row w3-theme-l5" style="height: 100%;" >
                 <h:panelGroup rendered="#{webUserController.loggedUser ne null}">
                     <ui:insert name="content">
-                       Contents
+                        Contents
                     </ui:insert>
                     <br/>
                     <br/>
                     <br/>
+
+                    <!--                <div class="w3-row w3-theme-l5" >
+                                        <iframe width="100%" height="800px" src="https://datastudio.google.com/embed/reporting/70e7a2a3-8706-46c3-86f6-f4865adf4ad4/page/siJ4B" frameborder="0" style="border:0" allowfullscreen="true"></iframe>
+                                    </div>-->
                 </h:panelGroup>
                 <h:panelGroup rendered="#{webUserController.loggedUser eq null}">
                     <ez:login/>
