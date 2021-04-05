@@ -1,3 +1,4 @@
-select id,code, name
+select id, name, `DTYPE` , `CREATEDAT`, `REFERENCECOMPONENT_ID`,`PARENTCOMPONENT_ID`
 from component
-where id=16885;
+order by id desc
+limit 100;

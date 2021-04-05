@@ -86,9 +86,9 @@ public class IndicatorController implements Serializable {
     ApplicationController applicationController;
 
     @EJB
-    ClientEncounterComponentItemFacade clientEncounterComponentItemFacade;
+     ClientEncounterComponentItemFacade clientEncounterComponentItemFacade;
     @EJB
-    EncounterFacade encounterFacade;
+     EncounterFacade  encounterFacade;
 
     private Date fromDate;
     private Date toDate;
@@ -354,7 +354,7 @@ public class IndicatorController implements Serializable {
         result = CommonController.stringToHtml(j.getMessage());
     }
 
-    private Long calculateIndividualQueryResult(List<EncounterWithComponents> ewcs, QueryWithCriteria qwc) {
+    public  Long calculateIndividualQueryResult(List<EncounterWithComponents> ewcs, QueryWithCriteria qwc) {
         Long result = 0l;
         if (ewcs == null) {
             JsfUtil.addErrorMessage("No Encounters");
@@ -379,7 +379,7 @@ public class IndicatorController implements Serializable {
         return result;
     }
 
-    private boolean findMatch(List<ClientEncounterComponentItem> ccs, QueryWithCriteria qrys) {
+    private  boolean findMatch(List<ClientEncounterComponentItem> ccs, QueryWithCriteria qrys) {
         if (qrys == null) {
 
             return false;
@@ -500,7 +500,7 @@ public class IndicatorController implements Serializable {
         return suitableForInclusion;
     }
 
-    private boolean matchQuery(QueryComponent q, ClientEncounterComponentItem clientValue) {
+    private  boolean matchQuery(QueryComponent q, ClientEncounterComponentItem clientValue) {
         if (clientValue == null) {
             return false;
         }
@@ -784,7 +784,7 @@ public class IndicatorController implements Serializable {
         return m;
     }
 
-    public boolean clientValueIsNotNull(QueryComponent q, ClientEncounterComponentItem clientValue) {
+    public  boolean clientValueIsNotNull(QueryComponent q, ClientEncounterComponentItem clientValue) {
         boolean valueNotNull = false;
         if (q.getMatchType() == QueryCriteriaMatchType.Variable_Value_Check) {
             switch (q.getQueryDataType()) {
@@ -823,7 +823,7 @@ public class IndicatorController implements Serializable {
         return valueNotNull;
     }
 
-    public List<EncounterWithComponents> findEncountersWithComponents(List<Long> ids) {
+    public  List<EncounterWithComponents> findEncountersWithComponents(List<Long> ids) {
         if (ids == null) {
             JsfUtil.addErrorMessage("No Encounter IDs");
             return null;
@@ -838,7 +838,7 @@ public class IndicatorController implements Serializable {
         return cs;
     }
 
-    private List<ClientEncounterComponentItem> findClientEncounterComponentItems(Long endId) {
+    private  List<ClientEncounterComponentItem> findClientEncounterComponentItems(Long endId) {
         String j;
         Map m;
         m = new HashMap();
@@ -850,7 +850,7 @@ public class IndicatorController implements Serializable {
         return ts;
     }
 
-    private List<Long> findEncounterIds(Date fromDate, Date toDate, Institution institution) {
+    public  List<Long> findEncounterIds(Date fromDate, Date toDate, Institution institution) {
         String j = "select e.id "
                 + " from  ClientEncounterComponentFormSet f join f.encounter e"
                 + " where e.retired<>:er"
@@ -872,7 +872,7 @@ public class IndicatorController implements Serializable {
         return encs;
     }
 
-    private List<QueryComponent> findCriteriaForQueryComponent(String qryCode) {
+    public List<QueryComponent> findCriteriaForQueryComponent(String qryCode) {
         if (qryCode == null) {
             return null;
         }

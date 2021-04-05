@@ -722,15 +722,7 @@ public class ClientEncounterComponentFormSetController implements Serializable {
     }
 
     public String createNewAndNavigateToDataEntry(DesignComponentFormSet dfs) {
-//        System.out.println("createNewAndNavigateToDataEntry");
-//        System.out.println("dfs = " + dfs);
-
         String navigationLink = "/dataentry/Formset";
-//        boolean test;
-//        test = true;
-//        if (test) {
-//            return "";
-//        }
         formEditable = true;
         if (clientController.getSelected() == null) {
             JsfUtil.addErrorMessage("Please select a client");
@@ -929,6 +921,7 @@ public class ClientEncounterComponentFormSetController implements Serializable {
         int formCounter = 0;
 
         for (DesignComponentForm df : dfList) {
+           
 
             boolean skipThisForm = false;
             if (df.getComponentSex() == ComponentSex.For_Females && clientController.getSelected().getPerson().getSex().getCode().equalsIgnoreCase("sex_male")) {
@@ -947,10 +940,13 @@ public class ClientEncounterComponentFormSetController implements Serializable {
                         + "order by cf.id desc";
                 Map m = new HashMap();
                 m.put("rf", df);
-                m.put("cfs", df);
-
+                m.put("cfs", cfs);
+// System.out.println("df = " + df.getId());
+ 
                 ClientEncounterComponentForm cf = clientEncounterComponentFormController.getClientEncounterComponentForm(j, m);
 
+                System.out.println("cf = " + cf);
+                
                 if (cf == null) {
                     cf = new ClientEncounterComponentForm();
 

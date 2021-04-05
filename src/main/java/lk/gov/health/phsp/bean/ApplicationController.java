@@ -65,7 +65,7 @@ public class ApplicationController {
     @EJB
     private InstitutionFacade institutionFacade;
     @EJB
-    private QueryComponentFacade queryComponentFacade;
+    private  QueryComponentFacade queryComponentFacade;
     @EJB
     private ClientFacade clientFacade;
     @EJB
@@ -82,7 +82,7 @@ public class ApplicationController {
     private boolean demoSetup = false;
     private boolean production = true;
     private String versionNo = "1.1.4";
-    private List<QueryComponent> queryComponents;
+    private  List<QueryComponent> queryComponents;
     private List<Item> items;
     private List<String> userTransactionTypes;
     
@@ -191,7 +191,7 @@ public class ApplicationController {
 
     }
 
-    public static boolean validateHin(String validatingHin) {
+    public  boolean validateHin(String validatingHin) {
         if (validatingHin == null) {
             return false;
         }
@@ -200,7 +200,7 @@ public class ApplicationController {
         return checkDigit == digit.charAt(0);
     }
 
-    public static String calculateCheckDigit(String card) {
+    public  String calculateCheckDigit(String card) {
         if (card == null) {
             return null;
         }
@@ -234,12 +234,12 @@ public class ApplicationController {
 
     
 
-    private List<QueryComponent> findQueryComponents() {
+    private  List<QueryComponent> findQueryComponents() {
         String j = "select q from QueryComponent q "
                 + " where q.retired=false "
                 + " order by q.orderNo, q.name";
         Map m = new HashMap();
-        return queryComponents = getQueryComponentFacade().findByJpql(j, m);
+        return  queryComponentFacade.findByJpql(j, m);
 
     }
 
