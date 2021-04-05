@@ -1056,7 +1056,7 @@ public class ClientEncounterComponentFormSetController implements Serializable {
                             m.put("ret", false);
                             m.put("cf", cf);
                             m.put("dis", dis);
-                            System.out.println("ci = " + ci);
+                            
                             ClientEncounterComponentItem ci;
                             ci = clientEncounterComponentItemController.getItem(j, m);
                             System.out.println("ci = " + ci);
