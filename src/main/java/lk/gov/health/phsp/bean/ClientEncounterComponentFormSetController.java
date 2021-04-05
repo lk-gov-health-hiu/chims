@@ -1054,12 +1054,12 @@ public class ClientEncounterComponentFormSetController implements Serializable {
                                     + " order by ci.orderNo";
                             m = new HashMap();
                             m.put("ret", false);
-                            m.put("ci", cf);
+                            m.put("cf", cf);
                             m.put("dis", dis);
-
+                            System.out.println("ci = " + ci);
                             ClientEncounterComponentItem ci;
                             ci = clientEncounterComponentItemController.getItem(j, m);
-
+                            System.out.println("ci = " + ci);
                             if (ci != null) {
                                 DataItem i = new DataItem();
                                 i.setMultipleEntries(false);
