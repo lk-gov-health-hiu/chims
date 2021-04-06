@@ -156,6 +156,10 @@ public class ClientEncounterComponentFormController implements Serializable {
     public ClientEncounterComponentForm getClientEncounterComponentForm(java.lang.Long id) {
         return getFacade().find(id);
     }
+    
+    public ClientEncounterComponentForm getClientEncounterComponentForm(String jpql, Map m) {
+        return getFacade().findFirstByJpql(jpql,m);
+    }
 
     public List<ClientEncounterComponentForm> getItemsAvailableSelectMany() {
         return getFacade().findAll();

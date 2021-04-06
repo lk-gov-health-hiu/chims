@@ -645,7 +645,6 @@ public class ClientEncounterComponentItemController implements Serializable {
             return;
         }
 
- 
         if (i.getId() == null) {
             i.setCreatedAt(new Date());
             i.setCreatedBy(webUserController.getLoggedUser());
@@ -738,7 +737,7 @@ public class ClientEncounterComponentItemController implements Serializable {
         System.out.println("going to save");
 
         System.out.println("i.getCi().getId() = " + i.getCi().getId());
-        
+
         save(i.getCi());
 
         System.out.println("saved");
@@ -803,10 +802,15 @@ public class ClientEncounterComponentItemController implements Serializable {
     }
 
     public List<ClientEncounterComponentItem> getItems() {
-//        if (items == null) {
-//            items = getFacade().findAll();
-//        }
         return items;
+    }
+
+    public List<ClientEncounterComponentItem> getItems(String j, Map m) {
+        return getFacade().findByJpql(j, m);
+    }
+    
+    public ClientEncounterComponentItem getItem(String j, Map m) {
+        return getFacade().findFirstByJpql(j, m);
     }
 
     private void persist(PersistAction persistAction, String successMessage) {
