@@ -921,7 +921,6 @@ public class ClientEncounterComponentFormSetController implements Serializable {
         int formCounter = 0;
 
         for (DesignComponentForm df : dfList) {
-           
 
             boolean skipThisForm = false;
             if (df.getComponentSex() == ComponentSex.For_Females && clientController.getSelected().getPerson().getSex().getCode().equalsIgnoreCase("sex_male")) {
@@ -942,11 +941,11 @@ public class ClientEncounterComponentFormSetController implements Serializable {
                 m.put("rf", df);
                 m.put("cfs", cfs);
 // System.out.println("df = " + df.getId());
- 
+
                 ClientEncounterComponentForm cf = clientEncounterComponentFormController.getClientEncounterComponentForm(j, m);
 
                 System.out.println("cf = " + cf);
-                
+
                 if (cf == null) {
                     cf = new ClientEncounterComponentForm();
 
@@ -998,9 +997,10 @@ public class ClientEncounterComponentFormSetController implements Serializable {
                             m.put("ret", false);
                             m.put("cf", cf);
                             m.put("dis", dis);
-
+                            System.out.println("cf = " + cf.getId());
+                            System.out.println("dis = " + dis.getId());
                             List<ClientEncounterComponentItem> cis = clientEncounterComponentItemController.getItems(j, m);
-
+                            System.out.println("cis = " + cis);
                             if (cis != null && !cis.isEmpty()) {
                                 for (ClientEncounterComponentItem tci : cis) {
                                     DataItem i = new DataItem();
@@ -1056,7 +1056,8 @@ public class ClientEncounterComponentFormSetController implements Serializable {
                             m.put("ret", false);
                             m.put("cf", cf);
                             m.put("dis", dis);
-                            
+                            System.out.println("cf = " + cf.getId());
+                            System.out.println("dis = " + dis.getId());
                             ClientEncounterComponentItem ci;
                             ci = clientEncounterComponentItemController.getItem(j, m);
                             System.out.println("ci = " + ci);
@@ -1087,7 +1088,7 @@ public class ClientEncounterComponentFormSetController implements Serializable {
                                 ci.setCss(dis.getCss());
                                 ci.setOrderNo(dis.getOrderNo());
                                 ci.setDataRepresentationType(DataRepresentationType.Encounter);
-                                
+
                                 DataItem i = new DataItem();
                                 i.setMultipleEntries(false);
                                 i.setCi(ci);
