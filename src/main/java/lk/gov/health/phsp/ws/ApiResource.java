@@ -145,8 +145,12 @@ public class ApiResource {
             ja.put("name", a.getName());
             ja.put("hin", a.getPoiNumber());
             ja.put("address", a.getAddress());
-            ja.put("province_id", a.getProvince().getCode());
-            ja.put("district_id", a.getDistrict().getCode());
+            if (a.getProvince() != null) {
+                ja.put("province_id", a.getProvince().getCode());
+            }
+            if (a.getDistrict() != null) {
+                ja.put("district_id", a.getDistrict().getCode());
+            }
             array.put(ja);
         }
         jSONObjectOut.put("data", array);
