@@ -79,11 +79,11 @@ public class AnalysisBean {
     StoredQueryResultFacade storedQueryResultFacade;
 
     private List<QueryComponent> queryComponents;
-    int year;
-    int month;
-    private List<QueryComponent> qcs;
+    static int year;
+    static int month;
+    static private List<QueryComponent> qcs;
 
-    List<InstitutionYearMonthCompleted> iymcs;
+    static List<InstitutionYearMonthCompleted> iymcs;
 
 //    @Schedule(dayOfWeek = "Mon-Fri", month = "*", hour = "9-17", dayOfMonth = "*", year = "*", minute = "*", second = "0", persistent = false)
 //    public void myTimer() {
@@ -105,7 +105,7 @@ public class AnalysisBean {
         getIymcs();
         InstitutionYearMonthCompleted next = selectNextIymcs();
         System.out.println("next = " + next);
-        
+
         if (next != null) {
             System.out.println("Next INS = " + next.getInstitution().getName());
             runClinicCounts(next);
@@ -224,7 +224,7 @@ public class AnalysisBean {
         }
 
     }
-    
+
     public void saveValue(QueryComponent qc, Date fromDate, Date toDate, Institution institution, Long value) {
         StoredQueryResult s;
         s = findStoredQueryResult(qc, fromDate, toDate, institution);
@@ -838,7 +838,7 @@ public class AnalysisBean {
             return null;
         }
     }
-    
+
     public StoredQueryResult findStoredQueryResult(QueryComponent qc, Date fromDate, Date toDate, Institution institution) {
         String j;
         Map m;
