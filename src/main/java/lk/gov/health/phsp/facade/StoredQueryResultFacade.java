@@ -28,7 +28,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import lk.gov.health.phsp.entity.StoredQueryResult;
 
-/**
+/**static
  *
  * @author Dr M H B Ariyaratne<buddhika.ari@gmail.com>
  */

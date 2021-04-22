@@ -48,7 +48,7 @@ import lk.gov.health.phsp.pojcs.Replaceable;
 public class StoredQueryResultController implements Serializable {
 
     @EJB
-    static StoredQueryResultFacade facade;
+    StoredQueryResultFacade facade;
 
     /**
      * Creates a new instance of StoredQueryResultController

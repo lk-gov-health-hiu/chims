@@ -130,7 +130,8 @@
                                             <p:inputText id="itStC" value="#{ii.ci.shortTextValue}" 
                                                          required="#{ii.di.required}" 
                                                          requiredMessage="#{ii.di.requiredErrorMessage}" >
-                                                <p:ajax  event="blur" process="@this"   listener="#{clientEncounterComponentItemController.save(ii.ci)}" ></p:ajax>
+                                                <p:ajax  event="blur" process="@this"  
+                                                         listener="#{clientEncounterComponentItemController.save(ii.ci)}" ></p:ajax>
                                             </p:inputText>
                                         </td>
                                         <td>

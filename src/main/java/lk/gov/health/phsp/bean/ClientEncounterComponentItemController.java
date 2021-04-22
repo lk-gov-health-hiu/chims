@@ -635,15 +635,15 @@ public class ClientEncounterComponentItemController implements Serializable {
             return;
         }
 
-        if (i.getReferanceDesignComponentFormItem() == null) {
-            System.out.println("i.getReferanceDesignComponentFormItem() is null. Not saving");
-            return;
-        }
-
-        if (i.getReferanceDesignComponentFormItem().getSelectionDataType() == null) {
-            System.out.println("i.getReferanceDesignComponentFormItem().getSelectionDataType() is null. Not saving");
-            return;
-        }
+//        if (i.getReferanceDesignComponentFormItem() == null) {
+//            System.out.println("i.getReferanceDesignComponentFormItem() is null. Not saving");
+//            return;
+//        }
+//
+//        if (i.getReferanceDesignComponentFormItem().getSelectionDataType() == null) {
+//            System.out.println("i.getReferanceDesignComponentFormItem().getSelectionDataType() is null. Not saving");
+//            return;
+//        }
 
         if (i.getId() == null) {
             i.setCreatedAt(new Date());

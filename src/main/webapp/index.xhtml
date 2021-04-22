@@ -12,7 +12,7 @@
 
             <ui:define name="content">
                 
-                <h:panelGroup rendered="true" >
+                <h:panelGroup rendered="false" >
                     <iframe width="100%" height="900"
                             src="https://datastudio.google.com/embed/reporting/70e7a2a3-8706-46c3-86f6-f4865adf4ad4/page/siJ4B" 
                             frameborder="0" 
@@ -22,7 +22,7 @@
                     </iframe>
                 </h:panelGroup>
 
-                <h:panelGroup rendered="false">
+                <h:panelGroup rendered="true">
                     <ez:dashboardSystemAdministrator rendered="#{webUserController.loggedUser.systemAdministrator}"/>
                     <ez:dashboardSuperUser rendered="#{webUserController.loggedUser.superUser}"/>
                     <ez:dashboardUser rendered="#{webUserController.loggedUser.user}"/>
