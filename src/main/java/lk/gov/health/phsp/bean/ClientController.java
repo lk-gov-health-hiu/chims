@@ -383,6 +383,17 @@ public class ClientController implements Serializable {
         }
 
     }
+    
+    
+    public void addCreatedDateFromCreatedAt(){
+        List<Client> cs = getFacade().findAll();
+        for(Client c:cs){
+            if(c.getCreatedOn()==null){
+                c.setCreatedOn(c.getCreatedAt());
+                getFacade().edit(c);
+            }
+        }
+    }
 
     public void checkEmailExists() {
         emailExists = null;

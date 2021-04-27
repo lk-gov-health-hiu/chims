@@ -65,6 +65,16 @@
                                                      action="#{reportController.toViewClientRegistrationsByProvince()}"
                                                      rendered="#{webUserController.hasPrivilege('System_Administration')}"
                                                      ajax="false"></p:commandButton>
+                                    
+                                    
+                                     <p:commandButton value="Daily Clinic Visits"   style="width:20em;margin:auto;"
+                                                      action="#{reportController.toViewDailyClinicsVisitCounts()}"
+                                                     ajax="false"></p:commandButton>
+                                    
+                                     <p:commandButton value="Daily Registrations"   style="width:20em;margin:auto;"
+                                                      action="#{reportController.toViewDailyClinicsRegistrationCounts()}"
+                                                     ajax="false"></p:commandButton>
+                                    
                                 </h:panelGrid>
                             </p:tab>
 

@@ -38,6 +38,8 @@ public class Client implements Serializable {
     private WebUser createdBy;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date createdAt;
+    @Temporal(javax.persistence.TemporalType.DATE)
+    private Date createdOn;
     @ManyToOne
     private Institution createInstitution;
     /*
@@ -231,4 +233,14 @@ public class Client implements Serializable {
         this.reservedClient = reservedClient;
     }
 
+    public Date getCreatedOn() {
+        return createdOn;
+    }
+
+    public void setCreatedOn(Date createdOn) {
+        this.createdOn = createdOn;
+    }
+
+    
+    
 }

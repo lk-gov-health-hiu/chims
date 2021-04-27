@@ -36,6 +36,11 @@
                                     <p:commandButton ajax="false" action="/systemAdmin/all_clients" value="Client List"  onclick="this.form.target = '_blank'" ></p:commandButton>
                                     <p:commandButton ajax="false" action="#{itemController.addInitialMetadata()}" value="Add Initial Metadata" ></p:commandButton>
                                     <p:commandButton ajax="false" action="/systemAdmin/client_import_error_correction" value="Error Correction for Client Import" ></p:commandButton>
+                                
+                                    <p:commandButton ajax="false" action="#{clientController.addCreatedDateFromCreatedAt()}" 
+                                                     value="Add Created Date from Created At" ></p:commandButton>
+                                
+                                
                                 </p:panelGrid>
                             </p:tab> 
                             <p:tab title="Entered data" >

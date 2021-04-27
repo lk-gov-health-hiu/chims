@@ -89,6 +89,7 @@ import lk.gov.health.phsp.facade.UploadFacade;
 import lk.gov.health.phsp.facade.util.JsfUtil;
 import lk.gov.health.phsp.pojcs.AreaCount;
 import lk.gov.health.phsp.pojcs.ClientBasicData;
+import lk.gov.health.phsp.pojcs.DateInstitutionCount;
 import lk.gov.health.phsp.pojcs.EncounterBasicData;
 import lk.gov.health.phsp.pojcs.InstitutionCount;
 import lk.gov.health.phsp.pojcs.Replaceable;
@@ -1552,6 +1553,80 @@ public class ReportController implements Serializable {
         return action;
     }
 
+    public String toViewDailyClinicsVisitCounts() {
+        encounters = new ArrayList<>();
+        String forSys = "/reports/clinic_visits/for_sa_daily";
+        String forIns = "/reports/clinic_visits/for_ia_daily";
+        String forMe = "/reports/clinic_visits/for_me_daily";
+        String forClient = "/reports/index";
+        String noAction = "";
+        String action = "";
+        switch (webUserController.getLoggedUser().getWebUserRole()) {
+            case Client:
+                action = forClient;
+                break;
+            case Doctor:
+            case Institution_Administrator:
+            case Institution_Super_User:
+            case Institution_User:
+            case Nurse:
+            case Midwife:
+                action = forIns;
+                break;
+            case Me_Admin:
+            case Me_Super_User:
+                action = forMe;
+                break;
+            case Me_User:
+            case User:
+                action = noAction;
+                break;
+            case Super_User:
+            case System_Administrator:
+                action = forSys;
+                break;
+        }
+        userTransactionController.recordTransaction("To View Daily Clinic Visits");
+        return action;
+    }
+    
+    public String toViewDailyClinicsRegistrationCounts() {
+        encounters = new ArrayList<>();
+        String forSys = "/reports/client_registrations/for_sa_daily";
+        String forIns = "/reports/client_registrations/for_ia_daily";
+        String forMe = "/reports/client_registrations/for_me_daily";
+        String forClient = "/reports/index";
+        String noAction = "";
+        String action = "";
+        switch (webUserController.getLoggedUser().getWebUserRole()) {
+            case Client:
+                action = forClient;
+                break;
+            case Doctor:
+            case Institution_Administrator:
+            case Institution_Super_User:
+            case Institution_User:
+            case Nurse:
+            case Midwife:
+                action = forIns;
+                break;
+            case Me_Admin:
+            case Me_Super_User:
+                action = forMe;
+                break;
+            case Me_User:
+            case User:
+                action = noAction;
+                break;
+            case Super_User:
+            case System_Administrator:
+                action = forSys;
+                break;
+        }
+        userTransactionController.recordTransaction("To View Daily Clinic Visits");
+        return action;
+    }
+
     public String toViewClientRegistrationsByDistrict() {
         areaCounts = null;
         areaRepCount = null;
@@ -2342,6 +2417,262 @@ public class ReportController implements Serializable {
                     Cell c7 = row.createCell(6);
                     c7.setCellValue(cbd.getInstitution());
                 }
+
+                serial++;
+            }
+        }
+
+        objs = null;
+        System.gc();
+
+        try (FileOutputStream outputStream = new FileOutputStream(newFile)) {
+            workbook.write(outputStream);
+        } catch (Exception e) {
+
+        }
+
+        InputStream stream;
+        try {
+            stream = new FileInputStream(newFile);
+            resultExcelFile = new DefaultStreamedContent(stream, mimeType, FILE_NAME);
+        } catch (FileNotFoundException ex) {
+
+        }
+
+    }
+
+    public void downloadDailyClinicVisitCounts() {
+        String j;
+        Map m = new HashMap();
+
+        j = "select new lk.gov.health.phsp.pojcs.DateInstitutionCount("
+                + "e.encounterDate, count(e)"
+                + ") "
+                + " from Encounter e "
+                + " where e.retired=:ret "
+                + " and e.encounterType=:type "
+                + " and e.encounterDate between :fd and :td ";
+
+        m.put("ret", false);
+        m.put("fd", fromDate);
+        m.put("td", toDate);
+        m.put("type", EncounterType.Clinic_Visit);
+        if (institution != null) {
+            j += " and e.institution in :ins ";
+            List<Institution> ins = institutionController.findChildrenInstitutions(institution);
+            ins.add(institution);
+            m.put("ins", ins);
+        } else {
+            if (webUserController.getLoggedUser().isRestrictedToInstitution()) {
+                j += " and e.institution in :ins ";
+                List<Institution> ins = webUserController.getLoggableInstitutions();
+                ins.add(institution);
+                m.put("ins", ins);
+            }
+        }
+
+        j += " group by e.encounterDate "
+                + " order by e.encounterDate";
+
+        //String phn, String gnArea, String institution, Date dataOfBirth, Date encounterAt, String sex
+        List<Object> objs = getClientFacade().findAggregates(j, m);
+
+        String FILE_NAME = "clinic_visits_by_date" + "_" + (new Date()) + ".xlsx";
+        String mimeType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+
+        String folder = "/tmp/";
+
+        File newFile = new File(folder + FILE_NAME);
+
+        XSSFWorkbook workbook = new XSSFWorkbook();
+        XSSFSheet sheet = workbook.createSheet("ClinicVisitsByDate");
+
+        int rowCount = 0;
+
+        Row t1 = sheet.createRow(rowCount++);
+        Cell th1_lbl = t1.createCell(0);
+        th1_lbl.setCellValue("Report");
+        Cell th1_val = t1.createCell(1);
+        th1_val.setCellValue("Clinic Visits by Date");
+
+        Row t2 = sheet.createRow(rowCount++);
+        Cell th2_lbl = t2.createCell(0);
+        th2_lbl.setCellValue("From");
+        Cell th2_val = t2.createCell(1);
+        th2_val.setCellValue(CommonController.dateTimeToString(getFromDate(), "dd MMMM yyyy"));
+
+        Row t3 = sheet.createRow(rowCount++);
+        Cell th3_lbl = t3.createCell(0);
+        th3_lbl.setCellValue("To");
+        Cell th3_val = t3.createCell(1);
+        th3_val.setCellValue(CommonController.dateTimeToString(getToDate(), "dd MMMM yyyy"));
+
+        if (institution != null) {
+            Row t4 = sheet.createRow(rowCount++);
+            Cell th4_lbl = t4.createCell(0);
+            th4_lbl.setCellValue("Institution");
+            Cell th4_val = t4.createCell(1);
+            th4_val.setCellValue(institution.getName());
+        }
+
+        rowCount++;
+
+        Row t5 = sheet.createRow(rowCount++);
+        Cell th5_1 = t5.createCell(0);
+        th5_1.setCellValue("Serial");
+        Cell th5_2 = t5.createCell(1);
+        th5_2.setCellValue("Date");
+        Cell th5_3 = t5.createCell(2);
+        th5_3.setCellValue("Count");
+
+        int serial = 1;
+
+        CellStyle cellStyle = workbook.createCellStyle();
+        CreationHelper createHelper = workbook.getCreationHelper();
+        cellStyle.setDataFormat(
+                createHelper.createDataFormat().getFormat("dd/MMMM/yyyy"));
+
+        for (Object o : objs) {
+            if (o instanceof DateInstitutionCount) {
+                DateInstitutionCount cbd = (DateInstitutionCount) o;
+                Row row = sheet.createRow(++rowCount);
+
+                Cell c1 = row.createCell(0);
+                c1.setCellValue(serial);
+
+                Cell c2 = row.createCell(1);
+                c2.setCellStyle(cellStyle);
+                c2.setCellValue(cbd.getDate());
+                
+                Cell c3 = row.createCell(2);
+                c3.setCellValue(cbd.getCount());
+
+                serial++;
+            }
+        }
+
+        objs = null;
+        System.gc();
+
+        try (FileOutputStream outputStream = new FileOutputStream(newFile)) {
+            workbook.write(outputStream);
+        } catch (Exception e) {
+
+        }
+
+        InputStream stream;
+        try {
+            stream = new FileInputStream(newFile);
+            resultExcelFile = new DefaultStreamedContent(stream, mimeType, FILE_NAME);
+        } catch (FileNotFoundException ex) {
+
+        }
+
+    }
+    
+    public void downloadDailyClientRegistrationCounts() {
+        String j;
+        Map m = new HashMap();
+
+        j = "select new lk.gov.health.phsp.pojcs.DateInstitutionCount("
+                + "cast(e.createdAt as LocalDate), count(e)"
+                + ") "
+                + " from Client e "
+                + " where e.retired=:ret "
+                + " and e.createdAt between :fd and :td ";
+
+        m.put("ret", false);
+        m.put("fd", fromDate);
+        m.put("td", toDate);
+        if (institution != null) {
+            j += " and e.createInstitution in :ins ";
+            List<Institution> ins = institutionController.findChildrenInstitutions(institution);
+            ins.add(institution);
+            m.put("ins", ins);
+        } else {
+            if (webUserController.getLoggedUser().isRestrictedToInstitution()) {
+                j += " and e.createInstitution in :ins ";
+                List<Institution> ins = webUserController.getLoggableInstitutions();
+                ins.add(institution);
+                m.put("ins", ins);
+            }
+        }
+
+        j += " group by cast(e.createdAt as LocalDate)  "
+                + " order by cast(e.createdAt as LocalDate)";
+
+        //String phn, String gnArea, String institution, Date dataOfBirth, Date encounterAt, String sex
+        List<Object> objs = getClientFacade().findAggregates(j, m);
+
+        String FILE_NAME = "client_registrations_by_date" + "_" + (new Date()) + ".xlsx";
+        String mimeType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+
+        String folder = "/tmp/";
+
+        File newFile = new File(folder + FILE_NAME);
+
+        XSSFWorkbook workbook = new XSSFWorkbook();
+        XSSFSheet sheet = workbook.createSheet("ClientRegistrationsByDate");
+
+        int rowCount = 0;
+
+        Row t1 = sheet.createRow(rowCount++);
+        Cell th1_lbl = t1.createCell(0);
+        th1_lbl.setCellValue("Report");
+        Cell th1_val = t1.createCell(1);
+        th1_val.setCellValue("Client Registrations by Date");
+
+        Row t2 = sheet.createRow(rowCount++);
+        Cell th2_lbl = t2.createCell(0);
+        th2_lbl.setCellValue("From");
+        Cell th2_val = t2.createCell(1);
+        th2_val.setCellValue(CommonController.dateTimeToString(getFromDate(), "dd MMMM yyyy"));
+
+        Row t3 = sheet.createRow(rowCount++);
+        Cell th3_lbl = t3.createCell(0);
+        th3_lbl.setCellValue("To");
+        Cell th3_val = t3.createCell(1);
+        th3_val.setCellValue(CommonController.dateTimeToString(getToDate(), "dd MMMM yyyy"));
+
+        if (institution != null) {
+            Row t4 = sheet.createRow(rowCount++);
+            Cell th4_lbl = t4.createCell(0);
+            th4_lbl.setCellValue("Institution");
+            Cell th4_val = t4.createCell(1);
+            th4_val.setCellValue(institution.getName());
+        }
+
+        rowCount++;
+
+        Row t5 = sheet.createRow(rowCount++);
+        Cell th5_1 = t5.createCell(0);
+        th5_1.setCellValue("Serial");
+        Cell th5_2 = t5.createCell(1);
+        th5_2.setCellValue("Date");
+        Cell th5_3 = t5.createCell(2);
+        th5_3.setCellValue("Count");
+
+        int serial = 1;
+
+        CellStyle cellStyle = workbook.createCellStyle();
+        CreationHelper createHelper = workbook.getCreationHelper();
+        cellStyle.setDataFormat(
+                createHelper.createDataFormat().getFormat("dd/MMMM/yyyy"));
+
+        for (Object o : objs) {
+            if (o instanceof DateInstitutionCount) {
+                DateInstitutionCount cbd = (DateInstitutionCount) o;
+                Row row = sheet.createRow(++rowCount);
+
+                Cell c1 = row.createCell(0);
+                c1.setCellValue(serial);
+
+                Cell c2 = row.createCell(1);
+                c2.setCellStyle(cellStyle);
+                c2.setCellValue(cbd.getDate());
+                
+                Cell c3 = row.createCell(2);
+                c3.setCellValue(cbd.getCount());
 
                 serial++;
             }
