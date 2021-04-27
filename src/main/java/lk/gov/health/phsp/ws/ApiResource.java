@@ -39,6 +39,7 @@ import lk.gov.health.phsp.bean.InstitutionApplicationController;
 import lk.gov.health.phsp.entity.Area;
 import lk.gov.health.phsp.entity.Institution;
 import lk.gov.health.phsp.enums.AreaType;
+import lk.gov.health.phsp.enums.RelationshipType;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -67,7 +68,7 @@ public class ApiResource {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public String getJson(@QueryParam("name") String name) {
+    public String getJson(@QueryParam("name") String name, @QueryParam("year") String year) {
         JSONObject jSONObjectOut;
         if (name == null || name.trim().equals("")) {
             jSONObjectOut = errorMessageInstruction();
@@ -85,6 +86,9 @@ public class ApiResource {
                 case "get_module_institutes_list":
                     jSONObjectOut = moduleInstituteList();
                     break;
+                case "get_institutes_total_population_list":
+                    jSONObjectOut = institutePopulationList(year);
+                    break;
                 default:
                     jSONObjectOut = errorMessage();
             }
@@ -99,7 +103,8 @@ public class ApiResource {
         List<Area> ds = areaApplicationController.getAllAreas(AreaType.District);
         for (Area a : ds) {
             JSONObject ja = new JSONObject();
-            ja.put("district_id", a.getCode());
+            ja.put("district_id", a.getId());
+            ja.put("district_code", a.getCode());
             ja.put("district_name", a.getName());
             array.put(ja);
         }
@@ -114,7 +119,8 @@ public class ApiResource {
         List<Institution> ds = institutionApplicationController.getInstitutions();
         for (Institution a : ds) {
             JSONObject ja = new JSONObject();
-            ja.put("institute_id", a.getCode());            
+            ja.put("institute_id", a.getId()); 
+            ja.put("institute_code", a.getCode()); 
             ja.put("name", a.getName());
             ja.put("hin", a.getPoiNumber());
             ja.put("latitude", a.getCoordinate().getLatitude());
@@ -133,13 +139,52 @@ public class ApiResource {
         return jSONObjectOut;
     }
     
+    private JSONObject institutePopulationList(String year) {
+        if(year==null || year.trim().equals("")){
+            return errorMessageNoYear();
+        }
+        Integer intYear;
+        try{
+            intYear = Integer.parseInt(year);
+        }catch (Exception e){
+            System.out.println("e = " + e);
+            return errorMessageNoYear();
+        }
+        if(intYear==null||intYear<2000||intYear>2030){
+            return errorMessageNoYear();
+        }
+        JSONObject jSONObjectOut = new JSONObject();
+        JSONArray array = new JSONArray();
+        List<Institution> ds = institutionApplicationController.getInstitutions();
+        for (Institution a : ds) {
+            JSONObject ja = new JSONObject();
+            ja.put("institute_id", a.getCode());  
+            ja.put("institute_code", a.getCode());  
+            
+            ja.put("year", a.getName());
+            
+            ja.put("male",institutionApplicationController.findInstitutionPopulationData(a, RelationshipType.Male_Population, intYear));
+            ja.put("female", institutionApplicationController.findInstitutionPopulationData(a, RelationshipType.Female_Population, intYear));
+            ja.put("over_35_male", institutionApplicationController.findInstitutionPopulationData(a, RelationshipType.Over_35_Male_Population, intYear));
+            ja.put("over_35_female", institutionApplicationController.findInstitutionPopulationData(a, RelationshipType.Over_35_Female_Population, intYear));
+            ja.put("target_over_35_male", institutionApplicationController.findInstitutionPopulationData(a, RelationshipType.Over_35_Male_Population, intYear));
+            ja.put("target_over_35_female", institutionApplicationController.findInstitutionPopulationData(a, RelationshipType.Over_35_Female_Population, intYear));
+            
+            array.put(ja);
+        }
+        jSONObjectOut.put("data", array);
+        jSONObjectOut.put("status", successMessage());
+        return jSONObjectOut;
+    }
+    
     private JSONObject moduleInstituteList() {
         JSONObject jSONObjectOut = new JSONObject();
         JSONArray array = new JSONArray();
         List<Institution> ds = institutionApplicationController.getInstitutions();
         for (Institution a : ds) {
             JSONObject ja = new JSONObject();
-            ja.put("institute_id", a.getCode()); 
+            ja.put("institute_id", a.getId()); 
+            ja.put("institute_code", a.getCode()); 
             ja.put("institute_type_db",a.getInstitutionType());
             ja.put("institute_type",a.getInstitutionType().getLabel());
             ja.put("name", a.getName());
@@ -161,6 +206,7 @@ public class ApiResource {
         for (Area a : ds) {
             JSONObject ja = new JSONObject();
             ja.put("province_id", a.getCode());
+            ja.put("province_code", a.getCode());
             ja.put("province_name", a.getName());
             array.put(ja);
         }
@@ -181,6 +227,14 @@ public class ApiResource {
         jSONObjectOut.put("code", 400);
         jSONObjectOut.put("type", "error");
         jSONObjectOut.put("message", "Parameter name is not recognized.");
+        return jSONObjectOut;
+    }
+    
+    private JSONObject errorMessageNoYear() {
+        JSONObject jSONObjectOut = new JSONObject();
+        jSONObjectOut.put("code", 400);
+        jSONObjectOut.put("type", "error");
+        jSONObjectOut.put("message", "Parameter year is provided or not recognized.");
         return jSONObjectOut;
     }
 

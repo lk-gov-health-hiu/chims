@@ -37,14 +37,17 @@ import lk.gov.health.phsp.entity.Area;
 import lk.gov.health.phsp.entity.Institution;
 import lk.gov.health.phsp.entity.Item;
 import lk.gov.health.phsp.entity.QueryComponent;
+import lk.gov.health.phsp.entity.Relationship;
 import lk.gov.health.phsp.enums.EncounterType;
 import lk.gov.health.phsp.enums.InstitutionType;
+import lk.gov.health.phsp.enums.RelationshipType;
 import lk.gov.health.phsp.enums.WebUserRole;
 import lk.gov.health.phsp.facade.ClientEncounterComponentItemFacade;
 import lk.gov.health.phsp.facade.ClientFacade;
 import lk.gov.health.phsp.facade.EncounterFacade;
 import lk.gov.health.phsp.facade.InstitutionFacade;
 import lk.gov.health.phsp.facade.QueryComponentFacade;
+import lk.gov.health.phsp.facade.RelationshipFacade;
 // </editor-fold>
 
 /**
@@ -58,6 +61,8 @@ public class InstitutionApplicationController {
 // <editor-fold defaultstate="collapsed" desc="EJBs">
     @EJB
     private InstitutionFacade institutionFacade;
+    @EJB
+    RelationshipFacade relationshipFacade; 
 // </editor-fold>    
 
 // <editor-fold defaultstate="collapsed" desc="Class Variables">
@@ -97,6 +102,44 @@ public class InstitutionApplicationController {
 
     public void setInstitutions(List<Institution> institutions) {
         this.institutions = institutions;
+    }
+    
+    public Long findInstitutionPopulationData(Institution tins, RelationshipType ttr, Integer ty) {
+
+        if (ty == null) {
+            System.out.println("No Year");
+            return 0l;
+        }
+        if (tins == null) {
+            System.out.println("No Institution");
+            return 0l;
+        }
+        if (ttr == null) {
+            System.out.println("No Relationship Type");
+            return 0l;
+        }
+
+        String j = "select r from Relationship r "
+                + " where r.retired<>:ret "
+                + " and r.yearInt=:y";
+
+        Map m = new HashMap();
+
+        j += " and r.institution=:ins  ";
+        j += " and r.relationshipType=:rt ";
+        
+        m.put("ins", tins);
+        m.put("rt", ttr);
+        m.put("y", ty);
+        m.put("ret", true);
+        
+        System.out.println("m = " + m);
+        System.out.println("j = " + j);
+        Relationship tr = relationshipFacade.findFirstByJpql(j, m);
+        if(tr==null){
+            return 0l;
+        }
+        return tr.getLongValue1();
     }
 
 }
