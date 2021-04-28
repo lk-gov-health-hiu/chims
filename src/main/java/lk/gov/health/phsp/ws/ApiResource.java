@@ -226,7 +226,7 @@ public class ApiResource {
         Long lngInsId = null;
 
         try {
-            lngInsId = Long.parseLong(year);
+            lngInsId = Long.parseLong(insId);
         } catch (Exception e) {
             System.out.println("e = " + e);
             return errorMessageNoInstituteId();
@@ -302,7 +302,7 @@ public class ApiResource {
             return errorMessageNoInstituteId();
         }
         try {
-            lngInsId = Long.parseLong(year);
+            lngInsId = Long.parseLong(insId);
         } catch (Exception e) {
             System.out.println("e = " + e);
             return errorMessageNoInstituteId();

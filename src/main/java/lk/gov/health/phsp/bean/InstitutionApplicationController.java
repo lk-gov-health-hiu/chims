@@ -103,21 +103,24 @@ public class InstitutionApplicationController {
     }
 
     public List<Institution> getHospitals() {
-
         fillHospitals();
+        System.out.println("hospitals = " + hospitals.size());
         return hospitals;
     }
 
     public void fillHospitals() {
         hospitals = new ArrayList<>();
         for (Institution i : getInstitutions()) {
-            if (institutionTypeCorrect(hospitalTypes, i.getInstitutionType())) {
+            System.out.println("i = " + i);
+            System.out.println("i.getInstitutionType() = " + i.getInstitutionType());
+            if (institutionTypeCorrect(getHospitalTypes(), i.getInstitutionType())) {
                 hospitals.add(i);
             }
         }
     }
 
     public boolean institutionTypeCorrect(List<InstitutionType> its, InstitutionType it) {
+        
         boolean correct = false;
         if (its == null || it == null) {
             return correct;
