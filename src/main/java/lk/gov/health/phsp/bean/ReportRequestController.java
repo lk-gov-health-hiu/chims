@@ -131,6 +131,8 @@ public class ReportRequestController implements Serializable {
     @Inject
     private InstitutionController institutionController;
     @Inject
+    InstitutionApplicationController institutionApplicationController;
+    @Inject
     private QueryComponentController queryComponentController;
     @Inject
     private ClientEncounterComponentItemController clientEncounterComponentItemController;
@@ -845,7 +847,7 @@ public class ReportRequestController implements Serializable {
         m.put("td", toDate);
         if (institution != null) {
             j += " and c.createInstitution in :ins ";
-            List<Institution> ins = institutionController.findChildrenInstitutions(institution);
+            List<Institution> ins = institutionApplicationController.findChildrenInstitutions(institution);
             ins.add(institution);
             m.put("ins", ins);
         }
@@ -866,7 +868,7 @@ public class ReportRequestController implements Serializable {
         m.put("type", EncounterType.Clinic_Enroll);
         if (institution != null) {
             j += " and c.institution in :ins ";
-            List<Institution> ins = institutionController.findChildrenInstitutions(institution);
+            List<Institution> ins = institutionApplicationController.findChildrenInstitutions(institution);
             ins.add(institution);
             m.put("ins", ins);
         }
@@ -886,7 +888,7 @@ public class ReportRequestController implements Serializable {
         m.put("type", EncounterType.Clinic_Enroll);
         if (institution != null) {
             j += " and c.institution in :ins ";
-            List<Institution> ins = institutionController.findChildrenInstitutions(institution);
+            List<Institution> ins = institutionApplicationController.findChildrenInstitutions(institution);
             ins.add(institution);
             m.put("ins", ins);
         }

@@ -63,8 +63,11 @@
                     <p:menuitem value="Manage Areas" action="/area/index" ajax="false"    />
                     <p:menuitem value="Manage Metadata" action="/systemAdmin/manage_metadata_index"    ajax="false" />
                     <p:menuitem value="Manage Data" action="/systemAdmin/manage_data_index"    ajax="false" />
+                    <p:menuitem value="Manage Interfaces" action="/systemAdmin/interfaces"    ajax="false" />
 
                     <p:menuitem value="Manage Analysis"  action="/queryComponent/index"     ajax="false" />
+
+
                 </p:submenu>
 
                 <p:submenu label="Settings"  rendered="#{webUserController.hasPrivilege('User')}" >

@@ -91,7 +91,8 @@ public class WebUserController implements Serializable {
     private UserTransactionController userTransactionController;
     @Inject
     private ApplicationController applicationController;
-
+    @Inject
+    InstitutionApplicationController institutionApplicationController;
     /*
     Variables
      */
@@ -150,13 +151,10 @@ public class WebUserController implements Serializable {
 
     private String locale;
 
-    
-
     private WebUserRole assumedRole;
     private Institution assumedInstitution;
     private Area assumedArea;
     private List<UserPrivilege> assumedPrivileges;
-
 
     int reportTabIndex;
     private int indicatorTabIndex;
@@ -275,7 +273,7 @@ public class WebUserController implements Serializable {
             return ins;
         }
         ins.add(loggedUser.getInstitution());
-        ins.addAll(institutionController.findChildrenInstitutions(loggedUser.getInstitution()));
+        ins.addAll(institutionApplicationController.findChildrenInstitutions(loggedUser.getInstitution()));
         return ins;
     }
 
@@ -320,8 +318,8 @@ public class WebUserController implements Serializable {
         userTransactionController.recordTransaction("To List All Users");
         return "/webUser/manage_users";
     }
-    
-    public String toManageUserIndexForSystemAdmin(){
+
+    public String toManageUserIndexForSystemAdmin() {
         return "/webUser/index";
     }
 
@@ -613,7 +611,6 @@ public class WebUserController implements Serializable {
 
         loggedUserPrivileges = userPrivilegeList(loggedUser);
 
-       
         JsfUtil.addSuccessMessage("Successfully Logged");
         userTransactionController.recordTransaction("Successful Login");
         return "/index";
@@ -642,14 +639,10 @@ public class WebUserController implements Serializable {
         }
     }
 
-   
-
     public String toHome() {
         userTransactionController.recordTransaction("To Home");
         return "/index";
     }
-
-   
 
     public String loginForMobile() {
         loginRequestResponse = "";
@@ -1409,8 +1402,6 @@ public class WebUserController implements Serializable {
         return selectedGnAreas;
     }
 
-    
-    
     public void setSelectedGnAreas(List<Area> selectedGnAreas) {
         if (selectedGnAreas == null) {
             selectedGnAreas = new ArrayList<>();
@@ -1609,8 +1600,6 @@ public class WebUserController implements Serializable {
         return myPrivilegeRoot;
     }
 
-   
-
     public void setMyPrivilegeRoot(TreeNode myPrivilegeRoot) {
         this.myPrivilegeRoot = myPrivilegeRoot;
     }
@@ -1684,8 +1673,6 @@ public class WebUserController implements Serializable {
         this.loggableGnAreas = loggableGnAreas;
     }
 
-  
-
     public int getReportTabIndex() {
         return reportTabIndex;
     }
@@ -1694,8 +1681,6 @@ public class WebUserController implements Serializable {
         this.reportTabIndex = reportTabIndex;
     }
 
-    
-
     public ClientController getClientController() {
         return clientController;
     }
@@ -1703,8 +1688,6 @@ public class WebUserController implements Serializable {
     public EncounterController getEncounterController() {
         return encounterController;
     }
-
-    
 
     public WebUserRole getAssumedRole() {
         return assumedRole;
@@ -1749,7 +1732,6 @@ public class WebUserController implements Serializable {
         return ups;
     }
 
-    
     public String getIpAddress() {
         return ipAddress;
     }

@@ -62,11 +62,13 @@ public class InstitutionApplicationController {
     @EJB
     private InstitutionFacade institutionFacade;
     @EJB
-    RelationshipFacade relationshipFacade; 
+    RelationshipFacade relationshipFacade;
 // </editor-fold>    
 
 // <editor-fold defaultstate="collapsed" desc="Class Variables">
     private List<Institution> institutions;
+    List<Institution> hospitals;
+    private List<InstitutionType> hospitalTypes;
     // </editor-fold>
 
     public InstitutionApplicationController() {
@@ -100,10 +102,38 @@ public class InstitutionApplicationController {
         return institutions;
     }
 
+    public List<Institution> getHospitals() {
+
+        fillHospitals();
+        return hospitals;
+    }
+
+    public void fillHospitals() {
+        hospitals = new ArrayList<>();
+        for (Institution i : getInstitutions()) {
+            if (institutionTypeCorrect(hospitalTypes, i.getInstitutionType())) {
+                hospitals.add(i);
+            }
+        }
+    }
+
+    public boolean institutionTypeCorrect(List<InstitutionType> its, InstitutionType it) {
+        boolean correct = false;
+        if (its == null || it == null) {
+            return correct;
+        }
+        for (InstitutionType tit : its) {
+            if (tit.equals(it)) {
+                correct = true;
+            }
+        }
+        return correct;
+    }
+
     public void setInstitutions(List<Institution> institutions) {
         this.institutions = institutions;
     }
-    
+
     public Long findInstitutionPopulationData(Institution tins, RelationshipType ttr, Integer ty) {
 
         if (ty == null) {
@@ -127,19 +157,111 @@ public class InstitutionApplicationController {
 
         j += " and r.institution=:ins  ";
         j += " and r.relationshipType=:rt ";
-        
+
         m.put("ins", tins);
         m.put("rt", ttr);
         m.put("y", ty);
         m.put("ret", true);
-        
+
         System.out.println("m = " + m);
         System.out.println("j = " + j);
         Relationship tr = relationshipFacade.findFirstByJpql(j, m);
-        if(tr==null){
+        if (tr == null) {
             return 0l;
         }
         return tr.getLongValue1();
+    }
+
+    public List<Relationship> findInstitutionPopulationData(Institution tins, Integer ty) {
+
+        if (ty == null) {
+            System.out.println("No Year");
+            return null;
+        }
+        if (tins == null) {
+            System.out.println("No Institution");
+            return null;
+        }
+
+        String j = "select r from Relationship r "
+                + " where r.retired<>:ret "
+                + " and r.yearInt=:y";
+
+        Map m = new HashMap();
+
+        j += " and r.institution=:ins  ";
+
+        m.put("ins", tins);
+        m.put("y", ty);
+        m.put("ret", true);
+
+        System.out.println("m = " + m);
+        System.out.println("j = " + j);
+        List<Relationship> tr = relationshipFacade.findByJpql(j, m);
+        return tr;
+    }
+
+    public List<InstitutionType> getHospitalTypes() {
+        if (hospitalTypes == null || hospitalTypes.isEmpty()) {
+            hospitalTypes = new ArrayList<>();
+            hospitalTypes.add(InstitutionType.Base_Hospital);
+            hospitalTypes.add(InstitutionType.District_General_Hospital);
+            hospitalTypes.add(InstitutionType.Divisional_Hospital);
+            hospitalTypes.add(InstitutionType.National_Hospital);
+            hospitalTypes.add(InstitutionType.Primary_Medical_Care_Unit);
+            hospitalTypes.add(InstitutionType.Teaching_Hospital);
+        }
+        return hospitalTypes;
+    }
+
+    public Institution findInstitution(Long insId) {
+        Institution ri = null;
+        for (Institution i : getInstitutions()) {
+            if (i.getId().equals(insId)) {
+                ri = i;
+            }
+        }
+        return ri;
+    }
+
+    public List<Institution> findChildrenInstitutions(Institution ins) {
+        List<Institution> allIns = getInstitutions();
+        List<Institution> cins = new ArrayList<>();
+        for (Institution i : allIns) {
+            if (i.getParent() == null) {
+                continue;
+            }
+            if (i.getParent().equals(ins)) {
+                cins.add(i);
+            }
+        }
+        List<Institution> tins = new ArrayList<>();
+        tins.addAll(cins);
+        if (cins.isEmpty()) {
+            return tins;
+        } else {
+            for (Institution i : cins) {
+                tins.addAll(findChildrenInstitutions(i));
+            }
+        }
+        return tins;
+    }
+
+    public List<Institution> findChildrenInstitutions(Institution ins, InstitutionType type) {
+        List<Institution> cins = findChildrenInstitutions(ins);
+        List<Institution> tins = new ArrayList<>();
+        for (Institution i : cins) {
+            if (i.getParent() == null) {
+                continue;
+            }
+            if (i.getInstitutionType() == null) {
+                continue;
+            }
+            if (i.getInstitutionType().equals(type)) {
+                tins.add(i);
+            }
+        }
+        return tins;
     }
 
 }

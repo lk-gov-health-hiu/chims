@@ -26,11 +26,14 @@ package lk.gov.health.phsp.bean;
 // <editor-fold defaultstate="collapsed" desc="Imports">
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import javax.ejb.EJB;
 import javax.inject.Named;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import lk.gov.health.phsp.entity.Institution;
+import lk.gov.health.phsp.entity.Item;
 import lk.gov.health.phsp.enums.EncounterType;
 import lk.gov.health.phsp.facade.ClientFacade;
 import lk.gov.health.phsp.facade.EncounterFacade;
@@ -86,6 +89,36 @@ public class AnalysisController {
 
         encounterCount = fs;
         userTransactionController.recordTransaction("Find Encounter Count");
+    }
+
+    public Long findEncounterCount(Date pFrom, Date pTo, List<Institution> pIns, EncounterType ec, Item sex) {
+        if (ec == null) {
+            ec = EncounterType.Clinic_Visit;
+        }
+        Long fs;
+        Map m = new HashMap();
+        String j = "select count(s) from Encounter s ";
+        j += " where s.retired<>:ret ";
+        j += " and s.encounterType=:t ";
+        j += " and s.encounterDate between :fd and :td ";
+        m.put("fd", pFrom);
+        m.put("td", pTo);
+        m.put("t", ec);
+        m.put("ret", true);
+
+        if (sex != null) {
+            j += " and s.client.person.sex.code=:s ";
+            m.put("s",sex.getCode());
+        }
+        
+        
+        
+        j += " and s.institution in =:ins ";
+        m.put("ins", pIns);
+
+        fs = getEncounterFacade().findLongByJpql(j, m);
+
+     return fs;
     }
 
     public void findClientCount() {

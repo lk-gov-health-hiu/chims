@@ -144,6 +144,8 @@ public class ReportController implements Serializable {
     @Inject
     private InstitutionController institutionController;
     @Inject
+    InstitutionApplicationController institutionApplicationController;
+    @Inject
     private QueryComponentController queryComponentController;
     @Inject
     private ClientEncounterComponentItemController clientEncounterComponentItemController;
@@ -1802,7 +1804,7 @@ public class ReportController implements Serializable {
         m.put("td", toDate);
         if (institution != null) {
             j += " and c.createInstitution in :ins ";
-            List<Institution> ins = institutionController.findChildrenInstitutions(institution);
+            List<Institution> ins = institutionApplicationController.findChildrenInstitutions(institution);
             ins.add(institution);
             m.put("ins", ins);
         }
@@ -1837,7 +1839,7 @@ public class ReportController implements Serializable {
 
         if (institution != null) {
             j += " and c.createInstitution in :ins ";
-            List<Institution> ins = institutionController.findChildrenInstitutions(institution);
+            List<Institution> ins = institutionApplicationController.findChildrenInstitutions(institution);
             ins.add(institution);
             m.put("ins", ins);
         } else {
@@ -2121,7 +2123,7 @@ public class ReportController implements Serializable {
         m.put("type", EncounterType.Clinic_Enroll);
         if (institution != null) {
             j += " and c.institution in :ins ";
-            List<Institution> ins = institutionController.findChildrenInstitutions(institution);
+            List<Institution> ins = institutionApplicationController.findChildrenInstitutions(institution);
             ins.add(institution);
             m.put("ins", ins);
         } else {
@@ -2160,7 +2162,7 @@ public class ReportController implements Serializable {
 
         if (institution != null) {
             j += " and e.institution in :ins ";
-            List<Institution> ins = institutionController.findChildrenInstitutions(institution);
+            List<Institution> ins = institutionApplicationController.findChildrenInstitutions(institution);
             ins.add(institution);
             m.put("ins", ins);
         } else {
@@ -2310,7 +2312,7 @@ public class ReportController implements Serializable {
         m.put("type", EncounterType.Clinic_Visit);
         if (institution != null) {
             j += " and e.institution in :ins ";
-            List<Institution> ins = institutionController.findChildrenInstitutions(institution);
+            List<Institution> ins = institutionApplicationController.findChildrenInstitutions(institution);
             ins.add(institution);
             m.put("ins", ins);
         } else {
@@ -2459,7 +2461,7 @@ public class ReportController implements Serializable {
         m.put("type", EncounterType.Clinic_Visit);
         if (institution != null) {
             j += " and e.institution in :ins ";
-            List<Institution> ins = institutionController.findChildrenInstitutions(institution);
+            List<Institution> ins = institutionApplicationController.findChildrenInstitutions(institution);
             ins.add(institution);
             m.put("ins", ins);
         } else {
@@ -2586,7 +2588,7 @@ public class ReportController implements Serializable {
         m.put("td", toDate);
         if (institution != null) {
             j += " and e.createInstitution in :ins ";
-            List<Institution> ins = institutionController.findChildrenInstitutions(institution);
+            List<Institution> ins = institutionApplicationController.findChildrenInstitutions(institution);
             ins.add(institution);
             m.put("ins", ins);
         } else {
@@ -2732,7 +2734,7 @@ public class ReportController implements Serializable {
 
         if (institution != null) {
             j += " and e.institution in :ins ";
-            List<Institution> ins = institutionController.findChildrenInstitutions(institution);
+            List<Institution> ins = institutionApplicationController.findChildrenInstitutions(institution);
             ins.add(institution);
             m.put("ins", ins);
         } else {
@@ -2889,7 +2891,7 @@ public class ReportController implements Serializable {
         m.put("type", EncounterType.Clinic_Visit);
         if (institution != null) {
             j += " and c.institution in :ins ";
-            List<Institution> ins = institutionController.findChildrenInstitutions(institution);
+            List<Institution> ins = institutionApplicationController.findChildrenInstitutions(institution);
             ins.add(institution);
             m.put("ins", ins);
         }
@@ -2909,7 +2911,7 @@ public class ReportController implements Serializable {
         m.put("type", EncounterType.Clinic_Enroll);
         if (institution != null) {
             j += " and c.institution in :ins ";
-            List<Institution> ins = institutionController.findChildrenInstitutions(institution);
+            List<Institution> ins = institutionApplicationController.findChildrenInstitutions(institution);
             ins.add(institution);
             m.put("ins", ins);
         } else {
@@ -2931,7 +2933,7 @@ public class ReportController implements Serializable {
         m.put("type", EncounterType.Clinic_Visit);
         if (institution != null) {
             j += " and c.institution in :ins ";
-            List<Institution> ins = institutionController.findChildrenInstitutions(institution);
+            List<Institution> ins = institutionApplicationController.findChildrenInstitutions(institution);
             ins.add(institution);
             m.put("ins", ins);
         } else {
@@ -2953,7 +2955,7 @@ public class ReportController implements Serializable {
         m.put("type", EncounterType.Clinic_Enroll);
         if (institution != null) {
             j += " and c.institution in :ins ";
-            List<Institution> ins = institutionController.findChildrenInstitutions(institution);
+            List<Institution> ins = institutionApplicationController.findChildrenInstitutions(institution);
             ins.add(institution);
             m.put("ins", ins);
         }

@@ -83,6 +83,8 @@ public class IndicatorController implements Serializable {
     @Inject
     InstitutionController institutionController;
     @Inject
+    InstitutionApplicationController institutionApplicationController;
+    @Inject
     ApplicationController applicationController;
 
     @EJB
@@ -1267,7 +1269,8 @@ public class IndicatorController implements Serializable {
         j.setMessage("");
 
         List<Replaceable> rs = findReplaceblesInIndicatorQuery(queryComponent.getIndicatorQuery());
-        List<Institution> clinicsUnderInstitute = institutionController.findChildrenInstitutions(institution, InstitutionType.Clinic);
+        List<Institution> clinicsUnderInstitute = institutionApplicationController.findChildrenInstitutions(institution, InstitutionType.Clinic);
+       
         if (clinicsUnderInstitute == null) {
             JsfUtil.addErrorMessage("Selected institution do not have HLCs under that");
             return;
