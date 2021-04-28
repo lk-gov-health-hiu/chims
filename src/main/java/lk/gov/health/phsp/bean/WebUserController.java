@@ -3,7 +3,6 @@ package lk.gov.health.phsp.bean;
 import lk.gov.health.phsp.entity.Area;
 import lk.gov.health.phsp.entity.WebUser;
 import lk.gov.health.phsp.entity.Institution;
-import lk.gov.health.phsp.enums.InstitutionType;
 import lk.gov.health.phsp.entity.Item;
 import lk.gov.health.phsp.entity.Upload;
 import lk.gov.health.phsp.enums.WebUserRole;
@@ -37,7 +36,6 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.servlet.http.HttpServletRequest;
 import lk.gov.health.phsp.entity.UserPrivilege;
-import lk.gov.health.phsp.enums.EncounterType;
 import lk.gov.health.phsp.enums.Privilege;
 import lk.gov.health.phsp.enums.PrivilegeTreeNode;
 import lk.gov.health.phsp.facade.UserPrivilegeFacade;
@@ -93,6 +91,8 @@ public class WebUserController implements Serializable {
     private ApplicationController applicationController;
     @Inject
     InstitutionApplicationController institutionApplicationController;
+    @Inject
+    WebUserApplicationController webUserApplicationController;
     /*
     Variables
      */
@@ -312,10 +312,7 @@ public class WebUserController implements Serializable {
     }
 
     public String toManageAllUsers() {
-        String j = "select u from WebUser u "
-                + " where u.retired=false ";
-        items = getFacade().findByJpql(j);
-        userTransactionController.recordTransaction("To List All Users");
+        items = webUserApplicationController.getItems();
         return "/webUser/manage_users";
     }
 
@@ -1086,18 +1083,21 @@ public class WebUserController implements Serializable {
             JsfUtil.addErrorMessage(e, ("Error Occured. Please change username and try again."));
             return "";
         }
+        webUserApplicationController.fillWebUsers();
         userTransactionController.recordTransaction("New WebUser save BySysAdmin");
         return "/webUser/index";
     }
 
     public String prepareEdit() {
         userTransactionController.recordTransaction("Edit user list By SysAdmin or InsAdmin");
-        return "Edit";
+        return "/webUser/Edit";
     }
 
     public String prepareEditPassword() {
+        password = "";
+        passwordReenter="";
         userTransactionController.recordTransaction("Edit Password user list By SysAdmin or InsAdmin");
-        return "Password";
+        return "/webUser/Password";
     }
 
     public String update() {

@@ -51,9 +51,9 @@
                     <p:menuitem value="Manage Users" 
                                 action="/insAdmin/user_index" ajax="false"
                                 rendered="#{webUserController.hasPrivilege('Institution_Administration')}" />
-                    <p:menuitem value="Manage Institutions" action="/insAdmin/institution_index"  />
-                    <p:menuitem value="Manage Areas" action="/insAdmin/area_index" ajax="false"  />
-                    <p:menuitem value="Manage Metadata" action="/insAdmin/data_index"   ajax="false"  />
+                    <p:menuitem value="Manage Institutions" action="/insAdmin/institution_index" rendered="#{webUserController.hasPrivilege('Institution_Administration')}" />
+                    <p:menuitem value="Manage Areas" action="/insAdmin/area_index" ajax="false" rendered="#{webUserController.hasPrivilege('Institution_Administration')}" />
+                    <p:menuitem value="Manage Metadata" action="/insAdmin/data_index"   ajax="false"  rendered="#{webUserController.hasPrivilege('Institution_Administration')}"/>
                 </p:submenu>
 
                 <!--//Disabled the Menu-->

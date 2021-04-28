@@ -29,29 +29,24 @@
 
                         <p:panelGrid columns="1" style="width: 15%;" >
 
-                            <p:commandButton icon="fa fa-user-plus" 
+                            <p:commandButton icon="fa fa-user-plus"  ajax="false"
                                              value="Add New User" styleClass="btn300"
                                              action="#{webUserController.toCreateNewUserBySysAdmin()}">
                             </p:commandButton>
 
-                            <p:commandButton  icon="fa fa-users"
+                            <p:commandButton  icon="fa fa-users" ajax="false"
                                               value="View Users"  styleClass="btn300"
                                               action="#{webUserController.toManageAllUsers()}">
                             </p:commandButton>
                             
-                            <p:commandButton  icon="fa fa-users" 
+                            <p:commandButton  icon="fa fa-users"  ajax="false"
                                               value="View Transactions"  styleClass="btn300"
                                               action="#{userTransactionController.toSearchUserTransactions()}">
                             </p:commandButton>
 
-                            <p:commandButton icon="fa fa-user-secret" 
-                                             styleClass="btn300" ajax="false" action="/systemAdmin/assume_users" value="Assume Users"  rendered="#{webUserController.loggedUser.systemAdministrator}" ></p:commandButton>
-
-                            <p:commandButton icon="fa fa-user-circle"  styleClass="btn300" ajax="false" action="/systemAdmin/assume_roles" value="Assume Roles"  rendered="#{webUserController.loggedUser.systemAdministrator}" ></p:commandButton>
-
                             <p:commandButton   icon="fa fa-id-card"  
                                                styleClass="btn300" ajax="false" action="/demoAccount/List" value="Demo Accounts" ></p:commandButton>
-                            <p:commandButton  icon="fa fa-users" 
+                            <p:commandButton  icon="fa fa-users"  ajax="false"
                                               value="Suspicious Login Attempts"  styleClass="btn300"
                                               action="#{userTransactionController.toSuspiciousLoginAttempts()}">
                             </p:commandButton>
