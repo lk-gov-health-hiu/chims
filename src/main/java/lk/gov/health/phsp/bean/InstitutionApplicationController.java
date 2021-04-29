@@ -48,6 +48,7 @@ import lk.gov.health.phsp.facade.EncounterFacade;
 import lk.gov.health.phsp.facade.InstitutionFacade;
 import lk.gov.health.phsp.facade.QueryComponentFacade;
 import lk.gov.health.phsp.facade.RelationshipFacade;
+import org.apache.commons.codec.digest.DigestUtils;
 // </editor-fold>
 
 /**
@@ -100,6 +101,10 @@ public class InstitutionApplicationController {
             institutions = fillAllInstitutions();
         }
         return institutions;
+    }
+    
+    public String getInstitutionHash(){
+         return  DigestUtils.md5Hex(getInstitutions().toString()).toUpperCase();
     }
 
     public List<Institution> getHospitals() {

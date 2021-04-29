@@ -98,8 +98,8 @@ public class ApiResource {
                 case "get_institutes_list":
                     jSONObjectOut = instituteList();
                     break;
-                case "get_module_institutes_list":
-                    jSONObjectOut = moduleInstituteList();
+                case "get_institutes_list_hash":
+                    jSONObjectOut = instituteListHash();
                     break;
                 case "get_institutes_total_population_list":
                     jSONObjectOut = instituteListWithPopulations(year);
@@ -150,6 +150,9 @@ public class ApiResource {
             ja.put("latitude", a.getCoordinate().getLatitude());
             ja.put("longitude", a.getCoordinate().getLongitude());
             ja.put("address", a.getAddress());
+            ja.put("type", a.getInstitutionType());
+            ja.put("type_label", a.getInstitutionType().getLabel());
+            
             if (a.getProvince() != null) {
                 ja.put("province_id", a.getProvince().getCode());
             }
@@ -358,24 +361,9 @@ public class ApiResource {
         return jSONObjectOut;
     }
 
-    private JSONObject moduleInstituteList() {
+    private JSONObject instituteListHash() {
         JSONObject jSONObjectOut = new JSONObject();
-        JSONArray array = new JSONArray();
-        List<Institution> ds = institutionApplicationController.getInstitutions();
-        for (Institution a : ds) {
-            JSONObject ja = new JSONObject();
-            ja.put("institute_id", a.getId());
-            ja.put("institute_code", a.getCode());
-            ja.put("institute_type_db", a.getInstitutionType());
-            ja.put("institute_type", a.getInstitutionType().getLabel());
-            ja.put("name", a.getName());
-            ja.put("hin", a.getPoiNumber());
-            ja.put("address", a.getAddress());
-            ja.put("province_id", a.getProvince().getCode());
-            ja.put("district_id", a.getDistrict().getCode());
-            array.put(ja);
-        }
-        jSONObjectOut.put("data", array);
+        jSONObjectOut.put("data", institutionApplicationController.getInstitutionHash());
         jSONObjectOut.put("status", successMessage());
         return jSONObjectOut;
     }
