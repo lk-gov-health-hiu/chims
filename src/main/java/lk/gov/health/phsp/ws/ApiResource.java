@@ -152,12 +152,17 @@ public class ApiResource {
             ja.put("address", a.getAddress());
             ja.put("type", a.getInstitutionType());
             ja.put("type_label", a.getInstitutionType().getLabel());
+            if(a.getEditedAt()!=null){
+                ja.put("edited_at", a.getEditedAt());
+            }else{
+                ja.put("edited_at", a.getCreatedAt());
+            }
             
             if (a.getProvince() != null) {
-                ja.put("province_id", a.getProvince().getCode());
+                ja.put("province_id", a.getProvince().getId());
             }
             if (a.getDistrict() != null) {
-                ja.put("district_id", a.getDistrict().getCode());
+                ja.put("district_id", a.getDistrict().getId());
             }
             array.put(ja);
         }

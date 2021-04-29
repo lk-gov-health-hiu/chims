@@ -141,7 +141,28 @@ public class Institution implements Serializable {
 
     @Override
     public String toString() {
-        return id + " " + code + " " + name + " " + address + " "  ;
+        String to = id + " " + code + " " + name + " " + address + " " + poiNumber + " ";
+        if (coordinate != null) {
+            to += coordinate.getLongitude() + " " + coordinate.getLatitude();
+        }
+        to += institutionType;
+        if (institutionType != null) {
+            to += institutionType.getLabel();
+        }
+        if(province!=null){
+            to+= province.getId();
+        }
+        if(district!=null){
+            to+=district.getId();
+        }
+        if(editedAt!=null){
+            to+=editedAt;
+        }else{
+            if(createdAt!=null){
+                to+=createdAt;
+            }
+        }
+        return to;
     }
 
     public InstitutionType getInstitutionType() {
