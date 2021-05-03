@@ -109,15 +109,13 @@ public class InstitutionApplicationController {
 
     public List<Institution> getHospitals() {
         fillHospitals();
-        System.out.println("hospitals = " + hospitals.size());
+//        System.out.println("hospitals = " + hospitals.size());
         return hospitals;
     }
 
     public void fillHospitals() {
         hospitals = new ArrayList<>();
         for (Institution i : getInstitutions()) {
-            System.out.println("i = " + i);
-            System.out.println("i.getInstitutionType() = " + i.getInstitutionType());
             if (institutionTypeCorrect(getHospitalTypes(), i.getInstitutionType())) {
                 hospitals.add(i);
             }

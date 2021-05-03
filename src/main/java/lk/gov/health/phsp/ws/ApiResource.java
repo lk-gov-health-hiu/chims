@@ -96,6 +96,7 @@ public class ApiResource {
                     jSONObjectOut = districtList();
                     break;
                 case "get_institutes_list":
+                case "get_institute_list":
                     jSONObjectOut = instituteList();
                     break;
                 case "get_institutes_list_hash":
@@ -104,18 +105,26 @@ public class ApiResource {
                 case "get_institutes_total_population_list":
                     jSONObjectOut = instituteListWithPopulations(year);
                     break;
+
+                case "get_institutes_registered_list":
+                    jSONObjectOut = instituteListWithregistrationCounts(year, month);
+                    break;
+                case "get_institutes_screened_list":
+                    jSONObjectOut = instituteListWithScreenedCounts(year, month);
+                    break;
                 case "get_institute_populations":
                     jSONObjectOut = institutePopulations(year, instituteId);
                     break;
                 case "get_institute_screened_counts":
                     jSONObjectOut = instituteScreened(year, month, instituteId);
                     break;
+
                 case "get_institute_registered_counts":
                     jSONObjectOut = instituteScreened(year, month, instituteId);
                     break;
+
                 case "get_patients_with_cvd_risk_list":
-                case "get_institutes_screened_list":
-                case "get_institutes_registered_list":
+
                     jSONObjectOut = errorMessageTime();
                     break;
                 default:
@@ -157,12 +166,12 @@ public class ApiResource {
             ja.put("address", a.getAddress());
             ja.put("type", a.getInstitutionType());
             ja.put("type_label", a.getInstitutionType().getLabel());
-            if(a.getEditedAt()!=null){
+            if (a.getEditedAt() != null) {
                 ja.put("edited_at", a.getEditedAt());
-            }else{
+            } else {
                 ja.put("edited_at", a.getCreatedAt());
             }
-            
+
             if (a.getProvince() != null) {
                 ja.put("province_id", a.getProvince().getId());
             }
@@ -183,7 +192,7 @@ public class ApiResource {
         Integer intYear;
         try {
             intYear = Integer.parseInt(year);
-        } catch (Exception e) {
+        } catch (NumberFormatException e) {
             System.out.println("e = " + e);
             return errorMessageNoYear();
         }
@@ -195,19 +204,155 @@ public class ApiResource {
         List<Institution> ds = institutionApplicationController.getHospitals();
         for (Institution a : ds) {
             JSONObject ja = new JSONObject();
-            ja.put("institute_id", a.getCode());
+            ja.put("institute_id", a.getId());
             ja.put("institute_code", a.getCode());
 
-            ja.put("year", a.getName());
+            ja.put("year", year);
 
             ja.put("male", institutionApplicationController.findInstitutionPopulationData(a, RelationshipType.Male_Population, intYear));
             ja.put("female", institutionApplicationController.findInstitutionPopulationData(a, RelationshipType.Female_Population, intYear));
             ja.put("over_35_male", institutionApplicationController.findInstitutionPopulationData(a, RelationshipType.Over_35_Male_Population, intYear));
             ja.put("over_35_female", institutionApplicationController.findInstitutionPopulationData(a, RelationshipType.Over_35_Female_Population, intYear));
-            ja.put("target_over_35_male", institutionApplicationController.findInstitutionPopulationData(a, RelationshipType.Over_35_Male_Population, intYear));
-            ja.put("target_over_35_female", institutionApplicationController.findInstitutionPopulationData(a, RelationshipType.Over_35_Female_Population, intYear));
+            ja.put("target_over_35_male", institutionApplicationController.findInstitutionPopulationData(a, RelationshipType.Annual_Target_Male_Population, intYear));
+            ja.put("target_over_35_female", institutionApplicationController.findInstitutionPopulationData(a, RelationshipType.Annual_Target_Female_Population, intYear));
 
             array.put(ja);
+        }
+        jSONObjectOut.put("data", array);
+        jSONObjectOut.put("status", successMessage());
+        return jSONObjectOut;
+    }
+
+    private JSONObject instituteListWithScreenedCounts(String year, String month) {
+        if (year == null || year.trim().equals("")) {
+            return errorMessageNoYear();
+        }
+        Integer intYear;
+        try {
+            intYear = Integer.parseInt(year);
+        } catch (NumberFormatException e) {
+            System.out.println("e = " + e);
+            return errorMessageNoYear();
+        }
+        if (intYear < 2000 || intYear > 2030) {
+            return errorMessageNoYear();
+        }
+
+        //Month
+        if (month == null || month.trim().equals("")) {
+            return errorMessageNoYear();
+        }
+        Integer intMonth;
+        try {
+            intMonth = Integer.parseInt(month);
+        } catch (NumberFormatException e) {
+            System.out.println("e = " + e);
+            return errorMessageNoMonth();
+        }
+        if (intMonth < 0 || intMonth > 12) {
+            return errorMessageNoMonth();
+        }
+
+        JSONObject jSONObjectOut = new JSONObject();
+        JSONArray array = new JSONArray();
+        List<Institution> ds = institutionApplicationController.getHospitals();
+        for (Institution a : ds) {
+
+            Date from = CommonController.startOfTheMonth(intYear, intMonth);
+            Date to = CommonController.endOfTheMonth(intYear, intMonth);
+
+            List<Institution> pIns = institutionApplicationController.findChildrenInstitutions(a);
+
+            Long maleCount = analysisController.findEncounterCount(from, to, pIns, EncounterType.Clinic_Visit, itemApplicationController.getMale());
+            Long femaleCount = analysisController.findEncounterCount(from, to, pIns, EncounterType.Clinic_Visit, itemApplicationController.getFemale());
+            Long totalCount = analysisController.findEncounterCount(from, to, pIns, EncounterType.Clinic_Visit, null);
+
+            if (totalCount != null && totalCount > 0) {
+                JSONObject ja = new JSONObject();
+                ja.put("institute_id", a.getId());
+                ja.put("institute_code", a.getCode());
+                ja.put("year", year);
+                ja.put("month", month);
+                ja.put("male", maleCount);
+                ja.put("female", femaleCount);
+                ja.put("total", totalCount);
+                array.put(ja);
+            }
+
+        }
+        jSONObjectOut.put("data", array);
+        jSONObjectOut.put("status", successMessage());
+        return jSONObjectOut;
+    }
+
+    private JSONObject instituteListWithregistrationCounts(String year, String month) {
+        if (year == null || year.trim().equals("")) {
+            return errorMessageNoYear();
+        }
+        Integer intYear;
+        try {
+            intYear = Integer.parseInt(year);
+        } catch (NumberFormatException e) {
+            System.out.println("e = " + e);
+            return errorMessageNoYear();
+        }
+        if (intYear < 2000 || intYear > 2050) {
+            return errorMessageNoYear();
+        }
+
+        //Month
+        if (month == null || month.trim().equals("")) {
+            return errorMessageNoMonth();
+        }
+        Integer intMonth;
+        intMonth = CommonController.monthIntFromString(month);
+        if (intMonth == null) {
+            try {
+                intMonth = Integer.parseInt(month);
+            } catch (NumberFormatException e) {
+                System.out.println("e = " + e);
+                return errorMessageNoMonth();
+            }
+        }
+        if (intMonth < 1 || intMonth > 12) {
+            return errorMessageNoMonth();
+        }
+
+        JSONObject jSONObjectOut = new JSONObject();
+        JSONArray array = new JSONArray();
+        List<Institution> ds = institutionApplicationController.getHospitals();
+        for (Institution a : ds) {
+
+            Date from = CommonController.startOfTheMonth(intYear, intMonth);
+            Date to = CommonController.endOfTheMonth(intYear, intMonth);
+
+            List<Institution> pIns = institutionApplicationController.findChildrenInstitutions(a);
+
+            Long maleCount = analysisController.findRegistrationCount(from, to, pIns, itemApplicationController.getMale());
+            Long femaleCount = analysisController.findRegistrationCount(from, to, pIns, itemApplicationController.getFemale());
+            Long totalCount = analysisController.findRegistrationCount(from, to, pIns, null);
+
+            
+            System.out.println("Institution = " + a.getName());
+            System.out.println("maleCount = " + maleCount);
+            System.out.println("femaleCount = " + femaleCount);
+            System.out.println("totalCount = " + totalCount);
+            System.out.println("from = " + from.toString());
+            System.out.println("to = " + to.toString());
+            
+            
+            if (totalCount != null && totalCount > 0) {
+                JSONObject ja = new JSONObject();
+                ja.put("institute_id", a.getId());
+                ja.put("institute_code", a.getCode());
+                ja.put("year", year);
+                ja.put("month", month);
+                ja.put("male", maleCount);
+                ja.put("female", femaleCount);
+                ja.put("total", totalCount);
+                array.put(ja);
+            }
+
         }
         jSONObjectOut.put("data", array);
         jSONObjectOut.put("status", successMessage());
@@ -301,11 +446,11 @@ public class ApiResource {
         Integer intMonth;
         try {
             intMonth = Integer.parseInt(month);
-        } catch (Exception e) {
+        } catch (NumberFormatException e) {
             System.out.println("e = " + e);
             return errorMessageNoMonth();
         }
-        if (intMonth == null || intYear < 0 || intYear > 12) {
+        if (intMonth < 1 || intMonth > 12) {
             return errorMessageNoMonth();
         }
 
@@ -384,7 +529,7 @@ public class ApiResource {
         List<Area> ds = areaApplicationController.getAllAreas(AreaType.Province);
         for (Area a : ds) {
             JSONObject ja = new JSONObject();
-            ja.put("province_id", a.getCode());
+            ja.put("province_id", a.getId());
             ja.put("province_code", a.getCode());
             ja.put("province_name", a.getName());
             array.put(ja);
@@ -409,7 +554,7 @@ public class ApiResource {
         jSONObjectOut.put("message", "Parameter name is not recognized.");
         return jSONObjectOut;
     }
-    
+
     private JSONObject errorMessageTime() {
         JSONObject jSONObjectOut = new JSONObject();
         jSONObjectOut.put("code", 400);
@@ -429,7 +574,7 @@ public class ApiResource {
 
     private JSONObject errorMessageNoMonth() {
         JSONObject jSONObjectOut = new JSONObject();
-        jSONObjectOut.put("code", 401);
+        jSONObjectOut.put("code", 402);
         jSONObjectOut.put("type", "error");
         jSONObjectOut.put("message", "Parameter month is not provided or not recognized.");
         return jSONObjectOut;

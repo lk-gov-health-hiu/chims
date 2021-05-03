@@ -101,15 +101,15 @@ public class AnalysisBean {
 
     @Schedule(hour = "21-5", minute = "*/2", second = "0", persistent = false)
     public void processCounts() {
-        System.out.println("processCounts");
-        getIymcs();
-        InstitutionYearMonthCompleted next = selectNextIymcs();
-        System.out.println("next = " + next);
-
-        if (next != null) {
-            System.out.println("Next INS = " + next.getInstitution().getName());
-            runClinicCounts(next);
-        }
+        System.out.println("processCounts Commented");
+//        getIymcs();
+//        InstitutionYearMonthCompleted next = selectNextIymcs();
+//        System.out.println("next = " + next);
+//
+//        if (next != null) {
+//            System.out.println("Next INS = " + next.getInstitution().getName());
+//            runClinicCounts(next);
+//        }
     }
 
     public List<InstitutionYearMonthCompleted> getIymcs() {

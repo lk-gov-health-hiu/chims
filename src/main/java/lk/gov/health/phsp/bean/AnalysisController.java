@@ -95,6 +95,9 @@ public class AnalysisController {
         if (ec == null) {
             ec = EncounterType.Clinic_Visit;
         }
+        if(pIns==null || pIns.isEmpty()){
+            return null;
+        }
         Long fs;
         Map m = new HashMap();
         String j = "select count(s) from Encounter s ";
@@ -108,17 +111,53 @@ public class AnalysisController {
 
         if (sex != null) {
             j += " and s.client.person.sex.code=:s ";
-            m.put("s",sex.getCode());
+            m.put("s", sex.getCode());
         }
-        
-        
-        
-        j += " and s.institution in =:ins ";
-        m.put("ins", pIns);
 
+        j += " and s.institution in :ins ";
+        m.put("ins", pIns);
+        System.out.println("j = " + j);
+        System.out.println("m = " + m);
         fs = getEncounterFacade().findLongByJpql(j, m);
 
-     return fs;
+        return fs;
+    }
+
+    public Long findRegistrationCount(Date pFrom, Date pTo, List<Institution> pIns, Item sex) {
+        System.out.println("Find Registration Count");
+        System.out.println("Sex = " + sex);
+        System.out.println("dates start");
+        System.out.println("p From = " + pFrom.toString());
+        System.out.println("p To = " + pTo.toString());
+        System.out.println("dates end");
+        
+        if(pIns==null || pIns.isEmpty()){
+            return null;
+        }
+        System.out.println("Pins Count = " + pIns.size());
+        Long fs;
+        Map m = new HashMap();
+        String j = "select count(c) from Client c ";
+        j += " where c.retired<>:ret ";
+        j += " and c.createdAt between :fd and :td ";
+        m.put("fd", pFrom);
+        m.put("td", pTo);
+        m.put("ret", true);
+        if (sex != null) {
+            j += " and c.person.sex.code=:s ";
+            m.put("s", sex.getCode());
+        }
+
+        j += " and c.createInstitution in :ins ";
+        m.put("ins", pIns);
+
+        System.out.println("j = " + j);
+        
+        fs = getClientFacade().findLongByJpql(j, m);
+
+        System.out.println("fs = " + fs);
+        
+        return fs;
     }
 
     public void findClientCount() {

@@ -66,11 +66,11 @@ public class ItemApplicationController {
     }
     
     public Item getMale(){
-        return findItemByCode("male");
+        return findItemByCode("sex_male");
     }
     
     public Item getFemale(){
-        return findItemByCode("female");
+        return findItemByCode("sex_female");
     }
     
     
