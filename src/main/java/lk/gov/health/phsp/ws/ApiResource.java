@@ -113,6 +113,11 @@ public class ApiResource {
                 case "get_institute_registered_counts":
                     jSONObjectOut = instituteScreened(year, month, instituteId);
                     break;
+                case "get_patients_with_cvd_risk_list":
+                case "get_institutes_screened_list":
+                case "get_institutes_registered_list":
+                    jSONObjectOut = errorMessageTime();
+                    break;
                 default:
                     jSONObjectOut = errorMessage();
             }
@@ -400,6 +405,16 @@ public class ApiResource {
         JSONObject jSONObjectOut = new JSONObject();
         jSONObjectOut.put("code", 400);
         jSONObjectOut.put("type", "error");
+        String e = "Parameter name is not recognized.";
+        jSONObjectOut.put("message", "Parameter name is not recognized.");
+        return jSONObjectOut;
+    }
+    
+    private JSONObject errorMessageTime() {
+        JSONObject jSONObjectOut = new JSONObject();
+        jSONObjectOut.put("code", 400);
+        jSONObjectOut.put("type", "error");
+        String e = "This requested is supported only during 9pm to 6am next day.";
         jSONObjectOut.put("message", "Parameter name is not recognized.");
         return jSONObjectOut;
     }
