@@ -140,7 +140,7 @@ public class AnalysisController {
         Map m = new HashMap();
         String j = "select count(c) from Client c ";
         j += " where c.retired<>:ret ";
-        j += " and c.createdOn between :fd and :td ";
+        j += " and c.createdAt between :fd and :td ";
         m.put("fd", pFrom);
         m.put("td", pTo);
         m.put("ret", true);

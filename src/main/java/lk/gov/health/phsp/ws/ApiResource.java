@@ -331,6 +331,7 @@ public class ApiResource {
             Date to = CommonController.endOfTheMonth(intYear, intMonth);
 
             List<Institution> pIns = institutionApplicationController.findChildrenInstitutions(a);
+            pIns.add(a);
 
             Long maleCount = analysisController.findRegistrationCount(from, to, pIns, itemApplicationController.getMale());
             Long femaleCount = analysisController.findRegistrationCount(from, to, pIns, itemApplicationController.getFemale());
