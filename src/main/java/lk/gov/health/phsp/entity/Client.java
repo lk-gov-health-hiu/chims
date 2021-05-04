@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -34,25 +35,25 @@ public class Client implements Serializable {
     /*
     Create Properties
      */
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private WebUser createdBy;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date createdAt;
     @Temporal(javax.persistence.TemporalType.DATE)
     private Date createdOn;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Institution createInstitution;
     /*
     Last Edit Properties
      */
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private WebUser lastEditBy;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date lastEditeAt;
     /*
     Retire Reversal Properties
      */
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private WebUser retiredReversedBy;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date retiredReversedAt;
@@ -61,7 +62,7 @@ public class Client implements Serializable {
      */
     private boolean retired;
     private boolean reservedClient;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private WebUser retiredBy;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date retiredAt;

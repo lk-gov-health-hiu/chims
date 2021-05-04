@@ -243,12 +243,16 @@ public class ApiResource {
             return errorMessageNoYear();
         }
         Integer intMonth;
-        try {
-            intMonth = Integer.parseInt(month);
-        } catch (NumberFormatException e) {
-            System.out.println("e = " + e);
-            return errorMessageNoMonth();
+        intMonth = CommonController.monthIntFromString(month);
+        if (intMonth == null) {
+            try {
+                intMonth = Integer.parseInt(month);
+            } catch (NumberFormatException e) {
+                System.out.println("e = " + e);
+                return errorMessageNoMonth();
+            }
         }
+        
         if (intMonth < 0 || intMonth > 12) {
             return errorMessageNoMonth();
         }
@@ -333,13 +337,16 @@ public class ApiResource {
             Long totalCount = analysisController.findRegistrationCount(from, to, pIns, null);
 
             
-            System.out.println("Institution = " + a.getName());
-            System.out.println("maleCount = " + maleCount);
-            System.out.println("femaleCount = " + femaleCount);
-            System.out.println("totalCount = " + totalCount);
-            System.out.println("from = " + from.toString());
-            System.out.println("to = " + to.toString());
+//            System.out.println("Institution = " + a.getName());
+//            System.out.println("maleCount = " + maleCount);
+//            System.out.println("femaleCount = " + femaleCount);
+//            System.out.println("totalCount = " + totalCount);
             
+//            System.out.println("intYear = " + intYear);
+//            System.out.println("intMonth = " + intMonth);
+//            System.out.println("from = " + CommonController.dateTimeToString(from, "dd MMMM yyyy hh:mm"));
+//            System.out.println("to = " + CommonController.dateTimeToString(to, "dd MMMM yyyy hh:mm"));
+//            
             
             if (totalCount != null && totalCount > 0) {
                 JSONObject ja = new JSONObject();

@@ -32,6 +32,7 @@ import javax.ejb.EJB;
 import javax.inject.Named;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.persistence.TemporalType;
 import lk.gov.health.phsp.entity.Institution;
 import lk.gov.health.phsp.entity.Item;
 import lk.gov.health.phsp.enums.EncounterType;
@@ -95,7 +96,7 @@ public class AnalysisController {
         if (ec == null) {
             ec = EncounterType.Clinic_Visit;
         }
-        if(pIns==null || pIns.isEmpty()){
+        if (pIns == null || pIns.isEmpty()) {
             return null;
         }
         Long fs;
@@ -124,14 +125,14 @@ public class AnalysisController {
     }
 
     public Long findRegistrationCount(Date pFrom, Date pTo, List<Institution> pIns, Item sex) {
-        System.out.println("Find Registration Count");
-        System.out.println("Sex = " + sex);
-        System.out.println("dates start");
-        System.out.println("p From = " + pFrom.toString());
-        System.out.println("p To = " + pTo.toString());
-        System.out.println("dates end");
-        
-        if(pIns==null || pIns.isEmpty()){
+//        System.out.println("Find Registration Count");
+//        System.out.println("Sex = " + sex);
+//        System.out.println("dates start");
+        System.out.println("p From = " + CommonController.dateTimeToString(pFrom, "dd MMMM yyyy hh:mm"));
+        System.out.println("p To = " + CommonController.dateTimeToString(pTo, "dd MMMM yyyy hh:mm"));
+//        System.out.println("dates end");
+
+        if (pIns == null || pIns.isEmpty()) {
             return null;
         }
         System.out.println("Pins Count = " + pIns.size());
@@ -139,7 +140,7 @@ public class AnalysisController {
         Map m = new HashMap();
         String j = "select count(c) from Client c ";
         j += " where c.retired<>:ret ";
-        j += " and c.createdAt between :fd and :td ";
+        j += " and c.createdOn between :fd and :td ";
         m.put("fd", pFrom);
         m.put("td", pTo);
         m.put("ret", true);
@@ -151,12 +152,10 @@ public class AnalysisController {
         j += " and c.createInstitution in :ins ";
         m.put("ins", pIns);
 
-        System.out.println("j = " + j);
-        
-        fs = getClientFacade().findLongByJpql(j, m);
+//        System.out.println("j = " + j);
+        fs = getClientFacade().findLongByJpql(j, m, TemporalType.DATE);
 
-        System.out.println("fs = " + fs);
-        
+//        System.out.println("fs = " + fs);
         return fs;
     }
 

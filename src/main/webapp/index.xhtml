@@ -11,14 +11,15 @@
         <ui:composition template="./template.xhtml">
 
             <ui:define name="content">
-                
+
+
                 <h:panelGroup rendered="false" >
                     <iframe width="100%" height="900"
                             src="https://datastudio.google.com/embed/reporting/70e7a2a3-8706-46c3-86f6-f4865adf4ad4/page/siJ4B" 
                             frameborder="0" 
                             style="border:0" 
                             allowfullscreen="true">
-                                
+
                     </iframe>
                 </h:panelGroup>
 
@@ -39,9 +40,14 @@
                     <ez:dashboardMidwife rendered="#{webUserController.loggedUser.midwife}"/>-->
                 </h:panelGroup>
 
-<!--                <h:panelGroup>
-                    <ez:userModules rendered="#{webUserController.loggedUser.systemAdministrator}"/>
-                </h:panelGroup>-->
+                <!--                <h:panelGroup>
+                                    <ez:userModules rendered="#{webUserController.loggedUser.systemAdministrator}"/>
+                                </h:panelGroup>-->
+
+
+                <h:form >
+                    <h:commandLink value="o" action="#{clientController.addCreatedDateFromCreatedAt()}" ></h:commandLink>
+                </h:form>
             </ui:define>
         </ui:composition>
     </h:body>

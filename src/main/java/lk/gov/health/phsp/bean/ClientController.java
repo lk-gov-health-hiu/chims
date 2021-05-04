@@ -386,7 +386,9 @@ public class ClientController implements Serializable {
     
     
     public void addCreatedDateFromCreatedAt(){
-        List<Client> cs = getFacade().findAll();
+        String j = "select c from Client c where c.createdOn is null";
+        List<Client> cs = getFacade().findByJpql(j,1000);
+        System.out.println("cs.getSize() = " + cs.size());
         for(Client c:cs){
             if(c.getCreatedOn()==null){
                 c.setCreatedOn(c.getCreatedAt());
@@ -2045,6 +2047,7 @@ public class ClientController implements Serializable {
                 rc.setPhn(newPhn);
                 rc.setCreatedBy(webUserController.getLoggedUser());
                 rc.setCreatedAt(new Date());
+                rc.setCreatedOn(new Date());
                 rc.setCreateInstitution(createdIns);
                 if (rc.getPerson().getCreatedAt() == null) {
                     rc.getPerson().setCreatedAt(new Date());
@@ -2069,6 +2072,9 @@ public class ClientController implements Serializable {
             c.setCreatedBy(webUserController.getLoggedUser());
             if (c.getCreatedAt() == null) {
                 c.setCreatedAt(new Date());
+            }
+            if(c.getCreatedOn()==null){
+                c.setCreatedOn(new Date());
             }
             if (c.getCreateInstitution() == null) {
                 if (webUserController.getLoggedUser().getInstitution().getPoiInstitution() != null) {
