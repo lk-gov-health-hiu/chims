@@ -81,9 +81,6 @@ public class DashboardController {
             totalNumberOfClinicVisits = findTotalNumberOfClinicVisitsForAdmin();
         }
         if (totalNumberOfCvsRiskClients == null) {
-            riskVals = new ArrayList<>();
-            riskVals.add(riskVal1);
-            riskVals.add(riskVal2);
             totalNumberOfCvsRiskClients = findTotalNumberOfCvsRiskClientsForAdmin();
         }
     }
@@ -148,9 +145,6 @@ public class DashboardController {
             Date toDate,
             String itemCode,
             List<String> valueStrings) {
-        if (bypass) {
-            return 65;
-        }
 
         String j;
         Map m = new HashMap();

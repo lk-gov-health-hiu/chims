@@ -24,6 +24,7 @@
 package lk.gov.health.phsp.bean;
 
 // <editor-fold defaultstate="collapsed" desc="Imports">
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -35,7 +36,9 @@ import javax.inject.Inject;
 import javax.persistence.TemporalType;
 import lk.gov.health.phsp.entity.Institution;
 import lk.gov.health.phsp.entity.Item;
+import lk.gov.health.phsp.entity.QueryComponent;
 import lk.gov.health.phsp.enums.EncounterType;
+import lk.gov.health.phsp.facade.ClientEncounterComponentItemFacade;
 import lk.gov.health.phsp.facade.ClientFacade;
 import lk.gov.health.phsp.facade.EncounterFacade;
 // </editor-fold>
@@ -49,6 +52,8 @@ public class AnalysisController {
     private ClientFacade clientFacade;
     @EJB
     private EncounterFacade encounterFacade;
+    @EJB
+    ClientEncounterComponentItemFacade clientEncounterComponentItemFacade;
 // </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="Controllers">
     @Inject
@@ -59,6 +64,11 @@ public class AnalysisController {
     private Long encounterCount;
     private Date from;
     private Date to;
+
+    private String riskVariable = "cvs_risk_factor";
+    private String riskVal1 = "30-40%";
+    private String riskVal2 = ">40%";
+    private List<String> riskVals;
 // </editor-fold>
 
 // <editor-fold defaultstate="collapsed" desc="Constructors">

@@ -56,16 +56,15 @@ import lk.gov.health.phsp.facade.QueryComponentFacade;
  *
  * @author Dr M H B Ariyaratne<buddhika.ari@gmail.com>
  */
-@Named(value = "applicationController")
+@Named
 @ApplicationScoped
 public class ApplicationController {
 
 // <editor-fold defaultstate="collapsed" desc="EJBs">
-
     @EJB
     private InstitutionFacade institutionFacade;
     @EJB
-    private  QueryComponentFacade queryComponentFacade;
+    private QueryComponentFacade queryComponentFacade;
     @EJB
     private ClientFacade clientFacade;
     @EJB
@@ -82,10 +81,9 @@ public class ApplicationController {
     private boolean demoSetup = false;
     private boolean production = true;
     private String versionNo = "1.1.4";
-    private  List<QueryComponent> queryComponents;
+    private List<QueryComponent> queryComponents;
     private List<Item> items;
     private List<String> userTransactionTypes;
-    
 
     private final boolean logActivity = true;
 
@@ -191,7 +189,7 @@ public class ApplicationController {
 
     }
 
-    public  boolean validateHin(String validatingHin) {
+    public boolean validateHin(String validatingHin) {
         if (validatingHin == null) {
             return false;
         }
@@ -200,7 +198,7 @@ public class ApplicationController {
         return checkDigit == digit.charAt(0);
     }
 
-    public  String calculateCheckDigit(String card) {
+    public String calculateCheckDigit(String card) {
         if (card == null) {
             return null;
         }
@@ -232,22 +230,36 @@ public class ApplicationController {
         return digit.substring(digit.length() - 1);
     }
 
-    
-
-    private  List<QueryComponent> findQueryComponents() {
+    private List<QueryComponent> findQueryComponents() {
         String j = "select q from QueryComponent q "
                 + " where q.retired=false "
                 + " order by q.orderNo, q.name";
         Map m = new HashMap();
-        return  queryComponentFacade.findByJpql(j, m);
+        return queryComponentFacade.findByJpql(j, m);
 
     }
-
-    
 
     public void reloadQueryComponents() {
         queryComponents = null;
         userTransactionController.recordTransaction("Reload Query Components");
+    }
+
+    public QueryComponent findQueryComponent(String code) {
+        QueryComponent r = null;
+        if (code == null || code.trim().equals("")) {
+            return r;
+        }
+        for (QueryComponent c : getQueryComponents()) {
+            if (c.getCode() != null) {
+                if(c.getCode().equalsIgnoreCase(code)){
+                    if(r!=null){
+                        System.err.println("THIS CODE HAS DUPLICATES : " + code);
+                    }
+                    r=c;
+                }
+            }
+        }
+        return r;
     }
 
     // </editor-fold>
@@ -322,7 +334,6 @@ public class ApplicationController {
         this.production = production;
     }
 
-   
     public ClientFacade getClientFacade() {
         return clientFacade;
     }
@@ -347,5 +358,4 @@ public class ApplicationController {
         this.clientEncounterComponentItemFacade = clientEncounterComponentItemFacade;
     }
 
-    
 }

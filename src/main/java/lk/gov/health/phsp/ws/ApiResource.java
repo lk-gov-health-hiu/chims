@@ -31,19 +31,19 @@ import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.Produces;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
-import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import lk.gov.health.phsp.bean.AnalysisController;
+import lk.gov.health.phsp.bean.ApplicationController;
 import lk.gov.health.phsp.bean.AreaApplicationController;
 import lk.gov.health.phsp.bean.CommonController;
 import lk.gov.health.phsp.bean.InstitutionApplicationController;
 import lk.gov.health.phsp.bean.ItemApplicationController;
-import lk.gov.health.phsp.bean.ItemController;
+import lk.gov.health.phsp.bean.StoredQueryResultController;
 import lk.gov.health.phsp.entity.Area;
 import lk.gov.health.phsp.entity.Institution;
-import lk.gov.health.phsp.entity.Item;
+import lk.gov.health.phsp.entity.QueryComponent;
 import lk.gov.health.phsp.entity.Relationship;
 import lk.gov.health.phsp.enums.AreaType;
 import lk.gov.health.phsp.enums.EncounterType;
@@ -71,6 +71,10 @@ public class ApiResource {
     AnalysisController analysisController;
     @Inject
     ItemApplicationController itemApplicationController;
+    @Inject
+    ApplicationController applicationController;
+    @Inject
+    StoredQueryResultController storedQueryResultController;
 
     /**
      * Creates a new instance of GenericResource
@@ -112,6 +116,9 @@ public class ApiResource {
                 case "get_institutes_screened_list":
                     jSONObjectOut = instituteListWithScreenedCounts(year, month);
                     break;
+                case "get_patients_with_cvd_risk_list":
+                    jSONObjectOut = instituteListWithCvdRiskCounts(year, month);
+                    break;
                 case "get_institute_populations":
                     jSONObjectOut = institutePopulations(year, instituteId);
                     break;
@@ -121,11 +128,6 @@ public class ApiResource {
 
                 case "get_institute_registered_counts":
                     jSONObjectOut = instituteScreened(year, month, instituteId);
-                    break;
-
-                case "get_patients_with_cvd_risk_list":
-
-                    jSONObjectOut = errorMessageTime();
                     break;
                 default:
                     jSONObjectOut = errorMessage();
@@ -252,7 +254,7 @@ public class ApiResource {
                 return errorMessageNoMonth();
             }
         }
-        
+
         if (intMonth < 0 || intMonth > 12) {
             return errorMessageNoMonth();
         }
@@ -270,6 +272,87 @@ public class ApiResource {
             Long maleCount = analysisController.findEncounterCount(from, to, pIns, EncounterType.Clinic_Visit, itemApplicationController.getMale());
             Long femaleCount = analysisController.findEncounterCount(from, to, pIns, EncounterType.Clinic_Visit, itemApplicationController.getFemale());
             Long totalCount = analysisController.findEncounterCount(from, to, pIns, EncounterType.Clinic_Visit, null);
+
+            if (totalCount != null && totalCount > 0) {
+                JSONObject ja = new JSONObject();
+                ja.put("institute_id", a.getId());
+                ja.put("institute_code", a.getCode());
+                ja.put("year", year);
+                ja.put("month", month);
+                ja.put("male", maleCount);
+                ja.put("female", femaleCount);
+                ja.put("total", totalCount);
+                array.put(ja);
+            }
+
+        }
+        jSONObjectOut.put("data", array);
+        jSONObjectOut.put("status", successMessage());
+        return jSONObjectOut;
+    }
+
+    private JSONObject instituteListWithCvdRiskCounts(String year, String month) {
+        if (year == null || year.trim().equals("")) {
+            return errorMessageNoYear();
+        }
+        Integer intYear;
+        try {
+            intYear = Integer.parseInt(year);
+        } catch (NumberFormatException e) {
+            System.out.println("e = " + e);
+            return errorMessageNoYear();
+        }
+        if (intYear < 2000 || intYear > 2030) {
+            return errorMessageNoYear();
+        }
+
+        //Month
+        if (month == null || month.trim().equals("")) {
+            return errorMessageNoYear();
+        }
+        Integer intMonth;
+        intMonth = CommonController.monthIntFromString(month);
+        if (intMonth == null) {
+            try {
+                intMonth = Integer.parseInt(month);
+            } catch (NumberFormatException e) {
+                System.out.println("e = " + e);
+                return errorMessageNoMonth();
+            }
+        }
+
+        if (intMonth < 0 || intMonth > 12) {
+            return errorMessageNoMonth();
+        }
+
+        QueryComponent mc = applicationController.findQueryComponent("encounter_count_Number_of_female_participants_with_CVD_risk_greater_20presentage");
+        if (mc == null) {
+            return errorMessageNoIndicator();
+        }
+        QueryComponent fc = applicationController.findQueryComponent("encounter_count_Number_of_male_participants_with_CVD_risk_greater_20presentage");
+        if(fc==null){
+            return errorMessageNoIndicator();
+        }
+        QueryComponent tc = applicationController.findQueryComponent("encounter_count_of_total_CVD_risk_greater_20presentage");
+        if(tc==null){
+            return errorMessageNoIndicator();
+        }
+        
+
+        JSONObject jSONObjectOut = new JSONObject();
+        JSONArray array = new JSONArray();
+        List<Institution> ds = institutionApplicationController.getHospitals();
+        for (Institution a : ds) {
+
+            Date from = CommonController.startOfTheMonth(intYear, intMonth);
+            Date to = CommonController.endOfTheMonth(intYear, intMonth);
+
+            List<Institution> pIns = institutionApplicationController.findChildrenInstitutions(a);
+            pIns.add(a);
+
+            Long maleCount = storedQueryResultController.findStoredLongValue(mc, from, to, pIns);
+            Long femaleCount = storedQueryResultController.findStoredLongValue(fc, from, to, pIns);
+            Long totalCount = storedQueryResultController.findStoredLongValue(tc, from, to, pIns);
 
             if (totalCount != null && totalCount > 0) {
                 JSONObject ja = new JSONObject();
@@ -337,18 +420,15 @@ public class ApiResource {
             Long femaleCount = analysisController.findRegistrationCount(from, to, pIns, itemApplicationController.getFemale());
             Long totalCount = analysisController.findRegistrationCount(from, to, pIns, null);
 
-            
 //            System.out.println("Institution = " + a.getName());
 //            System.out.println("maleCount = " + maleCount);
 //            System.out.println("femaleCount = " + femaleCount);
 //            System.out.println("totalCount = " + totalCount);
-            
 //            System.out.println("intYear = " + intYear);
 //            System.out.println("intMonth = " + intMonth);
 //            System.out.println("from = " + CommonController.dateTimeToString(from, "dd MMMM yyyy hh:mm"));
 //            System.out.println("to = " + CommonController.dateTimeToString(to, "dd MMMM yyyy hh:mm"));
 //            
-            
             if (totalCount != null && totalCount > 0) {
                 JSONObject ja = new JSONObject();
                 ja.put("institute_id", a.getId());
@@ -577,6 +657,14 @@ public class ApiResource {
         jSONObjectOut.put("code", 401);
         jSONObjectOut.put("type", "error");
         jSONObjectOut.put("message", "Parameter year is not provided or not recognized.");
+        return jSONObjectOut;
+    }
+
+    private JSONObject errorMessageNoIndicator() {
+        JSONObject jSONObjectOut = new JSONObject();
+        jSONObjectOut.put("code", 411);
+        jSONObjectOut.put("type", "error");
+        jSONObjectOut.put("message", "Indicator NOT recognized.");
         return jSONObjectOut;
     }
 

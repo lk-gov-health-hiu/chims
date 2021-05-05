@@ -78,7 +78,7 @@ public class AnalysisBean {
     @EJB
     StoredQueryResultFacade storedQueryResultFacade;
 
-    private List<QueryComponent> queryComponents;
+    static List<QueryComponent> queryComponents;
     static int year;
     static int month;
     static private List<QueryComponent> qcs;

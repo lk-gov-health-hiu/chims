@@ -31,12 +31,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.ejb.EJB;
+import javax.enterprise.context.ApplicationScoped;
 import lk.gov.health.phsp.entity.Area;
 import lk.gov.health.phsp.entity.Institution;
 import lk.gov.health.phsp.entity.QueryComponent;
 import lk.gov.health.phsp.entity.StoredQueryResult;
+import lk.gov.health.phsp.facade.QueryComponentFacade;
 import lk.gov.health.phsp.facade.StoredQueryResultFacade;
-import lk.gov.health.phsp.pojcs.Jpq;
 import lk.gov.health.phsp.pojcs.Replaceable;
 
 /**
@@ -44,11 +45,13 @@ import lk.gov.health.phsp.pojcs.Replaceable;
  * @author buddhika
  */
 @Named
-@SessionScoped
+@ApplicationScoped
 public class StoredQueryResultController implements Serializable {
 
     @EJB
     StoredQueryResultFacade facade;
+    @EJB
+    QueryComponentFacade queryComponentFacade;
 
     /**
      * Creates a new instance of StoredQueryResultController
@@ -63,6 +66,22 @@ public class StoredQueryResultController implements Serializable {
             return null;
         }
         return s.getLongValue();
+    }
+
+    public Long findStoredLongValue(QueryComponent qc, Date fromDate, Date toDate, List<Institution> institutions) {
+        Long c = 0l;
+        Map<Long,Institution> mis = new HashMap<>();
+        for (Institution institution : institutions) {
+            mis.put(institution.getId(), institution);
+        }
+        for (Institution institution : mis.values()) {
+            StoredQueryResult s;
+            s = findStoredQueryResult(qc, fromDate, toDate, institution);
+            if (s != null && s.getLongValue() != null) {
+                c += s.getLongValue();
+            }
+        }
+        return c;
     }
 
     public Long findStoredLongValue(QueryComponent qc, Date fromDate, Date toDate, Institution institution, Replaceable re) {
@@ -110,7 +129,7 @@ public class StoredQueryResultController implements Serializable {
                 + " order by s.id desc";
         return facade.findFirstByJpql(j, m);
     }
-    
+
     public StoredQueryResult findStoredQueryResult(QueryComponent qc, Date fromDate, Date toDate, Area area) {
         String j;
         Map m;
@@ -147,7 +166,7 @@ public class StoredQueryResultController implements Serializable {
         }
 
     }
-    
+
     public void saveValue(QueryComponent qc, Date fromDate, Date toDate, Area area, Long value) {
         StoredQueryResult s;
         s = findStoredQueryResult(qc, fromDate, toDate, area);
