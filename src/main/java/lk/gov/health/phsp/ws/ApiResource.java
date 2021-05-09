@@ -32,6 +32,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.inject.Inject;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import lk.gov.health.phsp.bean.AnalysisController;
@@ -48,6 +49,7 @@ import lk.gov.health.phsp.entity.Relationship;
 import lk.gov.health.phsp.enums.AreaType;
 import lk.gov.health.phsp.enums.EncounterType;
 import lk.gov.health.phsp.enums.RelationshipType;
+import lk.gov.health.phsp.enums.WebUserRole;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -136,6 +138,20 @@ public class ApiResource {
         String json = jSONObjectOut.toString();
         return json;
     }
+    
+    @GET
+    @Path("/get_role_name/{roleId}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public String getRoleName(@PathParam("roleId") String roleId){
+        return WebUserRole.valueOf(roleId).getLabel();
+    }
+    
+    @GET
+    @Path("/get_ins_name/{insCode}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public String getInstituteName(@PathParam("insCode") String insCode){
+        return null;
+    }
 
     private JSONObject districtList() {
         JSONObject jSONObjectOut = new JSONObject();
@@ -173,13 +189,13 @@ public class ApiResource {
             } else {
                 ja.put("edited_at", a.getCreatedAt());
             }
-
             if (a.getProvince() != null) {
                 ja.put("province_id", a.getProvince().getId());
             }
             if (a.getDistrict() != null) {
                 ja.put("district_id", a.getDistrict().getId());
             }
+            ja.put("child_institutions", Get_Child_Institutions(a));
             array.put(ja);
         }
         jSONObjectOut.put("data", array);
@@ -700,4 +716,20 @@ public class ApiResource {
         return jSONObjectOut;
     }
 
+    private String Get_Child_Institutions(Institution institution) {
+        String childInstitions = null;
+
+        if (institution != null) {
+            List<Institution> instList = institutionApplicationController.findChildrenInstitutions(institution);
+
+            for (Institution i_ : instList) {
+                if (childInstitions == null) {
+                    childInstitions = institution.getCode() + ":" + i_.getCode();
+                } else {
+                    childInstitions += "^" + institution.getCode() + ":" + i_.getCode();
+                }
+            }
+        }
+        return childInstitions;
+    }
 }
