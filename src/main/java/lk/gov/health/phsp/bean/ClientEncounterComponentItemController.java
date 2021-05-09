@@ -703,7 +703,7 @@ public class ClientEncounterComponentItemController implements Serializable {
         userTransactionController.recordTransaction("Add Another - Clinic Forms");
     }
 
-    public void addAnother(DataItem i) {
+    public void addAnotherDataItem(DataItem i) {
         System.out.println("addAnother");
         System.out.println("Dataitem i = " + i);
 
@@ -738,12 +738,19 @@ public class ClientEncounterComponentItemController implements Serializable {
 
         System.out.println("i.getCi().getId() = " + i.getCi().getId());
 
-        save(i.getCi());
+        save(i.getAddingItem().getCi());
 
         System.out.println("saved");
         System.out.println("i.getCi().getId() = " + i.getCi().getId());
 
         i.getAddedItems().add(i.getAddingItem());
+        
+        if (i.getAddingItem().getCi().getItemValue() == null) {
+            JsfUtil.addErrorMessage("No Item value for CI");
+            return;
+        } else {
+            System.out.println("i.getAddingItem().getCi().getItemValue() = " + i.getAddingItem().getCi().getItemValue().getName());
+        }
 
         System.out.println("before new nci");
 

@@ -56,7 +56,8 @@
 
                             <h:panelGroup rendered="#{clientEncounterComponentFormSetController.dataFormset.dfs.panelType  eq 'TabView_Left_Oriented' }" >
                                 <p:tabView 
-                                    activeIndex="#{clientEncounterComponentFormSetController.selectedTabIndex}"  orientation="left" style="width: 100%; padding: 5px;" 
+                                    activeIndex="#{clientEncounterComponentFormSetController.selectedTabIndex}"
+                                    orientation="left" style="width: 100%; padding: 5px;" 
                                     value="#{clientEncounterComponentFormSetController.dataFormset.forms}" var="f">
                                     <p:tab title="#{f.df.name}" >
                                         <div style="#{f.df.css}" >
@@ -67,37 +68,24 @@
                                 </p:tabView>
                             </h:panelGroup>
                             
-                           
-                            
-<!--                            <h1>New</h1>
-                            <hr/>
-                            <h1>Old</h1>-->
 
                             <h:panelGroup rendered="#{clientEncounterComponentFormSetController.selected.referanceDesignComponentFormSet.panelType eq 'TabView_Bottom_Oriented'}" >
                                 <p:tabView 
-                                    activeIndex="#{clientEncounterComponentFormSetController.selectedTabIndex}"  orientation="bottom" style="width: 100%; padding: 5px;" value="#{clientEncounterComponentFormController.findClientEncounterComponentFormOfAFormset(clientEncounterComponentFormSetController.selected)}" var="f">
-                                    <p:tab title="#{f.name}" >
-                                        <div style="#{f.generatedCss}" >
+                                    activeIndex="#{clientEncounterComponentFormSetController.selectedTabIndex}"  
+                                    orientation="bottom" style="width: 100%; padding: 5px;" 
+                                    value="#{clientEncounterComponentFormSetController.dataFormset.forms}" var="f">
+                                    <p:tab title="#{f.df.name}" >
+                                        <div style="#{f.df.css}" >
                                             <ez:dataform form="#{f}" ></ez:dataform>
                                         </div>
                                     </p:tab>
                                     <p:ajax event="tabChange" process="@this"/>
                                 </p:tabView>
                             </h:panelGroup>
-<!--                            <h:panelGroup rendered="#{clientEncounterComponentFormSetController.selected.referanceDesignComponentFormSet.panelType eq 'TabView_Left_Oriented'}" >
-                                <p:tabView activeIndex="#{clientEncounterComponentFormSetController.selectedTabIndex}" orientation="left" style="width: 100%; padding: 5px;" value="#{clientEncounterComponentFormController.findClientEncounterComponentFormOfAFormset(clientEncounterComponentFormSetController.selected)}" var="f">
-                                    <p:tab title="#{f.name}" >
-                                        <div style="#{f.generatedCss}" >
-                                            <ez:dataform form="#{f}" ></ez:dataform>
-                                        </div>
-                                    </p:tab>
-                                    <p:ajax event="tabChange" process="@this"/>
-                                </p:tabView>
-                            </h:panelGroup>-->
                             <h:panelGroup rendered="#{clientEncounterComponentFormSetController.selected.referanceDesignComponentFormSet.panelType eq 'Tabview_Top_Oriented'}" >
-                                <p:tabView activeIndex="#{clientEncounterComponentFormSetController.selectedTabIndex}"  orientation="top" style="width: 100%; padding: 5px;" value="#{clientEncounterComponentFormController.findClientEncounterComponentFormOfAFormset(clientEncounterComponentFormSetController.selected)}" var="f">
-                                    <p:tab title="#{f.name}" >
-                                        <div style="#{f.generatedCss}" >
+                                <p:tabView activeIndex="#{clientEncounterComponentFormSetController.selectedTabIndex}"  orientation="top" style="width: 100%; padding: 5px;" value="#{clientEncounterComponentFormSetController.dataFormset.forms}" var="f">
+                                    <p:tab title="#{f.df.name}" >
+                                        <div style="#{f.df.css}" >
                                             <ez:dataform form="#{f}" ></ez:dataform>
                                         </div>
                                     </p:tab>
@@ -105,9 +93,9 @@
                                 </p:tabView>
                             </h:panelGroup>
                             <h:panelGroup rendered="#{clientEncounterComponentFormSetController.selected.referanceDesignComponentFormSet.panelType eq 'TabView_Right_Oriented'}" >
-                                <p:tabView  activeIndex="#{clientEncounterComponentFormSetController.selectedTabIndex}" orientation="right" style="width: 100%; padding: 5px;" value="#{clientEncounterComponentFormController.findClientEncounterComponentFormOfAFormset(clientEncounterComponentFormSetController.selected)}" var="f">
-                                    <p:tab title="#{f.name}" >
-                                        <div style="#{f.generatedCss}" >
+                                <p:tabView  activeIndex="#{clientEncounterComponentFormSetController.selectedTabIndex}" orientation="right" style="width: 100%; padding: 5px;" value="#{clientEncounterComponentFormSetController.dataFormset.forms}" var="f">
+                                    <p:tab title="#{f.df.name}" >
+                                        <div style="#{f.df.css}" >
                                             <ez:dataform form="#{f}" ></ez:dataform>
                                         </div>
                                     </p:tab>
@@ -115,9 +103,9 @@
                                 </p:tabView>
                             </h:panelGroup>
                             <h:panelGroup rendered="#{clientEncounterComponentFormSetController.selected.referanceDesignComponentFormSet.panelType eq 'Accordion_Basic'}" >
-                                <p:accordionPanel  activeIndex="#{clientEncounterComponentFormSetController.selectedTabIndex}"  style="width: 100%; padding: 5px;" value="#{clientEncounterComponentFormController.findClientEncounterComponentFormOfAFormset(clientEncounterComponentFormSetController.selected)}" var="f">
-                                    <p:tab title="#{f.name}" >
-                                        <div style="#{f.generatedCss}" >
+                                <p:accordionPanel  activeIndex="#{clientEncounterComponentFormSetController.selectedTabIndex}"  style="width: 100%; padding: 5px;" value="#{clientEncounterComponentFormSetController.dataFormset.forms}" var="f">
+                                    <p:tab title="#{f.df.name}" >
+                                        <div style="#{f.df.css}" >
                                             <ez:dataform form="#{f}" ></ez:dataform>
                                         </div>
                                     </p:tab>
@@ -125,9 +113,9 @@
                                 </p:accordionPanel>
                             </h:panelGroup>
                             <h:panelGroup rendered="#{clientEncounterComponentFormSetController.selected.referanceDesignComponentFormSet.panelType eq 'Accordion_Multiple'}" >
-                                <p:accordionPanel multiple="true" style="width: 100%; padding: 5px;" value="#{clientEncounterComponentFormController.findClientEncounterComponentFormOfAFormset(clientEncounterComponentFormSetController.selected)}" var="f">
-                                    <p:tab title="#{f.name}" >
-                                        <div style="#{f.generatedCss}" >
+                                <p:accordionPanel multiple="true" style="width: 100%; padding: 5px;" value="#{clientEncounterComponentFormSetController.dataFormset.forms}" var="f">
+                                    <p:tab title="#{f.df.name}" >
+                                        <div style="#{f.df.css}" >
                                             <ez:dataform form="#{f}" ></ez:dataform>
                                         </div>
                                     </p:tab>
