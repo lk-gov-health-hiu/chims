@@ -1,5 +1,7 @@
 package lk.gov.health.phsp.bean;
 
+import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.WebResource;
 import lk.gov.health.phsp.entity.Area;
 import lk.gov.health.phsp.entity.WebUser;
 import lk.gov.health.phsp.entity.Institution;
@@ -13,9 +15,11 @@ import lk.gov.health.phsp.facade.UploadFacade;
 import lk.gov.health.phsp.facade.WebUserFacade;
 import lk.gov.health.phsp.facade.util.JsfUtil;
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 
 import java.io.Serializable;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -23,11 +27,14 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.ejb.EJB;
 import javax.enterprise.context.SessionScoped;
 import javax.faces.component.UIComponent;
+import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
@@ -39,6 +46,8 @@ import lk.gov.health.phsp.entity.UserPrivilege;
 import lk.gov.health.phsp.enums.Privilege;
 import lk.gov.health.phsp.enums.PrivilegeTreeNode;
 import lk.gov.health.phsp.facade.UserPrivilegeFacade;
+import org.glassfish.jersey.client.ClientResponse;
+import org.json.simple.parser.JSONParser;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 import org.primefaces.model.TreeNode;
@@ -309,6 +318,39 @@ public class WebUserController implements Serializable {
         passwordReenter = "";
         userTransactionController.recordTransaction("To Add New User By InsAdmin");
         return "/insAdmin/create_new_user";
+    }
+    
+    public void toProcedureRoom() {
+        String privilageStr = null;
+        String baseUrl = "http://localhost:8080/ProcedureRoomService/resources/redirect";
+        String urlVals = "?API_KEY=EF16A5D4EF8AA6AA0580AF1390CF0600";
+        urlVals += "&User_Name="+loggedUser.getName();
+        urlVals += "&User_Role="+loggedUser.getWebUserRole();
+        
+        for(UserPrivilege up:loggedUserPrivileges){
+            if(up.getPrivilege() != null){
+                if(privilageStr==null){
+                    privilageStr = up.getPrivilege().toString();
+                }else{
+                    privilageStr += "^"+up.getPrivilege().toString();
+                }
+            }
+        }
+        urlVals += "&Privileges="+"TEST";
+        urlVals += "&Institution="+loggedUser.getInstitution().getCode();
+        urlVals += "&UserID="+loggedUser.getName();
+        
+        Client client = Client.create();
+        WebResource webResource1 = client.resource(baseUrl + urlVals);
+        com.sun.jersey.api.client.ClientResponse cr = webResource1.accept("text/plain").get(com.sun.jersey.api.client.ClientResponse.class);
+        String outpt = cr.getEntity(String.class);
+        
+        ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
+        try {
+            externalContext.redirect(outpt);
+        } catch (IOException ex) {
+            Logger.getLogger(WebUserController.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     public String toManageAllUsers() {

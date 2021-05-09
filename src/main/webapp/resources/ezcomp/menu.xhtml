@@ -69,6 +69,9 @@
 
 
                 </p:submenu>
+                <p:submenu label="Modules">
+                    <p:menuitem value="Procedure Room" action="#{webUserController.toProcedureRoom()}"  ajax="false" />
+                </p:submenu>
 
                 <p:submenu label="Settings"  rendered="#{webUserController.hasPrivilege('User')}" >
                     <p:menuitem value="Change My Password" action="#{webUserController.toChangeMyPassword()}"    ajax="false" />
