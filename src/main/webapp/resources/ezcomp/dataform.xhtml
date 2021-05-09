@@ -64,7 +64,7 @@
                                         </td>
                                         <td>
                                             <p:commandButton id="btnAddM1"  value="Add" process="domIcM btnAddM1" update="@form :#{p:component('formset')}"
-                                                             action="#{clientEncounterComponentItemController.addAnother(ii)}"></p:commandButton>
+                                                             action="#{clientEncounterComponentItemController.addAnotherDataItem(ii)}"></p:commandButton>
                                         </td>
                                     </h:panelGroup>
                                     <h:panelGroup rendered="#{ii.di.renderType eq 'Autocomplete'}" >
@@ -83,7 +83,7 @@
                                         </td>
                                         <td>
                                             <p:commandButton id="btnAddM2"  value="Add" process="acItemM btnAddM2" update="@form :#{p:component('formset')}"
-                                                             action="#{clientEncounterComponentItemController.addAnother(ii)}"></p:commandButton>
+                                                             action="#{clientEncounterComponentItemController.addAnotherDataItem(ii)}"></p:commandButton>
                                         </td>
                                     </h:panelGroup>
 
@@ -104,7 +104,7 @@
                                     </td>
                                     <td>
                                         <p:commandButton id="btnAddM3"  value="Add" process="acAM btnAddM3" update="@form :#{p:component('formset')}"
-                                                         action="#{clientEncounterComponentItemController.addAnother(ii.addingItem)}"></p:commandButton>
+                                                         action="#{clientEncounterComponentItemController.addAnotherDataItem(ii.addingItem)}"></p:commandButton>
                                     </td>
                                 </h:panelGroup>
                                 <h:panelGroup rendered="#{ii.di.renderType eq 'Prescreption'}" >
@@ -208,7 +208,7 @@
                                             <p:outputLabel for="itLongC" value="#{ii.di.name}"  style="#{ii.di.css}" ></p:outputLabel>
                                         </td>
                                         <td>
-                                            <p:inputText id="itLongC" value="#{ii.longNumberValue}" 
+                                            <p:inputText id="itLongC" value="#{ii.ci.longNumberValue}" 
                                                          required="#{ii.di.required}" 
                                                          requiredMessage="#{ii.di.requiredErrorMessage}" >
                                                 <p:ajax  event="blur" process="@this"   listener="#{clientEncounterComponentItemController.save(ii.ci)}" ></p:ajax>
@@ -359,7 +359,7 @@
                             <td>
                                 <h:panelGroup rendered="#{ii.di.multipleEntiesPerForm}" >
                                     <p:commandButton id="btnAdd"  value="Add Another" process="@this" update="@form :#{p:component('formset')}"
-                                                     action="#{clientEncounterComponentItemController.addAnother(ii.ci)}"></p:commandButton>
+                                                     action="#{clientEncounterComponentItemController.addAnotherDataItem(ii.ci)}"></p:commandButton>
                                 </h:panelGroup>
                             </td>
                             <td>

@@ -60,7 +60,7 @@
                                     value="#{clientEncounterComponentFormSetController.dataFormset.forms}" var="f">
                                     <p:tab title="#{f.df.name}" >
                                         <div style="#{f.df.css}" >
-                                            <ez:dataform form="#{f}" ></ez:dataform>
+                                            <ez:dataform_view form="#{f}" ></ez:dataform_view>
                                         </div>
                                     </p:tab>
                                     <p:ajax event="tabChange" process="@this"/>
@@ -78,7 +78,7 @@
                                     activeIndex="#{clientEncounterComponentFormSetController.selectedTabIndex}"  orientation="bottom" style="width: 100%; padding: 5px;" value="#{clientEncounterComponentFormController.findClientEncounterComponentFormOfAFormset(clientEncounterComponentFormSetController.selected)}" var="f">
                                     <p:tab title="#{f.name}" >
                                         <div style="#{f.generatedCss}" >
-                                            <ez:dataform form="#{f}" ></ez:dataform>
+                                            <ez:dataform_view form="#{f}" ></ez:dataform_view>
                                         </div>
                                     </p:tab>
                                     <p:ajax event="tabChange" process="@this"/>
@@ -88,7 +88,7 @@
                                 <p:tabView activeIndex="#{clientEncounterComponentFormSetController.selectedTabIndex}" orientation="left" style="width: 100%; padding: 5px;" value="#{clientEncounterComponentFormController.findClientEncounterComponentFormOfAFormset(clientEncounterComponentFormSetController.selected)}" var="f">
                                     <p:tab title="#{f.name}" >
                                         <div style="#{f.generatedCss}" >
-                                            <ez:dataform form="#{f}" ></ez:dataform>
+                                            <ez:dataform_view form="#{f}" ></ez:dataform_view>
                                         </div>
                                     </p:tab>
                                     <p:ajax event="tabChange" process="@this"/>
@@ -98,7 +98,7 @@
                                 <p:tabView activeIndex="#{clientEncounterComponentFormSetController.selectedTabIndex}"  orientation="top" style="width: 100%; padding: 5px;" value="#{clientEncounterComponentFormController.findClientEncounterComponentFormOfAFormset(clientEncounterComponentFormSetController.selected)}" var="f">
                                     <p:tab title="#{f.name}" >
                                         <div style="#{f.generatedCss}" >
-                                            <ez:dataform form="#{f}" ></ez:dataform>
+                                            <ez:dataform_view form="#{f}" ></ez:dataform_view>
                                         </div>
                                     </p:tab>
                                     <p:ajax event="tabChange" process="@this"/>
@@ -108,7 +108,7 @@
                                 <p:tabView  activeIndex="#{clientEncounterComponentFormSetController.selectedTabIndex}" orientation="right" style="width: 100%; padding: 5px;" value="#{clientEncounterComponentFormController.findClientEncounterComponentFormOfAFormset(clientEncounterComponentFormSetController.selected)}" var="f">
                                     <p:tab title="#{f.name}" >
                                         <div style="#{f.generatedCss}" >
-                                            <ez:dataform form="#{f}" ></ez:dataform>
+                                            <ez:dataform_view form="#{f}" ></ez:dataform_view>
                                         </div>
                                     </p:tab>
                                     <p:ajax event="tabChange" process="@this"/>
@@ -118,7 +118,7 @@
                                 <p:accordionPanel  activeIndex="#{clientEncounterComponentFormSetController.selectedTabIndex}"  style="width: 100%; padding: 5px;" value="#{clientEncounterComponentFormController.findClientEncounterComponentFormOfAFormset(clientEncounterComponentFormSetController.selected)}" var="f">
                                     <p:tab title="#{f.name}" >
                                         <div style="#{f.generatedCss}" >
-                                            <ez:dataform form="#{f}" ></ez:dataform>
+                                            <ez:dataform_view form="#{f}" ></ez:dataform_view>
                                         </div>
                                     </p:tab>
                                     <p:ajax event="tabChange" process="@this"/>
@@ -128,7 +128,7 @@
                                 <p:accordionPanel multiple="true" style="width: 100%; padding: 5px;" value="#{clientEncounterComponentFormController.findClientEncounterComponentFormOfAFormset(clientEncounterComponentFormSetController.selected)}" var="f">
                                     <p:tab title="#{f.name}" >
                                         <div style="#{f.generatedCss}" >
-                                            <ez:dataform form="#{f}" ></ez:dataform>
+                                            <ez:dataform_view form="#{f}" ></ez:dataform_view>
                                         </div>
                                     </p:tab>
                                     <p:ajax event="tabChange" process="@this"/>
