@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package lk.gov.health.phsp.bean;
+package lk.gov.health.phsp.entity;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -34,31 +34,42 @@ import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
-import lk.gov.health.phsp.entity.Institution;
-import lk.gov.health.phsp.entity.WebUser;
 
 /**
  *
  * @author buddhika
  */
 @Entity
-public class Preference implements Serializable {
+public class ApiRequest implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    
-    @Column(length = 100,nullable = false)
+
+    @Column(length = 100)
     private String name;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Encounter encounter;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private ClientEncounterComponentItem clientEncounterComponentItem;
+
     @Lob
-    private String longTextValue;
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Institution institution;
-    @ManyToOne(fetch = FetchType.LAZY)
-    private WebUser webUser;
-    private boolean applicationPreferance;
-    
+    private String requestMessage;
+
+    @Lob
+    private String response;
+
+    private boolean success;
+    @Temporal(javax.persistence.TemporalType.TIMESTAMP)
+    private Date successedAt;
+    private boolean failed;
+    @Temporal(javax.persistence.TemporalType.TIMESTAMP)
+    private Date failedAt;
+    private int failedAttempts;
+
     /*
     Create Properties
      */
@@ -66,16 +77,7 @@ public class Preference implements Serializable {
     private WebUser createdBy;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date createdAt;
-    /*
-    Last Edit Properties
-     */
-    @ManyToOne(fetch = FetchType.LAZY)
-    private WebUser lastEditBy;
-    @Temporal(javax.persistence.TemporalType.TIMESTAMP)
-    private Date lastEditeAt;
-    
 
-    
     
     public Long getId() {
         return id;
@@ -85,6 +87,8 @@ public class Preference implements Serializable {
         this.id = id;
     }
 
+    
+    
     @Override
     public int hashCode() {
         int hash = 0;
@@ -95,10 +99,10 @@ public class Preference implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Preference)) {
+        if (!(object instanceof ApiRequest)) {
             return false;
         }
-        Preference other = (Preference) object;
+        ApiRequest other = (ApiRequest) object;
         if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
@@ -107,7 +111,7 @@ public class Preference implements Serializable {
 
     @Override
     public String toString() {
-        return "lk.gov.health.phsp.bean.Preference[ id=" + id + " ]";
+        return "lk.gov.health.phsp.entity.ApiRequest[ id=" + id + " ]";
     }
 
     public String getName() {
@@ -118,36 +122,76 @@ public class Preference implements Serializable {
         this.name = name;
     }
 
-    public String getLongTextValue() {
-        return longTextValue;
+    public Encounter getEncounter() {
+        return encounter;
     }
 
-    public void setLongTextValue(String longTextValue) {
-        this.longTextValue = longTextValue;
+    public void setEncounter(Encounter encounter) {
+        this.encounter = encounter;
     }
 
-    public Institution getInstitution() {
-        return institution;
+    public ClientEncounterComponentItem getClientEncounterComponentItem() {
+        return clientEncounterComponentItem;
     }
 
-    public void setInstitution(Institution institution) {
-        this.institution = institution;
+    public void setClientEncounterComponentItem(ClientEncounterComponentItem clientEncounterComponentItem) {
+        this.clientEncounterComponentItem = clientEncounterComponentItem;
     }
 
-    public WebUser getWebUser() {
-        return webUser;
+    public String getRequestMessage() {
+        return requestMessage;
     }
 
-    public void setWebUser(WebUser webUser) {
-        this.webUser = webUser;
+    public void setRequestMessage(String requestMessage) {
+        this.requestMessage = requestMessage;
     }
 
-    public boolean isApplicationPreferance() {
-        return applicationPreferance;
+    public String getResponse() {
+        return response;
     }
 
-    public void setApplicationPreferance(boolean applicationPreferance) {
-        this.applicationPreferance = applicationPreferance;
+    public void setResponse(String response) {
+        this.response = response;
+    }
+
+    public boolean isSuccess() {
+        return success;
+    }
+
+    public void setSuccess(boolean success) {
+        this.success = success;
+    }
+
+    public boolean isFailed() {
+        return failed;
+    }
+
+    public void setFailed(boolean failed) {
+        this.failed = failed;
+    }
+
+    public int getFailedAttempts() {
+        return failedAttempts;
+    }
+
+    public void setFailedAttempts(int failedAttempts) {
+        this.failedAttempts = failedAttempts;
+    }
+
+    public Date getSuccessedAt() {
+        return successedAt;
+    }
+
+    public void setSuccessedAt(Date successedAt) {
+        this.successedAt = successedAt;
+    }
+
+    public Date getFailedAt() {
+        return failedAt;
+    }
+
+    public void setFailedAt(Date failedAt) {
+        this.failedAt = failedAt;
     }
 
     public WebUser getCreatedBy() {
@@ -166,22 +210,4 @@ public class Preference implements Serializable {
         this.createdAt = createdAt;
     }
 
-    public WebUser getLastEditBy() {
-        return lastEditBy;
-    }
-
-    public void setLastEditBy(WebUser lastEditBy) {
-        this.lastEditBy = lastEditBy;
-    }
-
-    public Date getLastEditeAt() {
-        return lastEditeAt;
-    }
-
-    public void setLastEditeAt(Date lastEditeAt) {
-        this.lastEditeAt = lastEditeAt;
-    }
-    
-    
-    
-}
+     }

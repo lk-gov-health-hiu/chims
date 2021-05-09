@@ -1,29 +1,13 @@
 package lk.gov.health.phsp.bean;
 
-import lk.gov.health.phsp.entity.Area;
-import lk.gov.health.phsp.enums.AreaType;
-import lk.gov.health.phsp.entity.Coordinate;
-import lk.gov.health.phsp.facade.AreaFacade;
-import lk.gov.health.phsp.facade.CoordinateFacade;
-import lk.gov.health.phsp.facade.util.JsfUtil;
-import lk.gov.health.phsp.facade.util.JsfUtil.PersistAction;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 
 import java.io.Serializable;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
-import javax.ejb.EJBException;
 import javax.enterprise.context.SessionScoped;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
@@ -31,27 +15,7 @@ import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import jxl.Cell;
-import jxl.Sheet;
-import jxl.Workbook;
-import jxl.read.biff.BiffException;
-import lk.gov.health.phsp.entity.Institution;
-import lk.gov.health.phsp.entity.Relationship;
-import lk.gov.health.phsp.enums.RelationshipType;
 import lk.gov.health.phsp.facade.PreferenceFacade;
-import org.primefaces.model.UploadedFile;
-import org.primefaces.event.map.OverlaySelectEvent;
-import org.primefaces.model.map.DefaultMapModel;
-import org.primefaces.model.map.LatLng;
-import org.primefaces.model.map.MapModel;
-import org.primefaces.model.map.Polygon;
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
 
 @Named
 @SessionScoped
