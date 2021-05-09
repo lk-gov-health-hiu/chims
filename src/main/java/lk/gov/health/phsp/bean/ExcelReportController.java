@@ -107,6 +107,8 @@ public class ExcelReportController implements Serializable {
 
     @Inject
     StoredQueryResultController storedQueryResultController;
+    @Inject
+    ApplicationController applicationController;
 
     /**
      * Creates a new instance of ExcelReportController
@@ -597,7 +599,7 @@ public class ExcelReportController implements Serializable {
         boolean isComplexQuery = false;
 
         for (QueryComponent qc : qrys.getCriteria()) {
-            if(qc.getMatchType()==null){
+            if (qc.getMatchType() == null) {
                 JsfUtil.addErrorMessage("No match type for the query " + qc.getName());
                 continue;
             }
@@ -1444,11 +1446,7 @@ public class ExcelReportController implements Serializable {
     }
 
     private List<QueryComponent> findAllQueryComponents() {
-        String j = "select q from QueryComponent q "
-                + " where q.retired=false "
-                + " order by q.orderNo, q.id";
-        List<QueryComponent> c = getQueryComponentFacade().findByJpql(j);
-        return c;
+        return applicationController.getQueryComponents();
     }
 
     private QueryWithCriteria findQwcFromQwcs(List<QueryWithCriteria> qwcs, String qryCode) {

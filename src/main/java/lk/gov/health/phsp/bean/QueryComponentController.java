@@ -54,18 +54,15 @@ import lk.gov.health.phsp.enums.QueryLevel;
 import lk.gov.health.phsp.enums.QueryOutputType;
 import lk.gov.health.phsp.enums.QueryType;
 import lk.gov.health.phsp.enums.RelationshipType;
-import lk.gov.health.phsp.enums.SelectionDataType;
 import lk.gov.health.phsp.facade.ClientEncounterComponentItemFacade;
 import lk.gov.health.phsp.facade.ClientFacade;
 import lk.gov.health.phsp.facade.EncounterFacade;
 import lk.gov.health.phsp.facade.RelationshipFacade;
-import lk.gov.health.phsp.pojcs.EncounterBasicData;
 import lk.gov.health.phsp.pojcs.EncounterWithComponents;
 import lk.gov.health.phsp.pojcs.Jpq;
 import lk.gov.health.phsp.pojcs.QueryResult;
 import lk.gov.health.phsp.pojcs.QueryWithCriteria;
 import lk.gov.health.phsp.pojcs.Replaceable;
-import org.apache.commons.lang3.SerializationUtils;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.CreationHelper;
@@ -75,7 +72,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 
-@Named("queryComponentController")
+@Named
 @SessionScoped
 public class QueryComponentController implements Serializable {
 
@@ -282,13 +279,10 @@ public class QueryComponentController implements Serializable {
 //        listQueries(searchText);
 //    }
     public List<Item> getItemsForCountCriteriaItems() {
-        System.out.println("getItemsInDesignFormItemValues");
-        System.out.println("getSelectedCountCriteria() = " + getSelectedCountCriteria());
         if (getSelectedCountCriteria() == null || getSelectedCountCriteria().getItem() == null) {
             System.out.println("Null Error Return back");
             return new ArrayList<>();
         }
-        System.out.println("getSelectedCountCriteria().getItem() = " + getSelectedCountCriteria().getItem());
         String j = "select distinct(di.categoryOfAvailableItems) "
                 + " from DesignComponentFormItem di "
                 + " where di.retired<>:ret "
@@ -380,20 +374,14 @@ public class QueryComponentController implements Serializable {
             m.put("ret", true);
             m.put("code", i.getCode());
 
-            System.out.println("j 1 = " + j);
-            System.out.println("m 1 = " + m);
-
             List<Item> temIt = getItemFacade().findByJpql(j, m);
-
-            System.out.println("temIt = " + temIt);
 
             if (temIt != null) {
                 temItsm.addAll(temIt);
             }
         }
 
-        System.out.println("temItsm = " + temItsm);
-
+       
         return temItsm;
     }
 
@@ -874,16 +862,15 @@ public class QueryComponentController implements Serializable {
 
         if (!qry.matches("\\S+") && (qry.length() > 0)) {
             String[] splited = qry.split("\\s+");
-            
 
             for (QueryComponent qc : tls) {
                 boolean canInclude = true;
                 for (String s : splited) {
                     if (!qc.getName().toLowerCase().contains(s) && !qc.getCode().toLowerCase().contains(s)) {
-                        canInclude=false;
+                        canInclude = false;
                     }
                 }
-                if(canInclude){
+                if (canInclude) {
                     sls.add(qc);
                 }
             }

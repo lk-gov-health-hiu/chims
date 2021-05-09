@@ -903,6 +903,7 @@ public class ClientEncounterComponentFormSetController implements Serializable {
     }
 
     public void loadOldNavigateToDataEntry(ClientEncounterComponentFormSet cfs) {
+        System.out.println("loadOldNavigateToDataEntry");
         if (cfs == null) {
             return;
         }
@@ -921,6 +922,7 @@ public class ClientEncounterComponentFormSetController implements Serializable {
         int formCounter = 0;
 
         for (DesignComponentForm df : dfList) {
+            System.out.println("df = " + df.getName());
 
             boolean skipThisForm = false;
             if (df.getComponentSex() == ComponentSex.For_Females && clientController.getSelected().getPerson().getSex().getCode().equalsIgnoreCase("sex_male")) {
@@ -930,6 +932,8 @@ public class ClientEncounterComponentFormSetController implements Serializable {
                 skipThisForm = true;
             }
 
+            System.out.println("skipThisForm = " + skipThisForm);
+            
             if (!skipThisForm) {
                 formCounter++;
                 String j = "select cf "
@@ -974,6 +978,8 @@ public class ClientEncounterComponentFormSetController implements Serializable {
                 int itemCounter = 0;
 
                 for (DesignComponentFormItem dis : diList) {
+                    
+                    System.out.println("dis = " + dis.getName());
 
                     boolean disSkipThisItem = false;
                     if (dis.getComponentSex() == ComponentSex.For_Females && clientController.getSelected().getPerson().getSex().getCode().equalsIgnoreCase("sex_male")) {
@@ -983,9 +989,13 @@ public class ClientEncounterComponentFormSetController implements Serializable {
                         disSkipThisItem = true;
                     }
 
+                    System.out.println("disSkipThisItem = " + disSkipThisItem);
+                    
                     if (!disSkipThisItem) {
 
                         if (dis.isMultipleEntiesPerForm()) {
+                            
+                            System.out.println("dis.isMultipleEntiesPerForm() = " + dis.isMultipleEntiesPerForm());
 
                             j = "Select ci "
                                     + " from ClientEncounterComponentItem ci "

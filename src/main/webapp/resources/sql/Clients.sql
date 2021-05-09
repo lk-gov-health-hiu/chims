@@ -1,5 +1,5 @@
-select `ID`, `CREATEDAT` ,`CREATEINSTITUTION_ID`
+select `ID`, `CREATEDAT` ,`CREATEINSTITUTION_ID`, `CREATEDON`
 from client 
-where `CREATEINSTITUTION_ID` is not null
+where `CREATEDON` is not null
 order by id desc
 limit 100;
