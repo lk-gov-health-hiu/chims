@@ -27,6 +27,29 @@
                         <tr>
 
                             <h:panelGroup id="gpDataM" >
+                                <h:panelGroup rendered="#{ii.di.item.dataType eq 'Procedure_Request'}" >
+                                    <td>
+                                        <p:outputLabel for="domIcpR" value="#{ii.di.name}"  style="#{ii.di.css}" ></p:outputLabel>
+                                    </td>
+                                    <td>
+                                        <p:autoComplete id="domIcpR" value="#{ii.prescriptionValue.medicine}"
+                                                        completeMethod="#{itemController.completeItemsofParentWithFIlter}"
+                                                        var="ai" itemLabel="#{ai.name}" itemValue="#{ai}"
+                                                        maxResults="15" forceSelection="true" 
+                                                        minQueryLength="3" placeholder="Procedure"
+                                                        required="#{ii.required}" 
+                                                        requiredMessage="#{ii.requiredErrorMessage}">
+                                            <f:attribute name="filter" value="procedure" />
+                                            <p:ajax  event="blur" process="@this"  
+                                                     listener="#{clientEncounterComponentItemController.save(ii)}" >
+                                            </p:ajax>
+                                        </p:autoComplete>
+                                    </td>
+                                    <td>
+                                        <p:commandButton id="btnAddPr1"  value="Add" process="domIcpR domIcpR" update="@form :#{p:component('formset')}"
+                                                         action="#{clientEncounterComponentItemController.addAnother(ii)}"></p:commandButton>
+                                    </td>
+                                </h:panelGroup>
                                 <h:panelGroup rendered="#{ii.di.item.dataType eq 'Item_Reference'}" >
                                     <h:panelGroup rendered="#{ii.di.renderType eq 'Drop_Down_Menu'}" >
                                         <td>
@@ -315,7 +338,7 @@
                                         <p:outputLabel value="#{ii.di.name}"  style="#{ii.di.css}" ></p:outputLabel>
                                     </td>
                                     <td>
-                                        <!--<ez:prescription/>-->
+                                        <ez:prescription/>
                                     </td>
                                 </h:panelGroup>
                             </h:panelGroup>
