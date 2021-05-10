@@ -43,6 +43,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.servlet.http.HttpServletRequest;
 import lk.gov.health.phsp.entity.UserPrivilege;
+import lk.gov.health.phsp.enums.InstitutionType;
 import lk.gov.health.phsp.enums.Privilege;
 import lk.gov.health.phsp.enums.PrivilegeTreeNode;
 import lk.gov.health.phsp.facade.UserPrivilegeFacade;
@@ -319,32 +320,32 @@ public class WebUserController implements Serializable {
         userTransactionController.recordTransaction("To Add New User By InsAdmin");
         return "/insAdmin/create_new_user";
     }
-    
+
     public void toProcedureRoom() {
         String privilageStr = null;
         String baseUrl = "http://localhost:8080/ProcedureRoomService/resources/redirect";
         String urlVals = "?API_KEY=EF16A5D4EF8AA6AA0580AF1390CF0600";
-        urlVals += "&User_Name="+loggedUser.getName();
-        urlVals += "&User_Role="+loggedUser.getWebUserRole();
-        
-        for(UserPrivilege up:loggedUserPrivileges){
-            if(up.getPrivilege() != null){
-                if(privilageStr==null){
+        urlVals += "&User_Name=" + loggedUser.getName();
+        urlVals += "&User_Role=" + loggedUser.getWebUserRole();
+
+        for (UserPrivilege up : loggedUserPrivileges) {
+            if (up.getPrivilege() != null) {
+                if (privilageStr == null) {
                     privilageStr = up.getPrivilege().toString();
-                }else{
-                    privilageStr += "^"+up.getPrivilege().toString();
+                } else {
+                    privilageStr += "^" + up.getPrivilege().toString();
                 }
             }
         }
-        urlVals += "&Privileges="+"TEST";
-        urlVals += "&Institution="+loggedUser.getInstitution().getCode();
-        urlVals += "&UserID="+loggedUser.getName();
-        
+        urlVals += "&Privileges=" + "TEST";
+        urlVals += "&Institution=" + loggedUser.getInstitution().getCode();
+        urlVals += "&UserID=" + loggedUser.getName();
+
         Client client = Client.create();
         WebResource webResource1 = client.resource(baseUrl + urlVals);
         com.sun.jersey.api.client.ClientResponse cr = webResource1.accept("text/plain").get(com.sun.jersey.api.client.ClientResponse.class);
         String outpt = cr.getEntity(String.class);
-        
+
         ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
         try {
             externalContext.redirect(outpt);
@@ -1137,7 +1138,7 @@ public class WebUserController implements Serializable {
 
     public String prepareEditPassword() {
         password = "";
-        passwordReenter="";
+        passwordReenter = "";
         userTransactionController.recordTransaction("Edit Password user list By SysAdmin or InsAdmin");
         return "/webUser/Password";
     }
@@ -1679,6 +1680,19 @@ public class WebUserController implements Serializable {
             loggableInstitutions = findAutherizedInstitutions();
         }
         return loggableInstitutions;
+    }
+
+    public List<Institution> getLoggableProcedureRooms() {
+        List<Institution> prs = new ArrayList<>();
+        for (Institution ins : getLoggableProcedureRooms()) {
+            if (ins.getInstitutionType() == null) {
+                continue;
+            }
+            if (ins.getInstitutionType() == InstitutionType.Procedure_Room) {
+                prs.add(ins);
+            }
+        }
+        return prs;
     }
 
     public void setLoggableInstitutions(List<Institution> loggableInstitutions) {
