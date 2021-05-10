@@ -85,7 +85,10 @@ public enum RenderType {
     Link("Link"),
     @Deprecated
     Item_select_and_add_to_List("Item select & add to List"),
-    Prescreption("Prescreption");
+    Prescreption("Prescreption"),
+    Procedure_room("Procedure Room");
+    
+    
     
     private final String label;
     

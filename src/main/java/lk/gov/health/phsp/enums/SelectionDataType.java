@@ -53,7 +53,8 @@ public enum SelectionDataType {
     @Deprecated
     Free_Entry("Free Entry"),
     @Deprecated
-    Calculation("Calculation");
+    Calculation("Calculation"),
+    Procedure_Request("Procedure Request");
     
     public final String label;    
     private SelectionDataType(String label){
