@@ -16,7 +16,7 @@
 
     <!-- IMPLEMENTATION -->
     <cc:implementation>
-        
+
 
         <h:panelGroup id="gpFormItems" rendered="#{cc.attrs.form.df.itemArrangementStrategy eq 'Label_Value_Unit_Sets'}" >
 
@@ -41,7 +41,7 @@
                                                     <p:outputLabel value="Room" ></p:outputLabel>
                                                 </td>
                                                 <td>
-                                                    <p:selectOneMenu value="" >
+                                                    <p:selectOneMenu  >
                                                         <f:selectItem itemLabel="Please select" ></f:selectItem>
                                                         <f:selectItems value="#{webUserController.loggableProcedureRooms}"
                                                                        var="ipr"
@@ -52,15 +52,18 @@
                                             </tr>
                                             <tr>
                                                 <td>
-                                                    
+                                                    <p:outputLabel value="Procedure" ></p:outputLabel>
+                                                </td>
+                                                <td>
+                                                    <p:selectOneMenu id="prM" value="#{ii.addingItem.ci.itemValue}" >
+                                                        <f:selectItem itemLabel="Please select" ></f:selectItem>
+                                                        <f:selectItems value="#{ii.availableItemsForSelection}" var="li"
+                                                                       itemLabel="#{li.displayName}" itemValue="#{li}" ></f:selectItems>
+                                                    </p:selectOneMenu>
                                                 </td>
                                             </tr>
                                         </table>
-                                        <p:selectOneMenu id="prM" value="#{ii.addingItem.ci.itemValue}" >
-                                            <f:selectItem itemLabel="Please select" ></f:selectItem>
-                                            <f:selectItems value="#{ii.availableItemsForSelection}" var="li"
-                                                           itemLabel="#{li.displayName}" itemValue="#{li}" ></f:selectItems>
-                                        </p:selectOneMenu>
+
                                     </td>
                                     <td>
                                         <p:commandButton id="btnAddPrM"  value="Add" 

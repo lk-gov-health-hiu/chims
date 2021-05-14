@@ -1684,7 +1684,7 @@ public class WebUserController implements Serializable {
 
     public List<Institution> getLoggableProcedureRooms() {
         List<Institution> prs = new ArrayList<>();
-        for (Institution ins : getLoggableProcedureRooms()) {
+        for (Institution ins : getLoggableInstitutions()) {
             if (ins.getInstitutionType() == null) {
                 continue;
             }

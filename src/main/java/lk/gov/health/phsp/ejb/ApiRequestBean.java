@@ -46,6 +46,7 @@ public class ApiRequestBean {
     @Schedule(dayOfMonth = "*", year = "*", minute = "*", second = "0", persistent = false)
     public void myTimer() {
         System.out.println("Timer event: " + new Date());
+        sendApiRequest(null);
     }
 
     public void sendApiRequests() {
@@ -75,7 +76,29 @@ public class ApiRequestBean {
     }
 
     public boolean sendApiRequest(ApiRequest a) {
-  
+        //TO : Dinidu
+        String phn;
+        String procedureOd;
+        String InsId;
+        String CreterId;
+        
+        if(a==null){
+            
+//        System.out.println("PHN = " + a.getEncounter().getClient().getPhn());
+//        System.out.println("Procedure ID = " + a.getClientEncounterComponentItem().getItemValue().getId());
+//        System.out.println("Institute ID = " + a.getEncounter().getInstitution().getId());
+//        System.out.println("Institute ID = " + a.getEncounter().getInstitution().getId());
+        }else{
+            
+        }
+        /*
+        PHN
+        Procedure ID taken from API
+        Institute ID
+        Creater By - User ID
+        Created At - User
+        */
+       
         return false;
     }
 
