@@ -41,7 +41,8 @@
                                 <div >
 
                                     <p:commandButton  rendered="#{!clientEncounterComponentFormSetController.selected.completed}"
-                                                      value="Complete" action="#{clientEncounterComponentFormSetController.completeFormset()}" ajax="false"
+                                                      value="Complete" 
+                                                      action="#{clientEncounterComponentFormSetController.completeFormset()}" ajax="false"
                                                       onclick="if (!confirm('Really want to do complete the visit?'))
                                                                   return false"
                                                       ></p:commandButton>

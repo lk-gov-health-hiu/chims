@@ -44,6 +44,7 @@ import lk.gov.health.phsp.bean.ItemApplicationController;
 import lk.gov.health.phsp.bean.StoredQueryResultController;
 import lk.gov.health.phsp.entity.Area;
 import lk.gov.health.phsp.entity.Institution;
+import lk.gov.health.phsp.entity.Item;
 import lk.gov.health.phsp.entity.QueryComponent;
 import lk.gov.health.phsp.entity.Relationship;
 import lk.gov.health.phsp.enums.AreaType;
@@ -95,6 +96,12 @@ public class ApiResource {
             jSONObjectOut = errorMessageInstruction();
         } else {
             switch (name) {
+                case "get_procedure_list":
+                    jSONObjectOut = procedureList();
+                    break;
+                case "get_procedures_pending":
+                    jSONObjectOut = proceduresPending();
+                    break;
                 case "get_province_list":
                     jSONObjectOut = provinceList();
                     break;
@@ -138,18 +145,18 @@ public class ApiResource {
         String json = jSONObjectOut.toString();
         return json;
     }
-    
+
     @GET
     @Path("/get_role_name/{roleId}")
     @Produces(MediaType.APPLICATION_JSON)
-    public String getRoleName(@PathParam("roleId") String roleId){
+    public String getRoleName(@PathParam("roleId") String roleId) {
         return WebUserRole.valueOf(roleId).getLabel();
     }
-    
+
     @GET
     @Path("/get_ins_name/{insCode}")
     @Produces(MediaType.APPLICATION_JSON)
-    public String getInstituteName(@PathParam("insCode") String insCode){
+    public String getInstituteName(@PathParam("insCode") String insCode) {
         return null;
     }
 
@@ -346,14 +353,13 @@ public class ApiResource {
             return errorMessageNoIndicator();
         }
         QueryComponent fc = applicationController.findQueryComponent("encounter_count_Number_of_male_participants_with_CVD_risk_greater_20presentage");
-        if(fc==null){
+        if (fc == null) {
             return errorMessageNoIndicator();
         }
         QueryComponent tc = applicationController.findQueryComponent("encounter_count_of_total_CVD_risk_greater_20presentage");
-        if(tc==null){
+        if (tc == null) {
             return errorMessageNoIndicator();
         }
-        
 
         JSONObject jSONObjectOut = new JSONObject();
         JSONArray array = new JSONArray();
@@ -636,6 +642,40 @@ public class ApiResource {
             ja.put("province_id", a.getId());
             ja.put("province_code", a.getCode());
             ja.put("province_name", a.getName());
+            array.put(ja);
+        }
+        jSONObjectOut.put("data", array);
+        jSONObjectOut.put("status", successMessage());
+        return jSONObjectOut;
+    }
+
+    private JSONObject procedureList() {
+        JSONObject jSONObjectOut = new JSONObject();
+        JSONArray array = new JSONArray();
+        List<Item> ds = itemApplicationController.findChildren("procedure");
+        for (Item a : ds) {
+            JSONObject ja = new JSONObject();
+            ja.put("procedure_id", a.getId());
+            ja.put("procedure_code", a.getCode());
+            ja.put("procedure_name", a.getName());
+            ja.put("procedure_descreption", a.getDescreption());
+            array.put(ja);
+        }
+        jSONObjectOut.put("data", array);
+        jSONObjectOut.put("status", successMessage());
+        return jSONObjectOut;
+    }
+    
+    private JSONObject proceduresPending() {
+        JSONObject jSONObjectOut = new JSONObject();
+        JSONArray array = new JSONArray();
+        List<Item> ds = itemApplicationController.findChildren("procedure");
+        for (Item a : ds) {
+            JSONObject ja = new JSONObject();
+            ja.put("procedure_id", a.getId());
+            ja.put("procedure_code", a.getCode());
+            ja.put("procedure_name", a.getName());
+            ja.put("procedure_descreption", a.getDescreption());
             array.put(ja);
         }
         jSONObjectOut.put("data", array);
