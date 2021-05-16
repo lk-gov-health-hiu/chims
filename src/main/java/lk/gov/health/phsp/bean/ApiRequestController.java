@@ -38,18 +38,7 @@ public class ApiRequestController implements Serializable {
 
   
 
-    public void saveApiRequestPreference(ApiRequest p) {
-        if (p == null) {
-            return;
-        }
-        if (p.getId() == null) {
-            p.setCreatedAt(new Date());
-            p.setCreatedBy(webUserController.getLoggedUser());
-            getFacade().create(p);
-        } else {
-            getFacade().edit(p);
-        }
-    }
+    
 
     
 

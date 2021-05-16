@@ -5,7 +5,7 @@
         <exclude-unlisted-classes>false</exclude-unlisted-classes>
         <shared-cache-mode>ALL</shared-cache-mode>
         <properties>
-            <!--<property name="javax.persistence.schema-generation.database.action" value="create"/>-->
+            <property name="javax.persistence.schema-generation.database.action" value="create-or-extend-tables"/>
             <!--      <property name="eclipselink.connection-pool.default.initial" value="128"/>
             <property name="eclipselink.connection-pool.default.min" value="128"/>
             <property name="eclipselink.connection-pool.default.max" value="128"/>-->

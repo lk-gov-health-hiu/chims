@@ -54,7 +54,7 @@ public class ApiRequest implements Serializable {
     private Encounter encounter;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    private ClientEncounterComponentItem clientEncounterComponentItem;
+    private ClientEncounterComponentItem requestCeci;
 
     @Lob
     private String requestMessage;
@@ -71,6 +71,20 @@ public class ApiRequest implements Serializable {
     private int failedAttempts;
 
     /*
+    Convey Properties
+     */
+    private boolean convaied;
+    @Temporal(javax.persistence.TemporalType.TIMESTAMP)
+    private Date convaiedAt;
+
+    private boolean responseReceived;
+    @Temporal(javax.persistence.TemporalType.TIMESTAMP)
+    private Date responseReceivedAt;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private ClientEncounterComponentItem responseCeci;
+
+    /*
     Create Properties
      */
     @ManyToOne(fetch = FetchType.LAZY)
@@ -78,7 +92,15 @@ public class ApiRequest implements Serializable {
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date createdAt;
 
-    
+    /*
+    Retire Properties
+     */
+    private boolean retired;
+    @ManyToOne(fetch = FetchType.LAZY)
+    private WebUser retiredBy;
+    @Temporal(javax.persistence.TemporalType.TIMESTAMP)
+    private Date retiredAt;
+
     public Long getId() {
         return id;
     }
@@ -87,8 +109,6 @@ public class ApiRequest implements Serializable {
         this.id = id;
     }
 
-    
-    
     @Override
     public int hashCode() {
         int hash = 0;
@@ -130,12 +150,12 @@ public class ApiRequest implements Serializable {
         this.encounter = encounter;
     }
 
-    public ClientEncounterComponentItem getClientEncounterComponentItem() {
-        return clientEncounterComponentItem;
+    public ClientEncounterComponentItem getRequestCeci() {
+        return requestCeci;
     }
 
-    public void setClientEncounterComponentItem(ClientEncounterComponentItem clientEncounterComponentItem) {
-        this.clientEncounterComponentItem = clientEncounterComponentItem;
+    public void setRequestCeci(ClientEncounterComponentItem requestCeci) {
+        this.requestCeci = requestCeci;
     }
 
     public String getRequestMessage() {
@@ -210,4 +230,71 @@ public class ApiRequest implements Serializable {
         this.createdAt = createdAt;
     }
 
-     }
+    public boolean isConvaied() {
+        return convaied;
+    }
+
+    public void setConvaied(boolean convaied) {
+        this.convaied = convaied;
+    }
+
+    public boolean isResponseReceived() {
+        return responseReceived;
+    }
+
+    public void setResponseReceived(boolean responseReceived) {
+        this.responseReceived = responseReceived;
+    }
+
+    public boolean isRetired() {
+        return retired;
+    }
+
+    public void setRetired(boolean retired) {
+        this.retired = retired;
+    }
+
+    public Date getConvaiedAt() {
+        return convaiedAt;
+    }
+
+    public void setConvaiedAt(Date convaiedAt) {
+        this.convaiedAt = convaiedAt;
+    }
+
+    public Date getResponseReceivedAt() {
+        return responseReceivedAt;
+    }
+
+    public void setResponseReceivedAt(Date responseReceivedAt) {
+        this.responseReceivedAt = responseReceivedAt;
+    }
+
+    public ClientEncounterComponentItem getResponseCeci() {
+        return responseCeci;
+    }
+
+    public void setResponseCeci(ClientEncounterComponentItem responseCeci) {
+        this.responseCeci = responseCeci;
+    }
+
+    public WebUser getRetiredBy() {
+        return retiredBy;
+    }
+
+    public void setRetiredBy(WebUser retiredBy) {
+        this.retiredBy = retiredBy;
+    }
+
+    public Date getRetiredAt() {
+        return retiredAt;
+    }
+
+    public void setRetiredAt(Date retiredAt) {
+        this.retiredAt = retiredAt;
+    }
+    
+    
+    
+
+}

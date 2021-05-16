@@ -23,6 +23,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
 import javax.inject.Inject;
+import lk.gov.health.phsp.entity.ApiRequest;
 import lk.gov.health.phsp.entity.Client;
 import lk.gov.health.phsp.entity.ClientEncounterComponentForm;
 import lk.gov.health.phsp.entity.ClientEncounterComponentItem;
@@ -88,7 +89,8 @@ public class ClientEncounterComponentFormSetController implements Serializable {
     private CommonController commonController;
     @Inject
     UserTransactionController userTransactionController;
-
+    @Inject
+    ApiRequestApplicationController apiRequestApplicationController;
 // </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="Class Variables">
     private List<ClientEncounterComponentFormSet> items = null;
@@ -271,7 +273,7 @@ public class ClientEncounterComponentFormSetController implements Serializable {
             }
             for (DataItem tItem : tForm.getItems()) {
                 if (tItem.getDi() == null || tItem.getDi().getSelectionDataType() == null) {
-                    System.out.println("Null in (tItem.getDi() == null || tItem.getDi().getSelectionDataType())");
+                    System.err.println("Null in (tItem.getDi() == null || tItem.getDi().getSelectionDataType())");
                     continue;
                 }
 
@@ -279,27 +281,40 @@ public class ClientEncounterComponentFormSetController implements Serializable {
                     if (tItem.getDi().getSelectionDataType() == SelectionDataType.Procedure_Request) {
                         for (DataItem ttItem : tItem.getAddedItems()) {
                             if (ttItem.getCi() == null) {
-                                System.out.println("ttItem.getCi() is null");
+                                System.err.println("ttItem.getCi() is null");
                                 continue;
                             }
                             if (ttItem.getCi().getItemValue() == null) {
-                                System.out.println("ttItem.getCi().getItemValue() is null");
+                                System.err.println("ttItem.getCi().getItemValue() is null");
                                 continue;
                             }
-                            System.out.println("ttItem = " + ttItem.getCi().getItemValue().getName());
+                            ApiRequest r = new ApiRequest();
+                            r.setRequestCeci(ttItem.getCi());
+                            r.setCreatedAt(new Date());
+                            r.setCreatedBy(webUserController.getLoggedUser());
+                            r.setEncounter(tSet.getEfs().getEncounter());
+                            r.setName("procedure_request");
+                            apiRequestApplicationController.saveApiRequests(r);
                         }
                     }
                 } else {
                     if (tItem.getDi().getSelectionDataType() == SelectionDataType.Procedure_Request) {
                         if (tItem.getCi() == null) {
-                            System.out.println("tItem.getCi() is null");
+                            System.err.println("tItem.getCi() is null");
                             continue;
                         }
                         if (tItem.getCi().getItemValue() == null) {
-                            System.out.println("tItem.getCi().getItemValue() is null");
+                            System.err.println("tItem.getCi().getItemValue() is null");
                             continue;
                         }
                         System.out.println("tItem = " + tItem.getCi().getItemValue().getName());
+                        ApiRequest r = new ApiRequest();
+                        r.setRequestCeci(tItem.getCi());
+                        r.setCreatedAt(new Date());
+                        r.setCreatedBy(webUserController.getLoggedUser());
+                        r.setEncounter(tSet.getEfs().getEncounter());
+                        r.setName("procedure_request");
+                        apiRequestApplicationController.saveApiRequests(r);
                     }
                 }
 

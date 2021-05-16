@@ -36,13 +36,17 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import lk.gov.health.phsp.bean.AnalysisController;
+import lk.gov.health.phsp.bean.ApiRequestApplicationController;
 import lk.gov.health.phsp.bean.ApplicationController;
 import lk.gov.health.phsp.bean.AreaApplicationController;
 import lk.gov.health.phsp.bean.CommonController;
 import lk.gov.health.phsp.bean.InstitutionApplicationController;
 import lk.gov.health.phsp.bean.ItemApplicationController;
 import lk.gov.health.phsp.bean.StoredQueryResultController;
+import lk.gov.health.phsp.entity.ApiRequest;
 import lk.gov.health.phsp.entity.Area;
+import lk.gov.health.phsp.entity.Client;
+import lk.gov.health.phsp.entity.ClientEncounterComponentItem;
 import lk.gov.health.phsp.entity.Institution;
 import lk.gov.health.phsp.entity.Item;
 import lk.gov.health.phsp.entity.QueryComponent;
@@ -78,6 +82,8 @@ public class ApiResource {
     ApplicationController applicationController;
     @Inject
     StoredQueryResultController storedQueryResultController;
+    @Inject
+    ApiRequestApplicationController apiRequestApplicationController;
 
     /**
      * Creates a new instance of GenericResource
@@ -665,17 +671,63 @@ public class ApiResource {
         jSONObjectOut.put("status", successMessage());
         return jSONObjectOut;
     }
-    
+
     private JSONObject proceduresPending() {
         JSONObject jSONObjectOut = new JSONObject();
         JSONArray array = new JSONArray();
-        List<Item> ds = itemApplicationController.findChildren("procedure");
-        for (Item a : ds) {
+        List<ApiRequest> ds = apiRequestApplicationController.getPendingProcedure();
+        for (ApiRequest a : ds) {
             JSONObject ja = new JSONObject();
-            ja.put("procedure_id", a.getId());
-            ja.put("procedure_code", a.getCode());
-            ja.put("procedure_name", a.getName());
-            ja.put("procedure_descreption", a.getDescreption());
+
+            if (a.getRequestCeci() == null) {
+                System.err.println("a.getRequestCeci() is null");
+                continue;
+            }
+
+            ClientEncounterComponentItem ci = a.getRequestCeci();
+            Client c = null;
+            Item i = null;
+            Institution ins = null;
+
+            if (ci.getItemValue() != null) {
+                i = ci.getItemValue();
+            } else {
+                System.err.println("ci.getItemValue() is null");
+                continue;
+            }
+
+            if (ci.getEncounter() != null) {
+                if (ci.getEncounter().getClient() != null) {
+                    c = ci.getEncounter().getClient();
+                } else {
+                    System.err.println("ci.getEncounter().getClient() is null");
+                    continue;
+                }
+                if (ci.getEncounter().getInstitution() != null) {
+                    ins = ci.getEncounter().getInstitution();
+                } else {
+                    System.err.println("ci.getEncounter().getInstitution() is null");
+                    continue;
+                }
+            } else {
+                System.out.println("ci.getEncounter() is null");
+                continue;
+            }
+
+            ja.put("procedure_id", i.getId());
+            ja.put("procedure_code", i.getCode());
+            ja.put("procedure_name", i.getName());
+            ja.put("client_phn", c.getPhn());
+            ja.put("client_id", c.getId());
+            ja.put("client_name", c.getPerson().getName());
+            ja.put("institute_id", ins.getId());
+            ja.put("institute_code", ins.getCode());
+            ja.put("institute_name", ins.getName());
+            if (ins.getParent() != null) {
+                ja.put("parent_institute_id", ins.getParent().getId());
+                ja.put("parent_institute_code", ins.getParent().getCode());
+                ja.put("parent_institute_name", ins.getParent().getName());
+            }
             array.put(ja);
         }
         jSONObjectOut.put("data", array);

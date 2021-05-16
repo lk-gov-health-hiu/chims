@@ -1,16 +1,12 @@
 package lk.gov.health.phsp.bean;
 
-
 import java.io.Serializable;
 import java.util.Date;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import javax.ejb.EJB;
 import javax.enterprise.context.SessionScoped;
-import javax.faces.component.UIComponent;
-import javax.faces.context.FacesContext;
-import javax.faces.convert.Converter;
-import javax.faces.convert.FacesConverter;
 import javax.inject.Inject;
 import javax.inject.Named;
 import lk.gov.health.phsp.entity.ApiRequest;
@@ -30,15 +26,24 @@ public class ApiRequestApplicationController implements Serializable {
     @Inject
     private UserTransactionController userTransactionController;
 
-
     // <editor-fold defaultstate="collapsed" desc="Getters and Setters">
     private ApiRequestFacade getFacade() {
         return ejbFacade;
     }
 
-  
+    public List<ApiRequest> getPendingProcedure() {
+        String j = "select a "
+                + " from ApiRequest a "
+                + " where a.retired=:ret "
+                + " and a.convaied=:con"
+                + " order by a.id";
+        Map m = new HashMap();
+        m.put("ret", false);
+        m.put("con", true);
+        return getFacade().findByJpql(j, m);
+    }
 
-    public void saveApiRequestPreference(ApiRequest p) {
+    public void saveApiRequests(ApiRequest p) {
         if (p == null) {
             return;
         }
@@ -51,13 +56,9 @@ public class ApiRequestApplicationController implements Serializable {
         }
     }
 
-    
-
     public ApiRequestFacade getEjbFacade() {
         return ejbFacade;
     }
-
-   
 
     public WebUserController getWebUserController() {
         return webUserController;
@@ -83,52 +84,4 @@ public class ApiRequestApplicationController implements Serializable {
         this.userTransactionController = userTransactionController;
     }
 
-    // </editor-fold>
-    // <editor-fold defaultstate="collapsed" desc="Converters">
-    @FacesConverter(forClass = ApiRequest.class)
-    public static class ApiRequestControllerConverter implements Converter {
-
-        @Override
-        public Object getAsObject(FacesContext facesContext, UIComponent component, String value) {
-            if (value == null || value.length() == 0) {
-                return null;
-            }
-            ApiRequestApplicationController controller = (ApiRequestApplicationController) facesContext.getApplication().getELResolver().
-                    getValue(facesContext.getELContext(), null, "apiRequestController");
-            return controller.getFacade().find(getKey(value));
-        }
-
-        java.lang.Long getKey(String value) {
-            java.lang.Long key;
-            try {
-                key = Long.valueOf(value);
-            } catch (NumberFormatException e) {
-                key = 0l;
-            }
-            return key;
-        }
-
-        String getStringKey(java.lang.Long value) {
-            StringBuilder sb = new StringBuilder();
-            sb.append(value);
-            return sb.toString();
-        }
-
-        @Override
-        public String getAsString(FacesContext facesContext, UIComponent component, Object object) {
-            if (object == null) {
-                return null;
-            }
-            if (object instanceof Preference) {
-                ApiRequest o = (ApiRequest) object;
-                return getStringKey(o.getId());
-            } else {
-                Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, "object {0} is of type {1}; expected type: {2}", new Object[]{object, object.getClass().getName(), ApiRequest.class.getName()});
-                return null;
-            }
-        }
-
-    }
-
-    // </editor-fold>
 }
