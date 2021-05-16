@@ -271,11 +271,38 @@ public class ClientEncounterComponentFormSetController implements Serializable {
             }
             for (DataItem tItem : tForm.getItems()) {
                 if (tItem.getDi() == null || tItem.getDi().getSelectionDataType() == null) {
+                    System.out.println("Null in (tItem.getDi() == null || tItem.getDi().getSelectionDataType())");
                     continue;
                 }
-                if (tItem.getDi().getSelectionDataType() == SelectionDataType.Procedure_Request) {
-                    System.out.println("tItem = " + tItem.getCi().getItemValue().getName());
+
+                if (tItem.getMultipleEntries()) {
+                    if (tItem.getDi().getSelectionDataType() == SelectionDataType.Procedure_Request) {
+                        for (DataItem ttItem : tItem.getAddedItems()) {
+                            if (ttItem.getCi() == null) {
+                                System.out.println("ttItem.getCi() is null");
+                                continue;
+                            }
+                            if (ttItem.getCi().getItemValue() == null) {
+                                System.out.println("ttItem.getCi().getItemValue() is null");
+                                continue;
+                            }
+                            System.out.println("ttItem = " + ttItem.getCi().getItemValue().getName());
+                        }
+                    }
+                } else {
+                    if (tItem.getDi().getSelectionDataType() == SelectionDataType.Procedure_Request) {
+                        if (tItem.getCi() == null) {
+                            System.out.println("tItem.getCi() is null");
+                            continue;
+                        }
+                        if (tItem.getCi().getItemValue() == null) {
+                            System.out.println("tItem.getCi().getItemValue() is null");
+                            continue;
+                        }
+                        System.out.println("tItem = " + tItem.getCi().getItemValue().getName());
+                    }
                 }
+
             }
         }
 
