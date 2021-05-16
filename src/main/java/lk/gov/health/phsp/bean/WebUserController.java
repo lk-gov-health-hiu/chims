@@ -629,6 +629,7 @@ public class WebUserController implements Serializable {
     }
 
     public String loginNew() {
+        System.out.println("loginNew");
         loggableInstitutions = null;
         loggablePmcis = null;
         loggableGnAreas = null;
@@ -649,6 +650,8 @@ public class WebUserController implements Serializable {
             return "";
         }
 
+        System.out.println("username & password correct");
+        
         loggedUserPrivileges = userPrivilegeList(loggedUser);
 
         JsfUtil.addSuccessMessage("Successfully Logged");
@@ -657,6 +660,7 @@ public class WebUserController implements Serializable {
     }
 
     private boolean checkLoginNew() {
+        System.out.println("checkLoginNew");
         if (getFacade() == null) {
             JsfUtil.addErrorMessage("Server Error");
             return false;
@@ -1126,7 +1130,7 @@ public class WebUserController implements Serializable {
             JsfUtil.addErrorMessage(e, ("Error Occured. Please change username and try again."));
             return "";
         }
-        webUserApplicationController.fillWebUsers();
+        webUserApplicationController.resetWebUsers();
         userTransactionController.recordTransaction("New WebUser save BySysAdmin");
         return "/webUser/index";
     }
