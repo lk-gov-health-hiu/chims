@@ -23,7 +23,7 @@
                     </iframe>
                 </h:panelGroup>
 
-                <h:panelGroup rendered="true">
+                <h:panelGroup rendered="false">
                     <ez:dashboardSystemAdministrator rendered="#{webUserController.loggedUser.systemAdministrator}"/>
                     <ez:dashboardSuperUser rendered="#{webUserController.loggedUser.superUser}"/>
                     <ez:dashboardUser rendered="#{webUserController.loggedUser.user}"/>
@@ -45,9 +45,6 @@
                                 </h:panelGroup>-->
 
 
-                <h:form >
-                    <h:commandLink value="o" action="#{clientController.addCreatedDateFromCreatedAt()}" ></h:commandLink>
-                </h:form>
             </ui:define>
         </ui:composition>
     </h:body>
