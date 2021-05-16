@@ -17,9 +17,7 @@ import lk.gov.health.phsp.facade.util.JsfUtil;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-
 import java.io.Serializable;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -43,11 +41,10 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.servlet.http.HttpServletRequest;
 import lk.gov.health.phsp.entity.UserPrivilege;
+import lk.gov.health.phsp.enums.InstitutionType;
 import lk.gov.health.phsp.enums.Privilege;
 import lk.gov.health.phsp.enums.PrivilegeTreeNode;
 import lk.gov.health.phsp.facade.UserPrivilegeFacade;
-import org.glassfish.jersey.client.ClientResponse;
-import org.json.simple.parser.JSONParser;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 import org.primefaces.model.TreeNode;
@@ -321,24 +318,24 @@ public class WebUserController implements Serializable {
     }
     
     public void toProcedureRoom() {
-        String privilageStr = null;
+        String insList = null;
         String baseUrl = "http://localhost:8080/ProcedureRoomService/resources/redirect";
         String urlVals = "?API_KEY=EF16A5D4EF8AA6AA0580AF1390CF0600";
-        urlVals += "&User_Name="+loggedUser.getName();
-        urlVals += "&User_Role="+loggedUser.getWebUserRole();
+        urlVals += "&UserId="+loggedUser.getId();
+        urlVals += "&UserName="+loggedUser.getName();
+        urlVals += "&UserRole="+loggedUser.getWebUserRole();       
         
-        for(UserPrivilege up:loggedUserPrivileges){
-            if(up.getPrivilege() != null){
-                if(privilageStr==null){
-                    privilageStr = up.getPrivilege().toString();
+        for(Institution ins_:institutionApplicationController.findChildrenInstitutions(loggedUser.getInstitution(), InstitutionType.Procedure_Room)){
+            if(ins_.getId() != null){
+                if(insList==null){
+                    insList = ins_.getId().toString();
                 }else{
-                    privilageStr += "^"+up.getPrivilege().toString();
+                    insList += "A"+ins_.getId().toString();
                 }
             }
         }
-        urlVals += "&Privileges="+"TEST";
-        urlVals += "&Institution="+loggedUser.getInstitution().getCode();
-        urlVals += "&UserID="+loggedUser.getName();
+        urlVals += "&insList="+insList;
+        urlVals += "&userInstitution="+loggedUser.getInstitution().getId();
         
         Client client = Client.create();
         WebResource webResource1 = client.resource(baseUrl + urlVals);

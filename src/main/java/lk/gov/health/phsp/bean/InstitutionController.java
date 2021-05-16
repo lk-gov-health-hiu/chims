@@ -58,6 +58,8 @@ public class InstitutionController implements Serializable {
     InstitutionApplicationController institutionApplicationController;
     @Inject
     private UserTransactionController userTransactionController;
+    @Inject
+    private ExternalSyncController externalSyncController;
 
     private List<Institution> items = null;
     private Institution selected;
@@ -285,8 +287,6 @@ public class InstitutionController implements Serializable {
         }
         return tins;
     }
-
-    
 
     public List<Institution> findInstitutions(InstitutionType type) {
         List<Institution> cins = institutionApplicationController.getInstitutions();
@@ -592,6 +592,7 @@ public class InstitutionController implements Serializable {
                     getFacade().create(newClinic);
 
                     institutionApplicationController.setInstitutions(null);
+                    externalSyncController.ManageHash("INSTITUTION");
 
                 }
                 lk.gov.health.phsp.facade.util.JsfUtil.addSuccessMessage("Completed. Please check success and failure messages.");
@@ -617,6 +618,7 @@ public class InstitutionController implements Serializable {
             selected.setCreatedAt(new Date());
             selected.setCreater(webUserController.getLoggedUser());
             getFacade().create(selected);
+            externalSyncController.ManageHash("INSTITUTION");
 
             institutionApplicationController.getInstitutions().add(selected);
             items = null;
@@ -865,6 +867,14 @@ public class InstitutionController implements Serializable {
 
     public void setFile(UploadedFile file) {
         this.file = file;
+    }
+
+    public ExternalSyncController getExternalSyncController() {
+        return externalSyncController;
+    }
+
+    public void setExternalSyncController(ExternalSyncController externalSyncController) {
+        this.externalSyncController = externalSyncController;
     }
 
     @FacesConverter(forClass = Institution.class)
