@@ -31,16 +31,36 @@ public class ApiRequestApplicationController implements Serializable {
         return ejbFacade;
     }
 
+    public boolean markRequestAsReceived(String id) {
+        Long lngId = CommonController.stringToLong(id);
+        if (lngId == null || lngId == 0) {
+            return false;
+        }
+        ApiRequest r = getFacade().find(lngId);
+        if (r == null) {
+            return false;
+        }
+        System.out.println("r.isConvaied() = " + r.isConvaied());
+        r.setConvaied(true);
+        r.setConvaiedAt(new Date());
+        ejbFacade.edit(r);
+        System.out.println("r.isConvaied() = " + r.isConvaied());
+        return true;
+    }
+
     public List<ApiRequest> getPendingProcedure() {
         String j = "select a "
                 + " from ApiRequest a "
                 + " where a.retired=:ret "
                 + " and a.convaied=:con"
+                + " and a.name=:name "
                 + " order by a.id";
         Map m = new HashMap();
         m.put("ret", false);
-        m.put("con", true);
-        return getFacade().findByJpql(j, m);
+        m.put("con", false);
+        m.put("name", "procedure_request");
+        List<ApiRequest> rs = getFacade().findByJpql(j, m);
+        return rs;
     }
 
     public void saveApiRequests(ApiRequest p) {

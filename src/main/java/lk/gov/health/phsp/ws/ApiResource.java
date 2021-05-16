@@ -96,7 +96,8 @@ public class ApiResource {
     public String getJson(@QueryParam("name") String name,
             @QueryParam("year") String year,
             @QueryParam("month") String month,
-            @QueryParam("institute_id") String instituteId) {
+            @QueryParam("institute_id") String instituteId,
+            @QueryParam("id") String id) {
         JSONObject jSONObjectOut;
         if (name == null || name.trim().equals("")) {
             jSONObjectOut = errorMessageInstruction();
@@ -107,6 +108,9 @@ public class ApiResource {
                     break;
                 case "get_procedures_pending":
                     jSONObjectOut = proceduresPending();
+                    break;
+                case "mark_request_as_received":
+                    jSONObjectOut = markRequestAsReceived(id);
                     break;
                 case "get_province_list":
                     jSONObjectOut = provinceList();
@@ -672,6 +676,16 @@ public class ApiResource {
         return jSONObjectOut;
     }
 
+    private JSONObject markRequestAsReceived(String id){
+        boolean f = apiRequestApplicationController.markRequestAsReceived(id);
+        if(!f){
+            return errorMessageNoId();
+        }
+        JSONObject jSONObjectOut = new JSONObject();
+        jSONObjectOut.put("status", successMessage());
+        return jSONObjectOut;
+    }
+    
     private JSONObject proceduresPending() {
         JSONObject jSONObjectOut = new JSONObject();
         JSONArray array = new JSONArray();
@@ -714,6 +728,7 @@ public class ApiResource {
                 continue;
             }
 
+            ja.put("procedure_request_id", a.getId());
             ja.put("procedure_id", i.getId());
             ja.put("procedure_code", i.getCode());
             ja.put("procedure_name", i.getName());
@@ -805,6 +820,14 @@ public class ApiResource {
         jSONObjectOut.put("code", 400);
         jSONObjectOut.put("type", "error");
         jSONObjectOut.put("message", "You must provide a value for the parameter name.");
+        return jSONObjectOut;
+    }
+    
+    private JSONObject errorMessageNoId() {
+        JSONObject jSONObjectOut = new JSONObject();
+        jSONObjectOut.put("code", 410);
+        jSONObjectOut.put("type", "error");
+        jSONObjectOut.put("message", "The ID provided is not found.");
         return jSONObjectOut;
     }
 
