@@ -2257,7 +2257,10 @@ public class AreaController implements Serializable {
                 RelationshipType.Estimated_Midyear_Population,
                 RelationshipType.Over_35_Female_Population,
                 RelationshipType.Over_35_Male_Population,
-                RelationshipType.Over_35_Population,};
+                RelationshipType.Over_35_Population,
+                RelationshipType.Annual_Target_Female_Population,
+                RelationshipType.Annual_Target_Male_Population,
+                RelationshipType.Annual_Target_Population};
         }
         return rts;
     }

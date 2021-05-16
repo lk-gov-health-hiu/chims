@@ -85,6 +85,8 @@ public class Relationship implements Serializable {
 
     @Enumerated(EnumType.STRING)
     private RelationshipType relationshipType;
+    
+    
 
     public Long getId() {
         return id;

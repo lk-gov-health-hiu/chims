@@ -19,7 +19,6 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import java.io.Serializable;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -42,13 +41,13 @@ import javax.faces.model.SelectItem;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.servlet.http.HttpServletRequest;
+import lk.gov.health.phsp.entity.Relationship;
 import lk.gov.health.phsp.entity.UserPrivilege;
 import lk.gov.health.phsp.enums.InstitutionType;
 import lk.gov.health.phsp.enums.Privilege;
 import lk.gov.health.phsp.enums.PrivilegeTreeNode;
+import lk.gov.health.phsp.enums.RelationshipType;
 import lk.gov.health.phsp.facade.UserPrivilegeFacade;
-import org.glassfish.jersey.client.ClientResponse;
-import org.json.simple.parser.JSONParser;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 import org.primefaces.model.TreeNode;
@@ -103,6 +102,8 @@ public class WebUserController implements Serializable {
     InstitutionApplicationController institutionApplicationController;
     @Inject
     WebUserApplicationController webUserApplicationController;
+    @Inject
+    RelationshipController relationshipController;
     /*
     Variables
      */
@@ -113,6 +114,8 @@ public class WebUserController implements Serializable {
 
     private List<Institution> loggableInstitutions;
     private List<Institution> loggablePmcis;
+    private List<Institution> loggableProcedureRooms;
+
     private List<Area> loggableGnAreas;
 
     private Area selectedProvince;
@@ -651,7 +654,7 @@ public class WebUserController implements Serializable {
         }
 
         System.out.println("username & password correct");
-        
+
         loggedUserPrivileges = userPrivilegeList(loggedUser);
 
         JsfUtil.addSuccessMessage("Successfully Logged");
@@ -1687,16 +1690,15 @@ public class WebUserController implements Serializable {
     }
 
     public List<Institution> getLoggableProcedureRooms() {
-        List<Institution> prs = new ArrayList<>();
-        for (Institution ins : getLoggableInstitutions()) {
-            if (ins.getInstitutionType() == null) {
-                continue;
+        if (loggableProcedureRooms == null) {
+            List<Relationship> rs = relationshipController.findRelationships(institution, RelationshipType.Procedure_Room);
+            List<Institution> prs = new ArrayList<>();
+            for (Relationship r : rs) {
+                prs.add(r.getToInstitution());
             }
-            if (ins.getInstitutionType() == InstitutionType.Procedure_Room) {
-                prs.add(ins);
-            }
+            loggableProcedureRooms = prs;
         }
-        return prs;
+        return loggableProcedureRooms;
     }
 
     public void setLoggableInstitutions(List<Institution> loggableInstitutions) {
