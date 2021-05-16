@@ -1691,11 +1691,17 @@ public class WebUserController implements Serializable {
 
     public List<Institution> getLoggableProcedureRooms() {
         if (loggableProcedureRooms == null) {
-            List<Relationship> rs = relationshipController.findRelationships(institution, RelationshipType.Procedure_Room);
+            Map<Long, Institution> mapPrs = new HashMap<>();
             List<Institution> prs = new ArrayList<>();
-            for (Relationship r : rs) {
-                prs.add(r.getToInstitution());
+            for (Institution ins : getLoggableInstitutions()) {
+                List<Relationship> rs = relationshipController.findRelationships(ins, RelationshipType.Procedure_Room);
+                for (Relationship r : rs) {
+                    if (r.getInstitution() != null) {
+                        mapPrs.put(r.getInstitution().getId(), r.getInstitution());
+                    }
+                }
             }
+            prs.addAll(mapPrs.values());
             loggableProcedureRooms = prs;
         }
         return loggableProcedureRooms;
