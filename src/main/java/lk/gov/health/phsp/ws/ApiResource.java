@@ -25,6 +25,7 @@ package lk.gov.health.phsp.ws;
 
 import java.util.Date;
 import java.util.List;
+import javax.annotation.Resource;
 import javax.enterprise.context.Dependent;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
@@ -32,9 +33,13 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.SecurityContext;
+import javax.xml.ws.WebServiceContext;
+import javax.xml.ws.handler.MessageContext;
 import lk.gov.health.phsp.bean.AnalysisController;
 import lk.gov.health.phsp.bean.ApiRequestApplicationController;
 import lk.gov.health.phsp.bean.ApplicationController;
@@ -42,6 +47,7 @@ import lk.gov.health.phsp.bean.AreaApplicationController;
 import lk.gov.health.phsp.bean.CommonController;
 import lk.gov.health.phsp.bean.InstitutionApplicationController;
 import lk.gov.health.phsp.bean.ItemApplicationController;
+import lk.gov.health.phsp.bean.RequestController;
 import lk.gov.health.phsp.bean.StoredQueryResultController;
 import lk.gov.health.phsp.entity.ApiRequest;
 import lk.gov.health.phsp.entity.Area;
@@ -51,6 +57,7 @@ import lk.gov.health.phsp.entity.Institution;
 import lk.gov.health.phsp.entity.Item;
 import lk.gov.health.phsp.entity.QueryComponent;
 import lk.gov.health.phsp.entity.Relationship;
+import lk.gov.health.phsp.entity.WebUser;
 import lk.gov.health.phsp.enums.AreaType;
 import lk.gov.health.phsp.enums.EncounterType;
 import lk.gov.health.phsp.enums.RelationshipType;
@@ -70,6 +77,8 @@ public class ApiResource {
     @Context
     private UriInfo context;
 
+
+
     @Inject
     AreaApplicationController areaApplicationController;
     @Inject
@@ -85,6 +94,8 @@ public class ApiResource {
     @Inject
     ApiRequestApplicationController apiRequestApplicationController;
 
+
+    
     /**
      * Creates a new instance of GenericResource
      */
@@ -97,7 +108,13 @@ public class ApiResource {
             @QueryParam("year") String year,
             @QueryParam("month") String month,
             @QueryParam("institute_id") String instituteId,
-            @QueryParam("id") String id) {
+            @QueryParam("id") String id,
+            @Context HttpServletRequest requestContext,
+            @Context SecurityContext context) {
+        
+        String ipadd =  requestContext.getHeader("X-FORWARDED-FOR");
+        System.out.println("ipadd = " + ipadd);
+        
         JSONObject jSONObjectOut;
         if (name == null || name.trim().equals("")) {
             jSONObjectOut = errorMessageInstruction();
@@ -107,7 +124,9 @@ public class ApiResource {
                     jSONObjectOut = procedureList();
                     break;
                 case "get_procedures_pending":
-                    jSONObjectOut = proceduresPending();
+                    jSONObjectOut = proceduresPending(id
+                    
+                    );
                     break;
                 case "mark_request_as_received":
                     jSONObjectOut = markRequestAsReceived(id);
@@ -152,6 +171,7 @@ public class ApiResource {
                     jSONObjectOut = errorMessage();
             }
         }
+        
         String json = jSONObjectOut.toString();
         return json;
     }
@@ -686,7 +706,7 @@ public class ApiResource {
         return jSONObjectOut;
     }
     
-    private JSONObject proceduresPending() {
+    private JSONObject proceduresPending(String id) {
         JSONObject jSONObjectOut = new JSONObject();
         JSONArray array = new JSONArray();
         List<ApiRequest> ds = apiRequestApplicationController.getPendingProcedure();
@@ -702,6 +722,7 @@ public class ApiResource {
             Client c = null;
             Item i = null;
             Institution ins = null;
+            WebUser u = null;
 
             if (ci.getItemValue() != null) {
                 i = ci.getItemValue();
@@ -723,6 +744,9 @@ public class ApiResource {
                     System.err.println("ci.getEncounter().getInstitution() is null");
                     continue;
                 }
+                if(ci.getEncounter().getCreatedBy()!=null){
+                    u = ci.getEncounter().getCreatedBy();
+                }
             } else {
                 System.out.println("ci.getEncounter() is null");
                 continue;
@@ -742,6 +766,10 @@ public class ApiResource {
                 ja.put("parent_institute_id", ins.getParent().getId());
                 ja.put("parent_institute_code", ins.getParent().getCode());
                 ja.put("parent_institute_name", ins.getParent().getName());
+            }
+            if(u!=null){
+                ja.put("user_id", u.getId());
+                ja.put("user_name", u.getName());
             }
             array.put(ja);
         }
