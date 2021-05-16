@@ -35,7 +35,7 @@ import lk.gov.health.phsp.facade.WebUserFacade;
  *
  * @author buddhika
  */
-@Named(value = "webUserApplicationController")
+@Named
 @ApplicationScoped
 public class WebUserApplicationController {
 
@@ -66,7 +66,7 @@ public class WebUserApplicationController {
         this.items = items;
     }
 
-    public void fillWebUsers(){
+    private void fillWebUsers(){
         String j = "select u from WebUser u "
                 + " where u.retired=false ";
         items = facade.findByJpql(j);
