@@ -9,6 +9,7 @@ import lk.gov.health.phsp.bean.util.JsfUtil.PersistAction;
 import lk.gov.health.phsp.facade.ItemFacade;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -607,6 +608,20 @@ public class ItemController implements Serializable {
     }
 
     public List<Item> findItemList(String parentCode, ItemType t, String qry) {
+        List<Item> nis = new ArrayList<>();
+        for(Item i: itemApplicationController.getItems()){
+            boolean canInclude=true;
+            
+            if(parentCode==null||parentCode.trim().equalsIgnoreCase("")){
+                
+            }
+            
+            if(canInclude){
+                nis.add(i);
+            }
+        }
+        
+        
         String j = "select t from Item t where t.retired=false ";
         Map m = new HashMap();
 
@@ -628,27 +643,31 @@ public class ItemController implements Serializable {
     }
 
     public List<Item> findItemList(Item parent) {
-        String j = "select t from Item t where t.retired=false ";
-        Map m = new HashMap();
-
-        if (parent != null) {
-            m.put("p", parent);
-            j += " and t.parent=:p ";
+//        String j = "select t from Item t where t.retired=false ";
+//        Map m = new HashMap();
+//
+//        if (parent != null) {
+//            m.put("p", parent);
+//            j += " and t.parent=:p ";
+//        }
+//        j += " order by t.name";
+        if (parent == null || parent.getCode() == null) {
+            return new ArrayList<>();
         }
-        j += " order by t.name";
-        return getFacade().findByJpql(j, m);
+        return itemApplicationController.findChildren(parent.getCode());
     }
 
     public List<Item> findItemListByCode(String parentCode) {
-        String j = "select t from Item t where t.retired=false ";
-        Map m = new HashMap();
-        Item parent = findItemByCode(parentCode);
-        if (parent != null) {
-            m.put("p", parent);
-            j += " and t.parent=:p ";
-        }
-        j += " order by t.name";
-        return getFacade().findByJpql(j, m);
+//        String j = "select t from Item t where t.retired=false ";
+//        Map m = new HashMap();
+//        Item parent = findItemByCode(parentCode);
+//        if (parent != null) {
+//            m.put("p", parent);
+//            j += " and t.parent=:p ";
+//        }
+//        j += " order by t.name";
+//        return getFacade().findByJpql(j, m);
+        return itemApplicationController.findChildren(parentCode);
     }
 
     public void setTitles(List<Item> titles) {
