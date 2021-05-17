@@ -32,6 +32,12 @@
                                              style="width: 15rem; margin-top:1rem;"
                                              action="#{institutionController.toImportInstitution()}"></p:commandButton>
 
+
+                            <p:commandButton value="Relod Institutions" ajax="false" 
+                                             style="width: 15rem; margin-top:1rem;"
+                                             action="#{institutionApplicationController.resetAllInstitutions()}">
+
+                            </p:commandButton>
                         </p:panelGrid>
                     </h:form>                   
                     <ui:insert name="insContents" >
