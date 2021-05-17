@@ -382,37 +382,50 @@ public class InstitutionController implements Serializable {
     }
 
     public Institution findInstitutionByName(String name) {
-        String j = "Select i from Institution i where i.retired=:ret ";
-        Map m = new HashMap();
-        if (name != null) {
-            j += " and lower(i.name)=:n ";
-            m.put("n", name.trim().toLowerCase());
+        if(name==null||name.trim().equals("")){
+            return null;
         }
-        m.put("ret", false);
-        return getFacade().findFirstByJpql(j, m);
+        Institution ni=null;
+        for(Institution i :institutionApplicationController.getInstitutions()){
+            if(i.getName()!=null && i.getName().equalsIgnoreCase(name)){
+                if(ni!=null){
+                    System.out.println("Duplicate Institution Name : " + name);
+                }
+                ni=i;
+            }
+        }
+        return ni;
+//        String j = "Select i from Institution i where i.retired=:ret ";
+//        Map m = new HashMap();
+//        if (name != null) {
+//            j += " and lower(i.name)=:n ";
+//            m.put("n", name.trim().toLowerCase());
+//        }
+//        m.put("ret", false);
+//        return getFacade().findFirstByJpql(j, m);
     }
 
-    public Institution findInstitutionById(Long id) {
-        String j = "Select i from Institution i where i.retired=:ret ";
-        Map m = new HashMap();
-        if (id != null) {
-            j += " and i.id=:n ";
-            m.put("n", id);
-        }
-        m.put("ret", false);
-        return getFacade().findFirstByJpql(j, m);
-    }
-
-    public List<Institution> completePmcis(String nameQry) {
-        String j = "Select i from Institution i where i.retired=false and i.pmci=true ";
-        Map m = new HashMap();
-        if (nameQry != null) {
-            j += " and lower(i.name) like :n ";
-            m.put("n", "%" + nameQry.trim().toLowerCase() + "%");
-        }
-        j += " order by i.name";
-        return getFacade().findByJpql(j, m);
-    }
+//    public Institution findInstitutionById(Long id) {
+//        String j = "Select i from Institution i where i.retired=:ret ";
+//        Map m = new HashMap();
+//        if (id != null) {
+//            j += " and i.id=:n ";
+//            m.put("n", id);
+//        }
+//        m.put("ret", false);
+//        return getFacade().findFirstByJpql(j, m);
+//    }
+//
+//    public List<Institution> completePmcis(String nameQry) {
+//        String j = "Select i from Institution i where i.retired=false and i.pmci=true ";
+//        Map m = new HashMap();
+//        if (nameQry != null) {
+//            j += " and lower(i.name) like :n ";
+//            m.put("n", "%" + nameQry.trim().toLowerCase() + "%");
+//        }
+//        j += " order by i.name";
+//        return getFacade().findByJpql(j, m);
+//    }
 
     public void fillItems() {
         if (institutionApplicationController.getInstitutions() != null) {
@@ -690,16 +703,16 @@ public class InstitutionController implements Serializable {
     }
 
     public Institution getInstitution(java.lang.Long id) {
-        return getFacade().find(id);
+        Institution ni = null;
+        for(Institution i:institutionApplicationController.getInstitutions()){
+            if(i.getId()!=null && i.getId().equals(id)){
+                ni = i;
+            }
+        }
+        return ni;
     }
 
-    public List<Institution> getItemsAvailableSelectMany() {
-        return getFacade().findAll();
-    }
 
-    public List<Institution> getItemsAvailableSelectOne() {
-        return getFacade().findAll();
-    }
 
     public void refreshMyInstitutions() {
         userTransactionController.recordTransaction("refresh My Institutions");
