@@ -157,7 +157,7 @@ public class AreaController implements Serializable {
         } else {
             selected.setLastEditBy(webUserController.getLoggedUser());
             selected.setLastEditeAt(new Date());
-            getFacade().edit(deleting);
+            getFacade().edit(selected);
             JsfUtil.addSuccessMessage("Updated");
         }
         items = null;
