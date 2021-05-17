@@ -61,7 +61,10 @@ public enum RelationshipType {
     High_Risk_Population("High_Risk_Population"),
     Annual_Target_Male_Population("Registerd Male Population"),
     Annual_Target_Female_Population("Registered Female Population"),
-    Annual_Target_Population("Registered_Population");
+    Annual_Target_Population("Registered_Population"),
+    Procedure_Room("Procedure Room"),
+    Dispensary("Dispensary"),
+    Laboratory("Laboratory");
     private final String label;
     
     private RelationshipType(String label){

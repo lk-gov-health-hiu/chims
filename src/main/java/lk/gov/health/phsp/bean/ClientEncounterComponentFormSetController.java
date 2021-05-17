@@ -23,6 +23,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
 import javax.inject.Inject;
+import lk.gov.health.phsp.entity.ApiRequest;
 import lk.gov.health.phsp.entity.Client;
 import lk.gov.health.phsp.entity.ClientEncounterComponentForm;
 import lk.gov.health.phsp.entity.ClientEncounterComponentItem;
@@ -88,7 +89,8 @@ public class ClientEncounterComponentFormSetController implements Serializable {
     private CommonController commonController;
     @Inject
     UserTransactionController userTransactionController;
-
+    @Inject
+    ApiRequestApplicationController apiRequestApplicationController;
 // </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="Class Variables">
     private List<ClientEncounterComponentFormSet> items = null;
@@ -243,27 +245,82 @@ public class ClientEncounterComponentFormSetController implements Serializable {
     }
 
     public String completeFormset() {
-        System.out.println("completeFormset" + new Date());
         if (selected == null) {
             JsfUtil.addErrorMessage("Nothing to Complete.");
             userTransactionController.recordTransaction("Nothing to Complete in formset");
             return "";
         }
-        System.out.println("1" + new Date());
         save(selected);
-        System.out.println("2" + new Date());
+        executreCompleteEvents(dataFormset);
         selected.setCompleted(true);
         selected.setCompletedAt(new Date());
         selected.setCompletedBy(webUserController.getLoggedUser());
-        System.out.println("3" + new Date());
         getFacade().edit(selected);
 //        executePostCompletionStrategies(selected);
         formEditable = false;
         JsfUtil.addSuccessMessage("Completed");
-        System.out.println("4" + new Date());
         userTransactionController.recordTransaction("Formset Completed");
-        System.out.println("5" + new Date());
         return toViewFormset();
+    }
+
+    public void executreCompleteEvents(DataFormset tSet) {
+        if (tSet.getForms() == null) {
+            return;
+        }
+        for (DataForm tForm : tSet.getForms()) {
+            if (tForm.getItems() == null) {
+                continue;
+            }
+            for (DataItem tItem : tForm.getItems()) {
+                if (tItem.getDi() == null || tItem.getDi().getSelectionDataType() == null) {
+                    System.err.println("Null in (tItem.getDi() == null || tItem.getDi().getSelectionDataType())");
+                    continue;
+                }
+
+                if (tItem.getMultipleEntries()) {
+                    if (tItem.getDi().getSelectionDataType() == SelectionDataType.Procedure_Request) {
+                        for (DataItem ttItem : tItem.getAddedItems()) {
+                            if (ttItem.getCi() == null) {
+                                System.err.println("ttItem.getCi() is null");
+                                continue;
+                            }
+                            if (ttItem.getCi().getItemValue() == null) {
+                                System.err.println("ttItem.getCi().getItemValue() is null");
+                                continue;
+                            }
+                            ApiRequest r = new ApiRequest();
+                            r.setRequestCeci(ttItem.getCi());
+                            r.setCreatedAt(new Date());
+                            r.setCreatedBy(webUserController.getLoggedUser());
+                            r.setEncounter(tSet.getEfs().getEncounter());
+                            r.setName("procedure_request");
+                            apiRequestApplicationController.saveApiRequests(r);
+                        }
+                    }
+                } else {
+                    if (tItem.getDi().getSelectionDataType() == SelectionDataType.Procedure_Request) {
+                        if (tItem.getCi() == null) {
+                            System.err.println("tItem.getCi() is null");
+                            continue;
+                        }
+                        if (tItem.getCi().getItemValue() == null) {
+                            System.err.println("tItem.getCi().getItemValue() is null");
+                            continue;
+                        }
+                        System.out.println("tItem = " + tItem.getCi().getItemValue().getName());
+                        ApiRequest r = new ApiRequest();
+                        r.setRequestCeci(tItem.getCi());
+                        r.setCreatedAt(new Date());
+                        r.setCreatedBy(webUserController.getLoggedUser());
+                        r.setEncounter(tSet.getEfs().getEncounter());
+                        r.setName("procedure_request");
+                        apiRequestApplicationController.saveApiRequests(r);
+                    }
+                }
+
+            }
+        }
+
     }
 
     public String reverseCompleteFormset() {
@@ -933,7 +990,7 @@ public class ClientEncounterComponentFormSetController implements Serializable {
             }
 
             System.out.println("skipThisForm = " + skipThisForm);
-            
+
             if (!skipThisForm) {
                 formCounter++;
                 String j = "select cf "
@@ -978,7 +1035,7 @@ public class ClientEncounterComponentFormSetController implements Serializable {
                 int itemCounter = 0;
 
                 for (DesignComponentFormItem dis : diList) {
-                    
+
                     System.out.println("dis = " + dis.getName());
 
                     boolean disSkipThisItem = false;
@@ -990,11 +1047,11 @@ public class ClientEncounterComponentFormSetController implements Serializable {
                     }
 
                     System.out.println("disSkipThisItem = " + disSkipThisItem);
-                    
+
                     if (!disSkipThisItem) {
 
                         if (dis.isMultipleEntiesPerForm()) {
-                            
+
                             System.out.println("dis.isMultipleEntiesPerForm() = " + dis.isMultipleEntiesPerForm());
 
                             j = "Select ci "

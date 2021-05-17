@@ -23,7 +23,9 @@
  */
 package lk.gov.health.phsp.bean;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import javax.ejb.EJB;
 import javax.inject.Named;
@@ -41,39 +43,72 @@ public class ItemApplicationController {
 
     @EJB
     private ItemFacade facade;
+
+    private List<Item> items;
+    
+
     /**
      * Creates a new instance of ItemApplicationController
      */
     public ItemApplicationController() {
     }
-    
+
     public Item findItemByCode(String code) {
-        Item item;
-        String j;
-        Map m = new HashMap();
-        if (code != null) {
-            j = "select i from Item i "
-                    + " where i.retired=false "
-                    + " and lower(i.code)=:code "
-                    + " order by i.id";
-            m = new HashMap();
-            m.put("code", code.trim().toLowerCase());
-            item = facade.findFirstByJpql(j, m);
-        } else {
-            item = null;
+        Item item = null;
+        int counter = 0;
+        for (Item ti : getItems()) {
+            if (ti.getCode() != null && ti.getCode().equalsIgnoreCase(code)) {
+                counter++;
+                item = ti;
+            }
+        }
+        if (counter > 1) {
+            System.err.println("This item code is duplicated = " + code);
         }
         return item;
     }
-    
-    public Item getMale(){
+
+    public List<Item> findChildren(String code) {
+        List<Item> tis = new ArrayList<>();
+        for (Item ti : getItems()) {
+            if (ti.getParent() != null && ti.getParent().getCode() != null && ti.getParent().getCode().equalsIgnoreCase(code)) {
+                tis.add(ti);
+            }
+        }
+        return tis;
+    }
+
+    public Item getMale() {
         return findItemByCode("sex_male");
     }
-    
-    public Item getFemale(){
+
+    public Item getFemale() {
         return findItemByCode("sex_female");
     }
-    
-    
-    
-    
+
+    public List<Item> getItems() {
+        if (items == null) {
+            items = fillItems();
+        }
+        return items;
+    }
+
+    public void setItems(List<Item> items) {
+        this.items = items;
+    }
+
+    private List<Item> fillItems() {
+        String j = "select i "
+                + "from Item i "
+                + "where i.retired=:ret "
+                + "order by i.name";
+        Map m = new HashMap();
+        m.put("ret", false);
+        return facade.findByJpql(j, m);
+    }
+
+    public void invalidateItems() {
+        items = null;
+    }
+
 }

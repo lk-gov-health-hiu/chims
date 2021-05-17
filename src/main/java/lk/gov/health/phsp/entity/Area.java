@@ -31,6 +31,7 @@ import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -66,21 +67,21 @@ public class Area implements Serializable {
     @ManyToOne
     private Area parentArea;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Area phm;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Area phi;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Area dsd;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Area moh;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Area district;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Area province;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Area rdhsArea;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Area pdhsArea;
 
     private double centreLongitude;
@@ -97,27 +98,27 @@ public class Area implements Serializable {
     private Long femaleTargePopulation;
     
     
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Institution pmci;
 
     /*
     Create Properties
      */
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private WebUser createdBy;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date createdAt;
     /*
     Last Edit Properties
      */
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private WebUser lastEditBy;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date lastEditeAt;
     /*
     Retire Reversal Properties
      */
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private WebUser retiredReversedBy;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date retiredReversedAt;
@@ -125,7 +126,7 @@ public class Area implements Serializable {
     Retire Properties
      */
     private boolean retired;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private WebUser retiredBy;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date retiredAt;

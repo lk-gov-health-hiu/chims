@@ -39,7 +39,8 @@ public enum SelectionDataType {
     Item_Reference("Item Reference"),
     Client_Reference("Client Reference"),
     Area_Reference("Area Reference"),
-    Prescreption_Reference("Prescreption Reference"),
+    Prescreption_Reference("Prescreption"),
+    Procedure_Request("Procedure Request"),
     @Deprecated
     Institution_Reference("Institution Reference"),
     @Deprecated
@@ -53,7 +54,8 @@ public enum SelectionDataType {
     @Deprecated
     Free_Entry("Free Entry"),
     @Deprecated
-    Calculation("Calculation");
+    Calculation("Calculation"),
+    Procedure_Request("Procedure Request");
     
     public final String label;    
     private SelectionDataType(String label){

@@ -703,7 +703,7 @@ public class ClientEncounterComponentItemController implements Serializable {
         userTransactionController.recordTransaction("Add Another - Clinic Forms");
     }
 
-    public void addAnotherDataItem(DataItem i) {
+      public void addAnotherDataItem(DataItem i) {
         System.out.println("addAnother");
         System.out.println("Dataitem i = " + i);
 
@@ -736,12 +736,12 @@ public class ClientEncounterComponentItemController implements Serializable {
 
         System.out.println("going to save");
 
-        System.out.println("i.getCi().getId() = " + i.getCi().getId());
+        System.out.println("i.getAddingItem().getCi().getId() = " + i.getAddingItem().getCi().getId());
 
         save(i.getAddingItem().getCi());
 
         System.out.println("saved");
-        System.out.println("i.getCi().getId() = " + i.getCi().getId());
+        System.out.println("i.getAddingItem().getCi().getId() = " + i.getAddingItem().getCi().getId());
 
         i.getAddedItems().add(i.getAddingItem());
         

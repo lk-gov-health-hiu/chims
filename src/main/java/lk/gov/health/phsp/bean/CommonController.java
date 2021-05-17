@@ -312,6 +312,7 @@ public class CommonController implements Serializable {
             RenderType.Input_Text_Area,
             RenderType.List_Box,
             RenderType.Prescreption,
+            RenderType.Procedure_room,
             RenderType.Observation,
             RenderType.PlanOfAction,
             RenderType.Referral,
@@ -356,7 +357,14 @@ public class CommonController implements Serializable {
             SelectionDataType.Item_Reference,
             SelectionDataType.Client_Reference,
             SelectionDataType.Area_Reference,
-            SelectionDataType.Prescreption_Reference};
+            SelectionDataType.Prescreption_Reference,
+<<<<<<< HEAD
+            SelectionDataType.Procedure_Request};
+=======
+            SelectionDataType.Procedure_Request
+                
+        };
+>>>>>>> master
         return sdts;
     }
 

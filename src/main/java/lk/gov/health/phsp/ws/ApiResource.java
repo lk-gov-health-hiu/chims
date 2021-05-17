@@ -25,6 +25,7 @@ package lk.gov.health.phsp.ws;
 
 import java.util.Date;
 import java.util.List;
+import javax.annotation.Resource;
 import javax.enterprise.context.Dependent;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
@@ -32,22 +33,35 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.SecurityContext;
+import javax.xml.ws.WebServiceContext;
+import javax.xml.ws.handler.MessageContext;
 import lk.gov.health.phsp.bean.AnalysisController;
+import lk.gov.health.phsp.bean.ApiRequestApplicationController;
 import lk.gov.health.phsp.bean.ApplicationController;
 import lk.gov.health.phsp.bean.AreaApplicationController;
 import lk.gov.health.phsp.bean.CommonController;
 import lk.gov.health.phsp.bean.InstitutionApplicationController;
 import lk.gov.health.phsp.bean.ItemApplicationController;
+import lk.gov.health.phsp.bean.RequestController;
 import lk.gov.health.phsp.bean.StoredQueryResultController;
+import lk.gov.health.phsp.entity.ApiRequest;
 import lk.gov.health.phsp.entity.Area;
+import lk.gov.health.phsp.entity.Client;
+import lk.gov.health.phsp.entity.ClientEncounterComponentItem;
 import lk.gov.health.phsp.entity.Institution;
+import lk.gov.health.phsp.entity.Item;
 import lk.gov.health.phsp.entity.QueryComponent;
 import lk.gov.health.phsp.entity.Relationship;
+import lk.gov.health.phsp.entity.WebUser;
 import lk.gov.health.phsp.enums.AreaType;
 import lk.gov.health.phsp.enums.EncounterType;
 import lk.gov.health.phsp.enums.RelationshipType;
+import lk.gov.health.phsp.enums.WebUserRole;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -63,6 +77,8 @@ public class ApiResource {
     @Context
     private UriInfo context;
 
+
+
     @Inject
     AreaApplicationController areaApplicationController;
     @Inject
@@ -75,7 +91,11 @@ public class ApiResource {
     ApplicationController applicationController;
     @Inject
     StoredQueryResultController storedQueryResultController;
+    @Inject
+    ApiRequestApplicationController apiRequestApplicationController;
 
+
+    
     /**
      * Creates a new instance of GenericResource
      */
@@ -87,12 +107,30 @@ public class ApiResource {
     public String getJson(@QueryParam("name") String name,
             @QueryParam("year") String year,
             @QueryParam("month") String month,
-            @QueryParam("institute_id") String instituteId) {
+            @QueryParam("institute_id") String instituteId,
+            @QueryParam("id") String id,
+            @Context HttpServletRequest requestContext,
+            @Context SecurityContext context) {
+        
+        String ipadd =  requestContext.getHeader("X-FORWARDED-FOR");
+        System.out.println("ipadd = " + ipadd);
+        
         JSONObject jSONObjectOut;
         if (name == null || name.trim().equals("")) {
             jSONObjectOut = errorMessageInstruction();
         } else {
             switch (name) {
+                case "get_procedure_list":
+                    jSONObjectOut = procedureList();
+                    break;
+                case "get_procedures_pending":
+                    jSONObjectOut = proceduresPending(id
+                    
+                    );
+                    break;
+                case "mark_request_as_received":
+                    jSONObjectOut = markRequestAsReceived(id);
+                    break;
                 case "get_province_list":
                     jSONObjectOut = provinceList();
                     break;
@@ -133,8 +171,23 @@ public class ApiResource {
                     jSONObjectOut = errorMessage();
             }
         }
+        
         String json = jSONObjectOut.toString();
         return json;
+    }
+
+    @GET
+    @Path("/get_role_name/{roleId}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public String getRoleName(@PathParam("roleId") String roleId) {
+        return WebUserRole.valueOf(roleId).getLabel();
+    }
+
+    @GET
+    @Path("/get_ins_name/{insCode}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public String getInstituteName(@PathParam("insCode") String insCode) {
+        return null;
     }
 
     private JSONObject districtList() {
@@ -173,13 +226,13 @@ public class ApiResource {
             } else {
                 ja.put("edited_at", a.getCreatedAt());
             }
-
             if (a.getProvince() != null) {
                 ja.put("province_id", a.getProvince().getId());
             }
             if (a.getDistrict() != null) {
                 ja.put("district_id", a.getDistrict().getId());
             }
+            ja.put("child_institutions", Get_Child_Institutions(a));
             array.put(ja);
         }
         jSONObjectOut.put("data", array);
@@ -330,14 +383,13 @@ public class ApiResource {
             return errorMessageNoIndicator();
         }
         QueryComponent fc = applicationController.findQueryComponent("encounter_count_Number_of_male_participants_with_CVD_risk_greater_20presentage");
-        if(fc==null){
+        if (fc == null) {
             return errorMessageNoIndicator();
         }
         QueryComponent tc = applicationController.findQueryComponent("encounter_count_of_total_CVD_risk_greater_20presentage");
-        if(tc==null){
+        if (tc == null) {
             return errorMessageNoIndicator();
         }
-        
 
         JSONObject jSONObjectOut = new JSONObject();
         JSONArray array = new JSONArray();
@@ -627,6 +679,105 @@ public class ApiResource {
         return jSONObjectOut;
     }
 
+    private JSONObject procedureList() {
+        JSONObject jSONObjectOut = new JSONObject();
+        JSONArray array = new JSONArray();
+        List<Item> ds = itemApplicationController.findChildren("procedure");
+        for (Item a : ds) {
+            JSONObject ja = new JSONObject();
+            ja.put("procedure_id", a.getId());
+            ja.put("procedure_code", a.getCode());
+            ja.put("procedure_name", a.getName());
+            ja.put("procedure_descreption", a.getDescreption());
+            array.put(ja);
+        }
+        jSONObjectOut.put("data", array);
+        jSONObjectOut.put("status", successMessage());
+        return jSONObjectOut;
+    }
+
+    private JSONObject markRequestAsReceived(String id){
+        boolean f = apiRequestApplicationController.markRequestAsReceived(id);
+        if(!f){
+            return errorMessageNoId();
+        }
+        JSONObject jSONObjectOut = new JSONObject();
+        jSONObjectOut.put("status", successMessage());
+        return jSONObjectOut;
+    }
+    
+    private JSONObject proceduresPending(String id) {
+        JSONObject jSONObjectOut = new JSONObject();
+        JSONArray array = new JSONArray();
+        List<ApiRequest> ds = apiRequestApplicationController.getPendingProcedure();
+        for (ApiRequest a : ds) {
+            JSONObject ja = new JSONObject();
+
+            if (a.getRequestCeci() == null) {
+                System.err.println("a.getRequestCeci() is null");
+                continue;
+            }
+
+            ClientEncounterComponentItem ci = a.getRequestCeci();
+            Client c = null;
+            Item i = null;
+            Institution ins = null;
+            WebUser u = null;
+
+            if (ci.getItemValue() != null) {
+                i = ci.getItemValue();
+            } else {
+                System.err.println("ci.getItemValue() is null");
+                continue;
+            }
+
+            if (ci.getEncounter() != null) {
+                if (ci.getEncounter().getClient() != null) {
+                    c = ci.getEncounter().getClient();
+                } else {
+                    System.err.println("ci.getEncounter().getClient() is null");
+                    continue;
+                }
+                if (ci.getEncounter().getInstitution() != null) {
+                    ins = ci.getEncounter().getInstitution();
+                } else {
+                    System.err.println("ci.getEncounter().getInstitution() is null");
+                    continue;
+                }
+                if(ci.getEncounter().getCreatedBy()!=null){
+                    u = ci.getEncounter().getCreatedBy();
+                }
+            } else {
+                System.out.println("ci.getEncounter() is null");
+                continue;
+            }
+
+            ja.put("procedure_request_id", a.getId());
+            ja.put("procedure_id", i.getId());
+            ja.put("procedure_code", i.getCode());
+            ja.put("procedure_name", i.getName());
+            ja.put("client_phn", c.getPhn());
+            ja.put("client_id", c.getId());
+            ja.put("client_name", c.getPerson().getName());
+            ja.put("institute_id", ins.getId());
+            ja.put("institute_code", ins.getCode());
+            ja.put("institute_name", ins.getName());
+            if (ins.getParent() != null) {
+                ja.put("parent_institute_id", ins.getParent().getId());
+                ja.put("parent_institute_code", ins.getParent().getCode());
+                ja.put("parent_institute_name", ins.getParent().getName());
+            }
+            if(u!=null){
+                ja.put("user_id", u.getId());
+                ja.put("user_name", u.getName());
+            }
+            array.put(ja);
+        }
+        jSONObjectOut.put("data", array);
+        jSONObjectOut.put("status", successMessage());
+        return jSONObjectOut;
+    }
+
     private JSONObject successMessage() {
         JSONObject jSONObjectOut = new JSONObject();
         jSONObjectOut.put("code", 200);
@@ -699,5 +850,29 @@ public class ApiResource {
         jSONObjectOut.put("message", "You must provide a value for the parameter name.");
         return jSONObjectOut;
     }
+    
+    private JSONObject errorMessageNoId() {
+        JSONObject jSONObjectOut = new JSONObject();
+        jSONObjectOut.put("code", 410);
+        jSONObjectOut.put("type", "error");
+        jSONObjectOut.put("message", "The ID provided is not found.");
+        return jSONObjectOut;
+    }
 
+    private String Get_Child_Institutions(Institution institution) {
+        String childInstitions = null;
+
+        if (institution != null) {
+            List<Institution> instList = institutionApplicationController.findChildrenInstitutions(institution);
+
+            for (Institution i_ : instList) {
+                if (childInstitions == null) {
+                    childInstitions = institution.getCode() + ":" + i_.getCode();
+                } else {
+                    childInstitions += "^" + institution.getCode() + ":" + i_.getCode();
+                }
+            }
+        }
+        return childInstitions;
+    }
 }

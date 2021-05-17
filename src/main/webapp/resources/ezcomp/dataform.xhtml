@@ -17,6 +17,7 @@
     <!-- IMPLEMENTATION -->
     <cc:implementation>
 
+
         <h:panelGroup id="gpFormItems" rendered="#{cc.attrs.form.df.itemArrangementStrategy eq 'Label_Value_Unit_Sets'}" >
 
             <table style="#{cc.attrs.form.df.css}" class="alignTop w3-table w3-bordered w3-border">
@@ -27,6 +28,53 @@
                         <tr>
 
                             <h:panelGroup id="gpDataM" >
+
+                                <h:panelGroup rendered="#{ii.di.item.dataType eq 'Procedure_Request'}" >
+
+                                    <td>
+                                        <p:outputLabel for="prM" value="#{ii.di.name}"  style="#{ii.di.css}" ></p:outputLabel>
+                                    </td>
+                                    <td>
+                                        <table >
+                                            <tr>
+                                                <td>
+                                                    <p:outputLabel value="Room" ></p:outputLabel>
+                                                </td>
+                                                <td>
+                                                    <p:selectOneMenu  >
+                                                        <f:selectItem itemLabel="Please select" ></f:selectItem>
+                                                        <f:selectItems value="#{webUserController.loggableProcedureRooms}"
+                                                                       var="ipr"
+                                                                       itemLabel="#{ipr.name}"
+                                                                       itemValue="#{ipr}"></f:selectItems>
+                                                    </p:selectOneMenu>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <p:outputLabel value="Procedure" ></p:outputLabel>
+                                                </td>
+                                                <td>
+                                                    <p:selectOneMenu id="prM" value="#{ii.addingItem.ci.itemValue}" >
+                                                        <f:selectItem itemLabel="Please select" ></f:selectItem>
+                                                        <f:selectItems value="#{ii.availableItemsForSelection}" var="li"
+                                                                       itemLabel="#{li.displayName}" itemValue="#{li}" ></f:selectItems>
+                                                    </p:selectOneMenu>
+                                                </td>
+                                            </tr>
+                                        </table>
+
+                                    </td>
+                                    <td>
+                                        <p:commandButton id="btnAddPrM"  value="Add" 
+                                                         process="prM btnAddPrM" 
+                                                         update="@form :#{p:component('formset')}"
+                                                         action="#{clientEncounterComponentItemController.addAnotherDataItem(ii)}"></p:commandButton>
+                                    </td>
+
+
+                                </h:panelGroup>
+
                                 <h:panelGroup rendered="#{ii.di.item.dataType eq 'Item_Reference'}" >
                                     <h:panelGroup rendered="#{ii.di.renderType eq 'Drop_Down_Menu'}" >
                                         <td>
@@ -315,7 +363,7 @@
                                         <p:outputLabel value="#{ii.di.name}"  style="#{ii.di.css}" ></p:outputLabel>
                                     </td>
                                     <td>
-                                        <!--<ez:prescription/>-->
+                                        <ez:prescription/>
                                     </td>
                                 </h:panelGroup>
                             </h:panelGroup>

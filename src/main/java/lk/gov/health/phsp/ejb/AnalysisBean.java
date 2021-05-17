@@ -36,8 +36,6 @@ import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 import lk.gov.health.phsp.bean.CommonController;
-import lk.gov.health.phsp.bean.IndicatorController;
-import lk.gov.health.phsp.bean.StoredQueryResultController;
 import lk.gov.health.phsp.bean.util.JsfUtil;
 import lk.gov.health.phsp.entity.ClientEncounterComponentItem;
 import lk.gov.health.phsp.entity.Institution;
@@ -58,7 +56,6 @@ import lk.gov.health.phsp.pojcs.EncounterWithComponents;
 import lk.gov.health.phsp.pojcs.InstitutionYearMonthCompleted;
 import lk.gov.health.phsp.pojcs.Jpq;
 import lk.gov.health.phsp.pojcs.QueryWithCriteria;
-import lk.gov.health.phsp.pojcs.Replaceable;
 
 /**
  *
