@@ -358,7 +358,13 @@ public class CommonController implements Serializable {
             SelectionDataType.Client_Reference,
             SelectionDataType.Area_Reference,
             SelectionDataType.Prescreption_Reference,
+<<<<<<< HEAD
             SelectionDataType.Procedure_Request};
+=======
+            SelectionDataType.Procedure_Request
+                
+        };
+>>>>>>> master
         return sdts;
     }
 
