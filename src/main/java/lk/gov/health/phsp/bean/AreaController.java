@@ -15,7 +15,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -40,7 +39,6 @@ import jxl.Sheet;
 import jxl.Workbook;
 import jxl.read.biff.BiffException;
 import lk.gov.health.phsp.entity.Institution;
-import lk.gov.health.phsp.entity.Item;
 import lk.gov.health.phsp.entity.Relationship;
 import lk.gov.health.phsp.enums.RelationshipType;
 import org.primefaces.model.UploadedFile;
@@ -159,7 +157,7 @@ public class AreaController implements Serializable {
         } else {
             selected.setLastEditBy(webUserController.getLoggedUser());
             selected.setLastEditeAt(new Date());
-            getFacade().edit(deleting);
+            getFacade().edit(selected);
             JsfUtil.addSuccessMessage("Updated");
         }
         items = null;
@@ -2259,7 +2257,10 @@ public class AreaController implements Serializable {
                 RelationshipType.Estimated_Midyear_Population,
                 RelationshipType.Over_35_Female_Population,
                 RelationshipType.Over_35_Male_Population,
-                RelationshipType.Over_35_Population,};
+                RelationshipType.Over_35_Population,
+                RelationshipType.Annual_Target_Female_Population,
+                RelationshipType.Annual_Target_Male_Population,
+                RelationshipType.Annual_Target_Population};
         }
         return rts;
     }

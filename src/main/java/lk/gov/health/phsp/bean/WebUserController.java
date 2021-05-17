@@ -40,10 +40,12 @@ import javax.faces.model.SelectItem;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.servlet.http.HttpServletRequest;
+import lk.gov.health.phsp.entity.Relationship;
 import lk.gov.health.phsp.entity.UserPrivilege;
 import lk.gov.health.phsp.enums.InstitutionType;
 import lk.gov.health.phsp.enums.Privilege;
 import lk.gov.health.phsp.enums.PrivilegeTreeNode;
+import lk.gov.health.phsp.enums.RelationshipType;
 import lk.gov.health.phsp.facade.UserPrivilegeFacade;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
@@ -99,6 +101,8 @@ public class WebUserController implements Serializable {
     InstitutionApplicationController institutionApplicationController;
     @Inject
     WebUserApplicationController webUserApplicationController;
+    @Inject
+    RelationshipController relationshipController;
     /*
     Variables
      */
@@ -109,6 +113,8 @@ public class WebUserController implements Serializable {
 
     private List<Institution> loggableInstitutions;
     private List<Institution> loggablePmcis;
+    private List<Institution> loggableProcedureRooms;
+
     private List<Area> loggableGnAreas;
 
     private Area selectedProvince;
@@ -316,7 +322,7 @@ public class WebUserController implements Serializable {
         userTransactionController.recordTransaction("To Add New User By InsAdmin");
         return "/insAdmin/create_new_user";
     }
-    
+
     public void toProcedureRoom() {
         String insList = null;
         String baseUrl = "http://localhost:8080/ProcedureRoomService/resources/redirect";
@@ -341,7 +347,7 @@ public class WebUserController implements Serializable {
         WebResource webResource1 = client.resource(baseUrl + urlVals);
         com.sun.jersey.api.client.ClientResponse cr = webResource1.accept("text/plain").get(com.sun.jersey.api.client.ClientResponse.class);
         String outpt = cr.getEntity(String.class);
-        
+
         ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
         try {
             externalContext.redirect(outpt);
@@ -647,7 +653,7 @@ public class WebUserController implements Serializable {
         }
 
         System.out.println("username & password correct");
-        
+
         loggedUserPrivileges = userPrivilegeList(loggedUser);
 
         JsfUtil.addSuccessMessage("Successfully Logged");
@@ -1138,7 +1144,7 @@ public class WebUserController implements Serializable {
 
     public String prepareEditPassword() {
         password = "";
-        passwordReenter="";
+        passwordReenter = "";
         userTransactionController.recordTransaction("Edit Password user list By SysAdmin or InsAdmin");
         return "/webUser/Password";
     }
@@ -1680,6 +1686,24 @@ public class WebUserController implements Serializable {
             loggableInstitutions = findAutherizedInstitutions();
         }
         return loggableInstitutions;
+    }
+
+    public List<Institution> getLoggableProcedureRooms() {
+        if (loggableProcedureRooms == null) {
+            Map<Long, Institution> mapPrs = new HashMap<>();
+            List<Institution> prs = new ArrayList<>();
+            for (Institution ins : getLoggableInstitutions()) {
+                List<Relationship> rs = relationshipController.findRelationships(ins, RelationshipType.Procedure_Room);
+                for (Relationship r : rs) {
+                    if (r.getToInstitution() != null) {
+                        mapPrs.put(r.getToInstitution().getId(), r.getToInstitution());
+                    }
+                }
+            }
+            prs.addAll(mapPrs.values());
+            loggableProcedureRooms = prs;
+        }
+        return loggableProcedureRooms;
     }
 
     public void setLoggableInstitutions(List<Institution> loggableInstitutions) {

@@ -36,7 +36,7 @@
                             <p:commandButton value="Process" ajax="false"
                                              action="#{reportController.fillClinicVisitsByInstitution()}"></p:commandButton>
                             <p:commandButton value="Download" ajax="false">
-                                <p:dataExporter type="xlsx" target="tbl" fileName="Client Registrations by Institution" ></p:dataExporter>
+                                <p:dataExporter type="xlsx" target="tbl" fileName="Clinic Visits by Institution" ></p:dataExporter>
                             </p:commandButton>
                         </p:panelGrid>
 
@@ -47,7 +47,7 @@
                                      rowsPerPageTemplate="10,20,30,40,50"
                                      >
                             <f:facet name="header"  >
-                                <p:outputLabel value="Client Registrations by Institution" ></p:outputLabel>
+                                <p:outputLabel value="Clinic Visits by Institution" ></p:outputLabel>
                                 <p:outputLabel value="From : " ></p:outputLabel>
                                 <p:outputLabel value="#{reportController.fromDate}" >
                                     <f:convertDateTime pattern="dd MMMM yyyy" ></f:convertDateTime>
@@ -75,7 +75,7 @@
                                       >
                                 <p:outputLabel value="#{c.institution.district.name}" ></p:outputLabel>
                             </p:column>
-                            <p:column headerText="Count"  
+                            <p:column headerText="Clinic Visits Count"  
                                       sortBy="#{c.count}">
                                 <p:outputLabel value="#{c.count}" ></p:outputLabel>
                             </p:column>

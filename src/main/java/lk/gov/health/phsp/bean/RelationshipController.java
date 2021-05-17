@@ -34,9 +34,7 @@ import jxl.Workbook;
 import jxl.read.biff.BiffException;
 import lk.gov.health.phsp.entity.Area;
 import lk.gov.health.phsp.entity.Institution;
-import lk.gov.health.phsp.entity.Item;
 import lk.gov.health.phsp.enums.AreaType;
-import lk.gov.health.phsp.enums.ItemType;
 import lk.gov.health.phsp.enums.RelationshipType;
 import lk.gov.health.phsp.facade.AreaFacade;
 import org.primefaces.model.UploadedFile;
@@ -66,6 +64,7 @@ public class RelationshipController implements Serializable {
 
     private Area area;
     private Institution institution;
+    private Institution procedureRoom;
     private Integer year;
     private Integer month;
     private Long populationValue;
@@ -249,6 +248,19 @@ public class RelationshipController implements Serializable {
         userTransactionController.recordTransaction("Remove Relationship GnData");
     }
 
+    public void removeProcedureRoom(){
+        if (removing == null) {
+            JsfUtil.addErrorMessage("Nothing to remove");
+            return;
+        }
+        removing.setRetired(true);
+        removing.setRetiredAt(new Date());
+        removing.setRetiredBy(webUserController.getLoggedUser());
+        getFacade().edit(removing);
+        removing = null;
+        fillProcedureRoomsForSelectedInstitution();
+    }
+    
     public void save() {
         save(selected);
         JsfUtil.addSuccessMessage("Saved");
@@ -267,6 +279,13 @@ public class RelationshipController implements Serializable {
             r.setLastEditBy(webUserController.getLoggedUser());
             r.setLastEditeAt(new Date());
             getFacade().edit(r);
+        }
+    }
+
+    public void fillProcedureRoomsForSelectedInstitution() {
+        items = findRelationships(institution, RelationshipType.Procedure_Room);
+        if (items == null) {
+            items = new ArrayList<>();
         }
     }
 
@@ -365,6 +384,40 @@ public class RelationshipController implements Serializable {
         }
     }
 
+    public void saveProcedureRoom() {
+        if (institution == null) {
+            JsfUtil.addErrorMessage("Institution ?");
+            return;
+        }
+        if (procedureRoom == null) {
+            JsfUtil.addErrorMessage("Procedure Room ?");
+            return;
+        }
+        RelationshipType trt = RelationshipType.Procedure_Room;
+
+        Relationship r;
+        r = findRelationship(institution, procedureRoom, trt);
+        System.out.println("r = " + r);
+        if (r == null) {
+            r = new Relationship();
+            r.setInstitution(institution);
+            r.setToInstitution(procedureRoom);
+            r.setRelationshipType(trt);
+            r.setCreatedAt(new Date());
+            r.setCreatedBy(webUserController.getLoggedUser());
+            getFacade().create(r);
+            JsfUtil.addSuccessMessage("Procedure Room Added");
+        } else {
+            r.setLongValue1(populationValue);
+            r.setLastEditBy(webUserController.getLoggedUser());
+            r.setLastEditeAt(new Date());
+            getFacade().edit(r);
+            JsfUtil.addSuccessMessage("Procedure Room Already Exists Updated");
+        }
+        fillProcedureRoomsForSelectedInstitution();
+        procedureRoom = null;
+    }
+
     public Relationship findRelationship(int y, Institution ins, RelationshipType t) {
         String j = "select r from Relationship r "
                 + " where r.institution=:ins   "
@@ -373,6 +426,20 @@ public class RelationshipController implements Serializable {
         Map m = new HashMap();
         m.put("ins", ins);
         m.put("y", y);
+        m.put("rt", t);
+        return getFacade().findFirstByJpql(j, m);
+    }
+
+    public Relationship findRelationship(Institution ins, Institution toIns, RelationshipType t) {
+        String j = "select r from Relationship r "
+                + " where r.retired=:r "
+                + " and r.institution=:i   "
+                + " and r.toInstitution=:t "
+                + " and r.relationshipType=:rt ";
+        Map m = new HashMap();
+        m.put("r", false);
+        m.put("i", ins);
+        m.put("t", toIns);
         m.put("rt", t);
         return getFacade().findFirstByJpql(j, m);
     }
@@ -387,6 +454,18 @@ public class RelationshipController implements Serializable {
         m.put("y", y);
         m.put("rt", t);
         return getFacade().findFirstByJpql(j, m);
+    }
+
+    public List<Relationship> findRelationships(Institution ins, RelationshipType t) {
+        String j = "select r from Relationship r "
+                + " where r.retired=:ret "
+                + " and r.institution=:ins   "
+                + " and r.relationshipType=:rt";
+        Map m = new HashMap();
+        m.put("ret", false);
+        m.put("ins", ins);
+        m.put("rt", t);
+        return getFacade().findByJpql(j, m);
     }
 
     public Long findPopulationValue(int y, Institution ins, RelationshipType t) {
@@ -471,8 +550,6 @@ public class RelationshipController implements Serializable {
         items = getFacade().findByJpql(j, m);
     }
 
-    
-
     public void fillAreaPopulationData() {
         if (getYear() == null) {
             JsfUtil.addErrorMessage("No Year Selected.");
@@ -516,6 +593,14 @@ public class RelationshipController implements Serializable {
         userTransactionController.recordTransaction("To Add Population Data for Institution");
         items = null;
         return "/institution/add_population_data";
+    }
+
+    public String toAddProcedureRoomForInstitution() {
+        userTransactionController.recordTransaction("To Add Procedure Room for Institution");
+        items = null;
+        procedureRoom = null;
+        institution = null;
+        return "/institution/add_procedure_room";
     }
 
     public String toAddPopulationDataForArea() {
@@ -793,6 +878,14 @@ public class RelationshipController implements Serializable {
 
     public void setPopulationValue(Long populationValue) {
         this.populationValue = populationValue;
+    }
+
+    public Institution getProcedureRoom() {
+        return procedureRoom;
+    }
+
+    public void setProcedureRoom(Institution procedureRoom) {
+        this.procedureRoom = procedureRoom;
     }
 
     @FacesConverter(forClass = Relationship.class)

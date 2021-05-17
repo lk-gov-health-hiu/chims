@@ -312,6 +312,7 @@ public class CommonController implements Serializable {
             RenderType.Input_Text_Area,
             RenderType.List_Box,
             RenderType.Prescreption,
+            RenderType.Procedure_room,
             RenderType.Observation,
             RenderType.PlanOfAction,
             RenderType.Referral,
@@ -356,7 +357,10 @@ public class CommonController implements Serializable {
             SelectionDataType.Item_Reference,
             SelectionDataType.Client_Reference,
             SelectionDataType.Area_Reference,
-            SelectionDataType.Prescreption_Reference};
+            SelectionDataType.Prescreption_Reference,
+            SelectionDataType.Procedure_Request
+        };
+
         return sdts;
     }
 
@@ -450,7 +454,7 @@ public class CommonController implements Serializable {
 //        System.out.println("month = " + month);
         Calendar c = Calendar.getInstance();
         c.set(Calendar.YEAR, year);
-        c.set(Calendar.MONTH, month-1);
+        c.set(Calendar.MONTH, month - 1);
 //        System.out.println("c = " + c);
         return startOfTheMonth(c.getTime());
     }
@@ -493,7 +497,7 @@ public class CommonController implements Serializable {
     public static Date endOfTheMonth(Integer year, Integer month) {
         Calendar c = Calendar.getInstance();
         c.set(Calendar.YEAR, year);
-        c.set(Calendar.MONTH, month-1);
+        c.set(Calendar.MONTH, month - 1);
         return endOfTheMonth(c.getTime());
     }
 

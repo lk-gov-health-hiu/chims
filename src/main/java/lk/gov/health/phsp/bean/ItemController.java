@@ -9,6 +9,7 @@ import lk.gov.health.phsp.bean.util.JsfUtil.PersistAction;
 import lk.gov.health.phsp.facade.ItemFacade;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -26,7 +27,6 @@ import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
 import javax.inject.Inject;
-import javax.persistence.Transient;
 import jxl.Cell;
 import jxl.Sheet;
 import jxl.Workbook;
@@ -49,6 +49,8 @@ public class ItemController implements Serializable {
     ApplicationController applicationController;
     @Inject
     private UserTransactionController userTransactionController;
+    @Inject
+    ItemApplicationController itemApplicationController;
 
     private List<Item> items = null;
     private Item selected;
@@ -513,18 +515,18 @@ public class ItemController implements Serializable {
     public void setSelected(Item selected) {
         this.selected = selected;
     }
-    
-    public void save(){
+
+    public void save() {
         save(selected);
         JsfUtil.addSuccessMessage("Saved");
     }
-    
-    public void save(Item i){
-        if(i.getId()==null){
+
+    public void save(Item i) {
+        if (i.getId() == null) {
             i.setCreatedAt(new Date());
             i.setCreatedBy(webUserController.getLoggedUser());
             getFacade().create(i);
-        }else{
+        } else {
             i.setEditedAt(new Date());
             i.setEditedBy(webUserController.getLoggedUser());
             getFacade().edit(i);
@@ -547,84 +549,22 @@ public class ItemController implements Serializable {
         return selected;
     }
 
-    public void create() {
-        persist(PersistAction.CREATE, ResourceBundle.getBundle("/BundleClinical").getString("ItemCreated"));
-        if (!JsfUtil.isValidationFailed()) {
-            items = null; 
-            applicationController.setItems(null);
-            userTransactionController.recordTransaction("Create Item");
-        }
-    }
-
-    public void update() {
-        persist(PersistAction.UPDATE, ResourceBundle.getBundle("/BundleClinical").getString("ItemUpdated"));
-        userTransactionController.recordTransaction("Update Item");
-    }
-
-    public void destroy() {
-        persist(PersistAction.DELETE, ResourceBundle.getBundle("/BundleClinical").getString("ItemDeleted"));
-        if (!JsfUtil.isValidationFailed()) {
-            selected = null; // Remove selection
-            items = null; 
-            applicationController.setItems(null);
-        }
-    }
-
     public List<Item> getItems() {
-        items = applicationController.getItems();
-        if (items == null) {
-            items = getFacade().findAll();
-            applicationController.setItems(items);
-        }
+        items = itemApplicationController.getItems();
         return items;
-    }
-
-    private void persist(PersistAction persistAction, String successMessage) {
-        if (selected != null) {
-            setEmbeddableKeys();
-            try {
-                if (persistAction != PersistAction.DELETE) {
-                    getFacade().edit(selected);
-                } else {
-                    getFacade().remove(selected);
-                }
-                JsfUtil.addSuccessMessage(successMessage);
-            } catch (EJBException ex) {
-                String msg = "";
-                Throwable cause = ex.getCause();
-                if (cause != null) {
-                    msg = cause.getLocalizedMessage();
-                }
-                if (msg.length() > 0) {
-                    JsfUtil.addErrorMessage(msg);
-                } else {
-                    JsfUtil.addErrorMessage(ex, ResourceBundle.getBundle("/BundleClinical").getString("PersistenceErrorOccured"));
-                }
-            } catch (Exception ex) {
-                Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);
-                JsfUtil.addErrorMessage(ex, ResourceBundle.getBundle("/BundleClinical").getString("PersistenceErrorOccured"));
-            }
-        }
     }
 
     public Item getItem(java.lang.Long id) {
         return getFacade().find(id);
     }
 
-    public List<Item> getItemsAvailableSelectMany() {
-        return getFacade().findAll();
-    }
-
-    public List<Item> getItemsAvailableSelectOne() {
-        return getFacade().findAll();
-    }
-
     public List<Item> getTitles() {
         if (titles == null) {
-            String j = "select t from Item t where t.retired=false and t.parent.parent=:p order by t.orderNo";
-            Map m = new HashMap();
-            m.put("p", findItemByCode("title"));
-            titles = getFacade().findByJpql(j, m);
+//            String j = "select t from Item t where t.retired=false and t.parent.parent=:p order by t.orderNo";
+//            Map m = new HashMap();
+//            m.put("p", findItemByCode("title"));
+//            titles = getFacade().findByJpql(j, m);
+            titles = itemApplicationController.findChildren("title");
         }
         return titles;
     }
@@ -646,7 +586,7 @@ public class ItemController implements Serializable {
     }
 
     public List<Item> findChildrenAndGrandchildrenItemList(Item parent, ItemType t, String qry) {
-        
+
         String j = "select t from Item t where t.retired=false ";
         Map m = new HashMap();
 
@@ -668,6 +608,20 @@ public class ItemController implements Serializable {
     }
 
     public List<Item> findItemList(String parentCode, ItemType t, String qry) {
+        List<Item> nis = new ArrayList<>();
+        for(Item i: itemApplicationController.getItems()){
+            boolean canInclude=true;
+            
+            if(parentCode==null||parentCode.trim().equalsIgnoreCase("")){
+                
+            }
+            
+            if(canInclude){
+                nis.add(i);
+            }
+        }
+        
+        
         String j = "select t from Item t where t.retired=false ";
         Map m = new HashMap();
 
@@ -689,27 +643,31 @@ public class ItemController implements Serializable {
     }
 
     public List<Item> findItemList(Item parent) {
-        String j = "select t from Item t where t.retired=false ";
-        Map m = new HashMap();
-
-        if (parent != null) {
-            m.put("p", parent);
-            j += " and t.parent=:p ";
+//        String j = "select t from Item t where t.retired=false ";
+//        Map m = new HashMap();
+//
+//        if (parent != null) {
+//            m.put("p", parent);
+//            j += " and t.parent=:p ";
+//        }
+//        j += " order by t.name";
+        if (parent == null || parent.getCode() == null) {
+            return new ArrayList<>();
         }
-        j += " order by t.name";
-        return getFacade().findByJpql(j, m);
+        return itemApplicationController.findChildren(parent.getCode());
     }
 
     public List<Item> findItemListByCode(String parentCode) {
-        String j = "select t from Item t where t.retired=false ";
-        Map m = new HashMap();
-        Item parent = findItemByCode(parentCode);
-        if (parent != null) {
-            m.put("p", parent);
-            j += " and t.parent=:p ";
-        }
-        j += " order by t.name";
-        return getFacade().findByJpql(j, m);
+//        String j = "select t from Item t where t.retired=false ";
+//        Map m = new HashMap();
+//        Item parent = findItemByCode(parentCode);
+//        if (parent != null) {
+//            m.put("p", parent);
+//            j += " and t.parent=:p ";
+//        }
+//        j += " order by t.name";
+//        return getFacade().findByJpql(j, m);
+        return itemApplicationController.findChildren(parentCode);
     }
 
     public void setTitles(List<Item> titles) {

@@ -82,7 +82,6 @@ public class ApplicationController {
     private boolean production = true;
     private String versionNo = "1.1.4";
     private List<QueryComponent> queryComponents;
-    private List<Item> items;
     private List<String> userTransactionTypes;
 
     private final boolean logActivity = true;
@@ -310,13 +309,7 @@ public class ApplicationController {
         this.queryComponentFacade = queryComponentFacade;
     }
 
-    public List<Item> getItems() {
-        return items;
-    }
-
-    public void setItems(List<Item> items) {
-        this.items = items;
-    }
+    
 
     public List<String> getUserTransactionTypes() {
         return userTransactionTypes;

@@ -19,7 +19,7 @@
                 <h:form id="AreaEditForm">
                     <h:panelGroup id="display">
                         <p:commandButton action="#{areaController.saveOrUpdateAreaForSystemAdmin}" 
-                                         value="#{bundleClinical.Save}" 
+                                         ajax="false"        value="#{bundleClinical.Save}" 
                                          />
 
 
@@ -35,13 +35,13 @@
 
                             <p:outputLabel value="#{bundleClinical.EditAreaLabel_name}" for="name" />
                             <p:inputText id="name" value="#{areaController.selected.name}" autocomplete="off" title="#{bundleClinical.EditAreaTitle_name}" />
+                            
                             <p:outputLabel value="#{bundleClinical.EditAreaLabel_code}" for="code" />
-
                             <p:inputText id="code" value="#{areaController.selected.code}" autocomplete="off" title="#{bundleClinical.EditAreaTitle_code}" />
 
-                            <p:outputLabel value="ID" for="id" />
+                            <p:outputLabel value="Area ID" for="id" />
                             <p:inputText id="id" value="#{areaController.selected.areauid}" autocomplete="off" 
-                                         title="ID" />
+                                         title="Area ID" />
 
                             <p:outputLabel value="#{bundleClinical.EditAreaLabel_parentArea}" for="parentArea" />
                             <p:autoComplete id="parentArea" value="#{areaController.selected.parentArea}"

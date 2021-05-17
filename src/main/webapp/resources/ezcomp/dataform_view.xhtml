@@ -27,6 +27,14 @@
                         <tr>
 
                             <h:panelGroup id="gpDataM" >
+                                 <h:panelGroup rendered="#{ii.di.item.dataType eq 'Procedure_Request'}" >
+                                    <td>
+                                        <p:outputLabel  value="#{ii.di.name}"  style="#{ii.di.css}" rendered="#{ii.ci.orderNo eq 1}" ></p:outputLabel>
+                                    </td>
+                                    <td>
+                                        <p:outputLabel  value="#{ii.ci.itemValue.name}"  style="#{ii.di.css}" ></p:outputLabel>
+                                    </td>
+                                </h:panelGroup>
                                 <h:panelGroup rendered="#{ii.di.item.dataType eq 'Item_Reference'}" >
                                     <td>
                                         <p:outputLabel  value="#{ii.di.name}"  style="#{ii.di.css}" ></p:outputLabel>

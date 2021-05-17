@@ -43,7 +43,8 @@ public enum RenderType {
     HTML("HTML"),
     Autocomplete_to_select_one_item("Autocomplete to Select One Item"),
     Autocomplete_to_select_many_items("Autocomplete to Select Many Items"),
-    Prescreption_pad("Prescreption Pad"),
+    Prescreption_pad("Prescreption"),
+    Procedure_request("Procedure Request"),
     Observation("Observation"),
     Referral("Referral"),
     Transfer("Transfer"),
@@ -85,7 +86,10 @@ public enum RenderType {
     Link("Link"),
     @Deprecated
     Item_select_and_add_to_List("Item select & add to List"),
-    Prescreption("Prescreption");
+    Prescreption("Prescreption"),
+    Procedure_room("Procedure Request");
+    
+    
     
     private final String label;
     

@@ -2525,7 +2525,7 @@ public class ReportController implements Serializable {
         Cell th5_2 = t5.createCell(1);
         th5_2.setCellValue("Date");
         Cell th5_3 = t5.createCell(2);
-        th5_3.setCellValue("Count");
+        th5_3.setCellValue("Clinic Visit Count");
 
         int serial = 1;
 
