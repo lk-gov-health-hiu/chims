@@ -548,8 +548,16 @@ public class ItemController implements Serializable {
     }
 
     public List<Item> getItems() {
-        items = itemApplicationController.getItems();
+        if (items == null) {
+            items = itemApplicationController.getItems();
+        }
         return items;
+    }
+
+    public void reloadItems() {
+        itemApplicationController.invalidateItems();
+        items = null;
+        getItems();
     }
 
     public Item getItem(java.lang.Long id) {
@@ -859,13 +867,13 @@ public class ItemController implements Serializable {
         for (Item p : getProcedures()) {
             boolean canInclude = false;
             if (p.getName() != null && p.getName().toLowerCase().contains(qry)) {
-                canInclude=true;
+                canInclude = true;
             }
             if (p.getDisplayName() != null && p.getDisplayName().toLowerCase().contains(qry)) {
-                canInclude=true;
+                canInclude = true;
             }
-            if (p.getCode()!= null && p.getCode().toLowerCase().contains(qry)) {
-                canInclude=true;
+            if (p.getCode() != null && p.getCode().toLowerCase().contains(qry)) {
+                canInclude = true;
             }
             if (canInclude) {
                 tps.add(p);
