@@ -64,7 +64,8 @@ public enum RelationshipType {
     Annual_Target_Population("Registered_Population"),
     Procedure_Room("Procedure Room"),
     Dispensary("Dispensary"),
-    Laboratory("Laboratory");
+    Laboratory("Laboratory"),
+    Procedure_for_institution("Procedure performed at the institution");
     private final String label;
     
     private RelationshipType(String label){

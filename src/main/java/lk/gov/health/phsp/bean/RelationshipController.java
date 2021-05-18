@@ -34,6 +34,7 @@ import jxl.Workbook;
 import jxl.read.biff.BiffException;
 import lk.gov.health.phsp.entity.Area;
 import lk.gov.health.phsp.entity.Institution;
+import lk.gov.health.phsp.entity.Item;
 import lk.gov.health.phsp.enums.AreaType;
 import lk.gov.health.phsp.enums.RelationshipType;
 import lk.gov.health.phsp.facade.AreaFacade;
@@ -65,6 +66,9 @@ public class RelationshipController implements Serializable {
     private Area area;
     private Institution institution;
     private Institution procedureRoom;
+    Item procedure;
+    
+    
     private Integer year;
     private Integer month;
     private Long populationValue;
@@ -261,6 +265,19 @@ public class RelationshipController implements Serializable {
         fillProcedureRoomsForSelectedInstitution();
     }
     
+    public void removeProcedureFromRoom(){
+        if (removing == null) {
+            JsfUtil.addErrorMessage("Nothing to remove");
+            return;
+        }
+        removing.setRetired(true);
+        removing.setRetiredAt(new Date());
+        removing.setRetiredBy(webUserController.getLoggedUser());
+        getFacade().edit(removing);
+        removing = null;
+        fillProceduresForSelectedProcedureRoom();
+    }
+    
     public void save() {
         save(selected);
         JsfUtil.addSuccessMessage("Saved");
@@ -284,6 +301,15 @@ public class RelationshipController implements Serializable {
 
     public void fillProcedureRoomsForSelectedInstitution() {
         items = findRelationships(institution, RelationshipType.Procedure_Room);
+        if (items == null) {
+            items = new ArrayList<>();
+        }
+    }
+    
+    
+    
+    public void fillProceduresForSelectedProcedureRoom() {
+        items = findRelationships(institution, RelationshipType.Procedure_for_institution);
         if (items == null) {
             items = new ArrayList<>();
         }
@@ -408,7 +434,6 @@ public class RelationshipController implements Serializable {
             getFacade().create(r);
             JsfUtil.addSuccessMessage("Procedure Room Added");
         } else {
-            r.setLongValue1(populationValue);
             r.setLastEditBy(webUserController.getLoggedUser());
             r.setLastEditeAt(new Date());
             getFacade().edit(r);
@@ -416,6 +441,38 @@ public class RelationshipController implements Serializable {
         }
         fillProcedureRoomsForSelectedInstitution();
         procedureRoom = null;
+    }
+    
+    public void addProcedureToProcedureRoom() {
+        if (institution == null) {
+            JsfUtil.addErrorMessage("Procedure Room ?");
+            return;
+        }
+        if (procedure == null) {
+            JsfUtil.addErrorMessage("Procedure ?");
+            return;
+        }
+        RelationshipType trt = RelationshipType.Procedure_for_institution;
+
+        Relationship r;
+        r = findRelationship(institution, procedure, trt);
+        if (r == null) {
+            r = new Relationship();
+            r.setInstitution(institution);
+            r.setItem(procedure);
+            r.setRelationshipType(trt);
+            r.setCreatedAt(new Date());
+            r.setCreatedBy(webUserController.getLoggedUser());
+            getFacade().create(r);
+            JsfUtil.addSuccessMessage("Procedure added to Procedure Room");
+        } else {
+            r.setLastEditBy(webUserController.getLoggedUser());
+            r.setLastEditeAt(new Date());
+            getFacade().edit(r);
+            JsfUtil.addSuccessMessage("Procedure is Already added to the room");
+        }
+        fillProceduresForSelectedProcedureRoom();
+        procedure = null;
     }
 
     public Relationship findRelationship(int y, Institution ins, RelationshipType t) {
@@ -440,6 +497,20 @@ public class RelationshipController implements Serializable {
         m.put("r", false);
         m.put("i", ins);
         m.put("t", toIns);
+        m.put("rt", t);
+        return getFacade().findFirstByJpql(j, m);
+    }
+    
+    public Relationship findRelationship(Institution ins, Item item, RelationshipType t) {
+        String j = "select r from Relationship r "
+                + " where r.retired=:r "
+                + " and r.institution=:i   "
+                + " and r.item=:t "
+                + " and r.relationshipType=:rt ";
+        Map m = new HashMap();
+        m.put("r", false);
+        m.put("i", ins);
+        m.put("t", item);
         m.put("rt", t);
         return getFacade().findFirstByJpql(j, m);
     }
@@ -601,6 +672,14 @@ public class RelationshipController implements Serializable {
         procedureRoom = null;
         institution = null;
         return "/institution/add_procedure_room";
+    }
+    
+    public String toAddProceduresForProcedureRooms() {
+        userTransactionController.recordTransaction("To Add Procedures for Procedure Rooms");
+        items = null;
+        procedure = null;
+        institution = null;
+        return "/institution/room_procedures";
     }
 
     public String toAddPopulationDataForArea() {
@@ -887,6 +966,16 @@ public class RelationshipController implements Serializable {
     public void setProcedureRoom(Institution procedureRoom) {
         this.procedureRoom = procedureRoom;
     }
+
+    public Item getProcedure() {
+        return procedure;
+    }
+
+    public void setProcedure(Item procedure) {
+        this.procedure = procedure;
+    }
+    
+    
 
     @FacesConverter(forClass = Relationship.class)
     public static class RelationshipControllerConverter implements Converter {
