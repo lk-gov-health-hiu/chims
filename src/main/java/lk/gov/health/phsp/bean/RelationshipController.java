@@ -57,6 +57,8 @@ public class RelationshipController implements Serializable {
     private UserTransactionController userTransactionController;
     @Inject
     InstitutionController institutionController;
+    @Inject
+    ItemController itemController;
 
     private List<Relationship> items = null;
     private Relationship selected;
@@ -67,8 +69,7 @@ public class RelationshipController implements Serializable {
     private Institution institution;
     private Institution procedureRoom;
     Item procedure;
-    
-    
+
     private Integer year;
     private Integer month;
     private Long populationValue;
@@ -252,7 +253,7 @@ public class RelationshipController implements Serializable {
         userTransactionController.recordTransaction("Remove Relationship GnData");
     }
 
-    public void removeProcedureRoom(){
+    public void removeProcedureRoom() {
         if (removing == null) {
             JsfUtil.addErrorMessage("Nothing to remove");
             return;
@@ -264,8 +265,8 @@ public class RelationshipController implements Serializable {
         removing = null;
         fillProcedureRoomsForSelectedInstitution();
     }
-    
-    public void removeProcedureFromRoom(){
+
+    public void removeProcedureFromRoom() {
         if (removing == null) {
             JsfUtil.addErrorMessage("Nothing to remove");
             return;
@@ -277,7 +278,7 @@ public class RelationshipController implements Serializable {
         removing = null;
         fillProceduresForSelectedProcedureRoom();
     }
-    
+
     public void save() {
         save(selected);
         JsfUtil.addSuccessMessage("Saved");
@@ -305,9 +306,7 @@ public class RelationshipController implements Serializable {
             items = new ArrayList<>();
         }
     }
-    
-    
-    
+
     public void fillProceduresForSelectedProcedureRoom() {
         items = findRelationships(institution, RelationshipType.Procedure_for_institution);
         if (items == null) {
@@ -442,7 +441,7 @@ public class RelationshipController implements Serializable {
         fillProcedureRoomsForSelectedInstitution();
         procedureRoom = null;
     }
-    
+
     public void addProcedureToProcedureRoom() {
         if (institution == null) {
             JsfUtil.addErrorMessage("Procedure Room ?");
@@ -500,7 +499,7 @@ public class RelationshipController implements Serializable {
         m.put("rt", t);
         return getFacade().findFirstByJpql(j, m);
     }
-    
+
     public Relationship findRelationship(Institution ins, Item item, RelationshipType t) {
         String j = "select r from Relationship r "
                 + " where r.retired=:r "
@@ -673,7 +672,31 @@ public class RelationshipController implements Serializable {
         institution = null;
         return "/institution/add_procedure_room";
     }
-    
+
+    public List<Item> proceduresPerformedInAProcedureRoom(Institution procedureRoom) {
+        System.out.println("proceduresPerformedInAProcedureRoom");
+        System.out.println("procedureRoom = " + procedureRoom);
+        List<Item> ps = new ArrayList();
+        if (procedureRoom == null) {
+            return ps;
+        }
+        List<Relationship> rs = findRelationships(procedureRoom, RelationshipType.Procedure_for_institution);
+        System.out.println("rs = " + rs.size());
+        Map<Long, Item> mis = new HashMap<>();
+        for (Relationship r : rs) {
+            if (r.getId() != null) {
+                mis.put(r.getItem().getId(), r.getItem());
+                List<Item> tis = itemController.findChildren(r.getItem().getCode());
+                for (Item i : tis) {
+                    mis.put(i.getId(), i);
+                }
+            }
+        }
+        ps.addAll(mis.values());
+        System.out.println("ps = " + ps.size());
+        return ps;
+    }
+
     public String toAddProceduresForProcedureRooms() {
         userTransactionController.recordTransaction("To Add Procedures for Procedure Rooms");
         items = null;
@@ -974,8 +997,6 @@ public class RelationshipController implements Serializable {
     public void setProcedure(Item procedure) {
         this.procedure = procedure;
     }
-    
-    
 
     @FacesConverter(forClass = Relationship.class)
     public static class RelationshipControllerConverter implements Converter {

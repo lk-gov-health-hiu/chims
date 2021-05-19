@@ -29,7 +29,7 @@
 
                             <h:panelGroup id="gpDataM" >
 
-                              
+
                                 <h:panelGroup rendered="#{ii.di.item.dataType eq 'Procedure_Request'}" >
 
                                     <td>
@@ -42,24 +42,30 @@
                                                     <p:outputLabel value="Room" ></p:outputLabel>
                                                 </td>
                                                 <td>
-                                                    <p:selectOneMenu  >
+                                                    <p:selectOneMenu value="#{ii.ci.institutionValue}" >
                                                         <f:selectItem itemLabel="Please select" ></f:selectItem>
                                                         <f:selectItems value="#{webUserController.loggableProcedureRooms}"
                                                                        var="ipr"
                                                                        itemLabel="#{ipr.name}"
-                                                                       itemValue="#{ipr}"></f:selectItems>
+                                                                       itemValue="#{ipr}">
+
+                                                        </f:selectItems>
+                                                        <f:ajax event="change" execute="@this" render="prM lblPrM" ></f:ajax>
                                                     </p:selectOneMenu>
                                                 </td>
                                             </tr>
                                             <tr>
                                                 <td>
-                                                    <p:outputLabel value="Procedure" ></p:outputLabel>
+                                                    <p:outputLabel id="lblPrM" value="Procedures for #{ii.ci.institutionValue}" ></p:outputLabel>
                                                 </td>
                                                 <td>
                                                     <p:selectOneMenu id="prM" value="#{ii.addingItem.ci.itemValue}" >
                                                         <f:selectItem itemLabel="Please select" ></f:selectItem>
-                                                        <f:selectItems value="#{ii.availableItemsForSelection}" var="li"
-                                                                       itemLabel="#{li.displayName}" itemValue="#{li}" ></f:selectItems>
+                                                        <f:selectItems value="#{ii.availableProcedures}" 
+                                                                       var="li"
+                                                                       itemLabel="#{li.displayName}" 
+                                                                       itemValue="#{li}">
+                                                        </f:selectItems>
                                                     </p:selectOneMenu>
                                                 </td>
                                             </tr>
