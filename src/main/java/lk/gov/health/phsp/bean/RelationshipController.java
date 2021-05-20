@@ -33,6 +33,8 @@ import jxl.Sheet;
 import jxl.Workbook;
 import jxl.read.biff.BiffException;
 import lk.gov.health.phsp.entity.Area;
+import lk.gov.health.phsp.entity.Component;
+import lk.gov.health.phsp.entity.DesignComponentFormSet;
 import lk.gov.health.phsp.entity.Institution;
 import lk.gov.health.phsp.entity.Item;
 import lk.gov.health.phsp.enums.AreaType;
@@ -69,6 +71,8 @@ public class RelationshipController implements Serializable {
     private Institution institution;
     private Institution procedureRoom;
     Item procedure;
+    
+    private DesignComponentFormSet formset;
 
     private Integer year;
     private Integer month;
@@ -278,6 +282,19 @@ public class RelationshipController implements Serializable {
         removing = null;
         fillProceduresForSelectedProcedureRoom();
     }
+    
+    public void removeFormsetFromInstitution() {
+        if (removing == null) {
+            JsfUtil.addErrorMessage("Nothing to remove");
+            return;
+        }
+        removing.setRetired(true);
+        removing.setRetiredAt(new Date());
+        removing.setRetiredBy(webUserController.getLoggedUser());
+        getFacade().edit(removing);
+        removing = null;
+        fillInstitutionsForSelectedFormSet();
+    }
 
     public void save() {
         save(selected);
@@ -309,6 +326,13 @@ public class RelationshipController implements Serializable {
 
     public void fillProceduresForSelectedProcedureRoom() {
         items = findRelationships(institution, RelationshipType.Procedure_for_institution);
+        if (items == null) {
+            items = new ArrayList<>();
+        }
+    }
+    
+    public void fillInstitutionsForSelectedFormSet() {
+        items = findRelationships(institution, RelationshipType.Formsets_for_institution);
         if (items == null) {
             items = new ArrayList<>();
         }
@@ -473,6 +497,39 @@ public class RelationshipController implements Serializable {
         fillProceduresForSelectedProcedureRoom();
         procedure = null;
     }
+    
+    
+    public void addFormsetToInstitution() {
+        if (institution == null) {
+            JsfUtil.addErrorMessage("Institution?");
+            return;
+        }
+        if (formset == null) {
+            JsfUtil.addErrorMessage("Form set?");
+            return;
+        }
+        RelationshipType trt = RelationshipType.Formsets_for_institution;
+
+        Relationship r;
+        r = findRelationship(institution, formset, trt);
+        if (r == null) {
+            r = new Relationship();
+            r.setInstitution(institution);
+            r.setComponent(formset);
+            r.setRelationshipType(trt);
+            r.setCreatedAt(new Date());
+            r.setCreatedBy(webUserController.getLoggedUser());
+            getFacade().create(r);
+            JsfUtil.addSuccessMessage("Form set assigned to Institution");
+        } else {
+            r.setLastEditBy(webUserController.getLoggedUser());
+            r.setLastEditeAt(new Date());
+            getFacade().edit(r);
+            JsfUtil.addSuccessMessage("Form set is already asigned to the institution");
+        }
+        fillInstitutionsForSelectedFormSet();
+        formset = null;
+    }
 
     public Relationship findRelationship(int y, Institution ins, RelationshipType t) {
         String j = "select r from Relationship r "
@@ -513,6 +570,20 @@ public class RelationshipController implements Serializable {
         m.put("rt", t);
         return getFacade().findFirstByJpql(j, m);
     }
+    
+    public Relationship findRelationship(Institution ins, Component com, RelationshipType t) {
+        String j = "select r from Relationship r "
+                + " where r.retired=:r "
+                + " and r.institution=:i   "
+                + " and r.component=:t "
+                + " and r.relationshipType=:rt ";
+        Map m = new HashMap();
+        m.put("r", false);
+        m.put("i", ins);
+        m.put("t", com);
+        m.put("rt", t);
+        return getFacade().findFirstByJpql(j, m);
+    }
 
     public Relationship findRelationship(int y, Area area, RelationshipType t) {
         String j = "select r from Relationship r "
@@ -537,6 +608,20 @@ public class RelationshipController implements Serializable {
         m.put("rt", t);
         return getFacade().findByJpql(j, m);
     }
+    
+    public List<Relationship> findRelationships(Component com, RelationshipType t) {
+        String j = "select r from Relationship r "
+                + " where r.retired=:ret "
+                + " and r.component=:com   "
+                + " and r.relationshipType=:rt";
+        Map m = new HashMap();
+        m.put("ret", false);
+        m.put("com", com);
+        m.put("rt", t);
+        return getFacade().findByJpql(j, m);
+    }
+    
+    
 
     public Long findPopulationValue(int y, Institution ins, RelationshipType t) {
         System.out.println("findPopulationValue");
@@ -997,6 +1082,16 @@ public class RelationshipController implements Serializable {
     public void setProcedure(Item procedure) {
         this.procedure = procedure;
     }
+
+    public DesignComponentFormSet getFormset() {
+        return formset;
+    }
+
+    public void setFormset(DesignComponentFormSet formset) {
+        this.formset = formset;
+    }
+    
+    
 
     @FacesConverter(forClass = Relationship.class)
     public static class RelationshipControllerConverter implements Converter {

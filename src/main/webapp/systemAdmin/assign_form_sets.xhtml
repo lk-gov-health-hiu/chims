@@ -24,14 +24,14 @@
                                         <p:outputLabel value="Assign Formset" ></p:outputLabel>
                                     </f:facet>
                                     <p:outputLabel value="Formset" ></p:outputLabel>
-                                    <p:autoComplete id="refSet" value="#{designComponentFormSetController.referanceSet}" 
+                                    <p:autoComplete id="refSet" value="#{relationshipController.formset}" 
                                                     var="s" itemLabel="#{s.name}" itemValue="#{s}"
                                                     completeMethod="#{designComponentFormSetController.completeFormSets}"
                                                     forceSelection="true" maxResults="15" minQueryLength="3">
                                     </p:autoComplete>
 
                                     <p:outputLabel value="Institute" ></p:outputLabel>
-                                    <p:autoComplete completeMethod="#{institutionController.completeInstitutions}"
+                                    <p:autoComplete completeMethod="#{relationshipController.institution}"
                                                     var="i" id="forIns" 
                                                     itemLabel="#{i.name}" itemValue="#{i}"
                                                     value="#{designComponentFormSetController.institution}"
@@ -39,12 +39,12 @@
                                     </p:autoComplete>
 
                                     <p:commandButton id="btnImport" value="Fill" ajax="false"
-                                                     action="#{designComponentFormSetController.importFormSet()}"
+                                                     action="#{relationshipController.fillInstitutionsForSelectedFormSet()}"
                                                      process="refSet forIns btnImport" update="datalist refSet forIns" 
                                                      style="float: right;">
                                     </p:commandButton>
                                     <p:commandButton id="btnDup" value="Assign" ajax="false"
-                                                     action="#{designComponentFormSetController.duplicateFormSet()}"
+                                                     action="#{relationshipController.addFormsetToInstitution()}"
                                                      process="refSet forIns btnImport" update="datalist refSet forIns" 
                                                      style="float: right;">
                                     </p:commandButton>
@@ -53,8 +53,16 @@
                                 </p:panelGrid>
                                 
                                 
-                                <p:dataTable  >
-                                    
+                                <p:dataTable value="#{relationshipController.items}" var="i" rowKey="#{i.id}" paginator="true" 
+                                             rows="10">
+                                    <p:column headerText="Institution" >
+                                        
+                                    </p:column>
+                                     <p:column headerText="Actions" >
+                                         <p:commandButton value="Remove" ajax="false" action="#{relationshipController.removeFormsetFromInstitution()}" >
+                                             <f:setPropertyActionListener value="#{i}" target="#{relationshipController.removing}" ></f:setPropertyActionListener>
+                                         </p:commandButton>
+                                    </p:column>
                                 </p:dataTable>
                                 
                             </p:panelGrid>
