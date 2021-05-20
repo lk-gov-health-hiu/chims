@@ -36,45 +36,33 @@
                                         <p:outputLabel for="prM" value="#{ii.di.name}"  style="#{ii.di.css}" ></p:outputLabel>
                                     </td>
                                     <td>
-                                        <table >
-                                            <tr>
-                                                <td>
-                                                    <p:outputLabel value="Room" ></p:outputLabel>
-                                                </td>
-                                                <td>
-                                                    <p:selectOneMenu value="#{ii.ci.institutionValue}" >
-                                                        <f:selectItem itemLabel="Please select" ></f:selectItem>
-                                                        <f:selectItems value="#{webUserController.loggableProcedureRooms}"
-                                                                       var="ipr"
-                                                                       itemLabel="#{ipr.name}"
-                                                                       itemValue="#{ipr}">
-
-                                                        </f:selectItems>
-                                                        <f:ajax event="change" execute="@this" render="prM lblPrM" ></f:ajax>
-                                                    </p:selectOneMenu>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td>
-                                                    <p:outputLabel id="lblPrM" value="Procedures for #{ii.ci.institutionValue}" ></p:outputLabel>
-                                                </td>
-                                                <td>
-                                                    <p:selectOneMenu id="prM" value="#{ii.addingItem.ci.itemValue}" >
-                                                        <f:selectItem itemLabel="Please select" ></f:selectItem>
-                                                        <f:selectItems value="#{ii.availableProcedures}" 
-                                                                       var="li"
-                                                                       itemLabel="#{li.displayName}" 
-                                                                       itemValue="#{li}">
-                                                        </f:selectItems>
-                                                    </p:selectOneMenu>
-                                                </td>
-                                            </tr>
-                                        </table>
-
+                                        <p:selectOneMenu value="#{ii.addingItem.ci.institutionValue}" >
+                                            <f:selectItem itemLabel="Please select room" ></f:selectItem>
+                                            <f:selectItems value="#{webUserController.loggableProcedureRooms}"
+                                                           var="ipr"
+                                                           itemLabel="#{ipr.name}"
+                                                           itemValue="#{ipr}">
+                                            </f:selectItems>
+                                            <f:ajax event="change" execute="@this" render="prM lblPrM" ></f:ajax>
+                                        </p:selectOneMenu>
+                                    </td>
+                                    <td>
+                                        <p:selectOneMenu id="prM" value="#{ii.addingItem.ci.itemValue}" >
+                                            <f:selectItem itemLabel="Please select procedure" ></f:selectItem>
+                                            <f:selectItems value="#{ii.addingItem.availableProcedures}" 
+                                                           var="li"
+                                                           itemLabel="#{li.displayName}" 
+                                                           itemValue="#{li}">
+                                            </f:selectItems>
+                                        </p:selectOneMenu>
+                                    </td>
+                                    <td>
+                                        <p:inputTextarea id="prComments" value="#{ii.addingItem.ci.longTextValue}" placeholder="Enter Comments" >
+                                        </p:inputTextarea>
                                     </td>
                                     <td>
                                         <p:commandButton id="btnAddPrM"  value="Add" 
-                                                         process="prM btnAddPrM" 
+                                                         process="prM btnAddPrM prComments" 
                                                          update="@form :#{p:component('formset')}"
                                                          action="#{clientEncounterComponentItemController.addAnotherDataItem(ii)}"></p:commandButton>
                                     </td>
