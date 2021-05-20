@@ -1,0 +1,67 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <body>
+        <ui:composition template="/template.xhtml">
+            <ui:define name="content">
+                <h:form>
+                    <h:form >
+                        <p:panel header="Assign Formset" styleClass="pageRootPanel" >
+                            <p:panelGrid columns="2" styleClass="alignTop pageInnerPanel" >
+                                <f:facet name="header" >
+                                    <p:commandButton value="Back" action="/insAdmin/data_index" ajax="false" ></p:commandButton>
+                                </f:facet>
+
+
+
+                                <p:panelGrid columns="2" >
+                                    <f:facet name="header" >
+                                        <p:outputLabel value="Assign Formset" ></p:outputLabel>
+                                    </f:facet>
+                                    <p:outputLabel value="Formset" ></p:outputLabel>
+                                    <p:autoComplete id="refSet" value="#{designComponentFormSetController.referanceSet}" 
+                                                    var="s" itemLabel="#{s.name}" itemValue="#{s}"
+                                                    completeMethod="#{designComponentFormSetController.completeFormSets}"
+                                                    forceSelection="true" maxResults="15" minQueryLength="3">
+                                    </p:autoComplete>
+
+                                    <p:outputLabel value="Institute" ></p:outputLabel>
+                                    <p:autoComplete completeMethod="#{institutionController.completeInstitutions}"
+                                                    var="i" id="forIns" 
+                                                    itemLabel="#{i.name}" itemValue="#{i}"
+                                                    value="#{designComponentFormSetController.institution}"
+                                                    forceSelection="true" maxResults="15" minQueryLength="3">
+                                    </p:autoComplete>
+
+                                    <p:commandButton id="btnImport" value="Fill" ajax="false"
+                                                     action="#{designComponentFormSetController.importFormSet()}"
+                                                     process="refSet forIns btnImport" update="datalist refSet forIns" 
+                                                     style="float: right;">
+                                    </p:commandButton>
+                                    <p:commandButton id="btnDup" value="Assign" ajax="false"
+                                                     action="#{designComponentFormSetController.duplicateFormSet()}"
+                                                     process="refSet forIns btnImport" update="datalist refSet forIns" 
+                                                     style="float: right;">
+                                    </p:commandButton>
+
+
+                                </p:panelGrid>
+                                
+                                
+                                <p:dataTable  >
+                                    
+                                </p:dataTable>
+                                
+                            </p:panelGrid>
+                        </p:panel>
+                    </h:form>
+                </h:form>
+            </ui:define>
+        </ui:composition>
+    </body>
+</html>
