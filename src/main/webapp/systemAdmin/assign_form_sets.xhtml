@@ -12,7 +12,7 @@
                 <h:form>
                     <h:form >
                         <p:panel header="Assign Formset" styleClass="pageRootPanel" >
-                            <p:panelGrid columns="2" styleClass="alignTop pageInnerPanel" >
+                            <p:panelGrid columns="1" styleClass="alignTop pageInnerPanel" >
                                 <f:facet name="header" >
                                     <p:commandButton value="Back" action="/insAdmin/data_index" ajax="false" ></p:commandButton>
                                 </f:facet>
@@ -31,10 +31,10 @@
                                     </p:autoComplete>
 
                                     <p:outputLabel value="Institute" ></p:outputLabel>
-                                    <p:autoComplete completeMethod="#{relationshipController.institution}"
+                                    <p:autoComplete value="#{relationshipController.institution}"
                                                     var="i" id="forIns" 
                                                     itemLabel="#{i.name}" itemValue="#{i}"
-                                                    value="#{designComponentFormSetController.institution}"
+                                                    completeMethod="#{institutionController.completeClinics}"
                                                     forceSelection="true" maxResults="15" minQueryLength="3">
                                     </p:autoComplete>
 
@@ -56,7 +56,7 @@
                                 <p:dataTable value="#{relationshipController.items}" var="i" rowKey="#{i.id}" paginator="true" 
                                              rows="10">
                                     <p:column headerText="Institution" >
-                                        
+                                        <p:outputLabel value="#{i.institution.name}" ></p:outputLabel>
                                     </p:column>
                                      <p:column headerText="Actions" >
                                          <p:commandButton value="Remove" ajax="false" action="#{relationshipController.removeFormsetFromInstitution()}" >

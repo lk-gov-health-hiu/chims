@@ -528,7 +528,7 @@ public class RelationshipController implements Serializable {
             JsfUtil.addSuccessMessage("Form set is already asigned to the institution");
         }
         fillInstitutionsForSelectedFormSet();
-        formset = null;
+        institution = null;
     }
 
     public Relationship findRelationship(int y, Institution ins, RelationshipType t) {

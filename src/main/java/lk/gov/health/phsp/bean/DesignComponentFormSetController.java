@@ -80,13 +80,13 @@ public class DesignComponentFormSetController implements Serializable {
     }
 
     public String toImportFormsets(){
-        backString = "/systemAdmin/index";
+        backString = "/systemAdmin/manage_data_index";
         userTransactionController.recordTransaction("To Import Forms Sets");
         return "/systemAdmin/import_form_sets";
     }
     
      public String toAssignFormsets(){
-        backString = "/systemAdmin/index";
+        backString = "/systemAdmin/manage_data_index";
         userTransactionController.recordTransaction("To Assign Forms Sets");
         return "/systemAdmin/assign_form_sets";
     }
