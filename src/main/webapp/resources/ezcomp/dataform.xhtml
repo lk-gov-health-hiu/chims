@@ -69,10 +69,19 @@
                                                                  update="gpPrs"
                                                                  action="#{clientEncounterComponentItemController.addAnotherDataItem(ii)}"></p:commandButton>
                                             </td>
-
+                                            <h:panelGroup rendered="#{ii.di.displayLastResult}" >
+                                                <td>
+                                                    <h:outputText value="#{fn:replace(clientEncounterComponentFormSetController.lastData(ii.ci),'\\n','&lt;br/&gt;')}" escape="false" />
+                                                </td>
+                                            </h:panelGroup>
+                                            <h:panelGroup rendered="#{ii.di.discreptionAsASideLabel}" >
+                                                <td>
+                                                    <p:outputLabel value="#{ii.di.descreption}"  ></p:outputLabel>
+                                                </td>
+                                            </h:panelGroup>
                                         </tr>
                                         <tr >
-                                            <td colspan="4">
+                                            <td colspan="6">
                                                 <p:dataTable value="#{ii.addedItems}" var="ai" emptyMessage="Nothing added Yet">
                                                     <p:column headerText="Procedure Room">
                                                         <p:outputLabel value="#{ai.ci.institutionValue.name}" ></p:outputLabel>
@@ -115,6 +124,16 @@
                                                     </p:column>
                                                 </p:dataTable>
                                             </td>
+                                            <h:panelGroup rendered="#{ii.di.displayLastResult}" >
+                                                <td>
+                                                    <h:outputText value="#{fn:replace(clientEncounterComponentFormSetController.lastData(ii.ci),'\\n','&lt;br/&gt;')}" escape="false" />
+                                                </td>
+                                            </h:panelGroup>
+                                            <h:panelGroup rendered="#{ii.di.discreptionAsASideLabel}" >
+                                                <td>
+                                                    <p:outputLabel value="#{ii.di.descreption}"  ></p:outputLabel>
+                                                </td>
+                                            </h:panelGroup>
                                         </tr>
                                     </table>
                                 </h:panelGroup>
@@ -147,9 +166,16 @@
                                                 </p:dataTable>
                                             </td>
 
-                                            <td>
-                                                <p:outputLabel value="#{ii.di.descreption}" ></p:outputLabel>
-                                            </td>
+                                            <h:panelGroup rendered="#{ii.di.displayLastResult}" >
+                                                <td>
+                                                    <h:outputText value="#{fn:replace(clientEncounterComponentFormSetController.lastData(ii.ci),'\\n','&lt;br/&gt;')}" escape="false" />
+                                                </td>
+                                            </h:panelGroup>
+                                            <h:panelGroup rendered="#{ii.di.discreptionAsASideLabel}" >
+                                                <td>
+                                                    <p:outputLabel value="#{ii.di.descreption}"  ></p:outputLabel>
+                                                </td>
+                                            </h:panelGroup>
                                         </tr>
                                     </table>
                                 </h:panelGroup>
@@ -182,11 +208,16 @@
                                                 </p:dataTable>
                                             </td>
                                         </tr>
-                                        <tr>
+                                        <h:panelGroup rendered="#{ii.di.displayLastResult}" >
                                             <td>
-                                                <p:outputLabel value="#{ii.di.descreption}" ></p:outputLabel>
+                                                <h:outputText value="#{fn:replace(clientEncounterComponentFormSetController.lastData(ii.ci),'\\n','&lt;br/&gt;')}" escape="false" />
                                             </td>
-                                        </tr>
+                                        </h:panelGroup>
+                                        <h:panelGroup rendered="#{ii.di.discreptionAsASideLabel}" >
+                                            <td>
+                                                <p:outputLabel value="#{ii.di.descreption}"  ></p:outputLabel>
+                                            </td>
+                                        </h:panelGroup>
                                     </table>
                                 </h:panelGroup>
 
