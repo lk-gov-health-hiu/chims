@@ -343,7 +343,9 @@ public class DesignComponentFormSetController implements Serializable {
                 Component c = r.getComponent();
                 if(c!=null){
                     if(c instanceof DesignComponentFormSet){
-                        clinicFormSets.add((DesignComponentFormSet) r.getComponent());
+                        DesignComponentFormSet ts = (DesignComponentFormSet) r.getComponent();
+                        ts.setCurrentlyUsedIn(clinic);
+                        clinicFormSets.add(ts);
                     }
                 }
             }
