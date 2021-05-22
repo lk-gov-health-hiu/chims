@@ -45,6 +45,7 @@ import lk.gov.health.phsp.bean.CommonController;
 import lk.gov.health.phsp.bean.InstitutionApplicationController;
 import lk.gov.health.phsp.bean.ItemApplicationController;
 import lk.gov.health.phsp.bean.StoredQueryResultController;
+import lk.gov.health.phsp.bean.WebUserController;
 import lk.gov.health.phsp.entity.ApiRequest;
 import lk.gov.health.phsp.entity.Area;
 import lk.gov.health.phsp.entity.Client;
@@ -86,6 +87,7 @@ public class ApiResource {
     @Inject
     StoredQueryResultController storedQueryResultController;
     @Inject
+    WebUserController webUserController;
     ApiRequestApplicationController apiRequestApplicationController;
 
     /**
@@ -116,8 +118,7 @@ public class ApiResource {
                     jSONObjectOut = procedureList();
                     break;
                 case "get_procedures_pending":
-                    jSONObjectOut = proceduresPending(id
-                    );
+                    jSONObjectOut = proceduresPending(id);
                     break;
                 case "mark_request_as_received":
                     jSONObjectOut = markRequestAsReceived(id);
@@ -132,9 +133,12 @@ public class ApiResource {
                 case "get_institute_list":
                     jSONObjectOut = instituteList();
                     break;
+                case "get_institute_and_unit_list":
+                    jSONObjectOut = instituteAndUnitList();
+                    break;
                 case "get_institutes_list_hash":
                     jSONObjectOut = instituteListHash();
-                    break;
+                    break;                
                 case "get_institutes_total_population_list":
                     jSONObjectOut = instituteListWithPopulations(year);
                     break;
@@ -173,14 +177,14 @@ public class ApiResource {
     public String getRoleName(@PathParam("roleId") String roleId) {
         return WebUserRole.valueOf(roleId).getLabel();
     }
-
+    
     @GET
-    @Path("/get_ins_name/{insCode}")
+    @Path("/get_institution_name/{insCode}")
     @Produces(MediaType.APPLICATION_JSON)
-    public String getInstituteName(@PathParam("insCode") String insCode) {
-        return null;
-    }
-
+    public String getInstituteName(@PathParam("insCode") String insCode){
+        return institutionApplicationController.findInstitution(Long.valueOf(insCode)).getName();
+    } 
+    
     private JSONObject districtList() {
         JSONObject jSONObjectOut = new JSONObject();
         JSONArray array = new JSONArray();
@@ -201,6 +205,40 @@ public class ApiResource {
         JSONObject jSONObjectOut = new JSONObject();
         JSONArray array = new JSONArray();
         List<Institution> ds = institutionApplicationController.getHospitals();
+        for (Institution a : ds) {
+            JSONObject ja = new JSONObject();
+            ja.put("institute_id", a.getId());
+            ja.put("institute_code", a.getCode());
+            ja.put("name", a.getName());
+            ja.put("hin", a.getPoiNumber());
+            ja.put("latitude", a.getCoordinate().getLatitude());
+            ja.put("longitude", a.getCoordinate().getLongitude());
+            ja.put("address", a.getAddress());
+            ja.put("type", a.getInstitutionType());
+            ja.put("type_label", a.getInstitutionType().getLabel());
+            if (a.getEditedAt() != null) {
+                ja.put("edited_at", a.getEditedAt());
+            } else {
+                ja.put("edited_at", a.getCreatedAt());
+            }
+            if (a.getProvince() != null) {
+                ja.put("province_id", a.getProvince().getId());
+            }
+            if (a.getDistrict() != null) {
+                ja.put("district_id", a.getDistrict().getId());
+            }
+            ja.put("child_institutions", Get_Child_Institutions(a));
+            array.put(ja);
+        }
+        jSONObjectOut.put("data", array);
+        jSONObjectOut.put("status", successMessage());
+        return jSONObjectOut;
+    }
+    
+    private JSONObject instituteAndUnitList() {
+        JSONObject jSONObjectOut = new JSONObject();
+        JSONArray array = new JSONArray();
+        List<Institution> ds = institutionApplicationController.getInstitutions();
         for (Institution a : ds) {
             JSONObject ja = new JSONObject();
             ja.put("institute_id", a.getId());

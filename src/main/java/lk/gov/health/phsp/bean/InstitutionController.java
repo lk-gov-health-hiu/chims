@@ -57,7 +57,7 @@ public class InstitutionController implements Serializable {
     @Inject
     InstitutionApplicationController institutionApplicationController;
     @Inject
-    private UserTransactionController userTransactionController;
+    private UserTransactionController userTransactionController;    
 
     private List<Institution> items = null;
     private Institution selected;
@@ -285,8 +285,6 @@ public class InstitutionController implements Serializable {
         }
         return tins;
     }
-
-    
 
     public List<Institution> findInstitutions(InstitutionType type) {
         List<Institution> cins = institutionApplicationController.getInstitutions();
@@ -892,7 +890,7 @@ public class InstitutionController implements Serializable {
 
     public void setFile(UploadedFile file) {
         this.file = file;
-    }
+    }    
 
     @FacesConverter(forClass = Institution.class)
     public static class InstitutionControllerConverter implements Converter {
