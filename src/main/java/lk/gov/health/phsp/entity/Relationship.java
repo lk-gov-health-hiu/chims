@@ -30,6 +30,7 @@ import java.util.Date;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -54,24 +55,28 @@ public class Relationship implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Institution fromInstitution;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Institution toInstitution;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Institution institution;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Item fromItem;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Item toItem;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Item item;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Area fromArea;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Area toArea;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Area area;
+    
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Component component;
+    
     private Double dblValue;
     private Long longValue1;
     private Long longValue2;
@@ -388,6 +393,14 @@ public class Relationship implements Serializable {
 
     public void setRetireComments(String retireComments) {
         this.retireComments = retireComments;
+    }
+
+    public Component getComponent() {
+        return component;
+    }
+
+    public void setComponent(Component component) {
+        this.component = component;
     }
 
 }

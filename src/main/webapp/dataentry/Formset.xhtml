@@ -15,7 +15,7 @@
 
                 <h:panelGroup id="formset">
 
-                   
+
 
                     <h:form>
                         <p:panelGrid columns="1" style="width: 100%;" >
@@ -49,12 +49,17 @@
 
                                     <p:commandButton  value="Client Profile" action="#{clientEncounterComponentFormSetController.toClientProfileFromEncounter()}" ajax="false" ></p:commandButton>
 
+                                    <p:commandButton  value="Delete" action="#{clientEncounterComponentFormSetController}" ajax="false"
+                                                      onclick="if (!confirm('Really want to DELETE this data?'))
+                                                                  return false"
+                                                      ></p:commandButton>
+
                                 </div>
                             </f:facet>
 
                             <p:commandButton ajax="false" value="Reload" ></p:commandButton>
 
-                         
+
 
                             <h:panelGroup rendered="#{clientEncounterComponentFormSetController.dataFormset.dfs.panelType  eq 'TabView_Left_Oriented' }" >
                                 <p:tabView 
@@ -69,7 +74,7 @@
                                     <p:ajax event="tabChange" process="@this"/>
                                 </p:tabView>
                             </h:panelGroup>
-                            
+
 
                             <h:panelGroup rendered="#{clientEncounterComponentFormSetController.selected.referanceDesignComponentFormSet.panelType eq 'TabView_Bottom_Oriented'}" >
                                 <p:tabView 

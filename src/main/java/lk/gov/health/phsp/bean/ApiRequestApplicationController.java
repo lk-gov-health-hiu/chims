@@ -1,6 +1,7 @@
 package lk.gov.health.phsp.bean;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -48,18 +49,32 @@ public class ApiRequestApplicationController implements Serializable {
         return true;
     }
 
-    public List<ApiRequest> getPendingProcedure() {
-        String j = "select a "
-                + " from ApiRequest a "
-                + " where a.retired=:ret "
-                + " and a.convaied=:con"
-                + " and a.name=:name "
-                + " order by a.id";
+    public List<ApiRequest> getPendingProcedure(String id) {
+        System.out.println("getPendingProcedure");
+        System.out.println("id = " + id);
         Map m = new HashMap();
         m.put("ret", false);
         m.put("con", false);
         m.put("name", "procedure_request");
+        String j = "select a "
+                + " from ApiRequest a "
+                + " where a.retired=:ret "
+                + " and a.convaied=:con"
+                + " and a.name=:name ";
+        j += " order by a.id";
         List<ApiRequest> rs = getFacade().findByJpql(j, m);
+        if(id!=null && !id.trim().equals("")){
+            Long tid = CommonController.stringToLong(id);
+            List<ApiRequest> irs = new ArrayList<>();
+            for(ApiRequest ar:rs){
+                if(ar.getRequestCeci()!=null && ar.getRequestCeci().getInstitutionValue()!=null){
+                    if(ar.getRequestCeci().getInstitutionValue().getId().equals(tid)){
+                        irs.add(ar);
+                    }
+                }
+            }
+            return irs;
+        }
         return rs;
     }
 

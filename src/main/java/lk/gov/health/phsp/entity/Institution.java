@@ -155,13 +155,6 @@ public class Institution implements Serializable {
         if(district!=null){
             to+=district.getId();
         }
-        if(editedAt!=null){
-            to+=editedAt;
-        }else{
-            if(createdAt!=null){
-                to+=createdAt;
-            }
-        }
         return to;
     }
 

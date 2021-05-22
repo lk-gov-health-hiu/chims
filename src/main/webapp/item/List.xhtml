@@ -15,6 +15,8 @@
                 <p:commandButton value="Download" ajax="false" >
                     <p:dataExporter target="datalist" type="xls" fileName="dictionary" ></p:dataExporter>
                 </p:commandButton>
+                <p:commandButton value="Reload" ajax="false" action="#{itemController.reloadItems()}" >
+                </p:commandButton>
                 
                 <p:panel header="#{bundleClinical.ListItemTitle}">
                     <p:dataTable id="datalist" value="#{itemController.items}" var="item"

@@ -33,7 +33,10 @@ import jxl.Sheet;
 import jxl.Workbook;
 import jxl.read.biff.BiffException;
 import lk.gov.health.phsp.entity.Area;
+import lk.gov.health.phsp.entity.Component;
+import lk.gov.health.phsp.entity.DesignComponentFormSet;
 import lk.gov.health.phsp.entity.Institution;
+import lk.gov.health.phsp.entity.Item;
 import lk.gov.health.phsp.enums.AreaType;
 import lk.gov.health.phsp.enums.RelationshipType;
 import lk.gov.health.phsp.facade.AreaFacade;
@@ -56,6 +59,8 @@ public class RelationshipController implements Serializable {
     private UserTransactionController userTransactionController;
     @Inject
     InstitutionController institutionController;
+    @Inject
+    ItemController itemController;
 
     private List<Relationship> items = null;
     private Relationship selected;
@@ -65,6 +70,10 @@ public class RelationshipController implements Serializable {
     private Area area;
     private Institution institution;
     private Institution procedureRoom;
+    Item procedure;
+    
+    private DesignComponentFormSet formset;
+
     private Integer year;
     private Integer month;
     private Long populationValue;
@@ -248,7 +257,7 @@ public class RelationshipController implements Serializable {
         userTransactionController.recordTransaction("Remove Relationship GnData");
     }
 
-    public void removeProcedureRoom(){
+    public void removeProcedureRoom() {
         if (removing == null) {
             JsfUtil.addErrorMessage("Nothing to remove");
             return;
@@ -260,7 +269,33 @@ public class RelationshipController implements Serializable {
         removing = null;
         fillProcedureRoomsForSelectedInstitution();
     }
+
+    public void removeProcedureFromRoom() {
+        if (removing == null) {
+            JsfUtil.addErrorMessage("Nothing to remove");
+            return;
+        }
+        removing.setRetired(true);
+        removing.setRetiredAt(new Date());
+        removing.setRetiredBy(webUserController.getLoggedUser());
+        getFacade().edit(removing);
+        removing = null;
+        fillProceduresForSelectedProcedureRoom();
+    }
     
+    public void removeFormsetFromInstitution() {
+        if (removing == null) {
+            JsfUtil.addErrorMessage("Nothing to remove");
+            return;
+        }
+        removing.setRetired(true);
+        removing.setRetiredAt(new Date());
+        removing.setRetiredBy(webUserController.getLoggedUser());
+        getFacade().edit(removing);
+        removing = null;
+        fillInstitutionsForSelectedFormSet();
+    }
+
     public void save() {
         save(selected);
         JsfUtil.addSuccessMessage("Saved");
@@ -284,6 +319,20 @@ public class RelationshipController implements Serializable {
 
     public void fillProcedureRoomsForSelectedInstitution() {
         items = findRelationships(institution, RelationshipType.Procedure_Room);
+        if (items == null) {
+            items = new ArrayList<>();
+        }
+    }
+
+    public void fillProceduresForSelectedProcedureRoom() {
+        items = findRelationships(institution, RelationshipType.Procedure_for_institution);
+        if (items == null) {
+            items = new ArrayList<>();
+        }
+    }
+    
+    public void fillInstitutionsForSelectedFormSet() {
+        items = findRelationships(institution, RelationshipType.Formsets_for_institution);
         if (items == null) {
             items = new ArrayList<>();
         }
@@ -408,7 +457,6 @@ public class RelationshipController implements Serializable {
             getFacade().create(r);
             JsfUtil.addSuccessMessage("Procedure Room Added");
         } else {
-            r.setLongValue1(populationValue);
             r.setLastEditBy(webUserController.getLoggedUser());
             r.setLastEditeAt(new Date());
             getFacade().edit(r);
@@ -416,6 +464,71 @@ public class RelationshipController implements Serializable {
         }
         fillProcedureRoomsForSelectedInstitution();
         procedureRoom = null;
+    }
+
+    public void addProcedureToProcedureRoom() {
+        if (institution == null) {
+            JsfUtil.addErrorMessage("Procedure Room ?");
+            return;
+        }
+        if (procedure == null) {
+            JsfUtil.addErrorMessage("Procedure ?");
+            return;
+        }
+        RelationshipType trt = RelationshipType.Procedure_for_institution;
+
+        Relationship r;
+        r = findRelationship(institution, procedure, trt);
+        if (r == null) {
+            r = new Relationship();
+            r.setInstitution(institution);
+            r.setItem(procedure);
+            r.setRelationshipType(trt);
+            r.setCreatedAt(new Date());
+            r.setCreatedBy(webUserController.getLoggedUser());
+            getFacade().create(r);
+            JsfUtil.addSuccessMessage("Procedure added to Procedure Room");
+        } else {
+            r.setLastEditBy(webUserController.getLoggedUser());
+            r.setLastEditeAt(new Date());
+            getFacade().edit(r);
+            JsfUtil.addSuccessMessage("Procedure is Already added to the room");
+        }
+        fillProceduresForSelectedProcedureRoom();
+        procedure = null;
+    }
+    
+    
+    public void addFormsetToInstitution() {
+        if (institution == null) {
+            JsfUtil.addErrorMessage("Institution?");
+            return;
+        }
+        if (formset == null) {
+            JsfUtil.addErrorMessage("Form set?");
+            return;
+        }
+        RelationshipType trt = RelationshipType.Formsets_for_institution;
+
+        Relationship r;
+        r = findRelationship(institution, formset, trt);
+        if (r == null) {
+            r = new Relationship();
+            r.setInstitution(institution);
+            r.setComponent(formset);
+            r.setRelationshipType(trt);
+            r.setCreatedAt(new Date());
+            r.setCreatedBy(webUserController.getLoggedUser());
+            getFacade().create(r);
+            JsfUtil.addSuccessMessage("Form set assigned to Institution");
+        } else {
+            r.setLastEditBy(webUserController.getLoggedUser());
+            r.setLastEditeAt(new Date());
+            getFacade().edit(r);
+            JsfUtil.addSuccessMessage("Form set is already asigned to the institution");
+        }
+        fillInstitutionsForSelectedFormSet();
+        institution = null;
     }
 
     public Relationship findRelationship(int y, Institution ins, RelationshipType t) {
@@ -444,6 +557,34 @@ public class RelationshipController implements Serializable {
         return getFacade().findFirstByJpql(j, m);
     }
 
+    public Relationship findRelationship(Institution ins, Item item, RelationshipType t) {
+        String j = "select r from Relationship r "
+                + " where r.retired=:r "
+                + " and r.institution=:i   "
+                + " and r.item=:t "
+                + " and r.relationshipType=:rt ";
+        Map m = new HashMap();
+        m.put("r", false);
+        m.put("i", ins);
+        m.put("t", item);
+        m.put("rt", t);
+        return getFacade().findFirstByJpql(j, m);
+    }
+    
+    public Relationship findRelationship(Institution ins, Component com, RelationshipType t) {
+        String j = "select r from Relationship r "
+                + " where r.retired=:r "
+                + " and r.institution=:i   "
+                + " and r.component=:t "
+                + " and r.relationshipType=:rt ";
+        Map m = new HashMap();
+        m.put("r", false);
+        m.put("i", ins);
+        m.put("t", com);
+        m.put("rt", t);
+        return getFacade().findFirstByJpql(j, m);
+    }
+
     public Relationship findRelationship(int y, Area area, RelationshipType t) {
         String j = "select r from Relationship r "
                 + " where r.area=:area   "
@@ -467,6 +608,20 @@ public class RelationshipController implements Serializable {
         m.put("rt", t);
         return getFacade().findByJpql(j, m);
     }
+    
+    public List<Relationship> findRelationships(Component com, RelationshipType t) {
+        String j = "select r from Relationship r "
+                + " where r.retired=:ret "
+                + " and r.component=:com   "
+                + " and r.relationshipType=:rt";
+        Map m = new HashMap();
+        m.put("ret", false);
+        m.put("com", com);
+        m.put("rt", t);
+        return getFacade().findByJpql(j, m);
+    }
+    
+    
 
     public Long findPopulationValue(int y, Institution ins, RelationshipType t) {
         System.out.println("findPopulationValue");
@@ -601,6 +756,38 @@ public class RelationshipController implements Serializable {
         procedureRoom = null;
         institution = null;
         return "/institution/add_procedure_room";
+    }
+
+    public List<Item> proceduresPerformedInAProcedureRoom(Institution procedureRoom) {
+        System.out.println("proceduresPerformedInAProcedureRoom");
+        System.out.println("procedureRoom = " + procedureRoom);
+        List<Item> ps = new ArrayList();
+        if (procedureRoom == null) {
+            return ps;
+        }
+        List<Relationship> rs = findRelationships(procedureRoom, RelationshipType.Procedure_for_institution);
+        System.out.println("rs = " + rs.size());
+        Map<Long, Item> mis = new HashMap<>();
+        for (Relationship r : rs) {
+            if (r.getId() != null) {
+                mis.put(r.getItem().getId(), r.getItem());
+                List<Item> tis = itemController.findChildren(r.getItem().getCode());
+                for (Item i : tis) {
+                    mis.put(i.getId(), i);
+                }
+            }
+        }
+        ps.addAll(mis.values());
+        System.out.println("ps = " + ps.size());
+        return ps;
+    }
+
+    public String toAddProceduresForProcedureRooms() {
+        userTransactionController.recordTransaction("To Add Procedures for Procedure Rooms");
+        items = null;
+        procedure = null;
+        institution = null;
+        return "/institution/room_procedures";
     }
 
     public String toAddPopulationDataForArea() {
@@ -887,6 +1074,24 @@ public class RelationshipController implements Serializable {
     public void setProcedureRoom(Institution procedureRoom) {
         this.procedureRoom = procedureRoom;
     }
+
+    public Item getProcedure() {
+        return procedure;
+    }
+
+    public void setProcedure(Item procedure) {
+        this.procedure = procedure;
+    }
+
+    public DesignComponentFormSet getFormset() {
+        return formset;
+    }
+
+    public void setFormset(DesignComponentFormSet formset) {
+        this.formset = formset;
+    }
+    
+    
 
     @FacesConverter(forClass = Relationship.class)
     public static class RelationshipControllerConverter implements Converter {

@@ -15,15 +15,16 @@
                         <p:tabView orientation="left" >
                             <p:tab title="Data" >
                                 <p:panelGrid columns="1" >
+                                    <p:commandButton ajax="false" action="/item/List" value="Manage Dictionaty" ></p:commandButton>
                                     <p:commandButton ajax="false" action="/systemAdmin/gn_areas_for_pmci" value="GN Areas of PMCI" ></p:commandButton>
                                     <p:commandButton ajax="false" action="/systemAdmin/area_empanellement" value="Empanelled Population Data" ></p:commandButton>
                                 </p:panelGrid>
                             </p:tab>
-                            <p:tab title="Metadata" >
+                            <p:tab title="Forms" >
                                 <p:panelGrid columns="1" >
-                                    <p:commandButton ajax="false" action="/item/List" value="Manage Dictionaty" ></p:commandButton>
                                     <p:commandButton ajax="false" action="/designComponentFormSet/List" value="Fromset Management" ></p:commandButton>
-                                    <p:commandButton ajax="false" action="/systemAdmin/import_form_sets" value="Assign Formset" ></p:commandButton>
+                                    <p:commandButton ajax="false" action="#{designComponentFormSetController.toAssignFormsets()}" value="Assign Formset" ></p:commandButton>
+                                    <p:commandButton ajax="false" action="#{designComponentFormSetController.toImportFormsets()}" value="Create Form Sets to Institutions from Master Form Sets" ></p:commandButton>
                                     <p:commandButton ajax="false" action="#{designComponentFormSetController.toManageInstitutionFormssets()}" value="Manage Forms" ></p:commandButton>
                                 </p:panelGrid>
                             </p:tab> 

@@ -108,10 +108,10 @@ public class ApiResource {
             @QueryParam("id") String id,
             @Context HttpServletRequest requestContext,
             @Context SecurityContext context) {
-        
-        String ipadd =  requestContext.getHeader("X-FORWARDED-FOR");
+
+        String ipadd = requestContext.getHeader("X-FORWARDED-FOR");
         System.out.println("ipadd = " + ipadd);
-        
+
         JSONObject jSONObjectOut;
         if (name == null || name.trim().equals("")) {
             jSONObjectOut = errorMessageInstruction();
@@ -172,7 +172,7 @@ public class ApiResource {
                     jSONObjectOut = errorMessage();
             }
         }
-        
+
         String json = jSONObjectOut.toString();
         return json;
     }
@@ -738,20 +738,20 @@ public class ApiResource {
         return jSONObjectOut;
     }
 
-    private JSONObject markRequestAsReceived(String id){
+    private JSONObject markRequestAsReceived(String id) {
         boolean f = apiRequestApplicationController.markRequestAsReceived(id);
-        if(!f){
+        if (!f) {
             return errorMessageNoId();
         }
         JSONObject jSONObjectOut = new JSONObject();
         jSONObjectOut.put("status", successMessage());
         return jSONObjectOut;
     }
-    
+
     private JSONObject proceduresPending(String id) {
         JSONObject jSONObjectOut = new JSONObject();
         JSONArray array = new JSONArray();
-        List<ApiRequest> ds = apiRequestApplicationController.getPendingProcedure();
+        List<ApiRequest> ds = apiRequestApplicationController.getPendingProcedure(id);
         for (ApiRequest a : ds) {
             JSONObject ja = new JSONObject();
 
@@ -780,13 +780,10 @@ public class ApiResource {
                     System.err.println("ci.getEncounter().getClient() is null");
                     continue;
                 }
-                if (ci.getEncounter().getInstitution() != null) {
-                    ins = ci.getEncounter().getInstitution();
-                } else {
-                    System.err.println("ci.getEncounter().getInstitution() is null");
-                    continue;
-                }
-                if(ci.getEncounter().getCreatedBy()!=null){
+                if (ci.getInstitutionValue() != null) {
+                    ins = ci.getInstitutionValue();
+                } 
+                if (ci.getEncounter().getCreatedBy() != null) {
                     u = ci.getEncounter().getCreatedBy();
                 }
             } else {
@@ -801,15 +798,18 @@ public class ApiResource {
             ja.put("client_phn", c.getPhn());
             ja.put("client_id", c.getId());
             ja.put("client_name", c.getPerson().getName());
-            ja.put("institute_id", ins.getId());
-            ja.put("institute_code", ins.getCode());
-            ja.put("institute_name", ins.getName());
-            if (ins.getParent() != null) {
-                ja.put("parent_institute_id", ins.getParent().getId());
-                ja.put("parent_institute_code", ins.getParent().getCode());
-                ja.put("parent_institute_name", ins.getParent().getName());
+            if (ins != null) {
+                ja.put("institute_id", ins.getId());
+                ja.put("institute_code", ins.getCode());
+                ja.put("institute_name", ins.getName());
+                if (ins.getParent() != null) {
+                    ja.put("parent_institute_id", ins.getParent().getId());
+                    ja.put("parent_institute_code", ins.getParent().getCode());
+                    ja.put("parent_institute_name", ins.getParent().getName());
+                }
             }
-            if(u!=null){
+
+            if (u != null) {
                 ja.put("user_id", u.getId());
                 ja.put("user_name", u.getName());
             }
@@ -892,7 +892,7 @@ public class ApiResource {
         jSONObjectOut.put("message", "You must provide a value for the parameter name.");
         return jSONObjectOut;
     }
-    
+
     private JSONObject errorMessageNoId() {
         JSONObject jSONObjectOut = new JSONObject();
         jSONObjectOut.put("code", 410);

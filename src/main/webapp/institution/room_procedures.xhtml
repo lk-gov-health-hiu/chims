@@ -1,0 +1,87 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <body>
+
+        <ui:composition template="./index.xhtml">
+
+            <ui:define name="insTopic">
+                <p:outputLabel value="Procedures performed in Units" ></p:outputLabel>
+            </ui:define>
+
+            <ui:define name="insContents">
+
+                <h:form  >
+
+
+                    <p:panelGrid columns="4" >
+
+                        <p:outputLabel value="Procedure Room" for="acIns" ></p:outputLabel>
+                        <p:spacer height="1" width="10"></p:spacer>
+                        <p:autoComplete id="acIns" value="#{relationshipController.institution}" required="true"
+                                        completeMethod="#{institutionController.completeProcedureRooms}"
+                                        var="a" maxResults="20" minQueryLength="2"
+                                        itemLabel="#{a.name}" forceSelection="true"
+                                        itemValue="#{a}">
+                            <p:column headerText="Name" >
+                                <p:outputLabel value="#{a.name}" ></p:outputLabel>
+                            </p:column>
+                            <p:column headerText="Type" >
+                                <p:outputLabel value="#{a.institutionType}" ></p:outputLabel>
+                            </p:column>
+                            <p:ajax event="itemSelect" process="acIns" update="tbl"
+                                    listener="#{relationshipController.fillProceduresForSelectedProcedureRoom()}"></p:ajax>
+                        </p:autoComplete>
+                        <p:spacer height="1" width="10"></p:spacer>
+
+                        <p:outputLabel value="Procedure" for="acPr" ></p:outputLabel>
+                        <p:spacer height="1" width="10"></p:spacer>
+                        <p:autoComplete id="acPr" value="#{relationshipController.procedure}" 
+                                        completeMethod="#{itemController.completeProcedures}"
+                                        var="p" maxResults="20" minQueryLength="1"
+                                        itemLabel="#{p.name}" forceSelection="true"
+                                        itemValue="#{p}">
+                            <p:column headerText="Name" >
+                                <p:outputLabel value="#{p.name}" ></p:outputLabel>
+                            </p:column>
+                            <p:column headerText="Display Name" >
+                                <p:outputLabel value="#{p.displayName}" ></p:outputLabel>
+                            </p:column>
+                            <p:column headerText="Code" >
+                                <p:outputLabel value="#{p.code}" ></p:outputLabel>
+                            </p:column><!-- comment -->
+                            <p:column headerText="Parent" >
+                                <p:outputLabel value="#{p.parent.name}" rendered="#{p.parent ne null}" ></p:outputLabel>
+                            </p:column>
+                        </p:autoComplete>
+                        <p:commandButton ajax="false" value="Add" 
+                                         action="#{relationshipController.addProcedureToProcedureRoom()}"  ></p:commandButton>
+                    </p:panelGrid>
+
+                    <p:dataTable id="tbl" value="#{relationshipController.items}" var="i" rowKey="#{i.id}" rowIndexVar="c"
+                                 rows="10"
+                                 paginator="true">
+                        <p:column headerText="Procedure" >
+                            <p:outputLabel value="#{i.item.name}" ></p:outputLabel>
+                        </p:column>
+                        <p:column headerText="Remove" >
+                            <p:commandButton ajax="false" value="Remove" action="#{relationshipController.removeProcedureRoom()}" >
+                                <f:setPropertyActionListener value="#{i}" target="#{relationshipController.removing}" ></f:setPropertyActionListener>
+                            </p:commandButton>
+                        </p:column>
+                    </p:dataTable>
+
+                </h:form>
+
+
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>
