@@ -52,88 +52,84 @@
 
                             <p:commandButton ajax="false" value="Reload" ></p:commandButton>
 
-                         
+                            <h:panelGroup rendered="#{clientEncounterComponentFormSetController.dataFormset.forms.size() eq 1}" >
+                                <div style="#{clientEncounterComponentFormSetController.dataFormset.forms.get(0).df.css}" >
+                                    <ez:dataform_view form="#{clientEncounterComponentFormSetController.dataFormset.forms.get(0)}" ></ez:dataform_view>
+                                </div>
+                            </h:panelGroup>
 
-                            <h:panelGroup rendered="#{clientEncounterComponentFormSetController.dataFormset.dfs.panelType  eq 'TabView_Left_Oriented' }" >
-                                <p:tabView 
-                                    activeIndex="#{clientEncounterComponentFormSetController.selectedTabIndex}"  orientation="left" style="width: 100%; padding: 5px;" 
-                                    value="#{clientEncounterComponentFormSetController.dataFormset.forms}" var="f">
-                                    <p:tab title="#{f.df.name}" >
-                                        <div style="#{f.df.css}" >
-                                            <ez:dataform_view form="#{f}" ></ez:dataform_view>
-                                        </div>
-                                    </p:tab>
-                                    <p:ajax event="tabChange" process="@this"/>
-                                </p:tabView>
-                            </h:panelGroup>
-                            
-                           
-                            
-<!--                            <h1>New</h1>
-                            <hr/>
-                            <h1>Old</h1>-->
+                            <h:panelGroup rendered="#{clientEncounterComponentFormSetController.dataFormset.forms.size() gt 1}" >
+                                <h:panelGroup rendered="#{clientEncounterComponentFormSetController.dataFormset.dfs.panelType  eq 'TabView_Left_Oriented' }" >
+                                    <p:tabView 
+                                        activeIndex="#{clientEncounterComponentFormSetController.selectedTabIndex}"  orientation="left" style="width: 100%; padding: 5px;" 
+                                        value="#{clientEncounterComponentFormSetController.dataFormset.forms}" var="f">
+                                        <p:tab title="#{f.df.name}" >
+                                            <div style="#{f.df.css}" >
+                                                <ez:dataform_view form="#{f}" ></ez:dataform_view>
+                                            </div>
+                                        </p:tab>
+                                        <p:ajax event="tabChange" process="@this"/>
+                                    </p:tabView>
+                                </h:panelGroup>
 
-                            <h:panelGroup rendered="#{clientEncounterComponentFormSetController.selected.referanceDesignComponentFormSet.panelType eq 'TabView_Bottom_Oriented'}" >
-                                <p:tabView 
-                                    activeIndex="#{clientEncounterComponentFormSetController.selectedTabIndex}"  orientation="bottom" style="width: 100%; padding: 5px;" value="#{clientEncounterComponentFormController.findClientEncounterComponentFormOfAFormset(clientEncounterComponentFormSetController.selected)}" var="f">
-                                    <p:tab title="#{f.name}" >
-                                        <div style="#{f.generatedCss}" >
-                                            <ez:dataform_view form="#{f}" ></ez:dataform_view>
-                                        </div>
-                                    </p:tab>
-                                    <p:ajax event="tabChange" process="@this"/>
-                                </p:tabView>
+                                <h:panelGroup rendered="#{clientEncounterComponentFormSetController.selected.referanceDesignComponentFormSet.panelType eq 'TabView_Bottom_Oriented'}" >
+                                    <p:tabView 
+                                        activeIndex="#{clientEncounterComponentFormSetController.selectedTabIndex}"  orientation="bottom" style="width: 100%; padding: 5px;" value="#{clientEncounterComponentFormController.findClientEncounterComponentFormOfAFormset(clientEncounterComponentFormSetController.selected)}" var="f">
+                                        <p:tab title="#{f.name}" >
+                                            <div style="#{f.generatedCss}" >
+                                                <ez:dataform_view form="#{f}" ></ez:dataform_view>
+                                            </div>
+                                        </p:tab>
+                                        <p:ajax event="tabChange" process="@this"/>
+                                    </p:tabView>
+                                </h:panelGroup>
+
+                                <h:panelGroup rendered="#{clientEncounterComponentFormSetController.selected.referanceDesignComponentFormSet.panelType eq 'Tabview_Top_Oriented'}" >
+                                    <p:tabView activeIndex="#{clientEncounterComponentFormSetController.selectedTabIndex}"  orientation="top" style="width: 100%; padding: 5px;" value="#{clientEncounterComponentFormController.findClientEncounterComponentFormOfAFormset(clientEncounterComponentFormSetController.selected)}" var="f">
+                                        <p:tab title="#{f.name}" >
+                                            <div style="#{f.generatedCss}" >
+                                                <ez:dataform_view form="#{f}" ></ez:dataform_view>
+                                            </div>
+                                        </p:tab>
+                                        <p:ajax event="tabChange" process="@this"/>
+                                    </p:tabView>
+                                </h:panelGroup>
+
+                                <h:panelGroup rendered="#{clientEncounterComponentFormSetController.selected.referanceDesignComponentFormSet.panelType eq 'TabView_Right_Oriented'}" >
+                                    <p:tabView  activeIndex="#{clientEncounterComponentFormSetController.selectedTabIndex}" orientation="right" style="width: 100%; padding: 5px;" value="#{clientEncounterComponentFormController.findClientEncounterComponentFormOfAFormset(clientEncounterComponentFormSetController.selected)}" var="f">
+                                        <p:tab title="#{f.name}" >
+                                            <div style="#{f.generatedCss}" >
+                                                <ez:dataform_view form="#{f}" ></ez:dataform_view>
+                                            </div>
+                                        </p:tab>
+                                        <p:ajax event="tabChange" process="@this"/>
+                                    </p:tabView>
+                                </h:panelGroup>
+
+                                <h:panelGroup rendered="#{clientEncounterComponentFormSetController.selected.referanceDesignComponentFormSet.panelType eq 'Accordion_Basic'}" >
+                                    <p:accordionPanel  activeIndex="#{clientEncounterComponentFormSetController.selectedTabIndex}"  style="width: 100%; padding: 5px;" value="#{clientEncounterComponentFormController.findClientEncounterComponentFormOfAFormset(clientEncounterComponentFormSetController.selected)}" var="f">
+                                        <p:tab title="#{f.name}" >
+                                            <div style="#{f.generatedCss}" >
+                                                <ez:dataform_view form="#{f}" ></ez:dataform_view>
+                                            </div>
+                                        </p:tab>
+                                        <p:ajax event="tabChange" process="@this"/>
+                                    </p:accordionPanel>
+                                </h:panelGroup>
+
+                                <h:panelGroup rendered="#{clientEncounterComponentFormSetController.selected.referanceDesignComponentFormSet.panelType eq 'Accordion_Multiple'}" >
+                                    <p:accordionPanel multiple="true" style="width: 100%; padding: 5px;" value="#{clientEncounterComponentFormController.findClientEncounterComponentFormOfAFormset(clientEncounterComponentFormSetController.selected)}" var="f">
+                                        <p:tab title="#{f.name}" >
+                                            <div style="#{f.generatedCss}" >
+                                                <ez:dataform_view form="#{f}" ></ez:dataform_view>
+                                            </div>
+                                        </p:tab>
+                                        <p:ajax event="tabChange" process="@this"/>
+                                    </p:accordionPanel>
+                                </h:panelGroup>
+
                             </h:panelGroup>
-<!--                            <h:panelGroup rendered="#{clientEncounterComponentFormSetController.selected.referanceDesignComponentFormSet.panelType eq 'TabView_Left_Oriented'}" >
-                                <p:tabView activeIndex="#{clientEncounterComponentFormSetController.selectedTabIndex}" orientation="left" style="width: 100%; padding: 5px;" value="#{clientEncounterComponentFormController.findClientEncounterComponentFormOfAFormset(clientEncounterComponentFormSetController.selected)}" var="f">
-                                    <p:tab title="#{f.name}" >
-                                        <div style="#{f.generatedCss}" >
-                                            <ez:dataform_view form="#{f}" ></ez:dataform_view>
-                                        </div>
-                                    </p:tab>
-                                    <p:ajax event="tabChange" process="@this"/>
-                                </p:tabView>
-                            </h:panelGroup>-->
-                            <h:panelGroup rendered="#{clientEncounterComponentFormSetController.selected.referanceDesignComponentFormSet.panelType eq 'Tabview_Top_Oriented'}" >
-                                <p:tabView activeIndex="#{clientEncounterComponentFormSetController.selectedTabIndex}"  orientation="top" style="width: 100%; padding: 5px;" value="#{clientEncounterComponentFormController.findClientEncounterComponentFormOfAFormset(clientEncounterComponentFormSetController.selected)}" var="f">
-                                    <p:tab title="#{f.name}" >
-                                        <div style="#{f.generatedCss}" >
-                                            <ez:dataform_view form="#{f}" ></ez:dataform_view>
-                                        </div>
-                                    </p:tab>
-                                    <p:ajax event="tabChange" process="@this"/>
-                                </p:tabView>
-                            </h:panelGroup>
-                            <h:panelGroup rendered="#{clientEncounterComponentFormSetController.selected.referanceDesignComponentFormSet.panelType eq 'TabView_Right_Oriented'}" >
-                                <p:tabView  activeIndex="#{clientEncounterComponentFormSetController.selectedTabIndex}" orientation="right" style="width: 100%; padding: 5px;" value="#{clientEncounterComponentFormController.findClientEncounterComponentFormOfAFormset(clientEncounterComponentFormSetController.selected)}" var="f">
-                                    <p:tab title="#{f.name}" >
-                                        <div style="#{f.generatedCss}" >
-                                            <ez:dataform_view form="#{f}" ></ez:dataform_view>
-                                        </div>
-                                    </p:tab>
-                                    <p:ajax event="tabChange" process="@this"/>
-                                </p:tabView>
-                            </h:panelGroup>
-                            <h:panelGroup rendered="#{clientEncounterComponentFormSetController.selected.referanceDesignComponentFormSet.panelType eq 'Accordion_Basic'}" >
-                                <p:accordionPanel  activeIndex="#{clientEncounterComponentFormSetController.selectedTabIndex}"  style="width: 100%; padding: 5px;" value="#{clientEncounterComponentFormController.findClientEncounterComponentFormOfAFormset(clientEncounterComponentFormSetController.selected)}" var="f">
-                                    <p:tab title="#{f.name}" >
-                                        <div style="#{f.generatedCss}" >
-                                            <ez:dataform_view form="#{f}" ></ez:dataform_view>
-                                        </div>
-                                    </p:tab>
-                                    <p:ajax event="tabChange" process="@this"/>
-                                </p:accordionPanel>
-                            </h:panelGroup>
-                            <h:panelGroup rendered="#{clientEncounterComponentFormSetController.selected.referanceDesignComponentFormSet.panelType eq 'Accordion_Multiple'}" >
-                                <p:accordionPanel multiple="true" style="width: 100%; padding: 5px;" value="#{clientEncounterComponentFormController.findClientEncounterComponentFormOfAFormset(clientEncounterComponentFormSetController.selected)}" var="f">
-                                    <p:tab title="#{f.name}" >
-                                        <div style="#{f.generatedCss}" >
-                                            <ez:dataform_view form="#{f}" ></ez:dataform_view>
-                                        </div>
-                                    </p:tab>
-                                    <p:ajax event="tabChange" process="@this"/>
-                                </p:accordionPanel>
-                            </h:panelGroup>
+
                         </p:panelGrid>
                     </h:form>
                     <div>
