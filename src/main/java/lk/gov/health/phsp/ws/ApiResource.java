@@ -183,7 +183,7 @@ public class ApiResource {
     public String getRoleName(@PathParam("roleId") String roleId) {
         return WebUserRole.valueOf(roleId).getLabel();
     }
-
+    
     @GET
     @Path("/get_institution_name/{insCode}")
     @Produces(MediaType.APPLICATION_JSON)

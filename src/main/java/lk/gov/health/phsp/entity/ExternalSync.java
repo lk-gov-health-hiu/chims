@@ -43,6 +43,7 @@ public class ExternalSync implements Serializable {
     
     private String hashValue;
     private String hashOwner;
+    private Long lastModifiedObj;
 
     public Long getId() {
         return id;
@@ -91,5 +92,13 @@ public class ExternalSync implements Serializable {
 
     public void setHashOwner(String hashOwner) {
         this.hashOwner = hashOwner;
+    }
+
+    public Long getLastModifiedObj() {
+        return lastModifiedObj;
+    }
+
+    public void setLastModifiedObj(Long lastModifiedObj) {
+        this.lastModifiedObj = lastModifiedObj;
     }
 }
