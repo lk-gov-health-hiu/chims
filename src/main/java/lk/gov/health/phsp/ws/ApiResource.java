@@ -134,7 +134,7 @@ public class ApiResource {
                     jSONObjectOut = instituteList();
                     break;
                 case "get_module_institute_list":
-                    jSONObjectOut = moduleInstituteList();
+                    jSONObjectOut = instituteAndUnitList();
                     break;
                 case "get_institutes_list_hash":
                     jSONObjectOut = instituteListHash();
@@ -235,7 +235,7 @@ public class ApiResource {
         return jSONObjectOut;
     }
     
-    private JSONObject moduleInstituteList() {
+    private JSONObject instituteAndUnitList() {
         JSONObject jSONObjectOut = new JSONObject();
         JSONArray array = new JSONArray();
         List<Institution> ds = institutionApplicationController.getInstitutions();
