@@ -332,7 +332,6 @@ public class RelationshipController implements Serializable {
     }
     
     public void fillInstitutionsForSelectedFormSet() {
-        System.out.println("4444444444444444444");
         items = findRelationships(institution, RelationshipType.Formsets_for_institution);
         if (items == null) {
             items = new ArrayList<>();
@@ -573,7 +572,6 @@ public class RelationshipController implements Serializable {
     }
     
     public Relationship findRelationship(Institution ins, Component com, RelationshipType t) {
-        System.out.println("22222222222222222222");
         String j = "select r from Relationship r "
                 + " where r.retired=:r "
                 + " and r.institution=:i   "
