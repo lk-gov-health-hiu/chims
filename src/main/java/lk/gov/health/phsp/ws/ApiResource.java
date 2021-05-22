@@ -42,7 +42,6 @@ import lk.gov.health.phsp.bean.ApiRequestApplicationController;
 import lk.gov.health.phsp.bean.ApplicationController;
 import lk.gov.health.phsp.bean.AreaApplicationController;
 import lk.gov.health.phsp.bean.CommonController;
-import lk.gov.health.phsp.bean.ExternalSyncController;
 import lk.gov.health.phsp.bean.InstitutionApplicationController;
 import lk.gov.health.phsp.bean.ItemApplicationController;
 import lk.gov.health.phsp.bean.StoredQueryResultController;
@@ -89,8 +88,6 @@ public class ApiResource {
     StoredQueryResultController storedQueryResultController;
     @Inject
     WebUserController webUserController;
-    @Inject
-    ExternalSyncController syncController;
     ApiRequestApplicationController apiRequestApplicationController;
 
     /**
@@ -141,10 +138,7 @@ public class ApiResource {
                     break;
                 case "get_institutes_list_hash":
                     jSONObjectOut = instituteListHash();
-                    break;
-                case "get_institute_hash":
-                    jSONObjectOut = getInstituteHash();
-                    break;
+                    break;                
                 case "get_institutes_total_population_list":
                     jSONObjectOut = instituteListWithPopulations(year);
                     break;
@@ -189,14 +183,7 @@ public class ApiResource {
     @Produces(MediaType.APPLICATION_JSON)
     public String getInstituteName(@PathParam("insCode") String insCode){
         return institutionApplicationController.findInstitution(Long.valueOf(insCode)).getName();
-    }
-    
-    private JSONObject getInstituteHash() {
-        JSONObject jSONObjectOut = new JSONObject();
-        jSONObjectOut.put("data", syncController.getHash("INSTITUTION"));
-        jSONObjectOut.put("status", successMessage());
-        return jSONObjectOut;
-    }
+    } 
     
     private JSONObject districtList() {
         JSONObject jSONObjectOut = new JSONObject();
