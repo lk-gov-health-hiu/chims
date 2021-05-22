@@ -133,7 +133,7 @@ public class ApiResource {
                 case "get_institute_list":
                     jSONObjectOut = instituteList();
                     break;
-                case "get_module_institute_list":
+                case "get_institute_and_unit_list":
                     jSONObjectOut = instituteAndUnitList();
                     break;
                 case "get_institutes_list_hash":
