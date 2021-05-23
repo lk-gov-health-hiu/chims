@@ -88,6 +88,7 @@ public class ApiResource {
     StoredQueryResultController storedQueryResultController;
     @Inject
     WebUserController webUserController;
+    @Inject
     ApiRequestApplicationController apiRequestApplicationController;
 
     /**

@@ -119,6 +119,66 @@ public class ItemApplicationController {
         return completeItem(its, qry);
     }
     
+    
+    
+    
+    
+    
+    
+    
+    public List<Item> findPharmaceuticalItem() {
+        List<ItemType> its = new ArrayList<>();
+        its.add(ItemType.Atm);
+        its.add(ItemType.Vtm);
+        its.add(ItemType.Amp);
+        its.add(ItemType.Vmp);
+        its.add(ItemType.Ampp);
+        its.add(ItemType.Vmpp);
+        return findItem(its);
+    }
+
+    public List<Item> findVtm() {
+        List<ItemType> its = new ArrayList<>();
+        its.add(ItemType.Vtm);
+        return findItem(its);
+    }
+
+    public List<Item> findAtm() {
+        List<ItemType> its = new ArrayList<>();
+        its.add(ItemType.Atm);
+        return findItem(its);
+    }
+
+    public List<Item> findVmp(){
+        List<ItemType> its = new ArrayList<>();
+        its.add(ItemType.Vmp);
+        return findItem(its);
+    }
+    
+    public List<Item> findAmp(){
+        List<ItemType> its = new ArrayList<>();
+        its.add(ItemType.Amp);
+        return findItem(its);
+    }
+    
+    public List<Item> findVmpp(){
+        List<ItemType> its = new ArrayList<>();
+        its.add(ItemType.Vmpp);
+        return findItem(its);
+    }
+    
+    public List<Item> findAmpp(String qry){
+        List<ItemType> its = new ArrayList<>();
+        its.add(ItemType.Ampp);
+        return findItem(its);
+    }
+    
+    
+    
+    
+    
+    
+    
     public List<Item> completeItem(List<ItemType> types, String qry) {
         List<Item> tis = new ArrayList<>();
         if (qry == null || qry.trim().equals("")) {
@@ -158,6 +218,25 @@ public class ItemApplicationController {
             }
         }
 
+        return tis;
+    }
+    
+    public List<Item> findItem(List<ItemType> types) {
+        List<Item> tis = new ArrayList<>();
+        if (types == null || types.isEmpty()) {
+            return tis;
+        }
+        for (Item i : getItems()) {
+            boolean typeOk = false;
+            for (ItemType t : types) {
+                if (i.getItemType().equals(t)) {
+                    typeOk = true;
+                }
+            }
+            if (typeOk) {
+                tis.add(i);
+            }
+        }
         return tis;
     }
 

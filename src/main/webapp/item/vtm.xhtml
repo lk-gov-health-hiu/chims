@@ -1,0 +1,32 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+
+    <body>
+
+        <ui:composition template="/systemAdmin/manage_metadata_index.xhtml">
+
+            <ui:define name="metadata">
+
+
+                <p:dataTable value="#{itemController.vtms}" var="v" rowIndexVar="#{v.id}" >
+                    <p:column headerText="Name" >
+                        <p:outputLabel value="#{v.name}" ></p:outputLabel>
+                    </p:column>
+                    <p:column headerText="Code" >
+                        <p:outputLabel value="#{v.code}" ></p:outputLabel>
+                    </p:column>
+                    <p:column headerText="Action" >
+                        
+                    </p:column>
+                </p:dataTable>
+
+
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

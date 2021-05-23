@@ -62,6 +62,17 @@ public class ItemController implements Serializable {
     private List<Item> mimeTypes;
     private List<Item> categories;
     private List<Item> procedures;
+    private List<Item> vtms;
+    private List<Item> atms;
+    private List<Item> amps;
+    private List<Item> vmps;
+    
+    
+    private Item vtm;
+    private Item atm;
+    private Item vmp;
+    private Item amp;
+    
     private UploadedFile file;
 
     private int itemTypeColumnNumber;
@@ -69,11 +80,18 @@ public class ItemController implements Serializable {
     private int itemCodeColumnNumber;
     private int parentCodeColumnNumber;
     private int startRow = 1;
+    
 
     public ItemController() {
     }
 
     // <editor-fold defaultstate="collapsed" desc="Navigation">
+    
+    public String toManageVtm(){
+        vtms = itemApplicationController.findVtm();
+        return "/item/vtm";
+    }
+    
     // </editor-fold>    
     // <editor-fold defaultstate="collapsed" desc="Functions">
     public void fillDuplicateItemsInAFormSet(DesignComponentFormSet s) {
@@ -881,6 +899,72 @@ public class ItemController implements Serializable {
         }
         return tps;
     }
+
+    public List<Item> getVtms() {
+        return vtms;
+    }
+
+    public void setVtms(List<Item> vtms) {
+        this.vtms = vtms;
+    }
+
+    public List<Item> getAtms() {
+        return atms;
+    }
+
+    public void setAtms(List<Item> atms) {
+        this.atms = atms;
+    }
+
+    public List<Item> getAmps() {
+        return amps;
+    }
+
+    public void setAmps(List<Item> amps) {
+        this.amps = amps;
+    }
+
+    public List<Item> getVmps() {
+        return vmps;
+    }
+
+    public void setVmps(List<Item> vmps) {
+        this.vmps = vmps;
+    }
+
+    public Item getVtm() {
+        return vtm;
+    }
+
+    public void setVtm(Item vtm) {
+        this.vtm = vtm;
+    }
+
+    public Item getAtm() {
+        return atm;
+    }
+
+    public void setAtm(Item atm) {
+        this.atm = atm;
+    }
+
+    public Item getVmp() {
+        return vmp;
+    }
+
+    public void setVmp(Item vmp) {
+        this.vmp = vmp;
+    }
+
+    public Item getAmp() {
+        return amp;
+    }
+
+    public void setAmp(Item amp) {
+        this.amp = amp;
+    }
+    
+    
 
     @FacesConverter(forClass = Item.class)
     public static class ItemControllerConverter implements Converter {
