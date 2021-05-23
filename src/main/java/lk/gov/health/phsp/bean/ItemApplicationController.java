@@ -126,7 +126,7 @@ public class ItemApplicationController {
     
     
     
-    public List<Item> findPharmaceuticalItem() {
+    public List<Item> findPharmaceuticalItems() {
         List<ItemType> its = new ArrayList<>();
         its.add(ItemType.Atm);
         its.add(ItemType.Vtm);
@@ -134,43 +134,50 @@ public class ItemApplicationController {
         its.add(ItemType.Vmp);
         its.add(ItemType.Ampp);
         its.add(ItemType.Vmpp);
-        return findItem(its);
+        return findItems(its);
     }
 
-    public List<Item> findVtm() {
+    public List<Item> findVtms() {
         List<ItemType> its = new ArrayList<>();
         its.add(ItemType.Vtm);
-        return findItem(its);
+        return findItems(its);
     }
 
-    public List<Item> findAtm() {
+    public List<Item> findAtms() {
         List<ItemType> its = new ArrayList<>();
         its.add(ItemType.Atm);
-        return findItem(its);
+        return findItems(its);
     }
 
-    public List<Item> findVmp(){
+    public List<Item> findVmps(){
         List<ItemType> its = new ArrayList<>();
         its.add(ItemType.Vmp);
-        return findItem(its);
+        return findItems(its);
     }
     
-    public List<Item> findAmp(){
+    public List<Item> findAmps(){
         List<ItemType> its = new ArrayList<>();
         its.add(ItemType.Amp);
-        return findItem(its);
+        return findItems(its);
+    }
+    
+    public List<Item> findDictionaryItems(){
+        List<ItemType> its = new ArrayList<>();
+        its.add(ItemType.Dictionary_Category);
+        its.add(ItemType.Dictionary_Category);
+        return findItems(its);
     }
     
     public List<Item> findVmpp(){
         List<ItemType> its = new ArrayList<>();
         its.add(ItemType.Vmpp);
-        return findItem(its);
+        return findItems(its);
     }
     
     public List<Item> findAmpp(String qry){
         List<ItemType> its = new ArrayList<>();
         its.add(ItemType.Ampp);
-        return findItem(its);
+        return findItems(its);
     }
     
     
@@ -221,7 +228,7 @@ public class ItemApplicationController {
         return tis;
     }
     
-    public List<Item> findItem(List<ItemType> types) {
+    public List<Item> findItems(List<ItemType> types) {
         List<Item> tis = new ArrayList<>();
         if (types == null || types.isEmpty()) {
             return tis;

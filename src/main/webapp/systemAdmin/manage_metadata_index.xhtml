@@ -18,7 +18,7 @@
                             <p:tabView orientation="left" >
                                 <p:tab title="Data" >
                                     <p:panelGrid columns="1" >
-                                        <p:commandButton ajax="false" action="/item/List" value="Manage Dictionaty" ></p:commandButton>
+                                        <p:commandButton ajax="false" action="#{itemController.toManageDictionary()}" value="Manage Dictionaty" ></p:commandButton>
                                         <p:commandButton ajax="false" action="/systemAdmin/gn_areas_for_pmci" value="GN Areas of PMCI" ></p:commandButton>
                                         <p:commandButton ajax="false" action="/systemAdmin/area_empanellement" value="Empanelled Population Data" ></p:commandButton>
                                     </p:panelGrid>
@@ -33,7 +33,7 @@
                                 </p:tab> 
                                 <p:tab title="Medicines &amp; Devices" >
                                     <p:panelGrid columns="1" >
-                                        <p:commandButton ajax="false" action="/designComponentFormSet/List" 
+                                        <p:commandButton ajax="false" action="#{itemController.toManageVtm()}" 
                                                          value="Virtual Therapeutic Moiety" ></p:commandButton>
                                         <p:commandButton ajax="false" action="#{designComponentFormSetController.toAssignFormsets()}" 
                                                          value="Actual Therapeutic Moiety" ></p:commandButton>

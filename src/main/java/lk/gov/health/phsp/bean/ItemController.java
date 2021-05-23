@@ -52,6 +52,7 @@ public class ItemController implements Serializable {
     private List<Item> items = null;
     private Item selected;
     private Item selectedParent;
+    private Item removingItem;
     private List<Item> titles;
     private List<Item> ethinicities;
     private List<Item> religions;
@@ -66,13 +67,12 @@ public class ItemController implements Serializable {
     private List<Item> atms;
     private List<Item> amps;
     private List<Item> vmps;
-    
-    
+
     private Item vtm;
     private Item atm;
     private Item vmp;
     private Item amp;
-    
+
     private UploadedFile file;
 
     private int itemTypeColumnNumber;
@@ -80,18 +80,41 @@ public class ItemController implements Serializable {
     private int itemCodeColumnNumber;
     private int parentCodeColumnNumber;
     private int startRow = 1;
-    
 
     public ItemController() {
     }
 
     // <editor-fold defaultstate="collapsed" desc="Navigation">
+    public String toManageVtm() {
+        vtms = itemApplicationController.findVtms();
+        return "/item/vtms";
+    }
+
+    public String toManageDictionary() {
+        items = itemApplicationController.findDictionaryItems();
+        return "/item/List";
+    }
     
-    public String toManageVtm(){
-        vtms = itemApplicationController.findVtm();
+    public String toEditVtm(){
+        if(vtm==null){
+            JsfUtil.addErrorMessage("Nothing to Edit");
+            return "";
+        }
         return "/item/vtm";
     }
     
+    public String toAddVtm(){
+        vtm = new Item();
+        vtm.setItemType(ItemType.Vtm);
+        return "/item/vtm";
+    }
+    
+    public void saveVtm(){
+        save(vtm);
+        vtms = null;
+        getVtms();
+    }
+
     // </editor-fold>    
     // <editor-fold defaultstate="collapsed" desc="Functions">
     public void fillDuplicateItemsInAFormSet(DesignComponentFormSet s) {
@@ -523,7 +546,26 @@ public class ItemController implements Serializable {
         return item;
     }
 
-    // </editor-fold>    
+    // </editor-fold>   
+    public void removeItem() {
+        if (removingItem == null) {
+            JsfUtil.addErrorMessage("Nothing Selected");
+            return;
+        }
+        removingItem.setRetired(true);
+        removingItem.setRetiredAt(new Date());
+        removingItem.setRetiredBy(webUserController.getLoggedUser());
+        save(removingItem);
+        
+        try {
+            itemApplicationController.getItems().remove(removingItem);
+        } catch (Exception e) {
+            itemApplicationController.invalidateItems();
+        }
+        removingItem = null;
+        JsfUtil.addErrorMessage("Removed");
+    }
+
     public Item getSelected() {
         return selected;
     }
@@ -542,6 +584,11 @@ public class ItemController implements Serializable {
             i.setCreatedAt(new Date());
             i.setCreatedBy(webUserController.getLoggedUser());
             getFacade().create(i);
+            try{
+                itemApplicationController.getItems().add(i);
+            }catch(Exception e){
+                itemApplicationController.invalidateItems();
+            }
         } else {
             i.setEditedAt(new Date());
             i.setEditedBy(webUserController.getLoggedUser());
@@ -901,6 +948,9 @@ public class ItemController implements Serializable {
     }
 
     public List<Item> getVtms() {
+        if(vtms==null){
+            vtms = itemApplicationController.findVtms();
+        }
         return vtms;
     }
 
@@ -962,6 +1012,14 @@ public class ItemController implements Serializable {
 
     public void setAmp(Item amp) {
         this.amp = amp;
+    }
+
+    public Item getRemovingItem() {
+        return removingItem;
+    }
+
+    public void setRemovingItem(Item removingItem) {
+        this.removingItem = removingItem;
     }
     
     
