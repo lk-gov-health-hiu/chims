@@ -29,6 +29,7 @@ import javax.annotation.ManagedBean;
 import javax.enterprise.inject.spi.CDI;
 import javax.inject.Inject;
 import lk.gov.health.phsp.bean.ComponentController;
+import lk.gov.health.phsp.bean.ItemApplicationController;
 import lk.gov.health.phsp.bean.RelationshipController;
 import lk.gov.health.phsp.entity.ClientEncounterComponentItem;
 import lk.gov.health.phsp.entity.DesignComponentFormItem;
@@ -153,22 +154,28 @@ public class DataItem {
     }
 
     public List<Item> getAvailableProcedures() {
-        System.out.println("getAvailableProcedures");
         RelationshipController relationshipController = CDI.current().select(RelationshipController.class).get();
-        if(relationshipController!=null){
-            if(ci!=null){
-                if(ci.getInstitutionValue()!=null){
+        if (relationshipController != null) {
+            if (ci != null) {
+                if (ci.getInstitutionValue() != null) {
                     availableProcedures = relationshipController.proceduresPerformedInAProcedureRoom(ci.getInstitutionValue());
-                }else{
+                } else {
                     System.out.println("ci.getInstitutionValue() is null");
                 }
-            }else{
+            } else {
                 System.out.println("ci is null");
             }
-        }else{
+        } else {
             System.out.println("relationsip controller is null");
         }
         return availableProcedures;
+    }
+
+    public List<Item> completePharmaceuticalItem(String qry) {
+        List<Item> pis = new ArrayList<>();
+        ItemApplicationController itemApplicationController = CDI.current().select(ItemApplicationController.class).get();
+        
+        return pis;
     }
 
 }

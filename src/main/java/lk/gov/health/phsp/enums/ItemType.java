@@ -32,6 +32,12 @@ public enum ItemType {
     Dictionary_Item("Dictionary Item"),
     Dictionary_Category("Dictionary Category"),
     Mime_Type("Mime Type"),
+    Atm("ATM"),
+    Vtm("VTM"),
+    Amp("AMP"),
+    Vmp("VMP"),
+    Ampp("AMPP"),
+    Vmpp("VMPP"),
     Other("Other");
     
     public final String label;

@@ -25,41 +25,75 @@
 
                     <h:panelGroup id="gpDataAndButtonsMultiple" rendered="#{ii.multipleEntries}" >
                         <tr>
+                            <td>
 
-                            <h:panelGroup id="gpDataM" >
-                                 <h:panelGroup rendered="#{ii.di.item.dataType eq 'Procedure_Request'}" >
-                                    <td>
-                                        <p:outputLabel  value="#{ii.di.name}"  style="#{ii.di.css}" rendered="#{ii.ci.orderNo eq 1}" ></p:outputLabel>
-                                    </td>
-                                    <td>
-                                        <p:outputLabel  value="#{ii.ci.itemValue.name}"  style="#{ii.di.css}" ></p:outputLabel>
-                                    </td>
-                                </h:panelGroup>
-                                <h:panelGroup rendered="#{ii.di.item.dataType eq 'Item_Reference'}" >
-                                    <td>
-                                        <p:outputLabel  value="#{ii.di.name}"  style="#{ii.di.css}" ></p:outputLabel>
-                                    </td>
-                                    <td>
-                                        <p:outputLabel  value="#{ii.ci.itemValue.name}"  style="#{ii.di.css}" ></p:outputLabel>
-                                    </td>
-                                </h:panelGroup>
-                                <h:panelGroup rendered="#{ii.di.renderType eq 'Autocomplete' and ii.di.item.dataType eq 'Area_Reference'}" >
-                                    <td>
-                                        <p:outputLabel value="#{ii.di.name}"  style="#{ii.di.css}" ></p:outputLabel>
-                                    </td>
-                                    <td>
-                                        <p:outputLabel value="#{ii.ci.areaValue.name}"  style="#{ii.di.css}" ></p:outputLabel>
-                                    </td>
-                                </h:panelGroup>
-                                <h:panelGroup rendered="#{ii.di.renderType eq 'Prescreption'}" >
-                                    <td>
-                                        <!--<ez:prescription/>-->
-                                    </td>
-                                </h:panelGroup>
+                                <h:panelGroup id="gpDataM" >
+                                    <h:panelGroup rendered="#{ii.di.item.dataType eq 'Procedure_Request'}" >
+                                        <p:dataTable value="#{ii.addedItems}" style="#{ii.di.css}"
+                                                     rendered="#{not empty ii.addedItems}"
+                                                     var="ai" emptyMessage="Nothing added Yet">
+                                            <f:facet name="header" >
+                                                <p:outputLabel  value="#{ii.di.name}"  ></p:outputLabel>
+                                            </f:facet>
+                                            <p:column headerText="Procedure Room">
+                                                <p:outputLabel value="#{ai.ci.institutionValue.name}" ></p:outputLabel>
+                                            </p:column>
+                                            <p:column  headerText="Procedure">
+                                                <p:outputLabel value="#{ai.ci.itemValue.name}" ></p:outputLabel>
+                                            </p:column>
+                                            <p:column  headerText="Comments">
+                                                <p:outputLabel value="#{ai.ci.longTextValue}" ></p:outputLabel>
+                                            </p:column>
+                                        </p:dataTable>
+
+                                    </h:panelGroup>
+                                    <h:panelGroup rendered="#{ii.di.item.dataType eq 'Item_Reference'}" >
+                                        <p:dataTable value="#{ii.addedItems}" 
+                                                     rendered="#{not empty ii.addedItems}" style="#{ii.di.css}"
+                                                     var="ai" emptyMessage="Nothing added Yet">
+                                            <f:facet name="header" >
+                                                <p:outputLabel  value="#{ii.di.name}"  ></p:outputLabel>
+                                            </f:facet>
+                                            <p:column  >
+                                                <p:outputLabel value="#{ai.ci.itemValue.name}" ></p:outputLabel>
+                                            </p:column>
+                                            <p:column  >
+                                                <p:outputLabel value="#{ai.ci.longTextValue}" ></p:outputLabel>
+                                            </p:column>
+                                        </p:dataTable>
+                                        <td>
+                                            <p:outputLabel  value="#{ii.di.name}"  style="#{ii.di.css}" ></p:outputLabel>
+                                        </td>
+                                        <td>
+                                            <p:outputLabel  value="#{ii.ci.itemValue.name}"  style="#{ii.di.css}" ></p:outputLabel>
+                                        </td>
+                                    </h:panelGroup>
+                                    <h:panelGroup rendered="#{ii.di.item.dataType eq 'Area_Reference'}" >
+                                        <p:dataTable value="#{ii.addedItems}" 
+                                                     rendered="#{not empty ii.addedItems}" style="#{ii.di.css}"
+                                                     var="ai" emptyMessage="Nothing added Yet">
+                                            <f:facet name="header" >
+                                                <p:outputLabel  value="#{ii.di.name}"  ></p:outputLabel>
+                                            </f:facet>
+                                            <p:column  >
+                                                <p:outputLabel value="#{ai.ci.areaValue.name}" ></p:outputLabel>
+                                            </p:column>
+                                        </p:dataTable>
+
+                                    </h:panelGroup>
+                                    <h:panelGroup rendered="#{ii.di.renderType eq 'Prescreption'}" >
+                                        <td>
+                                            <!--<ez:prescription/>-->
+                                        </td>
+                                    </h:panelGroup>
 
 
 
-                            </h:panelGroup>
+                                </h:panelGroup>
+
+                            </td>
+
+
 
 
 
@@ -68,92 +102,102 @@
 
                     <h:panelGroup id="gpDataAndButtonsSingle" rendered="#{!ii.multipleEntries}" >
                         <tr>
-                            <h:panelGroup id="gpData" >
-                                <h:panelGroup rendered="#{ii.di.renderType eq 'Input_Text'}" >
-                                    <h:panelGroup rendered="#{ii.di.item.dataType eq'Short_Text'}" >
-                                        <td>
-                                            <p:outputLabel  value="#{ii.di.name}" style="#{ii.di.css}" ></p:outputLabel>
-                                        </td>
-                                        <td>
-                                            <p:outputLabel  value="#{ii.ci.shortTextValue}" style="#{ii.di.css}" ></p:outputLabel>
-                                        </td>
-                                    </h:panelGroup>
-                                    <h:panelGroup rendered="#{ii.di.item.dataType eq 'Integer_Number'}" >
-                                        <td>
-                                            <p:outputLabel value="#{ii.di.name}"  style="#{ii.di.css}" ></p:outputLabel>
-                                        </td>
-                                        <td>
-                                            <p:outputLabel value="#{ii.ci.integerNumberValue}"  style="#{ii.di.css}" ></p:outputLabel>
-                                        </td>
-                                    </h:panelGroup>
-                                    <h:panelGroup rendered="#{ii.di.item.dataType eq 'Real_Number'}" >
-                                        <td>
-                                            <p:outputLabel value="#{ii.di.name}"  style="#{ii.di.css}" ></p:outputLabel>
-                                        </td>
-                                        <td>
-                                            <p:outputLabel value="#{ii.ci.realNumberValue}"  style="#{ii.di.css}" ></p:outputLabel>
-                                        </td>
-                                    </h:panelGroup>
-                                    <h:panelGroup rendered="#{ii.di.item.dataType eq 'Long_Number'}" >
-                                        <td>
-                                            <p:outputLabel value="#{ii.di.name}"  style="#{ii.di.css}" ></p:outputLabel>
-                                        </td>
-                                        <td>
-                                            <p:outputLabel value="#{ii.ci.longNumberValue}"  style="#{ii.di.css}" ></p:outputLabel>
-                                        </td>
-                                    </h:panelGroup>
-                                </h:panelGroup>
-                                <h:panelGroup rendered="#{ii.di.renderType eq 'Input_Text_Area'}" >
-                                    <td>
-                                        <p:outputLabel value="#{ii.di.name}"  style="#{ii.di.css}" ></p:outputLabel>
-                                    </td>
-                                    <td>
-                                        <p:outputLabel value="#{ii.ci.longTextValue}"  style="#{ii.di.css}" ></p:outputLabel>
-                                    </td>
-                                </h:panelGroup>
-                                <h:panelGroup rendered="#{ii.di.item.dataType eq 'DateTime'}" >
-                                    <td>
-                                        <p:outputLabel  value="#{ii.di.name}"  style="#{ii.di.css}" ></p:outputLabel>
-                                    </td>
-                                    <td>
-                                        <p:outputLabel  value="#{ii.ci.dateValue}"  style="#{ii.di.css}" >
-                                            <f:convertDateTime pattern="dd MMMM yyyy" ></f:convertDateTime>
-                                        </p:outputLabel>
-                                    </td>
-                                </h:panelGroup>
-                                <h:panelGroup rendered="#{ii.di.item.dataType eq 'Item_Reference'}" >
-                                    <td>
-                                        <p:outputLabel  value="#{ii.di.name}"  style="#{ii.di.css}" ></p:outputLabel>
-                                    </td>
-                                    <td>
-                                        <p:outputLabel  value="#{ii.ci.itemValue.name}"  style="#{ii.di.css}" ></p:outputLabel>
-                                    </td>
-                                </h:panelGroup>
-                                <h:panelGroup rendered="#{ii.di.renderType eq 'Boolean_Checkbox'}" >
-                                    <td>
-                                        <p:outputLabel value="#{ii.di.name}"  style="#{ii.di.css}" ></p:outputLabel>
-                                    </td>
-                                    <td>
-                                        <p:outputLabel value="#{ii.ci.booleanValue?'Yes':'No'}"  style="#{ii.di.css}" ></p:outputLabel>
-                                    </td>
-                                </h:panelGroup>
-                                <h:panelGroup rendered="#{ii.di.item.dataType eq 'Area_Reference'}" >
-                                    <td>
-                                        <p:outputLabel  value="#{ii.di.name}"  style="#{ii.di.css}" ></p:outputLabel>
-                                    </td>
-                                    <td>
-                                        <p:outputLabel  value="#{ii.ci.areaValue.name}"  style="#{ii.di.css}" ></p:outputLabel>
-                                    </td>
-                                </h:panelGroup>
-                                <h:panelGroup rendered="#{ii.di.renderType eq 'Prescreption'}" >
-                                    <td>
-                                        <p:outputLabel value="#{ii.di.name}"  style="#{ii.di.css}" ></p:outputLabel>
-                                    </td>
-                                    <td>
-                                        <!--<ez:prescription/>-->
-                                    </td>
-                                </h:panelGroup>
-                            </h:panelGroup>
+                            <td>
+
+                                <table >
+                                    <tr>
+                                        <h:panelGroup id="gpData" >
+                                            <h:panelGroup rendered="#{ii.di.renderType eq 'Input_Text'}" >
+                                                <h:panelGroup rendered="#{ii.di.item.dataType eq'Short_Text'}" >
+                                                    <td>
+                                                        <p:outputLabel  value="#{ii.di.name}" style="#{ii.di.css}" ></p:outputLabel>
+                                                    </td>
+                                                    <td>
+                                                        <p:outputLabel  value="#{ii.ci.shortTextValue}" style="#{ii.di.css}" ></p:outputLabel>
+                                                    </td>
+                                                </h:panelGroup>
+                                                <h:panelGroup rendered="#{ii.di.item.dataType eq 'Integer_Number'}" >
+                                                    <td>
+                                                        <p:outputLabel value="#{ii.di.name}"  style="#{ii.di.css}" ></p:outputLabel>
+                                                    </td>
+                                                    <td>
+                                                        <p:outputLabel value="#{ii.ci.integerNumberValue}"  style="#{ii.di.css}" ></p:outputLabel>
+                                                    </td>
+                                                </h:panelGroup>
+                                                <h:panelGroup rendered="#{ii.di.item.dataType eq 'Real_Number'}" >
+                                                    <td>
+                                                        <p:outputLabel value="#{ii.di.name}"  style="#{ii.di.css}" ></p:outputLabel>
+                                                    </td>
+                                                    <td>
+                                                        <p:outputLabel value="#{ii.ci.realNumberValue}"  style="#{ii.di.css}" ></p:outputLabel>
+                                                    </td>
+                                                </h:panelGroup>
+                                                <h:panelGroup rendered="#{ii.di.item.dataType eq 'Long_Number'}" >
+                                                    <td>
+                                                        <p:outputLabel value="#{ii.di.name}"  style="#{ii.di.css}" ></p:outputLabel>
+                                                    </td>
+                                                    <td>
+                                                        <p:outputLabel value="#{ii.ci.longNumberValue}"  style="#{ii.di.css}" ></p:outputLabel>
+                                                    </td>
+                                                </h:panelGroup>
+                                            </h:panelGroup>
+                                            <h:panelGroup rendered="#{ii.di.renderType eq 'Input_Text_Area'}" >
+                                                <td>
+                                                    <p:outputLabel value="#{ii.di.name}"  style="#{ii.di.css}" ></p:outputLabel>
+                                                </td>
+                                                <td>
+                                                    <p:outputLabel value="#{ii.ci.longTextValue}"  style="#{ii.di.css}" ></p:outputLabel>
+                                                </td>
+                                            </h:panelGroup>
+                                            <h:panelGroup rendered="#{ii.di.item.dataType eq 'DateTime'}" >
+                                                <td>
+                                                    <p:outputLabel  value="#{ii.di.name}"  style="#{ii.di.css}" ></p:outputLabel>
+                                                </td>
+                                                <td>
+                                                    <p:outputLabel  value="#{ii.ci.dateValue}"  style="#{ii.di.css}" >
+                                                        <f:convertDateTime pattern="dd MMMM yyyy" ></f:convertDateTime>
+                                                    </p:outputLabel>
+                                                </td>
+                                            </h:panelGroup>
+                                            <h:panelGroup rendered="#{ii.di.item.dataType eq 'Item_Reference'}" >
+                                                <td>
+                                                    <p:outputLabel  value="#{ii.di.name}"  style="#{ii.di.css}" ></p:outputLabel>
+                                                </td>
+                                                <td>
+                                                    <p:outputLabel  value="#{ii.ci.itemValue.name}"  style="#{ii.di.css}" ></p:outputLabel>
+                                                </td>
+                                            </h:panelGroup>
+                                            <h:panelGroup rendered="#{ii.di.renderType eq 'Boolean_Checkbox'}" >
+                                                <td>
+                                                    <p:outputLabel value="#{ii.di.name}"  style="#{ii.di.css}" ></p:outputLabel>
+                                                </td>
+                                                <td>
+                                                    <p:outputLabel value="#{ii.ci.booleanValue?'Yes':'No'}"  style="#{ii.di.css}" ></p:outputLabel>
+                                                </td>
+                                            </h:panelGroup>
+                                            <h:panelGroup rendered="#{ii.di.item.dataType eq 'Area_Reference'}" >
+                                                <td>
+                                                    <p:outputLabel  value="#{ii.di.name}"  style="#{ii.di.css}" ></p:outputLabel>
+                                                </td>
+                                                <td>
+                                                    <p:outputLabel  value="#{ii.ci.areaValue.name}"  style="#{ii.di.css}" ></p:outputLabel>
+                                                </td>
+                                            </h:panelGroup>
+                                            <h:panelGroup rendered="#{ii.di.renderType eq 'Prescreption'}" >
+                                                <td>
+                                                    <p:outputLabel value="#{ii.di.name}"  style="#{ii.di.css}" ></p:outputLabel>
+                                                </td>
+                                                <td>
+                                                    <p:outputLabel value="Prescreption needs to be multiple" ></p:outputLabel>
+                                                </td>
+                                            </h:panelGroup>
+                                        </h:panelGroup>
+                                    </tr>
+                                </table>
+
+                            </td>
+
+
                         </tr>
                     </h:panelGroup>
 
