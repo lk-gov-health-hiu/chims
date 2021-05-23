@@ -25,7 +25,12 @@ package lk.gov.health.phsp.pojcs.dataentry;
 
 import java.util.ArrayList;
 import java.util.List;
+import javax.annotation.ManagedBean;
+import javax.enterprise.inject.spi.CDI;
+import javax.inject.Inject;
 import lk.gov.health.phsp.bean.ComponentController;
+import lk.gov.health.phsp.bean.ItemApplicationController;
+import lk.gov.health.phsp.bean.RelationshipController;
 import lk.gov.health.phsp.entity.ClientEncounterComponentItem;
 import lk.gov.health.phsp.entity.DesignComponentFormItem;
 import lk.gov.health.phsp.entity.Item;
@@ -42,20 +47,20 @@ public class DataItem {
     public ClientEncounterComponentItem ci;
     public DataForm form;
 
-
     private List<DataItem> addedItems;
     private DataItem addingItem;
     private Boolean multipleEntries;
-    
+
     private List<Item> availableItemsForSelection;
-    
-    public List<Item> completeAvailableItemsForSelection(String qry){
+    private List<Item> availableProcedures;
+
+    public List<Item> completeAvailableItemsForSelection(String qry) {
         List<Item> tis = new ArrayList<>();
-        if(qry==null||qry.trim().equals("")){
+        if (qry == null || qry.trim().equals("")) {
             return tis;
         }
-        for(Item i:getAvailableItemsForSelection()){
-            if(i.getName().equalsIgnoreCase(qry)||i.getCode().equalsIgnoreCase(qry)){
+        for (Item i : getAvailableItemsForSelection()) {
+            if (i.getName().equalsIgnoreCase(qry) || i.getCode().equalsIgnoreCase(qry)) {
                 tis.add(i);
             }
         }
@@ -129,8 +134,6 @@ public class DataItem {
         this.addingItem = addingItem;
     }
 
-    
-
     public Boolean getMultipleEntries() {
         return multipleEntries;
     }
@@ -144,10 +147,35 @@ public class DataItem {
     }
 
     public void setAvailableItemsForSelection(List<Item> availableItemsForSelection) {
-        if(availableItemsForSelection==null){
+        if (availableItemsForSelection == null) {
             availableItemsForSelection = new ArrayList<>();
         }
         this.availableItemsForSelection = availableItemsForSelection;
+    }
+
+    public List<Item> getAvailableProcedures() {
+        RelationshipController relationshipController = CDI.current().select(RelationshipController.class).get();
+        if (relationshipController != null) {
+            if (ci != null) {
+                if (ci.getInstitutionValue() != null) {
+                    availableProcedures = relationshipController.proceduresPerformedInAProcedureRoom(ci.getInstitutionValue());
+                } else {
+                    System.out.println("ci.getInstitutionValue() is null");
+                }
+            } else {
+                System.out.println("ci is null");
+            }
+        } else {
+            System.out.println("relationsip controller is null");
+        }
+        return availableProcedures;
+    }
+
+    public List<Item> completePharmaceuticalItem(String qry) {
+        List<Item> pis = new ArrayList<>();
+        ItemApplicationController itemApplicationController = CDI.current().select(ItemApplicationController.class).get();
+        
+        return pis;
     }
 
 }

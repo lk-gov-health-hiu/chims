@@ -59,7 +59,7 @@
                                 <f:selectItems value="#{reportController.designComponentFormItems}"
                                                var="ii"
                                                itemLabel="#{ii.name}"
-                                               itemValue="#{ii}"></f:selectItems>
+                                               itemValue="#{ii}"></f:selectItems>   
                                 <p:column headerText="Form" >
                                     <p:outputLabel value="#{it.parentComponent.name}" ></p:outputLabel>
                                 </p:column>
@@ -67,7 +67,7 @@
                                     <p:outputLabel value="#{it.name}" ></p:outputLabel>
                                 </p:column>
                             </p:selectOneMenu>
-
+                            
                             <p:spacer ></p:spacer>
                             <p:commandButton value="Download" 
                                              ajax="false" 

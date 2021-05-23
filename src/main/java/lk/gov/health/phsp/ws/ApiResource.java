@@ -25,7 +25,6 @@ package lk.gov.health.phsp.ws;
 
 import java.util.Date;
 import java.util.List;
-import javax.annotation.Resource;
 import javax.enterprise.context.Dependent;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
@@ -38,8 +37,6 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.SecurityContext;
-import javax.xml.ws.WebServiceContext;
-import javax.xml.ws.handler.MessageContext;
 import lk.gov.health.phsp.bean.AnalysisController;
 import lk.gov.health.phsp.bean.ApiRequestApplicationController;
 import lk.gov.health.phsp.bean.ApplicationController;
@@ -47,8 +44,8 @@ import lk.gov.health.phsp.bean.AreaApplicationController;
 import lk.gov.health.phsp.bean.CommonController;
 import lk.gov.health.phsp.bean.InstitutionApplicationController;
 import lk.gov.health.phsp.bean.ItemApplicationController;
-import lk.gov.health.phsp.bean.RequestController;
 import lk.gov.health.phsp.bean.StoredQueryResultController;
+import lk.gov.health.phsp.bean.WebUserController;
 import lk.gov.health.phsp.entity.ApiRequest;
 import lk.gov.health.phsp.entity.Area;
 import lk.gov.health.phsp.entity.Client;
@@ -77,8 +74,6 @@ public class ApiResource {
     @Context
     private UriInfo context;
 
-
-
     @Inject
     AreaApplicationController areaApplicationController;
     @Inject
@@ -92,10 +87,9 @@ public class ApiResource {
     @Inject
     StoredQueryResultController storedQueryResultController;
     @Inject
+    WebUserController webUserController;
     ApiRequestApplicationController apiRequestApplicationController;
 
-
-    
     /**
      * Creates a new instance of GenericResource
      */
@@ -111,10 +105,10 @@ public class ApiResource {
             @QueryParam("id") String id,
             @Context HttpServletRequest requestContext,
             @Context SecurityContext context) {
-        
-        String ipadd =  requestContext.getHeader("X-FORWARDED-FOR");
+
+        String ipadd = requestContext.getHeader("X-FORWARDED-FOR");
         System.out.println("ipadd = " + ipadd);
-        
+
         JSONObject jSONObjectOut;
         if (name == null || name.trim().equals("")) {
             jSONObjectOut = errorMessageInstruction();
@@ -124,9 +118,7 @@ public class ApiResource {
                     jSONObjectOut = procedureList();
                     break;
                 case "get_procedures_pending":
-                    jSONObjectOut = proceduresPending(id
-                    
-                    );
+                    jSONObjectOut = proceduresPending(id);
                     break;
                 case "mark_request_as_received":
                     jSONObjectOut = markRequestAsReceived(id);
@@ -141,9 +133,12 @@ public class ApiResource {
                 case "get_institute_list":
                     jSONObjectOut = instituteList();
                     break;
+                case "get_institute_and_unit_list":
+                    jSONObjectOut = instituteAndUnitList();
+                    break;
                 case "get_institutes_list_hash":
                     jSONObjectOut = instituteListHash();
-                    break;
+                    break;                
                 case "get_institutes_total_population_list":
                     jSONObjectOut = instituteListWithPopulations(year);
                     break;
@@ -171,7 +166,7 @@ public class ApiResource {
                     jSONObjectOut = errorMessage();
             }
         }
-        
+
         String json = jSONObjectOut.toString();
         return json;
     }
@@ -182,14 +177,14 @@ public class ApiResource {
     public String getRoleName(@PathParam("roleId") String roleId) {
         return WebUserRole.valueOf(roleId).getLabel();
     }
-
+    
     @GET
-    @Path("/get_ins_name/{insCode}")
+    @Path("/get_institution_name/{insCode}")
     @Produces(MediaType.APPLICATION_JSON)
-    public String getInstituteName(@PathParam("insCode") String insCode) {
-        return null;
-    }
-
+    public String getInstituteName(@PathParam("insCode") String insCode){
+        return institutionApplicationController.findInstitution(Long.valueOf(insCode)).getName();
+    } 
+    
     private JSONObject districtList() {
         JSONObject jSONObjectOut = new JSONObject();
         JSONArray array = new JSONArray();
@@ -210,6 +205,40 @@ public class ApiResource {
         JSONObject jSONObjectOut = new JSONObject();
         JSONArray array = new JSONArray();
         List<Institution> ds = institutionApplicationController.getHospitals();
+        for (Institution a : ds) {
+            JSONObject ja = new JSONObject();
+            ja.put("institute_id", a.getId());
+            ja.put("institute_code", a.getCode());
+            ja.put("name", a.getName());
+            ja.put("hin", a.getPoiNumber());
+            ja.put("latitude", a.getCoordinate().getLatitude());
+            ja.put("longitude", a.getCoordinate().getLongitude());
+            ja.put("address", a.getAddress());
+            ja.put("type", a.getInstitutionType());
+            ja.put("type_label", a.getInstitutionType().getLabel());
+            if (a.getEditedAt() != null) {
+                ja.put("edited_at", a.getEditedAt());
+            } else {
+                ja.put("edited_at", a.getCreatedAt());
+            }
+            if (a.getProvince() != null) {
+                ja.put("province_id", a.getProvince().getId());
+            }
+            if (a.getDistrict() != null) {
+                ja.put("district_id", a.getDistrict().getId());
+            }
+            ja.put("child_institutions", Get_Child_Institutions(a));
+            array.put(ja);
+        }
+        jSONObjectOut.put("data", array);
+        jSONObjectOut.put("status", successMessage());
+        return jSONObjectOut;
+    }
+    
+    private JSONObject instituteAndUnitList() {
+        JSONObject jSONObjectOut = new JSONObject();
+        JSONArray array = new JSONArray();
+        List<Institution> ds = institutionApplicationController.getInstitutions();
         for (Institution a : ds) {
             JSONObject ja = new JSONObject();
             ja.put("institute_id", a.getId());
@@ -696,20 +725,20 @@ public class ApiResource {
         return jSONObjectOut;
     }
 
-    private JSONObject markRequestAsReceived(String id){
+    private JSONObject markRequestAsReceived(String id) {
         boolean f = apiRequestApplicationController.markRequestAsReceived(id);
-        if(!f){
+        if (!f) {
             return errorMessageNoId();
         }
         JSONObject jSONObjectOut = new JSONObject();
         jSONObjectOut.put("status", successMessage());
         return jSONObjectOut;
     }
-    
+
     private JSONObject proceduresPending(String id) {
         JSONObject jSONObjectOut = new JSONObject();
         JSONArray array = new JSONArray();
-        List<ApiRequest> ds = apiRequestApplicationController.getPendingProcedure();
+        List<ApiRequest> ds = apiRequestApplicationController.getPendingProcedure(id);
         for (ApiRequest a : ds) {
             JSONObject ja = new JSONObject();
 
@@ -738,13 +767,10 @@ public class ApiResource {
                     System.err.println("ci.getEncounter().getClient() is null");
                     continue;
                 }
-                if (ci.getEncounter().getInstitution() != null) {
-                    ins = ci.getEncounter().getInstitution();
-                } else {
-                    System.err.println("ci.getEncounter().getInstitution() is null");
-                    continue;
-                }
-                if(ci.getEncounter().getCreatedBy()!=null){
+                if (ci.getInstitutionValue() != null) {
+                    ins = ci.getInstitutionValue();
+                } 
+                if (ci.getEncounter().getCreatedBy() != null) {
                     u = ci.getEncounter().getCreatedBy();
                 }
             } else {
@@ -759,15 +785,18 @@ public class ApiResource {
             ja.put("client_phn", c.getPhn());
             ja.put("client_id", c.getId());
             ja.put("client_name", c.getPerson().getName());
-            ja.put("institute_id", ins.getId());
-            ja.put("institute_code", ins.getCode());
-            ja.put("institute_name", ins.getName());
-            if (ins.getParent() != null) {
-                ja.put("parent_institute_id", ins.getParent().getId());
-                ja.put("parent_institute_code", ins.getParent().getCode());
-                ja.put("parent_institute_name", ins.getParent().getName());
+            if (ins != null) {
+                ja.put("institute_id", ins.getId());
+                ja.put("institute_code", ins.getCode());
+                ja.put("institute_name", ins.getName());
+                if (ins.getParent() != null) {
+                    ja.put("parent_institute_id", ins.getParent().getId());
+                    ja.put("parent_institute_code", ins.getParent().getCode());
+                    ja.put("parent_institute_name", ins.getParent().getName());
+                }
             }
-            if(u!=null){
+
+            if (u != null) {
                 ja.put("user_id", u.getId());
                 ja.put("user_name", u.getName());
             }
@@ -850,7 +879,7 @@ public class ApiResource {
         jSONObjectOut.put("message", "You must provide a value for the parameter name.");
         return jSONObjectOut;
     }
-    
+
     private JSONObject errorMessageNoId() {
         JSONObject jSONObjectOut = new JSONObject();
         jSONObjectOut.put("code", 410);

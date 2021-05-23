@@ -27,6 +27,7 @@ package lk.gov.health.phsp.entity;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlRootElement;
 import lk.gov.health.phsp.enums.ComponentSetType;
 import lk.gov.health.phsp.enums.PanelType;
@@ -38,6 +39,9 @@ import lk.gov.health.phsp.enums.PanelType;
 @Entity
 @XmlRootElement
 public class DesignComponentFormSet extends DesignComponent  {
+    
+    @Transient
+    private Institution currentlyUsedIn;
     
     @Enumerated(EnumType.STRING)
     private ComponentSetType componentSetType;
@@ -59,6 +63,17 @@ public class DesignComponentFormSet extends DesignComponent  {
 
     public void setPanelType(PanelType panelType) {
         this.panelType = panelType;
+    }
+
+    public Institution getCurrentlyUsedIn() {
+        if(currentlyUsedIn==null){
+            currentlyUsedIn = getInstitution();
+        }
+        return currentlyUsedIn;
+    }
+
+    public void setCurrentlyUsedIn(Institution currentlyUsedIn) {
+        this.currentlyUsedIn = currentlyUsedIn;
     }
 
    

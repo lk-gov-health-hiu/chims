@@ -5,7 +5,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import lk.gov.health.phsp.bean.util.JsfUtil;
-import lk.gov.health.phsp.bean.util.JsfUtil.PersistAction;
 import lk.gov.health.phsp.facade.ItemFacade;
 
 import java.io.Serializable;
@@ -15,11 +14,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
-import javax.ejb.EJBException;
 import javax.inject.Named;
 import javax.enterprise.context.SessionScoped;
 import javax.faces.component.UIComponent;
@@ -36,7 +33,7 @@ import lk.gov.health.phsp.entity.Item;
 import lk.gov.health.phsp.enums.ItemType;
 import org.primefaces.model.UploadedFile;
 
-@Named("itemController")
+@Named
 @SessionScoped
 public class ItemController implements Serializable {
 
@@ -64,6 +61,7 @@ public class ItemController implements Serializable {
     private List<Item> citizenships;
     private List<Item> mimeTypes;
     private List<Item> categories;
+    private List<Item> procedures;
     private UploadedFile file;
 
     private int itemTypeColumnNumber;
@@ -550,8 +548,16 @@ public class ItemController implements Serializable {
     }
 
     public List<Item> getItems() {
-        items = itemApplicationController.getItems();
+        if (items == null) {
+            items = itemApplicationController.getItems();
+        }
         return items;
+    }
+
+    public void reloadItems() {
+        itemApplicationController.invalidateItems();
+        items = null;
+        getItems();
     }
 
     public Item getItem(java.lang.Long id) {
@@ -585,6 +591,26 @@ public class ItemController implements Serializable {
         return findChildrenAndGrandchildrenItemList(parent, t, null);
     }
 
+    public List<Item> findChildren(String parentCode) {
+        if (parentCode == null || parentCode.trim().equals("")) {
+            return null;
+        }
+        Map<Long, Item> mits = new HashMap();
+        for (Item i : itemApplicationController.getItems()) {
+            if (i.getParent() != null
+                    && i.getParent().getCode() != null
+                    && i.getParent().getCode().equalsIgnoreCase(parentCode)) {
+                mits.put(i.getId(), i);
+                List<Item> gcs = findChildren(i.getCode());
+                for (Item gc : gcs) {
+                    mits.put(gc.getId(), gc);
+                }
+            }
+        }
+        List<Item> tis = new ArrayList<>(mits.values());
+        return tis;
+    }
+
     public List<Item> findChildrenAndGrandchildrenItemList(Item parent, ItemType t, String qry) {
 
         String j = "select t from Item t where t.retired=false ";
@@ -609,19 +635,18 @@ public class ItemController implements Serializable {
 
     public List<Item> findItemList(String parentCode, ItemType t, String qry) {
         List<Item> nis = new ArrayList<>();
-        for(Item i: itemApplicationController.getItems()){
-            boolean canInclude=true;
-            
-            if(parentCode==null||parentCode.trim().equalsIgnoreCase("")){
-                
+        for (Item i : itemApplicationController.getItems()) {
+            boolean canInclude = true;
+
+            if (parentCode == null || parentCode.trim().equalsIgnoreCase("")) {
+
             }
-            
-            if(canInclude){
+
+            if (canInclude) {
                 nis.add(i);
             }
         }
-        
-        
+
         String j = "select t from Item t where t.retired=false ";
         Map m = new HashMap();
 
@@ -824,6 +849,37 @@ public class ItemController implements Serializable {
 
     public void setEducationalStatus(List<Item> educationalStatus) {
         this.educationalStatus = educationalStatus;
+    }
+
+    public List<Item> getProcedures() {
+        if (procedures == null) {
+            procedures = findChildren("procedure");
+        }
+        return procedures;
+    }
+
+    public List<Item> completeProcedures(String qry) {
+        List<Item> tps = new ArrayList<>();
+        if (qry == null || qry.trim().equals("")) {
+            return tps;
+        }
+        qry = qry.trim().toLowerCase();
+        for (Item p : getProcedures()) {
+            boolean canInclude = false;
+            if (p.getName() != null && p.getName().toLowerCase().contains(qry)) {
+                canInclude = true;
+            }
+            if (p.getDisplayName() != null && p.getDisplayName().toLowerCase().contains(qry)) {
+                canInclude = true;
+            }
+            if (p.getCode() != null && p.getCode().toLowerCase().contains(qry)) {
+                canInclude = true;
+            }
+            if (canInclude) {
+                tps.add(p);
+            }
+        }
+        return tps;
     }
 
     @FacesConverter(forClass = Item.class)

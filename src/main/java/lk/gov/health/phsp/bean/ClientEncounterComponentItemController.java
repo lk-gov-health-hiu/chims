@@ -634,16 +634,8 @@ public class ClientEncounterComponentItemController implements Serializable {
             System.out.println("i is null. not saving");
             return;
         }
-
-//        if (i.getReferanceDesignComponentFormItem() == null) {
-//            System.out.println("i.getReferanceDesignComponentFormItem() is null. Not saving");
-//            return;
-//        }
-//
-//        if (i.getReferanceDesignComponentFormItem().getSelectionDataType() == null) {
-//            System.out.println("i.getReferanceDesignComponentFormItem().getSelectionDataType() is null. Not saving");
-//            return;
-//        }
+        
+        System.out.println("i.getInstitutionValue() = " + i.getInstitutionValue());
 
         if (i.getId() == null) {
             i.setCreatedAt(new Date());
@@ -771,6 +763,8 @@ public class ClientEncounterComponentItemController implements Serializable {
         nci.setCss(i.getDi().getCss());
         nci.setOrderNo(i.getAddedItems().size() + 1.0);
         nci.setDataRepresentationType(DataRepresentationType.Encounter);
+        
+        nci.setInstitutionValue(i.getAddingItem().getCi().getInstitutionValue());
 
         System.out.println("before new ni");
 

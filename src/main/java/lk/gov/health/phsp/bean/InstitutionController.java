@@ -57,7 +57,7 @@ public class InstitutionController implements Serializable {
     @Inject
     InstitutionApplicationController institutionApplicationController;
     @Inject
-    private UserTransactionController userTransactionController;
+    private UserTransactionController userTransactionController;    
 
     private List<Institution> items = null;
     private Institution selected;
@@ -286,8 +286,6 @@ public class InstitutionController implements Serializable {
         return tins;
     }
 
-    
-
     public List<Institution> findInstitutions(InstitutionType type) {
         List<Institution> cins = institutionApplicationController.getInstitutions();
         List<Institution> tins = new ArrayList<>();
@@ -344,6 +342,16 @@ public class InstitutionController implements Serializable {
 
     public List<Institution> completeHlClinics(String nameQry) {
         return fillInstitutions(InstitutionType.Clinic, nameQry, null);
+    }
+    
+    public List<Institution> completeClinics(String qry) {
+        List<InstitutionType> its = new ArrayList<>();
+        its.add(InstitutionType.Clinic);
+        its.add(InstitutionType.Cardiology_Clinic);
+        its.add(InstitutionType.Medical_Clinic);
+        its.add(InstitutionType.Other_Clinic);
+        its.add(InstitutionType.Surgical_Clinic);
+        return fillInstitutions(its, qry, null);
     }
 
     public List<InstitutionType> hospitalInstitutionTypes() {
@@ -882,7 +890,7 @@ public class InstitutionController implements Serializable {
 
     public void setFile(UploadedFile file) {
         this.file = file;
-    }
+    }    
 
     @FacesConverter(forClass = Institution.class)
     public static class InstitutionControllerConverter implements Converter {
