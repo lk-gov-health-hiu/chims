@@ -25,9 +25,7 @@ package lk.gov.health.phsp.pojcs.dataentry;
 
 import java.util.ArrayList;
 import java.util.List;
-import javax.annotation.ManagedBean;
 import javax.enterprise.inject.spi.CDI;
-import javax.inject.Inject;
 import lk.gov.health.phsp.bean.ComponentController;
 import lk.gov.health.phsp.bean.ItemApplicationController;
 import lk.gov.health.phsp.bean.RelationshipController;
@@ -172,9 +170,9 @@ public class DataItem {
     }
 
     public List<Item> completePharmaceuticalItem(String qry) {
-        List<Item> pis = new ArrayList<>();
+        List<Item> pis;
         ItemApplicationController itemApplicationController = CDI.current().select(ItemApplicationController.class).get();
-        
+        pis = itemApplicationController.completePharmaceuticalItem(qry);
         return pis;
     }
 

@@ -122,6 +122,9 @@ public class Item implements Serializable {
     private boolean dataTypePrescreption;
 
     public ItemType getItemType() {
+        if(itemType==null){
+            itemType = ItemType.Dictionary_Item;
+        }
         return itemType;
     }
 

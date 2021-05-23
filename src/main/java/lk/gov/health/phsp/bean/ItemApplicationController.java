@@ -31,6 +31,7 @@ import javax.ejb.EJB;
 import javax.inject.Named;
 import javax.enterprise.context.ApplicationScoped;
 import lk.gov.health.phsp.entity.Item;
+import lk.gov.health.phsp.enums.ItemType;
 import lk.gov.health.phsp.facade.ItemFacade;
 
 /**
@@ -45,12 +46,119 @@ public class ItemApplicationController {
     private ItemFacade facade;
 
     private List<Item> items;
-    
 
     /**
      * Creates a new instance of ItemApplicationController
      */
     public ItemApplicationController() {
+    }
+
+    public List<Item> completeDictionaryItem(String qry) {
+        List<ItemType> its = new ArrayList<>();
+        its.add(ItemType.Dictionary_Item);
+        return completeItem(its, qry);
+    }
+
+    public List<Item> completeDictionaryCategory(String qry) {
+        List<ItemType> its = new ArrayList<>();
+        its.add(ItemType.Dictionary_Category);
+        return completeItem(its, qry);
+    }
+
+    public List<Item> completeDictionaryItemOrCategory(String qry) {
+        List<ItemType> its = new ArrayList<>();
+        its.add(ItemType.Dictionary_Item);
+        its.add(ItemType.Dictionary_Category);
+        return completeItem(its, qry);
+    }
+
+    public List<Item> completePharmaceuticalItem(String qry) {
+        List<ItemType> its = new ArrayList<>();
+        its.add(ItemType.Atm);
+        its.add(ItemType.Vtm);
+        its.add(ItemType.Amp);
+        its.add(ItemType.Vmp);
+        its.add(ItemType.Ampp);
+        its.add(ItemType.Vmpp);
+        return completeItem(its, qry);
+    }
+
+    public List<Item> completeVtm(String qry) {
+        List<ItemType> its = new ArrayList<>();
+        its.add(ItemType.Vtm);
+        return completeItem(its, qry);
+    }
+
+    public List<Item> completeAtm(String qry) {
+        List<ItemType> its = new ArrayList<>();
+        its.add(ItemType.Atm);
+        return completeItem(its, qry);
+    }
+
+    public List<Item> completeVmp(String qry){
+        List<ItemType> its = new ArrayList<>();
+        its.add(ItemType.Vmp);
+        return completeItem(its, qry);
+    }
+    
+    public List<Item> completeAmp(String qry){
+        List<ItemType> its = new ArrayList<>();
+        its.add(ItemType.Amp);
+        return completeItem(its, qry);
+    }
+    
+    public List<Item> completeVmpp(String qry){
+        List<ItemType> its = new ArrayList<>();
+        its.add(ItemType.Vmpp);
+        return completeItem(its, qry);
+    }
+    
+    public List<Item> completeAmpp(String qry){
+        List<ItemType> its = new ArrayList<>();
+        its.add(ItemType.Ampp);
+        return completeItem(its, qry);
+    }
+    
+    public List<Item> completeItem(List<ItemType> types, String qry) {
+        List<Item> tis = new ArrayList<>();
+        if (qry == null || qry.trim().equals("")) {
+            return tis;
+        }
+        if (types == null || types.isEmpty()) {
+            return tis;
+        }
+        qry = qry.trim().toLowerCase();
+        for (Item i : getItems()) {
+            boolean nameOk = false;
+            boolean typeOk = false;
+            if (i.getName() != null && !i.getName().trim().equals("")) {
+                if (i.getName().toLowerCase().contains(qry)) {
+                    nameOk = true;
+                }
+            }
+            if (i.getCode() != null && !i.getCode().trim().equals("")) {
+                if (i.getCode().toLowerCase().contains(qry)) {
+                    nameOk = true;
+                }
+            }
+            if (i.getDisplayName() != null && !i.getDisplayName().trim().equals("")) {
+                if (i.getDisplayName().toLowerCase().contains(qry)) {
+                    nameOk = true;
+                }
+            }
+
+            for (ItemType t : types) {
+                if (i.getItemType().equals(t)) {
+                    typeOk = true;
+                }
+            }
+
+            if (nameOk && typeOk) {
+                tis.add(i);
+            }
+        }
+
+        return tis;
     }
 
     public Item findItemByCode(String code) {
