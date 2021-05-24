@@ -441,6 +441,12 @@ public class InstitutionController implements Serializable {
             return;
         }
     }
+    
+    public void resetAllInstitutions(){
+        items=null;
+        institutionApplicationController.resetAllInstitutions();
+        items = institutionApplicationController.getInstitutions();
+    }
 
     public List<Institution> fillInstitutions(InstitutionType type, String nameQry, Institution parent) {
         List<Institution> resIns = new ArrayList<>();
