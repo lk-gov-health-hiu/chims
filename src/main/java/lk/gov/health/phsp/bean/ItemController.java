@@ -584,11 +584,7 @@ public class ItemController implements Serializable {
 
     public List<Item> getTitles() {
         if (titles == null) {
-//            String j = "select t from Item t where t.retired=false and t.parent.parent=:p order by t.orderNo";
-//            Map m = new HashMap();
-//            m.put("p", findItemByCode("title"));
-//            titles = getFacade().findByJpql(j, m);
-            titles = itemApplicationController.findChildren("title");
+            titles = itemApplicationController.findChildDictionaryItems("title");
         }
         return titles;
     }
