@@ -24,6 +24,8 @@
 package lk.gov.health.phsp.bean;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -275,6 +277,7 @@ public class ItemApplicationController {
                 ns.add(i);
             }
         }
+        Collections.sort(ns, Comparator.comparing(Item::getName));
         return ns;
     }
 
