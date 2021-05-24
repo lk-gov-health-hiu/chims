@@ -10,7 +10,7 @@
             <property name="eclipselink.connection-pool.default.max" value="128"/>-->
       <!--            <property name="eclipselink.logging.level.sql" value="FINE"/>
             <property name="eclipselink.logging.parameters" value="true"/>-->
-      <!--<property name="javax.persistence.schema-generation.database.action" value="create-or-extend-tables"/>-->
+      <property name="javax.persistence.schema-generation.database.action" value="create-or-extend-tables"/>
     </properties>
   </persistence-unit>
 </persistence>

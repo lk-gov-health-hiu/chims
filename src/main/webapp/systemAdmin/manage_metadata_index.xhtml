@@ -11,88 +11,89 @@
 
             <ui:define name="content">
 
-                <p:panelGrid columns="2" >
-                    <p:panel header="System Administration" >
-                        <h:form>
+                <p:panelGrid columns="2" styleClass="alignTop">
 
-                            <p:tabView orientation="left" >
-                                <p:tab title="Data" >
-                                    <p:panelGrid columns="1" >
-                                        <p:commandButton ajax="false" action="#{itemController.toManageDictionary()}" value="Manage Dictionaty" ></p:commandButton>
-                                        <p:commandButton ajax="false" action="/systemAdmin/gn_areas_for_pmci" value="GN Areas of PMCI" ></p:commandButton>
-                                        <p:commandButton ajax="false" action="/systemAdmin/area_empanellement" value="Empanelled Population Data" ></p:commandButton>
-                                    </p:panelGrid>
-                                </p:tab>
-                                <p:tab title="Forms" >
-                                    <p:panelGrid columns="1" >
-                                        <p:commandButton ajax="false" action="/designComponentFormSet/List" value="Fromset Management" ></p:commandButton>
-                                        <p:commandButton ajax="false" action="#{designComponentFormSetController.toAssignFormsets()}" value="Assign Formset" ></p:commandButton>
-                                        <p:commandButton ajax="false" action="#{designComponentFormSetController.toImportFormsets()}" value="Create Form Sets to Institutions from Master Form Sets" ></p:commandButton>
-                                        <p:commandButton ajax="false" action="#{designComponentFormSetController.toManageInstitutionFormssets()}" value="Manage Forms" ></p:commandButton>
-                                    </p:panelGrid>
-                                </p:tab> 
-                                <p:tab title="Medicines &amp; Devices" >
-                                    <p:panelGrid columns="1" >
-                                        <p:commandButton ajax="false" action="#{itemController.toManageVtm()}" 
-                                                         value="Virtual Therapeutic Moiety" ></p:commandButton>
-                                        <p:commandButton ajax="false" action="#{designComponentFormSetController.toAssignFormsets()}" 
-                                                         value="Actual Therapeutic Moiety" ></p:commandButton>
-                                        <p:commandButton ajax="false" action="#{designComponentFormSetController.toImportFormsets()}" 
-                                                         value="Vertual Medicinal Product" ></p:commandButton>
-                                        <p:commandButton ajax="false" action="#{designComponentFormSetController.toManageInstitutionFormssets()}" 
-                                                         value="Actual Medicinal Product" ></p:commandButton>
-                                    </p:panelGrid>
-                                </p:tab> 
+                    <h:form>
+                        <p:accordionPanel activeIndex="#{webUserController.metadataTabIndex}" style="width: 20rem;">
 
-                                <p:tab title="Development" >
-                                    <p:panelGrid columns="1" >
-                                        <p:commandButton ajax="false" action="/demoAccount/List" value="Demo Accounts" ></p:commandButton>
-                                        <p:commandButton ajax="false" action="/client/import_clients" value="Import Patients" ></p:commandButton>
-                                        <p:commandButton ajax="false" action="/item/import" value="Import Items" ></p:commandButton>
-                                        <p:commandButton ajax="false" action="/item/import" value="Import Institutions" ></p:commandButton>
-                                        <p:commandButton ajax="false" action="/systemAdmin/all_clients" value="Client List"  onclick="this.form.target = '_blank'" ></p:commandButton>
-                                        <p:commandButton ajax="false" action="#{itemController.addInitialMetadata()}" value="Add Initial Metadata" ></p:commandButton>
-                                        <p:commandButton ajax="false" action="/systemAdmin/client_import_error_correction" value="Error Correction for Client Import" ></p:commandButton>
+                            <p:tab title="Forms" >
+                                <p:panelGrid columns="1" >
+                                    <p:commandButton ajax="false" action="/designComponentFormSet/List" value="Fromset Management" ></p:commandButton>
+                                    <p:commandButton ajax="false" action="#{designComponentFormSetController.toAssignFormsets()}" value="Assign Formset" ></p:commandButton>
+                                    <p:commandButton ajax="false" action="#{designComponentFormSetController.toImportFormsets()}" value="Create Form Sets to Institutions from Master Form Sets" ></p:commandButton>
+                                    <p:commandButton ajax="false" action="#{designComponentFormSetController.toManageInstitutionFormssets()}" value="Manage Forms" ></p:commandButton>
+                                </p:panelGrid>
+                            </p:tab> 
+                            <p:tab title="Medicines &amp; Devices" >
+                                <p:panelGrid columns="1" >
+                                    <p:commandButton ajax="false" action="#{itemController.toManageVtm()}" 
+                                                     value="List Virtual Therapeutic Moiety" ></p:commandButton>
+                                    <p:commandButton ajax="false" action="#{itemController.toAddVtm()}" 
+                                                     value="Add Virtual Therapeutic Moiety" ></p:commandButton>
+                                    <p:commandButton ajax="false" action="#{designComponentFormSetController.toAssignFormsets()}" 
+                                                     value="Actual Therapeutic Moiety" ></p:commandButton>
+                                    <p:commandButton ajax="false" action="#{designComponentFormSetController.toImportFormsets()}" 
+                                                     value="Vertual Medicinal Product" ></p:commandButton>
+                                    <p:commandButton ajax="false" action="#{designComponentFormSetController.toManageInstitutionFormssets()}" 
+                                                     value="Actual Medicinal Product" ></p:commandButton>
+                                </p:panelGrid>
+                            </p:tab> 
 
-                                        <p:commandButton ajax="false" action="#{clientController.addCreatedDateFromCreatedAt()}" 
-                                                         value="Add Created Date from Created At" ></p:commandButton>
+                            <p:tab title="Development" >
+                                <p:panelGrid columns="1" >
+                                    <p:commandButton ajax="false" action="/demoAccount/List" value="Demo Accounts" ></p:commandButton>
+                                    <p:commandButton ajax="false" action="/client/import_clients" value="Import Patients" ></p:commandButton>
+                                    <p:commandButton ajax="false" action="/item/import" value="Import Items" ></p:commandButton>
+                                    <p:commandButton ajax="false" action="/item/import" value="Import Institutions" ></p:commandButton>
+                                    <p:commandButton ajax="false" action="/systemAdmin/all_clients" value="Client List"  onclick="this.form.target = '_blank'" ></p:commandButton>
+                                    <p:commandButton ajax="false" action="#{itemController.addInitialMetadata()}" value="Add Initial Metadata" ></p:commandButton>
+                                    <p:commandButton ajax="false" action="/systemAdmin/client_import_error_correction" value="Error Correction for Client Import" ></p:commandButton>
+
+                                    <p:commandButton ajax="false" action="#{clientController.addCreatedDateFromCreatedAt()}" 
+                                                     value="Add Created Date from Created At" ></p:commandButton>
 
 
-                                    </p:panelGrid>
-                                </p:tab> 
-                                <p:tab title="Entered data" >
-                                    <p:panelGrid columns="1" >
-                                        <p:commandButton ajax="false" 
-                                                         action="#{analysisController.toCountsForSystemAdmin()}" 
-                                                         value="Counts"   ></p:commandButton>
-                                        <p:commandButton ajax="false" 
-                                                         action="#{clientController.toRegisterdClientsWithDatesForSystemAdmin()}" 
-                                                         value="Client List"   ></p:commandButton>
-                                        <p:commandButton ajax="false" 
-                                                         action="#{clientEncounterComponentFormSetController.fillEncountersFormSetsForSysadmin}" 
-                                                         value="Encounter List"   ></p:commandButton>
-                                    </p:panelGrid>
-                                </p:tab> 
+                                </p:panelGrid>
+                            </p:tab> 
+                            <p:tab title="Entered data" >
+                                <p:panelGrid columns="1" >
+                                    <p:commandButton ajax="false" 
+                                                     action="#{analysisController.toCountsForSystemAdmin()}" 
+                                                     value="Counts"   ></p:commandButton>
+                                    <p:commandButton ajax="false" 
+                                                     action="#{clientController.toRegisterdClientsWithDatesForSystemAdmin()}" 
+                                                     value="Client List"   ></p:commandButton>
+                                    <p:commandButton ajax="false" 
+                                                     action="#{clientEncounterComponentFormSetController.fillEncountersFormSetsForSysadmin}" 
+                                                     value="Encounter List"   ></p:commandButton>
+                                </p:panelGrid>
+                            </p:tab> 
+
+                            <p:tab title="Data" >
+                                <p:panelGrid columns="1" >
+                                    <p:commandButton ajax="false" action="#{itemController.toManageDictionary()}" value="Manage Dictionaty" ></p:commandButton>
+                                    <p:commandButton ajax="false" action="/systemAdmin/gn_areas_for_pmci" value="GN Areas of PMCI" ></p:commandButton>
+                                    <p:commandButton ajax="false" action="/systemAdmin/area_empanellement" value="Empanelled Population Data" ></p:commandButton>
+                                </p:panelGrid>
+                            </p:tab>
+
+                            <p:tab title="Corrections" >
+                                <p:panelGrid columns="1" >
+                                    <p:commandButton ajax="false" action="#{designComponentFormController.toListSystemForms()}" value="Forms"   ></p:commandButton>
+                                    <p:commandButton ajax="false" action="/systemAdmin/clients_with_phn_error" value="Client with wrong PHN"  onclick="this.form.target = '_blank'" ></p:commandButton>
+                                    <p:commandButton ajax="false" action="#{designComponentFormItemController.addDataTypesToDictionaryItemsFromFormItems}" value="Transfer Data Type from FormItem to Item" ></p:commandButton>
+                                    <p:commandButton ajax="false" action="#{itemController.generateDisplayNames()}" value="Generate Display Names" ></p:commandButton>
+                                </p:panelGrid>
+                            </p:tab> 
+                        </p:accordionPanel>
+                    </h:form>
 
 
 
-                                <p:tab title="Corrections" >
-                                    <p:panelGrid columns="1" >
-                                        <p:commandButton ajax="false" action="#{designComponentFormController.toListSystemForms()}" value="Forms"   ></p:commandButton>
-                                        <p:commandButton ajax="false" action="/systemAdmin/clients_with_phn_error" value="Client with wrong PHN"  onclick="this.form.target = '_blank'" ></p:commandButton>
-                                        <p:commandButton ajax="false" action="#{designComponentFormItemController.addDataTypesToDictionaryItemsFromFormItems}" value="Transfer Data Type from FormItem to Item" ></p:commandButton>
-                                        <p:commandButton ajax="false" action="#{itemController.generateDisplayNames()}" value="Generate Display Names" ></p:commandButton>
-                                    </p:panelGrid>
-                                </p:tab> 
-                            </p:tabView>
-                        </h:form>
-
-                    </p:panel>
-                    
                     <ui:insert name="metadata" >
-                        
+
                     </ui:insert>
-                    
+
                 </p:panelGrid>
 
 

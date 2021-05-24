@@ -170,6 +170,7 @@ public class WebUserController implements Serializable {
 
     int reportTabIndex;
     private int indicatorTabIndex;
+    private int metadataTabIndex;
 
     private String ipAddress;
 
@@ -1814,6 +1815,16 @@ public class WebUserController implements Serializable {
     public void setIndicatorTabIndex(int indicatorTabIndex) {
         this.indicatorTabIndex = indicatorTabIndex;
     }
+
+    public int getMetadataTabIndex() {
+        return metadataTabIndex;
+    }
+
+    public void setMetadataTabIndex(int metadataTabIndex) {
+        this.metadataTabIndex = metadataTabIndex;
+    }
+    
+    
 
     @FacesConverter(forClass = WebUser.class)
     public static class WebUserControllerConverter implements Converter {
