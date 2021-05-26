@@ -262,6 +262,9 @@ public class Item implements Serializable {
     }
 
     public String getDisplayName() {
+        if(displayName==null||displayName.trim().equals("")){
+            displayName = name;
+        }
         return displayName;
     }
 

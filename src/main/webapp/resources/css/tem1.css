@@ -213,3 +213,8 @@
 .fullWidth{
     width: 100%;
 }
+
+.width18rem{
+    width: 18rem;
+    color: red;
+}
