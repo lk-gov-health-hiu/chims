@@ -24,6 +24,8 @@
 package lk.gov.health.phsp.bean;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -95,25 +97,25 @@ public class ItemApplicationController {
         return completeItem(its, qry);
     }
 
-    public List<Item> completeVmp(String qry){
+    public List<Item> completeVmp(String qry) {
         List<ItemType> its = new ArrayList<>();
         its.add(ItemType.Vmp);
         return completeItem(its, qry);
     }
-    
-    public List<Item> completeAmp(String qry){
+
+    public List<Item> completeAmp(String qry) {
         List<ItemType> its = new ArrayList<>();
         its.add(ItemType.Amp);
         return completeItem(its, qry);
     }
-    
-    public List<Item> completeVmpp(String qry){
+
+    public List<Item> completeVmpp(String qry) {
         List<ItemType> its = new ArrayList<>();
         its.add(ItemType.Vmpp);
         return completeItem(its, qry);
     }
-    
-    public List<Item> completeAmpp(String qry){
+
+    public List<Item> completeAmpp(String qry) {
         List<ItemType> its = new ArrayList<>();
         its.add(ItemType.Ampp);
         return completeItem(its, qry);
@@ -167,25 +169,19 @@ public class ItemApplicationController {
         its.add(ItemType.Dictionary_Category);
         return findItems(its);
     }
-    
-    public List<Item> findVmpp(){
+
+    public List<Item> findVmpp() {
         List<ItemType> its = new ArrayList<>();
         its.add(ItemType.Vmpp);
         return findItems(its);
     }
-    
-    public List<Item> findAmpp(String qry){
+
+    public List<Item> findAmpp(String qry) {
         List<ItemType> its = new ArrayList<>();
         its.add(ItemType.Ampp);
         return findItems(its);
     }
-    
-    
-    
-    
-    
-    
-    
+
     public List<Item> completeItem(List<ItemType> types, String qry) {
         List<Item> tis = new ArrayList<>();
         if (qry == null || qry.trim().equals("")) {
@@ -270,6 +266,33 @@ public class ItemApplicationController {
             }
         }
         return tis;
+    }
+
+    public List<Item> findChildDictionaryItems(String code) {
+        List<Item> os = new ArrayList<>();
+        if (code == null || code.trim().equals("")) {
+            return os;
+        }
+        code = code.trim().toLowerCase();
+        List<Item> ns = new ArrayList<>();
+        for (Item i : getItems()) {
+            if (i.getParent() == null) {
+                continue;
+            }
+            if (i.getParent().getCode().trim().equalsIgnoreCase(code)) {
+                if (i.getItemType().equals(ItemType.Dictionary_Item)) {
+                    os.add(i);
+                }
+                os.addAll(findChildDictionaryItems(i.getCode()));
+            }
+        }
+        for(Item i:os){
+            if(!ns.contains(i)){
+                ns.add(i);
+            }
+        }
+        Collections.sort(ns, Comparator.comparing(Item::getName));
+        return ns;
     }
 
     public Item getMale() {

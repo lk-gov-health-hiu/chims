@@ -42,7 +42,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author buddhika
  */
 @Entity
-@Table(name = "component")
+@Table
 @XmlRootElement
 public class Component implements Serializable {
 

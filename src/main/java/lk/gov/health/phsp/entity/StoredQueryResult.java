@@ -52,7 +52,7 @@ import org.eclipse.persistence.annotations.CacheType;
         expiry = 0,
         alwaysRefresh = true
 )
-@Table(name = "storedqueryresult")
+@Table
 @XmlRootElement
 public class StoredQueryResult implements Serializable {
 

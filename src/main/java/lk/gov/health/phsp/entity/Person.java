@@ -47,7 +47,7 @@ import org.joda.time.PeriodType;
  */
 @Entity
 @XmlRootElement
-@Table(name = "person")
+@Table
 public class Person implements Serializable {
 
 // <editor-fold defaultstate="collapsed" desc="Persistant Attributes">

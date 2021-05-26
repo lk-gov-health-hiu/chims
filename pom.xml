@@ -3,11 +3,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.divudi</groupId>
-    <artifactId>chims</artifactId>
+    <artifactId>fom</artifactId>
     <version>0.1</version>
     <packaging>war</packaging>
 
-    <name>chims</name>
+    <name>fom</name>
 
     <properties>
         <endorsed.dir>${project.build.directory}/endorsed</endorsed.dir>
@@ -298,8 +298,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.1</version>
                 <configuration>
-                    <source>1.7</source>
-                    <target>1.7</target>
+                    <source>1.8</source>
+                    <target>1.8</target>
                     <compilerArguments>
                         <endorseddirs>${endorsed.dir}</endorseddirs>
                     </compilerArguments>

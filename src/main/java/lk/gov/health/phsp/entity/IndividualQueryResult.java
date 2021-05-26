@@ -37,7 +37,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author buddhika
  */
 @Entity
-@Table(name = "individualqueryresult")
+@Table
 @XmlRootElement
 public class IndividualQueryResult implements Serializable {
 

@@ -34,6 +34,7 @@ import jxl.Sheet;
 import jxl.Workbook;
 import jxl.read.biff.BiffException;
 import lk.gov.health.phsp.entity.Area;
+import lk.gov.health.phsp.entity.Item;
 import lk.gov.health.phsp.enums.AreaType;
 import lk.gov.health.phsp.enums.InstitutionType;
 import lk.gov.health.phsp.facade.AreaFacade;
@@ -57,7 +58,7 @@ public class InstitutionController implements Serializable {
     @Inject
     InstitutionApplicationController institutionApplicationController;
     @Inject
-    private UserTransactionController userTransactionController;    
+    private UserTransactionController userTransactionController;
 
     private List<Institution> items = null;
     private Institution selected;
@@ -343,7 +344,7 @@ public class InstitutionController implements Serializable {
     public List<Institution> completeHlClinics(String nameQry) {
         return fillInstitutions(InstitutionType.Clinic, nameQry, null);
     }
-    
+
     public List<Institution> completeClinics(String qry) {
         List<InstitutionType> its = new ArrayList<>();
         its.add(InstitutionType.Clinic);
@@ -384,22 +385,22 @@ public class InstitutionController implements Serializable {
     public List<Institution> completePdhs(String nameQry) {
         return fillInstitutions(InstitutionType.Provincial_Department_of_Health_Services, nameQry, null);
     }
-    
+
     public List<Institution> completeProcedureRooms(String nameQry) {
         return fillInstitutions(InstitutionType.Procedure_Room, nameQry, null);
     }
 
     public Institution findInstitutionByName(String name) {
-        if(name==null||name.trim().equals("")){
+        if (name == null || name.trim().equals("")) {
             return null;
         }
-        Institution ni=null;
-        for(Institution i :institutionApplicationController.getInstitutions()){
-            if(i.getName()!=null && i.getName().equalsIgnoreCase(name)){
-                if(ni!=null){
+        Institution ni = null;
+        for (Institution i : institutionApplicationController.getInstitutions()) {
+            if (i.getName() != null && i.getName().equalsIgnoreCase(name)) {
+                if (ni != null) {
                     System.out.println("Duplicate Institution Name : " + name);
                 }
-                ni=i;
+                ni = i;
             }
         }
         return ni;
@@ -434,12 +435,17 @@ public class InstitutionController implements Serializable {
 //        j += " order by i.name";
 //        return getFacade().findByJpql(j, m);
 //    }
-
     public void fillItems() {
         if (institutionApplicationController.getInstitutions() != null) {
             items = institutionApplicationController.getInstitutions();
             return;
         }
+    }
+
+    public void resetAllInstitutions() {
+        items = null;
+        institutionApplicationController.resetAllInstitutions();
+        items = institutionApplicationController.getInstitutions();
     }
 
     public List<Institution> fillInstitutions(InstitutionType type, String nameQry, Institution parent) {
@@ -712,15 +718,13 @@ public class InstitutionController implements Serializable {
 
     public Institution getInstitution(java.lang.Long id) {
         Institution ni = null;
-        for(Institution i:institutionApplicationController.getInstitutions()){
-            if(i.getId()!=null && i.getId().equals(id)){
+        for (Institution i : institutionApplicationController.getInstitutions()) {
+            if (i.getId() != null && i.getId().equals(id)) {
                 ni = i;
             }
         }
         return ni;
     }
-
-
 
     public void refreshMyInstitutions() {
         userTransactionController.recordTransaction("refresh My Institutions");
@@ -732,7 +736,12 @@ public class InstitutionController implements Serializable {
             myClinics = new ArrayList<>();
             int count = 0;
             for (Institution i : webUserController.getLoggableInstitutions()) {
-                if (i.getInstitutionType().equals(InstitutionType.Clinic)) {
+                if (i.getInstitutionType().equals(InstitutionType.Clinic)
+                        || i.getInstitutionType().equals(InstitutionType.Medical_Clinic)
+                        || i.getInstitutionType().equals(InstitutionType.Surgical_Clinic)
+                        || i.getInstitutionType().equals(InstitutionType.Other_Clinic)
+                        || i.getInstitutionType().equals(InstitutionType.Cardiology_Clinic)
+                        || i.getInstitutionType().equals(InstitutionType.Ward_Clinic)) {
                     myClinics.add(i);
                     count++;
                 }
@@ -890,7 +899,7 @@ public class InstitutionController implements Serializable {
 
     public void setFile(UploadedFile file) {
         this.file = file;
-    }    
+    }
 
     @FacesConverter(forClass = Institution.class)
     public static class InstitutionControllerConverter implements Converter {

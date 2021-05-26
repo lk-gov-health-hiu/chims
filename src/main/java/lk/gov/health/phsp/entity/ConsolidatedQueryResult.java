@@ -55,7 +55,7 @@ import lk.gov.health.phsp.enums.TimePeriodType;
  * @author buddhika
  */
 @Entity
-@Table(name = "consolidatedqueryresult")
+@Table
 @XmlRootElement
 public class ConsolidatedQueryResult implements Serializable {
 
