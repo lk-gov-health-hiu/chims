@@ -1,0 +1,47 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+    <body>
+
+        <ui:composition template="/systemAdmin/manage_metadata_index.xhtml">
+
+            <ui:define name="metadata">
+
+                <h:form enctype="multipart/form-data">
+                    <h:outputLabel value="Import Pharmaceutical Items" ></h:outputLabel>
+                    <p>Please make sure the following order of Columns.</p>
+                    <p>Leave First Row for Row Headings.</p>
+                    <p style="color: red;" >Use only *.xls files. <b><i>NOT</i> xlsx files.</b></p>
+                    <p:panelGrid columns="14" style="border: 1px solid blue;" >
+                        <h:outputLabel value ="0. Dosage Form"></h:outputLabel>
+                        <h:outputLabel value ="1. Product " ></h:outputLabel>
+                        <h:outputLabel value ="2. Code" ></h:outputLabel>
+                        <h:outputLabel value ="3. Bar Code" ></h:outputLabel>
+                        <h:outputLabel value ="4. Generic Name" ></h:outputLabel>
+                        <h:outputLabel value ="6. Strength" ></h:outputLabel>
+                        <h:outputLabel value ="6. Strength Unit" ></h:outputLabel>
+                        <h:outputLabel value ="7. Pack Size" ></h:outputLabel>
+                        <h:outputLabel value ="8. Issue Unit" ></h:outputLabel>
+                        <h:outputLabel value ="9. Pack Unit" ></h:outputLabel>
+                        <h:outputLabel value ="10. Manufacturer" ></h:outputLabel>
+                        <h:outputLabel value ="11. Importer" ></h:outputLabel>
+                    </p:panelGrid>
+
+                    <p:fileUpload value="#{itemController.file}" mode="simple"/>
+                    <h:commandButton value="Submit" action="#{itemController.importToExcel}"/>
+
+
+                </h:form>
+
+
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

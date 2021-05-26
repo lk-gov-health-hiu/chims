@@ -62,6 +62,8 @@ public class Item implements Serializable {
     String name;
     private String displayName;
     private String code;
+    private String barcode;
+    private String localCode;
     @ManyToOne
     private Item parent;
 
@@ -467,6 +469,22 @@ public class Item implements Serializable {
 
     public void setAbsoluteMaximumLong(Long absoluteMaximumLong) {
         this.absoluteMaximumLong = absoluteMaximumLong;
+    }
+
+    public String getBarcode() {
+        return barcode;
+    }
+
+    public void setBarcode(String barcode) {
+        this.barcode = barcode;
+    }
+
+    public String getLocalCode() {
+        return localCode;
+    }
+
+    public void setLocalCode(String localCode) {
+        this.localCode = localCode;
     }
     
     

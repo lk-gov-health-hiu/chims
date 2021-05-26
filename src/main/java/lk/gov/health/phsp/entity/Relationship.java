@@ -73,6 +73,11 @@ public class Relationship implements Serializable {
     private Area toArea;
     @ManyToOne(fetch = FetchType.LAZY)
     private Area area;
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Item itemUnit;
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Item toItemUnit;
+    
     
     @ManyToOne(fetch = FetchType.LAZY)
     private Component component;
@@ -101,6 +106,8 @@ public class Relationship implements Serializable {
         this.id = id;
     }
 
+    
+    
     /*
     Create Properties
      */
@@ -401,6 +408,14 @@ public class Relationship implements Serializable {
 
     public void setComponent(Component component) {
         this.component = component;
+    }
+
+    public Item getItemUnit() {
+        return itemUnit;
+    }
+
+    public void setItemUnit(Item itemUnit) {
+        this.itemUnit = itemUnit;
     }
 
 }

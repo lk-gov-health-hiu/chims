@@ -66,7 +66,9 @@ public enum RelationshipType {
     Dispensary("Dispensary"),
     Laboratory("Laboratory"),
     Procedure_for_institution("Procedure performed at the institution"),
-    Formsets_for_institution("Formsets Assigned For Institutions");
+    Formsets_for_institution("Formsets Assigned For Institutions"),
+    VtmsForVmp("VTM for VMP"),
+    VmpForAmp("VMP for AMP");
     private final String label;
     
     private RelationshipType(String label){
