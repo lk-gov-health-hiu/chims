@@ -43,7 +43,7 @@ import lk.gov.health.phsp.enums.PrescriptionType;
  * @author Dr M H B Ariyaratne<buddhika.ari@gmail.com>
  */
 @Entity
-@Table(name = "prescription")
+@Table
 @XmlRootElement
 public class Prescription implements Serializable {
 

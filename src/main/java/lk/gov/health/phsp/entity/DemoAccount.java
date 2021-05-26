@@ -36,7 +36,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author Dr M H B Ariyaratne<buddhika.ari@gmail.com>
  */
 @Entity
-@Table(name = "demoaccount")
+@Table
 @XmlRootElement
 public class DemoAccount implements Serializable {
 

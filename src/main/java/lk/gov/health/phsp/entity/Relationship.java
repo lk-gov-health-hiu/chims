@@ -46,7 +46,7 @@ import lk.gov.health.phsp.enums.RelationshipType;
  * @author buddhika
  */
 @Entity
-@Table(name = "relationship")
+@Table
 @XmlRootElement
 public class Relationship implements Serializable {
 

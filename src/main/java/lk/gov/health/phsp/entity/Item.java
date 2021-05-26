@@ -45,7 +45,7 @@ import lk.gov.health.phsp.enums.SelectionDataType;
  * @author User
  */
 @Entity
-@Table(name = "item")
+@Table
 @XmlRootElement
 public class Item implements Serializable {
 

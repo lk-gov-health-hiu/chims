@@ -32,7 +32,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @Entity
 @XmlRootElement
-@Table(name = "webuser")
+@Table
 public class WebUser implements Serializable {
 
     private static final long serialVersionUID = 1L;

@@ -47,7 +47,7 @@ import javax.xml.bind.annotation.XmlTransient;
  * @author User
  */
 @Entity
-@Table(name = "area")
+@Table
 @XmlRootElement
 public class Area implements Serializable {
 

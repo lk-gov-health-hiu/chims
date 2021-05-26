@@ -42,7 +42,7 @@ import lk.gov.health.phsp.enums.Privilege;
  * @author Dr M H B Ariyaratne<buddhika.ari@gmail.com>
  */
 @Entity
-@Table(name = "userprivilege")
+@Table
 @XmlRootElement
 public class UserPrivilege implements Serializable {
 

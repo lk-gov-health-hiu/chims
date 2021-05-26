@@ -36,7 +36,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 @Entity
 @XmlRootElement
-@Table(name = "coordinate")
+@Table
 public class Coordinate implements Serializable {
 
     private static final long serialVersionUID = 1L;

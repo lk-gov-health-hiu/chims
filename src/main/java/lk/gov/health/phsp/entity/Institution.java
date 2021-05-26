@@ -45,7 +45,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @Entity
 @XmlRootElement
-@Table(name = "institution")
+@Table
 public class Institution implements Serializable {
 
     private static final long serialVersionUID = 1L;

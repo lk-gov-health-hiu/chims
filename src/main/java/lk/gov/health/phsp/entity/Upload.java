@@ -47,7 +47,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @Entity
 @XmlRootElement
-@Table(name = "upload")
+@Table
 public class Upload implements Serializable {
 
     static final long serialVersionUID = 1L;
