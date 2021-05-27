@@ -42,44 +42,69 @@
                                                                 var="p"
                                                                 itemLabel="#{p.name}"
                                                                 itemValue="#{p}"
+                                                                placeholder="Select Medicine"
                                                                 >
                                                 </p:autoComplete>
+                                            </td>
+                                            <td>
                                                 <p:inputText value="#{ii.addingItem.ci.prescriptionValue.dose}" ></p:inputText>
                                                 <p:selectOneMenu value="#{ii.addingItem.ci.prescriptionValue.doseUnit}" >
                                                     <f:selectItem itemLabel="Please select dose unit" ></f:selectItem>
-                                                    <f:selectItems value="#{webUserController.loggableProcedureRooms}"
-                                                                   var="ipr"
-                                                                   itemLabel="#{ipr.name}"
-                                                                   itemValue="#{ipr}">
+                                                    <f:selectItems value="#{itemApplicationController.issueUnits}"
+                                                                   var="iu"
+                                                                   itemLabel="#{iu.name}"
+                                                                   itemValue="#{iu}">
+                                                    </f:selectItems>
+                                                    <f:selectItems value="#{itemApplicationController.strengthUnits}"
+                                                                   var="su"
+                                                                   itemLabel="#{su.name}"
+                                                                   itemValue="#{su}">
                                                     </f:selectItems>
                                                     <f:ajax event="change" execute="@this" render="" ></f:ajax>
                                                 </p:selectOneMenu>
                                             </td>
                                             <td>
-                                                <p:selectOneMenu id="prM" value="#{ii.addingItem.ci.itemValue}" >
-                                                    <f:selectItem itemLabel="Please select procedure" ></f:selectItem>
-                                                    <f:selectItems value="#{ii.addingItem.availableProcedures}" 
-                                                                   var="li"
-                                                                   itemLabel="#{li.displayName}" 
+                                                <p:selectOneMenu value="#{ii.addingItem.ci.prescriptionValue.frequency}" >
+                                                    <f:selectItem itemLabel="Please select frequency" ></f:selectItem>
+                                                    <f:selectItems value="#{itemApplicationController.frequencyUnits}"
+                                                                   var="fu"
+                                                                   itemLabel="#{fu.name}"
+                                                                   itemValue="#{fu}">
+                                                    </f:selectItems>
+                                                    <f:ajax event="change" execute="@this" render="" ></f:ajax>
+                                                </p:selectOneMenu>
+                                            </td>
+                                            <td>
+                                                <p:inputText value="#{ii.addingItem.ci.prescriptionValue.duration}" ></p:inputText>
+                                                <p:selectOneMenu value="#{ii.addingItem.ci.itemValue}" >
+                                                    <f:selectItem itemLabel="Please select duration unit" ></f:selectItem>
+                                                    <f:selectItems value="#{itemApplicationController.durationUnits}" 
+                                                                   var="du"
+                                                                   itemLabel="#{du.displayName}" 
                                                                    itemValue="#{li}">
+                                                    </f:selectItems>
+                                                    <f:selectItems value="#{itemApplicationController.issueUnits}" 
+                                                                   var="iu"
+                                                                   itemLabel="#{iu.displayName}" 
+                                                                   itemValue="#{iu}">
+                                                    </f:selectItems>
+                                                    <f:selectItems value="#{itemApplicationController.packUnits}" 
+                                                                   var="pu"
+                                                                   itemLabel="#{pu.displayName}" 
+                                                                   itemValue="#{pu}">
                                                     </f:selectItems>
                                                 </p:selectOneMenu>
                                             </td>
                                             <td>
-                                                <p:inputTextarea id="prComments" value="#{ii.addingItem.ci.longTextValue}" placeholder="Enter Comments" >
+                                                <p:inputTextarea value="#{ii.addingItem.ci.prescriptionValue.description}" placeholder="Enter Comments" >
                                                 </p:inputTextarea>
                                             </td>
                                             <td>
-                                                <p:commandButton id="btnAddPrM"  value="Add" 
+                                                <p:commandButton id="btnAddRx"  value="Add" 
                                                                  process="prM btnAddPrM prComments" 
                                                                  update="gpPrs"
                                                                  action="#{clientEncounterComponentItemController.addAnotherDataItem(ii)}"></p:commandButton>
                                             </td>
-                                            <h:panelGroup rendered="#{ii.di.displayLastResult}" >
-                                                <td>
-                                                    <h:outputText value="#{fn:replace(clientEncounterComponentFormSetController.lastData(ii.ci),'\\n','&lt;br/&gt;')}" escape="false" />
-                                                </td>
-                                            </h:panelGroup>
                                             <h:panelGroup rendered="#{ii.di.discreptionAsASideLabel}" >
                                                 <td>
                                                     <p:outputLabel value="#{ii.di.descreption}"  ></p:outputLabel>
