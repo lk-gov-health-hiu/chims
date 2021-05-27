@@ -14,6 +14,9 @@
 
                 <h:form >
                     <p:dataTable value="#{itemController.vmps}" var="v" rowIndexVar="#{v.id}" >
+                        <f:facet name="header" >
+                            <p:outputLabel value="Manage VMPs" ></p:outputLabel>
+                        </f:facet>
                         <p:column headerText="Name" >
                             <p:outputLabel value="#{v.name}" ></p:outputLabel>
                         </p:column>

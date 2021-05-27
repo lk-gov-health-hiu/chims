@@ -96,12 +96,12 @@ public class ItemController implements Serializable {
     }
 
     public String toManageVmps() {
-        vtms = itemApplicationController.findVmps();
+        vmps = itemApplicationController.findVmps();
         return "/item/vmps";
     }
 
     public String toManageAmps() {
-        vtms = itemApplicationController.findAmps();
+        amps = itemApplicationController.findAmps();
         return "/item/amps";
     }
 
