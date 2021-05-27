@@ -230,9 +230,9 @@ public class ClientEncounterComponentItem extends ClientEncounterComponent {
     }
 
     public void setPrescriptionValue(Prescription prescriptionValue) {
-        if (prescriptionValue == null) {
-            prescriptionValue = new Prescription();
-        }
+//        if (prescriptionValue == null) {
+//            prescriptionValue = new Prescription();
+//        }
         this.prescriptionValue = prescriptionValue;
     }
 
