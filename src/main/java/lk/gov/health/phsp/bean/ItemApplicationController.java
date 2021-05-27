@@ -49,12 +49,22 @@ public class ItemApplicationController {
 
     private List<Item> items;
     private List<ItemType> unitsTypes;
+    private List<Item> packUnits;
+    private List<Item> frequencyUnits;
+    private List<Item> durationUnits;
+    private List<Item> strengthUnits;
+    private List<Item> issueUnits;
+    
+    
+    
 
     /**
      * Creates a new instance of ItemApplicationController
      */
     public ItemApplicationController() {
     }
+    
+    
 
     public List<Item> completeDictionaryItem(String qry) {
         List<ItemType> its = new ArrayList<>();
@@ -222,6 +232,12 @@ public class ItemApplicationController {
         return tis;
     }
 
+    public List<Item> findItems(ItemType type) {
+        List<ItemType> its = new ArrayList<>();
+        its.add(type);
+        return findItems(its);
+    }
+    
     public List<Item> findItems(List<ItemType> types) {
         List<Item> tis = new ArrayList<>();
         if (types == null || types.isEmpty()) {
@@ -324,6 +340,11 @@ public class ItemApplicationController {
 
     public void invalidateItems() {
         items = null;
+        packUnits=null;
+        frequencyUnits=null;
+        strengthUnits=null;
+        durationUnits=null;
+        issueUnits=null;
     }
 
     public List<ItemType> getUnitsTypes() {
@@ -342,5 +363,43 @@ public class ItemApplicationController {
     public void setUnitsTypes(List<ItemType> unitsTypes) {
         this.unitsTypes = unitsTypes;
     }
+
+
+
+    public List<Item> getFrequencyUnits() {
+        if(frequencyUnits==null){
+            frequencyUnits = findItems(ItemType.Frequency_Unit);
+        }
+        return frequencyUnits;
+    }
+
+    public List<Item> getDurationUnits() {
+        if(durationUnits==null){
+            durationUnits = findItems(ItemType.Duration_Unit);
+        }
+        return durationUnits;
+    }
+
+    public List<Item> getStrengthUnits() {
+        if(strengthUnits==null){
+            strengthUnits = findItems(ItemType.Strength_Unit);
+        }
+        return strengthUnits;
+    }
+
+    public List<Item> getIssueUnits() {
+        if(issueUnits==null){
+            issueUnits = findItems(ItemType.Issue_Unit);
+        }
+        return issueUnits;
+    }
+
+    public List<Item> getPackUnits() {
+        if(packUnits==null){
+            packUnits = findItems(ItemType.Pack_Unit);
+        }
+        return packUnits;
+    }
+
 
 }
