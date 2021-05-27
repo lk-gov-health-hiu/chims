@@ -27,7 +27,7 @@
                             <p:outputLabel value="#{v.itemType.label}" ></p:outputLabel>
                         </p:column>
                         <p:column headerText="Action" >
-                            <p:commandButton ajax="false" value="Edit" action="#{itemController.toEditAmp()}" >
+                            <p:commandButton ajax="false" value="Edit" action="#{itemController.toEditUnit()}" >
                                 <f:setPropertyActionListener value="#{v}" target="#{itemController.unit}">
                                 </f:setPropertyActionListener>
                             </p:commandButton>
