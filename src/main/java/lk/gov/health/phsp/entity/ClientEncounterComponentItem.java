@@ -72,14 +72,14 @@ public class ClientEncounterComponentItem extends ClientEncounterComponent {
     private Institution institutionValue;
     @ManyToOne(fetch = FetchType.LAZY)
     private Client clientValue;
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     private Prescription prescriptionValue;
     
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     private Observation observationValue;
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     private Procedure procedureValue;
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     private Movement movementValue;
     
 
