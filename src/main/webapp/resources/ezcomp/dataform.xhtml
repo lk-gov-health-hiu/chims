@@ -114,14 +114,12 @@
                                         <tr >
                                             <td colspan="6">
                                                 <p:dataTable value="#{ii.addedItems}" var="ai" emptyMessage="Nothing added Yet">
-                                                    <p:column headerText="Procedure Room">
-                                                        <p:outputLabel value="#{ai.ci.institutionValue.name}" ></p:outputLabel>
-                                                    </p:column>
-                                                    <p:column  headerText="Procedure">
-                                                        <p:outputLabel value="#{ai.ci.itemValue.name}" ></p:outputLabel>
-                                                    </p:column>
-                                                    <p:column  headerText="Comments">
-                                                        <p:outputLabel value="#{ai.ci.longTextValue}" ></p:outputLabel>
+                                                    <p:column headerText="Prescribed">
+                                                        <p:outputLabel value="#{ai.ci.prescriptionValue.medicine.name}" ></p:outputLabel>
+                                                        <p:outputLabel value=" " ></p:outputLabel>
+                                                        <p:outputLabel value="#{ai.ci.prescriptionValue.dose}" ></p:outputLabel>
+                                                        <p:outputLabel value="#{ai.ci.prescriptionValue.doseUnit.name}" ></p:outputLabel>
+                                                        <p:outputLabel value=" " ></p:outputLabel>
                                                     </p:column>
                                                 </p:dataTable>
                                             </td>
