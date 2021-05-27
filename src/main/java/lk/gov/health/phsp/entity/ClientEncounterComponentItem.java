@@ -228,6 +228,11 @@ public class ClientEncounterComponentItem extends ClientEncounterComponent {
     }
 
     public Prescription getPrescriptionValue() {
+        if(prescriptionValue==null){
+            prescriptionValue = new Prescription();
+            prescriptionValue.setClient(itemClient);
+            prescriptionValue.setClientEncounterComponentItem(this);
+        }
         return prescriptionValue;
     }
 

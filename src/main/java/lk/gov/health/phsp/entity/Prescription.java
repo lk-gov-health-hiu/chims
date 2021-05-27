@@ -82,7 +82,8 @@ public class Prescription implements Serializable {
     private Client client;
     @ManyToOne
     private Encounter encounter;
-
+    @ManyToOne
+    private ClientEncounterComponentItem clientEncounterComponentItem;
     /*
     Omitting Properties
      */
@@ -174,7 +175,7 @@ public class Prescription implements Serializable {
             str += duration + " " + durationUnit.getName() + " ";
         }
         if (issueQuantity != null && issueUnit != null) {
-            str += issueQuantity +  " " + issueUnit.getName();
+            str += issueQuantity + " " + issueUnit.getName();
         }
 
         return str;
@@ -428,4 +429,14 @@ public class Prescription implements Serializable {
         this.prescriptionType = prescriptionType;
     }
 
+    public ClientEncounterComponentItem getClientEncounterComponentItem() {
+        return clientEncounterComponentItem;
+    }
+
+    public void setClientEncounterComponentItem(ClientEncounterComponentItem clientEncounterComponentItem) {
+        this.clientEncounterComponentItem = clientEncounterComponentItem;
+    }
+
+    
+    
 }
