@@ -26,16 +26,18 @@
                             </p:tab> 
                             <p:tab title="Medicines &amp; Devices" >
                                 <p:panelGrid columns="1" >
-                                    <p:commandButton styleClass="width18rem"  ajax="false" action="#{itemController.toManageVtm()}" 
-                                                     value="List Virtual Therapeutic Moiety" ></p:commandButton>
+                                    <p:commandButton styleClass="width18rem"  ajax="false" action="#{itemController.toManageVtms()}" 
+                                                     value="List VTMs" ></p:commandButton>
                                     <p:commandButton styleClass="width18rem"  ajax="false" action="#{itemController.toAddVtm()}" 
-                                                     value="Add Virtual Therapeutic Moiety" ></p:commandButton>
-                                    <p:commandButton styleClass="width18rem"  ajax="false" action="#{designComponentFormSetController.toAssignFormsets()}" 
-                                                     value="Actual Therapeutic Moiety" ></p:commandButton>
-                                    <p:commandButton styleClass="width18rem"  ajax="false" action="#{designComponentFormSetController.toImportFormsets()}" 
-                                                     value="Vertual Medicinal Product" ></p:commandButton>
-                                    <p:commandButton styleClass="width18rem"  ajax="false" action="#{designComponentFormSetController.toManageInstitutionFormssets()}" 
-                                                     value="Actual Medicinal Product" ></p:commandButton>
+                                                     value="Add VTM" ></p:commandButton>
+                                    <p:commandButton styleClass="width18rem"  ajax="false" action="#{itemController.toManageVmps()}" 
+                                                     value="List VMPs" ></p:commandButton>
+                                    <p:commandButton styleClass="width18rem"  ajax="false" action="#{itemController.toAddVmp()}" 
+                                                     value="Add VMP" ></p:commandButton>
+                                    <p:commandButton styleClass="width18rem"  ajax="false" action="#{itemController.toManageAmps()}" 
+                                                     value="List AMPs" ></p:commandButton>
+                                    <p:commandButton styleClass="width18rem"  ajax="false" action="#{itemController.toAddAmp()}" 
+                                                     value="Add AMP" ></p:commandButton>
                                     <p:commandButton styleClass="width18rem"  ajax="false" 
                                                      action="/item/medicines_import" 
                                                      value="Import" ></p:commandButton>

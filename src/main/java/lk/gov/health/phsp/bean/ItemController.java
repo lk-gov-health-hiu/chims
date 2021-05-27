@@ -90,9 +90,19 @@ public class ItemController implements Serializable {
     }
 
     // <editor-fold defaultstate="collapsed" desc="Navigation">
-    public String toManageVtm() {
+    public String toManageVtms() {
         vtms = itemApplicationController.findVtms();
         return "/item/vtms";
+    }
+
+    public String toManageVmps() {
+        vtms = itemApplicationController.findVmps();
+        return "/item/vmps";
+    }
+
+    public String toManageAmps() {
+        vtms = itemApplicationController.findAmps();
+        return "/item/amps";
     }
 
     public String toManageDictionary() {
@@ -107,6 +117,22 @@ public class ItemController implements Serializable {
         }
         return "/item/vtm";
     }
+    
+    public String toEditVmp() {
+        if (vmp == null) {
+            JsfUtil.addErrorMessage("Nothing to Edit");
+            return "";
+        }
+        return "/item/vmp";
+    }
+    
+     public String toEditAmp() {
+        if (amp == null) {
+            JsfUtil.addErrorMessage("Nothing to Edit");
+            return "";
+        }
+        return "/item/amp";
+    }
 
     public String toAddVtm() {
         vtm = new Item();
@@ -114,10 +140,34 @@ public class ItemController implements Serializable {
         return "/item/vtm";
     }
 
+    public String toAddVmp() {
+        vmp = new Item();
+        vmp.setItemType(ItemType.Vmp);
+        return "/item/vmp";
+    }
+
+    public String toAddAmp() {
+        amp = new Item();
+        amp.setItemType(ItemType.Amp);
+        return "/item/amp";
+    }
+
     public void saveVtm() {
         save(vtm);
         vtms = null;
         getVtms();
+    }
+
+    public void saveVmp() {
+        save(vmp);
+        vmps = null;
+        getVmps();
+    }
+
+    public void saveAmp() {
+        save(amp);
+        amps = null;
+        getAmps();
     }
 
     // </editor-fold>    

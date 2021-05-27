@@ -1,0 +1,44 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+    <body>
+
+        <ui:composition template="/systemAdmin/manage_metadata_index.xhtml">
+
+            <ui:define name="metadata">
+
+                <h:form >
+                    <p:dataTable value="#{itemController.vmps}" var="v" rowIndexVar="#{v.id}" >
+                        <p:column headerText="Name" >
+                            <p:outputLabel value="#{v.name}" ></p:outputLabel>
+                        </p:column>
+                        <p:column headerText="Code" >
+                            <p:outputLabel value="#{v.code}" ></p:outputLabel>
+                        </p:column>
+                        <p:column headerText="Action" >
+                            <p:commandButton ajax="false" value="Edit" action="#{itemController.toEditVmp()}" >
+                                <f:setPropertyActionListener value="#{v}" target="#{itemController.vmp}">
+                                </f:setPropertyActionListener>
+                            </p:commandButton>
+                            <p:commandButton ajax="false" value="Delete" action="#{itemController.removeItem()}" >
+                                <f:setPropertyActionListener value="#{v}" target="#{itemController.removingItem}">
+                                </f:setPropertyActionListener>
+                            </p:commandButton>
+
+                        </p:column>
+                    </p:dataTable>
+                </h:form>
+
+
+
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>
