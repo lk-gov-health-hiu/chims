@@ -28,7 +28,7 @@
 
                         <tr>
                             <td>
-                                <h:panelGroup rendered="#{ii.di.renderType eq 'Prescreption'}" >
+                                <h:panelGroup id="gpRx" rendered="#{ii.di.renderType eq 'Prescreption'}" >
                                     <table >
                                         <tr>
                                             <td colspan="4">
@@ -37,7 +37,7 @@
                                         </tr>
                                         <tr>
                                             <td>
-                                                <p:autoComplete value="#{ii.addingItem.ci.prescriptionValue.item}" 
+                                                <p:autoComplete id="acRx" value="#{ii.addingItem.ci.prescriptionValue.item}" 
                                                                 completeMethod="#{itemApplicationController.completePharmaceuticalItem}"
                                                                 var="p"
                                                                 itemLabel="#{p.name}"
@@ -47,8 +47,8 @@
                                                 </p:autoComplete>
                                             </td>
                                             <td>
-                                                <p:inputText value="#{ii.addingItem.ci.prescriptionValue.dose}" ></p:inputText>
-                                                <p:selectOneMenu value="#{ii.addingItem.ci.prescriptionValue.doseUnit}" >
+                                                <p:inputText id="txtRxDose" value="#{ii.addingItem.ci.prescriptionValue.dose}" ></p:inputText>
+                                                <p:selectOneMenu id="cmbRxDoseUnit" value="#{ii.addingItem.ci.prescriptionValue.doseUnit}" >
                                                     <f:selectItem itemLabel="Please select dose unit" ></f:selectItem>
                                                     <f:selectItems value="#{itemApplicationController.issueUnits}"
                                                                    var="iu"
@@ -64,7 +64,7 @@
                                                 </p:selectOneMenu>
                                             </td>
                                             <td>
-                                                <p:selectOneMenu value="#{ii.addingItem.ci.prescriptionValue.frequency}" >
+                                                <p:selectOneMenu id="cmbRxFrequency" value="#{ii.addingItem.ci.prescriptionValue.frequency}" >
                                                     <f:selectItem itemLabel="Please select frequency" ></f:selectItem>
                                                     <f:selectItems value="#{itemApplicationController.frequencyUnits}"
                                                                    var="fu"
@@ -75,8 +75,8 @@
                                                 </p:selectOneMenu>
                                             </td>
                                             <td>
-                                                <p:inputText value="#{ii.addingItem.ci.prescriptionValue.duration}" ></p:inputText>
-                                                <p:selectOneMenu value="#{ii.addingItem.ci.itemValue}" >
+                                                <p:inputText id="txtRxDuration" value="#{ii.addingItem.ci.prescriptionValue.duration}" ></p:inputText>
+                                                <p:selectOneMenu id="cmbRxDurationUnit" value="#{ii.addingItem.ci.itemValue}" >
                                                     <f:selectItem itemLabel="Please select duration unit" ></f:selectItem>
                                                     <f:selectItems value="#{itemApplicationController.durationUnits}" 
                                                                    var="du"
@@ -96,13 +96,13 @@
                                                 </p:selectOneMenu>
                                             </td>
                                             <td>
-                                                <p:inputTextarea value="#{ii.addingItem.ci.prescriptionValue.description}" placeholder="Enter Comments" >
+                                                <p:inputTextarea id="txtRxDes" value="#{ii.addingItem.ci.prescriptionValue.description}" placeholder="Enter Comments" >
                                                 </p:inputTextarea>
                                             </td>
                                             <td>
                                                 <p:commandButton id="btnAddRx"  value="Add" 
-                                                                 process="prM btnAddPrM prComments" 
-                                                                 update="gpPrs"
+                                                                 process="btnAddRx acRx txtRxDose cmbRxDoseUnit cmbRxFrequency txtRxDuration cmbRxDurationUnit txtRxDes" 
+                                                                 update="gpRx"
                                                                  action="#{clientEncounterComponentItemController.addAnotherDataItem(ii)}"></p:commandButton>
                                             </td>
                                             <h:panelGroup rendered="#{ii.di.discreptionAsASideLabel}" >
@@ -125,8 +125,6 @@
                                                     </p:column>
                                                 </p:dataTable>
                                             </td>
-
-
                                         </tr>
                                     </table>
                                 </h:panelGroup>
