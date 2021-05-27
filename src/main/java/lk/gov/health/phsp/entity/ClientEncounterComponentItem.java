@@ -72,24 +72,20 @@ public class ClientEncounterComponentItem extends ClientEncounterComponent {
     private Institution institutionValue;
     @ManyToOne(fetch = FetchType.LAZY)
     private Client clientValue;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Prescription prescriptionValue;
-    
-    @ManyToOne(fetch = FetchType.LAZY)
+
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Observation observationValue;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Procedure procedureValue;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Movement movementValue;
-    
 
     private Integer integerNumberValue2;
     private Long longNumberValue2;
     private Double realNumberValue2;
-    
-    
-    
-    
+
     public Client getItemClient() {
         return itemClient;
     }
@@ -122,7 +118,6 @@ public class ClientEncounterComponentItem extends ClientEncounterComponent {
         this.dataRepresentationType = dataRepresentationType;
     }
 
-    
     public String getLongTextValue() {
         return longTextValue;
     }
@@ -196,6 +191,9 @@ public class ClientEncounterComponentItem extends ClientEncounterComponent {
     }
 
     public Item getItemValue() {
+        if (itemValue == null && prescriptionValue != null) {
+            itemValue = prescriptionValue.getMedicine();
+        }
         return itemValue;
     }
 
@@ -228,15 +226,13 @@ public class ClientEncounterComponentItem extends ClientEncounterComponent {
     }
 
     public Prescription getPrescriptionValue() {
-        if(prescriptionValue==null){
-            prescriptionValue = new Prescription();
-            prescriptionValue.setClient(itemClient);
-            prescriptionValue.setClientEncounterComponentItem(this);
-        }
         return prescriptionValue;
     }
 
     public void setPrescriptionValue(Prescription prescriptionValue) {
+//        if (prescriptionValue == null) {
+//            prescriptionValue = new Prescription();
+//        }
         this.prescriptionValue = prescriptionValue;
     }
 
@@ -288,6 +284,4 @@ public class ClientEncounterComponentItem extends ClientEncounterComponent {
         this.realNumberValue2 = realNumberValue2;
     }
 
-    
-    
 }
