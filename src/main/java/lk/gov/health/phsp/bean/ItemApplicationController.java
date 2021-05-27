@@ -48,6 +48,7 @@ public class ItemApplicationController {
     private ItemFacade facade;
 
     private List<Item> items;
+    private List<ItemType> unitsTypes;
 
     /**
      * Creates a new instance of ItemApplicationController
@@ -120,14 +121,7 @@ public class ItemApplicationController {
         its.add(ItemType.Ampp);
         return completeItem(its, qry);
     }
-    
-    
-    
-    
-    
-    
-    
-    
+
     public List<Item> findPharmaceuticalItems() {
         List<ItemType> its = new ArrayList<>();
         its.add(ItemType.Atm);
@@ -151,19 +145,23 @@ public class ItemApplicationController {
         return findItems(its);
     }
 
-    public List<Item> findVmps(){
+    public List<Item> findVmps() {
         List<ItemType> its = new ArrayList<>();
         its.add(ItemType.Vmp);
         return findItems(its);
     }
-    
-    public List<Item> findAmps(){
+
+    public List<Item> findAmps() {
         List<ItemType> its = new ArrayList<>();
         its.add(ItemType.Amp);
         return findItems(its);
     }
-    
-    public List<Item> findDictionaryItems(){
+
+    public List<Item> findUnits() {
+        return findItems(getUnitsTypes());
+    }
+
+    public List<Item> findDictionaryItems() {
         List<ItemType> its = new ArrayList<>();
         its.add(ItemType.Dictionary_Category);
         its.add(ItemType.Dictionary_Category);
@@ -223,7 +221,7 @@ public class ItemApplicationController {
 
         return tis;
     }
-    
+
     public List<Item> findItems(List<ItemType> types) {
         List<Item> tis = new ArrayList<>();
         if (types == null || types.isEmpty()) {
@@ -286,8 +284,8 @@ public class ItemApplicationController {
                 os.addAll(findChildDictionaryItems(i.getCode()));
             }
         }
-        for(Item i:os){
-            if(!ns.contains(i)){
+        for (Item i : os) {
+            if (!ns.contains(i)) {
                 ns.add(i);
             }
         }
@@ -326,6 +324,23 @@ public class ItemApplicationController {
 
     public void invalidateItems() {
         items = null;
+    }
+
+    public List<ItemType> getUnitsTypes() {
+        if (unitsTypes == null) {
+            List<ItemType> its = new ArrayList<>();
+            its.add(ItemType.Strength_Unit);
+            its.add(ItemType.Pack_Unit);
+            its.add(ItemType.Duration_Unit);
+            its.add(ItemType.Frequency_Unit);
+            its.add(ItemType.Issue_Unit);
+            unitsTypes = its;
+        }
+        return unitsTypes;
+    }
+
+    public void setUnitsTypes(List<ItemType> unitsTypes) {
+        this.unitsTypes = unitsTypes;
     }
 
 }

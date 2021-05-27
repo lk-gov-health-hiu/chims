@@ -28,6 +28,83 @@
 
                         <tr>
                             <td>
+                                <h:panelGroup rendered="#{ii.di.renderType eq 'Prescreption'}" >
+                                    <table >
+                                        <tr>
+                                            <td colspan="4">
+                                                <p:outputLabel value="#{ii.di.name}"  style="#{ii.di.css}" ></p:outputLabel>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <p:autoComplete value="#{ii.addingItem.ci.prescriptionValue.item}" 
+                                                                completeMethod="#{itemApplicationController.completePharmaceuticalItem}"
+                                                                var="p"
+                                                                itemLabel="#{p.name}"
+                                                                itemValue="#{p}"
+                                                                >
+                                                </p:autoComplete>
+                                                <p:inputText value="#{ii.addingItem.ci.prescriptionValue.dose}" ></p:inputText>
+                                                <p:selectOneMenu value="#{ii.addingItem.ci.prescriptionValue.doseUnit}" >
+                                                    <f:selectItem itemLabel="Please select dose unit" ></f:selectItem>
+                                                    <f:selectItems value="#{webUserController.loggableProcedureRooms}"
+                                                                   var="ipr"
+                                                                   itemLabel="#{ipr.name}"
+                                                                   itemValue="#{ipr}">
+                                                    </f:selectItems>
+                                                    <f:ajax event="change" execute="@this" render="" ></f:ajax>
+                                                </p:selectOneMenu>
+                                            </td>
+                                            <td>
+                                                <p:selectOneMenu id="prM" value="#{ii.addingItem.ci.itemValue}" >
+                                                    <f:selectItem itemLabel="Please select procedure" ></f:selectItem>
+                                                    <f:selectItems value="#{ii.addingItem.availableProcedures}" 
+                                                                   var="li"
+                                                                   itemLabel="#{li.displayName}" 
+                                                                   itemValue="#{li}">
+                                                    </f:selectItems>
+                                                </p:selectOneMenu>
+                                            </td>
+                                            <td>
+                                                <p:inputTextarea id="prComments" value="#{ii.addingItem.ci.longTextValue}" placeholder="Enter Comments" >
+                                                </p:inputTextarea>
+                                            </td>
+                                            <td>
+                                                <p:commandButton id="btnAddPrM"  value="Add" 
+                                                                 process="prM btnAddPrM prComments" 
+                                                                 update="gpPrs"
+                                                                 action="#{clientEncounterComponentItemController.addAnotherDataItem(ii)}"></p:commandButton>
+                                            </td>
+                                            <h:panelGroup rendered="#{ii.di.displayLastResult}" >
+                                                <td>
+                                                    <h:outputText value="#{fn:replace(clientEncounterComponentFormSetController.lastData(ii.ci),'\\n','&lt;br/&gt;')}" escape="false" />
+                                                </td>
+                                            </h:panelGroup>
+                                            <h:panelGroup rendered="#{ii.di.discreptionAsASideLabel}" >
+                                                <td>
+                                                    <p:outputLabel value="#{ii.di.descreption}"  ></p:outputLabel>
+                                                </td>
+                                            </h:panelGroup>
+                                        </tr>
+                                        <tr >
+                                            <td colspan="6">
+                                                <p:dataTable value="#{ii.addedItems}" var="ai" emptyMessage="Nothing added Yet">
+                                                    <p:column headerText="Procedure Room">
+                                                        <p:outputLabel value="#{ai.ci.institutionValue.name}" ></p:outputLabel>
+                                                    </p:column>
+                                                    <p:column  headerText="Procedure">
+                                                        <p:outputLabel value="#{ai.ci.itemValue.name}" ></p:outputLabel>
+                                                    </p:column>
+                                                    <p:column  headerText="Comments">
+                                                        <p:outputLabel value="#{ai.ci.longTextValue}" ></p:outputLabel>
+                                                    </p:column>
+                                                </p:dataTable>
+                                            </td>
+
+
+                                        </tr>
+                                    </table>
+                                </h:panelGroup>
 
                                 <h:panelGroup id="gpPrs" rendered="#{ii.di.item.dataType eq 'Procedure_Request'}" >
                                     <table >
@@ -221,20 +298,7 @@
                                     </table>
                                 </h:panelGroup>
 
-                                <h:panelGroup rendered="#{ii.di.renderType eq 'Prescreption'}" >
-                                    <table>
-                                        <tr>
-                                            <th>
-                                                <p:outputLabel value="#{ii.di.name}" ></p:outputLabel>
-                                            </th>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                
-                                            </td>
-                                        </tr>
-                                    </table>
-                                </h:panelGroup>
+
 
 
                             </td>

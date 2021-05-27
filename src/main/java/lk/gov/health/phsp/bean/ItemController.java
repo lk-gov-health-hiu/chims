@@ -72,11 +72,13 @@ public class ItemController implements Serializable {
     private List<Item> atms;
     private List<Item> amps;
     private List<Item> vmps;
+    private List<Item> units;
 
     private Item vtm;
     private Item atm;
     private Item vmp;
     private Item amp;
+    private Item unit;
 
     private UploadedFile file;
 
@@ -105,6 +107,11 @@ public class ItemController implements Serializable {
         return "/item/amps";
     }
 
+    public String toManageUnits() {
+        units = itemApplicationController.findUnits();
+        return "/item/units";
+    }
+
     public String toManageDictionary() {
         items = itemApplicationController.findDictionaryItems();
         return "/item/List";
@@ -117,7 +124,7 @@ public class ItemController implements Serializable {
         }
         return "/item/vtm";
     }
-    
+
     public String toEditVmp() {
         if (vmp == null) {
             JsfUtil.addErrorMessage("Nothing to Edit");
@@ -125,8 +132,8 @@ public class ItemController implements Serializable {
         }
         return "/item/vmp";
     }
-    
-     public String toEditAmp() {
+
+    public String toEditAmp() {
         if (amp == null) {
             JsfUtil.addErrorMessage("Nothing to Edit");
             return "";
@@ -151,6 +158,11 @@ public class ItemController implements Serializable {
         amp.setItemType(ItemType.Amp);
         return "/item/amp";
     }
+    
+    public String toAddUnit() {
+        unit = new Item();
+        return "/item/unit";
+    }
 
     public void saveVtm() {
         save(vtm);
@@ -168,6 +180,12 @@ public class ItemController implements Serializable {
         save(amp);
         amps = null;
         getAmps();
+    }
+    
+    public void saveUnit() {
+        save(unit);
+        units = null;
+        getUnits();
     }
 
     // </editor-fold>    
@@ -1382,6 +1400,27 @@ public class ItemController implements Serializable {
     public void setRemovingItem(Item removingItem) {
         this.removingItem = removingItem;
     }
+
+    public List<Item> getUnits() {
+        if(units==null){
+            units = itemApplicationController.findUnits();
+        }
+        return units;
+    }
+
+    public void setUnits(List<Item> units) {
+        this.units = units;
+    }
+
+    public Item getUnit() {
+        return unit;
+    }
+
+    public void setUnit(Item unit) {
+        this.unit = unit;
+    }
+    
+    
 
     @FacesConverter(forClass = Item.class)
     public static class ItemControllerConverter implements Converter {
