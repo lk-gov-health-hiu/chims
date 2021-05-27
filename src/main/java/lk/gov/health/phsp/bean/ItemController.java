@@ -210,7 +210,8 @@ public class ItemController implements Serializable {
                     System.err.println("No Dosage Form Specified in line no " + i);
                     continue;
                 }
-                String dosageFormCode = "dosage_form_" + dosageFormName.trim().toLowerCase();
+                String dosageFormCode = CommonController.prepareAsCode(
+                        "dosage_form_" + dosageFormName.trim().toLowerCase());
                 cat = findItemByCode(dosageFormCode, ItemType.Dosage_Form);
                 if (cat == null) {
                     cat = new Item();
@@ -229,7 +230,7 @@ public class ItemController implements Serializable {
                     continue;
                 }
 
-                String strengthUnitCode = "strength_unit_" + strengthUnitName;
+                String strengthUnitCode = CommonController.prepareAsCode("strength_unit_" + strengthUnitName);
                 strengthUnit = findItemByCode(strengthUnitCode, ItemType.Strength_Unit);
                 if (strengthUnit == null) {
                     strengthUnit = new Item();
@@ -246,16 +247,15 @@ public class ItemController implements Serializable {
                 if (packUnitName == null || packUnitName.trim().equals("")) {
                     System.out.println("No pack unit for line number " + i);
                     continue;
-                } else {
-                    String packUnitCode = "pack_unit_" + packUnitName;
-                    packUnit = findItemByCode(packUnitCode, ItemType.Pack_Unit);
-                    if (packUnit == null) {
-                        packUnit = new Item();
-                        packUnit.setName(packUnitName);
-                        packUnit.setCode(packUnitCode);
-                        packUnit.setItemType(ItemType.Pack_Unit);
-                        save(packUnit);
-                    }
+                }
+                String packUnitCode = CommonController.prepareAsCode("pack_unit_" + packUnitName);
+                packUnit = findItemByCode(packUnitCode, ItemType.Pack_Unit);
+                if (packUnit == null) {
+                    packUnit = new Item();
+                    packUnit.setName(packUnitName);
+                    packUnit.setCode(packUnitCode);
+                    packUnit.setItemType(ItemType.Pack_Unit);
+                    save(packUnit);
                 }
 
                 //Issue Unit
@@ -265,7 +265,7 @@ public class ItemController implements Serializable {
                     System.out.println("Issue Unit is not found in line no " + i);
                     continue;
                 }
-                String issueUnitCode = "issue_unit_" + issueUnitName;
+                String issueUnitCode = CommonController.prepareAsCode("issue_unit_" + issueUnitName);
                 issueUnit = findItemByCode(issueUnitCode, ItemType.Issue_Unit);
                 if (issueUnit == null) {
                     issueUnit = new Item();
@@ -311,7 +311,7 @@ public class ItemController implements Serializable {
                     System.out.println("VTM is not given in line no " + i);
                 }
 
-                String vtmCode = "vtm_" + vtmName;
+                String vtmCode = CommonController.prepareAsCode("vtm_" + vtmName);
 
                 ivtm = findItemByCode(vtmCode, ItemType.Vtm);
 
@@ -326,7 +326,7 @@ public class ItemController implements Serializable {
                 String vmpName = vtmName + " " + strengthUnitsPerIssueUnit
                         + strengthUnitName + " " + dosageFormName;
                 //Vmp
-                String vmpCode = "vmp_" + vmpName;
+                String vmpCode = CommonController.prepareAsCode("vmp_" + vmpName);
                 ivmp = findItemByCode(vmpCode, ItemType.Vmp);
 
                 if (ivmp == null) {
@@ -344,7 +344,7 @@ public class ItemController implements Serializable {
                     System.err.println("Amp is not given in line number " + i);
                 }
 
-                String ampCode = "amp_" + ampName;
+                String ampCode = CommonController.prepareAsCode("amp_" + ampName);
                 iamp = findItemByCode(ampCode, ItemType.Amp);
                 if (iamp == null) {
                     iamp = new Item();
@@ -381,7 +381,7 @@ public class ItemController implements Serializable {
 
                     vtmsForVmp.setToItem(ivtm);
                     vtmsForVmp.setDblValue(strengthUnitsPerIssueUnit);
-                    vtmsForVmp.setToItem(strengthUnit);
+                    vtmsForVmp.setToItemUnit(strengthUnit);
 
                     vtmsForVmp.setRelationshipType(RelationshipType.VtmsForVmp);
 

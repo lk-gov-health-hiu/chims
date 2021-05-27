@@ -1050,5 +1050,10 @@ public class CommonController implements Serializable {
         str = str.replace("\n", "<br/>");
         return str;
     }
+    
+    public static String prepareAsCode(String str){
+        String after = str.trim().replaceAll(" +", "_");
+        return after.toLowerCase();
+    }
 
 }

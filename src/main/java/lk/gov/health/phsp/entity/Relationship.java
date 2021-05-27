@@ -418,4 +418,12 @@ public class Relationship implements Serializable {
         this.itemUnit = itemUnit;
     }
 
+    public Item getToItemUnit() {
+        return toItemUnit;
+    }
+
+    public void setToItemUnit(Item toItemUnit) {
+        this.toItemUnit = toItemUnit;
+    }
+
 }
