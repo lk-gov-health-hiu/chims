@@ -13,7 +13,10 @@
             <ui:define name="metadata">
 
                 <h:form >
-                    <p:dataTable value="#{itemController.unit}" var="v" rowIndexVar="#{v.id}" >
+                    <p:dataTable value="#{itemController.units}" var="v" rowIndexVar="#{v.id}" >
+                        <f:facet name="header" >
+                            <p:outputLabel value="Manage Units" ></p:outputLabel>
+                        </f:facet>
                         <p:column headerText="Name" >
                             <p:outputLabel value="#{v.name}" ></p:outputLabel>
                         </p:column>

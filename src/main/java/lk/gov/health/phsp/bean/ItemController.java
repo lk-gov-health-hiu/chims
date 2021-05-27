@@ -140,6 +140,14 @@ public class ItemController implements Serializable {
         }
         return "/item/amp";
     }
+    
+    public String toEditUnit() {
+        if (unit == null) {
+            JsfUtil.addErrorMessage("Nothing to Edit");
+            return "";
+        }
+        return "/item/unit";
+    }
 
     public String toAddVtm() {
         vtm = new Item();
