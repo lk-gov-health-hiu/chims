@@ -49,6 +49,14 @@ public class ApiRequestApplicationController implements Serializable {
         return true;
     }
 
+    public ApiRequest getApiRequest(String id) {
+        Long lid = CommonController.getLongValue(id);
+        if (lid == null) {
+            return null;
+        }
+        return getFacade().find(lid);
+    }
+
     public List<ApiRequest> getPendingProcedure(String id) {
         System.out.println("getPendingProcedure");
         System.out.println("id = " + id);
@@ -63,12 +71,12 @@ public class ApiRequestApplicationController implements Serializable {
                 + " and a.name=:name ";
         j += " order by a.id";
         List<ApiRequest> rs = getFacade().findByJpql(j, m);
-        if(id!=null && !id.trim().equals("")){
+        if (id != null && !id.trim().equals("")) {
             Long tid = CommonController.stringToLong(id);
             List<ApiRequest> irs = new ArrayList<>();
-            for(ApiRequest ar:rs){
-                if(ar.getRequestCeci()!=null && ar.getRequestCeci().getInstitutionValue()!=null){
-                    if(ar.getRequestCeci().getInstitutionValue().getId().equals(tid)){
+            for (ApiRequest ar : rs) {
+                if (ar.getRequestCeci() != null && ar.getRequestCeci().getInstitutionValue() != null) {
+                    if (ar.getRequestCeci().getInstitutionValue().getId().equals(tid)) {
                         irs.add(ar);
                     }
                 }

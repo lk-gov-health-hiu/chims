@@ -139,7 +139,7 @@ public class ApiResource {
                     break;
                 case "get_institutes_list_hash":
                     jSONObjectOut = instituteListHash();
-                    break;                
+                    break;
                 case "get_institutes_total_population_list":
                     jSONObjectOut = instituteListWithPopulations(year);
                     break;
@@ -178,14 +178,37 @@ public class ApiResource {
     public String getRoleName(@PathParam("roleId") String roleId) {
         return WebUserRole.valueOf(roleId).getLabel();
     }
-    
+
     @GET
     @Path("/get_institution_name/{insCode}")
     @Produces(MediaType.APPLICATION_JSON)
-    public String getInstituteName(@PathParam("insCode") String insCode){
+    public String getInstituteName(@PathParam("insCode") String insCode) {
         return institutionApplicationController.findInstitution(Long.valueOf(insCode)).getName();
-    } 
-    
+    }
+
+    @GET
+    @Path("/update_client_procedure/{clientProcedureId}/{status}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public String updateClientProcedureRest(@PathParam("clientProcedureId") String clientProcedureId,
+            @PathParam("status") String status) {
+        return updateClientProcedureRest(clientProcedureId, status);
+    }
+
+    private JSONObject updateClientProcedure(String strId, String status) {
+        JSONObject jSONObjectOut = new JSONObject();
+        JSONArray array = new JSONArray();
+        ApiRequest a = apiRequestApplicationController.getApiRequest(strId);
+        if (a == null) {
+            return errorMessageNoId();
+        }
+        a.setConvaied(true);
+        a.getRequestCeci().setLongTextValue(a.getRequestCeci().getLongTextValue() + status);
+        apiRequestApplicationController.saveApiRequests(a);
+        jSONObjectOut.put("data", array);
+        jSONObjectOut.put("status", successMessage());
+        return jSONObjectOut;
+    }
+
     private JSONObject districtList() {
         JSONObject jSONObjectOut = new JSONObject();
         JSONArray array = new JSONArray();
@@ -235,7 +258,7 @@ public class ApiResource {
         jSONObjectOut.put("status", successMessage());
         return jSONObjectOut;
     }
-    
+
     private JSONObject instituteAndUnitList() {
         JSONObject jSONObjectOut = new JSONObject();
         JSONArray array = new JSONArray();
@@ -770,7 +793,7 @@ public class ApiResource {
                 }
                 if (ci.getInstitutionValue() != null) {
                     ins = ci.getInstitutionValue();
-                } 
+                }
                 if (ci.getEncounter().getCreatedBy() != null) {
                     u = ci.getEncounter().getCreatedBy();
                 }

@@ -31,13 +31,13 @@
                                 <h:panelGroup id="gpRx" rendered="#{ii.di.renderType eq 'Prescreption'}" >
                                     <table >
                                         <tr>
-                                            <td colspan="4">
+                                            <td colspan="7">
                                                 <p:outputLabel value="#{ii.di.name}"  style="#{ii.di.css}" ></p:outputLabel>
                                             </td>
                                         </tr>
                                         <tr>
                                             <td>
-                                                <p:autoComplete id="acRx" value="#{ii.addingItem.ci.prescriptionValue.item}" 
+                                                <p:autoComplete id="acRx" value="#{ii.addingItem.ci.prescriptionValue.medicine}" 
                                                                 completeMethod="#{itemApplicationController.completePharmaceuticalItem}"
                                                                 var="p"
                                                                 itemLabel="#{p.name}"
@@ -76,7 +76,7 @@
                                             </td>
                                             <td>
                                                 <p:inputText id="txtRxDuration" value="#{ii.addingItem.ci.prescriptionValue.duration}" ></p:inputText>
-                                                <p:selectOneMenu id="cmbRxDurationUnit" value="#{ii.addingItem.ci.itemValue}" >
+                                                <p:selectOneMenu id="cmbRxDurationUnit" value="#{ii.addingItem.ci.prescriptionValue.durationUnit}" >
                                                     <f:selectItem itemLabel="Please select duration unit" ></f:selectItem>
                                                     <f:selectItems value="#{itemApplicationController.durationUnits}" 
                                                                    var="du"
@@ -96,7 +96,8 @@
                                                 </p:selectOneMenu>
                                             </td>
                                             <td>
-                                                <p:inputTextarea id="txtRxDes" value="#{ii.addingItem.ci.prescriptionValue.description}" placeholder="Enter Comments" >
+                                                <p:inputTextarea id="txtRxDes" 
+                                                                 value="#{ii.addingItem.ci.prescriptionValue.description}" placeholder="Enter Comments" >
                                                 </p:inputTextarea>
                                             </td>
                                             <td>
@@ -112,13 +113,18 @@
                                             </h:panelGroup>
                                         </tr>
                                         <tr >
-                                            <td colspan="6">
+                                            <td colspan="7">
                                                 <p:dataTable value="#{ii.addedItems}" var="ai" emptyMessage="Nothing added Yet">
                                                     <p:column headerText="Prescribed">
                                                         <p:outputLabel value="#{ai.ci.prescriptionValue.medicine.name}" ></p:outputLabel>
                                                         <p:outputLabel value=" " ></p:outputLabel>
                                                         <p:outputLabel value="#{ai.ci.prescriptionValue.dose}" ></p:outputLabel>
                                                         <p:outputLabel value="#{ai.ci.prescriptionValue.doseUnit.name}" ></p:outputLabel>
+                                                        <p:outputLabel value=" " ></p:outputLabel>
+                                                        <p:outputLabel value="#{ai.ci.prescriptionValue.frequency.name}" ></p:outputLabel>
+                                                        <p:outputLabel value=" " ></p:outputLabel>
+                                                        <p:outputLabel value="#{ai.ci.prescriptionValue.duration}" ></p:outputLabel>
+                                                        <p:outputLabel value="#{ai.ci.prescriptionValue.durationUnit.name}" ></p:outputLabel>
                                                         <p:outputLabel value=" " ></p:outputLabel>
                                                     </p:column>
                                                 </p:dataTable>

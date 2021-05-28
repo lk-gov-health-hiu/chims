@@ -33,11 +33,13 @@ import lk.gov.health.phsp.entity.DesignComponentFormSet;
 import lk.gov.health.phsp.entity.Encounter;
 import lk.gov.health.phsp.entity.Institution;
 import lk.gov.health.phsp.entity.Item;
+import lk.gov.health.phsp.entity.Prescription;
 import lk.gov.health.phsp.enums.ComponentSex;
 import lk.gov.health.phsp.enums.DataCompletionStrategy;
 import lk.gov.health.phsp.enums.DataPopulationStrategy;
 import lk.gov.health.phsp.enums.DataRepresentationType;
 import lk.gov.health.phsp.enums.EncounterType;
+import lk.gov.health.phsp.enums.RenderType;
 import lk.gov.health.phsp.enums.SelectionDataType;
 import lk.gov.health.phsp.facade.ClientEncounterComponentItemFacade;
 import lk.gov.health.phsp.facade.ClientFacade;
@@ -892,6 +894,16 @@ public class ClientEncounterComponentFormSetController implements Serializable {
                             } else if (ci.getReferanceDesignComponentFormItem().getDataPopulationStrategy() == DataPopulationStrategy.From_Last_Encounter) {
                                 updateFromLastEncounter(ci);
                             }
+                            
+                            if(dis.getRenderType()==RenderType.Prescreption){
+                                Prescription p = new Prescription();
+                                p.setClient(e.getClient());
+                                p.setEncounter(e);
+                                p.setCreatedAt(new Date());
+                                p.setCreatedBy(webUserController.getLoggedUser());
+                                ci.setPrescriptionValue(p);
+                            }
+                            
                             DataItem i = new DataItem();
                             i.setMultipleEntries(true);
                             i.setCi(ci);
