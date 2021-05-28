@@ -2602,7 +2602,9 @@ public class ClientController implements Serializable {
 
     public List<Encounter> getSelectedClientsLastFiveClinicVisits() {
         if (selectedClientsLastFiveClinicVisits == null) {
-            selectedClientsLastFiveClinicVisits = fillEncounters(selected, InstitutionType.Clinic, EncounterType.Clinic_Visit, true, 5);
+            selectedClientsLastFiveClinicVisits = fillEncounters(selected, 
+                    institutionApplicationController.getClinicTypes(), 
+                    EncounterType.Clinic_Visit, true, 5);
 
         }
         return selectedClientsLastFiveClinicVisits;
