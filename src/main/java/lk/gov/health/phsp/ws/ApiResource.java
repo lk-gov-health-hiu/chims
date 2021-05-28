@@ -191,7 +191,9 @@ public class ApiResource {
     @Produces(MediaType.APPLICATION_JSON)
     public String updateClientProcedureRest(@PathParam("clientProcedureId") String clientProcedureId,
             @PathParam("status") String status) {
-        return updateClientProcedureRest(clientProcedureId, status);
+        JSONObject jSONObjectOut = updateClientProcedure(clientProcedureId, status);
+        String json = jSONObjectOut.toString();
+        return json;
     }
 
     private JSONObject updateClientProcedure(String strId, String status) {

@@ -25,28 +25,17 @@ package lk.gov.health.phsp.bean;
 
 // <editor-fold defaultstate="collapsed" desc="Import">
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.ejb.EJB;
 import javax.inject.Named;
 import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import lk.gov.health.phsp.entity.Area;
 import lk.gov.health.phsp.entity.Institution;
-import lk.gov.health.phsp.entity.Item;
-import lk.gov.health.phsp.entity.QueryComponent;
 import lk.gov.health.phsp.entity.Relationship;
-import lk.gov.health.phsp.enums.EncounterType;
 import lk.gov.health.phsp.enums.InstitutionType;
 import lk.gov.health.phsp.enums.RelationshipType;
-import lk.gov.health.phsp.enums.WebUserRole;
-import lk.gov.health.phsp.facade.ClientEncounterComponentItemFacade;
-import lk.gov.health.phsp.facade.ClientFacade;
-import lk.gov.health.phsp.facade.EncounterFacade;
 import lk.gov.health.phsp.facade.InstitutionFacade;
-import lk.gov.health.phsp.facade.QueryComponentFacade;
 import lk.gov.health.phsp.facade.RelationshipFacade;
 import org.apache.commons.codec.digest.DigestUtils;
 // </editor-fold>
