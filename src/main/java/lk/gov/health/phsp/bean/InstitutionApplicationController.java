@@ -59,6 +59,7 @@ public class InstitutionApplicationController {
     private List<Institution> institutions;
     List<Institution> hospitals;
     private List<InstitutionType> hospitalTypes;
+    private List<InstitutionType> clinicTypes;
     // </editor-fold>
 
     public InstitutionApplicationController() {
@@ -91,6 +92,8 @@ public class InstitutionApplicationController {
         }
         return institutions;
     }
+    
+    
     
     public String getInstitutionHash(){
          return  DigestUtils.md5Hex(getInstitutions().toString()).toUpperCase();
@@ -209,6 +212,8 @@ public class InstitutionApplicationController {
         return hospitalTypes;
     }
 
+    
+    
     public Institution findInstitution(Long insId) {
         Institution ri = null;
         for (Institution i : getInstitutions()) {
@@ -257,6 +262,19 @@ public class InstitutionApplicationController {
             }
         }
         return tins;
+    }
+
+    public List<InstitutionType> getClinicTypes() {
+        if (clinicTypes == null || clinicTypes.isEmpty()) {
+            clinicTypes = new ArrayList<>();
+            clinicTypes.add(InstitutionType.Clinic);
+            clinicTypes.add(InstitutionType.Cardiology_Clinic);
+            clinicTypes.add(InstitutionType.Medical_Clinic);
+            clinicTypes.add(InstitutionType.Other_Clinic);
+            clinicTypes.add(InstitutionType.Surgical_Clinic);
+            clinicTypes.add(InstitutionType.Ward_Clinic);
+        }
+        return clinicTypes;
     }
 
 }

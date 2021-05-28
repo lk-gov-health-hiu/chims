@@ -155,7 +155,7 @@ public class ClientController implements Serializable {
     public String toSelectClient() {
         return "/client/select";
     }
-    
+
     public String toSelectClientBasic() {
         return "/client/select_basic";
     }
@@ -169,10 +169,10 @@ public class ClientController implements Serializable {
         userTransactionController.recordTransaction("To Client Profile");
         return "/client/profile";
     }
-    
+
     public String toClientProfileById() {
         selected = getFacade().find(selectedId);
-        if(selected==null){
+        if (selected == null) {
             JsfUtil.addErrorMessage("No such client");
             return "";
         }
@@ -383,14 +383,13 @@ public class ClientController implements Serializable {
         }
 
     }
-    
-    
-    public void addCreatedDateFromCreatedAt(){
+
+    public void addCreatedDateFromCreatedAt() {
         String j = "select c from Client c where c.createdOn is null";
-        List<Client> cs = getFacade().findByJpql(j,1000);
+        List<Client> cs = getFacade().findByJpql(j, 1000);
         System.out.println("cs.getSize() = " + cs.size());
-        for(Client c:cs){
-            if(c.getCreatedOn()==null){
+        for (Client c : cs) {
+            if (c.getCreatedOn() == null) {
                 c.setCreatedOn(c.getCreatedAt());
                 getFacade().edit(c);
             }
@@ -518,7 +517,7 @@ public class ClientController implements Serializable {
         String j = "select c from Client c "
                 + " where c.retired=:ret "
                 + " and c.reservedClient<>:res ";
-        
+
         Map m = new HashMap();
         m.put("ret", false);
         m.put("res", true);
@@ -1159,7 +1158,6 @@ public class ClientController implements Serializable {
     }
 
     public List<Encounter> fillEncounters(Client client, InstitutionType insType, EncounterType encType, boolean excludeCompleted, Integer maxRecordCount) {
-        // ////System.out.println("fillEncounters");
         String j = "select e from Encounter e where e.retired=false ";
         Map m = new HashMap();
         if (client != null) {
@@ -1186,8 +1184,39 @@ public class ClientController implements Serializable {
 
     }
 
+    public List<Encounter> fillEncounters(Client client, List<InstitutionType> insTypes, EncounterType encType, boolean excludeCompleted, Integer maxRecordCount) {
+        String j = "select e from Encounter e where e.retired=false ";
+        Map m = new HashMap();
+        if (client != null) {
+            j += " and e.client=:c ";
+            m.put("c", client);
+        }
+        if (insTypes != null) {
+            j += " and e.institution.institutionType in :it ";
+            m.put("it", insTypes);
+        }
+        if (insTypes != null) {
+            j += " and e.encounterType=:et ";
+            m.put("et", encType);
+        }
+        if (excludeCompleted) {
+            j += " and e.completed=:com ";
+            m.put("com", false);
+        }
+        if (maxRecordCount == null) {
+            return encounterFacade.findByJpql(j, m);
+        } else {
+            return encounterFacade.findByJpql(j, m, maxRecordCount);
+        }
+
+    }
+
     public List<Encounter> fillEncounters(Client client, InstitutionType insType, EncounterType encType, boolean excludeCompleted) {
         return fillEncounters(client, insType, encType, true, null);
+    }
+    
+    public List<Encounter> fillEncounters(Client client, List<InstitutionType> insTypes, EncounterType encType, boolean excludeCompleted) {
+        return fillEncounters(client, insTypes, encType, true, null);
     }
 
     public void enrollInClinic() {
@@ -1354,7 +1383,7 @@ public class ClientController implements Serializable {
             setSelected(selectedClients.get(0));
             selectedClients = null;
             clearSearchById();
-            if(selected.isReservedClient()){
+            if (selected.isReservedClient()) {
                 return "/client/client";
             }
             return toClientProfile();
@@ -1554,7 +1583,7 @@ public class ClientController implements Serializable {
             return toSelectClientBasic();
         }
     }
-    
+
     public String searchByPhnWithBasicData() {
         System.out.println("searchByPhnWithBasicData");
         userTransactionController.recordTransaction("Search By PHN");
@@ -1852,8 +1881,7 @@ public class ClientController implements Serializable {
         cs = new ArrayList<>();
         return cs;
     }
-    
-    
+
     public List<ClientBasicData> listPatientsByPhnWithBasicData(String ids) {
         if (ids == null || ids.trim().equals("")) {
             return null;
@@ -2004,7 +2032,7 @@ public class ClientController implements Serializable {
             }
         }
         selected.setReservedClient(false);
-        
+
         saveClient(selected);
         JsfUtil.addSuccessMessage("Saved.");
         return toClientProfile();
@@ -2035,7 +2063,7 @@ public class ClientController implements Serializable {
             return;
         }
         reservePhnList = new ArrayList<>();
-        
+
         while (i < numberOfPhnToReserve) {
             String newPhn = generateNewPhn(createdIns);
 
@@ -2056,7 +2084,7 @@ public class ClientController implements Serializable {
                     rc.getPerson().setCreatedBy(webUserController.getLoggedUser());
                 }
                 rc.setReservedClient(true);
-                
+
                 getFacade().create(rc);
                 i = i + 1;
             }
@@ -2073,7 +2101,7 @@ public class ClientController implements Serializable {
             if (c.getCreatedAt() == null) {
                 c.setCreatedAt(new Date());
             }
-            if(c.getCreatedOn()==null){
+            if (c.getCreatedOn() == null) {
                 c.setCreatedOn(new Date());
             }
             if (c.getCreateInstitution() == null) {
@@ -2282,7 +2310,9 @@ public class ClientController implements Serializable {
 
     public List<Encounter> getSelectedClientsClinics() {
         if (selectedClientsClinics == null) {
-            selectedClientsClinics = fillEncounters(selected, InstitutionType.Clinic, EncounterType.Clinic_Enroll, true);
+            selectedClientsClinics = fillEncounters(selected, 
+                    institutionApplicationController.getClinicTypes(),
+                    EncounterType.Clinic_Enroll, true);
         }
         return selectedClientsClinics;
     }
@@ -2613,7 +2643,7 @@ public class ClientController implements Serializable {
     public void setSelectedClientsWithBasicData(List<ClientBasicData> selectedClientsWithBasicData) {
         this.selectedClientsWithBasicData = selectedClientsWithBasicData;
     }
-    
+
     public List<String> getReservePhnList() {
         return reservePhnList;
     }
