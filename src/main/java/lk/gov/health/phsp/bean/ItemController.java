@@ -399,8 +399,11 @@ public class ItemController implements Serializable {
                     save(ivtm);
                 }
 
-                String vmpName = vtmName + " " + strengthUnitsPerIssueUnit
+                String strengthUnitsPerIssueUnitString = CommonController.formatDouble(strengthUnitsPerIssueUnit);
+
+                String vmpName = vtmName + " " + strengthUnitsPerIssueUnitString
                         + strengthUnitName + " " + dosageFormName;
+
                 //Vmp
                 String vmpCode = CommonController.prepareAsCode("vmp_" + vmpName);
                 ivmp = findItemByCode(vmpCode, ItemType.Vmp);
@@ -614,7 +617,7 @@ public class ItemController implements Serializable {
     public List<Item> completeItemsofParent(String qry) {
         return findChildrenAndGrandchildrenItemList(selectedParent, null, qry);
     }
-    
+
     public List<Item> completeItemsofParent(Item parent, String qry) {
         return findChildrenAndGrandchildrenItemList(parent, null, qry);
     }
@@ -1148,7 +1151,7 @@ public class ItemController implements Serializable {
     public List<Item> findItemListByCode(String parentCode) {
         return itemApplicationController.findChildren(parentCode);
     }
-    
+
     public List<Item> completeItemstByCode(String parentCode, String qry) {
         return itemApplicationController.findChildren(parentCode, qry);
     }
