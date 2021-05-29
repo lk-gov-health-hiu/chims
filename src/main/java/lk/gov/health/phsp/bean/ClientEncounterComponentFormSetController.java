@@ -174,6 +174,27 @@ public class ClientEncounterComponentFormSetController implements Serializable {
 // </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="User Functions">
 
+    public String deleteSelected(){
+        if(selected==null){
+            JsfUtil.addErrorMessage("Nothing to delete");
+            return "";
+        }
+        selected.setRetired(true);
+        selected.setRetiredAt(new Date());
+        selected.setRetiredBy(webUserController.getLoggedUser());
+        save(selected);
+        
+        Encounter e=selected.getEncounter();
+        if(e!=null){
+            e.setRetired(true);
+            e.setRetiredAt(new Date());
+            e.setRetiredBy(webUserController.getLoggedUser());
+            getEncounterFacade().edit(e);
+        }
+        return clientController.toClientProfile();
+    }
+    
+    
     public void retireSelectedItems() {
         if (selectedItems == null) {
             return;
@@ -340,7 +361,7 @@ public class ClientEncounterComponentFormSetController implements Serializable {
         formEditable = true;
         JsfUtil.addSuccessMessage("Reversed Completion");
         userTransactionController.recordTransaction("Formset Complete Reversal");
-        return toViewFormset();
+        return toViewOrEditDataset();
     }
 
     public void executePostCompletionStrategies(ClientEncounterComponentFormSet s) {

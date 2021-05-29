@@ -39,13 +39,18 @@
 
                                 <div >
 
-                                    <p:commandButton  rendered="#{!clientEncounterComponentFormSetController.selected.completed}"
-                                                      value="Complete" action="#{clientEncounterComponentFormSetController.completeFormset()}" ajax="false"
-                                                      onclick="if (!confirm('Really want to do complete the visit?'))
+                                    <p:commandButton  rendered="#{clientEncounterComponentFormSetController.selected.completed}"
+                                                      value="Mark Incomplete" action="#{clientEncounterComponentFormSetController.reverseCompleteFormset()}" ajax="false"
+                                                      onclick="if (!confirm('Really want to do mark the visit as incomplete?'))
                                                                   return false"
                                                       ></p:commandButton>
 
                                     <p:commandButton  value="Client Profile" action="#{clientEncounterComponentFormSetController.toClientProfileFromEncounter()}" ajax="false" ></p:commandButton>
+
+                                    <p:commandButton  value="Delete" action="#{clientEncounterComponentFormSetController.deleteSelected()}" ajax="false"
+                                                      onclick="if (!confirm('Really want to DELETE this data?'))
+                                                                  return false"
+                                                      ></p:commandButton>
 
                                 </div>
                             </f:facet>
