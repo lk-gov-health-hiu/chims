@@ -20,7 +20,7 @@
                                 <p:outputLabel value="#{bundleClinical.EditItemLabel_itemType}" for="itemType" />
                                 <p:selectOneMenu
                                     id="itemType" value="#{itemController.selected.itemType}" title="#{bundleClinical.EditItemTitle_itemType}" >
-                                    <f:selectItems value="#{commonController.itemTypes}"
+                                    <f:selectItems value="#{itemApplicationController.dictionaryTypes}"
                                                    var="itemTypes"
                                                    itemValue="#{itemTypes}"
                                                    itemLabel="#{itemTypes.label}"></f:selectItems>
@@ -122,7 +122,7 @@
                     </p:tabView>
 
 
-                    <p:commandButton action="#{itemController.save()}" value="#{bundleClinical.Save}" ajax="false" />
+                    <p:commandButton action="#{itemController.saveDictionatyItemsAndCategories()}" value="#{bundleClinical.Save}" ajax="false" />
                 </h:panelGroup>
             </h:form>
         </p:dialog>

@@ -113,7 +113,7 @@ public class ItemController implements Serializable {
     }
 
     public String toManageDictionary() {
-        items = itemApplicationController.findDictionaryItems();
+        items = itemApplicationController.getDictionaryItemsAndCategories();
         return "/item/List";
     }
 
@@ -140,7 +140,7 @@ public class ItemController implements Serializable {
         }
         return "/item/amp";
     }
-    
+
     public String toEditUnit() {
         if (unit == null) {
             JsfUtil.addErrorMessage("Nothing to Edit");
@@ -166,7 +166,7 @@ public class ItemController implements Serializable {
         amp.setItemType(ItemType.Amp);
         return "/item/amp";
     }
-    
+
     public String toAddUnit() {
         unit = new Item();
         return "/item/unit";
@@ -189,7 +189,7 @@ public class ItemController implements Serializable {
         amps = null;
         getAmps();
     }
-    
+
     public void saveUnit() {
         save(unit);
         units = null;
@@ -960,6 +960,18 @@ public class ItemController implements Serializable {
         this.selected = selected;
     }
 
+    public void saveDictionatyItemsAndCategories() {
+        boolean needReload = false;
+        if (selected.getId() == null) {
+            needReload = true;
+        }
+        save(selected);
+        if (needReload) {
+            itemApplicationController.invalidateDictionaryItemsAndCategories();
+            items = itemApplicationController.getDictionaryItemsAndCategories();
+        }
+    }
+
     public void save() {
         save(selected);
         JsfUtil.addSuccessMessage("Saved");
@@ -1410,7 +1422,7 @@ public class ItemController implements Serializable {
     }
 
     public List<Item> getUnits() {
-        if(units==null){
+        if (units == null) {
             units = itemApplicationController.findUnits();
         }
         return units;
@@ -1427,8 +1439,6 @@ public class ItemController implements Serializable {
     public void setUnit(Item unit) {
         this.unit = unit;
     }
-    
-    
 
     @FacesConverter(forClass = Item.class)
     public static class ItemControllerConverter implements Converter {

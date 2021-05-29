@@ -49,22 +49,19 @@ public class ItemApplicationController {
 
     private List<Item> items;
     private List<ItemType> unitsTypes;
+    private List<ItemType> dictionaryTypes;
     private List<Item> packUnits;
     private List<Item> frequencyUnits;
     private List<Item> durationUnits;
     private List<Item> strengthUnits;
     private List<Item> issueUnits;
-    
-    
-    
+    private List<Item> dictionaryItemsAndCategories;
 
     /**
      * Creates a new instance of ItemApplicationController
      */
     public ItemApplicationController() {
     }
-    
-    
 
     public List<Item> completeDictionaryItem(String qry) {
         List<ItemType> its = new ArrayList<>();
@@ -171,13 +168,17 @@ public class ItemApplicationController {
         return findItems(getUnitsTypes());
     }
 
-    public List<Item> findDictionaryItems() {
-        List<ItemType> its = new ArrayList<>();
-        its.add(ItemType.Dictionary_Category);
-        its.add(ItemType.Dictionary_Category);
-        return findItems(its);
+    public List<Item> getDictionaryItemsAndCategories() {
+        if(dictionaryItemsAndCategories==null){
+            dictionaryItemsAndCategories =findItems(getDictionaryTypes());
+        }
+        return dictionaryItemsAndCategories;
     }
 
+    public void invalidateDictionaryItemsAndCategories(){
+        dictionaryItemsAndCategories=null;
+    }
+    
     public List<Item> findVmpp() {
         List<ItemType> its = new ArrayList<>();
         its.add(ItemType.Vmpp);
@@ -237,7 +238,7 @@ public class ItemApplicationController {
         its.add(type);
         return findItems(its);
     }
-    
+
     public List<Item> findItems(List<ItemType> types) {
         List<Item> tis = new ArrayList<>();
         if (types == null || types.isEmpty()) {
@@ -340,11 +341,12 @@ public class ItemApplicationController {
 
     public void invalidateItems() {
         items = null;
-        packUnits=null;
-        frequencyUnits=null;
-        strengthUnits=null;
-        durationUnits=null;
-        issueUnits=null;
+        packUnits = null;
+        frequencyUnits = null;
+        strengthUnits = null;
+        durationUnits = null;
+        issueUnits = null;
+        dictionaryItemsAndCategories=null;
     }
 
     public List<ItemType> getUnitsTypes() {
@@ -364,42 +366,48 @@ public class ItemApplicationController {
         this.unitsTypes = unitsTypes;
     }
 
-
-
     public List<Item> getFrequencyUnits() {
-        if(frequencyUnits==null){
+        if (frequencyUnits == null) {
             frequencyUnits = findItems(ItemType.Frequency_Unit);
         }
         return frequencyUnits;
     }
 
     public List<Item> getDurationUnits() {
-        if(durationUnits==null){
+        if (durationUnits == null) {
             durationUnits = findItems(ItemType.Duration_Unit);
         }
         return durationUnits;
     }
 
     public List<Item> getStrengthUnits() {
-        if(strengthUnits==null){
+        if (strengthUnits == null) {
             strengthUnits = findItems(ItemType.Strength_Unit);
         }
         return strengthUnits;
     }
 
     public List<Item> getIssueUnits() {
-        if(issueUnits==null){
+        if (issueUnits == null) {
             issueUnits = findItems(ItemType.Issue_Unit);
         }
         return issueUnits;
     }
 
     public List<Item> getPackUnits() {
-        if(packUnits==null){
+        if (packUnits == null) {
             packUnits = findItems(ItemType.Pack_Unit);
         }
         return packUnits;
     }
 
+    public List<ItemType> getDictionaryTypes() {
+        if (dictionaryTypes == null) {
+            dictionaryTypes = new ArrayList<>();
+            dictionaryTypes.add(ItemType.Dictionary_Category);
+            dictionaryTypes.add(ItemType.Dictionary_Item);
+        }
+        return dictionaryTypes;
+    }
 
 }
