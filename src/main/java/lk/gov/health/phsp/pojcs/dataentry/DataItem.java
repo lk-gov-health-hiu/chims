@@ -33,6 +33,9 @@ import lk.gov.health.phsp.bean.RelationshipController;
 import lk.gov.health.phsp.entity.ClientEncounterComponentItem;
 import lk.gov.health.phsp.entity.DesignComponentFormItem;
 import lk.gov.health.phsp.entity.Item;
+import lk.gov.health.phsp.entity.Prescription;
+import lk.gov.health.phsp.enums.RenderType;
+import lk.gov.health.phsp.enums.SelectionDataType;
 
 /**
  *
@@ -91,6 +94,14 @@ public class DataItem {
     }
 
     public ClientEncounterComponentItem getCi() {
+        if (ci != null && di != null) {
+            if (di.getSelectionDataType() == SelectionDataType.Prescreption_Reference || di.getItem().getDataType() == SelectionDataType.Prescreption_Reference || di.getRenderType() == RenderType.Prescreption || di.getRenderType() == RenderType.Prescreption_pad) {
+                if(ci.getPrescriptionValue()==null){
+                    Prescription p = new Prescription();
+                    ci.setPrescriptionValue(p);
+                }
+            }
+        }
         return ci;
     }
 
@@ -179,18 +190,17 @@ public class DataItem {
 
     public List<Item> completeItem(String qry) {
         List<Item> pis = new ArrayList<>();
-        String parentCode="";
-        if(getDi()==null){
+        String parentCode = "";
+        if (getDi() == null) {
             return pis;
         }
-        if(getDi().getCategoryOfAvailableItems()==null){
+        if (getDi().getCategoryOfAvailableItems() == null) {
             return pis;
         }
-        parentCode =getDi().getCategoryOfAvailableItems().getCode();
+        parentCode = getDi().getCategoryOfAvailableItems().getCode();
         ItemController itemController = CDI.current().select(ItemController.class).get();
         pis = itemController.completeItemstByCode(parentCode, qry);
         return pis;
     }
-    
-    
+
 }
