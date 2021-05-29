@@ -503,6 +503,8 @@ public class ClientEncounterComponentFormSetController implements Serializable {
             case "client_ds_division":
                 c.getPerson().getGnArea().setDsd(ti.getAreaValue());
                 return;
+            case "marietal_status_at_registration":
+                c.getPerson().setMariatalStatus(ti.getItemValue());
         }
 
         getPersonFacade().edit(c.getPerson());
@@ -1397,6 +1399,8 @@ public class ClientEncounterComponentFormSetController implements Serializable {
             case "client_ds_division":
                 ti.setAreaValue(c.getPerson().getGnArea().getDsd());
                 return;
+             case "marietal_status_at_registration":
+                 ti.setItemValue(c.getPerson().getMariatalStatus());
         }
 
         ClientEncounterComponentItem vi;
