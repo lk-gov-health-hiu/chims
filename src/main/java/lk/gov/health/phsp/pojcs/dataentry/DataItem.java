@@ -28,6 +28,7 @@ import java.util.List;
 import javax.enterprise.inject.spi.CDI;
 import lk.gov.health.phsp.bean.ComponentController;
 import lk.gov.health.phsp.bean.ItemApplicationController;
+import lk.gov.health.phsp.bean.ItemController;
 import lk.gov.health.phsp.bean.RelationshipController;
 import lk.gov.health.phsp.entity.ClientEncounterComponentItem;
 import lk.gov.health.phsp.entity.DesignComponentFormItem;
@@ -176,4 +177,20 @@ public class DataItem {
         return pis;
     }
 
+    public List<Item> completeItem(String qry) {
+        List<Item> pis = new ArrayList<>();
+        String parentCode="";
+        if(getDi()==null){
+            return pis;
+        }
+        if(getDi().getCategoryOfAvailableItems()==null){
+            return pis;
+        }
+        parentCode =getDi().getCategoryOfAvailableItems().getCode();
+        ItemController itemController = CDI.current().select(ItemController.class).get();
+        pis = itemController.completeItemstByCode(parentCode, qry);
+        return pis;
+    }
+    
+    
 }
