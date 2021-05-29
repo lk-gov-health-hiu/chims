@@ -246,15 +246,14 @@
                                     <table>
                                         <tr>
                                             <td>
-                                                <p:outputLabel for="acItemcompleteAvailableItemsForSelectionM" value="#{ii.di.name}"  style="#{ii.di.css}" ></p:outputLabel>
+                                                <p:outputLabel for="acItemM" value="#{ii.di.name}"  style="#{ii.di.css}" ></p:outputLabel>
                                             </td>
                                             <td>
                                                 <p:autoComplete id="acItemM" value="#{ii.addingItem.ci.itemValue}"
-                                                                completeMethod="#{ii.completeAvailableItemsForSelection}"
+                                                                completeMethod="#{ii.addingItem.completeAvailableItemsForSelection}"
                                                                 var="ai" itemLabel="#{ai.name}" itemValue="#{ai}"
                                                                 maxResults="15" forceSelection="true" 
                                                                 minQueryLength="3"
-                                                                required="#{ii.required}" 
                                                                 requiredMessage="#{ii.requiredErrorMessage}">
                                                 </p:autoComplete>
                                             </td>
@@ -588,7 +587,6 @@
                                                                 var="ai" itemLabel="#{ai.name}" itemValue="#{ai}"
                                                                 maxResults="15" forceSelection="true" 
                                                                 minQueryLength="3"
-                                                                required="#{ii.required}" 
                                                                 requiredMessage="#{ii.requiredErrorMessage}">
                                                     <p:ajax  event="blur" process="@this"   
                                                              listener="#{clientEncounterComponentItemController.save(ii.ci)}" >
