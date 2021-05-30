@@ -175,6 +175,15 @@
                                                     <p:outputLabel value="#{ii.ci.booleanValue?'Yes':'No'}"  style="#{ii.di.css}" ></p:outputLabel>
                                                 </td>
                                             </h:panelGroup>
+                                             <h:panelGroup rendered="#{ii.di.renderType eq 'Boolean_Button'}" >
+                                                <td>
+                                                    <p:outputLabel value="#{ii.di.name}"  style="#{ii.di.css}" ></p:outputLabel>
+                                                </td>
+                                                <td>
+                                                    <p:outputLabel value="#{ii.ci.booleanValue?'Yes':'No'}"  style="#{ii.di.css}" ></p:outputLabel>
+                                                </td>
+                                            </h:panelGroup>
+                                         
                                             <h:panelGroup rendered="#{ii.di.item.dataType eq 'Area_Reference'}" >
                                                 <td>
                                                     <p:outputLabel  value="#{ii.di.name}"  style="#{ii.di.css}" ></p:outputLabel>
