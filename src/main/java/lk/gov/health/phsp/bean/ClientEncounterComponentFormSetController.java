@@ -174,6 +174,27 @@ public class ClientEncounterComponentFormSetController implements Serializable {
 // </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="User Functions">
 
+    public String deleteSelected(){
+        if(selected==null){
+            JsfUtil.addErrorMessage("Nothing to delete");
+            return "";
+        }
+        selected.setRetired(true);
+        selected.setRetiredAt(new Date());
+        selected.setRetiredBy(webUserController.getLoggedUser());
+        save(selected);
+        
+        Encounter e=selected.getEncounter();
+        if(e!=null){
+            e.setRetired(true);
+            e.setRetiredAt(new Date());
+            e.setRetiredBy(webUserController.getLoggedUser());
+            getEncounterFacade().edit(e);
+        }
+        return clientController.toClientProfile();
+    }
+    
+    
     public void retireSelectedItems() {
         if (selectedItems == null) {
             return;
@@ -340,7 +361,7 @@ public class ClientEncounterComponentFormSetController implements Serializable {
         formEditable = true;
         JsfUtil.addSuccessMessage("Reversed Completion");
         userTransactionController.recordTransaction("Formset Complete Reversal");
-        return toViewFormset();
+        return toViewOrEditDataset();
     }
 
     public void executePostCompletionStrategies(ClientEncounterComponentFormSet s) {
@@ -482,6 +503,8 @@ public class ClientEncounterComponentFormSetController implements Serializable {
             case "client_ds_division":
                 c.getPerson().getGnArea().setDsd(ti.getAreaValue());
                 return;
+            case "marietal_status_at_registration":
+                c.getPerson().setMariatalStatus(ti.getItemValue());
         }
 
         getPersonFacade().edit(c.getPerson());
@@ -1376,6 +1399,8 @@ public class ClientEncounterComponentFormSetController implements Serializable {
             case "client_ds_division":
                 ti.setAreaValue(c.getPerson().getGnArea().getDsd());
                 return;
+             case "marietal_status_at_registration":
+                 ti.setItemValue(c.getPerson().getMariatalStatus());
         }
 
         ClientEncounterComponentItem vi;

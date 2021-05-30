@@ -399,8 +399,11 @@ public class ItemController implements Serializable {
                     save(ivtm);
                 }
 
-                String vmpName = vtmName + " " + strengthUnitsPerIssueUnit
+                String strengthUnitsPerIssueUnitString = CommonController.formatDouble(strengthUnitsPerIssueUnit);
+
+                String vmpName = vtmName + " " + strengthUnitsPerIssueUnitString
                         + strengthUnitName + " " + dosageFormName;
+
                 //Vmp
                 String vmpCode = CommonController.prepareAsCode("vmp_" + vmpName);
                 ivmp = findItemByCode(vmpCode, ItemType.Vmp);
@@ -613,6 +616,10 @@ public class ItemController implements Serializable {
 
     public List<Item> completeItemsofParent(String qry) {
         return findChildrenAndGrandchildrenItemList(selectedParent, null, qry);
+    }
+
+    public List<Item> completeItemsofParent(Item parent, String qry) {
+        return findChildrenAndGrandchildrenItemList(parent, null, qry);
     }
 
     public List<Item> completeItemsofParentWithFIlter(String qry) {
@@ -1142,16 +1149,11 @@ public class ItemController implements Serializable {
     }
 
     public List<Item> findItemListByCode(String parentCode) {
-//        String j = "select t from Item t where t.retired=false ";
-//        Map m = new HashMap();
-//        Item parent = findItemByCode(parentCode);
-//        if (parent != null) {
-//            m.put("p", parent);
-//            j += " and t.parent=:p ";
-//        }
-//        j += " order by t.name";
-//        return getFacade().findByJpql(j, m);
         return itemApplicationController.findChildren(parentCode);
+    }
+
+    public List<Item> completeItemstByCode(String parentCode, String qry) {
+        return itemApplicationController.findChildren(parentCode, qry);
     }
 
     public void setTitles(List<Item> titles) {

@@ -169,16 +169,16 @@ public class ItemApplicationController {
     }
 
     public List<Item> getDictionaryItemsAndCategories() {
-        if(dictionaryItemsAndCategories==null){
-            dictionaryItemsAndCategories =findItems(getDictionaryTypes());
+        if (dictionaryItemsAndCategories == null) {
+            dictionaryItemsAndCategories = findItems(getDictionaryTypes());
         }
         return dictionaryItemsAndCategories;
     }
 
-    public void invalidateDictionaryItemsAndCategories(){
-        dictionaryItemsAndCategories=null;
+    public void invalidateDictionaryItemsAndCategories() {
+        dictionaryItemsAndCategories = null;
     }
-    
+
     public List<Item> findVmpp() {
         List<ItemType> its = new ArrayList<>();
         its.add(ItemType.Vmpp);
@@ -276,8 +276,38 @@ public class ItemApplicationController {
     public List<Item> findChildren(String code) {
         List<Item> tis = new ArrayList<>();
         for (Item ti : getItems()) {
-            if (ti.getParent() != null && ti.getParent().getCode() != null && ti.getParent().getCode().equalsIgnoreCase(code)) {
+            if (ti.getParent() != null
+                    && ti.getParent().getCode() != null
+                    && ti.getParent().getCode().equalsIgnoreCase(code)) {
                 tis.add(ti);
+            }
+        }
+        return tis;
+    }
+
+    public List<Item> findChildren(String code, String qry) {
+        List<Item> tis = new ArrayList<>();
+        if (qry == null || qry.trim().equals("")) {
+            return tis;
+        }
+        qry = qry.trim().toLowerCase();
+        for (Item ti : getItems()) {
+            if (ti.getParent() != null
+                    && ti.getParent().getCode() != null
+                    && ti.getParent().getCode().equalsIgnoreCase(code)) {
+                boolean canInclude = false;
+                if(ti.getName()!=null && ti.getName().contains(qry)){
+                    canInclude=true;
+                }
+                if(ti.getCode()!=null && ti.getCode().contains(qry)){
+                    canInclude=true;
+                }
+                if(ti.getDisplayName()!=null && ti.getDisplayName().contains(qry)){
+                    canInclude=true;
+                }
+                if (canInclude) {
+                    tis.add(ti);
+                }
             }
         }
         return tis;
@@ -346,7 +376,7 @@ public class ItemApplicationController {
         strengthUnits = null;
         durationUnits = null;
         issueUnits = null;
-        dictionaryItemsAndCategories=null;
+        dictionaryItemsAndCategories = null;
     }
 
     public List<ItemType> getUnitsTypes() {

@@ -83,7 +83,20 @@
                                     </h:panelGroup>
                                     <h:panelGroup rendered="#{ii.di.renderType eq 'Prescreption'}" >
                                         <td>
-                                            <!--<ez:prescription/>-->
+                                            <p:dataTable value="#{ii.addedItems}" var="ai" emptyMessage="Nothing added Yet">
+                                                <p:column headerText="Prescribed">
+                                                    <p:outputLabel value="#{ai.ci.prescriptionValue.medicine.name}" ></p:outputLabel>
+                                                    <p:outputLabel value=" " ></p:outputLabel>
+                                                    <p:outputLabel value="#{ai.ci.prescriptionValue.dose}" ></p:outputLabel>
+                                                    <p:outputLabel value="#{ai.ci.prescriptionValue.doseUnit.name}" ></p:outputLabel>
+                                                    <p:outputLabel value=" " ></p:outputLabel>
+                                                    <p:outputLabel value="#{ai.ci.prescriptionValue.frequency.name}" ></p:outputLabel>
+                                                    <p:outputLabel value=" " ></p:outputLabel>
+                                                    <p:outputLabel value="#{ai.ci.prescriptionValue.duration}" ></p:outputLabel>
+                                                    <p:outputLabel value="#{ai.ci.prescriptionValue.durationUnit.name}" ></p:outputLabel>
+                                                    <p:outputLabel value=" " ></p:outputLabel>
+                                                </p:column>
+                                            </p:dataTable>
                                         </td>
                                     </h:panelGroup>
 

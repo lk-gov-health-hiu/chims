@@ -242,7 +242,7 @@
                                     </table>
                                 </h:panelGroup>
 
-                                <h:panelGroup rendered="#{ii.di.item.dataType eq 'Item_Reference' and ii.di.renderType eq 'Autocomplete'}" >
+                                <h:panelGroup id="gpMultipleItemAc" rendered="#{ii.di.item.dataType eq 'Item_Reference' and ii.di.renderType eq 'Autocomplete'}" >
                                     <table>
                                         <tr>
                                             <td>
@@ -250,21 +250,36 @@
                                             </td>
                                             <td>
                                                 <p:autoComplete id="acItemM" value="#{ii.addingItem.ci.itemValue}"
-                                                                completeMethod="#{ii.addingItem.completeAvailableItemsForSelection}"
+                                                                completeMethod="#{ii.addingItem.completeItem}"
                                                                 var="ai" itemLabel="#{ai.name}" itemValue="#{ai}"
                                                                 maxResults="15" forceSelection="true" 
                                                                 minQueryLength="3"
                                                                 requiredMessage="#{ii.requiredErrorMessage}">
                                                 </p:autoComplete>
                                             </td>
+
+                                            <h:panelGroup id="gpItemAcDetails" >
+                                                <h:panelGroup rendered="#{ii.di.displayDetailsBox}" >
+                                                    <td>
+                                                        <p:inputTextarea value="#{ii.addingItem.ci.longTextValue}" ></p:inputTextarea>
+                                                    </td>
+
+                                                </h:panelGroup>
+                                            </h:panelGroup>
+
                                             <td>
-                                                <p:commandButton id="btnAddM2"  value="Add" process="acItemM btnAddM2" update="@form :#{p:component('formset')}"
+                                                <p:commandButton id="btnAddM2"  value="Add" process="acItemM btnAddM2 gpItemAcDetails" update="gpMultipleItemAc"
                                                                  action="#{clientEncounterComponentItemController.addAnotherDataItem(ii)}"></p:commandButton>
                                             </td>
-                                            <td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="6">
                                                 <p:dataTable value="#{ii.addedItems}" var="ai" emptyMessage="Nothing added Yet">
                                                     <p:column >
                                                         <p:outputLabel value="#{ai.ci.itemValue.name}" ></p:outputLabel>
+                                                    </p:column>
+                                                    <p:column >
+                                                        <p:outputLabel value="#{ai.ci.longTextValue}" ></p:outputLabel>
                                                     </p:column>
                                                 </p:dataTable>
                                             </td>
