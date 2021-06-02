@@ -317,8 +317,8 @@ public class ApiResource {
 
             ja.put("year", year);
 
-            ja.put("male", institutionApplicationController.findInstitutionPopulationData(a, RelationshipType.Male_Population, intYear));
-            ja.put("female", institutionApplicationController.findInstitutionPopulationData(a, RelationshipType.Female_Population, intYear));
+            ja.put("male", institutionApplicationController.findInstitutionPopulationData(a, RelationshipType.Empanelled_Male_Population, intYear));
+            ja.put("female", institutionApplicationController.findInstitutionPopulationData(a, RelationshipType.Empanelled_Female_Population, intYear));
             ja.put("over_35_male", institutionApplicationController.findInstitutionPopulationData(a, RelationshipType.Over_35_Male_Population, intYear));
             ja.put("over_35_female", institutionApplicationController.findInstitutionPopulationData(a, RelationshipType.Over_35_Female_Population, intYear));
             ja.put("target_over_35_male", institutionApplicationController.findInstitutionPopulationData(a, RelationshipType.Annual_Target_Male_Population, intYear));
