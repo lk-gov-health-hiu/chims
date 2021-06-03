@@ -112,8 +112,6 @@
                             <h:panelGroup >
                                 <p:inputText id="nic"  autocomplete="off" value="#{clientController.selected.person.nic}" title="Nic" validatorMessage="Please check the number">
                                     <f:validateRegex pattern="^([0-9]{9}[x|X|v|V]|[0-9]{12})?$" ></f:validateRegex>
-                                    <!--                                    <f:ajax event="change" execute="@this" render="nicExists" 
-                                                                                listener="#{clientController.checkNicExists}" ></f:ajax>-->
                                 </p:inputText><br ></br>
                             </h:panelGroup>
 
