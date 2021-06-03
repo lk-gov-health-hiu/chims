@@ -86,6 +86,36 @@ public class ApiRequestApplicationController implements Serializable {
         return rs;
     }
 
+      public List<ApiRequest> getPendingPrescriptions(String id) {
+        System.out.println("getPendingPrescreptions");
+        System.out.println("id = " + id);
+        Map m = new HashMap();
+        m.put("ret", false);
+        m.put("con", false);
+        m.put("name", "prescription_request");
+        String j = "select a "
+                + " from ApiRequest a "
+                + " where a.retired=:ret "
+                + " and a.convaied=:con"
+                + " and a.name=:name ";
+        j += " order by a.id";
+        List<ApiRequest> rs = getFacade().findByJpql(j, m);
+        if (id != null && !id.trim().equals("")) {
+            Long tid = CommonController.stringToLong(id);
+            List<ApiRequest> irs = new ArrayList<>();
+            for (ApiRequest ar : rs) {
+                if (ar.getRequestCeci() != null && ar.getRequestCeci().getInstitutionValue() != null) {
+                    if (ar.getRequestCeci().getInstitutionValue().getId().equals(tid)) {
+                        irs.add(ar);
+                    }
+                }
+            }
+            return irs;
+        }
+        return rs;
+    }
+
+    
     public void saveApiRequests(ApiRequest p) {
         if (p == null) {
             return;

@@ -121,8 +121,14 @@ public class ApiResource {
                 case "get_procedures_pending":
                     jSONObjectOut = proceduresPending(id);
                     break;
+                case "get_prescreptions_pending":
+                    jSONObjectOut = prescriptionsPending(id);
+                    break;
                 case "mark_request_as_received":
                     jSONObjectOut = markRequestAsReceived(id);
+                    break;
+                case "mark_prescription_as_received":
+                    jSONObjectOut = markPrescriptionAsReceived(id);
                     break;
                 case "get_province_list":
                     jSONObjectOut = provinceList();
@@ -761,10 +767,92 @@ public class ApiResource {
         return jSONObjectOut;
     }
 
+    private JSONObject markPrescriptionAsReceived(String id) {
+        boolean f = apiRequestApplicationController.markRequestAsReceived(id);
+        if (!f) {
+            return errorMessageNoId();
+        }
+        JSONObject jSONObjectOut = new JSONObject();
+        jSONObjectOut.put("status", successMessage());
+        return jSONObjectOut;
+    }
+
     private JSONObject proceduresPending(String id) {
         JSONObject jSONObjectOut = new JSONObject();
         JSONArray array = new JSONArray();
         List<ApiRequest> ds = apiRequestApplicationController.getPendingProcedure(id);
+        for (ApiRequest a : ds) {
+            JSONObject ja = new JSONObject();
+
+            if (a.getRequestCeci() == null) {
+                System.err.println("a.getRequestCeci() is null");
+                continue;
+            }
+
+            ClientEncounterComponentItem ci = a.getRequestCeci();
+            Client c = null;
+            Item i = null;
+            Institution ins = null;
+            WebUser u = null;
+
+            if (ci.getItemValue() != null) {
+                i = ci.getItemValue();
+            } else {
+                System.err.println("ci.getItemValue() is null");
+                continue;
+            }
+
+            if (ci.getEncounter() != null) {
+                if (ci.getEncounter().getClient() != null) {
+                    c = ci.getEncounter().getClient();
+                } else {
+                    System.err.println("ci.getEncounter().getClient() is null");
+                    continue;
+                }
+                if (ci.getInstitutionValue() != null) {
+                    ins = ci.getInstitutionValue();
+                }
+                if (ci.getEncounter().getCreatedBy() != null) {
+                    u = ci.getEncounter().getCreatedBy();
+                }
+            } else {
+                System.out.println("ci.getEncounter() is null");
+                continue;
+            }
+
+            ja.put("procedure_request_id", a.getId());
+            ja.put("procedure_id", i.getId());
+            ja.put("procedure_code", i.getCode());
+            ja.put("procedure_name", i.getName());
+            ja.put("client_phn", c.getPhn());
+            ja.put("client_id", c.getId());
+            ja.put("client_name", c.getPerson().getName());
+            if (ins != null) {
+                ja.put("institute_id", ins.getId());
+                ja.put("institute_code", ins.getCode());
+                ja.put("institute_name", ins.getName());
+                if (ins.getParent() != null) {
+                    ja.put("parent_institute_id", ins.getParent().getId());
+                    ja.put("parent_institute_code", ins.getParent().getCode());
+                    ja.put("parent_institute_name", ins.getParent().getName());
+                }
+            }
+
+            if (u != null) {
+                ja.put("user_id", u.getId());
+                ja.put("user_name", u.getName());
+            }
+            array.put(ja);
+        }
+        jSONObjectOut.put("data", array);
+        jSONObjectOut.put("status", successMessage());
+        return jSONObjectOut;
+    }
+
+    private JSONObject prescriptionsPending(String id) {
+        JSONObject jSONObjectOut = new JSONObject();
+        JSONArray array = new JSONArray();
+        List<ApiRequest> ds = apiRequestApplicationController.getPendingPrescriptions(id);
         for (ApiRequest a : ds) {
             JSONObject ja = new JSONObject();
 
