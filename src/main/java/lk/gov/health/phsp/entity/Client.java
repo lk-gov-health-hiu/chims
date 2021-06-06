@@ -15,7 +15,7 @@ import javax.persistence.Temporal;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @Entity
-@Table(name = "client")
+@Table
 @XmlRootElement
 public class Client implements Serializable {
 

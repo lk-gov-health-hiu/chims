@@ -40,7 +40,8 @@ public enum WebUserRole {
     Doctor("Doctor"),
     Nurse("Nurse"),
     Midwife("Midwife"),
-    Client("Client");
+    Client("Client"),
+    Student("Student");
 
     private final String label;
     

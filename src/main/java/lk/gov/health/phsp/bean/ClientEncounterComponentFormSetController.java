@@ -33,11 +33,13 @@ import lk.gov.health.phsp.entity.DesignComponentFormSet;
 import lk.gov.health.phsp.entity.Encounter;
 import lk.gov.health.phsp.entity.Institution;
 import lk.gov.health.phsp.entity.Item;
+import lk.gov.health.phsp.entity.Prescription;
 import lk.gov.health.phsp.enums.ComponentSex;
 import lk.gov.health.phsp.enums.DataCompletionStrategy;
 import lk.gov.health.phsp.enums.DataPopulationStrategy;
 import lk.gov.health.phsp.enums.DataRepresentationType;
 import lk.gov.health.phsp.enums.EncounterType;
+import lk.gov.health.phsp.enums.RenderType;
 import lk.gov.health.phsp.enums.SelectionDataType;
 import lk.gov.health.phsp.facade.ClientEncounterComponentItemFacade;
 import lk.gov.health.phsp.facade.ClientFacade;
@@ -172,6 +174,27 @@ public class ClientEncounterComponentFormSetController implements Serializable {
 // </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="User Functions">
 
+    public String deleteSelected(){
+        if(selected==null){
+            JsfUtil.addErrorMessage("Nothing to delete");
+            return "";
+        }
+        selected.setRetired(true);
+        selected.setRetiredAt(new Date());
+        selected.setRetiredBy(webUserController.getLoggedUser());
+        save(selected);
+        
+        Encounter e=selected.getEncounter();
+        if(e!=null){
+            e.setRetired(true);
+            e.setRetiredAt(new Date());
+            e.setRetiredBy(webUserController.getLoggedUser());
+            getEncounterFacade().edit(e);
+        }
+        return clientController.toClientProfile();
+    }
+    
+    
     public void retireSelectedItems() {
         if (selectedItems == null) {
             return;
@@ -338,7 +361,7 @@ public class ClientEncounterComponentFormSetController implements Serializable {
         formEditable = true;
         JsfUtil.addSuccessMessage("Reversed Completion");
         userTransactionController.recordTransaction("Formset Complete Reversal");
-        return toViewFormset();
+        return toViewOrEditDataset();
     }
 
     public void executePostCompletionStrategies(ClientEncounterComponentFormSet s) {
@@ -480,6 +503,8 @@ public class ClientEncounterComponentFormSetController implements Serializable {
             case "client_ds_division":
                 c.getPerson().getGnArea().setDsd(ti.getAreaValue());
                 return;
+            case "marietal_status_at_registration":
+                c.getPerson().setMariatalStatus(ti.getItemValue());
         }
 
         getPersonFacade().edit(c.getPerson());
@@ -892,6 +917,16 @@ public class ClientEncounterComponentFormSetController implements Serializable {
                             } else if (ci.getReferanceDesignComponentFormItem().getDataPopulationStrategy() == DataPopulationStrategy.From_Last_Encounter) {
                                 updateFromLastEncounter(ci);
                             }
+                            
+                            if(dis.getRenderType()==RenderType.Prescreption){
+                                Prescription p = new Prescription();
+                                p.setClient(e.getClient());
+                                p.setEncounter(e);
+                                p.setCreatedAt(new Date());
+                                p.setCreatedBy(webUserController.getLoggedUser());
+                                ci.setPrescriptionValue(p);
+                            }
+                            
                             DataItem i = new DataItem();
                             i.setMultipleEntries(true);
                             i.setCi(ci);
@@ -1364,6 +1399,8 @@ public class ClientEncounterComponentFormSetController implements Serializable {
             case "client_ds_division":
                 ti.setAreaValue(c.getPerson().getGnArea().getDsd());
                 return;
+             case "marietal_status_at_registration":
+                 ti.setItemValue(c.getPerson().getMariatalStatus());
         }
 
         ClientEncounterComponentItem vi;

@@ -25,28 +25,17 @@ package lk.gov.health.phsp.bean;
 
 // <editor-fold defaultstate="collapsed" desc="Import">
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.ejb.EJB;
 import javax.inject.Named;
 import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import lk.gov.health.phsp.entity.Area;
 import lk.gov.health.phsp.entity.Institution;
-import lk.gov.health.phsp.entity.Item;
-import lk.gov.health.phsp.entity.QueryComponent;
 import lk.gov.health.phsp.entity.Relationship;
-import lk.gov.health.phsp.enums.EncounterType;
 import lk.gov.health.phsp.enums.InstitutionType;
 import lk.gov.health.phsp.enums.RelationshipType;
-import lk.gov.health.phsp.enums.WebUserRole;
-import lk.gov.health.phsp.facade.ClientEncounterComponentItemFacade;
-import lk.gov.health.phsp.facade.ClientFacade;
-import lk.gov.health.phsp.facade.EncounterFacade;
 import lk.gov.health.phsp.facade.InstitutionFacade;
-import lk.gov.health.phsp.facade.QueryComponentFacade;
 import lk.gov.health.phsp.facade.RelationshipFacade;
 import org.apache.commons.codec.digest.DigestUtils;
 // </editor-fold>
@@ -70,6 +59,7 @@ public class InstitutionApplicationController {
     private List<Institution> institutions;
     List<Institution> hospitals;
     private List<InstitutionType> hospitalTypes;
+    private List<InstitutionType> clinicTypes;
     // </editor-fold>
 
     public InstitutionApplicationController() {
@@ -102,6 +92,8 @@ public class InstitutionApplicationController {
         }
         return institutions;
     }
+    
+    
     
     public String getInstitutionHash(){
          return  DigestUtils.md5Hex(getInstitutions().toString()).toUpperCase();
@@ -220,6 +212,8 @@ public class InstitutionApplicationController {
         return hospitalTypes;
     }
 
+    
+    
     public Institution findInstitution(Long insId) {
         Institution ri = null;
         for (Institution i : getInstitutions()) {
@@ -268,6 +262,19 @@ public class InstitutionApplicationController {
             }
         }
         return tins;
+    }
+
+    public List<InstitutionType> getClinicTypes() {
+        if (clinicTypes == null || clinicTypes.isEmpty()) {
+            clinicTypes = new ArrayList<>();
+            clinicTypes.add(InstitutionType.Clinic);
+            clinicTypes.add(InstitutionType.Cardiology_Clinic);
+            clinicTypes.add(InstitutionType.Medical_Clinic);
+            clinicTypes.add(InstitutionType.Other_Clinic);
+            clinicTypes.add(InstitutionType.Surgical_Clinic);
+            clinicTypes.add(InstitutionType.Ward_Clinic);
+        }
+        return clinicTypes;
     }
 
 }

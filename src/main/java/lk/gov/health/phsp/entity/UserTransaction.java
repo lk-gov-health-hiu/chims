@@ -39,7 +39,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author buddhika
  */
 @Entity
-@Table(name = "usertransaction")
+@Table
 @XmlRootElement
 public class UserTransaction implements Serializable {
 

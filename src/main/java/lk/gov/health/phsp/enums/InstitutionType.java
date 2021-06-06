@@ -28,7 +28,9 @@ public enum InstitutionType {
     Stake_Holder("Stake Holder"),
     Partner("Partner"),
     Private_Sector_Institute("Private Sector Institute"),
-    Other("Other");
+    Other("Other"),
+    @Deprecated
+    Ward_Clinic("Ward Clinic");
     
     private final String label;
     

@@ -65,14 +65,14 @@ public enum RelationshipType {
     Procedure_Room("Procedure Room"),
     Dispensary("Dispensary"),
     Laboratory("Laboratory"),
-    Procedure_for_institution("Procedure performed at the institution"),
-    Formsets_for_institution("Formsets Assigned For Institutions");
+    VtmsForVmp("Vtms for VMPs"),
+    VmpForAmp("VMP for AMP");
     private final String label;
-   
+    
     private RelationshipType(String label){
         this.label = label;
     }
-   
+    
     public String getLabel(){
         return label;
     }    

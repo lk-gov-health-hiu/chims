@@ -38,7 +38,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  *
  */
 @Entity
-@Table(name = "phn")
+@Table
 @XmlRootElement
 public class Phn implements Serializable {
 

@@ -45,7 +45,7 @@ import lk.gov.health.phsp.enums.SelectionDataType;
  * @author User
  */
 @Entity
-@Table(name = "item")
+@Table
 @XmlRootElement
 public class Item implements Serializable {
 
@@ -62,6 +62,8 @@ public class Item implements Serializable {
     String name;
     private String displayName;
     private String code;
+    private String barcode;
+    private String localCode;
     @ManyToOne
     private Item parent;
 
@@ -122,6 +124,9 @@ public class Item implements Serializable {
     private boolean dataTypePrescreption;
 
     public ItemType getItemType() {
+        if(itemType==null){
+            itemType = ItemType.Dictionary_Item;
+        }
         return itemType;
     }
 
@@ -259,6 +264,9 @@ public class Item implements Serializable {
     }
 
     public String getDisplayName() {
+        if(displayName==null||displayName.trim().equals("")){
+            displayName = name;
+        }
         return displayName;
     }
 
@@ -461,6 +469,22 @@ public class Item implements Serializable {
 
     public void setAbsoluteMaximumLong(Long absoluteMaximumLong) {
         this.absoluteMaximumLong = absoluteMaximumLong;
+    }
+
+    public String getBarcode() {
+        return barcode;
+    }
+
+    public void setBarcode(String barcode) {
+        this.barcode = barcode;
+    }
+
+    public String getLocalCode() {
+        return localCode;
+    }
+
+    public void setLocalCode(String localCode) {
+        this.localCode = localCode;
     }
     
     

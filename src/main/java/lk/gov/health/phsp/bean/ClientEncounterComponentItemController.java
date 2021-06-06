@@ -36,8 +36,10 @@ import lk.gov.health.phsp.entity.Component;
 import lk.gov.health.phsp.entity.DesignComponentFormItem;
 import lk.gov.health.phsp.entity.Encounter;
 import lk.gov.health.phsp.entity.Person;
+import lk.gov.health.phsp.entity.Prescription;
 import lk.gov.health.phsp.enums.DataPopulationStrategy;
 import lk.gov.health.phsp.enums.DataRepresentationType;
+import lk.gov.health.phsp.enums.RenderType;
 import lk.gov.health.phsp.enums.SelectionDataType;
 import lk.gov.health.phsp.pojcs.dataentry.DataForm;
 import lk.gov.health.phsp.pojcs.dataentry.DataFormset;
@@ -731,6 +733,7 @@ public class ClientEncounterComponentItemController implements Serializable {
         System.out.println("i.getAddingItem().getCi().getId() = " + i.getAddingItem().getCi().getId());
 
         save(i.getAddingItem().getCi());
+        
 
         System.out.println("saved");
         System.out.println("i.getAddingItem().getCi().getId() = " + i.getAddingItem().getCi().getId());
@@ -766,6 +769,15 @@ public class ClientEncounterComponentItemController implements Serializable {
         
         nci.setInstitutionValue(i.getAddingItem().getCi().getInstitutionValue());
 
+        if(i.getDi().getRenderType()==RenderType.Prescreption){
+            Prescription p = new Prescription();
+            p.setClient(i.getForm().getFormset().getEfs().getEncounter().getClient());
+            p.setEncounter(i.getForm().getFormset().getEfs().getEncounter());
+            p.setCreatedAt(new Date());
+            p.setCreatedBy(webUserController.getLoggedUser());
+            nci.setPrescriptionValue(p);
+        }
+        
         System.out.println("before new ni");
 
         DataItem ni = new DataItem();

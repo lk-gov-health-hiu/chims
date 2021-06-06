@@ -48,7 +48,7 @@ import lk.gov.health.phsp.enums.RelationshipType;
  * @author buddhika
  */
 @Entity
-@Table(name = "querycomponent")
+@Table
 @XmlRootElement
 public class QueryComponent extends Component {
 

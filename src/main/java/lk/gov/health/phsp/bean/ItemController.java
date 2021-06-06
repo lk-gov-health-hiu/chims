@@ -30,7 +30,9 @@ import jxl.Workbook;
 import jxl.read.biff.BiffException;
 import lk.gov.health.phsp.entity.DesignComponentFormSet;
 import lk.gov.health.phsp.entity.Item;
+import lk.gov.health.phsp.entity.Relationship;
 import lk.gov.health.phsp.enums.ItemType;
+import lk.gov.health.phsp.enums.RelationshipType;
 import org.primefaces.model.UploadedFile;
 
 @Named
@@ -48,10 +50,13 @@ public class ItemController implements Serializable {
     private UserTransactionController userTransactionController;
     @Inject
     ItemApplicationController itemApplicationController;
+    @Inject
+    RelationshipController relationshipController;
 
     private List<Item> items = null;
     private Item selected;
     private Item selectedParent;
+    private Item removingItem;
     private List<Item> titles;
     private List<Item> ethinicities;
     private List<Item> religions;
@@ -62,6 +67,18 @@ public class ItemController implements Serializable {
     private List<Item> mimeTypes;
     private List<Item> categories;
     private List<Item> procedures;
+    private List<Item> vtms;
+    private List<Item> atms;
+    private List<Item> amps;
+    private List<Item> vmps;
+    private List<Item> units;
+
+    private Item vtm;
+    private Item atm;
+    private Item vmp;
+    private Item amp;
+    private Item unit;
+
     private UploadedFile file;
 
     private int itemTypeColumnNumber;
@@ -74,8 +91,404 @@ public class ItemController implements Serializable {
     }
 
     // <editor-fold defaultstate="collapsed" desc="Navigation">
+    public String toManageVtms() {
+        vtms = itemApplicationController.findVtms();
+        return "/item/vtms";
+    }
+
+    public String toManageVmps() {
+        vmps = itemApplicationController.findVmps();
+        return "/item/vmps";
+    }
+
+    public String toManageAmps() {
+        amps = itemApplicationController.findAmps();
+        return "/item/amps";
+    }
+
+    public String toManageUnits() {
+        units = itemApplicationController.findUnits();
+        return "/item/units";
+    }
+
+    public String toManageDictionary() {
+        items = itemApplicationController.getDictionaryItemsAndCategories();
+        return "/item/List";
+    }
+
+    public String toEditVtm() {
+        if (vtm == null) {
+            JsfUtil.addErrorMessage("Nothing to Edit");
+            return "";
+        }
+        return "/item/vtm";
+    }
+
+    public String toEditVmp() {
+        if (vmp == null) {
+            JsfUtil.addErrorMessage("Nothing to Edit");
+            return "";
+        }
+        return "/item/vmp";
+    }
+
+    public String toEditAmp() {
+        if (amp == null) {
+            JsfUtil.addErrorMessage("Nothing to Edit");
+            return "";
+        }
+        return "/item/amp";
+    }
+
+    public String toEditUnit() {
+        if (unit == null) {
+            JsfUtil.addErrorMessage("Nothing to Edit");
+            return "";
+        }
+        return "/item/unit";
+    }
+
+    public String toAddVtm() {
+        vtm = new Item();
+        vtm.setItemType(ItemType.Vtm);
+        return "/item/vtm";
+    }
+
+    public String toAddVmp() {
+        vmp = new Item();
+        vmp.setItemType(ItemType.Vmp);
+        return "/item/vmp";
+    }
+
+    public String toAddAmp() {
+        amp = new Item();
+        amp.setItemType(ItemType.Amp);
+        return "/item/amp";
+    }
+
+    public String toAddUnit() {
+        unit = new Item();
+        return "/item/unit";
+    }
+
+    public void saveVtm() {
+        save(vtm);
+        vtms = null;
+        getVtms();
+    }
+
+    public void saveVmp() {
+        save(vmp);
+        vmps = null;
+        getVmps();
+    }
+
+    public void saveAmp() {
+        save(amp);
+        amps = null;
+        getAmps();
+    }
+
+    public void saveUnit() {
+        save(unit);
+        units = null;
+        getUnits();
+    }
+
     // </editor-fold>    
     // <editor-fold defaultstate="collapsed" desc="Functions">
+    public String importToExcel() {
+        String dosageFormName;
+        String ampName;
+        String ampLocalCode;
+        String ampBarcode;
+        String vtmName;
+        String strStrength;
+        String strengthUnitName;
+        String strPackSize;
+        String issueUnitName;
+        String packUnitName;
+
+        int dosageFormCol = 0;
+
+        int ampCol = 1;
+        int ampLocalCol = 2;
+        int ampBarcodeCol = 3;
+
+        int vtmCol = 4;
+
+        int strengthOfIssueUnitCol = 5;
+        int strengthUnitCol = 6;
+        int issueUnitsPerPackCol = 7;
+
+        int issueUnitCol = 8;
+        int packUnitCol = 9;
+
+        /**
+         * <h:outputLabel value ="0. Dosage Form"></h:outputLabel>
+         * <h:outputLabel value ="1. Product " ></h:outputLabel>
+         * <h:outputLabel value ="2. Code" ></h:outputLabel>
+         * <h:outputLabel value ="3. Bar Code" ></h:outputLabel>
+         * <h:outputLabel value ="4. Generic Name" ></h:outputLabel>
+         * <h:outputLabel value ="6. Strength" ></h:outputLabel>
+         * <h:outputLabel value ="6. Strength Unit" ></h:outputLabel>
+         * <h:outputLabel value ="7. Pack Size" ></h:outputLabel>
+         * <h:outputLabel value ="8. Issue Unit" ></h:outputLabel>
+         * <h:outputLabel value ="9. Pack Unit" ></h:outputLabel>
+         * <h:outputLabel value ="10. Manufacturer" ></h:outputLabel>
+         * <h:outputLabel value ="11. Importer" ></h:outputLabel>
+         */
+        Item cat;
+        Item ivtm;
+        Item ivmp;
+        Item iamp;
+        Item issueUnit;
+        Item strengthUnit;
+        Item packUnit;
+        double strengthUnitsPerIssueUnit;
+        double issueUnitsPerPack;
+
+        File inputWorkbook;
+        Workbook w;
+        Cell cell;
+        InputStream in;
+        JsfUtil.addSuccessMessage(file.getFileName());
+        try {
+            JsfUtil.addSuccessMessage(file.getFileName());
+            in = file.getInputstream();
+            File f;
+            f = new File(Calendar.getInstance().getTimeInMillis() + file.getFileName());
+            FileOutputStream out = new FileOutputStream(f);
+            int read = 0;
+            byte[] bytes = new byte[1024];
+            while ((read = in.read(bytes)) != -1) {
+                out.write(bytes, 0, read);
+            }
+            in.close();
+            out.flush();
+            out.close();
+
+            inputWorkbook = new File(f.getAbsolutePath());
+
+            JsfUtil.addSuccessMessage("Excel File Opened");
+            w = Workbook.getWorkbook(inputWorkbook);
+            Sheet sheet = w.getSheet(0);
+
+            for (int i = startRow; i < sheet.getRows(); i++) {
+
+                Map m = new HashMap();
+
+                //Category
+                cell = sheet.getCell(dosageFormCol, i);
+                dosageFormName = cell.getContents();
+                if (dosageFormName == null || dosageFormName.trim().equals("")) {
+                    System.err.println("No Dosage Form Specified in line no " + i);
+                    continue;
+                }
+                String dosageFormCode = CommonController.prepareAsCode(
+                        "dosage_form_" + dosageFormName.trim().toLowerCase());
+                cat = findItemByCode(dosageFormCode, ItemType.Dosage_Form);
+                if (cat == null) {
+                    cat = new Item();
+                    cat.setItemType(ItemType.Dosage_Form);
+                    cat.setName(dosageFormName);
+                    cat.setCode(dosageFormCode);
+                    save(cat);
+                }
+
+                //Strength Unit
+                cell = sheet.getCell(strengthUnitCol, i);
+                strengthUnitName = cell.getContents();
+
+                if (strengthUnitName == null || strengthUnitName.trim().equals("")) {
+                    System.err.println("No Strength Unit in line no " + i);
+                    continue;
+                }
+
+                String strengthUnitCode = CommonController.prepareAsCode("strength_unit_" + strengthUnitName);
+                strengthUnit = findItemByCode(strengthUnitCode, ItemType.Strength_Unit);
+                if (strengthUnit == null) {
+                    strengthUnit = new Item();
+                    strengthUnit.setName(strengthUnitName);
+                    strengthUnit.setCode(strengthUnitCode);
+                    strengthUnit.setItemType(ItemType.Strength_Unit);
+                    save(strengthUnit);
+                }
+                // //System.out.println("strengthUnit = " + strengthUnit.getName());
+                //Pack Unit
+                cell = sheet.getCell(packUnitCol, i);
+                packUnitName = cell.getContents();
+
+                if (packUnitName == null || packUnitName.trim().equals("")) {
+                    System.out.println("No pack unit for line number " + i);
+                    continue;
+                }
+                String packUnitCode = CommonController.prepareAsCode("pack_unit_" + packUnitName);
+                packUnit = findItemByCode(packUnitCode, ItemType.Pack_Unit);
+                if (packUnit == null) {
+                    packUnit = new Item();
+                    packUnit.setName(packUnitName);
+                    packUnit.setCode(packUnitCode);
+                    packUnit.setItemType(ItemType.Pack_Unit);
+                    save(packUnit);
+                }
+
+                //Issue Unit
+                cell = sheet.getCell(issueUnitCol, i);
+                issueUnitName = cell.getContents();
+                if (issueUnitName == null || issueUnitName.trim().equals("")) {
+                    System.out.println("Issue Unit is not found in line no " + i);
+                    continue;
+                }
+                String issueUnitCode = CommonController.prepareAsCode("issue_unit_" + issueUnitName);
+                issueUnit = findItemByCode(issueUnitCode, ItemType.Issue_Unit);
+                if (issueUnit == null) {
+                    issueUnit = new Item();
+                    issueUnit.setName(issueUnitName);
+                    issueUnit.setCode(issueUnitCode);
+                    issueUnit.setItemType(ItemType.Issue_Unit);
+                    save(issueUnit);
+                    continue;
+                }
+                //StrengthOfAnMeasurementUnit
+                cell = sheet.getCell(strengthOfIssueUnitCol, i);
+                strStrength = cell.getContents();
+                // //System.out.println("strStrength = " + strStrength);
+                if (!strStrength.equals("")) {
+                    try {
+                        strengthUnitsPerIssueUnit = Double.parseDouble(strStrength);
+                    } catch (NumberFormatException e) {
+                        strengthUnitsPerIssueUnit = 0.0;
+                    }
+                } else {
+                    strengthUnitsPerIssueUnit = 0.0;
+                }
+
+                //Issue Units Per Pack
+                cell = sheet.getCell(issueUnitsPerPackCol, i);
+                strPackSize = cell.getContents();
+                // //System.out.println("strPackSize = " + strPackSize);
+                if (!strPackSize.equals("")) {
+                    try {
+                        issueUnitsPerPack = Double.parseDouble(strPackSize);
+                    } catch (NumberFormatException e) {
+                        issueUnitsPerPack = 0.0;
+                    }
+                } else {
+                    issueUnitsPerPack = 0.0;
+                }
+
+                //Vtm
+                cell = sheet.getCell(vtmCol, i);
+                vtmName = cell.getContents();
+                // //System.out.println("strGenericName = " + strGenericName);
+                if (vtmName == null || vtmName.trim().equals("")) {
+                    System.out.println("VTM is not given in line no " + i);
+                }
+
+                String vtmCode = CommonController.prepareAsCode("vtm_" + vtmName);
+
+                ivtm = findItemByCode(vtmCode, ItemType.Vtm);
+
+                if (ivtm == null) {
+                    ivtm = new Item();
+                    ivtm.setName(vtmName);
+                    ivtm.setCode(vtmCode);
+                    ivtm.setItemType(ItemType.Vtm);
+                    save(ivtm);
+                }
+
+                String strengthUnitsPerIssueUnitString = CommonController.formatDouble(strengthUnitsPerIssueUnit);
+
+                String vmpName = vtmName + " " + strengthUnitsPerIssueUnitString
+                        + strengthUnitName + " " + dosageFormName;
+
+                //Vmp
+                String vmpCode = CommonController.prepareAsCode("vmp_" + vmpName);
+                ivmp = findItemByCode(vmpCode, ItemType.Vmp);
+
+                if (ivmp == null) {
+                    ivmp = new Item();
+                    ivmp.setName(vmpName);
+                    ivmp.setCode(vmpCode);
+                    ivmp.setItemType(ItemType.Vmp);
+                    save(ivmp);
+                }
+
+                //Amp
+                cell = sheet.getCell(ampCol, i);
+                ampName = cell.getContents();
+                if (ampName == null || ampName.trim().equals("")) {
+                    System.err.println("Amp is not given in line number " + i);
+                }
+
+                String ampCode = CommonController.prepareAsCode("amp_" + ampName);
+                iamp = findItemByCode(ampCode, ItemType.Amp);
+                if (iamp == null) {
+                    iamp = new Item();
+                    iamp.setName(ampName);
+                    iamp.setCode(ampCode);
+                    iamp.setItemType(ItemType.Amp);
+                    save(iamp);
+                }
+
+                cell = sheet.getCell(ampLocalCol, i);
+                ampLocalCode = cell.getContents();
+                if (ampLocalCode != null && !ampLocalCode.trim().equals("")) {
+                    iamp.setLocalCode(ampLocalCode);
+                }
+
+                cell = sheet.getCell(ampBarcodeCol, i);
+                ampBarcode = cell.getContents();
+                if (ampBarcode != null && !ampBarcode.trim().equals("")) {
+                    iamp.setBarcode(ampBarcode);
+                }
+
+                Relationship vtmsForVmp
+                        = relationshipController.findRelationship(ivmp,
+                                issueUnit,
+                                ivtm,
+                                strengthUnitsPerIssueUnit,
+                                strengthUnit,
+                                RelationshipType.VtmsForVmp);
+                if (vtmsForVmp == null) {
+                    vtmsForVmp = new Relationship();
+
+                    vtmsForVmp.setItem(ivmp);
+                    vtmsForVmp.setItemUnit(issueUnit);
+
+                    vtmsForVmp.setToItem(ivtm);
+                    vtmsForVmp.setDblValue(strengthUnitsPerIssueUnit);
+                    vtmsForVmp.setToItemUnit(strengthUnit);
+
+                    vtmsForVmp.setRelationshipType(RelationshipType.VtmsForVmp);
+
+                    relationshipController.save(vtmsForVmp);
+                }
+
+                Relationship vmpForAmp = relationshipController.findRelationship(iamp, ivmp, RelationshipType.VmpForAmp);
+                if (vmpForAmp == null) {
+                    vmpForAmp = new Relationship();
+                    vmpForAmp.setItem(iamp);
+                    vmpForAmp.setToItem(ivmp);
+                    vmpForAmp.setRelationshipType(RelationshipType.VmpForAmp);
+                    relationshipController.save(vmpForAmp);
+                }
+
+                //TODO: AMPP, VMPP, Importer, Manufacturer, Suplier
+            }
+
+            JsfUtil.addSuccessMessage("Succesful. All the data in Excel File Impoted to the database");
+            return "";
+        } catch (IOException ex) {
+            JsfUtil.addErrorMessage(ex.getMessage());
+            return "";
+        } catch (BiffException e) {
+            JsfUtil.addErrorMessage(e.getMessage());
+            return "";
+        }
+    }
+
     public void fillDuplicateItemsInAFormSet(DesignComponentFormSet s) {
         String j = "select di.item from DesignComponentFormItem di "
                 + "  where di.retired=false "
@@ -202,6 +615,10 @@ public class ItemController implements Serializable {
 
     public List<Item> completeItemsofParent(String qry) {
         return findChildrenAndGrandchildrenItemList(selectedParent, null, qry);
+    }
+
+    public List<Item> completeItemsofParent(Item parent, String qry) {
+        return findChildrenAndGrandchildrenItemList(parent, null, qry);
     }
 
     public List<Item> completeItemsofParentWithFIlter(String qry) {
@@ -488,30 +905,77 @@ public class ItemController implements Serializable {
     }
 
     public Item findItemByCode(String code) {
-        Item item;
-        String j;
-        Map m = new HashMap();
-        if (code != null) {
-            j = "select i from Item i "
-                    + " where i.retired=false "
-                    + " and lower(i.code)=:code "
-                    + " order by i.id";
-            m = new HashMap();
-            m.put("code", code.trim().toLowerCase());
-            item = getFacade().findFirstByJpql(j, m);
-        } else {
-            item = null;
+        Item item = null;
+        if (code == null || code.trim().equals("")) {
+            return item;
+        }
+        code = code.trim();
+        for (Item i : itemApplicationController.getItems()) {
+            if (i.getCode() != null) {
+                if (i.getCode().trim().equalsIgnoreCase(code)) {
+                    return i;
+                }
+            }
         }
         return item;
     }
 
-    // </editor-fold>    
+    public Item findItemByCode(String code, ItemType type) {
+        Item item = null;
+        if (code == null || code.trim().equals("")) {
+            return item;
+        }
+        code = code.trim();
+        for (Item i : itemApplicationController.getItems()) {
+            if (i.getCode() != null) {
+                if (i.getItemType() != null) {
+                    if (i.getCode().trim().equalsIgnoreCase(code) && i.getItemType().equals(type)) {
+                        return i;
+                    }
+                }
+            }
+        }
+        return item;
+    }
+
+    // </editor-fold>   
+    public void removeItem() {
+        if (removingItem == null) {
+            JsfUtil.addErrorMessage("Nothing Selected");
+            return;
+        }
+        removingItem.setRetired(true);
+        removingItem.setRetiredAt(new Date());
+        removingItem.setRetiredBy(webUserController.getLoggedUser());
+        save(removingItem);
+
+        try {
+            itemApplicationController.getItems().remove(removingItem);
+        } catch (Exception e) {
+            itemApplicationController.invalidateItems();
+        }
+        removingItem = null;
+        JsfUtil.addErrorMessage("Removed");
+    }
+
     public Item getSelected() {
         return selected;
     }
 
     public void setSelected(Item selected) {
         this.selected = selected;
+    }
+
+    public void saveDictionatyItemsAndCategories() {
+        boolean needReload = false;
+        if (selected.getId() == null) {
+            needReload = true;
+        }
+        save(selected);
+        if (needReload) {
+            itemApplicationController.invalidateDictionaryItemsAndCategories();
+            items = itemApplicationController.getDictionaryItemsAndCategories();
+        }
     }
 
     public void save() {
@@ -524,6 +988,11 @@ public class ItemController implements Serializable {
             i.setCreatedAt(new Date());
             i.setCreatedBy(webUserController.getLoggedUser());
             getFacade().create(i);
+            try {
+                itemApplicationController.getItems().add(i);
+            } catch (Exception e) {
+                itemApplicationController.invalidateItems();
+            }
         } else {
             i.setEditedAt(new Date());
             i.setEditedBy(webUserController.getLoggedUser());
@@ -566,11 +1035,7 @@ public class ItemController implements Serializable {
 
     public List<Item> getTitles() {
         if (titles == null) {
-//            String j = "select t from Item t where t.retired=false and t.parent.parent=:p order by t.orderNo";
-//            Map m = new HashMap();
-//            m.put("p", findItemByCode("title"));
-//            titles = getFacade().findByJpql(j, m);
-            titles = itemApplicationController.findChildren("title");
+            titles = itemApplicationController.findChildDictionaryItems("title");
         }
         return titles;
     }
@@ -683,16 +1148,11 @@ public class ItemController implements Serializable {
     }
 
     public List<Item> findItemListByCode(String parentCode) {
-//        String j = "select t from Item t where t.retired=false ";
-//        Map m = new HashMap();
-//        Item parent = findItemByCode(parentCode);
-//        if (parent != null) {
-//            m.put("p", parent);
-//            j += " and t.parent=:p ";
-//        }
-//        j += " order by t.name";
-//        return getFacade().findByJpql(j, m);
         return itemApplicationController.findChildren(parentCode);
+    }
+
+    public List<Item> completeItemstByCode(String parentCode, String qry) {
+        return itemApplicationController.findChildren(parentCode, qry);
     }
 
     public void setTitles(List<Item> titles) {
@@ -701,7 +1161,8 @@ public class ItemController implements Serializable {
 
     public List<Item> getEthinicities() {
         if (ethinicities == null) {
-            ethinicities = findItemList("ethnic_group", ItemType.Dictionary_Item);
+//            ethinicities = findItemList("ethnic_group", ItemType.Dictionary_Item);
+            ethinicities = itemApplicationController.findChildDictionaryItems("ethnic_group");
         }
         return ethinicities;
     }
@@ -712,7 +1173,8 @@ public class ItemController implements Serializable {
 
     public List<Item> getReligions() {
         if (religions == null) {
-            religions = findItemList("religion", ItemType.Dictionary_Item);
+//            religions = findItemList("religion", ItemType.Dictionary_Item);
+            religions = itemApplicationController.findChildDictionaryItems("religion");
         }
         return religions;
     }
@@ -723,7 +1185,8 @@ public class ItemController implements Serializable {
 
     public List<Item> getSexes() {
         if (sexes == null) {
-            sexes = findItemList("sex", ItemType.Dictionary_Item);
+//            sexes = findItemList("sex", ItemType.Dictionary_Item);
+            sexes = itemApplicationController.findChildDictionaryItems("sex");
         }
         return sexes;
     }
@@ -734,7 +1197,8 @@ public class ItemController implements Serializable {
 
     public List<Item> getMarietalStatus() {
         if (marietalStatus == null) {
-            marietalStatus = findItemList("marital_status", ItemType.Dictionary_Item);
+//            marietalStatus = findItemList("marital_status", ItemType.Dictionary_Item);
+            marietalStatus = itemApplicationController.findChildDictionaryItems("marital_status");
         }
         return marietalStatus;
     }
@@ -745,7 +1209,8 @@ public class ItemController implements Serializable {
 
     public List<Item> getCitizenships() {
         if (citizenships == null) {
-            citizenships = findItemList("citizenship", ItemType.Dictionary_Item);
+//            citizenships = findItemList("citizenship", ItemType.Dictionary_Item);
+            citizenships = itemApplicationController.findChildDictionaryItems("citizenship");
         }
         return citizenships;
     }
@@ -880,6 +1345,100 @@ public class ItemController implements Serializable {
             }
         }
         return tps;
+    }
+
+    public List<Item> getVtms() {
+        if (vtms == null) {
+            vtms = itemApplicationController.findVtms();
+        }
+        return vtms;
+    }
+
+    public void setVtms(List<Item> vtms) {
+        this.vtms = vtms;
+    }
+
+    public List<Item> getAtms() {
+        return atms;
+    }
+
+    public void setAtms(List<Item> atms) {
+        this.atms = atms;
+    }
+
+    public List<Item> getAmps() {
+        return amps;
+    }
+
+    public void setAmps(List<Item> amps) {
+        this.amps = amps;
+    }
+
+    public List<Item> getVmps() {
+        return vmps;
+    }
+
+    public void setVmps(List<Item> vmps) {
+        this.vmps = vmps;
+    }
+
+    public Item getVtm() {
+        return vtm;
+    }
+
+    public void setVtm(Item vtm) {
+        this.vtm = vtm;
+    }
+
+    public Item getAtm() {
+        return atm;
+    }
+
+    public void setAtm(Item atm) {
+        this.atm = atm;
+    }
+
+    public Item getVmp() {
+        return vmp;
+    }
+
+    public void setVmp(Item vmp) {
+        this.vmp = vmp;
+    }
+
+    public Item getAmp() {
+        return amp;
+    }
+
+    public void setAmp(Item amp) {
+        this.amp = amp;
+    }
+
+    public Item getRemovingItem() {
+        return removingItem;
+    }
+
+    public void setRemovingItem(Item removingItem) {
+        this.removingItem = removingItem;
+    }
+
+    public List<Item> getUnits() {
+        if (units == null) {
+            units = itemApplicationController.findUnits();
+        }
+        return units;
+    }
+
+    public void setUnits(List<Item> units) {
+        this.units = units;
+    }
+
+    public Item getUnit() {
+        return unit;
+    }
+
+    public void setUnit(Item unit) {
+        this.unit = unit;
     }
 
     @FacesConverter(forClass = Item.class)

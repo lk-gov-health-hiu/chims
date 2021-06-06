@@ -1,0 +1,36 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+    <body>
+
+        <ui:composition template="/systemAdmin/manage_metadata_index.xhtml">
+
+            <ui:define name="metadata">
+
+                <h:form >
+
+                    <p:panelGrid columns="2" >
+                        <f:facet name="header" >
+                            <p:outputLabel value="Add/Edit VTM" ></p:outputLabel>
+                            <p:commandButton ajax="false" value="Save" action="#{itemController.saveVtm()}"></p:commandButton>
+                        </f:facet>
+                        <p:outputLabel value="Name" ></p:outputLabel>
+                        <p:inputText value="#{itemController.vtm.name}" ></p:inputText>
+                        <p:outputLabel value="Code" ></p:outputLabel>
+                        <p:inputText value="#{itemController.vtm.code}" ></p:inputText><!-- comment -->
+                        <p:outputLabel value="Descreption" ></p:outputLabel>
+                        <p:inputTextarea value="#{itemController.vtm.descreption}" ></p:inputTextarea><!-- comment -->
+                    </p:panelGrid>
+                </h:form>
+
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

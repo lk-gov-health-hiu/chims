@@ -28,6 +28,110 @@
 
                         <tr>
                             <td>
+                                <h:panelGroup id="gpRx" rendered="#{ii.di.renderType eq 'Prescreption'}" >
+                                    <table >
+                                        <tr>
+                                            <td colspan="7">
+                                                <p:outputLabel value="#{ii.di.name}"  style="#{ii.di.css}" ></p:outputLabel>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <p:autoComplete id="acRx" value="#{ii.addingItem.ci.prescriptionValue.medicine}" 
+                                                                completeMethod="#{itemApplicationController.completePharmaceuticalItem}"
+                                                                var="p"
+                                                                itemLabel="#{p.name}"
+                                                                itemValue="#{p}"
+                                                                placeholder="Select Medicine"
+                                                                >
+                                                </p:autoComplete>
+                                            </td>
+                                            <td>
+                                                <p:inputText id="txtRxDose" value="#{ii.addingItem.ci.prescriptionValue.dose}" ></p:inputText>
+                                                <p:selectOneMenu id="cmbRxDoseUnit" value="#{ii.addingItem.ci.prescriptionValue.doseUnit}" >
+                                                    <f:selectItem itemLabel="Please select dose unit" ></f:selectItem>
+                                                    <f:selectItems value="#{itemApplicationController.issueUnits}"
+                                                                   var="iu"
+                                                                   itemLabel="#{iu.name}"
+                                                                   itemValue="#{iu}">
+                                                    </f:selectItems>
+                                                    <f:selectItems value="#{itemApplicationController.strengthUnits}"
+                                                                   var="su"
+                                                                   itemLabel="#{su.name}"
+                                                                   itemValue="#{su}">
+                                                    </f:selectItems>
+                                                    <f:ajax event="change" execute="@this" render="" ></f:ajax>
+                                                </p:selectOneMenu>
+                                            </td>
+                                            <td>
+                                                <p:selectOneMenu id="cmbRxFrequency" value="#{ii.addingItem.ci.prescriptionValue.frequency}" >
+                                                    <f:selectItem itemLabel="Please select frequency" ></f:selectItem>
+                                                    <f:selectItems value="#{itemApplicationController.frequencyUnits}"
+                                                                   var="fu"
+                                                                   itemLabel="#{fu.name}"
+                                                                   itemValue="#{fu}">
+                                                    </f:selectItems>
+                                                    <f:ajax event="change" execute="@this" render="" ></f:ajax>
+                                                </p:selectOneMenu>
+                                            </td>
+                                            <td>
+                                                <p:inputText id="txtRxDuration" value="#{ii.addingItem.ci.prescriptionValue.duration}" ></p:inputText>
+                                                <p:selectOneMenu id="cmbRxDurationUnit" value="#{ii.addingItem.ci.prescriptionValue.durationUnit}" >
+                                                    <f:selectItem itemLabel="Please select duration unit" ></f:selectItem>
+                                                    <f:selectItems value="#{itemApplicationController.durationUnits}" 
+                                                                   var="du"
+                                                                   itemLabel="#{du.displayName}" 
+                                                                   itemValue="#{li}">
+                                                    </f:selectItems>
+                                                    <f:selectItems value="#{itemApplicationController.issueUnits}" 
+                                                                   var="iu"
+                                                                   itemLabel="#{iu.displayName}" 
+                                                                   itemValue="#{iu}">
+                                                    </f:selectItems>
+                                                    <f:selectItems value="#{itemApplicationController.packUnits}" 
+                                                                   var="pu"
+                                                                   itemLabel="#{pu.displayName}" 
+                                                                   itemValue="#{pu}">
+                                                    </f:selectItems>
+                                                </p:selectOneMenu>
+                                            </td>
+                                            <td>
+                                                <p:inputTextarea id="txtRxDes" 
+                                                                 value="#{ii.addingItem.ci.prescriptionValue.description}" placeholder="Enter Comments" >
+                                                </p:inputTextarea>
+                                            </td>
+                                            <td>
+                                                <p:commandButton id="btnAddRx"  value="Add" 
+                                                                 process="btnAddRx acRx txtRxDose cmbRxDoseUnit cmbRxFrequency txtRxDuration cmbRxDurationUnit txtRxDes" 
+                                                                 update="gpRx"
+                                                                 action="#{clientEncounterComponentItemController.addAnotherDataItem(ii)}"></p:commandButton>
+                                            </td>
+                                            <h:panelGroup rendered="#{ii.di.discreptionAsASideLabel}" >
+                                                <td>
+                                                    <p:outputLabel value="#{ii.di.descreption}"  ></p:outputLabel>
+                                                </td>
+                                            </h:panelGroup>
+                                        </tr>
+                                        <tr >
+                                            <td colspan="7">
+                                                <p:dataTable value="#{ii.addedItems}" var="ai" emptyMessage="Nothing added Yet">
+                                                    <p:column headerText="Prescribed">
+                                                        <p:outputLabel value="#{ai.ci.prescriptionValue.medicine.name}" ></p:outputLabel>
+                                                        <p:outputLabel value=" " ></p:outputLabel>
+                                                        <p:outputLabel value="#{ai.ci.prescriptionValue.dose}" ></p:outputLabel>
+                                                        <p:outputLabel value="#{ai.ci.prescriptionValue.doseUnit.name}" ></p:outputLabel>
+                                                        <p:outputLabel value=" " ></p:outputLabel>
+                                                        <p:outputLabel value="#{ai.ci.prescriptionValue.frequency.name}" ></p:outputLabel>
+                                                        <p:outputLabel value=" " ></p:outputLabel>
+                                                        <p:outputLabel value="#{ai.ci.prescriptionValue.duration}" ></p:outputLabel>
+                                                        <p:outputLabel value="#{ai.ci.prescriptionValue.durationUnit.name}" ></p:outputLabel>
+                                                        <p:outputLabel value=" " ></p:outputLabel>
+                                                    </p:column>
+                                                </p:dataTable>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </h:panelGroup>
 
                                 <h:panelGroup id="gpPrs" rendered="#{ii.di.item.dataType eq 'Procedure_Request'}" >
                                     <table >
@@ -138,30 +242,44 @@
                                     </table>
                                 </h:panelGroup>
 
-                                <h:panelGroup rendered="#{ii.di.item.dataType eq 'Item_Reference' and ii.di.renderType eq 'Autocomplete'}" >
+                                <h:panelGroup id="gpMultipleItemAc" rendered="#{ii.di.item.dataType eq 'Item_Reference' and ii.di.renderType eq 'Autocomplete'}" >
                                     <table>
                                         <tr>
                                             <td>
-                                                <p:outputLabel for="acItemcompleteAvailableItemsForSelectionM" value="#{ii.di.name}"  style="#{ii.di.css}" ></p:outputLabel>
+                                                <p:outputLabel for="acItemM" value="#{ii.di.name}"  style="#{ii.di.css}" ></p:outputLabel>
                                             </td>
                                             <td>
                                                 <p:autoComplete id="acItemM" value="#{ii.addingItem.ci.itemValue}"
-                                                                completeMethod="#{ii.completeAvailableItemsForSelection}"
+                                                                completeMethod="#{ii.addingItem.completeItem}"
                                                                 var="ai" itemLabel="#{ai.name}" itemValue="#{ai}"
                                                                 maxResults="15" forceSelection="true" 
                                                                 minQueryLength="3"
-                                                                required="#{ii.required}" 
                                                                 requiredMessage="#{ii.requiredErrorMessage}">
                                                 </p:autoComplete>
                                             </td>
+
+                                            <h:panelGroup id="gpItemAcDetails" >
+                                                <h:panelGroup rendered="#{ii.di.displayDetailsBox}" >
+                                                    <td>
+                                                        <p:inputTextarea value="#{ii.addingItem.ci.longTextValue}" ></p:inputTextarea>
+                                                    </td>
+
+                                                </h:panelGroup>
+                                            </h:panelGroup>
+
                                             <td>
-                                                <p:commandButton id="btnAddM2"  value="Add" process="acItemM btnAddM2" update="@form :#{p:component('formset')}"
+                                                <p:commandButton id="btnAddM2"  value="Add" process="acItemM btnAddM2 gpItemAcDetails" update="gpMultipleItemAc"
                                                                  action="#{clientEncounterComponentItemController.addAnotherDataItem(ii)}"></p:commandButton>
                                             </td>
-                                            <td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="6">
                                                 <p:dataTable value="#{ii.addedItems}" var="ai" emptyMessage="Nothing added Yet">
                                                     <p:column >
                                                         <p:outputLabel value="#{ai.ci.itemValue.name}" ></p:outputLabel>
+                                                    </p:column>
+                                                    <p:column >
+                                                        <p:outputLabel value="#{ai.ci.longTextValue}" ></p:outputLabel>
                                                     </p:column>
                                                 </p:dataTable>
                                             </td>
@@ -221,20 +339,7 @@
                                     </table>
                                 </h:panelGroup>
 
-                                <h:panelGroup rendered="#{ii.di.renderType eq 'Prescreption'}" >
-                                    <table>
-                                        <tr>
-                                            <th>
-                                                <p:outputLabel value="#{ii.di.name}" ></p:outputLabel>
-                                            </th>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                
-                                            </td>
-                                        </tr>
-                                    </table>
-                                </h:panelGroup>
+
 
 
                             </td>
@@ -497,7 +602,6 @@
                                                                 var="ai" itemLabel="#{ai.name}" itemValue="#{ai}"
                                                                 maxResults="15" forceSelection="true" 
                                                                 minQueryLength="3"
-                                                                required="#{ii.required}" 
                                                                 requiredMessage="#{ii.requiredErrorMessage}">
                                                     <p:ajax  event="blur" process="@this"   
                                                              listener="#{clientEncounterComponentItemController.save(ii.ci)}" >
@@ -549,6 +653,40 @@
                                         </tr>
                                     </table>
                                 </h:panelGroup>
+                                
+                                <h:panelGroup rendered="#{ii.di.renderType eq 'Boolean_Button'}" >
+                                    <table >
+                                        <tr>
+                                            <td>
+                                                <p:outputLabel for="bbNc" value="#{ii.di.name}"  style="#{ii.di.css}" ></p:outputLabel>
+                                            </td>
+                                            <td>
+                                                <p:selectBooleanButton id="bbNc" value="#{ii.ci.booleanValue}" offLabel="No" onLabel="Yes"
+                                                                         required="#{ii.di.required}" 
+                                                                         requiredMessage="#{ii.di.requiredErrorMessage}" >
+                                                    <p:ajax  process="@this"   
+                                                             listener="#{clientEncounterComponentItemController.save(ii.ci)}" >
+                                                    </p:ajax>
+                                                    <p:ajax  process="@this"  event="blur" 
+                                                             listener="#{clientEncounterComponentItemController.save(ii.ci)}" >
+                                                    </p:ajax>
+                                                </p:selectBooleanButton>
+                                            </td>
+                                            <h:panelGroup rendered="#{ii.di.displayLastResult}" >
+                                                <td>
+                                                    <h:outputText value="#{fn:replace(clientEncounterComponentFormSetController.lastData(ii.ci),'\\n','&lt;br/&gt;')}" escape="false" />
+                                                </td>
+                                            </h:panelGroup>
+                                            <h:panelGroup rendered="#{ii.di.discreptionAsASideLabel}" >
+                                                <td>
+                                                    <p:outputLabel value="#{ii.di.descreption}"  ></p:outputLabel>
+                                                </td>
+                                            </h:panelGroup>
+                                        </tr>
+                                    </table>
+                                </h:panelGroup>
+                                
+                                
                                 <h:panelGroup rendered="#{ii.di.renderType eq 'Autocomplete' and ii.di.item.dataType eq 'Area_Reference'}" >
                                     <table >
                                         <tr>

@@ -21,8 +21,8 @@
 
                         <p:panelGrid  columns="3" rendered="#{webUserController.selected != null}" style="margin: auto; text-align: left;">
                             <f:facet name="header" >
-                                <p:commandButton action="#{webUserController.saveNewWebUserBySysAdmin()}" value="#{bundleClinical.Save}" />
-                                <p:commandButton value="Back" action="index" process="@this" update="@all">
+                                <p:commandButton ajax="false" action="#{webUserController.saveNewWebUserBySysAdmin()}" value="#{bundleClinical.Save}" />
+                                <p:commandButton ajax="false" value="Back" action="index" process="@this" update="@all">
                                 </p:commandButton>
                             </f:facet>
 

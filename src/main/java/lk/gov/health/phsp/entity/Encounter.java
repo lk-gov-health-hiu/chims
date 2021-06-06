@@ -46,7 +46,7 @@ import lk.gov.health.phsp.enums.EncounterType;
  * @author buddhika
  */
 @Entity
-@Table(name = "encounter")
+@Table
 @XmlRootElement
 public class Encounter implements Serializable {
 

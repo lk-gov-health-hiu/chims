@@ -71,7 +71,7 @@ public class RelationshipController implements Serializable {
     private Institution institution;
     private Institution procedureRoom;
     Item procedure;
-    
+
     private DesignComponentFormSet formset;
 
     private Integer year;
@@ -282,7 +282,7 @@ public class RelationshipController implements Serializable {
         removing = null;
         fillProceduresForSelectedProcedureRoom();
     }
-    
+
     public void removeFormsetFromInstitution() {
         if (removing == null) {
             JsfUtil.addErrorMessage("Nothing to remove");
@@ -330,7 +330,7 @@ public class RelationshipController implements Serializable {
             items = new ArrayList<>();
         }
     }
-    
+
     public void fillInstitutionsForSelectedFormSet() {
         items = findRelationships(institution, RelationshipType.Formsets_for_institution);
         if (items == null) {
@@ -497,8 +497,7 @@ public class RelationshipController implements Serializable {
         fillProceduresForSelectedProcedureRoom();
         procedure = null;
     }
-    
-    
+
     public void addFormsetToInstitution() {
         if (institution == null) {
             JsfUtil.addErrorMessage("Institution?");
@@ -570,7 +569,45 @@ public class RelationshipController implements Serializable {
         m.put("rt", t);
         return getFacade().findFirstByJpql(j, m);
     }
+
+    public Relationship findRelationship(Item item, Item itemUnit, Item toItem, Double dblValue,
+            Item toItemUnit, RelationshipType t) {
+        String j = "select r from Relationship r "
+                + " where r.retired=:r "
+                + " and r.item=:item   "
+                + " and r.itemUnit=:itemUnit "
+                + " and r.toItem=:toItem "
+                + " and r.toItemUnit=:toItemUnit "
+                + " and r.dblValue=:dblValue "
+                + " and r.relationshipType=:rt ";
+        Map m = new HashMap();
+        m.put("r", false);
+        m.put("item", item);
+        m.put("itemUnit", itemUnit);
+
+        m.put("toItem", toItem);
+        m.put("toItemUnit", toItemUnit);
+        m.put("dblValue", dblValue);
+
+        m.put("rt", t);
+
+        return getFacade().findFirstByJpql(j, m);
+    }
     
+     public Relationship findRelationship(Item item, Item toItem, RelationshipType t) {
+        String j = "select r from Relationship r "
+                + " where r.retired=:r "
+                + " and r.item=:item   "
+                + " and r.toItem=:toItem "
+                + " and r.relationshipType=:rt ";
+        Map m = new HashMap();
+        m.put("r", false);
+        m.put("item", item);
+        m.put("toItem", toItem);
+        m.put("rt", t);
+        return getFacade().findFirstByJpql(j, m);
+    }
+
     public Relationship findRelationship(Institution ins, Component com, RelationshipType t) {
         String j = "select r from Relationship r "
                 + " where r.retired=:r "
@@ -608,7 +645,7 @@ public class RelationshipController implements Serializable {
         m.put("rt", t);
         return getFacade().findByJpql(j, m);
     }
-    
+
     public List<Relationship> findRelationships(Component com, RelationshipType t) {
         String j = "select r from Relationship r "
                 + " where r.retired=:ret "
@@ -620,8 +657,6 @@ public class RelationshipController implements Serializable {
         m.put("rt", t);
         return getFacade().findByJpql(j, m);
     }
-    
-    
 
     public Long findPopulationValue(int y, Institution ins, RelationshipType t) {
         System.out.println("findPopulationValue");
@@ -1090,8 +1125,6 @@ public class RelationshipController implements Serializable {
     public void setFormset(DesignComponentFormSet formset) {
         this.formset = formset;
     }
-    
-    
 
     @FacesConverter(forClass = Relationship.class)
     public static class RelationshipControllerConverter implements Converter {

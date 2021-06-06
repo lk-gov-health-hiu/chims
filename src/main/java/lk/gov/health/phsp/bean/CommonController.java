@@ -735,6 +735,17 @@ public class CommonController implements Serializable {
         return l;
     }
 
+    public static String formatDouble(Double variable) {
+        String out;
+        if ((variable == Math.floor(variable)) && !Double.isInfinite(variable)) {
+            int oi = variable.intValue();
+            out = oi + "";
+        }else{
+            out = variable.toString();
+        }
+        return out;
+    }
+
     public static Integer getIntegerValue(String result) {
         Integer d = null;
         try {
@@ -1049,6 +1060,11 @@ public class CommonController implements Serializable {
         }
         str = str.replace("\n", "<br/>");
         return str;
+    }
+
+    public static String prepareAsCode(String str) {
+        String after = str.trim().replaceAll(" +", "_");
+        return after.toLowerCase();
     }
 
 }

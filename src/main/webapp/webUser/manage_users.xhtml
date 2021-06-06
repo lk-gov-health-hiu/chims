@@ -89,6 +89,10 @@
                                                   action="#{webUserController.prepareEditPassword()}" >
                                     <f:setPropertyActionListener value="#{item}" target="#{webUserController.current}" ></f:setPropertyActionListener>
                                 </p:commandButton>
+                                <p:commandButton  value="Delete" ajax="false"
+                                                  action="#{webUserController.deleteUser()}" >
+                                    <f:setPropertyActionListener value="#{item}" target="#{webUserController.current}" ></f:setPropertyActionListener>
+                                </p:commandButton>
 
 
 

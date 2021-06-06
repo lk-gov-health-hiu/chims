@@ -38,6 +38,12 @@ public enum ItemType {
     Vmp("VMP"),
     Ampp("AMPP"),
     Vmpp("VMPP"),
+    Strength_Unit("Strength Unit"),
+    Issue_Unit("Issue Unit"),
+    Dosage_Form("Dosage Form"),
+    Pack_Unit("Pack Unit"),
+    Frequency_Unit("Frequency Unit"),
+    Duration_Unit("Duration Unit"),
     Other("Other");
     
     public final String label;
