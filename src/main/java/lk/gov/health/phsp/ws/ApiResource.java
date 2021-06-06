@@ -130,6 +130,9 @@ public class ApiResource {
                 case "mark_prescription_as_received":
                     jSONObjectOut = markPrescriptionAsReceived(id);
                     break;
+                case "mark_prescription_as_issued":
+                    jSONObjectOut = markPrescriptionAsReceived(id);
+                    break;
                 case "get_province_list":
                     jSONObjectOut = provinceList();
                     break;
@@ -768,6 +771,16 @@ public class ApiResource {
     }
 
     private JSONObject markPrescriptionAsReceived(String id) {
+        boolean f = apiRequestApplicationController.markRequestAsReceived(id);
+        if (!f) {
+            return errorMessageNoId();
+        }
+        JSONObject jSONObjectOut = new JSONObject();
+        jSONObjectOut.put("status", successMessage());
+        return jSONObjectOut;
+    }
+    
+    private JSONObject markPrescriptionAsIssued(String id) {
         boolean f = apiRequestApplicationController.markRequestAsReceived(id);
         if (!f) {
             return errorMessageNoId();
