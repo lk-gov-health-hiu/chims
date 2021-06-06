@@ -16,7 +16,7 @@
                         <h:form>
                             <p:outputLabel value="Summery - (PHN : #{clientController.selected.phn})" ></p:outputLabel>
                             <p:spacer height="1" width="30"></p:spacer>
-                            <p:commandButton value="To Edit Details" action="/client/client"
+                            <p:commandButton value="To Edit Details" action="#{clientController.toClient()}"
                                              style="float: right;">
                             </p:commandButton>
                             <p:commandButton value="To Print" action="/client/client_print" style="float: right;">

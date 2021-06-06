@@ -330,8 +330,21 @@ public class ClientController implements Serializable {
                 Client_Data);
 
         if (cfs == null) {
-            System.err.println("No CFS");
-            return;
+            Encounter e = new Encounter();
+            e.setClient(getSelected());
+            e.setInstitution(webUserController.getLoggedUser().getInstitution());
+            e.setEncounterType(EncounterType.Client_Data);
+            encounterController.save(e);
+            cfs = new ClientEncounterComponentFormSet();
+            cfs.setCreatedAt(new Date());
+            cfs.setCreatedBy(webUserController.getLoggedUser());
+            cfs.setEncounter(e);
+            cfs.setInstitution(dfs.getCurrentlyUsedIn());
+            cfs.setReferenceComponent(dfs);
+            cfs.setName(dfs.getName());
+            cfs.setDescreption(dfs.getDescreption());
+            cfs.setCss(dfs.getCss());
+            clientEncounterComponentFormSetController.save(cfs);
         }
         DataFormset fs = new DataFormset();
         Encounter e = cfs.getEncounter();
@@ -544,7 +557,7 @@ public class ClientController implements Serializable {
         dataFormset = fs;
         clientCefs = cfs;
         clientDcfs = dfs;
-        
+
     }
 
     public List<Area> completeClientsGnArea(String qry) {

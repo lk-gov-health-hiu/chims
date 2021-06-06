@@ -29,6 +29,7 @@ import lk.gov.health.phsp.entity.DesignComponentForm;
 import lk.gov.health.phsp.entity.DesignComponentFormItem;
 import lk.gov.health.phsp.entity.Institution;
 import lk.gov.health.phsp.entity.Relationship;
+import static lk.gov.health.phsp.enums.ComponentSetType.Patient_Pages;
 import lk.gov.health.phsp.enums.RelationshipType;
 import lk.gov.health.phsp.facade.DesignComponentFormItemFacade;
 import org.apache.commons.lang3.SerializationUtils;
@@ -321,7 +322,8 @@ public class DesignComponentFormSetController implements Serializable {
                 if(c!=null){
                     if(c instanceof DesignComponentFormSet){
                         DesignComponentFormSet ts = (DesignComponentFormSet) r.getComponent();
-                        if(ts.getComponentSetType()==lk.gov.health.phsp.enums.ComponentSetType.Patient_Pages){
+                        System.out.println("ts.getComponentSetType() = " + ts.getComponentSetType());
+                        if(ts.getComponentSetType().equals(Patient_Pages)){
                             fs=ts;
                         }
                     }

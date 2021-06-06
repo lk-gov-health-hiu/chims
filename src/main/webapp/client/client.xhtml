@@ -295,7 +295,7 @@
                             <h:panelGroup rendered="#{clientController.dataFormset.forms.size() gt 1}" >
                                 <h:panelGroup rendered="#{clientController.dataFormset.dfs.panelType  eq 'TabView_Left_Oriented' }" >
                                     <p:tabView 
-                                        activeIndex="#{clientController.selectedTabIndex}"
+                                        activeIndex="#{clientController.intNo}"
                                         orientation="left" style="width: 100%; padding: 5px;" 
                                         value="#{clientController.dataFormset.forms}" var="f">
                                         <p:tab title="#{f.df.name}" >
@@ -306,9 +306,9 @@
                                         <p:ajax event="tabChange" process="@this"/>
                                     </p:tabView>
                                 </h:panelGroup>
-                                <h:panelGroup rendered="#{clientController.selected.referanceDesignComponentFormSet.panelType eq 'TabView_Bottom_Oriented'}" >
+                                <h:panelGroup rendered="#{clientController.dataFormset.dfs.panelType eq 'TabView_Bottom_Oriented'}" >
                                     <p:tabView 
-                                        activeIndex="#{clientController.selectedTabIndex}"  
+                                        activeIndex="#{clientController.intNo}"  
                                         orientation="bottom" style="width: 100%; padding: 5px;" 
                                         value="#{clientController.dataFormset.forms}" var="f">
                                         <p:tab title="#{f.df.name}" >
@@ -319,8 +319,8 @@
                                         <p:ajax event="tabChange" process="@this"/>
                                     </p:tabView>
                                 </h:panelGroup>
-                                <h:panelGroup rendered="#{clientController.selected.referanceDesignComponentFormSet.panelType eq 'Tabview_Top_Oriented'}" >
-                                    <p:tabView activeIndex="#{clientController.selectedTabIndex}"  orientation="top" style="width: 100%; padding: 5px;" value="#{clientController.dataFormset.forms}" var="f">
+                                <h:panelGroup rendered="#{clientController.dataFormset.dfs.panelType eq 'Tabview_Top_Oriented'}" >
+                                    <p:tabView activeIndex="#{clientController.intNo}"  orientation="top" style="width: 100%; padding: 5px;" value="#{clientController.dataFormset.forms}" var="f">
                                         <p:tab title="#{f.df.name}" >
                                             <div style="#{f.df.css}" >
                                                 <ez:dataform form="#{f}" ></ez:dataform>
@@ -329,8 +329,8 @@
                                         <p:ajax event="tabChange" process="@this"/>
                                     </p:tabView>
                                 </h:panelGroup>
-                                <h:panelGroup rendered="#{clientController.selected.referanceDesignComponentFormSet.panelType eq 'TabView_Right_Oriented'}" >
-                                    <p:tabView  activeIndex="#{clientController.selectedTabIndex}" orientation="right" style="width: 100%; padding: 5px;" value="#{clientController.dataFormset.forms}" var="f">
+                                <h:panelGroup rendered="#{clientController.dataFormset.dfs.panelType eq 'TabView_Right_Oriented'}" >
+                                    <p:tabView  activeIndex="#{clientController.intNo}" orientation="right" style="width: 100%; padding: 5px;" value="#{clientController.dataFormset.forms}" var="f">
                                         <p:tab title="#{f.df.name}" >
                                             <div style="#{f.df.css}" >
                                                 <ez:dataform form="#{f}" ></ez:dataform>
@@ -339,8 +339,8 @@
                                         <p:ajax event="tabChange" process="@this"/>
                                     </p:tabView>
                                 </h:panelGroup>
-                                <h:panelGroup rendered="#{clientController.selected.referanceDesignComponentFormSet.panelType eq 'Accordion_Basic'}" >
-                                    <p:accordionPanel  activeIndex="#{clientController.selectedTabIndex}"  style="width: 100%; padding: 5px;" value="#{clientController.dataFormset.forms}" var="f">
+                                <h:panelGroup rendered="#{clientController.dataFormset.dfs.panelType eq 'Accordion_Basic'}" >
+                                    <p:accordionPanel  activeIndex="#{clientController.intNo}"  style="width: 100%; padding: 5px;" value="#{clientController.dataFormset.forms}" var="f">
                                         <p:tab title="#{f.df.name}" >
                                             <div style="#{f.df.css}" >
                                                 <ez:dataform form="#{f}" ></ez:dataform>
@@ -349,7 +349,7 @@
                                         <p:ajax event="tabChange" process="@this"/>
                                     </p:accordionPanel>
                                 </h:panelGroup>
-                                <h:panelGroup rendered="#{clientController.selected.referanceDesignComponentFormSet.panelType eq 'Accordion_Multiple'}" >
+                                <h:panelGroup rendered="#{clientController.dataFormset.dfs.panelType eq 'Accordion_Multiple'}" >
                                     <p:accordionPanel multiple="true" style="width: 100%; padding: 5px;" value="#{clientController.dataFormset.forms}" var="f">
                                         <p:tab title="#{f.df.name}" >
                                             <div style="#{f.df.css}" >
