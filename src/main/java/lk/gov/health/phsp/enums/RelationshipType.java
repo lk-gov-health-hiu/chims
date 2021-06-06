@@ -65,7 +65,9 @@ public enum RelationshipType {
     Procedure_Room("Procedure Room"),
     Dispensary("Dispensary"),
     Laboratory("Laboratory"),
-    VtmsForVmp("Vtms for VMPs"),
+    Procedure_for_institution("Procedure performed at the institution"),
+    Formsets_for_institution("Formsets Assigned For Institutions"),
+    VtmsForVmp("VTM for VMP"),
     VmpForAmp("VMP for AMP");
     private final String label;
     
