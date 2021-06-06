@@ -174,8 +174,8 @@ public class ClientEncounterComponentFormSetController implements Serializable {
 // </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="User Functions">
 
-    public String deleteSelected(){
-        if(selected==null){
+    public String deleteSelected() {
+        if (selected == null) {
             JsfUtil.addErrorMessage("Nothing to delete");
             return "";
         }
@@ -183,9 +183,9 @@ public class ClientEncounterComponentFormSetController implements Serializable {
         selected.setRetiredAt(new Date());
         selected.setRetiredBy(webUserController.getLoggedUser());
         save(selected);
-        
-        Encounter e=selected.getEncounter();
-        if(e!=null){
+
+        Encounter e = selected.getEncounter();
+        if (e != null) {
             e.setRetired(true);
             e.setRetiredAt(new Date());
             e.setRetiredBy(webUserController.getLoggedUser());
@@ -193,8 +193,7 @@ public class ClientEncounterComponentFormSetController implements Serializable {
         }
         return clientController.toClientProfile();
     }
-    
-    
+
     public void retireSelectedItems() {
         if (selectedItems == null) {
             return;
@@ -320,6 +319,24 @@ public class ClientEncounterComponentFormSetController implements Serializable {
                             r.setName("procedure_request");
                             apiRequestApplicationController.saveApiRequests(r);
                         }
+                    } else if (tItem.getDi().getSelectionDataType() == SelectionDataType.Prescreption_Reference) {
+                        for (DataItem ttItem : tItem.getAddedItems()) {
+                            if (ttItem.getCi() == null) {
+                                System.err.println("ttItem.getCi() is null");
+                                continue;
+                            }
+                            if (ttItem.getCi().getItemValue() == null) {
+                                System.err.println("ttItem.getCi().getItemValue() is null");
+                                continue;
+                            }
+                            ApiRequest r = new ApiRequest();
+                            r.setRequestCeci(ttItem.getCi());
+                            r.setCreatedAt(new Date());
+                            r.setCreatedBy(webUserController.getLoggedUser());
+                            r.setEncounter(tSet.getEfs().getEncounter());
+                            r.setName("prescription_request");
+                            apiRequestApplicationController.saveApiRequests(r);
+                        }
                     }
                 } else {
                     if (tItem.getDi().getSelectionDataType() == SelectionDataType.Procedure_Request) {
@@ -338,6 +355,23 @@ public class ClientEncounterComponentFormSetController implements Serializable {
                         r.setCreatedBy(webUserController.getLoggedUser());
                         r.setEncounter(tSet.getEfs().getEncounter());
                         r.setName("procedure_request");
+                        apiRequestApplicationController.saveApiRequests(r);
+                    } else if (tItem.getDi().getSelectionDataType() == SelectionDataType.Prescreption_Reference) {
+                        if (tItem.getCi() == null) {
+                            System.err.println("tItem.getCi() is null");
+                            continue;
+                        }
+                        if (tItem.getCi().getItemValue() == null) {
+                            System.err.println("tItem.getCi().getItemValue() is null");
+                            continue;
+                        }
+                        System.out.println("tItem = " + tItem.getCi().getItemValue().getName());
+                        ApiRequest r = new ApiRequest();
+                        r.setRequestCeci(tItem.getCi());
+                        r.setCreatedAt(new Date());
+                        r.setCreatedBy(webUserController.getLoggedUser());
+                        r.setEncounter(tSet.getEfs().getEncounter());
+                        r.setName("prescription_request");
                         apiRequestApplicationController.saveApiRequests(r);
                     }
                 }
@@ -530,8 +564,6 @@ public class ClientEncounterComponentFormSetController implements Serializable {
             getFacade().edit(s);
         }
     }
-
-    
 
     public List<ClientEncounterComponentFormSet> fillLastFiveCompletedEncountersFormSets(String type) {
         return ClientEncounterComponentFormSetController.this.fillEncountersFormSets(type, 5);
@@ -791,8 +823,6 @@ public class ClientEncounterComponentFormSetController implements Serializable {
         return false;
     }
 
-    
-
     public String createNewAndNavigateToDataEntry(DesignComponentFormSet dfs) {
         String navigationLink = "/dataentry/Formset";
         formEditable = true;
@@ -917,8 +947,8 @@ public class ClientEncounterComponentFormSetController implements Serializable {
                             } else if (ci.getReferanceDesignComponentFormItem().getDataPopulationStrategy() == DataPopulationStrategy.From_Last_Encounter) {
                                 updateFromLastEncounter(ci);
                             }
-                            
-                            if(dis.getRenderType()==RenderType.Prescreption){
+
+                            if (dis.getRenderType() == RenderType.Prescreption) {
                                 Prescription p = new Prescription();
                                 p.setClient(e.getClient());
                                 p.setEncounter(e);
@@ -926,7 +956,7 @@ public class ClientEncounterComponentFormSetController implements Serializable {
                                 p.setCreatedBy(webUserController.getLoggedUser());
                                 ci.setPrescriptionValue(p);
                             }
-                            
+
                             DataItem i = new DataItem();
                             i.setMultipleEntries(true);
                             i.setCi(ci);
@@ -1399,8 +1429,8 @@ public class ClientEncounterComponentFormSetController implements Serializable {
             case "client_ds_division":
                 ti.setAreaValue(c.getPerson().getGnArea().getDsd());
                 return;
-             case "marietal_status_at_registration":
-                 ti.setItemValue(c.getPerson().getMariatalStatus());
+            case "marietal_status_at_registration":
+                ti.setItemValue(c.getPerson().getMariatalStatus());
         }
 
         ClientEncounterComponentItem vi;
