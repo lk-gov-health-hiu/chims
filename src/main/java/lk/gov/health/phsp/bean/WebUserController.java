@@ -642,7 +642,7 @@ public class WebUserController implements Serializable {
         System.out.println("username & password correct");
 
         loggedUserPrivileges = userPrivilegeList(loggedUser);
-
+        clientController.setClientDcfs(null);
         JsfUtil.addSuccessMessage("Successfully Logged");
         userTransactionController.recordTransaction("Successful Login");
         return "/index";

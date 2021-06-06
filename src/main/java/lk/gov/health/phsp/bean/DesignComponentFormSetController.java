@@ -311,6 +311,25 @@ public class DesignComponentFormSetController implements Serializable {
         }
         return ss;
     }
+    
+    public DesignComponentFormSet getClintFormSet(Institution clinic) {
+        List<Relationship> rs = relationshipController.findRelationships(clinic, RelationshipType.Formsets_for_institution);
+        DesignComponentFormSet fs=null;
+        if(rs!=null){
+            for(Relationship r:rs){
+                Component c = r.getComponent();
+                if(c!=null){
+                    if(c instanceof DesignComponentFormSet){
+                        DesignComponentFormSet ts = (DesignComponentFormSet) r.getComponent();
+                        if(ts.getComponentSetType()==lk.gov.health.phsp.enums.ComponentSetType.Patient_Pages){
+                            fs=ts;
+                        }
+                    }
+                }
+            }
+        }
+        return fs;
+    }
 
     public List<DesignComponentFormSet> getClinicFormSets(Institution clinic) {
         boolean needRefill = false;

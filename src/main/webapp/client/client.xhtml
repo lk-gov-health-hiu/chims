@@ -4,7 +4,8 @@
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:f="http://xmlns.jcp.org/jsf/core"
-      xmlns:p="http://primefaces.org/ui">
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ez="http://xmlns.jcp.org/jsf/composite/ezcomp">
 
     <body>
 
@@ -12,20 +13,58 @@
 
             <ui:define name="content">
 
+                <h:form>
+                    <h:panelGroup>
 
-                <p:panel style="text-align: center;height: 100%;" >
-                    <f:facet name="header" >
-                        <p:outputLabel value="Add Client Details" rendered="#{clientController.selected.id eq null}"></p:outputLabel>
-                        <p:outputLabel value="Edit Client Details" rendered="#{clientController.selected.id ne null}"></p:outputLabel>
-                    </f:facet>
 
-                    <h:form>
-
-                        <p:panelGrid columns="4" style="text-align: left;margin: auto;">
-                            <f:facet name="header" >
-                                <p:commandButton ajax="false" action="#{clientController.saveClient()}" value="Save" ></p:commandButton>
-                            </f:facet>
-
+                        <p:tooltip for="year" >
+                            You can enter the age in years here. The system will calculate the approximate date of birth.
+                        </p:tooltip>
+                        <p:tooltip for="month" >
+                            In children below five years, you may enter the age in months here. The system will use this data to calculate the approximate date of birth.
+                        </p:tooltip>
+                        <p:tooltip for="day" >
+                            In children below one month, you may enter the age in days here. The system will use this to calculate the approximate date of birth.
+                        </p:tooltip>
+                        <p:tooltip for="sex" >
+                            Select Gender
+                        </p:tooltip>
+                        <p:tooltip for="title" >
+                            Select Title
+                        </p:tooltip>
+                        <p:tooltip for="phone2" >
+                            Enter home number
+                        </p:tooltip>
+                        <p:tooltip for="phone1" >
+                            Enter mobile number
+                        </p:tooltip>
+                        <p:tooltip for="gn" >
+                            Search GN Area
+                        </p:tooltip>
+                        <p:tooltip for="district" >
+                            Search District
+                        </p:tooltip>
+                        <p:tooltip for="calDob" >
+                            You can also enter the Date of Birth
+                        </p:tooltip>
+                        <p:tooltip for="email" >
+                            Enter the email
+                        </p:tooltip>
+                        <p:tooltip for="phn" >
+                            Generate a new PHN for new registrations of enter existing PHN if already registered.
+                        </p:tooltip>
+                        <p:watermark value="Years" for="year" class="w3-red" />
+                        <p:watermark value="Months" for="month" />
+                        <p:watermark value="Days" for="day" />
+                        <p:watermark for="calDob" value="Birthday" ></p:watermark>
+                    </h:panelGroup>
+                    <p:panelGrid columns="2"  style="width: 100%; text-align: center;height: 100%;"  styleClass="alignTop" >
+                        <f:facet name="header" >
+                            <p:commandButton style="float: left;" ajax="false" action="#{clientController.saveClient()}" value="Save" ></p:commandButton>
+                            <p:outputLabel value="Add Client Details" rendered="#{clientController.selected.id eq null}"></p:outputLabel>
+                            <p:outputLabel value="Edit Client Details" rendered="#{clientController.selected.id ne null}"></p:outputLabel>
+                        </f:facet>
+                        <p:panelGrid columns="4" style="text-align: left;margin: auto; width: 100%;">
                             <p:outputLabel value="Title:" for="title" />
                             <p:selectOneMenu id="title"  value="#{clientController.selected.person.title}"  >
                                 <f:selectItems value="#{itemController.titles}" var="t" itemLabel="#{t.name}"
@@ -242,60 +281,97 @@
 
 
                         </p:panelGrid>
-                        <p:tooltip for="year" >
-                            You can enter the age in years here. The system will calculate the approximate date of birth.
-                        </p:tooltip>
-                        <p:tooltip for="month" >
-                            In children below five years, you may enter the age in months here. The system will use this data to calculate the approximate date of birth.
-                        </p:tooltip>
-                        <p:tooltip for="day" >
-                            In children below one month, you may enter the age in days here. The system will use this to calculate the approximate date of birth.
-                        </p:tooltip>
 
-                        <p:tooltip for="sex" >
-                            Select Gender
-                        </p:tooltip>
-                        <p:tooltip for="title" >
-                            Select Title
-                        </p:tooltip>
-                        <p:tooltip for="phone2" >
-                            Enter home number
-                        </p:tooltip>
-                        <p:tooltip for="phone1" >
-                            Enter mobile number
-                        </p:tooltip>
-                        <p:tooltip for="gn" >
-                            Search GN Area
-                        </p:tooltip>
-                        <p:tooltip for="district" >
-                            Search District
-                        </p:tooltip>
+                        <p:panelGrid id="formset" columns="1" style="width: 100%;" rendered="#{clientController.selected.id ne null}" >
+                            <f:facet name="header" >
+                                <p:outputLabel value="Clinical Data" ></p:outputLabel>
+                            </f:facet>
+                            <h:panelGroup rendered="#{clientController.dataFormset.forms.size() eq 1}" >
+                                <div style="#{clientController.dataFormset.forms.get(0).df.css}" >
+                                    <ez:dataform form="#{clientController.dataFormset.forms.get(0)}" ></ez:dataform>
+                                </div>
+                            </h:panelGroup>
 
-                        <p:tooltip for="calDob" >
-                            You can also enter the Date of Birth
-                        </p:tooltip>
-                        <p:tooltip for="email" >
-                            Enter the email
-                        </p:tooltip>
+                            <h:panelGroup rendered="#{clientController.dataFormset.forms.size() gt 1}" >
+                                <h:panelGroup rendered="#{clientController.dataFormset.dfs.panelType  eq 'TabView_Left_Oriented' }" >
+                                    <p:tabView 
+                                        activeIndex="#{clientController.selectedTabIndex}"
+                                        orientation="left" style="width: 100%; padding: 5px;" 
+                                        value="#{clientController.dataFormset.forms}" var="f">
+                                        <p:tab title="#{f.df.name}" >
+                                            <div style="#{f.df.css}" >
+                                                <ez:dataform form="#{f}" ></ez:dataform>
+                                            </div>
+                                        </p:tab>
+                                        <p:ajax event="tabChange" process="@this"/>
+                                    </p:tabView>
+                                </h:panelGroup>
+                                <h:panelGroup rendered="#{clientController.selected.referanceDesignComponentFormSet.panelType eq 'TabView_Bottom_Oriented'}" >
+                                    <p:tabView 
+                                        activeIndex="#{clientController.selectedTabIndex}"  
+                                        orientation="bottom" style="width: 100%; padding: 5px;" 
+                                        value="#{clientController.dataFormset.forms}" var="f">
+                                        <p:tab title="#{f.df.name}" >
+                                            <div style="#{f.df.css}" >
+                                                <ez:dataform form="#{f}" ></ez:dataform>
+                                            </div>
+                                        </p:tab>
+                                        <p:ajax event="tabChange" process="@this"/>
+                                    </p:tabView>
+                                </h:panelGroup>
+                                <h:panelGroup rendered="#{clientController.selected.referanceDesignComponentFormSet.panelType eq 'Tabview_Top_Oriented'}" >
+                                    <p:tabView activeIndex="#{clientController.selectedTabIndex}"  orientation="top" style="width: 100%; padding: 5px;" value="#{clientController.dataFormset.forms}" var="f">
+                                        <p:tab title="#{f.df.name}" >
+                                            <div style="#{f.df.css}" >
+                                                <ez:dataform form="#{f}" ></ez:dataform>
+                                            </div>
+                                        </p:tab>
+                                        <p:ajax event="tabChange" process="@this"/>
+                                    </p:tabView>
+                                </h:panelGroup>
+                                <h:panelGroup rendered="#{clientController.selected.referanceDesignComponentFormSet.panelType eq 'TabView_Right_Oriented'}" >
+                                    <p:tabView  activeIndex="#{clientController.selectedTabIndex}" orientation="right" style="width: 100%; padding: 5px;" value="#{clientController.dataFormset.forms}" var="f">
+                                        <p:tab title="#{f.df.name}" >
+                                            <div style="#{f.df.css}" >
+                                                <ez:dataform form="#{f}" ></ez:dataform>
+                                            </div>
+                                        </p:tab>
+                                        <p:ajax event="tabChange" process="@this"/>
+                                    </p:tabView>
+                                </h:panelGroup>
+                                <h:panelGroup rendered="#{clientController.selected.referanceDesignComponentFormSet.panelType eq 'Accordion_Basic'}" >
+                                    <p:accordionPanel  activeIndex="#{clientController.selectedTabIndex}"  style="width: 100%; padding: 5px;" value="#{clientController.dataFormset.forms}" var="f">
+                                        <p:tab title="#{f.df.name}" >
+                                            <div style="#{f.df.css}" >
+                                                <ez:dataform form="#{f}" ></ez:dataform>
+                                            </div>
+                                        </p:tab>
+                                        <p:ajax event="tabChange" process="@this"/>
+                                    </p:accordionPanel>
+                                </h:panelGroup>
+                                <h:panelGroup rendered="#{clientController.selected.referanceDesignComponentFormSet.panelType eq 'Accordion_Multiple'}" >
+                                    <p:accordionPanel multiple="true" style="width: 100%; padding: 5px;" value="#{clientController.dataFormset.forms}" var="f">
+                                        <p:tab title="#{f.df.name}" >
+                                            <div style="#{f.df.css}" >
+                                                <ez:dataform form="#{f}" ></ez:dataform>
+                                            </div>
+                                        </p:tab>
+                                        <p:ajax event="tabChange" process="@this"/>
+                                    </p:accordionPanel>
+                                </h:panelGroup>
+                            </h:panelGroup>
 
-                        <p:tooltip for="phn" >
-                            Generate a new PHN for new registrations of enter existing PHN if already registered.
-                        </p:tooltip>
+
+                        </p:panelGrid>
+
+
+                    </p:panelGrid>
 
 
 
 
-                        <p:watermark value="Years" for="year" class="w3-red" />
-                        <p:watermark value="Months" for="month" />
-                        <p:watermark value="Days" for="day" />
-                        <p:watermark for="calDob" value="Birthday" ></p:watermark>
 
-
-
-
-                    </h:form>
-
-                </p:panel>
+                </h:form>
 
 
 

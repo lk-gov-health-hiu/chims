@@ -38,7 +38,8 @@ public enum EncounterType {
     Pharmacy_Issue("Pharmacy Issue"),
     Testing("Testing"),
     Procedure("Procedure"),
-    Other("Other");
+    Other("Other"),
+    Client_Data("Client Data");
     
     private final String label;    
     private EncounterType(String label){

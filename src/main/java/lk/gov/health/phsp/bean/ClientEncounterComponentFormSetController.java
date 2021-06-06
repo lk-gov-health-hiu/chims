@@ -801,6 +801,27 @@ public class ClientEncounterComponentFormSetController implements Serializable {
         ClientEncounterComponentFormSet f = getFacade().findFirstByJpql(j, m);
         return f;
     }
+    
+    public ClientEncounterComponentFormSet findClientEncounterFromset(DesignComponentFormSet dfs, Client c, Institution i, EncounterType t) {
+        String j = "select f from  ClientEncounterComponentFormSet f join f.encounter e"
+                + " where "
+                + " e.retired<>:er"
+                + " and f.retired<>:fr "
+                + " and f.referenceComponent=:dfs "
+                + " and e.client=:c "
+                + " and e.institution=:i "
+                + " and e.encounterType=:t"
+                + " order by f.id desc";
+        Map m = new HashMap();
+        m.put("c", c);
+        m.put("i", i);
+        m.put("t", t);
+        m.put("dfs", dfs);
+        m.put("er", true);
+        m.put("fr", true);
+        ClientEncounterComponentFormSet f = getFacade().findFirstByJpql(j, m);
+        return f;
+    }
 
     public boolean isFirstEncounterOfThatType(Client c, Institution i, EncounterType t) {
         String j = "select count(e) from Encounter e where "
