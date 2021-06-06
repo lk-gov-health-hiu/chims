@@ -653,6 +653,40 @@
                                         </tr>
                                     </table>
                                 </h:panelGroup>
+                                
+                                <h:panelGroup rendered="#{ii.di.renderType eq 'Boolean_Button'}" >
+                                    <table >
+                                        <tr>
+                                            <td>
+                                                <p:outputLabel for="bbNc" value="#{ii.di.name}"  style="#{ii.di.css}" ></p:outputLabel>
+                                            </td>
+                                            <td>
+                                                <p:selectBooleanButton id="bbNc" value="#{ii.ci.booleanValue}" offLabel="No" onLabel="Yes"
+                                                                         required="#{ii.di.required}" 
+                                                                         requiredMessage="#{ii.di.requiredErrorMessage}" >
+                                                    <p:ajax  process="@this"   
+                                                             listener="#{clientEncounterComponentItemController.save(ii.ci)}" >
+                                                    </p:ajax>
+                                                    <p:ajax  process="@this"  event="blur" 
+                                                             listener="#{clientEncounterComponentItemController.save(ii.ci)}" >
+                                                    </p:ajax>
+                                                </p:selectBooleanButton>
+                                            </td>
+                                            <h:panelGroup rendered="#{ii.di.displayLastResult}" >
+                                                <td>
+                                                    <h:outputText value="#{fn:replace(clientEncounterComponentFormSetController.lastData(ii.ci),'\\n','&lt;br/&gt;')}" escape="false" />
+                                                </td>
+                                            </h:panelGroup>
+                                            <h:panelGroup rendered="#{ii.di.discreptionAsASideLabel}" >
+                                                <td>
+                                                    <p:outputLabel value="#{ii.di.descreption}"  ></p:outputLabel>
+                                                </td>
+                                            </h:panelGroup>
+                                        </tr>
+                                    </table>
+                                </h:panelGroup>
+                                
+                                
                                 <h:panelGroup rendered="#{ii.di.renderType eq 'Autocomplete' and ii.di.item.dataType eq 'Area_Reference'}" >
                                     <table >
                                         <tr>
