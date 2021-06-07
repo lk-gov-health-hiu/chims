@@ -243,3 +243,13 @@
     height: 6rem;
     display: block;
 }
+
+
+/** tabs **/
+.ui-tabs.ui-tabs-left > .ui-tabs-nav {
+   width: 10%;
+}
+/** panels **/
+.ui-tabs.ui-tabs-left > .ui-tabs-panels {
+   width: 90%;
+}
