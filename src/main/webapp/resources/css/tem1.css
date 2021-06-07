@@ -245,6 +245,17 @@
 }
 
 
+.prescriptionItemtd{
+    width: 22rem;
+    display: block;
+}
+
+.prescriptionItem{
+    width: 20rem;
+    display: block;
+}
+
+
 /** tabs **/
 .ui-tabs.ui-tabs-left > .ui-tabs-nav {
    width: 10%;

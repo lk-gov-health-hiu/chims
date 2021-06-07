@@ -29,25 +29,25 @@
                         <tr>
                             <td>
                                 <h:panelGroup id="gpRx" rendered="#{ii.di.renderType eq 'Prescreption'}" >
-                                    <table border="1" width="100%" cellpadding="0" cellspacing="0">
+                                    <table width="100%" cellpadding="0" cellspacing="0">
                                         <tr>
                                             <td colspan="7">
                                                 <p:outputLabel value="#{ii.di.name}"  style="#{ii.di.css}" ></p:outputLabel>
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td>
+                                            <td class="prescriptionItemtd">
                                                 <p:outputLabel value="Medicine/Device" ></p:outputLabel>
                                                 <p:autoComplete id="acRx" value="#{ii.addingItem.ci.prescriptionValue.medicine}" 
                                                                 completeMethod="#{itemApplicationController.completePharmaceuticalItem}"
-                                                                var="p" inputStyleClass="dataValueInputText"
+                                                                var="p" inputStyleClass="prescriptionItem"
                                                                 itemLabel="#{p.name}"
                                                                 itemValue="#{p}"
                                                                 placeholder="Select Medicine"
                                                                 >
                                                 </p:autoComplete>
                                             </td>
-                                            <td>
+                                            <td style="width:8rem;">
                                                 <p:outputLabel value="Dose" ></p:outputLabel>
                                                 <p:inputText style="width:6rem;" id="txtRxDose" value="#{ii.addingItem.ci.prescriptionValue.dose}" ></p:inputText>
                                                 <p:selectOneMenu  style="width:6rem;"  id="cmbRxDoseUnit" value="#{ii.addingItem.ci.prescriptionValue.doseUnit}" >
@@ -65,7 +65,7 @@
                                                     <f:ajax event="change" execute="@this" render="" ></f:ajax>
                                                 </p:selectOneMenu>
                                             </td>
-                                            <td>
+                                            <td  style="width:8rem;">
                                                 <p:outputLabel value="Frequency" ></p:outputLabel>
                                                 <p:selectOneMenu  style="width:6rem;"  id="cmbRxFrequency" value="#{ii.addingItem.ci.prescriptionValue.frequency}" >
                                                     <f:selectItem  itemLabel="Frequency" ></f:selectItem>
@@ -77,7 +77,7 @@
                                                     <f:ajax event="change" execute="@this" render="" ></f:ajax>
                                                 </p:selectOneMenu>
                                             </td>
-                                            <td>
+                                            <td  style="width:8rem;">
                                                 <p:outputLabel value="Duration" ></p:outputLabel>
                                                 <p:inputText  style="width:6rem;"  id="txtRxDuration" value="#{ii.addingItem.ci.prescriptionValue.duration}" ></p:inputText>
                                                 <p:selectOneMenu style="width:6rem;"  id="cmbRxDurationUnit" value="#{ii.addingItem.ci.prescriptionValue.durationUnit}" >
@@ -99,9 +99,9 @@
                                                     </f:selectItems>
                                                 </p:selectOneMenu>
                                             </td>
-                                            <td>
+                                            <td class="prescriptionItemtd">
                                                 <p:outputLabel value="Comments" ></p:outputLabel>
-                                                <p:inputTextarea  styleClass="dataValueInputTextArea"  id="txtRxDes" 
+                                                <p:inputTextarea  styleClass="prescriptionItem"  id="txtRxDes" 
                                                                   value="#{ii.addingItem.ci.prescriptionValue.description}" placeholder="Enter Comments" >
                                                 </p:inputTextarea>
                                             </td>
