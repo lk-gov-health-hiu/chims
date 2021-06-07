@@ -184,7 +184,7 @@
                                         </tr>
                                         <tr >
                                             <td colspan="6">
-                                                <p:dataTable value="#{ii.addedItems}" var="ai" emptyMessage="Nothing added Yet">
+                                                <p:dataTable id="tblProcedureRoom" value="#{ii.addedItems}" var="ai" emptyMessage="Nothing added Yet">
                                                     <p:column headerText="Procedure Room">
                                                         <p:outputLabel value="#{ai.ci.institutionValue.name}" ></p:outputLabel>
                                                     </p:column>
@@ -193,6 +193,12 @@
                                                     </p:column>
                                                     <p:column  headerText="Comments">
                                                         <p:outputLabel value="#{ai.ci.longTextValue}" ></p:outputLabel>
+                                                    </p:column>
+                                                    <p:column >
+                                                        <p:commandButton id="btnProcedureRemove" value="Remove" 
+                                                                         action="#{clientEncounterComponentItemController.removeDataItem(ii,ai)}"
+                                                                         process="btnProcedureRemove" update="tblProcedureRoom" >
+                                                        </p:commandButton>
                                                     </p:column>
                                                 </p:dataTable>
                                             </td>
@@ -230,9 +236,18 @@
                                         </tr><!-- comment -->
                                         <tr>
                                             <td colspan="4">
-                                                <p:dataTable value="#{ii.addedItems}" var="ai" emptyMessage="Nothing added Yet">
+                                                <p:dataTable id="tblMuItemsDd" value="#{ii.addedItems}" var="ai" emptyMessage="Nothing added Yet">
                                                     <p:column >
                                                         <p:outputLabel value="#{ai.ci.itemValue.name}" ></p:outputLabel>
+                                                    </p:column>
+                                                    <p:column  rendered="#{ii.di.displayDetailsBox}" >
+                                                        <p:outputLabel value="#{ai.ci.longTextValue}" ></p:outputLabel>
+                                                    </p:column>
+                                                    <p:column >
+                                                        <p:commandButton id="btnMuItemsDd" value="Remove" 
+                                                                         action="#{clientEncounterComponentItemController.removeDataItem(ii,ai)}"
+                                                                         process="btnMuItemsDd" update="tblMuItemsDd" >
+                                                        </p:commandButton>
                                                     </p:column>
                                                 </p:dataTable>
                                             </td>
@@ -271,12 +286,18 @@
                                         </tr>
                                         <tr>
                                             <td colspan="6">
-                                                <p:dataTable value="#{ii.addedItems}" var="ai" emptyMessage="Nothing added Yet">
+                                                <p:dataTable id="tblMuIrAc" value="#{ii.addedItems}" var="ai" emptyMessage="Nothing added Yet">
                                                     <p:column >
                                                         <p:outputLabel value="#{ai.ci.itemValue.name}" ></p:outputLabel>
                                                     </p:column>
                                                     <p:column >
                                                         <p:outputLabel value="#{ai.ci.longTextValue}" ></p:outputLabel>
+                                                    </p:column>
+                                                    <p:column >
+                                                        <p:commandButton id="btnMuIrAc" value="Remove" 
+                                                                         action="#{clientEncounterComponentItemController.removeDataItem(ii,ai)}"
+                                                                         process="btnMuIrAc" update="tblMuIrAc" >
+                                                        </p:commandButton>
                                                     </p:column>
                                                 </p:dataTable>
                                             </td>
