@@ -255,6 +255,16 @@
     display: block;
 }
 
+.detailBoxtd{
+    width: 20rem;
+    display: block;
+}
+
+.detailBox{
+    width: 18rem;
+    display: block;
+}
+
 
 /** tabs **/
 .ui-tabs.ui-tabs-left > .ui-tabs-nav {
