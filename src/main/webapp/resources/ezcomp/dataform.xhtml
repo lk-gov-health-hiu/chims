@@ -97,7 +97,7 @@
                                             </td>
                                             <td>
                                                 <p:inputTextarea  styleClass="dataValueInputTextArea"  id="txtRxDes" 
-                                                                 value="#{ii.addingItem.ci.prescriptionValue.description}" placeholder="Enter Comments" >
+                                                                  value="#{ii.addingItem.ci.prescriptionValue.description}" placeholder="Enter Comments" >
                                                 </p:inputTextarea>
                                             </td>
                                             <td>
@@ -136,14 +136,15 @@
                                 <h:panelGroup id="gpPrs" rendered="#{ii.di.item.dataType eq 'Procedure_Request'}" >
                                     <table >
                                         <tr>
-                                            <td colspan="4">
-                                                <p:outputLabel for="prM" value="#{ii.di.name}"  style="#{ii.di.css}" ></p:outputLabel>
+                                            <td colspan="6">
+                                                <p:outputLabel  for="prM" value="#{ii.di.name}"  style="#{ii.di.css}" ></p:outputLabel>
                                                 <p:outputLabel for="prM" value="#{ii.di.descreption}"  style="#{ii.di.css}" ></p:outputLabel>
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td>
-                                                <p:selectOneMenu value="#{ii.addingItem.ci.institutionValue}" >
+                                            <td class="dataValuetd">
+                                                <p:selectOneMenu value="#{ii.addingItem.ci.institutionValue}"
+                                                                 styleClass="dataValueInputText">
                                                     <f:selectItem itemLabel="Please select room" ></f:selectItem>
                                                     <f:selectItems value="#{webUserController.loggableProcedureRooms}"
                                                                    var="ipr"
@@ -153,8 +154,8 @@
                                                     <f:ajax event="change" execute="@this" render="prM lblPrM" ></f:ajax>
                                                 </p:selectOneMenu>
                                             </td>
-                                            <td>
-                                                <p:selectOneMenu id="prM" value="#{ii.addingItem.ci.itemValue}" >
+                                            <td class="dataValuetd">
+                                                <p:selectOneMenu styleClass="dataValueInputText" id="prM" value="#{ii.addingItem.ci.itemValue}" >
                                                     <f:selectItem itemLabel="Please select procedure" ></f:selectItem>
                                                     <f:selectItems value="#{ii.addingItem.availableProcedures}" 
                                                                    var="li"
@@ -163,7 +164,7 @@
                                                     </f:selectItems>
                                                 </p:selectOneMenu>
                                             </td>
-                                            <td>
+                                            <td class="dataValuetd">
                                                 <p:inputTextarea  styleClass="dataValueInputTextArea" id="prComments" value="#{ii.addingItem.ci.longTextValue}" placeholder="Enter Comments" >
                                                 </p:inputTextarea>
                                             </td>
@@ -173,16 +174,6 @@
                                                                  update="gpPrs"
                                                                  action="#{clientEncounterComponentItemController.addAnotherDataItem(ii)}"></p:commandButton>
                                             </td>
-                                            <h:panelGroup rendered="#{ii.di.displayLastResult}" >
-                                                <td>
-                                                    <h:outputText value="#{fn:replace(clientEncounterComponentFormSetController.lastData(ii.ci),'\\n','&lt;br/&gt;')}" escape="false" />
-                                                </td>
-                                            </h:panelGroup>
-                                            <h:panelGroup rendered="#{ii.di.discreptionAsASideLabel}" >
-                                                <td>
-                                                    <p:outputLabel value="#{ii.di.descreption}"  ></p:outputLabel>
-                                                </td>
-                                            </h:panelGroup>
                                         </tr>
                                         <tr >
                                             <td colspan="6">
@@ -210,14 +201,21 @@
                                             <td>
                                                 <p:outputLabel for="domIcM"  styleClass="dataLabel" value="#{ii.di.name}"  style="#{ii.di.css}" ></p:outputLabel>
                                             </td>
-                                            <td>
+                                            <td style="color: red; background-color: yellow; border: 10px solid black;">
                                                 <p:selectOneMenu id="domIcM" value="#{ii.addingItem.ci.itemValue}" >
                                                     <f:selectItem itemLabel="Please select" ></f:selectItem>
                                                     <f:selectItems value="#{ii.availableItemsForSelection}" var="li"
                                                                    itemLabel="#{li.displayName}" itemValue="#{li}" ></f:selectItems>
                                                 </p:selectOneMenu>
                                             </td>
-                                            <td>
+
+                                            <h:panelGroup rendered="#{ii.di.displayDetailsBox}" >
+                                                <td>
+                                                    <p:inputTextarea  styleClass="dataValueInputTextArea" value="#{ii.addingItem.ci.longTextValue}" ></p:inputTextarea>
+                                                </td>
+                                            </h:panelGroup>
+
+                                            <td >
                                                 <p:commandButton id="btnAddM1"  value="Add" process="domIcM btnAddM1" update="@form :#{p:component('formset')}"
                                                                  action="#{clientEncounterComponentItemController.addAnotherDataItem(ii)}"></p:commandButton>
                                             </td>
@@ -245,10 +243,10 @@
                                 <h:panelGroup id="gpMultipleItemAc" rendered="#{ii.di.item.dataType eq 'Item_Reference' and ii.di.renderType eq 'Autocomplete'}" >
                                     <table>
                                         <tr>
-                                            <td>
+                                            <td class="dataLabeltd">
                                                 <p:outputLabel for="acItemM"  styleClass="dataLabel" value="#{ii.di.name}"  style="#{ii.di.css}" ></p:outputLabel>
                                             </td>
-                                            <td>
+                                            <td class="dataValuetd">
                                                 <p:autoComplete id="acItemM" value="#{ii.addingItem.ci.itemValue}"
                                                                 completeMethod="#{ii.addingItem.completeItem}"
                                                                 var="ai" itemLabel="#{ai.name}" itemValue="#{ai}"
@@ -391,8 +389,8 @@
                                             </td>
                                             <td>
                                                 <p:inputText  styleClass="dataValueInputText" id="itIntC" value="#{ii.ci.integerNumberValue}" 
-                                                             required="#{ii.di.required}" 
-                                                             requiredMessage="#{ii.di.requiredErrorMessage}" >
+                                                              required="#{ii.di.required}" 
+                                                              requiredMessage="#{ii.di.requiredErrorMessage}" >
                                                     <p:ajax  event="blur" process="@this"   listener="#{clientEncounterComponentItemController.save(ii.ci)}" ></p:ajax>
 
                                                 </p:inputText>
@@ -424,8 +422,8 @@
                                             </td>
                                             <td>
                                                 <p:inputText  styleClass="dataValueInputText" id="itRnC" value="#{ii.ci.realNumberValue}" 
-                                                             required="#{ii.di.required}" validatorMessage="#{ii.di.regexValidationFailedMessage}"
-                                                             requiredMessage="#{ii.di.requiredErrorMessage}" >
+                                                              required="#{ii.di.required}" validatorMessage="#{ii.di.regexValidationFailedMessage}"
+                                                              requiredMessage="#{ii.di.requiredErrorMessage}" >
                                                     <p:ajax  event="blur" process="@this"  listener="#{clientEncounterComponentItemController.save(ii.ci)}" ></p:ajax>
                                                 </p:inputText>
                                             </td>
@@ -456,8 +454,8 @@
                                             </td>
                                             <td>
                                                 <p:inputText  styleClass="dataValueInputText" id="itLongC" value="#{ii.ci.longNumberValue}" 
-                                                             required="#{ii.di.required}" 
-                                                             requiredMessage="#{ii.di.requiredErrorMessage}" >
+                                                              required="#{ii.di.required}" 
+                                                              requiredMessage="#{ii.di.requiredErrorMessage}" >
                                                     <p:ajax  event="blur" process="@this"   listener="#{clientEncounterComponentItemController.save(ii.ci)}" ></p:ajax>
                                                 </p:inputText>
                                             </td>
@@ -653,7 +651,7 @@
                                         </tr>
                                     </table>
                                 </h:panelGroup>
-                                
+
                                 <h:panelGroup rendered="#{ii.di.renderType eq 'Boolean_Button'}" >
                                     <table >
                                         <tr>
@@ -662,8 +660,8 @@
                                             </td>
                                             <td>
                                                 <p:selectBooleanButton id="bbNc" value="#{ii.ci.booleanValue}" offLabel="No" onLabel="Yes"
-                                                                         required="#{ii.di.required}" 
-                                                                         requiredMessage="#{ii.di.requiredErrorMessage}" >
+                                                                       required="#{ii.di.required}" 
+                                                                       requiredMessage="#{ii.di.requiredErrorMessage}" >
                                                     <p:ajax  process="@this"   
                                                              listener="#{clientEncounterComponentItemController.save(ii.ci)}" >
                                                     </p:ajax>
@@ -685,8 +683,8 @@
                                         </tr>
                                     </table>
                                 </h:panelGroup>
-                                
-                                
+
+
                                 <h:panelGroup rendered="#{ii.di.renderType eq 'Autocomplete' and ii.di.item.dataType eq 'Area_Reference'}" >
                                     <table >
                                         <tr>
