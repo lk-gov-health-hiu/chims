@@ -25,8 +25,10 @@
 
                     <h:panelGroup id="gpDataAndButtonsMultiple" rendered="#{ii.multipleEntries}" >
                         <tr>
+                            <td style="dataLabeltd">
+                                <p:outputLabel  value="#{ii.di.name}"  style="#{ii.di.css}" ></p:outputLabel>
+                            </td>
                             <td>
-
                                 <h:panelGroup id="gpDataM" >
                                     <h:panelGroup rendered="#{ii.di.item.dataType eq 'Procedure_Request'}" >
                                         <p:dataTable value="#{ii.addedItems}" style="#{ii.di.css}"
@@ -45,7 +47,6 @@
                                                 <p:outputLabel value="#{ai.ci.longTextValue}" ></p:outputLabel>
                                             </p:column>
                                         </p:dataTable>
-
                                     </h:panelGroup>
                                     <h:panelGroup rendered="#{ii.di.item.dataType eq 'Item_Reference'}" >
                                         <p:dataTable value="#{ii.addedItems}" 
@@ -61,12 +62,7 @@
                                                 <p:outputLabel value="#{ai.ci.longTextValue}" ></p:outputLabel>
                                             </p:column>
                                         </p:dataTable>
-                                        <td>
-                                            <p:outputLabel  value="#{ii.di.name}"  style="#{ii.di.css}" ></p:outputLabel>
-                                        </td>
-                                        <td>
-                                            <p:outputLabel  value="#{ii.ci.itemValue.name}"  style="#{ii.di.css}" ></p:outputLabel>
-                                        </td>
+
                                     </h:panelGroup>
                                     <h:panelGroup rendered="#{ii.di.item.dataType eq 'Area_Reference'}" >
                                         <p:dataTable value="#{ii.addedItems}" 
@@ -99,31 +95,21 @@
                                             </p:dataTable>
                                         </td>
                                     </h:panelGroup>
-
-
-
                                 </h:panelGroup>
-
                             </td>
-
-
-
-
-
                         </tr>
                     </h:panelGroup>
 
                     <h:panelGroup id="gpDataAndButtonsSingle" rendered="#{!ii.multipleEntries}" >
                         <tr>
                             <td>
-
                                 <table >
                                     <tr>
                                         <h:panelGroup id="gpData" >
                                             <h:panelGroup rendered="#{ii.di.renderType eq 'Input_Text'}" >
                                                 <h:panelGroup rendered="#{ii.di.item.dataType eq'Short_Text'}" >
                                                     <td>
-                                                        <p:outputLabel  value="#{ii.di.name}" style="#{ii.di.css}" ></p:outputLabel>
+                                                        <p:outputLabel  styleClass="dataLabel"  value="#{ii.di.name}" style="#{ii.di.css}" ></p:outputLabel>
                                                     </td>
                                                     <td>
                                                         <p:outputLabel  value="#{ii.ci.shortTextValue}" style="#{ii.di.css}" ></p:outputLabel>
@@ -131,7 +117,7 @@
                                                 </h:panelGroup>
                                                 <h:panelGroup rendered="#{ii.di.item.dataType eq 'Integer_Number'}" >
                                                     <td>
-                                                        <p:outputLabel value="#{ii.di.name}"  style="#{ii.di.css}" ></p:outputLabel>
+                                                        <p:outputLabel  styleClass="dataLabel"  value="#{ii.di.name}"  style="#{ii.di.css}" ></p:outputLabel>
                                                     </td>
                                                     <td>
                                                         <p:outputLabel value="#{ii.ci.integerNumberValue}"  style="#{ii.di.css}" ></p:outputLabel>
@@ -139,7 +125,7 @@
                                                 </h:panelGroup>
                                                 <h:panelGroup rendered="#{ii.di.item.dataType eq 'Real_Number'}" >
                                                     <td>
-                                                        <p:outputLabel value="#{ii.di.name}"  style="#{ii.di.css}" ></p:outputLabel>
+                                                        <p:outputLabel  styleClass="dataLabel"  value="#{ii.di.name}"  style="#{ii.di.css}" ></p:outputLabel>
                                                     </td>
                                                     <td>
                                                         <p:outputLabel value="#{ii.ci.realNumberValue}"  style="#{ii.di.css}" ></p:outputLabel>
@@ -147,7 +133,7 @@
                                                 </h:panelGroup>
                                                 <h:panelGroup rendered="#{ii.di.item.dataType eq 'Long_Number'}" >
                                                     <td>
-                                                        <p:outputLabel value="#{ii.di.name}"  style="#{ii.di.css}" ></p:outputLabel>
+                                                        <p:outputLabel  styleClass="dataLabel"  value="#{ii.di.name}"  style="#{ii.di.css}" ></p:outputLabel>
                                                     </td>
                                                     <td>
                                                         <p:outputLabel value="#{ii.ci.longNumberValue}"  style="#{ii.di.css}" ></p:outputLabel>
@@ -156,7 +142,7 @@
                                             </h:panelGroup>
                                             <h:panelGroup rendered="#{ii.di.renderType eq 'Input_Text_Area'}" >
                                                 <td>
-                                                    <p:outputLabel value="#{ii.di.name}"  style="#{ii.di.css}" ></p:outputLabel>
+                                                    <p:outputLabel  styleClass="dataLabel"  value="#{ii.di.name}"  style="#{ii.di.css}" ></p:outputLabel>
                                                 </td>
                                                 <td>
                                                     <p:outputLabel value="#{ii.ci.longTextValue}"  style="#{ii.di.css}" ></p:outputLabel>
@@ -164,7 +150,7 @@
                                             </h:panelGroup>
                                             <h:panelGroup rendered="#{ii.di.item.dataType eq 'DateTime'}" >
                                                 <td>
-                                                    <p:outputLabel  value="#{ii.di.name}"  style="#{ii.di.css}" ></p:outputLabel>
+                                                    <p:outputLabel  styleClass="dataLabel"   value="#{ii.di.name}"  style="#{ii.di.css}" ></p:outputLabel>
                                                 </td>
                                                 <td>
                                                     <p:outputLabel  value="#{ii.ci.dateValue}"  style="#{ii.di.css}" >
@@ -174,7 +160,7 @@
                                             </h:panelGroup>
                                             <h:panelGroup rendered="#{ii.di.item.dataType eq 'Item_Reference'}" >
                                                 <td>
-                                                    <p:outputLabel  value="#{ii.di.name}"  style="#{ii.di.css}" ></p:outputLabel>
+                                                    <p:outputLabel  styleClass="dataLabel"  value="#{ii.di.name}"  style="#{ii.di.css}" ></p:outputLabel>
                                                 </td>
                                                 <td>
                                                     <p:outputLabel  value="#{ii.ci.itemValue.name}"  style="#{ii.di.css}" ></p:outputLabel>
@@ -182,24 +168,24 @@
                                             </h:panelGroup>
                                             <h:panelGroup rendered="#{ii.di.renderType eq 'Boolean_Checkbox'}" >
                                                 <td>
-                                                    <p:outputLabel value="#{ii.di.name}"  style="#{ii.di.css}" ></p:outputLabel>
+                                                    <p:outputLabel  styleClass="dataLabel"  value="#{ii.di.name}"  style="#{ii.di.css}" ></p:outputLabel>
                                                 </td>
                                                 <td>
                                                     <p:outputLabel value="#{ii.ci.booleanValue?'Yes':'No'}"  style="#{ii.di.css}" ></p:outputLabel>
                                                 </td>
                                             </h:panelGroup>
-                                             <h:panelGroup rendered="#{ii.di.renderType eq 'Boolean_Button'}" >
+                                            <h:panelGroup rendered="#{ii.di.renderType eq 'Boolean_Button'}" >
                                                 <td>
-                                                    <p:outputLabel value="#{ii.di.name}"  style="#{ii.di.css}" ></p:outputLabel>
+                                                    <p:outputLabel  styleClass="dataLabel"  value="#{ii.di.name}"  style="#{ii.di.css}" ></p:outputLabel>
                                                 </td>
                                                 <td>
                                                     <p:outputLabel value="#{ii.ci.booleanValue?'Yes':'No'}"  style="#{ii.di.css}" ></p:outputLabel>
                                                 </td>
                                             </h:panelGroup>
-                                         
+
                                             <h:panelGroup rendered="#{ii.di.item.dataType eq 'Area_Reference'}" >
                                                 <td>
-                                                    <p:outputLabel  value="#{ii.di.name}"  style="#{ii.di.css}" ></p:outputLabel>
+                                                    <p:outputLabel  styleClass="dataLabel"  value="#{ii.di.name}"  style="#{ii.di.css}" ></p:outputLabel>
                                                 </td>
                                                 <td>
                                                     <p:outputLabel  value="#{ii.ci.areaValue.name}"  style="#{ii.di.css}" ></p:outputLabel>
@@ -207,7 +193,7 @@
                                             </h:panelGroup>
                                             <h:panelGroup rendered="#{ii.di.renderType eq 'Prescreption'}" >
                                                 <td>
-                                                    <p:outputLabel value="#{ii.di.name}"  style="#{ii.di.css}" ></p:outputLabel>
+                                                    <p:outputLabel  styleClass="dataLabel"  value="#{ii.di.name}"  style="#{ii.di.css}" ></p:outputLabel>
                                                 </td>
                                                 <td>
                                                     <p:outputLabel value="Prescreption needs to be multiple" ></p:outputLabel>
