@@ -218,3 +218,24 @@
     width: 18rem;
     color: red;
 }
+
+.dataLabel{
+    width: 15rem;
+    display: block;
+    color: red;
+    background-color: greenyellow;
+}
+
+.dataValueInputText{
+    width: 30rem;
+    display: block;
+    color: red;
+    background-color: greenyellow;
+}
+
+.dataValueInputTextArea{
+    width: 30rem;
+    height: 6rem;
+    display: block;
+    background-color: greenyellow;
+}
