@@ -174,6 +174,26 @@ public class ClientEncounterComponentFormSetController implements Serializable {
 // </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="User Functions">
 
+    public String deleteSelected() {
+        if (selected == null) {
+            JsfUtil.addErrorMessage("Nothing to delete");
+            return "";
+        }
+        selected.setRetired(true);
+        selected.setRetiredAt(new Date());
+        selected.setRetiredBy(webUserController.getLoggedUser());
+        save(selected);
+
+        Encounter e = selected.getEncounter();
+        if (e != null) {
+            e.setRetired(true);
+            e.setRetiredAt(new Date());
+            e.setRetiredBy(webUserController.getLoggedUser());
+            getEncounterFacade().edit(e);
+        }
+        return clientController.toClientProfile();
+    }
+
     public void retireSelectedItems() {
         if (selectedItems == null) {
             return;
@@ -299,6 +319,24 @@ public class ClientEncounterComponentFormSetController implements Serializable {
                             r.setName("procedure_request");
                             apiRequestApplicationController.saveApiRequests(r);
                         }
+                    } else if (tItem.getDi().getSelectionDataType() == SelectionDataType.Prescreption_Reference) {
+                        for (DataItem ttItem : tItem.getAddedItems()) {
+                            if (ttItem.getCi() == null) {
+                                System.err.println("ttItem.getCi() is null");
+                                continue;
+                            }
+                            if (ttItem.getCi().getItemValue() == null) {
+                                System.err.println("ttItem.getCi().getItemValue() is null");
+                                continue;
+                            }
+                            ApiRequest r = new ApiRequest();
+                            r.setRequestCeci(ttItem.getCi());
+                            r.setCreatedAt(new Date());
+                            r.setCreatedBy(webUserController.getLoggedUser());
+                            r.setEncounter(tSet.getEfs().getEncounter());
+                            r.setName("prescription_request");
+                            apiRequestApplicationController.saveApiRequests(r);
+                        }
                     }
                 } else {
                     if (tItem.getDi().getSelectionDataType() == SelectionDataType.Procedure_Request) {
@@ -317,6 +355,23 @@ public class ClientEncounterComponentFormSetController implements Serializable {
                         r.setCreatedBy(webUserController.getLoggedUser());
                         r.setEncounter(tSet.getEfs().getEncounter());
                         r.setName("procedure_request");
+                        apiRequestApplicationController.saveApiRequests(r);
+                    } else if (tItem.getDi().getSelectionDataType() == SelectionDataType.Prescreption_Reference) {
+                        if (tItem.getCi() == null) {
+                            System.err.println("tItem.getCi() is null");
+                            continue;
+                        }
+                        if (tItem.getCi().getItemValue() == null) {
+                            System.err.println("tItem.getCi().getItemValue() is null");
+                            continue;
+                        }
+                        System.out.println("tItem = " + tItem.getCi().getItemValue().getName());
+                        ApiRequest r = new ApiRequest();
+                        r.setRequestCeci(tItem.getCi());
+                        r.setCreatedAt(new Date());
+                        r.setCreatedBy(webUserController.getLoggedUser());
+                        r.setEncounter(tSet.getEfs().getEncounter());
+                        r.setName("prescription_request");
                         apiRequestApplicationController.saveApiRequests(r);
                     }
                 }
@@ -340,7 +395,7 @@ public class ClientEncounterComponentFormSetController implements Serializable {
         formEditable = true;
         JsfUtil.addSuccessMessage("Reversed Completion");
         userTransactionController.recordTransaction("Formset Complete Reversal");
-        return toViewFormset();
+        return toViewOrEditDataset();
     }
 
     public void executePostCompletionStrategies(ClientEncounterComponentFormSet s) {
@@ -482,6 +537,8 @@ public class ClientEncounterComponentFormSetController implements Serializable {
             case "client_ds_division":
                 c.getPerson().getGnArea().setDsd(ti.getAreaValue());
                 return;
+            case "marietal_status_at_registration":
+                c.getPerson().setMariatalStatus(ti.getItemValue());
         }
 
         getPersonFacade().edit(c.getPerson());
@@ -507,8 +564,6 @@ public class ClientEncounterComponentFormSetController implements Serializable {
             getFacade().edit(s);
         }
     }
-
-    
 
     public List<ClientEncounterComponentFormSet> fillLastFiveCompletedEncountersFormSets(String type) {
         return ClientEncounterComponentFormSetController.this.fillEncountersFormSets(type, 5);
@@ -746,6 +801,27 @@ public class ClientEncounterComponentFormSetController implements Serializable {
         ClientEncounterComponentFormSet f = getFacade().findFirstByJpql(j, m);
         return f;
     }
+    
+    public ClientEncounterComponentFormSet findClientEncounterFromset(DesignComponentFormSet dfs, Client c, Institution i, EncounterType t) {
+        String j = "select f from  ClientEncounterComponentFormSet f join f.encounter e"
+                + " where "
+                + " e.retired<>:er"
+                + " and f.retired<>:fr "
+                + " and f.referenceComponent=:dfs "
+                + " and e.client=:c "
+                + " and e.institution=:i "
+                + " and e.encounterType=:t"
+                + " order by f.id desc";
+        Map m = new HashMap();
+        m.put("c", c);
+        m.put("i", i);
+        m.put("t", t);
+        m.put("dfs", dfs);
+        m.put("er", true);
+        m.put("fr", true);
+        ClientEncounterComponentFormSet f = getFacade().findFirstByJpql(j, m);
+        return f;
+    }
 
     public boolean isFirstEncounterOfThatType(Client c, Institution i, EncounterType t) {
         String j = "select count(e) from Encounter e where "
@@ -767,8 +843,6 @@ public class ClientEncounterComponentFormSetController implements Serializable {
         }
         return false;
     }
-
-    
 
     public String createNewAndNavigateToDataEntry(DesignComponentFormSet dfs) {
         String navigationLink = "/dataentry/Formset";
@@ -894,8 +968,8 @@ public class ClientEncounterComponentFormSetController implements Serializable {
                             } else if (ci.getReferanceDesignComponentFormItem().getDataPopulationStrategy() == DataPopulationStrategy.From_Last_Encounter) {
                                 updateFromLastEncounter(ci);
                             }
-                            
-                            if(dis.getRenderType()==RenderType.Prescreption){
+
+                            if (dis.getRenderType() == RenderType.Prescreption) {
                                 Prescription p = new Prescription();
                                 p.setClient(e.getClient());
                                 p.setEncounter(e);
@@ -903,7 +977,7 @@ public class ClientEncounterComponentFormSetController implements Serializable {
                                 p.setCreatedBy(webUserController.getLoggedUser());
                                 ci.setPrescriptionValue(p);
                             }
-                            
+
                             DataItem i = new DataItem();
                             i.setMultipleEntries(true);
                             i.setCi(ci);
@@ -1376,6 +1450,8 @@ public class ClientEncounterComponentFormSetController implements Serializable {
             case "client_ds_division":
                 ti.setAreaValue(c.getPerson().getGnArea().getDsd());
                 return;
+            case "marietal_status_at_registration":
+                ti.setItemValue(c.getPerson().getMariatalStatus());
         }
 
         ClientEncounterComponentItem vi;

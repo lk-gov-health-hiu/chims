@@ -42,12 +42,12 @@ import lk.gov.health.phsp.enums.RelationshipType;
 import lk.gov.health.phsp.facade.AreaFacade;
 import org.primefaces.model.UploadedFile;
 
-@Named("relationshipController")
+@Named
 @SessionScoped
 public class RelationshipController implements Serializable {
 
     @EJB
-    private lk.gov.health.phsp.facade.RelationshipFacade ejbFacade;
+    private RelationshipFacade ejbFacade;
     @EJB
     private AreaFacade areaFacade;
 
@@ -646,6 +646,18 @@ public class RelationshipController implements Serializable {
         return getFacade().findByJpql(j, m);
     }
 
+    public List<Relationship> findRelationships(List<RelationshipType> ts) {
+        String j = "select r from Relationship r "
+                + " where r.retired=:ret "
+                + " and r.relationshipType in :rt";
+        Map m = new HashMap();
+        m.put("ret", false);
+        m.put("rt", ts);
+        return getFacade().findByJpql(j, m);
+    }
+
+    
+    
     public List<Relationship> findRelationships(Component com, RelationshipType t) {
         String j = "select r from Relationship r "
                 + " where r.retired=:ret "

@@ -216,5 +216,61 @@
 
 .width18rem{
     width: 18rem;
-    color: red;
+}
+
+.dataLabel{
+    width: 15rem;
+    display: block;
+}
+
+.dataLabeltd{
+    width: 17rem;
+    display: block;
+}
+
+.dataValuetd{
+    width: 32rem;
+    display: block;
+}
+
+.dataValueInputText{
+    width: 30rem;
+    display: block;
+}
+
+.dataValueInputTextArea{
+    width: 30rem;
+    height: 6rem;
+    display: block;
+}
+
+
+.prescriptionItemtd{
+    width: 22rem;
+    display: block;
+}
+
+.prescriptionItem{
+    width: 20rem;
+    display: block;
+}
+
+.detailBoxtd{
+    width: 20rem;
+    display: block;
+}
+
+.detailBox{
+    width: 18rem;
+    display: block;
+}
+
+
+/** tabs **/
+.ui-tabs.ui-tabs-left > .ui-tabs-nav {
+   width: 10%;
+}
+/** panels **/
+.ui-tabs.ui-tabs-left > .ui-tabs-panels {
+   width: 90%;
 }

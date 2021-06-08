@@ -26,38 +26,39 @@
                                     <p:outputLabel value="#{clientEncounterComponentFormSetController.selected.encounter.client.person.age}" ></p:outputLabel>
                                     <p:outputLabel value=", " ></p:outputLabel>
                                     <p:outputLabel value="#{clientEncounterComponentFormSetController.selected.encounter.client.person.sex.name}" ></p:outputLabel>
-                                    <p:outputLabel value=", " ></p:outputLabel>
-                                    <p:outputLabel value="#{clientEncounterComponentFormSetController.selected.name}" ></p:outputLabel>
-                                    <p:outputLabel value=" at " ></p:outputLabel>
-                                    <p:outputLabel value="#{clientEncounterComponentFormSetController.selected.institution.name}" ></p:outputLabel>
-                                    <p:outputLabel value=" of " ></p:outputLabel>
-                                    <p:outputLabel value="#{clientEncounterComponentFormSetController.selected.institution.parent.name}" ></p:outputLabel>
-                                    <p:outputLabel value=" on " ></p:outputLabel>
-                                    <p:outputLabel value="#{clientEncounterComponentFormSetController.selected.encounter.encounterDate}" >
-                                        <f:convertDateTime pattern="dd MMMM yyyy" ></f:convertDateTime>
-                                    </p:outputLabel>
+                                    <p:outputLabel value="." ></p:outputLabel>
                                 </div>
 
-                                <div >
+                                <div style="float: right;" >
+                                    <p:panelGrid columns="4" >
+                                        <p:commandButton  rendered="#{!clientEncounterComponentFormSetController.selected.completed}"
+                                                          value="Complete" 
+                                                          action="#{clientEncounterComponentFormSetController.completeFormset()}" ajax="false"
+                                                          onclick="if (!confirm('Really want to do complete the visit?'))
+                                                                      return false"
+                                                          ></p:commandButton>
 
-                                    <p:commandButton  rendered="#{!clientEncounterComponentFormSetController.selected.completed}"
-                                                      value="Complete" 
-                                                      action="#{clientEncounterComponentFormSetController.completeFormset()}" ajax="false"
-                                                      onclick="if (!confirm('Really want to do complete the visit?'))
-                                                                  return false"
-                                                      ></p:commandButton>
+                                        <p:commandButton  rendered="#{!clientEncounterComponentFormSetController.selected.completed}"
+                                                          value="Reload" 
+                                                          action="#{clientEncounterComponentFormSetController.toViewOrEditDataset()}" ajax="false"
+                                                          onclick="if (!confirm('Really want to do complete the visit?'))
+                                                                      return false"
+                                                          ></p:commandButton>
 
-                                    <p:commandButton  value="Client Profile" action="#{clientEncounterComponentFormSetController.toClientProfileFromEncounter()}" ajax="false" ></p:commandButton>
 
-                                    <p:commandButton  value="Delete" action="#{clientEncounterComponentFormSetController}" ajax="false"
-                                                      onclick="if (!confirm('Really want to DELETE this data?'))
-                                                                  return false"
-                                                      ></p:commandButton>
+                                        <p:commandButton  value="Delete" action="#{clientEncounterComponentFormSetController.deleteSelected()}" ajax="false"
+                                                          onclick="if (!confirm('Really want to DELETE this data?'))
+                                                                      return false"
+                                                          ></p:commandButton>
+
+                                        <p:commandButton  value="Client Profile" action="#{clientEncounterComponentFormSetController.toClientProfileFromEncounter()}" ajax="false" ></p:commandButton>
+
+                                    </p:panelGrid>
 
                                 </div>
                             </f:facet>
 
-                            <p:commandButton ajax="false" value="Reload" rendered="false"  ></p:commandButton>
+                            <p:commandButton ajax="false" value="Retrieve Latest" rendered="true"  ></p:commandButton>
 
                             <h:panelGroup rendered="#{clientEncounterComponentFormSetController.dataFormset.forms.size() eq 1}" >
                                 <div style="#{clientEncounterComponentFormSetController.dataFormset.forms.get(0).df.css}" >

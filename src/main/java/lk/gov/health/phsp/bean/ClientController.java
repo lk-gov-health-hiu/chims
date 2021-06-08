@@ -35,17 +35,29 @@ import jxl.Sheet;
 import jxl.Workbook;
 import jxl.read.biff.BiffException;
 import lk.gov.health.phsp.entity.Area;
+import lk.gov.health.phsp.entity.ClientEncounterComponentForm;
 import lk.gov.health.phsp.entity.ClientEncounterComponentFormSet;
+import lk.gov.health.phsp.entity.ClientEncounterComponentItem;
+import lk.gov.health.phsp.entity.DesignComponentForm;
+import lk.gov.health.phsp.entity.DesignComponentFormItem;
+import lk.gov.health.phsp.entity.DesignComponentFormSet;
 import lk.gov.health.phsp.entity.Encounter;
 import lk.gov.health.phsp.entity.Institution;
 import lk.gov.health.phsp.entity.Item;
 import lk.gov.health.phsp.entity.Person;
 import lk.gov.health.phsp.enums.AreaType;
-import lk.gov.health.phsp.enums.EncounterType;
+import lk.gov.health.phsp.enums.ComponentSex;
+import lk.gov.health.phsp.enums.DataRepresentationType;
 import lk.gov.health.phsp.enums.InstitutionType;
+
 import lk.gov.health.phsp.facade.EncounterFacade;
 import lk.gov.health.phsp.pojcs.ClientBasicData;
 import lk.gov.health.phsp.pojcs.YearMonthDay;
+import lk.gov.health.phsp.pojcs.dataentry.DataForm;
+import lk.gov.health.phsp.pojcs.dataentry.DataFormset;
+import lk.gov.health.phsp.pojcs.dataentry.DataItem;
+import lk.gov.health.phsp.enums.EncounterType;
+import static lk.gov.health.phsp.enums.EncounterType.Client_Data;
 import org.primefaces.component.tabview.TabView;
 import org.primefaces.event.TabChangeEvent;
 import org.primefaces.model.UploadedFile;
@@ -84,6 +96,16 @@ public class ClientController implements Serializable {
     private ClientEncounterComponentFormSetController clientEncounterComponentFormSetController;
     @Inject
     UserTransactionController userTransactionController;
+    @Inject
+    DesignComponentFormSetController designComponentFormSetController;
+    @Inject
+    DesignComponentFormController designComponentFormController;
+    @Inject
+    ClientEncounterComponentFormController clientEncounterComponentFormController;
+    @Inject
+    DesignComponentFormItemController designComponentFormItemController;
+    @Inject
+    ClientEncounterComponentItemController clientEncounterComponentItemController;
     // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="Variables">
     private List<Client> items = null;
@@ -135,6 +157,10 @@ public class ClientController implements Serializable {
     private List<String> reservePhnList;
     private int intNo;
 
+    private DataFormset dataFormset;
+    ClientEncounterComponentFormSet clientCefs;
+    private DesignComponentFormSet clientDcfs;
+
     // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="Constructors">
     public ClientController() {
@@ -155,24 +181,26 @@ public class ClientController implements Serializable {
     public String toSelectClient() {
         return "/client/select";
     }
-    
+
     public String toSelectClientBasic() {
         return "/client/select_basic";
     }
 
     public String toClient() {
+        loadClientFormDataEntry();
         return "/client/client";
     }
 
     public String toClientProfile() {
         selectedClientsLastFiveClinicVisits = null;
+        loadClientFormDataEntry();
         userTransactionController.recordTransaction("To Client Profile");
         return "/client/profile";
     }
-    
+
     public String toClientProfileById() {
         selected = getFacade().find(selectedId);
-        if(selected==null){
+        if (selected == null) {
             JsfUtil.addErrorMessage("No such client");
             return "";
         }
@@ -285,6 +313,253 @@ public class ClientController implements Serializable {
 
     // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="Functions">
+    public void loadClientFormDataEntry() {
+        if (selected == null) {
+            System.err.println("No Selected");
+            return;
+        }
+        DesignComponentFormSet dfs = designComponentFormSetController.getClintFormSet(webUserController.getLoggedUser().getInstitution());
+        if (dfs == null) {
+            System.err.println("No DFS");
+            return;
+        }
+        ClientEncounterComponentFormSet cfs = clientEncounterComponentFormSetController.findClientEncounterFromset(
+                getClientDcfs(),
+                selected,
+                webUserController.getLoggedUser().getInstitution(),
+                Client_Data);
+
+        if (cfs == null) {
+            Encounter e = new Encounter();
+            e.setClient(getSelected());
+            e.setInstitution(webUserController.getLoggedUser().getInstitution());
+            e.setEncounterType(EncounterType.Client_Data);
+            encounterController.save(e);
+            cfs = new ClientEncounterComponentFormSet();
+            cfs.setCreatedAt(new Date());
+            cfs.setCreatedBy(webUserController.getLoggedUser());
+            cfs.setEncounter(e);
+            cfs.setInstitution(dfs.getCurrentlyUsedIn());
+            cfs.setReferenceComponent(dfs);
+            cfs.setName(dfs.getName());
+            cfs.setDescreption(dfs.getDescreption());
+            cfs.setCss(dfs.getCss());
+            clientEncounterComponentFormSetController.save(cfs);
+        }
+        DataFormset fs = new DataFormset();
+        Encounter e = cfs.getEncounter();
+        fs.setDfs(dfs);
+        fs.setEfs(cfs);
+
+        List<DesignComponentForm> dfList = designComponentFormController.fillFormsofTheSelectedSet(dfs);
+
+        int formCounter = 0;
+
+        for (DesignComponentForm df : dfList) {
+            System.out.println("df = " + df.getName());
+
+            boolean skipThisForm = false;
+            if (df.getComponentSex() == ComponentSex.For_Females && getSelected().getPerson().getSex().getCode().equalsIgnoreCase("sex_male")) {
+                skipThisForm = true;
+            }
+            if (df.getComponentSex() == ComponentSex.For_Males && getSelected().getPerson().getSex().getCode().equalsIgnoreCase("sex_female")) {
+                skipThisForm = true;
+            }
+
+            if (!skipThisForm) {
+                formCounter++;
+                String j = "select cf "
+                        + " from ClientEncounterComponentForm cf "
+                        + " where cf.referenceComponent=:rf "
+                        + " and cf.parentComponent=:cfs "
+                        + "order by cf.id desc";
+                Map m = new HashMap();
+                m.put("rf", df);
+                m.put("cfs", cfs);
+
+                ClientEncounterComponentForm cf = clientEncounterComponentFormController.getClientEncounterComponentForm(j, m);
+
+                System.out.println("cf = " + cf);
+
+                if (cf == null) {
+                    cf = new ClientEncounterComponentForm();
+
+                    cf.setEncounter(e);
+                    cf.setInstitution(dfs.getCurrentlyUsedIn());
+                    cf.setItem(df.getItem());
+
+                    cf.setReferenceComponent(df);
+                    cf.setName(df.getName());
+                    cf.setOrderNo(df.getOrderNo());
+                    cf.setParentComponent(cfs);
+                    cf.setCss(df.getCss());
+
+                    clientEncounterComponentFormController.save(cf);
+                }
+
+                DataForm f = new DataForm();
+                f.cf = cf;
+                f.df = df;
+                f.formset = fs;
+                f.id = formCounter;
+                f.orderNo = formCounter;
+
+                List<DesignComponentFormItem> diList = designComponentFormItemController.fillItemsOfTheForm(df);
+
+                int itemCounter = 0;
+
+                for (DesignComponentFormItem dis : diList) {
+
+                    System.out.println("dis = " + dis.getName());
+
+                    boolean disSkipThisItem = false;
+                    if (dis.getComponentSex() == ComponentSex.For_Females && getSelected().getPerson().getSex().getCode().equalsIgnoreCase("sex_male")) {
+                        disSkipThisItem = true;
+                    }
+                    if (dis.getComponentSex() == ComponentSex.For_Males && getSelected().getPerson().getSex().getCode().equalsIgnoreCase("sex_female")) {
+                        disSkipThisItem = true;
+                    }
+
+                    System.out.println("disSkipThisItem = " + disSkipThisItem);
+
+                    if (!disSkipThisItem) {
+
+                        if (dis.isMultipleEntiesPerForm()) {
+
+                            System.out.println("dis.isMultipleEntiesPerForm() = " + dis.isMultipleEntiesPerForm());
+
+                            j = "Select ci "
+                                    + " from ClientEncounterComponentItem ci "
+                                    + " where ci.retired=:ret "
+                                    + " and ci.parentComponent=:cf "
+                                    + " and ci.referenceComponent=:dis "
+                                    + " order by ci.orderNo";
+                            m = new HashMap();
+                            m.put("ret", false);
+                            m.put("cf", cf);
+                            m.put("dis", dis);
+                            System.out.println("cf = " + cf.getId());
+                            System.out.println("dis = " + dis.getId());
+                            List<ClientEncounterComponentItem> cis = clientEncounterComponentItemController.getItems(j, m);
+                            System.out.println("cis = " + cis);
+
+                            itemCounter++;
+                            ClientEncounterComponentItem ci = new ClientEncounterComponentItem();
+
+                            ci.setEncounter(e);
+                            ci.setInstitution(dfs.getCurrentlyUsedIn());
+
+                            ci.setItemFormset(cfs);
+                            ci.setItemEncounter(e);
+                            ci.setItemClient(e.getClient());
+
+                            ci.setItem(dis.getItem());
+                            ci.setDescreption(dis.getDescreption());
+
+                            ci.setReferenceComponent(dis);
+                            ci.setParentComponent(cf);
+                            ci.setName(dis.getName());
+                            ci.setCss(dis.getCss());
+                            ci.setOrderNo(dis.getOrderNo());
+                            ci.setDataRepresentationType(DataRepresentationType.Encounter);
+                            DataItem i = new DataItem();
+                            i.setMultipleEntries(true);
+                            i.setCi(ci);
+                            i.di = dis;
+                            i.id = itemCounter;
+                            i.orderNo = itemCounter;
+                            i.form = f;
+                            i.setAvailableItemsForSelection(itemController.findItemList(dis.getCategoryOfAvailableItems()));
+
+                            if (cis != null && !cis.isEmpty()) {
+                                for (ClientEncounterComponentItem tci : cis) {
+                                    DataItem di = new DataItem();
+                                    di.setMultipleEntries(true);
+                                    di.setCi(tci);
+                                    di.di = dis;
+                                    di.id = itemCounter;
+                                    di.orderNo = tci.getOrderNo();
+                                    di.form = f;
+                                    di.setAvailableItemsForSelection(itemController.findItemList(dis.getCategoryOfAvailableItems()));
+                                    i.getAddedItems().add(di);
+                                }
+                            }
+
+                            f.getItems().add(i);
+
+                        } else {
+
+                            j = "Select ci "
+                                    + " from ClientEncounterComponentItem ci "
+                                    + " where ci.retired=:ret "
+                                    + " and ci.parentComponent=:cf "
+                                    + " and ci.referenceComponent=:dis "
+                                    + " order by ci.orderNo";
+                            m = new HashMap();
+                            m.put("ret", false);
+                            m.put("cf", cf);
+                            m.put("dis", dis);
+                            System.out.println("cf = " + cf.getId());
+                            System.out.println("dis = " + dis.getId());
+                            ClientEncounterComponentItem ci;
+                            ci = clientEncounterComponentItemController.getItem(j, m);
+                            System.out.println("ci = " + ci);
+                            if (ci != null) {
+                                DataItem i = new DataItem();
+                                i.setMultipleEntries(false);
+                                i.setCi(ci);
+                                i.di = dis;
+                                i.id = itemCounter;
+                                i.orderNo = itemCounter;
+                                i.form = f;
+                                i.setAvailableItemsForSelection(itemController.findItemList(dis.getCategoryOfAvailableItems()));
+
+                                f.getItems().add(i);
+                            } else {
+                                itemCounter++;
+                                ci = new ClientEncounterComponentItem();
+                                ci.setEncounter(e);
+                                ci.setInstitution(dfs.getCurrentlyUsedIn());
+                                ci.setItemFormset(cfs);
+                                ci.setItemEncounter(e);
+                                ci.setItemClient(e.getClient());
+                                ci.setItem(dis.getItem());
+                                ci.setDescreption(dis.getDescreption());
+                                ci.setReferenceComponent(dis);
+                                ci.setParentComponent(cf);
+                                ci.setName(dis.getName());
+                                ci.setCss(dis.getCss());
+                                ci.setOrderNo(dis.getOrderNo());
+                                ci.setDataRepresentationType(DataRepresentationType.Encounter);
+
+                                DataItem i = new DataItem();
+                                i.setMultipleEntries(false);
+                                i.setCi(ci);
+                                i.di = dis;
+                                i.id = itemCounter;
+                                i.orderNo = itemCounter;
+                                i.form = f;
+                                i.setAvailableItemsForSelection(itemController.findItemList(dis.getCategoryOfAvailableItems()));
+
+                                f.getItems().add(i);
+                            }
+
+                        }
+
+                    }
+
+                }
+                fs.getForms().add(f);
+            }
+
+        }
+
+        dataFormset = fs;
+        clientCefs = cfs;
+        clientDcfs = dfs;
+
+    }
+
     public List<Area> completeClientsGnArea(String qry) {
         List<Area> areas = new ArrayList<>();
         if (selected == null) {
@@ -383,14 +658,13 @@ public class ClientController implements Serializable {
         }
 
     }
-    
-    
-    public void addCreatedDateFromCreatedAt(){
+
+    public void addCreatedDateFromCreatedAt() {
         String j = "select c from Client c where c.createdOn is null";
-        List<Client> cs = getFacade().findByJpql(j,1000);
+        List<Client> cs = getFacade().findByJpql(j, 1000);
         System.out.println("cs.getSize() = " + cs.size());
-        for(Client c:cs){
-            if(c.getCreatedOn()==null){
+        for (Client c : cs) {
+            if (c.getCreatedOn() == null) {
                 c.setCreatedOn(c.getCreatedAt());
                 getFacade().edit(c);
             }
@@ -518,7 +792,7 @@ public class ClientController implements Serializable {
         String j = "select c from Client c "
                 + " where c.retired=:ret "
                 + " and c.reservedClient<>:res ";
-        
+
         Map m = new HashMap();
         m.put("ret", false);
         m.put("res", true);
@@ -1159,7 +1433,6 @@ public class ClientController implements Serializable {
     }
 
     public List<Encounter> fillEncounters(Client client, InstitutionType insType, EncounterType encType, boolean excludeCompleted, Integer maxRecordCount) {
-        // ////System.out.println("fillEncounters");
         String j = "select e from Encounter e where e.retired=false ";
         Map m = new HashMap();
         if (client != null) {
@@ -1186,8 +1459,39 @@ public class ClientController implements Serializable {
 
     }
 
+    public List<Encounter> fillEncounters(Client client, List<InstitutionType> insTypes, EncounterType encType, boolean excludeCompleted, Integer maxRecordCount) {
+        String j = "select e from Encounter e where e.retired=false ";
+        Map m = new HashMap();
+        if (client != null) {
+            j += " and e.client=:c ";
+            m.put("c", client);
+        }
+        if (insTypes != null) {
+            j += " and e.institution.institutionType in :it ";
+            m.put("it", insTypes);
+        }
+        if (insTypes != null) {
+            j += " and e.encounterType=:et ";
+            m.put("et", encType);
+        }
+        if (excludeCompleted) {
+            j += " and e.completed=:com ";
+            m.put("com", false);
+        }
+        if (maxRecordCount == null) {
+            return encounterFacade.findByJpql(j, m);
+        } else {
+            return encounterFacade.findByJpql(j, m, maxRecordCount);
+        }
+
+    }
+
     public List<Encounter> fillEncounters(Client client, InstitutionType insType, EncounterType encType, boolean excludeCompleted) {
         return fillEncounters(client, insType, encType, true, null);
+    }
+
+    public List<Encounter> fillEncounters(Client client, List<InstitutionType> insTypes, EncounterType encType, boolean excludeCompleted) {
+        return fillEncounters(client, insTypes, encType, true, null);
     }
 
     public void enrollInClinic() {
@@ -1354,7 +1658,7 @@ public class ClientController implements Serializable {
             setSelected(selectedClients.get(0));
             selectedClients = null;
             clearSearchById();
-            if(selected.isReservedClient()){
+            if (selected.isReservedClient()) {
                 return "/client/client";
             }
             return toClientProfile();
@@ -1554,7 +1858,7 @@ public class ClientController implements Serializable {
             return toSelectClientBasic();
         }
     }
-    
+
     public String searchByPhnWithBasicData() {
         System.out.println("searchByPhnWithBasicData");
         userTransactionController.recordTransaction("Search By PHN");
@@ -1852,8 +2156,7 @@ public class ClientController implements Serializable {
         cs = new ArrayList<>();
         return cs;
     }
-    
-    
+
     public List<ClientBasicData> listPatientsByPhnWithBasicData(String ids) {
         if (ids == null || ids.trim().equals("")) {
             return null;
@@ -2004,7 +2307,7 @@ public class ClientController implements Serializable {
             }
         }
         selected.setReservedClient(false);
-        
+
         saveClient(selected);
         JsfUtil.addSuccessMessage("Saved.");
         return toClientProfile();
@@ -2035,7 +2338,7 @@ public class ClientController implements Serializable {
             return;
         }
         reservePhnList = new ArrayList<>();
-        
+
         while (i < numberOfPhnToReserve) {
             String newPhn = generateNewPhn(createdIns);
 
@@ -2056,7 +2359,7 @@ public class ClientController implements Serializable {
                     rc.getPerson().setCreatedBy(webUserController.getLoggedUser());
                 }
                 rc.setReservedClient(true);
-                
+
                 getFacade().create(rc);
                 i = i + 1;
             }
@@ -2073,7 +2376,7 @@ public class ClientController implements Serializable {
             if (c.getCreatedAt() == null) {
                 c.setCreatedAt(new Date());
             }
-            if(c.getCreatedOn()==null){
+            if (c.getCreatedOn() == null) {
                 c.setCreatedOn(new Date());
             }
             if (c.getCreateInstitution() == null) {
@@ -2282,7 +2585,9 @@ public class ClientController implements Serializable {
 
     public List<Encounter> getSelectedClientsClinics() {
         if (selectedClientsClinics == null) {
-            selectedClientsClinics = fillEncounters(selected, InstitutionType.Clinic, EncounterType.Clinic_Enroll, true);
+            selectedClientsClinics = fillEncounters(selected,
+                    institutionApplicationController.getClinicTypes(),
+                    EncounterType.Clinic_Enroll, true);
         }
         return selectedClientsClinics;
     }
@@ -2572,7 +2877,9 @@ public class ClientController implements Serializable {
 
     public List<Encounter> getSelectedClientsLastFiveClinicVisits() {
         if (selectedClientsLastFiveClinicVisits == null) {
-            selectedClientsLastFiveClinicVisits = fillEncounters(selected, InstitutionType.Clinic, EncounterType.Clinic_Visit, true, 5);
+            selectedClientsLastFiveClinicVisits = fillEncounters(selected,
+                    institutionApplicationController.getClinicTypes(),
+                    EncounterType.Clinic_Visit, true, 5);
 
         }
         return selectedClientsLastFiveClinicVisits;
@@ -2613,13 +2920,32 @@ public class ClientController implements Serializable {
     public void setSelectedClientsWithBasicData(List<ClientBasicData> selectedClientsWithBasicData) {
         this.selectedClientsWithBasicData = selectedClientsWithBasicData;
     }
-    
+
     public List<String> getReservePhnList() {
         return reservePhnList;
     }
 
     public void setReservePhnList(List<String> reservePhnList) {
         this.reservePhnList = reservePhnList;
+    }
+
+    public DataFormset getDataFormset() {
+        return dataFormset;
+    }
+
+    public void setDataFormset(DataFormset dataFormset) {
+        this.dataFormset = dataFormset;
+    }
+
+    public DesignComponentFormSet getClientDcfs() {
+        if (clientDcfs == null) {
+            clientDcfs = designComponentFormSetController.getClintFormSet(webUserController.getLoggedUser().getInstitution());
+        }
+        return clientDcfs;
+    }
+
+    public void setClientDcfs(DesignComponentFormSet clientDcfs) {
+        this.clientDcfs = clientDcfs;
     }
 
     // </editor-fold>

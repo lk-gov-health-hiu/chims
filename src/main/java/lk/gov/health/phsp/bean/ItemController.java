@@ -29,7 +29,6 @@ import jxl.Sheet;
 import jxl.Workbook;
 import jxl.read.biff.BiffException;
 import lk.gov.health.phsp.entity.DesignComponentFormSet;
-import lk.gov.health.phsp.entity.Institution;
 import lk.gov.health.phsp.entity.Item;
 import lk.gov.health.phsp.entity.Relationship;
 import lk.gov.health.phsp.enums.ItemType;
@@ -113,7 +112,7 @@ public class ItemController implements Serializable {
     }
 
     public String toManageDictionary() {
-        items = itemApplicationController.findDictionaryItems();
+        items = itemApplicationController.getDictionaryItemsAndCategories();
         return "/item/List";
     }
 
@@ -140,7 +139,7 @@ public class ItemController implements Serializable {
         }
         return "/item/amp";
     }
-    
+
     public String toEditUnit() {
         if (unit == null) {
             JsfUtil.addErrorMessage("Nothing to Edit");
@@ -166,7 +165,7 @@ public class ItemController implements Serializable {
         amp.setItemType(ItemType.Amp);
         return "/item/amp";
     }
-    
+
     public String toAddUnit() {
         unit = new Item();
         return "/item/unit";
@@ -189,7 +188,7 @@ public class ItemController implements Serializable {
         amps = null;
         getAmps();
     }
-    
+
     public void saveUnit() {
         save(unit);
         units = null;
@@ -399,8 +398,11 @@ public class ItemController implements Serializable {
                     save(ivtm);
                 }
 
-                String vmpName = vtmName + " " + strengthUnitsPerIssueUnit
+                String strengthUnitsPerIssueUnitString = CommonController.formatDouble(strengthUnitsPerIssueUnit);
+
+                String vmpName = vtmName + " " + strengthUnitsPerIssueUnitString
                         + strengthUnitName + " " + dosageFormName;
+
                 //Vmp
                 String vmpCode = CommonController.prepareAsCode("vmp_" + vmpName);
                 ivmp = findItemByCode(vmpCode, ItemType.Vmp);
@@ -613,6 +615,10 @@ public class ItemController implements Serializable {
 
     public List<Item> completeItemsofParent(String qry) {
         return findChildrenAndGrandchildrenItemList(selectedParent, null, qry);
+    }
+
+    public List<Item> completeItemsofParent(Item parent, String qry) {
+        return findChildrenAndGrandchildrenItemList(parent, null, qry);
     }
 
     public List<Item> completeItemsofParentWithFIlter(String qry) {
@@ -960,6 +966,18 @@ public class ItemController implements Serializable {
         this.selected = selected;
     }
 
+    public void saveDictionatyItemsAndCategories() {
+        boolean needReload = false;
+        if (selected.getId() == null) {
+            needReload = true;
+        }
+        save(selected);
+        if (needReload) {
+            itemApplicationController.invalidateDictionaryItemsAndCategories();
+            items = itemApplicationController.getDictionaryItemsAndCategories();
+        }
+    }
+
     public void save() {
         save(selected);
         JsfUtil.addSuccessMessage("Saved");
@@ -1130,16 +1148,11 @@ public class ItemController implements Serializable {
     }
 
     public List<Item> findItemListByCode(String parentCode) {
-//        String j = "select t from Item t where t.retired=false ";
-//        Map m = new HashMap();
-//        Item parent = findItemByCode(parentCode);
-//        if (parent != null) {
-//            m.put("p", parent);
-//            j += " and t.parent=:p ";
-//        }
-//        j += " order by t.name";
-//        return getFacade().findByJpql(j, m);
         return itemApplicationController.findChildren(parentCode);
+    }
+
+    public List<Item> completeItemstByCode(String parentCode, String qry) {
+        return itemApplicationController.findChildren(parentCode, qry);
     }
 
     public void setTitles(List<Item> titles) {
@@ -1410,7 +1423,7 @@ public class ItemController implements Serializable {
     }
 
     public List<Item> getUnits() {
-        if(units==null){
+        if (units == null) {
             units = itemApplicationController.findUnits();
         }
         return units;
@@ -1427,8 +1440,6 @@ public class ItemController implements Serializable {
     public void setUnit(Item unit) {
         this.unit = unit;
     }
-    
-    
 
     @FacesConverter(forClass = Item.class)
     public static class ItemControllerConverter implements Converter {

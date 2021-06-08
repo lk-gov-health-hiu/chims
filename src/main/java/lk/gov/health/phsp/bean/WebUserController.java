@@ -107,8 +107,6 @@ public class WebUserController implements Serializable {
     Variables
      */
     private List<WebUser> items = null;
-    private List<Upload> currentProjectUploads;
-    private List<Upload> clientUploads;
     private List<Upload> companyUploads;
 
     private List<Institution> loggableInstitutions;
@@ -560,18 +558,6 @@ public class WebUserController implements Serializable {
         return "";
     }
 
-    public String prepareRegisterAsClient() {
-        current = new WebUser();
-        current.setWebUserRole(WebUserRole.Institution_User);
-
-        currentProjectUploads = null;
-        companyUploads = null;
-        clientUploads = null;
-        currentUpload = null;
-
-        return "/register";
-    }
-
     public String registerUser() {
         if (!current.getWebUserPassword().equals(password)) {
             JsfUtil.addErrorMessage("Passwords are not matching. Please retry.");
@@ -656,7 +642,7 @@ public class WebUserController implements Serializable {
         System.out.println("username & password correct");
 
         loggedUserPrivileges = userPrivilegeList(loggedUser);
-
+        clientController.setClientDcfs(null);
         JsfUtil.addSuccessMessage("Successfully Logged");
         userTransactionController.recordTransaction("Successful Login");
         return "/index";
@@ -1149,6 +1135,33 @@ public class WebUserController implements Serializable {
         userTransactionController.recordTransaction("Edit Password user list By SysAdmin or InsAdmin");
         return "/webUser/Password";
     }
+    
+    public String deleteUser() {
+        if(current==null){
+            JsfUtil.addErrorMessage("Nothing to delete");
+            return "";
+        }
+        current.setRetired(true);
+        current.setRetirer(getLoggedUser());
+        current.setRetiredAt(new Date());
+        save(current);
+        webUserApplicationController.getItems().remove(current);
+        getItems().remove(current);
+        return "";
+    }
+    
+    public void save(WebUser u){
+        if(u==null) return;
+        if(u.getId()==null){
+            u.setCreatedAt(new Date());
+            u.setCreater(getLoggedUser());
+            getFacade().create(u);
+        }else{
+            u.setLastEditBy(getLoggedUser());
+            u.setLastEditeAt(new Date());
+            getFacade().edit(u);
+        }
+    }
 
     public String update() {
         try {
@@ -1289,9 +1302,6 @@ public class WebUserController implements Serializable {
     }
 
     public List<WebUser> getItems() {
-//        if (items == null) {
-//            items = getFacade().findAll();
-//        }
         return items;
     }
 
@@ -1299,13 +1309,6 @@ public class WebUserController implements Serializable {
         items = null;
     }
 
-    public SelectItem[] getItemsAvailableSelectMany() {
-        return JsfUtil.getSelectItems(ejbFacade.findAll(), false);
-    }
-
-    public SelectItem[] getItemsAvailableSelectOne() {
-        return JsfUtil.getSelectItems(ejbFacade.findAll(), true);
-    }
 
     public WebUser getWebUser(java.lang.Long id) {
         return ejbFacade.find(id);
@@ -1395,10 +1398,6 @@ public class WebUserController implements Serializable {
         this.currentUpload = currentUpload;
     }
 
-    public void setCurrentProjectUploads(List<Upload> currentProjectUploads) {
-        this.currentProjectUploads = currentProjectUploads;
-    }
-
     public Date getFromDate() {
         if (fromDate == null) {
             Calendar c = Calendar.getInstance();
@@ -1422,10 +1421,6 @@ public class WebUserController implements Serializable {
 
     public void setToDate(Date toDate) {
         this.toDate = toDate;
-    }
-
-    public void setClientUploads(List<Upload> clientUploads) {
-        this.clientUploads = clientUploads;
     }
 
     public Institution getInstitution() {

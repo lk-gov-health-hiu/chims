@@ -33,7 +33,7 @@ import lk.gov.health.phsp.enums.EncounterType;
 public class EncounterController implements Serializable {
 
     @EJB
-    private lk.gov.health.phsp.facade.EncounterFacade ejbFacade;
+    private EncounterFacade ejbFacade;
     private List<Encounter> items = null;
     private Encounter selected;
     @Inject
