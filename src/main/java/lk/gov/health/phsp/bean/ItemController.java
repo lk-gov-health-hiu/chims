@@ -412,6 +412,7 @@ public class ItemController implements Serializable {
                     ivmp.setName(vmpName);
                     ivmp.setCode(vmpCode);
                     ivmp.setItemType(ItemType.Vmp);
+                    ivmp.setParent(cat);
                     save(ivmp);
                 }
 
@@ -429,6 +430,7 @@ public class ItemController implements Serializable {
                     iamp.setName(ampName);
                     iamp.setCode(ampCode);
                     iamp.setItemType(ItemType.Amp);
+                    iamp.setParent(cat);
                     save(iamp);
                 }
 

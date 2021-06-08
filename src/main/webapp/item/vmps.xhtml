@@ -23,6 +23,9 @@
                         <p:column headerText="Code" >
                             <p:outputLabel value="#{v.code}" ></p:outputLabel>
                         </p:column>
+                        <p:column headerText="Dosage Form" >
+                            <p:outputLabel value="#{v.parent.name}" ></p:outputLabel>
+                        </p:column>
                         <p:column headerText="Action" >
                             <p:commandButton ajax="false" value="Edit" action="#{itemController.toEditVmp()}" >
                                 <f:setPropertyActionListener value="#{v}" target="#{itemController.vmp}">

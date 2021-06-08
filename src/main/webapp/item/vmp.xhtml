@@ -23,6 +23,12 @@
                         <p:inputText value="#{itemController.vmp.name}" ></p:inputText>
                         <p:outputLabel value="Code" ></p:outputLabel>
                         <p:inputText value="#{itemController.vmp.code}" ></p:inputText><!-- comment -->
+                        <p:outputLabel value="Category" ></p:outputLabel>
+                        <p:selectOneMenu value="#{itemController.vmp.parent}" >
+                            <f:selectItem itemLabel="Please select category" ></f:selectItem>
+                            <f:selectItems value="#{itemApplicationController.packUnits}" var="c" itemLabel="#{c.name}" itemValue="#{c}" >
+                            </f:selectItems>
+                        </p:selectOneMenu>
                         <p:outputLabel value="Descreption" ></p:outputLabel>
                         <p:inputTextarea value="#{itemController.vmp.descreption}" ></p:inputTextarea><!-- comment -->
                     </p:panelGrid>

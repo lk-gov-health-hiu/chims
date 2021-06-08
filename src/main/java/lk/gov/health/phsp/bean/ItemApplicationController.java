@@ -51,6 +51,7 @@ public class ItemApplicationController {
     private List<ItemType> unitsTypes;
     private List<ItemType> dictionaryTypes;
     private List<Item> packUnits;
+    private List<Item> dosageForms;
     private List<Item> frequencyUnits;
     private List<Item> durationUnits;
     private List<Item> strengthUnits;
@@ -157,7 +158,6 @@ public class ItemApplicationController {
         return findItems(its);
     }
 
-    
     public List<Item> findVtms() {
         List<ItemType> its = new ArrayList<>();
         its.add(ItemType.Vtm);
@@ -314,14 +314,14 @@ public class ItemApplicationController {
                     && ti.getParent().getCode() != null
                     && ti.getParent().getCode().equalsIgnoreCase(code)) {
                 boolean canInclude = false;
-                if(ti.getName()!=null && ti.getName().contains(qry)){
-                    canInclude=true;
+                if (ti.getName() != null && ti.getName().contains(qry)) {
+                    canInclude = true;
                 }
-                if(ti.getCode()!=null && ti.getCode().contains(qry)){
-                    canInclude=true;
+                if (ti.getCode() != null && ti.getCode().contains(qry)) {
+                    canInclude = true;
                 }
-                if(ti.getDisplayName()!=null && ti.getDisplayName().contains(qry)){
-                    canInclude=true;
+                if (ti.getDisplayName() != null && ti.getDisplayName().contains(qry)) {
+                    canInclude = true;
                 }
                 if (canInclude) {
                     tis.add(ti);
@@ -390,6 +390,7 @@ public class ItemApplicationController {
     public void invalidateItems() {
         items = null;
         packUnits = null;
+        dosageForms=null;
         frequencyUnits = null;
         strengthUnits = null;
         durationUnits = null;
@@ -447,6 +448,13 @@ public class ItemApplicationController {
             packUnits = findItems(ItemType.Pack_Unit);
         }
         return packUnits;
+    }
+
+    public List<Item> getDosageForms() {
+        if (dosageForms == null) {
+            dosageForms = findItems(ItemType.Dosage_Form);
+        }
+        return dosageForms;
     }
 
     public List<ItemType> getDictionaryTypes() {

@@ -824,6 +824,11 @@ public class ApiResource {
             ja.put("item_code", a.getCode());
             ja.put("item_name", a.getName());
             ja.put("item_type", a.getItemType());
+            if(a.getParent()!=null){
+                ja.put("parent_id", a.getParent().getId());
+            }else{
+                ja.put("parent_id", 0l);
+            }
             array.put(ja);
         }
         jSONObjectOut.put("data", array);
