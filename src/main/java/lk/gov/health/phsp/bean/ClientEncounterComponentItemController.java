@@ -794,6 +794,37 @@ public class ClientEncounterComponentItemController implements Serializable {
         userTransactionController.recordTransaction("Add Another - Clinic Forms");
         System.out.println("after saving user transaction");
     }
+      
+      
+      public void removeDataItem(DataItem i,DataItem removingItem) {
+        System.out.println("removeDataItem");
+        System.out.println("Dataitem i = " + i);
+
+        if (i == null) {
+            JsfUtil.addErrorMessage("No Data Item");
+            return;
+        }
+
+        if(removingItem==null){
+            JsfUtil.addErrorMessage("No Removing Item.");
+            return;
+        }
+        
+        if(removingItem.getCi()==null){
+            JsfUtil.addErrorMessage("No Removing c Item.");
+            return;
+        }
+        
+        removingItem.getCi().setRetired(true);
+        removingItem.getCi().setRetiredAt(new Date());
+        removingItem.getCi().setRetiredBy(webUserController.getLoggedUser());
+        save(removingItem.getCi());
+        
+        i.getAddedItems().remove(removingItem);
+        
+        userTransactionController.recordTransaction("Remove Item - Clinic Forms");
+    }
+      
 
     public void create() {
         persist(PersistAction.CREATE, ResourceBundle.getBundle("/BundleClinical").getString("ClientEncounterComponentItemCreated"));

@@ -20,7 +20,7 @@
 
         <h:panelGroup id="gpFormItems" rendered="#{cc.attrs.form.df.itemArrangementStrategy eq 'Label_Value_Unit_Sets'}" >
 
-            <table style="#{cc.attrs.form.df.css}" class="alignTop w3-table w3-bordered w3-border">
+            <table border="1" width="100%" cellpadding="0" cellspacing="0"  style="#{cc.attrs.form.df.css}" class="alignTop w3-table w3-bordered w3-border" >
                 <ui:repeat id="rptItems" value="#{cc.attrs.form.items}" 
                            var="ii" >
 
@@ -29,27 +29,29 @@
                         <tr>
                             <td>
                                 <h:panelGroup id="gpRx" rendered="#{ii.di.renderType eq 'Prescreption'}" >
-                                    <table >
+                                    <table width="100%" cellpadding="0" cellspacing="0">
                                         <tr>
                                             <td colspan="7">
                                                 <p:outputLabel value="#{ii.di.name}"  style="#{ii.di.css}" ></p:outputLabel>
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td>
+                                            <td class="prescriptionItemtd">
+                                                <p:outputLabel value="Medicine/Device" ></p:outputLabel>
                                                 <p:autoComplete id="acRx" value="#{ii.addingItem.ci.prescriptionValue.medicine}" 
                                                                 completeMethod="#{itemApplicationController.completePharmaceuticalItem}"
-                                                                var="p"
+                                                                var="p" inputStyleClass="prescriptionItem"
                                                                 itemLabel="#{p.name}"
                                                                 itemValue="#{p}"
                                                                 placeholder="Select Medicine"
                                                                 >
                                                 </p:autoComplete>
                                             </td>
-                                            <td>
-                                                <p:inputText id="txtRxDose" value="#{ii.addingItem.ci.prescriptionValue.dose}" ></p:inputText>
-                                                <p:selectOneMenu id="cmbRxDoseUnit" value="#{ii.addingItem.ci.prescriptionValue.doseUnit}" >
-                                                    <f:selectItem itemLabel="Please select dose unit" ></f:selectItem>
+                                            <td style="width:8rem;">
+                                                <p:outputLabel value="Dose" ></p:outputLabel>
+                                                <p:inputText style="width:6rem;" id="txtRxDose" value="#{ii.addingItem.ci.prescriptionValue.dose}" ></p:inputText>
+                                                <p:selectOneMenu  style="width:6rem;"  id="cmbRxDoseUnit" value="#{ii.addingItem.ci.prescriptionValue.doseUnit}" >
+                                                    <f:selectItem itemLabel="Dose unit" ></f:selectItem>
                                                     <f:selectItems value="#{itemApplicationController.issueUnits}"
                                                                    var="iu"
                                                                    itemLabel="#{iu.name}"
@@ -63,9 +65,10 @@
                                                     <f:ajax event="change" execute="@this" render="" ></f:ajax>
                                                 </p:selectOneMenu>
                                             </td>
-                                            <td>
-                                                <p:selectOneMenu id="cmbRxFrequency" value="#{ii.addingItem.ci.prescriptionValue.frequency}" >
-                                                    <f:selectItem itemLabel="Please select frequency" ></f:selectItem>
+                                            <td  style="width:8rem;">
+                                                <p:outputLabel value="Frequency" ></p:outputLabel>
+                                                <p:selectOneMenu  style="width:6rem;"  id="cmbRxFrequency" value="#{ii.addingItem.ci.prescriptionValue.frequency}" >
+                                                    <f:selectItem  itemLabel="Frequency" ></f:selectItem>
                                                     <f:selectItems value="#{itemApplicationController.frequencyUnits}"
                                                                    var="fu"
                                                                    itemLabel="#{fu.name}"
@@ -74,10 +77,11 @@
                                                     <f:ajax event="change" execute="@this" render="" ></f:ajax>
                                                 </p:selectOneMenu>
                                             </td>
-                                            <td>
-                                                <p:inputText id="txtRxDuration" value="#{ii.addingItem.ci.prescriptionValue.duration}" ></p:inputText>
-                                                <p:selectOneMenu id="cmbRxDurationUnit" value="#{ii.addingItem.ci.prescriptionValue.durationUnit}" >
-                                                    <f:selectItem itemLabel="Please select duration unit" ></f:selectItem>
+                                            <td  style="width:8rem;">
+                                                <p:outputLabel value="Duration" ></p:outputLabel>
+                                                <p:inputText  style="width:6rem;"  id="txtRxDuration" value="#{ii.addingItem.ci.prescriptionValue.duration}" ></p:inputText>
+                                                <p:selectOneMenu style="width:6rem;"  id="cmbRxDurationUnit" value="#{ii.addingItem.ci.prescriptionValue.durationUnit}" >
+                                                    <f:selectItem itemLabel="Duration unit" ></f:selectItem>
                                                     <f:selectItems value="#{itemApplicationController.durationUnits}" 
                                                                    var="du"
                                                                    itemLabel="#{du.displayName}" 
@@ -95,27 +99,23 @@
                                                     </f:selectItems>
                                                 </p:selectOneMenu>
                                             </td>
-                                            <td>
-                                                <p:inputTextarea id="txtRxDes" 
-                                                                 value="#{ii.addingItem.ci.prescriptionValue.description}" placeholder="Enter Comments" >
+                                            <td class="prescriptionItemtd">
+                                                <p:outputLabel value="Comments" ></p:outputLabel>
+                                                <p:inputTextarea  styleClass="prescriptionItem"  id="txtRxDes" 
+                                                                  value="#{ii.addingItem.ci.prescriptionValue.description}" placeholder="Enter Comments" >
                                                 </p:inputTextarea>
                                             </td>
                                             <td>
-                                                <p:commandButton id="btnAddRx"  value="Add" 
+                                                <p:commandButton id="btnAddRx"  value="Add"  style="width:6rem;" 
                                                                  process="btnAddRx acRx txtRxDose cmbRxDoseUnit cmbRxFrequency txtRxDuration cmbRxDurationUnit txtRxDes" 
                                                                  update="gpRx"
                                                                  action="#{clientEncounterComponentItemController.addAnotherDataItem(ii)}"></p:commandButton>
                                             </td>
-                                            <h:panelGroup rendered="#{ii.di.discreptionAsASideLabel}" >
-                                                <td>
-                                                    <p:outputLabel value="#{ii.di.descreption}"  ></p:outputLabel>
-                                                </td>
-                                            </h:panelGroup>
                                         </tr>
                                         <tr >
                                             <td colspan="7">
-                                                <p:dataTable value="#{ii.addedItems}" var="ai" emptyMessage="Nothing added Yet">
-                                                    <p:column headerText="Prescribed">
+                                                <p:dataTable id="tblPrescription" value="#{ii.addedItems}" var="ai" emptyMessage="Nothing added Yet">
+                                                    <p:column >
                                                         <p:outputLabel value="#{ai.ci.prescriptionValue.medicine.name}" ></p:outputLabel>
                                                         <p:outputLabel value=" " ></p:outputLabel>
                                                         <p:outputLabel value="#{ai.ci.prescriptionValue.dose}" ></p:outputLabel>
@@ -126,6 +126,13 @@
                                                         <p:outputLabel value="#{ai.ci.prescriptionValue.duration}" ></p:outputLabel>
                                                         <p:outputLabel value="#{ai.ci.prescriptionValue.durationUnit.name}" ></p:outputLabel>
                                                         <p:outputLabel value=" " ></p:outputLabel>
+                                                        <p:outputLabel value="#{ai.ci.prescriptionValue.description}" ></p:outputLabel>
+                                                    </p:column>
+                                                    <p:column >
+                                                        <p:commandButton id="btnPrescriptionRemove" value="Remove" 
+                                                                         action="#{clientEncounterComponentItemController.removeDataItem(ii,ai)}"
+                                                                         process="btnPrescriptionRemove" update="tblPrescription" >
+                                                        </p:commandButton>
                                                     </p:column>
                                                 </p:dataTable>
                                             </td>
@@ -136,14 +143,15 @@
                                 <h:panelGroup id="gpPrs" rendered="#{ii.di.item.dataType eq 'Procedure_Request'}" >
                                     <table >
                                         <tr>
-                                            <td colspan="4">
-                                                <p:outputLabel for="prM" value="#{ii.di.name}"  style="#{ii.di.css}" ></p:outputLabel>
+                                            <td colspan="6">
+                                                <p:outputLabel  for="prM" value="#{ii.di.name}"  style="#{ii.di.css}" ></p:outputLabel>
                                                 <p:outputLabel for="prM" value="#{ii.di.descreption}"  style="#{ii.di.css}" ></p:outputLabel>
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td>
-                                                <p:selectOneMenu value="#{ii.addingItem.ci.institutionValue}" >
+                                            <td class="dataValuetd">
+                                                <p:selectOneMenu value="#{ii.addingItem.ci.institutionValue}"
+                                                                 styleClass="dataValueInputText">
                                                     <f:selectItem itemLabel="Please select room" ></f:selectItem>
                                                     <f:selectItems value="#{webUserController.loggableProcedureRooms}"
                                                                    var="ipr"
@@ -153,8 +161,8 @@
                                                     <f:ajax event="change" execute="@this" render="prM lblPrM" ></f:ajax>
                                                 </p:selectOneMenu>
                                             </td>
-                                            <td>
-                                                <p:selectOneMenu id="prM" value="#{ii.addingItem.ci.itemValue}" >
+                                            <td class="dataValuetd">
+                                                <p:selectOneMenu styleClass="dataValueInputText" id="prM" value="#{ii.addingItem.ci.itemValue}" >
                                                     <f:selectItem itemLabel="Please select procedure" ></f:selectItem>
                                                     <f:selectItems value="#{ii.addingItem.availableProcedures}" 
                                                                    var="li"
@@ -163,8 +171,8 @@
                                                     </f:selectItems>
                                                 </p:selectOneMenu>
                                             </td>
-                                            <td>
-                                                <p:inputTextarea id="prComments" value="#{ii.addingItem.ci.longTextValue}" placeholder="Enter Comments" >
+                                            <td class="detailBoxtd">
+                                                <p:inputTextarea  styleClass="detailBox" id="prComments" value="#{ii.addingItem.ci.longTextValue}" placeholder="Enter Comments" >
                                                 </p:inputTextarea>
                                             </td>
                                             <td>
@@ -173,20 +181,10 @@
                                                                  update="gpPrs"
                                                                  action="#{clientEncounterComponentItemController.addAnotherDataItem(ii)}"></p:commandButton>
                                             </td>
-                                            <h:panelGroup rendered="#{ii.di.displayLastResult}" >
-                                                <td>
-                                                    <h:outputText value="#{fn:replace(clientEncounterComponentFormSetController.lastData(ii.ci),'\\n','&lt;br/&gt;')}" escape="false" />
-                                                </td>
-                                            </h:panelGroup>
-                                            <h:panelGroup rendered="#{ii.di.discreptionAsASideLabel}" >
-                                                <td>
-                                                    <p:outputLabel value="#{ii.di.descreption}"  ></p:outputLabel>
-                                                </td>
-                                            </h:panelGroup>
                                         </tr>
                                         <tr >
                                             <td colspan="6">
-                                                <p:dataTable value="#{ii.addedItems}" var="ai" emptyMessage="Nothing added Yet">
+                                                <p:dataTable id="tblProcedureRoom" value="#{ii.addedItems}" var="ai" emptyMessage="Nothing added Yet">
                                                     <p:column headerText="Procedure Room">
                                                         <p:outputLabel value="#{ai.ci.institutionValue.name}" ></p:outputLabel>
                                                     </p:column>
@@ -196,6 +194,12 @@
                                                     <p:column  headerText="Comments">
                                                         <p:outputLabel value="#{ai.ci.longTextValue}" ></p:outputLabel>
                                                     </p:column>
+                                                    <p:column >
+                                                        <p:commandButton id="btnProcedureRemove" value="Remove" 
+                                                                         action="#{clientEncounterComponentItemController.removeDataItem(ii,ai)}"
+                                                                         process="btnProcedureRemove" update="tblProcedureRoom" >
+                                                        </p:commandButton>
+                                                    </p:column>
                                                 </p:dataTable>
                                             </td>
 
@@ -204,40 +208,49 @@
                                     </table>
                                 </h:panelGroup>
 
-                                <h:panelGroup rendered="#{ii.di.item.dataType eq 'Item_Reference' and ii.di.renderType eq 'Drop_Down_Menu'}" >
+                                <h:panelGroup id="gpMuIrDd" rendered="#{ii.di.item.dataType eq 'Item_Reference' and ii.di.renderType eq 'Drop_Down_Menu'}" >
                                     <table >
                                         <tr>
-                                            <td>
-                                                <p:outputLabel for="domIcM" value="#{ii.di.name}"  style="#{ii.di.css}" ></p:outputLabel>
+                                            <td class="dataLabeltd">
+                                                <p:outputLabel for="domIcM"  styleClass="dataLabel" value="#{ii.di.name}"  style="#{ii.di.css}" ></p:outputLabel>
                                             </td>
-                                            <td>
-                                                <p:selectOneMenu id="domIcM" value="#{ii.addingItem.ci.itemValue}" >
+                                            <td class="dataValuetd">
+                                                <p:selectOneMenu id="domIcM" value="#{ii.addingItem.ci.itemValue}" styleClass="dataValueInputText" >
                                                     <f:selectItem itemLabel="Please select" ></f:selectItem>
                                                     <f:selectItems value="#{ii.availableItemsForSelection}" var="li"
                                                                    itemLabel="#{li.displayName}" itemValue="#{li}" ></f:selectItems>
                                                 </p:selectOneMenu>
                                             </td>
-                                            <td>
-                                                <p:commandButton id="btnAddM1"  value="Add" process="domIcM btnAddM1" update="@form :#{p:component('formset')}"
+                                            <h:panelGroup id="gpMuIrDdDes" >
+                                                <h:panelGroup rendered="#{ii.di.displayDetailsBox}" >
+                                                    <td  class="detailBoxtd">
+                                                        <p:inputTextarea id="txtMuIrDdDes"  styleClass="detailBox" value="#{ii.addingItem.ci.longTextValue}" ></p:inputTextarea>
+                                                    </td>
+                                                </h:panelGroup>
+                                            </h:panelGroup>
+
+                                            <td >
+                                                <p:commandButton id="btnAddM1"  value="Add" process="domIcM gpMuIrDdDes btnAddM1" update="gpMuIrDd"
                                                                  action="#{clientEncounterComponentItemController.addAnotherDataItem(ii)}"></p:commandButton>
                                             </td>
-                                            <td>
-                                                <p:dataTable value="#{ii.addedItems}" var="ai" emptyMessage="Nothing added Yet">
+                                        </tr><!-- comment -->
+                                        <tr>
+                                            <td colspan="4">
+                                                <p:dataTable id="tblMuItemsDd" value="#{ii.addedItems}" var="ai" emptyMessage="Nothing added Yet">
                                                     <p:column >
                                                         <p:outputLabel value="#{ai.ci.itemValue.name}" ></p:outputLabel>
                                                     </p:column>
+                                                    <p:column  rendered="#{ii.di.displayDetailsBox}" >
+                                                        <p:outputLabel value="#{ai.ci.longTextValue}" ></p:outputLabel>
+                                                    </p:column>
+                                                    <p:column >
+                                                        <p:commandButton id="btnMuItemsDd" value="Remove" 
+                                                                         action="#{clientEncounterComponentItemController.removeDataItem(ii,ai)}"
+                                                                         process="btnMuItemsDd" update="tblMuItemsDd" >
+                                                        </p:commandButton>
+                                                    </p:column>
                                                 </p:dataTable>
                                             </td>
-                                            <h:panelGroup rendered="#{ii.di.displayLastResult}" >
-                                                <td>
-                                                    <h:outputText value="#{fn:replace(clientEncounterComponentFormSetController.lastData(ii.ci),'\\n','&lt;br/&gt;')}" escape="false" />
-                                                </td>
-                                            </h:panelGroup>
-                                            <h:panelGroup rendered="#{ii.di.discreptionAsASideLabel}" >
-                                                <td>
-                                                    <p:outputLabel value="#{ii.di.descreption}"  ></p:outputLabel>
-                                                </td>
-                                            </h:panelGroup>
                                         </tr>
                                     </table>
                                 </h:panelGroup>
@@ -245,25 +258,24 @@
                                 <h:panelGroup id="gpMultipleItemAc" rendered="#{ii.di.item.dataType eq 'Item_Reference' and ii.di.renderType eq 'Autocomplete'}" >
                                     <table>
                                         <tr>
-                                            <td>
-                                                <p:outputLabel for="acItemM" value="#{ii.di.name}"  style="#{ii.di.css}" ></p:outputLabel>
+                                            <td class="dataLabeltd">
+                                                <p:outputLabel for="acItemM"  styleClass="dataLabel" value="#{ii.di.name}"  style="#{ii.di.css}" ></p:outputLabel>
                                             </td>
-                                            <td>
+                                            <td class="dataValuetd">
                                                 <p:autoComplete id="acItemM" value="#{ii.addingItem.ci.itemValue}"
                                                                 completeMethod="#{ii.addingItem.completeItem}"
                                                                 var="ai" itemLabel="#{ai.name}" itemValue="#{ai}"
                                                                 maxResults="15" forceSelection="true" 
-                                                                minQueryLength="3"
+                                                                minQueryLength="3"  inputStyleClass="dataValueInputText"
                                                                 requiredMessage="#{ii.requiredErrorMessage}">
                                                 </p:autoComplete>
                                             </td>
 
                                             <h:panelGroup id="gpItemAcDetails" >
                                                 <h:panelGroup rendered="#{ii.di.displayDetailsBox}" >
-                                                    <td>
-                                                        <p:inputTextarea value="#{ii.addingItem.ci.longTextValue}" ></p:inputTextarea>
+                                                    <td  class="detailBox">
+                                                        <p:inputTextarea  styleClass="detailBox" value="#{ii.addingItem.ci.longTextValue}" ></p:inputTextarea>
                                                     </td>
-
                                                 </h:panelGroup>
                                             </h:panelGroup>
 
@@ -274,26 +286,21 @@
                                         </tr>
                                         <tr>
                                             <td colspan="6">
-                                                <p:dataTable value="#{ii.addedItems}" var="ai" emptyMessage="Nothing added Yet">
+                                                <p:dataTable id="tblMuIrAc" value="#{ii.addedItems}" var="ai" emptyMessage="Nothing added Yet">
                                                     <p:column >
                                                         <p:outputLabel value="#{ai.ci.itemValue.name}" ></p:outputLabel>
                                                     </p:column>
                                                     <p:column >
                                                         <p:outputLabel value="#{ai.ci.longTextValue}" ></p:outputLabel>
                                                     </p:column>
+                                                    <p:column >
+                                                        <p:commandButton id="btnMuIrAc" value="Remove" 
+                                                                         action="#{clientEncounterComponentItemController.removeDataItem(ii,ai)}"
+                                                                         process="btnMuIrAc" update="tblMuIrAc" >
+                                                        </p:commandButton>
+                                                    </p:column>
                                                 </p:dataTable>
                                             </td>
-
-                                            <h:panelGroup rendered="#{ii.di.displayLastResult}" >
-                                                <td>
-                                                    <h:outputText value="#{fn:replace(clientEncounterComponentFormSetController.lastData(ii.ci),'\\n','&lt;br/&gt;')}" escape="false" />
-                                                </td>
-                                            </h:panelGroup>
-                                            <h:panelGroup rendered="#{ii.di.discreptionAsASideLabel}" >
-                                                <td>
-                                                    <p:outputLabel value="#{ii.di.descreption}"  ></p:outputLabel>
-                                                </td>
-                                            </h:panelGroup>
                                         </tr>
                                     </table>
                                 </h:panelGroup>
@@ -302,14 +309,14 @@
                                     <table>
                                         <tr>
                                             <td>
-                                                <p:outputLabel for="acAM" value="#{ii.di.name}"  style="#{ii.di.css}" ></p:outputLabel>
+                                                <p:outputLabel for="acAM"  styleClass="dataLabel"  value="#{ii.di.name}"  style="#{ii.di.css}" ></p:outputLabel>
                                             </td>
                                             <td>
                                                 <p:autoComplete id="acAM" value="#{ii.addingItem.ci.areaValue}"
                                                                 completeMethod="#{areaController.completeAreas}"
                                                                 var="a" itemLabel="#{a.name}" itemValue="#{a}"
                                                                 maxResults="15" forceSelection="true" 
-                                                                minQueryLength="3"
+                                                                minQueryLength="3"  inputStyleClass="dataValueInputText"
                                                                 required="#{ii.di.required}" 
                                                                 requiredMessage="#{ii.di.requiredErrorMessage}">
                                                 </p:autoComplete>
@@ -339,9 +346,6 @@
                                     </table>
                                 </h:panelGroup>
 
-
-
-
                             </td>
                         </tr>
                     </h:panelGroup>
@@ -354,10 +358,10 @@
                                     <table >
                                         <tr>
                                             <td>
-                                                <p:outputLabel for="itStC" value="#{ii.di.name}" style="#{ii.di.css}" ></p:outputLabel>
+                                                <p:outputLabel styleClass="dataLabel" for="itStC" value="#{ii.di.name}" style="#{ii.di.css}" ></p:outputLabel>
                                             </td>
                                             <td>
-                                                <p:inputText id="itStC" value="#{ii.ci.shortTextValue}" 
+                                                <p:inputText styleClass="dataValueInputText" id="itStC" value="#{ii.ci.shortTextValue}" 
                                                              required="#{ii.di.required}" 
                                                              requiredMessage="#{ii.di.requiredErrorMessage}" >
                                                     <p:ajax  event="blur" process="@this"  
@@ -387,12 +391,12 @@
                                     <table >
                                         <tr>
                                             <td>
-                                                <p:outputLabel for="itIntC" value="#{ii.di.name}"  style="#{ii.di.css}" ></p:outputLabel>
+                                                <p:outputLabel for="itIntC"  styleClass="dataLabel" value="#{ii.di.name}"  style="#{ii.di.css}" ></p:outputLabel>
                                             </td>
                                             <td>
-                                                <p:inputText id="itIntC" value="#{ii.ci.integerNumberValue}" 
-                                                             required="#{ii.di.required}" 
-                                                             requiredMessage="#{ii.di.requiredErrorMessage}" >
+                                                <p:inputText  styleClass="dataValueInputText" id="itIntC" value="#{ii.ci.integerNumberValue}" 
+                                                              required="#{ii.di.required}" 
+                                                              requiredMessage="#{ii.di.requiredErrorMessage}" >
                                                     <p:ajax  event="blur" process="@this"   listener="#{clientEncounterComponentItemController.save(ii.ci)}" ></p:ajax>
 
                                                 </p:inputText>
@@ -420,12 +424,12 @@
                                     <table >
                                         <tr>
                                             <td>
-                                                <p:outputLabel for="itRnC" value="#{ii.di.name}"  style="#{ii.di.css}" ></p:outputLabel>
+                                                <p:outputLabel for="itRnC"  styleClass="dataLabel" value="#{ii.di.name}"  style="#{ii.di.css}" ></p:outputLabel>
                                             </td>
                                             <td>
-                                                <p:inputText id="itRnC" value="#{ii.ci.realNumberValue}" 
-                                                             required="#{ii.di.required}" validatorMessage="#{ii.di.regexValidationFailedMessage}"
-                                                             requiredMessage="#{ii.di.requiredErrorMessage}" >
+                                                <p:inputText  styleClass="dataValueInputText" id="itRnC" value="#{ii.ci.realNumberValue}" 
+                                                              required="#{ii.di.required}" validatorMessage="#{ii.di.regexValidationFailedMessage}"
+                                                              requiredMessage="#{ii.di.requiredErrorMessage}" >
                                                     <p:ajax  event="blur" process="@this"  listener="#{clientEncounterComponentItemController.save(ii.ci)}" ></p:ajax>
                                                 </p:inputText>
                                             </td>
@@ -452,12 +456,12 @@
                                     <table >
                                         <tr>
                                             <td>
-                                                <p:outputLabel for="itLongC" value="#{ii.di.name}"  style="#{ii.di.css}" ></p:outputLabel>
+                                                <p:outputLabel for="itLongC"  styleClass="dataLabel" value="#{ii.di.name}"  style="#{ii.di.css}" ></p:outputLabel>
                                             </td>
                                             <td>
-                                                <p:inputText id="itLongC" value="#{ii.ci.longNumberValue}" 
-                                                             required="#{ii.di.required}" 
-                                                             requiredMessage="#{ii.di.requiredErrorMessage}" >
+                                                <p:inputText  styleClass="dataValueInputText" id="itLongC" value="#{ii.ci.longNumberValue}" 
+                                                              required="#{ii.di.required}" 
+                                                              requiredMessage="#{ii.di.requiredErrorMessage}" >
                                                     <p:ajax  event="blur" process="@this"   listener="#{clientEncounterComponentItemController.save(ii.ci)}" ></p:ajax>
                                                 </p:inputText>
                                             </td>
@@ -485,10 +489,10 @@
                                     <table >
                                         <tr>
                                             <td>
-                                                <p:outputLabel for="txtItaL" value="#{ii.di.name}"  style="#{ii.di.css}" ></p:outputLabel>
+                                                <p:outputLabel for="txtItaL"  styleClass="dataLabel" value="#{ii.di.name}"  style="#{ii.di.css}" ></p:outputLabel>
                                             </td>
                                             <td>
-                                                <p:inputTextarea id="txtItaL" value="#{ii.ci.longTextValue}" 
+                                                <p:inputTextarea id="txtItaL" value="#{ii.ci.longTextValue}"  styleClass="dataValueInputTextArea" 
                                                                  required="#{ii.di.required}" 
                                                                  requiredMessage="#{ii.di.requiredErrorMessage}" >
                                                     <p:ajax  event="blur" process="@this"   listener="#{clientEncounterComponentItemController.save(ii.ci)}" ></p:ajax>
@@ -512,7 +516,7 @@
                                     <table >
                                         <tr>
                                             <td>
-                                                <p:outputLabel for="calDp" value="#{ii.di.name}"  style="#{ii.di.css}" ></p:outputLabel>
+                                                <p:outputLabel for="calDp"  styleClass="dataLabel" value="#{ii.di.name}"  style="#{ii.di.css}" ></p:outputLabel>
                                             </td>
                                             <td>
                                                 <p:calendar id="calDp" value="#{ii.ci.dateValue}" 
@@ -539,7 +543,7 @@
                                     <table >
                                         <tr>
                                             <td>
-                                                <p:outputLabel for="calC" value="#{ii.di.name}" ></p:outputLabel>
+                                                <p:outputLabel for="calC"  styleClass="dataLabel" value="#{ii.di.name}" ></p:outputLabel>
                                             </td>
                                             <td>
                                                 <p:calendar id="calC" value="#{ii.ci.dateValue}" 
@@ -567,7 +571,7 @@
                                     <table >
                                         <tr>
                                             <td>
-                                                <p:outputLabel for="domIc" value="#{ii.di.name}"  style="#{ii.di.css}" ></p:outputLabel>
+                                                <p:outputLabel for="domIc"  styleClass="dataLabel" value="#{ii.di.name}"  style="#{ii.di.css}" ></p:outputLabel>
                                             </td>
                                             <td>
                                                 <p:selectOneMenu id="domIc" value="#{ii.ci.itemValue}" >
@@ -594,14 +598,14 @@
                                     <table >
                                         <tr>
                                             <td>
-                                                <p:outputLabel for="acItem" value="#{ii.di.name}"  style="#{ii.di.css}" ></p:outputLabel>
+                                                <p:outputLabel for="acItem"  styleClass="dataLabel" value="#{ii.di.name}"  style="#{ii.di.css}" ></p:outputLabel>
                                             </td>
                                             <td>
                                                 <p:autoComplete id="acItem" value="#{ii.ci.itemValue}"
                                                                 completeMethod="#{ii.completeItemsofParentWithFIlter}"
                                                                 var="ai" itemLabel="#{ai.name}" itemValue="#{ai}"
                                                                 maxResults="15" forceSelection="true" 
-                                                                minQueryLength="3"
+                                                                minQueryLength="3"  inputStyleClass="dataValueInputText"
                                                                 requiredMessage="#{ii.requiredErrorMessage}">
                                                     <p:ajax  event="blur" process="@this"   
                                                              listener="#{clientEncounterComponentItemController.save(ii.ci)}" >
@@ -626,7 +630,7 @@
                                     <table >
                                         <tr>
                                             <td>
-                                                <p:outputLabel for="bcNc" value="#{ii.di.name}"  style="#{ii.di.css}" ></p:outputLabel>
+                                                <p:outputLabel for="bcNc"  styleClass="dataLabel" value="#{ii.di.name}"  style="#{ii.di.css}" ></p:outputLabel>
                                             </td>
                                             <td>
                                                 <p:selectBooleanCheckbox id="bcNc" value="#{ii.ci.booleanValue}" 
@@ -653,17 +657,17 @@
                                         </tr>
                                     </table>
                                 </h:panelGroup>
-                                
+
                                 <h:panelGroup rendered="#{ii.di.renderType eq 'Boolean_Button'}" >
                                     <table >
                                         <tr>
                                             <td>
-                                                <p:outputLabel for="bbNc" value="#{ii.di.name}"  style="#{ii.di.css}" ></p:outputLabel>
+                                                <p:outputLabel for="bbNc"  styleClass="dataLabel" value="#{ii.di.name}"  style="#{ii.di.css}" ></p:outputLabel>
                                             </td>
                                             <td>
                                                 <p:selectBooleanButton id="bbNc" value="#{ii.ci.booleanValue}" offLabel="No" onLabel="Yes"
-                                                                         required="#{ii.di.required}" 
-                                                                         requiredMessage="#{ii.di.requiredErrorMessage}" >
+                                                                       required="#{ii.di.required}" 
+                                                                       requiredMessage="#{ii.di.requiredErrorMessage}" >
                                                     <p:ajax  process="@this"   
                                                              listener="#{clientEncounterComponentItemController.save(ii.ci)}" >
                                                     </p:ajax>
@@ -685,20 +689,20 @@
                                         </tr>
                                     </table>
                                 </h:panelGroup>
-                                
-                                
+
+
                                 <h:panelGroup rendered="#{ii.di.renderType eq 'Autocomplete' and ii.di.item.dataType eq 'Area_Reference'}" >
                                     <table >
                                         <tr>
                                             <td>
-                                                <p:outputLabel for="acA" value="#{ii.di.name}"  style="#{ii.di.css}" ></p:outputLabel>
+                                                <p:outputLabel for="acA"  styleClass="dataLabel" value="#{ii.di.name}"  style="#{ii.di.css}" ></p:outputLabel>
                                             </td>
                                             <td>
                                                 <p:autoComplete id="acA" value="#{ii.ci.areaValue}"
                                                                 completeMethod="#{areaController.completeAreas}"
                                                                 var="a" itemLabel="#{a.name}" itemValue="#{a}"
                                                                 maxResults="15" forceSelection="true" 
-                                                                minQueryLength="3"
+                                                                minQueryLength="3"  inputStyleClass="dataValueInputText"
                                                                 required="#{ii.di.required}" 
                                                                 requiredMessage="#{ii.di.requiredErrorMessage}">
                                                     <p:ajax  event="blur" process="@this"   
@@ -721,21 +725,6 @@
                                         </tr>
                                     </table>
                                 </h:panelGroup>
-                                <h:panelGroup rendered="#{ii.di.renderType eq 'Prescreption'}" >
-                                    <table >
-                                        <tr>
-                                            <td>
-                                                <p:outputLabel value="#{ii.di.name}"  style="#{ii.di.css}" ></p:outputLabel>
-                                            </td>
-                                            <td>
-                                                <ez:prescription/>
-                                            </td>
-                                        </tr>
-                                    </table>
-                                </h:panelGroup>
-
-
-
                             </td>
                         </tr>
                     </h:panelGroup>
