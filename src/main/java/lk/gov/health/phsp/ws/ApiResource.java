@@ -814,7 +814,6 @@ public class ApiResource {
         return jSONObjectOut;
     }
 
-    
     private JSONObject medicineAndUnitsList() {
         JSONObject jSONObjectOut = new JSONObject();
         JSONArray array = new JSONArray();
@@ -832,7 +831,6 @@ public class ApiResource {
         return jSONObjectOut;
     }
 
-    
     private JSONObject dosageFormList() {
         JSONObject jSONObjectOut = new JSONObject();
         JSONArray array = new JSONArray();
@@ -860,10 +858,46 @@ public class ApiResource {
         List<Relationship> ds = relationshipController.findRelationships(rts);
         for (Relationship a : ds) {
             JSONObject ja = new JSONObject();
-            ja.put("relationship_id", a.getId());
-            ja.put("relationship_item", a.getItem());
-            ja.put("relationship_to_item", a.getToItem());
-            ja.put("relationship_type", a.getRelationshipType());
+            ja.put("id", a.getId());
+            ja.put("type", a.getRelationshipType());
+            
+            if (a.getItem() != null) {
+                ja.put("item_id", a.getItem().getId());
+            } else {
+                ja.put("item_id", 0l);
+            }
+            if(a.getItemUnit()!=null){
+                ja.put("item_unit_id", a.getItemUnit().getId());
+            }else{
+                ja.put("item_unit_id", 0l);
+            }
+            
+            if(a.getToItem()!=null){
+                ja.put("to_item_id", a.getToItem().getId());
+            }else{
+                ja.put("to_item_id", 0l);
+            }
+            
+            if(a.getDblValue()!=null){
+                ja.put("dbl_value", a.getDblValue());
+            }else{
+                ja.put("dbl_value", 0.0);
+            }
+            
+            if(a.getToItemUnit()!=null){
+                ja.put("to_item_unit_id", a.getToItemUnit().getId());
+            }else{
+                ja.put("to_item_unit_id", 0l);
+            }
+            
+            if(a.getToItem()!=null){
+                ja.put("to_item_id", a.getToItem().getId());
+            }else{
+                ja.put("to_item_id", 0l);
+            }
+            
+            
+            
             array.put(ja);
         }
         jSONObjectOut.put("data", array);
