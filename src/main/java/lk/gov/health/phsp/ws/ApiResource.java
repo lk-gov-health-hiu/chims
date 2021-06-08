@@ -23,6 +23,7 @@
  */
 package lk.gov.health.phsp.ws;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import javax.enterprise.context.Dependent;
@@ -44,6 +45,7 @@ import lk.gov.health.phsp.bean.AreaApplicationController;
 import lk.gov.health.phsp.bean.CommonController;
 import lk.gov.health.phsp.bean.InstitutionApplicationController;
 import lk.gov.health.phsp.bean.ItemApplicationController;
+import lk.gov.health.phsp.bean.RelationshipController;
 import lk.gov.health.phsp.bean.StoredQueryResultController;
 import lk.gov.health.phsp.bean.WebUserController;
 import lk.gov.health.phsp.entity.ApiRequest;
@@ -57,6 +59,7 @@ import lk.gov.health.phsp.entity.Relationship;
 import lk.gov.health.phsp.entity.WebUser;
 import lk.gov.health.phsp.enums.AreaType;
 import lk.gov.health.phsp.enums.EncounterType;
+import lk.gov.health.phsp.enums.ItemType;
 import lk.gov.health.phsp.enums.RelationshipType;
 import lk.gov.health.phsp.enums.WebUserRole;
 import org.json.JSONArray;
@@ -90,6 +93,8 @@ public class ApiResource {
     WebUserController webUserController;
     @Inject
     ApiRequestApplicationController apiRequestApplicationController;
+    @Inject
+    RelationshipController relationshipController;
 
     /**
      * Creates a new instance of GenericResource
@@ -117,6 +122,18 @@ public class ApiResource {
             switch (name) {
                 case "get_procedure_list":
                     jSONObjectOut = procedureList();
+                    break;
+                case "get_medicine_list":
+                    jSONObjectOut = medicineList();
+                    break;
+                case "get_medicine_units":
+                    jSONObjectOut = medicineUnitsList();
+                    break;
+                case "get_dosage_forms":
+                    jSONObjectOut = dosageFormList();
+                    break;
+                case "get_medicine_relationships":
+                    jSONObjectOut = medicineRelationshipsList();
                     break;
                 case "get_procedures_pending":
                     jSONObjectOut = proceduresPending(id);
@@ -760,6 +777,79 @@ public class ApiResource {
         return jSONObjectOut;
     }
 
+    private JSONObject medicineList() {
+        JSONObject jSONObjectOut = new JSONObject();
+        JSONArray array = new JSONArray();
+        List<Item> ds = itemApplicationController.findPharmaceuticalItems();
+        for (Item a : ds) {
+            JSONObject ja = new JSONObject();
+            ja.put("item_id", a.getId());
+            ja.put("item_code", a.getCode());
+            ja.put("item_name", a.getName());
+            ja.put("item_type", a.getItemType());
+            array.put(ja);
+        }
+        jSONObjectOut.put("data", array);
+        jSONObjectOut.put("status", successMessage());
+        return jSONObjectOut;
+    }
+
+    private JSONObject medicineUnitsList() {
+        JSONObject jSONObjectOut = new JSONObject();
+        JSONArray array = new JSONArray();
+        List<Item> ds = itemApplicationController.findPharmaceuticalItems();
+        for (Item a : ds) {
+            JSONObject ja = new JSONObject();
+            ja.put("item_id", a.getId());
+            ja.put("item_code", a.getCode());
+            ja.put("item_name", a.getName());
+            ja.put("item_type", a.getItemType());
+            array.put(ja);
+        }
+        jSONObjectOut.put("data", array);
+        jSONObjectOut.put("status", successMessage());
+        return jSONObjectOut;
+    }
+
+    private JSONObject dosageFormList() {
+        JSONObject jSONObjectOut = new JSONObject();
+        JSONArray array = new JSONArray();
+        List<Item> ds = itemApplicationController.findItems(ItemType.Dosage_Form);
+        for (Item a : ds) {
+            JSONObject ja = new JSONObject();
+            ja.put("item_id", a.getId());
+            ja.put("item_code", a.getCode());
+            ja.put("item_name", a.getName());
+            ja.put("item_type", a.getItemType());
+            array.put(ja);
+        }
+        jSONObjectOut.put("data", array);
+        jSONObjectOut.put("status", successMessage());
+        return jSONObjectOut;
+    }
+
+    
+    private JSONObject medicineRelationshipsList() {
+        JSONObject jSONObjectOut = new JSONObject();
+        JSONArray array = new JSONArray();
+        List<RelationshipType> rts = new ArrayList<>();
+        rts.add(RelationshipType.VmpForAmp);
+        rts.add(RelationshipType.VtmsForVmp);
+
+        List<Relationship> ds = relationshipController.findRelationships(rts);
+        for (Relationship a : ds) {
+            JSONObject ja = new JSONObject();
+            ja.put("relationship_id", a.getId());
+            ja.put("relationship_item", a.getItem());
+            ja.put("relationship_to_item", a.getToItem());
+            ja.put("relationship_type", a.getRelationshipType());
+            array.put(ja);
+        }
+        jSONObjectOut.put("data", array);
+        jSONObjectOut.put("status", successMessage());
+        return jSONObjectOut;
+    }
+
     private JSONObject markRequestAsReceived(String id) {
         boolean f = apiRequestApplicationController.markRequestAsReceived(id);
         if (!f) {
@@ -779,7 +869,7 @@ public class ApiResource {
         jSONObjectOut.put("status", successMessage());
         return jSONObjectOut;
     }
-    
+
     private JSONObject markPrescriptionAsIssued(String id) {
         boolean f = apiRequestApplicationController.markRequestAsReceived(id);
         if (!f) {
