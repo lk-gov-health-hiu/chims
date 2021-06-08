@@ -140,6 +140,24 @@ public class ItemApplicationController {
         return findItems(its);
     }
 
+    public List<Item> findPharmaceuticalsAndUnits() {
+        List<ItemType> its = new ArrayList<>();
+        its.add(ItemType.Atm);
+        its.add(ItemType.Vtm);
+        its.add(ItemType.Amp);
+        its.add(ItemType.Vmp);
+        its.add(ItemType.Ampp);
+        its.add(ItemType.Vmpp);
+        its.add(ItemType.Frequency_Unit);
+        its.add(ItemType.Dosage_Form);
+        its.add(ItemType.Duration_Unit);
+        its.add(ItemType.Strength_Unit);
+        its.add(ItemType.Pack_Unit);
+        its.add(ItemType.Issue_Unit);
+        return findItems(its);
+    }
+
+    
     public List<Item> findVtms() {
         List<ItemType> its = new ArrayList<>();
         its.add(ItemType.Vtm);

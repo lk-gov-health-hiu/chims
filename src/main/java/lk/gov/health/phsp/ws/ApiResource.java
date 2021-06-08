@@ -129,6 +129,9 @@ public class ApiResource {
                 case "get_medicine_units":
                     jSONObjectOut = medicineUnitsList();
                     break;
+                case "get_medicines_and_units_list":
+                    jSONObjectOut = medicineAndUnitsList();
+                    break;
                 case "get_dosage_forms":
                     jSONObjectOut = dosageFormList();
                     break;
@@ -811,6 +814,25 @@ public class ApiResource {
         return jSONObjectOut;
     }
 
+    
+    private JSONObject medicineAndUnitsList() {
+        JSONObject jSONObjectOut = new JSONObject();
+        JSONArray array = new JSONArray();
+        List<Item> ds = itemApplicationController.findPharmaceuticalsAndUnits();
+        for (Item a : ds) {
+            JSONObject ja = new JSONObject();
+            ja.put("item_id", a.getId());
+            ja.put("item_code", a.getCode());
+            ja.put("item_name", a.getName());
+            ja.put("item_type", a.getItemType());
+            array.put(ja);
+        }
+        jSONObjectOut.put("data", array);
+        jSONObjectOut.put("status", successMessage());
+        return jSONObjectOut;
+    }
+
+    
     private JSONObject dosageFormList() {
         JSONObject jSONObjectOut = new JSONObject();
         JSONArray array = new JSONArray();
@@ -828,7 +850,6 @@ public class ApiResource {
         return jSONObjectOut;
     }
 
-    
     private JSONObject medicineRelationshipsList() {
         JSONObject jSONObjectOut = new JSONObject();
         JSONArray array = new JSONArray();
