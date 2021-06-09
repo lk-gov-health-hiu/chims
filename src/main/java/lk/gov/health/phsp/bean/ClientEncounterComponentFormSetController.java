@@ -319,14 +319,21 @@ public class ClientEncounterComponentFormSetController implements Serializable {
                             r.setName("procedure_request");
                             apiRequestApplicationController.saveApiRequests(r);
                         }
-                    } else if (tItem.getDi().getSelectionDataType() == SelectionDataType.Prescreption_Reference) {
+                    } else if (tItem.getDi().getSelectionDataType() == SelectionDataType.Prescreption_Request) {
+                        ApiRequest rfs = new ApiRequest();
+                        rfs.setRequestCefs(selected);
+                        rfs.setCreatedAt(new Date());
+                        rfs.setCreatedBy(webUserController.getLoggedUser());
+                        rfs.setEncounter(tSet.getEfs().getEncounter());
+                        rfs.setName("prescription_request");
+                        apiRequestApplicationController.saveApiRequests(rfs);
                         for (DataItem ttItem : tItem.getAddedItems()) {
                             if (ttItem.getCi() == null) {
                                 System.err.println("ttItem.getCi() is null");
                                 continue;
                             }
-                            if (ttItem.getCi().getItemValue() == null) {
-                                System.err.println("ttItem.getCi().getItemValue() is null");
+                            if (ttItem.getCi().getPrescriptionValue() == null) {
+                                System.err.println("ttItem.getCi().getPrescriptionValue() is null");
                                 continue;
                             }
                             ApiRequest r = new ApiRequest();
@@ -335,44 +342,9 @@ public class ClientEncounterComponentFormSetController implements Serializable {
                             r.setCreatedBy(webUserController.getLoggedUser());
                             r.setEncounter(tSet.getEfs().getEncounter());
                             r.setName("prescription_request");
+                            r.setParent(rfs);
                             apiRequestApplicationController.saveApiRequests(r);
                         }
-                    }
-                } else {
-                    if (tItem.getDi().getSelectionDataType() == SelectionDataType.Procedure_Request) {
-                        if (tItem.getCi() == null) {
-                            System.err.println("tItem.getCi() is null");
-                            continue;
-                        }
-                        if (tItem.getCi().getItemValue() == null) {
-                            System.err.println("tItem.getCi().getItemValue() is null");
-                            continue;
-                        }
-                        System.out.println("tItem = " + tItem.getCi().getItemValue().getName());
-                        ApiRequest r = new ApiRequest();
-                        r.setRequestCeci(tItem.getCi());
-                        r.setCreatedAt(new Date());
-                        r.setCreatedBy(webUserController.getLoggedUser());
-                        r.setEncounter(tSet.getEfs().getEncounter());
-                        r.setName("procedure_request");
-                        apiRequestApplicationController.saveApiRequests(r);
-                    } else if (tItem.getDi().getSelectionDataType() == SelectionDataType.Prescreption_Reference) {
-                        if (tItem.getCi() == null) {
-                            System.err.println("tItem.getCi() is null");
-                            continue;
-                        }
-                        if (tItem.getCi().getItemValue() == null) {
-                            System.err.println("tItem.getCi().getItemValue() is null");
-                            continue;
-                        }
-                        System.out.println("tItem = " + tItem.getCi().getItemValue().getName());
-                        ApiRequest r = new ApiRequest();
-                        r.setRequestCeci(tItem.getCi());
-                        r.setCreatedAt(new Date());
-                        r.setCreatedBy(webUserController.getLoggedUser());
-                        r.setEncounter(tSet.getEfs().getEncounter());
-                        r.setName("prescription_request");
-                        apiRequestApplicationController.saveApiRequests(r);
                     }
                 }
 
@@ -801,7 +773,7 @@ public class ClientEncounterComponentFormSetController implements Serializable {
         ClientEncounterComponentFormSet f = getFacade().findFirstByJpql(j, m);
         return f;
     }
-    
+
     public ClientEncounterComponentFormSet findClientEncounterFromset(DesignComponentFormSet dfs, Client c, Institution i, EncounterType t) {
         String j = "select f from  ClientEncounterComponentFormSet f join f.encounter e"
                 + " where "

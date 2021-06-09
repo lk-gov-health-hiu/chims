@@ -56,6 +56,12 @@ public class ApiRequest implements Serializable {
     @ManyToOne(fetch = FetchType.LAZY)
     private ClientEncounterComponentItem requestCeci;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    private DesignComponentFormItem requestDcfi;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private ApiRequest parent;
+
     @Lob
     private String requestMessage;
 
@@ -84,6 +90,10 @@ public class ApiRequest implements Serializable {
     @ManyToOne(fetch = FetchType.LAZY)
     private ClientEncounterComponentItem responseCeci;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    private ClientEncounterComponentFormSet requestCefs;
+
+    
     /*
     Create Properties
      */
@@ -104,6 +114,10 @@ public class ApiRequest implements Serializable {
     public Long getId() {
         return id;
     }
+    
+    
+    
+    
 
     public void setId(Long id) {
         this.id = id;
@@ -293,8 +307,29 @@ public class ApiRequest implements Serializable {
     public void setRetiredAt(Date retiredAt) {
         this.retiredAt = retiredAt;
     }
-    
-    
-    
+
+    public ApiRequest getParent() {
+        return parent;
+    }
+
+    public void setParent(ApiRequest parent) {
+        this.parent = parent;
+    }
+
+    public DesignComponentFormItem getRequestDcfi() {
+        return requestDcfi;
+    }
+
+    public void setRequestDcfi(DesignComponentFormItem requestDcfi) {
+        this.requestDcfi = requestDcfi;
+    }
+
+    public ClientEncounterComponentFormSet getRequestCefs() {
+        return requestCefs;
+    }
+
+    public void setRequestCefs(ClientEncounterComponentFormSet requestCefs) {
+        this.requestCefs = requestCefs;
+    }
 
 }

@@ -11,7 +11,13 @@ import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import lk.gov.health.phsp.entity.ApiRequest;
+import lk.gov.health.phsp.entity.Client;
+import lk.gov.health.phsp.entity.ClientEncounterComponentFormSet;
+import lk.gov.health.phsp.entity.Encounter;
+import lk.gov.health.phsp.entity.Prescription;
 import lk.gov.health.phsp.facade.ApiRequestFacade;
+import lk.gov.health.phsp.pojcs.PrescriptionItemPojo;
+import lk.gov.health.phsp.pojcs.PrescriptionPojo;
 
 @Named
 @SessionScoped
@@ -86,9 +92,8 @@ public class ApiRequestApplicationController implements Serializable {
         return rs;
     }
 
-      public List<ApiRequest> getPendingPrescriptions(String id) {
+    public  List<PrescriptionPojo> getPendingPrescriptions() {
         System.out.println("getPendingPrescreptions");
-        System.out.println("id = " + id);
         Map m = new HashMap();
         m.put("ret", false);
         m.put("con", false);
@@ -96,26 +101,95 @@ public class ApiRequestApplicationController implements Serializable {
         String j = "select a "
                 + " from ApiRequest a "
                 + " where a.retired=:ret "
-                + " and a.convaied=:con"
-                + " and a.name=:name ";
+                + " and a.convaied=:con "
+                + " and a.name=:name "
+                + " and a.requestCefs is not null ";
         j += " order by a.id";
-        List<ApiRequest> rs = getFacade().findByJpql(j, m);
-        if (id != null && !id.trim().equals("")) {
-            Long tid = CommonController.stringToLong(id);
+        List<ApiRequest> precrips = getFacade().findByJpql(j, m);
+        List<PrescriptionPojo> ps = new ArrayList<>();
             List<ApiRequest> irs = new ArrayList<>();
-            for (ApiRequest ar : rs) {
-                if (ar.getRequestCeci() != null && ar.getRequestCeci().getInstitutionValue() != null) {
-                    if (ar.getRequestCeci().getInstitutionValue().getId().equals(tid)) {
-                        irs.add(ar);
-                    }
+            for (ApiRequest presc : precrips) {
+                if (presc.getRequestCefs() == null) {
+                    System.err.println("No CEFS");
+                    continue;
                 }
+                ClientEncounterComponentFormSet cefs = presc.getRequestCefs();
+                if (cefs.getEncounter() == null) {
+                    System.err.println("No enconter");
+                    continue;
+                }
+                Encounter e = cefs.getEncounter();
+                if (e.getClient() == null) {
+                    System.err.println("No Client");
+                    continue;
+                }
+                Client c = e.getClient();
+                PrescriptionPojo p = new PrescriptionPojo();
+                p.setName(c.getPerson().getNameWithTitle());
+                p.setAge(c.getPerson().getAge());
+                p.setAgeInDays(c.getPerson().getAgeInDays());
+                p.setInstitutionId(e.getInstitution().getId());
+
+                m = new HashMap();
+                m.put("ret", false);
+                m.put("con", false);
+                m.put("name", "prescription_request");
+                m.put("p", presc);
+                j = "select a "
+                        + " from ApiRequest a "
+                        + " where a.retired=:ret "
+                        + " and a.convaied=:con "
+                        + " and a.name=:name "
+                        + " and a.parent=:p ";
+                j += " order by a.id";
+
+                List<ApiRequest> pis = getFacade().findByJpql(j, m);
+
+                for (ApiRequest pi : pis) {
+                    if (pi.getRequestCeci() != null && presc.getRequestCeci().getPrescriptionValue() != null) {
+                        PrescriptionItemPojo i = new PrescriptionItemPojo();
+                        Prescription pres = presc.getRequestCeci().getPrescriptionValue();
+                        if(pres.getMedicine()!=null){
+                            i.setMedicine(pres.getMedicine().getName());
+                            i.setMedicineId(pres.getMedicine().getId());
+                        }
+                        if(pres.getMedicine().getItemType()!=null){
+                            i.setMedicineType(pres.getMedicine().getItemType().name());
+                        }
+                        if(pres.getDose()!=null){
+                            i.setDose(pres.getDose());
+                        }
+                        if(pres.getDoseUnit()!=null){
+                            i.setDoseUnitId(pres.getDoseUnit().getId());
+                        }
+                        if(pres.getFrequency()!=null){
+                            i.setFrequencyUnitId(pres.getFrequency().getId());
+                        }
+                        if(pres.getDuration()!=null){
+                            i.setDuration(pres.getDuration());
+                        }
+                        if(pres.getDurationUnit()!=null){
+                            i.setDurationUnitId(pres.getDurationUnit().getId());
+                        }
+                        if(pres.getDescription()!=null){
+                            i.setComments(pres.getDescription());
+                        }
+                        if(pres.getIssueQuantity()!=null){
+                            i.setIssueQty(pres.getIssueQuantity());
+                        }
+                        if(pres.getIssueUnit()!=null){
+                            i.setIssueUnitId(pres.getIssueUnit().getId());
+                        }
+                        p.getItems().add(i);
+                    }
+                    ps.add(p);
+                }
+
             }
-            return irs;
-        }
-        return rs;
+        
+        return ps;
     }
 
-    
     public void saveApiRequests(ApiRequest p) {
         if (p == null) {
             return;
