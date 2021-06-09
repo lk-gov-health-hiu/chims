@@ -146,9 +146,9 @@ public class ApiRequestApplicationController implements Serializable {
                 List<ApiRequest> pis = getFacade().findByJpql(j, m);
 
                 for (ApiRequest pi : pis) {
-                    if (pi.getRequestCeci() != null && presc.getRequestCeci().getPrescriptionValue() != null) {
+                    if (pi.getRequestCeci() != null && pi.getRequestCeci().getPrescriptionValue() != null) {
                         PrescriptionItemPojo i = new PrescriptionItemPojo();
-                        Prescription pres = presc.getRequestCeci().getPrescriptionValue();
+                        Prescription pres = pi.getRequestCeci().getPrescriptionValue();
                         if(pres.getMedicine()!=null){
                             i.setMedicine(pres.getMedicine().getName());
                             i.setMedicineId(pres.getMedicine().getId());

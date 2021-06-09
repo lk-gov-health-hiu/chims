@@ -142,7 +142,7 @@ public class ApiResource {
                 case "get_procedures_pending":
                     jSONObjectOut = proceduresPending(id);
                     break;
-                case "get_prescreptions_pending":
+                case "get_prescriptions_pending":
                     jSONObjectOut = prescriptionsPending();
                     break;
                 case "mark_request_as_received":
