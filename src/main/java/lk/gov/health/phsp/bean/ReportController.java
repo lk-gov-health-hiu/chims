@@ -2702,7 +2702,18 @@ public class ReportController implements Serializable {
     public void downloadFormsetDataEntries() {
         String j;
         Map m = new HashMap();
+        if(institution==null){
+            JsfUtil.addErrorMessage("Select Institution");
+            return ;
+        }
+        if(designingComponentFormSet==null){
+            JsfUtil.addErrorMessage("Select Form Set");
+            return ;
+        }
 
+        //List<ReportColumn> cols = new ArrayList<>();
+        
+        
         j = "select new lk.gov.health.phsp.pojcs.EncounterBasicData("
                 + "e.client.phn, "
                 + "e.client.person.gnArea.name, "
@@ -2732,20 +2743,7 @@ public class ReportController implements Serializable {
         cfs.getEncounter();
         cfs.getReferenceComponent();
 
-        if (institution != null) {
-            j += " and e.institution in :ins ";
-            List<Institution> ins = institutionApplicationController.findChildrenInstitutions(institution);
-            ins.add(institution);
-            m.put("ins", ins);
-        } else {
-            if (webUserController.getLoggedUser().isRestrictedToInstitution()) {
-                j += " and e.institution in :ins ";
-                List<Institution> ins = webUserController.getLoggableInstitutions();
-                ins.add(institution);
-                m.put("ins", ins);
-            }
-        }
-
+        
         //String phn, String gnArea, String institution, Date dataOfBirth, Date encounterAt, String sex
         List<Object> objs = getClientFacade().findAggregates(j, m);
 
