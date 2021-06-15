@@ -2781,7 +2781,8 @@ public class ReportController implements Serializable {
                 if (dItem.getItem() != null && dItem.getItem().getCode() != null) {
                     ReportColumn rc = new ReportColumn();
                     rc.setColumnNumber(colCount++);
-                    rc.setHeader(dItem.getItem().getCode().trim().toLowerCase());
+                    rc.setHeader(dItem.getItem().getName());
+                    rc.setCode(dItem.getItem().getCode().trim().toLowerCase());
                     rc.setId(new Long(colCount));
                     cols.add(rc);
                 }
@@ -2814,24 +2815,6 @@ public class ReportController implements Serializable {
         }
 
         rows.add(titleRow);
-//
-//        j = "select s "
-//                + " from ClientEncounterComponentFormSet s join s.encounter e "
-//                + " where e.retired=false "
-//                + " and s.retired=false "
-//                + " and e.encounterDate between :fd to :td "
-//                + " and e.institution=:ins "
-//                + " and (s.referenceComponent=:rfs or s.referenceComponent.referenceComponent=:rfs)";
-//        m = new HashMap();
-//        m.put("ins", institution);
-//        m.put("fd", fromDate);
-//        m.put("td", toDate);
-//        m.put("rfs", designingComponentFormSet);
-//        clients = clientFacade.findByJpql(j, m);
-//        if (clients == null || clients.isEmpty()) {
-//            JsfUtil.addErrorMessage("No Clients registered or had clinic visits for the selected Institute");
-//            return;
-//        }
 
         j = "select s "
                 + " from ClientEncounterComponentFormSet s join s.encounter e "
@@ -2846,7 +2829,6 @@ public class ReportController implements Serializable {
         m.put("fd", fromDate);
         m.put("td", toDate);
         m.put("rfs", designingComponentFormSet);
-        clients = clientFacade.findByJpql(j, m);
         List<ClientEncounterComponentFormSet> cSets = clientEncounterComponentFormSetFacade.findByJpql(j, m);
 
         Map<Long, ClientFirstEncounterDetailsRemainingEncounterDatesAndTypes> mapCes = new HashMap<>();
@@ -2912,7 +2894,7 @@ public class ReportController implements Serializable {
             cells.add(regInsCell);
 
             ReportCell regDateCell = new ReportCell();
-            regDateCell.setColumn(rcSex);
+            regDateCell.setColumn(regDate);
             regDateCell.setRow(clientRow);
             regDateCell.setContainsDateValue(true);
             regDateCell.setDateValue(c.getCreatedOn());
@@ -2930,8 +2912,32 @@ public class ReportController implements Serializable {
             cells.add(gnCell);
 
             for (ReportColumn rc : cols) {
+                System.out.println("rc = " + rc);
+                if (rc == null) {
+                    continue;
+                }
+                if (rc.getCode() == null) {
+                    continue;
+                }
+                if (rc.getCode().equals("")) {
+                    continue;
+                }
+                System.out.println("rc = " + rc.getCode());
                 if (rc.getCode() != null || !rc.getCode().trim().equals("")) {
+
+                    if (ce == null) {
+                        continue;
+                    }
+                    if (ce.getFirstEncounter() == null) {
+                        continue;
+                    }
+                    if (ce.getFirstEncounter().getClientEncounterComponentItems() == null) {
+                        continue;
+                    }
+
                     for (ClientEncounterComponentItem cItem : ce.getFirstEncounter().getClientEncounterComponentItems()) {
+                        System.out.println("cItem = " + cItem);
+                        
                         if (cItem.getItem() == null || cItem.getItem().getCode() == null) {
                             continue;
                         }
@@ -2997,7 +3003,7 @@ public class ReportController implements Serializable {
                                     if (cItem.getRealNumberValue() == null) {
                                         ciCell.setDblValue(null);
                                     } else {
-                                        ciCell.setDblValue(cItem.getRealNumberValue().doubleValue());
+                                        ciCell.setDblValue(cItem.getRealNumberValue());
                                     }
                                     break;
                                 case Short_Text:
@@ -3021,6 +3027,8 @@ public class ReportController implements Serializable {
             String dates = "";
             String visitType = "";
 
+            System.out.println("ce.getRemainigEncounters() = " + ce.getRemainigEncounters());
+            
             for (Encounter e : ce.getRemainigEncounters()) {
                 dates += CommonController.dateTimeToString(e.getEncounterDate()) + "\n";
             }
