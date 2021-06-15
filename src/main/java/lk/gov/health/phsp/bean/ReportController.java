@@ -24,6 +24,7 @@
 package lk.gov.health.phsp.bean;
 
 // <editor-fold defaultstate="collapsed" desc="Imports">
+import jakarta.validation.ReportAsSingleViolation;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -77,6 +78,7 @@ import lk.gov.health.phsp.entity.Upload;
 import lk.gov.health.phsp.enums.Quarter;
 import lk.gov.health.phsp.enums.QueryCriteriaMatchType;
 import lk.gov.health.phsp.enums.QueryType;
+import lk.gov.health.phsp.enums.SelectionDataType;
 import lk.gov.health.phsp.enums.TimePeriodType;
 import lk.gov.health.phsp.facade.ClientEncounterComponentItemFacade;
 import lk.gov.health.phsp.facade.ClientFacade;
@@ -90,6 +92,7 @@ import lk.gov.health.phsp.facade.UploadFacade;
 import lk.gov.health.phsp.facade.util.JsfUtil;
 import lk.gov.health.phsp.pojcs.AreaCount;
 import lk.gov.health.phsp.pojcs.ClientBasicData;
+import lk.gov.health.phsp.pojcs.ClientFirstEncounterDetailsRemainingEncounterDatesAndTypes;
 import lk.gov.health.phsp.pojcs.DateInstitutionCount;
 import lk.gov.health.phsp.pojcs.EncounterBasicData;
 import lk.gov.health.phsp.pojcs.InstitutionCount;
@@ -2810,40 +2813,61 @@ public class ReportController implements Serializable {
             cells.add(cell);
         }
 
-        j = "select c "
-                + " from Client c "
-                + " where c.retired=false"
-                + " and "
-                + " (c.createInstitution=:ins or c.createInstitution=:poiIns)";
-        m = new HashMap();
-        m.put("ins", institution);
-        m.put("poiIns", institution.getPoiInstitution());
-        List<Client> clients = new ArrayList<>();
-
-        List<Client> regClients = clientFacade.findByJpql(j, m);
+        rows.add(titleRow);
 
         j = "select distinct(e.client) "
-                + " from Encounter e "
+                + " from ClientEncounterComponentFormSet s join s.encounter e "
                 + " where e.retired=false "
-                + " and e.institution=:ins ";
+                + " and s.retired=false "
+                + " and e.encounterDate between :fd to :td "
+                + " and e.institution=:ins "
+                + " and (s.referanceDesignComponentFormSet=:rfs or s.referenceComponent=:rfs or s.referenceComponent.referenceComponent=:rfs)";
         m = new HashMap();
         m.put("ins", institution);
-
-        List<Client> encounterClients = clientFacade.findByJpql(j, m);
-
-        if (encounterClients != null) {
-            clients.addAll(encounterClients);
-        }
-        if (regClients != null) {
-            clients.addAll(regClients);
-        }
-
-        if (clients.isEmpty()) {
+        m.put("fd", fromDate);
+        m.put("td", toDate);
+        m.put("rfs", designingComponentFormSet);
+        clients = clientFacade.findByJpql(j, m);
+        if (clients == null || clients.isEmpty()) {
             JsfUtil.addErrorMessage("No Clients registered or had clinic visits for the selected Institute");
             return;
         }
 
-        for (Client c : clients) {
+        j = "select s "
+                + " from ClientEncounterComponentFormSet s join s.encounter e "
+                + " where e.retired=false "
+                + " and s.retired=false "
+                + " and e.encounterDate between :fd to :td "
+                + " and e.institution=:ins "
+                + " and (s.referanceDesignComponentFormSet=:rfs or s.referenceComponent=:rfs or s.referenceComponent.referenceComponent=:rfs) "
+                + " order by s.id";
+        m = new HashMap();
+        m.put("ins", institution);
+        m.put("fd", fromDate);
+        m.put("td", toDate);
+        m.put("rfs", designingComponentFormSet);
+        clients = clientFacade.findByJpql(j, m);
+        List<ClientEncounterComponentFormSet> cSets = clientEncounterComponentFormSetFacade.findByJpql(j, m);
+
+        Map<Long, ClientFirstEncounterDetailsRemainingEncounterDatesAndTypes> mapCes = new HashMap<>();
+
+        for (ClientEncounterComponentFormSet cs : cSets) {
+            if (cs.getEncounter() == null || cs.getEncounter().getClient() == null) {
+                continue;
+            }
+            ClientFirstEncounterDetailsRemainingEncounterDatesAndTypes ce = mapCes.get(cs.getEncounter().getClient().getId());
+            if (ce == null) {
+                ce = new ClientFirstEncounterDetailsRemainingEncounterDatesAndTypes();
+                ce.setClient(cs.getEncounter().getClient());
+                ce.setFirstEncounter(cs.getEncounter());
+                mapCes.put(cs.getEncounter().getClient().getId(), ce);
+            } else {
+                ce.getRemainigEncounters().add(cs.getEncounter());
+            }
+        }
+
+        for (ClientFirstEncounterDetailsRemainingEncounterDatesAndTypes ce : mapCes.values()) {
+            Client c = ce.getClient();
             ReportRow clientRow = new ReportRow();
             clientRow.setRowNumber(rowCount++);
             clientRow.setId(new Long(rowCount));
@@ -2904,6 +2928,113 @@ public class ReportController implements Serializable {
                 gnCell.setStringValue("Not set");
             }
             cells.add(gnCell);
+
+            for (ReportColumn rc : cols) {
+                if (rc.getCode() != null || !rc.getCode().trim().equals("")) {
+                    for (ClientEncounterComponentItem cItem : ce.getFirstEncounter().getClientEncounterComponentItems()) {
+                        if (cItem.getItem() == null || cItem.getItem().getCode() == null) {
+                            continue;
+                        }
+                        if (rc.getCode().equalsIgnoreCase(cItem.getItem().getCode())) {
+                            ReportCell ciCell = new ReportCell();
+                            ciCell.setColumn(rc);
+                            ciCell.setRow(clientRow);
+
+                            SelectionDataType sdt = cItem.getReferanceDesignComponentFormItem().getSelectionDataType();
+                            switch (sdt) {
+                                case Boolean:
+                                    ciCell.setContainsStringValue(true);
+                                    if (cItem.getBooleanValue() == null) {
+                                        ciCell.setStringValue("");
+                                    } else if (cItem.getBooleanValue()) {
+                                        ciCell.setStringValue("true");
+                                    } else {
+                                        ciCell.setStringValue("false");
+                                    }
+                                    break;
+                                case DateTime:
+                                    ciCell.setContainsDateValue(true);
+                                    if (cItem.getDateValue() == null) {
+                                        ciCell.setDateValue(null);
+                                    } else {
+                                        ciCell.setDateValue(cItem.getDateValue());
+                                    }
+                                    break;
+                                case Integer_Number:
+                                    ciCell.setContainsDoubleValue(true);
+                                    if (cItem.getRealNumberValue() == null) {
+                                        ciCell.setDblValue(null);
+                                    } else {
+                                        ciCell.setDblValue(cItem.getRealNumberValue());
+                                    }
+                                    break;
+                                case Long_Number:
+                                    ciCell.setContainsDoubleValue(true);
+                                    if (cItem.getLongNumberValue() == null) {
+                                        ciCell.setDblValue(null);
+                                    } else {
+                                        ciCell.setDblValue(cItem.getLongNumberValue().doubleValue());
+                                    }
+                                    break;
+                                case Item_Reference:
+                                    ciCell.setContainsStringValue(true);
+                                    if (cItem.getItemValue() == null) {
+                                        ciCell.setStringValue(null);
+                                    } else {
+                                        ciCell.setStringValue(cItem.getItemValue().getName());
+                                    }
+                                    break;
+                                case Long_Text:
+                                    ciCell.setContainsStringValue(true);
+                                    if (cItem.getLongTextValue() == null) {
+                                        ciCell.setStringValue(null);
+                                    } else {
+                                        ciCell.setStringValue(cItem.getLongTextValue());
+                                    }
+                                    break;
+                                case Real_Number:
+                                    ciCell.setContainsDoubleValue(true);
+                                    if (cItem.getRealNumberValue() == null) {
+                                        ciCell.setDblValue(null);
+                                    } else {
+                                        ciCell.setDblValue(cItem.getRealNumberValue().doubleValue());
+                                    }
+                                    break;
+                                case Short_Text:
+                                    ciCell.setContainsStringValue(true);
+                                    if (cItem.getShortTextValue() == null) {
+                                        ciCell.setStringValue(null);
+                                    } else {
+                                        ciCell.setStringValue(cItem.getShortTextValue());
+                                    }
+                                    break;
+                                default:
+                                    ciCell.setContainsStringValue(true);
+                                    ciCell.setStringValue("Under Construction");
+                            }
+                            cells.add(ciCell);
+                        }
+                    }
+                }
+            }
+
+            String dates = "";
+            String visitType = "";
+
+            for (Encounter e : ce.getRemainigEncounters()) {
+                dates += CommonController.dateTimeToString(e.getEncounterDate()) + "\n";
+            }
+
+            ReportCell vdCell = new ReportCell();
+            vdCell.setColumn(rcVd);
+            vdCell.setRow(clientRow);
+            vdCell.setContainsStringValue(true);
+            if (dates.equals("")) {
+                gnCell.setStringValue(dates);
+            } else {
+                gnCell.setStringValue("No more visits");
+            }
+            cells.add(vdCell);
 
             rows.add(clientRow);
         }
