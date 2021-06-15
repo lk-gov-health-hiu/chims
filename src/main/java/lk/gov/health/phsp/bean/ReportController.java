@@ -2837,7 +2837,7 @@ public class ReportController implements Serializable {
                 + " from ClientEncounterComponentFormSet s join s.encounter e "
                 + " where e.retired=false "
                 + " and s.retired=false "
-                + " and e.encounterDate between :fd to :td "
+                + " and e.encounterDate between :fd and :td "
                 + " and e.institution=:ins "
                 + " and (s.referenceComponent=:rfs or s.referenceComponent.referenceComponent=:rfs) "
                 + " order by s.id";
