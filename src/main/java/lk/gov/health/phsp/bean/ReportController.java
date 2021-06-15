@@ -2873,21 +2873,25 @@ public class ReportController implements Serializable {
             sexCell.setColumn(rcSex);
             sexCell.setRow(titleRow);
             sexCell.setContainsStringValue(true);
-            sexCell.setStringValue(c.getPerson().getSex().getName());
+            if (c.getPerson().getSex() != null) {
+                sexCell.setStringValue(c.getPerson().getSex().getName());
+            }
             cells.add(sexCell);
 
             ReportCell regInsCell = new ReportCell();
             regInsCell.setColumn(rcRegIns);
             regInsCell.setRow(titleRow);
             regInsCell.setContainsStringValue(true);
-            regInsCell.setStringValue(c.getCreateInstitution().getName());
+            if (c.getCreateInstitution() != null) {
+                regInsCell.setStringValue(c.getCreateInstitution().getName());
+            }
             cells.add(regInsCell);
 
             ReportCell regDateCell = new ReportCell();
             regDateCell.setColumn(rcSex);
             regDateCell.setRow(titleRow);
-            regDateCell.setContainsStringValue(true);
-            regDateCell.setStringValue(c.getCreateInstitution().getName());
+            regDateCell.setContainsDateValue(true);
+            regDateCell.setDateValue(c.getCreatedOn());
             cells.add(regDateCell);
 
             ReportCell gnCell = new ReportCell();
