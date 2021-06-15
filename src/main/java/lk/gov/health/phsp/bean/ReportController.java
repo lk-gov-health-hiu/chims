@@ -2814,24 +2814,24 @@ public class ReportController implements Serializable {
         }
 
         rows.add(titleRow);
-
-        j = "select distinct(e.client) "
-                + " from ClientEncounterComponentFormSet s join s.encounter e "
-                + " where e.retired=false "
-                + " and s.retired=false "
-                + " and e.encounterDate between :fd to :td "
-                + " and e.institution=:ins "
-                + " and (s.referanceDesignComponentFormSet=:rfs or s.referenceComponent=:rfs or s.referenceComponent.referenceComponent=:rfs)";
-        m = new HashMap();
-        m.put("ins", institution);
-        m.put("fd", fromDate);
-        m.put("td", toDate);
-        m.put("rfs", designingComponentFormSet);
-        clients = clientFacade.findByJpql(j, m);
-        if (clients == null || clients.isEmpty()) {
-            JsfUtil.addErrorMessage("No Clients registered or had clinic visits for the selected Institute");
-            return;
-        }
+//
+//        j = "select s "
+//                + " from ClientEncounterComponentFormSet s join s.encounter e "
+//                + " where e.retired=false "
+//                + " and s.retired=false "
+//                + " and e.encounterDate between :fd to :td "
+//                + " and e.institution=:ins "
+//                + " and (s.referenceComponent=:rfs or s.referenceComponent.referenceComponent=:rfs)";
+//        m = new HashMap();
+//        m.put("ins", institution);
+//        m.put("fd", fromDate);
+//        m.put("td", toDate);
+//        m.put("rfs", designingComponentFormSet);
+//        clients = clientFacade.findByJpql(j, m);
+//        if (clients == null || clients.isEmpty()) {
+//            JsfUtil.addErrorMessage("No Clients registered or had clinic visits for the selected Institute");
+//            return;
+//        }
 
         j = "select s "
                 + " from ClientEncounterComponentFormSet s join s.encounter e "
@@ -2839,7 +2839,7 @@ public class ReportController implements Serializable {
                 + " and s.retired=false "
                 + " and e.encounterDate between :fd to :td "
                 + " and e.institution=:ins "
-                + " and (s.referanceDesignComponentFormSet=:rfs or s.referenceComponent=:rfs or s.referenceComponent.referenceComponent=:rfs) "
+                + " and (s.referenceComponent=:rfs or s.referenceComponent.referenceComponent=:rfs) "
                 + " order by s.id";
         m = new HashMap();
         m.put("ins", institution);
