@@ -65,6 +65,7 @@ import jxl.write.WriteException;
 import lk.gov.health.phsp.entity.ClientEncounterComponentFormSet;
 import lk.gov.health.phsp.entity.ClientEncounterComponentItem;
 import lk.gov.health.phsp.entity.ConsolidatedQueryResult;
+import lk.gov.health.phsp.entity.DesignComponentForm;
 import lk.gov.health.phsp.entity.DesignComponentFormItem;
 import lk.gov.health.phsp.entity.DesignComponentFormSet;
 import lk.gov.health.phsp.entity.IndividualQueryResult;
@@ -93,6 +94,9 @@ import lk.gov.health.phsp.pojcs.DateInstitutionCount;
 import lk.gov.health.phsp.pojcs.EncounterBasicData;
 import lk.gov.health.phsp.pojcs.InstitutionCount;
 import lk.gov.health.phsp.pojcs.Replaceable;
+import lk.gov.health.phsp.pojcs.ReportCell;
+import lk.gov.health.phsp.pojcs.ReportColumn;
+import lk.gov.health.phsp.pojcs.ReportRow;
 import lk.gov.health.phsp.pojcs.ReportTimePeriod;
 import org.apache.commons.io.FileUtils;
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -151,6 +155,8 @@ public class ReportController implements Serializable {
     private ClientEncounterComponentItemController clientEncounterComponentItemController;
     @Inject
     private ExcelReportController excelReportController;
+    @Inject
+    DesignComponentFormController designComponentFormController;
     @Inject
     private DesignComponentFormItemController designComponentFormItemController;
     @Inject
@@ -1591,7 +1597,7 @@ public class ReportController implements Serializable {
         userTransactionController.recordTransaction("To View Daily Clinic Visits");
         return action;
     }
-    
+
     public String toViewDailyClinicsRegistrationCounts() {
         encounters = new ArrayList<>();
         String forSys = "/reports/client_registrations/for_sa_daily";
@@ -1860,7 +1866,7 @@ public class ReportController implements Serializable {
         File newFile = new File(folder + FILE_NAME);
 
         XSSFWorkbook workbook = new XSSFWorkbook();
-        XSSFSheet sheet = workbook.createSheet("Java Books");
+        XSSFSheet sheet = workbook.createSheet("Data");
 
         int rowCount = 0;
 
@@ -2184,7 +2190,7 @@ public class ReportController implements Serializable {
         File newFile = new File(folder + FILE_NAME);
 
         XSSFWorkbook workbook = new XSSFWorkbook();
-        XSSFSheet sheet = workbook.createSheet("Java Books");
+        XSSFSheet sheet = workbook.createSheet("Data");
 
         int rowCount = 0;
 
@@ -2335,7 +2341,7 @@ public class ReportController implements Serializable {
         File newFile = new File(folder + FILE_NAME);
 
         XSSFWorkbook workbook = new XSSFWorkbook();
-        XSSFSheet sheet = workbook.createSheet("Java Books");
+        XSSFSheet sheet = workbook.createSheet("Data");
 
         int rowCount = 0;
 
@@ -2545,7 +2551,7 @@ public class ReportController implements Serializable {
                 Cell c2 = row.createCell(1);
                 c2.setCellStyle(cellStyle);
                 c2.setCellValue(cbd.getDate());
-                
+
                 Cell c3 = row.createCell(2);
                 c3.setCellValue(cbd.getCount());
 
@@ -2571,7 +2577,7 @@ public class ReportController implements Serializable {
         }
 
     }
-    
+
     public void downloadDailyClientRegistrationCounts() {
         String j;
         Map m = new HashMap();
@@ -2672,7 +2678,7 @@ public class ReportController implements Serializable {
                 Cell c2 = row.createCell(1);
                 c2.setCellStyle(cellStyle);
                 c2.setCellValue(cbd.getDate());
-                
+
                 Cell c3 = row.createCell(2);
                 c3.setCellValue(cbd.getCount());
 
@@ -2702,163 +2708,248 @@ public class ReportController implements Serializable {
     public void downloadFormsetDataEntries() {
         String j;
         Map m = new HashMap();
-        if(institution==null){
-            JsfUtil.addErrorMessage("Select Institution");
-            return ;
-        }
-        if(designingComponentFormSet==null){
-            JsfUtil.addErrorMessage("Select Form Set");
-            return ;
-        }
-
-        //List<ReportColumn> cols = new ArrayList<>();
-        
-        
-        j = "select new lk.gov.health.phsp.pojcs.EncounterBasicData("
-                + "e.client.phn, "
-                + "e.client.person.gnArea.name, "
-                + "e.institution.name, "
-                + "e.client.person.dateOfBirth, "
-                + "e.encounterDate, "
-                + "e.client.person.sex.name,"
-                + " cfs.referenceComponent.name  "
-                + ") "
-                + " from ClientEncounterComponentFormSet cfs"
-                + " join cfs.encounter e "
-                + " where e.retired=:ret "
-                + " and e.encounterType=:type "
-                + " and e.encounterDate between :fd and :td ";
-
-        m.put("ret", false);
-        m.put("fd", fromDate);
-        m.put("td", toDate);
-
-        if (designingComponentFormSet != null) {
-            j += " and cfs.referenceComponent=:dfs ";
-            m.put("dfs", designingComponentFormSet);
-        }
-        m.put("type", EncounterType.Clinic_Visit);
-
-        ClientEncounterComponentFormSet cfs = new ClientEncounterComponentFormSet();
-        cfs.getEncounter();
-        cfs.getReferenceComponent();
-
-        
-        //String phn, String gnArea, String institution, Date dataOfBirth, Date encounterAt, String sex
-        List<Object> objs = getClientFacade().findAggregates(j, m);
-
-        String FILE_NAME = "client_clinic_visits" + "_" + (new Date()) + ".xlsx";
-        String mimeType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
-
-        String folder = "/tmp/";
-
-        File newFile = new File(folder + FILE_NAME);
-
-        XSSFWorkbook workbook = new XSSFWorkbook();
-        XSSFSheet sheet = workbook.createSheet("Java Books");
-
-        int rowCount = 0;
-
-        Row t1 = sheet.createRow(rowCount++);
-        Cell th1_lbl = t1.createCell(0);
-        th1_lbl.setCellValue("Report");
-        Cell th1_val = t1.createCell(1);
-        th1_val.setCellValue("List of Clinic Visits");
-
-        Row t2 = sheet.createRow(rowCount++);
-        Cell th2_lbl = t2.createCell(0);
-        th2_lbl.setCellValue("From");
-        Cell th2_val = t2.createCell(1);
-        th2_val.setCellValue(CommonController.dateTimeToString(fromDate, "dd MMMM yyyy"));
-
-        Row t3 = sheet.createRow(rowCount++);
-        Cell th3_lbl = t3.createCell(0);
-        th3_lbl.setCellValue("To");
-        Cell th3_val = t3.createCell(1);
-        th3_val.setCellValue(CommonController.dateTimeToString(toDate, "dd MMMM yyyy"));
-
-        if (institution != null) {
-            Row t4 = sheet.createRow(rowCount++);
-            Cell th4_lbl = t4.createCell(0);
-            th4_lbl.setCellValue("Institution");
-            Cell th4_val = t4.createCell(1);
-            th4_val.setCellValue(institution.getName());
-        }
-
-        rowCount++;
-
-        Row t5 = sheet.createRow(rowCount++);
-        Cell th5_1 = t5.createCell(0);
-        th5_1.setCellValue("Serial");
-        Cell th5_2 = t5.createCell(1);
-        th5_2.setCellValue("PHN");
-        Cell th5_3 = t5.createCell(2);
-        th5_3.setCellValue("Sex");
-        Cell th5_4 = t5.createCell(3);
-        th5_4.setCellValue("Age in Years at Encounter");
-        Cell th5_5 = t5.createCell(4);
-        th5_5.setCellValue("Encounter at");
-        Cell th5_6 = t5.createCell(5);
-        th5_6.setCellValue("GN Areas");
-        int col = 5;
         if (institution == null) {
-            col++;
-            Cell th5_7 = t5.createCell(col);
-            th5_7.setCellValue("Institution");
+            JsfUtil.addErrorMessage("Select Institution");
+            return;
         }
         if (designingComponentFormSet == null) {
-            col++;
-            Cell th5_7 = t5.createCell(col);
-            th5_7.setCellValue("Formset");
+            JsfUtil.addErrorMessage("Select Form Set");
+            return;
         }
 
-        int serial = 1;
+        List<ReportColumn> cols = new ArrayList<>();
+        int colCount = 0;
 
-        CellStyle cellStyle = workbook.createCellStyle();
-        CreationHelper createHelper = workbook.getCreationHelper();
-        cellStyle.setDataFormat(
-                createHelper.createDataFormat().getFormat("dd/MMMM/yyyy hh:mm"));
+        List<ReportRow> rows = new ArrayList<>();
+        int rowCount = 0;
 
-        for (Object o : objs) {
-            if (o instanceof EncounterBasicData) {
-                EncounterBasicData cbd = (EncounterBasicData) o;
-                Row row = sheet.createRow(++rowCount);
+        List<ReportCell> cells = new ArrayList<>();
+        int cellCount = 0;
 
-                Cell c1 = row.createCell(0);
-                c1.setCellValue(serial);
+        ReportColumn rcSerial = new ReportColumn();
+        rcSerial.setColumnNumber(colCount++);
+        rcSerial.setHeader("Serial No.");
+        rcSerial.setId(new Long(colCount));
+        cols.add(rcSerial);
 
-                Cell c2 = row.createCell(1);
-                c2.setCellValue(cbd.getPhn());
+        ReportColumn rcPhn = new ReportColumn();
+        rcPhn.setColumnNumber(colCount++);
+        rcSerial.setHeader("PHN");
+        rcPhn.setId(new Long(colCount));
+        cols.add(rcPhn);
 
-                Cell c3 = row.createCell(2);
-                c3.setCellValue(cbd.getSex());
+        ReportColumn rcDob = new ReportColumn();
+        rcDob.setColumnNumber(colCount++);
+        rcDob.setHeader("Date of Birth");
+        rcDob.setDateFormat("dd MMMM yyyy");
+        rcDob.setId(new Long(colCount));
+        cols.add(rcDob);
 
-                Cell c4 = row.createCell(3);
-                c4.setCellValue(cbd.getAgeInYears());
+        ReportColumn rcSex = new ReportColumn();
+        rcSex.setColumnNumber(colCount++);
+        rcSex.setHeader("Sex");
+        rcSex.setId(new Long(colCount));
+        cols.add(rcSex);
 
-                Cell c5 = row.createCell(4);
-                c5.setCellValue(cbd.getEncounterAt());
-                c5.setCellStyle(cellStyle);
+        ReportColumn rcGn = new ReportColumn();
+        rcGn.setColumnNumber(colCount++);
+        rcGn.setHeader("GN Area");
+        rcGn.setId(new Long(colCount));
+        cols.add(rcGn);
 
-                Cell c6 = row.createCell(5);
-                c6.setCellValue(cbd.getGnArea());
-                col = 5;
-                if (institution == null) {
-                    col++;
-                    Cell c7 = row.createCell(col);
-                    c7.setCellValue(cbd.getInstitution());
+        ReportColumn rcRegIns = new ReportColumn();
+        rcRegIns.setColumnNumber(colCount++);
+        rcRegIns.setHeader("Empanalled Institute");
+        rcRegIns.setId(new Long(colCount));
+        cols.add(rcRegIns);
+
+        ReportColumn regDate = new ReportColumn();
+        regDate.setColumnNumber(colCount++);
+        regDate.setHeader("Empanalled Date");
+        regDate.setDateFormat("dd MMMM yyyy");
+        regDate.setId(new Long(colCount));
+        cols.add(regDate);
+
+        List<DesignComponentForm> dForms = designComponentFormController.fillFormsofTheSelectedSet(designingComponentFormSet);
+
+        for (DesignComponentForm dForm : dForms) {
+            List<DesignComponentFormItem> dItems = designComponentFormItemController.fillItemsOfTheForm(dForm);
+            for (DesignComponentFormItem dItem : dItems) {
+                if (dItem.getItem() != null && dItem.getItem().getCode() != null) {
+                    ReportColumn rc = new ReportColumn();
+                    rc.setColumnNumber(colCount++);
+                    rc.setHeader(dItem.getItem().getCode().trim().toLowerCase());
+                    rc.setId(new Long(colCount));
+                    cols.add(rc);
                 }
-                if (designingComponentFormSet == null) {
-                    col++;
-                    Cell c7 = row.createCell(col);
-                    c7.setCellValue(cbd.getComponentName());
-                }
-                serial++;
             }
         }
 
-        objs = null;
-        System.gc();
+        ReportColumn rcVd = new ReportColumn();
+        rcVd.setColumnNumber(colCount++);
+        rcVd.setHeader("Visit Dates");
+        rcVd.setId(new Long(colCount));
+        cols.add(rcVd);
+
+        ReportColumn rcVfs = new ReportColumn();
+        rcVfs.setColumnNumber(colCount++);
+        rcVfs.setHeader("Visit Form Set");
+        rcVfs.setId(new Long(colCount));
+        cols.add(rcVfs);
+
+        ReportRow titleRow = new ReportRow();
+        titleRow.setRowNumber(rowCount++);
+        titleRow.setId(new Long(rowCount));
+        for (ReportColumn rc : cols) {
+            ReportCell cell = new ReportCell();
+            cell.setColumn(rc);
+            cell.setRow(titleRow);
+            cell.setContainsStringValue(true);
+            cell.setStringValue(rc.getHeader());
+            cell.setId(new Long(cellCount++));
+            cells.add(cell);
+        }
+
+        j = "select c "
+                + " from Client c "
+                + " where c.retired=false"
+                + " and "
+                + " (c.createInstitution=:ins or c.createInstitution=:poiIns)";
+        m = new HashMap();
+        m.put("ins", institution);
+        m.put("poiIns", institution.getPoiInstitution());
+        List<Client> clients = new ArrayList<>();
+
+        List<Client> regClients = clientFacade.findByJpql(j, m);
+
+        j = "select distinct(e.client) "
+                + " from Encounter e "
+                + " where e.retired=false "
+                + " and e.institution=:ins ";
+        m = new HashMap();
+        m.put("ins", institution);
+
+        List<Client> encounterClients = clientFacade.findByJpql(j, m);
+
+        if (encounterClients != null) {
+            clients.addAll(encounterClients);
+        }
+        if (regClients != null) {
+            clients.addAll(regClients);
+        }
+
+        if (clients.isEmpty()) {
+            JsfUtil.addErrorMessage("No Clients registered or had clinic visits for the selected Institute");
+            return;
+        }
+
+        for (Client c : clients) {
+            ReportRow clientRow = new ReportRow();
+            clientRow.setRowNumber(rowCount++);
+            clientRow.setId(new Long(rowCount));
+
+            ReportCell serialCell = new ReportCell();
+            serialCell.setColumn(rcSerial);
+            serialCell.setRow(titleRow);
+            serialCell.setContainsLongValue(true);
+            serialCell.setLongValue(new Long(rowCount));
+            cells.add(serialCell);
+
+            ReportCell phnCell = new ReportCell();
+            phnCell.setColumn(rcPhn);
+            phnCell.setRow(titleRow);
+            phnCell.setContainsStringValue(true);
+            phnCell.setStringValue(c.getPhn());
+            cells.add(phnCell);
+
+            ReportCell dobCell = new ReportCell();
+            dobCell.setColumn(rcDob);
+            dobCell.setRow(titleRow);
+            dobCell.setContainsDateValue(true);
+            dobCell.setDateValue(c.getPerson().getDateOfBirth());
+            cells.add(dobCell);
+
+            ReportCell sexCell = new ReportCell();
+            sexCell.setColumn(rcSex);
+            sexCell.setRow(titleRow);
+            sexCell.setContainsStringValue(true);
+            sexCell.setStringValue(c.getPerson().getSex().getName());
+            cells.add(sexCell);
+
+            ReportCell regInsCell = new ReportCell();
+            regInsCell.setColumn(rcRegIns);
+            regInsCell.setRow(titleRow);
+            regInsCell.setContainsStringValue(true);
+            regInsCell.setStringValue(c.getCreateInstitution().getName());
+            cells.add(regInsCell);
+
+            ReportCell regDateCell = new ReportCell();
+            regDateCell.setColumn(rcSex);
+            regDateCell.setRow(titleRow);
+            regDateCell.setContainsStringValue(true);
+            regDateCell.setStringValue(c.getCreateInstitution().getName());
+            cells.add(regDateCell);
+
+            ReportCell gnCell = new ReportCell();
+            gnCell.setColumn(rcGn);
+            gnCell.setRow(titleRow);
+            gnCell.setContainsStringValue(true);
+            if (c.getPerson().getGnArea() != null) {
+                gnCell.setStringValue(c.getPerson().getGnArea().getName());
+            } else {
+                gnCell.setStringValue("Not set");
+            }
+            cells.add(gnCell);
+
+            rows.add(titleRow);
+        }
+
+        String excelFileName = "Form_set_data_and_clinic_visits" + "_" + (new Date()) + ".xlsx";
+        createExcelFile(excelFileName, cols, rows, cells);
+    }
+
+    public void createExcelFile(String fileName, List<ReportColumn> cols, List<ReportRow> rows, List<ReportCell> cells) {
+        String mimeType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+        String folder = "/tmp/";
+        File newFile = new File(folder + fileName);
+
+        XSSFWorkbook workbook = new XSSFWorkbook();
+        XSSFSheet sheet = workbook.createSheet("Data");
+
+        int rowCount = 0;
+
+        for (ReportRow rr : rows) {
+            Row r = sheet.createRow(rowCount++);
+            int colCount = 0;
+            for (ReportColumn rc : cols) {
+                Cell c = r.createCell(colCount++);
+                for (ReportCell rcel : cells) {
+                    if (rcel.getColumn().equals(rc) && rcel.getRow().equals(rr)) {
+                        if (rcel.isContainsDateValue()) {
+                            CellStyle cellStyle = workbook.createCellStyle();
+                            CreationHelper createHelper = workbook.getCreationHelper();
+                            if (rc.getDateFormat() == null || rc.getDateFormat().trim().equals("")) {
+                                cellStyle.setDataFormat(
+                                        createHelper.createDataFormat().getFormat("dd/MMMM/yyyy hh:mm"));
+                            } else {
+                                cellStyle.setDataFormat(
+                                        createHelper.createDataFormat().getFormat(rc.getDateFormat()));
+                            }
+                            c.setCellStyle(cellStyle);
+                            c.setCellValue(rcel.getDateValue());
+                        } else if (rcel.isContainsDoubleValue()) {
+                            c.setCellValue(rcel.getDblValue());
+                        } else if (rcel.isContainsLongValue()) {
+                            c.setCellValue(rcel.getLongValue().doubleValue());
+                        } else if (rcel.isContainsStringValue()) {
+                            c.setCellValue(rcel.getStringValue());
+                        } else {
+                            c.setCellValue("");
+                        }
+                    }
+                }
+            }
+        }
 
         try (FileOutputStream outputStream = new FileOutputStream(newFile)) {
             workbook.write(outputStream);
@@ -2869,7 +2960,7 @@ public class ReportController implements Serializable {
         InputStream stream;
         try {
             stream = new FileInputStream(newFile);
-            resultExcelFile = new DefaultStreamedContent(stream, mimeType, FILE_NAME);
+            resultExcelFile = new DefaultStreamedContent(stream, mimeType, fileName);
         } catch (FileNotFoundException ex) {
 
         }
