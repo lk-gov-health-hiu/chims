@@ -2850,28 +2850,28 @@ public class ReportController implements Serializable {
 
             ReportCell serialCell = new ReportCell();
             serialCell.setColumn(rcSerial);
-            serialCell.setRow(titleRow);
+            serialCell.setRow(clientRow);
             serialCell.setContainsLongValue(true);
             serialCell.setLongValue(new Long(rowCount));
             cells.add(serialCell);
 
             ReportCell phnCell = new ReportCell();
             phnCell.setColumn(rcPhn);
-            phnCell.setRow(titleRow);
+            phnCell.setRow(clientRow);
             phnCell.setContainsStringValue(true);
             phnCell.setStringValue(c.getPhn());
             cells.add(phnCell);
 
             ReportCell dobCell = new ReportCell();
             dobCell.setColumn(rcDob);
-            dobCell.setRow(titleRow);
+            dobCell.setRow(clientRow);
             dobCell.setContainsDateValue(true);
             dobCell.setDateValue(c.getPerson().getDateOfBirth());
             cells.add(dobCell);
 
             ReportCell sexCell = new ReportCell();
             sexCell.setColumn(rcSex);
-            sexCell.setRow(titleRow);
+            sexCell.setRow(clientRow);
             sexCell.setContainsStringValue(true);
             if (c.getPerson().getSex() != null) {
                 sexCell.setStringValue(c.getPerson().getSex().getName());
@@ -2880,7 +2880,7 @@ public class ReportController implements Serializable {
 
             ReportCell regInsCell = new ReportCell();
             regInsCell.setColumn(rcRegIns);
-            regInsCell.setRow(titleRow);
+            regInsCell.setRow(clientRow);
             regInsCell.setContainsStringValue(true);
             if (c.getCreateInstitution() != null) {
                 regInsCell.setStringValue(c.getCreateInstitution().getName());
@@ -2889,14 +2889,14 @@ public class ReportController implements Serializable {
 
             ReportCell regDateCell = new ReportCell();
             regDateCell.setColumn(rcSex);
-            regDateCell.setRow(titleRow);
+            regDateCell.setRow(clientRow);
             regDateCell.setContainsDateValue(true);
             regDateCell.setDateValue(c.getCreatedOn());
             cells.add(regDateCell);
 
             ReportCell gnCell = new ReportCell();
             gnCell.setColumn(rcGn);
-            gnCell.setRow(titleRow);
+            gnCell.setRow(clientRow);
             gnCell.setContainsStringValue(true);
             if (c.getPerson().getGnArea() != null) {
                 gnCell.setStringValue(c.getPerson().getGnArea().getName());
@@ -2905,7 +2905,7 @@ public class ReportController implements Serializable {
             }
             cells.add(gnCell);
 
-            rows.add(titleRow);
+            rows.add(clientRow);
         }
 
         String excelFileName = "Form_set_data_and_clinic_visits" + "_" + (new Date()) + ".xlsx";
