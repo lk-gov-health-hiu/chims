@@ -16,42 +16,45 @@
         <ui:composition template="/reports/index.xhtml">
             <ui:define name="reports">
                 <h:form>
+                    <p:poll interval="6" ></p:poll>
                     <p:panelGrid columns="2" class="w3-border w3-margin w3-card" >
                         <f:facet name="header" >
                             <p:outputLabel value="Data in Form sets" ></p:outputLabel>
                         </f:facet>
-                       
-                            <p:outputLabel value="From" ></p:outputLabel>
-                            <p:calendar value="#{reportController.fromDate}" pattern="dd MM yyyy" ></p:calendar>
 
-                            <p:outputLabel value="To" ></p:outputLabel>
-                            <p:calendar value="#{reportController.toDate}" pattern="dd MM yyyy" ></p:calendar>
+                        <p:outputLabel value="From" ></p:outputLabel>
+                        <p:calendar value="#{reportController.fromDate}" pattern="dd MM yyyy" ></p:calendar>
 
-                            <p:outputLabel value="Institution" ></p:outputLabel>
-                            <p:autoComplete   value="#{reportController.institution}" 
-                                              completeMethod="#{institutionController.completeInstitutions}"
-                                              var="i" itemLabel="#{i.name}" itemValue="#{i}"
-                                              forceSelection="true" maxResults="15" minQueryLength="3">
-                            </p:autoComplete >
-                            
-                             <p:outputLabel value="Formset" ></p:outputLabel>
-                             <p:autoComplete   value="#{reportController.designingComponentFormSet}" 
-                                              completeMethod="#{designComponentFormSetController.completeFormSets}"
-                                              var="i" itemLabel="#{i.name}" itemValue="#{i}"
-                                              forceSelection="true" maxResults="15" minQueryLength="2">
-                            </p:autoComplete >
+                        <p:outputLabel value="To" ></p:outputLabel>
+                        <p:calendar value="#{reportController.toDate}" pattern="dd MM yyyy" ></p:calendar>
+
+                        <p:outputLabel value="Institution" ></p:outputLabel>
+                        <p:autoComplete   value="#{reportController.institution}" 
+                                          completeMethod="#{institutionController.completeInstitutions}"
+                                          var="i" itemLabel="#{i.name}" itemValue="#{i}"
+                                          forceSelection="true" maxResults="15" minQueryLength="3">
+                        </p:autoComplete >
+
+                        <p:outputLabel value="Formset" ></p:outputLabel>
+                        <p:autoComplete   value="#{reportController.designingComponentFormSet}" 
+                                          completeMethod="#{designComponentFormSetController.completeFormSets}"
+                                          var="i" itemLabel="#{i.name}" itemValue="#{i}"
+                                          forceSelection="true" maxResults="15" minQueryLength="2">
+                        </p:autoComplete >
 
 
-                            <p:spacer ></p:spacer>
-                            <p:commandButton value="Download" 
-                                             ajax="false" 
-                                             oncomplete ="PrimeFaces.monitorDownload(start, stop);" 
-                                             icon="ui-icon-arrowthick-1-s"
-                                             actionListener="#{reportController.downloadFormsetDataEntries()}">
-                                <p:fileDownload value="#{reportController.resultExcelFile}" />
-                            </p:commandButton>
+                        <p:commandButton value="Process" 
+                                         ajax="false" 
+                                         action="#{reportController.downloadFormsetDataEntries()}">
+                        </p:commandButton>
+                        <p:commandButton value="Download" 
+                                         ajax="false" disabled="#{reportController.resultExcelFile eq null}"
+                                         oncomplete ="PrimeFaces.monitorDownload(start, stop);" 
+                                         icon="ui-icon-arrowthick-1-s">
+                            <p:fileDownload value="#{reportController.resultExcelFile}" />
+                        </p:commandButton>
 
-                    
+
 
 
                     </p:panelGrid>
