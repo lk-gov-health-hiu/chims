@@ -68,8 +68,21 @@
                             <p:column headerText="Actions" >
                                 <h:panelGrid columns="2" >
                                     <p:commandButton value="Download" 
+                                                     rendered="#{r.resultType eq 'excel_object'}"
                                                      disabled="#{!r.processCompleted}"
                                                      ajax="false" 
+                                                     onclick="PrimeFaces.monitorDownload(start, stop);" 
+                                                     icon="ui-icon-arrowthick-1-s">
+                                        <f:setPropertyActionListener value="#{r}" 
+                                                                     target="#{reportController.downloadingResult}" 
+                                                                     ></f:setPropertyActionListener>
+                                        <p:fileDownload value="#{reportController.downloadingFile}" />
+                                    </p:commandButton>
+                                    <p:commandButton value="Download" 
+                                                     rendered="#{r.resultType eq 'cell_values'}"
+                                                     disabled="#{!r.processCompleted}"
+                                                     ajax="false" 
+                                                     actionListener="#{reportController.createExcelFileForSelectedStoredQueryResult}"
                                                      onclick="PrimeFaces.monitorDownload(start, stop);" 
                                                      icon="ui-icon-arrowthick-1-s">
                                         <f:setPropertyActionListener value="#{r}" 

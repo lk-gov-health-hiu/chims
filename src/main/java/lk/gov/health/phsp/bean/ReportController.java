@@ -63,6 +63,7 @@ import jxl.write.Label;
 import jxl.write.WritableSheet;
 import jxl.write.WritableWorkbook;
 import jxl.write.WriteException;
+import lk.gov.health.phsp.ejb.AnalysisBean;
 import lk.gov.health.phsp.entity.ClientEncounterComponentFormSet;
 import lk.gov.health.phsp.entity.ClientEncounterComponentItem;
 import lk.gov.health.phsp.entity.ConsolidatedQueryResult;
@@ -97,9 +98,12 @@ import lk.gov.health.phsp.pojcs.DateInstitutionCount;
 import lk.gov.health.phsp.pojcs.EncounterBasicData;
 import lk.gov.health.phsp.pojcs.InstitutionCount;
 import lk.gov.health.phsp.pojcs.Replaceable;
-import lk.gov.health.phsp.pojcs.ReportCell;
-import lk.gov.health.phsp.pojcs.ReportColumn;
-import lk.gov.health.phsp.pojcs.ReportRow;
+import lk.gov.health.phsp.entity.ReportCell;
+import lk.gov.health.phsp.entity.ReportColumn;
+import lk.gov.health.phsp.entity.ReportRow;
+import lk.gov.health.phsp.facade.ReportCellFacade;
+import lk.gov.health.phsp.facade.ReportColumnFacade;
+import lk.gov.health.phsp.facade.ReportRowFacade;
 import lk.gov.health.phsp.pojcs.ReportTimePeriod;
 import org.apache.commons.io.FileUtils;
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -117,6 +121,8 @@ import org.primefaces.model.StreamedContent;
 public class ReportController implements Serializable {
 // <editor-fold defaultstate="collapsed" desc="EJBs">
 
+    @EJB
+    AnalysisBean analysisBean;
     @EJB
     private DesignComponentFormItemFacade designComponentFormItemFacade;
     @EJB
@@ -137,6 +143,12 @@ public class ReportController implements Serializable {
     private ConsolidatedQueryResultFacade consolidatedQueryResultFacade;
     @EJB
     private IndividualQueryResultFacade individualQueryResultFacade;
+    @EJB
+    ReportColumnFacade reportColumnFacade;
+    @EJB
+    ReportRowFacade reportRowFacade;
+    @EJB
+    ReportCellFacade reportCellFacade;
 
 // </editor-fold>     
 // <editor-fold defaultstate="collapsed" desc="Controllers">
@@ -189,6 +201,7 @@ public class ReportController implements Serializable {
 // </editor-fold> 
     private List<StoredQueryResult> myResults;
     private List<StoredQueryResult> reportResults;
+    private StoredQueryResult selectedStoredQueryResult;
     private List<InstitutionCount> institutionCounts;
     private Long reportCount;
     private List<AreaCount> areaCounts;
@@ -2709,8 +2722,6 @@ public class ReportController implements Serializable {
     }
 
     public void downloadFormsetDataEntries() {
-        String j;
-        Map m = new HashMap();
         if (institution == null) {
             JsfUtil.addErrorMessage("Select Institution");
             return;
@@ -2719,336 +2730,12 @@ public class ReportController implements Serializable {
             JsfUtil.addErrorMessage("Select Form Set");
             return;
         }
-
-        List<ReportColumn> cols = new ArrayList<>();
-        int colCount = 0;
-
-        List<ReportRow> rows = new ArrayList<>();
-        int rowCount = 0;
-
-        List<ReportCell> cells = new ArrayList<>();
-        int cellCount = 0;
-
-        ReportColumn rcSerial = new ReportColumn();
-        rcSerial.setColumnNumber(colCount++);
-        rcSerial.setHeader("Serial No.");
-        rcSerial.setId(new Long(colCount));
-        cols.add(rcSerial);
-
-        ReportColumn rcPhn = new ReportColumn();
-        rcPhn.setColumnNumber(colCount++);
-        rcSerial.setHeader("PHN");
-        rcPhn.setId(new Long(colCount));
-        cols.add(rcPhn);
-
-        ReportColumn rcDob = new ReportColumn();
-        rcDob.setColumnNumber(colCount++);
-        rcDob.setHeader("Date of Birth");
-        rcDob.setDateFormat("dd MMMM yyyy");
-        rcDob.setId(new Long(colCount));
-        cols.add(rcDob);
-
-        ReportColumn rcSex = new ReportColumn();
-        rcSex.setColumnNumber(colCount++);
-        rcSex.setHeader("Sex");
-        rcSex.setId(new Long(colCount));
-        cols.add(rcSex);
-
-        ReportColumn rcGn = new ReportColumn();
-        rcGn.setColumnNumber(colCount++);
-        rcGn.setHeader("GN Area");
-        rcGn.setId(new Long(colCount));
-        cols.add(rcGn);
-
-        ReportColumn rcRegIns = new ReportColumn();
-        rcRegIns.setColumnNumber(colCount++);
-        rcRegIns.setHeader("Empanalled Institute");
-        rcRegIns.setId(new Long(colCount));
-        cols.add(rcRegIns);
-
-        ReportColumn regDate = new ReportColumn();
-        regDate.setColumnNumber(colCount++);
-        regDate.setHeader("Empanalled Date");
-        regDate.setDateFormat("dd MMMM yyyy");
-        regDate.setId(new Long(colCount));
-        cols.add(regDate);
-
-        List<DesignComponentForm> dForms = designComponentFormController.fillFormsofTheSelectedSet(designingComponentFormSet);
-
-        for (DesignComponentForm dForm : dForms) {
-            List<DesignComponentFormItem> dItems = designComponentFormItemController.fillItemsOfTheForm(dForm);
-            for (DesignComponentFormItem dItem : dItems) {
-                if (dItem.getItem() != null && dItem.getItem().getCode() != null) {
-                    ReportColumn rc = new ReportColumn();
-                    rc.setColumnNumber(colCount++);
-                    rc.setHeader(dItem.getItem().getName());
-                    rc.setCode(dItem.getItem().getCode().trim().toLowerCase());
-                    rc.setId(new Long(colCount));
-                    cols.add(rc);
-                }
-            }
-        }
-
-        ReportColumn rcVd = new ReportColumn();
-        rcVd.setColumnNumber(colCount++);
-        rcVd.setHeader("Visit Dates");
-        rcVd.setId(new Long(colCount));
-        cols.add(rcVd);
-
-        ReportColumn rcVfs = new ReportColumn();
-        rcVfs.setColumnNumber(colCount++);
-        rcVfs.setHeader("Visit Form Set");
-        rcVfs.setId(new Long(colCount));
-        cols.add(rcVfs);
-
-        ReportRow titleRow = new ReportRow();
-        titleRow.setRowNumber(rowCount++);
-        titleRow.setId(new Long(rowCount));
-        for (ReportColumn rc : cols) {
-            ReportCell cell = new ReportCell();
-            cell.setColumn(rc);
-            cell.setRow(titleRow);
-            cell.setContainsStringValue(true);
-            cell.setStringValue(rc.getHeader());
-            cell.setId(new Long(cellCount++));
-            cells.add(cell);
-        }
-
-        rows.add(titleRow);
-
-        j = "select s "
-                + " from ClientEncounterComponentFormSet s join s.encounter e "
-                + " where e.retired=false "
-                + " and s.retired=false "
-                + " and e.encounterDate between :fd and :td "
-                + " and e.institution=:ins "
-                + " and (s.referenceComponent=:rfs or s.referenceComponent.referenceComponent=:rfs) "
-                + " order by s.id";
-        m = new HashMap();
-        m.put("ins", institution);
-        m.put("fd", fromDate);
-        m.put("td", toDate);
-        m.put("rfs", designingComponentFormSet);
-        List<ClientEncounterComponentFormSet> cSets = clientEncounterComponentFormSetFacade.findByJpql(j, m);
-
-        Map<Long, ClientFirstEncounterDetailsRemainingEncounterDatesAndTypes> mapCes = new HashMap<>();
-
-        for (ClientEncounterComponentFormSet cs : cSets) {
-            if (cs.getEncounter() == null || cs.getEncounter().getClient() == null) {
-                continue;
-            }
-            ClientFirstEncounterDetailsRemainingEncounterDatesAndTypes ce = mapCes.get(cs.getEncounter().getClient().getId());
-            if (ce == null) {
-                ce = new ClientFirstEncounterDetailsRemainingEncounterDatesAndTypes();
-                ce.setClient(cs.getEncounter().getClient());
-                ce.setFirstEncounter(cs.getEncounter());
-                mapCes.put(cs.getEncounter().getClient().getId(), ce);
-            } else {
-                ce.getRemainigEncounters().add(cs.getEncounter());
-            }
-        }
-
-        for (ClientFirstEncounterDetailsRemainingEncounterDatesAndTypes ce : mapCes.values()) {
-            Client c = ce.getClient();
-            ReportRow clientRow = new ReportRow();
-            clientRow.setRowNumber(rowCount++);
-            clientRow.setId(new Long(rowCount));
-
-            ReportCell serialCell = new ReportCell();
-            serialCell.setColumn(rcSerial);
-            serialCell.setRow(clientRow);
-            serialCell.setContainsLongValue(true);
-            serialCell.setLongValue(new Long(rowCount));
-            cells.add(serialCell);
-
-            ReportCell phnCell = new ReportCell();
-            phnCell.setColumn(rcPhn);
-            phnCell.setRow(clientRow);
-            phnCell.setContainsStringValue(true);
-            phnCell.setStringValue(c.getPhn());
-            cells.add(phnCell);
-
-            ReportCell dobCell = new ReportCell();
-            dobCell.setColumn(rcDob);
-            dobCell.setRow(clientRow);
-            dobCell.setContainsDateValue(true);
-            dobCell.setDateValue(c.getPerson().getDateOfBirth());
-            cells.add(dobCell);
-
-            ReportCell sexCell = new ReportCell();
-            sexCell.setColumn(rcSex);
-            sexCell.setRow(clientRow);
-            sexCell.setContainsStringValue(true);
-            if (c.getPerson().getSex() != null) {
-                sexCell.setStringValue(c.getPerson().getSex().getName());
-            }
-            cells.add(sexCell);
-
-            ReportCell regInsCell = new ReportCell();
-            regInsCell.setColumn(rcRegIns);
-            regInsCell.setRow(clientRow);
-            regInsCell.setContainsStringValue(true);
-            if (c.getCreateInstitution() != null) {
-                regInsCell.setStringValue(c.getCreateInstitution().getName());
-            }
-            cells.add(regInsCell);
-
-            ReportCell regDateCell = new ReportCell();
-            regDateCell.setColumn(regDate);
-            regDateCell.setRow(clientRow);
-            regDateCell.setContainsDateValue(true);
-            regDateCell.setDateValue(c.getCreatedOn());
-            cells.add(regDateCell);
-
-            ReportCell gnCell = new ReportCell();
-            gnCell.setColumn(rcGn);
-            gnCell.setRow(clientRow);
-            gnCell.setContainsStringValue(true);
-            if (c.getPerson().getGnArea() != null) {
-                gnCell.setStringValue(c.getPerson().getGnArea().getName());
-            } else {
-                gnCell.setStringValue("Not set");
-            }
-            cells.add(gnCell);
-
-            for (ReportColumn rc : cols) {
-                System.out.println("rc = " + rc);
-                if (rc == null) {
-                    continue;
-                }
-                if (rc.getCode() == null) {
-                    continue;
-                }
-                if (rc.getCode().equals("")) {
-                    continue;
-                }
-                System.out.println("rc = " + rc.getCode());
-                if (rc.getCode() != null || !rc.getCode().trim().equals("")) {
-
-                    if (ce == null) {
-                        continue;
-                    }
-                    if (ce.getFirstEncounter() == null) {
-                        continue;
-                    }
-                    if (ce.getFirstEncounter().getClientEncounterComponentItems() == null) {
-                        continue;
-                    }
-
-                    for (ClientEncounterComponentItem cItem : ce.getFirstEncounter().getClientEncounterComponentItems()) {
-                        System.out.println("cItem = " + cItem);
-                        
-                        if (cItem.getItem() == null || cItem.getItem().getCode() == null) {
-                            continue;
-                        }
-                        if (rc.getCode().equalsIgnoreCase(cItem.getItem().getCode())) {
-                            ReportCell ciCell = new ReportCell();
-                            ciCell.setColumn(rc);
-                            ciCell.setRow(clientRow);
-
-                            SelectionDataType sdt = cItem.getReferanceDesignComponentFormItem().getSelectionDataType();
-                            switch (sdt) {
-                                case Boolean:
-                                    ciCell.setContainsStringValue(true);
-                                    if (cItem.getBooleanValue() == null) {
-                                        ciCell.setStringValue("");
-                                    } else if (cItem.getBooleanValue()) {
-                                        ciCell.setStringValue("true");
-                                    } else {
-                                        ciCell.setStringValue("false");
-                                    }
-                                    break;
-                                case DateTime:
-                                    ciCell.setContainsDateValue(true);
-                                    if (cItem.getDateValue() == null) {
-                                        ciCell.setDateValue(null);
-                                    } else {
-                                        ciCell.setDateValue(cItem.getDateValue());
-                                    }
-                                    break;
-                                case Integer_Number:
-                                    ciCell.setContainsDoubleValue(true);
-                                    if (cItem.getRealNumberValue() == null) {
-                                        ciCell.setDblValue(null);
-                                    } else {
-                                        ciCell.setDblValue(cItem.getRealNumberValue());
-                                    }
-                                    break;
-                                case Long_Number:
-                                    ciCell.setContainsDoubleValue(true);
-                                    if (cItem.getLongNumberValue() == null) {
-                                        ciCell.setDblValue(null);
-                                    } else {
-                                        ciCell.setDblValue(cItem.getLongNumberValue().doubleValue());
-                                    }
-                                    break;
-                                case Item_Reference:
-                                    ciCell.setContainsStringValue(true);
-                                    if (cItem.getItemValue() == null) {
-                                        ciCell.setStringValue(null);
-                                    } else {
-                                        ciCell.setStringValue(cItem.getItemValue().getName());
-                                    }
-                                    break;
-                                case Long_Text:
-                                    ciCell.setContainsStringValue(true);
-                                    if (cItem.getLongTextValue() == null) {
-                                        ciCell.setStringValue(null);
-                                    } else {
-                                        ciCell.setStringValue(cItem.getLongTextValue());
-                                    }
-                                    break;
-                                case Real_Number:
-                                    ciCell.setContainsDoubleValue(true);
-                                    if (cItem.getRealNumberValue() == null) {
-                                        ciCell.setDblValue(null);
-                                    } else {
-                                        ciCell.setDblValue(cItem.getRealNumberValue());
-                                    }
-                                    break;
-                                case Short_Text:
-                                    ciCell.setContainsStringValue(true);
-                                    if (cItem.getShortTextValue() == null) {
-                                        ciCell.setStringValue(null);
-                                    } else {
-                                        ciCell.setStringValue(cItem.getShortTextValue());
-                                    }
-                                    break;
-                                default:
-                                    ciCell.setContainsStringValue(true);
-                                    ciCell.setStringValue("Under Construction");
-                            }
-                            cells.add(ciCell);
-                        }
-                    }
-                }
-            }
-
-            String dates = "";
-            String visitType = "";
-
-            System.out.println("ce.getRemainigEncounters() = " + ce.getRemainigEncounters());
-            
-            for (Encounter e : ce.getRemainigEncounters()) {
-                dates += CommonController.dateTimeToString(e.getEncounterDate()) + "\n";
-            }
-
-            ReportCell vdCell = new ReportCell();
-            vdCell.setColumn(rcVd);
-            vdCell.setRow(clientRow);
-            vdCell.setContainsStringValue(true);
-            if (dates.equals("")) {
-                gnCell.setStringValue(dates);
-            } else {
-                gnCell.setStringValue("No more visits");
-            }
-            cells.add(vdCell);
-
-            rows.add(clientRow);
-        }
-
-        String excelFileName = "Form_set_data_and_clinic_visits" + "_" + (new Date()) + ".xlsx";
-        createExcelFile(excelFileName, cols, rows, cells);
+        analysisBean.createFormsetDataEntriesAndSubsequentVisitDates(institution,
+                designingComponentFormSet,
+                fromDate,
+                toDate,
+                webUserController.getLoggedUser());
+        JsfUtil.addSuccessMessage("Process started. Check under my reports.");
     }
 
     public void createExcelFile(String fileName, List<ReportColumn> cols, List<ReportRow> rows, List<ReportCell> cells) {
@@ -3104,6 +2791,114 @@ public class ReportController implements Serializable {
         try {
             stream = new FileInputStream(newFile);
             resultExcelFile = new DefaultStreamedContent(stream, mimeType, fileName);
+        } catch (FileNotFoundException ex) {
+
+        }
+
+    }
+
+    public void createExcelFileForSelectedStoredQueryResult() {
+        if (selectedStoredQueryResult == null) {
+            JsfUtil.addErrorMessage("No fiel selected");
+            return;
+        }
+        String fileName;
+        if (selectedStoredQueryResult.getName() == null || selectedStoredQueryResult.getName().trim().equals("")) {
+            fileName = "downloading file.xlsx";
+        } else {
+            fileName = selectedStoredQueryResult.getName();
+        }
+
+        Map m;
+        String j;
+
+        j = "select col "
+                + " from ReportColumn col "
+                + " where col.storedQueryResult=:sqr "
+                + " order by col.columnNumber";
+        m = new HashMap();
+        m.put("sqr", selectedStoredQueryResult);
+        List<ReportColumn> cols = reportColumnFacade.findByJpql(j, m);
+        if (cols == null || cols.isEmpty()) {
+            JsfUtil.addErrorMessage("No Columns for report");
+            return;
+        }
+
+        j = "select row "
+                + " from ReportRow row "
+                + " where row.storedQueryResult=:sqr "
+                + " order by row.rowNumber";
+        m = new HashMap();
+        m.put("sqr", selectedStoredQueryResult);
+        List<ReportRow> rows = reportRowFacade.findByJpql(j, m);
+        if (rows == null || rows.isEmpty()) {
+            JsfUtil.addErrorMessage("No Rows for report");
+            return;
+        }
+
+        j = "select cell "
+                + " from ReportCell cell "
+                + " where cell.storedQueryResult=:sqr ";
+        m = new HashMap();
+        m.put("sqr", selectedStoredQueryResult);
+        List<ReportCell> cells = reportCellFacade.findByJpql(j, m);
+        if (cells == null || rows.isEmpty()) {
+            JsfUtil.addErrorMessage("No Cells for report");
+            return;
+        }
+
+        String mimeType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+        String folder = "/tmp/";
+        File newFile = new File(folder + fileName);
+
+        XSSFWorkbook workbook = new XSSFWorkbook();
+        XSSFSheet sheet = workbook.createSheet("Data");
+
+        int rowCount = 0;
+
+        for (ReportRow rr : rows) {
+            Row r = sheet.createRow(rowCount++);
+            int colCount = 0;
+            for (ReportColumn rc : cols) {
+                Cell c = r.createCell(colCount++);
+                for (ReportCell rcel : cells) {
+                    if (rcel.getColumn().equals(rc) && rcel.getRow().equals(rr)) {
+                        if (rcel.isContainsDateValue()) {
+                            CellStyle cellStyle = workbook.createCellStyle();
+                            CreationHelper createHelper = workbook.getCreationHelper();
+                            if (rc.getDateFormat() == null || rc.getDateFormat().trim().equals("")) {
+                                cellStyle.setDataFormat(
+                                        createHelper.createDataFormat().getFormat("dd/MMMM/yyyy hh:mm"));
+                            } else {
+                                cellStyle.setDataFormat(
+                                        createHelper.createDataFormat().getFormat(rc.getDateFormat()));
+                            }
+                            c.setCellStyle(cellStyle);
+                            c.setCellValue(rcel.getDateValue());
+                        } else if (rcel.isContainsDoubleValue()) {
+                            c.setCellValue(rcel.getDblValue());
+                        } else if (rcel.isContainsLongValue()) {
+                            c.setCellValue(rcel.getLongValue().doubleValue());
+                        } else if (rcel.isContainsStringValue()) {
+                            c.setCellValue(rcel.getStringValue());
+                        } else {
+                            c.setCellValue("");
+                        }
+                    }
+                }
+            }
+        }
+
+        try (FileOutputStream outputStream = new FileOutputStream(newFile)) {
+            workbook.write(outputStream);
+        } catch (Exception e) {
+
+        }
+
+        InputStream stream;
+        try {
+            stream = new FileInputStream(newFile);
+            downloadingFile = new DefaultStreamedContent(stream, mimeType, fileName);
         } catch (FileNotFoundException ex) {
 
         }
@@ -3485,6 +3280,14 @@ public class ReportController implements Serializable {
 
     public void setFromSet(DesignComponentFormSet fromSet) {
         this.fromSet = fromSet;
+    }
+
+    public StoredQueryResult getSelectedStoredQueryResult() {
+        return selectedStoredQueryResult;
+    }
+
+    public void setSelectedStoredQueryResult(StoredQueryResult selectedStoredQueryResult) {
+        this.selectedStoredQueryResult = selectedStoredQueryResult;
     }
 
 }

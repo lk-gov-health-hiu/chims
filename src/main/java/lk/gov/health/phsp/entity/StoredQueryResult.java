@@ -60,6 +60,9 @@ public class StoredQueryResult implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+    
+    private String name;
+    private String resultType;
 
     @ManyToOne
     private Institution institution;
@@ -137,6 +140,8 @@ public class StoredQueryResult implements Serializable {
     public void setId(Long id) {
         this.id = id;
     }
+    
+    
     
     
 
@@ -475,6 +480,25 @@ public class StoredQueryResult implements Serializable {
 
     public void setRecalculate(boolean recalculate) {
         this.recalculate = recalculate;
+    }
+
+    public String getResultType() {
+        if(resultType==null||resultType.trim().equals("")){
+            resultType="excel_object";
+        }
+        return resultType;
+    }
+
+    public void setResultType(String resultType) {
+        this.resultType = resultType;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
 }

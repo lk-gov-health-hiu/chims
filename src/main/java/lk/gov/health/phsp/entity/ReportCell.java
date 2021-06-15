@@ -21,29 +21,83 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package lk.gov.health.phsp.pojcs;
+package lk.gov.health.phsp.entity;
 
+import java.io.Serializable;
 import java.util.Date;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.Temporal;
 
 /**
  *
  * @author buddhika
  */
-public class ReportCell {
+@Entity
+public class ReportCell implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
+    @ManyToOne
     private ReportRow row;
+    @ManyToOne
     private ReportColumn column;
     private Double dblValue;
     private String stringValue;
     private Long longValue;
+    @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date dateValue;
     private boolean containsDoubleValue;
     private boolean containsLongValue;
     private boolean containsStringValue;
     private boolean containsDateValue;
+
+    @ManyToOne
+    private StoredQueryResult storedQueryResult;
     
-    private Long id;
     
     
+    
+    
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    
+    
+    @Override
+    public int hashCode() {
+        int hash = 0;
+        hash += (id != null ? id.hashCode() : 0);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        // TODO: Warning - this method won't work in the case the id fields are not set
+        if (!(object instanceof ReportCell)) {
+            return false;
+        }
+        ReportCell other = (ReportCell) object;
+        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public String toString() {
+        return "lk.gov.health.phsp.entity.ReportCell[ id=" + id + " ]";
+    }
 
     public ReportRow getRow() {
         return row;
@@ -125,13 +179,12 @@ public class ReportCell {
         this.containsDateValue = containsDateValue;
     }
 
-    public Long getId() {
-        return id;
+    public StoredQueryResult getStoredQueryResult() {
+        return storedQueryResult;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setStoredQueryResult(StoredQueryResult storedQueryResult) {
+        this.storedQueryResult = storedQueryResult;
     }
-    
     
 }

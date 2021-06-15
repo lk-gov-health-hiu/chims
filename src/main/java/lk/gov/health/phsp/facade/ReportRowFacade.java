@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2021 buddhika.
+ * Copyright 2019 Dr M H B Ariyaratne<buddhika.ari@gmail.com>.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,33 +21,31 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package lk.gov.health.phsp.pojcs;
+package lk.gov.health.phsp.facade;
 
-/**
+import javax.ejb.Stateless;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import lk.gov.health.phsp.entity.ReportRow;
+import lk.gov.health.phsp.entity.StoredQueryResult;
+
+/**static
  *
- * @author buddhika
+ * @author Dr M H B Ariyaratne<buddhika.ari@gmail.com>
  */
-public class ReportRow {
-    private int rowNumber;
-    private Long id;
-    
-    
+@Stateless
+public class ReportRowFacade extends AbstractFacade<ReportRow> {
 
-    public int getRowNumber() {
-        return rowNumber;
+    @PersistenceContext(unitName = "hmisPU")
+    private EntityManager em;
+
+    @Override
+    protected EntityManager getEntityManager() {
+        return em;
     }
 
-    public void setRowNumber(int rowNumber) {
-        this.rowNumber = rowNumber;
+    public ReportRowFacade() {
+        super(ReportRow.class);
     }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-    
     
 }

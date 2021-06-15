@@ -29,6 +29,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.ejb.Asynchronous;
 import javax.ejb.EJB;
 import javax.ejb.Schedule;
 import javax.ejb.Stateless;
@@ -37,21 +38,39 @@ import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 import lk.gov.health.phsp.bean.CommonController;
 import lk.gov.health.phsp.bean.util.JsfUtil;
+import lk.gov.health.phsp.entity.Client;
+import lk.gov.health.phsp.entity.ClientEncounterComponentFormSet;
 import lk.gov.health.phsp.entity.ClientEncounterComponentItem;
+import lk.gov.health.phsp.entity.DesignComponentForm;
+import lk.gov.health.phsp.entity.DesignComponentFormItem;
+import lk.gov.health.phsp.entity.DesignComponentFormSet;
+import lk.gov.health.phsp.entity.Encounter;
 import lk.gov.health.phsp.entity.Institution;
 import lk.gov.health.phsp.entity.Item;
 import lk.gov.health.phsp.entity.QueryComponent;
+import lk.gov.health.phsp.entity.ReportCell;
+import lk.gov.health.phsp.entity.ReportColumn;
+import lk.gov.health.phsp.entity.ReportRow;
 import lk.gov.health.phsp.entity.StoredQueryResult;
+import lk.gov.health.phsp.entity.WebUser;
 import lk.gov.health.phsp.enums.EncounterType;
 import lk.gov.health.phsp.enums.InstitutionType;
 import lk.gov.health.phsp.enums.QueryCriteriaMatchType;
 import lk.gov.health.phsp.enums.QueryLevel;
 import lk.gov.health.phsp.enums.QueryType;
+import lk.gov.health.phsp.enums.SelectionDataType;
+import lk.gov.health.phsp.facade.ClientEncounterComponentFormSetFacade;
 import lk.gov.health.phsp.facade.ClientEncounterComponentItemFacade;
+import lk.gov.health.phsp.facade.DesignComponentFormFacade;
+import lk.gov.health.phsp.facade.DesignComponentFormItemFacade;
 import lk.gov.health.phsp.facade.EncounterFacade;
 import lk.gov.health.phsp.facade.InstitutionFacade;
 import lk.gov.health.phsp.facade.QueryComponentFacade;
+import lk.gov.health.phsp.facade.ReportCellFacade;
+import lk.gov.health.phsp.facade.ReportColumnFacade;
+import lk.gov.health.phsp.facade.ReportRowFacade;
 import lk.gov.health.phsp.facade.StoredQueryResultFacade;
+import lk.gov.health.phsp.pojcs.ClientFirstEncounterDetailsRemainingEncounterDatesAndTypes;
 import lk.gov.health.phsp.pojcs.EncounterWithComponents;
 import lk.gov.health.phsp.pojcs.InstitutionYearMonthCompleted;
 import lk.gov.health.phsp.pojcs.Jpq;
@@ -74,6 +93,18 @@ public class AnalysisBean {
     EncounterFacade encounterFacade;
     @EJB
     StoredQueryResultFacade storedQueryResultFacade;
+    @EJB
+    ReportColumnFacade reportColumnFacade;
+    @EJB
+    ReportRowFacade reportRowFacade;
+    @EJB
+    ReportCellFacade reportCellFacade;
+    @EJB
+    DesignComponentFormFacade designComponentFormFacade;
+    @EJB
+    DesignComponentFormItemFacade designComponentFormItemFacade;
+    @EJB
+    ClientEncounterComponentFormSetFacade clientEncounterComponentFormSetFacade;
 
     static List<QueryComponent> queryComponents;
     static int year;
@@ -109,6 +140,441 @@ public class AnalysisBean {
 //        }
     }
 
+    @Asynchronous
+    public void createFormsetDataEntriesAndSubsequentVisitDates(Institution institution,
+            DesignComponentFormSet designingComponentFormSet,
+            Date fromDate, Date toDate,
+            WebUser createdBy) {
+        String j;
+        Map m = new HashMap();
+        if (institution == null) {
+            return;
+        }
+        if (designingComponentFormSet == null) {
+            return;
+        }
+        String excelFileName = "Form_set_data_and_clinic_visits" + "_" + (new Date()) + ".xlsx";
+        StoredQueryResult sqr = new StoredQueryResult();
+        sqr.setCreatedAt(new Date());
+        sqr.setCreater(createdBy);
+        sqr.setInstitution(institution);
+        sqr.setResultFrom(fromDate);
+        sqr.setResultTo(toDate);
+        sqr.setResultType("cell_values");
+        sqr.setProcessStarted(true);
+        sqr.setProcessStartedAt(new Date());
+        sqr.setWebUser(createdBy);
+        sqr.setName(excelFileName);
+        storedQueryResultFacade.create(sqr);
+
+        List<ReportColumn> cols = new ArrayList<>();
+        int colCount = 0;
+
+        List<ReportRow> rows = new ArrayList<>();
+        int rowCount = 0;
+
+        List<ReportCell> cells = new ArrayList<>();
+        int cellCount = 0;
+
+        ReportColumn rcSerial = new ReportColumn();
+        rcSerial.setColumnNumber(colCount++);
+        rcSerial.setHeader("Serial No.");
+        rcSerial.setStoredQueryResult(sqr);
+        reportColumnFacade.create(rcSerial);
+        cols.add(rcSerial);
+
+        ReportColumn rcPhn = new ReportColumn();
+        rcPhn.setColumnNumber(colCount++);
+        rcPhn.setHeader("PHN");
+        rcPhn.setStoredQueryResult(sqr);
+        reportColumnFacade.create(rcPhn);
+        cols.add(rcPhn);
+
+        ReportColumn rcDob = new ReportColumn();
+        rcDob.setColumnNumber(colCount++);
+        rcDob.setStoredQueryResult(sqr);
+        rcDob.setHeader("Date of Birth");
+        rcDob.setDateFormat("dd MMMM yyyy");
+        reportColumnFacade.create(rcDob);
+        cols.add(rcDob);
+
+        ReportColumn rcSex = new ReportColumn();
+        rcSex.setColumnNumber(colCount++);
+        rcSex.setHeader("Sex");
+        rcSex.setStoredQueryResult(sqr);
+        reportColumnFacade.create(rcSex);
+        cols.add(rcSex);
+
+        ReportColumn rcGn = new ReportColumn();
+        rcGn.setColumnNumber(colCount++);
+        rcGn.setHeader("GN Area");
+        rcGn.setStoredQueryResult(sqr);
+        reportColumnFacade.create(rcGn);
+        cols.add(rcGn);
+
+        ReportColumn rcRegIns = new ReportColumn();
+        rcRegIns.setColumnNumber(colCount++);
+        rcRegIns.setHeader("Empanalled Institute");
+        rcRegIns.setStoredQueryResult(sqr);
+        reportColumnFacade.create(rcRegIns);
+        cols.add(rcRegIns);
+
+        ReportColumn rcRegDate = new ReportColumn();
+        rcRegDate.setColumnNumber(colCount++);
+        rcRegDate.setHeader("Empanalled Date");
+        rcRegDate.setDateFormat("dd MMMM yyyy");
+        rcRegDate.setStoredQueryResult(sqr);
+        reportColumnFacade.create(rcRegDate);
+        cols.add(rcRegDate);
+
+        List<DesignComponentForm> dForms = fillFormsofTheSelectedSet(designingComponentFormSet);
+
+        for (DesignComponentForm dForm : dForms) {
+            List<DesignComponentFormItem> dItems = fillItemsOfTheForm(dForm);
+            for (DesignComponentFormItem dItem : dItems) {
+                if (dItem.getItem() != null && dItem.getItem().getCode() != null) {
+                    ReportColumn rc = new ReportColumn();
+                    rc.setColumnNumber(colCount++);
+                    rc.setHeader(dItem.getItem().getName());
+                    rc.setCode(dItem.getItem().getCode().trim().toLowerCase());
+                    rc.setStoredQueryResult(sqr);
+                    reportColumnFacade.create(rc);
+                    cols.add(rc);
+                }
+            }
+        }
+
+        ReportColumn rcVd = new ReportColumn();
+        rcVd.setColumnNumber(colCount++);
+        rcVd.setHeader("Visit Dates");
+        rcVd.setStoredQueryResult(sqr);
+        reportColumnFacade.create(rcVd);
+        cols.add(rcVd);
+
+        ReportColumn rcVfs = new ReportColumn();
+        rcVfs.setColumnNumber(colCount++);
+        rcVfs.setHeader("Visit Form Set");
+        rcVfs.setStoredQueryResult(sqr);
+        reportColumnFacade.create(rcVfs);
+        cols.add(rcVfs);
+
+        ReportRow insRow = new ReportRow();
+        insRow.setRowNumber(rowCount++);
+        insRow.setStoredQueryResult(sqr);
+        reportRowFacade.create(insRow);
+
+        ReportRow fromRow = new ReportRow();
+        fromRow.setRowNumber(rowCount++);
+        fromRow.setStoredQueryResult(sqr);
+        reportRowFacade.create(fromRow);
+
+        ReportRow toRow = new ReportRow();
+        toRow.setRowNumber(rowCount++);
+        toRow.setStoredQueryResult(sqr);
+        reportRowFacade.create(toRow);
+
+        ReportRow titleRow = new ReportRow();
+        titleRow.setRowNumber(rowCount++);
+        titleRow.setStoredQueryResult(sqr);
+        reportRowFacade.create(titleRow);
+
+        ReportCell cellIns = new ReportCell();
+        cellIns.setColumn(rcPhn);
+        cellIns.setRow(insRow);
+        cellIns.setContainsStringValue(true);
+        cellIns.setStringValue(institution.getName());
+        cellIns.setStoredQueryResult(sqr);
+        reportCellFacade.create(cellIns);
+
+        ReportCell cellFrom = new ReportCell();
+        cellFrom.setColumn(rcPhn);
+        cellFrom.setRow(fromRow);
+        cellFrom.setContainsDateValue(true);
+        cellFrom.setDateValue(fromDate);
+        cellFrom.setStoredQueryResult(sqr);
+        reportCellFacade.create(cellFrom);
+
+        ReportCell cellTo = new ReportCell();
+        cellTo.setColumn(rcPhn);
+        cellTo.setRow(toRow);
+        cellTo.setContainsDateValue(true);
+        cellTo.setDateValue(toDate);
+        cellTo.setStoredQueryResult(sqr);
+        reportCellFacade.create(cellTo);
+
+        for (ReportColumn rc : cols) {
+            ReportCell cell = new ReportCell();
+            cell.setColumn(rc);
+            cell.setRow(titleRow);
+            cell.setContainsStringValue(true);
+            cell.setStringValue(rc.getHeader());
+            cell.setStoredQueryResult(sqr);
+            reportCellFacade.create(cell);
+            cells.add(cell);
+        }
+
+        rows.add(insRow);
+        rows.add(fromRow);
+        rows.add(toRow);
+        rows.add(titleRow);
+
+        j = "select s "
+                + " from ClientEncounterComponentFormSet s join s.encounter e "
+                + " where e.retired=false "
+                + " and s.retired=false "
+                + " and e.encounterDate between :fd and :td "
+                + " and e.institution=:ins "
+                + " and (s.referenceComponent=:rfs or s.referenceComponent.referenceComponent=:rfs) "
+                + " order by s.id";
+        m = new HashMap();
+        m.put("ins", institution);
+        m.put("fd", fromDate);
+        m.put("td", toDate);
+        m.put("rfs", designingComponentFormSet);
+        List<ClientEncounterComponentFormSet> cSets = clientEncounterComponentFormSetFacade.findByJpql(j, m);
+
+        Map<Long, ClientFirstEncounterDetailsRemainingEncounterDatesAndTypes> mapCes = new HashMap<>();
+
+        for (ClientEncounterComponentFormSet cs : cSets) {
+            if (cs.getEncounter() == null || cs.getEncounter().getClient() == null) {
+                continue;
+            }
+            ClientFirstEncounterDetailsRemainingEncounterDatesAndTypes ce = mapCes.get(cs.getEncounter().getClient().getId());
+            if (ce == null) {
+                ce = new ClientFirstEncounterDetailsRemainingEncounterDatesAndTypes();
+                ce.setClient(cs.getEncounter().getClient());
+                ce.setFirstEncounter(cs.getEncounter());
+                mapCes.put(cs.getEncounter().getClient().getId(), ce);
+            } else {
+                ce.getRemainigEncounters().add(cs.getEncounter());
+            }
+        }
+
+        for (ClientFirstEncounterDetailsRemainingEncounterDatesAndTypes ce : mapCes.values()) {
+            Client c = ce.getClient();
+            ReportRow clientRow = new ReportRow();
+            clientRow.setRowNumber(rowCount++);
+            clientRow.setStoredQueryResult(sqr);
+            reportRowFacade.create(clientRow);
+
+            ReportCell serialCell = new ReportCell();
+            serialCell.setColumn(rcSerial);
+            serialCell.setRow(clientRow);
+            serialCell.setContainsLongValue(true);
+            serialCell.setStoredQueryResult(sqr);
+            reportCellFacade.create(serialCell);
+            cells.add(serialCell);
+
+            ReportCell phnCell = new ReportCell();
+            phnCell.setColumn(rcPhn);
+            phnCell.setRow(clientRow);
+            phnCell.setContainsStringValue(true);
+            phnCell.setStringValue(c.getPhn());
+            phnCell.setStoredQueryResult(sqr);
+            reportCellFacade.create(phnCell);
+            cells.add(phnCell);
+
+            ReportCell dobCell = new ReportCell();
+            dobCell.setColumn(rcDob);
+            dobCell.setRow(clientRow);
+            dobCell.setContainsDateValue(true);
+            dobCell.setDateValue(c.getPerson().getDateOfBirth());
+            dobCell.setStoredQueryResult(sqr);
+            reportCellFacade.create(dobCell);
+            cells.add(dobCell);
+
+            ReportCell sexCell = new ReportCell();
+            sexCell.setColumn(rcSex);
+            sexCell.setRow(clientRow);
+            sexCell.setContainsStringValue(true);
+            if (c.getPerson().getSex() != null) {
+                sexCell.setStringValue(c.getPerson().getSex().getName());
+            }
+            sexCell.setStoredQueryResult(sqr);
+            reportCellFacade.create(sexCell);
+            cells.add(sexCell);
+
+            ReportCell regInsCell = new ReportCell();
+            regInsCell.setColumn(rcRegIns);
+            regInsCell.setRow(clientRow);
+            regInsCell.setContainsStringValue(true);
+            if (c.getCreateInstitution() != null) {
+                regInsCell.setStringValue(c.getCreateInstitution().getName());
+            }
+            regInsCell.setStoredQueryResult(sqr);
+            reportCellFacade.create(regInsCell);
+            cells.add(regInsCell);
+
+            ReportCell regDateCell = new ReportCell();
+            regDateCell.setColumn(rcRegDate);
+            regDateCell.setRow(clientRow);
+            regDateCell.setContainsDateValue(true);
+            regDateCell.setDateValue(c.getCreatedOn());
+            regDateCell.setStoredQueryResult(sqr);
+            reportCellFacade.create(regDateCell);
+            cells.add(regDateCell);
+
+            ReportCell gnCell = new ReportCell();
+            gnCell.setColumn(rcGn);
+            gnCell.setRow(clientRow);
+            gnCell.setContainsStringValue(true);
+            if (c.getPerson().getGnArea() != null) {
+                gnCell.setStringValue(c.getPerson().getGnArea().getName());
+            } else {
+                gnCell.setStringValue("Not set");
+            }
+            gnCell.setStoredQueryResult(sqr);
+            reportCellFacade.create(gnCell);
+            cells.add(gnCell);
+
+            for (ReportColumn rc : cols) {
+                System.out.println("rc = " + rc);
+                if (rc == null) {
+                    continue;
+                }
+                if (rc.getCode() == null) {
+                    continue;
+                }
+                if (rc.getCode().equals("")) {
+                    continue;
+                }
+                System.out.println("rc = " + rc.getCode());
+                if (rc.getCode() != null || !rc.getCode().trim().equals("")) {
+
+                    if (ce == null) {
+                        continue;
+                    }
+                    if (ce.getFirstEncounter() == null) {
+                        continue;
+                    }
+                    if (ce.getFirstEncounter().getClientEncounterComponentItems() == null) {
+                        continue;
+                    }
+
+                    for (ClientEncounterComponentItem cItem : ce.getFirstEncounter().getClientEncounterComponentItems()) {
+                        System.out.println("cItem = " + cItem);
+
+                        if (cItem.getItem() == null || cItem.getItem().getCode() == null) {
+                            continue;
+                        }
+                        if (rc.getCode().equalsIgnoreCase(cItem.getItem().getCode())) {
+                            ReportCell ciCell = new ReportCell();
+                            ciCell.setColumn(rc);
+                            ciCell.setRow(clientRow);
+
+                            SelectionDataType sdt = cItem.getReferanceDesignComponentFormItem().getSelectionDataType();
+                            switch (sdt) {
+                                case Boolean:
+                                    ciCell.setContainsStringValue(true);
+                                    if (cItem.getBooleanValue() == null) {
+                                        ciCell.setStringValue("");
+                                    } else if (cItem.getBooleanValue()) {
+                                        ciCell.setStringValue("true");
+                                    } else {
+                                        ciCell.setStringValue("false");
+                                    }
+                                    break;
+                                case DateTime:
+                                    ciCell.setContainsDateValue(true);
+                                    if (cItem.getDateValue() == null) {
+                                        ciCell.setDateValue(null);
+                                    } else {
+                                        ciCell.setDateValue(cItem.getDateValue());
+                                    }
+                                    break;
+                                case Integer_Number:
+                                    ciCell.setContainsDoubleValue(true);
+                                    if (cItem.getRealNumberValue() == null) {
+                                        ciCell.setDblValue(null);
+                                    } else {
+                                        ciCell.setDblValue(cItem.getRealNumberValue());
+                                    }
+                                    break;
+                                case Long_Number:
+                                    ciCell.setContainsDoubleValue(true);
+                                    if (cItem.getLongNumberValue() == null) {
+                                        ciCell.setDblValue(null);
+                                    } else {
+                                        ciCell.setDblValue(cItem.getLongNumberValue().doubleValue());
+                                    }
+                                    break;
+                                case Item_Reference:
+                                    ciCell.setContainsStringValue(true);
+                                    if (cItem.getItemValue() == null) {
+                                        ciCell.setStringValue(null);
+                                    } else {
+                                        ciCell.setStringValue(cItem.getItemValue().getName());
+                                    }
+                                    break;
+                                case Long_Text:
+                                    ciCell.setContainsStringValue(true);
+                                    if (cItem.getLongTextValue() == null) {
+                                        ciCell.setStringValue(null);
+                                    } else {
+                                        ciCell.setStringValue(cItem.getLongTextValue());
+                                    }
+                                    break;
+                                case Real_Number:
+                                    ciCell.setContainsDoubleValue(true);
+                                    if (cItem.getRealNumberValue() == null) {
+                                        ciCell.setDblValue(null);
+                                    } else {
+                                        ciCell.setDblValue(cItem.getRealNumberValue());
+                                    }
+                                    break;
+                                case Short_Text:
+                                    ciCell.setContainsStringValue(true);
+                                    if (cItem.getShortTextValue() == null) {
+                                        ciCell.setStringValue(null);
+                                    } else {
+                                        ciCell.setStringValue(cItem.getShortTextValue());
+                                    }
+                                    break;
+                                default:
+                                    ciCell.setContainsStringValue(true);
+                                    ciCell.setStringValue("Under Construction");
+                            }
+                            ciCell.setStoredQueryResult(sqr);
+                            reportCellFacade.create(ciCell);
+                            cells.add(ciCell);
+                        }
+                    }
+                }
+            }
+
+            String dates = "";
+            String visitType = "";
+
+            System.out.println("ce.getRemainigEncounters() = " + ce.getRemainigEncounters());
+
+            for (Encounter e : ce.getRemainigEncounters()) {
+                dates += CommonController.dateTimeToString(e.getEncounterDate()) + "\n";
+            }
+
+            ReportCell vdCell = new ReportCell();
+            vdCell.setColumn(rcVd);
+            vdCell.setRow(clientRow);
+            vdCell.setContainsStringValue(true);
+            if (dates.equals("")) {
+                gnCell.setStringValue(dates);
+            } else {
+                gnCell.setStringValue("No more visits");
+            }
+            vdCell.setStoredQueryResult(sqr);
+            reportCellFacade.create(vdCell);
+            cells.add(vdCell);
+
+            clientRow.setStoredQueryResult(sqr);
+            reportRowFacade.create(clientRow);
+            rows.add(clientRow);
+        }
+
+        sqr.setProcessCompleted(true);
+        sqr.setProcessCompletedAt(new Date());
+        storedQueryResultFacade.edit(sqr);
+
+    }
+
     public List<InstitutionYearMonthCompleted> getIymcs() {
         System.out.println("getIymcs");
         if (iymcs == null) {
@@ -128,6 +594,19 @@ public class AnalysisBean {
             }
         }
         return iymcs;
+    }
+
+    public List<DesignComponentForm> fillFormsofTheSelectedSet(DesignComponentFormSet set) {
+        if (set == null) {
+            return new ArrayList<>();
+        }
+        String j = "Select f from DesignComponentForm f "
+                + "where f.retired=false "
+                + " and f.parentComponent=:pc "
+                + " order by f.orderNo";
+        Map m = new HashMap();
+        m.put("pc", set);
+        return designComponentFormFacade.findByJpql(j, m);
     }
 
     public InstitutionYearMonthCompleted selectNextIymcs() {
@@ -834,6 +1313,20 @@ public class AnalysisBean {
 
             return null;
         }
+    }
+
+    public List<DesignComponentFormItem> fillItemsOfTheForm(DesignComponentForm form) {
+        List<DesignComponentFormItem> is;
+        if (form == null) {
+            is = new ArrayList<>();
+            return is;
+        }
+        String j = "Select i from DesignComponentFormItem i where i.retired=false "
+                + " and i.parentComponent=:p "
+                + " order by i.orderNo";
+        Map m = new HashMap();
+        m.put("p", form);
+        return designComponentFormItemFacade.findByJpql(j, m);
     }
 
     public StoredQueryResult findStoredQueryResult(QueryComponent qc, Date fromDate, Date toDate, Institution institution) {
