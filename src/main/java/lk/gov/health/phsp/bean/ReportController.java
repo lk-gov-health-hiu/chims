@@ -2797,6 +2797,14 @@ public class ReportController implements Serializable {
 
     }
 
+    public StreamedContent getDownloadCreatedFromReport() {
+        if (downloadingFile == null) {
+            JsfUtil.addErrorMessage("No Download file");
+            return null;
+        }
+        return downloadingFile;
+    }
+
     public void createExcelFileForSelectedStoredQueryResult() {
         if (selectedStoredQueryResult == null) {
             JsfUtil.addErrorMessage("No fiel selected");
@@ -2878,7 +2886,9 @@ public class ReportController implements Serializable {
                         } else if (rcel.isContainsDoubleValue()) {
                             c.setCellValue(rcel.getDblValue());
                         } else if (rcel.isContainsLongValue()) {
-                            c.setCellValue(rcel.getLongValue());
+                            if (rcel != null & rcel.getLongValue() != null) {
+                                c.setCellValue(rcel.getLongValue());
+                            }
                         } else if (rcel.isContainsStringValue()) {
                             c.setCellValue(rcel.getStringValue());
                         } else {

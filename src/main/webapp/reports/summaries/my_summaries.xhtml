@@ -88,7 +88,7 @@
                                         <f:setPropertyActionListener value="#{r}" 
                                                                      target="#{reportController.selectedStoredQueryResult}" 
                                                                      ></f:setPropertyActionListener>
-                                        <p:fileDownload value="#{reportController.downloadingFile}" />
+                                        <p:fileDownload value="#{reportController.downloadCreatedFromReport}" />
                                     </p:commandButton>
                                     <p:commandButton ajax="false" action="#{reportController.removeReport()}"
                                                      value="Remove">
