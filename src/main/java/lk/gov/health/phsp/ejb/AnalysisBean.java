@@ -575,13 +575,6 @@ public class AnalysisBean {
 
     }
 
-    
-    
-    
-    
-    
-    
-    
     @Asynchronous
     public void createLongitudinalVisitDates(Institution institution,
             Date fromDate, Date toDate,
@@ -665,19 +658,40 @@ public class AnalysisBean {
         reportColumnFacade.create(rcRegDate);
         cols.add(rcRegDate);
 
-        ReportColumn rcVd = new ReportColumn();
-        rcVd.setColumnNumber(colCount++);
-        rcVd.setHeader("Visit Dates");
-        rcVd.setStoredQueryResult(sqr);
-        reportColumnFacade.create(rcVd);
-        cols.add(rcVd);
+        ReportColumn rcVd1 = new ReportColumn();
+        rcVd1.setColumnNumber(colCount++);
+        rcVd1.setHeader("Visit Date 1");
+        rcVd1.setStoredQueryResult(sqr);
+        reportColumnFacade.create(rcVd1);
+        cols.add(rcVd1);
 
-        ReportColumn rcVfs = new ReportColumn();
-        rcVfs.setColumnNumber(colCount++);
-        rcVfs.setHeader("Visit Form Set");
-        rcVfs.setStoredQueryResult(sqr);
-        reportColumnFacade.create(rcVfs);
-        cols.add(rcVfs);
+        ReportColumn rcVd2 = new ReportColumn();
+        rcVd2.setColumnNumber(colCount++);
+        rcVd2.setHeader("Visit Date 2");
+        rcVd2.setStoredQueryResult(sqr);
+        reportColumnFacade.create(rcVd2);
+        cols.add(rcVd2);
+
+        ReportColumn rcVd3 = new ReportColumn();
+        rcVd3.setColumnNumber(colCount++);
+        rcVd3.setHeader("Visit Date 3");
+        rcVd3.setStoredQueryResult(sqr);
+        reportColumnFacade.create(rcVd3);
+        cols.add(rcVd3);
+
+        ReportColumn rcVd4 = new ReportColumn();
+        rcVd4.setColumnNumber(colCount++);
+        rcVd4.setHeader("Visit Date 4");
+        rcVd4.setStoredQueryResult(sqr);
+        reportColumnFacade.create(rcVd4);
+        cols.add(rcVd4);
+
+        ReportColumn rcVd5 = new ReportColumn();
+        rcVd5.setColumnNumber(colCount++);
+        rcVd5.setHeader("Visit Date 5");
+        rcVd5.setStoredQueryResult(sqr);
+        reportColumnFacade.create(rcVd5);
+        cols.add(rcVd5);
 
         ReportRow insRow = new ReportRow();
         insRow.setRowNumber(rowCount++);
@@ -723,6 +737,12 @@ public class AnalysisBean {
         cellTo.setStoredQueryResult(sqr);
         reportCellFacade.create(cellTo);
 
+        rows.add(insRow);
+        rows.add(fromRow);
+        rows.add(toRow);
+        rows.add(titleRow);
+        
+
         for (ReportColumn rc : cols) {
             ReportCell cell = new ReportCell();
             cell.setColumn(rc);
@@ -732,12 +752,9 @@ public class AnalysisBean {
             cell.setStoredQueryResult(sqr);
             reportCellFacade.create(cell);
             cells.add(cell);
-        }
-
-        rows.add(insRow);
-        rows.add(fromRow);
-        rows.add(toRow);
-        rows.add(titleRow);
+        }        
+        
+        
 
         j = "select e "
                 + " from Encounter e "
@@ -754,12 +771,12 @@ public class AnalysisBean {
         Map<Long, ClientFirstEncounterDetailsRemainingEncounterDatesAndTypes> mapCes = new HashMap<>();
 
         for (Encounter cs : cSets) {
-            
             ClientFirstEncounterDetailsRemainingEncounterDatesAndTypes ce = mapCes.get(cs.getClient().getId());
             if (ce == null) {
                 ce = new ClientFirstEncounterDetailsRemainingEncounterDatesAndTypes();
                 ce.setClient(cs.getClient());
                 ce.setFirstEncounter(cs);
+                ce.getRemainigEncounters().add(cs);
                 mapCes.put(cs.getClient().getId(), ce);
             } else {
                 ce.getRemainigEncounters().add(cs);
@@ -794,7 +811,7 @@ public class AnalysisBean {
             dobCell.setColumn(rcDob);
             dobCell.setRow(clientRow);
             dobCell.setContainsDoubleValue(true);
-            Integer ageInYears = CommonController.calculateAge(c.getPerson().getDateOfBirth(),c.getCreatedOn());
+            Integer ageInYears = CommonController.calculateAge(c.getPerson().getDateOfBirth(), c.getCreatedOn());
             dobCell.setDblValue(ageInYears.doubleValue());
             dobCell.setStoredQueryResult(sqr);
             reportCellFacade.create(dobCell);
@@ -849,19 +866,52 @@ public class AnalysisBean {
 
             System.out.println("ce.getRemainigEncounters() = " + ce.getRemainigEncounters());
 
+            int encounterNo = 1;
             for (Encounter e : ce.getRemainigEncounters()) {
-                dates += CommonController.dateTimeToString(e.getEncounterDate()) + "\n";
+                ReportCell vdCell = new ReportCell();
+                switch (encounterNo) {
+                    case 1:
+                        vdCell.setColumn(rcVd1);
+                        vdCell.setRow(clientRow);
+                        vdCell.setContainsDateValue(true);
+                        vdCell.setDateValue(e.getEncounterDate());
+                        break;
+                    case 2:
+                        vdCell.setColumn(rcVd2);
+                        vdCell.setRow(clientRow);
+                        vdCell.setContainsDateValue(true);
+                        vdCell.setDateValue(e.getEncounterDate());
+                        break;
+                    case 3:
+                        vdCell.setColumn(rcVd3);
+                        vdCell.setRow(clientRow);
+                        vdCell.setContainsDateValue(true);
+                        vdCell.setDateValue(e.getEncounterDate());
+                        break;
+                    case 4:
+                        vdCell.setColumn(rcVd4);
+                        vdCell.setRow(clientRow);
+                        vdCell.setContainsDateValue(true);
+                        vdCell.setDateValue(e.getEncounterDate());
+                        break;
+                    default:
+                        dates += CommonController.dateTimeToString(e.getEncounterDate()) + "\n";
+                        break;
+                }
+                vdCell.setStoredQueryResult(sqr);
+                reportCellFacade.create(vdCell);
+                cells.add(vdCell);
+                encounterNo++;
             }
 
             ReportCell vdCell = new ReportCell();
-            vdCell.setColumn(rcVd);
+            vdCell.setColumn(rcVd5);
             vdCell.setRow(clientRow);
             vdCell.setContainsStringValue(true);
             if (dates.equals("")) {
-                gnCell.setStringValue(dates);
-            } else {
-                gnCell.setStringValue("No more visits");
+                vdCell.setStringValue(dates);
             }
+
             vdCell.setStoredQueryResult(sqr);
             reportCellFacade.create(vdCell);
             cells.add(vdCell);
@@ -877,11 +927,6 @@ public class AnalysisBean {
 
     }
 
-    
-    
-    
-    
-    
     public List<InstitutionYearMonthCompleted> getIymcs() {
         System.out.println("getIymcs");
         if (iymcs == null) {

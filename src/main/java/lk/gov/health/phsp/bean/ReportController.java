@@ -2763,12 +2763,7 @@ public class ReportController implements Serializable {
             JsfUtil.addErrorMessage("Select Institution");
             return;
         }
-        if (designingComponentFormSet == null) {
-            JsfUtil.addErrorMessage("Select Form Set");
-            return;
-        }
-        analysisBean.createFormsetDataEntriesAndSubsequentVisitDates(institution,
-                designingComponentFormSet,
+        analysisBean.createLongitudinalVisitDates(institution,
                 fromDate,
                 toDate,
                 webUserController.getLoggedUser());
