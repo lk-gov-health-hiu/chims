@@ -575,6 +575,313 @@ public class AnalysisBean {
 
     }
 
+    
+    
+    
+    
+    
+    
+    
+    @Asynchronous
+    public void createLongitudinalVisitDates(Institution institution,
+            Date fromDate, Date toDate,
+            WebUser createdBy) {
+        String j;
+        Map m = new HashMap();
+        if (institution == null) {
+            return;
+        }
+        String excelFileName = "Longitidunal_clinic_visits" + "_" + (new Date()) + ".xlsx";
+        StoredQueryResult sqr = new StoredQueryResult();
+        sqr.setCreatedAt(new Date());
+        sqr.setCreater(createdBy);
+        sqr.setInstitution(institution);
+        sqr.setResultFrom(fromDate);
+        sqr.setResultTo(toDate);
+        sqr.setResultType("cell_values");
+        sqr.setProcessStarted(true);
+        sqr.setProcessStartedAt(new Date());
+        sqr.setWebUser(createdBy);
+        sqr.setName(excelFileName);
+        storedQueryResultFacade.create(sqr);
+
+        List<ReportColumn> cols = new ArrayList<>();
+        int colCount = 0;
+
+        List<ReportRow> rows = new ArrayList<>();
+        int rowCount = 0;
+
+        List<ReportCell> cells = new ArrayList<>();
+        int cellCount = 0;
+
+        ReportColumn rcSerial = new ReportColumn();
+        rcSerial.setColumnNumber(colCount++);
+        rcSerial.setHeader("Serial No.");
+        rcSerial.setStoredQueryResult(sqr);
+        reportColumnFacade.create(rcSerial);
+        cols.add(rcSerial);
+
+        ReportColumn rcPhn = new ReportColumn();
+        rcPhn.setColumnNumber(colCount++);
+        rcPhn.setHeader("PHN");
+        rcPhn.setStoredQueryResult(sqr);
+        reportColumnFacade.create(rcPhn);
+        cols.add(rcPhn);
+
+        ReportColumn rcDob = new ReportColumn();
+        rcDob.setColumnNumber(colCount++);
+        rcDob.setStoredQueryResult(sqr);
+        rcDob.setHeader("Age");
+        rcDob.setDateFormat("dd MMMM yyyy");
+        reportColumnFacade.create(rcDob);
+        cols.add(rcDob);
+
+        ReportColumn rcSex = new ReportColumn();
+        rcSex.setColumnNumber(colCount++);
+        rcSex.setHeader("Sex");
+        rcSex.setStoredQueryResult(sqr);
+        reportColumnFacade.create(rcSex);
+        cols.add(rcSex);
+
+        ReportColumn rcGn = new ReportColumn();
+        rcGn.setColumnNumber(colCount++);
+        rcGn.setHeader("GN Area");
+        rcGn.setStoredQueryResult(sqr);
+        reportColumnFacade.create(rcGn);
+        cols.add(rcGn);
+
+        ReportColumn rcRegIns = new ReportColumn();
+        rcRegIns.setColumnNumber(colCount++);
+        rcRegIns.setHeader("Empanalled Institute");
+        rcRegIns.setStoredQueryResult(sqr);
+        reportColumnFacade.create(rcRegIns);
+        cols.add(rcRegIns);
+
+        ReportColumn rcRegDate = new ReportColumn();
+        rcRegDate.setColumnNumber(colCount++);
+        rcRegDate.setHeader("Empanalled Date");
+        rcRegDate.setDateFormat("dd MMMM yyyy");
+        rcRegDate.setStoredQueryResult(sqr);
+        reportColumnFacade.create(rcRegDate);
+        cols.add(rcRegDate);
+
+        ReportColumn rcVd = new ReportColumn();
+        rcVd.setColumnNumber(colCount++);
+        rcVd.setHeader("Visit Dates");
+        rcVd.setStoredQueryResult(sqr);
+        reportColumnFacade.create(rcVd);
+        cols.add(rcVd);
+
+        ReportColumn rcVfs = new ReportColumn();
+        rcVfs.setColumnNumber(colCount++);
+        rcVfs.setHeader("Visit Form Set");
+        rcVfs.setStoredQueryResult(sqr);
+        reportColumnFacade.create(rcVfs);
+        cols.add(rcVfs);
+
+        ReportRow insRow = new ReportRow();
+        insRow.setRowNumber(rowCount++);
+        insRow.setStoredQueryResult(sqr);
+        reportRowFacade.create(insRow);
+
+        ReportRow fromRow = new ReportRow();
+        fromRow.setRowNumber(rowCount++);
+        fromRow.setStoredQueryResult(sqr);
+        reportRowFacade.create(fromRow);
+
+        ReportRow toRow = new ReportRow();
+        toRow.setRowNumber(rowCount++);
+        toRow.setStoredQueryResult(sqr);
+        reportRowFacade.create(toRow);
+
+        ReportRow titleRow = new ReportRow();
+        titleRow.setRowNumber(rowCount++);
+        titleRow.setStoredQueryResult(sqr);
+        reportRowFacade.create(titleRow);
+
+        ReportCell cellIns = new ReportCell();
+        cellIns.setColumn(rcPhn);
+        cellIns.setRow(insRow);
+        cellIns.setContainsStringValue(true);
+        cellIns.setStringValue(institution.getName());
+        cellIns.setStoredQueryResult(sqr);
+        reportCellFacade.create(cellIns);
+
+        ReportCell cellFrom = new ReportCell();
+        cellFrom.setColumn(rcPhn);
+        cellFrom.setRow(fromRow);
+        cellFrom.setContainsDateValue(true);
+        cellFrom.setDateValue(fromDate);
+        cellFrom.setStoredQueryResult(sqr);
+        reportCellFacade.create(cellFrom);
+
+        ReportCell cellTo = new ReportCell();
+        cellTo.setColumn(rcPhn);
+        cellTo.setRow(toRow);
+        cellTo.setContainsDateValue(true);
+        cellTo.setDateValue(toDate);
+        cellTo.setStoredQueryResult(sqr);
+        reportCellFacade.create(cellTo);
+
+        for (ReportColumn rc : cols) {
+            ReportCell cell = new ReportCell();
+            cell.setColumn(rc);
+            cell.setRow(titleRow);
+            cell.setContainsStringValue(true);
+            cell.setStringValue(rc.getHeader());
+            cell.setStoredQueryResult(sqr);
+            reportCellFacade.create(cell);
+            cells.add(cell);
+        }
+
+        rows.add(insRow);
+        rows.add(fromRow);
+        rows.add(toRow);
+        rows.add(titleRow);
+
+        j = "select e "
+                + " from Encounter e "
+                + " where e.retired=false "
+                + " and e.encounterDate between :fd and :td "
+                + " and e.institution=:ins "
+                + " order by e.id";
+        m = new HashMap();
+        m.put("ins", institution);
+        m.put("fd", fromDate);
+        m.put("td", toDate);
+        List<Encounter> cSets = clientEncounterComponentFormSetFacade.findByJpql(j, m);
+
+        Map<Long, ClientFirstEncounterDetailsRemainingEncounterDatesAndTypes> mapCes = new HashMap<>();
+
+        for (Encounter cs : cSets) {
+            
+            ClientFirstEncounterDetailsRemainingEncounterDatesAndTypes ce = mapCes.get(cs.getClient().getId());
+            if (ce == null) {
+                ce = new ClientFirstEncounterDetailsRemainingEncounterDatesAndTypes();
+                ce.setClient(cs.getClient());
+                ce.setFirstEncounter(cs);
+                mapCes.put(cs.getClient().getId(), ce);
+            } else {
+                ce.getRemainigEncounters().add(cs);
+            }
+        }
+
+        for (ClientFirstEncounterDetailsRemainingEncounterDatesAndTypes ce : mapCes.values()) {
+            Client c = ce.getClient();
+            ReportRow clientRow = new ReportRow();
+            clientRow.setRowNumber(rowCount++);
+            clientRow.setStoredQueryResult(sqr);
+            reportRowFacade.create(clientRow);
+
+            ReportCell serialCell = new ReportCell();
+            serialCell.setColumn(rcSerial);
+            serialCell.setRow(clientRow);
+            serialCell.setContainsLongValue(true);
+            serialCell.setStoredQueryResult(sqr);
+            reportCellFacade.create(serialCell);
+            cells.add(serialCell);
+
+            ReportCell phnCell = new ReportCell();
+            phnCell.setColumn(rcPhn);
+            phnCell.setRow(clientRow);
+            phnCell.setContainsStringValue(true);
+            phnCell.setStringValue(c.getPhn());
+            phnCell.setStoredQueryResult(sqr);
+            reportCellFacade.create(phnCell);
+            cells.add(phnCell);
+
+            ReportCell dobCell = new ReportCell();
+            dobCell.setColumn(rcDob);
+            dobCell.setRow(clientRow);
+            dobCell.setContainsDoubleValue(true);
+            Integer ageInYears = CommonController.calculateAge(c.getPerson().getDateOfBirth(),c.getCreatedOn());
+            dobCell.setDblValue(ageInYears.doubleValue());
+            dobCell.setStoredQueryResult(sqr);
+            reportCellFacade.create(dobCell);
+            cells.add(dobCell);
+
+            ReportCell sexCell = new ReportCell();
+            sexCell.setColumn(rcSex);
+            sexCell.setRow(clientRow);
+            sexCell.setContainsStringValue(true);
+            if (c.getPerson().getSex() != null) {
+                sexCell.setStringValue(c.getPerson().getSex().getName());
+            }
+            sexCell.setStoredQueryResult(sqr);
+            reportCellFacade.create(sexCell);
+            cells.add(sexCell);
+
+            ReportCell regInsCell = new ReportCell();
+            regInsCell.setColumn(rcRegIns);
+            regInsCell.setRow(clientRow);
+            regInsCell.setContainsStringValue(true);
+            if (c.getCreateInstitution() != null) {
+                regInsCell.setStringValue(c.getCreateInstitution().getName());
+            }
+            regInsCell.setStoredQueryResult(sqr);
+            reportCellFacade.create(regInsCell);
+            cells.add(regInsCell);
+
+            ReportCell regDateCell = new ReportCell();
+            regDateCell.setColumn(rcRegDate);
+            regDateCell.setRow(clientRow);
+            regDateCell.setContainsDateValue(true);
+            regDateCell.setDateValue(c.getCreatedOn());
+            regDateCell.setStoredQueryResult(sqr);
+            reportCellFacade.create(regDateCell);
+            cells.add(regDateCell);
+
+            ReportCell gnCell = new ReportCell();
+            gnCell.setColumn(rcGn);
+            gnCell.setRow(clientRow);
+            gnCell.setContainsStringValue(true);
+            if (c.getPerson().getGnArea() != null) {
+                gnCell.setStringValue(c.getPerson().getGnArea().getName());
+            } else {
+                gnCell.setStringValue("Not set");
+            }
+            gnCell.setStoredQueryResult(sqr);
+            reportCellFacade.create(gnCell);
+            cells.add(gnCell);
+
+            String dates = "";
+            String visitType = "";
+
+            System.out.println("ce.getRemainigEncounters() = " + ce.getRemainigEncounters());
+
+            for (Encounter e : ce.getRemainigEncounters()) {
+                dates += CommonController.dateTimeToString(e.getEncounterDate()) + "\n";
+            }
+
+            ReportCell vdCell = new ReportCell();
+            vdCell.setColumn(rcVd);
+            vdCell.setRow(clientRow);
+            vdCell.setContainsStringValue(true);
+            if (dates.equals("")) {
+                gnCell.setStringValue(dates);
+            } else {
+                gnCell.setStringValue("No more visits");
+            }
+            vdCell.setStoredQueryResult(sqr);
+            reportCellFacade.create(vdCell);
+            cells.add(vdCell);
+
+            clientRow.setStoredQueryResult(sqr);
+            reportRowFacade.create(clientRow);
+            rows.add(clientRow);
+        }
+
+        sqr.setProcessCompleted(true);
+        sqr.setProcessCompletedAt(new Date());
+        storedQueryResultFacade.edit(sqr);
+
+    }
+
+    
+    
+    
+    
+    
     public List<InstitutionYearMonthCompleted> getIymcs() {
         System.out.println("getIymcs");
         if (iymcs == null) {

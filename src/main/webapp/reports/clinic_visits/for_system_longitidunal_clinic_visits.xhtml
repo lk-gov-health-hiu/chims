@@ -47,15 +47,6 @@
                                          ajax="false" 
                                          action="#{reportController.downloadFormsetDataEntries()}">
                         </p:commandButton>
-                        <p:commandButton value="Download" 
-                                         ajax="false" disabled="#{reportController.resultExcelFile eq null}"
-                                         oncomplete ="PrimeFaces.monitorDownload(start, stop);" 
-                                         icon="ui-icon-arrowthick-1-s">
-                            <p:fileDownload value="#{reportController.resultExcelFile}" />
-                        </p:commandButton>
-
-
-
 
                     </p:panelGrid>
 

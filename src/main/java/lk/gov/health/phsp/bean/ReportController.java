@@ -1811,7 +1811,6 @@ public class ReportController implements Serializable {
         return action;
     }
 
-    
     public String toViewDataForms() {
         encounters = new ArrayList<>();
         String forSys = "/reports/data_forms/for_system";
@@ -2757,6 +2756,23 @@ public class ReportController implements Serializable {
 
         }
 
+    }
+
+    public void downloadLongitidinalClinicVisits() {
+        if (institution == null) {
+            JsfUtil.addErrorMessage("Select Institution");
+            return;
+        }
+        if (designingComponentFormSet == null) {
+            JsfUtil.addErrorMessage("Select Form Set");
+            return;
+        }
+        analysisBean.createFormsetDataEntriesAndSubsequentVisitDates(institution,
+                designingComponentFormSet,
+                fromDate,
+                toDate,
+                webUserController.getLoggedUser());
+        JsfUtil.addSuccessMessage("Process started. Check under my reports.");
     }
 
     public void downloadFormsetDataEntries() {
