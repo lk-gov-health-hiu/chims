@@ -26,6 +26,17 @@
  * Created: Jun 16, 2021
  */
 
-ALTER TABLE usertransaction MODIFY id INTEGER NOT NULL AUTO_INCREMENT;
-select (max(id)+1) from usertransaction;
-ALTER TABLE usertransaction AUTO_INCREMENT=58355;
+set foreign_key_checks=0;
+
+ALTER TABLE reportcolumn MODIFY id INTEGER NOT NULL AUTO_INCREMENT;
+ALTER TABLE reportcolumn AUTO_INCREMENT=58355;
+
+
+ALTER TABLE reportrow MODIFY id INTEGER NOT NULL AUTO_INCREMENT;
+ALTER TABLE reportrow AUTO_INCREMENT=58355;
+
+
+ALTER TABLE reportcell MODIFY id INTEGER NOT NULL AUTO_INCREMENT;
+ALTER TABLE reportcell AUTO_INCREMENT=58355;
+
+set foreign_key_checks=1;
