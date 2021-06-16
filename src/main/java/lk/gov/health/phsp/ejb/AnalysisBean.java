@@ -741,7 +741,6 @@ public class AnalysisBean {
         rows.add(fromRow);
         rows.add(toRow);
         rows.add(titleRow);
-        
 
         for (ReportColumn rc : cols) {
             ReportCell cell = new ReportCell();
@@ -752,9 +751,7 @@ public class AnalysisBean {
             cell.setStoredQueryResult(sqr);
             reportCellFacade.create(cell);
             cells.add(cell);
-        }        
-        
-        
+        }
 
         j = "select e "
                 + " from Encounter e "
@@ -869,32 +866,24 @@ public class AnalysisBean {
             int encounterNo = 1;
             for (Encounter e : ce.getRemainigEncounters()) {
                 ReportCell vdCell = new ReportCell();
+                vdCell.setRow(clientRow);
+                vdCell.setContainsDateValue(true);
+                vdCell.setDateValue(e.getEncounterDate());
                 switch (encounterNo) {
                     case 1:
                         vdCell.setColumn(rcVd1);
-                        vdCell.setRow(clientRow);
-                        vdCell.setContainsDateValue(true);
-                        vdCell.setDateValue(e.getEncounterDate());
                         break;
                     case 2:
                         vdCell.setColumn(rcVd2);
-                        vdCell.setRow(clientRow);
-                        vdCell.setContainsDateValue(true);
-                        vdCell.setDateValue(e.getEncounterDate());
                         break;
                     case 3:
                         vdCell.setColumn(rcVd3);
-                        vdCell.setRow(clientRow);
-                        vdCell.setContainsDateValue(true);
-                        vdCell.setDateValue(e.getEncounterDate());
                         break;
                     case 4:
                         vdCell.setColumn(rcVd4);
-                        vdCell.setRow(clientRow);
-                        vdCell.setContainsDateValue(true);
-                        vdCell.setDateValue(e.getEncounterDate());
                         break;
                     default:
+                        vdCell.setColumn(rcVd1);
                         dates += CommonController.dateTimeToString(e.getEncounterDate()) + "\n";
                         break;
                 }

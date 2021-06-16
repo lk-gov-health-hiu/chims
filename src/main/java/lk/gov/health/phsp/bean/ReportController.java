@@ -2919,6 +2919,9 @@ public class ReportController implements Serializable {
             for (ReportColumn rc : cols) {
                 Cell c = r.createCell(colCount++);
                 for (ReportCell rcel : cells) {
+                    if (rcel.getColumn() == null || rcel.getRow() == null) {
+                        continue;
+                    }
                     if (rcel.getColumn().equals(rc) && rcel.getRow().equals(rr)) {
                         if (rcel.isContainsDateValue()) {
                             CellStyle cellStyle = workbook.createCellStyle();
