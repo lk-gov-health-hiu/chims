@@ -7,7 +7,7 @@
       xmlns:f="http://xmlns.jcp.org/jsf/core">
     <head>
         <ui:define name="head">
-            My Excel Reports
+            My Reports
         </ui:define>
     </head>
     <body>
@@ -78,7 +78,7 @@
                                                                      ></f:setPropertyActionListener>
                                         <p:fileDownload value="#{reportController.downloadingFile}" />
                                     </p:commandButton>
-                                    <p:commandButton value="Download" 
+                                    <p:commandButton value="Excel" 
                                                      rendered="#{r.resultType eq 'cell_values'}"
                                                      disabled="#{!r.processCompleted}"
                                                      ajax="false" 
@@ -86,7 +86,7 @@
                                                      onclick="PrimeFaces.monitorDownload(start, stop);" 
                                                      icon="ui-icon-arrowthick-1-s">
                                         <f:setPropertyActionListener value="#{r}" 
-                                                                     target="#{reportController.downloadingResult}" 
+                                                                     target="#{reportController.selectedStoredQueryResult}" 
                                                                      ></f:setPropertyActionListener>
                                         <p:fileDownload value="#{reportController.downloadingFile}" />
                                     </p:commandButton>

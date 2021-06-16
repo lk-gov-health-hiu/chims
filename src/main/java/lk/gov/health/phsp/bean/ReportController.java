@@ -2878,7 +2878,7 @@ public class ReportController implements Serializable {
                         } else if (rcel.isContainsDoubleValue()) {
                             c.setCellValue(rcel.getDblValue());
                         } else if (rcel.isContainsLongValue()) {
-                            c.setCellValue(rcel.getLongValue().doubleValue());
+                            c.setCellValue(rcel.getLongValue());
                         } else if (rcel.isContainsStringValue()) {
                             c.setCellValue(rcel.getStringValue());
                         } else {
