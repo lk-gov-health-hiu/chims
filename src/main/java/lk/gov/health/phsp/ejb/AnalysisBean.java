@@ -349,7 +349,7 @@ public class AnalysisBean {
                 ce.setFirstEncounter(cs.getEncounter());
                 mapCes.put(cs.getEncounter().getClient().getId(), ce);
             } else {
-                ce.getRemainigEncounters().add(cs.getEncounter());
+                ce.getRemainigEncounters().put(cs.getEncounter().getId(), cs.getEncounter());
             }
         }
 
@@ -550,7 +550,7 @@ public class AnalysisBean {
 
             System.out.println("ce.getRemainigEncounters() = " + ce.getRemainigEncounters());
 
-            for (Encounter e : ce.getRemainigEncounters()) {
+            for (Encounter e : ce.getRemainigEncounters().values()) {
                 dates += CommonController.dateTimeToString(e.getEncounterDate()) + "\n";
             }
 
@@ -776,10 +776,10 @@ public class AnalysisBean {
                 ce = new ClientFirstEncounterDetailsRemainingEncounterDatesAndTypes();
                 ce.setClient(cs.getClient());
                 ce.setFirstEncounter(cs);
-                ce.getRemainigEncounters().add(cs);
+                ce.getRemainigEncounters().put(cs.getId(), cs);
                 mapCes.put(cs.getClient().getId(), ce);
             } else {
-                ce.getRemainigEncounters().add(cs);
+                ce.getRemainigEncounters().put(cs.getId(),cs);
             }
         }
 
@@ -867,7 +867,7 @@ public class AnalysisBean {
             System.out.println("ce.getRemainigEncounters() = " + ce.getRemainigEncounters());
 
             int encounterNo = 1;
-            for (Encounter e : ce.getRemainigEncounters()) {
+            for (Encounter e : ce.getRemainigEncounters().values()) {
                 ReportCell vdCell = new ReportCell();
                 vdCell.setRow(clientRow);
                 vdCell.setContainsDateValue(true);
@@ -1081,11 +1081,15 @@ public class AnalysisBean {
         j = "select c "
                 + " from Client c "
                 + " where c.retired=false "
-                + " and (c.createInstitution=:ins or c.createInstitution.parent=:ins)"
+                + " and (c.createInstitution=:ins or c.createInstitution.parent=:ins or c.createInstitution=:pins or c.createInstitution.parent=:pins) "
                 + " order by c.id";
         m = new HashMap();
         m.put("ins", institution);
-        
+        if(institution.getParent()!=null){
+            m.put("pins", institution.getParent());
+        }else{
+            m.put("pins", institution);
+        }
         Map<Long, ClientFirstEncounterDetailsRemainingEncounterDatesAndTypes> mapCes = new HashMap<>();
 
         
@@ -1115,10 +1119,10 @@ public class AnalysisBean {
                 ce = new ClientFirstEncounterDetailsRemainingEncounterDatesAndTypes();
                 ce.setClient(cs.getClient());
                 ce.setFirstEncounter(cs);
-                ce.getRemainigEncounters().add(cs);
+                ce.getRemainigEncounters().put(cs.getId(), cs);
                 mapCes.put(cs.getClient().getId(), ce);
             } else {
-                ce.getRemainigEncounters().add(cs);
+                ce.getRemainigEncounters().put(cs.getId(), cs);
             }
         }
 
@@ -1205,7 +1209,7 @@ public class AnalysisBean {
             System.out.println("ce.getRemainigEncounters() = " + ce.getRemainigEncounters());
 
             int encounterNo = 1;
-            for (Encounter e : ce.getRemainigEncounters()) {
+            for (Encounter e : ce.getRemainigEncounters().values()) {
                 ReportCell vdCell = new ReportCell();
                 vdCell.setRow(clientRow);
                 vdCell.setContainsDateValue(true);

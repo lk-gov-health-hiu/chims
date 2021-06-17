@@ -24,7 +24,9 @@
 package lk.gov.health.phsp.pojcs;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import lk.gov.health.phsp.entity.Client;
 import lk.gov.health.phsp.entity.Encounter;
@@ -36,7 +38,7 @@ import lk.gov.health.phsp.entity.Encounter;
 public class ClientFirstEncounterDetailsRemainingEncounterDatesAndTypes {
     private Client client;
     private Encounter firstEncounter;
-    private List<Encounter> remainigEncounters;
+    private Map<Long,Encounter> remainigEncounters;
 
     public Client getClient() {
         return client;
@@ -54,14 +56,14 @@ public class ClientFirstEncounterDetailsRemainingEncounterDatesAndTypes {
         this.firstEncounter = firstEncounter;
     }
 
-    public List<Encounter> getRemainigEncounters() {
+    public Map<Long,Encounter> getRemainigEncounters() {
         if(remainigEncounters==null){
-            remainigEncounters = new ArrayList<>();
+            remainigEncounters = new HashMap<>();
         }
         return remainigEncounters;
     }
 
-    public void setRemainigEncounters(List<Encounter> remainigEncounters) {
+    public void setRemainigEncounters(Map<Long,Encounter> remainigEncounters) {
         this.remainigEncounters = remainigEncounters;
     }
 
