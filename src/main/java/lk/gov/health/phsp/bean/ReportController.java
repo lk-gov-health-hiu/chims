@@ -1810,6 +1810,43 @@ public class ReportController implements Serializable {
         userTransactionController.recordTransaction("To View Longitidunal Clinic Visits");
         return action;
     }
+    
+    public String toViewAllClientsAndTheirClinicVisits() {
+        encounters = new ArrayList<>();
+        String forSys = "/reports/clinic_visits/for_system_all_clients_and_their_clinic_visits";
+        String forIns = "/reports/data_forms/for_ins";
+        String forMe = "/reports/data_forms/for_me";
+        String forClient = "/reports/data_forms/for_clients";
+        String noAction = "";
+        String action = "";
+        switch (webUserController.getLoggedUser().getWebUserRole()) {
+            case Client:
+                action = forClient;
+                break;
+            case Doctor:
+            case Institution_Administrator:
+            case Institution_Super_User:
+            case Institution_User:
+            case Nurse:
+            case Midwife:
+                action = forIns;
+                break;
+            case Me_Admin:
+            case Me_Super_User:
+                action = forMe;
+                break;
+            case Me_User:
+            case User:
+                action = noAction;
+                break;
+            case Super_User:
+            case System_Administrator:
+                action = forSys;
+                break;
+        }
+        userTransactionController.recordTransaction("To View Longitidunal Clinic Visits");
+        return action;
+    }
 
     public String toViewDataForms() {
         encounters = new ArrayList<>();
@@ -2770,6 +2807,20 @@ public class ReportController implements Serializable {
         JsfUtil.addSuccessMessage("Process started. Check under my reports.");
     }
 
+    
+    public void downloadAllClientsAndTheirClinicVisits() {
+        if (institution == null) {
+            JsfUtil.addErrorMessage("Select Institution");
+            return;
+        }
+        analysisBean.createLongitudinalVisitDates(institution,
+                fromDate,
+                toDate,
+                webUserController.getLoggedUser());
+        JsfUtil.addSuccessMessage("Process started. Check under my reports.");
+    }
+
+    
     public void downloadFormsetDataEntries() {
         if (institution == null) {
             JsfUtil.addErrorMessage("Select Institution");
