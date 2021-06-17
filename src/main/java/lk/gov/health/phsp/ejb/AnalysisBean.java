@@ -1103,7 +1103,6 @@ public class AnalysisBean {
         j = "select e "
                 + " from Encounter e "
                 + " where e.retired=false "
-                + " and e.encounterDate between :fd and :td "
                 + " and e.institution=:ins "
                 + " order by e.id";
         m = new HashMap();
