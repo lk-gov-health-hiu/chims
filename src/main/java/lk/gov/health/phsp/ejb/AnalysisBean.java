@@ -1186,7 +1186,7 @@ public class AnalysisBean {
             regDateCell.setColumn(rcRegDate);
             regDateCell.setRow(clientRow);
             regDateCell.setContainsDateValue(true);
-            regDateCell.setDateValue(c.getCreatedOn());
+            regDateCell.setDateValue(c.getCreatedAt());
             regDateCell.setStoredQueryResult(sqr);
             reportCellFacade.create(regDateCell);
             cells.add(regDateCell);
@@ -1206,14 +1206,14 @@ public class AnalysisBean {
 
             String dates = "";
 
-            System.out.println("ce.getRemainigEncounters() = " + ce.getRemainigEncounters());
+//            System.out.println("ce.getRemainigEncounters() = " + ce.getRemainigEncounters());
 
             int encounterNo = 1;
             for (Encounter e : ce.getRemainigEncounters().values()) {
                 ReportCell vdCell = new ReportCell();
                 vdCell.setRow(clientRow);
                 vdCell.setContainsDateValue(true);
-                vdCell.setDateValue(e.getEncounterDate());
+                vdCell.setDateValue(e.getCreatedAt());
                 switch (encounterNo) {
                     case 1:
                         vdCell.setColumn(rcVd1);
