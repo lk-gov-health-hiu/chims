@@ -921,14 +921,14 @@ public class AnalysisBean {
 
     
     @Asynchronous
-    public void createAllClientsAndTheirClinicVisit(Institution institution,
+    public void createAllClientsAndAllClinicVisits(Institution institution,
             WebUser createdBy) {
         String j;
         Map m = new HashMap();
         if (institution == null) {
             return;
         }
-        String excelFileName = "All_clients_and_their_clinic_visits_" + institution + "_taken_on_" + (new Date()) + ".xlsx";
+        String excelFileName = "All_clients_and_all_clinic_visits_" + institution + "_taken_on_" + (new Date()) + ".xlsx";
         StoredQueryResult sqr = new StoredQueryResult();
         sqr.setCreatedAt(new Date());
         sqr.setCreater(createdBy);

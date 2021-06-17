@@ -1811,9 +1811,9 @@ public class ReportController implements Serializable {
         return action;
     }
     
-    public String toViewAllClientsAndTheirClinicVisits() {
+    public String toViewAllClientsAndAllClinicVisits() {
         encounters = new ArrayList<>();
-        String forSys = "/reports/clinic_visits/for_system_all_clients_and_their_clinic_visits";
+        String forSys = "/reports/clinic_visits/for_system_all_clients_and_all_clinic_visits";
         String forIns = "/reports/data_forms/for_ins";
         String forMe = "/reports/data_forms/for_me";
         String forClient = "/reports/data_forms/for_clients";
@@ -1844,7 +1844,7 @@ public class ReportController implements Serializable {
                 action = forSys;
                 break;
         }
-        userTransactionController.recordTransaction("To View Longitidunal Clinic Visits");
+        userTransactionController.recordTransaction("To All Clients and all Clinic Visits");
         return action;
     }
 
@@ -2808,14 +2808,12 @@ public class ReportController implements Serializable {
     }
 
     
-    public void downloadAllClientsAndTheirClinicVisits() {
+    public void downloadAllClientsAndAllClinicVisits() {
         if (institution == null) {
             JsfUtil.addErrorMessage("Select Institution");
             return;
         }
-        analysisBean.createLongitudinalVisitDates(institution,
-                fromDate,
-                toDate,
+        analysisBean.createAllClientsAndAllClinicVisits(institution,
                 webUserController.getLoggedUser());
         JsfUtil.addSuccessMessage("Process started. Check under my reports.");
     }
