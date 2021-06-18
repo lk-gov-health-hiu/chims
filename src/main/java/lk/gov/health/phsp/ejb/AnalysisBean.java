@@ -779,7 +779,7 @@ public class AnalysisBean {
                 ce.getRemainigEncounters().put(cs.getId(), cs);
                 mapCes.put(cs.getClient().getId(), ce);
             } else {
-                ce.getRemainigEncounters().put(cs.getId(),cs);
+                ce.getRemainigEncounters().put(cs.getId(), cs);
             }
         }
 
@@ -919,7 +919,6 @@ public class AnalysisBean {
 
     }
 
-    
     @Asynchronous
     public void createAllClientsAndAllClinicVisits(Institution institution,
             WebUser createdBy) {
@@ -1041,7 +1040,7 @@ public class AnalysisBean {
         reportRowFacade.create(insRow);
 
         rowCount++;
-        
+
         ReportRow titleRow = new ReportRow();
         titleRow.setRowNumber(rowCount++);
         titleRow.setStoredQueryResult(sqr);
@@ -1077,7 +1076,6 @@ public class AnalysisBean {
             cells.add(cell);
         }
 
-        
         j = "select c "
                 + " from Client c "
                 + " where c.retired=false "
@@ -1085,32 +1083,33 @@ public class AnalysisBean {
                 + " order by c.id";
         m = new HashMap();
         m.put("ins", institution);
-        if(institution.getParent()!=null){
+        if (institution.getParent() != null) {
             m.put("pins", institution.getParent());
-        }else{
+        } else {
             m.put("pins", institution);
         }
         Map<Long, ClientFirstEncounterDetailsRemainingEncounterDatesAndTypes> mapCes = new HashMap<>();
 
-        
         List<Client> clients = clientFacade.findByJpql(j, m);
-        
-        for(Client c:clients){
+
+        for (Client c : clients) {
             ClientFirstEncounterDetailsRemainingEncounterDatesAndTypes ce = mapCes.get(c.getId());
             if (ce == null) {
                 ce = new ClientFirstEncounterDetailsRemainingEncounterDatesAndTypes();
                 ce.setClient(c);
                 mapCes.put(c.getId(), ce);
-            } 
+            }
         }
-        
+
         j = "select e "
                 + " from Encounter e "
                 + " where e.retired=false "
                 + " and e.institution=:ins "
+                + " and e.encounterType=:et "
                 + " order by e.id";
         m = new HashMap();
         m.put("ins", institution);
+        m.put("et", EncounterType.Clinic_Visit);
         List<Encounter> cSets = clientEncounterComponentFormSetFacade.findByJpql(j, m);
 
         for (Encounter cs : cSets) {
@@ -1207,7 +1206,6 @@ public class AnalysisBean {
             String dates = "";
 
 //            System.out.println("ce.getRemainigEncounters() = " + ce.getRemainigEncounters());
-
             int encounterNo = 1;
             for (Encounter e : ce.getRemainigEncounters().values()) {
                 ReportCell vdCell = new ReportCell();
@@ -1261,8 +1259,6 @@ public class AnalysisBean {
 
     }
 
-    
-    
     public List<InstitutionYearMonthCompleted> getIymcs() {
         System.out.println("getIymcs");
         if (iymcs == null) {
