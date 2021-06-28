@@ -7,7 +7,7 @@
       xmlns:f="http://xmlns.jcp.org/jsf/core">
     <head>
         <ui:define name="head">
-            My Excel Reports
+            My Reports
         </ui:define>
     </head>
     <body>
@@ -17,7 +17,7 @@
                 <h:form>
                     <p:panelGrid columns="1" style="width: 99%; margin: auto;">
                         <f:facet name="header" >
-                            <p:outputLabel value="My Summeries" ></p:outputLabel>
+                            <p:outputLabel value="My Reports Available for Download" ></p:outputLabel>
                         </f:facet>
                         <p:panelGrid columns="2" >
 
@@ -50,7 +50,7 @@
                                 </p:outputLabel>
                             </p:column>
                             <p:column headerText="Report" >
-                                <p:outputLabel value="#{r.queryComponent.name}">
+                                <p:outputLabel value="#{r.name}">
                                 </p:outputLabel>
                             </p:column>
                             <p:column headerText="Period" >
@@ -66,8 +66,9 @@
                                 </p:outputLabel>
                             </p:column>
                             <p:column headerText="Actions" >
-                                <h:panelGrid columns="2" >
+                              
                                     <p:commandButton value="Download" 
+                                                     rendered="#{r.resultType eq 'excel_object'}"
                                                      disabled="#{!r.processCompleted}"
                                                      ajax="false" 
                                                      onclick="PrimeFaces.monitorDownload(start, stop);" 
@@ -77,11 +78,31 @@
                                                                      ></f:setPropertyActionListener>
                                         <p:fileDownload value="#{reportController.downloadingFile}" />
                                     </p:commandButton>
+                                    <p:commandButton value="Prepare" 
+                                                     rendered="#{r.resultType eq 'cell_values'}"
+                                                     disabled="#{!r.processCompleted}"
+                                                     ajax="false" 
+                                                     action="#{reportController.createExcelFileForSelectedStoredQueryResult}">
+                                        <f:setPropertyActionListener value="#{r}" 
+                                                                     target="#{reportController.selectedStoredQueryResult}" 
+                                                                     ></f:setPropertyActionListener>
+                                    </p:commandButton>
+                                    <p:commandButton value="Download" 
+                                                     rendered="#{r.resultType eq 'cell_values'}"
+                                                     disabled="#{!r.processCompleted}"
+                                                     ajax="false" 
+                                                     onclick="PrimeFaces.monitorDownload(start, stop);" 
+                                                     icon="ui-icon-arrowthick-1-s">
+                                        <f:setPropertyActionListener value="#{r}" 
+                                                                     target="#{reportController.selectedStoredQueryResult}" 
+                                                                     ></f:setPropertyActionListener>
+                                        <p:fileDownload value="#{reportController.downloadCreatedFromReport}" />
+                                    </p:commandButton>
                                     <p:commandButton ajax="false" action="#{reportController.removeReport()}"
                                                      value="Remove">
                                         <f:setPropertyActionListener value="#{r}" target="#{reportController.removingResult}" ></f:setPropertyActionListener>
                                     </p:commandButton>
-                                </h:panelGrid>
+                              
 
                             </p:column>
                         </p:dataTable>

@@ -359,8 +359,7 @@ public class CommonController implements Serializable {
             SelectionDataType.Area_Reference,
             SelectionDataType.Prescreption_Reference,
             SelectionDataType.Procedure_Request,
-            SelectionDataType.Prescreption_Request,
-        };
+            SelectionDataType.Prescreption_Request,};
 
         return sdts;
     }
@@ -741,7 +740,7 @@ public class CommonController implements Serializable {
         if ((variable == Math.floor(variable)) && !Double.isInfinite(variable)) {
             int oi = variable.intValue();
             out = oi + "";
-        }else{
+        } else {
             out = variable.toString();
         }
         return out;
@@ -788,6 +787,9 @@ public class CommonController implements Serializable {
     }
 
     public static String dateTimeToString(Date date) {
+        if (date == null) {
+            return "";
+        }
         return dateTimeToString(date, "dd MMMM yyyy");
     }
 

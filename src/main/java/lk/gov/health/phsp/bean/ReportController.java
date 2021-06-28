@@ -24,6 +24,7 @@
 package lk.gov.health.phsp.bean;
 
 // <editor-fold defaultstate="collapsed" desc="Imports">
+import jakarta.validation.ReportAsSingleViolation;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -62,9 +63,11 @@ import jxl.write.Label;
 import jxl.write.WritableSheet;
 import jxl.write.WritableWorkbook;
 import jxl.write.WriteException;
+import lk.gov.health.phsp.ejb.AnalysisBean;
 import lk.gov.health.phsp.entity.ClientEncounterComponentFormSet;
 import lk.gov.health.phsp.entity.ClientEncounterComponentItem;
 import lk.gov.health.phsp.entity.ConsolidatedQueryResult;
+import lk.gov.health.phsp.entity.DesignComponentForm;
 import lk.gov.health.phsp.entity.DesignComponentFormItem;
 import lk.gov.health.phsp.entity.DesignComponentFormSet;
 import lk.gov.health.phsp.entity.IndividualQueryResult;
@@ -76,6 +79,7 @@ import lk.gov.health.phsp.entity.Upload;
 import lk.gov.health.phsp.enums.Quarter;
 import lk.gov.health.phsp.enums.QueryCriteriaMatchType;
 import lk.gov.health.phsp.enums.QueryType;
+import lk.gov.health.phsp.enums.SelectionDataType;
 import lk.gov.health.phsp.enums.TimePeriodType;
 import lk.gov.health.phsp.facade.ClientEncounterComponentItemFacade;
 import lk.gov.health.phsp.facade.ClientFacade;
@@ -89,10 +93,17 @@ import lk.gov.health.phsp.facade.UploadFacade;
 import lk.gov.health.phsp.facade.util.JsfUtil;
 import lk.gov.health.phsp.pojcs.AreaCount;
 import lk.gov.health.phsp.pojcs.ClientBasicData;
+import lk.gov.health.phsp.pojcs.ClientFirstEncounterDetailsRemainingEncounterDatesAndTypes;
 import lk.gov.health.phsp.pojcs.DateInstitutionCount;
 import lk.gov.health.phsp.pojcs.EncounterBasicData;
 import lk.gov.health.phsp.pojcs.InstitutionCount;
 import lk.gov.health.phsp.pojcs.Replaceable;
+import lk.gov.health.phsp.entity.ReportCell;
+import lk.gov.health.phsp.entity.ReportColumn;
+import lk.gov.health.phsp.entity.ReportRow;
+import lk.gov.health.phsp.facade.ReportCellFacade;
+import lk.gov.health.phsp.facade.ReportColumnFacade;
+import lk.gov.health.phsp.facade.ReportRowFacade;
 import lk.gov.health.phsp.pojcs.ReportTimePeriod;
 import org.apache.commons.io.FileUtils;
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -110,6 +121,8 @@ import org.primefaces.model.StreamedContent;
 public class ReportController implements Serializable {
 // <editor-fold defaultstate="collapsed" desc="EJBs">
 
+    @EJB
+    AnalysisBean analysisBean;
     @EJB
     private DesignComponentFormItemFacade designComponentFormItemFacade;
     @EJB
@@ -130,6 +143,12 @@ public class ReportController implements Serializable {
     private ConsolidatedQueryResultFacade consolidatedQueryResultFacade;
     @EJB
     private IndividualQueryResultFacade individualQueryResultFacade;
+    @EJB
+    ReportColumnFacade reportColumnFacade;
+    @EJB
+    ReportRowFacade reportRowFacade;
+    @EJB
+    ReportCellFacade reportCellFacade;
 
 // </editor-fold>     
 // <editor-fold defaultstate="collapsed" desc="Controllers">
@@ -151,6 +170,8 @@ public class ReportController implements Serializable {
     private ClientEncounterComponentItemController clientEncounterComponentItemController;
     @Inject
     private ExcelReportController excelReportController;
+    @Inject
+    DesignComponentFormController designComponentFormController;
     @Inject
     private DesignComponentFormItemController designComponentFormItemController;
     @Inject
@@ -180,6 +201,7 @@ public class ReportController implements Serializable {
 // </editor-fold> 
     private List<StoredQueryResult> myResults;
     private List<StoredQueryResult> reportResults;
+    private StoredQueryResult selectedStoredQueryResult;
     private List<InstitutionCount> institutionCounts;
     private Long reportCount;
     private List<AreaCount> areaCounts;
@@ -1591,7 +1613,7 @@ public class ReportController implements Serializable {
         userTransactionController.recordTransaction("To View Daily Clinic Visits");
         return action;
     }
-    
+
     public String toViewDailyClinicsRegistrationCounts() {
         encounters = new ArrayList<>();
         String forSys = "/reports/client_registrations/for_sa_daily";
@@ -1752,6 +1774,80 @@ public class ReportController implements Serializable {
         return action;
     }
 
+    public String toViewLongitudinalClinicVisits() {
+        encounters = new ArrayList<>();
+        String forSys = "/reports/clinic_visits/for_system_longitidunal_clinic_visits";
+        String forIns = "/reports/data_forms/for_ins";
+        String forMe = "/reports/data_forms/for_me";
+        String forClient = "/reports/data_forms/for_clients";
+        String noAction = "";
+        String action = "";
+        switch (webUserController.getLoggedUser().getWebUserRole()) {
+            case Client:
+                action = forClient;
+                break;
+            case Doctor:
+            case Institution_Administrator:
+            case Institution_Super_User:
+            case Institution_User:
+            case Nurse:
+            case Midwife:
+                action = forIns;
+                break;
+            case Me_Admin:
+            case Me_Super_User:
+                action = forMe;
+                break;
+            case Me_User:
+            case User:
+                action = noAction;
+                break;
+            case Super_User:
+            case System_Administrator:
+                action = forSys;
+                break;
+        }
+        userTransactionController.recordTransaction("To View Longitidunal Clinic Visits");
+        return action;
+    }
+    
+    public String toViewAllClientsAndAllClinicVisits() {
+        encounters = new ArrayList<>();
+        String forSys = "/reports/clinic_visits/for_system_all_clients_and_all_clinic_visits";
+        String forIns = "/reports/data_forms/for_ins";
+        String forMe = "/reports/data_forms/for_me";
+        String forClient = "/reports/data_forms/for_clients";
+        String noAction = "";
+        String action = "";
+        switch (webUserController.getLoggedUser().getWebUserRole()) {
+            case Client:
+                action = forClient;
+                break;
+            case Doctor:
+            case Institution_Administrator:
+            case Institution_Super_User:
+            case Institution_User:
+            case Nurse:
+            case Midwife:
+                action = forIns;
+                break;
+            case Me_Admin:
+            case Me_Super_User:
+                action = forMe;
+                break;
+            case Me_User:
+            case User:
+                action = noAction;
+                break;
+            case Super_User:
+            case System_Administrator:
+                action = forSys;
+                break;
+        }
+        userTransactionController.recordTransaction("To All Clients and all Clinic Visits");
+        return action;
+    }
+
     public String toViewDataForms() {
         encounters = new ArrayList<>();
         String forSys = "/reports/data_forms/for_system";
@@ -1860,7 +1956,7 @@ public class ReportController implements Serializable {
         File newFile = new File(folder + FILE_NAME);
 
         XSSFWorkbook workbook = new XSSFWorkbook();
-        XSSFSheet sheet = workbook.createSheet("Java Books");
+        XSSFSheet sheet = workbook.createSheet("Data");
 
         int rowCount = 0;
 
@@ -2184,7 +2280,7 @@ public class ReportController implements Serializable {
         File newFile = new File(folder + FILE_NAME);
 
         XSSFWorkbook workbook = new XSSFWorkbook();
-        XSSFSheet sheet = workbook.createSheet("Java Books");
+        XSSFSheet sheet = workbook.createSheet("Data");
 
         int rowCount = 0;
 
@@ -2335,7 +2431,7 @@ public class ReportController implements Serializable {
         File newFile = new File(folder + FILE_NAME);
 
         XSSFWorkbook workbook = new XSSFWorkbook();
-        XSSFSheet sheet = workbook.createSheet("Java Books");
+        XSSFSheet sheet = workbook.createSheet("Data");
 
         int rowCount = 0;
 
@@ -2545,7 +2641,7 @@ public class ReportController implements Serializable {
                 Cell c2 = row.createCell(1);
                 c2.setCellStyle(cellStyle);
                 c2.setCellValue(cbd.getDate());
-                
+
                 Cell c3 = row.createCell(2);
                 c3.setCellValue(cbd.getCount());
 
@@ -2571,7 +2667,7 @@ public class ReportController implements Serializable {
         }
 
     }
-    
+
     public void downloadDailyClientRegistrationCounts() {
         String j;
         Map m = new HashMap();
@@ -2672,7 +2768,7 @@ public class ReportController implements Serializable {
                 Cell c2 = row.createCell(1);
                 c2.setCellStyle(cellStyle);
                 c2.setCellValue(cbd.getDate());
-                
+
                 Cell c3 = row.createCell(2);
                 c3.setCellValue(cbd.getCount());
 
@@ -2699,168 +2795,89 @@ public class ReportController implements Serializable {
 
     }
 
+    public void downloadLongitidinalClinicVisits() {
+        if (institution == null) {
+            JsfUtil.addErrorMessage("Select Institution");
+            return;
+        }
+        analysisBean.createLongitudinalVisitDates(institution,
+                fromDate,
+                toDate,
+                webUserController.getLoggedUser());
+        JsfUtil.addSuccessMessage("Process started. Check under my reports.");
+    }
+
+    
+    public void downloadAllClientsAndAllClinicVisits() {
+        if (institution == null) {
+            JsfUtil.addErrorMessage("Select Institution");
+            return;
+        }
+        analysisBean.createAllClientsAndAllClinicVisits(institution,
+                webUserController.getLoggedUser());
+        JsfUtil.addSuccessMessage("Process started. Check under my reports.");
+    }
+
+    
     public void downloadFormsetDataEntries() {
-        String j;
-        Map m = new HashMap();
-
-        j = "select new lk.gov.health.phsp.pojcs.EncounterBasicData("
-                + "e.client.phn, "
-                + "e.client.person.gnArea.name, "
-                + "e.institution.name, "
-                + "e.client.person.dateOfBirth, "
-                + "e.encounterDate, "
-                + "e.client.person.sex.name,"
-                + " cfs.referenceComponent.name  "
-                + ") "
-                + " from ClientEncounterComponentFormSet cfs"
-                + " join cfs.encounter e "
-                + " where e.retired=:ret "
-                + " and e.encounterType=:type "
-                + " and e.encounterDate between :fd and :td ";
-
-        m.put("ret", false);
-        m.put("fd", fromDate);
-        m.put("td", toDate);
-
-        if (designingComponentFormSet != null) {
-            j += " and cfs.referenceComponent=:dfs ";
-            m.put("dfs", designingComponentFormSet);
+        if (institution == null) {
+            JsfUtil.addErrorMessage("Select Institution");
+            return;
         }
-        m.put("type", EncounterType.Clinic_Visit);
-
-        ClientEncounterComponentFormSet cfs = new ClientEncounterComponentFormSet();
-        cfs.getEncounter();
-        cfs.getReferenceComponent();
-
-        if (institution != null) {
-            j += " and e.institution in :ins ";
-            List<Institution> ins = institutionApplicationController.findChildrenInstitutions(institution);
-            ins.add(institution);
-            m.put("ins", ins);
-        } else {
-            if (webUserController.getLoggedUser().isRestrictedToInstitution()) {
-                j += " and e.institution in :ins ";
-                List<Institution> ins = webUserController.getLoggableInstitutions();
-                ins.add(institution);
-                m.put("ins", ins);
-            }
+        if (designingComponentFormSet == null) {
+            JsfUtil.addErrorMessage("Select Form Set");
+            return;
         }
+        analysisBean.createFormsetDataEntriesAndSubsequentVisitDates(institution,
+                designingComponentFormSet,
+                fromDate,
+                toDate,
+                webUserController.getLoggedUser());
+        JsfUtil.addSuccessMessage("Process started. Check under my reports.");
+    }
 
-        //String phn, String gnArea, String institution, Date dataOfBirth, Date encounterAt, String sex
-        List<Object> objs = getClientFacade().findAggregates(j, m);
-
-        String FILE_NAME = "client_clinic_visits" + "_" + (new Date()) + ".xlsx";
+    public void createExcelFile(String fileName, List<ReportColumn> cols, List<ReportRow> rows, List<ReportCell> cells) {
         String mimeType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
-
         String folder = "/tmp/";
-
-        File newFile = new File(folder + FILE_NAME);
+        File newFile = new File(folder + fileName);
 
         XSSFWorkbook workbook = new XSSFWorkbook();
-        XSSFSheet sheet = workbook.createSheet("Java Books");
+        XSSFSheet sheet = workbook.createSheet("Data");
 
         int rowCount = 0;
 
-        Row t1 = sheet.createRow(rowCount++);
-        Cell th1_lbl = t1.createCell(0);
-        th1_lbl.setCellValue("Report");
-        Cell th1_val = t1.createCell(1);
-        th1_val.setCellValue("List of Clinic Visits");
-
-        Row t2 = sheet.createRow(rowCount++);
-        Cell th2_lbl = t2.createCell(0);
-        th2_lbl.setCellValue("From");
-        Cell th2_val = t2.createCell(1);
-        th2_val.setCellValue(CommonController.dateTimeToString(fromDate, "dd MMMM yyyy"));
-
-        Row t3 = sheet.createRow(rowCount++);
-        Cell th3_lbl = t3.createCell(0);
-        th3_lbl.setCellValue("To");
-        Cell th3_val = t3.createCell(1);
-        th3_val.setCellValue(CommonController.dateTimeToString(toDate, "dd MMMM yyyy"));
-
-        if (institution != null) {
-            Row t4 = sheet.createRow(rowCount++);
-            Cell th4_lbl = t4.createCell(0);
-            th4_lbl.setCellValue("Institution");
-            Cell th4_val = t4.createCell(1);
-            th4_val.setCellValue(institution.getName());
-        }
-
-        rowCount++;
-
-        Row t5 = sheet.createRow(rowCount++);
-        Cell th5_1 = t5.createCell(0);
-        th5_1.setCellValue("Serial");
-        Cell th5_2 = t5.createCell(1);
-        th5_2.setCellValue("PHN");
-        Cell th5_3 = t5.createCell(2);
-        th5_3.setCellValue("Sex");
-        Cell th5_4 = t5.createCell(3);
-        th5_4.setCellValue("Age in Years at Encounter");
-        Cell th5_5 = t5.createCell(4);
-        th5_5.setCellValue("Encounter at");
-        Cell th5_6 = t5.createCell(5);
-        th5_6.setCellValue("GN Areas");
-        int col = 5;
-        if (institution == null) {
-            col++;
-            Cell th5_7 = t5.createCell(col);
-            th5_7.setCellValue("Institution");
-        }
-        if (designingComponentFormSet == null) {
-            col++;
-            Cell th5_7 = t5.createCell(col);
-            th5_7.setCellValue("Formset");
-        }
-
-        int serial = 1;
-
-        CellStyle cellStyle = workbook.createCellStyle();
-        CreationHelper createHelper = workbook.getCreationHelper();
-        cellStyle.setDataFormat(
-                createHelper.createDataFormat().getFormat("dd/MMMM/yyyy hh:mm"));
-
-        for (Object o : objs) {
-            if (o instanceof EncounterBasicData) {
-                EncounterBasicData cbd = (EncounterBasicData) o;
-                Row row = sheet.createRow(++rowCount);
-
-                Cell c1 = row.createCell(0);
-                c1.setCellValue(serial);
-
-                Cell c2 = row.createCell(1);
-                c2.setCellValue(cbd.getPhn());
-
-                Cell c3 = row.createCell(2);
-                c3.setCellValue(cbd.getSex());
-
-                Cell c4 = row.createCell(3);
-                c4.setCellValue(cbd.getAgeInYears());
-
-                Cell c5 = row.createCell(4);
-                c5.setCellValue(cbd.getEncounterAt());
-                c5.setCellStyle(cellStyle);
-
-                Cell c6 = row.createCell(5);
-                c6.setCellValue(cbd.getGnArea());
-                col = 5;
-                if (institution == null) {
-                    col++;
-                    Cell c7 = row.createCell(col);
-                    c7.setCellValue(cbd.getInstitution());
+        for (ReportRow rr : rows) {
+            Row r = sheet.createRow(rowCount++);
+            int colCount = 0;
+            for (ReportColumn rc : cols) {
+                Cell c = r.createCell(colCount++);
+                for (ReportCell rcel : cells) {
+                    if (rcel.getColumn().equals(rc) && rcel.getRow().equals(rr)) {
+                        if (rcel.isContainsDateValue()) {
+                            CellStyle cellStyle = workbook.createCellStyle();
+                            CreationHelper createHelper = workbook.getCreationHelper();
+                            if (rc.getDateFormat() == null || rc.getDateFormat().trim().equals("")) {
+                                cellStyle.setDataFormat(
+                                        createHelper.createDataFormat().getFormat("dd/MMMM/yyyy hh:mm"));
+                            } else {
+                                cellStyle.setDataFormat(
+                                        createHelper.createDataFormat().getFormat(rc.getDateFormat()));
+                            }
+                            c.setCellStyle(cellStyle);
+                            c.setCellValue(rcel.getDateValue());
+                        } else if (rcel.isContainsDoubleValue()) {
+                            c.setCellValue(rcel.getDblValue());
+                        } else if (rcel.isContainsLongValue()) {
+                            c.setCellValue(rcel.getLongValue().doubleValue());
+                        } else if (rcel.isContainsStringValue()) {
+                            c.setCellValue(rcel.getStringValue());
+                        } else {
+                            c.setCellValue("");
+                        }
+                    }
                 }
-                if (designingComponentFormSet == null) {
-                    col++;
-                    Cell c7 = row.createCell(col);
-                    c7.setCellValue(cbd.getComponentName());
-                }
-                serial++;
             }
         }
-
-        objs = null;
-        System.gc();
 
         try (FileOutputStream outputStream = new FileOutputStream(newFile)) {
             workbook.write(outputStream);
@@ -2871,7 +2888,128 @@ public class ReportController implements Serializable {
         InputStream stream;
         try {
             stream = new FileInputStream(newFile);
-            resultExcelFile = new DefaultStreamedContent(stream, mimeType, FILE_NAME);
+            resultExcelFile = new DefaultStreamedContent(stream, mimeType, fileName);
+        } catch (FileNotFoundException ex) {
+
+        }
+
+    }
+
+    public StreamedContent getDownloadCreatedFromReport() {
+        if (downloadingFile == null) {
+            JsfUtil.addErrorMessage("No Download file");
+            return null;
+        }
+        return downloadingFile;
+    }
+
+    public void createExcelFileForSelectedStoredQueryResult() {
+        if (selectedStoredQueryResult == null) {
+            JsfUtil.addErrorMessage("No fiel selected");
+            return;
+        }
+        String fileName;
+        if (selectedStoredQueryResult.getName() == null || selectedStoredQueryResult.getName().trim().equals("")) {
+            fileName = "downloading file.xlsx";
+        } else {
+            fileName = selectedStoredQueryResult.getName();
+        }
+
+        Map m;
+        String j;
+
+        j = "select col "
+                + " from ReportColumn col "
+                + " where col.storedQueryResult=:sqr "
+                + " order by col.columnNumber";
+        m = new HashMap();
+        m.put("sqr", selectedStoredQueryResult);
+        List<ReportColumn> cols = reportColumnFacade.findByJpql(j, m);
+        if (cols == null || cols.isEmpty()) {
+            JsfUtil.addErrorMessage("No Columns for report");
+            return;
+        }
+
+        j = "select row "
+                + " from ReportRow row "
+                + " where row.storedQueryResult=:sqr "
+                + " order by row.rowNumber";
+        m = new HashMap();
+        m.put("sqr", selectedStoredQueryResult);
+        List<ReportRow> rows = reportRowFacade.findByJpql(j, m);
+        if (rows == null || rows.isEmpty()) {
+            JsfUtil.addErrorMessage("No Rows for report");
+            return;
+        }
+
+        j = "select cell "
+                + " from ReportCell cell "
+                + " where cell.storedQueryResult=:sqr ";
+        m = new HashMap();
+        m.put("sqr", selectedStoredQueryResult);
+        List<ReportCell> cells = reportCellFacade.findByJpql(j, m);
+        if (cells == null || rows.isEmpty()) {
+            JsfUtil.addErrorMessage("No Cells for report");
+            return;
+        }
+
+        String mimeType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+        String folder = "/tmp/";
+        File newFile = new File(folder + fileName);
+
+        XSSFWorkbook workbook = new XSSFWorkbook();
+        XSSFSheet sheet = workbook.createSheet("Data");
+
+        int rowCount = 0;
+
+        for (ReportRow rr : rows) {
+            Row r = sheet.createRow(rowCount++);
+            int colCount = 0;
+            for (ReportColumn rc : cols) {
+                Cell c = r.createCell(colCount++);
+                for (ReportCell rcel : cells) {
+                    if (rcel.getColumn() == null || rcel.getRow() == null) {
+                        continue;
+                    }
+                    if (rcel.getColumn().equals(rc) && rcel.getRow().equals(rr)) {
+                        if (rcel.isContainsDateValue()) {
+                            CellStyle cellStyle = workbook.createCellStyle();
+                            CreationHelper createHelper = workbook.getCreationHelper();
+                            if (rc.getDateFormat() == null || rc.getDateFormat().trim().equals("")) {
+                                cellStyle.setDataFormat(
+                                        createHelper.createDataFormat().getFormat("dd/MMMM/yyyy hh:mm"));
+                            } else {
+                                cellStyle.setDataFormat(
+                                        createHelper.createDataFormat().getFormat(rc.getDateFormat()));
+                            }
+                            c.setCellStyle(cellStyle);
+                            c.setCellValue(rcel.getDateValue());
+                        } else if (rcel.isContainsDoubleValue()) {
+                            c.setCellValue(rcel.getDblValue());
+                        } else if (rcel.isContainsLongValue()) {
+                            if (rcel != null & rcel.getLongValue() != null) {
+                                c.setCellValue(rcel.getLongValue());
+                            }
+                        } else if (rcel.isContainsStringValue()) {
+                            c.setCellValue(rcel.getStringValue());
+                        } else {
+                            c.setCellValue("");
+                        }
+                    }
+                }
+            }
+        }
+
+        try (FileOutputStream outputStream = new FileOutputStream(newFile)) {
+            workbook.write(outputStream);
+        } catch (Exception e) {
+
+        }
+
+        InputStream stream;
+        try {
+            stream = new FileInputStream(newFile);
+            downloadingFile = new DefaultStreamedContent(stream, mimeType, fileName);
         } catch (FileNotFoundException ex) {
 
         }
@@ -3253,6 +3391,14 @@ public class ReportController implements Serializable {
 
     public void setFromSet(DesignComponentFormSet fromSet) {
         this.fromSet = fromSet;
+    }
+
+    public StoredQueryResult getSelectedStoredQueryResult() {
+        return selectedStoredQueryResult;
+    }
+
+    public void setSelectedStoredQueryResult(StoredQueryResult selectedStoredQueryResult) {
+        this.selectedStoredQueryResult = selectedStoredQueryResult;
     }
 
 }

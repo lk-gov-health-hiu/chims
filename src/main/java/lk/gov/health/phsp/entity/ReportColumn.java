@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2021 Dr M H Buddhika Ariyaratne <buddhika.ari@gmail.com>.
+ * Copyright 2021 buddhika.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,47 +24,38 @@
 package lk.gov.health.phsp.entity;
 
 import java.io.Serializable;
-import java.util.Date;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
-import javax.persistence.Temporal;
-
 /**
  *
- * @author Dr M H Buddhika Ariyaratne <buddhika.ari@gmail.com>
+ * @author buddhika
  */
 @Entity
-public class InstitutionComponent implements Serializable {
+public class ReportColumn implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    private String header;
+    private int columnNumber;
+    private String dateFormat;
+    private String code;
+    @ManyToOne
+    private StoredQueryResult storedQueryResult;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    Institution institution;
-    @ManyToOne(fetch = FetchType.LAZY)
-    Component component;
+    public StoredQueryResult getStoredQueryResult() {
+        return storedQueryResult;
+    }
+
+    public void setStoredQueryResult(StoredQueryResult storedQueryResult) {
+        this.storedQueryResult = storedQueryResult;
+    }
+
     
-    /*
-    Create Properties
-     */
-    @ManyToOne(fetch = FetchType.LAZY)
-    private WebUser createdBy;
-    @Temporal(javax.persistence.TemporalType.TIMESTAMP)
-    private Date createdAt;
-    /*
-    Retire Properties
-     */
-    private boolean retired;
-    @ManyToOne(fetch = FetchType.LAZY)
-    private WebUser retiredBy;
-    @Temporal(javax.persistence.TemporalType.TIMESTAMP)
-    private Date retiredAt;
     
     public Long getId() {
         return id;
@@ -84,10 +75,10 @@ public class InstitutionComponent implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof InstitutionComponent)) {
+        if (!(object instanceof ReportColumn)) {
             return false;
         }
-        InstitutionComponent other = (InstitutionComponent) object;
+        ReportColumn other = (ReportColumn) object;
         if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
@@ -96,7 +87,39 @@ public class InstitutionComponent implements Serializable {
 
     @Override
     public String toString() {
-        return "lk.gov.health.phsp.entity.InstitutionComponent[ id=" + id + " ]";
+        return "lk.gov.health.phsp.entity.ReportColumn[ id=" + id + " ]";
     }
-    
+
+    public String getHeader() {
+        return header;
+    }
+
+    public void setHeader(String header) {
+        this.header = header;
+    }
+
+    public int getColumnNumber() {
+        return columnNumber;
+    }
+
+    public void setColumnNumber(int columnNumber) {
+        this.columnNumber = columnNumber;
+    }
+
+    public String getDateFormat() {
+        return dateFormat;
+    }
+
+    public void setDateFormat(String dateFormat) {
+        this.dateFormat = dateFormat;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
 }

@@ -40,7 +40,7 @@
                                                      action="#{reportController.toViewMySummeries()}"
                                                      ajax="false"></p:commandButton>
 
-                                    
+
                                 </h:panelGrid>
 
                             </p:tab>
@@ -50,8 +50,8 @@
                                     <p:commandButton value="Institution-vice Clinic Visits"   style="width:20em;margin:auto;"
                                                      action="#{reportController.toViewClinicVisitsByInstitution()}"
                                                      ajax="false"></p:commandButton>
-                                    
-                                    
+
+
                                     <p:commandButton value="Institution-vice Client Registrations"   style="width:20em;margin:auto;"
                                                      action="#{reportController.toViewClientRegistrationsByInstitution()}"
                                                      ajax="false"></p:commandButton>
@@ -65,16 +65,16 @@
                                                      action="#{reportController.toViewClientRegistrationsByProvince()}"
                                                      rendered="#{webUserController.hasPrivilege('System_Administration')}"
                                                      ajax="false"></p:commandButton>
-                                    
-                                    
-                                     <p:commandButton value="Daily Clinic Visits"   style="width:20em;margin:auto;"
-                                                      action="#{reportController.toViewDailyClinicsVisitCounts()}"
+
+
+                                    <p:commandButton value="Daily Clinic Visits"   style="width:20em;margin:auto;"
+                                                     action="#{reportController.toViewDailyClinicsVisitCounts()}"
                                                      ajax="false"></p:commandButton>
-                                    
-                                     <p:commandButton value="Daily Registrations"   style="width:20em;margin:auto;"
-                                                      action="#{reportController.toViewDailyClinicsRegistrationCounts()}"
+
+                                    <p:commandButton value="Daily Registrations"   style="width:20em;margin:auto;"
+                                                     action="#{reportController.toViewDailyClinicsRegistrationCounts()}"
                                                      ajax="false"></p:commandButton>
-                                    
+
                                 </h:panelGrid>
                             </p:tab>
 
@@ -92,9 +92,17 @@
                                     <p:commandButton value="Clinic Visits"   style="width:20em;margin:auto;"
                                                      action="#{reportController.toViewClinicVisits()}"
                                                      ajax="false"></p:commandButton>
-                                    
-                                     <p:commandButton value="Data Forms"   style="width:20em;margin:auto;"
-                                                      action="#{reportController.toViewDataForms()}"
+
+                                    <p:commandButton value="Longitudinal Clinic Visits"   style="width:20em;margin:auto;"
+                                                     action="#{reportController.toViewLongitudinalClinicVisits()}"
+                                                     ajax="false"></p:commandButton>
+
+                                    <p:commandButton value="All Clients &amp; All Visits"   style="width:20em;margin:auto;"
+                                                     action="#{reportController.toViewAllClientsAndAllClinicVisits()}"
+                                                     ajax="false"></p:commandButton>
+
+                                    <p:commandButton value="Data Forms"   style="width:20em;margin:auto;"
+                                                     action="#{reportController.toViewDataForms()}"
                                                      ajax="false"></p:commandButton>
 
                                 </h:panelGrid>
@@ -109,6 +117,11 @@
                                     <p:commandButton value="Clinical Data"   style="width:20em;margin:auto;"
                                                      action="#{reportController.toSingleVariableClinicalData()}"
                                                      ajax="false"></p:commandButton>
+
+                                    <p:commandButton value="Formset Data"   style="width:20em;margin:auto;"
+                                                     action="#{reportController.to}"
+                                                     ajax="false"></p:commandButton>
+
 
                                 </h:panelGrid>
 

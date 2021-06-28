@@ -61,6 +61,9 @@ public class StoredQueryResult implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    private String name;
+    private String resultType;
+
     @ManyToOne
     private Institution institution;
     @ManyToOne
@@ -81,7 +84,7 @@ public class StoredQueryResult implements Serializable {
     @Temporal(javax.persistence.TemporalType.DATE)
     private Date resultTo;
     private boolean recalculate;
-    
+
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date requestCreatedAt;
 
@@ -137,8 +140,6 @@ public class StoredQueryResult implements Serializable {
     public void setId(Long id) {
         this.id = id;
     }
-    
-    
 
     @Override
     public int hashCode() {
@@ -404,6 +405,10 @@ public class StoredQueryResult implements Serializable {
     public String getPeriodString() {
         periodString = "";
         if (this.timePeriodType == null) {
+            periodString = "From : "
+                    + CommonController.dateTimeToString(this.resultFrom)
+                    + ", To : "
+                    + CommonController.dateTimeToString(this.resultTo);
             return periodString;
         }
         switch (this.timePeriodType) {
@@ -475,6 +480,25 @@ public class StoredQueryResult implements Serializable {
 
     public void setRecalculate(boolean recalculate) {
         this.recalculate = recalculate;
+    }
+
+    public String getResultType() {
+        if (resultType == null || resultType.trim().equals("")) {
+            resultType = "excel_object";
+        }
+        return resultType;
+    }
+
+    public void setResultType(String resultType) {
+        this.resultType = resultType;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
 }
