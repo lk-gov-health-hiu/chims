@@ -1989,7 +1989,7 @@ public class ReportController implements Serializable {
             stream = new FileInputStream(newFile);
             resultExcelFile = new DefaultStreamedContent(stream, mimeType, FILE_NAME);
         } catch (FileNotFoundException ex) {
-            System.out.println("File not found exception -->" + ex.getMessage());
+            // System.out.println("File not found exception -->" + ex.getMessage());
         }
     }
 

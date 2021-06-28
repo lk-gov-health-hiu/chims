@@ -446,7 +446,7 @@ public class RelationshipController implements Serializable {
 
         Relationship r;
         r = findRelationship(institution, procedureRoom, trt);
-        System.out.println("r = " + r);
+        // System.out.println("r = " + r);
         if (r == null) {
             r = new Relationship();
             r.setInstitution(institution);
@@ -671,13 +671,13 @@ public class RelationshipController implements Serializable {
     }
 
     public Long findPopulationValue(int y, Institution ins, RelationshipType t) {
-        System.out.println("findPopulationValue");
+        // System.out.println("findPopulationValue");
         Long p = 0l;
-        System.out.println("ins = " + ins);
+        // System.out.println("ins = " + ins);
         Institution hospital = institutionController.findHospital(ins);
-        System.out.println("hospital = " + hospital);
+        // System.out.println("hospital = " + hospital);
         if (hospital == null) {
-            System.out.println("A Hospital Not Found");
+            // System.out.println("A Hospital Not Found");
             return 0l;
         }
         Relationship r = findRelationship(y, hospital, t);
@@ -723,7 +723,7 @@ public class RelationshipController implements Serializable {
     }
 
     public void fillInstitutionPopulationData() {
-        System.out.println("fillInstitutionPopulationData");
+        // System.out.println("fillInstitutionPopulationData");
         if (getYear() == null) {
             JsfUtil.addErrorMessage("No Year Selected.");
             return;
@@ -747,8 +747,8 @@ public class RelationshipController implements Serializable {
         }
         m.put("y", getYear());
         m.put("ret", true);
-        System.out.println("m = " + m);
-        System.out.println("j = " + j);
+        // System.out.println("m = " + m);
+        // System.out.println("j = " + j);
         items = getFacade().findByJpql(j, m);
     }
 
@@ -806,14 +806,14 @@ public class RelationshipController implements Serializable {
     }
 
     public List<Item> proceduresPerformedInAProcedureRoom(Institution procedureRoom) {
-        System.out.println("proceduresPerformedInAProcedureRoom");
-        System.out.println("procedureRoom = " + procedureRoom);
+        // System.out.println("proceduresPerformedInAProcedureRoom");
+        // System.out.println("procedureRoom = " + procedureRoom);
         List<Item> ps = new ArrayList();
         if (procedureRoom == null) {
             return ps;
         }
         List<Relationship> rs = findRelationships(procedureRoom, RelationshipType.Procedure_for_institution);
-        System.out.println("rs = " + rs.size());
+        // System.out.println("rs = " + rs.size());
         Map<Long, Item> mis = new HashMap<>();
         for (Relationship r : rs) {
             if (r.getId() != null) {
@@ -825,7 +825,7 @@ public class RelationshipController implements Serializable {
             }
         }
         ps.addAll(mis.values());
-        System.out.println("ps = " + ps.size());
+        // System.out.println("ps = " + ps.size());
         return ps;
     }
 

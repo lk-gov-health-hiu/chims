@@ -84,7 +84,7 @@ public class AnalysisBean {
 
 //    @Schedule(dayOfWeek = "Mon-Fri", month = "*", hour = "9-17", dayOfMonth = "*", year = "*", minute = "*", second = "0", persistent = false)
 //    public void myTimer() {
-//        System.out.println("Timer event: " + new Date());
+//        // System.out.println("Timer event: " + new Date());
 //    }
     @Schedule(hour = "19-05", minute = "*/5", second = "0", persistent = false)
     public void startProcessingCounts() {
@@ -98,19 +98,19 @@ public class AnalysisBean {
 
     @Schedule(hour = "21-5", minute = "*/2", second = "0", persistent = false)
     public void processCounts() {
-        System.out.println("processCounts Commented");
+        // System.out.println("processCounts Commented");
 //        getIymcs();
 //        InstitutionYearMonthCompleted next = selectNextIymcs();
-//        System.out.println("next = " + next);
+//        // System.out.println("next = " + next);
 //
 //        if (next != null) {
-//            System.out.println("Next INS = " + next.getInstitution().getName());
+//            // System.out.println("Next INS = " + next.getInstitution().getName());
 //            runClinicCounts(next);
 //        }
     }
 
     public List<InstitutionYearMonthCompleted> getIymcs() {
-        System.out.println("getIymcs");
+        // System.out.println("getIymcs");
         if (iymcs == null) {
             Calendar c = Calendar.getInstance();
             int ti = c.get(Calendar.YEAR);
@@ -119,7 +119,7 @@ public class AnalysisBean {
             month = tm;
             iymcs = new ArrayList<>();
             for (Institution ins : findClinics()) {
-                System.out.println("ins = " + ins.getName());
+                // System.out.println("ins = " + ins.getName());
                 InstitutionYearMonthCompleted iymc = new InstitutionYearMonthCompleted();
                 iymc.setInstitution(ins);
                 iymc.setYear(ti);
@@ -131,11 +131,11 @@ public class AnalysisBean {
     }
 
     public InstitutionYearMonthCompleted selectNextIymcs() {
-        System.out.println("selectNextIymcs");
+        // System.out.println("selectNextIymcs");
         InstitutionYearMonthCompleted r = null;
         boolean allCompletedForThisCycle = true;
         for (InstitutionYearMonthCompleted t : getIymcs()) {
-            System.out.println("t = " + t.getInstitution().getName());
+            // System.out.println("t = " + t.getInstitution().getName());
             if (t.isCompleted()) {
                 allCompletedForThisCycle = false;
                 return t;
@@ -160,8 +160,8 @@ public class AnalysisBean {
     }
 
     public void runClinicCounts(InstitutionYearMonthCompleted iymc) {
-        System.out.println("Running clinic count");
-        System.out.println("iymc = " + iymc);
+        // System.out.println("Running clinic count");
+        // System.out.println("iymc = " + iymc);
         if (iymc == null) {
             return;
         }
@@ -188,9 +188,9 @@ public class AnalysisBean {
         Date fromDate = CommonController.startOfTheMonth(iymc.getYear(), iymc.getMonth());
         Date toDate = CommonController.endOfTheMonth(iymc.getYear(), iymc.getMonth());
 
-        System.out.println("iymc.getInstitution() = " + iymc.getInstitution().getName());
-        System.out.println("fromDate = " + fromDate);
-        System.out.println("toDate = " + toDate);
+        // System.out.println("iymc.getInstitution() = " + iymc.getInstitution().getName());
+        // System.out.println("fromDate = " + fromDate);
+        // System.out.println("toDate = " + toDate);
 
         List<QueryWithCriteria> qs = new ArrayList<>();
         List<EncounterWithComponents> encountersWithComponents;
