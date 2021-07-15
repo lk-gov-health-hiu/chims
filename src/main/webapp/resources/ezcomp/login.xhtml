@@ -28,10 +28,10 @@
                                                 <h1 class="h4 text-gray-900 mb-4">Log In</h1>
                                             </div>
                                             <div class="form-group">
-                                                <p:inputText autocomplete="off" value="#{webUserController.userName}"/>
+                                                <p:inputText autocomplete="off" value="#{webUserController.userName}" class="form-control"/>
                                             </div>
                                             <div class="form-group">
-                                                <p:password autocomplete="off" value="#{webUserController.password}"/>
+                                                <p:password autocomplete="off" value="#{webUserController.password}" class="form-control"/>
                                             </div>
                                             <h:commandButton class="btn btn-block btn-primary" value="Login" action="#{webUserController.loginNew()}" />
 
