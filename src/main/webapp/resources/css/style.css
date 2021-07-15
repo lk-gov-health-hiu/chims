@@ -1,0 +1,200 @@
+/*
+The MIT License
+
+Copyright 2021 user.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+*/
+/* 
+    Created on : Jun 14, 2021, 11:28:37 PM
+    Author     : Dinidu Hewage
+*/
+
+.header {
+    padding: 10px;
+} 
+.ui-column-filter{
+    width: 100%;
+    box-sizing: border-box;
+    height: 0.7cm;
+}
+
+body .ui-panelmenu .ui-panelmenu-header.ui-state-active, body .ui-panelmenu .ui-panelmenu-header{
+    font-size: 12px;
+    font-weight: normal;
+    background-color: #2596be;
+}
+body .ui-menu .ui-menu-list .ui-menuitem .ui-menuitem-link
+body .ui-panelmenu li.ui-menuitem span.ui-menuitem-text{
+    font-size: 12px;
+    font-weight: normal;
+} 
+
+body .ui-panelmenu h3.ui-panelmenu-header.ui-state-active{
+    background-color: #D2d4d4;
+} 
+
+.ui-fluid .ui-inputfield{
+    height: 0.7cm;
+    margin-top: 0.2cm;
+    margin-bottom: 0.2cm;
+    font-size: 12px;
+}
+
+body .ui-widget{
+    font-size: 12px !important;
+}
+
+.ui-fluid .ui-inputtextarea{
+    height: 1cm;
+}        
+
+body .ui-datatable thead th{
+    height: 0.2cm;
+}
+
+.ui-widget-content .ui-datatable-even{
+    height: 0.5rem;
+}
+
+body .ui-button.rounded-button.ui-button-icon-only {
+    border-radius: 50%;
+    height: 1.5rem !important;
+    width: 1.5rem;
+    font-size: 5px;
+}
+
+body .ui-button.ui-button-icon-only .ui-icon {
+    margin-top: -0.3rem !important;
+    margin-left: -0.3rem !important;
+    font-size: 10px;
+}
+
+body .ui-datatable thead th .ui-sortable-column-icon.ui-icon-carat-2-n-s {
+    font-size: 10px;                 
+}
+
+body .ui-datatable .ui-datatable-data tr td {
+    padding: 0.25rem 0.25rem !important;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    border-width: 0 0 1px 0;
+}
+
+.navbar-header{
+    width: 100%;
+    padding-bottom: 10px;
+}
+
+.navbar-header .logo_img{
+    float: left;
+    width: 100%;
+}
+
+.navbar-header .logo_img h5{
+    margin-top: 20px;
+}
+
+.name_title{
+    padding: 10px;
+    float: left;
+}
+.link_menu{
+    width: 100%;    
+}
+
+.link_menu .mega_menu{
+    height: 1cm;
+    background-color: #D2d4d4;
+    align-content: center;
+    padding-top: 5px;
+}
+
+.mega_menu-menuitem{
+    border-top: -10px;
+    height: 0.75cm;
+}
+
+.ui-menuitem-text{
+    padding-top: -20px;
+    height: 0.5cm;
+}
+
+footer{
+    background-color: #267ad4;
+    position: relative;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    overflow:hidden;
+}
+
+footer b{
+    margin-left: 400px;    
+}
+
+.input-group-prepend {   
+    width:80%;
+}
+
+.crud-action{
+    padding: 5px;
+}
+
+.main-panel{
+    height: 100%;
+    width: 100%;
+}
+
+.card-header{
+    text-align: center;
+    font-size: 1rem;
+}
+.card{
+    padding-bottom: 10px;
+}
+
+.name-title{
+    padding-right: 5px;
+}
+
+.user_details .form{
+    float: right;
+    padding-top: 20px;
+}
+
+.form-control{
+    padding: 0px;
+    height: calc(0.75rem + .75rem + 2px);
+}
+
+label{
+    margin-bottom: 0 !important;
+}
+
+.card-body{
+    padding-top: 5px;
+}
+
+.ui-selectonemenu{
+    width: 100%;
+}
+
+.form-control .withicon{
+    width: 90% !important;
+}

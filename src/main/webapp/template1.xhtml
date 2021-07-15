@@ -1,0 +1,106 @@
+<?xml version='1.0' encoding='UTF-8' ?> 
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ez="http://xmlns.jcp.org/jsf/composite/ezcomp">
+
+    <h:head id="headt">
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1"/>
+        <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet"></link>   
+        <link rel="shortcut icon" href="#{resource['image/favicon.ico']}" type="image/x-icon" />
+        <h:outputStylesheet library="css" name="bootstrap.min.css"/>
+        <h:outputStylesheet library="css" name="style.css"></h:outputStylesheet>
+        <h:outputStylesheet library="css" name="all.min.css"></h:outputStylesheet>
+        <h:outputStylesheet library="css" name="sb-admin-2.min.css"></h:outputStylesheet>
+        <h:outputStylesheet library="css" name="tem1.css"/>
+        <script async="true" src="https://www.googletagmanager.com/gtag/js?id=G-VFXVJY37FG"></script>
+        <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag() {
+                dataLayer.push(arguments);
+            }
+            gtag('js', new Date());
+
+            gtag('config', 'G-VFXVJY37FG');
+        </script>
+        <title>#{bundle.Title}</title>
+        <ui:insert name="head">
+        </ui:insert>
+    </h:head>
+
+    <h:body id="page-top">
+        <div id="wrapper">
+            <f:view locale="#{webUserController.locale}" >
+                <h:panelGroup rendered="#{webUserController.loggedUser ne null}">
+                    <!-- Sidebar -->
+                    <nav class="navbar row">
+                        <div class="container-fluid">                
+                            <div class="navbar-header">
+                                <div class="logo_img">
+                                    <div class="row">
+                                        <div class="col-sm-8 col-lg-8">
+                                            <h:graphicImage style="float: left;" library="image" name="hims_header.png"></h:graphicImage> 
+                                            <h5>Health Information Management System</h5>
+                                        </div>
+                                        <div class="user_details col-sm-4 col-lg-4">
+                                            <h:form class="form">
+                                                <p:outputLabel class="name-title" value="#{webUserController.loggedUser.person.nameWithTitle}"></p:outputLabel>
+                                                <p:commandLink  class="btn btn-primary btn-sm" action="#{webUserController.logOut()}" ajax="false" value="Logout" />
+                                            </h:form>                                              
+                                        </div>
+                                    </div>  
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="link_menu row h-100">
+                            <div class="mega_menu col-12 my-auto">
+                                <h:form class="w-25 mx-auto">
+                                    <div class="form-group row">
+                                        <p:inputText class="input-group-prepend" autocomplete="off" value="#{clientController.searchingId}" placeholder="Search Here..."/>
+                                        <p:commandButton ajax="false" action="#{clientController.searchByAnyIdWithBasicData()}" icon="ui-icon-search" ></p:commandButton>                                    
+                                    </div>
+                                </h:form>
+                            </div>                            
+                        </div>
+                    </nav> 
+                    <div class="container-fluid">
+                        <div class="row content">                        
+                            <div class="col-md-2 sidenav">
+                                <ez:menu/>
+                            </div>
+                            <div class="col-md-10">
+                                <h:panelGroup rendered="#{webUserController.loggedUser ne null}">
+                                    <ui:insert name="content">
+                                        Contents
+                                    </ui:insert>
+                                </h:panelGroup>
+
+                            </div>                        
+                        </div>
+                        <ui:insert name="bottom" rendered="#{webUserController.loggedUser ne null}">
+                            <ez:footer/>
+                        </ui:insert>
+                        <p:growl>
+                        </p:growl>
+                    </div>
+                </h:panelGroup>
+                <h:panelGroup rendered="#{webUserController.loggedUser eq null}">
+                    <ez:login/>
+                    <div style="width: 50%; margin: auto;">
+                        <ez:demo_login/>
+                    </div>
+                    <ui:insert name="timeout">
+                    </ui:insert>
+                </h:panelGroup>
+            </f:view>
+        </div>
+        <h:outputScript library="js" name="bootstrap.bundle.min.js"></h:outputScript>
+        <h:outputScript library="js" name="sb-admin-2.min.js"></h:outputScript>
+        <h:outputScript library="js" name="jquery.easing.min.js"></h:outputScript>
+    </h:body>
+</html>
