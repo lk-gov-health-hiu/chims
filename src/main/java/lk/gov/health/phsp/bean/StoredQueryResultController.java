@@ -69,9 +69,9 @@ public class StoredQueryResultController implements Serializable {
     }
 
     public Long findStoredLongValue(QueryComponent qc, Date fromDate, Date toDate, List<Institution> institutions) {
-        System.out.println("findStoredLongValue");
-        System.out.println("fromDate = " + CommonController.dateTimeToString(fromDate));
-        System.out.println("toDate = " + CommonController.dateTimeToString(toDate));
+        // System.out.println("findStoredLongValue");
+        // System.out.println("fromDate = " + CommonController.dateTimeToString(fromDate));
+        // System.out.println("toDate = " + CommonController.dateTimeToString(toDate));
         Long c = 0l;
         Map<Long, Institution> mis = new HashMap<>();
         for (Institution institution : institutions) {
@@ -80,13 +80,13 @@ public class StoredQueryResultController implements Serializable {
         for (Institution institution : mis.values()) {
             StoredQueryResult s;
             s = findStoredQueryResult(qc, fromDate, toDate, institution);
-            System.out.println("institution.getName() = " + institution.getName());
+            // System.out.println("institution.getName() = " + institution.getName());
             if (s != null && s.getLongValue() != null) {
-                System.out.println("s.getLongValue() = " + s.getLongValue());
+                // System.out.println("s.getLongValue() = " + s.getLongValue());
                 c += s.getLongValue();
             }
         }
-        System.out.println("c = " + c);
+        // System.out.println("c = " + c);
         return c;
     }
 
@@ -110,7 +110,7 @@ public class StoredQueryResultController implements Serializable {
         Long insSum = 0L;
         for (Institution i : institutions) {
             Long ic = findStoredLongValue(qc, fromDate, toDate, i, re);
-//            System.out.println("qc = " + qc.getName() + ", Ins = " + i.getName() + ", count = " + ic);
+//            // System.out.println("qc = " + qc.getName() + ", Ins = " + i.getName() + ", count = " + ic);
             if (ic != null) {
                 insSum += ic;
             }

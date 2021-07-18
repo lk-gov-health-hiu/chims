@@ -398,7 +398,7 @@ public class InstitutionController implements Serializable {
         for (Institution i : institutionApplicationController.getInstitutions()) {
             if (i.getName() != null && i.getName().equalsIgnoreCase(name)) {
                 if (ni != null) {
-                    System.out.println("Duplicate Institution Name : " + name);
+                    // System.out.println("Duplicate Institution Name : " + name);
                 }
                 ni = i;
             }
