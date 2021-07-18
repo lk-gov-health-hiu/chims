@@ -1810,7 +1810,7 @@ public class ReportController implements Serializable {
         userTransactionController.recordTransaction("To View Longitidunal Clinic Visits");
         return action;
     }
-    
+
     public String toViewAllClientsAndAllClinicVisits() {
         encounters = new ArrayList<>();
         String forSys = "/reports/clinic_visits/for_system_all_clients_and_all_clinic_visits";
@@ -1912,26 +1912,15 @@ public class ReportController implements Serializable {
         String j;
         Map m = new HashMap();
 
-        j = "select new lk.gov.health.phsp.pojcs.ClientBasicData("
-                + "c.phn, "
-                + "c.person.name, "
-                + "c.person.nic, "
-                + "c.person.address, "
-                + "c.person.phone1, "
-                + "c.person.gnArea.name, "
-                + "c.createInstitution.name, "
-                + "c.person.dateOfBirth, "
-                + "c.createdAt, "
-                + "c.person.sex.name "
-                + ") "
+        j = "select c "
                 + " from Client c "
-                + " where c.retired=:ret "
-                + " and c.reservedClient<>:res "
+                + " where (c.retired=:ret or c.retired is null) "
+                + " and (c.reservedClient=:res or c.reservedClient is null) "
                 + " and c.createdAt between :fd and :td ";
         m.put("ret", false);
-        m.put("res", true);
-        m.put("fd", fromDate);
-        m.put("td", toDate);
+        m.put("res", false);
+        m.put("fd", getFromDate());
+        m.put("td", getToDate());
 
         if (institution != null) {
             j += " and c.createInstitution in :ins ";
@@ -1946,7 +1935,7 @@ public class ReportController implements Serializable {
             }
         }
 
-        List<Object> objs = getClientFacade().findAggregates(j, m);
+        List<Client> tmpClients = getClientFacade().findByJpql(j, m);
 
         String FILE_NAME = "client_registrations" + "_" + (new Date()) + ".xlsx";
         String mimeType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
@@ -2030,48 +2019,55 @@ public class ReportController implements Serializable {
         CreationHelper createHelper = workbook.getCreationHelper();
         cellStyle.setDataFormat(createHelper.createDataFormat().getFormat("dd/MMMM/yyyy hh:mm"));
 
-        for (Object o : objs) {
-            if (o instanceof ClientBasicData) {
-                ClientBasicData cbd = (ClientBasicData) o;
-                Row row = sheet.createRow(++rowCount);
+        for (Client o : tmpClients) {
 
-                Cell c1 = row.createCell(0);
-                c1.setCellValue(serial);
+            Row row = sheet.createRow(++rowCount);
 
-                Cell c2 = row.createCell(1);
-                c2.setCellValue(cbd.getPhn());
+            Cell c1 = row.createCell(0);
+            c1.setCellValue(serial);
 
-                Cell c3 = row.createCell(2);
-                c3.setCellValue(cbd.getName());
+            Cell c2 = row.createCell(1);
+            c2.setCellValue(o.getPhn());
 
-                Cell c4 = row.createCell(3);
-                c4.setCellValue(cbd.getNic());
-
-                Cell c5 = row.createCell(4);
-                c5.setCellValue(cbd.getDataOfBirth());
-
-                Cell c6 = row.createCell(5);
-                c6.setCellValue(cbd.getAgeInYears());
-
-                Cell c7 = row.createCell(6);
-                c7.setCellValue(cbd.getSex());
-
-                Cell c8 = row.createCell(7);
-                c8.setCellValue(cbd.getAddress());
-
-                Cell c9 = row.createCell(8);
-                c9.setCellValue(cbd.getGnArea());
-
-                Cell c10 = row.createCell(9);
-                c10.setCellValue(cbd.getPhone());
-
-                if (institution == null) {
-                    Cell c11 = row.createCell(10);
-                    c11.setCellValue(cbd.getCreatedInstitution());
-                }
-
-                serial++;
+            if (o.getPerson() == null) {
+                continue;
             }
+
+            Cell c3 = row.createCell(2);
+            c3.setCellValue(o.getPerson().getName());
+
+            Cell c4 = row.createCell(3);
+            c4.setCellValue(o.getPerson().getNic());
+
+            Cell c5 = row.createCell(4);
+            c5.setCellValue(o.getPerson().getDateOfBirth());
+
+            Cell c6 = row.createCell(5);
+            c6.setCellValue(o.getPerson().getAge());
+
+            Cell c7 = row.createCell(6);
+            if (o.getPerson().getSex() != null) {
+                c7.setCellValue(o.getPerson().getSex().getName());
+            }
+
+            Cell c8 = row.createCell(7);
+            c8.setCellValue(o.getPerson().getAddress());
+
+            Cell c9 = row.createCell(8);
+            if (o.getPerson().getGnArea() != null) {
+                c9.setCellValue(o.getPerson().getGnArea().getName());
+            }
+
+            Cell c10 = row.createCell(9);
+            c10.setCellValue(o.getPerson().getPhone1());
+
+            if (institution == null) {
+                Cell c11 = row.createCell(10);
+                c11.setCellValue(o.getCreateInstitution().getName());
+            }
+
+            serial++;
+
         }
 
         try (FileOutputStream outputStream = new FileOutputStream(newFile)) {
@@ -2807,7 +2803,6 @@ public class ReportController implements Serializable {
         JsfUtil.addSuccessMessage("Process started. Check under my reports.");
     }
 
-    
     public void downloadAllClientsAndAllClinicVisits() {
         if (institution == null) {
             JsfUtil.addErrorMessage("Select Institution");
@@ -2818,7 +2813,6 @@ public class ReportController implements Serializable {
         JsfUtil.addSuccessMessage("Process started. Check under my reports.");
     }
 
-    
     public void downloadFormsetDataEntries() {
         if (institution == null) {
             JsfUtil.addErrorMessage("Select Institution");
