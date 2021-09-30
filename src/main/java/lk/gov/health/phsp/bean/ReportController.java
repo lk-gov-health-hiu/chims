@@ -2609,12 +2609,13 @@ public class ReportController implements Serializable {
     private Long numberOfFunctioningHlcs(InstitutionType type){
         String j = "select e.institution "
                 + " from Encounter e "
+                + " where e.retired=:ret "
+                 + " and e.encounterDate between :fd and :td "
                 + " group by e.institution";
         Map m = new HashMap();
-//        m.put("et", EncounterType.HLC_Visit);
-//             m.put("ret", false);
-//         m.put("fd", fromDate);
-//          m.put("td", toDate);
+             m.put("ret", false);
+         m.put("fd", fromDate);
+          m.put("td", toDate);
         System.out.println("m = " + m);
         System.out.println("j = " + j);
          List<Institution> ins =institutionFacade.findByJpql(j,m);
