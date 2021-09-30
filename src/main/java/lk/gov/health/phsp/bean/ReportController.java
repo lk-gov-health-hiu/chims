@@ -58,6 +58,7 @@ import java.io.InputStream;
 import java.util.Iterator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import javax.persistence.TemporalType;
 import jxl.Workbook;
 import jxl.write.Label;
 import jxl.write.WritableSheet;
@@ -102,6 +103,7 @@ import lk.gov.health.phsp.entity.ReportCell;
 import lk.gov.health.phsp.entity.ReportColumn;
 import lk.gov.health.phsp.entity.ReportRow;
 import lk.gov.health.phsp.enums.InstitutionType;
+import lk.gov.health.phsp.facade.InstitutionFacade;
 import lk.gov.health.phsp.facade.ReportCellFacade;
 import lk.gov.health.phsp.facade.ReportColumnFacade;
 import lk.gov.health.phsp.facade.ReportRowFacade;
@@ -135,6 +137,8 @@ public class ReportController implements Serializable {
     private ClientFacade clientFacade;
     @EJB
     private EncounterFacade encounterFacade;
+    @EJB
+    private InstitutionFacade institutionFacade;
     @EJB
     private QueryComponentFacade queryComponentFacade;
     @EJB
@@ -2583,34 +2587,61 @@ public class ReportController implements Serializable {
         Map m = new HashMap();
         m.put("t", type);
          m.put("f", false);
-        return encounterFacade.countByJpql(j, m);
+         Long n =encounterFacade.countByJpql(j, m);
+         if(n==null) return 0l;
+        return n;
     }
     
     private Long numberOfHlcs(InstitutionType type){
         String j = "select count(i) "
                 + " from Institution i "
                 + " where (i.retired=:f or i.retired is null) "
-                + " and i.institutionType=:hlc "
-                + " and (i.parent.institutionType=:t or i.parent.parent.institutionType=:t)";
+                + " and (i.institutionType=:hlc and i.parent.institutionType=:t)";
         Map m = new HashMap();
         m.put("t", type);
         m.put("f", false);
         m.put("hlc", InstitutionType.Clinic);
-        return encounterFacade.countByJpql(j, m);
+        Long n =encounterFacade.countByJpql(j, m);
+         if(n==null) return 0l;
+        return n;
     }
     
     private Long numberOfFunctioningHlcs(InstitutionType type){
-        String j = "select count(i) "
-                + " from Encounter e join e.institution i "
-                + " where (e.retired=:f or e.retired is null) "
-                + " and i.institutionType=:hlc "
-                + " and (i.parent.institutionType=:t or i.parent.parent.institutionType=:t) "
-                + " group by i";
+        String j = "select e.institution "
+                + " from Encounter e "
+                + " group by e.institution";
         Map m = new HashMap();
-        m.put("t", type);
-        m.put("f", false);
-        m.put("hlc", InstitutionType.Clinic);
-        return encounterFacade.countByJpql(j, m);
+//        m.put("et", EncounterType.HLC_Visit);
+//             m.put("ret", false);
+//         m.put("fd", fromDate);
+//          m.put("td", toDate);
+        System.out.println("m = " + m);
+        System.out.println("j = " + j);
+         List<Institution> ins =institutionFacade.findByJpql(j,m);
+         System.out.println("ins = " + ins);
+         Long n=0l;
+         for(Institution i:ins){
+             System.out.println("i = " + i.getName());
+             boolean canInclude=false;
+             if(i.getInstitutionType()!=null){
+                 if(i.getInstitutionType().equals(type)) {
+                     canInclude=true;
+                 }
+             }
+             if(i.getParent()!=null && i.getParent().getInstitutionType()!=null){
+                 if(i.getParent().getInstitutionType().equals(type)){
+                      canInclude=true;
+                 }
+                  if(i.getParent().getParent()!=null && i.getParent().getParent().getInstitutionType()!=null){
+                 if(i.getParent().getParent().getInstitutionType().equals(type)){
+                      canInclude=true;
+                 }
+             }
+             }
+             if(canInclude) n++;
+             
+         }
+        return n;
     }
     
     
@@ -2627,88 +2658,59 @@ public class ReportController implements Serializable {
         InstituteTypeCounts moh = new InstituteTypeCounts();
         
         pgh.setType(InstitutionType.Provincial_General_Hospital);
+        pgh.setSerial(1);
         pgh.setNumber(numberOfInstitutions(InstitutionType.Provincial_General_Hospital));
         pgh.setHlcs(numberOfHlcs(InstitutionType.Provincial_General_Hospital));
         pgh.setFunctioningHlcs(numberOfFunctioningHlcs(InstitutionType.Provincial_General_Hospital));
         itCounts.add(pgh);
         
         dgh.setType(InstitutionType.District_General_Hospital);
-         pgh.setNumber(numberOfInstitutions(InstitutionType.Provincial_General_Hospital));
-        pgh.setHlcs(numberOfHlcs(InstitutionType.Provincial_General_Hospital));
-        pgh.setFunctioningHlcs(numberOfFunctioningHlcs(InstitutionType.Provincial_General_Hospital));
-        itCounts.add(pgh);
+        dgh.setSerial(2);
+         dgh.setNumber(numberOfInstitutions(InstitutionType.District_General_Hospital));
+        dgh.setHlcs(numberOfHlcs(InstitutionType.District_General_Hospital));
+        dgh.setFunctioningHlcs(numberOfFunctioningHlcs(InstitutionType.District_General_Hospital));
+        itCounts.add(dgh);
         
         
         bh.setType(InstitutionType.Base_Hospital);
-         pgh.setNumber(numberOfInstitutions(InstitutionType.Provincial_General_Hospital));
-        pgh.setHlcs(numberOfHlcs(InstitutionType.Provincial_General_Hospital));
-        pgh.setFunctioningHlcs(numberOfFunctioningHlcs(InstitutionType.Provincial_General_Hospital));
-        itCounts.add(pgh);
+        bh.setSerial(3);
+         bh.setNumber(numberOfInstitutions(InstitutionType.Base_Hospital));
+        bh.setHlcs(numberOfHlcs(InstitutionType.Base_Hospital));
+        bh.setFunctioningHlcs(numberOfFunctioningHlcs(InstitutionType.Base_Hospital));
+        itCounts.add(bh);
         
         
         dh.setType(InstitutionType.Divisional_Hospital);
-         pgh.setNumber(numberOfInstitutions(InstitutionType.Provincial_General_Hospital));
-        pgh.setHlcs(numberOfHlcs(InstitutionType.Provincial_General_Hospital));
-        pgh.setFunctioningHlcs(numberOfFunctioningHlcs(InstitutionType.Provincial_General_Hospital));
-        itCounts.add(pgh);
+        dh.setSerial(4);
+         dh.setNumber(numberOfInstitutions(InstitutionType.Divisional_Hospital));
+        dh.setHlcs(numberOfHlcs(InstitutionType.Divisional_Hospital));
+        dh.setFunctioningHlcs(numberOfFunctioningHlcs(InstitutionType.Divisional_Hospital));
+        itCounts.add(dh);
         
         
         pmcu.setType(InstitutionType.Primary_Medical_Care_Unit);
-         pgh.setNumber(numberOfInstitutions(InstitutionType.Provincial_General_Hospital));
-        pgh.setHlcs(numberOfHlcs(InstitutionType.Provincial_General_Hospital));
-        pgh.setFunctioningHlcs(numberOfFunctioningHlcs(InstitutionType.Provincial_General_Hospital));
-        itCounts.add(pgh);
+        pmcu.setSerial(5);
+         pmcu.setNumber(numberOfInstitutions(InstitutionType.Primary_Medical_Care_Unit));
+        pmcu.setHlcs(numberOfHlcs(InstitutionType.Primary_Medical_Care_Unit));
+        pmcu.setFunctioningHlcs(numberOfFunctioningHlcs(InstitutionType.Primary_Medical_Care_Unit));
+        itCounts.add(pmcu);
         
         eh.setType(InstitutionType.Estate_Hospital);
-         pgh.setNumber(numberOfInstitutions(InstitutionType.Provincial_General_Hospital));
-        pgh.setHlcs(numberOfHlcs(InstitutionType.Provincial_General_Hospital));
-        pgh.setFunctioningHlcs(numberOfFunctioningHlcs(InstitutionType.Provincial_General_Hospital));
-        itCounts.add(pgh);
+        eh.setSerial(6);
+         eh.setNumber(numberOfInstitutions(InstitutionType.Estate_Hospital));
+        eh.setHlcs(numberOfHlcs(InstitutionType.Estate_Hospital));
+        eh.setFunctioningHlcs(numberOfFunctioningHlcs(InstitutionType.Estate_Hospital));
+        itCounts.add(eh);
         
         moh.setType(InstitutionType.MOH_Office);
-         pgh.setNumber(numberOfInstitutions(InstitutionType.Provincial_General_Hospital));
-        pgh.setHlcs(numberOfHlcs(InstitutionType.Provincial_General_Hospital));
-        pgh.setFunctioningHlcs(numberOfFunctioningHlcs(InstitutionType.Provincial_General_Hospital));
-        itCounts.add(pgh);
+        moh.setSerial(7);
+         moh.setNumber(numberOfInstitutions(InstitutionType.MOH_Office));
+        moh.setHlcs(numberOfHlcs(InstitutionType.MOH_Office));
+        moh.setFunctioningHlcs(numberOfFunctioningHlcs(InstitutionType.MOH_Office));
+        itCounts.add(moh);
         
-        String j;
-        Map m = new HashMap();
 
-        j = "select new lk.gov.health.phsp.pojcs.EncounterBasicData("
-                + "e.client.phn, "
-                + "e.client.person.gnArea.name, "
-                + "e.institution.name, "
-                + "e.client.person.dateOfBirth, "
-                + "e.encounterDate, "
-                + "e.client.person.sex.name "
-                + ") "
-                + " from Encounter e "
-                + " where e.retired=:ret "
-                + " and e.encounterType=:type "
-                + " and e.encounterDate between :fd and :td ";
-
-        m.put("ret", false);
-        m.put("fd", fromDate);
-        m.put("td", toDate);
-        m.put("type", EncounterType.Clinic_Visit);
-        if (institution != null) {
-            j += " and e.institution in :ins ";
-            List<Institution> ins = institutionApplicationController.findChildrenInstitutions(institution);
-            ins.add(institution);
-            m.put("ins", ins);
-        } else {
-            if (webUserController.getLoggedUser().isRestrictedToInstitution()) {
-                j += " and e.institution in :ins ";
-                List<Institution> ins = webUserController.getLoggableInstitutions();
-                ins.add(institution);
-                m.put("ins", ins);
-            }
-        }
-
-        //String phn, String gnArea, String institution, Date dataOfBirth, Date encounterAt, String sex
-        List<Object> objs = getClientFacade().findAggregates(j, m);
-
-        String FILE_NAME = "client_clinic_visits" + "_" + (new Date()) + ".xlsx";
+        String FILE_NAME = "functioning_clinics" + "_" + (new Date()) + ".xlsx";
         String mimeType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
 
         String folder = "/tmp/";
@@ -2724,7 +2726,7 @@ public class ReportController implements Serializable {
         Cell th1_lbl = t1.createCell(0);
         th1_lbl.setCellValue("Report");
         Cell th1_val = t1.createCell(1);
-        th1_val.setCellValue("List of Clinic Visits");
+        th1_val.setCellValue("Functioning Clinics");
 
         Row t2 = sheet.createRow(rowCount++);
         Cell th2_lbl = t2.createCell(0);
@@ -2738,33 +2740,25 @@ public class ReportController implements Serializable {
         Cell th3_val = t3.createCell(1);
         th3_val.setCellValue(CommonController.dateTimeToString(toDate, "dd MMMM yyyy"));
 
-        if (institution != null) {
-            Row t4 = sheet.createRow(rowCount++);
-            Cell th4_lbl = t4.createCell(0);
-            th4_lbl.setCellValue("Institution");
-            Cell th4_val = t4.createCell(1);
-            th4_val.setCellValue(institution.getName());
-        }
+//        if (institution != null) {
+//            Row t4 = sheet.createRow(rowCount++);
+//            Cell th4_lbl = t4.createCell(0);
+//            th4_lbl.setCellValue("Institution");
+//            Cell th4_val = t4.createCell(1);
+//            th4_val.setCellValue(institution.getName());
+//        }
 
         rowCount++;
 
         Row t5 = sheet.createRow(rowCount++);
         Cell th5_1 = t5.createCell(0);
-        th5_1.setCellValue("Serial");
+        th5_1.setCellValue("Type");
         Cell th5_2 = t5.createCell(1);
-        th5_2.setCellValue("PHN");
+        th5_2.setCellValue("Number of Institutions");
         Cell th5_3 = t5.createCell(2);
-        th5_3.setCellValue("Sex");
+        th5_3.setCellValue("Number of HLCs");
         Cell th5_4 = t5.createCell(3);
-        th5_4.setCellValue("Age in Years at Encounter");
-        Cell th5_5 = t5.createCell(4);
-        th5_5.setCellValue("Encounter at");
-        Cell th5_6 = t5.createCell(5);
-        th5_6.setCellValue("GN Areas");
-        if (institution == null) {
-            Cell th5_7 = t5.createCell(6);
-            th5_7.setCellValue("Institution");
-        }
+        th5_4.setCellValue("Number of Functioning HLCs");
 
         int serial = 1;
 
@@ -2773,39 +2767,28 @@ public class ReportController implements Serializable {
         cellStyle.setDataFormat(
                 createHelper.createDataFormat().getFormat("dd/MMMM/yyyy hh:mm"));
 
-        for (Object o : objs) {
-            if (o instanceof EncounterBasicData) {
-                EncounterBasicData cbd = (EncounterBasicData) o;
+        for (InstituteTypeCounts cbd : itCounts) {
+            
                 Row row = sheet.createRow(++rowCount);
 
                 Cell c1 = row.createCell(0);
-                c1.setCellValue(serial);
+                c1.setCellValue(cbd.getType().getLabel());
 
                 Cell c2 = row.createCell(1);
-                c2.setCellValue(cbd.getPhn());
+                c2.setCellValue(cbd.getNumber());
 
                 Cell c3 = row.createCell(2);
-                c3.setCellValue(cbd.getSex());
+                c3.setCellValue(cbd.getHlcs());
 
                 Cell c4 = row.createCell(3);
-                c4.setCellValue(cbd.getAgeInYears());
+                c4.setCellValue(cbd.getFunctioningHlcs());
 
-                Cell c5 = row.createCell(4);
-                c5.setCellValue(cbd.getEncounterAt());
-                c5.setCellStyle(cellStyle);
-
-                Cell c6 = row.createCell(5);
-                c6.setCellValue(cbd.getGnArea());
-                if (institution == null) {
-                    Cell c7 = row.createCell(6);
-                    c7.setCellValue(cbd.getInstitution());
-                }
 
                 serial++;
-            }
+            
         }
 
-        objs = null;
+        itCounts = null;
         System.gc();
 
         try (FileOutputStream outputStream = new FileOutputStream(newFile)) {

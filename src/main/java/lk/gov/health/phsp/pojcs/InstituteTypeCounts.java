@@ -30,10 +30,13 @@ import lk.gov.health.phsp.enums.InstitutionType;
  * @author buddhika
  */
 public class InstituteTypeCounts {
+    private Integer serial;
     private InstitutionType type;
     private Long number;
     private Long hlcs;
     private Long functioningHlcs;
+    
+    
 
     public InstitutionType getType() {
         return type;
@@ -65,6 +68,14 @@ public class InstituteTypeCounts {
 
     public void setFunctioningHlcs(Long functioningHlcs) {
         this.functioningHlcs = functioningHlcs;
+    }
+
+    public Integer getSerial() {
+        return serial;
+    }
+
+    public void setSerial(Integer serial) {
+        this.serial = serial;
     }
     
 }
