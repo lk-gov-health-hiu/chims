@@ -55,7 +55,9 @@ import lk.gov.health.phsp.enums.RelationshipType;
 import lk.gov.health.phsp.enums.TimePeriodType;
 import lk.gov.health.phsp.facade.ClientEncounterComponentItemFacade;
 import lk.gov.health.phsp.facade.EncounterFacade;
+import lk.gov.health.phsp.facade.InstitutionFacade;
 import lk.gov.health.phsp.pojcs.EncounterWithComponents;
+import lk.gov.health.phsp.pojcs.InstitutionDataQuery;
 import lk.gov.health.phsp.pojcs.Jpq;
 import lk.gov.health.phsp.pojcs.NcdReportTem;
 import lk.gov.health.phsp.pojcs.QueryWithCriteria;
@@ -91,6 +93,8 @@ public class IndicatorController implements Serializable {
      ClientEncounterComponentItemFacade clientEncounterComponentItemFacade;
     @EJB
      EncounterFacade  encounterFacade;
+    @EJB
+    InstitutionFacade institutionFacade;
 
     private Date fromDate;
     private Date toDate;
@@ -109,6 +113,7 @@ public class IndicatorController implements Serializable {
     private boolean recalculate;
 
     private List<QueryComponent> selectedIndicators;
+    private List<InstitutionDataQuery> dataQueries;
 
     /**
      * Creates a new instance of IndicatorController
@@ -248,6 +253,57 @@ public class IndicatorController implements Serializable {
         message = CommonController.stringToHtml(j.getErrorMessage());
         result = CommonController.stringToHtml(j.getMessage());
     }
+    
+    
+    public void runClinicCountsForRequests(Institution tIns, QueryComponent tQc,
+            Integer tYear,
+            Integer tMonth) {
+        if (tIns.getInstitutionType() == null) {
+            JsfUtil.addErrorMessage("No Type for the institution");
+            return;
+        }
+        if (tIns.getInstitutionType() != InstitutionType.Clinic) {
+            JsfUtil.addErrorMessage("Selected institution is NOT a HLC?");
+            return;
+        }
+        Jpq j = new Jpq();
+        fromDate = CommonController.startOfTheMonth(tYear, tMonth);
+        toDate = CommonController.endOfTheMonth(tYear, tMonth);
+
+        List<QueryWithCriteria> qs = new ArrayList<>();
+        List<EncounterWithComponents> encountersWithComponents;
+
+        List<Long> encounterIds = findEncounterIds(fromDate,
+                toDate,
+                tIns);
+
+        encountersWithComponents = findEncountersWithComponents(encounterIds);
+        if (encountersWithComponents == null) {
+            j.setErrorMessage("No data for the selected institution for the period");
+            JsfUtil.addErrorMessage("No data?");
+            return;
+        }
+
+        QueryWithCriteria qwc = new QueryWithCriteria();
+        qwc.setQuery(tQc);
+        qwc.setCriteria(findCriteriaForQueryComponent(tQc.getCode()));
+
+        Long value = calculateIndividualQueryResult(encountersWithComponents, qwc);
+        j.setMessage("Clinic : " + tIns.getName() + "\n");
+        j.setMessage(j.getMessage() + "From : " + CommonController.formatDate(fromDate) + "\n");
+        j.setMessage(j.getMessage() + "To : " + CommonController.formatDate(toDate) + "\n");
+        j.setMessage(j.getMessage() + "Number of Encounters : " + encountersWithComponents.size() + "\n");
+        j.setMessage(j.getMessage() + "Count : " + qwc.getQuery().getName() + "\n");
+        if (value != null) {
+            storedQueryResultController.saveValue(qwc.getQuery(), fromDate, toDate, tIns, value);
+            j.setMessage(j.getMessage() + "Result : " + value + "\n");
+        }else{
+            j.setMessage(j.getMessage() + "Result : No Result\n");
+        }
+        message = CommonController.stringToHtml(j.getErrorMessage());
+        result = CommonController.stringToHtml(j.getMessage());
+    }
+    
 
     public void runClinicCountsForSelectedIndicators() {
         if (institution == null) {
@@ -871,6 +927,7 @@ public class IndicatorController implements Serializable {
         m.put("fd", fromDate);
         m.put("td", toDate);
         List<Long> encs = encounterFacade.findLongList(j, m);
+        System.out.println("encs = " + encs.size());
         return encs;
     }
 
@@ -1125,8 +1182,24 @@ public class IndicatorController implements Serializable {
         message = CommonController.stringToHtml(j.getMessage());
 
     }
+    
+    private List<Institution> listOfFunctioningHlcs(){
+        String j = "select e.institution "
+                + " from Encounter e "
+                + " where e.retired=:ret "
+                 + " and e.encounterDate between :fd and :td "
+                + " group by e.institution"
+                + " order by count(e) desc";
+        Map m = new HashMap();
+             m.put("ret", false);
+         m.put("fd", fromDate);
+          m.put("td", toDate);
+         List<Institution> ins =institutionFacade.findByJpql(j,m);
+        return ins;
+    }
 
     public void runAllInstitutionMonthly() {
+        dataQueries=new ArrayList<>();
         if (queryComponent == null) {
             JsfUtil.addErrorMessage("Indicator ?");
             return;
@@ -1154,20 +1227,31 @@ public class IndicatorController implements Serializable {
         j.setMessage("");
 
         List<Replaceable> rs = findReplaceblesInIndicatorQuery(queryComponent.getIndicatorQuery());
-        List<Institution> allClinics = institutionController.findInstitutions(InstitutionType.Clinic);
+        List<Institution> allClinics = listOfFunctioningHlcs();
+        
+        
+        
         if (allClinics == null) {
             JsfUtil.addErrorMessage("Selected institution do not have HLCs under that");
             return;
         }
         for (Replaceable r : rs) {
             QueryComponent temqc = queryComponentController.findLastQuery(r.getQryCode());
+            
+            InstitutionDataQuery idq = new InstitutionDataQuery();
+            idq.setQuery(temqc);
+            
             if (temqc == null) {
+                idq.setErrorMessage("Count " + r.getQryCode() + " in the indicator is not found. ");
+                dataQueries.add(idq);
                 j.setError(true);
                 j.setMessage(j.getMessage() + "\n" + "Count " + r.getQryCode() + " in the indicator is not found. ");
                 continue;
             }
 
             if (null == temqc.getQueryType()) {
+                 idq.setErrorMessage("Type of query " + r.getQryCode() + " in is not set. ");
+                dataQueries.add(idq);
                 j.setError(true);
                 j.setMessage(j.getMessage() + "\n" + "Type of query " + r.getQryCode() + " in is not set. ");
 
@@ -1177,27 +1261,32 @@ public class IndicatorController implements Serializable {
                         if (temqc.getPopulationType() == null) {
                             j.setError(true);
                             j.setMessage(j.getMessage() + "\n" + "Type of Population " + r.getQryCode() + " in is not set. ");
+                             idq.setErrorMessage("Type of Population " + r.getQryCode() + " in is not set. ");
+                dataQueries.add(idq);
                             continue;
                         }
-                        int temYear;
-                        Calendar c = Calendar.getInstance();
-                        c.setTime(fromDate);
-                        temYear = c.get(Calendar.YEAR);
+                        
+                        
 
-                        Long tp = relationshipController.findPopulationValue(temYear, institution, temqc.getPopulationType());
+                        Long tp = relationshipController.findPopulationValue(year, institutionApplicationController.findMinistryOfHealth(), temqc.getPopulationType());
                         if (tp != null) {
                             r.setTextReplacing(tp + "");
                             r.setSelectedValue(tp + "");
                             j.setMessage(j.getMessage() + r.getQryCode() + " - " + tp + "\n");
+                            idq.setValue(tp);
+                            dataQueries.add(idq);
                         } else {
                             j.setError(true);
                             j.setMessage(j.getMessage() + "No Population data for " + r.getQryCode() + "\n");
+                             idq.setErrorMessage("No Population data for " + r.getQryCode() + "\n");
+                dataQueries.add(idq);
                         }
                         break;
 
                     case Client_Count:
                     case Encounter_Count:
                         Long tv = storedQueryResultController.findStoredLongValue(temqc, fromDate, toDate, allClinics, r);
+                        dataQueries.addAll(storedQueryResultController.findStoredQueryData(temqc, fromDate, toDate, allClinics, r,year,month));
                         if (tv != null) {
                             r.setTextReplacing(tv + "");
                             r.setSelectedValue(tv + "");
@@ -1211,8 +1300,12 @@ public class IndicatorController implements Serializable {
                     default:
                         j.setError(true);
                         j.setMessage(j.getMessage() + "\n" + "Wrong Query - " + r.getQryCode() + "\n");
+                         idq.setErrorMessage("Wrong Query - " + r.getQryCode());
+                dataQueries.add(idq);
                 }
             }
+            
+           
 
         }
 
@@ -1639,12 +1732,22 @@ public class IndicatorController implements Serializable {
         this.result = result;
     }
 
+    
+    
     public List<QueryComponent> getSelectedIndicators() {
         return selectedIndicators;
     }
 
     public void setSelectedIndicators(List<QueryComponent> selectedIndicators) {
         this.selectedIndicators = selectedIndicators;
+    }
+
+    public List<InstitutionDataQuery> getDataQueries() {
+        return dataQueries;
+    }
+
+    public void setDataQueries(List<InstitutionDataQuery> dataQueries) {
+        this.dataQueries = dataQueries;
     }
 
 }

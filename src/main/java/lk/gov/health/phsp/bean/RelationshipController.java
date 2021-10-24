@@ -671,16 +671,19 @@ public class RelationshipController implements Serializable {
     }
 
     public Long findPopulationValue(int y, Institution ins, RelationshipType t) {
-        // System.out.println("findPopulationValue");
+         System.out.println("findPopulationValue");
         Long p = 0l;
-        // System.out.println("ins = " + ins);
+         System.out.println("ins = " + ins);
+         System.out.println("y = " + y);
+         System.out.println("t = " + t.getLabel());
         Institution hospital = institutionController.findHospital(ins);
-        // System.out.println("hospital = " + hospital);
+         System.out.println("hospital = " + hospital);
         if (hospital == null) {
-            // System.out.println("A Hospital Not Found");
+             System.out.println("A Hospital Not Found");
             return 0l;
         }
         Relationship r = findRelationship(y, hospital, t);
+        System.out.println("r = " + r);
         if (r != null) {
             p = r.getLongValue1();
         } else {

@@ -223,6 +223,18 @@ public class InstitutionApplicationController {
         }
         return ri;
     }
+    
+    public Institution findMinistryOfHealth() {
+        System.out.println("find MoH");
+        Institution ri = null;
+        for (Institution i : getInstitutions()) {
+            if (i.getInstitutionType().equals(InstitutionType.Ministry_of_Health)) {
+                ri = i;
+            }
+        }
+        System.out.println("ri = " + ri);
+        return ri;
+    }
 
     public List<Institution> findChildrenInstitutions(Institution ins) {
         List<Institution> allIns = getInstitutions();

@@ -2646,6 +2646,9 @@ public class ReportController implements Serializable {
     }
     
     
+    
+    
+    
     public void downloadFunctioningHlcs() {
         
         

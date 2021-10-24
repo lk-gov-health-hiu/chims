@@ -90,6 +90,8 @@ public class InstitutionController implements Serializable {
             return null;
         }
         switch (unit.getInstitutionType()) {
+            case Ministry_of_Health:
+                return institutionApplicationController.findMinistryOfHealth();
             case Base_Hospital:
             case District_General_Hospital:
             case Divisional_Hospital:
@@ -99,7 +101,7 @@ public class InstitutionController implements Serializable {
                 return unit;
             case Clinic:
             case MOH_Office:
-            case Ministry_of_Health:
+            
             case Other:
             case Partner:
 
