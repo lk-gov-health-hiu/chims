@@ -93,6 +93,13 @@
                                       >
                                 <p:outputLabel value="#{c.institution.district.name}" ></p:outputLabel>
                             </p:column>
+                             <p:column headerText="Type" 
+                                      filterBy="#{c.institution.institutionType.label}" 
+                                      filterMatchMode="contains" 
+                                      sortBy="#{c.institution.institutionType.label}"
+                                      >
+                                 <p:outputLabel value="#{c.institution.institutionType.label}" ></p:outputLabel>
+                            </p:column>
                             <p:column headerText="Institution" 
                                       filterBy="#{c.institution.name}" 
                                       filterMatchMode="contains" 
