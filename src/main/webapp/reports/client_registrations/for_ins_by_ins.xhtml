@@ -61,6 +61,34 @@
                                 <p:outputLabel value="#{n+1}" >
                                 </p:outputLabel>
                             </p:column>
+                            <p:column headerText="PDHS" 
+                                      filterBy="#{c.institution.pdhsArea.name}" 
+                                      filterMatchMode="contains" 
+                                      sortBy="#{c.institution.pdhsArea.name}"
+                                      >
+                                <p:outputLabel value="#{c.institution.pdhsArea.name}" ></p:outputLabel>
+                            </p:column>
+                            <p:column headerText="RDHS" 
+                                      filterBy="#{c.institution.rdhsArea.name}" 
+                                      filterMatchMode="contains" 
+                                      sortBy="#{c.institution.rdhsArea.name}"
+                                      >
+                                <p:outputLabel value="#{c.institution.rdhsArea.name}" ></p:outputLabel>
+                            </p:column>
+                            <p:column headerText="Province" 
+                                      filterBy="#{c.institution.province.name}" 
+                                      filterMatchMode="contains" 
+                                      sortBy="#{c.institution.province.name}"
+                                      >
+                                <p:outputLabel value="#{c.institution.province.name}" ></p:outputLabel>
+                            </p:column>
+                            <p:column headerText="District" 
+                                      filterBy="#{c.institution.district.name}" 
+                                      filterMatchMode="contains" 
+                                      sortBy="#{c.institution.district.name}"
+                                      >
+                                <p:outputLabel value="#{c.institution.district.name}" ></p:outputLabel>
+                            </p:column>
                             <p:column headerText="Institution" 
                                       filterBy="#{c.institution.name}" 
                                       filterMatchMode="contains" 
@@ -87,6 +115,7 @@
                                       sortBy="#{c.count}">
                                 <p:outputLabel value="#{c.count}" ></p:outputLabel>
                             </p:column>
+
                             <f:facet name="footer" >
                                 <p:outputLabel value="Total - #{reportController.reportCount}" ></p:outputLabel>
                             </f:facet>

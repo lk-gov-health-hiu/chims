@@ -61,12 +61,26 @@
                                 <p:outputLabel value="#{n+1}" >
                                 </p:outputLabel>
                             </p:column>
-                            <p:column headerText="Institution" 
-                                      filterBy="#{c.institution.name}" 
+                            <p:column headerText="PDHS" 
+                                      filterBy="#{c.institution.pdhsArea.name}" 
                                       filterMatchMode="contains" 
-                                      sortBy="#{c.institution.name}"
+                                      sortBy="#{c.institution.pdhsArea.name}"
                                       >
-                                <p:outputLabel value="#{c.institution.name}" ></p:outputLabel>
+                                <p:outputLabel value="#{c.institution.pdhsArea.name}" ></p:outputLabel>
+                            </p:column>
+                            <p:column headerText="RDHS" 
+                                      filterBy="#{c.institution.rdhsArea.name}" 
+                                      filterMatchMode="contains" 
+                                      sortBy="#{c.institution.rdhsArea.name}"
+                                      >
+                                <p:outputLabel value="#{c.institution.rdhsArea.name}" ></p:outputLabel>
+                            </p:column>
+                            <p:column headerText="Province" 
+                                      filterBy="#{c.institution.province.name}" 
+                                      filterMatchMode="contains" 
+                                      sortBy="#{c.institution.province.name}"
+                                      >
+                                <p:outputLabel value="#{c.institution.province.name}" ></p:outputLabel>
                             </p:column>
                             <p:column headerText="District" 
                                       filterBy="#{c.institution.district.name}" 
@@ -75,14 +89,14 @@
                                       >
                                 <p:outputLabel value="#{c.institution.district.name}" ></p:outputLabel>
                             </p:column>
-                            <p:column headerText="Type" 
-                                      filterBy="#{c.institution.institutionType.label}" 
+                            <p:column headerText="Institution" 
+                                      filterBy="#{c.institution.name}" 
                                       filterMatchMode="contains" 
-                                      sortBy="#{c.institution.institutionType.label}"
+                                      sortBy="#{c.institution.name}"
                                       >
-                                <p:outputLabel value="#{c.institution.institutionType.label}" ></p:outputLabel>
+                                <p:outputLabel value="#{c.institution.name}" ></p:outputLabel>
                             </p:column>
-                            <p:column headerText="Clinic Visits Count"  
+                            <p:column headerText="Count"  
                                       sortBy="#{c.count}">
                                 <p:outputLabel value="#{c.count}" ></p:outputLabel>
                             </p:column>
