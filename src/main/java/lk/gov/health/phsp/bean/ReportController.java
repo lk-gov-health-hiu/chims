@@ -2945,7 +2945,7 @@ public class ReportController implements Serializable {
         Map m = new HashMap();
 
         j = "select new lk.gov.health.phsp.pojcs.DateInstitutionCount("
-                + "cast(e.createdAt as LocalDate), count(e)"
+                + "cast(e.createdAt as LocalDate) as createdDate, count(e)"
                 + ") "
                 + " from Client e "
                 + " where e.retired=:ret "

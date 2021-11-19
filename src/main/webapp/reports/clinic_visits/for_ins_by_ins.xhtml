@@ -32,7 +32,7 @@
                             <p:outputLabel value="To" ></p:outputLabel>
                             <p:calendar value="#{reportController.toDate}" pattern="dd MM yyyy hh:mm a" ></p:calendar>
 
-                           
+
                             <p:commandButton value="Process" ajax="false"
                                              action="#{reportController.fillClinicVisitsByInstitution()}"></p:commandButton>
                             <p:commandButton value="Download" ajax="false">
@@ -74,6 +74,13 @@
                                       sortBy="#{c.institution.district.name}"
                                       >
                                 <p:outputLabel value="#{c.institution.district.name}" ></p:outputLabel>
+                            </p:column>
+                            <p:column headerText="Type" 
+                                      filterBy="#{c.institution.institutionType.label}" 
+                                      filterMatchMode="contains" 
+                                      sortBy="#{c.institution.institutionType.label}"
+                                      >
+                                <p:outputLabel value="#{c.institution.institutionType.label}" ></p:outputLabel>
                             </p:column>
                             <p:column headerText="Clinic Visits Count"  
                                       sortBy="#{c.count}">
