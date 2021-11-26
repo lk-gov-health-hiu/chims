@@ -28,20 +28,23 @@
                             <p:ajax event="tabChange" update="@this" />
                             <p:tab title="Counts"  >
                                 <h:panelGrid columns="1" >
-                                     <p:commandButton value="Client Registrations"   style="width:20em;margin:auto;"
+                                    <p:commandButton value="Client Registrations"   style="width:20em;margin:auto;"
                                                      action="#{hospitalReportController.toRegistrationCounts()}"
                                                      ajax="false"></p:commandButton>
-                                    
+
                                     <p:commandButton value="Clinic Visits"   style="width:20em;margin:auto;"
                                                      action="#{hospitalReportController.toVisitCounts()}"
                                                      ajax="false"></p:commandButton>
-                                   
-                                    <p:commandButton value="Daily Clinic Visits"   style="width:20em;margin:auto;"
-                                                     action="#{hospitalReportController.toViewDailyClinicsVisitCounts()}"
-                                                     ajax="false"></p:commandButton>
+
                                     <p:commandButton value="Daily Registrations"   style="width:20em;margin:auto;"
                                                      action="#{hospitalReportController.toViewDailyClinicsRegistrationCounts()}"
                                                      ajax="false"></p:commandButton>
+
+                                    <p:commandButton value="Daily Clinic Visits"   style="width:20em;margin:auto;"
+                                                     action="#{hospitalReportController.toDailyVisitCounts()}"
+                                                     ajax="false"></p:commandButton>
+
+
                                 </h:panelGrid>
                             </p:tab>
 
