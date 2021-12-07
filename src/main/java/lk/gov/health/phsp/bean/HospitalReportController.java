@@ -120,9 +120,9 @@ import org.primefaces.model.StreamedContent;
  *
  * @author hiu_pdhs_sp
  */
-@Named(value = "reportController")
+@Named
 @SessionScoped
-public class ReportController implements Serializable {
+public class HospitalReportController implements Serializable {
 // <editor-fold defaultstate="collapsed" desc="EJBs">
 
     @EJB
@@ -201,7 +201,7 @@ public class ReportController implements Serializable {
     /**
      * Creates a new instance of ReportController
      */
-    public ReportController() {
+    public HospitalReportController() {
     }
 
 // </editor-fold> 
@@ -821,39 +821,8 @@ public class ReportController implements Serializable {
 
 // <editor-fold defaultstate="collapsed" desc="Navigation">
     public String toViewReports() {
-        String forSys = "/reports/index";
-        String forIns = "/hospital/report_index";
-        String forMe = "/reports/index";
-        String forClient = "/reports/index";
-        String noAction = "";
-        String action = "";
-        switch (webUserController.getLoggedUser().getWebUserRole()) {
-            case Client:
-                action = forClient;
-                break;
-            case Doctor:
-            case Institution_Administrator:
-            case Institution_Super_User:
-            case Institution_User:
-            case Nurse:
-            case Midwife:
-                action = forIns;
-                break;
-            case Me_Admin:
-            case Me_Super_User:
-                action = forMe;
-                break;
-            case Me_User:
-            case User:
-                action = noAction;
-                break;
-            case Super_User:
-            case System_Administrator:
-                action = forSys;
-                break;
-        }
-        userTransactionController.recordTransaction("To View Clinic Visits By Institution");
-        return action;
+        userTransactionController.recordTransaction("To View Reports");
+        return "/reports/index";
     }
 
     public String toInstitutionMonthlySummeries() {
@@ -1540,114 +1509,23 @@ public class ReportController implements Serializable {
         return "/reports/excel/index";
     }
 
-    public String toViewClientRegistrationsByInstitution() {
+    public String toRegistrationCounts() {
         encounters = new ArrayList<>();
-        String forSys = "/reports/client_registrations/for_system_by_ins";
-        String forIns = "/reports/client_registrations/for_ins_by_ins";
-        String forMe = "/reports/client_registrations/for_me_by_ins";
-        String forClient = "/reports/client_registrations/for_clients";
-        String noAction = "";
-        String action = "";
-        switch (webUserController.getLoggedUser().getWebUserRole()) {
-            case Client:
-                action = forClient;
-                break;
-            case Doctor:
-            case Institution_Administrator:
-            case Institution_Super_User:
-            case Institution_User:
-            case Nurse:
-            case Midwife:
-                action = forIns;
-                break;
-            case Me_Admin:
-            case Me_Super_User:
-                action = forMe;
-                break;
-            case Me_User:
-            case User:
-                action = noAction;
-                break;
-            case Super_User:
-            case System_Administrator:
-                action = forSys;
-                break;
-        }
-        userTransactionController.recordTransaction("To View Client Registrations By Institution");
+        institutionCounts= new ArrayList<>();
+        String action = "/hospital/registration_counts";
         return action;
     }
 
-    public String toViewClinicVisitsByInstitution() {
+    public String toVisitCounts() {
         encounters = new ArrayList<>();
-        String forSys = "/reports/clinic_visits/for_ins_by_ins";
-        String forIns = "/reports/clinic_visits/for_ins_by_ins";
-        String forMe = "/reports/clinic_visits/for_ins_by_ins";
-        String forClient = "/reports/clinic_visits/for_ins_by_ins";
-        String noAction = "";
-        String action = "";
-        switch (webUserController.getLoggedUser().getWebUserRole()) {
-            case Client:
-                action = forClient;
-                break;
-            case Doctor:
-            case Institution_Administrator:
-            case Institution_Super_User:
-            case Institution_User:
-            case Nurse:
-            case Midwife:
-                action = forIns;
-                break;
-            case Me_Admin:
-            case Me_Super_User:
-                action = forMe;
-                break;
-            case Me_User:
-            case User:
-                action = noAction;
-                break;
-            case Super_User:
-            case System_Administrator:
-                action = forSys;
-                break;
-        }
-        userTransactionController.recordTransaction("To View Clinic Visits By Institution");
-        return action;
+        institutionCounts= new ArrayList<>();
+        String forIns = "/hospital/visit_counts";
+        return forIns;
     }
 
-    public String toViewDailyClinicsVisitCounts() {
+    public String toDailyVisitCounts() {
         encounters = new ArrayList<>();
-        String forSys = "/reports/clinic_visits/for_sa_daily";
-        String forIns = "/reports/clinic_visits/for_ia_daily";
-        String forMe = "/reports/clinic_visits/for_me_daily";
-        String forClient = "/reports/index";
-        String noAction = "";
-        String action = "";
-        switch (webUserController.getLoggedUser().getWebUserRole()) {
-            case Client:
-                action = forClient;
-                break;
-            case Doctor:
-            case Institution_Administrator:
-            case Institution_Super_User:
-            case Institution_User:
-            case Nurse:
-            case Midwife:
-                action = forIns;
-                break;
-            case Me_Admin:
-            case Me_Super_User:
-                action = forMe;
-                break;
-            case Me_User:
-            case User:
-                action = noAction;
-                break;
-            case Super_User:
-            case System_Administrator:
-                action = forSys;
-                break;
-        }
-        userTransactionController.recordTransaction("To View Daily Clinic Visits");
+        String action = "/hospital/daily_visit_counts";
         return action;
     }
     
@@ -1691,38 +1569,7 @@ public class ReportController implements Serializable {
 
     public String toViewDailyClinicsRegistrationCounts() {
         encounters = new ArrayList<>();
-        String forSys = "/reports/client_registrations/for_sa_daily";
-        String forIns = "/reports/client_registrations/for_ia_daily";
-        String forMe = "/reports/client_registrations/for_me_daily";
-        String forClient = "/reports/index";
-        String noAction = "";
-        String action = "";
-        switch (webUserController.getLoggedUser().getWebUserRole()) {
-            case Client:
-                action = forClient;
-                break;
-            case Doctor:
-            case Institution_Administrator:
-            case Institution_Super_User:
-            case Institution_User:
-            case Nurse:
-            case Midwife:
-                action = forIns;
-                break;
-            case Me_Admin:
-            case Me_Super_User:
-                action = forMe;
-                break;
-            case Me_User:
-            case User:
-                action = noAction;
-                break;
-            case Super_User:
-            case System_Administrator:
-                action = forSys;
-                break;
-        }
-        userTransactionController.recordTransaction("To View Daily Clinic Visits");
+        String action = "/hospital/daily_registration_counts";
         return action;
     }
 
@@ -2171,10 +2018,9 @@ public class ReportController implements Serializable {
         m.put("res", true);
         j = j + " and c.createdAt between :fd and :td ";
 
-        if (webUserController.getLoggedUser().isRestrictedToInstitution()) {
             j = j + " and c.createInstitution in :ins ";
             m.put("ins", webUserController.getLoggableInstitutions());
-        }
+        
 
         j = j + " group by c.createInstitution ";
         j = j + " order by c.createInstitution.name ";
@@ -2203,11 +2049,12 @@ public class ReportController implements Serializable {
         m.put("ret", true);
         m.put("et", EncounterType.Clinic_Visit);
         j = j + " and e.encounterDate between :fd and :td ";
-
+        j = j + " and e.institution in :inss ";
         j = j + " group by e.institution ";
         j = j + " order by e.institution.name ";
         m.put("fd", getFromDate());
         m.put("td", getToDate());
+        m.put("inss", webUserController.findAutherizedInstitutions());
         List<Object> objs = getClientFacade().findAggregates(j, m);
         institutionCounts = new ArrayList<>();
         reportCount = 0l;
@@ -2858,20 +2705,11 @@ public class ReportController implements Serializable {
         m.put("fd", fromDate);
         m.put("td", toDate);
         m.put("type", EncounterType.Clinic_Visit);
-        if (institution != null) {
-            j += " and e.institution in :ins ";
+           j += " and e.institution in :ins ";
             List<Institution> ins = institutionApplicationController.findChildrenInstitutions(institution);
             ins.add(institution);
             m.put("ins", ins);
-        } else {
-            if (webUserController.getLoggedUser().isRestrictedToInstitution()) {
-                j += " and e.institution in :ins ";
-                List<Institution> ins = webUserController.getLoggableInstitutions();
-                ins.add(institution);
-                m.put("ins", ins);
-            }
-        }
-
+       
         j += " group by e.encounterDate "
                 + " order by e.encounterDate";
 
@@ -2976,7 +2814,7 @@ public class ReportController implements Serializable {
         Map m = new HashMap();
 
         j = "select new lk.gov.health.phsp.pojcs.DateInstitutionCount("
-                + "cast(e.createdAt as LocalDate) as createdDate, count(e)"
+                + "cast(e.createdAt as LocalDate), count(e)"
                 + ") "
                 + " from Client e "
                 + " where e.retired=:ret "
@@ -2985,20 +2823,11 @@ public class ReportController implements Serializable {
         m.put("ret", false);
         m.put("fd", fromDate);
         m.put("td", toDate);
-        if (institution != null) {
-            j += " and e.createInstitution in :ins ";
+           j += " and e.createInstitution in :ins ";
             List<Institution> ins = institutionApplicationController.findChildrenInstitutions(institution);
             ins.add(institution);
             m.put("ins", ins);
-        } else {
-            if (webUserController.getLoggedUser().isRestrictedToInstitution()) {
-                j += " and e.createInstitution in :ins ";
-                List<Institution> ins = webUserController.getLoggableInstitutions();
-                ins.add(institution);
-                m.put("ins", ins);
-            }
-        }
-
+       
         j += " group by cast(e.createdAt as LocalDate)  "
                 + " order by cast(e.createdAt as LocalDate)";
 
@@ -3060,6 +2889,8 @@ public class ReportController implements Serializable {
         cellStyle.setDataFormat(
                 createHelper.createDataFormat().getFormat("dd/MMMM/yyyy"));
 
+        
+        if(objs!=null){
         for (Object o : objs) {
             if (o instanceof DateInstitutionCount) {
                 DateInstitutionCount cbd = (DateInstitutionCount) o;
@@ -3078,7 +2909,11 @@ public class ReportController implements Serializable {
                 serial++;
             }
         }
-
+    
+            
+        }
+        
+        
         objs = null;
         System.gc();
 
