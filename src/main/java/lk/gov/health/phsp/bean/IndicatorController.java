@@ -217,8 +217,8 @@ public class IndicatorController implements Serializable {
             return;
         }
         Jpq j = new Jpq();
-        fromDate = CommonController.startOfTheMonth(year, month);
-        toDate = CommonController.endOfTheMonth(year, month);
+        fromDate = CommonController.startOfTheMonth(year, month, true);
+        toDate = CommonController.endOfTheMonth(year, month,true);
 
         List<QueryWithCriteria> qs = new ArrayList<>();
         List<EncounterWithComponents> encountersWithComponents;
@@ -335,8 +335,8 @@ public class IndicatorController implements Serializable {
             return;
         }
         Jpq j = new Jpq();
-        fromDate = CommonController.startOfTheMonth(year, month);
-        toDate = CommonController.endOfTheMonth(year, month);
+        fromDate = CommonController.startOfTheMonth(year, month,true);
+        toDate = CommonController.endOfTheMonth(year, month,true);
 
         List<QueryWithCriteria> qs = new ArrayList<>();
         List<EncounterWithComponents> encountersWithComponents;
@@ -910,10 +910,8 @@ public class IndicatorController implements Serializable {
 
     public  List<Long> findEncounterIds(Date fromDate, Date toDate, Institution institution) {
         String j = "select e.id "
-                + " from  ClientEncounterComponentFormSet f join f.encounter e"
-                + " where e.retired<>:er"
-                + " and f.retired<>:fr ";
-        j += " and f.completed=:fc ";
+                + " from  Encounter e"
+                + " where e.retired<>:er";
         j += " and e.institution=:i "
                 + " and e.encounterType=:t "
                 + " and e.encounterDate between :fd and :td"
@@ -922,8 +920,6 @@ public class IndicatorController implements Serializable {
         m.put("i", institution);
         m.put("t", EncounterType.Clinic_Visit);
         m.put("er", true);
-        m.put("fr", true);
-        m.put("fc", true);
         m.put("fd", fromDate);
         m.put("td", toDate);
         List<Long> encs = encounterFacade.findLongList(j, m);
@@ -987,8 +983,8 @@ public class IndicatorController implements Serializable {
             return;
         }
 
-        fromDate = CommonController.startOfTheMonth(year, month);
-        toDate = CommonController.endOfTheMonth(year, month);
+        fromDate = CommonController.startOfTheMonth(year, month, true);
+        toDate = CommonController.endOfTheMonth(year, month, true);
         Jpq j = new Jpq();
         j.setMessage("");
         j.setMessage("");
@@ -1220,8 +1216,8 @@ public class IndicatorController implements Serializable {
             JsfUtil.addErrorMessage("Month");
             return;
         }
-        fromDate = CommonController.startOfTheMonth(year, month);
-        toDate = CommonController.endOfTheMonth(year, month);
+        fromDate = CommonController.startOfTheMonth(year, month, true);
+        toDate = CommonController.endOfTheMonth(year, month, true);
         Jpq j = new Jpq();
         j.setMessage("");
         j.setMessage("");
@@ -1355,8 +1351,8 @@ public class IndicatorController implements Serializable {
             return;
         }
 
-        fromDate = CommonController.startOfTheMonth(year, month);
-        toDate = CommonController.endOfTheMonth(year, month);
+        fromDate = CommonController.startOfTheMonth(year, month, true);
+        toDate = CommonController.endOfTheMonth(year, month, true);
         Jpq j = new Jpq();
         j.setMessage("");
         j.setMessage("");
@@ -1471,8 +1467,8 @@ public class IndicatorController implements Serializable {
             return;
         }
 
-        fromDate = CommonController.startOfTheMonth(year, month);
-        toDate = CommonController.endOfTheMonth(year, month);
+        fromDate = CommonController.startOfTheMonth(year, month, true);
+        toDate = CommonController.endOfTheMonth(year, month, true);
         Jpq j = new Jpq();
         j.setMessage("");
         j.setMessage("");
