@@ -39,8 +39,10 @@
                             <p:barcode id="barcodePhn" type="code128" cache="false" value="#{clientController.selected.phn}" ></p:barcode>
                             <p:panel id="card" style="border: none;" >
 
-                                <div style="font-size: 1rem;line-height: 1.5rem;" >
-                                    <p:outputLabel escape="false" value="Name&nbsp;:&nbsp;#{clientController.selected.person.nameWithTitle}"></p:outputLabel>  
+                                <div style="font-size: 1rem;line-height: 1.5rem; overflow-wrap: break-word;" >
+                                    <p:outputLabel escape="false" value="Name&nbsp;:&nbsp;"></p:outputLabel>  
+                                    <br/>
+                                    <p:outputLabel escape="false" value="#{clientController.selected.person.nameWithTitle}"></p:outputLabel>  
                                     <br/>
                                     <p:outputLabel  escape="false" value="NIC&nbsp;&nbsp;&nbsp;:&nbsp;#{clientController.selected.person.nic}" ></p:outputLabel> 
                                     <br/>
