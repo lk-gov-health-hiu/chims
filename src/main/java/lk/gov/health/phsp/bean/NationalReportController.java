@@ -26,28 +26,36 @@ package lk.gov.health.phsp.bean;
 import javax.inject.Named;
 import javax.faces.view.ViewScoped;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.ejb.EJB;
+import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 import lk.gov.health.phsp.entity.Institution;
+import lk.gov.health.phsp.entity.Item;
 import lk.gov.health.phsp.enums.EncounterType;
 import lk.gov.health.phsp.facade.ClientFacade;
 import lk.gov.health.phsp.facade.EncounterFacade;
+import lk.gov.health.phsp.pojcs.InstitutionCount;
+import lk.gov.health.phsp.pojcs.ObservationValueCount;
 
 /**
  *
  * @author buddhika
  */
 @Named
-@ViewScoped
-public class HospitalController implements Serializable {
+@SessionScoped
+public class NationalReportController implements Serializable {
 
     private Date fromDate;
     private Date toDate;
     private Long count;
+    private Item queryItem;
+
+    private List<ObservationValueCount> observationValueCounts;
 
     private Institution institution;
 
@@ -62,85 +70,48 @@ public class HospitalController implements Serializable {
     /**
      * Creates a new instance of HospitalController
      */
-    public HospitalController() {
+    public NationalReportController() {
     }
 
-    public String toHospitalReportsCounts() {
+    public String toNationalReportsCounts() {
         count = null;
-        return "/reports/hospital/counts";
+        return "/national/counts";
     }
 
-    public String toHospitalReportsLists() {
+    public String toObservationValueCount() {
         count = null;
-        return "/reports/hospital/lists";
+        return "/national/observation_values";
     }
 
-    public String toHospitalRegistrationCount() {
-        count = null;
-        return "/reports/hospital/registrations";
-    }
-
-    public String toClinicVisitCount() {
-        count = null;
-        return "/reports/hospital/clinic_visits";
-    }
-
-    public void calculateClientRegistrations() {
+    public void fillObservationValues() {
         String j;
         Map m = new HashMap();
 
-        j = "select count(c) "
-                + " from Client c "
+        j = "select new lk.gov.health.phsp.pojcs.ObservationValueCount(c.shortTextValue, count(c)) "
+                + " from ClientEncounterComponentItem c "
                 + " where (c.retired=:ret or c.retired is null) "
-                + " and (c.reservedClient=:res or c.reservedClient is null) "
-                + " and c.createdAt between :fd and :td ";
+                + " and (c.item=:qi) "
+                + " and c.createdAt between :fd and :td "
+                + " group by c.shortTextValue";
         m.put("ret", false);
-        m.put("res", false);
+        m.put("qi", queryItem);
         m.put("fd", getFromDate());
         m.put("td", getToDate());
 
         if (institution != null) {
             j += " and c.createInstitution=:ins ";
             m.put("ins", institution);
-        } else {
-            if (webUserController.getLoggedUser().isRestrictedToInstitution()) {
-                j += " and c.createInstitution in :inss ";
-                List<Institution> ins = webUserController.getLoggableInstitutions();
-                m.put("inss", ins);
+        }
+        observationValueCounts = new ArrayList<>();
+        System.out.println("m = " + m);
+        System.out.println("j = " + j);
+        List<Object> objs = clientFacade.findAggregates(j, m);
+        for (Object o : objs) {
+            if (o instanceof ObservationValueCount) {
+                ObservationValueCount ic = (ObservationValueCount) o;
+                observationValueCounts.add(ic);
             }
         }
-
-        count = clientFacade.findLongByJpql(j, m);
-
-    }
-
-    public void calculateClinicVisits() {
-        String j;
-        Map m = new HashMap();
-
-        j = "select count(e) "
-                + " from Encounter e "
-                + " where e.retired=:ret "
-                + " and e.encounterType=:type "
-                + " and e.encounterDate between :fd and :td ";
-
-        m.put("ret", false);
-        m.put("fd", fromDate);
-        m.put("td", toDate);
-        m.put("type", EncounterType.Clinic_Visit);
-
-        if (institution != null) {
-            j += " and e.institution=:ins ";
-            m.put("ins", institution);
-        } else {
-            if (webUserController.getLoggedUser().isRestrictedToInstitution()) {
-                j += " and e.institution in :inss ";
-                List<Institution> ins = webUserController.getLoggableInstitutions();
-                m.put("inss", ins);
-            }
-        }
-
-        count = encounterFacade.findLongByJpql(j, m);
 
     }
 
@@ -180,6 +151,22 @@ public class HospitalController implements Serializable {
 
     public void setInstitution(Institution institution) {
         this.institution = institution;
+    }
+
+    public Item getQueryItem() {
+        return queryItem;
+    }
+
+    public void setQueryItem(Item queryItem) {
+        this.queryItem = queryItem;
+    }
+
+    public List<ObservationValueCount> getObservationValueCounts() {
+        return observationValueCounts;
+    }
+
+    public void setObservationValueCounts(List<ObservationValueCount> observationValueCounts) {
+        this.observationValueCounts = observationValueCounts;
     }
 
 }
