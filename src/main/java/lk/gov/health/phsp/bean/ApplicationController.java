@@ -24,8 +24,6 @@
 package lk.gov.health.phsp.bean;
 
 // <editor-fold defaultstate="collapsed" desc="Import">
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,14 +32,9 @@ import javax.ejb.EJB;
 import javax.inject.Named;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import lk.gov.health.phsp.entity.Area;
 import lk.gov.health.phsp.entity.Institution;
-import lk.gov.health.phsp.entity.Item;
 import lk.gov.health.phsp.entity.Phn;
 import lk.gov.health.phsp.entity.QueryComponent;
-import lk.gov.health.phsp.enums.AreaType;
-import lk.gov.health.phsp.facade.AreaFacade;
-import lk.gov.health.phsp.enums.EncounterType;
 import lk.gov.health.phsp.enums.InstitutionType;
 import lk.gov.health.phsp.enums.WebUserRole;
 import lk.gov.health.phsp.facade.ClientEncounterComponentItemFacade;
