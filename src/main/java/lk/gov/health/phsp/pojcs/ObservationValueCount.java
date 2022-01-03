@@ -31,6 +31,12 @@ public class ObservationValueCount {
     
     private String stringValue;
     private Long count;
+    private Integer intValue;
+    private Long longValue;
+    
+    
+    
+    
 
     public ObservationValueCount() {
     }
@@ -40,6 +46,18 @@ public class ObservationValueCount {
         this.count = count;
     }
 
+    public ObservationValueCount(Integer intValue, Long count) {
+        this.count = count;
+        this.intValue = intValue;
+    }
+
+    public ObservationValueCount(Long longValue, Long count) {
+        this.count = count;
+        this.longValue = longValue;
+    }
+
+    
+    
     
     
     public String getStringValue() {
@@ -56,6 +74,22 @@ public class ObservationValueCount {
 
     public void setCount(Long count) {
         this.count = count;
+    }
+
+    public Integer getIntValue() {
+        return intValue;
+    }
+
+    public void setIntValue(Integer intValue) {
+        this.intValue = intValue;
+    }
+
+    public Long getLongValue() {
+        return longValue;
+    }
+
+    public void setLongValue(Long longValue) {
+        this.longValue = longValue;
     }
     
     
