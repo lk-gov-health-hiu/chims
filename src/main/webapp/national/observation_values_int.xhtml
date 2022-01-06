@@ -19,7 +19,7 @@
                 <h:form>
                     <p:panelGrid columns="2" styleClass="alignTop" >
                         <f:facet name="header" >
-                            <p:outputLabel value="Observation Count" ></p:outputLabel>
+                            <p:outputLabel value="Observation Count - Integer" ></p:outputLabel>
                         </f:facet>
                         <p:panelGrid columns="1"   >
                             <f:facet name="header" >
@@ -42,7 +42,7 @@
                             <p:commandButton value="Process" ajax="false"
                                              action="#{nationalReportController.fillObservationValuesInt()}"></p:commandButton>
                             <p:commandButton value="Download" ajax="false">
-                                <p:dataExporter type="xlsx" target="tbl" fileName="Observation Counts" ></p:dataExporter>
+                                <p:dataExporter type="xlsx" target="tbl" fileName="Observation Counts - #{nationalReportController.queryItem.name}" ></p:dataExporter>
                             </p:commandButton>
                         </p:panelGrid>
 
@@ -53,7 +53,7 @@
                                      rowsPerPageTemplate="10,20,30,40,50"
                                      >
                             <f:facet name="header"  >
-                                <p:outputLabel value="Clinic Visits by Institution" ></p:outputLabel>
+                                <p:outputLabel value="Observation Counts - #{nationalReportController.queryItem.name}" ></p:outputLabel>
                                 <p:outputLabel value="From : " ></p:outputLabel>
                                 <p:outputLabel value="#{hospitalReportController.fromDate}" >
                                     <f:convertDateTime pattern="dd MMMM yyyy" ></f:convertDateTime>

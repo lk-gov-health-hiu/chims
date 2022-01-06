@@ -25,10 +25,13 @@ package lk.gov.health.phsp.ejb;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.ejb.Asynchronous;
 import javax.ejb.EJB;
 import javax.ejb.Schedule;
@@ -52,6 +55,7 @@ import lk.gov.health.phsp.entity.ReportCell;
 import lk.gov.health.phsp.entity.ReportColumn;
 import lk.gov.health.phsp.entity.ReportRow;
 import lk.gov.health.phsp.entity.StoredQueryResult;
+import lk.gov.health.phsp.entity.StoredRequest;
 import lk.gov.health.phsp.entity.WebUser;
 import lk.gov.health.phsp.enums.EncounterType;
 import lk.gov.health.phsp.enums.InstitutionType;
@@ -71,11 +75,13 @@ import lk.gov.health.phsp.facade.ReportCellFacade;
 import lk.gov.health.phsp.facade.ReportColumnFacade;
 import lk.gov.health.phsp.facade.ReportRowFacade;
 import lk.gov.health.phsp.facade.StoredQueryResultFacade;
+import lk.gov.health.phsp.facade.StoredRequestFacade;
 import lk.gov.health.phsp.pojcs.ClientFirstEncounterDetailsRemainingEncounterDatesAndTypes;
 import lk.gov.health.phsp.pojcs.EncounterWithComponents;
 import lk.gov.health.phsp.pojcs.InstitutionYearMonthCompleted;
 import lk.gov.health.phsp.pojcs.Jpq;
 import lk.gov.health.phsp.pojcs.QueryWithCriteria;
+import lk.gov.health.phsp.pojcs.Replaceable;
 
 /**
  *
@@ -89,7 +95,7 @@ public class AnalysisBean {
     @EJB
     QueryComponentFacade queryComponentFacade;
     @EJB
-    ClientEncounterComponentItemFacade clientEncounterComponentItemFacade;
+     ClientEncounterComponentItemFacade clientEncounterComponentItemFacade;
     @EJB
     EncounterFacade encounterFacade;
     @EJB
@@ -108,6 +114,8 @@ public class AnalysisBean {
     ClientEncounterComponentFormSetFacade clientEncounterComponentFormSetFacade;
     @EJB
     ClientFacade clientFacade;
+    @EJB
+    StoredRequestFacade storedRequestFacade;
 
     static List<QueryComponent> queryComponents;
     static int year;
@@ -1468,7 +1476,8 @@ public class AnalysisBean {
         return cs;
     }
 
-    private List<ClientEncounterComponentItem> findClientEncounterComponentItems(Long endId) {
+     private  List<ClientEncounterComponentItem> findClientEncounterComponentItems(Long endId) {
+         try{
         String j;
         Map m;
         m = new HashMap();
@@ -1477,7 +1486,9 @@ public class AnalysisBean {
                 + " and f.encounter.id=:eid";
         m.put("eid", endId);
         List<ClientEncounterComponentItem> ts = clientEncounterComponentItemFacade.findByJpql(j, m);
-        return ts;
+        return ts;}catch(Exception e){
+            return null;
+        }
     }
 
     public List<QueryComponent> findCriteriaForQueryComponent(String qryCode) {
@@ -1500,6 +1511,7 @@ public class AnalysisBean {
                 }
             }
         }
+        output.sort(Comparator.comparing(QueryComponent::getOrderNo));
         return output;
     }
 
@@ -1517,6 +1529,17 @@ public class AnalysisBean {
             queryComponents = findQueryComponents();
         }
         return queryComponents;
+    }
+    
+    public List<QueryComponent> fillIndicators() {
+        List<QueryComponent> tqcs = getQueryComponents();
+        List<QueryComponent> nqs = new ArrayList<>();
+        for (QueryComponent q : tqcs) {
+            if (q.getQueryType() == QueryType.Indicator) {
+                nqs.add(q);
+            }
+        }
+        return nqs;
     }
 
     public Long calculateIndividualQueryResult(List<EncounterWithComponents> ewcs, QueryWithCriteria qwc) {
@@ -2030,4 +2053,220 @@ public class AnalysisBean {
                 + " order by s.id desc";
         return storedQueryResultFacade.findFirstByJpql(j, m);
     }
+    
+    @Asynchronous
+    public void runClinicCountsForRequests(QueryComponent tQc,
+            Date fromDate,
+            Date toDate,
+            List<Institution> inss) {
+        
+        System.out.println("runClinicCountsForRequests");
+        System.out.println("inss = " + inss.size());
+        
+        for(Institution tIns:inss){
+            System.out.println("tIns = " + tIns);
+        if (tIns.getInstitutionType() == null) {
+            JsfUtil.addErrorMessage("No Type for the institution");
+            return;
+        }
+        if (tIns.getInstitutionType() != InstitutionType.Clinic) {
+            JsfUtil.addErrorMessage("Selected institution is NOT a HLC?");
+            return;
+        }
+        Jpq j = new Jpq();
+        
+        List<QueryWithCriteria> qs = new ArrayList<>();
+        List<EncounterWithComponents> encountersWithComponents;
+
+        List<Long> encounterIds = findEncounterIds(fromDate,
+                toDate,
+                tIns);
+
+        encountersWithComponents = findEncountersWithComponents(encounterIds);
+        if (encountersWithComponents == null) {
+            continue;
+        }
+
+        QueryWithCriteria qwc = new QueryWithCriteria();
+        qwc.setQuery(tQc);
+        qwc.setCriteria(findCriteriaForQueryComponent(tQc.getCode()));
+
+        Long value = calculateIndividualQueryResult(encountersWithComponents, qwc);
+        j.setMessage("Clinic : " + tIns.getName() + "\n");
+        j.setMessage(j.getMessage() + "From : " + CommonController.formatDate(fromDate) + "\n");
+        j.setMessage(j.getMessage() + "To : " + CommonController.formatDate(toDate) + "\n");
+        j.setMessage(j.getMessage() + "Number of Encounters : " + encountersWithComponents.size() + "\n");
+        j.setMessage(j.getMessage() + "Count : " + qwc.getQuery().getName() + "\n");
+        if (value != null) {
+            saveValue(qwc.getQuery(), fromDate, toDate, tIns, value);
+            j.setMessage(j.getMessage() + "Result : " + value + "\n");
+        }else{
+            j.setMessage(j.getMessage() + "Result : No Result\n");
+        }
+            System.out.println("j.getErrorMessage() = " + j.getErrorMessage());
+            System.out.println("j.getErrorMessage() = " + j.getMessage());
+//        message = CommonController.stringToHtml(j.getErrorMessage());
+//        result = CommonController.stringToHtml(j.getMessage());
+        
+        }
+    }
+    
+    
+    //    @Schedule(dayOfWeek = "Mon-Fri", month = "*", hour = "9-17", dayOfMonth = "*", year = "*", minute = "*", second = "0", persistent = false)
+//    public void myTimer() {
+//        // System.out.println("Timer event: " + new Date());
+//    }
+    @Schedule(hour = "19-15", minute = "*/3", second = "0", persistent = false)
+    public void runStoredRequests() {
+        System.out.print("runStoredRequests");
+        Map m = new HashMap();
+        String j = "select s"
+                + " from StoredRequest s "
+                + " where s.pending=:pen";
+        m.put("pen", true);
+        
+        StoredRequest request = storedRequestFacade.findFirstByJpql(j, m) ;
+        
+        if(request==null) return;
+        
+        request.setPending(false);
+        storedRequestFacade.edit(request);
+        
+         List<QueryComponent> indicators = fillIndicators();
+        
+        if (request.getInstitution() == null) {
+            System.out.println("no institution");
+            return;
+        }
+        if (indicators == null) {
+            System.out.println("no indicators");
+            return;
+        }
+        if (indicators.isEmpty()) {
+             System.out.println("no indicators");
+            return;
+        }
+        if (request.getRyear() == 0) {
+            JsfUtil.addErrorMessage("Year ?");
+            return;
+        }
+        if (request.getRmonth() == null) {
+            JsfUtil.addErrorMessage("Month");
+            return;
+        }
+       
+       
+        Date fromDate = CommonController.startOfTheMonth(request.getRyear(), request.getRmonth(),true);
+        Date toDate = CommonController.endOfTheMonth(request.getRyear(), request.getRmonth(),true);
+
+        List<QueryWithCriteria> qs = new ArrayList<>();
+        List<EncounterWithComponents> encountersWithComponents;
+
+        List<Long> encounterIds = findEncounterIds(fromDate,
+                toDate,
+                request.getInstitution());
+
+        encountersWithComponents = findEncountersWithComponents(encounterIds);
+        if (encountersWithComponents == null) {
+            System.out.println("No data for the selected institution for the period");
+            return;
+        }
+        Map<Long, QueryComponent> qcs = new HashMap<>();
+        List<Replaceable> rs = new ArrayList<>();
+        for (QueryComponent qc : indicators) {
+            List<Replaceable> trs = findReplaceblesInIndicatorQuery(qc.getIndicatorQuery());
+            if (trs != null && !trs.isEmpty()) {
+                rs.addAll(trs);
+            }
+        }
+
+        for (Replaceable r : rs) {
+            QueryComponent temqc = findLastQuery(r.getQryCode());
+            if (temqc == null) {
+                System.out.println( "\nCount " + r.getQryCode() + " used in indicators not found.\n");
+                continue;
+            }
+            if (null == temqc.getQueryType()) {
+                System.out.println("\n" + "No Type set for the query " + r.getQryCode() + " is not set. \n");
+
+            } else {
+                switch (temqc.getQueryType()) {
+                    case Client_Count:
+                    case Encounter_Count:
+                        qcs.put(temqc.getId(), temqc);
+                        break;
+                    case Population:
+                        break;
+                    default:
+                }
+            }
+        }
+
+        for (QueryComponent qcc : qcs.values()) {
+            QueryWithCriteria qwc = new QueryWithCriteria();
+            qwc.setQuery(qcc);
+            qwc.setCriteria(findCriteriaForQueryComponent(qcc.getCode()));
+            qs.add(qwc);
+        }
+
+       
+        for (QueryWithCriteria qwc : qs) {
+            Long value = calculateIndividualQueryResult(encountersWithComponents, qwc);
+            if (value != null) {
+                if (qwc != null) {
+                    saveValue(qwc.getQuery(), fromDate, toDate, request.getInstitution(), value);
+                }
+            }
+        }
+
+    }
+    
+    
+    public List<Replaceable> findReplaceblesInIndicatorQuery(String text) {
+        List<Replaceable> ss = new ArrayList<>();
+
+        String patternStart = "#{";
+        String patternEnd = "}";
+        String regexString = Pattern.quote(patternStart) + "(.*?)" + Pattern.quote(patternEnd);
+
+        Pattern p = Pattern.compile(regexString);
+        Matcher m = p.matcher(text);
+
+        while (m.find()) {
+            String block = m.group(1);
+            if (!block.trim().equals("")) {
+                Replaceable s = new Replaceable();
+                s.setFullText(block);
+                s.setTextToBeReplaced(block);
+                s.setQryCode(block);
+                ss.add(s);
+            }
+        }
+
+        return ss;
+
+    }
+    
+    public QueryComponent findLastQuery(String qry) {
+        if (qry == null) {
+            return null;
+        }
+        QueryComponent nq = null;
+        List<QueryComponent> tqcs = getQueryComponents();
+        List<QueryComponent> nqs = new ArrayList<>();
+        for (QueryComponent q : tqcs) {
+            if (q.getCode() != null && q.getCode().equalsIgnoreCase(qry)) {
+                if (nq == null) {
+                    nq = q;
+                } else {
+                    if (nq.getId() < q.getId()) {
+                        nq = q;
+                    }
+                }
+            }
+        }
+        return nq;
+
+    }
+
 }

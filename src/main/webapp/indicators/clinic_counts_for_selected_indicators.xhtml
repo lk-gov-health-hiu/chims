@@ -77,9 +77,14 @@
                                     </p:column>
                                 </p:dataTable>
 
-                                <p:spacer ></p:spacer>
+                               
                                 <p:commandButton value="Calculate"  style="width:30em;margin:auto;"
                                                  action="#{indicatorController.runClinicCountsForSelectedIndicators()}"
+                                                 ajax="false">
+                                </p:commandButton>
+                                
+                                <p:commandButton value="Schedule"  style="width:30em;margin:auto;"
+                                                 action="#{indicatorController.scheduleClinicCountsForSelectedIndicators()}"
                                                  ajax="false">
                                 </p:commandButton>
 

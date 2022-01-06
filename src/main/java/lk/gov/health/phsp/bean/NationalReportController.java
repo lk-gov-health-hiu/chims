@@ -92,6 +92,11 @@ public class NationalReportController implements Serializable {
         count = null;
         return "/national/observation_values_long";
     }
+    
+    public String toObservationValueCountDbl() {
+        count = null;
+        return "/national/observation_values_dbl";
+    }
 
     public void fillObservationValues() {
         String j;
@@ -137,7 +142,7 @@ public class NationalReportController implements Serializable {
                 + " where (c.retired=:ret or c.retired is null) "
                 + " and (c.item=:qi) "
                 + " and c.createdAt between :fd and :td "
-                + " group by c.shortTextValue";
+                + " group by c.integerNumberValue";
         m.put("ret", false);
         m.put("qi", queryItem);
         m.put("fd", getFromDate());
@@ -172,7 +177,42 @@ public class NationalReportController implements Serializable {
                 + " where (c.retired=:ret or c.retired is null) "
                 + " and (c.item=:qi) "
                 + " and c.createdAt between :fd and :td "
-                + " group by c.shortTextValue";
+                + " group by c.longNumberValue";
+        m.put("ret", false);
+        m.put("qi", queryItem);
+        m.put("fd", getFromDate());
+        m.put("td", getToDate());
+
+        if (institution != null) {
+            j += " and c.createInstitution=:ins ";
+            m.put("ins", institution);
+        }
+        observationValueCounts = new ArrayList<>();
+        System.out.println("m = " + m);
+        System.out.println("j = " + j);
+        List<Object> objs = clientFacade.findAggregates(j, m);
+        if (objs == null) {
+            return;
+        }
+        for (Object o : objs) {
+            if (o instanceof ObservationValueCount) {
+                ObservationValueCount ic = (ObservationValueCount) o;
+                observationValueCounts.add(ic);
+            }
+        }
+
+    }
+    
+    public void fillObservationValuesDbl() {
+        String j;
+        Map m = new HashMap();
+
+        j = "select new lk.gov.health.phsp.pojcs.ObservationValueCount(c.realNumberValue, count(c)) "
+                + " from ClientEncounterComponentItem c "
+                + " where (c.retired=:ret or c.retired is null) "
+                + " and (c.item=:qi) "
+                + " and c.createdAt between :fd and :td "
+                + " group by c.realNumberValue";
         m.put("ret", false);
         m.put("qi", queryItem);
         m.put("fd", getFromDate());

@@ -8,7 +8,7 @@
 
     <h:head >
         <ui:define name="head">
-            Observation Counts
+            Observation Counts - Double Values
         </ui:define>
     </h:head>
 
@@ -19,7 +19,7 @@
                 <h:form>
                     <p:panelGrid columns="2" styleClass="alignTop" >
                         <f:facet name="header" >
-                            <p:outputLabel value="Observation Counts - Long" ></p:outputLabel>
+                            <p:outputLabel value="Observation Count" ></p:outputLabel>
                         </f:facet>
                         <p:panelGrid columns="1"   >
                             <f:facet name="header" >
@@ -40,7 +40,7 @@
                                                itemValue="#{ii}"></p:autoComplete>   
 
                             <p:commandButton value="Process" ajax="false"
-                                             action="#{nationalReportController.fillObservationValuesLong()}"></p:commandButton>
+                                             action="#{nationalReportController.fillObservationValuesDbl()}"></p:commandButton>
                             <p:commandButton value="Download" ajax="false">
                                 <p:dataExporter type="xlsx" target="tbl" fileName="Observation Counts - #{nationalReportController.queryItem.name}" ></p:dataExporter>
                             </p:commandButton>
@@ -68,11 +68,11 @@
                                 </p:outputLabel>
                             </p:column>
                             <p:column headerText="Value" 
-                                      filterBy="#{c.longValue}" 
+                                      filterBy="#{c.realNumberValue}" 
                                       filterMatchMode="contains" 
-                                      sortBy="#{c.longValue}"
+                                      sortBy="#{c.realNumberValue}"
                                       >
-                                <p:outputLabel value="#{c.longValue}" ></p:outputLabel>
+                                <p:outputLabel value="#{c.realNumberValue}" ></p:outputLabel>
                             </p:column>
                             <p:column headerText="Count"  
                                       sortBy="#{c.count}">

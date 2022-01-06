@@ -973,6 +973,46 @@ public class ReportController implements Serializable {
         return action;
     }
 
+    
+    public String toMultipleVariableClinicalData() {
+        String forSys = "/reports/clinical_data/multiple_variable_sa";
+        String forIns = "/reports/clinical_data/multiple_variable_ia";
+        String forMeu = "/reports/clinical_data/multiple_variable_meu";
+        String forMea = "/reports/clinical_data/multiple_variable_mea";
+        String forClient = "";
+        String noAction = "";
+        String action = "";
+        switch (webUserController.getLoggedUser().getWebUserRole()) {
+            case Client:
+                action = forClient;
+                break;
+            case Doctor:
+            case Institution_Administrator:
+            case Institution_Super_User:
+            case Institution_User:
+            case Nurse:
+            case Midwife:
+                action = forIns;
+                break;
+            case Me_Admin:
+                action = forMea;
+                break;
+            case Me_Super_User:
+                action = forMeu;
+                break;
+            case Me_User:
+            case User:
+                action = noAction;
+                break;
+            case Super_User:
+            case System_Administrator:
+                action = forSys;
+                break;
+        }
+        userTransactionController.recordTransaction("To Single Variable Clinical Data");
+        return action;
+    }
+    
     public String toViewMySummeries() {
 
         listMyReports();
@@ -3437,7 +3477,7 @@ public class ReportController implements Serializable {
 
     public Date getFromDate() {
         if (fromDate == null) {
-            fromDate = CommonController.startOfTheYear();
+            fromDate = CommonController.startOfTheMonth();
         }
         return fromDate;
     }

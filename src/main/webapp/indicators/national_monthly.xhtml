@@ -25,41 +25,51 @@
                         </f:facet>
 
 
-                        <h:panelGrid columns="1" styleClass="alignTop" >
+                        <h:panelGrid columns="1" styleClass="alignTop" style="width: 100%;" >
 
-                            <p:panelGrid columns="2" >
+                            <p:panelGrid columns="2"  style="width: 100%;" >
                                 <p:outputLabel value="Indicator" for="indicator" ></p:outputLabel>
                                 <p:autoComplete id="indicator"
                                                 required="true" 
                                                 requiredMessage="Please select a report. To list reports, start entering few letters"
                                                 value="#{indicatorController.queryComponent}"
                                                 completeMethod="#{queryComponentController.completeIndicators}"
-                                                var="q" forceSelection="true" maxResults="15" minQueryLength="3"
+                                                var="q" forceSelection="true" maxResults="15"
+                                                minQueryLength="3"
+                                                style="width: 100%;"
+                                                inputStyle="width: 100%;"
                                                 itemLabel="#{q.name}"
                                                 itemValue="#{q}">
                                 </p:autoComplete>
 
-                                <p:outputLabel id="lblYear" value="Year" for="txtYear" ></p:outputLabel>
-                                <p:inputText id="txtYear"
-                                             required="true"
-                                             requiredMessage="Enter the year. Ex. 2022"
+                                <p:outputLabel id="lblYear" value="Year &amp; Month" ></p:outputLabel>
 
-                                             value="#{indicatorController.year}" ></p:inputText>
-
-
-                                <p:outputLabel id="lblMonth" value="Month" for="mnuMonth" ></p:outputLabel>
-                                <p:selectOneMenu id="mnuMonth" value="#{indicatorController.month}" 
-                                                 requiredMessage="Please select a month."
-                                                 required="true">
-                                    <f:selectItem itemLabel="Select a month" ></f:selectItem>
-                                    <f:selectItems value="#{commonController.months}" var="m" itemValue="#{m.value}" itemLabel="#{m}" ></f:selectItems>
-                                </p:selectOneMenu>
+                                <p:panelGrid style="width: 100%;" >
+                                    <p:inputText 
+                                        required="true"
+                                        requiredMessage="Enter the year. Ex. 2022"
+                                        value="#{indicatorController.year}" ></p:inputText>
+                                    <p:selectOneMenu id="mnuMonth" value="#{indicatorController.month}" 
+                                                     requiredMessage="Please select a month."
+                                                     required="true">
+                                        <f:selectItem itemLabel="Select a month" ></f:selectItem>
+                                        <f:selectItems value="#{commonController.months}" var="m" itemValue="#{m.value}" itemLabel="#{m}" ></f:selectItems>
+                                    </p:selectOneMenu>
+                                </p:panelGrid>
 
                                 <p:spacer ></p:spacer>
-                                <p:commandButton value="Calculate"  style="width:30em;margin:auto;"
-                                                 action="#{indicatorController.runAllInstitutionMonthly()}"
-                                                 ajax="false">
-                                </p:commandButton>
+
+                                <p:panelGrid columns="2" >
+                                    <p:commandButton value="Calculate"  style="width:30em;margin:auto;" 
+                                                     action="#{indicatorController.runAllInstitutionMonthly()}"
+                                                     ajax="false">
+                                    </p:commandButton>
+                                    <p:commandButton value="Prepare for Calculation"  style="width:30em;margin:auto;" 
+                                                     action="#{indicatorController.runClinicCountsForRequestsForAllInstitutions()}"
+                                                     ajax="false">
+                                    </p:commandButton>
+                                </p:panelGrid>
+
 
                             </p:panelGrid>
 
@@ -67,11 +77,17 @@
 
                         </h:panelGrid>
 
-                        <h:panelGrid columns="2" >
+                        <h:panelGrid columns="1" >
                             <h:panelGrid columns="1" >
                                 <h:panelGrid columns="2" >
-                                    <p:inputText value="Result" ></p:inputText>
-                                    <p:inputText value="${indicatorController.result}" ></p:inputText>
+                                    <h:panelGroup >
+                                        <h1><p:inputText value="Result" ></p:inputText></h1>
+                                    </h:panelGroup>
+                                    <h:panelGroup >
+                                        <h1><p:inputText styleClass="h1" value="#{indicatorController.result}" >
+                                            </p:inputText>
+                                        </h1>
+                                    </h:panelGroup>
                                 </h:panelGrid>
                                 <h:panelGrid columns="1" >
                                     <h:outputText value="#{indicatorController.message}" escape="false" ></h:outputText>
@@ -79,6 +95,7 @@
                             </h:panelGrid>
 
                             <p:dataTable value="#{indicatorController.dataQueries}" var="dq"
+                                         id="tbl"
                                          rowKey="#{dq.institution.id}"
                                          rows="10"
                                          paginator="true"
@@ -87,7 +104,7 @@
                                          rowsPerPageTemplate="5,10,{ShowAll|'All'}"
                                          reflow="true"
                                          resizeMode="expand"
-                                         rowStatePreserved="true"
+
 
                                          >
                                 <p:column headerText="Institution" sortBy="#{dq.institution.name}"  filterBy="#{dq.institution.name}" filterMatchMode="contains">
@@ -102,10 +119,14 @@
                                 <p:column headerText="Action" >
                                     <p:commandButton value="Run Analysis" 
                                                      ajax="false"
-                                                     action="#{indicatorController.runClinicCountsForRequests(dq.institution, dq.query, indicatorController.year, indicatorController.month)}"></p:commandButton>
+                                                     action="#{indicatorController.runClinicCountsForRequests(dq)}"></p:commandButton>
                                 </p:column>
 
                             </p:dataTable>
+                            
+                            <p:commandButton ajax="false" value="Generate Excel" >
+                                <p:dataExporter target="tbl" type="xlsx" fileName="Analysis" ></p:dataExporter>
+                            </p:commandButton>
 
 
                         </h:panelGrid>

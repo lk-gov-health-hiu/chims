@@ -197,6 +197,7 @@ public abstract class AbstractFacade<T> {
     }
 
     public List<T> findByJpql(String jpql, Map<String, Object> parameters) {
+        try{
         TypedQuery<T> qry = getEntityManager().createQuery(jpql, entityClass);
         Set s = parameters.entrySet();
         Iterator it = s.iterator();
@@ -211,7 +212,9 @@ public abstract class AbstractFacade<T> {
                 qry.setParameter(pPara, pVal);
             }
         }
-        return qry.getResultList();
+        return qry.getResultList();}catch(Exception e){
+            return null;
+        }
     }
 
     public List<T> findByJpql(String jpql, Map<String, Object> parameters, boolean withoutCache) {

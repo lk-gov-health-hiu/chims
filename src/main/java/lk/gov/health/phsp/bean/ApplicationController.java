@@ -228,7 +228,6 @@ public class ApplicationController {
                 + " order by q.orderNo, q.name";
         Map m = new HashMap();
         return queryComponentFacade.findByJpql(j, m);
-
     }
 
     public void reloadQueryComponents() {

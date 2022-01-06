@@ -33,6 +33,7 @@ public class ObservationValueCount {
     private Long count;
     private Integer intValue;
     private Long longValue;
+    private Double realNumberValue;
     
     
     
@@ -40,6 +41,13 @@ public class ObservationValueCount {
 
     public ObservationValueCount() {
     }
+
+    public ObservationValueCount(Double realNumberValue, Long count) {
+        this.count = count;
+        this.realNumberValue = realNumberValue;
+    }
+    
+    
 
     public ObservationValueCount(String stringValue, Long count) {
         this.stringValue = stringValue;
@@ -90,6 +98,14 @@ public class ObservationValueCount {
 
     public void setLongValue(Long longValue) {
         this.longValue = longValue;
+    }
+
+    public Double getRealNumberValue() {
+        return realNumberValue;
+    }
+
+    public void setRealNumberValue(Double realNumberValue) {
+        this.realNumberValue = realNumberValue;
     }
     
     
