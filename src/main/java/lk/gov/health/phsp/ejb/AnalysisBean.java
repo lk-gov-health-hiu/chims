@@ -2116,7 +2116,7 @@ public class AnalysisBean {
 //    public void myTimer() {
 //        // System.out.println("Timer event: " + new Date());
 //    }
-    @Schedule(hour = "19-15", minute = "*/3", second = "0", persistent = false)
+    @Schedule(hour = "*", minute = "*/2", second = "0", persistent = false)
     public void runStoredRequests() {
         System.out.print("runStoredRequests");
         Map m = new HashMap();
