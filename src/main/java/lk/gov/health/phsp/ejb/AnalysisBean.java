@@ -1511,7 +1511,11 @@ public class AnalysisBean {
                 }
             }
         }
-        output.sort(Comparator.comparing(QueryComponent::getOrderNo));
+        try{
+            output.sort(Comparator.comparing(QueryComponent::getOrderNo));
+        }catch(Exception e){
+            System.out.println("e = " + e);
+        }
         return output;
     }
 
@@ -2116,7 +2120,7 @@ public class AnalysisBean {
 //    public void myTimer() {
 //        // System.out.println("Timer event: " + new Date());
 //    }
-    @Schedule(hour = "*", minute = "*/2", second = "0", persistent = false)
+    @Schedule(hour = "21-5", minute = "*/5", second = "0", persistent = false)
     public void runStoredRequests() {
         System.out.print("runStoredRequests");
         Map m = new HashMap();

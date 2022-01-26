@@ -38,6 +38,7 @@ import lk.gov.health.phsp.entity.Area;
 import lk.gov.health.phsp.entity.Institution;
 import lk.gov.health.phsp.entity.QueryComponent;
 import lk.gov.health.phsp.entity.StoredQueryResult;
+import lk.gov.health.phsp.enums.RelationshipType;
 import lk.gov.health.phsp.facade.QueryComponentFacade;
 import lk.gov.health.phsp.facade.StoredQueryResultFacade;
 import lk.gov.health.phsp.pojcs.InstitutionDataQuery;
@@ -53,6 +54,8 @@ public class StoredQueryResultController implements Serializable {
 
     @Inject
     WebUserController webUserController;
+    @Inject
+    RelationshipController relationshipController;
 
     @EJB
     StoredQueryResultFacade facade;
@@ -149,6 +152,21 @@ public class StoredQueryResultController implements Serializable {
         return qds;
     }
 
+    public List<InstitutionDataQuery> findPopulationData(QueryComponent qc, List<Institution> institutions, Integer year) {
+        RelationshipType pt = qc.getPopulationType();
+        List<InstitutionDataQuery> qds = new ArrayList<>();
+        for (Institution i : institutions) {
+            InstitutionDataQuery q = new InstitutionDataQuery();
+            q.setInstitution(i);
+            q.setYear(year);
+            Long ic = relationshipController.findPopulationValue(year, i, pt);
+            q.setValue(ic);
+            q.setQuery(qc);
+            qds.add(q);
+        }
+        return qds;
+    }
+
     public StoredQueryResult findStoredQueryResult(QueryComponent qc, Date fromDate, Date toDate, Institution institution) {
         String j;
         Map m;
@@ -218,7 +236,7 @@ public class StoredQueryResultController implements Serializable {
         }
 
     }
-    
+
     public void saveValue(QueryComponent qc, Date fromDate, Date toDate, Institution institution, Long value, Double blVal) {
         StoredQueryResult s;
         System.out.println("SaveValue for Stored Query Result");

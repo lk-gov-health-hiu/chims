@@ -28,6 +28,7 @@ import javax.enterprise.context.SessionScoped;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
@@ -1054,7 +1055,11 @@ public class IndicatorController implements Serializable {
                 }
             }
         }
-        output.sort(Comparator.comparing(QueryComponent::getOrderNo));
+        try{
+            output.sort(Comparator.comparing(QueryComponent::getOrderNo));
+        } catch (Exception e){
+            
+        }
         return output;
     }
 
@@ -1354,6 +1359,8 @@ public class IndicatorController implements Serializable {
                 continue;
             }
 
+            Long tv;
+            
             if (null == temqc.getQueryType()) {
                  idq.setErrorMessage("Type of query " + r.getQryCode() + " in is not set. ");
                 dataQueries.add(idq);
@@ -1371,26 +1378,33 @@ public class IndicatorController implements Serializable {
                             continue;
                         }
                         
+                        tv = 0l;
+                        List<InstitutionDataQuery> tids = storedQueryResultController.findPopulationData(temqc,  allClinics, year);
+                        for(InstitutionDataQuery tid:tids){
+                            if(tid.getValue()!=null){
+                                tv+=tid.getValue();
+                            }
+                        }
                         
-
-                        Long tp = relationshipController.findPopulationValue(year, institutionApplicationController.findMinistryOfHealth(), temqc.getPopulationType());
-                        if (tp != null) {
-                            r.setTextReplacing(tp + "");
-                            r.setSelectedValue(tp + "");
-                            j.setMessage(j.getMessage() + r.getQryCode() + " - " + tp + "\n");
-                            idq.setValue(tp);
-                            dataQueries.add(idq);
+                        dataQueries.addAll(tids);
+                        
+                        
+                        
+                        if (tv != null) {
+                            r.setTextReplacing(tv + "");
+                            r.setSelectedValue(tv + "");
+                            j.setMessage(j.getMessage() + r.getQryCode() + " - " + tv + "\n");
                         } else {
                             j.setError(true);
-                            j.setMessage(j.getMessage() + "No Population data for " + r.getQryCode() + "\n");
-                             idq.setErrorMessage("No Population data for " + r.getQryCode() + "\n");
-                dataQueries.add(idq);
+                            j.setMessage(j.getMessage() + "\n" + "No count for " + r.getQryCode() + "\n");
                         }
+                        
+                        
                         break;
 
                     case Client_Count:
                     case Encounter_Count:
-                        Long tv = storedQueryResultController.findStoredLongValue(temqc, fromDate, toDate, allClinics, r);
+                        tv = storedQueryResultController.findStoredLongValue(temqc, fromDate, toDate, allClinics, r);
                         dataQueries.addAll(storedQueryResultController.findStoredQueryData(temqc, fromDate, toDate, allClinics, r,year,month));
                         if (tv != null) {
                             r.setTextReplacing(tv + "");
@@ -1430,6 +1444,8 @@ public class IndicatorController implements Serializable {
          result= String.format("%.2f", db);
         }
 
+        Collections.sort(dataQueries, Comparator.comparing(InstitutionDataQuery::getInstitutionName));
+        
         message = CommonController.stringToHtml(j.getMessage());
 
     }
