@@ -34,6 +34,7 @@ import javax.inject.Named;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.persistence.TemporalType;
+import lk.gov.health.phsp.ejb.AnalysisBean;
 import lk.gov.health.phsp.entity.Institution;
 import lk.gov.health.phsp.entity.Item;
 import lk.gov.health.phsp.entity.QueryComponent;
@@ -54,6 +55,8 @@ public class AnalysisController {
     private EncounterFacade encounterFacade;
     @EJB
     ClientEncounterComponentItemFacade clientEncounterComponentItemFacade;
+    @EJB
+    AnalysisBean analysisBean;
 // </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="Controllers">
     @Inject
@@ -84,6 +87,11 @@ public class AnalysisController {
 // </editor-fold>    
 
 // <editor-fold defaultstate="collapsed" desc="Main Methods">
+    
+    public void runStoredQueryRequests(){
+        analysisBean.runStoredRequests();
+    }
+    
     public void findEncounterCount() {
         Long fs;
         Map m = new HashMap();

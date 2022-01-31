@@ -22,6 +22,11 @@
 
                     </iframe>
                 </h:panelGroup>
+                
+                <h:form >
+                    <h:commandButton value="Run Analytics" action="#{analysisController.runStoredQueryRequests()}" >
+                    </h:commandButton>
+                </h:form>
 
                 <h:panelGroup rendered="false">
                     <ez:dashboardSystemAdministrator rendered="#{webUserController.loggedUser.systemAdministrator}"/>
