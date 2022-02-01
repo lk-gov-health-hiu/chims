@@ -119,7 +119,9 @@
                                 <p:column headerText="Action" >
                                     <p:commandButton value="Run Analysis" 
                                                      ajax="false"
-                                                     action="#{indicatorController.runClinicCountsForRequests(dq)}"></p:commandButton>
+                                                     action="#{indicatorController.runClinicCountsForRequests}">
+                                        <f:setPropertyActionListener value="#{dq}" target="#{indicatorController.selectedDq}" ></f:setPropertyActionListener>
+                                    </p:commandButton>
                                 </p:column>
 
                             </p:dataTable>

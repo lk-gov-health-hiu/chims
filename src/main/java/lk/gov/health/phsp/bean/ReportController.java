@@ -1406,7 +1406,7 @@ public class ReportController implements Serializable {
         Item itemVariable = null;
         Item itemValue = null;
 
-        if (q.getMatchType() == QueryCriteriaMatchType.Variable_Value_Check) {
+        if (q.getMatchType() == QueryCriteriaMatchType.Variable_Value_Check || q.getMatchType() == QueryCriteriaMatchType.Variable_Range_check) {
 
             switch (q.getQueryDataType()) {
                 case integer:

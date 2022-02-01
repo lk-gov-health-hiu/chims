@@ -38,10 +38,12 @@ import lk.gov.health.phsp.ejb.AnalysisBean;
 import lk.gov.health.phsp.entity.Institution;
 import lk.gov.health.phsp.entity.Item;
 import lk.gov.health.phsp.entity.QueryComponent;
+import lk.gov.health.phsp.entity.StoredRequest;
 import lk.gov.health.phsp.enums.EncounterType;
 import lk.gov.health.phsp.facade.ClientEncounterComponentItemFacade;
 import lk.gov.health.phsp.facade.ClientFacade;
 import lk.gov.health.phsp.facade.EncounterFacade;
+import lk.gov.health.phsp.facade.StoredRequestFacade;
 // </editor-fold>
 
 @Named
@@ -53,6 +55,8 @@ public class AnalysisController {
     private ClientFacade clientFacade;
     @EJB
     private EncounterFacade encounterFacade;
+    @EJB
+    StoredRequestFacade storedRequestFacade;
     @EJB
     ClientEncounterComponentItemFacade clientEncounterComponentItemFacade;
     @EJB
@@ -67,6 +71,8 @@ public class AnalysisController {
     private Long encounterCount;
     private Date from;
     private Date to;
+    
+    private List<StoredRequest> storedRequests;
 
     private String riskVariable = "cvs_risk_factor";
     private String riskVal1 = "30-40%";
@@ -91,6 +97,39 @@ public class AnalysisController {
     public void runStoredQueryRequests(){
         analysisBean.runStoredRequests();
     }
+    
+    public String fillStoredRequests(){
+        String j = "select s "
+                + " from StoredRequest s"
+                + " where s.requestCreatedAt between :fd and :td";
+        Map m = new HashMap();
+        m.put("fd", from);
+        m.put("td", to);
+        storedRequests = storedRequestFacade.findByJpql(j, m);
+        return "/queryComponent/stored_requests";
+    }
+    
+    public void addCreateDateForStoredRequests(){
+        String j = "select s "
+                + " from StoredRequest s"
+                + " where s.requestCreatedAt is null";
+        List<StoredRequest> rs = storedRequestFacade.findByJpql(j);
+        for(StoredRequest r:rs){
+            r.setRequestCreatedAt(new Date());
+            storedRequestFacade.edit(r);
+        }
+    }
+    
+    public void deleteStoredRequests(){
+        String j = "select s "
+                + " from StoredRequest s";
+        List<StoredRequest> rs = storedRequestFacade.findByJpql(j);
+        for(StoredRequest r:rs){
+            r.setRequestCreatedAt(new Date());
+            storedRequestFacade.remove(r);
+        }
+    }
+    
     
     public void findEncounterCount() {
         Long fs;
@@ -199,6 +238,8 @@ public class AnalysisController {
         return clientFacade;
     }
 
+    
+    
     public void setClientFacade(ClientFacade clientFacade) {
         this.clientFacade = clientFacade;
     }
@@ -249,5 +290,13 @@ public class AnalysisController {
         this.to = to;
     }
 // </editor-fold>
+
+    public List<StoredRequest> getStoredRequests() {
+        return storedRequests;
+    }
+
+    public void setStoredRequests(List<StoredRequest> storedRequests) {
+        this.storedRequests = storedRequests;
+    }
 
 }

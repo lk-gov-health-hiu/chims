@@ -1,0 +1,65 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <body>
+        <ui:composition template="/queryComponent/index.xhtml">
+            <ui:define name="analysis">     
+                <h:form >
+                    <p:panelGrid id="display" columns="2" style="margin: auto;" styleClass="fullWidth">
+                        <h:outputLabel value="From" ></h:outputLabel>
+                        <p:calendar value="#{analysisController.from}"  pattern="dd MMMM yyyy hh:mm" ></p:calendar>
+
+                        <h:outputLabel value="To" ></h:outputLabel>
+                        <p:calendar value="#{analysisController.to}" pattern="dd MMMM yyyy hh:mm" ></p:calendar>
+
+                        <p:commandButton ajax="false" value="Process" action="#{analysisController.fillStoredRequests()}"></p:commandButton>
+
+                    </p:panelGrid>
+
+
+                    <p:dataTable value="#{analysisController.storedRequests}" var="s" rowKey="#{s.id}"
+                                 paginator="true" rows="20">
+                        <p:column headerText="Year" sortBy="#{s.ryear}" filterBy="#{s.ryear}">
+                            <h:outputText value="#{s.ryear}" ></h:outputText>
+                        </p:column>
+                        <p:column headerText="Month" sortBy="#{s.rmonth}" >
+                            <h:outputText value="#{s.rmonth + 1}" ></h:outputText>
+                        </p:column>
+                        <p:column headerText="Institution" sortBy="#{s.institution.name}" filterBy="#{s.institution.name}" >
+                            <h:outputText value="#{s.institution.name}" ></h:outputText>
+                        </p:column>
+                        <p:column headerText="Pending" sortBy="#{s.pending}">
+                            <h:outputText value="#{s.pending?'Yes':'No'}" >
+                            </h:outputText>
+                        </p:column>
+                        <p:column headerText="Created at" sortBy="#{s.requestCreatedAt}">
+                            <h:outputText value="#{s.requestCreatedAt}" >
+                                <f:convertDateTime pattern="dd MMMM yyyy hh:mm:ss" ></f:convertDateTime>
+                            </h:outputText>
+                        </p:column>
+                        <p:column headerText="Process Started at" sortBy="#{s.processStartedAt}">
+                            <h:outputText value="#{s.processStartedAt}" >
+                                <f:convertDateTime pattern="dd MMMM yyyy hh:mm:ss" ></f:convertDateTime>
+                            </h:outputText>
+                        </p:column>
+                        <p:column headerText="Process Completed at" sortBy="#{s.processCompletedAt}" >
+                            <h:outputText value="#{s.processCompletedAt}" >
+                                <f:convertDateTime pattern="dd MMMM yyyy hh:mm:ss" ></f:convertDateTime>
+                            </h:outputText>
+                        </p:column>
+                         <p:column headerText="Successful" sortBy="#{s.processSuccess}">
+                             <h:outputText value="#{s.processSuccess?'Yes':'No'}" >
+                            </h:outputText>
+                        </p:column>
+                    </p:dataTable>
+
+                </h:form>
+            </ui:define>
+        </ui:composition>
+    </body>
+</html>

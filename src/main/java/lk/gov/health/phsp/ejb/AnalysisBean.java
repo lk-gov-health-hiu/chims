@@ -1721,7 +1721,7 @@ public class AnalysisBean {
         Boolean qBool = null;
         String qStr = null;
 
-        if (q.getMatchType() == QueryCriteriaMatchType.Variable_Value_Check) {
+        if (q.getMatchType() == QueryCriteriaMatchType.Variable_Value_Check || q.getMatchType() == QueryCriteriaMatchType.Variable_Range_check) {
 
             switch (q.getQueryDataType()) {
                 case integer:
@@ -1991,7 +1991,7 @@ public class AnalysisBean {
 
     public boolean clientValueIsNotNull(QueryComponent q, ClientEncounterComponentItem clientValue) {
         boolean valueNotNull = false;
-        if (q.getMatchType() == QueryCriteriaMatchType.Variable_Value_Check) {
+       if (q.getMatchType() == QueryCriteriaMatchType.Variable_Value_Check || q.getMatchType() == QueryCriteriaMatchType.Variable_Range_check) {
             switch (q.getQueryDataType()) {
                 case integer:
                     if (clientValue.getIntegerNumberValue() != null) {
@@ -2130,9 +2130,9 @@ public class AnalysisBean {
 //    public void myTimer() {
 //        // //System.out.println("Timer event: " + new Date());
 //    }
-    @Schedule(hour = "17-23,00-06", minute = "*", second = "0", persistent = false)
+    @Schedule(hour = "17-23,00-08", minute = "*/2", second = "0", persistent = false)
     public void runStoredRequests() {
-        System.out.print("Running Stored Requests");
+        System.out.print("Running Stored Requests*/5");
         Map m = new HashMap();
         String j = "select s"
                 + " from StoredRequest s "
@@ -2146,6 +2146,9 @@ public class AnalysisBean {
         }
 
         request.setPending(false);
+        request.setProcessFailed(true);
+        request.setProcessSuccess(false);
+        request.setProcessStartedAt(new Date());
         storedRequestFacade.edit(request);
 
         List<QueryComponent> indicators = fillIndicators();
@@ -2236,6 +2239,12 @@ public class AnalysisBean {
                 }
             }
         }
+        
+        request.setProcessCompletedAt(new Date());
+        request.setProcessSuccess(true);
+        request.setProcessFailed(false);
+        storedRequestFacade.edit(request);
+        
         //System.out.println("9");
 
     }

@@ -1760,7 +1760,7 @@ public class QueryComponentController implements Serializable {
     public boolean clientValueIsNotNull(QueryComponent q, ClientEncounterComponentItem clientValue) {
         boolean valueNotNull = false;
 
-        if (q.getMatchType() == QueryCriteriaMatchType.Variable_Value_Check) {
+        if (q.getMatchType() == QueryCriteriaMatchType.Variable_Value_Check || q.getMatchType() == QueryCriteriaMatchType.Variable_Range_check) {
             switch (q.getQueryDataType()) {
                 case integer:
 
@@ -1819,7 +1819,7 @@ public class QueryComponentController implements Serializable {
         Boolean qBool = null;
         String qStr = null;
 
-        if (q.getMatchType() == QueryCriteriaMatchType.Variable_Value_Check) {
+        if (q.getMatchType() == QueryCriteriaMatchType.Variable_Value_Check || q.getMatchType() == QueryCriteriaMatchType.Variable_Range_check) {
 
             switch (q.getQueryDataType()) {
                 case integer:
