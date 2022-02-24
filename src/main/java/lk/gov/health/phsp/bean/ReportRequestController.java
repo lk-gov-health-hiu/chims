@@ -335,7 +335,7 @@ public class ReportRequestController implements Serializable {
         InputStream stream;
         try {
             stream = new FileInputStream(newFile);
-            file = new DefaultStreamedContent(stream, "application/xls", newFile.getAbsolutePath());
+//            file = new DefaultStreamedContent(stream, "application/xls", newFile.getAbsolutePath());
         } catch (FileNotFoundException ex) {
            
             mergingMessage = "Error - " + ex.getMessage();
@@ -471,7 +471,7 @@ public class ReportRequestController implements Serializable {
 
                 InputStream stream;
                 stream = new FileInputStream(newFile);
-                file = new DefaultStreamedContent(stream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", FILE_NAME);
+//                file = new DefaultStreamedContent(stream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", FILE_NAME);
 
             }
         } catch (FileNotFoundException e) {

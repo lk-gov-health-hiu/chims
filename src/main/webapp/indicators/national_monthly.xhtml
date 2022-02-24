@@ -7,139 +7,127 @@
       xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:fn="http://xmlns.jcp.org/jsp/jstl/functions">
 
-    <body>
+    <h:body>
 
-        <ui:composition template="./index.xhtml">
+        <ui:composition template="/indicators/index.xhtml">
 
             <ui:define name="reports">
                 <h:form>
-                    <p:panelGrid columns="1" style="width: 100%">
-                        <f:facet name="header" >
-                            <p:outputLabel value="Indicator  - National Monthly" ></p:outputLabel>
-                            <p:spacer height="1" width="70" ></p:spacer>
-                            <p:commandButton value="Back"  
-                                             immediate="true"
-                                             action="#{indicatorController.toIndicatorIndex()}"
+
+                    <h2>
+                        <p:outputLabel value="Indicators  - National Monthly" ></p:outputLabel>
+                    </h2>
+                        
+
+                        <p:panelGrid columns="2"  style="width: 100%;" >
+                            <p:outputLabel value="Indicator" for="indicator" ></p:outputLabel>
+                            <p:autoComplete id="indicator"
+                                            required="true" 
+                                            requiredMessage="Please select a report. To list reports, start entering few letters"
+                                            value="#{indicatorController.queryComponent}"
+                                            completeMethod="#{queryComponentController.completeIndicators}"
+                                            var="q" forceSelection="true" maxResults="15"
+                                            minQueryLength="3"
+                                            style="width: 100%;"
+                                            inputStyle="width: 100%;"
+                                            itemLabel="#{q.name}"
+                                            itemValue="#{q}">
+                            </p:autoComplete>
+
+                            <p:outputLabel id="lblYear" value="Year" ></p:outputLabel>
+                            <p:inputText 
+                                required="true"
+                                requiredMessage="Enter the year. Ex. 2022"
+                                value="#{indicatorController.year}" ></p:inputText>
+
+                            <p:outputLabel id="lblMonth" value="Month" ></p:outputLabel>
+                            <p:selectOneMenu id="mnuMonth" value="#{indicatorController.month}" 
+                                             requiredMessage="Please select a month."
+                                             required="true">
+                                <f:selectItem itemLabel="Select a month" ></f:selectItem>
+                                <f:selectItems value="#{commonController.months}" var="m" itemValue="#{m.value}" itemLabel="#{m}" ></f:selectItems>
+                            </p:selectOneMenu>
+
+                        </p:panelGrid>
+
+                        <p:panelGrid columns="2" >
+
+                            <p:commandButton value="Calculate"  style="width:30em;margin:auto;" 
+                                             action="#{indicatorController.runAllInstitutionMonthly()}"
                                              ajax="false">
                             </p:commandButton>
-                        </f:facet>
-
-
-                        <h:panelGrid columns="1" styleClass="alignTop" style="width: 100%;" >
-
-                            <p:panelGrid columns="2"  style="width: 100%;" >
-                                <p:outputLabel value="Indicator" for="indicator" ></p:outputLabel>
-                                <p:autoComplete id="indicator"
-                                                required="true" 
-                                                requiredMessage="Please select a report. To list reports, start entering few letters"
-                                                value="#{indicatorController.queryComponent}"
-                                                completeMethod="#{queryComponentController.completeIndicators}"
-                                                var="q" forceSelection="true" maxResults="15"
-                                                minQueryLength="3"
-                                                style="width: 100%;"
-                                                inputStyle="width: 100%;"
-                                                itemLabel="#{q.name}"
-                                                itemValue="#{q}">
-                                </p:autoComplete>
-
-                                <p:outputLabel id="lblYear" value="Year &amp; Month" ></p:outputLabel>
-
-                                <p:panelGrid style="width: 100%;" >
-                                    <p:inputText 
-                                        required="true"
-                                        requiredMessage="Enter the year. Ex. 2022"
-                                        value="#{indicatorController.year}" ></p:inputText>
-                                    <p:selectOneMenu id="mnuMonth" value="#{indicatorController.month}" 
-                                                     requiredMessage="Please select a month."
-                                                     required="true">
-                                        <f:selectItem itemLabel="Select a month" ></f:selectItem>
-                                        <f:selectItems value="#{commonController.months}" var="m" itemValue="#{m.value}" itemLabel="#{m}" ></f:selectItems>
-                                    </p:selectOneMenu>
-                                </p:panelGrid>
-
-                                <p:spacer ></p:spacer>
-
-                                <p:panelGrid columns="2" >
-                                    <p:commandButton value="Calculate"  style="width:30em;margin:auto;" 
-                                                     action="#{indicatorController.runAllInstitutionMonthly()}"
-                                                     ajax="false">
-                                    </p:commandButton>
-                                    <p:commandButton value="Prepare for Calculation"  style="width:30em;margin:auto;" 
-                                                     action="#{indicatorController.runClinicCountsForRequestsForAllInstitutions()}"
-                                                     ajax="false">
-                                    </p:commandButton>
-                                </p:panelGrid>
-
-
-                            </p:panelGrid>
+                            <p:commandButton value="Prepare for Calculation"  style="width:30em;margin:auto;" 
+                                             action="#{indicatorController.runClinicCountsForRequestsForAllInstitutions()}"
+                                             ajax="false">
+                            </p:commandButton>
 
 
 
+                        </p:panelGrid>
+
+                        <h:panelGrid columns="2" >
+                            <h:panelGroup >
+                                <h1><p:inputText value="Result" ></p:inputText></h1>
+                            </h:panelGroup>
+                            <h:panelGroup >
+                                <h1><p:inputText styleClass="h1" value="#{indicatorController.result}" >
+                                    </p:inputText>
+                                </h1>
+                            </h:panelGroup>
+                        </h:panelGrid>
+                        <h:panelGrid columns="1" >
+                            <h:outputText value="#{indicatorController.message}" escape="false" ></h:outputText>
                         </h:panelGrid>
 
-                        <h:panelGrid columns="1" >
-                            <h:panelGrid columns="1" >
-                                <h:panelGrid columns="2" >
-                                    <h:panelGroup >
-                                        <h1><p:inputText value="Result" ></p:inputText></h1>
-                                    </h:panelGroup>
-                                    <h:panelGroup >
-                                        <h1><p:inputText styleClass="h1" value="#{indicatorController.result}" >
-                                            </p:inputText>
-                                        </h1>
-                                    </h:panelGroup>
-                                </h:panelGrid>
-                                <h:panelGrid columns="1" >
-                                    <h:outputText value="#{indicatorController.message}" escape="false" ></h:outputText>
-                                </h:panelGrid>
-                            </h:panelGrid>
 
-                            <p:dataTable value="#{indicatorController.dataQueries}" var="dq"
-                                         id="tbl"
-                                         rowKey="#{dq.institution.id}"
-                                         rows="10"
-                                         paginator="true"
-                                         paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-                                         currentPageReportTemplate="{startRecord}-{endRecord} of {totalRecords} records"
-                                         rowsPerPageTemplate="5,10,{ShowAll|'All'}"
-                                         reflow="true"
-                                         resizeMode="expand"
-
-
-                                         >
-                                <p:column headerText="Institution" sortBy="#{dq.institution.name}"  filterBy="#{dq.institution.name}" filterMatchMode="contains">
-                                    <h:outputText value="#{dq.institution.name}" ></h:outputText>
-                                </p:column>
-                                <p:column headerText="Query" sortBy="#{dq.query.name}" filterBy="#{dq.query.name}" filterMatchMode="contains">
-                                    <h:outputText value="#{dq.query.name}" ></h:outputText>
-                                </p:column>
-                                <p:column headerText="Value" sortBy="#{dq.value}" >
-                                    <h:outputText value="#{dq.value}" ></h:outputText>
-                                </p:column>
-                                <p:column headerText="Action" >
-                                    <p:commandButton value="Run Analysis" 
-                                                     ajax="false"
-                                                     action="#{indicatorController.runClinicCountsForRequests}">
-                                        <f:setPropertyActionListener value="#{dq}" target="#{indicatorController.selectedDq}" ></f:setPropertyActionListener>
-                                    </p:commandButton>
-                                </p:column>
-
-                            </p:dataTable>
-                            
+                        <h:panelGrid columns="2" >
                             <p:commandButton ajax="false" value="Generate Excel" >
                                 <p:dataExporter target="tbl" type="xlsx" fileName="Analysis" ></p:dataExporter>
                             </p:commandButton>
-
-
+                            <p:commandButton value="Run Analytics in Selected" 
+                                             ajax="false"
+                                             action="#{indicatorController.runClinicCountsForRequests}">
+                            </p:commandButton>
                         </h:panelGrid>
 
 
 
-                    </p:panelGrid>
+
+                        <p:dataTable value="#{indicatorController.dataQueries}" 
+                                     var="dq"
+                                     id="tbl"
+                                     rowKey="#{dq.tid}"
+                                     selection="#{indicatorController.selectedDq}"
+                                     selectionMode="single"
+
+                                     rows="10"
+                                     paginator="true"
+                                     paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                     currentPageReportTemplate="{startRecord}-{endRecord} of {totalRecords} records"
+                                     rowsPerPageTemplate="5,10,{ShowAll|'All'}"
+
+                                     >
+                            <p:ajax event="rowSelect" process="tbl"/>
+                            <p:ajax event="rowUnselect" process="tbl"/>
+                            <p:column headerText="No"  sortBy="#{dq.tid}" width="80" >
+                                <h:outputText value="#{dq.tid}" ></h:outputText>
+                            </p:column>
+                            <p:column headerText="Institution" sortBy="#{dq.institution.name}"  >
+                                <h:outputText value="#{dq.institution.name}" ></h:outputText>
+                            </p:column>
+                            <p:column headerText="Query" sortBy="#{dq.query.name}" >
+                                <h:outputText value="#{dq.query.name}" ></h:outputText>
+                            </p:column>
+                            <p:column headerText="Value" sortBy="#{dq.value}" >
+                                <h:outputText value="#{dq.value}" ></h:outputText>
+                            </p:column>
+                        </p:dataTable>
+
+
                 </h:form>
             </ui:define>
 
         </ui:composition>
 
-    </body>
+    </h:body>
 </html>

@@ -261,13 +261,21 @@ public class IndicatorController implements Serializable {
 
     public void runClinicCountsForRequests() {
         InstitutionDataQuery dq = selectedDq;
-        if(selectedDq==null){
+        if (selectedDq == null) {
             JsfUtil.addErrorMessage("No Data Query");
-            return ;
+            return;
         }
         Institution tIns = dq.getInstitution();
         QueryComponent tQc = dq.getQuery();
         System.out.println("tQc = " + tQc);
+        if (tIns == null) {
+            JsfUtil.addErrorMessage("The institution is null");
+            return;
+        }
+        if (tQc == null) {
+            JsfUtil.addErrorMessage("The query is null");
+            return;
+        }
         if (tIns.getInstitutionType() == null) {
             JsfUtil.addErrorMessage("No Type for the institution");
             return;
@@ -1302,6 +1310,7 @@ public class IndicatorController implements Serializable {
     }
 
     public void runAllInstitutionMonthly() {
+        System.out.println("runAllInstitutionMonthly");
         dataQueries = new ArrayList<>();
         if (queryComponent == null) {
             JsfUtil.addErrorMessage("Indicator ?");
@@ -1328,17 +1337,20 @@ public class IndicatorController implements Serializable {
         Jpq j = new Jpq();
         j.setMessage("");
         j.setMessage("");
-
+        System.out.println("1");
         List<Replaceable> rs = findReplaceblesInIndicatorQuery(queryComponent.getIndicatorQuery());
+        System.out.println("2");
         List<Institution> allClinics = listOfFunctioningHlcs();
-
+        System.out.println("3");
         if (allClinics == null) {
             JsfUtil.addErrorMessage("Selected institution do not have HLCs under that");
             return;
         }
+        System.out.println("4");
         for (Replaceable r : rs) {
+            System.out.println("r = " + r);
             QueryComponent temqc = queryComponentController.findLastQuery(r.getQryCode());
-
+            System.out.println("temqc = " + temqc);
             InstitutionDataQuery idq = new InstitutionDataQuery();
             idq.setQuery(temqc);
 
@@ -1359,6 +1371,7 @@ public class IndicatorController implements Serializable {
             } else {
                 switch (temqc.getQueryType()) {
                     case Population:
+                        System.out.println("population");
                         if (temqc.getPopulationType() == null) {
                             j.setError(true);
                             j.setMessage(j.getMessage() + "\n" + "Type of Population " + r.getQryCode() + " in is not set. ");
@@ -1384,16 +1397,25 @@ public class IndicatorController implements Serializable {
 
                     case Client_Count:
                     case Encounter_Count:
-                        Long tv = storedQueryResultController.findStoredLongValue(temqc, fromDate, toDate, allClinics, r);
-                        dataQueries.addAll(storedQueryResultController.findStoredQueryData(temqc, fromDate, toDate, allClinics, r, year, month));
-                        if (tv != null) {
-                            r.setTextReplacing(tv + "");
-                            r.setSelectedValue(tv + "");
-                            j.setMessage(j.getMessage() + r.getQryCode() + " - " + tv + "\n");
-                        } else {
+                        System.out.println("ec or cc");
+                        Long tv = 0l; // storedQueryResultController.findStoredLongValue(temqc, fromDate, toDate, allClinics, r);
+
+                        List<InstitutionDataQuery> temIdqs = storedQueryResultController.findStoredQueryData(temqc, fromDate, toDate, allClinics, r, year, month);
+                        if (temIdqs == null) {
                             j.setError(true);
                             j.setMessage(j.getMessage() + "\n" + "No count for " + r.getQryCode() + "\n");
+                            continue;
                         }
+                        for (InstitutionDataQuery temIdq : temIdqs) {
+                            if (temIdq.getValue() != null) {
+                                tv = tv + temIdq.getValue();
+                            }
+                        }
+                        dataQueries.addAll(temIdqs);
+
+                        r.setTextReplacing(tv + "");
+                        r.setSelectedValue(tv + "");
+                        j.setMessage(j.getMessage() + r.getQryCode() + " - " + tv + "\n");
 
                         break;
                     default:
@@ -1422,6 +1444,11 @@ public class IndicatorController implements Serializable {
         }
 
         message = CommonController.stringToHtml(j.getMessage());
+        Long c = 0l;
+        for(InstitutionDataQuery tdq:dataQueries){
+            tdq.setTid(c);
+            c++;
+        }
 
     }
 

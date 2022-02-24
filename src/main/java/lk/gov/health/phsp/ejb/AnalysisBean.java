@@ -134,12 +134,12 @@ public class AnalysisBean {
 
     }
 
-    @Schedule(hour = "05-18", minute = "*/15", second = "30", persistent = false)
-    public void endProcessingCounts() {
+//    @Schedule(hour = "05-18", minute = "*/15", second = "30", persistent = false)
+//    public void endProcessingCounts() {
+//
+//    }
 
-    }
-
-    @Schedule(hour = "21-5", minute = "*/2", second = "0", persistent = false)
+//    @Schedule(hour = "21-5", minute = "*/2", second = "0", persistent = false)
     public void processCounts() {
         // //System.out.println("processCounts Commented");
 //        getIymcs();
@@ -1483,9 +1483,7 @@ public class AnalysisBean {
             m = new HashMap();
             j = "select f from ClientEncounterComponentItem f "
                     + " where f.retired=false "
-                    + " and f.encounter.id=:eid "
-                    + " and f.itemClient.person.dateOfBirth is not null "
-                    + " and f.itemEncounter.client.person.dateOfBirth is not null";
+                    + " and f.encounter.id=:eid ";
             m.put("eid", endId);
             List<ClientEncounterComponentItem> ts = clientEncounterComponentItemFacade.findByJpql(j, m);
             return ts;

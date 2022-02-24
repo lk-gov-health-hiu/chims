@@ -258,7 +258,7 @@ public class HospitalReportController implements Serializable {
             downloadingResult.getUpload().setFileType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
             getStoredQueryResultFacade().edit(downloadingResult);
         }
-        downloadingFile = new DefaultStreamedContent(stream, downloadingResult.getUpload().getFileType(), downloadingResult.getUpload().getFileName());
+//        downloadingFile = new DefaultStreamedContent(stream, downloadingResult.getUpload().getFileType(), downloadingResult.getUpload().getFileName());
         return downloadingFile;
     }
 
@@ -571,7 +571,7 @@ public class HospitalReportController implements Serializable {
         InputStream stream;
         try {
             stream = new FileInputStream(newFile);
-            resultExcelFile = new DefaultStreamedContent(stream, mimeType, FILE_NAME);
+//            resultExcelFile = new DefaultStreamedContent(stream, mimeType, FILE_NAME);
         } catch (FileNotFoundException ex) {
 
         }
@@ -1117,7 +1117,7 @@ public class HospitalReportController implements Serializable {
         InputStream stream;
         try {
             stream = new FileInputStream(newFile);
-            file = new DefaultStreamedContent(stream, "application/xls", newFile.getAbsolutePath());
+//            file = new DefaultStreamedContent(stream, "application/xls", newFile.getAbsolutePath());
         } catch (FileNotFoundException ex) {
             mergingMessage = "Error - " + ex.getMessage();
         }
@@ -1247,7 +1247,7 @@ public class HospitalReportController implements Serializable {
 
                 InputStream stream;
                 stream = new FileInputStream(newFile);
-                file = new DefaultStreamedContent(stream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", FILE_NAME);
+//                file = new DefaultStreamedContent(stream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", FILE_NAME);
 
             }
         } catch (FileNotFoundException e) {
@@ -1511,14 +1511,14 @@ public class HospitalReportController implements Serializable {
 
     public String toRegistrationCounts() {
         encounters = new ArrayList<>();
-        institutionCounts= new ArrayList<>();
+        institutionCounts = new ArrayList<>();
         String action = "/hospital/registration_counts";
         return action;
     }
 
     public String toVisitCounts() {
         encounters = new ArrayList<>();
-        institutionCounts= new ArrayList<>();
+        institutionCounts = new ArrayList<>();
         String forIns = "/hospital/visit_counts";
         return forIns;
     }
@@ -1528,9 +1528,7 @@ public class HospitalReportController implements Serializable {
         String action = "/hospital/daily_visit_counts";
         return action;
     }
-    
-    
-    
+
     public String toFunctioningHLcs() {
         encounters = new ArrayList<>();
         String forSys = "/reports/clinic_visits/for_sa_functioning_hlcs";
@@ -2001,7 +1999,7 @@ public class HospitalReportController implements Serializable {
         InputStream stream;
         try {
             stream = new FileInputStream(newFile);
-            resultExcelFile = new DefaultStreamedContent(stream, mimeType, FILE_NAME);
+//            resultExcelFile = new DefaultStreamedContent(stream, mimeType, FILE_NAME);
         } catch (FileNotFoundException ex) {
             // System.out.println("File not found exception -->" + ex.getMessage());
         }
@@ -2018,9 +2016,8 @@ public class HospitalReportController implements Serializable {
         m.put("res", true);
         j = j + " and c.createdAt between :fd and :td ";
 
-            j = j + " and c.createInstitution in :ins ";
-            m.put("ins", webUserController.getLoggableInstitutions());
-        
+        j = j + " and c.createInstitution in :ins ";
+        m.put("ins", webUserController.getLoggableInstitutions());
 
         j = j + " group by c.createInstitution ";
         j = j + " order by c.createInstitution.name ";
@@ -2296,7 +2293,7 @@ public class HospitalReportController implements Serializable {
         InputStream stream;
         try {
             stream = new FileInputStream(newFile);
-            resultExcelFile = new DefaultStreamedContent(stream, mimeType, FILE_NAME);
+//            resultExcelFile = new DefaultStreamedContent(stream, mimeType, FILE_NAME);
         } catch (FileNotFoundException ex) {
 
         }
@@ -2450,27 +2447,29 @@ public class HospitalReportController implements Serializable {
         InputStream stream;
         try {
             stream = new FileInputStream(newFile);
-            resultExcelFile = new DefaultStreamedContent(stream, mimeType, FILE_NAME);
+//            resultExcelFile = new DefaultStreamedContent(stream, mimeType, FILE_NAME);
         } catch (FileNotFoundException ex) {
 
         }
 
     }
-    
-    private Long numberOfInstitutions(InstitutionType type){
+
+    private Long numberOfInstitutions(InstitutionType type) {
         String j = "select count(i) "
                 + " from Institution i "
                 + " where (i.retired=:f or i.retired is null) "
                 + " and i.institutionType=:t";
         Map m = new HashMap();
         m.put("t", type);
-         m.put("f", false);
-         Long n =encounterFacade.countByJpql(j, m);
-         if(n==null) return 0l;
+        m.put("f", false);
+        Long n = encounterFacade.countByJpql(j, m);
+        if (n == null) {
+            return 0l;
+        }
         return n;
     }
-    
-    private Long numberOfHlcs(InstitutionType type){
+
+    private Long numberOfHlcs(InstitutionType type) {
         String j = "select count(i) "
                 + " from Institution i "
                 + " where (i.retired=:f or i.retired is null) "
@@ -2479,57 +2478,56 @@ public class HospitalReportController implements Serializable {
         m.put("t", type);
         m.put("f", false);
         m.put("hlc", InstitutionType.Clinic);
-        Long n =encounterFacade.countByJpql(j, m);
-         if(n==null) return 0l;
+        Long n = encounterFacade.countByJpql(j, m);
+        if (n == null) {
+            return 0l;
+        }
         return n;
     }
-    
-    private Long numberOfFunctioningHlcs(InstitutionType type){
+
+    private Long numberOfFunctioningHlcs(InstitutionType type) {
         String j = "select e.institution "
                 + " from Encounter e "
                 + " where e.retired=:ret "
-                 + " and e.encounterDate between :fd and :td "
+                + " and e.encounterDate between :fd and :td "
                 + " group by e.institution";
         Map m = new HashMap();
-             m.put("ret", false);
-         m.put("fd", fromDate);
-          m.put("td", toDate);
+        m.put("ret", false);
+        m.put("fd", fromDate);
+        m.put("td", toDate);
         System.out.println("m = " + m);
         System.out.println("j = " + j);
-         List<Institution> ins =institutionFacade.findByJpql(j,m);
-         System.out.println("ins = " + ins);
-         Long n=0l;
-         for(Institution i:ins){
-             System.out.println("i = " + i.getName());
-             boolean canInclude=false;
-             if(i.getInstitutionType()!=null){
-                 if(i.getInstitutionType().equals(type)) {
-                     canInclude=true;
-                 }
-             }
-             if(i.getParent()!=null && i.getParent().getInstitutionType()!=null){
-                 if(i.getParent().getInstitutionType().equals(type)){
-                      canInclude=true;
-                 }
-                  if(i.getParent().getParent()!=null && i.getParent().getParent().getInstitutionType()!=null){
-                 if(i.getParent().getParent().getInstitutionType().equals(type)){
-                      canInclude=true;
-                 }
-             }
-             }
-             if(canInclude) n++;
-             
-         }
+        List<Institution> ins = institutionFacade.findByJpql(j, m);
+        System.out.println("ins = " + ins);
+        Long n = 0l;
+        for (Institution i : ins) {
+            System.out.println("i = " + i.getName());
+            boolean canInclude = false;
+            if (i.getInstitutionType() != null) {
+                if (i.getInstitutionType().equals(type)) {
+                    canInclude = true;
+                }
+            }
+            if (i.getParent() != null && i.getParent().getInstitutionType() != null) {
+                if (i.getParent().getInstitutionType().equals(type)) {
+                    canInclude = true;
+                }
+                if (i.getParent().getParent() != null && i.getParent().getParent().getInstitutionType() != null) {
+                    if (i.getParent().getParent().getInstitutionType().equals(type)) {
+                        canInclude = true;
+                    }
+                }
+            }
+            if (canInclude) {
+                n++;
+            }
+
+        }
         return n;
     }
-    
-    
-    
-    
-    
+
     public void downloadFunctioningHlcs() {
-        
-        
+
         List<InstituteTypeCounts> itCounts = new ArrayList<>();
         InstituteTypeCounts pgh = new InstituteTypeCounts();
         InstituteTypeCounts dgh = new InstituteTypeCounts();
@@ -2538,59 +2536,55 @@ public class HospitalReportController implements Serializable {
         InstituteTypeCounts pmcu = new InstituteTypeCounts();
         InstituteTypeCounts eh = new InstituteTypeCounts();
         InstituteTypeCounts moh = new InstituteTypeCounts();
-        
+
         pgh.setType(InstitutionType.Provincial_General_Hospital);
         pgh.setSerial(1);
         pgh.setNumber(numberOfInstitutions(InstitutionType.Provincial_General_Hospital));
         pgh.setHlcs(numberOfHlcs(InstitutionType.Provincial_General_Hospital));
         pgh.setFunctioningHlcs(numberOfFunctioningHlcs(InstitutionType.Provincial_General_Hospital));
         itCounts.add(pgh);
-        
+
         dgh.setType(InstitutionType.District_General_Hospital);
         dgh.setSerial(2);
-         dgh.setNumber(numberOfInstitutions(InstitutionType.District_General_Hospital));
+        dgh.setNumber(numberOfInstitutions(InstitutionType.District_General_Hospital));
         dgh.setHlcs(numberOfHlcs(InstitutionType.District_General_Hospital));
         dgh.setFunctioningHlcs(numberOfFunctioningHlcs(InstitutionType.District_General_Hospital));
         itCounts.add(dgh);
-        
-        
+
         bh.setType(InstitutionType.Base_Hospital);
         bh.setSerial(3);
-         bh.setNumber(numberOfInstitutions(InstitutionType.Base_Hospital));
+        bh.setNumber(numberOfInstitutions(InstitutionType.Base_Hospital));
         bh.setHlcs(numberOfHlcs(InstitutionType.Base_Hospital));
         bh.setFunctioningHlcs(numberOfFunctioningHlcs(InstitutionType.Base_Hospital));
         itCounts.add(bh);
-        
-        
+
         dh.setType(InstitutionType.Divisional_Hospital);
         dh.setSerial(4);
-         dh.setNumber(numberOfInstitutions(InstitutionType.Divisional_Hospital));
+        dh.setNumber(numberOfInstitutions(InstitutionType.Divisional_Hospital));
         dh.setHlcs(numberOfHlcs(InstitutionType.Divisional_Hospital));
         dh.setFunctioningHlcs(numberOfFunctioningHlcs(InstitutionType.Divisional_Hospital));
         itCounts.add(dh);
-        
-        
+
         pmcu.setType(InstitutionType.Primary_Medical_Care_Unit);
         pmcu.setSerial(5);
-         pmcu.setNumber(numberOfInstitutions(InstitutionType.Primary_Medical_Care_Unit));
+        pmcu.setNumber(numberOfInstitutions(InstitutionType.Primary_Medical_Care_Unit));
         pmcu.setHlcs(numberOfHlcs(InstitutionType.Primary_Medical_Care_Unit));
         pmcu.setFunctioningHlcs(numberOfFunctioningHlcs(InstitutionType.Primary_Medical_Care_Unit));
         itCounts.add(pmcu);
-        
+
         eh.setType(InstitutionType.Estate_Hospital);
         eh.setSerial(6);
-         eh.setNumber(numberOfInstitutions(InstitutionType.Estate_Hospital));
+        eh.setNumber(numberOfInstitutions(InstitutionType.Estate_Hospital));
         eh.setHlcs(numberOfHlcs(InstitutionType.Estate_Hospital));
         eh.setFunctioningHlcs(numberOfFunctioningHlcs(InstitutionType.Estate_Hospital));
         itCounts.add(eh);
-        
+
         moh.setType(InstitutionType.MOH_Office);
         moh.setSerial(7);
-         moh.setNumber(numberOfInstitutions(InstitutionType.MOH_Office));
+        moh.setNumber(numberOfInstitutions(InstitutionType.MOH_Office));
         moh.setHlcs(numberOfHlcs(InstitutionType.MOH_Office));
         moh.setFunctioningHlcs(numberOfFunctioningHlcs(InstitutionType.MOH_Office));
         itCounts.add(moh);
-        
 
         String FILE_NAME = "functioning_clinics" + "_" + (new Date()) + ".xlsx";
         String mimeType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
@@ -2629,7 +2623,6 @@ public class HospitalReportController implements Serializable {
 //            Cell th4_val = t4.createCell(1);
 //            th4_val.setCellValue(institution.getName());
 //        }
-
         rowCount++;
 
         Row t5 = sheet.createRow(rowCount++);
@@ -2650,24 +2643,23 @@ public class HospitalReportController implements Serializable {
                 createHelper.createDataFormat().getFormat("dd/MMMM/yyyy hh:mm"));
 
         for (InstituteTypeCounts cbd : itCounts) {
-            
-                Row row = sheet.createRow(++rowCount);
 
-                Cell c1 = row.createCell(0);
-                c1.setCellValue(cbd.getType().getLabel());
+            Row row = sheet.createRow(++rowCount);
 
-                Cell c2 = row.createCell(1);
-                c2.setCellValue(cbd.getNumber());
+            Cell c1 = row.createCell(0);
+            c1.setCellValue(cbd.getType().getLabel());
 
-                Cell c3 = row.createCell(2);
-                c3.setCellValue(cbd.getHlcs());
+            Cell c2 = row.createCell(1);
+            c2.setCellValue(cbd.getNumber());
 
-                Cell c4 = row.createCell(3);
-                c4.setCellValue(cbd.getFunctioningHlcs());
+            Cell c3 = row.createCell(2);
+            c3.setCellValue(cbd.getHlcs());
 
+            Cell c4 = row.createCell(3);
+            c4.setCellValue(cbd.getFunctioningHlcs());
 
-                serial++;
-            
+            serial++;
+
         }
 
         itCounts = null;
@@ -2682,7 +2674,7 @@ public class HospitalReportController implements Serializable {
         InputStream stream;
         try {
             stream = new FileInputStream(newFile);
-            resultExcelFile = new DefaultStreamedContent(stream, mimeType, FILE_NAME);
+//            resultExcelFile = new DefaultStreamedContent(stream, mimeType, FILE_NAME);
         } catch (FileNotFoundException ex) {
 
         }
@@ -2705,11 +2697,11 @@ public class HospitalReportController implements Serializable {
         m.put("fd", fromDate);
         m.put("td", toDate);
         m.put("type", EncounterType.Clinic_Visit);
-           j += " and e.institution in :ins ";
-            List<Institution> ins = institutionApplicationController.findChildrenInstitutions(institution);
-            ins.add(institution);
-            m.put("ins", ins);
-       
+        j += " and e.institution in :ins ";
+        List<Institution> ins = institutionApplicationController.findChildrenInstitutions(institution);
+        ins.add(institution);
+        m.put("ins", ins);
+
         j += " group by e.encounterDate "
                 + " order by e.encounterDate";
 
@@ -2802,7 +2794,8 @@ public class HospitalReportController implements Serializable {
         InputStream stream;
         try {
             stream = new FileInputStream(newFile);
-            resultExcelFile = new DefaultStreamedContent(stream, mimeType, FILE_NAME);
+            resultExcelFile = DefaultStreamedContent.builder().contentType(mimeType).name(FILE_NAME).stream(() -> stream).build();
+//            resultExcelFile = new DefaultStreamedContent(stream, mimeType, FILE_NAME);
         } catch (FileNotFoundException ex) {
 
         }
@@ -2823,11 +2816,11 @@ public class HospitalReportController implements Serializable {
         m.put("ret", false);
         m.put("fd", fromDate);
         m.put("td", toDate);
-           j += " and e.createInstitution in :ins ";
-            List<Institution> ins = institutionApplicationController.findChildrenInstitutions(institution);
-            ins.add(institution);
-            m.put("ins", ins);
-       
+        j += " and e.createInstitution in :ins ";
+        List<Institution> ins = institutionApplicationController.findChildrenInstitutions(institution);
+        ins.add(institution);
+        m.put("ins", ins);
+
         j += " group by cast(e.createdAt as LocalDate)  "
                 + " order by cast(e.createdAt as LocalDate)";
 
@@ -2889,31 +2882,28 @@ public class HospitalReportController implements Serializable {
         cellStyle.setDataFormat(
                 createHelper.createDataFormat().getFormat("dd/MMMM/yyyy"));
 
-        
-        if(objs!=null){
-        for (Object o : objs) {
-            if (o instanceof DateInstitutionCount) {
-                DateInstitutionCount cbd = (DateInstitutionCount) o;
-                Row row = sheet.createRow(++rowCount);
+        if (objs != null) {
+            for (Object o : objs) {
+                if (o instanceof DateInstitutionCount) {
+                    DateInstitutionCount cbd = (DateInstitutionCount) o;
+                    Row row = sheet.createRow(++rowCount);
 
-                Cell c1 = row.createCell(0);
-                c1.setCellValue(serial);
+                    Cell c1 = row.createCell(0);
+                    c1.setCellValue(serial);
 
-                Cell c2 = row.createCell(1);
-                c2.setCellStyle(cellStyle);
-                c2.setCellValue(cbd.getDate());
+                    Cell c2 = row.createCell(1);
+                    c2.setCellStyle(cellStyle);
+                    c2.setCellValue(cbd.getDate());
 
-                Cell c3 = row.createCell(2);
-                c3.setCellValue(cbd.getCount());
+                    Cell c3 = row.createCell(2);
+                    c3.setCellValue(cbd.getCount());
 
-                serial++;
+                    serial++;
+                }
             }
+
         }
-    
-            
-        }
-        
-        
+
         objs = null;
         System.gc();
 
@@ -2926,7 +2916,7 @@ public class HospitalReportController implements Serializable {
         InputStream stream;
         try {
             stream = new FileInputStream(newFile);
-            resultExcelFile = new DefaultStreamedContent(stream, mimeType, FILE_NAME);
+//            resultExcelFile = new DefaultStreamedContent(stream, mimeType, FILE_NAME);
         } catch (FileNotFoundException ex) {
 
         }
@@ -3024,7 +3014,7 @@ public class HospitalReportController implements Serializable {
         InputStream stream;
         try {
             stream = new FileInputStream(newFile);
-            resultExcelFile = new DefaultStreamedContent(stream, mimeType, fileName);
+//            resultExcelFile = new DefaultStreamedContent(stream, mimeType, fileName);
         } catch (FileNotFoundException ex) {
 
         }
@@ -3145,7 +3135,7 @@ public class HospitalReportController implements Serializable {
         InputStream stream;
         try {
             stream = new FileInputStream(newFile);
-            downloadingFile = new DefaultStreamedContent(stream, mimeType, fileName);
+//            downloadingFile = new DefaultStreamedContent(stream, mimeType, fileName);
         } catch (FileNotFoundException ex) {
 
         }

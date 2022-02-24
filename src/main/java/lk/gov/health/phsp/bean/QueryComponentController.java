@@ -1207,7 +1207,7 @@ public class QueryComponentController implements Serializable {
         InputStream stream;
         try {
             stream = new FileInputStream(newFile);
-            resultExcelFile = new DefaultStreamedContent(stream, mimeType, FILE_NAME);
+//            resultExcelFile = new DefaultStreamedContent(stream, mimeType, FILE_NAME);
         } catch (FileNotFoundException ex) {
 
         }
@@ -4070,7 +4070,7 @@ public class QueryComponentController implements Serializable {
         if (u.getFileType() == null || u.getFileType().trim().equals("")) {
             u.setFileType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
         }
-        downloadingFile = new DefaultStreamedContent(stream, u.getFileType(), u.getFileName());
+//        downloadingFile = new DefaultStreamedContent(stream, u.getFileType(), u.getFileName());
         return downloadingFile;
     }
 

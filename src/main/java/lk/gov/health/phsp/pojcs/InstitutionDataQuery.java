@@ -38,6 +38,7 @@ public class InstitutionDataQuery {
     private boolean dataAvailable;
     private Long value;
     private String errorMessage;
+    private Long tid;
     
     
 
@@ -95,6 +96,14 @@ public class InstitutionDataQuery {
 
     public void setErrorMessage(String errorMessage) {
         this.errorMessage = errorMessage;
+    }
+
+    public Long getTid() {
+        return tid;
+    }
+
+    public void setTid(Long tid) {
+        this.tid = tid;
     }
     
     

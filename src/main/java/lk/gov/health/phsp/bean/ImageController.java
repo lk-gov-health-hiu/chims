@@ -78,7 +78,8 @@ public class ImageController implements Serializable {
             if (p == null) {
                 return new DefaultStreamedContent();
             }
-            return new DefaultStreamedContent(new ByteArrayInputStream(p), dp.getShortTextValue(), dp.getLongTextValue());
+//            return new DefaultStreamedContent(new ByteArrayInputStream(p), dp.getShortTextValue(), dp.getLongTextValue());
+            return null;
         }
     }
 

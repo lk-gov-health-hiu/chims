@@ -60,7 +60,8 @@ import lk.gov.health.phsp.enums.EncounterType;
 import static lk.gov.health.phsp.enums.EncounterType.Client_Data;
 import org.primefaces.component.tabview.TabView;
 import org.primefaces.event.TabChangeEvent;
-import org.primefaces.model.UploadedFile;
+import org.primefaces.model.file.UploadedFile;
+
 // </editor-fold>
 
 @Named("clientController")
@@ -1146,7 +1147,7 @@ public class ClientController implements Serializable {
             Cell cell;
             InputStream in;
             try {
-                in = file.getInputstream();
+                in = file.getInputStream();
                 File f;
                 f = new File(Calendar.getInstance().getTimeInMillis() + file.getFileName());
                 FileOutputStream out = new FileOutputStream(f);
