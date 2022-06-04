@@ -8,7 +8,7 @@
 
     <h:head >
         <ui:define name="head">
-            Observation Counts
+            Clinic Visit Counts
         </ui:define>
     </h:head>
 
@@ -19,7 +19,7 @@
                 <h:form>
                     <p:panelGrid columns="2" styleClass="alignTop" >
                         <f:facet name="header" >
-                            <p:outputLabel value="Observation Count - Integer" ></p:outputLabel>
+                            <p:outputLabel value="Clinic Visit Counts" ></p:outputLabel>
                         </f:facet>
                         <p:panelGrid columns="1"   >
                             <f:facet name="header" >
@@ -31,25 +31,19 @@
                             <p:calendar value="#{nationalReportController.fromDate}" pattern="dd MM yyyy" ></p:calendar>
                             <p:outputLabel value="To" ></p:outputLabel>
                             <p:calendar value="#{nationalReportController.toDate}" pattern="dd MM yyyy" ></p:calendar>
-                            
-                             <p:outputLabel value="Sex:" for="sex" />
+
+                            <p:outputLabel value="Sex:" for="sex" />
                             <p:selectOneMenu id="sex"  value="#{nationalReportController.sex}" required="false" >
                                 <f:selectItem itemLabel="All" ></f:selectItem>
                                 <f:selectItems value="#{itemController.sexes}" var="s" itemLabel="#{s.name}"
                                                itemValue="#{s}" ></f:selectItems>
                             </p:selectOneMenu>
-                            
-                            <p:outputLabel value="Item" ></p:outputLabel>
-                            <p:autoComplete completeMethod="#{itemController.completeDictionaryItems}" 
-                                             value="#{nationalReportController.queryItem}"
-                                               var="ii"
-                                               itemLabel="#{ii.name}"
-                                               itemValue="#{ii}"></p:autoComplete>   
+  
 
                             <p:commandButton value="Process" ajax="false"
-                                             action="#{nationalReportController.fillObservationValuesInt()}"></p:commandButton>
+                                             action="#{nationalReportController.fillClinicVisitCounts()}"></p:commandButton>
                             <p:commandButton value="Download" ajax="false">
-                                <p:dataExporter type="xlsx" target="tbl" fileName="Observation Counts - #{nationalReportController.queryItem.name}" ></p:dataExporter>
+                                <p:dataExporter type="xlsx" target="tbl" fileName="Clinic Visit Counts" ></p:dataExporter>
                             </p:commandButton>
                         </p:panelGrid>
 
@@ -60,7 +54,7 @@
                                      rowsPerPageTemplate="10,20,30,40,50"
                                      >
                             <f:facet name="header"  >
-                                <p:outputLabel value="Observation Counts - #{nationalReportController.queryItem.name}" ></p:outputLabel>
+                                <p:outputLabel value="Clinic Visit Counts" ></p:outputLabel>
                                 <p:outputLabel value="From : " ></p:outputLabel>
                                 <p:outputLabel value="#{hospitalReportController.fromDate}" >
                                     <f:convertDateTime pattern="dd MMMM yyyy" ></f:convertDateTime>
@@ -70,17 +64,6 @@
                                     <f:convertDateTime pattern="dd MMMM yyyy" ></f:convertDateTime>
                                 </p:outputLabel>
                             </f:facet>
-                            <p:column headerText="No" width="50" >
-                                <p:outputLabel value="#{n+1}" >
-                                </p:outputLabel>
-                            </p:column>
-                            <p:column headerText="Value" 
-                                      filterBy="#{c.intValue}" 
-                                      filterMatchMode="contains" 
-                                      sortBy="#{c.intValue}"
-                                      >
-                                <p:outputLabel value="#{c.intValue}" ></p:outputLabel>
-                            </p:column>
                             <p:column headerText="Count"  
                                       sortBy="#{c.count}">
                                 <p:outputLabel value="#{c.count}" ></p:outputLabel>

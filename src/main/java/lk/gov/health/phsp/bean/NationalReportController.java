@@ -34,6 +34,8 @@ import java.util.Map;
 import javax.ejb.EJB;
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
+import javax.persistence.TemporalType;
+import lk.gov.health.phsp.entity.ClientEncounterComponentItem;
 import lk.gov.health.phsp.entity.Institution;
 import lk.gov.health.phsp.entity.Item;
 import lk.gov.health.phsp.enums.EncounterType;
@@ -54,6 +56,7 @@ public class NationalReportController implements Serializable {
     private Date toDate;
     private Long count;
     private Item queryItem;
+    private Item sex;
 
     private List<ObservationValueCount> observationValueCounts;
 
@@ -83,6 +86,16 @@ public class NationalReportController implements Serializable {
         return "/national/observation_values";
     }
 
+    public String toRegistrationCount() {
+        count = null;
+        return "/national/registration_counts";
+    }
+    
+    public String toClinicVisitCount() {
+        count = null;
+        return "/national/clinic_visit_counts";
+    }
+
     public String toObservationValueCountInt() {
         count = null;
         return "/national/observation_values_int";
@@ -92,7 +105,7 @@ public class NationalReportController implements Serializable {
         count = null;
         return "/national/observation_values_long";
     }
-    
+
     public String toObservationValueCountDbl() {
         count = null;
         return "/national/observation_values_dbl";
@@ -105,22 +118,98 @@ public class NationalReportController implements Serializable {
         j = "select new lk.gov.health.phsp.pojcs.ObservationValueCount(c.shortTextValue, count(c)) "
                 + " from ClientEncounterComponentItem c "
                 + " where (c.retired=:ret or c.retired is null) "
-                + " and (c.item=:qi) "
-                + " and c.createdAt between :fd and :td "
+                + " and (c.item=:qi)";
+        if (sex != null) {
+            j += " and c.encounter.client.person.sex.code=:s ";
+            m.put("s", sex.getCode());
+        }
+        if (institution != null) {
+            j += " and c.createInstitution=:ins ";
+            m.put("ins", institution);
+        }
+        j += " and c.createdAt between :fd and :td "
                 + " group by c.shortTextValue";
         m.put("ret", false);
         m.put("qi", queryItem);
         m.put("fd", getFromDate());
         m.put("td", getToDate());
 
-        if (institution != null) {
-            j += " and c.createInstitution=:ins ";
-            m.put("ins", institution);
-        }
+//        ClientEncounterComponentItem c = new ClientEncounterComponentItem();
+//        c.getEncounter().getClient().getPerson().getSex().getCode();
         observationValueCounts = new ArrayList<>();
         System.out.println("m = " + m);
         System.out.println("j = " + j);
         List<Object> objs = clientFacade.findAggregates(j, m);
+        if (objs == null) {
+            return;
+        }
+        for (Object o : objs) {
+            if (o instanceof ObservationValueCount) {
+                ObservationValueCount ic = (ObservationValueCount) o;
+                observationValueCounts.add(ic);
+            }
+        }
+
+    }
+
+    public void fillRegistrationCounts() {
+        String j;
+        Map m = new HashMap();
+
+        j = "select new lk.gov.health.phsp.pojcs.ObservationValueCount(count(c)) "
+                + " from Client c "
+                + " where (c.retired=:ret or c.retired is null) ";
+        if (sex != null) {
+            j += " and c.person.sex.code=:s ";
+            m.put("s", sex.getCode());
+        }
+        if (institution != null) {
+            j += " and c.createInstitution=:ins ";
+            m.put("ins", institution);
+        }
+        j += " and c.createdAt between :fd and :td ";
+        m.put("ret", false);
+        m.put("fd", getFromDate());
+        m.put("td", getToDate());
+
+        observationValueCounts = new ArrayList<>();
+        System.out.println("m = " + m);
+        System.out.println("j = " + j);
+        List<Object> objs = clientFacade.findAggregates(j, m, TemporalType.TIMESTAMP);
+        if (objs == null) {
+            return;
+        }
+        for (Object o : objs) {
+            if (o instanceof ObservationValueCount) {
+                ObservationValueCount ic = (ObservationValueCount) o;
+                observationValueCounts.add(ic);
+            }
+        }
+
+    }
+
+    public void fillClinicVisitCounts() {
+        String j;
+        Map m = new HashMap();
+
+        j = "select new lk.gov.health.phsp.pojcs.ObservationValueCount(count(c)) "
+                + " from Encounter c "
+                + " where (c.retired=:ret or c.retired is null) "
+                + " and c.encounterType=:et ";
+        m.put("et", EncounterType.Clinic_Visit);
+        if (sex != null) {
+            j += " and c.client.person.sex.code=:s ";
+            m.put("s", sex.getCode());
+        }
+        j += " and c.createdAt between :fd and :td ";
+        m.put("ret", false);
+        m.put("fd", getFromDate());
+        m.put("td", getToDate());
+
+        observationValueCounts = new ArrayList<>();
+        System.out.println("m = " + m);
+        System.out.println("j = " + j);
+        List<Object> objs = clientFacade.findAggregates(j, m, TemporalType.TIMESTAMP);
         if (objs == null) {
             return;
         }
@@ -140,18 +229,22 @@ public class NationalReportController implements Serializable {
         j = "select new lk.gov.health.phsp.pojcs.ObservationValueCount(c.integerNumberValue, count(c)) "
                 + " from ClientEncounterComponentItem c "
                 + " where (c.retired=:ret or c.retired is null) "
-                + " and (c.item=:qi) "
-                + " and c.createdAt between :fd and :td "
+                + " and (c.item=:qi) ";
+        if (sex != null) {
+            j += " and c.encounter.client.person.sex.code=:s ";
+            m.put("s", sex.getCode());
+        }
+        if (institution != null) {
+            j += " and c.createInstitution=:ins ";
+            m.put("ins", institution);
+        }
+        j += " and c.createdAt between :fd and :td "
                 + " group by c.integerNumberValue";
         m.put("ret", false);
         m.put("qi", queryItem);
         m.put("fd", getFromDate());
         m.put("td", getToDate());
 
-        if (institution != null) {
-            j += " and c.createInstitution=:ins ";
-            m.put("ins", institution);
-        }
         observationValueCounts = new ArrayList<>();
         System.out.println("m = " + m);
         System.out.println("j = " + j);
@@ -175,18 +268,22 @@ public class NationalReportController implements Serializable {
         j = "select new lk.gov.health.phsp.pojcs.ObservationValueCount(c.longNumberValue, count(c)) "
                 + " from ClientEncounterComponentItem c "
                 + " where (c.retired=:ret or c.retired is null) "
-                + " and (c.item=:qi) "
-                + " and c.createdAt between :fd and :td "
+                + " and (c.item=:qi) ";
+        if (sex != null) {
+            j += " and c.encounter.client.person.sex.code=:s ";
+            m.put("s", sex.getCode());
+        }
+        if (institution != null) {
+            j += " and c.createInstitution=:ins ";
+            m.put("ins", institution);
+        }
+        j += " and c.createdAt between :fd and :td "
                 + " group by c.longNumberValue";
         m.put("ret", false);
         m.put("qi", queryItem);
         m.put("fd", getFromDate());
         m.put("td", getToDate());
 
-        if (institution != null) {
-            j += " and c.createInstitution=:ins ";
-            m.put("ins", institution);
-        }
         observationValueCounts = new ArrayList<>();
         System.out.println("m = " + m);
         System.out.println("j = " + j);
@@ -202,7 +299,7 @@ public class NationalReportController implements Serializable {
         }
 
     }
-    
+
     public void fillObservationValuesDbl() {
         String j;
         Map m = new HashMap();
@@ -210,18 +307,22 @@ public class NationalReportController implements Serializable {
         j = "select new lk.gov.health.phsp.pojcs.ObservationValueCount(c.realNumberValue, count(c)) "
                 + " from ClientEncounterComponentItem c "
                 + " where (c.retired=:ret or c.retired is null) "
-                + " and (c.item=:qi) "
-                + " and c.createdAt between :fd and :td "
+                + " and (c.item=:qi) ";
+        if (sex != null) {
+            j += " and c.encounter.client.person.sex.code=:s ";
+            m.put("s", sex.getCode());
+        }
+        if (institution != null) {
+            j += " and c.createInstitution=:ins ";
+            m.put("ins", institution);
+        }
+        j += " and c.createdAt between :fd and :td "
                 + " group by c.realNumberValue";
         m.put("ret", false);
         m.put("qi", queryItem);
         m.put("fd", getFromDate());
         m.put("td", getToDate());
 
-        if (institution != null) {
-            j += " and c.createInstitution=:ins ";
-            m.put("ins", institution);
-        }
         observationValueCounts = new ArrayList<>();
         System.out.println("m = " + m);
         System.out.println("j = " + j);
@@ -290,6 +391,14 @@ public class NationalReportController implements Serializable {
 
     public void setObservationValueCounts(List<ObservationValueCount> observationValueCounts) {
         this.observationValueCounts = observationValueCounts;
+    }
+
+    public Item getSex() {
+        return sex;
+    }
+
+    public void setSex(Item sex) {
+        this.sex = sex;
     }
 
 }

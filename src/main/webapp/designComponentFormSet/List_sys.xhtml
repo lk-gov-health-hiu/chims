@@ -77,7 +77,7 @@
                                 <p:commandButton id="addForm"   icon="ui-icon-cart" value="Manage Pages" ajax="false" action="#{designComponentFormSetController.toAddFormsForTheSelectedSet()}"
                                                  actionListener="#{designComponentFormSetController.setBackStringToInsAdmin()}"
                                                  disabled="#{empty designComponentFormSetController.selected}"/>
-                                <p:commandButton id="deleteButton" icon="ui-icon-trash"  ajax="false"
+                                <p:commandButton id="deleteButton"  icon="pi pi-check"  ajax="false"
                                                  value="#{bundleClinical.Delete}" 
                                                    onclick="if (!confirm('Really want to do that?')) return false"
                                                  action="#{designComponentFormSetController.destroy}" 

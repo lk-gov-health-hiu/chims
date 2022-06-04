@@ -24,11 +24,11 @@
                 </h:panelGroup>
                 
                 <h:form >
-                    <h:commandButton value="Run Analytics" action="#{analysisController.runStoredQueryRequests()}" >
+                    <h:commandButton rendered="false" value="Run Analytics" action="#{analysisController.runStoredQueryRequests()}" >
                     </h:commandButton>
                 </h:form>
 
-                <h:panelGroup rendered="false">
+                <h:panelGroup rendered="true">
                     <ez:dashboardSystemAdministrator rendered="#{webUserController.loggedUser.systemAdministrator}"/>
                     <ez:dashboardSuperUser rendered="#{webUserController.loggedUser.superUser}"/>
                     <ez:dashboardUser rendered="#{webUserController.loggedUser.user}"/>
