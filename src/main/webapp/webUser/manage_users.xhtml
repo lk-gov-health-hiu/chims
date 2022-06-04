@@ -14,14 +14,21 @@
                 <h:form >
 
 
-                    <p:panelGrid style="height: 100%;text-align: center;" columns="2">
+                    <p:panelGrid style="height: 100%;text-align: center;" columns="1">
                         <f:facet name="header" >
                             <p:outputLabel value="User List" ></p:outputLabel>
+                            <p:commandButton value="Download" ajax="false" >
+                                <p:dataExporter target="datalist" type="xls" fileName="users" ></p:dataExporter>
+                            </p:commandButton>
                             <p:commandButton ajax="false" value="Back" action="#{webUserController.toManageUserIndexForSystemAdmin()}" style="float: right;"/>
+
                         </f:facet>
 
 
+
                         <p:dataTable value="#{webUserController.items}" var="item"  
+
+                                     id="datalist"
 
                                      rowKey="#{item.id}" 
 

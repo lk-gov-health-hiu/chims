@@ -23,7 +23,6 @@
  */
 package lk.gov.health.phsp.ejb;
 
-import com.mysql.cj.conf.PropertyKey;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Comparator;
@@ -96,7 +95,7 @@ public class AnalysisBean {
     @EJB
     QueryComponentFacade queryComponentFacade;
     @EJB
-    ClientEncounterComponentItemFacade clientEncounterComponentItemFacade;
+     ClientEncounterComponentItemFacade clientEncounterComponentItemFacade;
     @EJB
     EncounterFacade encounterFacade;
     @EJB
@@ -127,27 +126,27 @@ public class AnalysisBean {
 
 //    @Schedule(dayOfWeek = "Mon-Fri", month = "*", hour = "9-17", dayOfMonth = "*", year = "*", minute = "*", second = "0", persistent = false)
 //    public void myTimer() {
-//        // //System.out.println("Timer event: " + new Date());
+//        // System.out.println("Timer event: " + new Date());
 //    }
     @Schedule(hour = "19-05", minute = "*/5", second = "0", persistent = false)
     public void startProcessingCounts() {
 
     }
 
-//    @Schedule(hour = "05-18", minute = "*/15", second = "30", persistent = false)
-//    public void endProcessingCounts() {
-//
-//    }
+    @Schedule(hour = "05-18", minute = "*/15", second = "30", persistent = false)
+    public void endProcessingCounts() {
 
-//    @Schedule(hour = "21-5", minute = "*/2", second = "0", persistent = false)
+    }
+
+    @Schedule(hour = "21-5", minute = "*/2", second = "0", persistent = false)
     public void processCounts() {
-        // //System.out.println("processCounts Commented");
+        // System.out.println("processCounts Commented");
 //        getIymcs();
 //        InstitutionYearMonthCompleted next = selectNextIymcs();
-//        // //System.out.println("next = " + next);
+//        // System.out.println("next = " + next);
 //
 //        if (next != null) {
-//            // //System.out.println("Next INS = " + next.getInstitution().getName());
+//            // System.out.println("Next INS = " + next.getInstitution().getName());
 //            runClinicCounts(next);
 //        }
     }
@@ -440,7 +439,7 @@ public class AnalysisBean {
             cells.add(gnCell);
 
             for (ReportColumn rc : cols) {
-                //System.out.println("rc = " + rc);
+                System.out.println("rc = " + rc);
                 if (rc == null) {
                     continue;
                 }
@@ -450,6 +449,7 @@ public class AnalysisBean {
                 if (rc.getCode().equals("")) {
                     continue;
                 }
+                System.out.println("rc = " + rc.getCode());
                 if (rc.getCode() != null || !rc.getCode().trim().equals("")) {
 
                     if (ce == null) {
@@ -463,6 +463,7 @@ public class AnalysisBean {
                     }
 
                     for (ClientEncounterComponentItem cItem : ce.getFirstEncounter().getClientEncounterComponentItems()) {
+                        System.out.println("cItem = " + cItem);
 
                         if (cItem.getItem() == null || cItem.getItem().getCode() == null) {
                             continue;
@@ -555,6 +556,7 @@ public class AnalysisBean {
             String dates = "";
             String visitType = "";
 
+            System.out.println("ce.getRemainigEncounters() = " + ce.getRemainigEncounters());
 
             for (Encounter e : ce.getRemainigEncounters().values()) {
                 dates += CommonController.dateTimeToString(e.getEncounterDate()) + "\n";
@@ -870,6 +872,7 @@ public class AnalysisBean {
             String dates = "";
             String visitType = "";
 
+            System.out.println("ce.getRemainigEncounters() = " + ce.getRemainigEncounters());
 
             int encounterNo = 1;
             for (Encounter e : ce.getRemainigEncounters().values()) {
@@ -1210,7 +1213,7 @@ public class AnalysisBean {
 
             String dates = "";
 
-//            //System.out.println("ce.getRemainigEncounters() = " + ce.getRemainigEncounters());
+//            System.out.println("ce.getRemainigEncounters() = " + ce.getRemainigEncounters());
             int encounterNo = 1;
             for (Encounter e : ce.getRemainigEncounters().values()) {
                 ReportCell vdCell = new ReportCell();
@@ -1265,7 +1268,7 @@ public class AnalysisBean {
     }
 
     public List<InstitutionYearMonthCompleted> getIymcs() {
-        // //System.out.println("getIymcs");
+        // System.out.println("getIymcs");
         if (iymcs == null) {
             Calendar c = Calendar.getInstance();
             int ti = c.get(Calendar.YEAR);
@@ -1274,7 +1277,7 @@ public class AnalysisBean {
             month = tm;
             iymcs = new ArrayList<>();
             for (Institution ins : findClinics()) {
-                // //System.out.println("ins = " + ins.getName());
+                // System.out.println("ins = " + ins.getName());
                 InstitutionYearMonthCompleted iymc = new InstitutionYearMonthCompleted();
                 iymc.setInstitution(ins);
                 iymc.setYear(ti);
@@ -1299,11 +1302,11 @@ public class AnalysisBean {
     }
 
     public InstitutionYearMonthCompleted selectNextIymcs() {
-        // //System.out.println("selectNextIymcs");
+        // System.out.println("selectNextIymcs");
         InstitutionYearMonthCompleted r = null;
         boolean allCompletedForThisCycle = true;
         for (InstitutionYearMonthCompleted t : getIymcs()) {
-            // //System.out.println("t = " + t.getInstitution().getName());
+            // System.out.println("t = " + t.getInstitution().getName());
             if (t.isCompleted()) {
                 allCompletedForThisCycle = false;
                 return t;
@@ -1328,8 +1331,8 @@ public class AnalysisBean {
     }
 
     public void runClinicCounts(InstitutionYearMonthCompleted iymc) {
-        // //System.out.println("Running clinic count");
-        // //System.out.println("iymc = " + iymc);
+        // System.out.println("Running clinic count");
+        // System.out.println("iymc = " + iymc);
         if (iymc == null) {
             return;
         }
@@ -1356,9 +1359,10 @@ public class AnalysisBean {
         Date fromDate = CommonController.startOfTheMonth(iymc.getYear(), iymc.getMonth());
         Date toDate = CommonController.endOfTheMonth(iymc.getYear(), iymc.getMonth());
 
-        // //System.out.println("iymc.getInstitution() = " + iymc.getInstitution().getName());
-        // //System.out.println("fromDate = " + fromDate);
-        // //System.out.println("toDate = " + toDate);
+        // System.out.println("iymc.getInstitution() = " + iymc.getInstitution().getName());
+        // System.out.println("fromDate = " + fromDate);
+        // System.out.println("toDate = " + toDate);
+
         List<QueryWithCriteria> qs = new ArrayList<>();
         List<EncounterWithComponents> encountersWithComponents;
 
@@ -1466,28 +1470,23 @@ public class AnalysisBean {
         for (Long enId : ids) {
             EncounterWithComponents ewc = new EncounterWithComponents();
             ewc.setEncounterId(enId);
-
-            List<ClientEncounterComponentItem> tecs = findClientEncounterComponentItems(enId);
-            if (tecs != null) {
-                ewc.setComponents(tecs);
-                cs.add(ewc);
-            }
+            ewc.setComponents(findClientEncounterComponentItems(enId));
+            cs.add(ewc);
         }
         return cs;
     }
 
-    private List<ClientEncounterComponentItem> findClientEncounterComponentItems(Long endId) {
-        try {
-            String j;
-            Map m;
-            m = new HashMap();
-            j = "select f from ClientEncounterComponentItem f "
-                    + " where f.retired=false "
-                    + " and f.encounter.id=:eid ";
-            m.put("eid", endId);
-            List<ClientEncounterComponentItem> ts = clientEncounterComponentItemFacade.findByJpql(j, m);
-            return ts;
-        } catch (Exception e) {
+     private  List<ClientEncounterComponentItem> findClientEncounterComponentItems(Long endId) {
+         try{
+        String j;
+        Map m;
+        m = new HashMap();
+        j = "select f from ClientEncounterComponentItem f "
+                + " where f.retired=false "
+                + " and f.encounter.id=:eid";
+        m.put("eid", endId);
+        List<ClientEncounterComponentItem> ts = clientEncounterComponentItemFacade.findByJpql(j, m);
+        return ts;}catch(Exception e){
             return null;
         }
     }
@@ -1507,14 +1506,15 @@ public class AnalysisBean {
             }
 
             if (qc.getQueryLevel() == QueryLevel.Criterian) {
-                if (qc.getParentComponent().getCode() != null && qc.getParentComponent().getCode().equalsIgnoreCase(qryCode)) {
+                if (qc.getParentComponent().getCode().equalsIgnoreCase(qryCode)) {
                     output.add(qc);
                 }
             }
         }
-        try {
+        try{
             output.sort(Comparator.comparing(QueryComponent::getOrderNo));
-        } catch (Exception e) {
+        }catch(Exception e){
+            System.out.println("e = " + e);
         }
         return output;
     }
@@ -1534,23 +1534,12 @@ public class AnalysisBean {
         }
         return queryComponents;
     }
-
+    
     public List<QueryComponent> fillIndicators() {
         List<QueryComponent> tqcs = getQueryComponents();
         List<QueryComponent> nqs = new ArrayList<>();
         for (QueryComponent q : tqcs) {
             if (q.getQueryType() == QueryType.Indicator) {
-                nqs.add(q);
-            }
-        }
-        return nqs;
-    }
-
-    public List<QueryComponent> fillCounts() {
-        List<QueryComponent> tqcs = getQueryComponents();
-        List<QueryComponent> nqs = new ArrayList<>();
-        for (QueryComponent q : tqcs) {
-            if (q.getQueryType() == QueryType.Client_Count || q.getQueryType() == QueryType.Encounter_Count) {
                 nqs.add(q);
             }
         }
@@ -1719,7 +1708,7 @@ public class AnalysisBean {
         Boolean qBool = null;
         String qStr = null;
 
-        if (q.getMatchType() == QueryCriteriaMatchType.Variable_Value_Check || q.getMatchType() == QueryCriteriaMatchType.Variable_Range_check) {
+        if (q.getMatchType() == QueryCriteriaMatchType.Variable_Value_Check) {
 
             switch (q.getQueryDataType()) {
                 case integer:
@@ -1989,7 +1978,7 @@ public class AnalysisBean {
 
     public boolean clientValueIsNotNull(QueryComponent q, ClientEncounterComponentItem clientValue) {
         boolean valueNotNull = false;
-       if (q.getMatchType() == QueryCriteriaMatchType.Variable_Value_Check || q.getMatchType() == QueryCriteriaMatchType.Variable_Range_check) {
+        if (q.getMatchType() == QueryCriteriaMatchType.Variable_Value_Check) {
             switch (q.getQueryDataType()) {
                 case integer:
                     if (clientValue.getIntegerNumberValue() != null) {
@@ -2068,96 +2057,97 @@ public class AnalysisBean {
                 + " order by s.id desc";
         return storedQueryResultFacade.findFirstByJpql(j, m);
     }
-
+    
     @Asynchronous
     public void runClinicCountsForRequests(QueryComponent tQc,
             Date fromDate,
             Date toDate,
             List<Institution> inss) {
+        
+        System.out.println("runClinicCountsForRequests");
+        System.out.println("inss = " + inss.size());
+        
+        for(Institution tIns:inss){
+            System.out.println("tIns = " + tIns);
+        if (tIns.getInstitutionType() == null) {
+            JsfUtil.addErrorMessage("No Type for the institution");
+            return;
+        }
+        if (tIns.getInstitutionType() != InstitutionType.Clinic) {
+            JsfUtil.addErrorMessage("Selected institution is NOT a HLC?");
+            return;
+        }
+        Jpq j = new Jpq();
+        
+        List<QueryWithCriteria> qs = new ArrayList<>();
+        List<EncounterWithComponents> encountersWithComponents;
 
-        //System.out.println("runClinicCountsForRequests");
+        List<Long> encounterIds = findEncounterIds(fromDate,
+                toDate,
+                tIns);
 
-        for (Institution tIns : inss) {
-            //System.out.println("tIns = " + tIns);
-            if (tIns.getInstitutionType() == null) {
-                JsfUtil.addErrorMessage("No Type for the institution");
-                return;
-            }
-            if (tIns.getInstitutionType() != InstitutionType.Clinic) {
-                JsfUtil.addErrorMessage("Selected institution is NOT a HLC?");
-                return;
-            }
-            Jpq j = new Jpq();
+        encountersWithComponents = findEncountersWithComponents(encounterIds);
+        if (encountersWithComponents == null) {
+            continue;
+        }
 
-            List<QueryWithCriteria> qs = new ArrayList<>();
-            List<EncounterWithComponents> encountersWithComponents;
+        QueryWithCriteria qwc = new QueryWithCriteria();
+        qwc.setQuery(tQc);
+        qwc.setCriteria(findCriteriaForQueryComponent(tQc.getCode()));
 
-            List<Long> encounterIds = findEncounterIds(fromDate,
-                    toDate,
-                    tIns);
-
-            encountersWithComponents = findEncountersWithComponents(encounterIds);
-            if (encountersWithComponents == null) {
-                continue;
-            }
-
-            QueryWithCriteria qwc = new QueryWithCriteria();
-            qwc.setQuery(tQc);
-            qwc.setCriteria(findCriteriaForQueryComponent(tQc.getCode()));
-
-            Long value = calculateIndividualQueryResult(encountersWithComponents, qwc);
-            j.setMessage("Clinic : " + tIns.getName() + "\n");
-            j.setMessage(j.getMessage() + "From : " + CommonController.formatDate(fromDate) + "\n");
-            j.setMessage(j.getMessage() + "To : " + CommonController.formatDate(toDate) + "\n");
-            j.setMessage(j.getMessage() + "Number of Encounters : " + encountersWithComponents.size() + "\n");
-            j.setMessage(j.getMessage() + "Count : " + qwc.getQuery().getName() + "\n");
-            if (value != null) {
-                saveValue(qwc.getQuery(), fromDate, toDate, tIns, value);
-                j.setMessage(j.getMessage() + "Result : " + value + "\n");
-            } else {
-                j.setMessage(j.getMessage() + "Result : No Result\n");
-            }
-            //System.out.println("j.getErrorMessage() = " + j.getErrorMessage());
+        Long value = calculateIndividualQueryResult(encountersWithComponents, qwc);
+        j.setMessage("Clinic : " + tIns.getName() + "\n");
+        j.setMessage(j.getMessage() + "From : " + CommonController.formatDate(fromDate) + "\n");
+        j.setMessage(j.getMessage() + "To : " + CommonController.formatDate(toDate) + "\n");
+        j.setMessage(j.getMessage() + "Number of Encounters : " + encountersWithComponents.size() + "\n");
+        j.setMessage(j.getMessage() + "Count : " + qwc.getQuery().getName() + "\n");
+        if (value != null) {
+            saveValue(qwc.getQuery(), fromDate, toDate, tIns, value);
+            j.setMessage(j.getMessage() + "Result : " + value + "\n");
+        }else{
+            j.setMessage(j.getMessage() + "Result : No Result\n");
+        }
+            System.out.println("j.getErrorMessage() = " + j.getErrorMessage());
+            System.out.println("j.getErrorMessage() = " + j.getMessage());
 //        message = CommonController.stringToHtml(j.getErrorMessage());
 //        result = CommonController.stringToHtml(j.getMessage());
-
+        
         }
     }
-
+    
+    
     //    @Schedule(dayOfWeek = "Mon-Fri", month = "*", hour = "9-17", dayOfMonth = "*", year = "*", minute = "*", second = "0", persistent = false)
 //    public void myTimer() {
-//        // //System.out.println("Timer event: " + new Date());
+//        // System.out.println("Timer event: " + new Date());
 //    }
-    @Schedule(hour = "17-23,00-08", minute = "*/2", second = "0", persistent = false)
+//    @Schedule(hour = "21-5", minute = "*/5", second = "0", persistent = false)
     public void runStoredRequests() {
-        System.out.print("Running Stored Requests*/5");
+        System.out.print("runStoredRequests");
         Map m = new HashMap();
         String j = "select s"
                 + " from StoredRequest s "
                 + " where s.pending=:pen";
         m.put("pen", true);
-
-        StoredRequest request = storedRequestFacade.findFirstByJpql(j, m);
-
-        if (request == null) {
-            return;
-        }
-
+        
+        StoredRequest request = storedRequestFacade.findFirstByJpql(j, m) ;
+        
+        if(request==null) return;
+        
         request.setPending(false);
-        request.setProcessFailed(true);
-        request.setProcessSuccess(false);
-        request.setProcessStartedAt(new Date());
         storedRequestFacade.edit(request);
-
-        List<QueryComponent> indicators = fillIndicators();
-
+        
+         List<QueryComponent> indicators = fillIndicators();
+        
         if (request.getInstitution() == null) {
+            System.out.println("no institution");
             return;
         }
         if (indicators == null) {
+            System.out.println("no indicators");
             return;
         }
         if (indicators.isEmpty()) {
+             System.out.println("no indicators");
             return;
         }
         if (request.getRyear() == 0) {
@@ -2168,20 +2158,21 @@ public class AnalysisBean {
             JsfUtil.addErrorMessage("Month");
             return;
         }
-
-        System.out.println("Institution = " + request.getInstitution().getName());
-        System.out.println("Peroid = " + request.getRyear() + " - " + request.getRmonth());
-        
-        Date fromDate = CommonController.startOfTheMonth(request.getRyear(), request.getRmonth(), true);
-        Date toDate = CommonController.endOfTheMonth(request.getRyear(), request.getRmonth(), true);
+       
+       
+        Date fromDate = CommonController.startOfTheMonth(request.getRyear(), request.getRmonth(),true);
+        Date toDate = CommonController.endOfTheMonth(request.getRyear(), request.getRmonth(),true);
 
         List<QueryWithCriteria> qs = new ArrayList<>();
         List<EncounterWithComponents> encountersWithComponents;
+
         List<Long> encounterIds = findEncounterIds(fromDate,
                 toDate,
                 request.getInstitution());
+
         encountersWithComponents = findEncountersWithComponents(encounterIds);
         if (encountersWithComponents == null) {
+            System.out.println("No data for the selected institution for the period");
             return;
         }
         Map<Long, QueryComponent> qcs = new HashMap<>();
@@ -2192,14 +2183,16 @@ public class AnalysisBean {
                 rs.addAll(trs);
             }
         }
-        //System.out.println("6");
-        //System.out.println("6. " + new Date());
+
         for (Replaceable r : rs) {
             QueryComponent temqc = findLastQuery(r.getQryCode());
             if (temqc == null) {
+                System.out.println( "\nCount " + r.getQryCode() + " used in indicators not found.\n");
                 continue;
             }
             if (null == temqc.getQueryType()) {
+                System.out.println("\n" + "No Type set for the query " + r.getQryCode() + " is not set. \n");
+
             } else {
                 switch (temqc.getQueryType()) {
                     case Client_Count:
@@ -2212,12 +2205,6 @@ public class AnalysisBean {
                 }
             }
         }
-        //System.out.println("7");
-        //System.out.println("7. " + new Date());
-
-        if (qcs.isEmpty()) {
-            return;
-        }
 
         for (QueryComponent qcc : qcs.values()) {
             QueryWithCriteria qwc = new QueryWithCriteria();
@@ -2226,9 +2213,7 @@ public class AnalysisBean {
             qs.add(qwc);
         }
 
-        //System.out.println("8");
-        //System.out.println("8. " + new Date());
-
+       
         for (QueryWithCriteria qwc : qs) {
             Long value = calculateIndividualQueryResult(encountersWithComponents, qwc);
             if (value != null) {
@@ -2237,16 +2222,10 @@ public class AnalysisBean {
                 }
             }
         }
-        
-        request.setProcessCompletedAt(new Date());
-        request.setProcessSuccess(true);
-        request.setProcessFailed(false);
-        storedRequestFacade.edit(request);
-        
-        //System.out.println("9");
 
     }
-
+    
+    
     public List<Replaceable> findReplaceblesInIndicatorQuery(String text) {
         List<Replaceable> ss = new ArrayList<>();
 
@@ -2271,7 +2250,7 @@ public class AnalysisBean {
         return ss;
 
     }
-
+    
     public QueryComponent findLastQuery(String qry) {
         if (qry == null) {
             return null;

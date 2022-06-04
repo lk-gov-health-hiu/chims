@@ -31,6 +31,7 @@ import lk.gov.health.phsp.entity.QueryComponent;
  * @author buddhika
  */
 public class InstitutionDataQuery {
+
     private Institution institution;
     private QueryComponent query;
     private Integer month;
@@ -38,12 +39,19 @@ public class InstitutionDataQuery {
     private boolean dataAvailable;
     private Long value;
     private String errorMessage;
-    private Long tid;
-    
-    
 
     public Institution getInstitution() {
         return institution;
+    }
+
+    public String getInstitutionName() {
+        String n;
+        if (institution == null) {
+            n = "";
+        }else{
+            n = institution.getName();
+        }
+        return n;
     }
 
     public void setInstitution(Institution institution) {
@@ -98,16 +106,4 @@ public class InstitutionDataQuery {
         this.errorMessage = errorMessage;
     }
 
-    public Long getTid() {
-        return tid;
-    }
-
-    public void setTid(Long tid) {
-        this.tid = tid;
-    }
-    
-    
-    
-    
-    
 }
