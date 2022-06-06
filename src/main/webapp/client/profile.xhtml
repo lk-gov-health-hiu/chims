@@ -21,6 +21,8 @@
                             </p:commandButton>
                             <p:commandButton value="To Print" action="/client/client_print" style="float: right;">
                             </p:commandButton>
+                            <p:commandButton value="Delete" action="#{clientController.toRetireClient()}" style="float: right;">
+                            </p:commandButton>
                             <p:commandButton process="@this" ajax="false"
                                              actionListener="#{clientController.prepareToCapturePhotoWithWebCam()}"
                                              value="To Capture Photo" rendered="false"
@@ -146,6 +148,10 @@
                                             </h:dataTable>
                                         </h:panelGroup>
                                     </p:column>
+                                    <p:column headerText="Actions" >
+                                        <p:commandButton value="Unregister" action="" ></p:commandButton>
+                                    </p:column>
+                                    
                                 </p:dataTable>
                             </h:form> 
 
