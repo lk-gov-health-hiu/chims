@@ -16,12 +16,15 @@
                         <h:form>
                             <p:outputLabel value="Summery - (PHN : #{clientController.selected.phn})" ></p:outputLabel>
                             <p:spacer height="1" width="30"></p:spacer>
+
+                            <p:commandButton value="Delete" action="#{clientController.toRetireClient()}"
+                                             onclick="return confirm('Are you sure?')"
+                                             style="float: right;">
+                            </p:commandButton>
                             <p:commandButton value="To Edit Details" action="#{clientController.toClient()}"
                                              style="float: right;">
                             </p:commandButton>
                             <p:commandButton value="To Print" action="/client/client_print" style="float: right;">
-                            </p:commandButton>
-                            <p:commandButton value="Delete" action="#{clientController.toRetireClient()}" style="float: right;">
                             </p:commandButton>
                             <p:commandButton process="@this" ajax="false"
                                              actionListener="#{clientController.prepareToCapturePhotoWithWebCam()}"
@@ -149,9 +152,11 @@
                                         </h:panelGroup>
                                     </p:column>
                                     <p:column headerText="Actions" >
-                                        <p:commandButton value="Unregister" action="" ></p:commandButton>
+                                        <p:commandButton value="Unregister" action="#{clientController.removeFromClinic()}" ajax="false" >
+                                            <f:setPropertyActionListener value="#{chlce}" target="#{clientController.unregisteringClinic}" ></f:setPropertyActionListener>
+                                        </p:commandButton>
                                     </p:column>
-                                    
+
                                 </p:dataTable>
                             </h:form> 
 

@@ -156,6 +156,8 @@ public class ClientController implements Serializable {
     private String dateFormat;
     private List<String> reservePhnList;
     private int intNo;
+    
+    private Encounter unregisteringClinic;
 
     private DataFormset dataFormset;
     ClientEncounterComponentFormSet clientCefs;
@@ -2930,15 +2932,15 @@ public class ClientController implements Serializable {
         return selectedClientsLastFiveClinicVisits;
     }
     
-    public String removeFromClinic(Encounter clinic){
-        if(clinic==null){
+    public String removeFromClinic(){
+        if(unregisteringClinic==null){
             JsfUtil.addErrorMessage("No Clinic Selected");
             return "";
         }
-        clinic.setRetired(true);
-        clinic.setRetiredAt(new Date());
-        clinic.setRetiredBy(webUserController.getLoggedUser());
-        encounterFacade.edit(clinic);
+        unregisteringClinic.setRetired(true);
+        unregisteringClinic.setRetiredAt(new Date());
+        unregisteringClinic.setRetiredBy(webUserController.getLoggedUser());
+        encounterFacade.edit(unregisteringClinic);
         JsfUtil.addSuccessMessage("Unregistered from the clinic");
         return toClientProfile();
     }
@@ -3005,6 +3007,16 @@ public class ClientController implements Serializable {
     public void setClientDcfs(DesignComponentFormSet clientDcfs) {
         this.clientDcfs = clientDcfs;
     }
+
+    public Encounter getUnregisteringClinic() {
+        return unregisteringClinic;
+    }
+
+    public void setUnregisteringClinic(Encounter unregisteringClinic) {
+        this.unregisteringClinic = unregisteringClinic;
+    }
+    
+    
 
     // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="Inner Classes">
