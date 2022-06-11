@@ -26,6 +26,7 @@ package lk.gov.health.phsp.bean;
 import javax.inject.Named;
 import javax.enterprise.context.SessionScoped;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -38,6 +39,7 @@ import lk.gov.health.phsp.entity.QueryComponent;
 import lk.gov.health.phsp.entity.StoredQueryResult;
 import lk.gov.health.phsp.facade.QueryComponentFacade;
 import lk.gov.health.phsp.facade.StoredQueryResultFacade;
+import lk.gov.health.phsp.pojcs.InstitutionDataQuery;
 import lk.gov.health.phsp.pojcs.Replaceable;
 
 /**
@@ -69,9 +71,9 @@ public class StoredQueryResultController implements Serializable {
     }
 
     public Long findStoredLongValue(QueryComponent qc, Date fromDate, Date toDate, List<Institution> institutions) {
-        System.out.println("findStoredLongValue");
-        System.out.println("fromDate = " + CommonController.dateTimeToString(fromDate));
-        System.out.println("toDate = " + CommonController.dateTimeToString(toDate));
+        // System.out.println("findStoredLongValue");
+        // System.out.println("fromDate = " + CommonController.dateTimeToString(fromDate));
+        // System.out.println("toDate = " + CommonController.dateTimeToString(toDate));
         Long c = 0l;
         Map<Long, Institution> mis = new HashMap<>();
         for (Institution institution : institutions) {
@@ -80,13 +82,13 @@ public class StoredQueryResultController implements Serializable {
         for (Institution institution : mis.values()) {
             StoredQueryResult s;
             s = findStoredQueryResult(qc, fromDate, toDate, institution);
-            System.out.println("institution.getName() = " + institution.getName());
+            // System.out.println("institution.getName() = " + institution.getName());
             if (s != null && s.getLongValue() != null) {
-                System.out.println("s.getLongValue() = " + s.getLongValue());
+                // System.out.println("s.getLongValue() = " + s.getLongValue());
                 c += s.getLongValue();
             }
         }
-        System.out.println("c = " + c);
+        // System.out.println("c = " + c);
         return c;
     }
 
@@ -110,12 +112,32 @@ public class StoredQueryResultController implements Serializable {
         Long insSum = 0L;
         for (Institution i : institutions) {
             Long ic = findStoredLongValue(qc, fromDate, toDate, i, re);
-//            System.out.println("qc = " + qc.getName() + ", Ins = " + i.getName() + ", count = " + ic);
+//            // System.out.println("qc = " + qc.getName() + ", Ins = " + i.getName() + ", count = " + ic);
             if (ic != null) {
                 insSum += ic;
             }
         }
         return insSum;
+    }
+    
+    public List<InstitutionDataQuery> findStoredQueryData(QueryComponent qc, Date fromDate, Date toDate, List<Institution> institutions, Replaceable re, Integer year, Integer month) {
+        List<InstitutionDataQuery> qds = new ArrayList<>();
+        Long insSum = 0L;
+        for (Institution i : institutions) {
+            InstitutionDataQuery q = new InstitutionDataQuery();
+            q.setInstitution(i);
+            q.setQuery(qc);
+            q.setYear(year);
+            q.setMonth(month);
+            Long ic = findStoredLongValue(qc, fromDate, toDate, i, re);
+            q.setValue(ic);
+//            // System.out.println("qc = " + qc.getName() + ", Ins = " + i.getName() + ", count = " + ic);
+            if (ic != null) {
+                insSum += ic;
+            }
+            qds.add(q);
+        }
+        return qds;
     }
 
     public StoredQueryResult findStoredQueryResult(QueryComponent qc, Date fromDate, Date toDate, Institution institution) {

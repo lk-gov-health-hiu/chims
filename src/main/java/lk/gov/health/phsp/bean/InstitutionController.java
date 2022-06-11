@@ -90,6 +90,8 @@ public class InstitutionController implements Serializable {
             return null;
         }
         switch (unit.getInstitutionType()) {
+            case Ministry_of_Health:
+                return institutionApplicationController.findMinistryOfHealth();
             case Base_Hospital:
             case District_General_Hospital:
             case Divisional_Hospital:
@@ -99,7 +101,7 @@ public class InstitutionController implements Serializable {
                 return unit;
             case Clinic:
             case MOH_Office:
-            case Ministry_of_Health:
+            
             case Other:
             case Partner:
 
@@ -398,7 +400,7 @@ public class InstitutionController implements Serializable {
         for (Institution i : institutionApplicationController.getInstitutions()) {
             if (i.getName() != null && i.getName().equalsIgnoreCase(name)) {
                 if (ni != null) {
-                    System.out.println("Duplicate Institution Name : " + name);
+                    // System.out.println("Duplicate Institution Name : " + name);
                 }
                 ni = i;
             }

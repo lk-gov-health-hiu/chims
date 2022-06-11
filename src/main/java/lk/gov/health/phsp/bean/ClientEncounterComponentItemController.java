@@ -378,7 +378,7 @@ public class ClientEncounterComponentItemController implements Serializable {
         }
 
         String javaStringToEvaluate = addTemplateToReport(i.getDi().getCalculationScript().trim(), replacingBlocks);
-        System.out.println("javaStringToEvaluate = " + javaStringToEvaluate);
+        // System.out.println("javaStringToEvaluate = " + javaStringToEvaluate);
         String result = evaluateScript(javaStringToEvaluate);
 
         if (null == i.getDi().getItem().getDataType()) {
@@ -630,14 +630,14 @@ public class ClientEncounterComponentItemController implements Serializable {
     }
 
     public void save(ClientEncounterComponentItem i) {
-        System.out.println("save");
-        System.out.println("i = " + i);
+        // System.out.println("save");
+        // System.out.println("i = " + i);
         if (i == null) {
-            System.out.println("i is null. not saving");
+            // System.out.println("i is null. not saving");
             return;
         }
         
-        System.out.println("i.getInstitutionValue() = " + i.getInstitutionValue());
+        // System.out.println("i.getInstitutionValue() = " + i.getInstitutionValue());
 
         if (i.getId() == null) {
             i.setCreatedAt(new Date());
@@ -698,26 +698,26 @@ public class ClientEncounterComponentItemController implements Serializable {
     }
 
       public void addAnotherDataItem(DataItem i) {
-        System.out.println("addAnother");
-        System.out.println("Dataitem i = " + i);
+        // System.out.println("addAnother");
+        // System.out.println("Dataitem i = " + i);
 
         if (i == null) {
             JsfUtil.addErrorMessage("No Data Item");
             return;
         }
 
-        System.out.println("i.getAddingItem() = " + i.getAddingItem());
+        // System.out.println("i.getAddingItem() = " + i.getAddingItem());
 
         if (i.getAddingItem() == null) {
             JsfUtil.addErrorMessage("No Adding Item");
             return;
         }
 
-        System.out.println("i.getAddingItem().getCi() = " + i.getAddingItem().getCi());
+        // System.out.println("i.getAddingItem().getCi() = " + i.getAddingItem().getCi());
 
         if (i.getAddingItem().getCi() == null) {
             JsfUtil.addErrorMessage("No CI for Adding Item");
-            System.out.println("No CI for Adding Item");
+            // System.out.println("No CI for Adding Item");
             return;
         }
 
@@ -725,18 +725,18 @@ public class ClientEncounterComponentItemController implements Serializable {
             JsfUtil.addErrorMessage("No Item value for CI");
             return;
         } else {
-            System.out.println("i.getAddingItem().getCi().getItemValue() = " + i.getAddingItem().getCi().getItemValue().getName());
+            // System.out.println("i.getAddingItem().getCi().getItemValue() = " + i.getAddingItem().getCi().getItemValue().getName());
         }
 
-        System.out.println("going to save");
+        // System.out.println("going to save");
 
-        System.out.println("i.getAddingItem().getCi().getId() = " + i.getAddingItem().getCi().getId());
+        // System.out.println("i.getAddingItem().getCi().getId() = " + i.getAddingItem().getCi().getId());
 
         save(i.getAddingItem().getCi());
         
 
-        System.out.println("saved");
-        System.out.println("i.getAddingItem().getCi().getId() = " + i.getAddingItem().getCi().getId());
+        // System.out.println("saved");
+        // System.out.println("i.getAddingItem().getCi().getId() = " + i.getAddingItem().getCi().getId());
 
         i.getAddedItems().add(i.getAddingItem());
         
@@ -744,10 +744,10 @@ public class ClientEncounterComponentItemController implements Serializable {
             JsfUtil.addErrorMessage("No Item value for CI");
             return;
         } else {
-            System.out.println("i.getAddingItem().getCi().getItemValue() = " + i.getAddingItem().getCi().getItemValue().getName());
+            // System.out.println("i.getAddingItem().getCi().getItemValue() = " + i.getAddingItem().getCi().getItemValue().getName());
         }
 
-        System.out.println("before new nci");
+        // System.out.println("before new nci");
 
         ClientEncounterComponentItem nci = new ClientEncounterComponentItem();
 
@@ -778,7 +778,7 @@ public class ClientEncounterComponentItemController implements Serializable {
             nci.setPrescriptionValue(p);
         }
         
-        System.out.println("before new ni");
+        // System.out.println("before new ni");
 
         DataItem ni = new DataItem();
         ni.setMultipleEntries(true);
@@ -790,15 +790,15 @@ public class ClientEncounterComponentItemController implements Serializable {
 
         i.setAddingItem(ni);
 
-        System.out.println("before recording user transaction");
+        // System.out.println("before recording user transaction");
         userTransactionController.recordTransaction("Add Another - Clinic Forms");
-        System.out.println("after saving user transaction");
+        // System.out.println("after saving user transaction");
     }
       
       
       public void removeDataItem(DataItem i,DataItem removingItem) {
-        System.out.println("removeDataItem");
-        System.out.println("Dataitem i = " + i);
+        // System.out.println("removeDataItem");
+        // System.out.println("Dataitem i = " + i);
 
         if (i == null) {
             JsfUtil.addErrorMessage("No Data Item");

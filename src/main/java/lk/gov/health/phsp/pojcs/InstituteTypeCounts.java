@@ -21,35 +21,61 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package lk.gov.health.phsp.bean;
+package lk.gov.health.phsp.pojcs;
 
-import javax.inject.Named;
-import javax.enterprise.context.RequestScoped;
-import javax.faces.context.FacesContext;
-import javax.inject.Inject;
-import javax.servlet.http.HttpServletRequest;
+import lk.gov.health.phsp.enums.InstitutionType;
 
 /**
  *
  * @author buddhika
  */
-@Named(value = "requestController")
-@RequestScoped
-public class RequestController {
+public class InstituteTypeCounts {
+    private Integer serial;
+    private InstitutionType type;
+    private Long number;
+    private Long hlcs;
+    private Long functioningHlcs;
+    
+    
 
-    /**
-     * Creates a new instance of RequestController
-     */
-    public RequestController() {
+    public InstitutionType getType() {
+        return type;
     }
 
-    public String getRemoteAddress() {
-        HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
-        String ipAddress = request.getHeader("X-FORWARDED-FOR");
-        // System.out.println("ipAddress = " + ipAddress);
-        ipAddress = request.getRemoteAddr();
-        // System.out.println("ipAddress = " + ipAddress);
-        return ipAddress;
+    public void setType(InstitutionType type) {
+        this.type = type;
     }
 
+    public Long getNumber() {
+        return number;
+    }
+
+    public void setNumber(Long number) {
+        this.number = number;
+    }
+
+    public Long getHlcs() {
+        return hlcs;
+    }
+
+    public void setHlcs(Long hlcs) {
+        this.hlcs = hlcs;
+    }
+
+    public Long getFunctioningHlcs() {
+        return functioningHlcs;
+    }
+
+    public void setFunctioningHlcs(Long functioningHlcs) {
+        this.functioningHlcs = functioningHlcs;
+    }
+
+    public Integer getSerial() {
+        return serial;
+    }
+
+    public void setSerial(Integer serial) {
+        this.serial = serial;
+    }
+    
 }

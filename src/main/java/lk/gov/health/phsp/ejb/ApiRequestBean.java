@@ -45,7 +45,7 @@ public class ApiRequestBean {
 
     @Schedule(dayOfMonth = "*", year = "*", minute = "*", second = "0", persistent = false)
     public void myTimer() {
-        System.out.println("Timer event: " + new Date());
+        // System.out.println("Timer event: " + new Date());
         sendApiRequest(null);
     }
 
@@ -84,10 +84,10 @@ public class ApiRequestBean {
         
         if(a==null){
             
-//        System.out.println("PHN = " + a.getEncounter().getClient().getPhn());
-//        System.out.println("Procedure ID = " + a.getClientEncounterComponentItem().getItemValue().getId());
-//        System.out.println("Institute ID = " + a.getEncounter().getInstitution().getId());
-//        System.out.println("Institute ID = " + a.getEncounter().getInstitution().getId());
+//        // System.out.println("PHN = " + a.getEncounter().getClient().getPhn());
+//        // System.out.println("Procedure ID = " + a.getClientEncounterComponentItem().getItemValue().getId());
+//        // System.out.println("Institute ID = " + a.getEncounter().getInstitution().getId());
+//        // System.out.println("Institute ID = " + a.getEncounter().getInstitution().getId());
         }else{
             
         }

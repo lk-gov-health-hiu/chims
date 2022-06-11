@@ -213,12 +213,11 @@ public abstract class AbstractFacade<T> {
         }
         return qry.getResultList();
     }
-    
-    
+
     public List<T> findByJpql(String jpql, Map<String, Object> parameters, boolean withoutCache) {
-        
+
         TypedQuery<T> qry = getEntityManager().createQuery(jpql, entityClass);
-        
+
         Set s = parameters.entrySet();
         Iterator it = s.iterator();
 
@@ -235,13 +234,12 @@ public abstract class AbstractFacade<T> {
 
             }
         }
-        if(withoutCache){
+        if (withoutCache) {
             qry.setHint(QueryHints.CACHE_USAGE, CacheUsage.DoNotCheckCache);
         }
-        
+
         return qry.getResultList();
     }
-    
 
     public List<T> findByJpql(String jpql, Map<String, Object> parameters, TemporalType tt) {
         TypedQuery<T> qry = getEntityManager().createQuery(jpql, entityClass);
@@ -276,7 +274,7 @@ public abstract class AbstractFacade<T> {
             } else {
                 qry.setParameter(pPara, pVal);
             }
-           
+
         }
         return qry.getResultList();
     }
@@ -295,7 +293,7 @@ public abstract class AbstractFacade<T> {
             } else {
                 qry.setParameter(pPara, pVal);
             }
-            
+
         }
         return qry.getResultList();
     }
@@ -314,7 +312,7 @@ public abstract class AbstractFacade<T> {
             } else {
                 qry.setParameter(pPara, pVal);
             }
-           
+
         }
 
         qry.setMaxResults(1);
@@ -339,7 +337,7 @@ public abstract class AbstractFacade<T> {
             } else {
                 qry.setParameter(pPara, pVal);
             }
-            
+
         }
         return qry.getSingleResult();
     }
@@ -362,7 +360,7 @@ public abstract class AbstractFacade<T> {
             } else {
                 qry.setParameter(pPara, pVal);
             }
-            
+
         }
         return qry.getResultList();
     }
@@ -454,7 +452,7 @@ public abstract class AbstractFacade<T> {
     public long findLongByJpql(String jpql, Map<String, Object> parameters) {
         return findLongByJpql(jpql, parameters, TemporalType.DATE);
     }
-    
+
     public long findLongByJpql(String jpql, Map<String, Object> parameters, int maxResults) {
         TypedQuery<Long> qry = (TypedQuery<Long>) getEntityManager().createQuery(jpql);
         Set s = parameters.entrySet();
@@ -474,11 +472,10 @@ public abstract class AbstractFacade<T> {
         try {
             return (long) qry.getSingleResult();
         } catch (Exception e) {
-            
+
             return 0l;
         }
     }
-    
 
     public long findLongByJpql(String jpql, Map<String, Object> parameters, TemporalType tt) {
         TypedQuery<Long> qry = (TypedQuery<Long>) getEntityManager().createQuery(jpql);
@@ -498,7 +495,7 @@ public abstract class AbstractFacade<T> {
         try {
             return (long) qry.getSingleResult();
         } catch (Exception e) {
-           
+
             return 0l;
         }
     }
@@ -546,7 +543,7 @@ public abstract class AbstractFacade<T> {
             } else {
                 qry.setParameter(pPara, pVal);
             }
-  }
+        }
         qry.setMaxResults(maxRecords);
         qry.setHint("javax.persistence.cache.storeMode", "REFRESH");
         return qry.getResultList();
@@ -597,7 +594,6 @@ public abstract class AbstractFacade<T> {
         return AbstractFacade.this.findByJpql(jpql, parameters, TemporalType.DATE, maxRecords);
     }
 
-
     public Long countByJpql(String sql) {
         return countByJpql(sql, null, TemporalType.DATE);
     }
@@ -623,7 +619,19 @@ public abstract class AbstractFacade<T> {
                 }
             }
         }
-        return (Long) q.getSingleResult();
+        Object o;
+        try {
+            o = q.getSingleResult();
+        } catch (Exception e) {
+            return null;
+        }
+        if (o == null) {
+            return null;
+        }
+        if (!(o instanceof Long)) {
+            return null;
+        }
+        return (Long) o;
     }
 
     public double sumByJpql(String sql, Map parameters, TemporalType tt) {
@@ -643,7 +651,19 @@ public abstract class AbstractFacade<T> {
                 }
             }
         }
-        return (double) q.getSingleResult();
+        Object o;
+        try {
+            o = q.getSingleResult();
+        } catch (Exception e) {
+            return 0.0;
+        }
+        if (o == null) {
+            return 0.0;
+        }
+        if (!(o instanceof Long)) {
+            return 0.0;
+        }
+        return (double) o;
     }
 
     public Double sumByJpql(String sql) {
@@ -772,7 +792,7 @@ public abstract class AbstractFacade<T> {
             } else {
                 qry.setParameter(pPara, pVal);
             }
-          
+
         }
 
         if (!qry.getResultList().isEmpty()) {
@@ -832,7 +852,7 @@ public abstract class AbstractFacade<T> {
                 temd = 0.0;
             }
         } catch (Exception e) {
-            
+
             temd = 0.0;
         }
         return temd;
@@ -870,7 +890,7 @@ public abstract class AbstractFacade<T> {
             return null;
         }
     }
-    
+
     public List<String> findString(String strJQL, int maxRecords) {
         Query q = getEntityManager().createQuery(strJQL);
         q.setMaxResults(maxRecords);
@@ -924,7 +944,7 @@ public abstract class AbstractFacade<T> {
         try {
             return qry.getResultList();
         } catch (Exception e) {
-           
+
             return null;
         }
     }
