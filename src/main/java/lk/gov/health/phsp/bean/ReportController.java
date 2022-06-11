@@ -258,7 +258,7 @@ public class ReportController implements Serializable {
             downloadingResult.getUpload().setFileType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
             getStoredQueryResultFacade().edit(downloadingResult);
         }
-        downloadingFile = new DefaultStreamedContent(stream, downloadingResult.getUpload().getFileType(), downloadingResult.getUpload().getFileName());
+//        downloadingFile = new DefaultStreamedContent(stream, downloadingResult.getUpload().getFileType(), downloadingResult.getUpload().getFileName());
         return downloadingFile;
     }
 
@@ -571,7 +571,7 @@ public class ReportController implements Serializable {
         InputStream stream;
         try {
             stream = new FileInputStream(newFile);
-            resultExcelFile = new DefaultStreamedContent(stream, mimeType, FILE_NAME);
+//            resultExcelFile = new DefaultStreamedContent(stream, mimeType, FILE_NAME);
         } catch (FileNotFoundException ex) {
 
         }
@@ -1188,7 +1188,7 @@ public class ReportController implements Serializable {
         InputStream stream;
         try {
             stream = new FileInputStream(newFile);
-            file = new DefaultStreamedContent(stream, "application/xls", newFile.getAbsolutePath());
+//            file = new DefaultStreamedContent(stream, "application/xls", newFile.getAbsolutePath());
         } catch (FileNotFoundException ex) {
             mergingMessage = "Error - " + ex.getMessage();
         }
@@ -1318,7 +1318,7 @@ public class ReportController implements Serializable {
 
                 InputStream stream;
                 stream = new FileInputStream(newFile);
-                file = new DefaultStreamedContent(stream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", FILE_NAME);
+//                file = new DefaultStreamedContent(stream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", FILE_NAME);
 
             }
         } catch (FileNotFoundException e) {
@@ -1406,7 +1406,7 @@ public class ReportController implements Serializable {
         Item itemVariable = null;
         Item itemValue = null;
 
-        if (q.getMatchType() == QueryCriteriaMatchType.Variable_Value_Check) {
+        if (q.getMatchType() == QueryCriteriaMatchType.Variable_Value_Check || q.getMatchType() == QueryCriteriaMatchType.Variable_Range_check) {
 
             switch (q.getQueryDataType()) {
                 case integer:
@@ -2194,7 +2194,7 @@ public class ReportController implements Serializable {
         InputStream stream;
         try {
             stream = new FileInputStream(newFile);
-            resultExcelFile = new DefaultStreamedContent(stream, mimeType, FILE_NAME);
+//            resultExcelFile = new DefaultStreamedContent(stream, mimeType, FILE_NAME);
         } catch (FileNotFoundException ex) {
             // System.out.println("File not found exception -->" + ex.getMessage());
         }
@@ -2489,7 +2489,7 @@ public class ReportController implements Serializable {
         InputStream stream;
         try {
             stream = new FileInputStream(newFile);
-            resultExcelFile = new DefaultStreamedContent(stream, mimeType, FILE_NAME);
+//            resultExcelFile = new DefaultStreamedContent(stream, mimeType, FILE_NAME);
         } catch (FileNotFoundException ex) {
 
         }
@@ -2643,7 +2643,7 @@ public class ReportController implements Serializable {
         InputStream stream;
         try {
             stream = new FileInputStream(newFile);
-            resultExcelFile = new DefaultStreamedContent(stream, mimeType, FILE_NAME);
+//            resultExcelFile = new DefaultStreamedContent(stream, mimeType, FILE_NAME);
         } catch (FileNotFoundException ex) {
 
         }
@@ -2875,7 +2875,7 @@ public class ReportController implements Serializable {
         InputStream stream;
         try {
             stream = new FileInputStream(newFile);
-            resultExcelFile = new DefaultStreamedContent(stream, mimeType, FILE_NAME);
+//            resultExcelFile = new DefaultStreamedContent(stream, mimeType, FILE_NAME);
         } catch (FileNotFoundException ex) {
 
         }
@@ -3004,7 +3004,7 @@ public class ReportController implements Serializable {
         InputStream stream;
         try {
             stream = new FileInputStream(newFile);
-            resultExcelFile = new DefaultStreamedContent(stream, mimeType, FILE_NAME);
+//            resultExcelFile = new DefaultStreamedContent(stream, mimeType, FILE_NAME);
         } catch (FileNotFoundException ex) {
 
         }
@@ -3131,7 +3131,7 @@ public class ReportController implements Serializable {
         InputStream stream;
         try {
             stream = new FileInputStream(newFile);
-            resultExcelFile = new DefaultStreamedContent(stream, mimeType, FILE_NAME);
+//            resultExcelFile = new DefaultStreamedContent(stream, mimeType, FILE_NAME);
         } catch (FileNotFoundException ex) {
 
         }
@@ -3229,7 +3229,7 @@ public class ReportController implements Serializable {
         InputStream stream;
         try {
             stream = new FileInputStream(newFile);
-            resultExcelFile = new DefaultStreamedContent(stream, mimeType, fileName);
+//            resultExcelFile = new DefaultStreamedContent(stream, mimeType, fileName);
         } catch (FileNotFoundException ex) {
 
         }
@@ -3350,7 +3350,7 @@ public class ReportController implements Serializable {
         InputStream stream;
         try {
             stream = new FileInputStream(newFile);
-            downloadingFile = new DefaultStreamedContent(stream, mimeType, fileName);
+//            downloadingFile = new DefaultStreamedContent(stream, mimeType, fileName);
         } catch (FileNotFoundException ex) {
 
         }

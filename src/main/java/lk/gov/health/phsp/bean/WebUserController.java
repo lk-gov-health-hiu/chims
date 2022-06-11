@@ -49,7 +49,7 @@ import lk.gov.health.phsp.facade.UserPrivilegeFacade;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 import org.primefaces.model.TreeNode;
-import org.primefaces.model.UploadedFile;
+import org.primefaces.model.file.UploadedFile;
 import org.primefaces.model.map.DefaultMapModel;
 import org.primefaces.model.map.LatLng;
 import org.primefaces.model.map.MapModel;
@@ -539,7 +539,7 @@ public class WebUserController implements Serializable {
             return;
         }
         InputStream stream = new ByteArrayInputStream(currentUpload.getBaImage());
-        downloadingFile = new DefaultStreamedContent(stream, currentUpload.getFileType(), currentUpload.getFileName());
+//        downloadingFile = new DefaultStreamedContent(stream, currentUpload.getFileType(), currentUpload.getFileName());
     }
 
     public StreamedContent getDownloadingFile() {

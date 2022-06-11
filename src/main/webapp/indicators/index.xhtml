@@ -37,11 +37,11 @@
                                                      style="width:20em;margin:auto;"
                                                      action="#{indicatorController.toHospitalMonthly()}"
                                                      ajax="false"></p:commandButton>
-                                     <p:commandButton value="RDHS Monthly" 
+                                    <p:commandButton value="RDHS Monthly" 
                                                      style="width:20em;margin:auto;"
                                                      action="#{indicatorController.toRdhsMonthly()}"
                                                      ajax="false"></p:commandButton>
-                                     <p:commandButton value="PDHS Monthly" 
+                                    <p:commandButton value="PDHS Monthly" 
                                                      style="width:20em;margin:auto;"
                                                      action="#{indicatorController.toPdhsMonthly()}"
                                                      ajax="false"></p:commandButton>
@@ -60,33 +60,33 @@
                                                      style="width:20em;margin:auto;"
                                                      action="#{indicatorController.toNationalMonthly()}"
                                                      ajax="false"></p:commandButton>
-                                    
+
                                     <hr/>
-                                   
+
 
                                 </h:panelGrid>
 
                             </p:tab>
                             <p:tab title="Counts" >
-                                 <p:commandButton value="Counts" 
-                                                     style="width:20em;margin:auto;"
-                                                     action="#{indicatorController.toProcesCounts()}"
-                                                     ajax="false"></p:commandButton>
-                                 <p:commandButton value="Counts for Indicators" 
-                                                     style="width:20em;margin:auto;"
-                                                     action="#{indicatorController.toProcesCountsForSelectedIndicators()}"
-                                                     ajax="false"></p:commandButton>
+                                <p:commandButton value="Counts" 
+                                                 style="width:20em;margin:auto;"
+                                                 action="#{indicatorController.toProcesCounts()}"
+                                                 ajax="false"></p:commandButton>
+                                <p:commandButton value="Counts for Indicators" 
+                                                 style="width:20em;margin:auto;"
+                                                 action="#{indicatorController.toProcesCountsForSelectedIndicators()}"
+                                                 ajax="false"></p:commandButton>
                             </p:tab>
 
 
                         </p:accordionPanel>
                     </h:form>
 
-                    <p:panel style="width: calc(100vw - 28rem);">
-                        <ui:insert name="reports">
 
-                        </ui:insert>
-                    </p:panel>
+                    <ui:insert name="reports">
+
+                    </ui:insert>
+
 
                 </p:panelGrid>
 

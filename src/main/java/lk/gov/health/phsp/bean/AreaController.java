@@ -41,8 +41,8 @@ import jxl.read.biff.BiffException;
 import lk.gov.health.phsp.entity.Institution;
 import lk.gov.health.phsp.entity.Relationship;
 import lk.gov.health.phsp.enums.RelationshipType;
-import org.primefaces.model.UploadedFile;
 import org.primefaces.event.map.OverlaySelectEvent;
+import org.primefaces.model.file.UploadedFile;
 import org.primefaces.model.map.DefaultMapModel;
 import org.primefaces.model.map.LatLng;
 import org.primefaces.model.map.MapModel;
@@ -218,7 +218,7 @@ public class AreaController implements Serializable {
 
             try {
                 JsfUtil.addSuccessMessage(file.getFileName());
-                in = file.getInputstream();
+                in = file.getInputStream();
                 File f;
                 f = new File(Calendar.getInstance().getTimeInMillis() + file.getFileName());
                 FileOutputStream out = new FileOutputStream(f);
@@ -384,7 +384,7 @@ public class AreaController implements Serializable {
 
             try {
                 JsfUtil.addSuccessMessage(file.getFileName());
-                in = file.getInputstream();
+                in = file.getInputStream();
                 File f;
                 f = new File(Calendar.getInstance().getTimeInMillis() + file.getFileName());
                 FileOutputStream out = new FileOutputStream(f);
@@ -568,7 +568,7 @@ public class AreaController implements Serializable {
 
             try {
                 JsfUtil.addSuccessMessage(file.getFileName());
-                in = file.getInputstream();
+                in = file.getInputStream();
                 File f;
                 f = new File(Calendar.getInstance().getTimeInMillis() + file.getFileName());
                 FileOutputStream out = new FileOutputStream(f);
@@ -717,7 +717,7 @@ public class AreaController implements Serializable {
 
             try {
                 JsfUtil.addSuccessMessage(file.getFileName());
-                in = file.getInputstream();
+                in = file.getInputStream();
                 File f;
                 f = new File(Calendar.getInstance().getTimeInMillis() + file.getFileName());
                 FileOutputStream out = new FileOutputStream(f);
@@ -1065,7 +1065,7 @@ public class AreaController implements Serializable {
         JsfUtil.addSuccessMessage(file.getFileName() + " file uploaded.");
         try {
             JsfUtil.addSuccessMessage(file.getFileName());
-            in = file.getInputstream();
+            in = file.getInputStream();
             File f;
             f = new File(Calendar.getInstance().getTimeInMillis() + file.getFileName());
             FileOutputStream out = new FileOutputStream(f);
@@ -1220,7 +1220,7 @@ public class AreaController implements Serializable {
         JsfUtil.addSuccessMessage(file.getFileName() + " file uploaded.");
         try {
             JsfUtil.addSuccessMessage(file.getFileName());
-            in = file.getInputstream();
+            in = file.getInputStream();
             File f;
             f = new File(Calendar.getInstance().getTimeInMillis() + file.getFileName());
             FileOutputStream out = new FileOutputStream(f);
@@ -1417,7 +1417,7 @@ public class AreaController implements Serializable {
         try {
             String line = "";
             String cvsSplitBy = ",";
-            BufferedReader br = new BufferedReader(new InputStreamReader(file.getInputstream(), "UTF-8"));
+            BufferedReader br = new BufferedReader(new InputStreamReader(file.getInputStream(), "UTF-8"));
 
             Integer i = 0;
             while ((line = br.readLine()) != null) {
@@ -1462,7 +1462,7 @@ public class AreaController implements Serializable {
         try {
             String line = "";
             String cvsSplitBy = ",";
-            BufferedReader br = new BufferedReader(new InputStreamReader(file.getInputstream(), "UTF-8"));
+            BufferedReader br = new BufferedReader(new InputStreamReader(file.getInputStream(), "UTF-8"));
 
             Integer i = 0;
             while ((line = br.readLine()) != null) {

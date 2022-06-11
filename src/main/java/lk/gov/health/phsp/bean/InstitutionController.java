@@ -38,7 +38,8 @@ import lk.gov.health.phsp.entity.Item;
 import lk.gov.health.phsp.enums.AreaType;
 import lk.gov.health.phsp.enums.InstitutionType;
 import lk.gov.health.phsp.facade.AreaFacade;
-import org.primefaces.model.UploadedFile;
+import org.primefaces.model.file.UploadedFile;
+
 
 @Named
 @SessionScoped
@@ -563,7 +564,7 @@ public class InstitutionController implements Serializable {
 
             try {
                 lk.gov.health.phsp.facade.util.JsfUtil.addSuccessMessage(file.getFileName());
-                in = file.getInputstream();
+                in = file.getInputStream();
                 File f;
                 f = new File(Calendar.getInstance().getTimeInMillis() + file.getFileName());
                 FileOutputStream out = new FileOutputStream(f);
