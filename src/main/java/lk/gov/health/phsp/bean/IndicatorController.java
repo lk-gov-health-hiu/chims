@@ -28,6 +28,8 @@ import javax.enterprise.context.SessionScoped;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -40,31 +42,30 @@ import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 import lk.gov.health.phsp.bean.util.JsfUtil;
+import lk.gov.health.phsp.ejb.AnalysisBean;
 import lk.gov.health.phsp.entity.Area;
 import lk.gov.health.phsp.entity.ClientEncounterComponentItem;
 import lk.gov.health.phsp.entity.Institution;
 import lk.gov.health.phsp.entity.Item;
 import lk.gov.health.phsp.entity.QueryComponent;
+import lk.gov.health.phsp.entity.StoredRequest;
 import lk.gov.health.phsp.enums.EncounterType;
 import lk.gov.health.phsp.enums.InstitutionType;
 import lk.gov.health.phsp.enums.Quarter;
 import lk.gov.health.phsp.enums.QueryCriteriaMatchType;
 import lk.gov.health.phsp.enums.QueryLevel;
 import lk.gov.health.phsp.enums.QueryType;
-import lk.gov.health.phsp.enums.RelationshipType;
 import lk.gov.health.phsp.enums.TimePeriodType;
 import lk.gov.health.phsp.facade.ClientEncounterComponentItemFacade;
 import lk.gov.health.phsp.facade.EncounterFacade;
 import lk.gov.health.phsp.facade.InstitutionFacade;
+import lk.gov.health.phsp.facade.StoredRequestFacade;
 import lk.gov.health.phsp.pojcs.EncounterWithComponents;
 import lk.gov.health.phsp.pojcs.InstitutionDataQuery;
 import lk.gov.health.phsp.pojcs.Jpq;
-import lk.gov.health.phsp.pojcs.NcdReportTem;
 import lk.gov.health.phsp.pojcs.QueryWithCriteria;
 import lk.gov.health.phsp.pojcs.Replaceable;
 import lk.gov.health.phsp.pojcs.ReportTimePeriod;
-import org.bouncycastle.jcajce.provider.digest.GOST3411;
-import org.primefaces.model.StreamedContent;
 
 /**
  *
@@ -95,6 +96,10 @@ public class IndicatorController implements Serializable {
      EncounterFacade  encounterFacade;
     @EJB
     InstitutionFacade institutionFacade;
+    @EJB
+    AnalysisBean analysisBean;
+    @EJB
+    StoredRequestFacade storedRequestFacade;
 
     private Date fromDate;
     private Date toDate;
@@ -217,8 +222,8 @@ public class IndicatorController implements Serializable {
             return;
         }
         Jpq j = new Jpq();
-        fromDate = CommonController.startOfTheMonth(year, month);
-        toDate = CommonController.endOfTheMonth(year, month);
+        fromDate = CommonController.startOfTheMonth(year, month, true);
+        toDate = CommonController.endOfTheMonth(year, month,true);
 
         List<QueryWithCriteria> qs = new ArrayList<>();
         List<EncounterWithComponents> encountersWithComponents;
@@ -255,9 +260,13 @@ public class IndicatorController implements Serializable {
     }
     
     
-    public void runClinicCountsForRequests(Institution tIns, QueryComponent tQc,
-            Integer tYear,
-            Integer tMonth) {
+    public void runClinicCountsForRequests(InstitutionDataQuery dq) {        
+       System.out.println("runClinicCountsForRequests");
+        System.out.println("tMonth = " + year);
+        System.out.println("tYear = " + month);
+        Institution tIns = dq.getInstitution();
+ QueryComponent tQc        = dq.getQuery(); 
+  System.out.println("tQc = " + tQc);
         if (tIns.getInstitutionType() == null) {
             JsfUtil.addErrorMessage("No Type for the institution");
             return;
@@ -267,28 +276,34 @@ public class IndicatorController implements Serializable {
             return;
         }
         Jpq j = new Jpq();
-        fromDate = CommonController.startOfTheMonth(tYear, tMonth);
-        toDate = CommonController.endOfTheMonth(tYear, tMonth);
-
-        List<QueryWithCriteria> qs = new ArrayList<>();
+       fromDate = CommonController.startOfTheMonth(year, month, true);
+        toDate = CommonController.endOfTheMonth(year, month, true);
+//        List<QueryWithCriteria> qs = new ArrayList<>();
         List<EncounterWithComponents> encountersWithComponents;
 
         List<Long> encounterIds = findEncounterIds(fromDate,
                 toDate,
                 tIns);
 
+        System.out.println("encounterIds = " + encounterIds.size());
+        
         encountersWithComponents = findEncountersWithComponents(encounterIds);
         if (encountersWithComponents == null) {
             j.setErrorMessage("No data for the selected institution for the period");
             JsfUtil.addErrorMessage("No data?");
             return;
         }
+        System.out.println("encounterIds.size() = " + encounterIds.size());
 
         QueryWithCriteria qwc = new QueryWithCriteria();
         qwc.setQuery(tQc);
         qwc.setCriteria(findCriteriaForQueryComponent(tQc.getCode()));
 
         Long value = calculateIndividualQueryResult(encountersWithComponents, qwc);
+        
+        
+        System.out.println("value = " + value);
+        
         j.setMessage("Clinic : " + tIns.getName() + "\n");
         j.setMessage(j.getMessage() + "From : " + CommonController.formatDate(fromDate) + "\n");
         j.setMessage(j.getMessage() + "To : " + CommonController.formatDate(toDate) + "\n");
@@ -304,7 +319,57 @@ public class IndicatorController implements Serializable {
         result = CommonController.stringToHtml(j.getMessage());
     }
     
+    
+    public void runClinicCountsForRequestsForAllInstitutions() {
+        System.out.println("runClinicCountsForRequestsForAllInstitutions");
+       
+        fromDate = CommonController.startOfTheMonth(year, month, true);
+        toDate = CommonController.endOfTheMonth(year, month, true);
+        
+         List<Institution> allClinics = listOfFunctioningHlcs();
+         
+        for(Institution ins:allClinics){
+            requestClinicCountsForSelectedIndicators(ins);
+        }
+    }
+    
 
+    
+    public void requestClinicCountsForSelectedIndicators(Institution ins) {
+        if (ins == null) {
+            JsfUtil.addErrorMessage("HLC ?");
+            return;
+        }
+        if (year == 0) {
+            JsfUtil.addErrorMessage("Year ?");
+            return;
+        }
+        if (month == null) {
+            JsfUtil.addErrorMessage("Month");
+            return;
+        }
+        if (ins.getInstitutionType() == null) {
+            JsfUtil.addErrorMessage("No Type for the institution");
+            return;
+        }
+        if (ins.getInstitutionType() != InstitutionType.Clinic) {
+            JsfUtil.addErrorMessage("Selected institution is NOT a HLC?");
+            return;
+        }
+        Jpq j = new Jpq();
+        fromDate = CommonController.startOfTheMonth(year, month,true);
+        toDate = CommonController.endOfTheMonth(year, month,true);
+
+        StoredRequest sr = new StoredRequest();
+        sr.setInstitution(ins);
+        sr.setPending(true);
+        sr.setRmonth(month);
+        sr.setRyear(year);
+        storedRequestFacade.create(sr);
+        JsfUtil.addSuccessMessage("Request Saved");
+    }
+    
+    
     public void runClinicCountsForSelectedIndicators() {
         if (institution == null) {
             JsfUtil.addErrorMessage("HLC ?");
@@ -335,8 +400,8 @@ public class IndicatorController implements Serializable {
             return;
         }
         Jpq j = new Jpq();
-        fromDate = CommonController.startOfTheMonth(year, month);
-        toDate = CommonController.endOfTheMonth(year, month);
+        fromDate = CommonController.startOfTheMonth(year, month,true);
+        toDate = CommonController.endOfTheMonth(year, month,true);
 
         List<QueryWithCriteria> qs = new ArrayList<>();
         List<EncounterWithComponents> encountersWithComponents;
@@ -411,8 +476,48 @@ public class IndicatorController implements Serializable {
         message = CommonController.stringToHtml(j.getErrorMessage());
         result = CommonController.stringToHtml(j.getMessage());
     }
+    
+    public void scheduleClinicCountsForSelectedIndicators() {
+        if (institution == null) {
+            JsfUtil.addErrorMessage("HLC ?");
+            return;
+        }
+        if (year == 0) {
+            JsfUtil.addErrorMessage("Year ?");
+            return;
+        }
+        if (month == null) {
+            JsfUtil.addErrorMessage("Month");
+            return;
+        }
+        if (institution.getInstitutionType() == null) {
+            JsfUtil.addErrorMessage("No Type for the institution");
+            return;
+        }
+        if (institution.getInstitutionType() != InstitutionType.Clinic) {
+            JsfUtil.addErrorMessage("Selected institution is NOT a HLC?");
+            return;
+        }
+        Jpq j = new Jpq();
+        fromDate = CommonController.startOfTheMonth(year, month,true);
+        toDate = CommonController.endOfTheMonth(year, month,true);
+
+        StoredRequest sr = new StoredRequest();
+        sr.setInstitution(institution);
+        sr.setPending(true);
+        sr.setRmonth(month);
+        sr.setRyear(year);
+        storedRequestFacade.create(sr);
+        JsfUtil.addSuccessMessage("Request Saved");
+    }
 
     public  Long calculateIndividualQueryResult(List<EncounterWithComponents> ewcs, QueryWithCriteria qwc) {
+        
+        System.out.println("calculateIndividualQueryResult");
+        
+        System.out.println("qwc = " + qwc);
+        System.out.println("ewcs = " + ewcs);
+        
         Long result = 0l;
         if (ewcs == null) {
             JsfUtil.addErrorMessage("No Encounters");
@@ -897,6 +1002,7 @@ public class IndicatorController implements Serializable {
     }
 
     private  List<ClientEncounterComponentItem> findClientEncounterComponentItems(Long endId) {
+        try{
         String j;
         Map m;
         m = new HashMap();
@@ -906,14 +1012,15 @@ public class IndicatorController implements Serializable {
         m.put("eid", endId);
         List<ClientEncounterComponentItem> ts = clientEncounterComponentItemFacade.findByJpql(j, m);
         return ts;
+        }catch(Exception e){
+            return null;
+        }
     }
 
     public  List<Long> findEncounterIds(Date fromDate, Date toDate, Institution institution) {
         String j = "select e.id "
-                + " from  ClientEncounterComponentFormSet f join f.encounter e"
-                + " where e.retired<>:er"
-                + " and f.retired<>:fr ";
-        j += " and f.completed=:fc ";
+                + " from  Encounter e"
+                + " where e.retired<>:er";
         j += " and e.institution=:i "
                 + " and e.encounterType=:t "
                 + " and e.encounterDate between :fd and :td"
@@ -922,8 +1029,6 @@ public class IndicatorController implements Serializable {
         m.put("i", institution);
         m.put("t", EncounterType.Clinic_Visit);
         m.put("er", true);
-        m.put("fr", true);
-        m.put("fc", true);
         m.put("fd", fromDate);
         m.put("td", toDate);
         List<Long> encs = encounterFacade.findLongList(j, m);
@@ -949,6 +1054,11 @@ public class IndicatorController implements Serializable {
                     output.add(qc);
                 }
             }
+        }
+        try{
+            output.sort(Comparator.comparing(QueryComponent::getOrderNo));
+        } catch (Exception e){
+            
         }
         return output;
     }
@@ -987,8 +1097,8 @@ public class IndicatorController implements Serializable {
             return;
         }
 
-        fromDate = CommonController.startOfTheMonth(year, month);
-        toDate = CommonController.endOfTheMonth(year, month);
+        fromDate = CommonController.startOfTheMonth(year, month, true);
+        toDate = CommonController.endOfTheMonth(year, month, true);
         Jpq j = new Jpq();
         j.setMessage("");
         j.setMessage("");
@@ -1220,8 +1330,8 @@ public class IndicatorController implements Serializable {
             JsfUtil.addErrorMessage("Month");
             return;
         }
-        fromDate = CommonController.startOfTheMonth(year, month);
-        toDate = CommonController.endOfTheMonth(year, month);
+        fromDate = CommonController.startOfTheMonth(year, month, true);
+        toDate = CommonController.endOfTheMonth(year, month, true);
         Jpq j = new Jpq();
         j.setMessage("");
         j.setMessage("");
@@ -1249,6 +1359,8 @@ public class IndicatorController implements Serializable {
                 continue;
             }
 
+            Long tv;
+            
             if (null == temqc.getQueryType()) {
                  idq.setErrorMessage("Type of query " + r.getQryCode() + " in is not set. ");
                 dataQueries.add(idq);
@@ -1266,26 +1378,33 @@ public class IndicatorController implements Serializable {
                             continue;
                         }
                         
+                        tv = 0l;
+                        List<InstitutionDataQuery> tids = storedQueryResultController.findPopulationData(temqc,  allClinics, year);
+                        for(InstitutionDataQuery tid:tids){
+                            if(tid.getValue()!=null){
+                                tv+=tid.getValue();
+                            }
+                        }
                         
-
-                        Long tp = relationshipController.findPopulationValue(year, institutionApplicationController.findMinistryOfHealth(), temqc.getPopulationType());
-                        if (tp != null) {
-                            r.setTextReplacing(tp + "");
-                            r.setSelectedValue(tp + "");
-                            j.setMessage(j.getMessage() + r.getQryCode() + " - " + tp + "\n");
-                            idq.setValue(tp);
-                            dataQueries.add(idq);
+                        dataQueries.addAll(tids);
+                        
+                        
+                        
+                        if (tv != null) {
+                            r.setTextReplacing(tv + "");
+                            r.setSelectedValue(tv + "");
+                            j.setMessage(j.getMessage() + r.getQryCode() + " - " + tv + "\n");
                         } else {
                             j.setError(true);
-                            j.setMessage(j.getMessage() + "No Population data for " + r.getQryCode() + "\n");
-                             idq.setErrorMessage("No Population data for " + r.getQryCode() + "\n");
-                dataQueries.add(idq);
+                            j.setMessage(j.getMessage() + "\n" + "No count for " + r.getQryCode() + "\n");
                         }
+                        
+                        
                         break;
 
                     case Client_Count:
                     case Encounter_Count:
-                        Long tv = storedQueryResultController.findStoredLongValue(temqc, fromDate, toDate, allClinics, r);
+                        tv = storedQueryResultController.findStoredLongValue(temqc, fromDate, toDate, allClinics, r);
                         dataQueries.addAll(storedQueryResultController.findStoredQueryData(temqc, fromDate, toDate, allClinics, r,year,month));
                         if (tv != null) {
                             r.setTextReplacing(tv + "");
@@ -1317,10 +1436,16 @@ public class IndicatorController implements Serializable {
         j.setMessage(j.getMessage() + "\n\n" + "Formula with Values = " + script + "\n\nResult = " + result);
 
         Long sv = CommonController.stringToLong(result);
+        Double db = CommonController.stringToDouble(result);
+      
+        
         if (sv == null) {
-            storedQueryResultController.saveValue(queryComponent, fromDate, toDate, institution, sv);
+            storedQueryResultController.saveValue(queryComponent, fromDate, toDate, institution, sv,db);
+         result= String.format("%.2f", db);
         }
 
+        Collections.sort(dataQueries, Comparator.comparing(InstitutionDataQuery::getInstitutionName));
+        
         message = CommonController.stringToHtml(j.getMessage());
 
     }
@@ -1355,8 +1480,8 @@ public class IndicatorController implements Serializable {
             return;
         }
 
-        fromDate = CommonController.startOfTheMonth(year, month);
-        toDate = CommonController.endOfTheMonth(year, month);
+        fromDate = CommonController.startOfTheMonth(year, month, true);
+        toDate = CommonController.endOfTheMonth(year, month, true);
         Jpq j = new Jpq();
         j.setMessage("");
         j.setMessage("");
@@ -1471,8 +1596,8 @@ public class IndicatorController implements Serializable {
             return;
         }
 
-        fromDate = CommonController.startOfTheMonth(year, month);
-        toDate = CommonController.endOfTheMonth(year, month);
+        fromDate = CommonController.startOfTheMonth(year, month, true);
+        toDate = CommonController.endOfTheMonth(year, month, true);
         Jpq j = new Jpq();
         j.setMessage("");
         j.setMessage("");

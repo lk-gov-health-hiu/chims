@@ -50,7 +50,11 @@
         <ui:insert name="free">
         </ui:insert>
         <style>
-            html,body { height: 100%; margin: 0px; padding: 0px; }
+            html,body {
+                height: 100%;
+                margin: 0px;
+                padding: 0px;
+            }
             .ui-widget {
                 font-family: 'Poppins',Arial,sans-serif;
                 font-size: 1.0em;
@@ -63,23 +67,30 @@
             }
 
         </style>
-        <f:view locale="#{webUserController.locale}" >
-            <p:growl   >
-            </p:growl>
-            <div class="w3-row w3-theme-l5" style="font-family: 'Poppins', sans-serif!important;">
-                <h:panelGroup rendered="#{webUserController.loggedUser ne null}">
-                    <div class="w3-row" >
-                        <ez:menu/>
-                    </div>
-                </h:panelGroup>
 
-                <h:panelGroup rendered="#{webUserController.loggedUser eq null}">
-                    <div class="w3-row" style="text-align: center;" >
-                        <p:graphicImage library="image" name="hmis_logo.png" style="width: 25%;" ></p:graphicImage>
-                    </div>
-                </h:panelGroup>
-            </div>
+        <p:growl   >
+        </p:growl>
+        <div class="w3-row w3-theme-l5" style="font-family: 'Poppins', sans-serif!important;">
+            <h:panelGroup rendered="#{webUserController.loggedUser ne null}">
+                <div class="w3-row" >
+                    <ez:menu/>
+                </div>
+            </h:panelGroup>
 
+            <h:panelGroup rendered="#{webUserController.loggedUser eq null}">
+                <div class="w3-row" style="text-align: center;" >
+                    <p:graphicImage library="image" name="hmis_logo.png" style="width: 25%;" ></p:graphicImage>
+                </div>
+            </h:panelGroup>
+        </div>
+
+
+        <h:panelGroup rendered="false" >
+            <h1>Site will be down for Maintainance. Sorry for the inconvinience.</h1>
+        </h:panelGroup>
+
+
+        <h:panelGroup rendered="true" >
             <div class="w3-row w3-theme-l5" style="height: 100%;" >
                 <h:panelGroup rendered="#{webUserController.loggedUser ne null}">
                     <ui:insert name="content">
@@ -102,14 +113,16 @@
                     </ui:insert>
                 </h:panelGroup>
             </div>
+        </h:panelGroup>
 
-            <div class="footer w3-indigo">
-                <ui:insert name="bottom">
-                    <ez:footer/>
-                </ui:insert>
-            </div>
 
-        </f:view>
+
+        <div class="footer w3-indigo">
+            <ui:insert name="bottom">
+                <ez:footer/>
+            </ui:insert>
+        </div>
+
 
     </h:body>
 

@@ -9,7 +9,12 @@
     <body>
         <ui:composition template="/institution/index.xhtml">
             <ui:define name="insContents">
-                <h:form id="InstitutionListForm">    
+                <h:form id="InstitutionListForm">  
+                    
+                    <p:commandButton value="Download" ajax="false" >
+                        <p:dataExporter target="datalist" type="xls" fileName="institutions" ></p:dataExporter>
+                    </p:commandButton>
+                    
                     <p:dataTable id="datalist" value="#{institutionController.items}" var="item"
                                  selectionMode="single" selection="#{institutionController.selected}"
                                  paginator="true"

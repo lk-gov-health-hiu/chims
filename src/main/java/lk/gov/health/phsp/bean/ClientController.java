@@ -156,6 +156,8 @@ public class ClientController implements Serializable {
     private String dateFormat;
     private List<String> reservePhnList;
     private int intNo;
+    
+    private Encounter unregisteringClinic;
 
     private DataFormset dataFormset;
     ClientEncounterComponentFormSet clientCefs;
@@ -189,6 +191,21 @@ public class ClientController implements Serializable {
     public String toClient() {
         loadClientFormDataEntry();
         return "/client/client";
+    }
+    
+    public String toRetireClient() {
+        if(selected==null){
+            JsfUtil.addErrorMessage("No client is selected");
+            return "";
+        }
+        selected.getPerson().setRetired(true);
+        selected.getPerson().setRetiredAt(new Date());
+        selected.getPerson().setRetiredBy(webUserController.getLoggedUser());
+        selected.setRetired(true);
+        selected.setRetiredAt(new Date());
+        selected.setRetiredBy(webUserController.getLoggedUser());
+        getFacade().edit(selected);
+        return "/index";
     }
 
     public String toClientProfile() {
@@ -1477,6 +1494,36 @@ public class ClientController implements Serializable {
         if (excludeCompleted) {
             j += " and e.completed=:com ";
             m.put("com", false);
+        }
+        if (maxRecordCount == null) {
+            return encounterFacade.findByJpql(j, m);
+        } else {
+            return encounterFacade.findByJpql(j, m, maxRecordCount);
+        }
+
+    }
+    
+    public List<Encounter> fillEncounters(Client client, List<InstitutionType> insTypes, EncounterType encType, boolean excludeCompleted, Integer maxRecordCount, boolean descending) {
+        String j = "select e from Encounter e where e.retired=false ";
+        Map m = new HashMap();
+        if (client != null) {
+            j += " and e.client=:c ";
+            m.put("c", client);
+        }
+        if (insTypes != null) {
+            j += " and e.institution.institutionType in :it ";
+            m.put("it", insTypes);
+        }
+        if (insTypes != null) {
+            j += " and e.encounterType=:et ";
+            m.put("et", encType);
+        }
+        if (excludeCompleted) {
+            j += " and e.completed=:com ";
+            m.put("com", false);
+        }
+        if(descending){
+            j +=" order by e.id desc";
         }
         if (maxRecordCount == null) {
             return encounterFacade.findByJpql(j, m);
@@ -2879,10 +2926,23 @@ public class ClientController implements Serializable {
         if (selectedClientsLastFiveClinicVisits == null) {
             selectedClientsLastFiveClinicVisits = fillEncounters(selected,
                     institutionApplicationController.getClinicTypes(),
-                    EncounterType.Clinic_Visit, true, 5);
+                    EncounterType.Clinic_Visit, true, 5, true);
 
         }
         return selectedClientsLastFiveClinicVisits;
+    }
+    
+    public String removeFromClinic(){
+        if(unregisteringClinic==null){
+            JsfUtil.addErrorMessage("No Clinic Selected");
+            return "";
+        }
+        unregisteringClinic.setRetired(true);
+        unregisteringClinic.setRetiredAt(new Date());
+        unregisteringClinic.setRetiredBy(webUserController.getLoggedUser());
+        encounterFacade.edit(unregisteringClinic);
+        JsfUtil.addSuccessMessage("Unregistered from the clinic");
+        return toClientProfile();
     }
 
     public void setSelectedClientsLastFiveClinicVisits(List<Encounter> selectedClientsLastFiveClinicVisits) {
@@ -2947,6 +3007,16 @@ public class ClientController implements Serializable {
     public void setClientDcfs(DesignComponentFormSet clientDcfs) {
         this.clientDcfs = clientDcfs;
     }
+
+    public Encounter getUnregisteringClinic() {
+        return unregisteringClinic;
+    }
+
+    public void setUnregisteringClinic(Encounter unregisteringClinic) {
+        this.unregisteringClinic = unregisteringClinic;
+    }
+    
+    
 
     // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="Inner Classes">

@@ -36,7 +36,6 @@ import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
-import javax.faces.model.SelectItem;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.servlet.http.HttpServletRequest;
@@ -95,8 +94,6 @@ public class WebUserController implements Serializable {
     ExcelReportController reportController;
     @Inject
     private UserTransactionController userTransactionController;
-    @Inject
-    private ApplicationController applicationController;
     @Inject
     InstitutionApplicationController institutionApplicationController;
     @Inject

@@ -8,28 +8,28 @@
 
     <head>
         <ui:define name="head">
-            Daily Registrations
+            Daily Visits
         </ui:define>
     </head>
     <body>
 
-        <ui:composition template="/reports/index.xhtml">
+        <ui:composition template="/hospital/report_index.xhtml">
             <ui:define name="reports">
                 <h:form>
                     <p:panelGrid columns="2" class="w3-border w3-margin w3-card" >
                         <f:facet name="header" >
-                            <p:outputLabel value="Clinic Visits" ></p:outputLabel>
+                            <p:outputLabel value="Daily Clinic Visits" ></p:outputLabel>
                         </f:facet>
                        
                             <p:outputLabel value="From" ></p:outputLabel>
-                            <p:calendar value="#{reportController.fromDate}" pattern="dd MM yyyy" ></p:calendar>
+                            <p:calendar value="#{hospitalReportController.fromDate}" pattern="dd MM yyyy" ></p:calendar>
 
                             <p:outputLabel value="To" ></p:outputLabel>
-                            <p:calendar value="#{reportController.toDate}" pattern="dd MM yyyy" ></p:calendar>
+                            <p:calendar value="#{hospitalReportController.toDate}" pattern="dd MM yyyy" ></p:calendar>
 
-                            <p:outputLabel value="Institution" ></p:outputLabel>
-                            <p:autoComplete   value="#{reportController.institution}" 
-                                              completeMethod="#{institutionController.completeInstitutions}"
+                            <p:outputLabel value="Clinic" ></p:outputLabel>
+                            <p:autoComplete   value="#{hospitalReportController.institution}" 
+                                              completeMethod="#{webUserController.completeLoggableInstitutions}"
                                               var="i" itemLabel="#{i.name}" itemValue="#{i}"
                                               forceSelection="true" maxResults="15" minQueryLength="3">
                             </p:autoComplete >
@@ -40,8 +40,8 @@
                                              ajax="false" 
                                              oncomplete ="PrimeFaces.monitorDownload(start, stop);" 
                                              icon="ui-icon-arrowthick-1-s"
-                                             actionListener="#{reportController.downloadDailyClinicVisitCounts()}">
-                                <p:fileDownload value="#{reportController.resultExcelFile}" />
+                                             actionListener="#{hospitalReportController.downloadDailyClinicVisitCounts()}">
+                                <p:fileDownload value="#{hospitalReportController.resultExcelFile}" />
                             </p:commandButton>
 
                     

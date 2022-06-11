@@ -24,6 +24,7 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlRootElement;
+import lk.gov.health.phsp.enums.WebUserRoleLevel;
 
 /**
  *
@@ -129,6 +130,8 @@ public class WebUser implements Serializable {
     private boolean restrictedToInstitution;
     @Transient
     private boolean currentlyInAssumedState;
+        @Transient
+    private WebUserRoleLevel webUserRoleLevel;
 
     public WebUser() {
     }
@@ -494,6 +497,41 @@ public class WebUser implements Serializable {
                 restrictedToInstitution = true;
         }
         return restrictedToInstitution;
+    }
+    
+    public WebUserRoleLevel getWebUserRoleLevel() {
+        if (webUserRole == null) {
+            return webUserRoleLevel = null;
+        } else {
+            switch (webUserRole) {
+                case Client:
+                    webUserRoleLevel = WebUserRoleLevel.Client;
+                    break;
+                case Doctor:
+                case Institution_Administrator:
+                case Institution_Super_User:
+                case Institution_User:
+                     case Nurse:
+                     case Student:
+                    webUserRoleLevel = WebUserRoleLevel.Hospital;
+                    break;
+                case Me_Admin:
+                case Me_Super_User:
+                case Me_User:
+                    webUserRoleLevel = WebUserRoleLevel.National_Me;
+                    break;
+                case Midwife:
+                    webUserRoleLevel = WebUserRoleLevel.Moh;
+                    break;
+                case System_Administrator:
+                case Super_User:
+                case User:
+                    webUserRoleLevel = WebUserRoleLevel.National;
+                    break;
+                
+            }
+        }
+        return webUserRoleLevel;
     }
 
     public boolean isCurrentlyInAssumedState() {

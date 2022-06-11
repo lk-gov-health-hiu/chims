@@ -458,6 +458,18 @@ public class CommonController implements Serializable {
 //        // System.out.println("c = " + c);
         return startOfTheMonth(c.getTime());
     }
+    
+    public static Date startOfTheMonth(Integer year, Integer month, boolean zeroIndexForMonth) {
+        Calendar c = Calendar.getInstance();
+        c.set(Calendar.YEAR, year);
+        if(zeroIndexForMonth){
+            c.set(Calendar.MONTH, month);
+        }else{
+            c.set(Calendar.MONTH, month-1);
+        }
+        
+        return startOfTheMonth(c.getTime());
+    }
 
     public static Integer monthIntFromString(String month) {
         if (month == null) {
@@ -498,6 +510,17 @@ public class CommonController implements Serializable {
         Calendar c = Calendar.getInstance();
         c.set(Calendar.YEAR, year);
         c.set(Calendar.MONTH, month - 1);
+        return endOfTheMonth(c.getTime());
+    }
+    
+    public static Date endOfTheMonth(Integer year, Integer month, boolean zeroBasedMonthIndex) {
+        Calendar c = Calendar.getInstance();
+        c.set(Calendar.YEAR, year);
+        if(zeroBasedMonthIndex){
+            c.set(Calendar.MONTH, month);
+        }else{
+            c.set(Calendar.MONTH, month - 1);
+        }
         return endOfTheMonth(c.getTime());
     }
 
