@@ -825,6 +825,7 @@ public class ReportController implements Serializable {
         String forIns = "/hospital/report_index";
         String forMe = "/reports/index";
         String forClient = "/reports/index";
+        String forMoh = "/moh/reports/index";
         String noAction = "";
         String action = "";
         switch (webUserController.getLoggedUser().getWebUserRole()) {
