@@ -8,18 +8,18 @@
 
     <h:head >
         <ui:define name="head">
-            Clinic Visit Counts
+            Registration Counts
         </ui:define>
     </h:head>
 
     <h:body>
 
-        <ui:composition template="/hospital/report_index.xhtml">
+        <ui:composition template="/hospital/reports/index.xhtml">
             <ui:define name="reports">
                 <h:form>
                     <p:panelGrid columns="2" styleClass="alignTop" >
                         <f:facet name="header" >
-                            <p:outputLabel value="Clinic Visit Count" ></p:outputLabel>
+                            <p:outputLabel value="Registration Counts" ></p:outputLabel>
                         </f:facet>
                         <p:panelGrid columns="1"   >
                             <f:facet name="header" >
@@ -28,15 +28,15 @@
 
                             </f:facet>
                             <p:outputLabel value="From" ></p:outputLabel>
-                            <p:calendar value="#{hospitalReportController.fromDate}" pattern="dd MM yyyy hh:mm a" ></p:calendar>
+                            <p:calendar value="#{hospitalReportController.fromDate}" pattern="dd MMM yyyy" ></p:calendar>
                             <p:outputLabel value="To" ></p:outputLabel>
-                            <p:calendar value="#{hospitalReportController.toDate}" pattern="dd MM yyyy hh:mm a" ></p:calendar>
+                            <p:calendar value="#{hospitalReportController.toDate}" pattern="dd MMM yyyy" ></p:calendar>
 
 
                             <p:commandButton value="Process" ajax="false"
-                                             action="#{hospitalReportController.fillClinicVisitsByInstitution()}"></p:commandButton>
+                                             action="#{hospitalReportController.fillRegistrationsOfClientsByInstitution()}"></p:commandButton>
                             <p:commandButton value="Download" ajax="false">
-                                <p:dataExporter type="xlsx" target="tbl" fileName="Clinic Visits by Institution" ></p:dataExporter>
+                                <p:dataExporter type="xlsx" target="tbl" fileName="Client Registrations by Institution" ></p:dataExporter>
                             </p:commandButton>
                         </p:panelGrid>
 
@@ -47,7 +47,7 @@
                                      rowsPerPageTemplate="10,20,30,40,50"
                                      >
                             <f:facet name="header"  >
-                                <p:outputLabel value="Clinic Visits by Institution" ></p:outputLabel>
+                                <p:outputLabel value="Client Registrations by Institution" ></p:outputLabel>
                                 <p:outputLabel value="From : " ></p:outputLabel>
                                 <p:outputLabel value="#{hospitalReportController.fromDate}" >
                                     <f:convertDateTime pattern="dd MMMM yyyy" ></f:convertDateTime>
@@ -61,6 +61,7 @@
                                 <p:outputLabel value="#{n+1}" >
                                 </p:outputLabel>
                             </p:column>
+                           
                             <p:column headerText="Institution" 
                                       filterBy="#{c.institution.name}" 
                                       filterMatchMode="contains" 
@@ -68,10 +69,20 @@
                                       >
                                 <p:outputLabel value="#{c.institution.name}" ></p:outputLabel>
                             </p:column>
+                            
+                            <p:column headerText="Type" 
+                                      filterBy="#{c.institution.institutionType.label}" 
+                                      filterMatchMode="contains" 
+                                      sortBy="#{c.institution.institutionType.label}"
+                                      >
+                                <p:outputLabel value="#{c.institution.institutionType.label}" ></p:outputLabel>
+                            </p:column>
+
                             <p:column headerText="Count"  
                                       sortBy="#{c.count}">
                                 <p:outputLabel value="#{c.count}" ></p:outputLabel>
                             </p:column>
+
                             <f:facet name="footer" >
                                 <p:outputLabel value="Total - #{hospitalReportController.reportCount}" ></p:outputLabel>
                             </f:facet>
