@@ -38,6 +38,7 @@ public enum WebUserRole {
     Me_Super_User("Monitoring & Evaluation Super User"),
     Me_Admin("Monitoring & Evaluation User"),
     Doctor("Doctor"),
+    Moh("Medical Officer of Health"),
     Nurse("Nurse"),
     Midwife("Midwife"),
     Client("Client"),

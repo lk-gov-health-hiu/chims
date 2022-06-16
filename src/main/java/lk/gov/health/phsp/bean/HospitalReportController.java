@@ -1512,20 +1512,27 @@ public class HospitalReportController implements Serializable {
     public String toRegistrationCounts() {
         encounters = new ArrayList<>();
         institutionCounts = new ArrayList<>();
-        String action = "/hospital/registration_counts";
+        String action = "/hospital/reports/registration_counts";
         return action;
     }
 
     public String toVisitCounts() {
         encounters = new ArrayList<>();
         institutionCounts = new ArrayList<>();
-        String forIns = "/hospital/visit_counts";
+        String forIns = "/hospital/reports/visit_counts";
+        return forIns;
+    }
+    
+    public String toClinicRegistrationCounts() {
+        encounters = new ArrayList<>();
+        institutionCounts = new ArrayList<>();
+        String forIns = "/hospital/reports/clinic_registration_Counts";
         return forIns;
     }
 
     public String toDailyVisitCounts() {
         encounters = new ArrayList<>();
-        String action = "/hospital/daily_visit_counts";
+        String action = "/hospital/reports/daily_visit_counts";
         return action;
     }
 
@@ -1567,7 +1574,7 @@ public class HospitalReportController implements Serializable {
 
     public String toViewDailyClinicsRegistrationCounts() {
         encounters = new ArrayList<>();
-        String action = "/hospital/daily_registration_counts";
+        String action = "/hospital/reports/daily_registration_counts";
         return action;
     }
 
@@ -1585,223 +1592,50 @@ public class HospitalReportController implements Serializable {
 
     public String toViewClientRegistrations() {
         encounters = new ArrayList<>();
-        String forSys = "/reports/client_registrations/for_system";
-        String forIns = "/reports/client_registrations/for_ins";
-        String forMe = "/reports/client_registrations/for_me";
-        String forClient = "/reports/client_registrations/for_clients";
-        String noAction = "";
-        String action = "";
-        switch (webUserController.getLoggedUser().getWebUserRole()) {
-            case Client:
-                action = forClient;
-                break;
-            case Doctor:
-            case Institution_Administrator:
-            case Institution_Super_User:
-            case Institution_User:
-            case Nurse:
-            case Midwife:
-                action = forIns;
-                break;
-            case Me_Admin:
-            case Me_Super_User:
-                action = forMe;
-                break;
-            case Me_User:
-            case User:
-                action = noAction;
-                break;
-            case Super_User:
-            case System_Administrator:
-                action = forSys;
-                break;
-        }
+        String action = "/hospital/reports/client_registration_list";
         userTransactionController.recordTransaction("To View Client Registrations");
         return action;
     }
 
-    public String toViewClinicEnrollments() {
+    public String toViewClinicRegistration() {
         encounters = new ArrayList<>();
-        String forSys = "/reports/clinic_enrollments/for_system";
-        String forIns = "/reports/clinic_enrollments/for_ins";
-        String forMe = "/reports/clinic_enrollments/for_me";
-        String forClient = "/reports/clinic_enrollments/for_clients";
-        String noAction = "";
-        String action = "";
-        switch (webUserController.getLoggedUser().getWebUserRole()) {
-            case Client:
-                action = forClient;
-                break;
-            case Doctor:
-            case Institution_Administrator:
-            case Institution_Super_User:
-            case Institution_User:
-            case Nurse:
-            case Midwife:
-                action = forIns;
-                break;
-            case Me_Admin:
-            case Me_Super_User:
-                action = forMe;
-                break;
-            case Me_User:
-            case User:
-                action = noAction;
-                break;
-            case Super_User:
-            case System_Administrator:
-                action = forSys;
-                break;
-        }
-        userTransactionController.recordTransaction("To View Clinic Enrollments");
+        String action = "/hospital/reports/clinic_registration_list";
+        userTransactionController.recordTransaction("To View Clinic Registrations");
         return action;
     }
 
     public String toViewClinicVisits() {
         encounters = new ArrayList<>();
-        String forSys = "/reports/clinic_visits/for_system";
-        String forIns = "/reports/clinic_visits/for_ins";
-        String forMe = "/reports/clinic_visits/for_me";
-        String forClient = "/reports/clinic_visits/for_clients";
-        String noAction = "";
-        String action = "";
-        switch (webUserController.getLoggedUser().getWebUserRole()) {
-            case Client:
-                action = forClient;
-                break;
-            case Doctor:
-            case Institution_Administrator:
-            case Institution_Super_User:
-            case Institution_User:
-            case Nurse:
-            case Midwife:
-                action = forIns;
-                break;
-            case Me_Admin:
-            case Me_Super_User:
-                action = forMe;
-                break;
-            case Me_User:
-            case User:
-                action = noAction;
-                break;
-            case Super_User:
-            case System_Administrator:
-                action = forSys;
-                break;
-        }
+        String action = "/hospital/reports/clinic_visit_list";
         userTransactionController.recordTransaction("To View Clinic Visits");
         return action;
     }
 
     public String toViewLongitudinalClinicVisits() {
         encounters = new ArrayList<>();
-        String forSys = "/reports/clinic_visits/for_system_longitidunal_clinic_visits";
-        String forIns = "/reports/data_forms/for_ins";
-        String forMe = "/reports/data_forms/for_me";
-        String forClient = "/reports/data_forms/for_clients";
-        String noAction = "";
-        String action = "";
-        switch (webUserController.getLoggedUser().getWebUserRole()) {
-            case Client:
-                action = forClient;
-                break;
-            case Doctor:
-            case Institution_Administrator:
-            case Institution_Super_User:
-            case Institution_User:
-            case Nurse:
-            case Midwife:
-                action = forIns;
-                break;
-            case Me_Admin:
-            case Me_Super_User:
-                action = forMe;
-                break;
-            case Me_User:
-            case User:
-                action = noAction;
-                break;
-            case Super_User:
-            case System_Administrator:
-                action = forSys;
-                break;
-        }
+        String action = "/hospital/reports/longitudinal_clinic_visits";
         userTransactionController.recordTransaction("To View Longitidunal Clinic Visits");
         return action;
     }
 
     public String toViewAllClientsAndAllClinicVisits() {
         encounters = new ArrayList<>();
-        String forSys = "/reports/clinic_visits/for_system_all_clients_and_all_clinic_visits";
-        String forIns = "/reports/data_forms/for_ins";
-        String forMe = "/reports/data_forms/for_me";
-        String forClient = "/reports/data_forms/for_clients";
-        String noAction = "";
-        String action = "";
-        switch (webUserController.getLoggedUser().getWebUserRole()) {
-            case Client:
-                action = forClient;
-                break;
-            case Doctor:
-            case Institution_Administrator:
-            case Institution_Super_User:
-            case Institution_User:
-            case Nurse:
-            case Midwife:
-                action = forIns;
-                break;
-            case Me_Admin:
-            case Me_Super_User:
-                action = forMe;
-                break;
-            case Me_User:
-            case User:
-                action = noAction;
-                break;
-            case Super_User:
-            case System_Administrator:
-                action = forSys;
-                break;
-        }
+        String action = "/hospital/reports/all_clients_with_clinic_visits";
         userTransactionController.recordTransaction("To All Clients and all Clinic Visits");
         return action;
     }
 
-    public String toViewDataForms() {
+    public String toViewClinicalDataSingle() {
         encounters = new ArrayList<>();
-        String forSys = "/reports/data_forms/for_system";
-        String forIns = "/reports/data_forms/for_ins";
-        String forMe = "/reports/data_forms/for_me";
-        String forClient = "/reports/data_forms/for_clients";
-        String noAction = "";
-        String action = "";
-        switch (webUserController.getLoggedUser().getWebUserRole()) {
-            case Client:
-                action = forClient;
-                break;
-            case Doctor:
-            case Institution_Administrator:
-            case Institution_Super_User:
-            case Institution_User:
-            case Nurse:
-            case Midwife:
-                action = forIns;
-                break;
-            case Me_Admin:
-            case Me_Super_User:
-                action = forMe;
-                break;
-            case Me_User:
-            case User:
-                action = noAction;
-                break;
-            case Super_User:
-            case System_Administrator:
-                action = forSys;
-                break;
-        }
-        userTransactionController.recordTransaction("To View Data Forms");
+        String action = "/hospital/reports/clinical_data_single";
+        userTransactionController.recordTransaction("To View Clinical Data Single");
+        return action;
+    }
+    
+     public String toViewClinicalDataMultiple() {
+        encounters = new ArrayList<>();
+        String action = "/hospital/reports/clinical_data_multiple";
+        userTransactionController.recordTransaction("To View Clinical Data Multiple");
         return action;
     }
 
@@ -2065,6 +1899,38 @@ public class HospitalReportController implements Serializable {
         userTransactionController.recordTransaction("Fill Clinic Visits By Institution");
     }
 
+    
+    public void fillClinicRegistrationsByInstitution() {
+
+        String j = "select new lk.gov.health.phsp.pojcs.InstitutionCount(e.institution, count(e)) "
+                + " from Encounter e "
+                + " where e.retired<>:ret "
+                + " and e.encounterType=:et ";
+        Map m = new HashMap();
+        m.put("ret", true);
+        m.put("et", EncounterType.Clinic_Enroll);
+        j = j + " and e.encounterDate between :fd and :td ";
+        j = j + " and e.institution in :inss ";
+        j = j + " group by e.institution ";
+        j = j + " order by e.institution.name ";
+        m.put("fd", getFromDate());
+        m.put("td", getToDate());
+        m.put("inss", webUserController.findAutherizedInstitutions());
+        List<Object> objs = getClientFacade().findAggregates(j, m);
+        institutionCounts = new ArrayList<>();
+        reportCount = 0l;
+        for (Object o : objs) {
+            if (o instanceof InstitutionCount) {
+                InstitutionCount ic = (InstitutionCount) o;
+                institutionCounts.add(ic);
+                reportCount += ic.getCount();
+            }
+        }
+        userTransactionController.recordTransaction("Fill Clinic Registrations By Institution");
+    }
+
+    
+    
     public void fillRegistrationsOfClientsByDistrict() {
 
         String j = "select new lk.gov.health.phsp.pojcs.AreaCount(c.createInstitution.district, count(c)) "

@@ -660,12 +660,14 @@ public class WebUserController implements Serializable {
         m.put("ret", false);
         loggedUser = getFacade().findFirstByJpql(temSQL, m);
         if (loggedUser == null) {
+            JsfUtil.addErrorMessage("No User");
             return false;
         }
         if (commonController.matchPassword(password, loggedUser.getWebUserPassword())) {
             return true;
         } else {
             loggedUser = null;
+            JsfUtil.addErrorMessage("Password incorrect");
             return false;
         }
     }

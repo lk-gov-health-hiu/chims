@@ -3,11 +3,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.divudi</groupId>
-    <artifactId>chims1</artifactId>
+    <artifactId>chimsdev</artifactId>
     <version>0.1</version>
     <packaging>war</packaging>
 
-    <name>chims1</name>
+    <name>chimsdev</name>
 
     <properties>
         <endorsed.dir>${project.build.directory}/endorsed</endorsed.dir>

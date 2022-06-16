@@ -7,7 +7,7 @@
       xmlns:p="http://primefaces.org/ui">
 
     <body>
-        <ui:composition template="./../template.xhtml">
+        <ui:composition template="/template.xhtml">
             <ui:define name="content">
                 <f:view>
                     <p:panel header="Form Item Details" style="width: 100%; text-align: center;" >
@@ -16,7 +16,7 @@
                                          style="margin: auto; text-align: left; width: 80%;">
                                 <f:facet name="header" >
                                     <div>
-                                        <p:outputLabel value="Form" for="parentComponent" />
+                                        <p:outputLabel value="Form " for="parentComponent" />
                                         <p:outputLabel id="parentComponent" 
                                                        value="#{designComponentFormItemController.selected.parentComponent.name}" >
                                         </p:outputLabel>
@@ -28,20 +28,23 @@
 
                                 <p:tabView >
                                     <p:tab title="Basic" >
-                                        <p:panelGrid columns="2" >
+                                        <p:panelGrid columns="2" class="w-100" >
                                             <p:outputLabel value="Name:" for="name"/>
                                             <p:inputText id="name" required="true" rendered="true"
+                                                         class="w-100"
                                                          value="#{designComponentFormItemController.selected.name}" title="Name" />
 
                                             <p:outputLabel value="Descreption:" for="descreption" />
                                             <p:inputTextarea id="descreption"
+                                                             class="w-100"
                                                              value="#{designComponentFormItemController.selected.descreption}" title="Name" />
 
 
-                                            <p:outputLabel value="Item:" for="item" />
+                                            <p:outputLabel value="Concept:" for="item" />
                                             <p:autoComplete id="item" value="#{designComponentFormItemController.selected.item}" 
                                                             completeMethod="#{itemController.completeDictionaryItems}" 
                                                             maxResults="20" minQueryLength="3"
+                                                            class="w-100" inputStyleClass="w-100"
                                                             required="true"   var="dic" itemLabel="#{dic.code}" itemValue="#{dic}">
                                                 <p:column headerText="ID" >
                                                     <p:outputLabel value="#{dic.id}" ></p:outputLabel>
@@ -59,10 +62,10 @@
                                             <p:outputLabel value="Order No:" for="orderNo" />
                                             <p:inputText id="orderNo" value="#{designComponentFormItemController.selected.orderNo}" title="OrderNo" />
 
-                                            <p:outputLabel value="Multiple Entries per Form" for="multipleEntiesPerForm" />
+                                            <p:outputLabel value="Multiple Entries per Form:" for="multipleEntiesPerForm" />
                                             <p:selectBooleanCheckbox id="multipleEntiesPerForm" value="#{designComponentFormItemController.selected.multipleEntiesPerForm}" ></p:selectBooleanCheckbox>
 
-                                            <p:outputLabel value="ComponentSex:" for="componentSex" />
+                                            <p:outputLabel value="Sex:" for="componentSex" />
                                             <p:selectOneMenu id="componentSex" 
                                                              value="#{designComponentFormItemController.selected.componentSex}" 
                                                              title="ComponentSex" >
@@ -73,7 +76,7 @@
                                                 </f:selectItems>
                                             </p:selectOneMenu>
 
-                                            <p:outputLabel value="RenderType:" for="renderType" />
+                                            <p:outputLabel value="Rendered as:" for="renderType" />
                                             <p:selectOneMenu id="renderType" required="true"
                                                              value="#{designComponentFormItemController.selected.renderType}" 
                                                              title="RenderType" >
@@ -92,9 +95,10 @@
                                         </p:panelGrid>
                                     </p:tab>
                                     <p:tab title="Data" >
-                                        <p:panelGrid columns="2" >
+                                        <p:panelGrid columns="2" class="w-100" >
                                             <p:outputLabel value="Data Type:" for="selectionDataType" />
                                             <p:selectOneMenu id="selectionDataType" required="true"
+
                                                              value="#{designComponentFormItemController.selected.selectionDataType}" title="SelectionDataType" >
                                                 <f:selectItem itemLabel="Select" ></f:selectItem>
                                                 <f:selectItems value="#{commonController.selectionDataTypes}"
@@ -132,8 +136,10 @@
                                                 </f:selectItems>
                                             </p:selectOneMenu>
 
-                                            <p:outputLabel value="Category of Available Items:" for="categoryOfAvailableItems" />
+                                            <p:outputLabel value="Concept Category of Items available for Selection:" for="categoryOfAvailableItems" />
                                             <p:autoComplete id="categoryOfAvailableItems"
+                                                            class="w-100" 
+                                                            inputStyleClass="w-100"
                                                             value="#{designComponentFormItemController.selected.categoryOfAvailableItems}"
                                                             completeMethod="#{itemController.completeItems}" 
                                                             var="ic" itemLabel="#{ic.name}" forceSelection="true"
@@ -185,15 +191,16 @@
                                                              cols="100"
                                                              rows="10"/>
 
-                                            <p:outputLabel value="Calculation Script - Colour:" for="calculationScriptForColour" />
+                                            <p:outputLabel value="Calculation Script for CSS:" for="calculationScriptForColour" />
                                             <p:inputTextarea id="calculationScriptForColour"
                                                              value="#{designComponentFormItemController.selected.calculationScriptForColour}" 
                                                              autoResize="true"
                                                              cols="100"
                                                              rows="10"/>
 
-                                            <p:outputLabel value="Calculation Script - Background Colour:" for="calculationScriptForBackgroundColour" />
+                                            <p:outputLabel rendered="false" value="Calculation Script - Background Colour:" for="calculationScriptForBackgroundColour" />
                                             <p:inputTextarea id="calculationScriptForBackgroundColour"
+                                                             rendered="false"
                                                              value="#{designComponentFormItemController.selected.calculationScriptForBackgroundColour}" 
                                                              autoResize="true"
                                                              cols="100"
@@ -222,13 +229,13 @@
                                             <p:selectBooleanCheckbox id="required" value="#{designComponentFormItemController.selected.required}" ></p:selectBooleanCheckbox>
 
                                             <p:outputLabel value="Message" for="requiredErrorMsg" />
-                                            <p:inputTextarea id="requiredErrorMsg" value="#{designComponentFormItemController.selected.requiredErrorMessage}" title="Required Error Message" />
+                                            <p:inputTextarea id="requiredErrorMsg" class="w-100" value="#{designComponentFormItemController.selected.requiredErrorMessage}" title="Required Error Message" />
 
                                             <p:outputLabel value="Regex Validation String" for="regex" />
-                                            <p:inputText id="regex" value="#{designComponentFormItemController.selected.regexValidationString}" title="Name" />
+                                            <p:inputText class="w-100" id="regex" value="#{designComponentFormItemController.selected.regexValidationString}" title="Name" />
 
                                             <p:outputLabel value="Regex Error Message" for="regexErrorMesage" />
-                                            <p:inputTextarea id="regexErrorMesage" value="#{designComponentFormItemController.selected.regexValidationFailedMessage}" title="Name" />
+                                            <p:inputTextarea class="w-100" id="regexErrorMesage" value="#{designComponentFormItemController.selected.regexValidationFailedMessage}" title="Name" />
                                         </p:panelGrid>
                                     </p:tab>
 

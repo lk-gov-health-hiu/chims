@@ -21,7 +21,6 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-
 package lk.gov.health.phsp.enums;
 
 /**
@@ -31,19 +30,24 @@ package lk.gov.health.phsp.enums;
 public enum ComponentSetType {
     Patient_Pages("Patient Pages"),
     Encounter_Pages("Encounter Pages"),
+    @Deprecated
     Encounters_Arranged_Horizontally("Encounters Arranged Horizontally"),
+    @Deprecated
     Encounters_Arranged_Vertically("Encounters Arranged Vertically"),
+    @Deprecated
     Encounters_Annual_Summery_page("Encounters Annual Summery Page"),
+    @Deprecated
     Encounters_Annual_summery_Arranged_Horizontally("Encounters Annual Summery Arranged Horizontally"),
+    @Deprecated
     Encounters_Annual_summery_Arranged_Vertically("Encounters Annual Summery Arranged Vertically");
-    
-    private final String label;    
-    private ComponentSetType(String label){
+
+    private final String label;
+
+    private ComponentSetType(String label) {
         this.label = label;
     }
-    
-    public String getLabel(){
+
+    public String getLabel() {
         return label;
     }
 }
-
