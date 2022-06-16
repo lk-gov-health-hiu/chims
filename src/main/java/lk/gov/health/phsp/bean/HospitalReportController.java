@@ -1522,6 +1522,13 @@ public class HospitalReportController implements Serializable {
         String forIns = "/hospital/reports/visit_counts";
         return forIns;
     }
+    
+    public String toClinicRegistrationCounts() {
+        encounters = new ArrayList<>();
+        institutionCounts = new ArrayList<>();
+        String forIns = "/hospital/reports/clinic_registration_Counts";
+        return forIns;
+    }
 
     public String toDailyVisitCounts() {
         encounters = new ArrayList<>();
@@ -1892,6 +1899,38 @@ public class HospitalReportController implements Serializable {
         userTransactionController.recordTransaction("Fill Clinic Visits By Institution");
     }
 
+    
+    public void fillClinicRegistrationsByInstitution() {
+
+        String j = "select new lk.gov.health.phsp.pojcs.InstitutionCount(e.institution, count(e)) "
+                + " from Encounter e "
+                + " where e.retired<>:ret "
+                + " and e.encounterType=:et ";
+        Map m = new HashMap();
+        m.put("ret", true);
+        m.put("et", EncounterType.Clinic_Enroll);
+        j = j + " and e.encounterDate between :fd and :td ";
+        j = j + " and e.institution in :inss ";
+        j = j + " group by e.institution ";
+        j = j + " order by e.institution.name ";
+        m.put("fd", getFromDate());
+        m.put("td", getToDate());
+        m.put("inss", webUserController.findAutherizedInstitutions());
+        List<Object> objs = getClientFacade().findAggregates(j, m);
+        institutionCounts = new ArrayList<>();
+        reportCount = 0l;
+        for (Object o : objs) {
+            if (o instanceof InstitutionCount) {
+                InstitutionCount ic = (InstitutionCount) o;
+                institutionCounts.add(ic);
+                reportCount += ic.getCount();
+            }
+        }
+        userTransactionController.recordTransaction("Fill Clinic Registrations By Institution");
+    }
+
+    
+    
     public void fillRegistrationsOfClientsByDistrict() {
 
         String j = "select new lk.gov.health.phsp.pojcs.AreaCount(c.createInstitution.district, count(c)) "
