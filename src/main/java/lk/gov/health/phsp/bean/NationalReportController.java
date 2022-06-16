@@ -34,6 +34,7 @@ import java.util.Map;
 import javax.ejb.EJB;
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
+import lk.gov.health.phsp.entity.ClientEncounterComponentItem;
 import lk.gov.health.phsp.entity.Institution;
 import lk.gov.health.phsp.entity.Item;
 import lk.gov.health.phsp.enums.EncounterType;
@@ -54,6 +55,7 @@ public class NationalReportController implements Serializable {
     private Date toDate;
     private Long count;
     private Item queryItem;
+    private Item sex;
 
     private List<ObservationValueCount> observationValueCounts;
 
@@ -92,7 +94,7 @@ public class NationalReportController implements Serializable {
         count = null;
         return "/national/observation_values_long";
     }
-    
+
     public String toObservationValueCountDbl() {
         count = null;
         return "/national/observation_values_dbl";
@@ -105,13 +107,20 @@ public class NationalReportController implements Serializable {
         j = "select new lk.gov.health.phsp.pojcs.ObservationValueCount(c.shortTextValue, count(c)) "
                 + " from ClientEncounterComponentItem c "
                 + " where (c.retired=:ret or c.retired is null) "
-                + " and (c.item=:qi) "
-                + " and c.createdAt between :fd and :td "
+                + " and (c.item=:qi)";
+        if (sex != null) {
+            j += " and c.encounter.client.person.sex.code=:s ";
+            m.put("s", sex.getCode());
+        }
+        j += " and c.createdAt between :fd and :td "
                 + " group by c.shortTextValue";
         m.put("ret", false);
         m.put("qi", queryItem);
         m.put("fd", getFromDate());
         m.put("td", getToDate());
+
+        ClientEncounterComponentItem c = new ClientEncounterComponentItem();
+        c.getEncounter().getClient().getPerson().getSex().getCode();
 
         if (institution != null) {
             j += " and c.createInstitution=:ins ";
@@ -202,7 +211,7 @@ public class NationalReportController implements Serializable {
         }
 
     }
-    
+
     public void fillObservationValuesDbl() {
         String j;
         Map m = new HashMap();
@@ -290,6 +299,14 @@ public class NationalReportController implements Serializable {
 
     public void setObservationValueCounts(List<ObservationValueCount> observationValueCounts) {
         this.observationValueCounts = observationValueCounts;
+    }
+
+    public Item getSex() {
+        return sex;
+    }
+
+    public void setSex(Item sex) {
+        this.sex = sex;
     }
 
 }

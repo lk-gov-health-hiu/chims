@@ -29,6 +29,10 @@
                             <p:commandLink value="Print Card" ajax="false">
                                 <p:printer target="card" ></p:printer>
                             </p:commandLink>
+                            
+                            <p:commandLink value="Print Card (New)" ajax="false">
+                                <p:printer target="cardNew" ></p:printer>
+                            </p:commandLink>
 
                             <p:commandLink value="Back" ajax="false" action="/client/profile">
                             </p:commandLink>
@@ -52,6 +56,29 @@
                                     <p:outputLabel  escape="false" value="#{clientController.selected.person.dateOfBirth}" >
                                         <f:convertDateTime pattern="dd MMMM yyyy" ></f:convertDateTime>
                                     </p:outputLabel>
+                                    <br/>
+                                    <p:outputLabel  escape="false" value="PHN&nbsp;&nbsp;:&nbsp;#{clientController.selected.phn}" ></p:outputLabel>  
+                                    <br/>
+                                    <p:barcode id="cardPhn" type="code39"  cache="false" 
+                                               value="#{clientController.selected.phn}"
+                                               hrp="none" 
+                                               ></p:barcode>
+
+                                </div>
+
+
+
+                            </p:panel>
+                            
+                              <p:panel id="cardNew" style="border: none;" >
+
+                                <div style="font-size: 0.8rem;line-height: 1.0rem; overflow: hidden;" >
+                                    <p:outputLabel escape="false" value="Name&nbsp;:&nbsp;"></p:outputLabel>  
+                                    <p:outputLabel escape="false" value="#{clientController.selected.person.nameWithTitle}" style="max-width: 20em; overflow: hidden;"></p:outputLabel>  
+                                    <br/>
+                                    <p:outputLabel  escape="false" value="NIC&nbsp;&nbsp;&nbsp;:&nbsp;#{clientController.selected.person.nic}" ></p:outputLabel> 
+                                    <br/>
+                                    <p:outputLabel  escape="false" value="Institution&nbsp;&nbsp;&nbsp;:&nbsp;#{clientController.selected.createInstitution.name}" ></p:outputLabel> 
                                     <br/>
                                     <p:outputLabel  escape="false" value="PHN&nbsp;&nbsp;:&nbsp;#{clientController.selected.phn}" ></p:outputLabel>  
                                     <br/>
