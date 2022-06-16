@@ -641,24 +641,32 @@ public class InstitutionController implements Serializable {
         }
 
     }
-
+    
     public void saveOrUpdateInstitution() {
         if (selected == null) {
             JsfUtil.addErrorMessage("Nothing to select");
             return;
         }
-        if (selected.getId() == null) {
-            selected.setCreatedAt(new Date());
-            selected.setCreater(webUserController.getLoggedUser());
-            getFacade().create(selected);
+        saveOrUpdateInstitution(selected);
+    }
 
-            institutionApplicationController.getInstitutions().add(selected);
+    public void saveOrUpdateInstitution(Institution saving) {
+        if (saving == null) {
+            JsfUtil.addErrorMessage("Nothing to select");
+            return;
+        }
+        if (saving.getId() == null) {
+            saving.setCreatedAt(new Date());
+            saving.setCreater(webUserController.getLoggedUser());
+            getFacade().create(saving);
+
+            institutionApplicationController.getInstitutions().add(saving);
             items = null;
             JsfUtil.addSuccessMessage("Saved");
         } else {
-            selected.setEditedAt(new Date());
-            selected.setEditer(webUserController.getLoggedUser());
-            getFacade().edit(selected);
+            saving.setEditedAt(new Date());
+            saving.setEditer(webUserController.getLoggedUser());
+            getFacade().edit(saving);
             items = null;
             JsfUtil.addSuccessMessage("Updates");
         }

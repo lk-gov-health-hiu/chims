@@ -39,6 +39,7 @@ import javax.faces.convert.FacesConverter;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.servlet.http.HttpServletRequest;
+import lk.gov.health.phsp.entity.Person;
 import lk.gov.health.phsp.entity.Relationship;
 import lk.gov.health.phsp.entity.UserPrivilege;
 import lk.gov.health.phsp.enums.InstitutionType;
@@ -698,6 +699,25 @@ public class WebUserController implements Serializable {
         m.put("userName", "%" + qry.trim().toLowerCase() + "%");
         m.put("ret", false);
         return getFacade().findByJpql(temSQL, m);
+    }
+    
+    public void createDemoUser(){
+        Institution i = new Institution();
+        i.setName(userName);
+        institutionController.saveOrUpdateInstitution(i);
+        
+        Person p = new Person();
+        p.setName("Administrator");
+        
+        WebUser u = new WebUser();
+        u.setName("admin");
+        u.setWebUserPassword(commonController.hash(password));
+        u.setWebUserRole(WebUserRole.System_Administrator);
+        
+        save(u);
+        
+        
+        
     }
 
     private boolean checkLogin(boolean withoutPassword) {
