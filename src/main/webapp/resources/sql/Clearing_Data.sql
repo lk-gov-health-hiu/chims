@@ -1,4 +1,5 @@
 set foreign_key_checks=0;
+
 drop table APIREQUEST;
 drop table APROCEDURE;
 drop table CLIENT;
@@ -15,4 +16,6 @@ delete from person where id > 2;
 delete from USERAREA where WEBUSER_ID > 101;
 DELETE from USERPRIVILEGE where WEBUSER_ID > 101;
 delete from WEBUSER where ID > 101;
+
+
 set foreign_key_checks=1;
