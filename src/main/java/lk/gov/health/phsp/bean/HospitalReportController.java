@@ -232,6 +232,11 @@ public class HospitalReportController implements Serializable {
     private Quarter quarterEnum;
     private boolean recalculate;
 
+    
+    
+    
+    
+    
     public StreamedContent getDownloadingFile() {
         if (getDownloadingResult() == null) {
             JsfUtil.addErrorMessage("No Download file");
