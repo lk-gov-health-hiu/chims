@@ -48,8 +48,8 @@
                                      rowsPerPageTemplate="10,20,30,40,50"
                                      >
 
-                            <p:ajax event="rowSelect" process="tbl"  update=":#{p:component('card')}" />
-                            <p:ajax event="rowUnselect"   process="tbl"  update=":#{p:component('card')}"  />
+                            <p:ajax event="rowSelect" process="tbl"  update=":#{p:resolveFirstComponentWithId('card', view).clientId}" />
+                            <p:ajax event="rowUnselect"   process="tbl"  update=":#{p:resolveFirstComponentWithId('card', view).clientId}"  />
 
                             <p:column  headerText="Register On" sortBy="#{c.createdAt}" >
                                 <p:outputLabel value="#{c.createdAt}" >

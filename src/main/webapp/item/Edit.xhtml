@@ -52,7 +52,7 @@
                                 <p:selectOneMenu id="selectionDataType" required="true"
                                                  value="#{itemController.selected.dataType}" title="SelectionDataType" >
                                     <f:selectItems value="#{commonController.selectionDataTypes}" ></f:selectItems>
-                                    <f:ajax event="change" execute="@this" render=":#{p:component('tabValidation')}" ></f:ajax>
+                                    <f:ajax event="change" execute="@this" render=":#{p:resolveFirstComponentWithId('tabValidation', view).clientId}" ></f:ajax>
                                 </p:selectOneMenu>
 
 

@@ -309,7 +309,7 @@
                             </td>
                             <td>
                                 <h:panelGroup rendered="#{ii.referanceDesignComponentFormItem.multipleEntiesPerForm}" >
-                                    <p:commandButton id="btnAdd"  value="Add Another" process="@this" update="@form :#{p:component('formset')}"
+                                    <p:commandButton id="btnAdd"  value="Add Another" process="@this" update="@form :#{p:resolveFirstComponentWithId('formset', view).clientId}}"
                                                      action="#{clientEncounterComponentItemController.addAnother(ii)}"></p:commandButton>
                                 </h:panelGroup>
                             </td>

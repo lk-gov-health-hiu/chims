@@ -23,10 +23,11 @@
             <p:menubar  rendered="#{webUserController.loggedUser ne null}"  autoDisplay="true"   styleClass="horizontalmenu">
                 <p:menuitem ajax="false" value="Home" icon="ui-icon-home" action="/index" />
                 <p:submenu label="Clients" rendered="#{webUserController.hasPrivilege('Client_Management')}" >
-                    <p:menuitem ajax="false" value="Search by IDs" action="#{clientController.toSearchClientById()}" />
                     <p:menuitem ajax="false" value="Register New" action="#{clientController.toAddNewClient()}"  />
                     <p:menuitem ajax="false" value="Reserver PHN" 
                                 action="#{clientController.toReserverPhn()}"  />
+                    <p:menuitem ajax="false" value="Search" action="#{clientController.toSearchClientById()}" />
+                    
                 </p:submenu>
 
 
@@ -48,7 +49,7 @@
 
                 <p:submenu label="Analysis" 
                            disabled="false"
-                           rendered="#{webUserController.hasPrivilege('Institution_Administration')}" >
+                           rendered="#{webUserController.hasPrivilege('Institution_Administration') or true}" >
                     <p:menuitem ajax="false" value="Queries" 
                                 action="#{queryComponentController.toQueryIndex()}"  />
                     <p:menuitem ajax="false" value="Reports" 
