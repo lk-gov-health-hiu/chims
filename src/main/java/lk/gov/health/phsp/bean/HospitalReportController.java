@@ -159,6 +159,8 @@ public class HospitalReportController implements Serializable {
 // </editor-fold>     
 // <editor-fold defaultstate="collapsed" desc="Controllers">
     @Inject
+    StreamedContentController streamedContentController;
+    @Inject
     private EncounterController encounterController;
     @Inject
     private ClientController clientController;
@@ -232,11 +234,6 @@ public class HospitalReportController implements Serializable {
     private Quarter quarterEnum;
     private boolean recalculate;
 
-    
-    
-    
-    
-    
     public StreamedContent getDownloadingFile() {
         if (getDownloadingResult() == null) {
             JsfUtil.addErrorMessage("No Download file");
@@ -459,26 +456,39 @@ public class HospitalReportController implements Serializable {
         th5_1.setCellValue("Serial");
         Cell th5_2 = t5.createCell(1);
         th5_2.setCellValue("PHN");
-        Cell th5_3 = t5.createCell(2);
+
+        Cell th5_2a = t5.createCell(2);
+        th5_2a.setCellValue("Name");
+        Cell th5_2b = t5.createCell(3);
+        th5_2b.setCellValue("Address");
+        Cell th5_2c = t5.createCell(4);
+        th5_2c.setCellValue("Phone 1");
+        Cell th5_2d = t5.createCell(5);
+        th5_2d.setCellValue("Phone 2");
+        Cell th5_2e = t5.createCell(6);
+        th5_2e.setCellValue("GN");
+
+        Cell th5_3 = t5.createCell(7);
         th5_3.setCellValue("Sex");
-        Cell th5_4 = t5.createCell(3);
+        Cell th5_4 = t5.createCell(8);
         th5_4.setCellValue("Age in Years at Encounter");
-        Cell th5_5 = t5.createCell(4);
+        Cell th5_5 = t5.createCell(9);
         th5_5.setCellValue("Encounter at");
-        Cell th5_6 = t5.createCell(5);
+        Cell th5_6 = t5.createCell(10);
         th5_6.setCellValue("Short-text Value");
-        Cell th5_7 = t5.createCell(6);
+        Cell th5_7 = t5.createCell(11);
         th5_7.setCellValue("Long Value");
-        Cell th5_8 = t5.createCell(7);
+        Cell th5_8 = t5.createCell(12);
         th5_8.setCellValue("Int Value");
-        Cell th5_9 = t5.createCell(8);
+        Cell th5_9 = t5.createCell(13);
         th5_9.setCellValue("Real Value");
-        Cell th5_10 = t5.createCell(9);
+        Cell th5_10 = t5.createCell(14);
         th5_10.setCellValue("Item Value");
-        Cell th5_11 = t5.createCell(10);
+        Cell th5_11 = t5.createCell(15);
         th5_11.setCellValue("Item Value");
-        Cell th5_12 = t5.createCell(11);
+        Cell th5_12 = t5.createCell(16);
         th5_12.setCellValue("Completed");
+
         int serial = 1;
 
         CellStyle cellStyle = workbook.createCellStyle();
@@ -511,52 +521,66 @@ public class HospitalReportController implements Serializable {
                     c2.setCellValue(c.getPhn());
                 }
 
-                Cell c3 = row.createCell(2);
+                Cell c2a = row.createCell(2);
+                c2a.setCellValue(c.getPerson().getName());
+                Cell c2b = row.createCell(3);
+                c2b.setCellValue(c.getPerson().getAddress());
+                Cell c2c = row.createCell(4);
+                c2c.setCellValue(c.getPerson().getPhone1());
+                Cell c2d = row.createCell(5);
+                c2d.setCellValue(c.getPerson().getPhone2());
+
+                if (p.getGnArea() != null) {
+                    Cell c2e = row.createCell(6);
+                    c2e.setCellValue(c.getPerson().getGnArea().getName());
+                }
+
+                Cell c3 = row.createCell(7);
                 if (p.getSex() != null) {
                     c3.setCellValue(p.getSex().getName());
                 }
 
-                Cell c4 = row.createCell(3);
+                Cell c4 = row.createCell(8);
                 int ageInYears = CommonController.calculateAge(p.getDateOfBirth(), e.getEncounterDate());
                 c4.setCellValue(ageInYears);
 
-                Cell c5 = row.createCell(4);
+                Cell c5 = row.createCell(9);
                 if (e.getEncounterDate() != null) {
                     c5.setCellValue(e.getEncounterDate());
                 }
                 c5.setCellStyle(cellStyle);
 
-                Cell c6 = row.createCell(5);
+                Cell c6 = row.createCell(10);
                 if (i.getShortTextValue() != null) {
                     c6.setCellValue(i.getShortTextValue());
                 }
 
-                Cell c7 = row.createCell(6);
+                Cell c7 = row.createCell(11);
                 if (i.getLongNumberValue() != null) {
                     c7.setCellValue(i.getLongNumberValue());
                 }
 
-                Cell c8 = row.createCell(7);
+                Cell c8 = row.createCell(12);
                 if (i.getIntegerNumberValue() != null) {
                     c8.setCellValue(i.getIntegerNumberValue());
                 }
 
-                Cell c9 = row.createCell(8);
+                Cell c9 = row.createCell(13);
                 if (i.getRealNumberValue() != null) {
                     c9.setCellValue(i.getRealNumberValue());
                 }
 
-                Cell c10 = row.createCell(9);
+                Cell c10 = row.createCell(14);
                 if (i.getItemValue() != null && i.getItemValue().getName() != null) {
                     c10.setCellValue(i.getItemValue().getName());
                 }
 
-                Cell c11 = row.createCell(10);
+                Cell c11 = row.createCell(15);
                 if (i.getBooleanValue() != null) {
                     c11.setCellValue(i.getBooleanValue() ? "True" : "False");
                 }
 
-                Cell c12 = row.createCell(11);
+                Cell c12 = row.createCell(16);
 
                 if (i.getParentComponent() != null && i.getParentComponent().getParentComponent() != null) {
                     c12.setCellValue(i.getParentComponent().getParentComponent().isCompleted() ? "Complete" : "Not Completed");
@@ -576,9 +600,8 @@ public class HospitalReportController implements Serializable {
         InputStream stream;
         try {
             stream = new FileInputStream(newFile);
-//            resultExcelFile = new DefaultStreamedContent(stream, mimeType, FILE_NAME);
+            resultExcelFile = streamedContentController.generateStreamedContent(mimeType, FILE_NAME, stream);
         } catch (FileNotFoundException ex) {
-
         }
     }
 
@@ -1527,7 +1550,7 @@ public class HospitalReportController implements Serializable {
         String forIns = "/hospital/reports/visit_counts";
         return forIns;
     }
-    
+
     public String toClinicRegistrationCounts() {
         encounters = new ArrayList<>();
         institutionCounts = new ArrayList<>();
@@ -1636,8 +1659,8 @@ public class HospitalReportController implements Serializable {
         userTransactionController.recordTransaction("To View Clinical Data Single");
         return action;
     }
-    
-     public String toViewClinicalDataMultiple() {
+
+    public String toViewClinicalDataMultiple() {
         encounters = new ArrayList<>();
         String action = "/hospital/reports/clinical_data_multiple";
         userTransactionController.recordTransaction("To View Clinical Data Multiple");
@@ -1904,7 +1927,6 @@ public class HospitalReportController implements Serializable {
         userTransactionController.recordTransaction("Fill Clinic Visits By Institution");
     }
 
-    
     public void fillClinicRegistrationsByInstitution() {
 
         String j = "select new lk.gov.health.phsp.pojcs.InstitutionCount(e.institution, count(e)) "
@@ -1934,8 +1956,6 @@ public class HospitalReportController implements Serializable {
         userTransactionController.recordTransaction("Fill Clinic Registrations By Institution");
     }
 
-    
-    
     public void fillRegistrationsOfClientsByDistrict() {
 
         String j = "select new lk.gov.health.phsp.pojcs.AreaCount(c.createInstitution.district, count(c)) "

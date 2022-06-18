@@ -30,21 +30,8 @@
                 </p:submenu>
 
 
-                <p:submenu label="Reports" id="mnuReportsHospital"
-                           disabled="true"
-                           rendered="#{webUserController.loggedUser.webUserRoleLevel eq 'Hospital' and false}" >
-                    <p:menuitem ajax="false" value="Counts" 
-                                action="#{hospitalController.toHospitalReportsCounts()}"  />
-                    <p:menuitem ajax="false" value="Lists" 
-                                action="#{hospitalController.toHospitalReportsLists()}" ></p:menuitem>
-                </p:submenu>
                 
-                 <p:submenu label="Reports" id="mnuNationalHospital"
-                            disabled="true"
-                           rendered="#{webUserController.loggedUser.webUserRoleLevel eq 'National_Me' or webUserController.loggedUser.webUserRoleLevel eq 'National' and false}" >
-                    <p:menuitem ajax="false" value="Counts" 
-                                action="#{nationalReportController.toNationalReportsCounts()}"  />
-                </p:submenu>
+                 
 
                 <p:submenu label="Analysis" 
                            disabled="false" >

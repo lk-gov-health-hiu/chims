@@ -259,7 +259,9 @@ public class ReportController implements Serializable {
             getStoredQueryResultFacade().edit(downloadingResult);
         }
 //        downloadingFile = new DefaultStreamedContent(stream, downloadingResult.getUpload().getFileType(), downloadingResult.getUpload().getFileName());
-        return downloadingFile;
+        
+
+return downloadingFile;
     }
 
     public void listMyReports() {
@@ -862,7 +864,7 @@ public class ReportController implements Serializable {
 // <editor-fold defaultstate="collapsed" desc="Navigation">
     public String toViewReports() {
         String forSys = "/reports/index";
-        String forIns = "/hospital/report_index";
+        String forIns = "/hospital/reports/index";
         String forMe = "/reports/index";
         String forClient = "/reports/index";
         String forMoh = "/moh/reports/index";
