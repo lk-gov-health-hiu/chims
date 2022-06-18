@@ -322,7 +322,7 @@
                                                 </p:autoComplete>
                                             </td>
                                             <td>
-                                                <p:commandButton id="btnAddM3"  value="Add" process="acAM btnAddM3" update="@form :#{p:component('formset')}"
+                                                <p:commandButton id="btnAddM3"  value="Add" process="acAM btnAddM3" update=":#{p:resolveFirstComponentWithId('formset', view).clientId}"
                                                                  action="#{clientEncounterComponentItemController.addAnotherDataItem(ii.addingItem)}"></p:commandButton>
                                             </td>
                                             <td>

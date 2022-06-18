@@ -34,7 +34,7 @@ THE SOFTWARE.
             Client Registration Count - District
         </ui:define>
     </head>
-    <body>
+    <h:body>
 
         <ui:composition template="/reports/index.xhtml">
             <ui:define name="reports">
@@ -59,7 +59,7 @@ THE SOFTWARE.
 
 
                             <p:commandButton value="Download" id="btnDe" ajax="false">
-                                <p:dataExporter id="de" type="xlsx" target=":#{p:component('tbl')}" fileName="Client Registrations by District" ></p:dataExporter>
+                                <p:dataExporter id="de" type="xlsx" target=":#{p:resolveFirstComponentWithId('tbl', view).clientId}" fileName="Client Registrations by District" ></p:dataExporter>
                             </p:commandButton>
 
 
@@ -114,5 +114,5 @@ THE SOFTWARE.
 
         </ui:composition>
 
-    </body>
+    </h:body>
 </html>
