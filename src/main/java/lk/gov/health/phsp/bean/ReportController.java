@@ -159,6 +159,8 @@ public class ReportController implements Serializable {
 // </editor-fold>     
 // <editor-fold defaultstate="collapsed" desc="Controllers">
     @Inject
+    StreamedContentController streamedContentController;
+    @Inject
     private EncounterController encounterController;
     @Inject
     private ClientController clientController;
@@ -259,9 +261,8 @@ public class ReportController implements Serializable {
             getStoredQueryResultFacade().edit(downloadingResult);
         }
 //        downloadingFile = new DefaultStreamedContent(stream, downloadingResult.getUpload().getFileType(), downloadingResult.getUpload().getFileName());
-        
 
-return downloadingFile;
+        return downloadingFile;
     }
 
     public void listMyReports() {
@@ -451,7 +452,7 @@ return downloadingFile;
 
         rowCount++;
 
-        Row t5 = sheet.createRow(rowCount++);
+        Row t5 = sheet.createRow(rowCount);
         Cell th5_1 = t5.createCell(0);
         th5_1.setCellValue("Serial");
         Cell th5_2 = t5.createCell(1);
@@ -476,8 +477,7 @@ return downloadingFile;
         th5_11.setCellValue("Item Value");
         Cell th5_12 = t5.createCell(11);
         th5_12.setCellValue("Completed");
-        
-        
+
         Cell th5_13 = t5.createCell(12);
         th5_13.setCellValue("Name");
         Cell th5_14 = t5.createCell(13);
@@ -488,8 +488,7 @@ return downloadingFile;
         th5_16.setCellValue("Phone");
         Cell th5_17 = t5.createCell(16);
         th5_17.setCellValue("GN Area");
-        
-        
+
         int serial = 1;
 
         CellStyle cellStyle = workbook.createCellStyle();
@@ -592,9 +591,9 @@ return downloadingFile;
                 if (c.getPerson() != null) {
                     c16.setCellValue(c.getPerson().getPhone2());
                 }
-                
-                 Cell c17 = row.createCell(17);
-                if (c.getPerson() != null && c.getPerson().getGnArea() !=null) {
+
+                Cell c17 = row.createCell(17);
+                if (c.getPerson() != null && c.getPerson().getGnArea() != null) {
                     c17.setCellValue(c.getPerson().getGnArea().getName());
                 }
 
@@ -613,7 +612,7 @@ return downloadingFile;
         InputStream stream;
         try {
             stream = new FileInputStream(newFile);
-//            resultExcelFile = new DefaultStreamedContent(stream, mimeType, FILE_NAME);
+            resultExcelFile = streamedContentController.generateStreamedContent(mimeType, FILE_NAME, stream);
         } catch (FileNotFoundException ex) {
 
         }
@@ -2132,7 +2131,7 @@ return downloadingFile;
 
         rowCount++;
 
-        Row t5 = sheet.createRow(rowCount++);
+        Row t5 = sheet.createRow(rowCount);
         Cell th5_1 = t5.createCell(0);
         th5_1.setCellValue("Serial");
 
@@ -2234,7 +2233,7 @@ return downloadingFile;
         InputStream stream;
         try {
             stream = new FileInputStream(newFile);
-//            resultExcelFile = new DefaultStreamedContent(stream, mimeType, FILE_NAME);
+            resultExcelFile = streamedContentController.generateStreamedContent(mimeType, FILE_NAME, stream);
         } catch (FileNotFoundException ex) {
             // System.out.println("File not found exception -->" + ex.getMessage());
         }
@@ -2463,7 +2462,7 @@ return downloadingFile;
 
         rowCount++;
 
-        Row t5 = sheet.createRow(rowCount++);
+        Row t5 = sheet.createRow(rowCount);
         Cell th5_1 = t5.createCell(0);
         th5_1.setCellValue("Serial");
         Cell th5_2 = t5.createCell(1);
@@ -2529,7 +2528,7 @@ return downloadingFile;
         InputStream stream;
         try {
             stream = new FileInputStream(newFile);
-//            resultExcelFile = new DefaultStreamedContent(stream, mimeType, FILE_NAME);
+            resultExcelFile = streamedContentController.generateStreamedContent(mimeType, FILE_NAME, stream);
         } catch (FileNotFoundException ex) {
 
         }
@@ -2614,21 +2613,33 @@ return downloadingFile;
 
         rowCount++;
 
-        Row t5 = sheet.createRow(rowCount++);
+        Row t5 = sheet.createRow(rowCount);
         Cell th5_1 = t5.createCell(0);
         th5_1.setCellValue("Serial");
         Cell th5_2 = t5.createCell(1);
         th5_2.setCellValue("PHN");
-        Cell th5_3 = t5.createCell(2);
+
+        Cell th5_2a = t5.createCell(2);
+        th5_2a.setCellValue("Name");
+        Cell th5_2b = t5.createCell(3);
+        th5_2b.setCellValue("Address");
+        Cell th5_2c = t5.createCell(4);
+        th5_2c.setCellValue("Phone 1");
+        Cell th5_2d = t5.createCell(5);
+        th5_2d.setCellValue("Phone 2");
+        Cell th5_2e = t5.createCell(6);
+        th5_2e.setCellValue("GN");
+
+        Cell th5_3 = t5.createCell(7);
         th5_3.setCellValue("Sex");
-        Cell th5_4 = t5.createCell(3);
+        Cell th5_4 = t5.createCell(8);
         th5_4.setCellValue("Age in Years at Encounter");
-        Cell th5_5 = t5.createCell(4);
+        Cell th5_5 = t5.createCell(9);
         th5_5.setCellValue("Encounter at");
-        Cell th5_6 = t5.createCell(5);
+        Cell th5_6 = t5.createCell(10);
         th5_6.setCellValue("GN Areas");
         if (institution == null) {
-            Cell th5_7 = t5.createCell(6);
+            Cell th5_7 = t5.createCell(11);
             th5_7.setCellValue("Institution");
         }
 
@@ -2649,6 +2660,13 @@ return downloadingFile;
 
                 Cell c2 = row.createCell(1);
                 c2.setCellValue(cbd.getPhn());
+                
+                Cell c2a = row.createCell(2);
+                c2a.setCellValue(cbd.getName());
+
+                Cell c2c = row.createCell(4);
+                c2c.setCellValue(cbd.getPhone());
+               
 
                 Cell c3 = row.createCell(2);
                 c3.setCellValue(cbd.getSex());
@@ -2683,7 +2701,7 @@ return downloadingFile;
         InputStream stream;
         try {
             stream = new FileInputStream(newFile);
-//            resultExcelFile = new DefaultStreamedContent(stream, mimeType, FILE_NAME);
+            resultExcelFile = streamedContentController.generateStreamedContent(mimeType, FILE_NAME, stream);
         } catch (FileNotFoundException ex) {
 
         }
@@ -2861,7 +2879,7 @@ return downloadingFile;
 //        }
         rowCount++;
 
-        Row t5 = sheet.createRow(rowCount++);
+        Row t5 = sheet.createRow(rowCount);
         Cell th5_1 = t5.createCell(0);
         th5_1.setCellValue("Type");
         Cell th5_2 = t5.createCell(1);
@@ -2910,7 +2928,7 @@ return downloadingFile;
         InputStream stream;
         try {
             stream = new FileInputStream(newFile);
-//            resultExcelFile = new DefaultStreamedContent(stream, mimeType, FILE_NAME);
+            resultExcelFile = streamedContentController.generateStreamedContent(mimeType, FILE_NAME, stream);
         } catch (FileNotFoundException ex) {
 
         }
@@ -2993,7 +3011,7 @@ return downloadingFile;
 
         rowCount++;
 
-        Row t5 = sheet.createRow(rowCount++);
+        Row t5 = sheet.createRow(rowCount);
         Cell th5_1 = t5.createCell(0);
         th5_1.setCellValue("Serial");
         Cell th5_2 = t5.createCell(1);
@@ -3039,7 +3057,7 @@ return downloadingFile;
         InputStream stream;
         try {
             stream = new FileInputStream(newFile);
-//            resultExcelFile = new DefaultStreamedContent(stream, mimeType, FILE_NAME);
+            resultExcelFile = streamedContentController.generateStreamedContent(mimeType, FILE_NAME, stream);
         } catch (FileNotFoundException ex) {
 
         }
@@ -3120,7 +3138,7 @@ return downloadingFile;
 
         rowCount++;
 
-        Row t5 = sheet.createRow(rowCount++);
+        Row t5 = sheet.createRow(rowCount);
         Cell th5_1 = t5.createCell(0);
         th5_1.setCellValue("Serial");
         Cell th5_2 = t5.createCell(1);
@@ -3166,7 +3184,7 @@ return downloadingFile;
         InputStream stream;
         try {
             stream = new FileInputStream(newFile);
-//            resultExcelFile = new DefaultStreamedContent(stream, mimeType, FILE_NAME);
+            resultExcelFile = streamedContentController.generateStreamedContent(mimeType, FILE_NAME, stream);
         } catch (FileNotFoundException ex) {
 
         }
@@ -3264,7 +3282,7 @@ return downloadingFile;
         InputStream stream;
         try {
             stream = new FileInputStream(newFile);
-//            resultExcelFile = new DefaultStreamedContent(stream, mimeType, fileName);
+            resultExcelFile = streamedContentController.generateStreamedContent(mimeType, fileName, stream);
         } catch (FileNotFoundException ex) {
 
         }

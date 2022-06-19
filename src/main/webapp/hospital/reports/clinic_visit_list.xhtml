@@ -23,17 +23,21 @@
                             </p:outputLabel>
                         </f:facet>
                         <p:outputLabel value="From" ></p:outputLabel>
-                        <p:calendar value="#{reportController.fromDate}" pattern="dd MM yyyy" ></p:calendar>
+                        <p:calendar value="#{hospitalReportController.fromDate}" pattern="dd MM yyyy" ></p:calendar>
 
                         <p:outputLabel value="To" ></p:outputLabel>
-                        <p:calendar value="#{reportController.toDate}" pattern="dd MM yyyy" ></p:calendar>
+                        <p:calendar value="#{hospitalReportController.toDate}" pattern="dd MM yyyy" ></p:calendar>
 
-                        <p:outputLabel value="Institution" ></p:outputLabel>
-                        <p:autoComplete   value="#{reportController.institution}" 
-                                          completeMethod="#{webUserController.completeLoggableInstitutions}"
-                                          var="i" itemLabel="#{i.name}" itemValue="#{i}"
-                                          forceSelection="true" maxResults="15" minQueryLength="3">
-                        </p:autoComplete >
+                        <p:outputLabel value="Clinic" for="ins" ></p:outputLabel>
+                        <p:selectOneMenu id="ins"
+                                         required="true"
+                                         value="#{hospitalReportController.institution}" >
+                            <f:selectItem itemLabel="Select Clinic" ></f:selectItem>
+                            <f:selectItems value="#{webUserController.loggableInstitutions}"
+                                           var="i" 
+                                           itemLabel="#{i.name}"
+                                           itemValue="#{i}"></f:selectItems>
+                        </p:selectOneMenu>
 
 
                         <p:spacer ></p:spacer>
@@ -41,8 +45,8 @@
                                          ajax="false" 
                                          oncomplete ="PrimeFaces.monitorDownload(start, stop);" 
                                          icon="ui-icon-arrowthick-1-s"
-                                         actionListener="#{reportController.downloadClinicVisits()}">
-                            <p:fileDownload value="#{reportController.resultExcelFile}" />
+                                         actionListener="#{hospitalReportController.downloadClinicVisits()}">
+                            <p:fileDownload value="#{hospitalReportController.resultExcelFile}" />
                         </p:commandButton>
 
                     </p:panelGrid>

@@ -260,7 +260,7 @@ public class HospitalReportController implements Serializable {
             downloadingResult.getUpload().setFileType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
             getStoredQueryResultFacade().edit(downloadingResult);
         }
-//        downloadingFile = new DefaultStreamedContent(stream, downloadingResult.getUpload().getFileType(), downloadingResult.getUpload().getFileName());
+        downloadingFile = streamedContentController.generateStreamedContent(downloadingResult.getUpload().getFileType(), downloadingResult.getUpload().getFileName(), stream);
         return downloadingFile;
     }
 
@@ -451,7 +451,7 @@ public class HospitalReportController implements Serializable {
 
         rowCount++;
 
-        Row t5 = sheet.createRow(rowCount++);
+        Row t5 = sheet.createRow(rowCount);
         Cell th5_1 = t5.createCell(0);
         th5_1.setCellValue("Serial");
         Cell th5_2 = t5.createCell(1);
@@ -1759,7 +1759,7 @@ public class HospitalReportController implements Serializable {
 
         rowCount++;
 
-        Row t5 = sheet.createRow(rowCount++);
+        Row t5 = sheet.createRow(rowCount);
         Cell th5_1 = t5.createCell(0);
         th5_1.setCellValue("Serial");
 
@@ -1861,7 +1861,7 @@ public class HospitalReportController implements Serializable {
         InputStream stream;
         try {
             stream = new FileInputStream(newFile);
-//            resultExcelFile = new DefaultStreamedContent(stream, mimeType, FILE_NAME);
+            resultExcelFile = streamedContentController.generateStreamedContent(mimeType, FILE_NAME, stream);
         } catch (FileNotFoundException ex) {
             // System.out.println("File not found exception -->" + ex.getMessage());
         }
@@ -1943,7 +1943,7 @@ public class HospitalReportController implements Serializable {
         m.put("fd", getFromDate());
         m.put("td", getToDate());
         m.put("inss", webUserController.findAutherizedInstitutions());
-        List<Object> objs = getClientFacade().findAggregates(j, m);
+        List<Object> objs = getEncounterFacade().findAggregates(j, m, TemporalType.TIMESTAMP);
         institutionCounts = new ArrayList<>();
         reportCount = 0l;
         for (Object o : objs) {
@@ -2046,18 +2046,21 @@ public class HospitalReportController implements Serializable {
 
         j = "select new lk.gov.health.phsp.pojcs.EncounterBasicData("
                 + "e.client.phn, "
+                + "e.client.person.name, "
+                + "e.client.person.dateOfBirth, "
+                + "e.client.person.sex.name, "
+                + "e.client.person.phone1, "
+                + "e.client.person.address, "
                 + "e.client.person.gnArea.name, "
                 + "e.institution.name, "
-                + "e.client.person.dateOfBirth, "
-                + "e.encounterDate, "
-                + "e.client.person.sex.name "
+                + "e.encounterDate "
                 + ") "
                 + " from Encounter e "
-                + " where e.retired=:ret "
+                + " where e.retired<>:ret "
                 + " and e.encounterType=:type "
                 + " and e.encounterDate between :fd and :td ";
 
-        m.put("ret", false);
+        m.put("ret", true);
         m.put("fd", fromDate);
         m.put("td", toDate);
         m.put("type", EncounterType.Clinic_Enroll);
@@ -2076,9 +2079,9 @@ public class HospitalReportController implements Serializable {
             }
         }
         //String phn, String gnArea, String institution, Date dataOfBirth, Date encounterAt, String sex
-        List<Object> objs = getClientFacade().findAggregates(j, m);
+        List<Object> objs = getClientFacade().findAggregates(j, m, TemporalType.DATE);
 
-        String FILE_NAME = "client_clinic_enrolments" + "_" + (new Date()) + ".xlsx";
+        String FILE_NAME = "client_clinic_registrations" + "_" + (new Date()) + ".xlsx";
         String mimeType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
 
         String folder = "/tmp/";
@@ -2086,7 +2089,12 @@ public class HospitalReportController implements Serializable {
         File newFile = new File(folder + FILE_NAME);
 
         XSSFWorkbook workbook = new XSSFWorkbook();
-        XSSFSheet sheet = workbook.createSheet("Data");
+        XSSFSheet sheet = workbook.createSheet("ClinicRegistrations");
+        
+        CellStyle dateCellStyle = workbook.createCellStyle();
+        CreationHelper createHelper = workbook.getCreationHelper();
+        dateCellStyle.setDataFormat(
+                createHelper.createDataFormat().getFormat("dd/MMMM/yyyy"));
 
         int rowCount = 0;
 
@@ -2094,54 +2102,69 @@ public class HospitalReportController implements Serializable {
         Cell th1_lbl = t1.createCell(0);
         th1_lbl.setCellValue("Report");
         Cell th1_val = t1.createCell(1);
-        th1_val.setCellValue("List of Clinic Enrolments");
+        th1_val.setCellValue("List of Clinic Registrations");
 
         Row t2 = sheet.createRow(rowCount++);
         Cell th2_lbl = t2.createCell(0);
         th2_lbl.setCellValue("From");
         Cell th2_val = t2.createCell(1);
-        th2_val.setCellValue(CommonController.dateTimeToString(fromDate, "dd MMMM yyyy"));
+        th2_val.setCellStyle(dateCellStyle);
+        th2_val.setCellValue(fromDate);
 
         Row t3 = sheet.createRow(rowCount++);
         Cell th3_lbl = t3.createCell(0);
         th3_lbl.setCellValue("To");
         Cell th3_val = t3.createCell(1);
-        th3_val.setCellValue(CommonController.dateTimeToString(toDate, "dd MMMM yyyy"));
+        th3_val.setCellStyle(dateCellStyle);
+        th3_val.setCellValue(toDate);
 
         if (institution != null) {
             Row t4 = sheet.createRow(rowCount++);
             Cell th4_lbl = t4.createCell(0);
-            th4_lbl.setCellValue("Institution");
+            th4_lbl.setCellValue("Clinic");
             Cell th4_val = t4.createCell(1);
             th4_val.setCellValue(institution.getName());
         }
 
         rowCount++;
 
-        Row t5 = sheet.createRow(rowCount++);
+        Row t5 = sheet.createRow(rowCount);
+
         Cell th5_1 = t5.createCell(0);
         th5_1.setCellValue("Serial");
+
         Cell th5_2 = t5.createCell(1);
         th5_2.setCellValue("PHN");
+
         Cell th5_3 = t5.createCell(2);
-        th5_3.setCellValue("Sex");
+        th5_3.setCellValue("Name");
+
         Cell th5_4 = t5.createCell(3);
         th5_4.setCellValue("Age in Years at Encounter");
+
         Cell th5_5 = t5.createCell(4);
-        th5_5.setCellValue("Encounter at");
+        th5_5.setCellValue("Sex");
+
         Cell th5_6 = t5.createCell(5);
-        th5_6.setCellValue("GN Areas");
+        th5_6.setCellValue("Phone");
+
+        Cell th5_7 = t5.createCell(6);
+        th5_7.setCellValue("Address");
+
+        Cell th5_8 = t5.createCell(7);
+        th5_8.setCellValue("GN Areas");
+
+        Cell th5_9 = t5.createCell(8);
+        th5_9.setCellValue("Registered on");
+
         if (institution == null) {
-            Cell th5_7 = t5.createCell(6);
-            th5_7.setCellValue("Institution");
+            Cell th5_10 = t5.createCell(9);
+            th5_10.setCellValue("Institution");
         }
 
         int serial = 1;
 
-        CellStyle cellStyle = workbook.createCellStyle();
-        CreationHelper createHelper = workbook.getCreationHelper();
-        cellStyle.setDataFormat(
-                createHelper.createDataFormat().getFormat("dd/MMMM/yyyy hh:mm"));
+        
 
         for (Object o : objs) {
             if (o instanceof EncounterBasicData) {
@@ -2155,20 +2178,30 @@ public class HospitalReportController implements Serializable {
                 c2.setCellValue(cbd.getPhn());
 
                 Cell c3 = row.createCell(2);
-                c3.setCellValue(cbd.getSex());
+                c3.setCellValue(cbd.getName());
 
                 Cell c4 = row.createCell(3);
                 c4.setCellValue(cbd.getAgeInYears());
 
                 Cell c5 = row.createCell(4);
-                c5.setCellValue(cbd.getEncounterAt());
-                c5.setCellStyle(cellStyle);
+                c5.setCellValue(cbd.getSex());
 
                 Cell c6 = row.createCell(5);
-                c6.setCellValue(cbd.getGnArea());
+                c6.setCellValue(cbd.getPhone());
+
+                Cell c7 = row.createCell(6);
+                c7.setCellValue(cbd.getAddress());
+
+                Cell c8 = row.createCell(7);
+                c8.setCellValue(cbd.getGnArea());
+
+                Cell c9 = row.createCell(8);
+                c9.setCellValue(cbd.getEncounterAt());
+                c9.setCellStyle(dateCellStyle);
+
                 if (institution == null) {
-                    Cell c7 = row.createCell(6);
-                    c7.setCellValue(cbd.getInstitution());
+                    Cell c10 = row.createCell(9);
+                    c10.setCellValue(cbd.getInstitution());
                 }
 
                 serial++;
@@ -2184,7 +2217,7 @@ public class HospitalReportController implements Serializable {
         InputStream stream;
         try {
             stream = new FileInputStream(newFile);
-//            resultExcelFile = new DefaultStreamedContent(stream, mimeType, FILE_NAME);
+            resultExcelFile = streamedContentController.generateStreamedContent(mimeType, FILE_NAME, stream);
         } catch (FileNotFoundException ex) {
 
         }
@@ -2197,11 +2230,14 @@ public class HospitalReportController implements Serializable {
 
         j = "select new lk.gov.health.phsp.pojcs.EncounterBasicData("
                 + "e.client.phn, "
+                + "e.client.person.name, "
+                + "e.client.person.dateOfBirth, "
+                + "e.client.person.sex.name, "
+                + "e.client.person.phone1, "
+                + "e.client.person.address, "
                 + "e.client.person.gnArea.name, "
                 + "e.institution.name, "
-                + "e.client.person.dateOfBirth, "
-                + "e.encounterDate, "
-                + "e.client.person.sex.name "
+                + "e.encounterDate "
                 + ") "
                 + " from Encounter e "
                 + " where e.retired=:ret "
@@ -2269,22 +2305,38 @@ public class HospitalReportController implements Serializable {
 
         rowCount++;
 
-        Row t5 = sheet.createRow(rowCount++);
+        Row t5 = sheet.createRow(rowCount);
+
         Cell th5_1 = t5.createCell(0);
         th5_1.setCellValue("Serial");
+
         Cell th5_2 = t5.createCell(1);
         th5_2.setCellValue("PHN");
+
         Cell th5_3 = t5.createCell(2);
-        th5_3.setCellValue("Sex");
+        th5_3.setCellValue("Name");
+
         Cell th5_4 = t5.createCell(3);
         th5_4.setCellValue("Age in Years at Encounter");
-        Cell th5_5 = t5.createCell(4);
-        th5_5.setCellValue("Encounter at");
+
+        Cell th5_5 = t5.createCell(6);
+        th5_5.setCellValue("Sex");
+
         Cell th5_6 = t5.createCell(5);
-        th5_6.setCellValue("GN Areas");
+        th5_6.setCellValue("Phone");
+
+        Cell th5_7 = t5.createCell(4);
+        th5_7.setCellValue("Address");
+
+        Cell th5_8 = t5.createCell(8);
+        th5_8.setCellValue("GN Areas");
+
+        Cell th5_9 = t5.createCell(2);
+        th5_9.setCellValue("Encounter at");
+
         if (institution == null) {
-            Cell th5_7 = t5.createCell(6);
-            th5_7.setCellValue("Institution");
+            Cell th5_10 = t5.createCell(9);
+            th5_10.setCellValue("Institution");
         }
 
         int serial = 1;
@@ -2306,20 +2358,30 @@ public class HospitalReportController implements Serializable {
                 c2.setCellValue(cbd.getPhn());
 
                 Cell c3 = row.createCell(2);
-                c3.setCellValue(cbd.getSex());
+                c3.setCellValue(cbd.getName());
 
                 Cell c4 = row.createCell(3);
                 c4.setCellValue(cbd.getAgeInYears());
 
                 Cell c5 = row.createCell(4);
-                c5.setCellValue(cbd.getEncounterAt());
-                c5.setCellStyle(cellStyle);
+                c5.setCellValue(cbd.getSex());
 
                 Cell c6 = row.createCell(5);
-                c6.setCellValue(cbd.getGnArea());
+                c6.setCellValue(cbd.getPhone());
+
+                Cell c7 = row.createCell(6);
+                c7.setCellValue(cbd.getAddress());
+
+                Cell c8 = row.createCell(7);
+                c8.setCellValue(cbd.getGnArea());
+
+                Cell c9 = row.createCell(8);
+                c9.setCellValue(cbd.getEncounterAt());
+                c9.setCellStyle(cellStyle);
+
                 if (institution == null) {
-                    Cell c7 = row.createCell(6);
-                    c7.setCellValue(cbd.getInstitution());
+                    Cell c10 = row.createCell(9);
+                    c10.setCellValue(cbd.getInstitution());
                 }
 
                 serial++;
@@ -2338,7 +2400,7 @@ public class HospitalReportController implements Serializable {
         InputStream stream;
         try {
             stream = new FileInputStream(newFile);
-//            resultExcelFile = new DefaultStreamedContent(stream, mimeType, FILE_NAME);
+            resultExcelFile = streamedContentController.generateStreamedContent(mimeType, FILE_NAME, stream);
         } catch (FileNotFoundException ex) {
 
         }
@@ -2516,7 +2578,7 @@ public class HospitalReportController implements Serializable {
 //        }
         rowCount++;
 
-        Row t5 = sheet.createRow(rowCount++);
+        Row t5 = sheet.createRow(rowCount);
         Cell th5_1 = t5.createCell(0);
         th5_1.setCellValue("Type");
         Cell th5_2 = t5.createCell(1);
@@ -2565,7 +2627,7 @@ public class HospitalReportController implements Serializable {
         InputStream stream;
         try {
             stream = new FileInputStream(newFile);
-//            resultExcelFile = new DefaultStreamedContent(stream, mimeType, FILE_NAME);
+            resultExcelFile = streamedContentController.generateStreamedContent(mimeType, FILE_NAME, stream);
         } catch (FileNotFoundException ex) {
 
         }
@@ -2639,7 +2701,7 @@ public class HospitalReportController implements Serializable {
 
         rowCount++;
 
-        Row t5 = sheet.createRow(rowCount++);
+        Row t5 = sheet.createRow(rowCount);
         Cell th5_1 = t5.createCell(0);
         th5_1.setCellValue("Serial");
         Cell th5_2 = t5.createCell(1);
@@ -2685,8 +2747,8 @@ public class HospitalReportController implements Serializable {
         InputStream stream;
         try {
             stream = new FileInputStream(newFile);
-            resultExcelFile = DefaultStreamedContent.builder().contentType(mimeType).name(FILE_NAME).stream(() -> stream).build();
-//            resultExcelFile = new DefaultStreamedContent(stream, mimeType, FILE_NAME);
+//            resultExcelFile = DefaultStreamedContent.builder().contentType(mimeType).name(FILE_NAME).stream(() -> stream).build();
+            resultExcelFile = streamedContentController.generateStreamedContent(mimeType, FILE_NAME, stream);
         } catch (FileNotFoundException ex) {
 
         }
@@ -2758,7 +2820,7 @@ public class HospitalReportController implements Serializable {
 
         rowCount++;
 
-        Row t5 = sheet.createRow(rowCount++);
+        Row t5 = sheet.createRow(rowCount);
         Cell th5_1 = t5.createCell(0);
         th5_1.setCellValue("Serial");
         Cell th5_2 = t5.createCell(1);
@@ -2807,7 +2869,7 @@ public class HospitalReportController implements Serializable {
         InputStream stream;
         try {
             stream = new FileInputStream(newFile);
-//            resultExcelFile = new DefaultStreamedContent(stream, mimeType, FILE_NAME);
+            resultExcelFile = streamedContentController.generateStreamedContent(mimeType, FILE_NAME, stream);
         } catch (FileNotFoundException ex) {
 
         }
@@ -2905,7 +2967,7 @@ public class HospitalReportController implements Serializable {
         InputStream stream;
         try {
             stream = new FileInputStream(newFile);
-//            resultExcelFile = new DefaultStreamedContent(stream, mimeType, fileName);
+            resultExcelFile = streamedContentController.generateStreamedContent(mimeType, fileName, stream);
         } catch (FileNotFoundException ex) {
 
         }
