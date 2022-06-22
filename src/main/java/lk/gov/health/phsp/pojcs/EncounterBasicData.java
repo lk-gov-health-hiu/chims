@@ -32,11 +32,13 @@ import lk.gov.health.phsp.entity.Component;
  * @author buddhika
  */
 public class EncounterBasicData {
+
     private String phn;
     private String gnArea;
     private String institution;
     private String phone;
     private String name;
+    private String address;
     private Date dataOfBirth;
     private Date encounterAt;
     private String sex;
@@ -55,7 +57,6 @@ public class EncounterBasicData {
         this.sex = sex;
     }
 
-    
     public EncounterBasicData(String phn, String gnArea, String institution, Date dataOfBirth, Date encounterAt, String sex, String componentName) {
         this.phn = phn;
         this.gnArea = gnArea;
@@ -65,9 +66,28 @@ public class EncounterBasicData {
         this.sex = sex;
         this.componentName = componentName;
     }
-    
-    
-    
+
+    public EncounterBasicData(
+            String phn,
+            String name,
+            Date dataOfBirth,
+            String sex,
+            String phone,
+            String address,
+            String gnArea,
+            String institution, 
+            Date encounterAt) {
+        this.phn = phn;
+        this.name=name;
+        this.dataOfBirth = dataOfBirth;
+        this.sex = sex;
+        this.phone = phone;
+        this.address = address;
+        this.gnArea = gnArea;
+        this.institution = institution;       
+        this.encounterAt = encounterAt;
+    }
+
     public String getPhn() {
         return phn;
     }
@@ -133,7 +153,7 @@ public class EncounterBasicData {
     }
 
     public int getAgeInYears() {
-        ageInYears = CommonController.differenceInYears(dataOfBirth,encounterAt);
+        ageInYears = CommonController.differenceInYears(dataOfBirth, encounterAt);
         return ageInYears;
     }
 
@@ -148,8 +168,13 @@ public class EncounterBasicData {
     public void setComponentName(String componentName) {
         this.componentName = componentName;
     }
-    
-    
-    
-    
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
 }

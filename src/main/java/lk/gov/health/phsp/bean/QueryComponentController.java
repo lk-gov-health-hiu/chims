@@ -1058,7 +1058,7 @@ public class QueryComponentController implements Serializable {
 
         rowCount++;
 
-        Row t5 = sheet.createRow(rowCount++);
+        Row t5 = sheet.createRow(rowCount);
         Cell th5_1 = t5.createCell(0);
         th5_1.setCellValue("Serial");
         Cell th5_2 = t5.createCell(1);
@@ -1207,7 +1207,7 @@ public class QueryComponentController implements Serializable {
         InputStream stream;
         try {
             stream = new FileInputStream(newFile);
-//            resultExcelFile = new DefaultStreamedContent(stream, mimeType, FILE_NAME);
+//            resultExcelFile = streamedContentController.generateStreamedContent(mimeType, FILE_NAME, stream);
         } catch (FileNotFoundException ex) {
 
         }

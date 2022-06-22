@@ -47,12 +47,12 @@
                                      rowsPerPageTemplate="10,20,30,40,50"
                                      >
                             <f:facet name="header"  >
-                                <p:outputLabel value="Clinic Registrations" ></p:outputLabel>
-                                <p:outputLabel value="From : " ></p:outputLabel>
+                                <p:outputLabel value="Clinic Registrations&nbsp;" ></p:outputLabel>
+                                <p:outputLabel value="From :&nbsp;" ></p:outputLabel>
                                 <p:outputLabel value="#{hospitalReportController.fromDate}" >
                                     <f:convertDateTime pattern="dd MMMM yyyy" ></f:convertDateTime>
                                 </p:outputLabel>
-                                <p:outputLabel value=" To :" ></p:outputLabel>
+                                <p:outputLabel value="&nbsp;To :&nbsp;" ></p:outputLabel>
                                 <p:outputLabel value="#{hospitalReportController.toDate}" >
                                     <f:convertDateTime pattern="dd MMMM yyyy" ></f:convertDateTime>
                                 </p:outputLabel>
@@ -61,7 +61,7 @@
                                 <p:outputLabel value="#{n+1}" >
                                 </p:outputLabel>
                             </p:column>
-                            <p:column headerText="Clinic" 
+                            <p:column headerText="Hospital" 
                                       filterBy="#{c.institution.name}" 
                                       filterMatchMode="contains" 
                                       sortBy="#{c.institution.name}"
