@@ -309,21 +309,21 @@ public class ClientEncounterComponentItemController implements Serializable {
         List<Replaceable> replacingBlocks = findReplaceblesInCalculationString(i.getDi().getCalculationScript());
 
         for (Replaceable r : replacingBlocks) {
-            System.out.println("r = " + r);
+//            System.out.println("r = " + r);
             if (r.getPef().equalsIgnoreCase("f")) {
-                System.out.println("r.getPef() = " + r.getPef());
+//                System.out.println("r.getPef() = " + r.getPef());
                 if (r.getSm().equalsIgnoreCase("s")) {
-                    System.out.println("r.getSm() = " + r.getSm());
+//                    System.out.println("r.getSm() = " + r.getSm());
                     r.setClientEncounterComponentItem(findFormsetValue(i, r.getVariableCode()));
-                    System.out.println("1 r.getClientEncounterComponentItem() = " + r.getClientEncounterComponentItem());
+//                    System.out.println("1 r.getClientEncounterComponentItem() = " + r.getClientEncounterComponentItem());
                 } else {
                     r.setClientEncounterComponentItem(findFormsetValue(i, r.getVariableCode(), r.getValueCode()));
                     System.out.println("2 r.getClientEncounterComponentItem() = " + r.getClientEncounterComponentItem());
                 }
             } else if (r.getPef().equalsIgnoreCase("p")) {
-                System.out.println("2. r.getPef() = " + r.getPef());
+//                System.out.println("2. r.getPef() = " + r.getPef());
                 r.setClientEncounterComponentItem(findClientValue(i, r.getVariableCode()));
-                System.out.println("r.getClientEncounterComponentItem() = " + r.getClientEncounterComponentItem());
+//                System.out.println("r.getClientEncounterComponentItem() = " + r.getClientEncounterComponentItem());
             }
             if (r.getClientEncounterComponentItem() != null) {
                 ClientEncounterComponentItem c = r.getClientEncounterComponentItem();
@@ -396,7 +396,7 @@ public class ClientEncounterComponentItemController implements Serializable {
         String result = evaluateScript(javaStringToEvaluate);
 
         System.out.println("result = " + result);
-        
+
         if (null == i.getDi().getItem().getDataType()) {
             i.getCi().setShortTextValue(result);
         } else {
@@ -529,16 +529,20 @@ public class ClientEncounterComponentItemController implements Serializable {
     }
 
     public ClientEncounterComponentItem findFormsetValue(DataItem i, String variableCode, String valueCode) {
+        System.out.println("2 findFormsetValue");
         if (i == null) {
+            System.out.println("i null");
             return null;
         }
         if (variableCode == null) {
+            System.out.println("variableCode is null");
             return null;
         }
         if (variableCode.trim().equals("")) {
             return null;
         }
         if (valueCode == null) {
+            System.out.println("valueCode is null");
             return null;
         }
         if (valueCode.trim().equals("")) {
@@ -546,9 +550,12 @@ public class ClientEncounterComponentItemController implements Serializable {
         }
 
         DataFormset s = i.getForm().getFormset();
+        System.out.println("s = " + s);
         ClientEncounterComponentItem temc = null;
         for (DataForm f : s.getForms()) {
+            System.out.println("f = " + f.getDf().getName());
             for (DataItem di : f.getItems()) {
+                System.out.println("di = " + di);
                 if (di == null) {
                     continue;
                 }
@@ -561,18 +568,22 @@ public class ClientEncounterComponentItemController implements Serializable {
                 if (di.getDi().getItem().getCode() == null) {
                     continue;
                 }
-                if (di.getCi() == null) {
-                    continue;
-                }
-                if (di.getCi().getItemValue() == null) {
-                    continue;
-                }
-                if (di.getCi().getItemValue().getCode() == null) {
-                    continue;
-                }
-                if (di.getDi().getItem().getCode().equalsIgnoreCase(variableCode)
-                        && di.getCi().getItemValue().getCode().equalsIgnoreCase(valueCode)) {
-                    temc = di.getCi();
+                if (di.getDi().getItem().getCode().equalsIgnoreCase(variableCode)) {
+                    if (di.getAddedItems() == null) {
+                        System.out.println("di is null " );
+                        continue;
+                    }
+                    for (DataItem tdi : di.getAddedItems()) {
+                        System.out.println("tdi = " + tdi);
+                        System.out.println("tdi = " + tdi.getAddedItems());
+                        //TODO : Add Logic for Other Data Types in addition to Item Referance
+                        if (tdi.getCi() != null && tdi.getCi().getItemValue() != null && tdi.getCi().getItemValue().getCode() != null) {
+                            if (tdi.getCi().getItemValue().getCode().equalsIgnoreCase(valueCode)) {
+                                temc = tdi.getCi();
+                            }
+                        }
+                    }
+
                 }
             }
         }
@@ -1001,10 +1012,10 @@ public class ClientEncounterComponentItemController implements Serializable {
         System.out.println("i.getForm() = " + i.getForm());
         System.out.println("i.getForm().getFormset() = " + i.getForm().getFormset());
         System.out.println("i.getForm().getFormset().getMapOfClientValues() = " + i.getForm().getFormset().getMapOfClientValues());
-        
+
         ClientEncounterComponentItem fountVal = i.getForm().getFormset().getMapOfClientValues().get(code.toLowerCase());
         System.out.println("fountVal = " + fountVal);
-        
+
         if (fountVal != null) {
             if (code.equalsIgnoreCase("client_current_age_in_years")) {
                 Person p = i.getForm().getFormset().getEfs().getClient().getPerson();
