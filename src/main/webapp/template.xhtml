@@ -10,91 +10,31 @@
     <h:head id="headt">
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1"/>
-
-        <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css"></link>
-
         <link href="https://fonts.googleapis.com/css?family=Poppins;display=swap" rel="stylesheet"></link>
-
-        <link rel='stylesheet' href='https://use.fontawesome.com/releases/v5.7.0/css/all.css' 
-              integrity='sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ' 
-              crossorigin='anonymous'></link>
-
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"></link>
-
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous"/>
-
-        
-        <script async="true" src="https://www.googletagmanager.com/gtag/js?id=G-VFXVJY37FG"></script>
-        <script>
-            window.dataLayer = window.dataLayer || [];
-            function gtag() {
-                dataLayer.push(arguments);
-            }
-            gtag('js', new Date());
-
-            gtag('config', 'G-VFXVJY37FG');
-        </script>
-
-
         <title>#{bundle.Title}</title>
-
-
         <ui:insert name="head">
         </ui:insert>
-
         <h:outputStylesheet library="css" name="tem1.css"/>
-
-
-
-
     </h:head>
 
-    <h:body style="font-family: 'Poppins', sans-serif!important;">
+    <h:body>
         <ui:insert name="free">
         </ui:insert>
-        <style>
-            html,body {
-                height: 100%;
-                margin: 0px;
-                padding: 0px;
-            }
-            .ui-widget {
-                font-family: 'Poppins',Arial,sans-serif;
-                font-size: 1.0em;
-            }
-            .ui-widget input,
-            .ui-widget select,
-            .ui-widget textarea,
-            .ui-widget button {
-                font-family: 'Poppins',Arial,sans-serif;
-            }
-
-        </style>
-
         <p:growl   >
         </p:growl>
-        <div class="w3-row w3-theme-l5" style="font-family: 'Poppins', sans-serif!important;">
-            <h:panelGroup rendered="#{webUserController.loggedUser ne null}">
-                <div class="w3-row" >
+        <div class="row">
+            <div class="col-12" >
+                <h:panelGroup rendered="#{webUserController.loggedUser ne null}">
                     <ez:menu/>
-                </div>
-            </h:panelGroup>
-
-            <h:panelGroup rendered="#{webUserController.loggedUser eq null}">
-                <div class="w3-row" style="text-align: center;" >
-                    <p:graphicImage library="image" name="hmis_logo.png" style="width: 25%;" ></p:graphicImage>
-                </div>
-            </h:panelGroup>
+                </h:panelGroup>
+            </div>
         </div>
 
 
-        <h:panelGroup rendered="false" >
-            <h1>Site will be down for Maintainance. Sorry for the inconvinience.</h1>
-        </h:panelGroup>
 
-
-        <h:panelGroup rendered="true" >
-            <div class="w3-row w3-theme-l5" style="height: 100%;" >
+        <div class="row" style="height: 100%;" >
+            <div class="col-12" >
                 <h:panelGroup rendered="#{webUserController.loggedUser ne null}">
                     <ui:insert name="content">
                         Contents
@@ -102,10 +42,6 @@
                     <br/>
                     <br/>
                     <br/>
-
-                    <!--                <div class="w3-row w3-theme-l5" >
-                                        <iframe width="100%" height="800px" src="https://datastudio.google.com/embed/reporting/70e7a2a3-8706-46c3-86f6-f4865adf4ad4/page/siJ4B" frameborder="0" style="border:0" allowfullscreen="true"></iframe>
-                                    </div>-->
                 </h:panelGroup>
                 <h:panelGroup rendered="#{webUserController.loggedUser eq null}">
                     <ez:login/>
@@ -116,16 +52,18 @@
                     </ui:insert>
                 </h:panelGroup>
             </div>
-        </h:panelGroup>
-
-
-
-        <div class="footer w3-indigo">
-            <ui:insert name="bottom">
-                <ez:footer/>
-            </ui:insert>
         </div>
 
+
+
+
+        <div class="row">
+            <div class="col" >
+                <ui:insert name="bottom">
+                    <ez:footer/>
+                </ui:insert>
+            </div>
+        </div>
 
     </h:body>
 
