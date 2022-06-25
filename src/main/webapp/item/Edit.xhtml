@@ -11,111 +11,108 @@
         <p:dialog id="ItemEditDlg" widgetVar="ItemEditDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundleClinical.EditItemTitle}">
             <h:form id="ItemEditForm">
                 <h:panelGroup id="display">
-
-
                     <p:tabView >
                         <p:tab title="Basic Details" >
-                            <p:panelGrid columns="2" rendered="#{itemController.selected != null}">
-
-                                <p:outputLabel value="#{bundleClinical.EditItemLabel_itemType}" for="itemType" />
-                                <p:selectOneMenu
+                            <h:panelGrid columns="2" rendered="#{itemController.selected != null}">
+                                <h:outputLabel value="#{bundleClinical.EditItemLabel_itemType}" for="itemType" />
+                                <h:selectOneMenu
                                     id="itemType" value="#{itemController.selected.itemType}" title="#{bundleClinical.EditItemTitle_itemType}" >
                                     <f:selectItems value="#{itemApplicationController.dictionaryTypes}"
                                                    var="itemTypes"
                                                    itemValue="#{itemTypes}"
                                                    itemLabel="#{itemTypes.label}"></f:selectItems>
-                                </p:selectOneMenu>
+                                </h:selectOneMenu>
 
-                                <p:outputLabel value="#{bundleClinical.EditItemLabel_name}" for="name" />
-                                <p:inputText autocomplete="off" id="name" value="#{itemController.selected.name}"
+                                <h:outputLabel value="#{bundleClinical.EditItemLabel_name}" for="name" />
+                                <h:inputText autocomplete="off" id="name" value="#{itemController.selected.name}"
                                              title="#{bundleClinical.EditItemTitle_name}"
                                              required="true"/>
 
-                                <p:outputLabel value="Display Name" for="dname" />
-                                <p:inputText autocomplete="off" id="dname" value="#{itemController.selected.displayName}"
+                                <h:outputLabel value="Display Name" for="dname" />
+                                <h:inputText autocomplete="off" id="dname" value="#{itemController.selected.displayName}"
                                              title="#{bundleClinical.EditItemTitle_name}"
                                              required="true"/>
 
-                                <p:outputLabel value="Code" for="code" />
-                                <p:inputText  autocomplete="off"  id="code" required="true"
+                                <h:outputLabel value="Code" for="code" />
+                                <h:inputText  autocomplete="off"  id="code" required="true"
                                               value="#{itemController.selected.code}" 
                                               title="#{bundleClinical.EditItemTitle_id}"
                                               >
                                     <f:validateRegex pattern="^[a-zA-Z0-9_]*$" />
-                                </p:inputText>
+                                </h:inputText>
 
-                                <p:outputLabel value="Descreption:" for="descreption" />
-                                <p:inputTextarea id="descreption"
+                                <h:outputLabel value="Descreption:" for="descreption" />
+                                <h:inputTextarea id="descreption"
                                                  value="#{itemController.selected.descreption}" title="Name" />
 
-                                <p:outputLabel value="Data Type:" for="selectionDataType" />
-                                <p:selectOneMenu id="selectionDataType" required="true"
+                                <h:outputLabel value="Data Type:" for="selectionDataType" />
+                                <h:selectOneMenu id="selectionDataType" required="true"
                                                  value="#{itemController.selected.dataType}" title="SelectionDataType" >
                                     <f:selectItems value="#{commonController.selectionDataTypes}" ></f:selectItems>
                                     <f:ajax event="change" execute="@this" render=":#{p:resolveFirstComponentWithId('tabValidation', view).clientId}" ></f:ajax>
-                                </p:selectOneMenu>
+                                </h:selectOneMenu>
 
 
 
-                                <p:outputLabel value="Multiple Enties Per Client Status" for="multipleEntiesPerForm" />
+                                <h:outputLabel value="Multiple Enties Per Client Status" for="multipleEntiesPerForm" />
                                 <p:selectBooleanCheckbox id="multipleEntiesPerForm" value="#{itemController.selected.multipleEntiesPerClientStatus}" ></p:selectBooleanCheckbox>
 
 
 
-                                <p:outputLabel value="Parent"  />
+                                <h:outputLabel value="Parent"  />
                                 <p:autoComplete completeMethod="#{itemController.completeItems}" 
                                                 value="#{itemController.selected.parent}" var="di"  itemLabel="#{di.name}" 
                                                 itemValue="#{di}" forceSelection="true" maxResults="15" minQueryLength="3">
                                     <p:column headerText="Name">
-                                        <p:outputLabel value="#{di.name}" ></p:outputLabel>
+                                        <h:outputLabel value="#{di.name}" ></h:outputLabel>
                                     </p:column>
                                     <p:column headerText="Code">
-                                        <p:outputLabel value="#{di.code}" ></p:outputLabel>
+                                        <h:outputLabel value="#{di.code}" ></h:outputLabel>
                                     </p:column>
                                     <p:column headerText="Parent">
-                                        <p:outputLabel value="#{di.parent.name}" ></p:outputLabel>
+                                        <h:outputLabel value="#{di.parent.name}" ></h:outputLabel>
                                     </p:column>
                                 </p:autoComplete>
 
 
 
-                            </p:panelGrid>
+                            </h:panelGrid>
                         </p:tab>
                         <p:tab title="Validation">
-                            <p:panelGrid columns="2" id="tabValidation" >
+                            <h:panelGrid columns="2" id="tabValidation" >
 
-                                <p:outputLabel rendered="#{itemController.selected.dataTypeReal}" value="Absolute Minimum for Real Numbers:" for="minDbl" />
-                                <p:inputText id="minDbl"  rendered="#{itemController.selected.dataTypeReal}" 
+                                <h:outputLabel rendered="#{itemController.selected.dataTypeReal}" value="Absolute Minimum for Real Numbers:" for="minDbl" />
+                                <h:inputText id="minDbl"  rendered="#{itemController.selected.dataTypeReal}" 
                                              value="#{itemController.selected.absoluteMinimumDbl}" title="Absolute Minimum Value" >
-                                </p:inputText>
+                                </h:inputText>
 
-                                <p:outputLabel value="Absolute Maximum for Real Numbers" for="maxDbl"  rendered="#{itemController.selected.dataTypeReal}" />
-                                <p:inputText id="maxDbl"  rendered="#{itemController.selected.dataTypeReal}" 
+                                <h:outputLabel value="Absolute Maximum for Real Numbers" for="maxDbl"  rendered="#{itemController.selected.dataTypeReal}" />
+                                <h:inputText id="maxDbl"  rendered="#{itemController.selected.dataTypeReal}" 
                                              value="#{itemController.selected.absoluteMaximumDbl}" title="Absolute Maximum Value" >
-                                </p:inputText>
+                                </h:inputText>
 
-                                <p:outputLabel value="Absolute Minimum for Integer Numbers:" for="minInt"  rendered="#{itemController.selected.dataTypeInteger}" />
-                                <p:inputText id="minInt"  rendered="#{itemController.selected.dataTypeInteger}"
+                                <h:outputLabel value="Absolute Minimum for Integer Numbers:" for="minInt"  rendered="#{itemController.selected.dataTypeInteger}" />
+                                <h:inputText id="minInt"  rendered="#{itemController.selected.dataTypeInteger}"
                                              value="#{itemController.selected.absoluteMinimumInt}" title="Absolute Minimum Value" >
-                                </p:inputText>
+                                </h:inputText>
 
-                                <p:outputLabel value="Absolute Maximum for Integer Integer" for="maxInt"  rendered="#{itemController.selected.dataTypeInteger}"/>
-                                <p:inputText id="maxInt"  rendered="#{itemController.selected.dataTypeInteger}"
+                                <h:outputLabel value="Absolute Maximum for Integer Integer" for="maxInt"  rendered="#{itemController.selected.dataTypeInteger}"/>
+                                <h:inputText id="maxInt"  rendered="#{itemController.selected.dataTypeInteger}"
                                              value="#{itemController.selected.absoluteMaximumInt}" title="Absolute Maximum Value" >
-                                </p:inputText>
+                                </h:inputText>
 
-                                <p:outputLabel value="Absolute Minimum for Long Numbers:" for="minLng"  rendered="#{itemController.selected.dataTypeLong}"/>
-                                <p:inputText id="minLng"   rendered="#{itemController.selected.dataTypeLong}"
+                                <h:outputLabel value="Absolute Minimum for Long Numbers:" for="minLng"  rendered="#{itemController.selected.dataTypeLong}"/>
+                                <h:inputText id="minLng"   rendered="#{itemController.selected.dataTypeLong}"
                                              value="#{itemController.selected.absoluteMinimumLong}" title="Absolute Minimum Value" >
-                                </p:inputText>
+                                </h:inputText>
 
-                                <p:outputLabel value="Absolute Maximum for Integer Integer" for="maxLng"   rendered="#{itemController.selected.dataTypeLong}"/>
-                                <p:inputText id="maxLng"   rendered="#{itemController.selected.dataTypeLong}"
+                                <h:outputLabel value="Absolute Maximum for Integer Integer" for="maxLng"   rendered="#{itemController.selected.dataTypeLong}"/>
+                                <h:inputText id="maxLng"   rendered="#{itemController.selected.dataTypeLong}"
                                              value="#{itemController.selected.absoluteMaximumLong}" title="Absolute Maximum Value" >
-                                </p:inputText>
+                                </h:inputText>
 
 
-                            </p:panelGrid>
+                            </h:panelGrid>
                         </p:tab>
 
 
