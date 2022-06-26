@@ -333,6 +333,13 @@ public class RelationshipController implements Serializable {
     }
 
     public void fillInstitutionsForSelectedFormSet() {
+        items = findRelationships(formset, RelationshipType.Formsets_for_institution);
+        if (items == null) {
+            items = new ArrayList<>();
+        }
+    }
+    
+    public void fillFromsetsForSelectedInstitution() {
         items = findRelationships(institution, RelationshipType.Formsets_for_institution);
         if (items == null) {
             items = new ArrayList<>();

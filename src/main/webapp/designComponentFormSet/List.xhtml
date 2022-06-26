@@ -91,7 +91,12 @@
                                                  class="btn btn-primary m-3 p-2"
                                                  icon="ui-icon-cart" value="Manage Pages" ajax="false" action="#{designComponentFormSetController.toAddFormsForTheSelectedSet()}" actionListener="#{designComponentFormSetController.setBackStringToSysAdmin()}"
                                                  disabled="#{empty designComponentFormSetController.selected}"/>
-                                
+                                <p:commandButton id="duplicateButton" ajax="false"
+                                                 action="#{designComponentFormSetController.duplicateFormSet()}"
+                                                 icon="ui-icon-pencil" value="Duplicate" update=":DesignComponentFormSetEditForm" oncomplete="PF('DesignComponentFormSetEditDialog').show()" disabled="#{empty designComponentFormSetController.selected}">
+                                    <f:setPropertyActionListener value="#{designComponentFormSetController.selected}" 
+                                                                 target="#{designComponentFormSetController.referanceSet}" ></f:setPropertyActionListener>
+                                </p:commandButton>
                                 <p:commandButton id="errorEheck" 
                                                  class="btn btn-primary m-3 p-2"
                                                  icon="ui-icon-cart" value="To Export" 

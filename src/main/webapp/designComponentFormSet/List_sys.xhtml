@@ -19,7 +19,7 @@
                             <p:commandButton ajax="false" value="Back to Manage Metadata"
                                              action="#{designComponentFormSetController.back()}" style="float: right;" ></p:commandButton>
                         </f:facet>
-                        
+
                         <p:dataTable id="datalist" value="#{designComponentFormSetController.items}" var="item"
                                      selectionMode="single" selection="#{designComponentFormSetController.selected}"
                                      paginator="true"
@@ -30,8 +30,8 @@
                             <p:ajax event="rowSelect"   update="createButton viewButton editButton deleteButton addForm reloadButton"/>
                             <p:ajax event="rowUnselect" update="createButton viewButton editButton deleteButton addForm reloadButton"/>
                             <p:column  sortBy="#{item.name}"
-                                      filterBy="#{item.name}"
-                                      filterMatchMode="contains">
+                                       filterBy="#{item.name}"
+                                       filterMatchMode="contains">
                                 <f:facet name="header">
                                     <h:outputText value="#{bundleClinical.ListDesignComponentFormSetTitle_name}"/>
                                 </f:facet>
@@ -43,30 +43,30 @@
                                 <f:facet name="header">
                                     <h:outputText value="Institution"/>
                                 </f:facet>
-                                 <h:outputText value="#{item.institution.name}"/>
+                                <h:outputText value="#{item.institution.name}"/>
                             </p:column>
-                            
+
                             <p:column>
                                 <f:facet name="header">
                                     <h:outputText value="Type"/>
                                 </f:facet>
                                 <h:outputText value="#{item.componentSetType.label}"/>
                             </p:column>
-                            
+
                             <p:column>
                                 <f:facet name="header">
                                     <h:outputText value="Sex"/>
                                 </f:facet>
                                 <h:outputText value="#{item.componentSex.label}"/>
                             </p:column>
-                            
+
                             <p:column>
                                 <f:facet name="header">
                                     <h:outputText value="Derived From"/>
                                 </f:facet>
                                 <h:outputText value="#{item.referenceComponent.name}"/>
                             </p:column>
-                            
+
                             <f:facet name="footer">                               
                                 <p:commandButton id="reloadButton"   icon="ui-icon-arrowrefresh-1-n" value="Reload" ajax="false"
                                                  disabled="#{empty designComponentFormSetController.selected}"
@@ -74,12 +74,20 @@
                                 <p:commandButton id="createButton" icon="ui-icon-plus"   value="#{bundleClinical.Create}" actionListener="#{designComponentFormSetController.prepareCreate}" update=":DesignComponentFormSetCreateForm" oncomplete="PF('DesignComponentFormSetCreateDialog').show()"/>
                                 <p:commandButton id="viewButton"   icon="ui-icon-search" value="#{bundleClinical.View}" update=":DesignComponentFormSetViewForm" oncomplete="PF('DesignComponentFormSetViewDialog').show()" disabled="#{empty designComponentFormSetController.selected}"/>
                                 <p:commandButton id="editButton"   icon="ui-icon-pencil" value="#{bundleClinical.Edit}" update=":DesignComponentFormSetEditForm" oncomplete="PF('DesignComponentFormSetEditDialog').show()" disabled="#{empty designComponentFormSetController.selected}"/>
+                                <p:commandButton id="duplicateButton" ajax="false"
+                                                 action="#{designComponentFormSetController.duplicateFormSet()}"
+                                                 icon="ui-icon-pencil" value="Duplicate" update=":DesignComponentFormSetEditForm" oncomplete="PF('DesignComponentFormSetEditDialog').show()" disabled="#{empty designComponentFormSetController.selected}">
+                                    <f:setPropertyActionListener value="#{designComponentFormSetController.selected}" 
+                                                                 target="#{designComponentFormSetController.referanceSet}" ></f:setPropertyActionListener>
+                                </p:commandButton>
+
                                 <p:commandButton id="addForm"   icon="ui-icon-cart" value="Manage Pages" ajax="false" action="#{designComponentFormSetController.toAddFormsForTheSelectedSet()}"
                                                  actionListener="#{designComponentFormSetController.setBackStringToInsAdmin()}"
                                                  disabled="#{empty designComponentFormSetController.selected}"/>
                                 <p:commandButton id="deleteButton"  icon="pi pi-check"  ajax="false"
                                                  value="#{bundleClinical.Delete}" 
-                                                   onclick="if (!confirm('Really want to do that?')) return false"
+                                                 onclick="if (!confirm('Really want to do that?'))
+                                                               return false"
                                                  action="#{designComponentFormSetController.destroy}" 
                                                  disabled="#{empty designComponentFormSetController.selected}"/>
                             </f:facet>
