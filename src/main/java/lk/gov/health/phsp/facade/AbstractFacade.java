@@ -197,22 +197,23 @@ public abstract class AbstractFacade<T> {
     }
 
     public List<T> findByJpql(String jpql, Map<String, Object> parameters) {
-        try{
-        TypedQuery<T> qry = getEntityManager().createQuery(jpql, entityClass);
-        Set s = parameters.entrySet();
-        Iterator it = s.iterator();
-        while (it.hasNext()) {
-            Map.Entry m = (Map.Entry) it.next();
-            String pPara = (String) m.getKey();
-            if (m.getValue() instanceof Date) {
-                Date pVal = (Date) m.getValue();
-                qry.setParameter(pPara, pVal, TemporalType.DATE);
-            } else {
-                Object pVal = (Object) m.getValue();
-                qry.setParameter(pPara, pVal);
+        try {
+            TypedQuery<T> qry = getEntityManager().createQuery(jpql, entityClass);
+            Set s = parameters.entrySet();
+            Iterator it = s.iterator();
+            while (it.hasNext()) {
+                Map.Entry m = (Map.Entry) it.next();
+                String pPara = (String) m.getKey();
+                if (m.getValue() instanceof Date) {
+                    Date pVal = (Date) m.getValue();
+                    qry.setParameter(pPara, pVal, TemporalType.DATE);
+                } else {
+                    Object pVal = (Object) m.getValue();
+                    qry.setParameter(pPara, pVal);
+                }
             }
-        }
-        return qry.getResultList();}catch(Exception e){
+            return qry.getResultList();
+        } catch (Exception e) {
             return null;
         }
     }

@@ -47,7 +47,7 @@
                                 </p:dataTable>
                                 <f:facet name="footer" >                                    
                                     <p:commandButton value="Download" id="btnDe" ajax="false">
-                                        <p:dataExporter id="de" type="xlsx" target=":#{p:component('tbl')}" fileName="Reserved PHNs" ></p:dataExporter>
+                                        <p:dataExporter id="de" type="xlsx" target=":#{p:resolveFirstComponentWithId('tbl', view).clientId}" fileName="Reserved PHNs" ></p:dataExporter>
                                     </p:commandButton>
                                 </f:facet>
                             </p:panel>

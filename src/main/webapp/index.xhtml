@@ -22,8 +22,8 @@
 
                     </iframe>
                 </h:panelGroup>
-                
-                <h:panelGroup rendered="true">
+
+                <h:panelGroup rendered="false">
                     <h1>Reporting Module and Analytics will ONLY  be available from 2pm till 6am next day.</h1>
                 </h:panelGroup>
 
@@ -36,9 +36,9 @@
                     <ez:dashboardMeSuperUser rendered="#{webUserController.loggedUser.meSuperUser}"/>
                     <ez:dashboardMeUser rendered="#{webUserController.loggedUser.meUser}"/>
 
-                    <ez:dashboardInstItutionAdministrator rendered="#{webUserController.loggedUser.institutionAdministrator}"/>
-                    <ez:dashboardInstitutionSuperUser rendered="#{webUserController.loggedUser.institutionSuperUser}"/>
-                    <ez:dashboardInstitutionUser rendered="#{webUserController.loggedUser.institutionUser}"/>
+                    <ez:dashboardInstitution rendered="#{webUserController.loggedUser.institutionUser or webUserController.loggedUser.institutionAdministrator or webUserController.loggedUser.institutionSuperUser}"/>
+
+
                     <ez:dashboardDoctor rendered="#{webUserController.loggedUser.doctor}"/>
                     <ez:dashboardNurse rendered="#{webUserController.loggedUser.nurse}"/>
                     <ez:dashboardMidwife rendered="#{webUserController.loggedUser.midwife}"/>

@@ -1058,7 +1058,7 @@ public class QueryComponentController implements Serializable {
 
         rowCount++;
 
-        Row t5 = sheet.createRow(rowCount++);
+        Row t5 = sheet.createRow(rowCount);
         Cell th5_1 = t5.createCell(0);
         th5_1.setCellValue("Serial");
         Cell th5_2 = t5.createCell(1);
@@ -1207,7 +1207,7 @@ public class QueryComponentController implements Serializable {
         InputStream stream;
         try {
             stream = new FileInputStream(newFile);
-            resultExcelFile = new DefaultStreamedContent(stream, mimeType, FILE_NAME);
+//            resultExcelFile = streamedContentController.generateStreamedContent(mimeType, FILE_NAME, stream);
         } catch (FileNotFoundException ex) {
 
         }
@@ -1760,7 +1760,7 @@ public class QueryComponentController implements Serializable {
     public boolean clientValueIsNotNull(QueryComponent q, ClientEncounterComponentItem clientValue) {
         boolean valueNotNull = false;
 
-        if (q.getMatchType() == QueryCriteriaMatchType.Variable_Value_Check) {
+        if (q.getMatchType() == QueryCriteriaMatchType.Variable_Value_Check || q.getMatchType() == QueryCriteriaMatchType.Variable_Range_check) {
             switch (q.getQueryDataType()) {
                 case integer:
 
@@ -1819,7 +1819,7 @@ public class QueryComponentController implements Serializable {
         Boolean qBool = null;
         String qStr = null;
 
-        if (q.getMatchType() == QueryCriteriaMatchType.Variable_Value_Check) {
+        if (q.getMatchType() == QueryCriteriaMatchType.Variable_Value_Check || q.getMatchType() == QueryCriteriaMatchType.Variable_Range_check) {
 
             switch (q.getQueryDataType()) {
                 case integer:
@@ -4070,7 +4070,7 @@ public class QueryComponentController implements Serializable {
         if (u.getFileType() == null || u.getFileType().trim().equals("")) {
             u.setFileType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
         }
-        downloadingFile = new DefaultStreamedContent(stream, u.getFileType(), u.getFileName());
+//        downloadingFile = new DefaultStreamedContent(stream, u.getFileType(), u.getFileName());
         return downloadingFile;
     }
 

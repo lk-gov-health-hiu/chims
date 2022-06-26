@@ -36,7 +36,7 @@ public enum SelectionDataType {
     Long_Number("Long Number"),
     DateTime("Date Time"),
     Boolean("Boolean"),
-    Item_Reference("Coded Item"),
+    Item_Reference("Coded Concept"),
     Client_Reference("Client"),
     Area_Reference("Area"),
     Prescreption_Reference("Prescription"),

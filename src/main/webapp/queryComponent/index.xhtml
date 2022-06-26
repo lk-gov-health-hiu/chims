@@ -83,6 +83,14 @@
                                 <p:commandButton ajax="false" value="Reload"  styleClass="fullWidth"
                                                  action="#{applicationController.reloadQueryComponents()}"
                                                  ></p:commandButton>
+                                <p:separator ></p:separator>
+                                 <p:commandButton value="Delete Stored Requests" styleClass="fullWidth"
+                                                  action="#{analysisController.deleteStoredRequests()}"
+                                                 ajax="false" ></p:commandButton>
+
+                                <p:commandButton ajax="false" value="List Stored Requests"  styleClass="fullWidth"
+                                                 action="#{analysisController.fillStoredRequests}"
+                                                 ></p:commandButton>
                             </p:panelGrid>
                         </h:form>
                         <ui:insert name="analysis" >

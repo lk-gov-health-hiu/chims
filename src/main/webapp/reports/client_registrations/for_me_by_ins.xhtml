@@ -36,7 +36,7 @@
 
 
                             <p:commandButton value="Download" id="btnDe" ajax="false">
-                                <p:dataExporter id="de" type="xlsx" target=":#{p:component('tbl')}" fileName="Client Registrations by Institution" ></p:dataExporter>
+                                <p:dataExporter id="de" type="xlsx" target=":#{p:resolveFirstComponentWithId('tbl', view).clientId}" fileName="Client Registrations by Institution" ></p:dataExporter>
                             </p:commandButton>
 
 

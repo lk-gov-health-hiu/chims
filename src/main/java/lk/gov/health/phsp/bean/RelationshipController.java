@@ -40,7 +40,8 @@ import lk.gov.health.phsp.entity.Item;
 import lk.gov.health.phsp.enums.AreaType;
 import lk.gov.health.phsp.enums.RelationshipType;
 import lk.gov.health.phsp.facade.AreaFacade;
-import org.primefaces.model.UploadedFile;
+import org.primefaces.model.file.UploadedFile;
+//import org.primefaces.model.file.UploadedFile;
 
 @Named
 @SessionScoped
@@ -114,7 +115,7 @@ public class RelationshipController implements Serializable {
 
             try {
                 lk.gov.health.phsp.facade.util.JsfUtil.addSuccessMessage(file.getFileName());
-                in = file.getInputstream();
+                in = file.getInputStream();
                 File f;
                 f = new File(Calendar.getInstance().getTimeInMillis() + file.getFileName());
                 FileOutputStream out = new FileOutputStream(f);
@@ -332,6 +333,13 @@ public class RelationshipController implements Serializable {
     }
 
     public void fillInstitutionsForSelectedFormSet() {
+        items = findRelationships(formset, RelationshipType.Formsets_for_institution);
+        if (items == null) {
+            items = new ArrayList<>();
+        }
+    }
+    
+    public void fillFromsetsForSelectedInstitution() {
         items = findRelationships(institution, RelationshipType.Formsets_for_institution);
         if (items == null) {
             items = new ArrayList<>();

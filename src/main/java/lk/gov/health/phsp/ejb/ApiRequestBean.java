@@ -43,7 +43,7 @@ public class ApiRequestBean {
     @Inject
     ApiRequestFacade apiRequestFacade;
 
-    @Schedule(dayOfMonth = "*", year = "*", minute = "*", second = "0", persistent = false)
+//    @Schedule(dayOfMonth = "*", year = "*", minute = "*", second = "0", persistent = false)
     public void myTimer() {
         // System.out.println("Timer event: " + new Date());
         sendApiRequest(null);

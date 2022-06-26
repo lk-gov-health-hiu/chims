@@ -335,7 +335,7 @@ public class ReportRequestController implements Serializable {
         InputStream stream;
         try {
             stream = new FileInputStream(newFile);
-            file = new DefaultStreamedContent(stream, "application/xls", newFile.getAbsolutePath());
+//            file = new DefaultStreamedContent(stream, "application/xls", newFile.getAbsolutePath());
         } catch (FileNotFoundException ex) {
            
             mergingMessage = "Error - " + ex.getMessage();
@@ -471,7 +471,7 @@ public class ReportRequestController implements Serializable {
 
                 InputStream stream;
                 stream = new FileInputStream(newFile);
-                file = new DefaultStreamedContent(stream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", FILE_NAME);
+//                file = new DefaultStreamedContent(stream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", FILE_NAME);
 
             }
         } catch (FileNotFoundException e) {
@@ -551,7 +551,7 @@ public class ReportRequestController implements Serializable {
         Item itemVariable = null;
         Item itemValue = null;
 
-        if (q.getMatchType() == QueryCriteriaMatchType.Variable_Value_Check) {
+       if (q.getMatchType() == QueryCriteriaMatchType.Variable_Value_Check || q.getMatchType() == QueryCriteriaMatchType.Variable_Range_check) {
             switch (q.getQueryDataType()) {
                 case integer:
                     qInt1 = q.getIntegerNumberValue();

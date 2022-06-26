@@ -27,7 +27,7 @@ import javax.inject.Inject;
 import lk.gov.health.phsp.entity.Component;
 import lk.gov.health.phsp.entity.QueryComponent;
 import org.apache.commons.io.IOUtils;
-import org.primefaces.model.UploadedFile;
+import org.primefaces.model.file.UploadedFile;
 
 @Named
 @SessionScoped
@@ -186,7 +186,7 @@ public class UploadController implements Serializable {
         InputStream in;
 
         try {
-            in = getFile().getInputstream();
+            in = getFile().getInputStream();
             selected.setBaImage(IOUtils.toByteArray(in));
 
         } catch (IOException e) {
@@ -233,7 +233,7 @@ public class UploadController implements Serializable {
         InputStream in;
 
         try {
-            in = getFile().getInputstream();
+            in = getFile().getInputStream();
             selected.setBaImage(IOUtils.toByteArray(in));
 
         } catch (IOException e) {

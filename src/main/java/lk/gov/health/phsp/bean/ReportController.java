@@ -159,6 +159,8 @@ public class ReportController implements Serializable {
 // </editor-fold>     
 // <editor-fold defaultstate="collapsed" desc="Controllers">
     @Inject
+    StreamedContentController streamedContentController;
+    @Inject
     private EncounterController encounterController;
     @Inject
     private ClientController clientController;
@@ -258,7 +260,8 @@ public class ReportController implements Serializable {
             downloadingResult.getUpload().setFileType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
             getStoredQueryResultFacade().edit(downloadingResult);
         }
-        downloadingFile = new DefaultStreamedContent(stream, downloadingResult.getUpload().getFileType(), downloadingResult.getUpload().getFileName());
+//        downloadingFile = new DefaultStreamedContent(stream, downloadingResult.getUpload().getFileType(), downloadingResult.getUpload().getFileName());
+
         return downloadingFile;
     }
 
@@ -449,7 +452,7 @@ public class ReportController implements Serializable {
 
         rowCount++;
 
-        Row t5 = sheet.createRow(rowCount++);
+        Row t5 = sheet.createRow(rowCount);
         Cell th5_1 = t5.createCell(0);
         th5_1.setCellValue("Serial");
         Cell th5_2 = t5.createCell(1);
@@ -474,6 +477,18 @@ public class ReportController implements Serializable {
         th5_11.setCellValue("Item Value");
         Cell th5_12 = t5.createCell(11);
         th5_12.setCellValue("Completed");
+
+        Cell th5_13 = t5.createCell(12);
+        th5_13.setCellValue("Name");
+        Cell th5_14 = t5.createCell(13);
+        th5_14.setCellValue("Address");
+        Cell th5_15 = t5.createCell(14);
+        th5_15.setCellValue("Mobile");
+        Cell th5_16 = t5.createCell(15);
+        th5_16.setCellValue("Phone");
+        Cell th5_17 = t5.createCell(16);
+        th5_17.setCellValue("GN Area");
+
         int serial = 1;
 
         CellStyle cellStyle = workbook.createCellStyle();
@@ -556,6 +571,32 @@ public class ReportController implements Serializable {
                 if (i.getParentComponent() != null && i.getParentComponent().getParentComponent() != null) {
                     c12.setCellValue(i.getParentComponent().getParentComponent().isCompleted() ? "Complete" : "Not Completed");
                 }
+
+                Cell c13 = row.createCell(13);
+                if (c.getPerson() != null) {
+                    c13.setCellValue(c.getPerson().getName());
+                }
+
+                Cell c14 = row.createCell(14);
+                if (c.getPerson() != null) {
+                    c14.setCellValue(c.getPerson().getAddress());
+                }
+
+                Cell c15 = row.createCell(15);
+                if (c.getPerson() != null) {
+                    c15.setCellValue(c.getPerson().getPhone1());
+                }
+
+                Cell c16 = row.createCell(16);
+                if (c.getPerson() != null) {
+                    c16.setCellValue(c.getPerson().getPhone2());
+                }
+
+                Cell c17 = row.createCell(17);
+                if (c.getPerson() != null && c.getPerson().getGnArea() != null) {
+                    c17.setCellValue(c.getPerson().getGnArea().getName());
+                }
+
                 serial++;
             }
         }
@@ -571,7 +612,7 @@ public class ReportController implements Serializable {
         InputStream stream;
         try {
             stream = new FileInputStream(newFile);
-            resultExcelFile = new DefaultStreamedContent(stream, mimeType, FILE_NAME);
+            resultExcelFile = streamedContentController.generateStreamedContent(mimeType, FILE_NAME, stream);
         } catch (FileNotFoundException ex) {
 
         }
@@ -822,9 +863,10 @@ public class ReportController implements Serializable {
 // <editor-fold defaultstate="collapsed" desc="Navigation">
     public String toViewReports() {
         String forSys = "/reports/index";
-        String forIns = "/hospital/report_index";
+        String forIns = "/hospital/reports/index";
         String forMe = "/reports/index";
         String forClient = "/reports/index";
+        String forMoh = "/moh/reports/index";
         String noAction = "";
         String action = "";
         switch (webUserController.getLoggedUser().getWebUserRole()) {
@@ -973,7 +1015,6 @@ public class ReportController implements Serializable {
         return action;
     }
 
-    
     public String toMultipleVariableClinicalData() {
         String forSys = "/reports/clinical_data/multiple_variable_sa";
         String forIns = "/reports/clinical_data/multiple_variable_ia";
@@ -1012,7 +1053,7 @@ public class ReportController implements Serializable {
         userTransactionController.recordTransaction("To Single Variable Clinical Data");
         return action;
     }
-    
+
     public String toViewMySummeries() {
 
         listMyReports();
@@ -1188,7 +1229,7 @@ public class ReportController implements Serializable {
         InputStream stream;
         try {
             stream = new FileInputStream(newFile);
-            file = new DefaultStreamedContent(stream, "application/xls", newFile.getAbsolutePath());
+//            file = new DefaultStreamedContent(stream, "application/xls", newFile.getAbsolutePath());
         } catch (FileNotFoundException ex) {
             mergingMessage = "Error - " + ex.getMessage();
         }
@@ -1318,7 +1359,7 @@ public class ReportController implements Serializable {
 
                 InputStream stream;
                 stream = new FileInputStream(newFile);
-                file = new DefaultStreamedContent(stream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", FILE_NAME);
+//                file = new DefaultStreamedContent(stream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", FILE_NAME);
 
             }
         } catch (FileNotFoundException e) {
@@ -1406,7 +1447,7 @@ public class ReportController implements Serializable {
         Item itemVariable = null;
         Item itemValue = null;
 
-        if (q.getMatchType() == QueryCriteriaMatchType.Variable_Value_Check) {
+        if (q.getMatchType() == QueryCriteriaMatchType.Variable_Value_Check || q.getMatchType() == QueryCriteriaMatchType.Variable_Range_check) {
 
             switch (q.getQueryDataType()) {
                 case integer:
@@ -1690,9 +1731,7 @@ public class ReportController implements Serializable {
         userTransactionController.recordTransaction("To View Daily Clinic Visits");
         return action;
     }
-    
-    
-    
+
     public String toFunctioningHLcs() {
         encounters = new ArrayList<>();
         String forSys = "/reports/clinic_visits/for_sa_functioning_hlcs";
@@ -2092,7 +2131,7 @@ public class ReportController implements Serializable {
 
         rowCount++;
 
-        Row t5 = sheet.createRow(rowCount++);
+        Row t5 = sheet.createRow(rowCount);
         Cell th5_1 = t5.createCell(0);
         th5_1.setCellValue("Serial");
 
@@ -2194,7 +2233,7 @@ public class ReportController implements Serializable {
         InputStream stream;
         try {
             stream = new FileInputStream(newFile);
-            resultExcelFile = new DefaultStreamedContent(stream, mimeType, FILE_NAME);
+            resultExcelFile = streamedContentController.generateStreamedContent(mimeType, FILE_NAME, stream);
         } catch (FileNotFoundException ex) {
             // System.out.println("File not found exception -->" + ex.getMessage());
         }
@@ -2423,7 +2462,7 @@ public class ReportController implements Serializable {
 
         rowCount++;
 
-        Row t5 = sheet.createRow(rowCount++);
+        Row t5 = sheet.createRow(rowCount);
         Cell th5_1 = t5.createCell(0);
         th5_1.setCellValue("Serial");
         Cell th5_2 = t5.createCell(1);
@@ -2489,7 +2528,7 @@ public class ReportController implements Serializable {
         InputStream stream;
         try {
             stream = new FileInputStream(newFile);
-            resultExcelFile = new DefaultStreamedContent(stream, mimeType, FILE_NAME);
+            resultExcelFile = streamedContentController.generateStreamedContent(mimeType, FILE_NAME, stream);
         } catch (FileNotFoundException ex) {
 
         }
@@ -2574,21 +2613,33 @@ public class ReportController implements Serializable {
 
         rowCount++;
 
-        Row t5 = sheet.createRow(rowCount++);
+        Row t5 = sheet.createRow(rowCount);
         Cell th5_1 = t5.createCell(0);
         th5_1.setCellValue("Serial");
         Cell th5_2 = t5.createCell(1);
         th5_2.setCellValue("PHN");
-        Cell th5_3 = t5.createCell(2);
+
+        Cell th5_2a = t5.createCell(2);
+        th5_2a.setCellValue("Name");
+        Cell th5_2b = t5.createCell(3);
+        th5_2b.setCellValue("Address");
+        Cell th5_2c = t5.createCell(4);
+        th5_2c.setCellValue("Phone 1");
+        Cell th5_2d = t5.createCell(5);
+        th5_2d.setCellValue("Phone 2");
+        Cell th5_2e = t5.createCell(6);
+        th5_2e.setCellValue("GN");
+
+        Cell th5_3 = t5.createCell(7);
         th5_3.setCellValue("Sex");
-        Cell th5_4 = t5.createCell(3);
+        Cell th5_4 = t5.createCell(8);
         th5_4.setCellValue("Age in Years at Encounter");
-        Cell th5_5 = t5.createCell(4);
+        Cell th5_5 = t5.createCell(9);
         th5_5.setCellValue("Encounter at");
-        Cell th5_6 = t5.createCell(5);
+        Cell th5_6 = t5.createCell(10);
         th5_6.setCellValue("GN Areas");
         if (institution == null) {
-            Cell th5_7 = t5.createCell(6);
+            Cell th5_7 = t5.createCell(11);
             th5_7.setCellValue("Institution");
         }
 
@@ -2609,6 +2660,13 @@ public class ReportController implements Serializable {
 
                 Cell c2 = row.createCell(1);
                 c2.setCellValue(cbd.getPhn());
+                
+                Cell c2a = row.createCell(2);
+                c2a.setCellValue(cbd.getName());
+
+                Cell c2c = row.createCell(4);
+                c2c.setCellValue(cbd.getPhone());
+               
 
                 Cell c3 = row.createCell(2);
                 c3.setCellValue(cbd.getSex());
@@ -2643,27 +2701,29 @@ public class ReportController implements Serializable {
         InputStream stream;
         try {
             stream = new FileInputStream(newFile);
-            resultExcelFile = new DefaultStreamedContent(stream, mimeType, FILE_NAME);
+            resultExcelFile = streamedContentController.generateStreamedContent(mimeType, FILE_NAME, stream);
         } catch (FileNotFoundException ex) {
 
         }
 
     }
-    
-    private Long numberOfInstitutions(InstitutionType type){
+
+    private Long numberOfInstitutions(InstitutionType type) {
         String j = "select count(i) "
                 + " from Institution i "
                 + " where (i.retired=:f or i.retired is null) "
                 + " and i.institutionType=:t";
         Map m = new HashMap();
         m.put("t", type);
-         m.put("f", false);
-         Long n =encounterFacade.countByJpql(j, m);
-         if(n==null) return 0l;
+        m.put("f", false);
+        Long n = encounterFacade.countByJpql(j, m);
+        if (n == null) {
+            return 0l;
+        }
         return n;
     }
-    
-    private Long numberOfHlcs(InstitutionType type){
+
+    private Long numberOfHlcs(InstitutionType type) {
         String j = "select count(i) "
                 + " from Institution i "
                 + " where (i.retired=:f or i.retired is null) "
@@ -2672,57 +2732,56 @@ public class ReportController implements Serializable {
         m.put("t", type);
         m.put("f", false);
         m.put("hlc", InstitutionType.Clinic);
-        Long n =encounterFacade.countByJpql(j, m);
-         if(n==null) return 0l;
+        Long n = encounterFacade.countByJpql(j, m);
+        if (n == null) {
+            return 0l;
+        }
         return n;
     }
-    
-    private Long numberOfFunctioningHlcs(InstitutionType type){
+
+    private Long numberOfFunctioningHlcs(InstitutionType type) {
         String j = "select e.institution "
                 + " from Encounter e "
                 + " where e.retired=:ret "
-                 + " and e.encounterDate between :fd and :td "
+                + " and e.encounterDate between :fd and :td "
                 + " group by e.institution";
         Map m = new HashMap();
-             m.put("ret", false);
-         m.put("fd", fromDate);
-          m.put("td", toDate);
+        m.put("ret", false);
+        m.put("fd", fromDate);
+        m.put("td", toDate);
         System.out.println("m = " + m);
         System.out.println("j = " + j);
-         List<Institution> ins =institutionFacade.findByJpql(j,m);
-         System.out.println("ins = " + ins);
-         Long n=0l;
-         for(Institution i:ins){
-             System.out.println("i = " + i.getName());
-             boolean canInclude=false;
-             if(i.getInstitutionType()!=null){
-                 if(i.getInstitutionType().equals(type)) {
-                     canInclude=true;
-                 }
-             }
-             if(i.getParent()!=null && i.getParent().getInstitutionType()!=null){
-                 if(i.getParent().getInstitutionType().equals(type)){
-                      canInclude=true;
-                 }
-                  if(i.getParent().getParent()!=null && i.getParent().getParent().getInstitutionType()!=null){
-                 if(i.getParent().getParent().getInstitutionType().equals(type)){
-                      canInclude=true;
-                 }
-             }
-             }
-             if(canInclude) n++;
-             
-         }
+        List<Institution> ins = institutionFacade.findByJpql(j, m);
+        System.out.println("ins = " + ins);
+        Long n = 0l;
+        for (Institution i : ins) {
+            System.out.println("i = " + i.getName());
+            boolean canInclude = false;
+            if (i.getInstitutionType() != null) {
+                if (i.getInstitutionType().equals(type)) {
+                    canInclude = true;
+                }
+            }
+            if (i.getParent() != null && i.getParent().getInstitutionType() != null) {
+                if (i.getParent().getInstitutionType().equals(type)) {
+                    canInclude = true;
+                }
+                if (i.getParent().getParent() != null && i.getParent().getParent().getInstitutionType() != null) {
+                    if (i.getParent().getParent().getInstitutionType().equals(type)) {
+                        canInclude = true;
+                    }
+                }
+            }
+            if (canInclude) {
+                n++;
+            }
+
+        }
         return n;
     }
-    
-    
-    
-    
-    
+
     public void downloadFunctioningHlcs() {
-        
-        
+
         List<InstituteTypeCounts> itCounts = new ArrayList<>();
         InstituteTypeCounts pgh = new InstituteTypeCounts();
         InstituteTypeCounts dgh = new InstituteTypeCounts();
@@ -2731,59 +2790,55 @@ public class ReportController implements Serializable {
         InstituteTypeCounts pmcu = new InstituteTypeCounts();
         InstituteTypeCounts eh = new InstituteTypeCounts();
         InstituteTypeCounts moh = new InstituteTypeCounts();
-        
+
         pgh.setType(InstitutionType.Provincial_General_Hospital);
         pgh.setSerial(1);
         pgh.setNumber(numberOfInstitutions(InstitutionType.Provincial_General_Hospital));
         pgh.setHlcs(numberOfHlcs(InstitutionType.Provincial_General_Hospital));
         pgh.setFunctioningHlcs(numberOfFunctioningHlcs(InstitutionType.Provincial_General_Hospital));
         itCounts.add(pgh);
-        
+
         dgh.setType(InstitutionType.District_General_Hospital);
         dgh.setSerial(2);
-         dgh.setNumber(numberOfInstitutions(InstitutionType.District_General_Hospital));
+        dgh.setNumber(numberOfInstitutions(InstitutionType.District_General_Hospital));
         dgh.setHlcs(numberOfHlcs(InstitutionType.District_General_Hospital));
         dgh.setFunctioningHlcs(numberOfFunctioningHlcs(InstitutionType.District_General_Hospital));
         itCounts.add(dgh);
-        
-        
+
         bh.setType(InstitutionType.Base_Hospital);
         bh.setSerial(3);
-         bh.setNumber(numberOfInstitutions(InstitutionType.Base_Hospital));
+        bh.setNumber(numberOfInstitutions(InstitutionType.Base_Hospital));
         bh.setHlcs(numberOfHlcs(InstitutionType.Base_Hospital));
         bh.setFunctioningHlcs(numberOfFunctioningHlcs(InstitutionType.Base_Hospital));
         itCounts.add(bh);
-        
-        
+
         dh.setType(InstitutionType.Divisional_Hospital);
         dh.setSerial(4);
-         dh.setNumber(numberOfInstitutions(InstitutionType.Divisional_Hospital));
+        dh.setNumber(numberOfInstitutions(InstitutionType.Divisional_Hospital));
         dh.setHlcs(numberOfHlcs(InstitutionType.Divisional_Hospital));
         dh.setFunctioningHlcs(numberOfFunctioningHlcs(InstitutionType.Divisional_Hospital));
         itCounts.add(dh);
-        
-        
+
         pmcu.setType(InstitutionType.Primary_Medical_Care_Unit);
         pmcu.setSerial(5);
-         pmcu.setNumber(numberOfInstitutions(InstitutionType.Primary_Medical_Care_Unit));
+        pmcu.setNumber(numberOfInstitutions(InstitutionType.Primary_Medical_Care_Unit));
         pmcu.setHlcs(numberOfHlcs(InstitutionType.Primary_Medical_Care_Unit));
         pmcu.setFunctioningHlcs(numberOfFunctioningHlcs(InstitutionType.Primary_Medical_Care_Unit));
         itCounts.add(pmcu);
-        
+
         eh.setType(InstitutionType.Estate_Hospital);
         eh.setSerial(6);
-         eh.setNumber(numberOfInstitutions(InstitutionType.Estate_Hospital));
+        eh.setNumber(numberOfInstitutions(InstitutionType.Estate_Hospital));
         eh.setHlcs(numberOfHlcs(InstitutionType.Estate_Hospital));
         eh.setFunctioningHlcs(numberOfFunctioningHlcs(InstitutionType.Estate_Hospital));
         itCounts.add(eh);
-        
+
         moh.setType(InstitutionType.MOH_Office);
         moh.setSerial(7);
-         moh.setNumber(numberOfInstitutions(InstitutionType.MOH_Office));
+        moh.setNumber(numberOfInstitutions(InstitutionType.MOH_Office));
         moh.setHlcs(numberOfHlcs(InstitutionType.MOH_Office));
         moh.setFunctioningHlcs(numberOfFunctioningHlcs(InstitutionType.MOH_Office));
         itCounts.add(moh);
-        
 
         String FILE_NAME = "functioning_clinics" + "_" + (new Date()) + ".xlsx";
         String mimeType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
@@ -2822,10 +2877,9 @@ public class ReportController implements Serializable {
 //            Cell th4_val = t4.createCell(1);
 //            th4_val.setCellValue(institution.getName());
 //        }
-
         rowCount++;
 
-        Row t5 = sheet.createRow(rowCount++);
+        Row t5 = sheet.createRow(rowCount);
         Cell th5_1 = t5.createCell(0);
         th5_1.setCellValue("Type");
         Cell th5_2 = t5.createCell(1);
@@ -2843,24 +2897,23 @@ public class ReportController implements Serializable {
                 createHelper.createDataFormat().getFormat("dd/MMMM/yyyy hh:mm"));
 
         for (InstituteTypeCounts cbd : itCounts) {
-            
-                Row row = sheet.createRow(++rowCount);
 
-                Cell c1 = row.createCell(0);
-                c1.setCellValue(cbd.getType().getLabel());
+            Row row = sheet.createRow(++rowCount);
 
-                Cell c2 = row.createCell(1);
-                c2.setCellValue(cbd.getNumber());
+            Cell c1 = row.createCell(0);
+            c1.setCellValue(cbd.getType().getLabel());
 
-                Cell c3 = row.createCell(2);
-                c3.setCellValue(cbd.getHlcs());
+            Cell c2 = row.createCell(1);
+            c2.setCellValue(cbd.getNumber());
 
-                Cell c4 = row.createCell(3);
-                c4.setCellValue(cbd.getFunctioningHlcs());
+            Cell c3 = row.createCell(2);
+            c3.setCellValue(cbd.getHlcs());
 
+            Cell c4 = row.createCell(3);
+            c4.setCellValue(cbd.getFunctioningHlcs());
 
-                serial++;
-            
+            serial++;
+
         }
 
         itCounts = null;
@@ -2875,7 +2928,7 @@ public class ReportController implements Serializable {
         InputStream stream;
         try {
             stream = new FileInputStream(newFile);
-            resultExcelFile = new DefaultStreamedContent(stream, mimeType, FILE_NAME);
+            resultExcelFile = streamedContentController.generateStreamedContent(mimeType, FILE_NAME, stream);
         } catch (FileNotFoundException ex) {
 
         }
@@ -2958,7 +3011,7 @@ public class ReportController implements Serializable {
 
         rowCount++;
 
-        Row t5 = sheet.createRow(rowCount++);
+        Row t5 = sheet.createRow(rowCount);
         Cell th5_1 = t5.createCell(0);
         th5_1.setCellValue("Serial");
         Cell th5_2 = t5.createCell(1);
@@ -3004,7 +3057,7 @@ public class ReportController implements Serializable {
         InputStream stream;
         try {
             stream = new FileInputStream(newFile);
-            resultExcelFile = new DefaultStreamedContent(stream, mimeType, FILE_NAME);
+            resultExcelFile = streamedContentController.generateStreamedContent(mimeType, FILE_NAME, stream);
         } catch (FileNotFoundException ex) {
 
         }
@@ -3085,7 +3138,7 @@ public class ReportController implements Serializable {
 
         rowCount++;
 
-        Row t5 = sheet.createRow(rowCount++);
+        Row t5 = sheet.createRow(rowCount);
         Cell th5_1 = t5.createCell(0);
         th5_1.setCellValue("Serial");
         Cell th5_2 = t5.createCell(1);
@@ -3131,7 +3184,7 @@ public class ReportController implements Serializable {
         InputStream stream;
         try {
             stream = new FileInputStream(newFile);
-            resultExcelFile = new DefaultStreamedContent(stream, mimeType, FILE_NAME);
+            resultExcelFile = streamedContentController.generateStreamedContent(mimeType, FILE_NAME, stream);
         } catch (FileNotFoundException ex) {
 
         }
@@ -3229,7 +3282,7 @@ public class ReportController implements Serializable {
         InputStream stream;
         try {
             stream = new FileInputStream(newFile);
-            resultExcelFile = new DefaultStreamedContent(stream, mimeType, fileName);
+            resultExcelFile = streamedContentController.generateStreamedContent(mimeType, fileName, stream);
         } catch (FileNotFoundException ex) {
 
         }
@@ -3350,7 +3403,7 @@ public class ReportController implements Serializable {
         InputStream stream;
         try {
             stream = new FileInputStream(newFile);
-            downloadingFile = new DefaultStreamedContent(stream, mimeType, fileName);
+//            downloadingFile = new DefaultStreamedContent(stream, mimeType, fileName);
         } catch (FileNotFoundException ex) {
 
         }

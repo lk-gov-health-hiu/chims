@@ -38,7 +38,8 @@ import lk.gov.health.phsp.entity.Item;
 import lk.gov.health.phsp.enums.AreaType;
 import lk.gov.health.phsp.enums.InstitutionType;
 import lk.gov.health.phsp.facade.AreaFacade;
-import org.primefaces.model.UploadedFile;
+import org.primefaces.model.file.UploadedFile;
+
 
 @Named
 @SessionScoped
@@ -563,7 +564,7 @@ public class InstitutionController implements Serializable {
 
             try {
                 lk.gov.health.phsp.facade.util.JsfUtil.addSuccessMessage(file.getFileName());
-                in = file.getInputstream();
+                in = file.getInputStream();
                 File f;
                 f = new File(Calendar.getInstance().getTimeInMillis() + file.getFileName());
                 FileOutputStream out = new FileOutputStream(f);
@@ -640,24 +641,32 @@ public class InstitutionController implements Serializable {
         }
 
     }
-
+    
     public void saveOrUpdateInstitution() {
         if (selected == null) {
             JsfUtil.addErrorMessage("Nothing to select");
             return;
         }
-        if (selected.getId() == null) {
-            selected.setCreatedAt(new Date());
-            selected.setCreater(webUserController.getLoggedUser());
-            getFacade().create(selected);
+        saveOrUpdateInstitution(selected);
+    }
 
-            institutionApplicationController.getInstitutions().add(selected);
+    public void saveOrUpdateInstitution(Institution saving) {
+        if (saving == null) {
+            JsfUtil.addErrorMessage("Nothing to select");
+            return;
+        }
+        if (saving.getId() == null) {
+            saving.setCreatedAt(new Date());
+            saving.setCreater(webUserController.getLoggedUser());
+            getFacade().create(saving);
+
+            institutionApplicationController.getInstitutions().add(saving);
             items = null;
             JsfUtil.addSuccessMessage("Saved");
         } else {
-            selected.setEditedAt(new Date());
-            selected.setEditer(webUserController.getLoggedUser());
-            getFacade().edit(selected);
+            saving.setEditedAt(new Date());
+            saving.setEditer(webUserController.getLoggedUser());
+            getFacade().edit(saving);
             items = null;
             JsfUtil.addSuccessMessage("Updates");
         }

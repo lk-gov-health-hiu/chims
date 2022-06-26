@@ -31,13 +31,20 @@
                             <p:calendar value="#{nationalReportController.fromDate}" pattern="dd MM yyyy" ></p:calendar>
                             <p:outputLabel value="To" ></p:outputLabel>
                             <p:calendar value="#{nationalReportController.toDate}" pattern="dd MM yyyy" ></p:calendar>
-                            
+
+                            <p:outputLabel value="Sex:" for="sex" />
+                            <p:selectOneMenu id="sex"  value="#{nationalReportController.sex}" required="false" >
+                                <f:selectItem itemLabel="All" ></f:selectItem>
+                                <f:selectItems value="#{itemController.sexes}" var="s" itemLabel="#{s.name}"
+                                               itemValue="#{s}" ></f:selectItems>
+                            </p:selectOneMenu>
+
                             <p:outputLabel value="Item" ></p:outputLabel>
                             <p:autoComplete completeMethod="#{itemController.completeDictionaryItems}" 
-                                             value="#{nationalReportController.queryItem}"
-                                               var="ii"
-                                               itemLabel="#{ii.name}"
-                                               itemValue="#{ii}"></p:autoComplete>   
+                                            value="#{nationalReportController.queryItem}"
+                                            var="ii"
+                                            itemLabel="#{ii.name}"
+                                            itemValue="#{ii}"></p:autoComplete>   
 
                             <p:commandButton value="Process" ajax="false"
                                              action="#{nationalReportController.fillObservationValuesDbl()}"></p:commandButton>
