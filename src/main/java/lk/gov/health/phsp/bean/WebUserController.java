@@ -259,20 +259,7 @@ public class WebUserController implements Serializable {
         return login(true);
     }
 
-    public List<Area> findAutherizedGnAreas() {
-        List<Area> gns = new ArrayList<>();
-        if (loggedUser == null) {
-            return gns;
-        }
-        if (getLoggablePmcis() == null) {
-            return gns;
-        }
-        for (Institution i : getLoggablePmcis()) {
-            gns.addAll(institutionController.findDrainingGnAreas(i));
-        }
-        return gns;
-    }
-
+   
     public List<Institution> findAutherizedInstitutions() {
         List<Institution> ins = new ArrayList<>();
         if (loggedUser == null) {
@@ -1744,13 +1731,7 @@ public class WebUserController implements Serializable {
         this.loggablePmcis = loggablePmcis;
     }
 
-    public List<Area> getLoggableGnAreas() {
-        if (loggableGnAreas == null) {
-            loggableGnAreas = findAutherizedGnAreas();
-        }
-        return loggableGnAreas;
-    }
-
+    
     public void setLoggableGnAreas(List<Area> loggableGnAreas) {
         this.loggableGnAreas = loggableGnAreas;
     }

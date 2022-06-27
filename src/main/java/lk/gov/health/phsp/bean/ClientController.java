@@ -1138,300 +1138,302 @@ public class ClientController implements Serializable {
 //        }
 //        return true;
 //    }
-    public String importClientsFromExcel() {
-
-        importedClients = new ArrayList<>();
-
-        if (institution == null) {
-            JsfUtil.addErrorMessage("Add Institution");
-            return "";
-        }
-
-        if (uploadDetails == null || uploadDetails.trim().equals("")) {
-            JsfUtil.addErrorMessage("Add Column Names");
-            return "";
-        }
-
-        String[] cols = uploadDetails.split("\\r?\\n");
-        if (cols == null || cols.length < 5) {
-            JsfUtil.addErrorMessage("No SUfficient Columns");
-            return "";
-        }
-
-        try {
-            File inputWorkbook;
-            Workbook w;
-            Cell cell;
-            InputStream in;
-            try {
-                in = file.getInputStream();
-                File f;
-                f = new File(Calendar.getInstance().getTimeInMillis() + file.getFileName());
-                FileOutputStream out = new FileOutputStream(f);
-                int read = 0;
-                byte[] bytes = new byte[1024];
-                while ((read = in.read(bytes)) != -1) {
-                    out.write(bytes, 0, read);
-                }
-                in.close();
-                out.flush();
-                out.close();
-
-                inputWorkbook = new File(f.getAbsolutePath());
-
-                JsfUtil.addSuccessMessage("Excel File Opened");
-                w = Workbook.getWorkbook(inputWorkbook);
-                Sheet sheet = w.getSheet(0);
-
-                errorCode = "";
-
-                int startRow = 1;
-
-                Long temId = 0L;
-
-                for (int i = startRow; i < sheet.getRows(); i++) {
-
-                    Map m = new HashMap();
-
-                    Client c = new Client();
-                    Person p = new Person();
-                    c.setPerson(p);
-
-                    int colNo = 0;
-
-                    String gnAreaName = null;
-                    String gnAreaCode = null;
-                    for (String colName : cols) {
-                        cell = sheet.getCell(colNo, i);
-                        String cellString = cell.getContents();
-                        switch (colName) {
-                            case "client_gn_area_name":
-                                gnAreaName = cellString;
-                                break;
-                            case "client_gn_area_code":
-                                gnAreaCode = cellString;
-                                break;
-                        }
-                        colNo++;
-                    }
-                    Area gnArea = null;
-//                    //// System.out.println("gnAreaName = " + gnAreaName);
-//                    //// System.out.println("gnAreaCode = " + gnAreaCode);
-                    if (gnAreaName != null && gnAreaCode != null) {
-                        gnArea = areaController.getGnAreaByNameAndCode(gnAreaName, gnAreaCode);
-                    } else if (gnAreaName != null) {
-                        gnArea = areaController.getGnAreaByName(gnAreaName);
-                    } else if (gnAreaCode != null) {
-                        gnArea = areaController.getGnAreaByCode(gnAreaCode);
-                    }
-                    if (gnArea != null) {
-//                        //// System.out.println("gnArea = " + gnArea.getName());
-                    }
-
-                    colNo = 0;
-
-                    for (String colName : cols) {
-                        cell = sheet.getCell(colNo, i);
-                        String cellString = cell.getContents();
-                        switch (colName) {
-                            case "client_name":
-                                c.getPerson().setName(cellString);
-                                break;
-                            case "client_phn_number":
-                                c.setPhn(cellString);
-                                break;
-                            case "client_sex":
-                                Item sex;
-                                if (cellString.toLowerCase().contains("f")) {
-                                    sex = itemController.findItemByCode("sex_female");
-                                } else {
-                                    sex = itemController.findItemByCode("sex_male");
-                                }
-                                c.getPerson().setSex(sex);
-                                break;
-                            case "client_citizenship":
-                                Item cs;
-                                if (cellString == null) {
-                                    cs = null;
-                                } else if (cellString.toLowerCase().contains("sri")) {
-                                    cs = itemController.findItemByCode("citizenship_local");
-                                } else {
-                                    cs = itemController.findItemByCode("citizenship_foreign");
-                                }
-                                c.getPerson().setCitizenship(cs);
-                                break;
-
-                            case "client_ethnic_group":
-                                Item eg = null;
-                                if (cellString == null || cellString.trim().equals("")) {
-                                    eg = null;
-                                } else if (cellString.equalsIgnoreCase("Sinhala")) {
-                                    eg = itemController.findItemByCode("sinhalese");
-                                } else if (cellString.equalsIgnoreCase("moors")) {
-                                    eg = itemController.findItemByCode("citizenship_local");
-                                } else if (cellString.equalsIgnoreCase("SriLankanTamil")) {
-                                    eg = itemController.findItemByCode("tamil");
-                                } else {
-                                    eg = itemController.findItemByCode("ethnic_group_other");;
-                                }
-                                c.getPerson().setEthinicGroup(eg);
-                                break;
-                            case "client_religion":
-                                Item re = null;
-                                if (cellString == null || cellString.trim().equals("")) {
-                                    re = null;
-                                } else if (cellString.equalsIgnoreCase("Buddhist")) {
-                                    re = itemController.findItemByCode("buddhist");
-                                } else if (cellString.equalsIgnoreCase("Christian")) {
-                                    re = itemController.findItemByCode("christian");
-                                } else if (cellString.equalsIgnoreCase("Hindu")) {
-                                    re = itemController.findItemByCode("hindu");
-                                } else {
-                                    re = itemController.findItemByCode("religion_other");;
-                                }
-                                c.getPerson().setReligion(re);
-                                break;
-                            case "client_marital_status":
-                                Item ms = null;
-                                if (cellString == null || cellString.trim().equals("")) {
-                                    ms = null;
-                                } else if (cellString.equalsIgnoreCase("Married")) {
-                                    ms = itemController.findItemByCode("married");
-                                } else if (cellString.equalsIgnoreCase("Separated")) {
-                                    ms = itemController.findItemByCode("seperated");
-                                } else if (cellString.equalsIgnoreCase("Single")) {
-                                    ms = itemController.findItemByCode("unmarried");
-                                } else {
-                                    ms = itemController.findItemByCode("marital_status_other");;
-                                }
-                                c.getPerson().setMariatalStatus(ms);
-                                break;
-                            case "client_title":
-                                Item title = null;
-                                String ts = cellString;
-                                switch (ts) {
-                                    case "Baby":
-                                        title = itemController.findItemByCode("baby");
-                                        break;
-                                    case "Babyof":
-                                        title = itemController.findItemByCode("baby_of");
-                                        break;
-                                    case "Mr":
-                                        title = itemController.findItemByCode("mr");
-                                        break;
-                                    case "Mrs":
-                                        title = itemController.findItemByCode("mrs");
-                                        break;
-                                    case "Ms":
-                                        title = itemController.findItemByCode("ms");
-                                        break;
-                                    case "Prof":
-                                        title = itemController.findItemByCode("prof");
-                                        break;
-                                    case "Rev":
-                                    case "Thero":
-                                        title = itemController.findItemByCode("rev");
-                                        break;
-                                }
-                                c.getPerson().setTitle(title);
-                                break;
-                            case "client_nic_number":
-                                c.getPerson().setNic(cellString);
-                                break;
-                            case "client_data_of_birth":
-                                Date tdob = null;
-                                Date today = new Date();
-                                int ageInYears = 0;
-                                int birthYear;
-                                int thisYear;
-
-                                try {
-                                    tdob = commonController.dateFromString(cellString, dateFormat);
-                                    Calendar bc = Calendar.getInstance();
-                                    bc.setTime(tdob);
-                                    birthYear = bc.get(Calendar.YEAR);
-                                    Calendar tc = Calendar.getInstance();
-                                    thisYear = tc.get(Calendar.YEAR);
-                                    ageInYears = thisYear - birthYear;
-//                                    //// System.out.println("ageInYears = " + ageInYears);
-                                } catch (Exception e) {
-//                                    //// System.out.println("e = " + e);
-                                }
-                                if (ageInYears < 0) {
-                                    tdob = today;
-                                } else if (ageInYears > 200) {
-                                    tdob = today;
-                                }
-
-                                c.getPerson().setDateOfBirth(tdob);
-                                break;
-                            case "client_permanent_address":
-                                c.getPerson().setAddress(cellString);
-                                break;
-                            case "client_current_address":
-                                c.getPerson().setAddress(cellString);
-                                break;
-                            case "client_mobile_number":
-                                c.getPerson().setPhone1(cellString);
-                                break;
-                            case "client_home_number":
-                                c.getPerson().setPhone2(cellString);
-                                break;
-                            case "client_registered_at":
-                                Date reg = commonController.dateFromString(cellString, dateTimeFormat);
-                                c.getPerson().setCreatedAt(reg);
-                                c.setCreatedAt(reg);
-                                break;
-                            case "client_gn_area":
-                                //// System.out.println("GN");
-                                //// System.out.println("cellString = " + cellString);
-
-                                Area tgn;
-                                if (gnArea == null) {
-                                    gnArea = areaController.getAreaByCodeIfNotName(cellString, AreaType.GN);
-                                }
-
-                                break;
-                        }
-
-                        colNo++;
-                    }
-
-                    //// System.out.println("tgn = " + gnArea);
-                    if (gnArea != null) {
-                        c.getPerson().setGnArea(gnArea);
-                        c.getPerson().setDsArea(gnArea.getDsd());
-                        c.getPerson().setMohArea(gnArea.getMoh());
-                        c.getPerson().setPhmArea(gnArea.getPhm());
-                        c.getPerson().setDistrict(gnArea.getDistrict());
-                        c.getPerson().setProvince(gnArea.getProvince());
-                    }
-                    c.setCreateInstitution(institution);
-
-                    c.setId(temId);
-                    temId++;
-
-                    importedClients.add(c);
-
-                }
-
-                lk.gov.health.phsp.facade.util.JsfUtil.addSuccessMessage("Succesful. All the data in Excel File Impoted to the database");
-                errorCode = "";
-                return "save_imported_clients";
-            } catch (IOException ex) {
-                errorCode = ex.getMessage();
-                lk.gov.health.phsp.facade.util.JsfUtil.addErrorMessage(ex.getMessage());
-                return "";
-            } catch (BiffException ex) {
-                lk.gov.health.phsp.facade.util.JsfUtil.addErrorMessage(ex.getMessage());
-                errorCode = ex.getMessage();
-                return "";
-            }
-        } catch (IndexOutOfBoundsException e) {
-            errorCode = e.getMessage();
-            return "";
-        }
-    }
+    
+//    
+//    public String importClientsFromExcel() {
+//
+//        importedClients = new ArrayList<>();
+//
+//        if (institution == null) {
+//            JsfUtil.addErrorMessage("Add Institution");
+//            return "";
+//        }
+//
+//        if (uploadDetails == null || uploadDetails.trim().equals("")) {
+//            JsfUtil.addErrorMessage("Add Column Names");
+//            return "";
+//        }
+//
+//        String[] cols = uploadDetails.split("\\r?\\n");
+//        if (cols == null || cols.length < 5) {
+//            JsfUtil.addErrorMessage("No SUfficient Columns");
+//            return "";
+//        }
+//
+//        try {
+//            File inputWorkbook;
+//            Workbook w;
+//            Cell cell;
+//            InputStream in;
+//            try {
+//                in = file.getInputStream();
+//                File f;
+//                f = new File(Calendar.getInstance().getTimeInMillis() + file.getFileName());
+//                FileOutputStream out = new FileOutputStream(f);
+//                int read = 0;
+//                byte[] bytes = new byte[1024];
+//                while ((read = in.read(bytes)) != -1) {
+//                    out.write(bytes, 0, read);
+//                }
+//                in.close();
+//                out.flush();
+//                out.close();
+//
+//                inputWorkbook = new File(f.getAbsolutePath());
+//
+//                JsfUtil.addSuccessMessage("Excel File Opened");
+//                w = Workbook.getWorkbook(inputWorkbook);
+//                Sheet sheet = w.getSheet(0);
+//
+//                errorCode = "";
+//
+//                int startRow = 1;
+//
+//                Long temId = 0L;
+//
+//                for (int i = startRow; i < sheet.getRows(); i++) {
+//
+//                    Map m = new HashMap();
+//
+//                    Client c = new Client();
+//                    Person p = new Person();
+//                    c.setPerson(p);
+//
+//                    int colNo = 0;
+//
+//                    String gnAreaName = null;
+//                    String gnAreaCode = null;
+//                    for (String colName : cols) {
+//                        cell = sheet.getCell(colNo, i);
+//                        String cellString = cell.getContents();
+//                        switch (colName) {
+//                            case "client_gn_area_name":
+//                                gnAreaName = cellString;
+//                                break;
+//                            case "client_gn_area_code":
+//                                gnAreaCode = cellString;
+//                                break;
+//                        }
+//                        colNo++;
+//                    }
+//                    Area gnArea = null;
+////                    //// System.out.println("gnAreaName = " + gnAreaName);
+////                    //// System.out.println("gnAreaCode = " + gnAreaCode);
+//                    if (gnAreaName != null && gnAreaCode != null) {
+////                        gnArea = areaController.getGnAreaByNameAndCode(gnAreaName, gnAreaCode);
+//                    } else if (gnAreaName != null) {
+//                        gnArea = areaController.getGnAreaByName(gnAreaName);
+//                    } else if (gnAreaCode != null) {
+//                        gnArea = areaController.getGnAreaByCode(gnAreaCode);
+//                    }
+//                    if (gnArea != null) {
+////                        //// System.out.println("gnArea = " + gnArea.getName());
+//                    }
+//
+//                    colNo = 0;
+//
+//                    for (String colName : cols) {
+//                        cell = sheet.getCell(colNo, i);
+//                        String cellString = cell.getContents();
+//                        switch (colName) {
+//                            case "client_name":
+//                                c.getPerson().setName(cellString);
+//                                break;
+//                            case "client_phn_number":
+//                                c.setPhn(cellString);
+//                                break;
+//                            case "client_sex":
+//                                Item sex;
+//                                if (cellString.toLowerCase().contains("f")) {
+//                                    sex = itemController.findItemByCode("sex_female");
+//                                } else {
+//                                    sex = itemController.findItemByCode("sex_male");
+//                                }
+//                                c.getPerson().setSex(sex);
+//                                break;
+//                            case "client_citizenship":
+//                                Item cs;
+//                                if (cellString == null) {
+//                                    cs = null;
+//                                } else if (cellString.toLowerCase().contains("sri")) {
+//                                    cs = itemController.findItemByCode("citizenship_local");
+//                                } else {
+//                                    cs = itemController.findItemByCode("citizenship_foreign");
+//                                }
+//                                c.getPerson().setCitizenship(cs);
+//                                break;
+//
+//                            case "client_ethnic_group":
+//                                Item eg = null;
+//                                if (cellString == null || cellString.trim().equals("")) {
+//                                    eg = null;
+//                                } else if (cellString.equalsIgnoreCase("Sinhala")) {
+//                                    eg = itemController.findItemByCode("sinhalese");
+//                                } else if (cellString.equalsIgnoreCase("moors")) {
+//                                    eg = itemController.findItemByCode("citizenship_local");
+//                                } else if (cellString.equalsIgnoreCase("SriLankanTamil")) {
+//                                    eg = itemController.findItemByCode("tamil");
+//                                } else {
+//                                    eg = itemController.findItemByCode("ethnic_group_other");;
+//                                }
+//                                c.getPerson().setEthinicGroup(eg);
+//                                break;
+//                            case "client_religion":
+//                                Item re = null;
+//                                if (cellString == null || cellString.trim().equals("")) {
+//                                    re = null;
+//                                } else if (cellString.equalsIgnoreCase("Buddhist")) {
+//                                    re = itemController.findItemByCode("buddhist");
+//                                } else if (cellString.equalsIgnoreCase("Christian")) {
+//                                    re = itemController.findItemByCode("christian");
+//                                } else if (cellString.equalsIgnoreCase("Hindu")) {
+//                                    re = itemController.findItemByCode("hindu");
+//                                } else {
+//                                    re = itemController.findItemByCode("religion_other");;
+//                                }
+//                                c.getPerson().setReligion(re);
+//                                break;
+//                            case "client_marital_status":
+//                                Item ms = null;
+//                                if (cellString == null || cellString.trim().equals("")) {
+//                                    ms = null;
+//                                } else if (cellString.equalsIgnoreCase("Married")) {
+//                                    ms = itemController.findItemByCode("married");
+//                                } else if (cellString.equalsIgnoreCase("Separated")) {
+//                                    ms = itemController.findItemByCode("seperated");
+//                                } else if (cellString.equalsIgnoreCase("Single")) {
+//                                    ms = itemController.findItemByCode("unmarried");
+//                                } else {
+//                                    ms = itemController.findItemByCode("marital_status_other");;
+//                                }
+//                                c.getPerson().setMariatalStatus(ms);
+//                                break;
+//                            case "client_title":
+//                                Item title = null;
+//                                String ts = cellString;
+//                                switch (ts) {
+//                                    case "Baby":
+//                                        title = itemController.findItemByCode("baby");
+//                                        break;
+//                                    case "Babyof":
+//                                        title = itemController.findItemByCode("baby_of");
+//                                        break;
+//                                    case "Mr":
+//                                        title = itemController.findItemByCode("mr");
+//                                        break;
+//                                    case "Mrs":
+//                                        title = itemController.findItemByCode("mrs");
+//                                        break;
+//                                    case "Ms":
+//                                        title = itemController.findItemByCode("ms");
+//                                        break;
+//                                    case "Prof":
+//                                        title = itemController.findItemByCode("prof");
+//                                        break;
+//                                    case "Rev":
+//                                    case "Thero":
+//                                        title = itemController.findItemByCode("rev");
+//                                        break;
+//                                }
+//                                c.getPerson().setTitle(title);
+//                                break;
+//                            case "client_nic_number":
+//                                c.getPerson().setNic(cellString);
+//                                break;
+//                            case "client_data_of_birth":
+//                                Date tdob = null;
+//                                Date today = new Date();
+//                                int ageInYears = 0;
+//                                int birthYear;
+//                                int thisYear;
+//
+//                                try {
+//                                    tdob = commonController.dateFromString(cellString, dateFormat);
+//                                    Calendar bc = Calendar.getInstance();
+//                                    bc.setTime(tdob);
+//                                    birthYear = bc.get(Calendar.YEAR);
+//                                    Calendar tc = Calendar.getInstance();
+//                                    thisYear = tc.get(Calendar.YEAR);
+//                                    ageInYears = thisYear - birthYear;
+////                                    //// System.out.println("ageInYears = " + ageInYears);
+//                                } catch (Exception e) {
+////                                    //// System.out.println("e = " + e);
+//                                }
+//                                if (ageInYears < 0) {
+//                                    tdob = today;
+//                                } else if (ageInYears > 200) {
+//                                    tdob = today;
+//                                }
+//
+//                                c.getPerson().setDateOfBirth(tdob);
+//                                break;
+//                            case "client_permanent_address":
+//                                c.getPerson().setAddress(cellString);
+//                                break;
+//                            case "client_current_address":
+//                                c.getPerson().setAddress(cellString);
+//                                break;
+//                            case "client_mobile_number":
+//                                c.getPerson().setPhone1(cellString);
+//                                break;
+//                            case "client_home_number":
+//                                c.getPerson().setPhone2(cellString);
+//                                break;
+//                            case "client_registered_at":
+//                                Date reg = commonController.dateFromString(cellString, dateTimeFormat);
+//                                c.getPerson().setCreatedAt(reg);
+//                                c.setCreatedAt(reg);
+//                                break;
+//                            case "client_gn_area":
+//                                //// System.out.println("GN");
+//                                //// System.out.println("cellString = " + cellString);
+//
+//                                Area tgn;
+//                                if (gnArea == null) {
+////                                    gnArea = areaController.getAreaByCodeIfNotName(cellString, AreaType.GN);
+//                                }
+//
+//                                break;
+//                        }
+//
+//                        colNo++;
+//                    }
+//
+//                    //// System.out.println("tgn = " + gnArea);
+//                    if (gnArea != null) {
+//                        c.getPerson().setGnArea(gnArea);
+//                        c.getPerson().setDsArea(gnArea.getDsd());
+//                        c.getPerson().setMohArea(gnArea.getMoh());
+//                        c.getPerson().setPhmArea(gnArea.getPhm());
+//                        c.getPerson().setDistrict(gnArea.getDistrict());
+//                        c.getPerson().setProvince(gnArea.getProvince());
+//                    }
+//                    c.setCreateInstitution(institution);
+//
+//                    c.setId(temId);
+//                    temId++;
+//
+//                    importedClients.add(c);
+//
+//                }
+//
+//                lk.gov.health.phsp.facade.util.JsfUtil.addSuccessMessage("Succesful. All the data in Excel File Impoted to the database");
+//                errorCode = "";
+//                return "save_imported_clients";
+//            } catch (IOException ex) {
+//                errorCode = ex.getMessage();
+//                lk.gov.health.phsp.facade.util.JsfUtil.addErrorMessage(ex.getMessage());
+//                return "";
+//            } catch (BiffException ex) {
+//                lk.gov.health.phsp.facade.util.JsfUtil.addErrorMessage(ex.getMessage());
+//                errorCode = ex.getMessage();
+//                return "";
+//            }
+//        } catch (IndexOutOfBoundsException e) {
+//            errorCode = e.getMessage();
+//            return "";
+//        }
+//    }
 
     public void prepareToCapturePhotoWithWebCam() {
         goingToCaptureWebCamPhoto = true;
