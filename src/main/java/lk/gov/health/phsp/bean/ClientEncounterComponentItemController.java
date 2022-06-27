@@ -359,26 +359,36 @@ public class ClientEncounterComponentItemController implements Serializable {
                     case Short_Text:
                         if (c.getShortTextValue() != null) {
                             r.setSelectedValue(c.getShortTextValue());
+                        }else{
+                            r.setSelectedValue(r.getDefaultValue());
                         }
                         break;
                     case Boolean:
                         if (c.getBooleanValue() != null) {
                             r.setSelectedValue(c.getBooleanValue().toString());
+                        }else{
+                            r.setSelectedValue(r.getDefaultValue());
                         }
                         break;
                     case Real_Number:
                         if (c.getRealNumberValue() != null) {
                             r.setSelectedValue(c.getRealNumberValue().toString());
+                        }else{
+                            r.setSelectedValue(r.getDefaultValue());
                         }
                         break;
                     case Integer_Number:
                         if (c.getIntegerNumberValue() != null) {
                             r.setSelectedValue(c.getIntegerNumberValue().toString());
+                        }else{
+                            r.setSelectedValue(r.getDefaultValue());
                         }
                         break;
                     case Item_Reference:
                         if (c.getItemValue() != null) {
                             r.setSelectedValue(c.getItemValue().getCode());
+                        }else{
+                            r.setSelectedValue(r.getDefaultValue());
                         }
                         break;
                 }
