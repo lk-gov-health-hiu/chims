@@ -18,7 +18,7 @@
         <h:outputStylesheet library="css" name="tem1.css"/>
     </h:head>
 
-    <h:body>
+    <h:body >
         <ui:insert name="free">
         </ui:insert>
         <p:growl   >
@@ -33,15 +33,12 @@
 
 
 
-        <div class="row" style="height: 100%;" >
+        <div class="row" >
             <div class="col-12" >
                 <h:panelGroup rendered="#{webUserController.loggedUser ne null}">
                     <ui:insert name="content">
                         Contents
                     </ui:insert>
-                    <br/>
-                    <br/>
-                    <br/>
                 </h:panelGroup>
                 <h:panelGroup rendered="#{webUserController.loggedUser eq null}">
                     <ez:login/>
@@ -53,9 +50,6 @@
                 </h:panelGroup>
             </div>
         </div>
-
-
-
 
         <div class="row">
             <div class="col" >
