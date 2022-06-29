@@ -1823,7 +1823,7 @@ public class HospitalReportController implements Serializable {
 
             Cell c5 = row.createCell(4);
             c5.setCellValue(o.getPerson().getDateOfBirth());
-            c5.setCellValue(CommonController.dateTimeToString(getToDate(), "dd MMMM yyyy"));
+            c5.setCellStyle(cellStyle);
 
             Cell c6 = row.createCell(5);
             c6.setCellValue(o.getPerson().getAge());
