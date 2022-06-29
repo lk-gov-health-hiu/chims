@@ -449,9 +449,9 @@ public class HospitalReportController implements Serializable {
         Cell th5a_val = t5a.createCell(1);
         th5a_val.setCellValue(designComponentFormItem.getItem().getName());
 
-        rowCount++;
+        
 
-        Row t5 = sheet.createRow(rowCount);
+        Row t5 = sheet.createRow(rowCount++);
         Cell th5_1 = t5.createCell(0);
         th5_1.setCellValue("Serial");
         Cell th5_2 = t5.createCell(1);
@@ -1823,6 +1823,7 @@ public class HospitalReportController implements Serializable {
 
             Cell c5 = row.createCell(4);
             c5.setCellValue(o.getPerson().getDateOfBirth());
+            c5.setCellValue(CommonController.dateTimeToString(getToDate(), "dd MMMM yyyy"));
 
             Cell c6 = row.createCell(5);
             c6.setCellValue(o.getPerson().getAge());
@@ -2090,7 +2091,7 @@ public class HospitalReportController implements Serializable {
 
         XSSFWorkbook workbook = new XSSFWorkbook();
         XSSFSheet sheet = workbook.createSheet("ClinicRegistrations");
-        
+
         CellStyle dateCellStyle = workbook.createCellStyle();
         CreationHelper createHelper = workbook.getCreationHelper();
         dateCellStyle.setDataFormat(
@@ -2164,8 +2165,6 @@ public class HospitalReportController implements Serializable {
 
         int serial = 1;
 
-        
-
         for (Object o : objs) {
             if (o instanceof EncounterBasicData) {
                 EncounterBasicData cbd = (EncounterBasicData) o;
@@ -2237,7 +2236,8 @@ public class HospitalReportController implements Serializable {
                 + "e.client.person.address, "
                 + "e.client.person.gnArea.name, "
                 + "e.institution.name, "
-                + "e.encounterDate "
+                + "e.encounterDate,"
+                + "e.completed "
                 + ") "
                 + " from Encounter e "
                 + " where e.retired=:ret "
@@ -2319,24 +2319,27 @@ public class HospitalReportController implements Serializable {
         Cell th5_4 = t5.createCell(3);
         th5_4.setCellValue("Age in Years at Encounter");
 
-        Cell th5_5 = t5.createCell(6);
+        Cell th5_5 = t5.createCell(4);
         th5_5.setCellValue("Sex");
 
         Cell th5_6 = t5.createCell(5);
         th5_6.setCellValue("Phone");
 
-        Cell th5_7 = t5.createCell(4);
+        Cell th5_7 = t5.createCell(6);
         th5_7.setCellValue("Address");
 
-        Cell th5_8 = t5.createCell(8);
+        Cell th5_8 = t5.createCell(7);
         th5_8.setCellValue("GN Areas");
 
-        Cell th5_9 = t5.createCell(2);
-        th5_9.setCellValue("Encounter at");
+        Cell th5_9 = t5.createCell(8);
+        th5_9.setCellValue("Visit at");
+
+        Cell th5_10 = t5.createCell(9);
+        th5_10.setCellValue("Completed");
 
         if (institution == null) {
-            Cell th5_10 = t5.createCell(9);
-            th5_10.setCellValue("Institution");
+            Cell th5_11 = t5.createCell(10);
+            th5_11.setCellValue("Institution");
         }
 
         int serial = 1;
@@ -2379,8 +2382,14 @@ public class HospitalReportController implements Serializable {
                 c9.setCellValue(cbd.getEncounterAt());
                 c9.setCellStyle(cellStyle);
 
+                Cell c11 = row.createCell(9);
+                if (cbd.getCompleted() != null && cbd.getCompleted()) {
+                    c11.setCellValue("Complete");
+                } else {
+                    c11.setCellValue("Incomplete");
+                }
                 if (institution == null) {
-                    Cell c10 = row.createCell(9);
+                    Cell c10 = row.createCell(10);
                     c10.setCellValue(cbd.getInstitution());
                 }
 

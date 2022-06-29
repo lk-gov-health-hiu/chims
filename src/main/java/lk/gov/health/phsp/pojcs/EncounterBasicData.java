@@ -44,6 +44,7 @@ public class EncounterBasicData {
     private String sex;
     private int ageInYears;
     private String componentName;
+    private Boolean completed;
 
     public EncounterBasicData() {
     }
@@ -86,6 +87,29 @@ public class EncounterBasicData {
         this.gnArea = gnArea;
         this.institution = institution;       
         this.encounterAt = encounterAt;
+    }
+    
+    public EncounterBasicData(
+            String phn,
+            String name,
+            Date dataOfBirth,
+            String sex,
+            String phone,
+            String address,
+            String gnArea,
+            String institution, 
+            Date encounterAt,
+            Boolean completed) {
+        this.phn = phn;
+        this.name=name;
+        this.dataOfBirth = dataOfBirth;
+        this.sex = sex;
+        this.phone = phone;
+        this.address = address;
+        this.gnArea = gnArea;
+        this.institution = institution;       
+        this.encounterAt = encounterAt;
+        this.completed = completed;
     }
 
     public String getPhn() {
@@ -176,5 +200,15 @@ public class EncounterBasicData {
     public void setAddress(String address) {
         this.address = address;
     }
+
+    public Boolean getCompleted() {
+        return completed;
+    }
+
+    public void setCompleted(Boolean completed) {
+        this.completed = completed;
+    }
+    
+    
 
 }
