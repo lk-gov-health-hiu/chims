@@ -13,29 +13,40 @@
     </head>
     <body>
 
-          <ui:composition template="/hospital/reports/index.xhtml">
+        <ui:composition template="/hospital/reports/index.xhtml">
             <ui:define name="reports">
                 <h:form>
                     <p:panelGrid columns="2" class="w3-border w3-margin w3-card" >
                         <f:facet name="header" >
                             <p:outputLabel value="Daily Registrations" ></p:outputLabel>
                         </f:facet>
-                       
-                            <p:outputLabel value="From" ></p:outputLabel>
-                            <p:calendar value="#{hospitalReportController.fromDate}" pattern="dd MM yyyy" ></p:calendar>
 
-                            <p:outputLabel value="To" ></p:outputLabel>
-                            <p:calendar value="#{hospitalReportController.toDate}" pattern="dd MM yyyy" ></p:calendar>
+                        <p:outputLabel value="From" ></p:outputLabel>
+                        <p:calendar value="#{hospitalReportController.fromDate}" pattern="dd MM yyyy" ></p:calendar>
 
-                            <p:commandButton value="Download" 
-                                             ajax="false" 
-                                             oncomplete ="PrimeFaces.monitorDownload(start, stop);" 
-                                             icon="ui-icon-arrowthick-1-s"
-                                             actionListener="#{hospitalReportController.downloadDailyClientRegistrationCounts()}">
-                                <p:fileDownload value="#{hospitalReportController.resultExcelFile}" />
-                            </p:commandButton>
+                        <p:outputLabel value="To" ></p:outputLabel>
+                        <p:calendar value="#{hospitalReportController.toDate}" pattern="dd MM yyyy" ></p:calendar>
 
-                    
+                        <p:outputLabel value="Registered Hospital" for="ins" ></p:outputLabel>
+                        <p:selectOneMenu id="ins"
+                                         required="true"
+                                         value="#{hospitalReportController.institution}" >
+                            <f:selectItem itemLabel="Select Hospital" ></f:selectItem>
+                            <f:selectItems value="#{webUserController.loggableInstitutions}"
+                                           var="i" 
+                                           itemLabel="#{i.name}"
+                                           itemValue="#{i}"></f:selectItems>
+                        </p:selectOneMenu>
+
+                        <p:commandButton value="Download" 
+                                         ajax="false" 
+                                         oncomplete ="PrimeFaces.monitorDownload(start, stop);" 
+                                         icon="ui-icon-arrowthick-1-s"
+                                         actionListener="#{hospitalReportController.downloadDailyClientRegistrationCounts()}">
+                            <p:fileDownload value="#{hospitalReportController.resultExcelFile}" />
+                        </p:commandButton>
+
+
 
 
                     </p:panelGrid>
