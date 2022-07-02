@@ -74,6 +74,8 @@ public class RelationshipController implements Serializable {
     Item procedure;
 
     private DesignComponentFormSet formset;
+    private DesignComponentFormSet newFormset;
+    private List<Relationship> selectedRelationships;
 
     private Integer year;
     private Integer month;
@@ -209,7 +211,6 @@ public class RelationshipController implements Serializable {
 //            return "";
 //        }
 //    }
-
     public void addEmpowerementData() {
         if (adding == null) {
             JsfUtil.addErrorMessage("Select");
@@ -338,7 +339,7 @@ public class RelationshipController implements Serializable {
             items = new ArrayList<>();
         }
     }
-    
+
     public void fillFromsetsForSelectedInstitution() {
         items = findRelationships(institution, RelationshipType.Formsets_for_institution);
         if (items == null) {
@@ -506,6 +507,32 @@ public class RelationshipController implements Serializable {
         procedure = null;
     }
 
+    public void changeFormsets() {
+        if (formset == null) {
+            JsfUtil.addErrorMessage("Select the current Form set?");
+            return;
+        }
+        if (newFormset == null) {
+            JsfUtil.addErrorMessage("Select the new Form set?");
+            return;
+        }
+
+        if (selectedRelationships == null || selectedRelationships.isEmpty()) {
+            JsfUtil.addErrorMessage("Select institutions to change the Form set?");
+            return;
+        }
+
+        RelationshipType trt = RelationshipType.Formsets_for_institution;
+
+        for (Relationship r : selectedRelationships) {
+            r.setComponent(newFormset);
+            r.setLastEditBy(webUserController.getLoggedUser());
+            r.setLastEditeAt(new Date());
+            getFacade().edit(r);
+        }
+        JsfUtil.addSuccessMessage("Form sets changed");
+    }
+
     public void addFormsetToInstitution() {
         if (institution == null) {
             JsfUtil.addErrorMessage("Institution?");
@@ -601,8 +628,8 @@ public class RelationshipController implements Serializable {
 
         return getFacade().findFirstByJpql(j, m);
     }
-    
-     public Relationship findRelationship(Item item, Item toItem, RelationshipType t) {
+
+    public Relationship findRelationship(Item item, Item toItem, RelationshipType t) {
         String j = "select r from Relationship r "
                 + " where r.retired=:r "
                 + " and r.item=:item   "
@@ -664,8 +691,6 @@ public class RelationshipController implements Serializable {
         return getFacade().findByJpql(j, m);
     }
 
-    
-    
     public List<Relationship> findRelationships(Component com, RelationshipType t) {
         String j = "select r from Relationship r "
                 + " where r.retired=:ret "
@@ -679,15 +704,15 @@ public class RelationshipController implements Serializable {
     }
 
     public Long findPopulationValue(int y, Institution ins, RelationshipType t) {
-         System.out.println("findPopulationValue");
+        System.out.println("findPopulationValue");
         Long p = 0l;
-         System.out.println("ins = " + ins);
-         System.out.println("y = " + y);
-         System.out.println("t = " + t.getLabel());
+        System.out.println("ins = " + ins);
+        System.out.println("y = " + y);
+        System.out.println("t = " + t.getLabel());
         Institution hospital = institutionController.findHospital(ins);
-         System.out.println("hospital = " + hospital);
+        System.out.println("hospital = " + hospital);
         if (hospital == null) {
-             System.out.println("A Hospital Not Found");
+            System.out.println("A Hospital Not Found");
             return 0l;
         }
         Relationship r = findRelationship(y, hospital, t);
@@ -1149,6 +1174,24 @@ public class RelationshipController implements Serializable {
         this.formset = formset;
     }
 
+    public DesignComponentFormSet getNewFormset() {
+        return newFormset;
+    }
+
+    public void setNewFormset(DesignComponentFormSet newFormset) {
+        this.newFormset = newFormset;
+    }
+
+    public List<Relationship> getSelectedRelationships() {
+        return selectedRelationships;
+    }
+
+    public void setSelectedRelationships(List<Relationship> selectedRelationships) {
+        this.selectedRelationships = selectedRelationships;
+    }
+
+    
+    
     @FacesConverter(forClass = Relationship.class)
     public static class RelationshipControllerConverter implements Converter {
 
