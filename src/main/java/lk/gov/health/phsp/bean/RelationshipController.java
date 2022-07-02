@@ -1188,9 +1188,7 @@ public class RelationshipController implements Serializable {
 
     public void setSelectedRelationships(List<Relationship> selectedRelationships) {
         this.selectedRelationships = selectedRelationships;
-    }
-
-    
+    } 
     
     @FacesConverter(forClass = Relationship.class)
     public static class RelationshipControllerConverter implements Converter {
