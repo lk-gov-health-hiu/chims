@@ -39,6 +39,7 @@ import javax.faces.convert.FacesConverter;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.servlet.http.HttpServletRequest;
+import lk.gov.health.phsp.entity.Person;
 import lk.gov.health.phsp.entity.Relationship;
 import lk.gov.health.phsp.entity.UserPrivilege;
 import lk.gov.health.phsp.enums.InstitutionType;
@@ -49,7 +50,7 @@ import lk.gov.health.phsp.facade.UserPrivilegeFacade;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 import org.primefaces.model.TreeNode;
-import org.primefaces.model.UploadedFile;
+import org.primefaces.model.file.UploadedFile;
 import org.primefaces.model.map.DefaultMapModel;
 import org.primefaces.model.map.LatLng;
 import org.primefaces.model.map.MapModel;
@@ -258,20 +259,7 @@ public class WebUserController implements Serializable {
         return login(true);
     }
 
-    public List<Area> findAutherizedGnAreas() {
-        List<Area> gns = new ArrayList<>();
-        if (loggedUser == null) {
-            return gns;
-        }
-        if (getLoggablePmcis() == null) {
-            return gns;
-        }
-        for (Institution i : getLoggablePmcis()) {
-            gns.addAll(institutionController.findDrainingGnAreas(i));
-        }
-        return gns;
-    }
-
+   
     public List<Institution> findAutherizedInstitutions() {
         List<Institution> ins = new ArrayList<>();
         if (loggedUser == null) {
@@ -539,7 +527,7 @@ public class WebUserController implements Serializable {
             return;
         }
         InputStream stream = new ByteArrayInputStream(currentUpload.getBaImage());
-        downloadingFile = new DefaultStreamedContent(stream, currentUpload.getFileType(), currentUpload.getFileName());
+//        downloadingFile = new DefaultStreamedContent(stream, currentUpload.getFileType(), currentUpload.getFileName());
     }
 
     public StreamedContent getDownloadingFile() {
@@ -659,12 +647,14 @@ public class WebUserController implements Serializable {
         m.put("ret", false);
         loggedUser = getFacade().findFirstByJpql(temSQL, m);
         if (loggedUser == null) {
+            JsfUtil.addErrorMessage("No User");
             return false;
         }
         if (commonController.matchPassword(password, loggedUser.getWebUserPassword())) {
             return true;
         } else {
             loggedUser = null;
+            JsfUtil.addErrorMessage("Password incorrect");
             return false;
         }
     }
@@ -698,6 +688,25 @@ public class WebUserController implements Serializable {
         m.put("userName", "%" + qry.trim().toLowerCase() + "%");
         m.put("ret", false);
         return getFacade().findByJpql(temSQL, m);
+    }
+    
+    public void createDemoUser(){
+        Institution i = new Institution();
+        i.setName(userName);
+        institutionController.saveOrUpdateInstitution(i);
+        
+        Person p = new Person();
+        p.setName("Administrator");
+        
+        WebUser u = new WebUser();
+        u.setName("admin");
+        u.setWebUserPassword(commonController.hash(password));
+        u.setWebUserRole(WebUserRole.System_Administrator);
+        
+        save(u);
+        
+        
+        
     }
 
     private boolean checkLogin(boolean withoutPassword) {
@@ -1722,13 +1731,7 @@ public class WebUserController implements Serializable {
         this.loggablePmcis = loggablePmcis;
     }
 
-    public List<Area> getLoggableGnAreas() {
-        if (loggableGnAreas == null) {
-            loggableGnAreas = findAutherizedGnAreas();
-        }
-        return loggableGnAreas;
-    }
-
+    
     public void setLoggableGnAreas(List<Area> loggableGnAreas) {
         this.loggableGnAreas = loggableGnAreas;
     }

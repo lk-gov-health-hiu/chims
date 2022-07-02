@@ -3,11 +3,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.divudi</groupId>
-    <artifactId>chims1</artifactId>
+    <artifactId>chims</artifactId>
     <version>0.1</version>
     <packaging>war</packaging>
 
-    <name>chims1</name>
+    <name>chims</name>
 
     <properties>
         <endorsed.dir>${project.build.directory}/endorsed</endorsed.dir>
@@ -78,7 +78,7 @@
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
-            <version>8.0.23</version>
+            <version>8.0.28</version>
         </dependency>
         <dependency>
             <groupId>com.itextpdf</groupId>
@@ -149,7 +149,7 @@
         <dependency>
             <groupId>org.primefaces</groupId>  
             <artifactId>primefaces</artifactId>  
-            <version>7.0</version>
+            <version>10.0.0</version>
             <type>jar</type>
         </dependency>  
        

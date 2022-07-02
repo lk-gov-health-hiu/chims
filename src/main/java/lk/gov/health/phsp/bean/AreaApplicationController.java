@@ -41,8 +41,8 @@ import lk.gov.health.phsp.facade.AreaFacade;
 @Named
 @ApplicationScoped
 public class AreaApplicationController {
-    
-        @EJB
+
+    @EJB
     private AreaFacade areaFacade;
 
     private List<Area> gnAreas;
@@ -54,8 +54,7 @@ public class AreaApplicationController {
     public AreaApplicationController() {
     }
 
-    
-     public List<Area> getGnAreas() {
+    public List<Area> getGnAreas() {
         if (gnAreas == null) {
             gnAreas = getAllGnAreas();
         }
@@ -65,7 +64,7 @@ public class AreaApplicationController {
     public void setGnAreas(List<Area> gnAreas) {
         this.gnAreas = gnAreas;
     }
-    
+
     public List<Area> getAllAreas() {
         if (allAreas == null) {
             allAreas = fillAllAreas();
@@ -78,11 +77,12 @@ public class AreaApplicationController {
         Map m = new HashMap();
         j = "select a "
                 + " from Area a "
-                + " where a.name is not null";
+                + " where a.retired=:ret ";
         j += " order by a.name";
+        m.put("ret", false);
         return areaFacade.findByJpql(j, m);
     }
-    
+
     public List<Area> getAllGnAreas() {
         List<Area> tas = new ArrayList<>();
         for (Area a : getAllAreas()) {
@@ -93,17 +93,15 @@ public class AreaApplicationController {
         return tas;
     }
 
-
     public List<Area> getAllAreas(AreaType at) {
         List<Area> tas = new ArrayList<>();
         for (Area a : getAllAreas()) {
-            if (a.getType()!=null && a.getType().equals(at)) {
+            if (a.getType() != null && a.getType().equals(at)) {
                 tas.add(a);
             }
         }
         return tas;
     }
-
 
     public List<Area> completeGnAreas(String qry) {
         List<Area> tas = new ArrayList<>();
@@ -126,5 +124,15 @@ public class AreaApplicationController {
         }
         return tas;
     }
-    
+
+    public List<Area> completeAreas(String qry, AreaType atype) {
+        List<Area> tas = new ArrayList<>();
+        for (Area a : getAllAreas(atype)) {
+            if (a.getName().toLowerCase().contains(qry.trim().toLowerCase())) {
+                tas.add(a);
+            }
+        }
+        return tas;
+    }
+
 }

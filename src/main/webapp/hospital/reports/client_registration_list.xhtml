@@ -1,0 +1,62 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <h:head >
+        <ui:define name="head">
+            Download Client Registrations
+        </ui:define>
+    </h:head>
+
+    <h:body>
+
+        <ui:composition template="/hospital/reports/index.xhtml">
+            <ui:define name="reports">
+                <h:form>
+
+                    <p:panelGrid columns="1"  class="w3-border w3-margin w3-card" >
+                        <f:facet name="header" >
+                            <p:outputLabel value="Client Registrations" >
+                            </p:outputLabel>
+                        </f:facet>
+                        <p:outputLabel value="From" ></p:outputLabel>
+                        <p:calendar value="#{hospitalReportController.fromDate}" pattern="dd MM yyyy hh:mm a" ></p:calendar>
+                        <p:outputLabel value="To" ></p:outputLabel>
+                        <p:calendar value="#{hospitalReportController.toDate}" pattern="dd MM yyyy hh:mm a" ></p:calendar>
+
+                        <p:outputLabel value="Registered Hospital" for="ins" ></p:outputLabel>
+                        <p:selectOneMenu id="ins"
+                                         required="true"
+                                         value="#{hospitalReportController.institution}" >
+                            <f:selectItem itemLabel="Select Hospital" ></f:selectItem>
+                            <f:selectItems value="#{webUserController.loggableInstitutions}"
+                                           var="i" 
+                                           itemLabel="#{i.name}"
+                                           itemValue="#{i}"></f:selectItems>
+                        </p:selectOneMenu>
+
+                        <p:commandButton value="Download" 
+                                         ajax="false" 
+                                         oncomplete ="PrimeFaces.monitorDownload(start, stop);" 
+                                         icon="ui-icon-arrowthick-1-s"
+                                         actionListener="#{hospitalReportController.downloadClientRegistrations()}">
+                            <p:fileDownload value="#{hospitalReportController.resultExcelFile}" />
+                        </p:commandButton>    
+
+                    </p:panelGrid>
+
+
+
+
+
+                </h:form>
+            </ui:define>
+
+        </ui:composition>
+
+    </h:body>
+</html>

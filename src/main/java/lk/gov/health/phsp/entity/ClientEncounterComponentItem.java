@@ -43,11 +43,11 @@ import lk.gov.health.phsp.enums.DataRepresentationType;
 @XmlRootElement
 public class ClientEncounterComponentItem extends ClientEncounterComponent {
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Client itemClient;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Encounter itemEncounter;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private ClientEncounterComponentFormSet itemFormset;
     @Enumerated(EnumType.STRING)
     private DataRepresentationType dataRepresentationType;

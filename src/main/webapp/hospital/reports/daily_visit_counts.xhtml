@@ -13,7 +13,7 @@
     </head>
     <body>
 
-        <ui:composition template="/hospital/report_index.xhtml">
+         <ui:composition template="/hospital/reports/index.xhtml">
             <ui:define name="reports">
                 <h:form>
                     <p:panelGrid columns="2" class="w3-border w3-margin w3-card" >
@@ -28,11 +28,13 @@
                             <p:calendar value="#{hospitalReportController.toDate}" pattern="dd MM yyyy" ></p:calendar>
 
                             <p:outputLabel value="Clinic" ></p:outputLabel>
-                            <p:autoComplete   value="#{hospitalReportController.institution}" 
-                                              completeMethod="#{webUserController.completeLoggableInstitutions}"
-                                              var="i" itemLabel="#{i.name}" itemValue="#{i}"
-                                              forceSelection="true" maxResults="15" minQueryLength="3">
-                            </p:autoComplete >
+                            <p:selectOneMenu value="#{hospitalReportController.institution}" >
+                                <f:selectItem itemLabel="Please select" ></f:selectItem>
+                                <f:selectItems value="#{webUserController.loggableInstitutions}"
+                                               var="ins"
+                                               itemLabel="#{ins.name}"
+                                               itemValue="#{ins}" ></f:selectItems>
+                            </p:selectOneMenu>
 
 
                             <p:spacer ></p:spacer>

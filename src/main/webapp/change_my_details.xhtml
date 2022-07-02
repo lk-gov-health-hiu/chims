@@ -36,11 +36,10 @@
                         <h:inputText id="telNo" value="#{webUserController.selected.telNo}" title="#{bundle.EditWebUserTitle_telNo}" />
 
 
-                        <h:outputLabel value="Institution" for="institution" />
-                        <h:selectOneMenu id="institution" value="#{webUserController.selected.institution}" title="#{bundle.EditWebUserTitle_institution}" >
-                            <f:selectItem itemLabel="Select" ></f:selectItem>
-                            <f:selectItems value="#{institutionController.items}"/>
-                        </h:selectOneMenu>
+                        <h:outputLabel value="Institution" />
+                        <h:outputText id="institution" value="#{webUserController.selected.institution.name}"
+                                      title="#{bundle.EditWebUserTitle_institution}" >
+                        </h:outputText>
 
                         <h:outputLabel value="Language"  />
                         <h:selectOneMenu value="#{webUserController.selected.defLocale}" >

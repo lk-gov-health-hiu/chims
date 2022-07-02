@@ -42,6 +42,12 @@ public class ObservationValueCount {
     public ObservationValueCount() {
     }
 
+    public ObservationValueCount(Long count) {
+        this.count = count;
+    }
+    
+    
+
     public ObservationValueCount(Double realNumberValue, Long count) {
         this.count = count;
         this.realNumberValue = realNumberValue;

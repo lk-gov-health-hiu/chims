@@ -40,7 +40,8 @@ import lk.gov.health.phsp.entity.Item;
 import lk.gov.health.phsp.enums.AreaType;
 import lk.gov.health.phsp.enums.RelationshipType;
 import lk.gov.health.phsp.facade.AreaFacade;
-import org.primefaces.model.UploadedFile;
+import org.primefaces.model.file.UploadedFile;
+//import org.primefaces.model.file.UploadedFile;
 
 @Named
 @SessionScoped
@@ -95,119 +96,119 @@ public class RelationshipController implements Serializable {
         userTransactionController.recordTransaction("Fill All-Relationship");
     }
 
-    public String importDistrictPopulationDataFromExcel() {
-        try {
-            String strDistrict;
-            String strEstimatedMidYearPopulation;
-            String strEstimatedTargetPopulation;
-            Long midyearPopulation;
-            Long targetPopulation;
-
-            Area district = null;
-
-            File inputWorkbook;
-            Workbook w;
-            Cell cell;
-            InputStream in;
-
-            lk.gov.health.phsp.facade.util.JsfUtil.addSuccessMessage(file.getFileName());
-
-            try {
-                lk.gov.health.phsp.facade.util.JsfUtil.addSuccessMessage(file.getFileName());
-                in = file.getInputstream();
-                File f;
-                f = new File(Calendar.getInstance().getTimeInMillis() + file.getFileName());
-                FileOutputStream out = new FileOutputStream(f);
-                int read = 0;
-                byte[] bytes = new byte[1024];
-                while ((read = in.read(bytes)) != -1) {
-                    out.write(bytes, 0, read);
-                }
-                in.close();
-                out.flush();
-                out.close();
-
-                inputWorkbook = new File(f.getAbsolutePath());
-
-                lk.gov.health.phsp.facade.util.JsfUtil.addSuccessMessage("Excel File Opened");
-                w = Workbook.getWorkbook(inputWorkbook);
-                Sheet sheet = w.getSheet(0);
-
-                errorCode = "";
-
-                for (int i = startRow; i < sheet.getRows(); i++) {
-
-                    Map m = new HashMap();
-
-                    cell = sheet.getCell(districtColumnNumber, i);
-                    strDistrict = cell.getContents();
-
-                    district = areaController.getAreaByName(strDistrict, AreaType.District, false, null);
-
-                    if (district == null) {
-                        errorCode += strDistrict + " NOT Found";
-                        continue;
-                    }
-
-                    cell = sheet.getCell(estimatedMidyearPopulationColumnNumber, i);
-                    strEstimatedMidYearPopulation = cell.getContents();
-                    midyearPopulation = CommonController.getLongValue(strEstimatedMidYearPopulation);
-
-                    cell = sheet.getCell(targetPopulationColumnNumber, i);
-                    strEstimatedTargetPopulation = cell.getContents();
-                    targetPopulation = CommonController.getLongValue(strEstimatedTargetPopulation);
-
-                    Relationship myp = findRelationship(district, RelationshipType.Estimated_Midyear_Population, getYear());
-                    if (myp == null) {
-                        myp = new Relationship();
-                        myp.setArea(district);
-                        myp.setRelationshipType(RelationshipType.Estimated_Midyear_Population);
-                        myp.setYearInt(getYear());
-                        myp.setCreatedAt(new Date());
-                        myp.setCreatedBy(webUserController.getLoggedUser());
-                        getFacade().create(myp);
-                    } else {
-                        myp.setLastEditBy(webUserController.getLoggedUser());
-                        myp.setLastEditeAt(new Date());
-                    }
-                    myp.setLongValue1(midyearPopulation);
-                    getFacade().edit(myp);
-
-                    Relationship tp = findRelationship(district, RelationshipType.Over_35_Population, getYear());
-                    if (tp == null) {
-                        tp = new Relationship();
-                        tp.setArea(district);
-                        tp.setRelationshipType(RelationshipType.Over_35_Population);
-                        tp.setYearInt(getYear());
-                        tp.setCreatedAt(new Date());
-                        tp.setCreatedBy(webUserController.getLoggedUser());
-                        getFacade().create(tp);
-                    } else {
-                        tp.setLastEditBy(webUserController.getLoggedUser());
-                        tp.setLastEditeAt(new Date());
-                    }
-                    tp.setLongValue1(targetPopulation);
-                    getFacade().edit(tp);
-
-                    district.setTotalPopulation(midyearPopulation);
-                    district.setTotalTargetPopulation(targetPopulation);
-                    getAreaFacade().edit(district);
-
-                }
-
-                lk.gov.health.phsp.facade.util.JsfUtil.addSuccessMessage("Succesful. All the data in Excel File Impoted to the database");
-                return "";
-            } catch (IOException ex) {
-                lk.gov.health.phsp.facade.util.JsfUtil.addErrorMessage(ex.getMessage());
-                return "";
-            } catch (BiffException e) {
-                lk.gov.health.phsp.facade.util.JsfUtil.addErrorMessage(e.getMessage());
-                return "";
-            }
-        } catch (Exception e) {
-            return "";
-        }
-    }
+//    public String importDistrictPopulationDataFromExcel() {
+//        try {
+//            String strDistrict;
+//            String strEstimatedMidYearPopulation;
+//            String strEstimatedTargetPopulation;
+//            Long midyearPopulation;
+//            Long targetPopulation;
+//
+//            Area district = null;
+//
+//            File inputWorkbook;
+//            Workbook w;
+//            Cell cell;
+//            InputStream in;
+//
+//            lk.gov.health.phsp.facade.util.JsfUtil.addSuccessMessage(file.getFileName());
+//
+//            try {
+//                lk.gov.health.phsp.facade.util.JsfUtil.addSuccessMessage(file.getFileName());
+//                in = file.getInputStream();
+//                File f;
+//                f = new File(Calendar.getInstance().getTimeInMillis() + file.getFileName());
+//                FileOutputStream out = new FileOutputStream(f);
+//                int read = 0;
+//                byte[] bytes = new byte[1024];
+//                while ((read = in.read(bytes)) != -1) {
+//                    out.write(bytes, 0, read);
+//                }
+//                in.close();
+//                out.flush();
+//                out.close();
+//
+//                inputWorkbook = new File(f.getAbsolutePath());
+//
+//                lk.gov.health.phsp.facade.util.JsfUtil.addSuccessMessage("Excel File Opened");
+//                w = Workbook.getWorkbook(inputWorkbook);
+//                Sheet sheet = w.getSheet(0);
+//
+//                errorCode = "";
+//
+//                for (int i = startRow; i < sheet.getRows(); i++) {
+//
+//                    Map m = new HashMap();
+//
+//                    cell = sheet.getCell(districtColumnNumber, i);
+//                    strDistrict = cell.getContents();
+//
+//                    district = areaController.getArea(strDistrict, AreaType.District);
+//
+//                    if (district == null) {
+//                        errorCode += strDistrict + " NOT Found";
+//                        continue;
+//                    }
+//
+//                    cell = sheet.getCell(estimatedMidyearPopulationColumnNumber, i);
+//                    strEstimatedMidYearPopulation = cell.getContents();
+//                    midyearPopulation = CommonController.getLongValue(strEstimatedMidYearPopulation);
+//
+//                    cell = sheet.getCell(targetPopulationColumnNumber, i);
+//                    strEstimatedTargetPopulation = cell.getContents();
+//                    targetPopulation = CommonController.getLongValue(strEstimatedTargetPopulation);
+//
+//                    Relationship myp = findRelationship(district, RelationshipType.Estimated_Midyear_Population, getYear());
+//                    if (myp == null) {
+//                        myp = new Relationship();
+//                        myp.setArea(district);
+//                        myp.setRelationshipType(RelationshipType.Estimated_Midyear_Population);
+//                        myp.setYearInt(getYear());
+//                        myp.setCreatedAt(new Date());
+//                        myp.setCreatedBy(webUserController.getLoggedUser());
+//                        getFacade().create(myp);
+//                    } else {
+//                        myp.setLastEditBy(webUserController.getLoggedUser());
+//                        myp.setLastEditeAt(new Date());
+//                    }
+//                    myp.setLongValue1(midyearPopulation);
+//                    getFacade().edit(myp);
+//
+//                    Relationship tp = findRelationship(district, RelationshipType.Over_35_Population, getYear());
+//                    if (tp == null) {
+//                        tp = new Relationship();
+//                        tp.setArea(district);
+//                        tp.setRelationshipType(RelationshipType.Over_35_Population);
+//                        tp.setYearInt(getYear());
+//                        tp.setCreatedAt(new Date());
+//                        tp.setCreatedBy(webUserController.getLoggedUser());
+//                        getFacade().create(tp);
+//                    } else {
+//                        tp.setLastEditBy(webUserController.getLoggedUser());
+//                        tp.setLastEditeAt(new Date());
+//                    }
+//                    tp.setLongValue1(targetPopulation);
+//                    getFacade().edit(tp);
+//
+//                    district.setTotalPopulation(midyearPopulation);
+//                    district.setTotalTargetPopulation(targetPopulation);
+//                    getAreaFacade().edit(district);
+//
+//                }
+//
+//                lk.gov.health.phsp.facade.util.JsfUtil.addSuccessMessage("Succesful. All the data in Excel File Impoted to the database");
+//                return "";
+//            } catch (IOException ex) {
+//                lk.gov.health.phsp.facade.util.JsfUtil.addErrorMessage(ex.getMessage());
+//                return "";
+//            } catch (BiffException e) {
+//                lk.gov.health.phsp.facade.util.JsfUtil.addErrorMessage(e.getMessage());
+//                return "";
+//            }
+//        } catch (Exception e) {
+//            return "";
+//        }
+//    }
 
     public void addEmpowerementData() {
         if (adding == null) {
@@ -332,6 +333,13 @@ public class RelationshipController implements Serializable {
     }
 
     public void fillInstitutionsForSelectedFormSet() {
+        items = findRelationships(formset, RelationshipType.Formsets_for_institution);
+        if (items == null) {
+            items = new ArrayList<>();
+        }
+    }
+    
+    public void fillFromsetsForSelectedInstitution() {
         items = findRelationships(institution, RelationshipType.Formsets_for_institution);
         if (items == null) {
             items = new ArrayList<>();

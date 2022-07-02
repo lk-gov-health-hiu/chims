@@ -7,15 +7,8 @@ import lk.gov.health.phsp.facade.AreaFacade;
 import lk.gov.health.phsp.facade.CoordinateFacade;
 import lk.gov.health.phsp.facade.util.JsfUtil;
 import lk.gov.health.phsp.facade.util.JsfUtil.PersistAction;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 
 import java.io.Serializable;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -31,26 +24,14 @@ import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import jxl.Cell;
-import jxl.Sheet;
-import jxl.Workbook;
-import jxl.read.biff.BiffException;
-import lk.gov.health.phsp.entity.Institution;
 import lk.gov.health.phsp.entity.Relationship;
 import lk.gov.health.phsp.enums.RelationshipType;
-import org.primefaces.model.UploadedFile;
 import org.primefaces.event.map.OverlaySelectEvent;
+import org.primefaces.model.file.UploadedFile;
 import org.primefaces.model.map.DefaultMapModel;
 import org.primefaces.model.map.LatLng;
 import org.primefaces.model.map.MapModel;
 import org.primefaces.model.map.Polygon;
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
 
 @Named
 @SessionScoped
@@ -83,7 +64,7 @@ public class AreaController implements Serializable {
     private InstitutionController institutionController;
     @Inject
     private UserTransactionController userTransactionController;
-    
+
     @Inject
     AreaApplicationController areaApplicationController;
 
@@ -112,7 +93,7 @@ public class AreaController implements Serializable {
     private RelationshipType[] rts;
 
     public String listGnAreas() {
-        items = getAreas(AreaType.GN, null);
+        items = areaApplicationController.getAllAreas(AreaType.GN);
         return "/area/gn_list";
     }
 
@@ -167,11 +148,7 @@ public class AreaController implements Serializable {
     }
 
     public String toListAreasForSysAdmin() {
-        String j = "select a from Area a where a.retired=:ret order by a.name";
-        Map m = new HashMap();
-        m.put("ret", false);
-        items = getFacade().findByJpql(j, m);
-        userTransactionController.recordTransaction("List Areas By SysAdmin");
+        items = areaApplicationController.getAllAreas();
         return "/area/list";
     }
 
@@ -183,128 +160,6 @@ public class AreaController implements Serializable {
     public String toSearchAreasForSysAdmin() {
         userTransactionController.recordTransaction("Search Areas By SysAdmin");
         return "/area/search";
-    }
-
-    public String importAreasFromExcel() {
-        try {
-            String strGnName;
-            String strGNCode;
-            String strDsName;
-            String strDistrictName;
-            String strProvinceName;
-            String strTotalPopulationNumber;
-            String strMalePopulationNumber;
-            String strFemalePopulationNumber;
-            String strArea;
-            Long totalPopulation = null;
-            Long malePopulation = null;
-            Long femalePopulation = null;
-            Double area = null;
-
-            Area province;
-            Area district;
-            Area dsd;
-            Area moh;
-            Area phm;
-            Area phi;
-            Area gn;
-
-            File inputWorkbook;
-            Workbook w;
-            Cell cell;
-            InputStream in;
-
-            JsfUtil.addSuccessMessage(file.getFileName());
-
-            try {
-                JsfUtil.addSuccessMessage(file.getFileName());
-                in = file.getInputstream();
-                File f;
-                f = new File(Calendar.getInstance().getTimeInMillis() + file.getFileName());
-                FileOutputStream out = new FileOutputStream(f);
-                Integer read = 0;
-                byte[] bytes = new byte[1024];
-                while ((read = in.read(bytes)) != -1) {
-                    out.write(bytes, 0, read);
-                }
-                in.close();
-                out.flush();
-                out.close();
-
-                inputWorkbook = new File(f.getAbsolutePath());
-
-                JsfUtil.addSuccessMessage("Excel File Opened");
-                w = Workbook.getWorkbook(inputWorkbook);
-                Sheet sheet = w.getSheet(0);
-
-                for (Integer i = startRow; i < sheet.getRows(); i++) {
-
-                    Map m = new HashMap();
-
-                    cell = sheet.getCell(gnCodeColumnNumber, i);
-                    strGNCode = cell.getContents();
-
-                    cell = sheet.getCell(gnNameColumnNumber, i);
-                    strGnName = cell.getContents();
-
-                    cell = sheet.getCell(districtNameColumnNumber, i);
-                    strDistrictName = cell.getContents();
-
-                    cell = sheet.getCell(provinceNameColumnNumber, i);
-                    strProvinceName = cell.getContents();
-
-                    cell = sheet.getCell(dsdNameColumnNumber, i);
-                    strDsName = cell.getContents();
-
-                    cell = sheet.getCell(totalPopulationColumnNumber, i);
-                    strTotalPopulationNumber = cell.getContents();
-
-                    cell = sheet.getCell(malePopulationColumnNumber, i);
-                    strMalePopulationNumber = cell.getContents();
-
-                    cell = sheet.getCell(femalePopulationColumnNumber, i);
-                    strFemalePopulationNumber = cell.getContents();
-
-                    cell = sheet.getCell(areaColumnNumber, i);
-                    strArea = cell.getContents();
-
-                    province = getAreaByName(strProvinceName, AreaType.Province, true, null);
-                    district = getAreaByName(strDistrictName, AreaType.District, true, province);
-                    dsd = getAreaByName(strDsName, AreaType.DsArea, true, district);
-                    gn = getAreaByCodeAndName(strGNCode, strGnName, AreaType.GN, true, dsd);
-
-                    try {
-                        totalPopulation = Long.parseLong(strTotalPopulationNumber);
-                        malePopulation = Long.parseLong(strMalePopulationNumber);
-                        femalePopulation = Long.parseLong(strFemalePopulationNumber);
-                        area = Double.parseDouble(strArea);
-                    } catch (Exception e) {
-                    }
-
-                    gn.setName(strGnName);
-                    gn.setProvince(province);
-                    gn.setDistrict(district);
-                    gn.setDsd(dsd);
-                    gn.setTotalPopulation(totalPopulation);
-                    gn.setMalePopulation(malePopulation);
-                    gn.setFemalePopulation(femalePopulation);
-                    gn.setSurfaceArea(area);
-                    getFacade().edit(gn);
-
-                }
-
-                JsfUtil.addSuccessMessage("Succesful. All the data in Excel File Impoted to the database");
-                return "";
-            } catch (IOException ex) {
-                JsfUtil.addErrorMessage(ex.getMessage());
-                return "";
-            } catch (BiffException e) {
-                JsfUtil.addErrorMessage(e.getMessage());
-                return "";
-            }
-        } catch (Exception e) {
-            return "";
-        }
     }
 
     public String toImportInstitutionDrainingAreas() {
@@ -348,531 +203,504 @@ public class AreaController implements Serializable {
         return "/area/import_draining_gn_areas_for_institutions";
     }
 
-    public String uploadPopulationOfGnAreas() {
-        successMessage = "";
-        failureMessage = "";
-        Map<Long, Area> districts = new HashMap<>();
-//        <br/>
-        String newLine = "<br/>";
-
-        if (year == null) {
-            JsfUtil.addErrorMessage("Please select the year.");
-            failureMessage = "Process Aborted. No year is given.";
-        }
-
-        if (rt == null) {
-            JsfUtil.addErrorMessage("Please select the population type.");
-            failureMessage = "Process Aborted. No population type is given.";
-        }
-
-        try {
-
-            String strGNCode;
-            String strGnUid;
-            String strData;
-            Long longGnUid = null;
-
-            Area gn = null;
-            Long dataValue;
-
-            File inputWorkbook;
-            Workbook w;
-            Cell cell;
-            InputStream in;
-
-            JsfUtil.addSuccessMessage(file.getFileName());
-
-            try {
-                JsfUtil.addSuccessMessage(file.getFileName());
-                in = file.getInputstream();
-                File f;
-                f = new File(Calendar.getInstance().getTimeInMillis() + file.getFileName());
-                FileOutputStream out = new FileOutputStream(f);
-                Integer read = 0;
-                byte[] bytes = new byte[1024];
-                while ((read = in.read(bytes)) != -1) {
-                    out.write(bytes, 0, read);
-                }
-                in.close();
-                out.flush();
-                out.close();
-
-                inputWorkbook = new File(f.getAbsolutePath());
-
-                successMessage += "File Uploaded Successfully." + newLine;
-
-                w = Workbook.getWorkbook(inputWorkbook);
-                Sheet sheet = w.getSheet(0);
-
-                for (Integer i = startRow; i < sheet.getRows(); i++) {
-
-                    Map m = new HashMap();
-
-                    cell = sheet.getCell(dataColumnNumber, i);
-                    strData = cell.getContents();
-                    if (strData == null) {
-                        failureMessage += "No Population data given for the line number " + i + "." + newLine;
-                        continue;
-                    }
-
-                    try {
-                        dataValue = Long.parseLong(strData);
-                    } catch (Exception e) {
-                        failureMessage += "Wrong data for in the Population data COlumn for the line number " + i + "." + newLine;
-                        continue;
-                    }
-
-                    if (gnCodeColumnNumber != null && gnUidColumnNumber != null) {
-                        cell = sheet.getCell(gnUidColumnNumber, i);
-                        strGnUid = cell.getContents();
-
-                        cell = sheet.getCell(gnCodeColumnNumber, i);
-                        strGNCode = cell.getContents();
-
-                        if (strGnUid == null && strGNCode == null) {
-                            failureMessage += "No Area UID or Area Code given for the line number " + i + "." + newLine;
-                            continue;
-                        } else if (strGnUid != null && strGNCode != null) {
-                            try {
-                                longGnUid = Long.parseLong(strGnUid);
-                                gn = getAreaByUid(longGnUid, null);
-                            } catch (NumberFormatException e) {
-
-                            }
-                            if (gn == null) {
-                                gn = getAreaByCode(strGNCode, null);
-                            }
-                        } else if (strGnUid != null) {
-                            try {
-                                longGnUid = Long.parseLong(strGnUid);
-                            } catch (NumberFormatException e) {
-
-                            }
-                            gn = getAreaByUid(longGnUid, null);
-                        } else if (strGNCode != null) {
-                            gn = getAreaByCode(strGNCode, null);
-                        }
-                    } else if (gnCodeColumnNumber != null) {
-                        cell = sheet.getCell(gnCodeColumnNumber, i);
-                        strGNCode = cell.getContents();
-
-                        if (strGNCode == null || strGNCode.trim().equals("")) {
-                            failureMessage += "No GN Code for the line number " + i + newLine;
-                            continue;
-                        }
-                        gn = getAreaByCode(strGNCode, null);
-
-                    } else if (gnUidColumnNumber != null) {
-                        cell = sheet.getCell(gnUidColumnNumber, i);
-                        strGnUid = cell.getContents();
-                        if (strGnUid == null || strGnUid.trim().equals("")) {
-                            failureMessage += "No GN UID for the line number " + i + "." + newLine;
-                            continue;
-                        }
-                        try {
-                            longGnUid = Long.parseLong(strGnUid);
-                            gn = getAreaByUid(longGnUid, null);
-                        } catch (NumberFormatException e) {
-
-                        }
-                    } else {
-                        failureMessage += "Both Area UID and Area Code for the line number " + i + newLine + " is missing.";
-                        continue;
-                    }
-
-                    if (gn == null) {
-                        failureMessage += "No Matching area for Code or UID for the line number " + i + newLine;
-                        continue;
-                    }
-
-                    switch (rt) {
-                        case Empanelled_Female_Population:
-                            gn.setFemalePopulation(dataValue);
-                            break;
-                        case Empanelled_Male_Population:
-                            gn.setMalePopulation(dataValue);
-                            break;
-                        case Empanelled_Population:
-                            gn.setTotalPopulation(dataValue);
-                            break;
-                        case Estimated_Midyear_Female_Population:
-                            gn.setFemalePopulation(dataValue);
-                            break;
-                        case Estimated_Midyear_Male_Population:
-                            gn.setMalePopulation(dataValue);
-                            break;
-                        case Estimated_Midyear_Population:
-                            gn.setTotalPopulation(dataValue);
-                            break;
-                        case Over_35_Female_Population:
-                            gn.setMaleTargetPopulation(dataValue);
-                            break;
-                        case Over_35_Male_Population:
-                            gn.setFemaleTargePopulation(dataValue);
-                            break;
-                        case Over_35_Population:
-                            gn.setTotalTargetPopulation(dataValue);
-                            break;
-                    }
-
-                    getFacade().edit(gn);
-
-                    Relationship trt = relationshipController.findRelationship(gn, rt, year, true);
-
-                    trt.setLongValue1(dataValue);
-                    trt.setLastEditBy(webUserController.getLoggedUser());
-                    trt.setLastEditeAt(new Date());
-                    getRelationshipController().save(trt);
-
-                    if (gn.getParentArea().getParentArea() != null) {
-                        Area dis = gn.getParentArea().getParentArea();
-                        districts.put(dis.getId(), dis);
-                    }
-
-                }
-                JsfUtil.addSuccessMessage("Completed. Please check success and failure messages.");
-                return "";
-            } catch (IOException | BiffException ex) {
-                JsfUtil.addErrorMessage(ex.getMessage());
-                failureMessage += "Error. " + ex.getMessage() + ". Aborting the process." + newLine;
-                return "";
-            }
-        } catch (IndexOutOfBoundsException e) {
-            failureMessage += "Error. " + e.getMessage() + ". Aborting the process." + newLine;
-            return "";
-        }
-
-    }
-
-    public String uploadInstitutionDrainingAreas() {
-        successMessage = "";
-        failureMessage = "";
-//        <br/>
-        String newLine = "<br/>";
-        try {
-
-            String strGNCode;
-            String strGnUid;
-            String strIns;
-            Long longGnUid = null;
-
-            Area gn = null;
-            Institution ins;
-
-            File inputWorkbook;
-            Workbook w;
-            Cell cell;
-            InputStream in;
-
-            JsfUtil.addSuccessMessage(file.getFileName());
-
-            try {
-                JsfUtil.addSuccessMessage(file.getFileName());
-                in = file.getInputstream();
-                File f;
-                f = new File(Calendar.getInstance().getTimeInMillis() + file.getFileName());
-                FileOutputStream out = new FileOutputStream(f);
-                Integer read = 0;
-                byte[] bytes = new byte[1024];
-                while ((read = in.read(bytes)) != -1) {
-                    out.write(bytes, 0, read);
-                }
-                in.close();
-                out.flush();
-                out.close();
-
-                inputWorkbook = new File(f.getAbsolutePath());
-
-                successMessage += "File Uploaded Successfully." + newLine;
-
-                w = Workbook.getWorkbook(inputWorkbook);
-                Sheet sheet = w.getSheet(0);
-
-                for (Integer i = startRow; i < sheet.getRows(); i++) {
-
-                    Map m = new HashMap();
-
-                    cell = sheet.getCell(institutionColumnNumber, i);
-                    strIns = cell.getContents();
-                    if (strIns == null) {
-                        failureMessage += "No Institution given for the line number " + i + "." + newLine;
-                        continue;
-                    }
-
-                    ins = getInstitutionController().findInstitutionByName(strIns);
-                    if (ins == null) {
-                        failureMessage += "No Institution found for the name given for the line number " + i + "." + newLine;
-                        continue;
-                    }
-
-                    if (gnCodeColumnNumber != null && gnUidColumnNumber != null) {
-                        cell = sheet.getCell(gnUidColumnNumber, i);
-                        strGnUid = cell.getContents();
-
-                        cell = sheet.getCell(gnCodeColumnNumber, i);
-                        strGNCode = cell.getContents();
-
-                        if (strGnUid == null && strGNCode == null) {
-                            failureMessage += "No Area UID or Area Code given for the line number " + i + "." + newLine;
-                            continue;
-                        } else if (strGnUid != null && strGNCode != null) {
-                            try {
-                                longGnUid = Long.parseLong(strGnUid);
-                                gn = getAreaByUid(longGnUid, null);
-                            } catch (NumberFormatException e) {
-
-                            }
-                            if (gn == null) {
-                                gn = getAreaByCode(strGNCode, null);
-                            }
-                        } else if (strGnUid != null) {
-                            try {
-                                longGnUid = Long.parseLong(strGnUid);
-                            } catch (NumberFormatException e) {
-
-                            }
-                            gn = getAreaByUid(longGnUid, null);
-                        } else if (strGNCode != null) {
-                            gn = getAreaByCode(strGNCode, null);
-                        }
-                    } else if (gnCodeColumnNumber != null) {
-                        cell = sheet.getCell(gnCodeColumnNumber, i);
-                        strGNCode = cell.getContents();
-
-                        if (strGNCode == null || strGNCode.trim().equals("")) {
-                            failureMessage += "No GN Code for the line number " + i + newLine;
-                            continue;
-                        }
-                        gn = getAreaByCode(strGNCode, null);
-
-                    } else if (gnUidColumnNumber != null) {
-                        cell = sheet.getCell(gnUidColumnNumber, i);
-                        strGnUid = cell.getContents();
-                        if (strGnUid == null || strGnUid.trim().equals("")) {
-                            failureMessage += "No GN UID for the line number " + i + "." + newLine;
-                            continue;
-                        }
-                        try {
-                            longGnUid = Long.parseLong(strGnUid);
-                            gn = getAreaByUid(longGnUid, null);
-                        } catch (NumberFormatException e) {
-
-                        }
-                    } else {
-                        failureMessage += "Both Area UID and Area Code for the line number " + i + newLine + " is missing.";
-                        continue;
-                    }
-
-                    if (gn == null) {
-                        failureMessage += "No Matching area for Code or UID for the line number " + i + newLine;
-                        continue;
-                    }
-
-                    if (gn.getPmci() == null) {
-                        successMessage += "Successfully added " + gn.getName() + "(" + gn.getCode() + ") to the " + ins.getName() + " as a draining area." + newLine;
-                        gn.setPmci(ins);
-                        getFacade().edit(gn);
-                    } else {
-                        if (gn.getPmci().equals(ins)) {
-                            successMessage += "The " + gn.getName() + "(" + gn.getCode() + ") is already have the " + ins.getName() + " as the draining area. No update was necessary." + newLine;
-                        } else {
-                            successMessage += "The " + gn.getName() + "(" + gn.getCode() + ") is already had " + gn.getPmci().getName() + " as the draining area. It was replaced with " + ins.getName() + " as the new draining area." + newLine;
-                            getFacade().edit(gn);
-                        }
-                    }
-
-                }
-                JsfUtil.addSuccessMessage("Completed. Please check success and failure messages.");
-                return "";
-            } catch (IOException | BiffException ex) {
-                JsfUtil.addErrorMessage(ex.getMessage());
-                failureMessage += "Error. " + ex.getMessage() + ". Aborting the process." + newLine;
-                return "";
-            }
-        } catch (IndexOutOfBoundsException e) {
-            failureMessage += "Error. " + e.getMessage() + ". Aborting the process." + newLine;
-            return "";
-        }
-    }
-
-    public String importUpdateUidFromCodeOfAreasFromExcel() {
-        successMessage = "";
-        failureMessage = "";
-//        <br/>
-        String newLine = "<br/>";
-        try {
-
-            String strGNCode;
-            String strGnUid;
-            Long longGnUid;
-
-            Area gn;
-
-            File inputWorkbook;
-            Workbook w;
-            Cell cell;
-            InputStream in;
-
-            JsfUtil.addSuccessMessage(file.getFileName());
-
-            try {
-                JsfUtil.addSuccessMessage(file.getFileName());
-                in = file.getInputstream();
-                File f;
-                f = new File(Calendar.getInstance().getTimeInMillis() + file.getFileName());
-                FileOutputStream out = new FileOutputStream(f);
-                Integer read = 0;
-                byte[] bytes = new byte[1024];
-                while ((read = in.read(bytes)) != -1) {
-                    out.write(bytes, 0, read);
-                }
-                in.close();
-                out.flush();
-                out.close();
-
-                inputWorkbook = new File(f.getAbsolutePath());
-
-                successMessage += "File Uploaded Successfully." + newLine;
-
-                w = Workbook.getWorkbook(inputWorkbook);
-                Sheet sheet = w.getSheet(0);
-
-                for (Integer i = startRow; i < sheet.getRows(); i++) {
-
-                    Map m = new HashMap();
-
-                    cell = sheet.getCell(gnCodeColumnNumber, i);
-                    strGNCode = cell.getContents();
-
-                    if (strGNCode == null || strGNCode.trim().equals("")) {
-                        failureMessage += "No GN Code for the line number " + i + newLine;
-                        continue;
-                    }
-
-                    cell = sheet.getCell(gnUidColumnNumber, i);
-                    strGnUid = cell.getContents();
-
-                    if (strGnUid == null || strGnUid.trim().equals("")) {
-                        failureMessage += "No GN UID for the line number " + i + "." + newLine;
-                        continue;
-                    }
-
-                    try {
-                        longGnUid = Long.parseLong(strGnUid);
-                    } catch (NumberFormatException e) {
-                        failureMessage += "The GN UID for the line number " + i + " is not a number." + newLine;
-                        continue;
-                    }
-
-                    gn = getAreaByCode(strGNCode, null);
-
-                    if (gn == null) {
-                        failureMessage += "NO Areas could be found with the code for the line number " + i + " is not a number." + newLine;
-                        continue;
-                    }
-
-                    gn.setAreauid(longGnUid);
-                    getFacade().edit(gn);
-                    successMessage += "Successfully added the UID for " + gn.getName() + "(" + gn.getCode() + ")." + newLine;
-
-                }
-                JsfUtil.addSuccessMessage("Succesful. All the data in Excel File Impoted to the database");
-                return "";
-            } catch (IOException | BiffException ex) {
-                JsfUtil.addErrorMessage(ex.getMessage());
-                failureMessage += "Error. " + ex.getMessage() + ". Aborting the process." + newLine;
-                return "";
-            }
-        } catch (IndexOutOfBoundsException e) {
-            failureMessage += "Error. " + e.getMessage() + ". Aborting the process." + newLine;
-            return "";
-        }
-    }
-
-    public void updateNationalAndProvincialPopulationFromDistrictPopulations() {
-        for (RelationshipType t : getRts()) {
-            
-            Area sl = getNationalArea();
-            
-            Relationship slr = getRelationshipController().findRelationship(sl, t, year, true);
-            Long pop = 0l;
-            for (Area d : getDistricts()) {
-                
-                Relationship dr = getRelationshipController().findRelationship(d, t, year, false);
-                if (dr != null) {
-                    if (dr.getLongValue1() != null) {
-                       
-                        pop += dr.getLongValue1();
-                    }
-                }
-            }
-            slr.setLongValue1(pop);
-            getRelationshipController().save(slr);
-            for (Area p : getProvinces()) {
-                
-                List<Area> pds = getAreas(AreaType.District, p);
-                Relationship pr = getRelationshipController().findRelationship(p, t, year, true);
-                Long ppop = 0l;
-                for (Area d : pds) {
-                    
-                    Relationship pdr = getRelationshipController().findRelationship(d, t, year, false);
-                    if (pdr != null) {
-                        if (pdr.getLongValue1() != null) {
-                            ppop += pdr.getLongValue1();
-                        }
-                    }
-                }
-                pr.setLongValue1(ppop);
-                getRelationshipController().save(pr);
-            }
-        }
-
-    }
+//    public String uploadPopulationOfGnAreas() {
+//        successMessage = "";
+//        failureMessage = "";
+//        Map<Long, Area> districts = new HashMap<>();
+////        <br/>
+//        String newLine = "<br/>";
+//
+//        if (year == null) {
+//            JsfUtil.addErrorMessage("Please select the year.");
+//            failureMessage = "Process Aborted. No year is given.";
+//        }
+//
+//        if (rt == null) {
+//            JsfUtil.addErrorMessage("Please select the population type.");
+//            failureMessage = "Process Aborted. No population type is given.";
+//        }
+//
+//        try {
+//
+//            String strGNCode;
+//            String strGnUid;
+//            String strData;
+//            Long longGnUid = null;
+//
+//            Area gn = null;
+//            Long dataValue;
+//
+//            File inputWorkbook;
+//            Workbook w;
+//            Cell cell;
+//            InputStream in;
+//
+//            JsfUtil.addSuccessMessage(file.getFileName());
+//
+//            try {
+//                JsfUtil.addSuccessMessage(file.getFileName());
+//                in = file.getInputStream();
+//                File f;
+//                f = new File(Calendar.getInstance().getTimeInMillis() + file.getFileName());
+//                FileOutputStream out = new FileOutputStream(f);
+//                Integer read = 0;
+//                byte[] bytes = new byte[1024];
+//                while ((read = in.read(bytes)) != -1) {
+//                    out.write(bytes, 0, read);
+//                }
+//                in.close();
+//                out.flush();
+//                out.close();
+//
+//                inputWorkbook = new File(f.getAbsolutePath());
+//
+//                successMessage += "File Uploaded Successfully." + newLine;
+//
+//                w = Workbook.getWorkbook(inputWorkbook);
+//                Sheet sheet = w.getSheet(0);
+//
+//                for (Integer i = startRow; i < sheet.getRows(); i++) {
+//
+//                    Map m = new HashMap();
+//
+//                    cell = sheet.getCell(dataColumnNumber, i);
+//                    strData = cell.getContents();
+//                    if (strData == null) {
+//                        failureMessage += "No Population data given for the line number " + i + "." + newLine;
+//                        continue;
+//                    }
+//
+//                    try {
+//                        dataValue = Long.parseLong(strData);
+//                    } catch (Exception e) {
+//                        failureMessage += "Wrong data for in the Population data COlumn for the line number " + i + "." + newLine;
+//                        continue;
+//                    }
+//
+//                    if (gnCodeColumnNumber != null && gnUidColumnNumber != null) {
+//                        cell = sheet.getCell(gnUidColumnNumber, i);
+//                        strGnUid = cell.getContents();
+//
+//                        cell = sheet.getCell(gnCodeColumnNumber, i);
+//                        strGNCode = cell.getContents();
+//
+//                        if (strGnUid == null && strGNCode == null) {
+//                            failureMessage += "No Area UID or Area Code given for the line number " + i + "." + newLine;
+//                            continue;
+//                        } else if (strGnUid != null && strGNCode != null) {
+//                            try {
+//                                longGnUid = Long.parseLong(strGnUid);
+//                                gn = getAreaByUid(longGnUid, null);
+//                            } catch (NumberFormatException e) {
+//
+//                            }
+//                            if (gn == null) {
+//                                gn = getAreaByCode(strGNCode, null);
+//                            }
+//                        } else if (strGnUid != null) {
+//                            try {
+//                                longGnUid = Long.parseLong(strGnUid);
+//                            } catch (NumberFormatException e) {
+//
+//                            }
+//                            gn = getAreaByUid(longGnUid, null);
+//                        } else if (strGNCode != null) {
+//                            gn = getAreaByCode(strGNCode, null);
+//                        }
+//                    } else if (gnCodeColumnNumber != null) {
+//                        cell = sheet.getCell(gnCodeColumnNumber, i);
+//                        strGNCode = cell.getContents();
+//
+//                        if (strGNCode == null || strGNCode.trim().equals("")) {
+//                            failureMessage += "No GN Code for the line number " + i + newLine;
+//                            continue;
+//                        }
+//                        gn = getAreaByCode(strGNCode, null);
+//
+//                    } else if (gnUidColumnNumber != null) {
+//                        cell = sheet.getCell(gnUidColumnNumber, i);
+//                        strGnUid = cell.getContents();
+//                        if (strGnUid == null || strGnUid.trim().equals("")) {
+//                            failureMessage += "No GN UID for the line number " + i + "." + newLine;
+//                            continue;
+//                        }
+//                        try {
+//                            longGnUid = Long.parseLong(strGnUid);
+//                            gn = getAreaByUid(longGnUid, null);
+//                        } catch (NumberFormatException e) {
+//
+//                        }
+//                    } else {
+//                        failureMessage += "Both Area UID and Area Code for the line number " + i + newLine + " is missing.";
+//                        continue;
+//                    }
+//
+//                    if (gn == null) {
+//                        failureMessage += "No Matching area for Code or UID for the line number " + i + newLine;
+//                        continue;
+//                    }
+//
+//                    switch (rt) {
+//                        case Empanelled_Female_Population:
+//                            gn.setFemalePopulation(dataValue);
+//                            break;
+//                        case Empanelled_Male_Population:
+//                            gn.setMalePopulation(dataValue);
+//                            break;
+//                        case Empanelled_Population:
+//                            gn.setTotalPopulation(dataValue);
+//                            break;
+//                        case Estimated_Midyear_Female_Population:
+//                            gn.setFemalePopulation(dataValue);
+//                            break;
+//                        case Estimated_Midyear_Male_Population:
+//                            gn.setMalePopulation(dataValue);
+//                            break;
+//                        case Estimated_Midyear_Population:
+//                            gn.setTotalPopulation(dataValue);
+//                            break;
+//                        case Over_35_Female_Population:
+//                            gn.setMaleTargetPopulation(dataValue);
+//                            break;
+//                        case Over_35_Male_Population:
+//                            gn.setFemaleTargePopulation(dataValue);
+//                            break;
+//                        case Over_35_Population:
+//                            gn.setTotalTargetPopulation(dataValue);
+//                            break;
+//                    }
+//
+//                    getFacade().edit(gn);
+//
+//                    Relationship trt = relationshipController.findRelationship(gn, rt, year, true);
+//
+//                    trt.setLongValue1(dataValue);
+//                    trt.setLastEditBy(webUserController.getLoggedUser());
+//                    trt.setLastEditeAt(new Date());
+//                    getRelationshipController().save(trt);
+//
+//                    if (gn.getParentArea().getParentArea() != null) {
+//                        Area dis = gn.getParentArea().getParentArea();
+//                        districts.put(dis.getId(), dis);
+//                    }
+//
+//                }
+//                JsfUtil.addSuccessMessage("Completed. Please check success and failure messages.");
+//                return "";
+//            } catch (IOException | BiffException ex) {
+//                JsfUtil.addErrorMessage(ex.getMessage());
+//                failureMessage += "Error. " + ex.getMessage() + ". Aborting the process." + newLine;
+//                return "";
+//            }
+//        } catch (IndexOutOfBoundsException e) {
+//            failureMessage += "Error. " + e.getMessage() + ". Aborting the process." + newLine;
+//            return "";
+//        }
+//
+//    }
+
+//
+//    public String uploadInstitutionDrainingAreas() {
+//        successMessage = "";
+//        failureMessage = "";
+////        <br/>
+//        String newLine = "<br/>";
+//        try {
+//
+//            String strGNCode;
+//            String strGnUid;
+//            String strIns;
+//            Long longGnUid = null;
+//
+//            Area gn = null;
+//            Institution ins;
+//
+//            File inputWorkbook;
+//            Workbook w;
+//            Cell cell;
+//            InputStream in;
+//
+//            JsfUtil.addSuccessMessage(file.getFileName());
+//
+//            try {
+//                JsfUtil.addSuccessMessage(file.getFileName());
+//                in = file.getInputStream();
+//                File f;
+//                f = new File(Calendar.getInstance().getTimeInMillis() + file.getFileName());
+//                FileOutputStream out = new FileOutputStream(f);
+//                Integer read = 0;
+//                byte[] bytes = new byte[1024];
+//                while ((read = in.read(bytes)) != -1) {
+//                    out.write(bytes, 0, read);
+//                }
+//                in.close();
+//                out.flush();
+//                out.close();
+//
+//                inputWorkbook = new File(f.getAbsolutePath());
+//
+//                successMessage += "File Uploaded Successfully." + newLine;
+//
+//                w = Workbook.getWorkbook(inputWorkbook);
+//                Sheet sheet = w.getSheet(0);
+//
+//                for (Integer i = startRow; i < sheet.getRows(); i++) {
+//
+//                    Map m = new HashMap();
+//
+//                    cell = sheet.getCell(institutionColumnNumber, i);
+//                    strIns = cell.getContents();
+//                    if (strIns == null) {
+//                        failureMessage += "No Institution given for the line number " + i + "." + newLine;
+//                        continue;
+//                    }
+//
+//                    ins = getInstitutionController().findInstitutionByName(strIns);
+//                    if (ins == null) {
+//                        failureMessage += "No Institution found for the name given for the line number " + i + "." + newLine;
+//                        continue;
+//                    }
+//
+//                    if (gnCodeColumnNumber != null && gnUidColumnNumber != null) {
+//                        cell = sheet.getCell(gnUidColumnNumber, i);
+//                        strGnUid = cell.getContents();
+//
+//                        cell = sheet.getCell(gnCodeColumnNumber, i);
+//                        strGNCode = cell.getContents();
+//
+//                        if (strGnUid == null && strGNCode == null) {
+//                            failureMessage += "No Area UID or Area Code given for the line number " + i + "." + newLine;
+//                            continue;
+//                        } else if (strGnUid != null && strGNCode != null) {
+//                            try {
+//                                longGnUid = Long.parseLong(strGnUid);
+//                                gn = getAreaByUid(longGnUid, null);
+//                            } catch (NumberFormatException e) {
+//
+//                            }
+//                            if (gn == null) {
+//                                gn = getAreaByCode(strGNCode, null);
+//                            }
+//                        } else if (strGnUid != null) {
+//                            try {
+//                                longGnUid = Long.parseLong(strGnUid);
+//                            } catch (NumberFormatException e) {
+//
+//                            }
+//                            gn = getAreaByUid(longGnUid, null);
+//                        } else if (strGNCode != null) {
+//                            gn = getAreaByCode(strGNCode, null);
+//                        }
+//                    } else if (gnCodeColumnNumber != null) {
+//                        cell = sheet.getCell(gnCodeColumnNumber, i);
+//                        strGNCode = cell.getContents();
+//
+//                        if (strGNCode == null || strGNCode.trim().equals("")) {
+//                            failureMessage += "No GN Code for the line number " + i + newLine;
+//                            continue;
+//                        }
+//                        gn = getAreaByCode(strGNCode, null);
+//
+//                    } else if (gnUidColumnNumber != null) {
+//                        cell = sheet.getCell(gnUidColumnNumber, i);
+//                        strGnUid = cell.getContents();
+//                        if (strGnUid == null || strGnUid.trim().equals("")) {
+//                            failureMessage += "No GN UID for the line number " + i + "." + newLine;
+//                            continue;
+//                        }
+//                        try {
+//                            longGnUid = Long.parseLong(strGnUid);
+//                            gn = getAreaByUid(longGnUid, null);
+//                        } catch (NumberFormatException e) {
+//
+//                        }
+//                    } else {
+//                        failureMessage += "Both Area UID and Area Code for the line number " + i + newLine + " is missing.";
+//                        continue;
+//                    }
+//
+//                    if (gn == null) {
+//                        failureMessage += "No Matching area for Code or UID for the line number " + i + newLine;
+//                        continue;
+//                    }
+//
+//                    if (gn.getPmci() == null) {
+//                        successMessage += "Successfully added " + gn.getName() + "(" + gn.getCode() + ") to the " + ins.getName() + " as a draining area." + newLine;
+//                        gn.setPmci(ins);
+//                        getFacade().edit(gn);
+//                    } else {
+//                        if (gn.getPmci().equals(ins)) {
+//                            successMessage += "The " + gn.getName() + "(" + gn.getCode() + ") is already have the " + ins.getName() + " as the draining area. No update was necessary." + newLine;
+//                        } else {
+//                            successMessage += "The " + gn.getName() + "(" + gn.getCode() + ") is already had " + gn.getPmci().getName() + " as the draining area. It was replaced with " + ins.getName() + " as the new draining area." + newLine;
+//                            getFacade().edit(gn);
+//                        }
+//                    }
+//
+//                }
+//                JsfUtil.addSuccessMessage("Completed. Please check success and failure messages.");
+//                return "";
+//            } catch (IOException | BiffException ex) {
+//                JsfUtil.addErrorMessage(ex.getMessage());
+//                failureMessage += "Error. " + ex.getMessage() + ". Aborting the process." + newLine;
+//                return "";
+//            }
+//        } catch (IndexOutOfBoundsException e) {
+//            failureMessage += "Error. " + e.getMessage() + ". Aborting the process." + newLine;
+//            return "";
+//        }
+//    }
+//
+//    
+    
+//    
+//    public String importUpdateUidFromCodeOfAreasFromExcel() {
+//        successMessage = "";
+//        failureMessage = "";
+////        <br/>
+//        String newLine = "<br/>";
+//        try {
+//
+//            String strGNCode;
+//            String strGnUid;
+//            Long longGnUid;
+//
+//            Area gn;
+//
+//            File inputWorkbook;
+//            Workbook w;
+//            Cell cell;
+//            InputStream in;
+//
+//            JsfUtil.addSuccessMessage(file.getFileName());
+//
+//            try {
+//                JsfUtil.addSuccessMessage(file.getFileName());
+//                in = file.getInputStream();
+//                File f;
+//                f = new File(Calendar.getInstance().getTimeInMillis() + file.getFileName());
+//                FileOutputStream out = new FileOutputStream(f);
+//                Integer read = 0;
+//                byte[] bytes = new byte[1024];
+//                while ((read = in.read(bytes)) != -1) {
+//                    out.write(bytes, 0, read);
+//                }
+//                in.close();
+//                out.flush();
+//                out.close();
+//
+//                inputWorkbook = new File(f.getAbsolutePath());
+//
+//                successMessage += "File Uploaded Successfully." + newLine;
+//
+//                w = Workbook.getWorkbook(inputWorkbook);
+//                Sheet sheet = w.getSheet(0);
+//
+//                for (Integer i = startRow; i < sheet.getRows(); i++) {
+//
+//                    Map m = new HashMap();
+//
+//                    cell = sheet.getCell(gnCodeColumnNumber, i);
+//                    strGNCode = cell.getContents();
+//
+//                    if (strGNCode == null || strGNCode.trim().equals("")) {
+//                        failureMessage += "No GN Code for the line number " + i + newLine;
+//                        continue;
+//                    }
+//
+//                    cell = sheet.getCell(gnUidColumnNumber, i);
+//                    strGnUid = cell.getContents();
+//
+//                    if (strGnUid == null || strGnUid.trim().equals("")) {
+//                        failureMessage += "No GN UID for the line number " + i + "." + newLine;
+//                        continue;
+//                    }
+//
+//                    try {
+//                        longGnUid = Long.parseLong(strGnUid);
+//                    } catch (NumberFormatException e) {
+//                        failureMessage += "The GN UID for the line number " + i + " is not a number." + newLine;
+//                        continue;
+//                    }
+//
+//                    gn = getAreaByCode(strGNCode, null);
+//
+//                    if (gn == null) {
+//                        failureMessage += "NO Areas could be found with the code for the line number " + i + " is not a number." + newLine;
+//                        continue;
+//                    }
+//
+//                    gn.setAreauid(longGnUid);
+//                    getFacade().edit(gn);
+//                    successMessage += "Successfully added the UID for " + gn.getName() + "(" + gn.getCode() + ")." + newLine;
+//
+//                }
+//                JsfUtil.addSuccessMessage("Succesful. All the data in Excel File Impoted to the database");
+//                return "";
+//            } catch (IOException | BiffException ex) {
+//                JsfUtil.addErrorMessage(ex.getMessage());
+//                failureMessage += "Error. " + ex.getMessage() + ". Aborting the process." + newLine;
+//                return "";
+//            }
+//        } catch (IndexOutOfBoundsException e) {
+//            failureMessage += "Error. " + e.getMessage() + ". Aborting the process." + newLine;
+//            return "";
+//        }
+//    }
+//
+//    
+    
+//    public void updateNationalAndProvincialPopulationFromDistrictPopulations() {
+//        for (RelationshipType t : getRts()) {
+//
+//            Area sl = getNationalArea();
+//
+//            Relationship slr = getRelationshipController().findRelationship(sl, t, year, true);
+//            Long pop = 0l;
+//            for (Area d : getDistricts()) {
+//
+//                Relationship dr = getRelationshipController().findRelationship(d, t, year, false);
+//                if (dr != null) {
+//                    if (dr.getLongValue1() != null) {
+//
+//                        pop += dr.getLongValue1();
+//                    }
+//                }
+//            }
+//            slr.setLongValue1(pop);
+//            getRelationshipController().save(slr);
+//            for (Area p : getProvinces()) {
+//
+//                List<Area> pds = getAreas(AreaType.District, p);
+//                Relationship pr = getRelationshipController().findRelationship(p, t, year, true);
+//                Long ppop = 0l;
+//                for (Area d : pds) {
+//
+//                    Relationship pdr = getRelationshipController().findRelationship(d, t, year, false);
+//                    if (pdr != null) {
+//                        if (pdr.getLongValue1() != null) {
+//                            ppop += pdr.getLongValue1();
+//                        }
+//                    }
+//                }
+//                pr.setLongValue1(ppop);
+//                getRelationshipController().save(pr);
+//            }
+//        }
+//
+//    }
 
     public List<Area> getMohAreas() {
         if (mohAreas == null) {
-            mohAreas = getAreas(AreaType.MOH, null);
+            mohAreas = areaApplicationController.getAllAreas(AreaType.MOH);
         }
         return mohAreas;
     }
 
     public List<Area> getMohAreas(Area district) {
-        mohAreas = getAreas(AreaType.MOH, district);
-
+        mohAreas = areaApplicationController.getAllAreas(AreaType.MOH);
+//TODO
         return mohAreas;
-    }
-
-    public List<Area> getMohAreasOfADistrict(Area district) {
-        String j;
-        Map m = new HashMap();
-        j = "select a "
-                + " from Area a "
-                + " where a.name is not null ";
-
-        if (district != null) {
-            j += " and a.district=:pa ";
-            m.put("pa", district);
-        }
-        j += " order by a.name";
-
-        List<Area> areas = getFacade().findByJpql(j, m);
-        return areas;
-    }
-
-    public List<Area> getMohAreasOfRdhs(Area rdhs) {
-        String j;
-        Map m = new HashMap();
-        j = "select a "
-                + " from Area a "
-                + " where a.name is not null ";
-        if (rdhs != null) {
-            j += " and a.rdhsArea=:pa ";
-            m.put("pa", rdhs);
-        }
-        j += " order by a.name";
-
-        List<Area> areas = getFacade().findByJpql(j, m);
-        return areas;
     }
 
     public void setMohAreas(List<Area> mohAreas) {
@@ -881,7 +709,7 @@ public class AreaController implements Serializable {
 
     public List<Area> getPhiAreas() {
         if (phiAreas == null) {
-            phiAreas = getAreas(AreaType.PHI, null);
+            phiAreas = areaApplicationController.getAllAreas(AreaType.PHI);
         }
         return phiAreas;
     }
@@ -892,13 +720,14 @@ public class AreaController implements Serializable {
 
     public List<Area> getRdhsAreas() {
         if (rdhsAreas == null) {
-            rdhsAreas = getAreas(AreaType.District, null);
+            rdhsAreas = areaApplicationController.getAllAreas(AreaType.RdhsAra);
         }
         return rdhsAreas;
     }
 
     public List<Area> rdhsAreas(Area province) {
-        return getAreas(AreaType.District, province);
+        return  areaApplicationController.getAllAreas(AreaType.RdhsAra);
+        //TODO
     }
 
     public void setRdhsAreas(List<Area> rdhsAreas) {
@@ -907,7 +736,7 @@ public class AreaController implements Serializable {
 
     public List<Area> getPdhsAreas() {
         if (pdhsAreas == null) {
-            pdhsAreas = getAreas(AreaType.Province, null);
+            pdhsAreas =  areaApplicationController.getAllAreas(AreaType.PdhsArea);
         }
         return pdhsAreas;
     }
@@ -920,91 +749,61 @@ public class AreaController implements Serializable {
         return getFacade().find(id);
     }
 
-    public List<Area> getGnAreasOfMoh(Area mohArea) {
-        String j;
-        Map m = new HashMap();
-        j = "select a "
-                + " from Area a "
-                + " where a.name is not null ";
-        j += " and a.type=:t";
-        m.put("t", AreaType.GN);
-        j += " and a.moh=:moh ";
-        m.put("moh", mohArea);
-        j += " order by a.name";
-        List<Area> areas = getFacade().findByJpql(j, m);
-        return areas;
-    }
-
-    public Area getNationalArea() {
-        String j = "select a from Area a "
-                + " where "
-                + " a.type=:t "
-                + " and a.retired=false"
-                + " order by a.id desc";
-        Map m = new HashMap();
-        m.put("t", AreaType.National);
-        Area a = getFacade().findFirstByJpql(j, m);
-        if (a == null) {
-            a = new Area();
-            a.setName("Sri Lanka");
-            a.setCode("LK");
-            a.setType(AreaType.National);
-            a.setCreatedAt(new Date());
-            a.setCreatedBy(webUserController.getLoggedUser());
-            getFacade().create(a);
-            List<Area> ps = getAreas(AreaType.Province, null);
-            for (Area p : ps) {
-                p.setParentArea(a);
-                getFacade().edit(p);
-            }
-        }
-        return a;
-    }
-
-    public List<Area> getGnAreasOfPhm(Area mohArea) {
-        String j;
-        Map m = new HashMap();
-        j = "select a "
-                + " from Area a "
-                + " where a.name is not null ";
-        j += " and a.type=:t";
-        m.put("t", AreaType.PHM);
-        j += " and a.moh=:moh ";
-        m.put("moh", mohArea);
-        j += " order by a.name";
-        List<Area> areas = getFacade().findByJpql(j, m);
-        return areas;
-    }
-
-    public List<Area> getDistrictsOfAProvince(Area province) {
-        String j;
-        Map m = new HashMap();
-        j = "select a "
-                + " from Area a "
-                + " where a.name is not null ";
-        j += " and a.type=:t";
-        m.put("t", AreaType.District);
-        j += " and a.parentArea=:p ";
-        m.put("p", province);
-        j += " order by a.name";
-        List<Area> areas = getFacade().findByJpql(j, m);
-        return areas;
-    }
-
-    public List<Area> getPhmAreasOfMoh(Area mohArea) {
-        String j;
-        Map m = new HashMap();
-        j = "select a "
-                + " from Area a "
-                + " where a.name is not null ";
-        j += " and a.type=:t";
-        m.put("t", AreaType.PHM);
-        j += " and a.moh=:moh ";
-        m.put("moh", mohArea);
-        j += " order by a.name";
-        List<Area> areas = getFacade().findByJpql(j, m);
-        return areas;
-    }
+//    public Area getNationalArea() {
+//        String j = "select a from Area a "
+//                + " where "
+//                + " a.type=:t "
+//                + " and a.retired=false"
+//                + " order by a.id desc";
+//        Map m = new HashMap();
+//        m.put("t", AreaType.National);
+//        Area a = getFacade().findFirstByJpql(j, m);
+//        if (a == null) {
+//            a = new Area();
+//            a.setName("Sri Lanka");
+//            a.setCode("LK");
+//            a.setType(AreaType.National);
+//            a.setCreatedAt(new Date());
+//            a.setCreatedBy(webUserController.getLoggedUser());
+//            getFacade().create(a);
+//            List<Area> ps = getAreas(AreaType.Province, null);
+//            for (Area p : ps) {
+//                p.setParentArea(a);
+//                getFacade().edit(p);
+//            }
+//        }
+//        return a;
+//    }
+//
+//    public List<Area> getDistrictsOfAProvince(Area province) {
+//        String j;
+//        Map m = new HashMap();
+//        j = "select a "
+//                + " from Area a "
+//                + " where a.name is not null ";
+//        j += " and a.type=:t";
+//        m.put("t", AreaType.District);
+//        j += " and a.parentArea=:p ";
+//        m.put("p", province);
+//        j += " order by a.name";
+//        List<Area> areas = getFacade().findByJpql(j, m);
+//        return areas;
+//    }
+//
+//    public List<Area> getPhmAreasOfMoh(Area mohArea) {
+//        String j;
+//        Map m = new HashMap();
+//        j = "select a "
+//                + " from Area a "
+//                + " where a.name is not null ";
+//        j += " and a.type=:t";
+//        m.put("t", AreaType.PHM);
+//        j += " and a.moh=:moh ";
+//        m.put("moh", mohArea);
+//        j += " order by a.name";
+//        List<Area> areas = getFacade().findByJpql(j, m);
+//        return areas;
+//    }
 
     public String drawArea() {
         polygonModel = new DefaultMapModel();
@@ -1039,473 +838,476 @@ public class AreaController implements Serializable {
         this.file = file;
     }
 
-    public String saveMohCoordinates() {
-        if (file == null || "".equals(file.getFileName())) {
-            return "";
-        }
-        if (file == null) {
-            JsfUtil.addErrorMessage("Please select an KML File");
-            return "";
-        }
-
-        Area province;
-        Area district;
-        Area moh;
-
-        String text = "";
-        String provinceName = "";
-        String districtName = "";
-        String mohAreaName = "";
-        String centreLon = "";
-        String centreLat = "";
-        String centreLongLat = "";
-        String coordinatesText = "";
-
-        InputStream in;
-        JsfUtil.addSuccessMessage(file.getFileName() + " file uploaded.");
-        try {
-            JsfUtil.addSuccessMessage(file.getFileName());
-            in = file.getInputstream();
-            File f;
-            f = new File(Calendar.getInstance().getTimeInMillis() + file.getFileName());
-            FileOutputStream out = new FileOutputStream(f);
-            Integer read = 0;
-            byte[] bytes = new byte[1024];
-            while ((read = in.read(bytes)) != -1) {
-                out.write(bytes, 0, read);
-            }
-            in.close();
-            out.flush();
-            out.close();
-
-            File fXmlFile = new File(f.getAbsolutePath());
-            DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-            Document doc = dBuilder.parse(fXmlFile);
-
-            doc.getDocumentElement().normalize();
-
-            NodeList nList = doc.getElementsByTagName("Placemark");
-
-            for (Integer gnCount = 0; gnCount < nList.getLength(); gnCount++) {
-                Node gnNode = nList.item(gnCount);
-                NodeList gnNodes = gnNode.getChildNodes();
-                for (Integer gnElemantCount = 0; gnElemantCount < gnNodes.getLength(); gnElemantCount++) {
-
-                    Node gnDataNode = gnNodes.item(gnElemantCount);
-
-                    if (gnElemantCount == 4) {
-                        NodeList gnEdNodes = gnDataNode.getChildNodes();
-                        for (Integer gnEdCount = 0; gnEdCount < gnEdNodes.getLength(); gnEdCount++) {
-                            Node gnEdNode = gnEdNodes.item(gnEdCount);
-                            if (gnEdNode.hasChildNodes()) {
-                                if (gnEdNode.getFirstChild().getTextContent().equals("PROVINCE_N")) {
-                                    provinceName = gnEdNode.getLastChild().getTextContent();
-                                }
-                                if (gnEdNode.getFirstChild().getTextContent().equals("DISTRICT_N")) {
-                                    districtName = gnEdNode.getLastChild().getTextContent();
-                                }
-                                if (gnEdNode.getFirstChild().getTextContent().equals("MOH_N")) {
-                                    mohAreaName = gnEdNode.getLastChild().getTextContent();
-                                }
-                            }
-                        }
-                    }
-
-                    if (gnElemantCount == 6) {
-
-                        NodeList gnEdNodes = gnDataNode.getChildNodes();
-                        for (Integer gnEdCount = 0; gnEdCount < gnEdNodes.getLength(); gnEdCount++) {
-                            Node gnEdNode = gnEdNodes.item(gnEdCount);
-
-                            if (gnEdCount == 2) {
-                                coordinatesText = gnEdNode.getTextContent().trim();
-                            }
-
-                            if (gnEdNode.hasChildNodes()) {
-
-                                centreLongLat = gnEdNode.getFirstChild().getTextContent();
-
-                                if (centreLongLat.contains(",")) {
-                                    String[] ll = centreLongLat.split(",");
-                                    centreLat = ll[1].trim();
-                                    centreLon = ll[0].trim();
-                                }
-
-                                if (gnEdNode.getFirstChild().getTextContent().equals("PROVINCE_N")) {
-                                    provinceName = gnEdNode.getLastChild().getTextContent();
-                                }
-                                if (gnEdNode.getFirstChild().getTextContent().equals("DISTRICT_N")) {
-                                    districtName = gnEdNode.getLastChild().getTextContent();
-                                }
-
-                                if (gnEdNode.getFirstChild().getTextContent().equals("MOH_N")) {
-                                    mohAreaName = gnEdNode.getLastChild().getTextContent();
-                                }
-                            }
-                        }
-                    }
-
-                    if (gnElemantCount == 8) {
-                    }
-
-                }
-
-                province = getAreaByName(provinceName, AreaType.Province, false, null);
-                if (province == null) {
-                    JsfUtil.addErrorMessage("Add " + provinceName);
-                    return "";
-                }
-
-                district = getAreaByName(districtName, AreaType.District, false, null);
-                if (district == null) {
-                    JsfUtil.addErrorMessage("Add " + districtName);
-                    return "";
-                }
-
-                moh = getAreaByName(mohAreaName, AreaType.MOH, false, null);
-                if (moh == null) {
-                    moh = new Area();
-                    moh.setType(AreaType.MOH);
-                    moh.setCentreLatitude(Double.parseDouble(centreLat));
-                    moh.setCentreLongitude(Double.parseDouble(centreLon));
-                    moh.setZoomLavel(12);
-                    moh.setName(mohAreaName);
-                    moh.setParentArea(district);
-                    getFacade().create(moh);
-                    coordinatesText = coordinatesText.replaceAll("[\\t\\n\\r]", " ");
-                    addCoordinates(moh, coordinatesText);
-                } else {
-                    JsfUtil.addErrorMessage("MOH Exists");
-                }
-            }
-        } catch (IOException ex) {
-            JsfUtil.addErrorMessage(ex.getMessage());
-            return "";
-        } catch (ParserConfigurationException ex) {
-            Logger.getLogger(AreaController.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (SAXException ex) {
-            Logger.getLogger(AreaController.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (Exception ex) {
-        }
-        return "";
-    }
-
-    public String saveGnCoordinates() {
-        if (file == null || "".equals(file.getFileName())) {
-            return "";
-        }
-        if (file == null) {
-            JsfUtil.addErrorMessage("Please select an KML File");
-            return "";
-        }
-
-        Area province;
-        Area district;
-        Area moh;
-        Area gn;
-
-        String text = "";
-        String provinceName = "";
-        String districtName = "";
-        String mohAreaName = "";
-        String gnAreaName = "";
-        String gnAreaCode = "";
-        String centreLon = "";
-        String centreLat = "";
-        String centreLongLat = "";
-        String coordinatesText = "";
-
-        InputStream in;
-        JsfUtil.addSuccessMessage(file.getFileName() + " file uploaded.");
-        try {
-            JsfUtil.addSuccessMessage(file.getFileName());
-            in = file.getInputstream();
-            File f;
-            f = new File(Calendar.getInstance().getTimeInMillis() + file.getFileName());
-            FileOutputStream out = new FileOutputStream(f);
-            Integer read = 0;
-            byte[] bytes = new byte[1024];
-            while ((read = in.read(bytes)) != -1) {
-                out.write(bytes, 0, read);
-            }
-            in.close();
-            out.flush();
-            out.close();
-
-            File fXmlFile = new File(f.getAbsolutePath());
-            DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-            Document doc = dBuilder.parse(fXmlFile);
-
-            doc.getDocumentElement().normalize();
-
-            NodeList nList = doc.getElementsByTagName("Placemark");
-
-            for (Integer gnCount = 0; gnCount < nList.getLength(); gnCount++) {
-                Node gnNode = nList.item(gnCount);
-                NodeList gnNodes = gnNode.getChildNodes();
-                for (Integer gnElemantCount = 0; gnElemantCount < gnNodes.getLength(); gnElemantCount++) {
-
-                    Node gnDataNode = gnNodes.item(gnElemantCount);
-
-                    if (gnElemantCount == 4) {
-                        NodeList gnEdNodes = gnDataNode.getChildNodes();
-                        for (Integer gnEdCount = 0; gnEdCount < gnEdNodes.getLength(); gnEdCount++) {
-                            Node gnEdNode = gnEdNodes.item(gnEdCount);
-                            if (gnEdNode.hasChildNodes()) {
-                                if (gnEdNode.getFirstChild().getTextContent().equals("PROVINCE_N")) {
-                                    provinceName = gnEdNode.getLastChild().getTextContent();
-                                }
-                                if (gnEdNode.getFirstChild().getTextContent().equals("DISTRICT_N")) {
-                                    districtName = gnEdNode.getLastChild().getTextContent();
-                                }
-                                if (gnEdNode.getFirstChild().getTextContent().equals("MOH_N")) {
-                                    mohAreaName = gnEdNode.getLastChild().getTextContent();
-                                }
-                                if (gnEdNode.getFirstChild().getTextContent().equals("GND_NO")) {
-                                    gnAreaCode = gnEdNode.getLastChild().getTextContent();
-                                }
-                                if (gnEdNode.getFirstChild().getTextContent().equals("GND_N")) {
-                                    gnAreaName = gnEdNode.getLastChild().getTextContent();
-                                }
-
-                            }
-                        }
-                    }
-
-                    if (gnElemantCount == 6) {
-
-                        NodeList gnEdNodes = gnDataNode.getChildNodes();
-                        for (Integer gnEdCount = 0; gnEdCount < gnEdNodes.getLength(); gnEdCount++) {
-                            Node gnEdNode = gnEdNodes.item(gnEdCount);
-
-                            if (gnEdCount == 2) {
-                                coordinatesText = gnEdNode.getTextContent().trim();
-                            }
-
-                            if (gnEdNode.hasChildNodes()) {
-
-                                centreLongLat = gnEdNode.getFirstChild().getTextContent();
-
-                                if (centreLongLat.contains(",")) {
-                                    String[] ll = centreLongLat.split(",");
-                                    centreLat = ll[1].trim();
-                                    centreLon = ll[0].trim();
-                                }
-
-                                if (gnEdNode.getFirstChild().getTextContent().equals("PROVINCE_N")) {
-                                    provinceName = gnEdNode.getLastChild().getTextContent();
-                                }
-                                if (gnEdNode.getFirstChild().getTextContent().equals("DISTRICT_N")) {
-                                    districtName = gnEdNode.getLastChild().getTextContent();
-                                }
-                                if (gnEdNode.getFirstChild().getTextContent().equals("MOH_N")) {
-                                    mohAreaName = gnEdNode.getLastChild().getTextContent();
-                                }
-                                if (gnEdNode.getFirstChild().getTextContent().equals("GND_NO")) {
-                                    gnAreaCode = gnEdNode.getLastChild().getTextContent();
-                                }
-                                if (gnEdNode.getFirstChild().getTextContent().equals("GND_N")) {
-                                    gnAreaName = gnEdNode.getLastChild().getTextContent();
-                                }
-
-                            }
-                        }
-                    }
-
-                    if (gnElemantCount == 8) {
-                    }
-
-                }
-
-                province = getAreaByName(provinceName, AreaType.Province, false, null);
-                if (province == null) {
-                    JsfUtil.addErrorMessage("Add " + provinceName);
-                    return "";
-                }
-
-                district = getAreaByName(districtName, AreaType.District, false, null);
-                if (district == null) {
-                    JsfUtil.addErrorMessage("Add " + districtName);
-                    return "";
-                }
-
-                moh = getAreaByName(mohAreaName, AreaType.MOH, false, null);
-                if (moh == null) {
-                    JsfUtil.addErrorMessage("Add " + mohAreaName);
-                    return "";
-                }
-
-                gn = getAreaByName(gnAreaCode, AreaType.GN, false, null);
-                if (gn == null) {
-                    gn = new Area();
-                    gn.setType(AreaType.GN);
-                    gn.setCentreLatitude(Double.parseDouble(centreLat));
-                    gn.setCentreLongitude(Double.parseDouble(centreLon));
-                    gn.setZoomLavel(16);
-                    gn.setName(gnAreaName);
-                    gn.setCode(gnAreaCode);
-                    gn.setParentArea(moh);
-                    getFacade().create(gn);
-                    coordinatesText = coordinatesText.replaceAll("[\\t\\n\\r]", " ");
-                    addCoordinates(gn, coordinatesText);
-                } else {
-                    JsfUtil.addErrorMessage("GN Exists");
-                }
-            }
-
-        } catch (IOException ex) {
-            JsfUtil.addErrorMessage(ex.getMessage());
-            return "";
-        } catch (ParserConfigurationException ex) {
-            Logger.getLogger(AreaController.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (SAXException ex) {
-            Logger.getLogger(AreaController.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (Exception ex) {
-        }
-        return "";
-    }
-
-    public void addCoordinates(Area area, String s) {
-        String j = "select c from Coordinate c where c.area=:a";
-        Map m = new HashMap();
-        m.put("a", area);
-        List<Coordinate> cs = coordinateFacade.findByJpql(j, m);
-        for (Coordinate c : cs) {
-            coordinateFacade.remove(c);
-        }
-        String cvsSplitBy = ",";
-        String[] coords = s.split(" ");
-        for (String a : coords) {
-            String[] country = a.split(cvsSplitBy);
-            if (country.length > 1) {
-                Coordinate c = new Coordinate();
-                c.setArea(area);
-                String strLon = country[0].replace("\"", "");
-                String strLat = country[1].replace("\"", "");
-                double lon = Double.parseDouble(strLon);
-                double lat = Double.parseDouble(strLat);
-                c.setLongitude(lon);
-                c.setLatitude(lat);
-                coordinateFacade.create(c);
-            }
-        }
-    }
-
-    public String saveCoordinates() {
-        if (selected == null || selected.getId() == null) {
-            JsfUtil.addErrorMessage("Please select an Area");
-            return "";
-        }
-        if (file == null || "".equals(file.getFileName())) {
-            return "";
-        }
-        if (file == null) {
-            JsfUtil.addErrorMessage("Please select an CSV File");
-            return "";
-        }
-
-        String j = "select c from Coordinate c where c.area=:a";
-        Map m = new HashMap();
-        m.put("a", selected);
-        List<Coordinate> cs = coordinateFacade.findByJpql(j, m);
-        for (Coordinate c : cs) {
-            coordinateFacade.remove(c);
-        }
-
-        try {
-            String line = "";
-            String cvsSplitBy = ",";
-            BufferedReader br = new BufferedReader(new InputStreamReader(file.getInputstream(), "UTF-8"));
-
-            Integer i = 0;
-            while ((line = br.readLine()) != null) {
-                String[] country = line.split(cvsSplitBy);
-
-                if (i > 0) {
-                    if (country.length > 2) {
-                        Coordinate c = new Coordinate();
-                        c.setArea(selected);
-
-                        String strLon = country[1].replace("\"", "");
-                        String strLat = country[2].replace("\"", "");
-
-                        double lon = Double.parseDouble(strLon);
-
-                        double lat = Double.parseDouble(strLat);
-
-                        c.setLongitude(lon);
-                        c.setLatitude(lat);
-
-                        coordinateFacade.create(c);
-                    }
-                }
-                i++;
-            }
-            return "";
-        } catch (IOException e) {
-            return "";
-        }
-
-    }
-
-    public String saveCentreCoordinates() {
-        if (file == null || "".equals(file.getFileName())) {
-            return "";
-        }
-        if (file == null) {
-            JsfUtil.addErrorMessage("Please select an CSV File");
-            return "";
-        }
-
-        try {
-            String line = "";
-            String cvsSplitBy = ",";
-            BufferedReader br = new BufferedReader(new InputStreamReader(file.getInputstream(), "UTF-8"));
-
-            Integer i = 0;
-            while ((line = br.readLine()) != null) {
-                String[] country = line.split(cvsSplitBy);
-                if (i > 0) {
-                    if (country.length > 3) {
-
-                        String areName = country[3].replace("\"", "");
-                        String j = "select c from Area c where upper(c.name) like :a order by c.id desc";
-                        Map m = new HashMap();
-                        m.put("a", areName.toUpperCase() + "%");
-                        Area a = getFacade().findFirstByJpql(j, m);
-
-                        if (a == null) {
-//                            a = new Area();
-//                            a.setName(areName);
-//                            a.setType(AreaType.MOH);
-//                            getFacade().create(a);
-                            break;
-                        }
-
-                        String strLon = country[1].replace("\"", "");
-                        String strLat = country[2].replace("\"", "");
-
-                        double lon = Double.parseDouble(strLon);
-
-                        double lat = Double.parseDouble(strLat);
-
-                        a.setCentreLatitude(lat);
-                        a.setCentreLongitude(lon);
-                        a.setZoomLavel(12);
-
-                        getFacade().edit(a);
-                    }
-                }
-                i++;
-            }
-            return "";
-        } catch (IOException e) {
-            return "";
-        }
-
-    }
+//    
+//    public String saveMohCoordinates() {
+//        if (file == null || "".equals(file.getFileName())) {
+//            return "";
+//        }
+//        if (file == null) {
+//            JsfUtil.addErrorMessage("Please select an KML File");
+//            return "";
+//        }
+//
+//        Area province;
+//        Area district;
+//        Area moh;
+//
+//        String text = "";
+//        String provinceName = "";
+//        String districtName = "";
+//        String mohAreaName = "";
+//        String centreLon = "";
+//        String centreLat = "";
+//        String centreLongLat = "";
+//        String coordinatesText = "";
+//
+//        InputStream in;
+//        JsfUtil.addSuccessMessage(file.getFileName() + " file uploaded.");
+//        try {
+//            JsfUtil.addSuccessMessage(file.getFileName());
+//            in = file.getInputStream();
+//            File f;
+//            f = new File(Calendar.getInstance().getTimeInMillis() + file.getFileName());
+//            FileOutputStream out = new FileOutputStream(f);
+//            Integer read = 0;
+//            byte[] bytes = new byte[1024];
+//            while ((read = in.read(bytes)) != -1) {
+//                out.write(bytes, 0, read);
+//            }
+//            in.close();
+//            out.flush();
+//            out.close();
+//
+//            File fXmlFile = new File(f.getAbsolutePath());
+//            DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+//            DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+//            Document doc = dBuilder.parse(fXmlFile);
+//
+//            doc.getDocumentElement().normalize();
+//
+//            NodeList nList = doc.getElementsByTagName("Placemark");
+//
+//            for (Integer gnCount = 0; gnCount < nList.getLength(); gnCount++) {
+//                Node gnNode = nList.item(gnCount);
+//                NodeList gnNodes = gnNode.getChildNodes();
+//                for (Integer gnElemantCount = 0; gnElemantCount < gnNodes.getLength(); gnElemantCount++) {
+//
+//                    Node gnDataNode = gnNodes.item(gnElemantCount);
+//
+//                    if (gnElemantCount == 4) {
+//                        NodeList gnEdNodes = gnDataNode.getChildNodes();
+//                        for (Integer gnEdCount = 0; gnEdCount < gnEdNodes.getLength(); gnEdCount++) {
+//                            Node gnEdNode = gnEdNodes.item(gnEdCount);
+//                            if (gnEdNode.hasChildNodes()) {
+//                                if (gnEdNode.getFirstChild().getTextContent().equals("PROVINCE_N")) {
+//                                    provinceName = gnEdNode.getLastChild().getTextContent();
+//                                }
+//                                if (gnEdNode.getFirstChild().getTextContent().equals("DISTRICT_N")) {
+//                                    districtName = gnEdNode.getLastChild().getTextContent();
+//                                }
+//                                if (gnEdNode.getFirstChild().getTextContent().equals("MOH_N")) {
+//                                    mohAreaName = gnEdNode.getLastChild().getTextContent();
+//                                }
+//                            }
+//                        }
+//                    }
+//
+//                    if (gnElemantCount == 6) {
+//
+//                        NodeList gnEdNodes = gnDataNode.getChildNodes();
+//                        for (Integer gnEdCount = 0; gnEdCount < gnEdNodes.getLength(); gnEdCount++) {
+//                            Node gnEdNode = gnEdNodes.item(gnEdCount);
+//
+//                            if (gnEdCount == 2) {
+//                                coordinatesText = gnEdNode.getTextContent().trim();
+//                            }
+//
+//                            if (gnEdNode.hasChildNodes()) {
+//
+//                                centreLongLat = gnEdNode.getFirstChild().getTextContent();
+//
+//                                if (centreLongLat.contains(",")) {
+//                                    String[] ll = centreLongLat.split(",");
+//                                    centreLat = ll[1].trim();
+//                                    centreLon = ll[0].trim();
+//                                }
+//
+//                                if (gnEdNode.getFirstChild().getTextContent().equals("PROVINCE_N")) {
+//                                    provinceName = gnEdNode.getLastChild().getTextContent();
+//                                }
+//                                if (gnEdNode.getFirstChild().getTextContent().equals("DISTRICT_N")) {
+//                                    districtName = gnEdNode.getLastChild().getTextContent();
+//                                }
+//
+//                                if (gnEdNode.getFirstChild().getTextContent().equals("MOH_N")) {
+//                                    mohAreaName = gnEdNode.getLastChild().getTextContent();
+//                                }
+//                            }
+//                        }
+//                    }
+//
+//                    if (gnElemantCount == 8) {
+//                    }
+//
+//                }
+//
+//                province = getAreaByName(provinceName, AreaType.Province, false, null);
+//                if (province == null) {
+//                    JsfUtil.addErrorMessage("Add " + provinceName);
+//                    return "";
+//                }
+//
+//                district = getAreaByName(districtName, AreaType.District, false, null);
+//                if (district == null) {
+//                    JsfUtil.addErrorMessage("Add " + districtName);
+//                    return "";
+//                }
+//
+//                moh = getAreaByName(mohAreaName, AreaType.MOH, false, null);
+//                if (moh == null) {
+//                    moh = new Area();
+//                    moh.setType(AreaType.MOH);
+//                    moh.setCentreLatitude(Double.parseDouble(centreLat));
+//                    moh.setCentreLongitude(Double.parseDouble(centreLon));
+//                    moh.setZoomLavel(12);
+//                    moh.setName(mohAreaName);
+//                    moh.setParentArea(district);
+//                    getFacade().create(moh);
+//                    coordinatesText = coordinatesText.replaceAll("[\\t\\n\\r]", " ");
+//                    addCoordinates(moh, coordinatesText);
+//                } else {
+//                    JsfUtil.addErrorMessage("MOH Exists");
+//                }
+//            }
+//        } catch (IOException ex) {
+//            JsfUtil.addErrorMessage(ex.getMessage());
+//            return "";
+//        } catch (ParserConfigurationException ex) {
+//            Logger.getLogger(AreaController.class.getName()).log(Level.SEVERE, null, ex);
+//        } catch (SAXException ex) {
+//            Logger.getLogger(AreaController.class.getName()).log(Level.SEVERE, null, ex);
+//        } catch (Exception ex) {
+//        }
+//        return "";
+//    }
+
+
+//
+//    public String saveGnCoordinates() {
+//        if (file == null || "".equals(file.getFileName())) {
+//            return "";
+//        }
+//        if (file == null) {
+//            JsfUtil.addErrorMessage("Please select an KML File");
+//            return "";
+//        }
+//
+//        Area province;
+//        Area district;
+//        Area moh;
+//        Area gn;
+//
+//        String text = "";
+//        String provinceName = "";
+//        String districtName = "";
+//        String mohAreaName = "";
+//        String gnAreaName = "";
+//        String gnAreaCode = "";
+//        String centreLon = "";
+//        String centreLat = "";
+//        String centreLongLat = "";
+//        String coordinatesText = "";
+//
+//        InputStream in;
+//        JsfUtil.addSuccessMessage(file.getFileName() + " file uploaded.");
+//        try {
+//            JsfUtil.addSuccessMessage(file.getFileName());
+//            in = file.getInputStream();
+//            File f;
+//            f = new File(Calendar.getInstance().getTimeInMillis() + file.getFileName());
+//            FileOutputStream out = new FileOutputStream(f);
+//            Integer read = 0;
+//            byte[] bytes = new byte[1024];
+//            while ((read = in.read(bytes)) != -1) {
+//                out.write(bytes, 0, read);
+//            }
+//            in.close();
+//            out.flush();
+//            out.close();
+//
+//            File fXmlFile = new File(f.getAbsolutePath());
+//            DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+//            DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+//            Document doc = dBuilder.parse(fXmlFile);
+//
+//            doc.getDocumentElement().normalize();
+//
+//            NodeList nList = doc.getElementsByTagName("Placemark");
+//
+//            for (Integer gnCount = 0; gnCount < nList.getLength(); gnCount++) {
+//                Node gnNode = nList.item(gnCount);
+//                NodeList gnNodes = gnNode.getChildNodes();
+//                for (Integer gnElemantCount = 0; gnElemantCount < gnNodes.getLength(); gnElemantCount++) {
+//
+//                    Node gnDataNode = gnNodes.item(gnElemantCount);
+//
+//                    if (gnElemantCount == 4) {
+//                        NodeList gnEdNodes = gnDataNode.getChildNodes();
+//                        for (Integer gnEdCount = 0; gnEdCount < gnEdNodes.getLength(); gnEdCount++) {
+//                            Node gnEdNode = gnEdNodes.item(gnEdCount);
+//                            if (gnEdNode.hasChildNodes()) {
+//                                if (gnEdNode.getFirstChild().getTextContent().equals("PROVINCE_N")) {
+//                                    provinceName = gnEdNode.getLastChild().getTextContent();
+//                                }
+//                                if (gnEdNode.getFirstChild().getTextContent().equals("DISTRICT_N")) {
+//                                    districtName = gnEdNode.getLastChild().getTextContent();
+//                                }
+//                                if (gnEdNode.getFirstChild().getTextContent().equals("MOH_N")) {
+//                                    mohAreaName = gnEdNode.getLastChild().getTextContent();
+//                                }
+//                                if (gnEdNode.getFirstChild().getTextContent().equals("GND_NO")) {
+//                                    gnAreaCode = gnEdNode.getLastChild().getTextContent();
+//                                }
+//                                if (gnEdNode.getFirstChild().getTextContent().equals("GND_N")) {
+//                                    gnAreaName = gnEdNode.getLastChild().getTextContent();
+//                                }
+//
+//                            }
+//                        }
+//                    }
+//
+//                    if (gnElemantCount == 6) {
+//
+//                        NodeList gnEdNodes = gnDataNode.getChildNodes();
+//                        for (Integer gnEdCount = 0; gnEdCount < gnEdNodes.getLength(); gnEdCount++) {
+//                            Node gnEdNode = gnEdNodes.item(gnEdCount);
+//
+//                            if (gnEdCount == 2) {
+//                                coordinatesText = gnEdNode.getTextContent().trim();
+//                            }
+//
+//                            if (gnEdNode.hasChildNodes()) {
+//
+//                                centreLongLat = gnEdNode.getFirstChild().getTextContent();
+//
+//                                if (centreLongLat.contains(",")) {
+//                                    String[] ll = centreLongLat.split(",");
+//                                    centreLat = ll[1].trim();
+//                                    centreLon = ll[0].trim();
+//                                }
+//
+//                                if (gnEdNode.getFirstChild().getTextContent().equals("PROVINCE_N")) {
+//                                    provinceName = gnEdNode.getLastChild().getTextContent();
+//                                }
+//                                if (gnEdNode.getFirstChild().getTextContent().equals("DISTRICT_N")) {
+//                                    districtName = gnEdNode.getLastChild().getTextContent();
+//                                }
+//                                if (gnEdNode.getFirstChild().getTextContent().equals("MOH_N")) {
+//                                    mohAreaName = gnEdNode.getLastChild().getTextContent();
+//                                }
+//                                if (gnEdNode.getFirstChild().getTextContent().equals("GND_NO")) {
+//                                    gnAreaCode = gnEdNode.getLastChild().getTextContent();
+//                                }
+//                                if (gnEdNode.getFirstChild().getTextContent().equals("GND_N")) {
+//                                    gnAreaName = gnEdNode.getLastChild().getTextContent();
+//                                }
+//
+//                            }
+//                        }
+//                    }
+//
+//                    if (gnElemantCount == 8) {
+//                    }
+//
+//                }
+//
+//                province = getAreaByName(provinceName, AreaType.Province, false, null);
+//                if (province == null) {
+//                    JsfUtil.addErrorMessage("Add " + provinceName);
+//                    return "";
+//                }
+//
+//                district = getAreaByName(districtName, AreaType.District, false, null);
+//                if (district == null) {
+//                    JsfUtil.addErrorMessage("Add " + districtName);
+//                    return "";
+//                }
+//
+//                moh = getAreaByName(mohAreaName, AreaType.MOH, false, null);
+//                if (moh == null) {
+//                    JsfUtil.addErrorMessage("Add " + mohAreaName);
+//                    return "";
+//                }
+//
+//                gn = getAreaByName(gnAreaCode, AreaType.GN, false, null);
+//                if (gn == null) {
+//                    gn = new Area();
+//                    gn.setType(AreaType.GN);
+//                    gn.setCentreLatitude(Double.parseDouble(centreLat));
+//                    gn.setCentreLongitude(Double.parseDouble(centreLon));
+//                    gn.setZoomLavel(16);
+//                    gn.setName(gnAreaName);
+//                    gn.setCode(gnAreaCode);
+//                    gn.setParentArea(moh);
+//                    getFacade().create(gn);
+//                    coordinatesText = coordinatesText.replaceAll("[\\t\\n\\r]", " ");
+//                    addCoordinates(gn, coordinatesText);
+//                } else {
+//                    JsfUtil.addErrorMessage("GN Exists");
+//                }
+//            }
+//
+//        } catch (IOException ex) {
+//            JsfUtil.addErrorMessage(ex.getMessage());
+//            return "";
+//        } catch (ParserConfigurationException ex) {
+//            Logger.getLogger(AreaController.class.getName()).log(Level.SEVERE, null, ex);
+//        } catch (SAXException ex) {
+//            Logger.getLogger(AreaController.class.getName()).log(Level.SEVERE, null, ex);
+//        } catch (Exception ex) {
+//        }
+//        return "";
+//    }
+//
+//    public void addCoordinates(Area area, String s) {
+//        String j = "select c from Coordinate c where c.area=:a";
+//        Map m = new HashMap();
+//        m.put("a", area);
+//        List<Coordinate> cs = coordinateFacade.findByJpql(j, m);
+//        for (Coordinate c : cs) {
+//            coordinateFacade.remove(c);
+//        }
+//        String cvsSplitBy = ",";
+//        String[] coords = s.split(" ");
+//        for (String a : coords) {
+//            String[] country = a.split(cvsSplitBy);
+//            if (country.length > 1) {
+//                Coordinate c = new Coordinate();
+//                c.setArea(area);
+//                String strLon = country[0].replace("\"", "");
+//                String strLat = country[1].replace("\"", "");
+//                double lon = Double.parseDouble(strLon);
+//                double lat = Double.parseDouble(strLat);
+//                c.setLongitude(lon);
+//                c.setLatitude(lat);
+//                coordinateFacade.create(c);
+//            }
+//        }
+//    }
+//
+//    public String saveCoordinates() {
+//        if (selected == null || selected.getId() == null) {
+//            JsfUtil.addErrorMessage("Please select an Area");
+//            return "";
+//        }
+//        if (file == null || "".equals(file.getFileName())) {
+//            return "";
+//        }
+//        if (file == null) {
+//            JsfUtil.addErrorMessage("Please select an CSV File");
+//            return "";
+//        }
+//
+//        String j = "select c from Coordinate c where c.area=:a";
+//        Map m = new HashMap();
+//        m.put("a", selected);
+//        List<Coordinate> cs = coordinateFacade.findByJpql(j, m);
+//        for (Coordinate c : cs) {
+//            coordinateFacade.remove(c);
+//        }
+//
+//        try {
+//            String line = "";
+//            String cvsSplitBy = ",";
+//            BufferedReader br = new BufferedReader(new InputStreamReader(file.getInputStream(), "UTF-8"));
+//
+//            Integer i = 0;
+//            while ((line = br.readLine()) != null) {
+//                String[] country = line.split(cvsSplitBy);
+//
+//                if (i > 0) {
+//                    if (country.length > 2) {
+//                        Coordinate c = new Coordinate();
+//                        c.setArea(selected);
+//
+//                        String strLon = country[1].replace("\"", "");
+//                        String strLat = country[2].replace("\"", "");
+//
+//                        double lon = Double.parseDouble(strLon);
+//
+//                        double lat = Double.parseDouble(strLat);
+//
+//                        c.setLongitude(lon);
+//                        c.setLatitude(lat);
+//
+//                        coordinateFacade.create(c);
+//                    }
+//                }
+//                i++;
+//            }
+//            return "";
+//        } catch (IOException e) {
+//            return "";
+//        }
+//
+//    }
+//
+//    public String saveCentreCoordinates() {
+//        if (file == null || "".equals(file.getFileName())) {
+//            return "";
+//        }
+//        if (file == null) {
+//            JsfUtil.addErrorMessage("Please select an CSV File");
+//            return "";
+//        }
+//
+//        try {
+//            String line = "";
+//            String cvsSplitBy = ",";
+//            BufferedReader br = new BufferedReader(new InputStreamReader(file.getInputStream(), "UTF-8"));
+//
+//            Integer i = 0;
+//            while ((line = br.readLine()) != null) {
+//                String[] country = line.split(cvsSplitBy);
+//                if (i > 0) {
+//                    if (country.length > 3) {
+//
+//                        String areName = country[3].replace("\"", "");
+//                        String j = "select c from Area c where upper(c.name) like :a order by c.id desc";
+//                        Map m = new HashMap();
+//                        m.put("a", areName.toUpperCase() + "%");
+//                        Area a = getFacade().findFirstByJpql(j, m);
+//
+//                        if (a == null) {
+////                            a = new Area();
+////                            a.setName(areName);
+////                            a.setType(AreaType.MOH);
+////                            getFacade().create(a);
+//                            break;
+//                        }
+//
+//                        String strLon = country[1].replace("\"", "");
+//                        String strLat = country[2].replace("\"", "");
+//
+//                        double lon = Double.parseDouble(strLon);
+//
+//                        double lat = Double.parseDouble(strLat);
+//
+//                        a.setCentreLatitude(lat);
+//                        a.setCentreLongitude(lon);
+//                        a.setZoomLavel(12);
+//
+//                        getFacade().edit(a);
+//                    }
+//                }
+//                i++;
+//            }
+//            return "";
+//        } catch (IOException e) {
+//            return "";
+//        }
+//
+//    }
 
     public String toAddProvince() {
         selected = new Area();
@@ -1597,40 +1399,40 @@ public class AreaController implements Serializable {
         return "/area/index";
     }
 
-    public List<Area> getAreas(AreaType areaType, Area superArea) {
-        return getAreas(areaType, superArea, null);
-    }
-
-    public List<Area> getAreas(AreaType areaType, Area parentArea, Area grandParentArea) {
-        return getAreas(areaType, parentArea, grandParentArea, null);
-    }
-
-    public List<Area> getAreas(AreaType areaType, Area parentArea, Area grandParentArea, String qry) {
-        String j;
-        Map m = new HashMap();
-        j = "select a "
-                + " from Area a "
-                + " where a.name is not null ";
-        if (areaType != null) {
-            j += " and a.type=:t";
-            m.put("t", areaType);
-        }
-        if (parentArea != null) {
-            j += " and a.parentArea=:pa ";
-            m.put("pa", parentArea);
-        }
-        if (grandParentArea != null) {
-            j += " and a.parentArea.parentArea=:gpa ";
-            m.put("gpa", grandParentArea);
-        }
-        if (qry != null) {
-            j += " and lower(a.name) like :qry ";
-            m.put("qry", "%" + qry.toLowerCase() + "%");
-        }
-        j += " order by a.name";
-        List<Area> areas = getFacade().findByJpql(j, m);
-        return areas;
-    }
+//    public List<Area> getAreas(AreaType areaType, Area superArea) {
+//        return getAreas(areaType, superArea, null);
+//    }
+//
+//    public List<Area> getAreas(AreaType areaType, Area parentArea, Area grandParentArea) {
+//        return getAreas(areaType, parentArea, grandParentArea, null);
+//    }
+//
+//    public List<Area> getAreas(AreaType areaType, Area parentArea, Area grandParentArea, String qry) {
+//        String j;
+//        Map m = new HashMap();
+//        j = "select a "
+//                + " from Area a "
+//                + " where a.name is not null ";
+//        if (areaType != null) {
+//            j += " and a.type=:t";
+//            m.put("t", areaType);
+//        }
+//        if (parentArea != null) {
+//            j += " and a.parentArea=:pa ";
+//            m.put("pa", parentArea);
+//        }
+//        if (grandParentArea != null) {
+//            j += " and a.parentArea.parentArea=:gpa ";
+//            m.put("gpa", grandParentArea);
+//        }
+//        if (qry != null) {
+//            j += " and a.name like :qry ";
+//            m.put("qry", "%" + qry.toLowerCase() + "%");
+//        }
+//        j += " order by a.name";
+//        List<Area> areas = getFacade().findByJpql(j, m);
+//        return areas;
+//    }
 
 //    public List<Area> getAreas(AreaType areaType, Area parentArea, String qry) {
 //        String j;
@@ -1707,214 +1509,140 @@ public class AreaController implements Serializable {
     }
 
     public List<Area> getAreas(String qry, AreaType areaType) {
-        String j;
-        Map m = new HashMap();
-        j = "select a "
-                + " from Area a "
-                + " where upper(a.name) like :n   ";
-        m.put("n", "%" + qry.toUpperCase() + "%");
-        if (areaType != null) {
-            j += " and a.type=:t";
-            m.put("t", areaType);
-        }
-        j += " order by a.code";
-        return getFacade().findByJpql(j, m,30);
+        return areaApplicationController.completeAreas(qry, areaType);
     }
 
-    public Area getAreaByCode(String code, AreaType areaType) {
-        if (code.trim().equals("")) {
-            return null;
-        }
-        String j;
-        Map m = new HashMap();
-        j = "select a "
-                + " from Area a "
-                + " where a.retired=:ret "
-                + " and upper(a.code)=:n  ";
-        m.put("n", code.toUpperCase());
-        m.put("ret", false);
-        if (areaType != null) {
-            j += " and a.type=:t";
-            m.put("t", areaType);
-        }
-        j += " order by a.id desc";
-        Area ta = getFacade().findFirstByJpql(j, m);
-        return ta;
-    }
+//    public Area getAreaByCode(String code, AreaType areaType) {
+//        if (code.trim().equals("")) {
+//            return null;
+//        }
+//        String j;
+//        Map m = new HashMap();
+//        j = "select a "
+//                + " from Area a "
+//                + " where a.retired=:ret "
+//                + " and upper(a.code)=:n  ";
+//        m.put("n", code.toUpperCase());
+//        m.put("ret", false);
+//        if (areaType != null) {
+//            j += " and a.type=:t";
+//            m.put("t", areaType);
+//        }
+//        j += " order by a.id desc";
+//        Area ta = getFacade().findFirstByJpql(j, m);
+//        return ta;
+//    }
 
-    public Area getAreaByUid(Long code, AreaType areaType) {
-        if (code == null) {
-            return null;
-        }
-        String j;
-        Map m = new HashMap();
-        j = "select a "
-                + " from Area a "
-                + " where a.retired=:ret "
-                + " and a.areauid=:n  ";
-        m.put("n", code);
-        m.put("ret", false);
-        if (areaType != null) {
-            j += " and a.type=:t";
-            m.put("t", areaType);
-        }
-        j += " order by a.id desc";
-        Area ta = getFacade().findFirstByJpql(j, m);
-        return ta;
-    }
+//    public Area getAreaByUid(Long code, AreaType areaType) {
+//        if (code == null) {
+//            return null;
+//        }
+//        String j;
+//        Map m = new HashMap();
+//        j = "select a "
+//                + " from Area a "
+//                + " where a.retired=:ret "
+//                + " and a.areauid=:n  ";
+//        m.put("n", code);
+//        m.put("ret", false);
+//        if (areaType != null) {
+//            j += " and a.type=:t";
+//            m.put("t", areaType);
+//        }
+//        j += " order by a.id desc";
+//        Area ta = getFacade().findFirstByJpql(j, m);
+//        return ta;
+//    }
 
-    public Area getAreaByName(String nameOrCode, AreaType areaType, boolean createNew, Area parentArea) {
-        if (nameOrCode.trim().equals("")) {
-            return null;
-        }
-        String j;
-        Map m = new HashMap();
-        j = "select a "
-                + " from Area a "
-                + " where upper(a.name)=:n  ";
-        m.put("n", nameOrCode.toUpperCase());
-        if (areaType != null) {
-            j += " and a.type=:t";
-            m.put("t", areaType);
-        }
-        j += " order by a.code";
+    
+//    
+//    public Area getAreaByName(String nameOrCode, AreaType areaType, boolean createNew, Area parentArea) {
+//        if (nameOrCode.trim().equals("")) {
+//            return null;
+//        }
+//        String j;
+//        Map m = new HashMap();
+//        j = "select a "
+//                + " from Area a "
+//                + " where upper(a.name)=:n  ";
+//        m.put("n", nameOrCode.toUpperCase());
+//        if (areaType != null) {
+//            j += " and a.type=:t";
+//            m.put("t", areaType);
+//        }
+//        j += " order by a.code";
+//
+//        Area ta = getFacade().findFirstByJpql(j, m);
+//        
+//        
+//        if (ta == null && createNew) {
+//            ta = new Area();
+//            ta.setName(nameOrCode);
+//            ta.setType(areaType);
+//            ta.setCreatedAt(new Date());
+//            ta.setCreatedBy(webUserController.getLoggedUser());
+//            ta.setParentArea(parentArea);
+//            getFacade().create(ta);
+//        }
+//        return ta;
+//    }
+//
+//    
+    
+//    public Area getGnAreaByCode(String code) {
+//        AreaType areaType = AreaType.GN;
+//        if (code.trim().equals("")) {
+//            return null;
+//        }
+//        String j;
+//        Map m = new HashMap();
+//        j = "select a "
+//                + " from Area a "
+//                + " where upper(a.code)=:n  ";
+//        m.put("n", code.toUpperCase());
+//
+//        j += " and a.type=:t";
+//        m.put("t", areaType);
+//        Area ta = getFacade().findFirstByJpql(j, m);
+//        return ta;
+//    }
+//
+//    public Area getGnAreaByName(String name) {
+//        AreaType areaType = AreaType.GN;
+//        if (name.trim().equals("")) {
+//            return null;
+//        }
+//        String j;
+//        Map m = new HashMap();
+//        j = "select a "
+//                + " from Area a "
+//                + " where upper(a.name)=:n  ";
+//        m.put("n", name.toUpperCase());
+//
+//        j += " and a.type=:t";
+//        m.put("t", areaType);
+//        Area ta = getFacade().findFirstByJpql(j, m);
+//        return ta;
+//    }
 
-        Area ta = getFacade().findFirstByJpql(j, m);
-        if (ta == null && createNew) {
-            ta = new Area();
-            ta.setName(nameOrCode);
-            ta.setType(areaType);
-            ta.setCreatedAt(new Date());
-            ta.setCreatedBy(webUserController.getLoggedUser());
-            ta.setParentArea(parentArea);
-            getFacade().create(ta);
-        }
-        return ta;
-    }
-
-    public Area getGnAreaByCode(String code) {
-        AreaType areaType = AreaType.GN;
-        if (code.trim().equals("")) {
-            return null;
-        }
-        String j;
-        Map m = new HashMap();
-        j = "select a "
-                + " from Area a "
-                + " where upper(a.code)=:n  ";
-        m.put("n", code.toUpperCase());
-
-        j += " and a.type=:t";
-        m.put("t", areaType);
-        Area ta = getFacade().findFirstByJpql(j, m);
-        return ta;
-    }
-
-    public Area getGnAreaByName(String name) {
-        AreaType areaType = AreaType.GN;
-        if (name.trim().equals("")) {
-            return null;
-        }
-        String j;
-        Map m = new HashMap();
-        j = "select a "
-                + " from Area a "
-                + " where upper(a.name)=:n  ";
-        m.put("n", name.toUpperCase());
-
-        j += " and a.type=:t";
-        m.put("t", areaType);
-        Area ta = getFacade().findFirstByJpql(j, m);
-        return ta;
-    }
-
-    public Area getGnAreaByNameAndCode(String name, String code) {
-        AreaType areaType = AreaType.GN;
-        if (name.trim().equals("")) {
-            return null;
-        }
-        String j;
-        Map m = new HashMap();
-        j = "select a "
-                + " from Area a "
-                + " where upper(a.name)=:n "
-                + " and upper(a.code)=:c ";
-        m.put("n", name.toUpperCase());
-        m.put("c", code.toUpperCase());
-        j += " and a.type=:t";
-        m.put("t", areaType);
-        Area ta = getFacade().findFirstByJpql(j, m);
-        return ta;
-    }
-
-    public Area getAreaByCodeIfNotName(String nameOrCode, AreaType areaType) {
-        if (nameOrCode.trim().equals("")) {
-            return null;
-        }
-        String j;
-        Map m = new HashMap();
-
-        j = "select a "
-                + " from Area a "
-                + " where upper(a.code)=:n  ";
-        m.put("n", nameOrCode.toUpperCase());
-        if (areaType != null) {
-            j += " and a.type=:t";
-            m.put("t", areaType);
-        }
-
-        Area ta = getFacade().findFirstByJpql(j, m);
-
-        if (ta != null) {
-            return ta;
-        }
-
-        m = new HashMap();
-        j = "select a "
-                + " from Area a "
-                + " where upper(a.name)=:n  ";
-        m.put("n", nameOrCode.toUpperCase());
-        if (areaType != null) {
-            j += " and a.type=:t";
-            m.put("t", areaType);
-        }
-        ta = getFacade().findFirstByJpql(j, m);
-        return ta;
-    }
-
-    public Area getAreaByCodeAndName(String code, String name, AreaType areaType, boolean createNew, Area parentArea) {
-        try {
-            if (code.trim().equals("")) {
-                return null;
-            }
-            String j;
-            Map m = new HashMap();
-            j = "select a "
-                    + " from Area a "
-                    + " where upper(a.name) =:n and upper(a.code) =:c ";
-            m.put("c", code.toUpperCase());
-            m.put("n", name.toUpperCase());
-            if (areaType != null) {
-                j += " and a.type=:t";
-                m.put("t", areaType);
-            }
-            j += " order by a.code";
-
-            Area ta = getFacade().findFirstByJpql(j, m);
-            if (ta == null && createNew) {
-                ta = new Area();
-                ta.setCode(code);
-                ta.setType(areaType);
-                ta.setCreatedAt(new Date());
-                ta.setCreatedBy(webUserController.getLoggedUser());
-                ta.setParentArea(parentArea);
-                getFacade().create(ta);
-            }
-            return ta;
-        } catch (Exception e) {
-            return null;
-        }
-    }
+//    public Area getGnAreaByNameAndCode(String name, String code) {
+//        AreaType areaType = AreaType.GN;
+//        if (name.trim().equals("")) {
+//            return null;
+//        }
+//        String j;
+//        Map m = new HashMap();
+//        j = "select a "
+//                + " from Area a "
+//                + " where upper(a.name)=:n "
+//                + " and upper(a.code)=:c ";
+//        m.put("n", name.toUpperCase());
+//        m.put("c", code.toUpperCase());
+//        j += " and a.type=:t";
+//        m.put("t", areaType);
+//        Area ta = getFacade().findFirstByJpql(j, m);
+//        return ta;
+//    }
 
     public AreaController() {
     }
@@ -2018,7 +1746,7 @@ public class AreaController implements Serializable {
     // <editor-fold defaultstate="collapsed" desc="Getters and Setters">
     public List<Area> getProvinces() {
         if (provinces == null) {
-            provinces = getAreas(AreaType.Province, null);
+            provinces =  areaApplicationController.getAllAreas(AreaType.Province);
         }
         return provinces;
     }
@@ -2029,7 +1757,7 @@ public class AreaController implements Serializable {
 
     public List<Area> getDsAreas() {
         if (dsAreas == null) {
-            dsAreas = getAreas(AreaType.DsArea, null);
+            dsAreas =  areaApplicationController.getAllAreas(AreaType.DsArea);
         }
         return dsAreas;
     }
@@ -2143,14 +1871,14 @@ public class AreaController implements Serializable {
     }
 
     public List<Area> getGnAreas() {
-        gnAreas = getAreas(AreaType.GN, null);
+        gnAreas =  areaApplicationController.getAllAreas(AreaType.GN);
         return gnAreas;
     }
 
-    public List<Area> getGnAreas(Area parentArea, AreaType type) {
-        gnAreas = getAreas(AreaType.GN, null);
-        return gnAreas;
-    }
+//    public List<Area> getGnAreas(Area parentArea, AreaType type) {
+//        gnAreas = getAreas(AreaType.GN, null);
+//        return gnAreas;
+//    }
 
     public void setGnAreas(List<Area> gnAreas) {
         this.gnAreas = gnAreas;
@@ -2158,7 +1886,7 @@ public class AreaController implements Serializable {
 
     public List<Area> getDistricts() {
         if (districts == null) {
-            districts = getAreas(AreaType.District, null);
+            districts =  areaApplicationController.getAllAreas(AreaType.District);
         }
         return districts;
     }
@@ -2297,7 +2025,7 @@ public class AreaController implements Serializable {
             try {
                 key = Long.valueOf(value);
             } catch (NumberFormatException e) {
-                key =0l;
+                key = 0l;
             }
             return key;
         }

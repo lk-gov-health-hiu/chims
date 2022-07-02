@@ -100,6 +100,7 @@ public class StoredQueryResultController implements Serializable {
     }
 
     public Long findStoredLongValue(QueryComponent qc, Date fromDate, Date toDate, Institution institution, Replaceable re) {
+        System.out.println("findStoredLongValue");
         StoredQueryResult s;
         s = findStoredQueryResult(qc, fromDate, toDate, institution);
         Long r;
@@ -133,6 +134,7 @@ public class StoredQueryResultController implements Serializable {
     }
 
     public List<InstitutionDataQuery> findStoredQueryData(QueryComponent qc, Date fromDate, Date toDate, List<Institution> institutions, Replaceable re, Integer year, Integer month) {
+        System.out.println("findStoredQueryData");
         List<InstitutionDataQuery> qds = new ArrayList<>();
         Long insSum = 0L;
         for (Institution i : institutions) {
@@ -168,6 +170,7 @@ public class StoredQueryResultController implements Serializable {
     }
 
     public StoredQueryResult findStoredQueryResult(QueryComponent qc, Date fromDate, Date toDate, Institution institution) {
+        System.out.println("findStoredQueryResult");
         String j;
         Map m;
         m = new HashMap();

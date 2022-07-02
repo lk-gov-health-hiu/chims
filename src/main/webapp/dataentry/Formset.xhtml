@@ -13,24 +13,17 @@
 
             <ui:define name="content">
 
-                <h:panelGroup id="formset">
-
-
+                <h:panelGroup id="formset" class="m-2 p-2">
 
                     <h:form>
-                        <p:panelGrid columns="1" style="width: 100%;" >
+                        <p:panelGrid columns="1" style="width: 100%;"  class="m-2 p-2 border-primary" >
                             <f:facet name="header" >
-                                <div style="float: left;">
-                                    <p:outputLabel value="#{clientEncounterComponentFormSetController.selected.encounter.client.person.nameWithTitle}" ></p:outputLabel>
-                                    <p:outputLabel value=", " ></p:outputLabel>
-                                    <p:outputLabel value="#{clientEncounterComponentFormSetController.selected.encounter.client.person.age}" ></p:outputLabel>
-                                    <p:outputLabel value=", " ></p:outputLabel>
-                                    <p:outputLabel value="#{clientEncounterComponentFormSetController.selected.encounter.client.person.sex.name}" ></p:outputLabel>
-                                    <p:outputLabel value="." ></p:outputLabel>
+                                <div style="float: left;" class="h4" >
+                                    <h:outputText value="#{clientEncounterComponentFormSetController.selected.encounter.client.person.nameWithTitle}" ></h:outputText>
                                 </div>
 
                                 <div style="float: right;" >
-                                    <p:panelGrid columns="4" >
+                                    <h:panelGrid columns="4" >
                                         <p:commandButton  rendered="#{!clientEncounterComponentFormSetController.selected.completed}"
                                                           value="Complete" 
                                                           action="#{clientEncounterComponentFormSetController.completeFormset()}" ajax="false"
@@ -53,12 +46,12 @@
 
                                         <p:commandButton  value="Client Profile" action="#{clientEncounterComponentFormSetController.toClientProfileFromEncounter()}" ajax="false" ></p:commandButton>
 
-                                    </p:panelGrid>
+                                    </h:panelGrid>
 
                                 </div>
                             </f:facet>
 
-                            <p:commandButton ajax="false" value="Retrieve Latest" rendered="true"  ></p:commandButton>
+                            <!--<p:commandButton ajax="false" value="Retrieve Latest" rendered="true"  ></p:commandButton>-->
 
                             <h:panelGroup rendered="#{clientEncounterComponentFormSetController.dataFormset.forms.size() eq 1}" >
                                 <div style="#{clientEncounterComponentFormSetController.dataFormset.forms.get(0).df.css}" >
@@ -138,7 +131,7 @@
 
                         </p:panelGrid>
                     </h:form>
-                    <div>
+<!--                    <div>
                         <br/>
                         <br/>
                         <br/>
@@ -179,7 +172,7 @@
                         <br/>
                         <br/>
                         <br/>
-                    </div>
+                    </div>-->
 
                 </h:panelGroup>
             </ui:define>

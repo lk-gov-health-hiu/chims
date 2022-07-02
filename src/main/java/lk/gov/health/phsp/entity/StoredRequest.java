@@ -24,6 +24,7 @@
 package lk.gov.health.phsp.entity;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -31,6 +32,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.Temporal;
 
 /**
  *
@@ -49,7 +51,15 @@ public class StoredRequest implements Serializable {
     private Institution institution;
     private Integer ryear;
     private Integer rmonth;
+    @Temporal(javax.persistence.TemporalType.TIMESTAMP)
+    private Date requestCreatedAt;
     
+    @Temporal(javax.persistence.TemporalType.TIMESTAMP)
+    private Date processStartedAt;
+    @Temporal(javax.persistence.TemporalType.TIMESTAMP)
+    private Date processCompletedAt;
+    private boolean processFailed;
+    private boolean processSuccess;
     
     
     
@@ -116,6 +126,46 @@ public class StoredRequest implements Serializable {
 
     public void setRmonth(Integer rmonth) {
         this.rmonth = rmonth;
+    }
+
+    public Date getProcessStartedAt() {
+        return processStartedAt;
+    }
+
+    public void setProcessStartedAt(Date processStartedAt) {
+        this.processStartedAt = processStartedAt;
+    }
+
+    public Date getProcessCompletedAt() {
+        return processCompletedAt;
+    }
+
+    public void setProcessCompletedAt(Date processCompletedAt) {
+        this.processCompletedAt = processCompletedAt;
+    }
+
+    public boolean isProcessFailed() {
+        return processFailed;
+    }
+
+    public void setProcessFailed(boolean processFailed) {
+        this.processFailed = processFailed;
+    }
+
+    public boolean isProcessSuccess() {
+        return processSuccess;
+    }
+
+    public void setProcessSuccess(boolean processSuccess) {
+        this.processSuccess = processSuccess;
+    }
+
+    public Date getRequestCreatedAt() {
+        return requestCreatedAt;
+    }
+
+    public void setRequestCreatedAt(Date requestCreatedAt) {
+        this.requestCreatedAt = requestCreatedAt;
     }
 
   

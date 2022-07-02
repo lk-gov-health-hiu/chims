@@ -14,9 +14,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -34,11 +32,11 @@ import jxl.Sheet;
 import jxl.Workbook;
 import jxl.read.biff.BiffException;
 import lk.gov.health.phsp.entity.Area;
-import lk.gov.health.phsp.entity.Item;
 import lk.gov.health.phsp.enums.AreaType;
 import lk.gov.health.phsp.enums.InstitutionType;
 import lk.gov.health.phsp.facade.AreaFacade;
-import org.primefaces.model.UploadedFile;
+import org.primefaces.model.file.UploadedFile;
+
 
 @Named
 @SessionScoped
@@ -120,23 +118,7 @@ public class InstitutionController implements Serializable {
         }
     }
 
-    public void addGnToPmc() {
-        if (selected == null) {
-            JsfUtil.addErrorMessage("No PMC is selected");
-            return;
-        }
-        if (area == null) {
-            JsfUtil.addErrorMessage("No GN is selected");
-            return;
-        }
-        area.setPmci(selected);
-        getAreaFacade().edit(area);
-        area = null;
-        fillGnAreasOfSelected();
-        JsfUtil.addSuccessMessage("Successfully added.");
-        userTransactionController.recordTransaction("Add Gn To Pmc");
-    }
-
+  
     public String toAddInstitution() {
         selected = new Institution();
         userTransactionController.recordTransaction("To Add Institution");
@@ -200,51 +182,9 @@ public class InstitutionController implements Serializable {
         return "/institution/search";
     }
 
-    public void removeGnFromPmc() {
-        if (removingArea == null) {
-            JsfUtil.addErrorMessage("Nothing to remove");
-            return;
-        }
-        removingArea.setPmci(null);
-        getAreaFacade().edit(removingArea);
-        fillGnAreasOfSelected();
-        removingArea = null;
-        userTransactionController.recordTransaction("Remove Gn From Pmc");
-    }
+    
 
-    public void fillGnAreasOfSelected() {
-        if (selected == null) {
-            gnAreasOfSelected = new ArrayList<>();
-            return;
-        }
-        String j = "select a from Area a where a.retired=false "
-                + " and a.type=:t "
-                + " and a.pmci=:p "
-                + " order by a.name";
-        Map m = new HashMap();
-        m.put("t", AreaType.GN);
-        m.put("p", selected);
-        gnAreasOfSelected = areaFacade.findByJpql(j, m);
-        userTransactionController.recordTransaction("Fill Gn Areas Of Selected");
-    }
-
-    public List<Area> findDrainingGnAreas(Institution ins) {
-        List<Area> gns;
-        if (ins == null) {
-            gns = new ArrayList<>();
-            return gns;
-        }
-        String j = "select a from Area a where a.retired=false "
-                + " and a.type=:t "
-                + " and a.pmci=:p "
-                + " order by a.name";
-        Map m = new HashMap();
-        m.put("t", AreaType.GN);
-        m.put("p", ins);
-        gns = areaFacade.findByJpql(j, m);
-        return gns;
-    }
-
+  
     public InstitutionController() {
     }
 
@@ -563,7 +503,7 @@ public class InstitutionController implements Serializable {
 
             try {
                 lk.gov.health.phsp.facade.util.JsfUtil.addSuccessMessage(file.getFileName());
-                in = file.getInputstream();
+                in = file.getInputStream();
                 File f;
                 f = new File(Calendar.getInstance().getTimeInMillis() + file.getFileName());
                 FileOutputStream out = new FileOutputStream(f);
@@ -640,24 +580,32 @@ public class InstitutionController implements Serializable {
         }
 
     }
-
+    
     public void saveOrUpdateInstitution() {
         if (selected == null) {
             JsfUtil.addErrorMessage("Nothing to select");
             return;
         }
-        if (selected.getId() == null) {
-            selected.setCreatedAt(new Date());
-            selected.setCreater(webUserController.getLoggedUser());
-            getFacade().create(selected);
+        saveOrUpdateInstitution(selected);
+    }
 
-            institutionApplicationController.getInstitutions().add(selected);
+    public void saveOrUpdateInstitution(Institution saving) {
+        if (saving == null) {
+            JsfUtil.addErrorMessage("Nothing to select");
+            return;
+        }
+        if (saving.getId() == null) {
+            saving.setCreatedAt(new Date());
+            saving.setCreater(webUserController.getLoggedUser());
+            getFacade().create(saving);
+
+            institutionApplicationController.getInstitutions().add(saving);
             items = null;
             JsfUtil.addSuccessMessage("Saved");
         } else {
-            selected.setEditedAt(new Date());
-            selected.setEditer(webUserController.getLoggedUser());
-            getFacade().edit(selected);
+            saving.setEditedAt(new Date());
+            saving.setEditer(webUserController.getLoggedUser());
+            getFacade().edit(saving);
             items = null;
             JsfUtil.addSuccessMessage("Updates");
         }
