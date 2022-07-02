@@ -91,6 +91,12 @@ public class DesignComponentFormSetController implements Serializable {
         userTransactionController.recordTransaction("To Assign Forms Sets");
         return "/systemAdmin/assign_form_sets";
     }
+     
+     public String toChangeFormsets(){
+        backString = "/systemAdmin/manage_data_index";
+        userTransactionController.recordTransaction("To Change Forms Sets");
+        return "/systemAdmin/change_form_sets";
+    }
     
     public String back() {
         userTransactionController.recordTransaction("Back to Manage Metadata");
