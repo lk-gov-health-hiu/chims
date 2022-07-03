@@ -6,7 +6,7 @@
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:f="http://xmlns.jcp.org/jsf/core">
 
-    <body>
+    <h:body>
         <ui:composition template="/template.xhtml">
             <ui:define name="content">
                 <h:form>
@@ -14,7 +14,7 @@
                         <p:panel header="Change Formset" styleClass="pageRootPanel" >
                             <p:panelGrid columns="1" styleClass="alignTop pageInnerPanel" >
                                 <f:facet name="header" >
-                                    <p:commandButton value="Back" action="/insAdmin/data_index" ajax="false" ></p:commandButton>
+                                    <p:commandButton value="Back" action="#{navigationController.backString}" ajax="false" ></p:commandButton>
                                 </f:facet>
 
 
@@ -79,5 +79,5 @@
                 </h:form>
             </ui:define>
         </ui:composition>
-    </body>
+    </h:body>
 </html>
