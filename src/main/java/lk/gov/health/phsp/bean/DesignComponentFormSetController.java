@@ -87,15 +87,21 @@ public class DesignComponentFormSetController implements Serializable {
     }
     
      public String toAssignFormsets(){
-        backString = "/systemAdmin/manage_data_index";
+        backString = "/systemAdmin/manage_metadata_index";
         userTransactionController.recordTransaction("To Assign Forms Sets");
         return "/systemAdmin/assign_form_sets";
     }
      
      public String toChangeFormsets(){
-        backString = "/systemAdmin/manage_data_index";
+        backString = "/systemAdmin/manage_metadata_index";
         userTransactionController.recordTransaction("To Change Forms Sets");
         return "/systemAdmin/change_form_sets";
+    }
+     
+     public String toReplaceFormsets(){
+        backString = "/systemAdmin/manage_metadata_index";
+        userTransactionController.recordTransaction("To Change Forms Sets");
+        return "/systemAdmin/replace_form_sets";
     }
     
     public String back() {
