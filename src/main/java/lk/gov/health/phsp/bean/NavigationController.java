@@ -51,6 +51,8 @@ public class NavigationController implements Serializable {
         this.backString = backString;
     }
     
-    
+    public String navigateBack(){
+        return backString;
+    }
     
 }
