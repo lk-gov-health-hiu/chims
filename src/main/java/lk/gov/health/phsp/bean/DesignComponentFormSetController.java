@@ -55,7 +55,9 @@ public class DesignComponentFormSetController implements Serializable {
     @Inject
     private UserTransactionController userTransactionController;
     @Inject
-    RelationshipController relationshipController;
+    private RelationshipController relationshipController;
+    @Inject
+    private NavigationController navigationController;
     // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="Class Variables">
     private List<DesignComponentFormSet> items = null;
@@ -66,7 +68,6 @@ public class DesignComponentFormSetController implements Serializable {
     private DesignComponentFormSet referanceSet;
     private Institution institution;
     private Institution clinicFormSetsInstitution;
-    private String backString;
 
     // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="Constructors">
@@ -76,25 +77,31 @@ public class DesignComponentFormSetController implements Serializable {
     // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="Navigation Functions">
     public String backToManageFormSets() {
-        userTransactionController.recordTransaction("Back To Manage FormSets");
-        return backString;
+        return navigationController.getBackString();
     }
 
-    public String toImportFormsets(){
-        backString = "/systemAdmin/manage_data_index";
-        userTransactionController.recordTransaction("To Import Forms Sets");
+    public String toImportFormsets() {
+        navigationController.setBackString("/systemAdmin/manage_data_index");
         return "/systemAdmin/import_form_sets";
     }
-    
-     public String toAssignFormsets(){
-        backString = "/systemAdmin/manage_data_index";
-        userTransactionController.recordTransaction("To Assign Forms Sets");
+
+    public String toAssignFormsets() {
+        navigationController.setBackString("/systemAdmin/manage_metadata_index");
         return "/systemAdmin/assign_form_sets";
     }
-    
+
+    public String toChangeFormsets() {
+        navigationController.setBackString("/systemAdmin/manage_metadata_index");
+        return "/systemAdmin/change_form_sets";
+    }
+
+    public String toReplaceFormsets() {
+        navigationController.setBackString("/systemAdmin/manage_metadata_index");
+        return "/systemAdmin/replace_form_sets";
+    }
+
     public String back() {
-        userTransactionController.recordTransaction("Back to Manage Metadata");
-        return backString;
+        return navigationController.getBackString();
     }
 
     public String toManageInstitutionFormssets() {
@@ -104,7 +111,7 @@ public class DesignComponentFormSetController implements Serializable {
                 + " order by s.name";
         Map m = new HashMap();
         m.put("ret", false);
-        backString = "/systemAdmin/index";
+        navigationController.setBackString("/systemAdmin/index");
         items = getFacade().findByJpql(j, m);
         userTransactionController.recordTransaction("To Manage Institution Formssets");
         return "/designComponentFormSet/List_sys";
@@ -117,9 +124,8 @@ public class DesignComponentFormSetController implements Serializable {
                 + " order by s.name";
         Map m = new HashMap();
         m.put("ret", false);
-        backString = "/systemAdmin/index";
+        navigationController.setBackString("/systemAdmin/index");
         items = getFacade().findByJpql(j, m);
-        userTransactionController.recordTransaction("To Manage System Formssets");
         return "/designComponentFormSet/List";
     }
 
@@ -177,7 +183,6 @@ public class DesignComponentFormSetController implements Serializable {
         }
 
         // System.out.println("referanceSet = " + referanceSet);
-
         referanceSet.getReferenceComponent();
         referanceSet.getParentComponent();
 
@@ -282,11 +287,11 @@ public class DesignComponentFormSetController implements Serializable {
     }
 
     public void setBackStringToSysAdmin() {
-        backString = "/designComponentFormSet/List";
+        navigationController.setBackString("/designComponentFormSet/List");
     }
 
     public void setBackStringToInsAdmin() {
-        backString = "/designComponentFormSet/List_Ins";
+        navigationController.setBackString("/designComponentFormSet/List_Ins");
     }
 
     public String toAddFormsForTheSelectedSet() {
@@ -312,19 +317,19 @@ public class DesignComponentFormSetController implements Serializable {
         }
         return ss;
     }
-    
+
     public DesignComponentFormSet getClintFormSet(Institution clinic) {
         List<Relationship> rs = relationshipController.findRelationships(clinic, RelationshipType.Formsets_for_institution);
-        DesignComponentFormSet fs=null;
-        if(rs!=null){
-            for(Relationship r:rs){
+        DesignComponentFormSet fs = null;
+        if (rs != null) {
+            for (Relationship r : rs) {
                 Component c = r.getComponent();
-                if(c!=null){
-                    if(c instanceof DesignComponentFormSet){
+                if (c != null) {
+                    if (c instanceof DesignComponentFormSet) {
                         DesignComponentFormSet ts = (DesignComponentFormSet) r.getComponent();
                         // System.out.println("ts.getComponentSetType() = " + ts.getComponentSetType());
-                        if(ts.getComponentSetType().equals(Patient_Pages)){
-                            fs=ts;
+                        if (ts.getComponentSetType().equals(Patient_Pages)) {
+                            fs = ts;
                         }
                     }
                 }
@@ -338,7 +343,7 @@ public class DesignComponentFormSetController implements Serializable {
         if (clinicFormSets == null) {
             needRefill = true;
         }
-        if (clinicFormSetsInstitution==null || !clinicFormSetsInstitution.equals(clinic)) {
+        if (clinicFormSetsInstitution == null || !clinicFormSetsInstitution.equals(clinic)) {
             clinicFormSetsInstitution = clinic;
             needRefill = true;
         }
@@ -355,15 +360,14 @@ public class DesignComponentFormSetController implements Serializable {
         if (clinicFormSets == null) {
             clinicFormSets = new ArrayList<>();
         }
-        
-        
-        List<Relationship> rs = relationshipController.findRelationships(clinic, RelationshipType.Formsets_for_institution);
-        
-        if(rs!=null){
-            for(Relationship r:rs){
+
+        List<Relationship> rs = relationshipController.findFormsetsForInstitution(clinic);
+
+        if (rs != null) {
+            for (Relationship r : rs) {
                 Component c = r.getComponent();
-                if(c!=null){
-                    if(c instanceof DesignComponentFormSet){
+                if (c != null) {
+                    if (c instanceof DesignComponentFormSet) {
                         DesignComponentFormSet ts = (DesignComponentFormSet) r.getComponent();
                         ts.setCurrentlyUsedIn(clinic);
                         clinicFormSets.add(ts);
@@ -371,7 +375,7 @@ public class DesignComponentFormSetController implements Serializable {
                 }
             }
         }
-        
+
         return clinicFormSets;
     }
 
@@ -555,11 +559,11 @@ public class DesignComponentFormSetController implements Serializable {
     // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="Converter">
     public String getBackString() {
-        return backString;
+        return navigationController.getBackString();
     }
 
     public void setBackString(String backString) {
-        this.backString = backString;
+        navigationController.setBackString(backString);
     }
 
     public List<DesignComponentFormItem> getExportItems() {

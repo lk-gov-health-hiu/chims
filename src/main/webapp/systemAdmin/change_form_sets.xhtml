@@ -6,49 +6,45 @@
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:f="http://xmlns.jcp.org/jsf/core">
 
-    <body>
+    <h:body>
         <ui:composition template="/template.xhtml">
             <ui:define name="content">
                 <h:form>
                     <h:form >
-                        <p:panel header="Replace Formset" styleClass="pageRootPanel" >
+                        <p:panel header="Change Formset" styleClass="pageRootPanel" >
                             <p:panelGrid columns="1" styleClass="alignTop pageInnerPanel" >
                                 <f:facet name="header" >
-                                    <p:commandButton value="Back" action="#{navigationController.navigateBack()}"  ajax="false" ></p:commandButton>
+                                    <p:commandButton value="Back" action="#{navigationController.navigateBack()}" ajax="false" ></p:commandButton>
                                 </f:facet>
 
 
 
                                 <p:panelGrid columns="3" >
                                     <f:facet name="header" >
-                                        <p:outputLabel value="Replace Formset" ></p:outputLabel>
+                                        <p:outputLabel value="Change Formset" ></p:outputLabel>
                                     </f:facet>
-                                    <p:outputLabel value="Formset" ></p:outputLabel>
+                                    <p:outputLabel value="Current Formset" ></p:outputLabel>
                                     <p:autoComplete id="refSet" value="#{relationshipController.formset}" 
                                                     var="s" itemLabel="#{s.name}" itemValue="#{s}"
                                                     completeMethod="#{designComponentFormSetController.completeFormSets}"
-                                                    forceSelection="true" maxResults="15" minQueryLength="3">
+                                                    forceSelection="true" maxResults="15" minQueryLength="2">
                                     </p:autoComplete>
-                                    <p:commandButton id="btnFillIns" value="Fill Institutions with this form" ajax="false"
+                                    <p:commandButton id="btnFillIns" value="Fill Institutions with current formset" ajax="false"
                                                      action="#{relationshipController.fillInstitutionsForSelectedFormSet()}"
                                                      style="float: right;">
                                     </p:commandButton>
 
-                                    <p:outputLabel value="Institute" ></p:outputLabel>
-                                    <p:autoComplete value="#{relationshipController.institution}"
-                                                    var="i" id="forIns" 
-                                                    itemLabel="#{i.name}" itemValue="#{i}"
-                                                    completeMethod="#{institutionController.completeClinics}"
-                                                    forceSelection="true" maxResults="15" minQueryLength="3">
+                                    <p:outputLabel value="New Formset" ></p:outputLabel>
+                                    <p:autoComplete id="newSet" value="#{relationshipController.newFormset}" 
+                                                    var="s" itemLabel="#{s.name}" itemValue="#{s}"
+                                                    completeMethod="#{designComponentFormSetController.completeFormSets}"
+                                                    forceSelection="true" maxResults="15" minQueryLength="2">
                                     </p:autoComplete>
-                                    <p:commandButton id="btnFillForms" value="Fill Forms assigned to this institute" ajax="false"
-                                                     action="#{relationshipController.fillInstitutionsForSelectedFormSet()}"
-                                                     style="float: right;">
-                                    </p:commandButton>
 
 
-                                    <p:commandButton id="btnDup" value="Assign" ajax="false"
-                                                     action="#{relationshipController.addFormsetToInstitution()}"
+
+                                    <p:commandButton id="btnDup" value="Change Formset" ajax="false"
+                                                     action="#{relationshipController.changeFormsets()}"
                                                      process="refSet forIns btnImport" update="datalist refSet forIns" 
                                                      style="float: right;">
                                     </p:commandButton>
@@ -57,8 +53,16 @@
                                 </p:panelGrid>
 
 
-                                <p:dataTable value="#{relationshipController.items}" var="i" rowKey="#{i.id}" paginator="true" 
-                                             rows="10">
+                                <p:dataTable value="#{relationshipController.items}"
+                                             var="i" rowKey="#{i.id}" 
+                                             paginator="true" 
+                                             rows="10"
+                                             paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                             currentPageReportTemplate="{startRecord}-{endRecord} of {totalRecords} records"
+                                             rowsPerPageTemplate="5,10,{ShowAll|'All'}"
+                                             selection="#{relationshipController.selectedRelationships}"
+                                             >
+                                    <p:column selectionMode="multiple" width="10" ></p:column>
                                     <p:column headerText="Institution" >
                                         <p:outputLabel value="#{i.institution.name}" ></p:outputLabel>
                                     </p:column>
@@ -75,5 +79,5 @@
                 </h:form>
             </ui:define>
         </ui:composition>
-    </body>
+    </h:body>
 </html>
