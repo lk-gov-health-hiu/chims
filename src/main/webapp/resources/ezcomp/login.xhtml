@@ -11,18 +11,9 @@
 
     <!-- IMPLEMENTATION -->
     <cc:implementation>
-
-
-
         <h:form >
             <div class="row" >
-                <div class="col-12 d-flex align-content-center m-2 p-2" >
-                    <p:graphicImage library="image" name="hmis_logo.png" class="m-auto w-25" ></p:graphicImage>
-                </div>
-            </div>
-
-            <div class="row" >
-                <div class="col-12 d-flex align-content-center m-2 p-2" >
+                <div class="col-ms-12 d-flex align-content-center m-1 p-1" >
                     <h:panelGroup rendered="#{applicationController.demoSetup}" >
                         <h1  class="m-auto w-25">Demo Version - Scroll Down to Find User Credentials.</h1>
                     </h:panelGroup>
@@ -34,37 +25,36 @@
 
 
             <div class="row" >
-                <div class="col-4" ></div>
-                <div class="col-4 d-flex align-content-center m-2 p-2">
+                <div class="col-md-4" ></div>
+                <div class="col-md-4 d-flex align-content-center m-2 p-2">
                     <h:outputLabel for="un" value="Username" class="m-auto form w-25"></h:outputLabel>
                     <p:inputText id="un" required="true" autocomplete="off" value="#{webUserController.userName}" 
                                  class="m-auto form form-control w-75"></p:inputText>
                 </div>
-                <div class="col-4" ></div>
+                <div class="col-md-4" ></div>
             </div>
             <div class="row" >
-                <div class="col-4" ></div>
-                <div class="col-4 d-flex justify-content-start m-2 p-2" >
+                <div class="col-md-4" ></div>
+                <div class="col-md-4 d-flex justify-content-start m-2 p-2" >
                     <h:outputLabel for="pwd" value="Password" class="form w-25"></h:outputLabel>
                     <p:password id="pwd" required="true" autocomplete="off" value="#{webUserController.password}" class="m-auto form form-control w-75"></p:password>
                 </div>
-                <div class="col-4" ></div>
+                <div class="col-md-4" ></div>
             </div>
             <div class="row" >
-                <div class="col-4" ></div>
-                <div class="col-4 d-flex justify-content-start m-2 p-2" >
-                    #{preferenceController.reCAPTCHASecreatKey}
+                <div class="col-md-4" ></div>
+                <div class="col-md-4 d-flex justify-content-end m-2 p-2" >
                     <p:captcha  label="Captcha" id="captcha" class="m-auto form form-control w-75"></p:captcha>
                 </div>
-                <div class="col-4" ></div>
+                <div class="col-md-4" ></div>
             </div>
             <div class="row" >
-                <div class="col-4" ></div>
-                <div class="col-4 d-flex justify-content-end m-2 p-2" >
+                <div class="col-md-4" ></div>
+                <div class="col-md-4 d-flex justify-content-end m-2 p-2" >
                     <h:commandButton class="btn  btn-outline-primary w-75"   value="Login"
                                      action="#{webUserController.loginNew()}" ></h:commandButton>        
                 </div>
-                <div class="col-4" ></div>
+                <div class="col-md-4" ></div>
             </div>
 
 
