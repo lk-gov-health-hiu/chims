@@ -64,6 +64,7 @@
                     <p:menuitem value="Manage Data" action="/systemAdmin/manage_data_index"    ajax="false" />
                     <p:menuitem value="Manage Interfaces" action="/systemAdmin/interfaces"    ajax="false" />
                     <p:menuitem value="Manage Analysis"  action="/queryComponent/index"     ajax="false" />
+                    <p:menuitem value="Manage Preferances"  action="#{preferenceController.toManagePreferences()}"     ajax="false" />
                 </p:submenu>
                 <p:submenu label="Modules" rendered="#{webUserController.hasPrivilege('Pharmacy_Management')}"  >
                     <p:menuitem value="Procedure Room" action="#{webUserController.toProcedureRoom()}"  ajax="false" />

@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package lk.gov.health.phsp.bean;
+package lk.gov.health.phsp.entity;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -34,8 +34,6 @@ import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
-import lk.gov.health.phsp.entity.Institution;
-import lk.gov.health.phsp.entity.WebUser;
 
 /**
  *
