@@ -23,6 +23,11 @@
         </ui:insert>
         <p:growl   >
         </p:growl>
+        
+        <h:panelGroup rendered="#{webUserController.ipBlocked}" >
+        
+        </h:panelGroup>
+        
         <div class="row">
             <div class="col-12" >
                 <h:panelGroup rendered="#{webUserController.loggedUser ne null}">
@@ -30,8 +35,6 @@
                 </h:panelGroup>
             </div>
         </div>
-
-
 
         <div class="row" >
             <div class="col-12" >

@@ -200,6 +200,10 @@ public class WebUserController implements Serializable {
 
     }
 
+    public boolean ipBlocked() {
+        return webUserApplicationController.ipBlocked(getIpAddress());
+    }
+
     public String assumeUser() {
         if (current == null) {
             JsfUtil.addErrorMessage("Please select a User");
@@ -240,7 +244,7 @@ public class WebUserController implements Serializable {
         loggedUser.setAssumedInstitution(assumedInstitution);
         loggedUser.setAssumedRole(assumedRole);
         loggedUserPrivileges = assumedPrivileges;
-        return login(true);
+        return WebUserController.this.login(true);
     }
 
     public void assumedInstitutionChanged() {
@@ -256,10 +260,9 @@ public class WebUserController implements Serializable {
         assumedPrivileges = null;
         logOut();
         userTransactionController.recordTransaction("End Assuming Roles");
-        return login(true);
+        return WebUserController.this.login(true);
     }
 
-   
     public List<Institution> findAutherizedInstitutions() {
         List<Institution> ins = new ArrayList<>();
         if (loggedUser == null) {
@@ -311,22 +314,22 @@ public class WebUserController implements Serializable {
         String insList = null;
         String baseUrl = "http://localhost:8080/ProcedureRoomService/resources/redirect";
         String urlVals = "?API_KEY=EF16A5D4EF8AA6AA0580AF1390CF0600";
-        urlVals += "&UserId="+loggedUser.getId();
-        urlVals += "&UserName="+loggedUser.getName();
-        urlVals += "&UserRole="+loggedUser.getWebUserRole();       
-        
-        for(Institution ins_:institutionApplicationController.findChildrenInstitutions(loggedUser.getInstitution(), InstitutionType.Procedure_Room)){
-            if(ins_.getId() != null){
-                if(insList==null){
+        urlVals += "&UserId=" + loggedUser.getId();
+        urlVals += "&UserName=" + loggedUser.getName();
+        urlVals += "&UserRole=" + loggedUser.getWebUserRole();
+
+        for (Institution ins_ : institutionApplicationController.findChildrenInstitutions(loggedUser.getInstitution(), InstitutionType.Procedure_Room)) {
+            if (ins_.getId() != null) {
+                if (insList == null) {
                     insList = ins_.getId().toString();
-                }else{
-                    insList += "A"+ins_.getId().toString();
+                } else {
+                    insList += "A" + ins_.getId().toString();
                 }
             }
         }
-        urlVals += "&insList="+insList;
-        urlVals += "&userInstitution="+loggedUser.getInstitution().getId();
-        
+        urlVals += "&insList=" + insList;
+        urlVals += "&userInstitution=" + loggedUser.getInstitution().getId();
+
         Client client = Client.create();
         WebResource webResource1 = client.resource(baseUrl + urlVals);
         com.sun.jersey.api.client.ClientResponse cr = webResource1.accept("text/plain").get(com.sun.jersey.api.client.ClientResponse.class);
@@ -346,7 +349,7 @@ public class WebUserController implements Serializable {
     }
 
     public String toManageUserIndexForSystemAdmin() {
-        return "/webUser/index";
+        return "/systemAdmin/manage_user_index";
     }
 
     public String toManagePrivileges() {
@@ -567,11 +570,10 @@ public class WebUserController implements Serializable {
         return "/index";
     }
 
-    public String login() {
-        userTransactionController.recordTransaction("login");
-        return login(false);
-    }
-
+//    public String login() {
+//        userTransactionController.recordTransaction("login");
+//        return login(false);
+//    }
     public String login(boolean withoutPassword) {
         loggableInstitutions = null;
         loggablePmcis = null;
@@ -602,8 +604,7 @@ public class WebUserController implements Serializable {
         return "/index";
     }
 
-    public String loginNew() {
-        // System.out.println("loginNew");
+    public String login() {
         loggableInstitutions = null;
         loggablePmcis = null;
         loggableGnAreas = null;
@@ -612,7 +613,10 @@ public class WebUserController implements Serializable {
             JsfUtil.addErrorMessage("Please enter a Username");
             return "";
         }
-
+        if (webUserApplicationController.userBlocked(userName)) {
+            JsfUtil.addErrorMessage("This user is blocked due to multiple failed login attempts. Please contact the hotline.");
+            return "";
+        }
         if (password == null || password.trim().equals("")) {
             JsfUtil.addErrorMessage("Please enter the Password");
             return "";
@@ -621,11 +625,9 @@ public class WebUserController implements Serializable {
         if (!checkLoginNew()) {
             JsfUtil.addErrorMessage("Username/Password Error. Please retry.");
             userTransactionController.recordTransaction("Failed Login Attempt", userName);
+            webUserApplicationController.addFailedAttempt(getIpAddress(), getUserName());
             return "";
         }
-
-        // System.out.println("username & password correct");
-
         loggedUserPrivileges = userPrivilegeList(loggedUser);
         clientController.setClientDcfs(null);
         JsfUtil.addSuccessMessage("Successfully Logged");
@@ -647,14 +649,12 @@ public class WebUserController implements Serializable {
         m.put("ret", false);
         loggedUser = getFacade().findFirstByJpql(temSQL, m);
         if (loggedUser == null) {
-            JsfUtil.addErrorMessage("No User");
             return false;
         }
         if (commonController.matchPassword(password, loggedUser.getWebUserPassword())) {
             return true;
         } else {
             loggedUser = null;
-            JsfUtil.addErrorMessage("Password incorrect");
             return false;
         }
     }
@@ -689,24 +689,22 @@ public class WebUserController implements Serializable {
         m.put("ret", false);
         return getFacade().findByJpql(temSQL, m);
     }
-    
-    public void createDemoUser(){
+
+    public void createDemoUser() {
         Institution i = new Institution();
         i.setName(userName);
         institutionController.saveOrUpdateInstitution(i);
-        
+
         Person p = new Person();
         p.setName("Administrator");
-        
+
         WebUser u = new WebUser();
         u.setName("admin");
         u.setWebUserPassword(commonController.hash(password));
         u.setWebUserRole(WebUserRole.System_Administrator);
-        
+
         save(u);
-        
-        
-        
+
     }
 
     private boolean checkLogin(boolean withoutPassword) {
@@ -1141,9 +1139,9 @@ public class WebUserController implements Serializable {
         userTransactionController.recordTransaction("Edit Password user list By SysAdmin or InsAdmin");
         return "/webUser/Password";
     }
-    
+
     public String deleteUser() {
-        if(current==null){
+        if (current == null) {
             JsfUtil.addErrorMessage("Nothing to delete");
             return "";
         }
@@ -1155,14 +1153,16 @@ public class WebUserController implements Serializable {
         getItems().remove(current);
         return "";
     }
-    
-    public void save(WebUser u){
-        if(u==null) return;
-        if(u.getId()==null){
+
+    public void save(WebUser u) {
+        if (u == null) {
+            return;
+        }
+        if (u.getId() == null) {
             u.setCreatedAt(new Date());
             u.setCreater(getLoggedUser());
             getFacade().create(u);
-        }else{
+        } else {
             u.setLastEditBy(getLoggedUser());
             u.setLastEditeAt(new Date());
             getFacade().edit(u);
@@ -1314,7 +1314,6 @@ public class WebUserController implements Serializable {
     private void recreateModel() {
         items = null;
     }
-
 
     public WebUser getWebUser(java.lang.Long id) {
         return ejbFacade.find(id);
@@ -1731,7 +1730,6 @@ public class WebUserController implements Serializable {
         this.loggablePmcis = loggablePmcis;
     }
 
-    
     public void setLoggableGnAreas(List<Area> loggableGnAreas) {
         this.loggableGnAreas = loggableGnAreas;
     }
@@ -1818,8 +1816,6 @@ public class WebUserController implements Serializable {
     public void setMetadataTabIndex(int metadataTabIndex) {
         this.metadataTabIndex = metadataTabIndex;
     }
-    
-    
 
     @FacesConverter(forClass = WebUser.class)
     public static class WebUserControllerConverter implements Converter {
