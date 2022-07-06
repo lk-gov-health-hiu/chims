@@ -45,6 +45,16 @@
                             </p:commandButton>
 
                             <p:commandButton  icon="fa fa-users"  ajax="false"
+                                              value="Blocked IPs"  styleClass="btn300"
+                                              action="#{webUserController.toManageBlockedIps()}">
+                            </p:commandButton>
+                            
+                            <p:commandButton  icon="fa fa-users"  ajax="false"
+                                              value="Blocked Users"  styleClass="btn300"
+                                              action="#{webUserController.toManageBlockedUsers()}">
+                            </p:commandButton>
+                            
+                            <p:commandButton  icon="fa fa-users"  ajax="false"
                                               value="Suspicious Login Attempts"  styleClass="btn300"
                                               action="#{userTransactionController.toSuspiciousLoginAttempts()}">
                             </p:commandButton>

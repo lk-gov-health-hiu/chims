@@ -122,6 +122,8 @@ public class WebUserController implements Serializable {
     private Double selectedFundValue;
     private Item selectedFundUnit;
     private String selectedFundComments;
+    private String selectedIp;
+    private String selectedUsername;
 
     private List<Area> districtsAvailableForSelection;
 
@@ -189,6 +191,7 @@ public class WebUserController implements Serializable {
 
     @PreDestroy
     public void sessionDestroy() {
+        webUserApplicationController.removeFromLoggedUsers(userName);
         userTransactionController.recordTransaction("Invalidating the Session", this.toString());
     }
 
@@ -204,48 +207,48 @@ public class WebUserController implements Serializable {
 //    public boolean ipBlocked() {
 //        return webUserApplicationController.ipBlocked(getIpAddress());
 //    }
-    public String assumeUser() {
-        if (current == null) {
-            JsfUtil.addErrorMessage("Please select a User");
-            return "";
-        }
-        assumedArea = current.getArea();
-        assumedInstitution = current.getInstitution();
-        assumedRole = current.getWebUserRole();
-        assumedPrivileges = userPrivilegeList(current);
-        userTransactionController.recordTransaction("assume User");
-        return assumeRoles();
-
-    }
-
-    public String assumeRoles() {
-        if (assumedRole == null) {
-            JsfUtil.addErrorMessage("Please select a Role");
-            userTransactionController.recordTransaction("Assume Roles");
-            return "";
-        }
-
-        if (assumedInstitution == null) {
-            JsfUtil.addErrorMessage("Please lsect an Institution");
-            return "";
-        }
-//        if (assumedArea == null) {
-//            JsfUtil.addErrorMessage("Please select an area");
+//    public String assumeUser() {
+//        if (current == null) {
+//            JsfUtil.addErrorMessage("Please select a User");
 //            return "";
 //        }
-        if (assumedPrivileges == null) {
-            assumedPrivileges = generateAssumedPrivileges(loggedUser, getInitialPrivileges(assumedRole));
-        }
-        WebUser twu = loggedUser;
-        logOut();
-        userName = twu.getName();
-        loggedUser = twu;
-        loggedUser.setAssumedArea(assumedArea);
-        loggedUser.setAssumedInstitution(assumedInstitution);
-        loggedUser.setAssumedRole(assumedRole);
-        loggedUserPrivileges = assumedPrivileges;
-        return WebUserController.this.login(true);
-    }
+//        assumedArea = current.getArea();
+//        assumedInstitution = current.getInstitution();
+//        assumedRole = current.getWebUserRole();
+//        assumedPrivileges = userPrivilegeList(current);
+//        userTransactionController.recordTransaction("assume User");
+//        return assumeRoles();
+//
+//    }
+
+//    public String assumeRoles() {
+//        if (assumedRole == null) {
+//            JsfUtil.addErrorMessage("Please select a Role");
+//            userTransactionController.recordTransaction("Assume Roles");
+//            return "";
+//        }
+//
+//        if (assumedInstitution == null) {
+//            JsfUtil.addErrorMessage("Please lsect an Institution");
+//            return "";
+//        }
+////        if (assumedArea == null) {
+////            JsfUtil.addErrorMessage("Please select an area");
+////            return "";
+////        }
+//        if (assumedPrivileges == null) {
+//            assumedPrivileges = generateAssumedPrivileges(loggedUser, getInitialPrivileges(assumedRole));
+//        }
+//        WebUser twu = loggedUser;
+//        logOut();
+//        userName = twu.getName();
+//        loggedUser = twu;
+//        loggedUser.setAssumedArea(assumedArea);
+//        loggedUser.setAssumedInstitution(assumedInstitution);
+//        loggedUser.setAssumedRole(assumedRole);
+//        loggedUserPrivileges = assumedPrivileges;
+//        return WebUserController.this.login(true);
+//    }
 
     public void assumedInstitutionChanged() {
         if (assumedInstitution != null) {
@@ -253,15 +256,15 @@ public class WebUserController implements Serializable {
         }
     }
 
-    public String endAssumingRoles() {
-        assumedRole = null;
-        assumedInstitution = null;
-        assumedArea = null;
-        assumedPrivileges = null;
-        logOut();
-        userTransactionController.recordTransaction("End Assuming Roles");
-        return WebUserController.this.login(true);
-    }
+//    public String endAssumingRoles() {
+//        assumedRole = null;
+//        assumedInstitution = null;
+//        assumedArea = null;
+//        assumedPrivileges = null;
+//        logOut();
+//        userTransactionController.recordTransaction("End Assuming Roles");
+//        return WebUserController.this.login(true);
+//    }
 
     public List<Institution> findAutherizedInstitutions() {
         List<Institution> ins = new ArrayList<>();
@@ -345,7 +348,39 @@ public class WebUserController implements Serializable {
 
     public String toManageAllUsers() {
         items = webUserApplicationController.getItems();
-        return "/webUser/manage_users";
+        return "/systemAdmin/manage_users";
+    }
+    
+    public String toManageBlockedIps(){
+        return "/systemAdmin/blocked_ips";
+    }
+    
+    public String toManageBlockedUsers(){
+        return "/systemAdmin/blocked_users";
+    }
+    
+    public void removeBlockedIp(){
+        if(selectedIp==null||selectedIp.trim().equals("")){
+            JsfUtil.addErrorMessage("No IP Selected");
+            return;
+        }
+        try{
+            webUserApplicationController.getSuspiciousIps().remove(selectedIp);
+        }catch(Exception e){
+            JsfUtil.addErrorMessage("Error in removing.");
+        }
+    }
+    
+    public void removeBlockedUser(){
+        if(selectedUsername==null||selectedUsername.trim().equals("")){
+            JsfUtil.addErrorMessage("No User Selected");
+            return;
+        }
+        try{
+            webUserApplicationController.getSuspiciousUsers().remove(selectedUsername);
+        }catch(Exception e){
+            JsfUtil.addErrorMessage("Error in removing.");
+        }
     }
 
     public String toManageUserIndexForSystemAdmin() {
@@ -565,6 +600,7 @@ public class WebUserController implements Serializable {
     }
 
     public String logOut() {
+        webUserApplicationController.removeFromLoggedUsers(userName);
         userTransactionController.recordTransaction("Logout");
         loggedUser = null;
         return "/index";
@@ -613,8 +649,13 @@ public class WebUserController implements Serializable {
             JsfUtil.addErrorMessage("Please enter a Username");
             return "";
         }
+        userName=userName.toLowerCase().trim();
         if (webUserApplicationController.userBlocked(userName)) {
             JsfUtil.addErrorMessage("This user is blocked due to multiple failed login attempts. Please contact the hotline.");
+            return "";
+        }
+        if(webUserApplicationController.userAlreadyLogged(userName)){
+            JsfUtil.addErrorMessage("This user is already logged to the system. If you have any concerns, please contact the hotline.");
             return "";
         }
         if (password == null || password.trim().equals("")) {
@@ -632,6 +673,7 @@ public class WebUserController implements Serializable {
         clientController.setClientDcfs(null);
         JsfUtil.addSuccessMessage("Successfully Logged");
         userTransactionController.recordTransaction("Successful Login");
+        webUserApplicationController.addToLoggedUsers(userName);
         return "/index";
     }
 
@@ -664,23 +706,7 @@ public class WebUserController implements Serializable {
         return "/index";
     }
 
-    public String loginForMobile() {
-        loginRequestResponse = "";
-        if (userName == null || userName.trim().equals("")) {
-            loginRequestResponse += "Wrong Isername. Please go back to settings and update.";
-            return "/mobile/login_failure";
-        }
-        if (password == null || password.trim().equals("")) {
-            loginRequestResponse += "Wrong Isername. Please go back to settings and update.";
-            return "/mobile/login_failure";
-        }
-        if (!checkLogin(false)) {
-            loginRequestResponse += "Wrong Isername. Please go back to settings and update.";
-            return "/mobile/login_failure";
-        }
-        return "/mobile/index";
-    }
-
+  
     public List<WebUser> completeUsers(String qry) {
         String temSQL;
         temSQL = "SELECT u FROM WebUser u WHERE lower(u.name) like :userName and u.retired =:ret";
@@ -1009,7 +1035,7 @@ public class WebUserController implements Serializable {
         password = "";
         passwordReenter = "";
         userTransactionController.recordTransaction("Create New User By SysAdmin");
-        return "/webUser/create_new_user";
+        return "/systemAdmin/create_new_user";
     }
 
     public String create() {
@@ -1825,6 +1851,24 @@ public class WebUserController implements Serializable {
     public void setIpBlocked(Boolean ipBlocked) {
         this.ipBlocked = ipBlocked;
     }
+
+    public String getSelectedIp() {
+        return selectedIp;
+    }
+
+    public void setSelectedIp(String selectedIp) {
+        this.selectedIp = selectedIp;
+    }
+
+    public String getSelectedUsername() {
+        return selectedUsername;
+    }
+
+    public void setSelectedUsername(String selectedUsername) {
+        this.selectedUsername = selectedUsername;
+    }
+    
+    
 
     @FacesConverter(forClass = WebUser.class)
     public static class WebUserControllerConverter implements Converter {

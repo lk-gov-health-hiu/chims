@@ -1,0 +1,40 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <h:body>
+        <ui:composition template="/systemAdmin/manage_user_index.xhtml">
+            <ui:define name="webUserContents">
+                <h:form >
+                    <p:dataTable id="tbl" 
+                                 value="#{webUserApplicationController.suspiciousIps}" var="c"
+                                 rowIndexVar="n"
+                                 paginator="true"
+                                 rows="10"
+                                 rowsPerPageTemplate="10,20,30,40,50"
+                                 rowKey="#{c}"
+                                 >
+                        <p:column headerText="IP" 
+                                  filterBy="#{c}" 
+                                  filterMatchMode="contains" 
+                                  sortBy="#{c}">
+                            <p:outputLabel value="#{c}" ></p:outputLabel>
+                        </p:column>
+                        <p:column headerText="Remove" >
+                            <p:commandButton value="Remove" 
+                                             action="#{webUserController.removeBlockedIp()}"
+                                             ajax="false"
+                                             >
+                                <f:setPropertyActionListener value="#{c}" target="#{webUserController.selectedIp}" ></f:setPropertyActionListener>
+                            </p:commandButton>
+                        </p:column>
+                    </p:dataTable>
+                </h:form>
+            </ui:define>
+        </ui:composition>
+    </h:body>
+</html>

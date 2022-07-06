@@ -52,6 +52,7 @@ public class WebUserApplicationController {
     private List<WebUser> items = null;
     private List<String> suspiciousIps;
     private List<String> suspiciousUsers;
+    private List<String> loggedUsers;
     private List<SuspeciousIpCount> suspeciousIpCounts;
     private List<SuspeciousUserCount> suspeciousUserCounts;
     private String selectedIp;
@@ -66,63 +67,63 @@ public class WebUserApplicationController {
     public WebUserApplicationController() {
     }
 
-    public boolean ipBlocked(String ip){
-        boolean ipFoundAmongBlocked=false;
-        for(String tip:getSuspiciousIps()){
-            if(tip.equalsIgnoreCase(ip)){
-                ipFoundAmongBlocked=true;
+    public boolean ipBlocked(String ip) {
+        boolean ipFoundAmongBlocked = false;
+        for (String tip : getSuspiciousIps()) {
+            if (tip.equalsIgnoreCase(ip)) {
+                ipFoundAmongBlocked = true;
                 return ipFoundAmongBlocked;
             }
         }
         return ipFoundAmongBlocked;
     }
-    
-    public boolean userBlocked(String username){
-        boolean userFoundAmongBlocked=false;
-        for(String tuser: getSuspiciousUsers()){
-            if(tuser.equalsIgnoreCase(username)){
-                userFoundAmongBlocked=true;
+
+    public boolean userBlocked(String username) {
+        boolean userFoundAmongBlocked = false;
+        for (String tuser : getSuspiciousUsers()) {
+            if (tuser.equalsIgnoreCase(username)) {
+                userFoundAmongBlocked = true;
                 return userFoundAmongBlocked;
             }
         }
         return userFoundAmongBlocked;
     }
-    
+
     public void addFailedAttempt(String ip, String username) {
         SuspeciousIpCount ipFound = null;
         for (SuspeciousIpCount bip : getSuspeciousIpCounts()) {
             if (bip.ip.equalsIgnoreCase(ip)) {
-                ipFound=bip;
+                ipFound = bip;
             }
         }
-        if(ipFound!=null){
+        if (ipFound != null) {
             ipFound.count++;
-            if(ipFound.count > ipBlockLimit){
+            if (ipFound.count > ipBlockLimit) {
                 getSuspiciousIps().add(ip);
                 getSuspeciousIpCounts().remove(ipFound);
             }
-        }else{
+        } else {
             ipFound = new SuspeciousIpCount();
-            ipFound.ip=ip;
-            ipFound.count=1;
+            ipFound.ip = ip;
+            ipFound.count = 1;
             getSuspeciousIpCounts().add(ipFound);
         }
         SuspeciousUserCount userFound = null;
-        for(SuspeciousUserCount buser:getSuspeciousUserCounts()){
-            if(buser.user.equalsIgnoreCase(username)){
+        for (SuspeciousUserCount buser : getSuspeciousUserCounts()) {
+            if (buser.user.equalsIgnoreCase(username)) {
                 userFound = buser;
             }
         }
-        if(userFound!=null){
+        if (userFound != null) {
             userFound.count++;
-            if(userFound.count > userBlockLimit){
+            if (userFound.count > userBlockLimit) {
                 getSuspiciousUsers().add(username);
                 getSuspeciousUserCounts().remove(userFound);
             }
-        }else{
+        } else {
             userFound = new SuspeciousUserCount();
-            userFound.user=username;
-            userFound.count=1;
+            userFound.user = username;
+            userFound.count = 1;
             getSuspeciousUserCounts().add(userFound);
         }
     }
@@ -207,26 +208,55 @@ public class WebUserApplicationController {
         this.userBlockLimit = userBlockLimit;
     }
 
-    public List<SuspeciousIpCount> getSuspeciousIpCounts() {
+    private List<SuspeciousIpCount> getSuspeciousIpCounts() {
         if (suspeciousIpCounts == null) {
             suspeciousIpCounts = new ArrayList<>();
         }
         return suspeciousIpCounts;
     }
 
-    public void setSuspeciousIpCounts(List<SuspeciousIpCount> suspeciousIpCounts) {
-        this.suspeciousIpCounts = suspeciousIpCounts;
+    public void addToLoggedUsers(String username) {
+        boolean found = false;
+        for (String un : getLoggedUsers()) {
+            if (un.equalsIgnoreCase(username)) {
+                found = true;
+            }
+        }
+        if (!found) {
+            getLoggedUsers().add(username);
+        }
+    }
+    
+     public boolean userAlreadyLogged(String username) {
+        boolean found = false;
+        for (String un : getLoggedUsers()) {
+            if (un.equalsIgnoreCase(username)) {
+                found = true;
+            }
+        }
+        return found;
     }
 
-    public List<SuspeciousUserCount> getSuspeciousUserCounts() {
+    public void removeFromLoggedUsers(String username){
+        getLoggedUsers().remove(username);
+    }
+    
+    private List<SuspeciousUserCount> getSuspeciousUserCounts() {
         if (suspeciousUserCounts == null) {
             suspeciousUserCounts = new ArrayList<>();
         }
         return suspeciousUserCounts;
     }
 
-    public void setSuspeciousUserCounts(List<SuspeciousUserCount> suspeciousUserCounts) {
-        this.suspeciousUserCounts = suspeciousUserCounts;
+    public List<String> getLoggedUsers() {
+        if (loggedUsers == null) {
+            loggedUsers = new ArrayList<>();
+        }
+        return loggedUsers;
+    }
+
+    public void setLoggedUsers(List<String> loggedUsers) {
+        this.loggedUsers = loggedUsers;
     }
 
     class SuspeciousIpCount {

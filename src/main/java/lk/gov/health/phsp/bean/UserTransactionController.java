@@ -81,12 +81,12 @@ public class UserTransactionController implements Serializable {
 // <editor-fold defaultstate="collapsed" desc="Navigation Functions">
     public String toSearchUserTransactions() {
         items = null;
-        return "/webUser/transactions";
+        return "/systemAdmin/transactions";
     }
 
     public String toSuspiciousLoginAttempts() {
         suspiciousLogins = null;
-        return "/webUser/suspicious_logins";
+        return "/systemAdmin/suspicious_logins";
     }
 
 // </editor-fold>
