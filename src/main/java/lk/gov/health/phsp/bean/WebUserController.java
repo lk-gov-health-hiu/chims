@@ -142,6 +142,7 @@ public class WebUserController implements Serializable {
 
     private UploadedFile file;
     private String comments;
+    private Boolean ipBlocked;
 
     private StreamedContent downloadingFile;
 
@@ -200,10 +201,9 @@ public class WebUserController implements Serializable {
 
     }
 
-    public boolean ipBlocked() {
-        return webUserApplicationController.ipBlocked(getIpAddress());
-    }
-
+//    public boolean ipBlocked() {
+//        return webUserApplicationController.ipBlocked(getIpAddress());
+//    }
     public String assumeUser() {
         if (current == null) {
             JsfUtil.addErrorMessage("Please select a User");
@@ -1815,6 +1815,15 @@ public class WebUserController implements Serializable {
 
     public void setMetadataTabIndex(int metadataTabIndex) {
         this.metadataTabIndex = metadataTabIndex;
+    }
+
+    public Boolean getIpBlocked() {
+        ipBlocked = webUserApplicationController.ipBlocked(getIpAddress());
+        return ipBlocked;
+    }
+
+    public void setIpBlocked(Boolean ipBlocked) {
+        this.ipBlocked = ipBlocked;
     }
 
     @FacesConverter(forClass = WebUser.class)

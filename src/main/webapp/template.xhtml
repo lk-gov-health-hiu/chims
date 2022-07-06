@@ -23,44 +23,60 @@
         </ui:insert>
         <p:growl   >
         </p:growl>
-        
+
         <h:panelGroup rendered="#{webUserController.ipBlocked}" >
-        
-        </h:panelGroup>
-        
-        <div class="row">
-            <div class="col-12" >
-                <h:panelGroup rendered="#{webUserController.loggedUser ne null}">
-                    <ez:menu/>
-                </h:panelGroup>
-            </div>
-        </div>
-
-        <div class="row" >
-            <div class="col-12" >
-                <h:panelGroup rendered="#{webUserController.loggedUser ne null}">
-                    <ui:insert name="content">
-                        Contents
-                    </ui:insert>
-                </h:panelGroup>
-                <h:panelGroup rendered="#{webUserController.loggedUser eq null}">
-                    <ez:login/>
-                    <div style="width: 50%; margin: auto;">
-                        <ez:demo_login/>
+            <div class="container-fluid" >
+                <div class="row" >
+                    <div class="col-12" >
+                        <h1>Your IP is blocked.</h1>
                     </div>
-                    <ui:insert name="timeout">
-                    </ui:insert>
-                </h:panelGroup>
+                </div>
+                <div class="row" >
+                    <div class="col-12" >
+                        <h2>Please contact the hotline to unblock it.</h2>
+                    </div>
+                </div>
             </div>
-        </div>
 
-        <div class="row">
-            <div class="col" >
-                <ui:insert name="bottom">
-                    <ez:footer/>
-                </ui:insert>
+        </h:panelGroup>
+
+        <h:panelGroup rendered="#{not webUserController.ipBlocked}" >
+
+            <div class="row">
+                <div class="col-12" >
+                    <h:panelGroup rendered="#{webUserController.loggedUser ne null}">
+                        <ez:menu/>
+                    </h:panelGroup>
+                </div>
             </div>
-        </div>
+
+            <div class="row" >
+                <div class="col-12" >
+                    <h:panelGroup rendered="#{webUserController.loggedUser ne null}">
+                        <ui:insert name="content">
+                            Contents
+                        </ui:insert>
+                    </h:panelGroup>
+                    <h:panelGroup rendered="#{webUserController.loggedUser eq null}">
+                        <ez:login/>
+                        <div style="width: 50%; margin: auto;">
+                            <ez:demo_login/>
+                        </div>
+                        <ui:insert name="timeout">
+                        </ui:insert>
+                    </h:panelGroup>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col" >
+                    <ui:insert name="bottom">
+                        <ez:footer/>
+                    </ui:insert>
+                </div>
+            </div>
+
+        </h:panelGroup>
 
     </h:body>
 
