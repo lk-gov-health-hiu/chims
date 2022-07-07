@@ -60,12 +60,12 @@
     
     <session-config>
         <session-timeout>
-            60
+            15
         </session-timeout>
         <cookie-config>
             <http-only>true</http-only>
             <secure>true</secure>
-            <max-age>1800</max-age>
+            <max-age>6000</max-age>
         </cookie-config>
     </session-config>
     
