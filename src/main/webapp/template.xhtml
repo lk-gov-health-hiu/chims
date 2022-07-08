@@ -57,12 +57,22 @@
                             Contents
                         </ui:insert>
                     </h:panelGroup>
-                    <h:panelGroup rendered="#{webUserController.loggedUser eq null}">
+                    <h:panelGroup rendered="#{webUserController.loggedUser eq null and webUserController.passwordChangingUser eq null}">
                         <ez:login/>
                         <div style="width: 50%; margin: auto;">
                             <ez:demo_login/>
                         </div>
                         <ui:insert name="timeout">
+                        </ui:insert>
+                    </h:panelGroup>
+                </div>
+            </div>
+
+
+            <div class="row">
+                <div class="col-12" >
+                    <h:panelGroup rendered="#{webUserController.loggedUser eq null and webUserController.passwordChangingUser ne null}">
+                        <ui:insert name="nonusercontent">
                         </ui:insert>
                     </h:panelGroup>
                 </div>
