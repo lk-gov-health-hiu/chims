@@ -7,7 +7,7 @@
       xmlns:f="http://xmlns.jcp.org/jsf/core">
     <head>
         <ui:define name="head">
-            Clinical Data Reports
+            Form Set Data Reports
         </ui:define>
     </head>
     <body>
@@ -16,13 +16,13 @@
                 <h:form>
                     <p:panelGrid columns="1" class="w3-border w3-margin w3-card" >
                         <f:facet name="header" >
-                            <p:outputLabel value="Clinical Data Reports" ></p:outputLabel>
+                            <p:outputLabel value="Form Set Data Reports" ></p:outputLabel>
                         </f:facet>
 
 
                         <p:panelGrid columns="2" >
                             <p:outputLabel value="Institution" for="ins" ></p:outputLabel>
-                            <p:autoComplete value="#{reportController.institution}"
+                            <p:autoComplete value="#{hospitalReportController.institution}"
                                             id="ins"
                                             requiredMessage="Please select a clinic. Selecting a Hospital will not give results."
                                             required="true" forceSelection="true" maxResults="15" minQueryLength="3"
@@ -33,48 +33,34 @@
                             </p:autoComplete>
 
                             <p:outputLabel value="From" for="from" ></p:outputLabel>
-                            <p:calendar id="from" value="#{reportController.fromDate}" navigator="true"
+                            <p:calendar id="from" value="#{hospitalReportController.fromDate}" navigator="true"
                                         required="true"
                                         requiredMessage="Select a start date"
                                         pattern="dd MM yyyy" ></p:calendar>
 
                             <p:outputLabel value="To" for="to" ></p:outputLabel>
-                            <p:calendar id="to" value="#{reportController.toDate}" navigator="true"
+                            <p:calendar id="to" value="#{hospitalReportController.toDate}" navigator="true"
                                         required="true"
                                         requiredMessage="Select a start date"
                                         pattern="dd MM yyyy" ></p:calendar>
 
                             <p:outputLabel id="lblForm" value="Form-set" ></p:outputLabel>
-                            <p:selectOneMenu id="form" value="#{reportController.designingComponentFormSet}" >
+                            <p:selectOneMenu id="form" value="#{hospitalReportController.designingComponentFormSet}" >
                                 <f:selectItem itemLabel="Select" ></f:selectItem>
                                 <f:selectItems value="#{designComponentFormSetController.items}" ></f:selectItems>
-                                <f:ajax listener="#{reportController.fillItemsofTheSelectedSet()}"
+                                <f:ajax listener="#{hospitalReportController.fillItemsofTheSelectedSet()}"
                                         execute="form" render="item" ></f:ajax>
                             </p:selectOneMenu>
 
-                            <p:outputLabel id="lblItem" value="item" ></p:outputLabel>
-                            <p:selectOneMenu id="item" 
-                                             value="#{reportController.designComponentFormItem}"
-                                             var="it">
-                                <f:selectItems value="#{reportController.designComponentFormItems}"
-                                               var="ii"
-                                               itemLabel="#{ii.name}"
-                                               itemValue="#{ii}"></f:selectItems>
-                                <p:column headerText="Form" >
-                                    <p:outputLabel value="#{it.parentComponent.name}" ></p:outputLabel>
-                                </p:column>
-                                <p:column headerText="Variable" >
-                                    <p:outputLabel value="#{it.name}" ></p:outputLabel>
-                                </p:column>
-                            </p:selectOneMenu>
+                            
 
                             <p:spacer ></p:spacer>
                             <p:commandButton value="Download" 
                                              ajax="false" 
                                              oncomplete ="PrimeFaces.monitorDownload(start, stop);" 
                                              icon="ui-icon-arrowthick-1-s"
-                                             actionListener="#{reportController.createExcelFileOfClinicalEncounterItemsForSelectedDesignComponent()}">
-                                <p:fileDownload value="#{reportController.resultExcelFile}" />
+                                             actionListener="#{hospitalReportController.createExcelFileOfFormsetData()}">
+                                <p:fileDownload value="#{hospitalReportController.resultExcelFile}" />
                             </p:commandButton>
                         </p:panelGrid>
                     </p:panelGrid>

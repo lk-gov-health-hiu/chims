@@ -669,7 +669,7 @@ public class WebUserController implements Serializable {
         }
         loggedUserPrivileges = userPrivilegeList(loggedUser);
         clientController.setClientDcfs(null);
-        JsfUtil.addSuccessMessage("Successfully Logged");
+        
         userTransactionController.recordTransaction("Successful Login");
         webUserApplicationController.addToLoggedUsers(userName);
         if (!passwordStrengthCheck(password)) {
@@ -678,6 +678,7 @@ public class WebUserController implements Serializable {
             return "/webUser/change_password_at_login";
         } else {
             passwordChangingUser = null;
+            JsfUtil.addSuccessMessage("Successfully Logged");
             return "/index";
         }
     }
@@ -1391,6 +1392,7 @@ public class WebUserController implements Serializable {
             userTransactionController.recordTransaction("My Password Updated");
             loggedUser = passwordChangingUser;
             passwordChangingUser = null;
+            JsfUtil.addSuccessMessage("Password Changed. Successfully Logged to the appliation.");
             return "/index";
         } catch (Exception e) {
             JsfUtil.addErrorMessage(e, e.getMessage());

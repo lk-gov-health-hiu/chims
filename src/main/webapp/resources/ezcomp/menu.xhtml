@@ -65,10 +65,6 @@
                     <p:menuitem value="Manage Analysis"  action="/queryComponent/index"     ajax="false" />
                     <p:menuitem value="Manage Preferances"  action="#{preferenceController.toManagePreferences()}"     ajax="false" />
                 </p:submenu>
-                <p:submenu label="Modules" rendered="#{webUserController.hasPrivilege('Pharmacy_Management')}"  >
-                    <p:menuitem value="Procedure Room" action="#{webUserController.toProcedureRoom()}"  ajax="false" />
-                </p:submenu>
-
                 <p:submenu label="Settings" >
                     <p:menuitem value="Change My Password" action="#{webUserController.toChangeMyPassword()}"    ajax="false" />
                     <p:menuitem value="Change My Details" action="#{webUserController.toChangeMyDetails()}"    ajax="false" />
