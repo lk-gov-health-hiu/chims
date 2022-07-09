@@ -357,6 +357,10 @@ public class WebUserController implements Serializable {
     public String toManageBlockedUsers() {
         return "/systemAdmin/blocked_users";
     }
+    
+    public String toManageLoggedUsers() {
+        return "/systemAdmin/logged_users";
+    }
 
     public void removeBlockedIp() {
         if (selectedIp == null || selectedIp.trim().equals("")) {
@@ -377,6 +381,18 @@ public class WebUserController implements Serializable {
         }
         try {
             webUserApplicationController.getSuspiciousUsers().remove(selectedUsername);
+        } catch (Exception e) {
+            JsfUtil.addErrorMessage("Error in removing.");
+        }
+    }
+    
+    public void removeLoggedUser() {
+        if (selectedUsername == null || selectedUsername.trim().equals("")) {
+            JsfUtil.addErrorMessage("No User Selected");
+            return;
+        }
+        try {
+            webUserApplicationController.getLoggedUsers().remove(selectedUsername);
         } catch (Exception e) {
             JsfUtil.addErrorMessage("Error in removing.");
         }

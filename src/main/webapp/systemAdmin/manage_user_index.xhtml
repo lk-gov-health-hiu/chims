@@ -21,9 +21,9 @@
 
                 <p:panelGrid style="width: 100%;" columns="2" styleClass="alignTop" columnClasses="width85percent width15percent">
 
-                         <f:facet name="header" >
-                            <p:outputLabel value="Manage Users" ></p:outputLabel>
-                        </f:facet>                    
+                    <f:facet name="header" >
+                        <p:outputLabel value="Manage Users" ></p:outputLabel>
+                    </f:facet>                    
 
                     <h:form>
 
@@ -38,7 +38,7 @@
                                               value="View Users"  styleClass="btn300"
                                               action="#{webUserController.toManageAllUsers()}">
                             </p:commandButton>
-                            
+
                             <p:commandButton  icon="fa fa-users"  ajax="false"
                                               value="View Transactions"  styleClass="btn300"
                                               action="#{userTransactionController.toSearchUserTransactions()}">
@@ -48,12 +48,17 @@
                                               value="Blocked IPs"  styleClass="btn300"
                                               action="#{webUserController.toManageBlockedIps()}">
                             </p:commandButton>
-                            
+
                             <p:commandButton  icon="fa fa-users"  ajax="false"
                                               value="Blocked Users"  styleClass="btn300"
                                               action="#{webUserController.toManageBlockedUsers()}">
                             </p:commandButton>
-                            
+
+                            <p:commandButton  icon="fa fa-users"  ajax="false"
+                                              value="Logged Users"  styleClass="btn300"
+                                              action="#{webUserController.toManageBlockedUsers()}">
+                            </p:commandButton>
+
                             <p:commandButton  icon="fa fa-users"  ajax="false"
                                               value="Suspicious Login Attempts"  styleClass="btn300"
                                               action="#{userTransactionController.toSuspiciousLoginAttempts()}">
