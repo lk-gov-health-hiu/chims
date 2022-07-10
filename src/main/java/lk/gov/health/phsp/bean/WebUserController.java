@@ -357,7 +357,7 @@ public class WebUserController implements Serializable {
     public String toManageBlockedUsers() {
         return "/systemAdmin/blocked_users";
     }
-    
+
     public String toManageLoggedUsers() {
         return "/systemAdmin/logged_users";
     }
@@ -385,7 +385,7 @@ public class WebUserController implements Serializable {
             JsfUtil.addErrorMessage("Error in removing.");
         }
     }
-    
+
     public void removeLoggedUser() {
         if (selectedUsername == null || selectedUsername.trim().equals("")) {
             JsfUtil.addErrorMessage("No User Selected");
@@ -411,30 +411,66 @@ public class WebUserController implements Serializable {
         selectedNodes = new TreeNode[0];
         List<UserPrivilege> userps = userPrivilegeList(current);
 
-        for (TreeNode n : allPrivilegeRoot.getChildren()) {
+        for (Object o : allPrivilegeRoot.getChildren()) {
+            TreeNode n;
+            if (o instanceof TreeNode) {
+                n = (TreeNode) o;
+            } else {
+                continue;
+            }
             n.setSelected(false);
-            for (TreeNode n1 : n.getChildren()) {
+            for (Object o1 : n.getChildren()) {
+                TreeNode n1;
+                if (o1 instanceof TreeNode) {
+                    n1 = (TreeNode) o1;
+                } else {
+                    continue;
+                }
                 n1.setSelected(false);
-                for (TreeNode n2 : n1.getChildren()) {
+                for (Object o2 : n1.getChildren()) {
+                    TreeNode n2;
+                    if (o2 instanceof TreeNode) {
+                        n2 = (TreeNode) o2;
+                    } else {
+                        continue;
+                    }
                     n2.setSelected(false);
                 }
             }
         }
         List<TreeNode> temSelected = new ArrayList<>();
         for (UserPrivilege wup : userps) {
-            for (TreeNode n : allPrivilegeRoot.getChildren()) {
+            for (Object o : allPrivilegeRoot.getChildren()) {
+                TreeNode n;
+                if (o instanceof TreeNode) {
+                    n = (TreeNode) o;
+                } else {
+                    continue;
+                }
                 if (wup.getPrivilege().equals(((PrivilegeTreeNode) n).getP())) {
                     n.setSelected(true);
 
                     temSelected.add(n);
                 }
-                for (TreeNode n1 : n.getChildren()) {
+                for (Object o1 : n.getChildren()) {
+                    TreeNode n1;
+                    if (o1 instanceof TreeNode) {
+                        n1 = (TreeNode) o1;
+                    } else {
+                        continue;
+                    }
                     if (wup.getPrivilege().equals(((PrivilegeTreeNode) n1).getP())) {
                         n1.setSelected(true);
 
                         temSelected.add(n1);
                     }
-                    for (TreeNode n2 : n1.getChildren()) {
+                    for (Object o2 : n1.getChildren()) {
+                        TreeNode n2;
+                        if (o2 instanceof TreeNode) {
+                            n2 = (TreeNode) o2;
+                        } else {
+                            continue;
+                        }
                         if (wup.getPrivilege().equals(((PrivilegeTreeNode) n2).getP())) {
                             n2.setSelected(true);
 
@@ -685,7 +721,7 @@ public class WebUserController implements Serializable {
         }
         loggedUserPrivileges = userPrivilegeList(loggedUser);
         clientController.setClientDcfs(null);
-        
+
         userTransactionController.recordTransaction("Successful Login");
         webUserApplicationController.addToLoggedUsers(userName);
         if (!passwordStrengthCheck(password)) {
@@ -2004,8 +2040,6 @@ public class WebUserController implements Serializable {
     public void setPasswordChangingUser(WebUser passwordChangingUser) {
         this.passwordChangingUser = passwordChangingUser;
     }
-    
-    
 
     @FacesConverter(forClass = WebUser.class)
     public static class WebUserControllerConverter implements Converter {
