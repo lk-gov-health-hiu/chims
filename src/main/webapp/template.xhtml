@@ -10,18 +10,12 @@
     <h:head id="headt">
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1"/>
-        <meta http-equiv="Content-Security-Policy"
-              content="default-src 'self'; img-src https://*; child-src 'none';"/>
         <link href="https://fonts.googleapis.com/css?family=Poppins;display=swap" rel="stylesheet"></link>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous"/>
         <title>#{bundle.Title}</title>
         <ui:insert name="head">
         </ui:insert>
         <h:outputStylesheet library="css" name="tem1.css"/>
-        <f:event type="preRenderView"
-                 listener="#{facesContext.externalContext.response.setHeader('X-Content-Type-Options', 'nosniff')}" />
-        <f:event type="preRenderView"
-                 listener="#{facesContext.externalContext.response.setHeader('X-XSS-Protection', '1; mode=block')}" />
     </h:head>
 
     <h:body >
