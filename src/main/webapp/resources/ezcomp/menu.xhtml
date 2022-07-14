@@ -17,12 +17,6 @@
 
         <h:form>  
 
-            <h:outputStylesheet library="css" name="tem1.css"/>
-
-            <p:menubar >
-                <p:menuitem action="#{clientController.toReserverPhn()}" ajax="false" value="PHN" ></p:menuitem>
-            </p:menubar>
-            
             <p:menubar  rendered="#{webUserController.loggedUser ne null}"  autoDisplay="true"   styleClass="horizontalmenu">
                 <p:menuitem ajax="false" value="Home" icon="ui-icon-home" action="/index" />
                 <p:submenu label="Clients" rendered="#{webUserController.hasPrivilege('Client_Management')}" >
