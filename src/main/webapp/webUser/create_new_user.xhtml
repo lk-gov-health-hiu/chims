@@ -54,13 +54,13 @@
                                            value="#{webUserController.userNameExsists()?'Username is already taken. Please try another.':''}" ></p:outputLabel>
 
                             <p:outputLabel value="Password" for="password" />
-                            <p:inputText  id="password" value="#{webUserController.password}" title="Password" size="30"
+                            <p:password  id="password" value="#{webUserController.password}" title="Password" size="30"
                                           required="true" requiredMessage="Password is required."/>
                             <p:spacer ></p:spacer>
 
 
                             <p:outputLabel value="Re-enter Password" for="passwordReenter" />
-                            <p:inputText  id="passwordReenter" value="#{webUserController.passwordReenter}" title="Re-enter Password" size="30"
+                            <p:password   id="passwordReenter" value="#{webUserController.passwordReenter}" title="Re-enter Password" size="30"
                                       autocomplete="false"     required="true" requiredMessage="Password is required."/>
                             <p:spacer ></p:spacer>
 
