@@ -1008,12 +1008,13 @@ public class ClientEncounterComponentFormSetController implements Serializable {
     }
 
     public void loadOldNavigateToDataEntry(ClientEncounterComponentFormSet cfs) {
-        // System.out.println("loadOldNavigateToDataEntry");
+         System.out.println("loadOldNavigateToDataEntry");
         if (cfs == null) {
             return;
         }
-
+        System.out.println("cfs = " + cfs.getId());
         DesignComponentFormSet dfs = cfs.getReferanceDesignComponentFormSet();
+        System.out.println("dfs = " + dfs.getId());
 
         DataFormset fs = new DataFormset();
 
