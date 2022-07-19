@@ -1,12 +1,13 @@
 package lk.gov.health.phsp.bean;
 
-
+import lk.gov.health.phsp.entity.Preference;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.enterprise.context.SessionScoped;
 import javax.faces.component.UIComponent;
@@ -41,10 +42,21 @@ public class PreferenceController implements Serializable {
     private String limsKey;
     private String pharmacyBaseUrl;
     private String pharmacyKey;
+    private String reCAPTCHASiteKey;
+    private String reCAPTCHASecreatKey;
 
     // <editor-fold defaultstate="collapsed" desc="Getters and Setters">
     private PreferenceFacade getFacade() {
         return ejbFacade;
+    }
+
+    @PostConstruct
+    public void PreferenceController() {
+        loadPreferances();
+    }
+    
+    public void init(){
+        loadPreferances();
     }
 
     public String findApplicationPreferanceValue(String name) {
@@ -52,11 +64,16 @@ public class PreferenceController implements Serializable {
         if (p != null) {
             return p.getLongTextValue();
         } else {
-            return "";
+            return null;
         }
     }
 
     public String toManagePreferences() {
+        loadPreferances();
+        return "/systemAdmin/preferences";
+    }
+
+    public void loadPreferances() {
         dictionaryServiceBaseUrl = findApplicationPreferanceValue(dictionaryServiceBaseUrl);
         dictionaryServiceKey = findApplicationPreferanceValue(dictionaryServiceKey);
         facilityRegistryBaseUrl = findApplicationPreferanceValue(facilityRegistryBaseUrl);
@@ -67,10 +84,11 @@ public class PreferenceController implements Serializable {
         limsKey = findApplicationPreferanceValue(limsKey);
         pharmacyBaseUrl = findApplicationPreferanceValue(pharmacyBaseUrl);
         pharmacyKey = findApplicationPreferanceValue(pharmacyKey);
-        return "/systemAdmin/preferences";
+        reCAPTCHASecreatKey = findApplicationPreferanceValue("reCAPTCHASecreatKey");
+        reCAPTCHASiteKey = findApplicationPreferanceValue("reCAPTCHASiteKey");
     }
 
-    public void savePreferences(){
+    public void savePreferences() {
         savePreference("dictionaryServiceBaseUrl", dictionaryServiceBaseUrl);
         savePreference("dictionaryServiceKey", dictionaryServiceKey);
         savePreference("facilityRegistryBaseUrl", facilityRegistryBaseUrl);
@@ -81,8 +99,10 @@ public class PreferenceController implements Serializable {
         savePreference("limsKey", limsKey);
         savePreference("pharmacyBaseUrl", pharmacyBaseUrl);
         savePreference("pharmacyKey", pharmacyKey);
+        savePreference("reCAPTCHASecreatKey", reCAPTCHASecreatKey);
+        savePreference("reCAPTCHASiteKey", reCAPTCHASiteKey);
     }
-    
+
     public Preference findApplicationPreferance(String name) {
         if (name == null) {
             return null;
@@ -237,6 +257,22 @@ public class PreferenceController implements Serializable {
 
     public void setUserTransactionController(UserTransactionController userTransactionController) {
         this.userTransactionController = userTransactionController;
+    }
+
+    public String getReCAPTCHASiteKey() {
+        return reCAPTCHASiteKey;
+    }
+
+    public void setReCAPTCHASiteKey(String reCAPTCHASiteKey) {
+        this.reCAPTCHASiteKey = reCAPTCHASiteKey;
+    }
+
+    public String getReCAPTCHASecreatKey() {
+        return reCAPTCHASecreatKey;
+    }
+
+    public void setReCAPTCHASecreatKey(String reCAPTCHASecreatKey) {
+        this.reCAPTCHASecreatKey = reCAPTCHASecreatKey;
     }
 
     // </editor-fold>

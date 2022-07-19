@@ -144,7 +144,6 @@ public class ClientEncounterComponentFormSetController implements Serializable {
         }
         loadOldNavigateToDataEntry(selected);
         if (selected.isCompleted()) {
-            userTransactionController.recordTransaction("To View Or Edit Formset");
             return toViewFormset();
         } else {
             return toEditFormset();
@@ -1039,7 +1038,6 @@ public class ClientEncounterComponentFormSetController implements Serializable {
             }
 
             // System.out.println("skipThisForm = " + skipThisForm);
-
             if (!skipThisForm) {
                 formCounter++;
                 String j = "select cf "
@@ -1055,7 +1053,6 @@ public class ClientEncounterComponentFormSetController implements Serializable {
                 ClientEncounterComponentForm cf = clientEncounterComponentFormController.getClientEncounterComponentForm(j, m);
 
                 // System.out.println("cf = " + cf);
-
                 if (cf == null) {
                     cf = new ClientEncounterComponentForm();
 
@@ -1086,7 +1083,6 @@ public class ClientEncounterComponentFormSetController implements Serializable {
                 for (DesignComponentFormItem dis : diList) {
 
                     // System.out.println("dis = " + dis.getName());
-
                     boolean disSkipThisItem = false;
                     if (dis.getComponentSex() == ComponentSex.For_Females && clientController.getSelected().getPerson().getSex().getCode().equalsIgnoreCase("sex_male")) {
                         disSkipThisItem = true;
@@ -1096,13 +1092,11 @@ public class ClientEncounterComponentFormSetController implements Serializable {
                     }
 
                     // System.out.println("disSkipThisItem = " + disSkipThisItem);
-
                     if (!disSkipThisItem) {
 
                         if (dis.isMultipleEntiesPerForm()) {
 
                             // System.out.println("dis.isMultipleEntiesPerForm() = " + dis.isMultipleEntiesPerForm());
-
                             j = "Select ci "
                                     + " from ClientEncounterComponentItem ci "
                                     + " where ci.retired=:ret "
@@ -1407,6 +1401,9 @@ public class ClientEncounterComponentFormSetController implements Serializable {
                 return;
             case "client_home_number":
                 ti.setShortTextValue(c.getPerson().getPhone2());
+                return;
+            case "client_phone_number":
+                ti.setShortTextValue(c.getPerson().getPhone1() + "/" + c.getPerson().getPhone2());
                 return;
             case "client_permanent_moh_area":
                 ti.setAreaValue(c.getPerson().getGnArea());

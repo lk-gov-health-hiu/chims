@@ -3,11 +3,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.divudi</groupId>
-    <artifactId>chimsdev</artifactId>
+    <artifactId>chims</artifactId>
     <version>0.1</version>
     <packaging>war</packaging>
 
-    <name>chimsdev</name>
+    <name>chims</name>
 
     <properties>
         <endorsed.dir>${project.build.directory}/endorsed</endorsed.dir>
@@ -156,7 +156,8 @@
         <dependency>
             <groupId>org.jasypt</groupId>
             <artifactId>jasypt</artifactId>
-            <version>1.9.2</version>
+            <version>1.9.3</version>
+            <type>jar</type>
         </dependency>
         <dependency>
             <groupId>commons-io</groupId>

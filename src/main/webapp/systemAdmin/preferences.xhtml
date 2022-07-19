@@ -13,51 +13,23 @@
             <ui:define name="content">
                 <h:form>
 
-                    <p:panel header="Preferences" >
-                        <p:panelGrid columns="1" >
-                            <f:facet name="header" >
-                                <p:commandButton ajax="false" action="#{preferenceController.savePreferences()}" 
-                                                 value="SAVE" ></p:commandButton>
-                            </f:facet>
-                            <p:tabView orientation="left" >
-                                <p:tab title="Interfacing" >
-                                    <p:panelGrid columns="2" >
-                                        <f:facet name="header" >
-                                            <p:commandButton ajax="false" action="#{preferenceController.savePreferences()}" 
-                                                             value="SAVE" ></p:commandButton>
-                                        </f:facet>
 
-                                        <p:outputLabel value="Dictionary Service URL" ></p:outputLabel>
-                                        <p:inputText size="100" value="#{preferenceController.dictionaryServiceBaseUrl}" ></p:inputText>
 
-                                        <p:outputLabel value="Dictionary Service KEY" ></p:outputLabel>
-                                        <p:inputText  size="100" value="#{preferenceController.dictionaryServiceKey}" ></p:inputText>
+                    <p:panelGrid columns="2" >
+                        <f:facet name="header" >
+                            <p:commandButton ajax="false" action="#{preferenceController.savePreferences()}" 
+                                             value="SAVE" ></p:commandButton>
+                        </f:facet>
 
-                                        <p:outputLabel value="Facility Registory URL" ></p:outputLabel>
-                                        <p:inputText size="100" value="#{preferenceController.facilityRegistryBaseUrl}"></p:inputText>
-                                        <p:outputLabel value="Facility Registory  KEY" ></p:outputLabel>
-                                        <p:inputText  size="100" value="#{preferenceController.facilityRegistryKey}" ></p:inputText>
+                        <p:outputLabel value="reCAPTCHA Site Key" ></p:outputLabel>
+                        <p:inputText size="100" value="#{preferenceController.reCAPTCHASiteKey}" ></p:inputText>
 
-                                        <p:outputLabel value="Procedure Room URL" ></p:outputLabel>
-                                        <p:inputText size="100" value="#{preferenceController.procedureRoomBaseUrl}"></p:inputText>
-                                        <p:outputLabel value="Procedure Room  KEY" ></p:outputLabel>
-                                        <p:inputText  size="100"  value="#{preferenceController.procedureRoomKey}"></p:inputText>
+                        <p:outputLabel value="reCAPTCHA Secreat Key" ></p:outputLabel>
+                        <p:inputText size="100" value="#{preferenceController.reCAPTCHASecreatKey}" ></p:inputText>
 
-                                        <p:outputLabel value="LIMS URL" ></p:outputLabel>
-                                        <p:inputText size="100" value="#{preferenceController.limsBaseUrl}"></p:inputText>
-                                        <p:outputLabel value="LIMS  KEY" ></p:outputLabel>
-                                        <p:inputText  size="100"  value="#{preferenceController.limsKey}"></p:inputText>
 
-                                        <p:outputLabel value="Pharmacy URL" ></p:outputLabel>
-                                        <p:inputText size="100" value="#{preferenceController.pharmacyBaseUrl}"></p:inputText>
-                                        <p:outputLabel value="Pharmacy KEY" ></p:outputLabel>
-                                        <p:inputText  size="100"  value="#{preferenceController.pharmacyKey}"></p:inputText>
+                    </p:panelGrid>
 
-                                    </p:panelGrid>
-                                </p:tab>
-                            </p:tabView>
-                        </p:panelGrid>
-                    </p:panel>
 
 
 

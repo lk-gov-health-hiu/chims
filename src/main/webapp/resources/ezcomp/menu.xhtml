@@ -2,7 +2,6 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:cc="http://xmlns.jcp.org/jsf/composite"
-      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:p="http://primefaces.org/ui"
       xmlns:f="http://xmlns.jcp.org/jsf/core">
@@ -17,8 +16,6 @@
 
 
         <h:form>  
-
-            <h:outputStylesheet library="css" name="tem1.css"/>
 
             <p:menubar  rendered="#{webUserController.loggedUser ne null}"  autoDisplay="true"   styleClass="horizontalmenu">
                 <p:menuitem ajax="false" value="Home" icon="ui-icon-home" action="/index" />
@@ -64,11 +61,8 @@
                     <p:menuitem value="Manage Data" action="/systemAdmin/manage_data_index"    ajax="false" />
                     <p:menuitem value="Manage Interfaces" action="/systemAdmin/interfaces"    ajax="false" />
                     <p:menuitem value="Manage Analysis"  action="/queryComponent/index"     ajax="false" />
+                    <p:menuitem value="Manage Preferances"  action="#{preferenceController.toManagePreferences()}"     ajax="false" />
                 </p:submenu>
-                <p:submenu label="Modules" rendered="#{webUserController.hasPrivilege('Pharmacy_Management')}"  >
-                    <p:menuitem value="Procedure Room" action="#{webUserController.toProcedureRoom()}"  ajax="false" />
-                </p:submenu>
-
                 <p:submenu label="Settings" >
                     <p:menuitem value="Change My Password" action="#{webUserController.toChangeMyPassword()}"    ajax="false" />
                     <p:menuitem value="Change My Details" action="#{webUserController.toChangeMyDetails()}"    ajax="false" />

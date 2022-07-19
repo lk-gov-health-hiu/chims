@@ -1,12 +1,9 @@
-<?xml version='1.0' encoding='UTF-8' ?> 
+<?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:p="http://primefaces.org/ui"
-      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:ez="http://xmlns.jcp.org/jsf/composite/ezcomp">
-
     <h:head id="headt">
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1"/>
@@ -17,13 +14,7 @@
         </ui:insert>
         <h:outputStylesheet library="css" name="tem1.css"/>
     </h:head>
-
-    <h:body >
-        <ui:insert name="free">
-        </ui:insert>
-        <p:growl   >
-        </p:growl>
-
+    <h:body>
         <h:panelGroup rendered="#{webUserController.ipBlocked}" >
             <div class="container-fluid" >
                 <div class="row" >
@@ -57,22 +48,12 @@
                             Contents
                         </ui:insert>
                     </h:panelGroup>
-                    <h:panelGroup rendered="#{webUserController.loggedUser eq null and webUserController.passwordChangingUser eq null}">
+                    <h:panelGroup rendered="#{webUserController.loggedUser eq null}">
                         <ez:login/>
                         <div style="width: 50%; margin: auto;">
                             <ez:demo_login/>
                         </div>
                         <ui:insert name="timeout">
-                        </ui:insert>
-                    </h:panelGroup>
-                </div>
-            </div>
-
-
-            <div class="row">
-                <div class="col-12" >
-                    <h:panelGroup rendered="#{webUserController.loggedUser eq null and webUserController.passwordChangingUser ne null}">
-                        <ui:insert name="nonusercontent">
                         </ui:insert>
                     </h:panelGroup>
                 </div>
@@ -87,7 +68,6 @@
             </div>
 
         </h:panelGroup>
-
     </h:body>
-
 </html>
+
