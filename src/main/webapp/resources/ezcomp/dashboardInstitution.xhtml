@@ -11,6 +11,72 @@
 
     <!-- IMPLEMENTATION -->
     <cc:implementation>
+        <h:form>
+
+
+            <div class="row" >
+                <div class="col-md-3 m-2 p-2" >
+                    <div class="card m-1 p-1 card-blue" >
+                        <div class="card-header" >
+                            <h5>Total Empanelled</h5>
+                        </div>
+                        <div class="card-body  text-center" >
+                            <h1>
+                                <h:outputLabel value="#{hospitalDashboardController.totalNumberOfRegisteredClients}" >
+                                    <f:convertNumber pattern="#,##0" ></f:convertNumber>
+                                </h:outputLabel>
+                            </h1>
+                        </div>
+                        <div class="card-footer" >
+                            <h6>
+                                <h:commandLink value="More Details" action="#{hospitalReportController.toRegistrationCounts()}" ></h:commandLink>
+                            </h6>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 m-2 p-2" >
+                    <div class="card m-1 p-1 card-cyan" >
+                        <div class="card-header" >
+                            <h5>Total Clinic Registrations</h5>
+                        </div>
+                        <div class="card-body  text-center" >
+                            <h1>
+                                <h:outputLabel value="#{hospitalDashboardController.totalNumberOfClinicEnrolments}" >
+                                    <f:convertNumber pattern="#,##0" ></f:convertNumber>
+                                </h:outputLabel>
+                            </h1>
+                        </div>
+                        <div class="card-footer" >
+                            <h6>
+                                <h:commandLink value="More Details" action="#{hospitalReportController.toClinicRegistrationCounts()}" ></h:commandLink>
+                            </h6>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 m-2 p-2" >
+                    <div class="card m-1 p-1 card-fuchsia" >
+                        <div class="card-header" >
+                            <h5>Total Clinic Visits</h5>
+                        </div>
+                        <div class="card-body text-center" >
+                            <h1>
+                                <h:outputLabel value="#{hospitalDashboardController.totalNumberOfClinicVisits}" >
+                                    <f:convertNumber pattern="#,##0" ></f:convertNumber>
+                                </h:outputLabel>
+                            </h1>
+                        </div>
+                        <div class="card-footer" >
+                            <h6>
+                                <h:commandLink value="More Details" action="#{hospitalReportController.toVisitCounts()}" ></h:commandLink>
+                            </h6>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+        </h:form>
+
 
 
     </cc:implementation>

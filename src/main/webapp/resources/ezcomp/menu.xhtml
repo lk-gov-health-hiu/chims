@@ -24,12 +24,12 @@
                     <p:menuitem ajax="false" value="Reserver PHN" 
                                 action="#{clientController.toReserverPhn()}"  />
                     <p:menuitem ajax="false" value="Search" action="#{clientController.toSearchClientById()}" />
-
+                    
                 </p:submenu>
 
 
-
-
+                
+                 
 
                 <p:submenu label="Analysis" 
                            disabled="false" >
@@ -84,22 +84,16 @@
                 <f:facet name="options">
                     <p:inputText autocomplete="off"
                                  value="#{clientController.searchingId}"/>
-                    <h:commandLink  class="btn" 
-                                    action="#{clientController.searchByAnyIdWithBasicData()}" 
-                                    >
-                        <div class="red" style="width:10px; height: 10px; color: red;"></div>
-                       
-                    </h:commandLink>
-
+                    <p:commandButton ajax="false" value="Search"
+                                     action="#{clientController.searchByAnyIdWithBasicData()}" 
+                                      ></p:commandButton>
                     <p:spacer height="1" width="5" ></p:spacer>
                     <p:outputLabel value="|"></p:outputLabel>
                     <p:spacer height="1" width="5" ></p:spacer>
                     <p:commandButton action="#{webUserController.logOut()}" ajax="false"
                                      rendered="#{webUserController.loggedUser ne null}" value="#{webUserController.loggedUser.name} - Logout" />
 
-                    <p:commandButton action="#{webUserController.endAssumingRoles()}" ajax="false"
-                                     rendered="#{webUserController.loggedUser.assumedRole ne null}" 
-                                     value="Back as Admin" />
+                   
 
                 </f:facet>
             </p:menubar>

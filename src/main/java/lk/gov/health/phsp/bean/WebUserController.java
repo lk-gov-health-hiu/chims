@@ -100,6 +100,8 @@ public class WebUserController implements Serializable {
     WebUserApplicationController webUserApplicationController;
     @Inject
     RelationshipController relationshipController;
+    @Inject
+    HospitalDashboardController hospitalDashboardController;
     /*
     Variables
      */
@@ -732,11 +734,26 @@ public class WebUserController implements Serializable {
             return "/webUser/change_password_at_login";
         } else {
             passwordChangingUser = null;
+            prepareDashboards();
             JsfUtil.addSuccessMessage("Successfully Logged");
             return "/index";
         }
     }
 
+    private void prepareDashboards(){
+        switch(getLoggedUser().getWebUserRoleLevel()){
+            case Hospital:
+            case Provincial:
+            case Regional:
+                hospitalDashboardController.prepareDashboard();
+                break;
+            case National:
+            case National_Me:
+            case Client:
+            case Moh:
+        }
+    }
+    
     private boolean checkLogin() {
          System.out.println("checkLogin");
         if (getFacade() == null) {
