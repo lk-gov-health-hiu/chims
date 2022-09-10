@@ -1,0 +1,42 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <title>Facelet Title</title>
+    </h:head>
+    <h:body>
+        <h:form >
+            <p:commandButton  icon="fa fa-users"  ajax="false"
+                              value="Blocked Users"  styleClass="btn300"
+                              actionListener="#{webUserController.toManageBlockedUsers()}">
+            </p:commandButton>
+            <p:dataTable id="tbl" 
+                         value="#{webUserController.toManageAllUsers}" var="c"
+                         rowIndexVar="n"
+                         paginator="true"
+                         rows="10"
+                         rowsPerPageTemplate="10,20,30,40,50"
+                         rowKey="#{c}"
+                         >
+                <p:column headerText="User" 
+                          filterBy="#{c}" 
+                          filterMatchMode="contains" 
+                          sortBy="#{c}">
+                    <p:outputLabel value="#{c}" ></p:outputLabel>
+                </p:column>
+                <p:column headerText="Remove" >
+                    <p:commandButton value="Remove" 
+                                     action="#{webUserController.removeBlockedUser()}"
+                                     ajax="false"
+                                     >
+                        <f:setPropertyActionListener value="#{c}" target="#{webUserController.selectedUsername}" ></f:setPropertyActionListener>
+                    </p:commandButton>
+                </p:column>
+            </p:dataTable>
+        </h:form>
+    </h:body>
+</html>
+

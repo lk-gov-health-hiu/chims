@@ -3,7 +3,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:cc="http://xmlns.jcp.org/jsf/composite"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:f="http://xmlns.jcp.org/jsf/core">
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
 
     <!-- INTERFACE -->
     <cc:interface>
@@ -14,8 +15,15 @@
         <h:form>
 
 
+             <div class="row p1" >
+                 <div class="col-md-12 text-lg-center" >
+                     <h2>
+                         <h:outputText class="card card-header" value="#{webUserController.loggedUser.institution.name}" ></h:outputText>
+                     </h2>
+                 </div>
+             </div>
             <div class="row" >
-                <div class="col-md-3 m-2 p-2" >
+                <div class="col-md-4  p-2" >
                     <div class="card m-1 p-1 card-blue" >
                         <div class="card-header" >
                             <h5>Total Empanelled</h5>
@@ -34,7 +42,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-3 m-2 p-2" >
+                <div class="col-md-4  p-2" >
                     <div class="card m-1 p-1 card-cyan" >
                         <div class="card-header" >
                             <h5>Total Clinic Registrations</h5>
@@ -53,7 +61,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-3 m-2 p-2" >
+                <div class="col-md-4  p-2" >
                     <div class="card m-1 p-1 card-fuchsia" >
                         <div class="card-header" >
                             <h5>Total Clinic Visits</h5>
@@ -73,7 +81,304 @@
                     </div>
                 </div>
             </div>
+            <div class="row" >
+                <div class="col-md-12 p-4" >
+                    <h2>
+                        <h:outputText class="h2" value="Clients over 35 years or above" ></h:outputText>
+                    </h2>
+                    <table class="table">
+                        <thead class="thead-dark" >
+                            <tr>
+                                <th>
+                                    <p:outputLabel class="h3" value="Year/Quarter" ></p:outputLabel>
+                                </th>
+                                <th>
+                                    <p:outputLabel class="h3" value="2020" ></p:outputLabel>
+                                </th>
+                                <th>
+                                    <p:outputLabel class="h3" value="2021 Q1" ></p:outputLabel>
+                                </th>
+                                <th>
+                                    <p:outputLabel class="h3" value="2021 Q2" ></p:outputLabel>
+                                </th>
+                                <th>
+                                    <p:outputLabel class="h3" value="2021 Q3" ></p:outputLabel>
+                                </th>
+                                <th>
+                                    <p:outputLabel class="h3" value="2021 Q4" ></p:outputLabel>
+                                </th>
+                                <th>
+                                    <p:outputLabel class="h3" value="2021" ></p:outputLabel>
+                                </th>
+                                <th>
+                                    <p:outputLabel class="h3" value="2022 Q1" ></p:outputLabel>
+                                </th>
+                            </tr>
 
+                        </thead>
+
+                        <tr>
+                            <th>
+                                <p:outputLabel class="h4" value="Target population, i.e. people aged 35 years or above" ></p:outputLabel>
+                            </th>
+                            <th>
+                                <p:outputLabel class="h3" value="2020" ></p:outputLabel>
+                            </th>
+                            <th>
+                                <p:outputLabel class="h3" value="2021 Q1" ></p:outputLabel>
+                            </th>
+                            <th>
+                                <p:outputLabel class="h3" value="2021 Q2" ></p:outputLabel>
+                            </th>
+                            <th>
+                                <p:outputLabel class="h3" value="2021 Q3" ></p:outputLabel>
+                            </th>
+                            <th>
+                                <p:outputLabel class="h3" value="2021 Q4" ></p:outputLabel>
+                            </th>
+                            <th>
+                                <p:outputLabel class="h3" value="2021" ></p:outputLabel>
+                            </th>
+                            <th>
+                                <p:outputLabel class="h3" value="2022 Q1" ></p:outputLabel>
+                            </th>
+                        </tr>
+
+
+                        <tr>
+                            <th>
+                                <p:outputLabel class="h4" value="Number and percentage of total Screened out of people aged 35 years or above" ></p:outputLabel>
+                            </th>
+                            <th>
+                                <p:outputLabel class="h3" value="2020" ></p:outputLabel>
+                            </th>
+                            <th>
+                                <p:outputLabel class="h3" value="2021 Q1" ></p:outputLabel>
+                            </th>
+                            <th>
+                                <p:outputLabel class="h3" value="2021 Q2" ></p:outputLabel>
+                            </th>
+                            <th>
+                                <p:outputLabel class="h3" value="2021 Q3" ></p:outputLabel>
+                            </th>
+                            <th>
+                                <p:outputLabel class="h3" value="2021 Q4" ></p:outputLabel>
+                            </th>
+                            <th>
+                                <p:outputLabel class="h3" value="2021" ></p:outputLabel>
+                            </th>
+                            <th>
+                                <p:outputLabel class="h3" value="2022 Q1" ></p:outputLabel>
+                            </th>
+                        </tr>
+
+                        <tr>
+                            <th>
+                                <p:outputLabel class="h4" value="Number and percentage of males screened out of males aged 35 years or above" ></p:outputLabel>
+                            </th>
+                            <th>
+                                <p:outputLabel class="h3" value="2020" ></p:outputLabel>
+                            </th>
+                            <th>
+                                <p:outputLabel class="h3" value="2021 Q1" ></p:outputLabel>
+                            </th>
+                            <th>
+                                <p:outputLabel class="h3" value="2021 Q2" ></p:outputLabel>
+                            </th>
+                            <th>
+                                <p:outputLabel class="h3" value="2021 Q3" ></p:outputLabel>
+                            </th>
+                            <th>
+                                <p:outputLabel class="h3" value="2021 Q4" ></p:outputLabel>
+                            </th>
+                            <th>
+                                <p:outputLabel class="h3" value="2021" ></p:outputLabel>
+                            </th>
+                            <th>
+                                <p:outputLabel class="h3" value="2022 Q1" ></p:outputLabel>
+                            </th>
+                        </tr>
+
+                        <tr>
+                            <th>
+                                <p:outputLabel class="h4" value="Number and percentage of females Screened out of females aged 35 years or above" ></p:outputLabel>
+                            </th>
+                            <th>
+                                <p:outputLabel class="h3" value="2020" ></p:outputLabel>
+                            </th>
+                            <th>
+                                <p:outputLabel class="h3" value="2021 Q1" ></p:outputLabel>
+                            </th>
+                            <th>
+                                <p:outputLabel class="h3" value="2021 Q2" ></p:outputLabel>
+                            </th>
+                            <th>
+                                <p:outputLabel class="h3" value="2021 Q3" ></p:outputLabel>
+                            </th>
+                            <th>
+                                <p:outputLabel class="h3" value="2021 Q4" ></p:outputLabel>
+                            </th>
+                            <th>
+                                <p:outputLabel class="h3" value="2021" ></p:outputLabel>
+                            </th>
+                            <th>
+                                <p:outputLabel class="h3" value="2022 Q1" ></p:outputLabel>
+                            </th>
+                        </tr>
+
+
+                    </table>
+                </div>
+            </div>
+            <div class="row" >
+                <div class="col-md-12 p-4" >
+                    <h2>
+                        <h:outputText class="h2" value="Clients aged 20-34 years of age" ></h:outputText>
+                    </h2>
+                    <table class="table">
+                        <thead class="thead-dark" >
+                            <tr>
+                                <th>
+                                    <p:outputLabel class="h3" value="Year/Quarter" ></p:outputLabel>
+                                </th>
+                                <th>
+                                    <p:outputLabel class="h3" value="2020" ></p:outputLabel>
+                                </th>
+                                <th>
+                                    <p:outputLabel class="h3" value="2021 Q1" ></p:outputLabel>
+                                </th>
+                                <th>
+                                    <p:outputLabel class="h3" value="2021 Q2" ></p:outputLabel>
+                                </th>
+                                <th>
+                                    <p:outputLabel class="h3" value="2021 Q3" ></p:outputLabel>
+                                </th>
+                                <th>
+                                    <p:outputLabel class="h3" value="2021 Q4" ></p:outputLabel>
+                                </th>
+                                <th>
+                                    <p:outputLabel class="h3" value="2021" ></p:outputLabel>
+                                </th>
+                                <th>
+                                    <p:outputLabel class="h3" value="2022 Q1" ></p:outputLabel>
+                                </th>
+                            </tr>
+
+                        </thead>
+
+                        <tr>
+                            <th>
+                                <p:outputLabel class="h4" value="Target population, i.e. people aged 35 years or above" ></p:outputLabel>
+                            </th>
+                            <th>
+                                <p:outputLabel class="h3" value="2020" ></p:outputLabel>
+                            </th>
+                            <th>
+                                <p:outputLabel class="h3" value="2021 Q1" ></p:outputLabel>
+                            </th>
+                            <th>
+                                <p:outputLabel class="h3" value="2021 Q2" ></p:outputLabel>
+                            </th>
+                            <th>
+                                <p:outputLabel class="h3" value="2021 Q3" ></p:outputLabel>
+                            </th>
+                            <th>
+                                <p:outputLabel class="h3" value="2021 Q4" ></p:outputLabel>
+                            </th>
+                            <th>
+                                <p:outputLabel class="h3" value="2021" ></p:outputLabel>
+                            </th>
+                            <th>
+                                <p:outputLabel class="h3" value="2022 Q1" ></p:outputLabel>
+                            </th>
+                        </tr>
+
+
+                        <tr>
+                            <th>
+                                <p:outputLabel class="h4" value="Number and percentage of total Screened out of people aged 35 years or above" ></p:outputLabel>
+                            </th>
+                            <th>
+                                <p:outputLabel class="h3" value="2020" ></p:outputLabel>
+                            </th>
+                            <th>
+                                <p:outputLabel class="h3" value="2021 Q1" ></p:outputLabel>
+                            </th>
+                            <th>
+                                <p:outputLabel class="h3" value="2021 Q2" ></p:outputLabel>
+                            </th>
+                            <th>
+                                <p:outputLabel class="h3" value="2021 Q3" ></p:outputLabel>
+                            </th>
+                            <th>
+                                <p:outputLabel class="h3" value="2021 Q4" ></p:outputLabel>
+                            </th>
+                            <th>
+                                <p:outputLabel class="h3" value="2021" ></p:outputLabel>
+                            </th>
+                            <th>
+                                <p:outputLabel class="h3" value="2022 Q1" ></p:outputLabel>
+                            </th>
+                        </tr>
+
+                        <tr>
+                            <th>
+                                <p:outputLabel class="h4" value="Number and percentage of males screened out of males aged 35 years or above" ></p:outputLabel>
+                            </th>
+                            <th>
+                                <p:outputLabel class="h3" value="2020" ></p:outputLabel>
+                            </th>
+                            <th>
+                                <p:outputLabel class="h3" value="2021 Q1" ></p:outputLabel>
+                            </th>
+                            <th>
+                                <p:outputLabel class="h3" value="2021 Q2" ></p:outputLabel>
+                            </th>
+                            <th>
+                                <p:outputLabel class="h3" value="2021 Q3" ></p:outputLabel>
+                            </th>
+                            <th>
+                                <p:outputLabel class="h3" value="2021 Q4" ></p:outputLabel>
+                            </th>
+                            <th>
+                                <p:outputLabel class="h3" value="2021" ></p:outputLabel>
+                            </th>
+                            <th>
+                                <p:outputLabel class="h3" value="2022 Q1" ></p:outputLabel>
+                            </th>
+                        </tr>
+
+                        <tr>
+                            <th>
+                                <p:outputLabel class="h4" value="Number and percentage of females Screened out of females aged 35 years or above" ></p:outputLabel>
+                            </th>
+                            <th>
+                                <p:outputLabel class="h3" value="2020" ></p:outputLabel>
+                            </th>
+                            <th>
+                                <p:outputLabel class="h3" value="2021 Q1" ></p:outputLabel>
+                            </th>
+                            <th>
+                                <p:outputLabel class="h3" value="2021 Q2" ></p:outputLabel>
+                            </th>
+                            <th>
+                                <p:outputLabel class="h3" value="2021 Q3" ></p:outputLabel>
+                            </th>
+                            <th>
+                                <p:outputLabel class="h3" value="2021 Q4" ></p:outputLabel>
+                            </th>
+                            <th>
+                                <p:outputLabel class="h3" value="2021" ></p:outputLabel>
+                            </th>
+                            <th>
+                                <p:outputLabel class="h3" value="2022 Q1" ></p:outputLabel>
+                            </th>
+                        </tr>
+
+
+                    </table>
+                </div>
+            </div>
 
         </h:form>
 
