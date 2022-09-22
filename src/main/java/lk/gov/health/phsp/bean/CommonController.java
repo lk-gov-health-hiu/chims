@@ -428,16 +428,16 @@ public class CommonController implements Serializable {
     }
 
     public static Date startOfTheMonth(Date d) {
-//        // System.out.println("startOfTheMonth from date");
-//        // System.out.println("d = " + d);
+//        // //System.out.println("startOfTheMonth from date");
+//        // //System.out.println("d = " + d);
         Calendar c = Calendar.getInstance();
         c.setTime(d);
         c.set(Calendar.DAY_OF_MONTH, 1);
         c.set(Calendar.HOUR, 0);
         c.set(Calendar.MINUTE, 0);
         c.set(Calendar.MILLISECOND, 1);
-//        // System.out.println("c = " + c);
-//        // System.out.println("c.getTime() = " + c.getTime());
+//        // //System.out.println("c = " + c);
+//        // //System.out.println("c.getTime() = " + c.getTime());
         return c.getTime();
     }
 
@@ -451,13 +451,13 @@ public class CommonController implements Serializable {
     }
 
     public static Date startOfTheMonth(Integer year, Integer month) {
-//        // System.out.println("startOfTheMonth from year and month");
-//        // System.out.println("year = " + year);
-//        // System.out.println("month = " + month);
+//        // //System.out.println("startOfTheMonth from year and month");
+//        // //System.out.println("year = " + year);
+//        // //System.out.println("month = " + month);
         Calendar c = Calendar.getInstance();
         c.set(Calendar.YEAR, year);
         c.set(Calendar.MONTH, month - 1);
-//        // System.out.println("c = " + c);
+//        // //System.out.println("c = " + c);
         return startOfTheMonth(c.getTime());
     }
 

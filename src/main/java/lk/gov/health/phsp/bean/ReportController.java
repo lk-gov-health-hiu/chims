@@ -197,6 +197,8 @@ public class ReportController implements Serializable {
     private StreamedContent file;
     private String mergingMessage;
     private QueryComponent queryComponent;
+    private DesignComponentFormSet formset;
+    private List<ClientEncounterComponentFormSet> clientEncounterComponentFormSets = null;
 // </editor-fold> 
 
 // <editor-fold defaultstate="collapsed" desc="Constructors">
@@ -617,8 +619,6 @@ public class ReportController implements Serializable {
 
         }
     }
-    
-    
 
     public void clearReportData() {
         if (institution == null) {
@@ -1697,6 +1697,42 @@ public class ReportController implements Serializable {
         return action;
     }
 
+    public String toViewFormsetCountsByInstitution() {
+        encounters = new ArrayList<>();
+        String forSys = "/national/reports/institution_vice_formset_counts";
+        String forIns = "/hospital/reports/formset_counts";
+        String forMe = "/national/reports/institution_vice_formset_counts";
+        String forClient = "";
+        String noAction = "";
+        String action = "";
+        switch (webUserController.getLoggedUser().getWebUserRole()) {
+            case Client:
+                action = forClient;
+                break;
+            case Doctor:
+            case Institution_Administrator:
+            case Institution_Super_User:
+            case Institution_User:
+            case Nurse:
+            case Midwife:
+                action = forIns;
+                break;
+            case Me_Admin:
+            case Me_Super_User:
+                action = forMe;
+                break;
+            case Me_User:
+            case User:
+                action = noAction;
+                break;
+            case Super_User:
+            case System_Administrator:
+                action = forSys;
+                break;
+        }
+        return action;
+    }
+
     public String toViewDailyClinicsVisitCounts() {
         encounters = new ArrayList<>();
         String forSys = "/reports/clinic_visits/for_sa_daily";
@@ -1927,6 +1963,42 @@ public class ReportController implements Serializable {
                 break;
         }
         userTransactionController.recordTransaction("To View Clinic Visits");
+        return action;
+    }
+
+    public String toViewformsetList() {
+        encounters = new ArrayList<>();
+        String forSys = "/national/reports/institution_vice_formset_list";
+        String forIns = "/hospital/reports/formset_list";
+        String forMe = "/national/reports/institution_vice_formset_list";
+        String forClient = "";
+        String noAction = "";
+        String action = "";
+        switch (webUserController.getLoggedUser().getWebUserRole()) {
+            case Client:
+                action = forClient;
+                break;
+            case Doctor:
+            case Institution_Administrator:
+            case Institution_Super_User:
+            case Institution_User:
+            case Nurse:
+            case Midwife:
+                action = forIns;
+                break;
+            case Me_Admin:
+            case Me_Super_User:
+                action = forMe;
+                break;
+            case Me_User:
+            case User:
+                action = noAction;
+                break;
+            case Super_User:
+            case System_Administrator:
+                action = forSys;
+                break;
+        }
         return action;
     }
 
@@ -2237,13 +2309,13 @@ public class ReportController implements Serializable {
             stream = new FileInputStream(newFile);
             resultExcelFile = streamedContentController.generateStreamedContent(mimeType, FILE_NAME, stream);
         } catch (FileNotFoundException ex) {
-            // System.out.println("File not found exception -->" + ex.getMessage());
+            // //System.out.println("File not found exception -->" + ex.getMessage());
         }
     }
 
     public void fillRegistrationsOfClientsByInstitution() {
 
-        String j = "select new lk.gov.health.phsp.pojcs.InstitutionCount(c.createInstitution, count(c)) "
+        String j = "select new lk.gov.health.phsp.pojcs.InstitutionCount(c.createdBy.institution, count(c)) "
                 + " from Client c "
                 + " where c.retired<>:ret "
                 + " and c.reservedClient<>:res ";
@@ -2253,12 +2325,12 @@ public class ReportController implements Serializable {
         j = j + " and c.createdAt between :fd and :td ";
 
         if (webUserController.getLoggedUser().isRestrictedToInstitution()) {
-            j = j + " and c.createInstitution in :ins ";
+            j = j + " and c.createdBy.institution in :ins ";
             m.put("ins", webUserController.getLoggableInstitutions());
         }
 
-        j = j + " group by c.createInstitution ";
-        j = j + " order by c.createInstitution.name ";
+        j = j + " group by c.createdBy.institution ";
+        j = j + " order by c.createdBy.institution.name ";
         m.put("fd", getFromDate());
         m.put("td", getToDate());
         List<Object> objs = getClientFacade().findAggregates(j, m);
@@ -2300,6 +2372,53 @@ public class ReportController implements Serializable {
             }
         }
         userTransactionController.recordTransaction("Fill Clinic Visits By Institution");
+    }
+
+    public void fillFormSetCountsByInstitution() {
+
+        String j = "select new lk.gov.health.phsp.pojcs.InstitutionCount(c.institution, count(c)) "
+                + " from ClientEncounterComponentFormSet c "
+                + " where c.retired<>:ret "
+                + " and c.referenceComponent=:et ";
+        Map m = new HashMap();
+        m.put("ret", true);
+        m.put("et", formset);
+        j = j + " and c.createdAt between :fd and :td ";
+
+        j = j + " group by c.institution ";
+        j = j + " order by c.institution.name ";
+        m.put("fd", getFromDate());
+        m.put("td", getToDate());
+        List<Object> objs = getClientFacade().findAggregates(j, m);
+        institutionCounts = new ArrayList<>();
+        reportCount = 0l;
+        for (Object o : objs) {
+            if (o instanceof InstitutionCount) {
+                InstitutionCount ic = (InstitutionCount) o;
+                institutionCounts.add(ic);
+                reportCount += ic.getCount();
+            }
+        }
+        userTransactionController.recordTransaction("Fill Clinic Visits By Institution");
+    }
+
+    public void fillFormSetCountsByInstitutionList() {
+        String j = "select c "
+                + " from ClientEncounterComponentFormSet c "
+                + " where c.retired<>:ret "
+                + " and c.referenceComponent=:et ";
+        Map m = new HashMap();
+        m.put("ret", true);
+        m.put("et", formset);
+        j = j + " and c.createdAt between :fd and :td ";
+        m.put("fd", getFromDate());
+        m.put("td", getToDate());
+        if (institution != null) {
+            j = j + " and c.institution=:ins ";
+            m.put("ins", institution);
+        }
+        clientEncounterComponentFormSets = clientEncounterComponentFormSetFacade.findByJpql(j, m, TemporalType.TIMESTAMP);
+        
     }
 
     public void fillRegistrationsOfClientsByDistrict() {
@@ -2662,13 +2781,12 @@ public class ReportController implements Serializable {
 
                 Cell c2 = row.createCell(1);
                 c2.setCellValue(cbd.getPhn());
-                
+
                 Cell c2a = row.createCell(2);
                 c2a.setCellValue(cbd.getName());
 
                 Cell c2c = row.createCell(4);
                 c2c.setCellValue(cbd.getPhone());
-               
 
                 Cell c3 = row.createCell(2);
                 c3.setCellValue(cbd.getSex());
@@ -2751,13 +2869,13 @@ public class ReportController implements Serializable {
         m.put("ret", false);
         m.put("fd", fromDate);
         m.put("td", toDate);
-        System.out.println("m = " + m);
-        System.out.println("j = " + j);
+        //System.out.println("m = " + m);
+        //System.out.println("j = " + j);
         List<Institution> ins = institutionFacade.findByJpql(j, m);
-        System.out.println("ins = " + ins);
+        //System.out.println("ins = " + ins);
         Long n = 0l;
         for (Institution i : ins) {
-            System.out.println("i = " + i.getName());
+            //System.out.println("i = " + i.getName());
             boolean canInclude = false;
             if (i.getInstitutionType() != null) {
                 if (i.getInstitutionType().equals(type)) {
@@ -3761,6 +3879,8 @@ public class ReportController implements Serializable {
         return areaCounts;
     }
 
+    
+    
     public void setAreaCounts(List<AreaCount> areaCounts) {
         this.areaCounts = areaCounts;
     }
@@ -3795,6 +3915,22 @@ public class ReportController implements Serializable {
 
     public void setSelectedStoredQueryResult(StoredQueryResult selectedStoredQueryResult) {
         this.selectedStoredQueryResult = selectedStoredQueryResult;
+    }
+
+    public DesignComponentFormSet getFormset() {
+        return formset;
+    }
+
+    public void setFormset(DesignComponentFormSet formset) {
+        this.formset = formset;
+    }
+
+    public List<ClientEncounterComponentFormSet> getClientEncounterComponentFormSets() {
+        return clientEncounterComponentFormSets;
+    }
+
+    public void setClientEncounterComponentFormSets(List<ClientEncounterComponentFormSet> clientEncounterComponentFormSets) {
+        this.clientEncounterComponentFormSets = clientEncounterComponentFormSets;
     }
 
 }

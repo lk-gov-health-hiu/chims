@@ -8,18 +8,18 @@
 
     <h:head >
         <ui:define name="head">
-            Institution-vice Clinic Visits
+            Institution-vice Form-set Counts
         </ui:define>
     </h:head>
 
     <h:body>
 
-        <ui:composition template="/reports/index.xhtml">
+        <ui:composition template="/hospital/reports/index.xhtml">
             <ui:define name="reports">
                 <h:form>
                     <p:panelGrid columns="2" styleClass="alignTop" >
                         <f:facet name="header" >
-                            <p:outputLabel value="Institution-vice Clinic Visits" ></p:outputLabel>
+                            <p:outputLabel value="Institution-vice Form-set Counts" ></p:outputLabel>
                         </f:facet>
                         <p:panelGrid columns="1"   >
                             <f:facet name="header" >
@@ -28,19 +28,24 @@
 
                             </f:facet>
                             <p:outputLabel value="From" ></p:outputLabel>
-                            <p:calendar value="#{reportController.fromDate}" pattern="dd MM yyyy hh:mm a" ></p:calendar>
+                            <p:calendar value="#{hospitalReportController.fromDate}" pattern="dd MM yyyy hh:mm a" ></p:calendar>
                             <p:outputLabel value="To" ></p:outputLabel>
-                            <p:calendar value="#{reportController.toDate}" pattern="dd MM yyyy hh:mm a" ></p:calendar>
-
+                            <p:calendar value="#{hospitalReportController.toDate}" pattern="dd MM yyyy hh:mm a" ></p:calendar>
+                            <p:outputLabel value="Form-set" ></p:outputLabel><!-- comment -->
+                            <p:autoComplete id="refSet" value="#{hospitalReportController.formset}" 
+                                            var="s" itemLabel="#{s.name}" itemValue="#{s}"
+                                            completeMethod="#{designComponentFormSetController.completeFormSets}"
+                                            forceSelection="true" maxResults="15" minQueryLength="3">
+                            </p:autoComplete>
 
                             <p:commandButton value="Process" ajax="false"
-                                             action="#{reportController.fillClinicVisitsByInstitution()}"></p:commandButton>
+                                             action="#{hospitalReportController.fillFormSetCountsByInstitution()}"></p:commandButton>
                             <p:commandButton value="Download" ajax="false">
-                                <p:dataExporter type="xlsx" target="tbl" fileName="Clinic Visits by Institution" ></p:dataExporter>
+                                <p:dataExporter type="xlsx" target="tbl" fileName="Form-set Counts by Institution" ></p:dataExporter>
                             </p:commandButton>
                         </p:panelGrid>
 
-                        <p:dataTable id="tbl" value="#{reportController.institutionCounts}" var="c"
+                        <p:dataTable id="tbl" value="#{hospitalReportController.institutionCounts}" var="c"
                                      rowIndexVar="n"
                                      paginator="true"
                                      rows="10"
@@ -49,11 +54,11 @@
                             <f:facet name="header"  >
                                 <p:outputLabel value="Clinic Visits by Institution" ></p:outputLabel>
                                 <p:outputLabel value="From : " ></p:outputLabel>
-                                <p:outputLabel value="#{reportController.fromDate}" >
+                                <p:outputLabel value="#{hospitalReportController.fromDate}" >
                                     <f:convertDateTime pattern="dd MMMM yyyy" ></f:convertDateTime>
                                 </p:outputLabel>
                                 <p:outputLabel value=" To :" ></p:outputLabel>
-                                <p:outputLabel value="#{reportController.toDate}" >
+                                <p:outputLabel value="#{hospitalReportController.toDate}" >
                                     <f:convertDateTime pattern="dd MMMM yyyy" ></f:convertDateTime>
                                 </p:outputLabel>
                             </f:facet>
@@ -94,7 +99,7 @@
                                 <p:outputLabel value="#{c.count}" ></p:outputLabel>
                             </p:column>
                             <f:facet name="footer" >
-                                <p:outputLabel value="Total - #{reportController.reportCount}" ></p:outputLabel>
+                                <p:outputLabel value="Total - #{hospitalReportController.reportCount}" ></p:outputLabel>
                             </f:facet>
                         </p:dataTable>
 

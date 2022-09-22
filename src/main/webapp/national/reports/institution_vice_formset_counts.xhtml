@@ -8,7 +8,7 @@
 
     <h:head >
         <ui:define name="head">
-            Institution-vice Clinic Visits
+            Institution-vice Form-set Counts
         </ui:define>
     </h:head>
 
@@ -19,7 +19,7 @@
                 <h:form>
                     <p:panelGrid columns="2" styleClass="alignTop" >
                         <f:facet name="header" >
-                            <p:outputLabel value="Institution-vice Clinic Visits" ></p:outputLabel>
+                            <p:outputLabel value="Institution-vice Form-set Counts" ></p:outputLabel>
                         </f:facet>
                         <p:panelGrid columns="1"   >
                             <f:facet name="header" >
@@ -31,12 +31,17 @@
                             <p:calendar value="#{reportController.fromDate}" pattern="dd MM yyyy hh:mm a" ></p:calendar>
                             <p:outputLabel value="To" ></p:outputLabel>
                             <p:calendar value="#{reportController.toDate}" pattern="dd MM yyyy hh:mm a" ></p:calendar>
-
+                            <p:outputLabel value="Form-set" ></p:outputLabel><!-- comment -->
+                            <p:autoComplete id="refSet" value="#{reportController.formset}" 
+                                            var="s" itemLabel="#{s.name}" itemValue="#{s}"
+                                            completeMethod="#{designComponentFormSetController.completeFormSets}"
+                                            forceSelection="true" maxResults="15" minQueryLength="3">
+                            </p:autoComplete>
 
                             <p:commandButton value="Process" ajax="false"
-                                             action="#{reportController.fillClinicVisitsByInstitution()}"></p:commandButton>
+                                             action="#{reportController.fillFormSetCountsByInstitution()}"></p:commandButton>
                             <p:commandButton value="Download" ajax="false">
-                                <p:dataExporter type="xlsx" target="tbl" fileName="Clinic Visits by Institution" ></p:dataExporter>
+                                <p:dataExporter type="xlsx" target="tbl" fileName="Form-set Counts by Institution" ></p:dataExporter>
                             </p:commandButton>
                         </p:panelGrid>
 

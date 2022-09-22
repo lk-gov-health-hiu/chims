@@ -1,0 +1,108 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <h:head >
+        <ui:define name="head">
+            Institution-vice Form-set Lists
+        </ui:define>
+    </h:head>
+
+    <h:body>
+
+        <ui:composition template="/reports/index.xhtml">
+            <ui:define name="reports">
+                <h:form>
+                    <p:panelGrid columns="2" styleClass="alignTop" >
+                        <f:facet name="header" >
+                            <p:outputLabel value="Institution-vice Form-set Lists" ></p:outputLabel>
+                        </f:facet>
+                        <p:panelGrid columns="1"   >
+                            <f:facet name="header" >
+                                <p:outputLabel value="Filters" >
+                                </p:outputLabel>
+
+                            </f:facet>
+                            <p:outputLabel value="From" ></p:outputLabel>
+                            <p:calendar value="#{reportController.fromDate}" pattern="dd MM yyyy hh:mm a" ></p:calendar>
+                            <p:outputLabel value="To" ></p:outputLabel>
+                            <p:calendar value="#{reportController.toDate}" pattern="dd MM yyyy hh:mm a" ></p:calendar>
+                            <p:outputLabel value="Form-set" ></p:outputLabel><!-- comment -->
+                            <p:autoComplete id="refSet" value="#{reportController.formset}" 
+                                            var="s" itemLabel="#{s.name}" itemValue="#{s}"
+                                            completeMethod="#{designComponentFormSetController.completeFormSets}"
+                                            forceSelection="true" maxResults="15" minQueryLength="3">
+                            </p:autoComplete>
+                            <p:outputLabel value="Institution" ></p:outputLabel>
+                            <p:autoComplete   value="#{reportController.institution}" 
+                                              required="true"
+                                              completeMethod="#{institutionController.completeInstitutions}"
+                                              var="i" itemLabel="#{i.name}" itemValue="#{i}"
+                                              forceSelection="true" maxResults="15" minQueryLength="3">
+                            </p:autoComplete >
+
+                            <p:commandButton value="Process" ajax="false"
+                                             action="#{reportController.fillFormSetCountsByInstitutionList()}"></p:commandButton>
+                            <p:commandButton value="Download" ajax="false">
+                                <p:dataExporter type="xlsx" target="tbl" fileName="Form-set Lists by Institution" ></p:dataExporter>
+                            </p:commandButton>
+                        </p:panelGrid>
+
+                        <p:dataTable value="#{reportController.clientEncounterComponentFormSets}"
+                                     var="s" rowKey="#{s.id}" rowIndexVar="n"
+                                     rows="10"
+                                     id="tbl"
+                                     class="table table-striped"
+                                     paginator="true"
+                                     paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                     rowsPerPageTemplate="5,10,15"
+                                     >
+                            <p:column headerText="Date" width="50" sortBy="#{s.encounter.encounterDate}" >
+                                <p:outputLabel value="#{s.encounter.encounterDate}" >
+                                    <f:convertDateTime pattern="dd MM yyyy" ></f:convertDateTime>
+                                </p:outputLabel>
+                            </p:column>
+                            <p:column rendered="#{reportController.institution eq null}" headerText="Institution" sortBy="#{s.encounter.institution.name}">
+                                <p:outputLabel value="#{s.encounter.institution.name}" style="color: #{s.completed?'green':'red'};" >
+                                </p:outputLabel>
+                            </p:column>
+                            <p:column headerText="Name" width="50" >
+                                <p:outputLabel value="#{s.encounter.client.person.name}" ></p:outputLabel>
+                            </p:column>
+                            <p:column headerText="Age" width="50" >
+                                <p:outputLabel value="#{s.encounter.client.person.age}" ></p:outputLabel>
+                            </p:column>
+                            <p:column headerText="Sex"  >
+                                <p:outputLabel value="#{s.encounter.client.person.sex.name}" ></p:outputLabel>
+                            </p:column>
+                            
+                            <p:column headerText="GN Area"  >
+                                <p:outputLabel value="#{s.encounter.client.person.gnArea.name}" ></p:outputLabel>
+                            </p:column>
+
+
+                            <p:column headerText="Actions" exportable="false">
+                                <h:commandLink action="#{clientEncounterComponentFormSetController.toViewOrEditDataset()}"
+                                               value="View Details"
+                                               style="color: #{s.completed?'green':'red'};">
+                                    <f:setPropertyActionListener value="#{s}" target="#{clientEncounterComponentFormSetController.selected}" ></f:setPropertyActionListener>
+                                </h:commandLink>
+                            </p:column>
+
+                        </p:dataTable>
+
+                    </p:panelGrid>
+
+
+
+                </h:form>
+            </ui:define>
+
+        </ui:composition>
+
+    </h:body>
+</html>

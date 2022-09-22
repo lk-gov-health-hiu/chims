@@ -75,20 +75,6 @@
                                       >
                                 <p:outputLabel value="#{c.institution.rdhsArea.name}" ></p:outputLabel>
                             </p:column>
-                            <p:column headerText="Province" 
-                                      filterBy="#{c.institution.province.name}" 
-                                      filterMatchMode="contains" 
-                                      sortBy="#{c.institution.province.name}"
-                                      >
-                                <p:outputLabel value="#{c.institution.province.name}" ></p:outputLabel>
-                            </p:column>
-                            <p:column headerText="District" 
-                                      filterBy="#{c.institution.district.name}" 
-                                      filterMatchMode="contains" 
-                                      sortBy="#{c.institution.district.name}"
-                                      >
-                                <p:outputLabel value="#{c.institution.district.name}" ></p:outputLabel>
-                            </p:column>
                             <p:column headerText="Institution" 
                                       filterBy="#{c.institution.name}" 
                                       filterMatchMode="contains" 
@@ -96,21 +82,6 @@
                                       >
                                 <p:outputLabel value="#{c.institution.name}" ></p:outputLabel>
                             </p:column>
-                            <p:column headerText="District" 
-                                      filterBy="#{c.institution.district.name}" 
-                                      filterMatchMode="contains" 
-                                      sortBy="#{c.institution.district.name}"
-                                      >
-                                <p:outputLabel value="#{c.institution.district.name}" ></p:outputLabel>
-                            </p:column>
-                            <p:column headerText="Type" 
-                                      filterBy="#{c.institution.institutionType.label}" 
-                                      filterMatchMode="contains" 
-                                      sortBy="#{c.institution.institutionType.label}"
-                                      >
-                                <p:outputLabel value="#{c.institution.institutionType.label}" ></p:outputLabel>
-                            </p:column>
-
                             <p:column headerText="Count"  
                                       sortBy="#{c.count}">
                                 <p:outputLabel value="#{c.count}" ></p:outputLabel>

@@ -114,6 +114,7 @@
                                 <div class="col-md-2" >
                                     <p:outputLabel value="Mariatal Status:" for="mariatalStatus"   class="form-label" />
                                     <p:selectOneMenu id="mariatalStatus" value="#{clientController.selected.person.mariatalStatus}" class="form-control">
+                                        <f:selectItem itemLabel="Select" ></f:selectItem>
                                         <f:selectItems value="#{itemController.marietalStatus}" var="m" itemLabel="#{m.name}"
                                                        itemValue="#{m}" ></f:selectItems>
                                     </p:selectOneMenu>
@@ -122,6 +123,7 @@
                                 <div class="col-md-2" >
                                     <p:outputLabel value="Ethinic Group:" for="ethinicGroup"   class="form-label" />
                                     <p:selectOneMenu id="ethinicGroup" value="#{clientController.selected.person.ethinicGroup}" class="form-control">
+                                         <f:selectItem itemLabel="Select" ></f:selectItem>
                                         <f:selectItems value="#{itemController.ethinicities}" var="e" itemLabel="#{e.name}"
                                                        itemValue="#{e}" ></f:selectItems>
                                     </p:selectOneMenu>
@@ -131,6 +133,7 @@
                                 <div class="col-md-2" >
                                     <p:outputLabel value="Religion:" for="religion"   class="form-label" />
                                     <p:selectOneMenu id="religion" value="#{clientController.selected.person.religion}" class="form-control" >
+                                         <f:selectItem itemLabel="Select" ></f:selectItem>
                                         <f:selectItems value="#{itemController.religions}" var="r" itemLabel="#{r.name}"
                                                        itemValue="#{r}" ></f:selectItems>
                                     </p:selectOneMenu>
@@ -139,6 +142,7 @@
                                 <div class="col-md-2" >
                                     <p:outputLabel value="Citizenship:" for="citizenship"   class="form-label" />
                                     <p:selectOneMenu id="citizenship" value="#{clientController.selected.person.citizenship}" class="form-control" >
+                                         <f:selectItem itemLabel="Select" ></f:selectItem>
                                         <f:selectItems value="#{itemController.citizenships}" var="c" itemLabel="#{c.name}"
                                                        itemValue="#{c}" ></f:selectItems>
                                     </p:selectOneMenu>
