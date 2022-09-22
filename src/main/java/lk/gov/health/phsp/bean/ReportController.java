@@ -2309,7 +2309,7 @@ public class ReportController implements Serializable {
             stream = new FileInputStream(newFile);
             resultExcelFile = streamedContentController.generateStreamedContent(mimeType, FILE_NAME, stream);
         } catch (FileNotFoundException ex) {
-            // System.out.println("File not found exception -->" + ex.getMessage());
+            // //System.out.println("File not found exception -->" + ex.getMessage());
         }
     }
 
@@ -2869,13 +2869,13 @@ public class ReportController implements Serializable {
         m.put("ret", false);
         m.put("fd", fromDate);
         m.put("td", toDate);
-        System.out.println("m = " + m);
-        System.out.println("j = " + j);
+        //System.out.println("m = " + m);
+        //System.out.println("j = " + j);
         List<Institution> ins = institutionFacade.findByJpql(j, m);
-        System.out.println("ins = " + ins);
+        //System.out.println("ins = " + ins);
         Long n = 0l;
         for (Institution i : ins) {
-            System.out.println("i = " + i.getName());
+            //System.out.println("i = " + i.getName());
             boolean canInclude = false;
             if (i.getInstitutionType() != null) {
                 if (i.getInstitutionType().equals(type)) {

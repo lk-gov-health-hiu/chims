@@ -409,8 +409,8 @@ public class NationalReportController implements Serializable {
 //        ClientEncounterComponentItem c = new ClientEncounterComponentItem();
 //        c.getEncounter().getClient().getPerson().getSex().getCode();
         observationValueCounts = new ArrayList<>();
-        System.out.println("m = " + m);
-        System.out.println("j = " + j);
+        //System.out.println("m = " + m);
+        //System.out.println("j = " + j);
         List<Object> objs = clientFacade.findAggregates(j, m);
         if (objs == null) {
             return;
@@ -445,8 +445,8 @@ public class NationalReportController implements Serializable {
         m.put("td", getToDate());
 
         observationValueCounts = new ArrayList<>();
-        System.out.println("m = " + m);
-        System.out.println("j = " + j);
+        //System.out.println("m = " + m);
+        //System.out.println("j = " + j);
         List<Object> objs = clientFacade.findAggregates(j, m, TemporalType.TIMESTAMP);
         if (objs == null) {
             return;
@@ -479,8 +479,8 @@ public class NationalReportController implements Serializable {
         m.put("td", getToDate());
 
         observationValueCounts = new ArrayList<>();
-        System.out.println("m = " + m);
-        System.out.println("j = " + j);
+        //System.out.println("m = " + m);
+        //System.out.println("j = " + j);
         List<Object> objs = clientFacade.findAggregates(j, m, TemporalType.TIMESTAMP);
         if (objs == null) {
             return;
@@ -518,8 +518,8 @@ public class NationalReportController implements Serializable {
         m.put("td", getToDate());
 
         observationValueCounts = new ArrayList<>();
-        System.out.println("m = " + m);
-        System.out.println("j = " + j);
+        //System.out.println("m = " + m);
+        //System.out.println("j = " + j);
         List<Object> objs = clientFacade.findAggregates(j, m);
         if (objs == null) {
             return;
@@ -557,8 +557,8 @@ public class NationalReportController implements Serializable {
         m.put("td", getToDate());
 
         observationValueCounts = new ArrayList<>();
-        System.out.println("m = " + m);
-        System.out.println("j = " + j);
+        //System.out.println("m = " + m);
+        //System.out.println("j = " + j);
         List<Object> objs = clientFacade.findAggregates(j, m);
         if (objs == null) {
             return;
@@ -596,8 +596,8 @@ public class NationalReportController implements Serializable {
         m.put("td", getToDate());
 
         observationValueCounts = new ArrayList<>();
-        System.out.println("m = " + m);
-        System.out.println("j = " + j);
+        //System.out.println("m = " + m);
+        //System.out.println("j = " + j);
         List<Object> objs = clientFacade.findAggregates(j, m);
         if (objs == null) {
             return;

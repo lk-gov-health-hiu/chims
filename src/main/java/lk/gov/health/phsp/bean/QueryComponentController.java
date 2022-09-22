@@ -280,7 +280,7 @@ public class QueryComponentController implements Serializable {
 //    }
     public List<Item> getItemsForCountCriteriaItems() {
         if (getSelectedCountCriteria() == null || getSelectedCountCriteria().getItem() == null) {
-            // System.out.println("Null Error Return back");
+            // //System.out.println("Null Error Return back");
             return new ArrayList<>();
         }
         String j = "select distinct(di.categoryOfAvailableItems) "
@@ -291,12 +291,12 @@ public class QueryComponentController implements Serializable {
         m.put("ret", true);
         m.put("qry", getSelectedCountCriteria().getItem().getCode().trim().toLowerCase());
 
-        // System.out.println("m = " + m);
-        // System.out.println("j = " + j);
+        // //System.out.println("m = " + m);
+        // //System.out.println("j = " + j);
 
         List<Item> parentItems = getItemFacade().findByJpql(j, m);
 
-        // System.out.println("parentItems = " + parentItems);
+        // //System.out.println("parentItems = " + parentItems);
 
         List<Item> temItsm = new ArrayList<>();
 
@@ -316,31 +316,31 @@ public class QueryComponentController implements Serializable {
             m.put("ret", true);
             m.put("code", i.getCode());
 
-            // System.out.println("j 1 = " + j);
-            // System.out.println("m 1 = " + m);
+            // //System.out.println("j 1 = " + j);
+            // //System.out.println("m 1 = " + m);
 
             List<Item> temIt = getItemFacade().findByJpql(j, m);
 
-            // System.out.println("temIt = " + temIt);
+            // //System.out.println("temIt = " + temIt);
 
             if (temIt != null) {
                 temItsm.addAll(temIt);
             }
         }
 
-        // System.out.println("temItsm = " + temItsm);
+        // //System.out.println("temItsm = " + temItsm);
 
         return temItsm;
     }
 
     public List<Item> getItemsInDesignFormItemValues() {
-        // System.out.println("getItemsInDesignFormItemValues");
-        // System.out.println("getSelected() = " + getSelected());
+        // //System.out.println("getItemsInDesignFormItemValues");
+        // //System.out.println("getSelected() = " + getSelected());
         if (getSelected() == null || getSelected().getItem() == null) {
-            // System.out.println("Null Error Return back");
+            // //System.out.println("Null Error Return back");
             return new ArrayList<>();
         }
-        // System.out.println("getSelected().getItem() = " + getSelected().getItem());
+        // //System.out.println("getSelected().getItem() = " + getSelected().getItem());
         String j = "select distinct(di.categoryOfAvailableItems) "
                 + " from DesignComponentFormItem di "
                 + " where di.retired<>:ret "
@@ -349,12 +349,12 @@ public class QueryComponentController implements Serializable {
         m.put("ret", true);
         m.put("qry", getSelected().getItem().getCode().trim().toLowerCase());
 
-        // System.out.println("m = " + m);
-        // System.out.println("j = " + j);
+        // //System.out.println("m = " + m);
+        // //System.out.println("j = " + j);
 
         List<Item> parentItems = getItemFacade().findByJpql(j, m);
 
-        // System.out.println("parentItems = " + parentItems);
+        // //System.out.println("parentItems = " + parentItems);
 
         List<Item> temItsm = new ArrayList<>();
 
@@ -1231,14 +1231,14 @@ public class QueryComponentController implements Serializable {
     }
 
     public List<QueryComponent> getCriteriaOfSelectedCount() {
-        // System.out.println("getCriteriaOfSelectedCount");
-        // System.out.println("selectedCount = " + selectedCount.getName());
+        // //System.out.println("getCriteriaOfSelectedCount");
+        // //System.out.println("selectedCount = " + selectedCount.getName());
         return criteriaOfSelectedCount = criteria(selectedCount);
     }
 
     public List<QueryComponent> criteria(QueryComponent p) {
-        // System.out.println("criteria");
-        // System.out.println("p = " + p);
+        // //System.out.println("criteria");
+        // //System.out.println("p = " + p);
         List<QueryComponent> tqcs = applicationController.getQueryComponents();
         List<QueryComponent> nqs = new ArrayList<>();
         for (QueryComponent q : tqcs) {
@@ -1247,7 +1247,7 @@ public class QueryComponentController implements Serializable {
                 nqs.add(q);
             }
         }
-        // System.out.println("nqs = " + nqs.size());
+        // //System.out.println("nqs = " + nqs.size());
         return nqs;
     }
 
@@ -1498,7 +1498,7 @@ public class QueryComponentController implements Serializable {
                     }
                 }
                 if (!componentFound) {
-                    // System.out.println("componentFound = " + componentFound);
+                    // //System.out.println("componentFound = " + componentFound);
                 }
                 if (!thisMatchOk) {
                     suitableForInclusion = false;
