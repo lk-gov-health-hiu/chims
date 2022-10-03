@@ -514,7 +514,7 @@ public class ItemController implements Serializable {
 
     public List<String> completeItemCodes(String qry) {
         String j = "select i.code from Item i "
-                + " where lower(i.code) like :q "
+                + " where i.code like :q "
                 + "  and i.retired=false "
                 + " order by i.code";
         Map m = new HashMap();
@@ -1093,7 +1093,7 @@ public class ItemController implements Serializable {
         }
         if (qry != null) {
             m.put("n", "%" + qry.trim().toLowerCase() + "%");
-            j += " and lower(t.name) like :n ";
+            j += " and t.name like :n ";
         }
         j += " order by t.orderNo";
         List<Item> tis = getFacade().findByJpql(j, m);
@@ -1128,7 +1128,7 @@ public class ItemController implements Serializable {
         }
         if (qry != null) {
             m.put("n", "%" + qry.trim().toLowerCase() + "%");
-            j += " and (lower(t.name) like :n or lower(t.code) like :n) ";
+            j += " and (t.name like :n or t.code like :n) ";
         }
         j += " order by t.orderNo";
         return getFacade().findByJpql(j, m);

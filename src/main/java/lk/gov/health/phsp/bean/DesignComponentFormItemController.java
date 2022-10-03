@@ -64,7 +64,7 @@ public class DesignComponentFormItemController implements Serializable {
         String j = "select distinct(di.item) "
                 + " from DesignComponentFormItem di "
                 + " where di.retired<>:ret "
-                + " and (lower(di.item.name) like :qry or lower(di.item.code) like :qry) "
+                + " and (di.item.name like :qry or di.item.code like :qry) "
                 + " order by di.item.name  ";
         Map m = new HashMap();
         m.put("ret", true);

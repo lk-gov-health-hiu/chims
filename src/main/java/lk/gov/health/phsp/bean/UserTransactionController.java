@@ -154,7 +154,7 @@ public class UserTransactionController implements Serializable {
         m.put("td", getToDate());
 
         if (searchText != null && !searchText.trim().equals("")) {
-            j += " and lower(u.transactionName)=:t ";
+            j += " and u.transactionName=:t ";
             m.put("t", searchText.trim().toLowerCase());
         }
         if (user != null) {
