@@ -59,19 +59,31 @@
                             </p:selectOneMenu>
 
                             <p:spacer ></p:spacer>
-                            <p:commandButton value="Download" 
+                            <p:commandButton value="Process" 
                                              ajax="false" 
                                              oncomplete ="PrimeFaces.monitorDownload(start, stop);" 
                                              icon="ui-icon-arrowthick-1-s"
-                                             actionListener="#{nationalReportController.createExcelFileOfClinicalEncounterItemsForSelectedDesignComponent()}">
-                                <p:fileDownload value="#{nationalReportController.resultExcelFile}" />
+                                             actionListener="#{nationalReportController.createDataSingleCounts()}">
                             </p:commandButton>
-                        </p:panelGrid>
-                        
-                        <p:dataTable >
+                            <p:commandButton value="Download" ajax="false">
+                                <p:dataExporter target="tbl" fileName="clinical data counts" type="xlsx" ></p:dataExporter>
+                            </p:commandButton>
                             
+                        </p:panelGrid>
+
+                        <p:dataTable id="tbl" value="#{nationalReportController.observationValueCounts}" var="o">
+                            <p:column headerText="Value" >
+                                <h:outputText rendered="#{o.intValue ne null}" value="#{o.intValue}" ></h:outputText>
+                                <h:outputText rendered="#{o.longValue ne null}" value="#{o.longValue}" ></h:outputText>
+                                <h:outputText rendered="#{o.realNumberValue ne null}" value="#{o.realNumberValue}" ></h:outputText>
+                                <h:outputText rendered="#{o.stringValue ne null}" value="#{o.stringValue}" ></h:outputText>
+                            </p:column>
+                            <p:column headerText="Count" >
+                                <h:outputText value="#{o.count}" ></h:outputText>
+                            </p:column>
+
                         </p:dataTable>
-                        
+
                     </p:panelGrid>
                 </h:form>
             </ui:define>

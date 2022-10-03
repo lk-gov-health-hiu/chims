@@ -79,14 +79,12 @@ public class NationalReportController implements Serializable {
 
     private List<ObservationValueCount> observationValueCounts;
     private DesignComponentFormItem designComponentFormItem;
-    
+
     private StreamedContent resultExcelFile;
-    
-    
 
     private Institution institution;
     private DesignComponentFormSet designingComponentFormSet;
-    
+
     @EJB
     private ClientEncounterComponentItemFacade clientEncounterComponentItemFacade;
 
@@ -102,8 +100,10 @@ public class NationalReportController implements Serializable {
     @EJB
     EncounterFacade encounterFacade;
 
-    
     private List<DesignComponentFormItem> designComponentFormItems;
+
+    
+    
     /**
      * Creates a new instance of HospitalController
      */
@@ -124,7 +124,7 @@ public class NationalReportController implements Serializable {
         count = null;
         return "/national/registration_counts";
     }
-    
+
     public String toClinicVisitCount() {
         count = null;
         return "/national/clinic_visit_counts";
@@ -148,7 +148,88 @@ public class NationalReportController implements Serializable {
     public void fillItemsofTheSelectedSet() {
         designComponentFormItems = designComponentFormItemController.fillItemsOfTheFormSet(designingComponentFormSet);
     }
-    
+
+    public void createDataSingleCounts() {
+        if (designComponentFormItem == null) {
+            JsfUtil.addErrorMessage("Please select a variable");
+            return;
+        }
+        if (designComponentFormItem.getItem() == null
+                || designComponentFormItem.getItem().getCode() == null) {
+            JsfUtil.addErrorMessage("Error in selected variable.");
+            return;
+        }
+        if (designComponentFormItem.getItem().getDataType() == null) {
+            JsfUtil.addErrorMessage("Error in item data type.");
+            return;
+        }
+        String select = "";
+        String groupBy = "";
+        switch (designComponentFormItem.getItem().getDataType()) {
+            case Real_Number:
+                select = "select new lk.gov.health.phsp.pojcs.ObservationValueCount(c.realNumberValue, count(c)) ";
+                groupBy = " group by c.realNumberValue";
+                break;
+            case Short_Text:
+                select = "select new lk.gov.health.phsp.pojcs.ObservationValueCount(c.shortTextValue, count(c)) ";
+                groupBy = " group by c.shortTextValue";
+                break;
+            case Integer_Number:
+                select = "select new lk.gov.health.phsp.pojcs.ObservationValueCount(c.integerNumberValue, count(c)) ";
+                groupBy = " group by c.integerNumberValue";
+                break;
+            case Item_Reference:
+                select = "select new lk.gov.health.phsp.pojcs.ObservationValueCount(c.itemValue.name, count(c)) ";
+                groupBy = " group by c.itemValue";
+                break;
+            case Long_Number:
+                select = "select new lk.gov.health.phsp.pojcs.ObservationValueCount(c.longNumberValue, count(c)) ";
+                groupBy = " group by c.longNumberValue";
+                break;
+            case Long_Text:
+            case Area_Reference:
+            case Boolean:
+            case Byte_Array:
+            case Client_Reference:
+            case DateTime:
+            case Prescreption_Reference:
+            case Prescreption_Request:
+            case Procedure_Request:
+                JsfUtil.addErrorMessage("Not supported.");
+                return;
+            default:
+                JsfUtil.addErrorMessage("Error in item data type.");
+                return;
+        }
+
+        String j = select 
+                + " from  ClientEncounterComponentItem c join c.itemEncounter e"
+                + " where c.retired<>:fr "
+                + " and c.item.code=:ic ";
+        j += "  and e.retired<>:er "
+                + " and e.encounterDate between :fd and :td";
+        j += groupBy;
+        Map m = new HashMap();
+        m.put("fr", true);
+        m.put("ic", designComponentFormItem.getItem().getCode().toLowerCase());
+        m.put("er", true);
+
+        m.put("fd", fromDate);
+        m.put("td", toDate);
+
+        List<Object> cis = clientEncounterComponentItemFacade.findObjectByJpql(j, m, TemporalType.TIMESTAMP);
+
+        observationValueCounts = new ArrayList<>();
+        
+        for(Object o:cis){
+            if(o instanceof ObservationValueCount ){
+                observationValueCounts.add((ObservationValueCount) o);
+            }
+        }
+        
+        
+    }
+
     public void createExcelFileOfClinicalEncounterItemsForSelectedDesignComponent() {
 
         if (institution == null) {
@@ -369,7 +450,7 @@ public class NationalReportController implements Serializable {
 
         cis = null;
 
-        try (FileOutputStream outputStream = new FileOutputStream(newFile)) {
+        try ( FileOutputStream outputStream = new FileOutputStream(newFile)) {
             workbook.write(outputStream);
         } catch (Exception e) {
 
@@ -382,7 +463,7 @@ public class NationalReportController implements Serializable {
         } catch (FileNotFoundException ex) {
         }
     }
-    
+
     public void fillObservationValues() {
         String j;
         Map m = new HashMap();
@@ -648,8 +729,6 @@ public class NationalReportController implements Serializable {
     public void setInstitution(Institution institution) {
         this.institution = institution;
     }
-    
-    
 
     public Item getQueryItem() {
         return queryItem;
@@ -690,7 +769,7 @@ public class NationalReportController implements Serializable {
     public void setResultExcelFile(StreamedContent resultExcelFile) {
         this.resultExcelFile = resultExcelFile;
     }
-    
+
     public String toViewClinicalDataSingle() {
         String action = "/national/reports/clinical_data_single";
         return action;
@@ -711,6 +790,5 @@ public class NationalReportController implements Serializable {
     public void setDesignComponentFormItems(List<DesignComponentFormItem> designComponentFormItems) {
         this.designComponentFormItems = designComponentFormItems;
     }
-    
 
 }
