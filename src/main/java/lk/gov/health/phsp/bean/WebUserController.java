@@ -109,7 +109,9 @@ public class WebUserController implements Serializable {
     private List<Upload> companyUploads;
 
     private List<Institution> loggableInstitutions;
+    private List<Institution> loggableClinics;
     private List<Institution> loggablePmcis;
+     private List<Institution> loggableHospitals;
     private List<Institution> loggableProcedureRooms;
 
     private List<Area> loggableGnAreas;
@@ -278,6 +280,27 @@ public class WebUserController implements Serializable {
         ins.add(loggedUser.getInstitution());
         ins.addAll(institutionApplicationController.findChildrenInstitutions(loggedUser.getInstitution()));
         return ins;
+    }
+    
+    public List<Institution> findAutherizedClinics(InstitutionType t) {
+        List<Institution> ins = new ArrayList<>();
+        if (loggedUser == null) {
+            return ins;
+        }
+        if (loggedUser.getInstitution() == null) {
+            return ins;
+        }
+        ins.add(loggedUser.getInstitution());
+        ins.addAll(institutionApplicationController.findChildrenInstitutions(loggedUser.getInstitution()));
+        List<Institution> rins = new ArrayList<>();
+        for(Institution i:ins){
+            if(i.getInstitutionType().equals(t)){
+                rins.add(i);
+            }
+        }
+        
+        return rins;
+        
     }
 
     public List<Institution> findAutherizedPmcis() {
@@ -695,6 +718,9 @@ public class WebUserController implements Serializable {
     public String login() {
         //System.out.println("Login");
         loggableInstitutions = null;
+        loggableClinics = null;
+        loggableHospitals=null;
+        
         loggablePmcis = null;
         loggableGnAreas = null;
         institutionController.setMyClinics(null);
@@ -1895,6 +1921,21 @@ public class WebUserController implements Serializable {
         }
         return loggableInstitutions;
     }
+    
+    public List<Institution> getLoggableClinics() {
+        if (loggableClinics == null) {
+            loggableClinics = findAutherizedClinics(InstitutionType.Clinic);
+        }
+        return loggableClinics;
+    }
+    
+    public List<Institution> getLoggableHospitals() {
+        if (loggableHospitals == null) {
+            loggableHospitals = findAutherizedClinics(InstitutionType.Base_Hospital);
+        }
+        return loggableHospitals;
+    }
+    
 
     public List<Institution> getLoggableProcedureRooms() {
         if (loggableProcedureRooms == null) {
