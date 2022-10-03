@@ -167,7 +167,7 @@ public class NationalReportController implements Serializable {
         String j = "select f "
                 + " from  ClientEncounterComponentItem f join f.itemEncounter e"
                 + " where f.retired<>:fr "
-                + " and lower(f.item.code)=:ic ";
+                + " and f.item.code=:ic ";
         j += " and e.institution=:i "
                 + " and e.retired<>:er "
                 + " and e.encounterType=:t "

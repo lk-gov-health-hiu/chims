@@ -390,6 +390,250 @@ public class ReportController implements Serializable {
         String j = "select f "
                 + " from  ClientEncounterComponentItem f join f.itemEncounter e"
                 + " where f.retired<>:fr "
+                + " and f.item.code=:ic ";
+        j += " and e.institution=:i "
+                + " and e.retired<>:er "
+                + " and e.encounterType=:t "
+                + " and e.encounterDate between :fd and :td"
+                + " order by e.id";
+        Map m = new HashMap();
+        m.put("fr", true);
+        m.put("ic", designComponentFormItem.getItem().getCode().toLowerCase());
+        m.put("i", institution);
+        m.put("er", true);
+
+        m.put("t", EncounterType.Clinic_Visit);
+        m.put("fd", fromDate);
+        m.put("td", toDate);
+
+        List<ClientEncounterComponentItem> cis = clientEncounterComponentItemFacade.findByJpql(j, m);
+
+        //String phn, String gnArea, String institution, Date dataOfBirth, Date encounterAt, String sex
+//        List<Object> objs = getClientFacade().findAggregates(j, m);
+        String FILE_NAME = "client_values" + "_" + (new Date()) + ".xlsx";
+        String mimeType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+
+        String folder = "/tmp/";
+
+        File newFile = new File(folder + FILE_NAME);
+
+        XSSFWorkbook workbook = new XSSFWorkbook();
+        XSSFSheet sheet = workbook.createSheet("Client Values");
+
+        int rowCount = 0;
+
+        Row t1 = sheet.createRow(rowCount++);
+        Cell th1_lbl = t1.createCell(0);
+        th1_lbl.setCellValue("Report");
+        Cell th1_val = t1.createCell(1);
+        th1_val.setCellValue("List of Clinic Values");
+
+        Row t2 = sheet.createRow(rowCount++);
+        Cell th2_lbl = t2.createCell(0);
+        th2_lbl.setCellValue("From");
+        Cell th2_val = t2.createCell(1);
+        th2_val.setCellValue(CommonController.dateTimeToString(fromDate, "dd MMMM yyyy"));
+
+        Row t3 = sheet.createRow(rowCount++);
+        Cell th3_lbl = t3.createCell(0);
+        th3_lbl.setCellValue("To");
+        Cell th3_val = t3.createCell(1);
+        th3_val.setCellValue(CommonController.dateTimeToString(toDate, "dd MMMM yyyy"));
+
+        Row t4 = sheet.createRow(rowCount++);
+        Cell th4_lbl = t4.createCell(0);
+        th4_lbl.setCellValue("Institution");
+        Cell th4_val = t4.createCell(1);
+        th4_val.setCellValue(institution.getName());
+
+        Row t5a = sheet.createRow(rowCount++);
+        Cell th5a_lbl = t5a.createCell(0);
+        th5a_lbl.setCellValue("Variable");
+        Cell th5a_val = t5a.createCell(1);
+        th5a_val.setCellValue(designComponentFormItem.getItem().getName());
+
+        rowCount++;
+
+        Row t5 = sheet.createRow(rowCount);
+        Cell th5_1 = t5.createCell(0);
+        th5_1.setCellValue("Serial");
+        Cell th5_2 = t5.createCell(1);
+        th5_2.setCellValue("PHN");
+        Cell th5_3 = t5.createCell(2);
+        th5_3.setCellValue("Sex");
+        Cell th5_4 = t5.createCell(3);
+        th5_4.setCellValue("Age in Years at Encounter");
+        Cell th5_5 = t5.createCell(4);
+        th5_5.setCellValue("Encounter at");
+        Cell th5_6 = t5.createCell(5);
+        th5_6.setCellValue("Short-text Value");
+        Cell th5_7 = t5.createCell(6);
+        th5_7.setCellValue("Long Value");
+        Cell th5_8 = t5.createCell(7);
+        th5_8.setCellValue("Int Value");
+        Cell th5_9 = t5.createCell(8);
+        th5_9.setCellValue("Real Value");
+        Cell th5_10 = t5.createCell(9);
+        th5_10.setCellValue("Item Value");
+        Cell th5_11 = t5.createCell(10);
+        th5_11.setCellValue("Item Value");
+        Cell th5_12 = t5.createCell(11);
+        th5_12.setCellValue("Completed");
+
+        Cell th5_13 = t5.createCell(12);
+        th5_13.setCellValue("Name");
+        Cell th5_14 = t5.createCell(13);
+        th5_14.setCellValue("Address");
+        Cell th5_15 = t5.createCell(14);
+        th5_15.setCellValue("Mobile");
+        Cell th5_16 = t5.createCell(15);
+        th5_16.setCellValue("Phone");
+        Cell th5_17 = t5.createCell(16);
+        th5_17.setCellValue("GN Area");
+
+        int serial = 1;
+
+        CellStyle cellStyle = workbook.createCellStyle();
+        CreationHelper createHelper = workbook.getCreationHelper();
+        cellStyle.setDataFormat(
+                createHelper.createDataFormat().getFormat("dd/MMMM/yyyy hh:mm"));
+
+        for (ClientEncounterComponentItem i : cis) {
+            if (i.getItemEncounter() != null) {
+
+                Encounter e = i.getItemEncounter();
+                if (e.getClient() == null) {
+                    continue;
+                }
+                Client c = e.getClient();
+                if (c == null) {
+                    continue;
+                }
+                Person p = c.getPerson();
+                if (p == null) {
+                    continue;
+                }
+                Row row = sheet.createRow(rowCount++);
+
+                Cell c1 = row.createCell(0);
+                c1.setCellValue(serial);
+
+                Cell c2 = row.createCell(1);
+                if (c.getPhn() != null) {
+                    c2.setCellValue(c.getPhn());
+                }
+
+                Cell c3 = row.createCell(2);
+                if (p.getSex() != null) {
+                    c3.setCellValue(p.getSex().getName());
+                }
+
+                Cell c4 = row.createCell(3);
+                int ageInYears = CommonController.calculateAge(p.getDateOfBirth(), e.getEncounterDate());
+                c4.setCellValue(ageInYears);
+
+                Cell c5 = row.createCell(4);
+                if (e.getEncounterDate() != null) {
+                    c5.setCellValue(e.getEncounterDate());
+                }
+                c5.setCellStyle(cellStyle);
+
+                Cell c6 = row.createCell(5);
+                if (i.getShortTextValue() != null) {
+                    c6.setCellValue(i.getShortTextValue());
+                }
+
+                Cell c7 = row.createCell(6);
+                if (i.getLongNumberValue() != null) {
+                    c7.setCellValue(i.getLongNumberValue());
+                }
+
+                Cell c8 = row.createCell(7);
+                if (i.getIntegerNumberValue() != null) {
+                    c8.setCellValue(i.getIntegerNumberValue());
+                }
+
+                Cell c9 = row.createCell(8);
+                if (i.getRealNumberValue() != null) {
+                    c9.setCellValue(i.getRealNumberValue());
+                }
+
+                Cell c10 = row.createCell(9);
+                if (i.getItemValue() != null && i.getItemValue().getName() != null) {
+                    c10.setCellValue(i.getItemValue().getName());
+                }
+
+                Cell c11 = row.createCell(10);
+                if (i.getBooleanValue() != null) {
+                    c11.setCellValue(i.getBooleanValue() ? "True" : "False");
+                }
+
+                Cell c12 = row.createCell(11);
+
+                if (i.getParentComponent() != null && i.getParentComponent().getParentComponent() != null) {
+                    c12.setCellValue(i.getParentComponent().getParentComponent().isCompleted() ? "Complete" : "Not Completed");
+                }
+
+                Cell c13 = row.createCell(13);
+                if (c.getPerson() != null) {
+                    c13.setCellValue(c.getPerson().getName());
+                }
+
+                Cell c14 = row.createCell(14);
+                if (c.getPerson() != null) {
+                    c14.setCellValue(c.getPerson().getAddress());
+                }
+
+                Cell c15 = row.createCell(15);
+                if (c.getPerson() != null) {
+                    c15.setCellValue(c.getPerson().getPhone1());
+                }
+
+                Cell c16 = row.createCell(16);
+                if (c.getPerson() != null) {
+                    c16.setCellValue(c.getPerson().getPhone2());
+                }
+
+                Cell c17 = row.createCell(17);
+                if (c.getPerson() != null && c.getPerson().getGnArea() != null) {
+                    c17.setCellValue(c.getPerson().getGnArea().getName());
+                }
+
+                serial++;
+            }
+        }
+
+        cis = null;
+
+        try (FileOutputStream outputStream = new FileOutputStream(newFile)) {
+            workbook.write(outputStream);
+        } catch (Exception e) {
+
+        }
+
+        InputStream stream;
+        try {
+            stream = new FileInputStream(newFile);
+            resultExcelFile = streamedContentController.generateStreamedContent(mimeType, FILE_NAME, stream);
+        } catch (FileNotFoundException ex) {
+
+        }
+    }
+
+    
+     public void createDataSingleCounts() {
+        if (designComponentFormItem == null) {
+            JsfUtil.addErrorMessage("Please select a variable");
+            return;
+        }
+        if (designComponentFormItem.getItem() == null
+                || designComponentFormItem.getItem().getCode() == null) {
+            JsfUtil.addErrorMessage("Error in selected variable.");
+        }
+
+        String j = "select f "
+                + " from  ClientEncounterComponentItem f join f.itemEncounter e"
+                + " where f.retired<>:fr "
                 + " and lower(f.item.code)=:ic ";
         j += " and e.institution=:i "
                 + " and e.retired<>:er "
@@ -620,6 +864,8 @@ public class ReportController implements Serializable {
         }
     }
 
+    
+    
     public void clearReportData() {
         if (institution == null) {
             JsfUtil.addErrorMessage("Please select an institutions");
@@ -1014,6 +1260,44 @@ public class ReportController implements Serializable {
                 break;
         }
         userTransactionController.recordTransaction("To Single Variable Clinical Data");
+        return action;
+    }
+    
+     public String toSingleVariableClinicalDataCounts() {
+        String forSys = "/national/reports/clinical_data_single_counts";
+        String forIns = "/hospital/reports/clinical_data_single_counts";
+        String forMeu = "/national/reports/clinical_data_single_counts";
+        String forMea = "/national/reports/clinical_data_single_counts";
+        String forClient = "";
+        String noAction = "";
+        String action = "";
+        switch (webUserController.getLoggedUser().getWebUserRole()) {
+            case Client:
+                action = forClient;
+                break;
+            case Doctor:
+            case Institution_Administrator:
+            case Institution_Super_User:
+            case Institution_User:
+            case Nurse:
+            case Midwife:
+                action = forIns;
+                break;
+            case Me_Admin:
+                action = forMea;
+                break;
+            case Me_Super_User:
+                action = forMeu;
+                break;
+            case Me_User:
+            case User:
+                action = noAction;
+                break;
+            case Super_User:
+            case System_Administrator:
+                action = forSys;
+                break;
+        }
         return action;
     }
 

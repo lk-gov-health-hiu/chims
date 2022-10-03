@@ -286,7 +286,7 @@ public class QueryComponentController implements Serializable {
         String j = "select distinct(di.categoryOfAvailableItems) "
                 + " from DesignComponentFormItem di "
                 + " where di.retired<>:ret "
-                + " and lower(di.item.code)=:qry ";
+                + " and di.item.code=:qry ";
         Map m = new HashMap();
         m.put("ret", true);
         m.put("qry", getSelectedCountCriteria().getItem().getCode().trim().toLowerCase());
@@ -310,7 +310,7 @@ public class QueryComponentController implements Serializable {
             }
             j = "select i from Item i "
                     + "where i.retired<>:ret "
-                    + " and lower(i.parent.code)=:code "
+                    + " and i.parent.code=:code "
                     + "";
             m = new HashMap();
             m.put("ret", true);
@@ -344,7 +344,7 @@ public class QueryComponentController implements Serializable {
         String j = "select distinct(di.categoryOfAvailableItems) "
                 + " from DesignComponentFormItem di "
                 + " where di.retired<>:ret "
-                + " and lower(di.item.code)=:qry ";
+                + " and di.item.code=:qry ";
         Map m = new HashMap();
         m.put("ret", true);
         m.put("qry", getSelected().getItem().getCode().trim().toLowerCase());
@@ -368,7 +368,7 @@ public class QueryComponentController implements Serializable {
             }
             j = "select i from Item i "
                     + "where i.retired<>:ret "
-                    + " and lower(i.parent.code)=:code "
+                    + " and i.parent.code=:code "
                     + "";
             m = new HashMap();
             m.put("ret", true);

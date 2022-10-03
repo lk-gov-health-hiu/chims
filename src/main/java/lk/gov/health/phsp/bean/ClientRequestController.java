@@ -74,7 +74,7 @@ public class ClientRequestController {
                 + " from Client c "
                 + " where c.retired<>:ret "
                 + " and c.reservedClient<>:res "
-                + " and lower(c.person.nic)=:nic ";
+                + " and c.person.nic=:nic ";
         m.put("ret", true);
         m.put("res", true);
         m.put("nic", nic.toLowerCase());
@@ -106,7 +106,7 @@ public class ClientRequestController {
                 + " from Client c "
                 + " where c.retired<>:ret "
                 + " and c.reservedClient<>:res "
-                + " and lower(c.person.email)=:email ";
+                + " and c.person.email=:email ";
         m.put("ret", true);
         m.put("res", true);
         m.put("email", email.toLowerCase());

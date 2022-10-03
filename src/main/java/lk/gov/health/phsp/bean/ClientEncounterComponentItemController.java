@@ -973,7 +973,7 @@ public class ClientEncounterComponentItemController implements Serializable {
 
         String j = "select i from ClientEncounterComponentItem i where i.retired=false "
                 + " and i.client=:client "
-                + " and lower(i.item.code)=:c";
+                + " and i.item.code=:c";
         Map m = new HashMap();
         m.put("client", client);
         m.put("c", code.toLowerCase());
