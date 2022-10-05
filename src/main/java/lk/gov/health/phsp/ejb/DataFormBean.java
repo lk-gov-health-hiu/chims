@@ -100,7 +100,7 @@ public class DataFormBean {
     @EJB
     QueryComponentFacade queryComponentFacade;
     @EJB
-     ClientEncounterComponentItemFacade clientEncounterComponentItemFacade;
+    ClientEncounterComponentItemFacade clientEncounterComponentItemFacade;
     @EJB
     EncounterFacade encounterFacade;
     @EJB
@@ -139,6 +139,30 @@ public class DataFormBean {
     @Schedule(hour = "05-18", minute = "*/15", second = "30", persistent = false)
     public void endProcessingCounts() {
 
+    }
+
+    @Asynchronous
+    public void saveCi(ClientEncounterComponentItem ci) {
+        if (ci == null) {
+            return;
+        }
+        if (ci.getId() == null) {
+            clientEncounterComponentItemFacade.create(ci);
+        } else {
+            clientEncounterComponentItemFacade.edit(ci);
+        }
+    }
+    
+    @Asynchronous
+    public void saveCfs(ClientEncounterComponentFormSet cfs) {
+        if (cfs == null) {
+            return;
+        }
+        if (cfs.getId() == null) {
+            clientEncounterComponentFormSetFacade.create(cfs);
+        } else {
+            clientEncounterComponentFormSetFacade.edit(cfs);
+        }
     }
 
     @Asynchronous
@@ -615,7 +639,6 @@ public class DataFormBean {
             String visitType = "";
 
             //System.out.println("ce.getRemainigEncounters() = " + ce.getRemainigEncounters());
-
             for (Encounter e : ce.getRemainigEncounters().values()) {
                 dates += CommonController.dateTimeToString(e.getEncounterDate()) + "\n";
             }
@@ -931,7 +954,6 @@ public class DataFormBean {
             String visitType = "";
 
             //System.out.println("ce.getRemainigEncounters() = " + ce.getRemainigEncounters());
-
             int encounterNo = 1;
             for (Encounter e : ce.getRemainigEncounters().values()) {
                 ReportCell vdCell = new ReportCell();
@@ -1420,7 +1442,6 @@ public class DataFormBean {
         // //System.out.println("iymc.getInstitution() = " + iymc.getInstitution().getName());
         // //System.out.println("fromDate = " + fromDate);
         // //System.out.println("toDate = " + toDate);
-
         List<QueryWithCriteria> qs = new ArrayList<>();
         List<EncounterWithComponents> encountersWithComponents;
 
@@ -1534,17 +1555,18 @@ public class DataFormBean {
         return cs;
     }
 
-     private  List<ClientEncounterComponentItem> findClientEncounterComponentItems(Long endId) {
-         try{
-        String j;
-        Map m;
-        m = new HashMap();
-        j = "select f from ClientEncounterComponentItem f "
-                + " where f.retired=false "
-                + " and f.encounter.id=:eid";
-        m.put("eid", endId);
-        List<ClientEncounterComponentItem> ts = clientEncounterComponentItemFacade.findByJpql(j, m);
-        return ts;}catch(Exception e){
+    private List<ClientEncounterComponentItem> findClientEncounterComponentItems(Long endId) {
+        try {
+            String j;
+            Map m;
+            m = new HashMap();
+            j = "select f from ClientEncounterComponentItem f "
+                    + " where f.retired=false "
+                    + " and f.encounter.id=:eid";
+            m.put("eid", endId);
+            List<ClientEncounterComponentItem> ts = clientEncounterComponentItemFacade.findByJpql(j, m);
+            return ts;
+        } catch (Exception e) {
             return null;
         }
     }
@@ -1569,9 +1591,9 @@ public class DataFormBean {
                 }
             }
         }
-        try{
+        try {
             output.sort(Comparator.comparing(QueryComponent::getOrderNo));
-        }catch(Exception e){
+        } catch (Exception e) {
             //System.out.println("e = " + e);
         }
         return output;
@@ -1592,7 +1614,7 @@ public class DataFormBean {
         }
         return queryComponents;
     }
-    
+
     public List<QueryComponent> fillIndicators() {
         List<QueryComponent> tqcs = getQueryComponents();
         List<QueryComponent> nqs = new ArrayList<>();
@@ -2115,65 +2137,63 @@ public class DataFormBean {
                 + " order by s.id desc";
         return storedQueryResultFacade.findFirstByJpql(j, m);
     }
-    
+
     @Asynchronous
     public void runClinicCountsForRequests(QueryComponent tQc,
             Date fromDate,
             Date toDate,
             List<Institution> inss) {
-        
+
         //System.out.println("runClinicCountsForRequests");
         //System.out.println("inss = " + inss.size());
-        
-        for(Institution tIns:inss){
+        for (Institution tIns : inss) {
             //System.out.println("tIns = " + tIns);
-        if (tIns.getInstitutionType() == null) {
-            JsfUtil.addErrorMessage("No Type for the institution");
-            return;
-        }
-        if (tIns.getInstitutionType() != InstitutionType.Clinic) {
-            JsfUtil.addErrorMessage("Selected institution is NOT a HLC?");
-            return;
-        }
-        Jpq j = new Jpq();
-        
-        List<QueryWithCriteria> qs = new ArrayList<>();
-        List<EncounterWithComponents> encountersWithComponents;
+            if (tIns.getInstitutionType() == null) {
+                JsfUtil.addErrorMessage("No Type for the institution");
+                return;
+            }
+            if (tIns.getInstitutionType() != InstitutionType.Clinic) {
+                JsfUtil.addErrorMessage("Selected institution is NOT a HLC?");
+                return;
+            }
+            Jpq j = new Jpq();
 
-        List<Long> encounterIds = findEncounterIds(fromDate,
-                toDate,
-                tIns);
+            List<QueryWithCriteria> qs = new ArrayList<>();
+            List<EncounterWithComponents> encountersWithComponents;
 
-        encountersWithComponents = findEncountersWithComponents(encounterIds);
-        if (encountersWithComponents == null) {
-            continue;
-        }
+            List<Long> encounterIds = findEncounterIds(fromDate,
+                    toDate,
+                    tIns);
 
-        QueryWithCriteria qwc = new QueryWithCriteria();
-        qwc.setQuery(tQc);
-        qwc.setCriteria(findCriteriaForQueryComponent(tQc.getCode()));
+            encountersWithComponents = findEncountersWithComponents(encounterIds);
+            if (encountersWithComponents == null) {
+                continue;
+            }
 
-        Long value = calculateIndividualQueryResult(encountersWithComponents, qwc);
-        j.setMessage("Clinic : " + tIns.getName() + "\n");
-        j.setMessage(j.getMessage() + "From : " + CommonController.formatDate(fromDate) + "\n");
-        j.setMessage(j.getMessage() + "To : " + CommonController.formatDate(toDate) + "\n");
-        j.setMessage(j.getMessage() + "Number of Encounters : " + encountersWithComponents.size() + "\n");
-        j.setMessage(j.getMessage() + "Count : " + qwc.getQuery().getName() + "\n");
-        if (value != null) {
-            saveValue(qwc.getQuery(), fromDate, toDate, tIns, value);
-            j.setMessage(j.getMessage() + "Result : " + value + "\n");
-        }else{
-            j.setMessage(j.getMessage() + "Result : No Result\n");
-        }
+            QueryWithCriteria qwc = new QueryWithCriteria();
+            qwc.setQuery(tQc);
+            qwc.setCriteria(findCriteriaForQueryComponent(tQc.getCode()));
+
+            Long value = calculateIndividualQueryResult(encountersWithComponents, qwc);
+            j.setMessage("Clinic : " + tIns.getName() + "\n");
+            j.setMessage(j.getMessage() + "From : " + CommonController.formatDate(fromDate) + "\n");
+            j.setMessage(j.getMessage() + "To : " + CommonController.formatDate(toDate) + "\n");
+            j.setMessage(j.getMessage() + "Number of Encounters : " + encountersWithComponents.size() + "\n");
+            j.setMessage(j.getMessage() + "Count : " + qwc.getQuery().getName() + "\n");
+            if (value != null) {
+                saveValue(qwc.getQuery(), fromDate, toDate, tIns, value);
+                j.setMessage(j.getMessage() + "Result : " + value + "\n");
+            } else {
+                j.setMessage(j.getMessage() + "Result : No Result\n");
+            }
             //System.out.println("j.getErrorMessage() = " + j.getErrorMessage());
             //System.out.println("j.getErrorMessage() = " + j.getMessage());
 //        message = CommonController.stringToHtml(j.getErrorMessage());
 //        result = CommonController.stringToHtml(j.getMessage());
-        
+
         }
     }
-    
-    
+
     //    @Schedule(dayOfWeek = "Mon-Fri", month = "*", hour = "9-17", dayOfMonth = "*", year = "*", minute = "*", second = "0", persistent = false)
 //    public void myTimer() {
 //        // //System.out.println("Timer event: " + new Date());
@@ -2186,16 +2206,18 @@ public class DataFormBean {
                 + " from StoredRequest s "
                 + " where s.pending=:pen";
         m.put("pen", true);
-        
-        StoredRequest request = storedRequestFacade.findFirstByJpql(j, m) ;
-        
-        if(request==null) return;
-        
+
+        StoredRequest request = storedRequestFacade.findFirstByJpql(j, m);
+
+        if (request == null) {
+            return;
+        }
+
         request.setPending(false);
         storedRequestFacade.edit(request);
-        
-         List<QueryComponent> indicators = fillIndicators();
-        
+
+        List<QueryComponent> indicators = fillIndicators();
+
         if (request.getInstitution() == null) {
             //System.out.println("no institution");
             return;
@@ -2205,7 +2227,7 @@ public class DataFormBean {
             return;
         }
         if (indicators.isEmpty()) {
-             //System.out.println("no indicators");
+            //System.out.println("no indicators");
             return;
         }
         if (request.getRyear() == 0) {
@@ -2216,10 +2238,9 @@ public class DataFormBean {
             JsfUtil.addErrorMessage("Month");
             return;
         }
-       
-       
-        Date fromDate = CommonController.startOfTheMonth(request.getRyear(), request.getRmonth(),true);
-        Date toDate = CommonController.endOfTheMonth(request.getRyear(), request.getRmonth(),true);
+
+        Date fromDate = CommonController.startOfTheMonth(request.getRyear(), request.getRmonth(), true);
+        Date toDate = CommonController.endOfTheMonth(request.getRyear(), request.getRmonth(), true);
 
         List<QueryWithCriteria> qs = new ArrayList<>();
         List<EncounterWithComponents> encountersWithComponents;
@@ -2271,7 +2292,6 @@ public class DataFormBean {
             qs.add(qwc);
         }
 
-       
         for (QueryWithCriteria qwc : qs) {
             Long value = calculateIndividualQueryResult(encountersWithComponents, qwc);
             if (value != null) {
@@ -2282,8 +2302,7 @@ public class DataFormBean {
         }
 
     }
-    
-    
+
     public List<Replaceable> findReplaceblesInIndicatorQuery(String text) {
         List<Replaceable> ss = new ArrayList<>();
 
@@ -2308,7 +2327,7 @@ public class DataFormBean {
         return ss;
 
     }
-    
+
     public QueryComponent findLastQuery(String qry) {
         if (qry == null) {
             return null;

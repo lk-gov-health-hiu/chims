@@ -362,7 +362,7 @@ public class ClientController implements Serializable {
             cfs.setName(dfs.getName());
             cfs.setDescreption(dfs.getDescreption());
             cfs.setCss(dfs.getCss());
-            clientEncounterComponentFormSetController.save(cfs);
+            clientEncounterComponentFormSetController.saveCfs(cfs);
         }
         DataFormset fs = new DataFormset();
         Encounter e = cfs.getEncounter();
