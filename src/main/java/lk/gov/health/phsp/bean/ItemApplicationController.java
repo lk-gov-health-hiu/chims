@@ -354,7 +354,7 @@ public class ItemApplicationController {
                 ns.add(i);
             }
         }
-        Collections.sort(ns, Comparator.comparing(Item::getName));
+        Collections.sort(ns, Comparator.comparing(Item::getDisplayName));
         return ns;
     }
 
