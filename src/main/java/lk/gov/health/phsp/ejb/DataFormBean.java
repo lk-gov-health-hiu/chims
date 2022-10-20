@@ -167,6 +167,11 @@ public class DataFormBean {
 
     @Asynchronous
     public void executeCompleteEvents(DataFormset tSet, ClientEncounterComponentFormSet fs, WebUser wu) {
+        boolean tmp = true;
+        if(tmp){
+            return;
+        }
+        
         if (tSet.getForms() == null) {
             return;
         }
