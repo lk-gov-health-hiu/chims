@@ -23,7 +23,9 @@
  */
 package lk.gov.health.phsp.ws;
 
-import java.util.ArrayList;
+import ca.uhn.fhir.context.FhirContext;
+import ca.uhn.fhir.context.FhirVersionEnum;
+import ca.uhn.fhir.parser.IParser;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -35,39 +37,19 @@ import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.Produces;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
-import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.PathParam;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.SecurityContext;
-import lk.gov.health.phsp.bean.AnalysisController;
-import lk.gov.health.phsp.bean.ApiRequestApplicationController;
-import lk.gov.health.phsp.bean.ApplicationController;
-import lk.gov.health.phsp.bean.AreaApplicationController;
-import lk.gov.health.phsp.bean.CommonController;
-import lk.gov.health.phsp.bean.InstitutionApplicationController;
-import lk.gov.health.phsp.bean.ItemApplicationController;
-import lk.gov.health.phsp.bean.RelationshipController;
-import lk.gov.health.phsp.bean.StoredQueryResultController;
-import lk.gov.health.phsp.bean.WebUserController;
 import lk.gov.health.phsp.entity.ApiKey;
-import lk.gov.health.phsp.entity.ApiRequest;
-import lk.gov.health.phsp.entity.Area;
 import lk.gov.health.phsp.entity.Client;
-import lk.gov.health.phsp.entity.ClientEncounterComponentItem;
-import lk.gov.health.phsp.entity.Institution;
-import lk.gov.health.phsp.entity.Item;
-import lk.gov.health.phsp.entity.QueryComponent;
-import lk.gov.health.phsp.entity.Relationship;
-import lk.gov.health.phsp.entity.WebUser;
-import lk.gov.health.phsp.enums.AreaType;
-import lk.gov.health.phsp.enums.EncounterType;
-import lk.gov.health.phsp.enums.ItemType;
-import lk.gov.health.phsp.enums.RelationshipType;
-import lk.gov.health.phsp.enums.WebUserRole;
 import lk.gov.health.phsp.facade.ApiKeyFacade;
-import lk.gov.health.phsp.pojcs.PrescriptionPojo;
+import lk.gov.health.phsp.facade.ClientFacade;
+import org.hl7.fhir.dstu3.model.BackboneElement;
+import org.hl7.fhir.dstu3.model.Base;
+import org.hl7.fhir.dstu3.model.ContactPoint;
+import org.hl7.fhir.dstu3.model.Enumerations;
+import org.hl7.fhir.dstu3.model.Narrative;
+import org.hl7.fhir.dstu3.model.OperationOutcome;
+import org.hl7.fhir.dstu3.model.Patient;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -85,6 +67,8 @@ public class FhirResource {
 
     @EJB
     ApiKeyFacade apiKeyFacade;
+    @EJB
+    ClientFacade clientFacade;
 
     /**
      * Creates a new instance of GenericResource
@@ -93,31 +77,102 @@ public class FhirResource {
     }
 
     @GET
-    @Path("/clint/{institution_code}/{last_invoice_id}")
+    @Path("/clint/{phn}")
     @Produces("application/json")
-    public String getCashInvoice(@Context HttpServletRequest requestContext,
-            @PathParam("last_invoice_id") String strLastIdInRequest,
-            @PathParam("institution_code") String strInstitutionCode) {
-        JSONArray array;
-        JSONObject jSONObjectOut = new JSONObject();
+    public String getClientByPhn(@Context HttpServletRequest requestContext,
+            @PathParam("phn") String phn) {
+
         String key = requestContext.getHeader("FHIR");
         if (!isValidKey(key)) {
-            jSONObjectOut = errorMessageNotValidKey();
-            String json = jSONObjectOut.toString();
-            return json;
+            return errorMessageKey();
         }
 
-        Long lastIdInRequest;
-        try {
-            lastIdInRequest = Long.valueOf(strLastIdInRequest);
-        } catch (Exception e) {
-            jSONObjectOut = errorMessageNotValidPathParameter();
-            String json = jSONObjectOut.toString();
-            System.out.println("e = " + e);
-            return json;
+        Client c = finfFirstPatientsByPhn(phn);
+        if (c == null) {
+            return errorMessageNoData();
         }
 
-        return errorMessageNotValidInstitution().toString();
+        Patient patient = fhirPatientFromClient(c);
+
+        FhirContext ctx = FhirContext.forDstu3();
+        IParser parser = ctx.newJsonParser();
+
+        String serialized = parser.encodeResourceToString(patient);
+
+        return serialized;
+    }
+
+    public List<Client> listPatientsByPhn(String phn) {
+        String j = "select c from Client c where c.retired=false and c.phn=:q order by c.phn";
+        Map m = new HashMap();
+        m.put("q", phn.trim().toUpperCase());
+        return clientFacade.findByJpql(j, m);
+    }
+
+    public Client finfFirstPatientsByPhn(String phn) {
+        String j = "select c from Client c where c.retired=false and c.phn=:q order by c.id desc";
+        Map m = new HashMap();
+        m.put("q", phn.trim().toUpperCase());
+        return clientFacade.findFirstByJpql(j, m);
+    }
+
+    public Patient fhirPatientFromClient(Client client) {
+        if (client == null) {
+            return null;
+        }
+        if (client.getPerson() == null) {
+            return null;
+        }
+        Patient patient = new Patient();
+        patient.setId(client.getId().toString());
+        patient.addIdentifier()
+                .setSystem("https://nic.gov.lk/")
+                .setValue(client.getPerson().getNic());
+        patient.addIdentifier()
+                .setSystem("https://passport.gov.lk/")
+                .setValue(client.getPerson().getPassportNumber());
+        patient.addIdentifier()
+                .setSystem("https://seniorcitizen.gov.lk/")
+                .setValue(client.getPerson().getSsNumber());
+        patient.addIdentifier()
+                .setSystem("https://drivinglicense.gov.lk/")
+                .setValue(client.getPerson().getDrivingLicenseNumber());
+        patient.addIdentifier()
+                .setSystem("https://phn.health.gov.lk/")
+                .setValue(client.getPhn());
+        patient.setActive(!client.isRetired());
+        patient.addAddress().addLine(client.getPerson().getAddress());
+
+        ContactPoint homePhone = patient.addTelecom();
+        homePhone.setUse(ContactPoint.ContactPointUse.HOME);
+        homePhone.setSystem(ContactPoint.ContactPointSystem.PHONE);
+        homePhone.setValue(client.getPerson().getPhone2());
+
+        ContactPoint mobile = patient.addTelecom();
+        mobile.setUse(ContactPoint.ContactPointUse.MOBILE);
+        mobile.setSystem(ContactPoint.ContactPointSystem.PHONE);
+        mobile.setValue(client.getPerson().getPhone1());
+
+        ContactPoint email = patient.addTelecom();
+        email.setUse(ContactPoint.ContactPointUse.HOME);
+        email.setSystem(ContactPoint.ContactPointSystem.EMAIL);
+        email.setValue(client.getPerson().getEmail());
+
+        patient.addName().setText(client.getPerson().getName());
+        patient.addName()
+                .setFamily(client.getPerson().getName())
+                .addGiven(client.getPerson().getName());
+        if (client.getPerson().getSex() == null || client.getPerson().getSex().getCode() == null) {
+            patient.setGender(Enumerations.AdministrativeGender.NULL);
+        } else if (client.getPerson().getSex().getCode().contains("female")) {
+            patient.setGender(Enumerations.AdministrativeGender.FEMALE);
+        } else if (client.getPerson().getSex().getCode().contains("male")) {
+            patient.setGender(Enumerations.AdministrativeGender.MALE);
+        } else {
+            patient.setGender(Enumerations.AdministrativeGender.OTHER);
+        }
+
+        return patient;
     }
 
     private JSONObject errorMessage() {
@@ -129,13 +184,28 @@ public class FhirResource {
         return jSONObjectOut;
     }
 
-    private JSONObject errorMessageNoData() {
-        JSONObject jSONObjectOut = new JSONObject();
-        jSONObjectOut.put("code", 400);
-        jSONObjectOut.put("type", "error");
-        String e = "No Data.";
-        jSONObjectOut.put("message", e);
-        return jSONObjectOut;
+    private String errorMessageNoData() {
+        FhirContext ctx = FhirContext.forDstu2();
+        IParser parser = ctx.newJsonParser();
+
+        OperationOutcome oo = new OperationOutcome();
+        Narrative n = new Narrative();
+        n.setId("Error - No Data");
+        oo.setText(n);
+
+        return parser.encodeResourceToString(oo);
+    }
+
+    private String errorMessageKey() {
+        FhirContext ctx = FhirContext.forDstu3();
+        IParser parser = ctx.newJsonParser();
+
+        OperationOutcome oo = new OperationOutcome();
+        Narrative n = new Narrative();
+        n.setId("Error - Key is Invalid");
+        oo.setText(n);
+
+        return parser.encodeResourceToString(oo);
     }
 
     private JSONObject errorMessageNotValidKey() {
