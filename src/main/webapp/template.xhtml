@@ -24,22 +24,23 @@
         <p:growl   >
         </p:growl>
 
-        <h:panelGroup rendered="#{webUserController.ipBlocked and false}" >
+        <h:panelGroup rendered="false" >
             <div class="container-fluid" >
                 <div class="row" >
                     <div class="col-12" >
-                        <h1>Your IP is blocked.</h1>
+                        <h1>System is upgrading. Will be back at 2am. Sorry for the inconviniance.</h1>
                     </div>
                 </div>
                 <div class="row" >
                     <div class="col-12" >
-                        <h2>Please contact the hotline to unblock it.</h2>
+                        <h2>Please check the data you entered for the last 2 hours. THey may be missing</h2>
                     </div>
                 </div>
+                #{webUserController.loggedUser.name}
             </div>
         </h:panelGroup>
 
-        <h:panelGroup rendered="#{not webUserController.ipBlocked or true}" >
+        <h:panelGroup rendered="#{webUserController.loggedUser.name eq 'buddhika' or true}" >
 
             <div class="row">
                 <div class="col-md-12" >

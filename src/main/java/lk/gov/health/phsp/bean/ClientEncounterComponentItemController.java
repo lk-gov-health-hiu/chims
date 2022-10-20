@@ -305,7 +305,7 @@ public class ClientEncounterComponentItemController implements Serializable {
             i.getCi().setShortTextValue(p.getAgeYears() + "");
             i.getCi().setRealNumberValue(Double.valueOf(p.getAgeYears()));
             i.getCi().setIntegerNumberValue(p.getAgeYears());
-            dataFormBean.saveCi(i.getCi());
+            saveCi(i.getCi());
             return;
         } else {
         }
@@ -416,7 +416,7 @@ public class ClientEncounterComponentItemController implements Serializable {
             switch (i.getDi().getItem().getDataType()) {
                 case Real_Number:
                     i.getCi().setRealNumberValue(CommonController.getDoubleValue(result));
-                    dataFormBean.saveCi(i.getCi());
+                    saveCi(i.getCi());
                     saveCi(i.getCi());
                     break;
                 case Integer_Number:
@@ -675,12 +675,15 @@ public class ClientEncounterComponentItemController implements Serializable {
             return;
         }
         if (i.getId() == null) {
-            i.setCreatedAt(new Date());
-            i.setCreatedBy(webUserController.getLoggedUser());
-        } 
-        dataFormBean.saveCi(i);
+//            i.setCreatedAt(new Date());
+//            i.setCreatedBy(webUserController.getLoggedUser());
+            getFacade().create(i);
+        } else{
+             getFacade().edit(i);
+        }
+//        dataFormBean.saveCi(i);
     }
-
+    
     public void addAnother(ClientEncounterComponentItem i) {
 
         if (i == null) {
