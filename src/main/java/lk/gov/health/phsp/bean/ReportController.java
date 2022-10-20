@@ -390,7 +390,7 @@ public class ReportController implements Serializable {
         String j = "select f "
                 + " from  ClientEncounterComponentItem f join f.itemEncounter e"
                 + " where f.retired<>:fr "
-                + " and lower(f.item.code)=:ic ";
+                + " and f.item.code=:ic ";
         j += " and e.institution=:i "
                 + " and e.retired<>:er "
                 + " and e.encounterType=:t "
@@ -620,6 +620,8 @@ public class ReportController implements Serializable {
         }
     }
 
+    
+    
     public void clearReportData() {
         if (institution == null) {
             JsfUtil.addErrorMessage("Please select an institutions");
@@ -864,9 +866,9 @@ public class ReportController implements Serializable {
 
 // <editor-fold defaultstate="collapsed" desc="Navigation">
     public String toViewReports() {
-        String forSys = "/reports/index";
+        String forSys = "/national/reports/index";
         String forIns = "/hospital/reports/index";
-        String forMe = "/reports/index";
+        String forMe = "/national/reports/index";
         String forClient = "/reports/index";
         String forMoh = "/moh/reports/index";
         String noAction = "";
@@ -1014,6 +1016,44 @@ public class ReportController implements Serializable {
                 break;
         }
         userTransactionController.recordTransaction("To Single Variable Clinical Data");
+        return action;
+    }
+    
+     public String toSingleVariableClinicalDataCounts() {
+        String forSys = "/national/reports/clinical_data_single_counts";
+        String forIns = "/hospital/reports/clinical_data_single_counts";
+        String forMeu = "/national/reports/clinical_data_single_counts";
+        String forMea = "/national/reports/clinical_data_single_counts";
+        String forClient = "";
+        String noAction = "";
+        String action = "";
+        switch (webUserController.getLoggedUser().getWebUserRole()) {
+            case Client:
+                action = forClient;
+                break;
+            case Doctor:
+            case Institution_Administrator:
+            case Institution_Super_User:
+            case Institution_User:
+            case Nurse:
+            case Midwife:
+                action = forIns;
+                break;
+            case Me_Admin:
+                action = forMea;
+                break;
+            case Me_Super_User:
+                action = forMeu;
+                break;
+            case Me_User:
+            case User:
+                action = noAction;
+                break;
+            case Super_User:
+            case System_Administrator:
+                action = forSys;
+                break;
+        }
         return action;
     }
 

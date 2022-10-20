@@ -2004,7 +2004,7 @@ public class ClientController implements Serializable {
         String j = "select c from Client c "
                 + " where c.retired=false "
                 + " and c.reservedClient<>:res "
-                + " and lower(c.person.localReferanceNo)=:q "
+                + " and c.person.localReferanceNo=:q "
                 + " and c.createInstitution=:ins "
                 + " order by c.phn";
         Map m = new HashMap();
@@ -2018,7 +2018,7 @@ public class ClientController implements Serializable {
         String j = "select c from Client c "
                 + " where c.retired=false "
                 + " and c.reservedClient<>:res "
-                + " and lower(c.person.localReferanceNo)=:q "
+                + " and c.person.localReferanceNo=:q "
                 + " order by c.phn";
         Map m = new HashMap();
         m.put("res", true);
@@ -2030,7 +2030,7 @@ public class ClientController implements Serializable {
         String j = "select c from Client c "
                 + " where c.retired=false "
                 + " and c.reservedClient<>:res "
-                + " and lower(c.person.ssNumber)=:q "
+                + " and c.person.ssNumber=:q "
                 + " order by c.phn";
         Map m = new HashMap();
         m.put("res", true);
@@ -2042,7 +2042,7 @@ public class ClientController implements Serializable {
         String j = "select c from Client c "
                 + " where c.retired=false "
                 + " and c.reservedClient<>:res "
-                + " and lower(c.person.drivingLicenseNumber)=:q "
+                + " and c.person.drivingLicenseNumber=:q "
                 + " order by c.phn";
         Map m = new HashMap();
         m.put("res", true);
@@ -2054,7 +2054,7 @@ public class ClientController implements Serializable {
         String j = "select c from Client c "
                 + " where c.retired=false "
                 + " and c.reservedClient<>:res "
-                + " and lower(c.person.passportNumber)=:q "
+                + " and c.person.passportNumber=:q "
                 + " order by c.phn";
         Map m = new HashMap();
         m.put("res", true);

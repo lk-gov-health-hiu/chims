@@ -1,0 +1,93 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <head>
+        <ui:define name="head">
+            Clinical Data Counts
+        </ui:define>
+    </head>
+    <body>
+
+        <ui:composition template="/national/reports/index.xhtml">
+            <ui:define name="reports">
+                <h:form>
+                    <p:panelGrid columns="1" class="w3-border w3-margin w3-card" >
+                        <f:facet name="header" >
+                            <p:outputLabel value="Clinical Data Counts" ></p:outputLabel>
+                        </f:facet>
+
+
+                        <p:panelGrid columns="2" >
+                            <p:outputLabel value="From" for="from" ></p:outputLabel>
+                            <p:calendar id="from" value="#{nationalReportController.fromDate}" navigator="true"
+                                        required="true"
+                                        requiredMessage="Select a start date"
+                                        pattern="dd MM yyyy" ></p:calendar>
+
+                            <p:outputLabel value="To" for="to" ></p:outputLabel>
+                            <p:calendar id="to" value="#{nationalReportController.toDate}" navigator="true"
+                                        required="true"
+                                        requiredMessage="Select a start date"
+                                        pattern="dd MM yyyy" ></p:calendar>
+
+                            <p:outputLabel id="lblForm" value="Form-set" ></p:outputLabel>
+                            <p:selectOneMenu id="form" value="#{nationalReportController.designingComponentFormSet}" >
+                                <f:selectItem itemLabel="Select" ></f:selectItem>
+                                <f:selectItems value="#{designComponentFormSetController.items}" ></f:selectItems>
+                                <f:ajax listener="#{nationalReportController.fillItemsofTheSelectedSet()}"
+                                        execute="form" render="item" ></f:ajax>
+                            </p:selectOneMenu>
+
+                            <p:outputLabel id="lblItem" value="item" ></p:outputLabel>
+                            <p:selectOneMenu id="item" 
+                                             value="#{nationalReportController.designComponentFormItem}"
+                                             var="it">
+                                <f:selectItems value="#{nationalReportController.designComponentFormItems}"
+                                               var="ii"
+                                               itemLabel="#{ii.name}"
+                                               itemValue="#{ii}"></f:selectItems>
+                                <p:column headerText="Form" >
+                                    <p:outputLabel value="#{it.parentComponent.name}" ></p:outputLabel>
+                                </p:column>
+                                <p:column headerText="Variable" >
+                                    <p:outputLabel value="#{it.name}" ></p:outputLabel>
+                                </p:column>
+                            </p:selectOneMenu>
+
+                            <p:spacer ></p:spacer>
+                            <p:commandButton value="Process" 
+                                             ajax="false" 
+                                             oncomplete ="PrimeFaces.monitorDownload(start, stop);" 
+                                             icon="ui-icon-arrowthick-1-s"
+                                             actionListener="#{nationalReportController.createDataSingleCounts()}">
+                            </p:commandButton>
+                            <p:commandButton value="Download" ajax="false">
+                                <p:dataExporter target="tbl" fileName="clinical data counts" type="xlsx" ></p:dataExporter>
+                            </p:commandButton>
+                            
+                        </p:panelGrid>
+
+                        <p:dataTable id="tbl" value="#{nationalReportController.observationValueCounts}" var="o">
+                            <p:column headerText="Value" >
+                                <h:outputText rendered="#{o.intValue ne null}" value="#{o.intValue}" ></h:outputText>
+                                <h:outputText rendered="#{o.longValue ne null}" value="#{o.longValue}" ></h:outputText>
+                                <h:outputText rendered="#{o.realNumberValue ne null}" value="#{o.realNumberValue}" ></h:outputText>
+                                <h:outputText rendered="#{o.stringValue ne null}" value="#{o.stringValue}" ></h:outputText>
+                            </p:column>
+                            <p:column headerText="Count" >
+                                <h:outputText value="#{o.count}" ></h:outputText>
+                            </p:column>
+
+                        </p:dataTable>
+
+                    </p:panelGrid>
+                </h:form>
+            </ui:define>
+        </ui:composition>
+
+    </body>
+</html>

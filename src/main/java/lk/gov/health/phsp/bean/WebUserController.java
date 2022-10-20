@@ -762,7 +762,7 @@ public class WebUserController implements Serializable {
         }
 
         String temSQL;
-        temSQL = "SELECT u FROM WebUser u WHERE lower(u.name)=:userName and u.retired =:ret";
+        temSQL = "SELECT u FROM WebUser u WHERE u.name=:userName and u.retired =:ret";
         Map m = new HashMap();
         m.put("userName", userName.trim().toLowerCase());
         m.put("ret", false);
@@ -790,7 +790,7 @@ public class WebUserController implements Serializable {
 
     public List<WebUser> completeUsers(String qry) {
         String temSQL;
-        temSQL = "SELECT u FROM WebUser u WHERE lower(u.name) like :userName and u.retired =:ret";
+        temSQL = "SELECT u FROM WebUser u WHERE u.name like :userName and u.retired =:ret";
         Map m = new HashMap();
         m.put("userName", "%" + qry.trim().toLowerCase() + "%");
         m.put("ret", false);
@@ -1177,7 +1177,7 @@ public class WebUserController implements Serializable {
         if (un == null) {
             return false;
         }
-        String j = "select u from WebUser u where lower(u.name)=:un order by u.id desc";
+        String j = "select u from WebUser u where u.name=:un order by u.id desc";
         Map m = new HashMap();
         m.put("un", un.toLowerCase());
         WebUser u = getFacade().findFirstByJpql(j, m);

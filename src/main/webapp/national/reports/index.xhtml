@@ -79,6 +79,10 @@
                                                       style="width:20em;margin:auto;"
                                                      action="#{reportController.toFunctioningHLcs}"
                                                      ajax="false"></p:commandButton>
+                                    
+                                    <p:commandButton value="Clinical Data"   style="width:20em;margin:auto;"
+                                                     action="#{reportController.toSingleVariableClinicalDataCounts()}"
+                                                     ajax="false"></p:commandButton>
 
                                 </h:panelGrid>
                             </p:tab>
@@ -113,6 +117,7 @@
                                     <p:commandButton value="Data Forms"   style="width:20em;margin:auto;"
                                                      action="#{reportController.toViewDataForms()}"
                                                      ajax="false"></p:commandButton>
+                                    
 
                                 </h:panelGrid>
 
