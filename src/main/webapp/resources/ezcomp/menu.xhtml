@@ -67,8 +67,10 @@
                     <p:menuitem value="Manage Preferances"  action="#{preferenceController.toManagePreferences()}"     ajax="false" />
                 </p:submenu>
                 <p:submenu label="Settings" >
-                    <p:menuitem value="Change My Password" action="#{webUserController.toChangeMyPassword()}"    ajax="false" />
-                    <p:menuitem value="Change My Details" action="#{webUserController.toChangeMyDetails()}"    ajax="false" />
+                    <p:menuitem value="Change My Password" action="#{webUserController.toChangeMyPassword()}" ajax="false" />
+                    <p:menuitem value="Change My Details" action="#{webUserController.toChangeMyDetails()}" ajax="false" />
+                    <p:menuitem value="Manage My API Keys" action="#{apiKeyController.toManageMyApiKeys()}" ajax="false" 
+                                ></p:menuitem>
                 </p:submenu>
 
                 <p:submenu label="Help" >
