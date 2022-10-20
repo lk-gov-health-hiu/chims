@@ -23,6 +23,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
 import javax.inject.Inject;
+import lk.gov.health.phsp.ejb.DataFormBean;
 import lk.gov.health.phsp.entity.ApiRequest;
 import lk.gov.health.phsp.entity.Client;
 import lk.gov.health.phsp.entity.ClientEncounterComponentForm;
@@ -66,6 +67,8 @@ public class ClientEncounterComponentFormSetController implements Serializable {
     private PersonFacade personFacade;
     @EJB
     private EncounterFacade encounterFacade;
+    @EJB
+    DataFormBean dataFormBean;
 
 // </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="Controllers">
@@ -181,7 +184,7 @@ public class ClientEncounterComponentFormSetController implements Serializable {
         selected.setRetired(true);
         selected.setRetiredAt(new Date());
         selected.setRetiredBy(webUserController.getLoggedUser());
-        save(selected);
+        saveCfs(selected);
 
         Encounter e = selected.getEncounter();
         if (e != null) {
@@ -271,85 +274,16 @@ public class ClientEncounterComponentFormSetController implements Serializable {
             userTransactionController.recordTransaction("Nothing to Complete in formset");
             return "";
         }
-        save(selected);
-        executreCompleteEvents(dataFormset);
         selected.setCompleted(true);
         selected.setCompletedAt(new Date());
         selected.setCompletedBy(webUserController.getLoggedUser());
-        getFacade().edit(selected);
-        loadOldNavigateToDataEntry(selected);
-//        executePostCompletionStrategies(selected);
+        saveCfs(selected);
+        dataFormBean.executeCompleteEvents(dataFormset, selected, getWebUserController().getLoggedUser());
+//        loadOldNavigateToDataEntry(selected);
         formEditable = false;
         JsfUtil.addSuccessMessage("Completed");
         userTransactionController.recordTransaction("Formset Completed");
         return toViewFormset();
-    }
-
-    public void executreCompleteEvents(DataFormset tSet) {
-        if (tSet.getForms() == null) {
-            return;
-        }
-        for (DataForm tForm : tSet.getForms()) {
-            if (tForm.getItems() == null) {
-                continue;
-            }
-            for (DataItem tItem : tForm.getItems()) {
-                if (tItem.getDi() == null || tItem.getDi().getSelectionDataType() == null) {
-                    System.err.println("Null in (tItem.getDi() == null || tItem.getDi().getSelectionDataType())");
-                    continue;
-                }
-
-                if (tItem.getMultipleEntries()) {
-                    if (tItem.getDi().getSelectionDataType() == SelectionDataType.Procedure_Request) {
-                        for (DataItem ttItem : tItem.getAddedItems()) {
-                            if (ttItem.getCi() == null) {
-                                System.err.println("ttItem.getCi() is null");
-                                continue;
-                            }
-                            if (ttItem.getCi().getItemValue() == null) {
-                                System.err.println("ttItem.getCi().getItemValue() is null");
-                                continue;
-                            }
-                            ApiRequest r = new ApiRequest();
-                            r.setRequestCeci(ttItem.getCi());
-                            r.setCreatedAt(new Date());
-                            r.setCreatedBy(webUserController.getLoggedUser());
-                            r.setEncounter(tSet.getEfs().getEncounter());
-                            r.setName("procedure_request");
-                            apiRequestApplicationController.saveApiRequests(r);
-                        }
-                    } else if (tItem.getDi().getSelectionDataType() == SelectionDataType.Prescreption_Request) {
-                        ApiRequest rfs = new ApiRequest();
-                        rfs.setRequestCefs(selected);
-                        rfs.setCreatedAt(new Date());
-                        rfs.setCreatedBy(webUserController.getLoggedUser());
-                        rfs.setEncounter(tSet.getEfs().getEncounter());
-                        rfs.setName("prescription_request");
-                        apiRequestApplicationController.saveApiRequests(rfs);
-                        for (DataItem ttItem : tItem.getAddedItems()) {
-                            if (ttItem.getCi() == null) {
-                                System.err.println("ttItem.getCi() is null");
-                                continue;
-                            }
-                            if (ttItem.getCi().getPrescriptionValue() == null) {
-                                System.err.println("ttItem.getCi().getPrescriptionValue() is null");
-                                continue;
-                            }
-                            ApiRequest r = new ApiRequest();
-                            r.setRequestCeci(ttItem.getCi());
-                            r.setCreatedAt(new Date());
-                            r.setCreatedBy(webUserController.getLoggedUser());
-                            r.setEncounter(tSet.getEfs().getEncounter());
-                            r.setName("prescription_request");
-                            r.setParent(rfs);
-                            apiRequestApplicationController.saveApiRequests(r);
-                        }
-                    }
-                }
-
-            }
-        }
-
     }
 
     public String reverseCompleteFormset() {
@@ -358,7 +292,7 @@ public class ClientEncounterComponentFormSetController implements Serializable {
             userTransactionController.recordTransaction("Nothing to Complete in formset");
             return "";
         }
-        save(selected);
+        saveCfs(selected);
         selected.setCompleted(false);
         selected.setCompletedAt(new Date());
         selected.setCompletedBy(webUserController.getLoggedUser());
@@ -518,22 +452,21 @@ public class ClientEncounterComponentFormSetController implements Serializable {
     }
 
     public void save() {
-        save(selected);
+        saveCfs(selected);
     }
 
-    public void save(ClientEncounterComponentFormSet s) {
+    public void saveCfs(ClientEncounterComponentFormSet s) {
         if (s == null) {
             return;
         }
         if (s.getId() == null) {
             s.setCreatedAt(new Date());
             s.setCreatedBy(webUserController.getLoggedUser());
-            getFacade().create(s);
         } else {
             s.setLastEditBy(webUserController.getLoggedUser());
             s.setLastEditeAt(new Date());
-            getFacade().edit(s);
         }
+        dataFormBean.saveCfs(s);
     }
 
     public List<ClientEncounterComponentFormSet> fillLastFiveCompletedEncountersFormSets(String type) {
@@ -1007,7 +940,7 @@ public class ClientEncounterComponentFormSetController implements Serializable {
     }
 
     public void loadOldNavigateToDataEntry(ClientEncounterComponentFormSet cfs) {
-         //System.out.println("loadOldNavigateToDataEntry");
+        //System.out.println("loadOldNavigateToDataEntry");
         if (cfs == null) {
             return;
         }

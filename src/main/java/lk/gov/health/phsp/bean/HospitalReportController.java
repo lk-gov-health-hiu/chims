@@ -1781,7 +1781,7 @@ public class HospitalReportController implements Serializable {
 //                    cf.setParentComponent(cfs);
 //                    cf.setCss(df.getCss());
 //
-//                    clientEncounterComponentFormController.save(cf);
+//                    clientEncounterComponentFormController.saveCi(cf);
 //                }
 //
 //                DataForm f = new DataForm();

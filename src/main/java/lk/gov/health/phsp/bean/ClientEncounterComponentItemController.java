@@ -31,6 +31,7 @@ import lk.gov.health.phsp.pojcs.Replaceable;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptEngine;
 import javax.script.ScriptException;
+import lk.gov.health.phsp.ejb.DataFormBean;
 import lk.gov.health.phsp.entity.Client;
 import lk.gov.health.phsp.entity.Component;
 import lk.gov.health.phsp.entity.DesignComponentFormItem;
@@ -51,6 +52,10 @@ public class ClientEncounterComponentItemController implements Serializable {
 
     @EJB
     private lk.gov.health.phsp.facade.ClientEncounterComponentItemFacade ejbFacade;
+
+    @EJB
+    DataFormBean dataFormBean;
+
     @Inject
     private WebUserController webUserController;
 
@@ -137,7 +142,7 @@ public class ClientEncounterComponentItemController implements Serializable {
 //        return selected;
 //    }
     public void save() {
-        save(selected);
+        saveCi(selected);
     }
 
 //
@@ -253,28 +258,28 @@ public class ClientEncounterComponentItemController implements Serializable {
 //                case Real_Number:
 //                    i.setRealNumberValue(CommonController.getDoubleValue(result));
 ////                    getFacade().edit(i);
-//                    save(i);
+//                    saveCi(i);
 //                    break;
 //                case Integer_Number:
 //                    i.setIntegerNumberValue(CommonController.getIntegerValue(result));
 ////                    getFacade().edit(i);
-//                    save(i);
+//                    saveCi(i);
 //                    break;
 //                case Short_Text:
 //                    i.setShortTextValue(result);
 ////                    getFacade().edit(i);
-//                    save(i);
+//                    saveCi(i);
 //                    break;
 //                case Long_Text:
 //                    i.setLongTextValue(result);
 ////                    getFacade().edit(i);
-//                    save(i);
+//                    saveCi(i);
 //                    break;
 //                default:
 //                    break;
 //            }
 ////            getFacade().edit(i);
-//            save(i);
+//            saveCi(i);
 //        }
 //        userTransactionController.recordTransaction("Calculate - Clinic Forms");
 //
@@ -284,7 +289,6 @@ public class ClientEncounterComponentItemController implements Serializable {
     public void calculate(DataItem i) {
 
         //System.out.println("Calculate");
-
         if (i == null) {
             //System.out.println("i is null");
             return;
@@ -301,7 +305,7 @@ public class ClientEncounterComponentItemController implements Serializable {
             i.getCi().setShortTextValue(p.getAgeYears() + "");
             i.getCi().setRealNumberValue(Double.valueOf(p.getAgeYears()));
             i.getCi().setIntegerNumberValue(p.getAgeYears());
-            save(i.getCi());
+            dataFormBean.saveCi(i.getCi());
             return;
         } else {
         }
@@ -359,35 +363,35 @@ public class ClientEncounterComponentItemController implements Serializable {
                     case Short_Text:
                         if (c.getShortTextValue() != null) {
                             r.setSelectedValue(c.getShortTextValue());
-                        }else{
+                        } else {
                             r.setSelectedValue(r.getDefaultValue());
                         }
                         break;
                     case Boolean:
                         if (c.getBooleanValue() != null) {
                             r.setSelectedValue(c.getBooleanValue().toString());
-                        }else{
+                        } else {
                             r.setSelectedValue(r.getDefaultValue());
                         }
                         break;
                     case Real_Number:
                         if (c.getRealNumberValue() != null) {
                             r.setSelectedValue(c.getRealNumberValue().toString());
-                        }else{
+                        } else {
                             r.setSelectedValue(r.getDefaultValue());
                         }
                         break;
                     case Integer_Number:
                         if (c.getIntegerNumberValue() != null) {
                             r.setSelectedValue(c.getIntegerNumberValue().toString());
-                        }else{
+                        } else {
                             r.setSelectedValue(r.getDefaultValue());
                         }
                         break;
                     case Item_Reference:
                         if (c.getItemValue() != null) {
                             r.setSelectedValue(c.getItemValue().getCode());
-                        }else{
+                        } else {
                             r.setSelectedValue(r.getDefaultValue());
                         }
                         break;
@@ -406,33 +410,33 @@ public class ClientEncounterComponentItemController implements Serializable {
         String result = evaluateScript(javaStringToEvaluate);
 
         //System.out.println("result = " + result);
-
         if (null == i.getDi().getItem().getDataType()) {
             i.getCi().setShortTextValue(result);
         } else {
             switch (i.getDi().getItem().getDataType()) {
                 case Real_Number:
                     i.getCi().setRealNumberValue(CommonController.getDoubleValue(result));
-                    save(i.getCi());
+                    dataFormBean.saveCi(i.getCi());
+                    saveCi(i.getCi());
                     break;
                 case Integer_Number:
                     i.getCi().setIntegerNumberValue(CommonController.getIntegerValue(result));
-                    save(i.getCi());
+                    saveCi(i.getCi());
                     break;
                 case Short_Text:
                     i.getCi().setShortTextValue(result);
-                    save(i.getCi());
+                    saveCi(i.getCi());
                     break;
                 case Long_Text:
                     i.getCi().setLongTextValue(result);
-                    save(i.getCi());
+                    saveCi(i.getCi());
                     break;
                 default:
                     break;
             }
-            save(i.getCi());
+            saveCi(i.getCi());
         }
-        save(i.getCi());
+        saveCi(i.getCi());
         userTransactionController.recordTransaction("Calculate - Clinic Forms");
 
     }
@@ -666,22 +670,15 @@ public class ClientEncounterComponentItemController implements Serializable {
 
     }
 
-    public void save(ClientEncounterComponentItem i) {
-        // //System.out.println("save");
-        // //System.out.println("i = " + i);
+    public void saveCi(ClientEncounterComponentItem i) {
         if (i == null) {
-            // //System.out.println("i is null. not saving");
             return;
         }
-
-        // //System.out.println("i.getInstitutionValue() = " + i.getInstitutionValue());
         if (i.getId() == null) {
             i.setCreatedAt(new Date());
             i.setCreatedBy(webUserController.getLoggedUser());
-            getFacade().create(i);
-        } else {
-            getFacade().edit(i);
-        }
+        } 
+        dataFormBean.saveCi(i);
     }
 
     public void addAnother(ClientEncounterComponentItem i) {
@@ -762,9 +759,9 @@ public class ClientEncounterComponentItemController implements Serializable {
             // //System.out.println("i.getAddingItem().getCi().getItemValue() = " + i.getAddingItem().getCi().getItemValue().getName());
         }
 
-        // //System.out.println("going to save");
+        // //System.out.println("going to saveCi");
         // //System.out.println("i.getAddingItem().getCi().getId() = " + i.getAddingItem().getCi().getId());
-        save(i.getAddingItem().getCi());
+        saveCi(i.getAddingItem().getCi());
 
         // //System.out.println("saved");
         // //System.out.println("i.getAddingItem().getCi().getId() = " + i.getAddingItem().getCi().getId());
@@ -845,7 +842,7 @@ public class ClientEncounterComponentItemController implements Serializable {
         removingItem.getCi().setRetired(true);
         removingItem.getCi().setRetiredAt(new Date());
         removingItem.getCi().setRetiredBy(webUserController.getLoggedUser());
-        save(removingItem.getCi());
+        saveCi(removingItem.getCi());
 
         i.getAddedItems().remove(removingItem);
 

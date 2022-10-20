@@ -365,7 +365,7 @@
                                                              required="#{ii.di.required}" 
                                                              requiredMessage="#{ii.di.requiredErrorMessage}" >
                                                     <p:ajax  event="blur" process="@this"  
-                                                             listener="#{clientEncounterComponentItemController.save(ii.ci)}" ></p:ajax>
+                                                             listener="#{clientEncounterComponentItemController.saveCi(ii.ci)}" ></p:ajax>
                                                 </p:inputText>
                                             </td>
                                             <td>
@@ -397,7 +397,7 @@
                                                 <p:inputText  styleClass="dataValueInputText" id="itIntC" value="#{ii.ci.integerNumberValue}" 
                                                               required="#{ii.di.required}" 
                                                               requiredMessage="#{ii.di.requiredErrorMessage}" >
-                                                    <p:ajax  event="blur" process="@this"   listener="#{clientEncounterComponentItemController.save(ii.ci)}" ></p:ajax>
+                                                    <p:ajax  event="blur" process="@this"   listener="#{clientEncounterComponentItemController.saveCi(ii.ci)}" ></p:ajax>
 
                                                 </p:inputText>
                                             </td>
@@ -430,7 +430,7 @@
                                                 <p:inputText  styleClass="dataValueInputText" id="itRnC" value="#{ii.ci.realNumberValue}" 
                                                               required="#{ii.di.required}" validatorMessage="#{ii.di.regexValidationFailedMessage}"
                                                               requiredMessage="#{ii.di.requiredErrorMessage}" >
-                                                    <p:ajax  event="blur" process="@this"  listener="#{clientEncounterComponentItemController.save(ii.ci)}" ></p:ajax>
+                                                    <p:ajax  event="blur" process="@this"  listener="#{clientEncounterComponentItemController.saveCi(ii.ci)}" ></p:ajax>
                                                 </p:inputText>
                                             </td>
                                             <td>
@@ -462,7 +462,7 @@
                                                 <p:inputText  styleClass="dataValueInputText" id="itLongC" value="#{ii.ci.longNumberValue}" 
                                                               required="#{ii.di.required}" 
                                                               requiredMessage="#{ii.di.requiredErrorMessage}" >
-                                                    <p:ajax  event="blur" process="@this"   listener="#{clientEncounterComponentItemController.save(ii.ci)}" ></p:ajax>
+                                                    <p:ajax  event="blur" process="@this"   listener="#{clientEncounterComponentItemController.saveCi(ii.ci)}" ></p:ajax>
                                                 </p:inputText>
                                             </td>
                                             <td>
@@ -495,7 +495,7 @@
                                                 <p:inputTextarea id="txtItaL" value="#{ii.ci.longTextValue}"  styleClass="dataValueInputTextArea" 
                                                                  required="#{ii.di.required}" 
                                                                  requiredMessage="#{ii.di.requiredErrorMessage}" >
-                                                    <p:ajax  event="blur" process="@this"   listener="#{clientEncounterComponentItemController.save(ii.ci)}" ></p:ajax>
+                                                    <p:ajax  event="blur" process="@this"   listener="#{clientEncounterComponentItemController.saveCi(ii.ci)}" ></p:ajax>
                                                 </p:inputTextarea>
                                             </td>
                                             <h:panelGroup rendered="#{ii.di.displayLastResult}" >
@@ -523,7 +523,7 @@
                                                             required="#{ii.di.required}" navigator="true"
                                                             requiredMessage="#{ii.di.requiredErrorMessage}" 
                                                             pattern="dd MMMM yyyy">
-                                                    <p:ajax  event="blur" process="@this"   listener="#{clientEncounterComponentItemController.save(ii.ci)}" ></p:ajax>
+                                                    <p:ajax  event="blur" process="@this"   listener="#{clientEncounterComponentItemController.saveCi(ii.ci)}" ></p:ajax>
                                                 </p:calendar>
                                             </td>
                                             <h:panelGroup rendered="#{ii.di.displayLastResult}" >
@@ -549,7 +549,7 @@
                                                 <p:calendar id="calC" value="#{ii.ci.dateValue}" 
                                                             required="#{ii.di.required}" 
                                                             requiredMessage="#{ii.di.requiredErrorMessage}" pattern="dd MMMM yyyy">
-                                                    <p:ajax  event="blur" process="@this"   listener="#{clientEncounterComponentItemController.save(ii.ci)}" ></p:ajax>
+                                                    <p:ajax  event="blur" process="@this"   listener="#{clientEncounterComponentItemController.saveCi(ii.ci)}" ></p:ajax>
                                                 </p:calendar>
                                             </td>
                                             <h:panelGroup rendered="#{ii.di.displayLastResult}" >
@@ -578,7 +578,7 @@
                                                     <f:selectItem itemLabel="Please select" ></f:selectItem>
                                                     <f:selectItems value="#{ii.availableItemsForSelection}" var="li"
                                                                    itemLabel="#{li.displayName}" itemValue="#{li}" ></f:selectItems>
-                                                    <p:ajax  event="blur" process="@this"   listener="#{clientEncounterComponentItemController.save(ii.ci)}" ></p:ajax>
+                                                    <p:ajax  event="blur" process="@this"   listener="#{clientEncounterComponentItemController.saveCi(ii.ci)}" ></p:ajax>
                                                 </p:selectOneMenu>
                                             </td>
                                             <h:panelGroup rendered="#{ii.di.displayLastResult}" >
@@ -608,7 +608,7 @@
                                                                 minQueryLength="3"  inputStyleClass="dataValueInputText"
                                                                 requiredMessage="#{ii.requiredErrorMessage}">
                                                     <p:ajax  event="blur" process="@this"   
-                                                             listener="#{clientEncounterComponentItemController.save(ii.ci)}" >
+                                                             listener="#{clientEncounterComponentItemController.saveCi(ii.ci)}" >
                                                     </p:ajax>
                                                 </p:autoComplete>
                                             </td>
@@ -637,10 +637,10 @@
                                                                          required="#{ii.di.required}" 
                                                                          requiredMessage="#{ii.di.requiredErrorMessage}" >
                                                     <p:ajax  process="@this"   
-                                                             listener="#{clientEncounterComponentItemController.save(ii.ci)}" >
+                                                             listener="#{clientEncounterComponentItemController.saveCi(ii.ci)}" >
                                                     </p:ajax>
                                                     <p:ajax  process="@this"  event="blur" 
-                                                             listener="#{clientEncounterComponentItemController.save(ii.ci)}" >
+                                                             listener="#{clientEncounterComponentItemController.saveCi(ii.ci)}" >
                                                     </p:ajax>
                                                 </p:selectBooleanCheckbox>
                                             </td>
@@ -669,10 +669,10 @@
                                                                        required="#{ii.di.required}" 
                                                                        requiredMessage="#{ii.di.requiredErrorMessage}" >
                                                     <p:ajax  process="@this"   
-                                                             listener="#{clientEncounterComponentItemController.save(ii.ci)}" >
+                                                             listener="#{clientEncounterComponentItemController.saveCi(ii.ci)}" >
                                                     </p:ajax>
                                                     <p:ajax  process="@this"  event="blur" 
-                                                             listener="#{clientEncounterComponentItemController.save(ii.ci)}" >
+                                                             listener="#{clientEncounterComponentItemController.saveCi(ii.ci)}" >
                                                     </p:ajax>
                                                 </p:selectBooleanButton>
                                             </td>
@@ -706,7 +706,7 @@
                                                                 required="#{ii.di.required}" 
                                                                 requiredMessage="#{ii.di.requiredErrorMessage}">
                                                     <p:ajax  event="blur" process="@this"   
-                                                             listener="#{clientEncounterComponentItemController.save(ii.ci)}" >
+                                                             listener="#{clientEncounterComponentItemController.saveCi(ii.ci)}" >
                                                     </p:ajax>
                                                 </p:autoComplete>
                                             </td>
