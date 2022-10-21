@@ -41,11 +41,20 @@ import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.PathParam;
 import lk.gov.health.phsp.entity.ApiKey;
 import lk.gov.health.phsp.entity.Client;
+import lk.gov.health.phsp.entity.Encounter;
+import lk.gov.health.phsp.enums.EncounterType;
+import lk.gov.health.phsp.enums.InstitutionType;
 import lk.gov.health.phsp.facade.ApiKeyFacade;
 import lk.gov.health.phsp.facade.ClientFacade;
+import lk.gov.health.phsp.facade.EncounterFacade;
 import org.hl7.fhir.dstu3.model.BackboneElement;
 import org.hl7.fhir.dstu3.model.Base;
+import org.hl7.fhir.dstu3.model.Bundle;
+import org.hl7.fhir.dstu3.model.Bundle.BundleType;
+import org.hl7.fhir.dstu3.model.CapabilityStatement;
+import org.hl7.fhir.dstu3.model.CapabilityStatement.CapabilityStatementDocumentComponent;
 import org.hl7.fhir.dstu3.model.ContactPoint;
+import org.hl7.fhir.dstu3.model.DateTimeType;
 import org.hl7.fhir.dstu3.model.Enumerations;
 import org.hl7.fhir.dstu3.model.Narrative;
 import org.hl7.fhir.dstu3.model.OperationOutcome;
@@ -69,6 +78,8 @@ public class FhirResource {
     ApiKeyFacade apiKeyFacade;
     @EJB
     ClientFacade clientFacade;
+    @EJB
+    EncounterFacade encounterFacade;
 
     /**
      * Creates a new instance of GenericResource
@@ -77,7 +88,29 @@ public class FhirResource {
     }
 
     @GET
-    @Path("/clint/{phn}")
+    @Path("/capability_statement")
+    @Produces("application/json")
+    public String getCapabilityStatement(@Context HttpServletRequest requestContext) {
+        CapabilityStatement cs = new CapabilityStatement();
+        CapabilityStatementDocumentComponent uc = new CapabilityStatementDocumentComponent();
+        cs.getSoftware()
+                .setName("cloud HIMS FHIR Server")
+                .setVersion("1.0")
+                .setReleaseDateElement(new DateTimeType("2022-10-06"));
+
+        cs.addDocument(uc);
+        cs.setName("cloud HIMS");
+        FhirContext ctx = FhirContext.forDstu3();
+        IParser parser = ctx.newJsonParser();
+
+        String serialized = parser.encodeResourceToString(cs);
+
+        return serialized;
+
+    }
+
+    @GET
+    @Path("/client/{phn}")
     @Produces("application/json")
     public String getClientByPhn(@Context HttpServletRequest requestContext,
             @PathParam("phn") String phn) {
@@ -102,6 +135,67 @@ public class FhirResource {
         return serialized;
     }
 
+    @GET
+    @Path("/client/{phn}/encounter/")
+    @Produces("application/json")
+    public String getClientVisitByPhn(@Context HttpServletRequest requestContext,
+            @PathParam("phn") String phn) {
+
+        String key = requestContext.getHeader("FHIR");
+        if (!isValidKey(key)) {
+            return errorMessageKey();
+        }
+
+        Client c = finfFirstPatientsByPhn(phn);
+        if (c == null) {
+            return errorMessageNoData();
+        }
+
+        Patient patient = fhirPatientFromClient(c);
+        List<Encounter> encounters = findEncounters(c, null, null, false, null, false);
+
+        if (encounters == null || encounters.isEmpty()) {
+            return errorMessageNoData();
+        }
+
+        org.hl7.fhir.dstu3.model.Encounter encounter = fhirEcnounterFromEncounter(encounters.get(0));
+        FhirContext ctx = FhirContext.forDstu3();
+        IParser parser = ctx.newJsonParser();
+
+        String serialized = parser.encodeResourceToString(encounter);
+
+        return serialized;
+    }
+
+    @GET
+    @Path("/institution_client/{institution_code}")
+    @Produces("application/json")
+    public String getInstitutionClientByPhn(@Context HttpServletRequest requestContext,
+            @PathParam("ins") String ins) {
+
+        String key = requestContext.getHeader("FHIR");
+        if (!isValidKey(key)) {
+            return errorMessageKey();
+        }
+
+        Client c = finfFirstPatientsByPhn(ins);
+        if (c == null) {
+            return errorMessageNoData();
+        }
+
+        Bundle b = new Bundle();
+        b.setType(BundleType.COLLECTION);
+
+        Patient patient = fhirPatientFromClient(c);
+
+        FhirContext ctx = FhirContext.forDstu3();
+        IParser parser = ctx.newJsonParser();
+
+        String serialized = parser.encodeResourceToString(patient);
+
+        return serialized;
+    }
+
     public List<Client> listPatientsByPhn(String phn) {
         String j = "select c from Client c where c.retired=false and c.phn=:q order by c.phn";
         Map m = new HashMap();
@@ -114,6 +208,21 @@ public class FhirResource {
         Map m = new HashMap();
         m.put("q", phn.trim().toUpperCase());
         return clientFacade.findFirstByJpql(j, m);
+    }
+
+    public org.hl7.fhir.dstu3.model.Encounter fhirEcnounterFromEncounter(Encounter e) {
+        if (e == null) {
+            return null;
+        }
+        org.hl7.fhir.dstu3.model.Encounter fe = new org.hl7.fhir.dstu3.model.Encounter();
+        fe.setId(e.getId().toString());
+        if (e.getCompleted()) {
+            fe.setStatus(org.hl7.fhir.dstu3.model.Encounter.EncounterStatus.FINISHED);
+        }
+        fe.getPeriod().setStart(e.getCreatedAt());
+        fe.getPeriod().setEnd(e.getCompletedAt());
+
+        return fe;
     }
 
     public Patient fhirPatientFromClient(Client client) {
@@ -269,6 +378,36 @@ public class FhirResource {
             return false;
         }
         return true;
+    }
+
+    public List<Encounter> findEncounters(Client client, List<InstitutionType> insTypes, EncounterType encType, boolean excludeCompleted, Integer maxRecordCount, boolean descending) {
+        String j = "select e from Encounter e where e.retired=false ";
+        Map m = new HashMap();
+        if (client != null) {
+            j += " and e.client=:c ";
+            m.put("c", client);
+        }
+        if (insTypes != null) {
+            j += " and e.institution.institutionType in :it ";
+            m.put("it", insTypes);
+        }
+        if (insTypes != null) {
+            j += " and e.encounterType=:et ";
+            m.put("et", encType);
+        }
+        if (excludeCompleted) {
+            j += " and e.completed=:com ";
+            m.put("com", false);
+        }
+        if (descending) {
+            j += " order by e.id desc";
+        }
+        if (maxRecordCount == null) {
+            return encounterFacade.findByJpql(j, m);
+        } else {
+            return encounterFacade.findByJpql(j, m, maxRecordCount);
+        }
+
     }
 
 }
