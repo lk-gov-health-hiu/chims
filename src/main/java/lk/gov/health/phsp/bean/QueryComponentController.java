@@ -668,8 +668,8 @@ public class QueryComponentController implements Serializable {
             applicationController.getQueryComponents().add(saving);
             JsfUtil.addSuccessMessage("Saved Successfully.");
         } else {
-            saving.setLastEditBy(webUserController.getLoggedUser());
-            saving.setLastEditeAt(new Date());
+//            saving.setLastEditBy(webUserController.getLoggedUser());
+//            saving.setLastEditeAt(new Date());
             getFacade().edit(saving);
             JsfUtil.addSuccessMessage("Updated Successfully.");
         }

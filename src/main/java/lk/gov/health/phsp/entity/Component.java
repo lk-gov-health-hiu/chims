@@ -118,10 +118,10 @@ public class Component implements Serializable {
     /*
     Last Edit Properties
      */
-    @ManyToOne(fetch = FetchType.LAZY)
-    private WebUser lastEditBy;
-    @Temporal(javax.persistence.TemporalType.TIMESTAMP)
-    private Date lastEditeAt;
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    private WebUser lastEditBy;
+//    @Temporal(javax.persistence.TemporalType.TIMESTAMP)
+//    private Date lastEditeAt;
     /*
     Retire Reversal Properties
      */
@@ -220,21 +220,21 @@ public class Component implements Serializable {
         this.createdAt = createdAt;
     }
 
-    public WebUser getLastEditBy() {
-        return lastEditBy;
-    }
-
-    public void setLastEditBy(WebUser lastEditBy) {
-        this.lastEditBy = lastEditBy;
-    }
-
-    public Date getLastEditeAt() {
-        return lastEditeAt;
-    }
-
-    public void setLastEditeAt(Date lastEditeAt) {
-        this.lastEditeAt = lastEditeAt;
-    }
+//    public WebUser getLastEditBy() {
+//        return lastEditBy;
+//    }
+//
+//    public void setLastEditBy(WebUser lastEditBy) {
+//        this.lastEditBy = lastEditBy;
+//    }
+//
+//    public Date getLastEditeAt() {
+//        return lastEditeAt;
+//    }
+//
+//    public void setLastEditeAt(Date lastEditeAt) {
+//        this.lastEditeAt = lastEditeAt;
+//    }
 
     public WebUser getRetiredReversedBy() {
         return retiredReversedBy;

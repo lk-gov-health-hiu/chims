@@ -190,8 +190,8 @@ public class DesignComponentFormSetController implements Serializable {
         ns.setId(null);
         ns.setCreatedAt(new Date());
         ns.setCreatedBy(webUserController.getLoggedUser());
-        ns.setLastEditBy(null);
-        ns.setLastEditeAt(null);
+//        ns.setLastEditBy(null);
+//        ns.setLastEditeAt(null);
 
         getFacade().create(ns);
 
@@ -204,8 +204,8 @@ public class DesignComponentFormSetController implements Serializable {
             nf.setId(null);
             nf.setCreatedAt(new Date());
             nf.setCreatedBy(webUserController.getLoggedUser());
-            nf.setLastEditBy(null);
-            nf.setLastEditeAt(null);
+//            nf.setLastEditBy(null);
+//            nf.setLastEditeAt(null);
             nf.setReferenceComponent(f);
             nf.setParentComponent(ns);
             nf.setInstitution(institution);
@@ -217,8 +217,8 @@ public class DesignComponentFormSetController implements Serializable {
                 ni.setId(null);
                 ni.setCreatedAt(new Date());
                 ni.setCreatedBy(webUserController.getLoggedUser());
-                ni.setLastEditBy(null);
-                ni.setLastEditeAt(null);
+//                ni.setLastEditBy(null);
+//                ni.setLastEditeAt(null);
                 ni.setReferenceComponent(i);
                 ni.setParentComponent(nf);
                 ni.setInstitution(institution);
@@ -245,8 +245,8 @@ public class DesignComponentFormSetController implements Serializable {
         ns.setId(null);
         ns.setCreatedAt(new Date());
         ns.setCreatedBy(webUserController.getLoggedUser());
-        ns.setLastEditBy(null);
-        ns.setLastEditeAt(null);
+//        ns.setLastEditBy(null);
+//        ns.setLastEditeAt(null);
         ns.setReferenceComponent(referanceSet);
         ns.setInstitution(null);
         getFacade().create(ns);
@@ -256,8 +256,8 @@ public class DesignComponentFormSetController implements Serializable {
             nf.setId(null);
             nf.setCreatedAt(new Date());
             nf.setCreatedBy(webUserController.getLoggedUser());
-            nf.setLastEditBy(null);
-            nf.setLastEditeAt(null);
+//            nf.setLastEditBy(null);
+//            nf.setLastEditeAt(null);
             nf.setReferenceComponent(f);
             nf.setParentComponent(ns);
             nf.setInstitution(institution);
@@ -269,8 +269,8 @@ public class DesignComponentFormSetController implements Serializable {
                 ni.setId(null);
                 ni.setCreatedAt(new Date());
                 ni.setCreatedBy(webUserController.getLoggedUser());
-                ni.setLastEditBy(null);
-                ni.setLastEditeAt(null);
+//                ni.setLastEditBy(null);
+//                ni.setLastEditeAt(null);
                 ni.setReferenceComponent(i);
                 ni.setParentComponent(nf);
                 ni.setInstitution(institution);

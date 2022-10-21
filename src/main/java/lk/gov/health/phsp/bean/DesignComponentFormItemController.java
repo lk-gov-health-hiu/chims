@@ -166,8 +166,8 @@ public class DesignComponentFormItemController implements Serializable {
             getFacade().create(selected);
             JsfUtil.addSuccessMessage("Saved Successfully.");
         } else {
-            selected.setLastEditBy(webUserController.getLoggedUser());
-            selected.setLastEditeAt(new Date());
+//            selected.setLastEditBy(webUserController.getLoggedUser());
+//            selected.setLastEditeAt(new Date());
             getFacade().edit(selected);
             JsfUtil.addSuccessMessage("Updated Successfully.");
         }
@@ -182,8 +182,8 @@ public class DesignComponentFormItemController implements Serializable {
             i.setCreatedBy(webUserController.getLoggedUser());
             getFacade().create(i);
         } else {
-            i.setLastEditBy(webUserController.getLoggedUser());
-            i.setLastEditeAt(new Date());
+//            i.setLastEditBy(webUserController.getLoggedUser());
+//            i.setLastEditeAt(new Date());
             getFacade().edit(i);
         }
     }
@@ -322,8 +322,8 @@ public class DesignComponentFormItemController implements Serializable {
             getFacade().create(selected);
             JsfUtil.addSuccessMessage("Saved Successfully.");
         } else {
-            selected.setLastEditBy(webUserController.getLoggedUser());
-            selected.setLastEditeAt(new Date());
+//            selected.setLastEditBy(webUserController.getLoggedUser());
+//            selected.setLastEditeAt(new Date());
             getFacade().edit(selected);
             JsfUtil.addSuccessMessage("Updated Successfully.");
         }

@@ -234,8 +234,8 @@ public class ClientEncounterComponentFormSetController implements Serializable {
                 getEncounterFacade().edit(e);
             }
             s.setCompleted(false);
-            s.setLastEditeAt(new Date());
-            s.setLastEditBy(webUserController.getLoggedUser());
+//            s.setLastEditeAt(new Date());
+//            s.setLastEditBy(webUserController.getLoggedUser());
             getFacade().edit(s);
         }
         userTransactionController.recordTransaction("Retire Selected Items As Uncomplete");
@@ -278,7 +278,7 @@ public class ClientEncounterComponentFormSetController implements Serializable {
         selected.setCompletedAt(new Date());
         selected.setCompletedBy(webUserController.getLoggedUser());
         saveCfs(selected);
-        dataFormBean.executeCompleteEvents(dataFormset, selected, getWebUserController().getLoggedUser());
+//        dataFormBean.executeCompleteEvents(dataFormset, selected, getWebUserController().getLoggedUser());
 //        loadOldNavigateToDataEntry(selected);
         formEditable = false;
         JsfUtil.addSuccessMessage("Completed");
@@ -368,8 +368,8 @@ public class ClientEncounterComponentFormSetController implements Serializable {
             ti.setDataRepresentationType(DataRepresentationType.Client);
             getItemFacade().create(ti);
         } else {
-            ti.setLastEditBy(webUserController.getLoggedUser());
-            ti.setLastEditeAt(new Date());
+//            ti.setLastEditBy(webUserController.getLoggedUser());
+//            ti.setLastEditeAt(new Date());
         }
 
 //        if (ti.getSelectionDataType() == null) {
@@ -463,10 +463,10 @@ public class ClientEncounterComponentFormSetController implements Serializable {
             s.setCreatedAt(new Date());
             s.setCreatedBy(webUserController.getLoggedUser());
         } else {
-            s.setLastEditBy(webUserController.getLoggedUser());
-            s.setLastEditeAt(new Date());
+//            s.setLastEditBy(webUserController.getLoggedUser());
+//            s.setLastEditeAt(new Date());
         }
-        dataFormBean.saveCfs(s);
+        saveCfs(s);
     }
 
     public List<ClientEncounterComponentFormSet> fillLastFiveCompletedEncountersFormSets(String type) {
