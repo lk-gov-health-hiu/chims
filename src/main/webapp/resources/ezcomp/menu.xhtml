@@ -24,12 +24,12 @@
                     <p:menuitem ajax="false" value="Reserver PHN" 
                                 action="#{clientController.toReserverPhn()}"  />
                     <p:menuitem ajax="false" value="Search" action="#{clientController.toSearchClientById()}" />
-                    
+
                 </p:submenu>
 
 
-                
-                 
+
+
 
                 <p:submenu label="Analysis" 
                            disabled="false" >
@@ -37,6 +37,9 @@
                                 action="#{queryComponentController.toQueryIndex()}"  />
                     <p:menuitem ajax="false" value="Reports" 
                                 action="#{reportController.toViewReports()}" ></p:menuitem>
+                    <p:menuitem ajax="false" value="Counts" 
+                                action="#{nationalReportController.toNationalReportsCounts()}"  ></p:menuitem>
+
                     <p:menuitem ajax="false" value="Indicators" 
                                 action="#{indicatorController.toIndicatorIndex}" ></p:menuitem>
                 </p:submenu>
@@ -64,8 +67,10 @@
                     <p:menuitem value="Manage Preferances"  action="#{preferenceController.toManagePreferences()}"     ajax="false" />
                 </p:submenu>
                 <p:submenu label="Settings" >
-                    <p:menuitem value="Change My Password" action="#{webUserController.toChangeMyPassword()}"    ajax="false" />
-                    <p:menuitem value="Change My Details" action="#{webUserController.toChangeMyDetails()}"    ajax="false" />
+                    <p:menuitem value="Change My Password" action="#{webUserController.toChangeMyPassword()}" ajax="false" />
+                    <p:menuitem value="Change My Details" action="#{webUserController.toChangeMyDetails()}" ajax="false" />
+                    <p:menuitem value="Manage My API Keys" action="#{apiKeyController.toManageMyApiKeys()}" ajax="false" 
+                                ></p:menuitem>
                 </p:submenu>
 
                 <p:submenu label="Help" >
@@ -84,18 +89,16 @@
                 <f:facet name="options">
                     <p:inputText autocomplete="off"
                                  value="#{clientController.searchingId}"/>
-                    <p:commandButton ajax="false" 
+                    <p:commandButton ajax="false" value="Search"
                                      action="#{clientController.searchByAnyIdWithBasicData()}" 
-                                     icon="ui-icon-search" ></p:commandButton>
+                                     ></p:commandButton>
                     <p:spacer height="1" width="5" ></p:spacer>
                     <p:outputLabel value="|"></p:outputLabel>
                     <p:spacer height="1" width="5" ></p:spacer>
                     <p:commandButton action="#{webUserController.logOut()}" ajax="false"
                                      rendered="#{webUserController.loggedUser ne null}" value="#{webUserController.loggedUser.name} - Logout" />
 
-                    <p:commandButton action="#{webUserController.endAssumingRoles()}" ajax="false"
-                                     rendered="#{webUserController.loggedUser.assumedRole ne null}" 
-                                     value="Back as Admin" />
+
 
                 </f:facet>
             </p:menubar>
@@ -114,12 +117,17 @@
 
 
 
-                <p:submenu label="Analysis" 
+                <p:submenu label="Analysis*" disabled="true"
                            rendered="#{webUserController.hasPrivilege('Institution_Administration')}" >
                     <p:menuitem ajax="false" value="Queries" 
                                 action="#{queryComponentController.toQueryIndex()}"  />
                     <p:menuitem ajax="false" value="Reports" 
                                 action="#{reportController.toViewReports()}" ></p:menuitem>
+                    <p:submenu label="Reports" id="mnuNationalHospital"
+                               rendered="#{webUserController.loggedUser.webUserRoleLevel eq 'National_Me' or webUserController.loggedUser.webUserRoleLevel eq 'National' and false}" >
+                        <p:menuitem ajax="false" value="Counts" 
+                                    action="#{nationalReportController.toNationalReportsCounts()}"  />
+                    </p:submenu>
                     <p:menuitem ajax="false" value="Indicators" 
                                 action="#{indicatorController.toIndicatorIndex}" ></p:menuitem>
                 </p:submenu>

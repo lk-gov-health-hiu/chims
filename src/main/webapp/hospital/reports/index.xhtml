@@ -40,6 +40,10 @@
                                                      action="#{hospitalReportController.toVisitCounts()}"
                                                      ajax="false"></p:commandButton>
 
+                                     <p:commandButton value="Institution-vice Formsets"   style="width:20em;margin:auto;"
+                                                     action="#{reportController.toViewFormsetCountsByInstitution()}"
+                                                     ajax="false"></p:commandButton>
+                                    
                                     <p:commandButton value="Daily Registrations"  rendered="false"  style="width:20em;margin:auto;"
                                                      action="#{hospitalReportController.toViewDailyClinicsRegistrationCounts()}"
                                                      ajax="false"></p:commandButton>
@@ -64,6 +68,10 @@
 
                                     <p:commandButton value="Clinic Visits"   style="width:20em;margin:auto;"
                                                      action="#{hospitalReportController.toViewClinicVisits()}"
+                                                     ajax="false"></p:commandButton>
+                                    
+                                      <p:commandButton value="Form-sets"   style="width:20em;margin:auto;"
+                                                     action="#{reportController.toViewformsetList()}"
                                                      ajax="false"></p:commandButton>
 
                                     <p:commandButton value="Longitudinal Clinic Visits" rendered="false"   style="width:20em;margin:auto;"

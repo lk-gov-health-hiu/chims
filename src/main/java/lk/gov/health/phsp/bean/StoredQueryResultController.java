@@ -78,9 +78,9 @@ public class StoredQueryResultController implements Serializable {
     }
 
     public Long findStoredLongValue(QueryComponent qc, Date fromDate, Date toDate, List<Institution> institutions) {
-        // System.out.println("findStoredLongValue");
-        // System.out.println("fromDate = " + CommonController.dateTimeToString(fromDate));
-        // System.out.println("toDate = " + CommonController.dateTimeToString(toDate));
+        // //System.out.println("findStoredLongValue");
+        // //System.out.println("fromDate = " + CommonController.dateTimeToString(fromDate));
+        // //System.out.println("toDate = " + CommonController.dateTimeToString(toDate));
         Long c = 0l;
         Map<Long, Institution> mis = new HashMap<>();
         for (Institution institution : institutions) {
@@ -89,18 +89,18 @@ public class StoredQueryResultController implements Serializable {
         for (Institution institution : mis.values()) {
             StoredQueryResult s;
             s = findStoredQueryResult(qc, fromDate, toDate, institution);
-            // System.out.println("institution.getName() = " + institution.getName());
+            // //System.out.println("institution.getName() = " + institution.getName());
             if (s != null && s.getLongValue() != null) {
-                // System.out.println("s.getLongValue() = " + s.getLongValue());
+                // //System.out.println("s.getLongValue() = " + s.getLongValue());
                 c += s.getLongValue();
             }
         }
-        // System.out.println("c = " + c);
+        // //System.out.println("c = " + c);
         return c;
     }
 
     public Long findStoredLongValue(QueryComponent qc, Date fromDate, Date toDate, Institution institution, Replaceable re) {
-        System.out.println("findStoredLongValue");
+        //System.out.println("findStoredLongValue");
         StoredQueryResult s;
         s = findStoredQueryResult(qc, fromDate, toDate, institution);
         Long r;
@@ -117,15 +117,15 @@ public class StoredQueryResultController implements Serializable {
     }
 
     public Long findStoredLongValue(QueryComponent qc, Date fromDate, Date toDate, List<Institution> institutions, Replaceable re) {
-        System.out.println("findStoredLongValue");
-        System.out.println("qc = " + qc);
-        System.out.println("fromDate = " + fromDate);
-        System.out.println("toDate = " + toDate);
+        //System.out.println("findStoredLongValue");
+        //System.out.println("qc = " + qc);
+        //System.out.println("fromDate = " + fromDate);
+        //System.out.println("toDate = " + toDate);
         Long insSum = 0L;
         for (Institution i : institutions) {
-            System.out.println("i = " + i);
+            //System.out.println("i = " + i);
             Long ic = findStoredLongValue(qc, fromDate, toDate, i, re);
-            System.out.println("qc = " + qc.getName() + ", Ins = " + i.getName() + ", count = " + ic);
+            //System.out.println("qc = " + qc.getName() + ", Ins = " + i.getName() + ", count = " + ic);
             if (ic != null) {
                 insSum += ic;
             }
@@ -134,7 +134,7 @@ public class StoredQueryResultController implements Serializable {
     }
 
     public List<InstitutionDataQuery> findStoredQueryData(QueryComponent qc, Date fromDate, Date toDate, List<Institution> institutions, Replaceable re, Integer year, Integer month) {
-        System.out.println("findStoredQueryData");
+        //System.out.println("findStoredQueryData");
         List<InstitutionDataQuery> qds = new ArrayList<>();
         Long insSum = 0L;
         for (Institution i : institutions) {
@@ -145,7 +145,7 @@ public class StoredQueryResultController implements Serializable {
             q.setMonth(month);
             Long ic = findStoredLongValue(qc, fromDate, toDate, i, re);
             q.setValue(ic);
-//            // System.out.println("qc = " + qc.getName() + ", Ins = " + i.getName() + ", count = " + ic);
+//            // //System.out.println("qc = " + qc.getName() + ", Ins = " + i.getName() + ", count = " + ic);
             if (ic != null) {
                 insSum += ic;
             }
@@ -170,7 +170,7 @@ public class StoredQueryResultController implements Serializable {
     }
 
     public StoredQueryResult findStoredQueryResult(QueryComponent qc, Date fromDate, Date toDate, Institution institution) {
-        System.out.println("findStoredQueryResult");
+        //System.out.println("findStoredQueryResult");
         String j;
         Map m;
         m = new HashMap();
@@ -209,14 +209,14 @@ public class StoredQueryResultController implements Serializable {
 
     public void saveValue(QueryComponent qc, Date fromDate, Date toDate, Institution institution, Long value) {
         StoredQueryResult s;
-        System.out.println("SaveValue for Stored Query Result");
-        System.out.println("qc.getName() = " + qc.getName());
-        System.out.println("fromDate = " + fromDate);
-        System.out.println("toDate = " + toDate);
-        System.out.println("institution = " + institution);
-        System.out.println("value = " + value);
+        //System.out.println("SaveValue for Stored Query Result");
+        //System.out.println("qc.getName() = " + qc.getName());
+        //System.out.println("fromDate = " + fromDate);
+        //System.out.println("toDate = " + toDate);
+        //System.out.println("institution = " + institution);
+        //System.out.println("value = " + value);
         s = findStoredQueryResult(qc, fromDate, toDate, institution);
-        System.out.println("s = " + s);
+        //System.out.println("s = " + s);
         if (s == null) {
             s = new StoredQueryResult();
             s.setCreatedAt(new Date());
@@ -227,13 +227,13 @@ public class StoredQueryResultController implements Serializable {
             s.setQueryComponent(qc);
             s.setLongValue(value);
             facade.create(s);
-            System.out.println("saved as new");
-            System.out.println("s = " + s);
-            System.out.println("s.getLongValue() = " + s.getLongValue());
+            //System.out.println("saved as new");
+            //System.out.println("s = " + s);
+            //System.out.println("s.getLongValue() = " + s.getLongValue());
             facade.edit(s);
         } else {
-            System.out.println("s = " + s);
-            System.out.println("updating old");
+            //System.out.println("s = " + s);
+            //System.out.println("updating old");
             s.setLongValue(value);
             facade.edit(s);
         }
@@ -242,14 +242,14 @@ public class StoredQueryResultController implements Serializable {
 
     public void saveValue(QueryComponent qc, Date fromDate, Date toDate, Institution institution, Long value, Double blVal) {
         StoredQueryResult s;
-        System.out.println("SaveValue for Stored Query Result");
-        System.out.println("qc.getName() = " + qc.getName());
-        System.out.println("fromDate = " + fromDate);
-        System.out.println("toDate = " + toDate);
-        System.out.println("institution = " + institution);
-        System.out.println("value = " + value);
+        //System.out.println("SaveValue for Stored Query Result");
+        //System.out.println("qc.getName() = " + qc.getName());
+        //System.out.println("fromDate = " + fromDate);
+        //System.out.println("toDate = " + toDate);
+        //System.out.println("institution = " + institution);
+        //System.out.println("value = " + value);
         s = findStoredQueryResult(qc, fromDate, toDate, institution);
-        System.out.println("s = " + s);
+        //System.out.println("s = " + s);
         if (s == null) {
             s = new StoredQueryResult();
             s.setCreatedAt(new Date());
@@ -261,13 +261,13 @@ public class StoredQueryResultController implements Serializable {
             s.setLongValue(value);
             s.setDoubleValue(blVal);
             facade.create(s);
-            System.out.println("saved as new");
-            System.out.println("s = " + s);
-            System.out.println("s.getLongValue() = " + s.getLongValue());
+            //System.out.println("saved as new");
+            //System.out.println("s = " + s);
+            //System.out.println("s.getLongValue() = " + s.getLongValue());
             facade.edit(s);
         } else {
-            System.out.println("s = " + s);
-            System.out.println("updating old");
+            //System.out.println("s = " + s);
+            //System.out.println("updating old");
             s.setLongValue(value);
             facade.edit(s);
         }

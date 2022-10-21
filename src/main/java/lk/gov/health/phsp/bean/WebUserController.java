@@ -100,6 +100,8 @@ public class WebUserController implements Serializable {
     WebUserApplicationController webUserApplicationController;
     @Inject
     RelationshipController relationshipController;
+    @Inject
+    HospitalDashboardController hospitalDashboardController;
     /*
     Variables
      */
@@ -107,7 +109,9 @@ public class WebUserController implements Serializable {
     private List<Upload> companyUploads;
 
     private List<Institution> loggableInstitutions;
+    private List<Institution> loggableClinics;
     private List<Institution> loggablePmcis;
+     private List<Institution> loggableHospitals;
     private List<Institution> loggableProcedureRooms;
 
     private List<Area> loggableGnAreas;
@@ -276,6 +280,27 @@ public class WebUserController implements Serializable {
         ins.add(loggedUser.getInstitution());
         ins.addAll(institutionApplicationController.findChildrenInstitutions(loggedUser.getInstitution()));
         return ins;
+    }
+    
+    public List<Institution> findAutherizedClinics(InstitutionType t) {
+        List<Institution> ins = new ArrayList<>();
+        if (loggedUser == null) {
+            return ins;
+        }
+        if (loggedUser.getInstitution() == null) {
+            return ins;
+        }
+        ins.add(loggedUser.getInstitution());
+        ins.addAll(institutionApplicationController.findChildrenInstitutions(loggedUser.getInstitution()));
+        List<Institution> rins = new ArrayList<>();
+        for(Institution i:ins){
+            if(i.getInstitutionType().equals(t)){
+                rins.add(i);
+            }
+        }
+        
+        return rins;
+        
     }
 
     public List<Institution> findAutherizedPmcis() {
@@ -691,8 +716,11 @@ public class WebUserController implements Serializable {
 //    }
 //    
     public String login() {
-        System.out.println("Login");
+        //System.out.println("Login");
         loggableInstitutions = null;
+        loggableClinics = null;
+        loggableHospitals=null;
+        
         loggablePmcis = null;
         loggableGnAreas = null;
         institutionController.setMyClinics(null);
@@ -701,7 +729,7 @@ public class WebUserController implements Serializable {
             return "";
         }
         userName = userName.toLowerCase().trim();
-        System.out.println("userName = " + userName);
+        //System.out.println("userName = " + userName);
         if (webUserApplicationController.userBlocked(userName)) {
             JsfUtil.addErrorMessage("This user is blocked due to multiple failed login attempts. Please contact the hotline.");
             return "";
@@ -714,7 +742,7 @@ public class WebUserController implements Serializable {
             JsfUtil.addErrorMessage("Please enter the Password");
             return "";
         }
-        System.out.println("password = " + password);
+        //System.out.println("password = " + password);
         if (!checkLogin()) {
             JsfUtil.addErrorMessage("Username/Password Error. Please retry.");
             userTransactionController.recordTransaction("Failed Login Attempt", userName);
@@ -732,35 +760,50 @@ public class WebUserController implements Serializable {
             return "/webUser/change_password_at_login";
         } else {
             passwordChangingUser = null;
+            prepareDashboards();
             JsfUtil.addSuccessMessage("Successfully Logged");
             return "/index";
         }
     }
 
+    private void prepareDashboards(){
+        switch(getLoggedUser().getWebUserRoleLevel()){
+            case Hospital:
+            case Provincial:
+            case Regional:
+                hospitalDashboardController.prepareDashboard();
+                break;
+            case National:
+            case National_Me:
+            case Client:
+            case Moh:
+        }
+    }
+    
     private boolean checkLogin() {
-         System.out.println("checkLogin");
+         //System.out.println("checkLogin");
         if (getFacade() == null) {
             JsfUtil.addErrorMessage("Server Error");
             return false;
         }
 
         String temSQL;
-        temSQL = "SELECT u FROM WebUser u WHERE lower(u.name)=:userName and u.retired =:ret";
+        temSQL = "SELECT u FROM WebUser u WHERE u.name=:userName and u.retired =:ret";
         Map m = new HashMap();
         m.put("userName", userName.trim().toLowerCase());
         m.put("ret", false);
-        System.out.println("m = " + m);
-        System.out.println("temSQL = " + temSQL);
+        //System.out.println("m = " + m);
+        //System.out.println("temSQL = " + temSQL);
         loggedUser = getFacade().findFirstByJpql(temSQL, m);
-        System.out.println("loggedUser = " + loggedUser);
+        //System.out.println("loggedUser = " + loggedUser);
         if (loggedUser == null) {
             return false;
         }
         if (commonController.matchPassword(password, loggedUser.getWebUserPassword())) {
-            System.out.println("Password matching" );
+            //System.out.println("Password matching" );
             return true;
         } else {
-            System.out.println("Password mismatch ");
+            //System.out.println("Password mismatch ");
             loggedUser = null;
             return false;
         }
@@ -773,7 +816,7 @@ public class WebUserController implements Serializable {
 
     public List<WebUser> completeUsers(String qry) {
         String temSQL;
-        temSQL = "SELECT u FROM WebUser u WHERE lower(u.name) like :userName and u.retired =:ret";
+        temSQL = "SELECT u FROM WebUser u WHERE u.name like :userName and u.retired =:ret";
         Map m = new HashMap();
         m.put("userName", "%" + qry.trim().toLowerCase() + "%");
         m.put("ret", false);
@@ -1160,7 +1203,7 @@ public class WebUserController implements Serializable {
         if (un == null) {
             return false;
         }
-        String j = "select u from WebUser u where lower(u.name)=:un order by u.id desc";
+        String j = "select u from WebUser u where u.name=:un order by u.id desc";
         Map m = new HashMap();
         m.put("un", un.toLowerCase());
         WebUser u = getFacade().findFirstByJpql(j, m);
@@ -1878,6 +1921,21 @@ public class WebUserController implements Serializable {
         }
         return loggableInstitutions;
     }
+    
+    public List<Institution> getLoggableClinics() {
+        if (loggableClinics == null) {
+            loggableClinics = findAutherizedClinics(InstitutionType.Clinic);
+        }
+        return loggableClinics;
+    }
+    
+    public List<Institution> getLoggableHospitals() {
+        if (loggableHospitals == null) {
+            loggableHospitals = findAutherizedClinics(InstitutionType.Base_Hospital);
+        }
+        return loggableHospitals;
+    }
+    
 
     public List<Institution> getLoggableProcedureRooms() {
         if (loggableProcedureRooms == null) {

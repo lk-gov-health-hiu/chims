@@ -23,6 +23,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
 import javax.inject.Inject;
+import lk.gov.health.phsp.ejb.DataFormBean;
 import lk.gov.health.phsp.entity.ApiRequest;
 import lk.gov.health.phsp.entity.Client;
 import lk.gov.health.phsp.entity.ClientEncounterComponentForm;
@@ -66,6 +67,8 @@ public class ClientEncounterComponentFormSetController implements Serializable {
     private PersonFacade personFacade;
     @EJB
     private EncounterFacade encounterFacade;
+    @EJB
+    DataFormBean dataFormBean;
 
 // </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="Controllers">
@@ -181,7 +184,7 @@ public class ClientEncounterComponentFormSetController implements Serializable {
         selected.setRetired(true);
         selected.setRetiredAt(new Date());
         selected.setRetiredBy(webUserController.getLoggedUser());
-        save(selected);
+        saveCfs(selected);
 
         Encounter e = selected.getEncounter();
         if (e != null) {
@@ -271,85 +274,16 @@ public class ClientEncounterComponentFormSetController implements Serializable {
             userTransactionController.recordTransaction("Nothing to Complete in formset");
             return "";
         }
-        save(selected);
-        executreCompleteEvents(dataFormset);
         selected.setCompleted(true);
         selected.setCompletedAt(new Date());
         selected.setCompletedBy(webUserController.getLoggedUser());
-        getFacade().edit(selected);
-        loadOldNavigateToDataEntry(selected);
-//        executePostCompletionStrategies(selected);
+        saveCfs(selected);
+        dataFormBean.executeCompleteEvents(dataFormset, selected, getWebUserController().getLoggedUser());
+//        loadOldNavigateToDataEntry(selected);
         formEditable = false;
         JsfUtil.addSuccessMessage("Completed");
         userTransactionController.recordTransaction("Formset Completed");
         return toViewFormset();
-    }
-
-    public void executreCompleteEvents(DataFormset tSet) {
-        if (tSet.getForms() == null) {
-            return;
-        }
-        for (DataForm tForm : tSet.getForms()) {
-            if (tForm.getItems() == null) {
-                continue;
-            }
-            for (DataItem tItem : tForm.getItems()) {
-                if (tItem.getDi() == null || tItem.getDi().getSelectionDataType() == null) {
-                    System.err.println("Null in (tItem.getDi() == null || tItem.getDi().getSelectionDataType())");
-                    continue;
-                }
-
-                if (tItem.getMultipleEntries()) {
-                    if (tItem.getDi().getSelectionDataType() == SelectionDataType.Procedure_Request) {
-                        for (DataItem ttItem : tItem.getAddedItems()) {
-                            if (ttItem.getCi() == null) {
-                                System.err.println("ttItem.getCi() is null");
-                                continue;
-                            }
-                            if (ttItem.getCi().getItemValue() == null) {
-                                System.err.println("ttItem.getCi().getItemValue() is null");
-                                continue;
-                            }
-                            ApiRequest r = new ApiRequest();
-                            r.setRequestCeci(ttItem.getCi());
-                            r.setCreatedAt(new Date());
-                            r.setCreatedBy(webUserController.getLoggedUser());
-                            r.setEncounter(tSet.getEfs().getEncounter());
-                            r.setName("procedure_request");
-                            apiRequestApplicationController.saveApiRequests(r);
-                        }
-                    } else if (tItem.getDi().getSelectionDataType() == SelectionDataType.Prescreption_Request) {
-                        ApiRequest rfs = new ApiRequest();
-                        rfs.setRequestCefs(selected);
-                        rfs.setCreatedAt(new Date());
-                        rfs.setCreatedBy(webUserController.getLoggedUser());
-                        rfs.setEncounter(tSet.getEfs().getEncounter());
-                        rfs.setName("prescription_request");
-                        apiRequestApplicationController.saveApiRequests(rfs);
-                        for (DataItem ttItem : tItem.getAddedItems()) {
-                            if (ttItem.getCi() == null) {
-                                System.err.println("ttItem.getCi() is null");
-                                continue;
-                            }
-                            if (ttItem.getCi().getPrescriptionValue() == null) {
-                                System.err.println("ttItem.getCi().getPrescriptionValue() is null");
-                                continue;
-                            }
-                            ApiRequest r = new ApiRequest();
-                            r.setRequestCeci(ttItem.getCi());
-                            r.setCreatedAt(new Date());
-                            r.setCreatedBy(webUserController.getLoggedUser());
-                            r.setEncounter(tSet.getEfs().getEncounter());
-                            r.setName("prescription_request");
-                            r.setParent(rfs);
-                            apiRequestApplicationController.saveApiRequests(r);
-                        }
-                    }
-                }
-
-            }
-        }
-
     }
 
     public String reverseCompleteFormset() {
@@ -358,7 +292,7 @@ public class ClientEncounterComponentFormSetController implements Serializable {
             userTransactionController.recordTransaction("Nothing to Complete in formset");
             return "";
         }
-        save(selected);
+        saveCfs(selected);
         selected.setCompleted(false);
         selected.setCompletedAt(new Date());
         selected.setCompletedBy(webUserController.getLoggedUser());
@@ -518,22 +452,21 @@ public class ClientEncounterComponentFormSetController implements Serializable {
     }
 
     public void save() {
-        save(selected);
+        saveCfs(selected);
     }
 
-    public void save(ClientEncounterComponentFormSet s) {
+    public void saveCfs(ClientEncounterComponentFormSet s) {
         if (s == null) {
             return;
         }
         if (s.getId() == null) {
             s.setCreatedAt(new Date());
             s.setCreatedBy(webUserController.getLoggedUser());
-            getFacade().create(s);
         } else {
             s.setLastEditBy(webUserController.getLoggedUser());
             s.setLastEditeAt(new Date());
-            getFacade().edit(s);
         }
+        dataFormBean.saveCfs(s);
     }
 
     public List<ClientEncounterComponentFormSet> fillLastFiveCompletedEncountersFormSets(String type) {
@@ -1007,13 +940,13 @@ public class ClientEncounterComponentFormSetController implements Serializable {
     }
 
     public void loadOldNavigateToDataEntry(ClientEncounterComponentFormSet cfs) {
-         System.out.println("loadOldNavigateToDataEntry");
+        //System.out.println("loadOldNavigateToDataEntry");
         if (cfs == null) {
             return;
         }
-        System.out.println("cfs = " + cfs.getId());
+        //System.out.println("cfs = " + cfs.getId());
         DesignComponentFormSet dfs = cfs.getReferanceDesignComponentFormSet();
-        System.out.println("dfs = " + dfs.getId());
+        //System.out.println("dfs = " + dfs.getId());
 
         DataFormset fs = new DataFormset();
 
@@ -1027,7 +960,7 @@ public class ClientEncounterComponentFormSetController implements Serializable {
         int formCounter = 0;
 
         for (DesignComponentForm df : dfList) {
-            // System.out.println("df = " + df.getName());
+            // //System.out.println("df = " + df.getName());
 
             boolean skipThisForm = false;
             if (df.getComponentSex() == ComponentSex.For_Females && clientController.getSelected().getPerson().getSex().getCode().equalsIgnoreCase("sex_male")) {
@@ -1037,7 +970,7 @@ public class ClientEncounterComponentFormSetController implements Serializable {
                 skipThisForm = true;
             }
 
-            // System.out.println("skipThisForm = " + skipThisForm);
+            // //System.out.println("skipThisForm = " + skipThisForm);
             if (!skipThisForm) {
                 formCounter++;
                 String j = "select cf "
@@ -1048,11 +981,11 @@ public class ClientEncounterComponentFormSetController implements Serializable {
                 Map m = new HashMap();
                 m.put("rf", df);
                 m.put("cfs", cfs);
-// // System.out.println("df = " + df.getId());
+// // //System.out.println("df = " + df.getId());
 
                 ClientEncounterComponentForm cf = clientEncounterComponentFormController.getClientEncounterComponentForm(j, m);
 
-                // System.out.println("cf = " + cf);
+                // //System.out.println("cf = " + cf);
                 if (cf == null) {
                     cf = new ClientEncounterComponentForm();
 
@@ -1082,7 +1015,7 @@ public class ClientEncounterComponentFormSetController implements Serializable {
 
                 for (DesignComponentFormItem dis : diList) {
 
-                    // System.out.println("dis = " + dis.getName());
+                    // //System.out.println("dis = " + dis.getName());
                     boolean disSkipThisItem = false;
                     if (dis.getComponentSex() == ComponentSex.For_Females && clientController.getSelected().getPerson().getSex().getCode().equalsIgnoreCase("sex_male")) {
                         disSkipThisItem = true;
@@ -1091,12 +1024,12 @@ public class ClientEncounterComponentFormSetController implements Serializable {
                         disSkipThisItem = true;
                     }
 
-                    // System.out.println("disSkipThisItem = " + disSkipThisItem);
+                    // //System.out.println("disSkipThisItem = " + disSkipThisItem);
                     if (!disSkipThisItem) {
 
                         if (dis.isMultipleEntiesPerForm()) {
 
-                            // System.out.println("dis.isMultipleEntiesPerForm() = " + dis.isMultipleEntiesPerForm());
+                            // //System.out.println("dis.isMultipleEntiesPerForm() = " + dis.isMultipleEntiesPerForm());
                             j = "Select ci "
                                     + " from ClientEncounterComponentItem ci "
                                     + " where ci.retired=:ret "
@@ -1107,10 +1040,10 @@ public class ClientEncounterComponentFormSetController implements Serializable {
                             m.put("ret", false);
                             m.put("cf", cf);
                             m.put("dis", dis);
-                            // System.out.println("cf = " + cf.getId());
-                            // System.out.println("dis = " + dis.getId());
+                            // //System.out.println("cf = " + cf.getId());
+                            // //System.out.println("dis = " + dis.getId());
                             List<ClientEncounterComponentItem> cis = clientEncounterComponentItemController.getItems(j, m);
-                            // System.out.println("cis = " + cis);
+                            // //System.out.println("cis = " + cis);
 
                             itemCounter++;
                             ClientEncounterComponentItem ci = new ClientEncounterComponentItem();
@@ -1168,11 +1101,11 @@ public class ClientEncounterComponentFormSetController implements Serializable {
                             m.put("ret", false);
                             m.put("cf", cf);
                             m.put("dis", dis);
-                            // System.out.println("cf = " + cf.getId());
-                            // System.out.println("dis = " + dis.getId());
+                            // //System.out.println("cf = " + cf.getId());
+                            // //System.out.println("dis = " + dis.getId());
                             ClientEncounterComponentItem ci;
                             ci = clientEncounterComponentItemController.getItem(j, m);
-                            // System.out.println("ci = " + ci);
+                            // //System.out.println("ci = " + ci);
                             if (ci != null) {
                                 DataItem i = new DataItem();
                                 i.setMultipleEntries(false);

@@ -47,14 +47,14 @@
                             <div class="col-4" ></div>
                             <div class="col-4 d-flex justify-content-start m-2 p-2" >
                                 <h:outputLabel for="pwd" value="Password" class="form w-25"></h:outputLabel>
-                                <p:password id="pwd" required="true" 
+                                <p:password id="pwd" required="true" toggleMask="true"
                                             requiredMessage="Enter a Password"
                                             autocomplete="off" value="#{webUserController.password}" 
-                                            class="m-auto form form-control w-75"></p:password>
+                                            class="form form-control w-100"></p:password>
                             </div>
                             <div class="col-4" ></div>
                         </div>
-                        <h:panelGroup rendered="true" >
+                        <h:panelGroup rendered="false" >
                             <div class="row" >
                                 <div class="col-4" ></div>
                                 <div class="col-4 d-flex justify-content-start m-2 p-2" >

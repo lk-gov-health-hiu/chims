@@ -18,32 +18,32 @@
         <h:outputStylesheet library="css" name="tem1.css"/>
     </h:head>
 
-    <h:body >
+    <h:body class="m-0 p-0">
         <ui:insert name="free">
         </ui:insert>
         <p:growl   >
         </p:growl>
 
-        <h:panelGroup rendered="#{webUserController.ipBlocked}" >
+        <h:panelGroup rendered="false" >
             <div class="container-fluid" >
                 <div class="row" >
                     <div class="col-12" >
-                        <h1>Your IP is blocked.</h1>
+                        <h1>System is upgrading. Will be back at 2am. Sorry for the inconviniance.</h1>
                     </div>
                 </div>
                 <div class="row" >
                     <div class="col-12" >
-                        <h2>Please contact the hotline to unblock it.</h2>
+                        <h2>Please check the data you entered for the last 2 hours. THey may be missing</h2>
                     </div>
                 </div>
+                #{webUserController.loggedUser.name}
             </div>
-
         </h:panelGroup>
 
-        <h:panelGroup rendered="#{not webUserController.ipBlocked}" >
+        <h:panelGroup rendered="#{webUserController.loggedUser.name eq 'buddhika' or true}" >
 
             <div class="row">
-                <div class="col-12" >
+                <div class="col-md-12" >
                     <h:panelGroup rendered="#{webUserController.loggedUser ne null}">
                         <ez:menu/>
                     </h:panelGroup>
@@ -51,7 +51,7 @@
             </div>
 
             <div class="row" >
-                <div class="col-12" >
+                <div class="col-md-12" >
                     <h:panelGroup rendered="#{webUserController.loggedUser ne null}">
                         <ui:insert name="content">
                             Contents
@@ -70,7 +70,7 @@
 
 
             <div class="row">
-                <div class="col-12" >
+                <div class="col-md-12" >
                     <h:panelGroup rendered="#{webUserController.loggedUser eq null and webUserController.passwordChangingUser ne null}">
                         <ui:insert name="nonusercontent">
                         </ui:insert>
@@ -79,7 +79,7 @@
             </div>
 
             <div class="row">
-                <div class="col" >
+                <div class="col-md-12" >
                     <ui:insert name="bottom">
                         <ez:footer/>
                     </ui:insert>

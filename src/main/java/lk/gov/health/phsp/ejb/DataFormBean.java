@@ -41,6 +41,7 @@ import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 import lk.gov.health.phsp.bean.CommonController;
 import lk.gov.health.phsp.bean.util.JsfUtil;
+import lk.gov.health.phsp.entity.ApiRequest;
 import lk.gov.health.phsp.entity.Client;
 import lk.gov.health.phsp.entity.ClientEncounterComponentFormSet;
 import lk.gov.health.phsp.entity.ClientEncounterComponentItem;
@@ -63,6 +64,7 @@ import lk.gov.health.phsp.enums.QueryCriteriaMatchType;
 import lk.gov.health.phsp.enums.QueryLevel;
 import lk.gov.health.phsp.enums.QueryType;
 import lk.gov.health.phsp.enums.SelectionDataType;
+import lk.gov.health.phsp.facade.ApiRequestFacade;
 import lk.gov.health.phsp.facade.ClientEncounterComponentFormSetFacade;
 import lk.gov.health.phsp.facade.ClientEncounterComponentItemFacade;
 import lk.gov.health.phsp.facade.ClientFacade;
@@ -82,20 +84,23 @@ import lk.gov.health.phsp.pojcs.InstitutionYearMonthCompleted;
 import lk.gov.health.phsp.pojcs.Jpq;
 import lk.gov.health.phsp.pojcs.QueryWithCriteria;
 import lk.gov.health.phsp.pojcs.Replaceable;
+import lk.gov.health.phsp.pojcs.dataentry.DataForm;
+import lk.gov.health.phsp.pojcs.dataentry.DataFormset;
+import lk.gov.health.phsp.pojcs.dataentry.DataItem;
 
 /**
  *
  * @author buddhika
  */
 @Stateless
-public class AnalysisBean {
+public class DataFormBean {
 
     @EJB
     InstitutionFacade institutionFacade;
     @EJB
     QueryComponentFacade queryComponentFacade;
     @EJB
-     ClientEncounterComponentItemFacade clientEncounterComponentItemFacade;
+    ClientEncounterComponentItemFacade clientEncounterComponentItemFacade;
     @EJB
     EncounterFacade encounterFacade;
     @EJB
@@ -116,6 +121,8 @@ public class AnalysisBean {
     ClientFacade clientFacade;
     @EJB
     StoredRequestFacade storedRequestFacade;
+    @EJB
+    private ApiRequestFacade apiRequestFacade;
 
     static List<QueryComponent> queryComponents;
     static int year;
@@ -124,10 +131,6 @@ public class AnalysisBean {
 
     static List<InstitutionYearMonthCompleted> iymcs;
 
-//    @Schedule(dayOfWeek = "Mon-Fri", month = "*", hour = "9-17", dayOfMonth = "*", year = "*", minute = "*", second = "0", persistent = false)
-//    public void myTimer() {
-//        // //System.out.println("Timer event: " + new Date());
-//    }
     @Schedule(hour = "19-05", minute = "*/5", second = "0", persistent = false)
     public void startProcessingCounts() {
 
@@ -138,17 +141,101 @@ public class AnalysisBean {
 
     }
 
-    @Schedule(hour = "21-5", minute = "*/2", second = "0", persistent = false)
-    public void processCounts() {
-        // //System.out.println("processCounts Commented");
-//        getIymcs();
-//        InstitutionYearMonthCompleted next = selectNextIymcs();
-//        // //System.out.println("next = " + next);
-//
-//        if (next != null) {
-//            // //System.out.println("Next INS = " + next.getInstitution().getName());
-//            runClinicCounts(next);
-//        }
+    @Asynchronous
+    public void saveCi(ClientEncounterComponentItem ci) {
+        if (ci == null) {
+            return;
+        }
+        if (ci.getId() == null) {
+            clientEncounterComponentItemFacade.create(ci);
+        } else {
+            clientEncounterComponentItemFacade.edit(ci);
+        }
+    }
+    
+    @Asynchronous
+    public void saveCfs(ClientEncounterComponentFormSet cfs) {
+        if (cfs == null) {
+            return;
+        }
+        if (cfs.getId() == null) {
+            clientEncounterComponentFormSetFacade.create(cfs);
+        } else {
+            clientEncounterComponentFormSetFacade.edit(cfs);
+        }
+    }
+
+    @Asynchronous
+    public void executeCompleteEvents(DataFormset tSet, ClientEncounterComponentFormSet fs, WebUser wu) {
+        boolean tmp = true;
+        if(tmp){
+            return;
+        }
+        
+        if (tSet.getForms() == null) {
+            return;
+        }
+        for (DataForm tForm : tSet.getForms()) {
+            if (tForm.getItems() == null) {
+                continue;
+            }
+            for (DataItem tItem : tForm.getItems()) {
+                if (tItem.getDi() == null || tItem.getDi().getSelectionDataType() == null) {
+                    System.err.println("Null in (tItem.getDi() == null || tItem.getDi().getSelectionDataType())");
+                    continue;
+                }
+
+                if (tItem.getMultipleEntries()) {
+                    if (tItem.getDi().getSelectionDataType() == SelectionDataType.Procedure_Request) {
+                        for (DataItem ttItem : tItem.getAddedItems()) {
+                            if (ttItem.getCi() == null) {
+                                System.err.println("ttItem.getCi() is null");
+                                continue;
+                            }
+                            if (ttItem.getCi().getItemValue() == null) {
+                                System.err.println("ttItem.getCi().getItemValue() is null");
+                                continue;
+                            }
+                            ApiRequest r = new ApiRequest();
+                            r.setRequestCeci(ttItem.getCi());
+                            r.setCreatedAt(new Date());
+                            r.setCreatedBy(wu);
+                            r.setEncounter(tSet.getEfs().getEncounter());
+                            r.setName("procedure_request");
+                            apiRequestFacade.create(r);
+                        }
+                    } else if (tItem.getDi().getSelectionDataType() == SelectionDataType.Prescreption_Request) {
+                        ApiRequest rfs = new ApiRequest();
+                        rfs.setRequestCefs(fs);
+                        rfs.setCreatedAt(new Date());
+                        rfs.setCreatedBy(wu);
+                        rfs.setEncounter(tSet.getEfs().getEncounter());
+                        rfs.setName("prescription_request");
+                        apiRequestFacade.create(rfs);
+                        for (DataItem ttItem : tItem.getAddedItems()) {
+                            if (ttItem.getCi() == null) {
+                                System.err.println("ttItem.getCi() is null");
+                                continue;
+                            }
+                            if (ttItem.getCi().getPrescriptionValue() == null) {
+                                System.err.println("ttItem.getCi().getPrescriptionValue() is null");
+                                continue;
+                            }
+                            ApiRequest r = new ApiRequest();
+                            r.setRequestCeci(ttItem.getCi());
+                            r.setCreatedAt(new Date());
+                            r.setCreatedBy(wu);
+                            r.setEncounter(tSet.getEfs().getEncounter());
+                            r.setName("prescription_request");
+                            r.setParent(rfs);
+                            apiRequestFacade.create(r);
+                        }
+                    }
+                }
+
+            }
+        }
+
     }
 
     @Asynchronous
@@ -557,7 +644,6 @@ public class AnalysisBean {
             String visitType = "";
 
             //System.out.println("ce.getRemainigEncounters() = " + ce.getRemainigEncounters());
-
             for (Encounter e : ce.getRemainigEncounters().values()) {
                 dates += CommonController.dateTimeToString(e.getEncounterDate()) + "\n";
             }
@@ -873,7 +959,6 @@ public class AnalysisBean {
             String visitType = "";
 
             //System.out.println("ce.getRemainigEncounters() = " + ce.getRemainigEncounters());
-
             int encounterNo = 1;
             for (Encounter e : ce.getRemainigEncounters().values()) {
                 ReportCell vdCell = new ReportCell();
@@ -1362,7 +1447,6 @@ public class AnalysisBean {
         // //System.out.println("iymc.getInstitution() = " + iymc.getInstitution().getName());
         // //System.out.println("fromDate = " + fromDate);
         // //System.out.println("toDate = " + toDate);
-
         List<QueryWithCriteria> qs = new ArrayList<>();
         List<EncounterWithComponents> encountersWithComponents;
 
@@ -1476,17 +1560,18 @@ public class AnalysisBean {
         return cs;
     }
 
-     private  List<ClientEncounterComponentItem> findClientEncounterComponentItems(Long endId) {
-         try{
-        String j;
-        Map m;
-        m = new HashMap();
-        j = "select f from ClientEncounterComponentItem f "
-                + " where f.retired=false "
-                + " and f.encounter.id=:eid";
-        m.put("eid", endId);
-        List<ClientEncounterComponentItem> ts = clientEncounterComponentItemFacade.findByJpql(j, m);
-        return ts;}catch(Exception e){
+    private List<ClientEncounterComponentItem> findClientEncounterComponentItems(Long endId) {
+        try {
+            String j;
+            Map m;
+            m = new HashMap();
+            j = "select f from ClientEncounterComponentItem f "
+                    + " where f.retired=false "
+                    + " and f.encounter.id=:eid";
+            m.put("eid", endId);
+            List<ClientEncounterComponentItem> ts = clientEncounterComponentItemFacade.findByJpql(j, m);
+            return ts;
+        } catch (Exception e) {
             return null;
         }
     }
@@ -1511,9 +1596,9 @@ public class AnalysisBean {
                 }
             }
         }
-        try{
+        try {
             output.sort(Comparator.comparing(QueryComponent::getOrderNo));
-        }catch(Exception e){
+        } catch (Exception e) {
             //System.out.println("e = " + e);
         }
         return output;
@@ -1534,7 +1619,7 @@ public class AnalysisBean {
         }
         return queryComponents;
     }
-    
+
     public List<QueryComponent> fillIndicators() {
         List<QueryComponent> tqcs = getQueryComponents();
         List<QueryComponent> nqs = new ArrayList<>();
@@ -2057,65 +2142,63 @@ public class AnalysisBean {
                 + " order by s.id desc";
         return storedQueryResultFacade.findFirstByJpql(j, m);
     }
-    
+
     @Asynchronous
     public void runClinicCountsForRequests(QueryComponent tQc,
             Date fromDate,
             Date toDate,
             List<Institution> inss) {
-        
+
         //System.out.println("runClinicCountsForRequests");
         //System.out.println("inss = " + inss.size());
-        
-        for(Institution tIns:inss){
+        for (Institution tIns : inss) {
             //System.out.println("tIns = " + tIns);
-        if (tIns.getInstitutionType() == null) {
-            JsfUtil.addErrorMessage("No Type for the institution");
-            return;
-        }
-        if (tIns.getInstitutionType() != InstitutionType.Clinic) {
-            JsfUtil.addErrorMessage("Selected institution is NOT a HLC?");
-            return;
-        }
-        Jpq j = new Jpq();
-        
-        List<QueryWithCriteria> qs = new ArrayList<>();
-        List<EncounterWithComponents> encountersWithComponents;
+            if (tIns.getInstitutionType() == null) {
+                JsfUtil.addErrorMessage("No Type for the institution");
+                return;
+            }
+            if (tIns.getInstitutionType() != InstitutionType.Clinic) {
+                JsfUtil.addErrorMessage("Selected institution is NOT a HLC?");
+                return;
+            }
+            Jpq j = new Jpq();
 
-        List<Long> encounterIds = findEncounterIds(fromDate,
-                toDate,
-                tIns);
+            List<QueryWithCriteria> qs = new ArrayList<>();
+            List<EncounterWithComponents> encountersWithComponents;
 
-        encountersWithComponents = findEncountersWithComponents(encounterIds);
-        if (encountersWithComponents == null) {
-            continue;
-        }
+            List<Long> encounterIds = findEncounterIds(fromDate,
+                    toDate,
+                    tIns);
 
-        QueryWithCriteria qwc = new QueryWithCriteria();
-        qwc.setQuery(tQc);
-        qwc.setCriteria(findCriteriaForQueryComponent(tQc.getCode()));
+            encountersWithComponents = findEncountersWithComponents(encounterIds);
+            if (encountersWithComponents == null) {
+                continue;
+            }
 
-        Long value = calculateIndividualQueryResult(encountersWithComponents, qwc);
-        j.setMessage("Clinic : " + tIns.getName() + "\n");
-        j.setMessage(j.getMessage() + "From : " + CommonController.formatDate(fromDate) + "\n");
-        j.setMessage(j.getMessage() + "To : " + CommonController.formatDate(toDate) + "\n");
-        j.setMessage(j.getMessage() + "Number of Encounters : " + encountersWithComponents.size() + "\n");
-        j.setMessage(j.getMessage() + "Count : " + qwc.getQuery().getName() + "\n");
-        if (value != null) {
-            saveValue(qwc.getQuery(), fromDate, toDate, tIns, value);
-            j.setMessage(j.getMessage() + "Result : " + value + "\n");
-        }else{
-            j.setMessage(j.getMessage() + "Result : No Result\n");
-        }
+            QueryWithCriteria qwc = new QueryWithCriteria();
+            qwc.setQuery(tQc);
+            qwc.setCriteria(findCriteriaForQueryComponent(tQc.getCode()));
+
+            Long value = calculateIndividualQueryResult(encountersWithComponents, qwc);
+            j.setMessage("Clinic : " + tIns.getName() + "\n");
+            j.setMessage(j.getMessage() + "From : " + CommonController.formatDate(fromDate) + "\n");
+            j.setMessage(j.getMessage() + "To : " + CommonController.formatDate(toDate) + "\n");
+            j.setMessage(j.getMessage() + "Number of Encounters : " + encountersWithComponents.size() + "\n");
+            j.setMessage(j.getMessage() + "Count : " + qwc.getQuery().getName() + "\n");
+            if (value != null) {
+                saveValue(qwc.getQuery(), fromDate, toDate, tIns, value);
+                j.setMessage(j.getMessage() + "Result : " + value + "\n");
+            } else {
+                j.setMessage(j.getMessage() + "Result : No Result\n");
+            }
             //System.out.println("j.getErrorMessage() = " + j.getErrorMessage());
             //System.out.println("j.getErrorMessage() = " + j.getMessage());
 //        message = CommonController.stringToHtml(j.getErrorMessage());
 //        result = CommonController.stringToHtml(j.getMessage());
-        
+
         }
     }
-    
-    
+
     //    @Schedule(dayOfWeek = "Mon-Fri", month = "*", hour = "9-17", dayOfMonth = "*", year = "*", minute = "*", second = "0", persistent = false)
 //    public void myTimer() {
 //        // //System.out.println("Timer event: " + new Date());
@@ -2128,16 +2211,18 @@ public class AnalysisBean {
                 + " from StoredRequest s "
                 + " where s.pending=:pen";
         m.put("pen", true);
-        
-        StoredRequest request = storedRequestFacade.findFirstByJpql(j, m) ;
-        
-        if(request==null) return;
-        
+
+        StoredRequest request = storedRequestFacade.findFirstByJpql(j, m);
+
+        if (request == null) {
+            return;
+        }
+
         request.setPending(false);
         storedRequestFacade.edit(request);
-        
-         List<QueryComponent> indicators = fillIndicators();
-        
+
+        List<QueryComponent> indicators = fillIndicators();
+
         if (request.getInstitution() == null) {
             //System.out.println("no institution");
             return;
@@ -2147,7 +2232,7 @@ public class AnalysisBean {
             return;
         }
         if (indicators.isEmpty()) {
-             //System.out.println("no indicators");
+            //System.out.println("no indicators");
             return;
         }
         if (request.getRyear() == 0) {
@@ -2158,10 +2243,9 @@ public class AnalysisBean {
             JsfUtil.addErrorMessage("Month");
             return;
         }
-       
-       
-        Date fromDate = CommonController.startOfTheMonth(request.getRyear(), request.getRmonth(),true);
-        Date toDate = CommonController.endOfTheMonth(request.getRyear(), request.getRmonth(),true);
+
+        Date fromDate = CommonController.startOfTheMonth(request.getRyear(), request.getRmonth(), true);
+        Date toDate = CommonController.endOfTheMonth(request.getRyear(), request.getRmonth(), true);
 
         List<QueryWithCriteria> qs = new ArrayList<>();
         List<EncounterWithComponents> encountersWithComponents;
@@ -2213,7 +2297,6 @@ public class AnalysisBean {
             qs.add(qwc);
         }
 
-       
         for (QueryWithCriteria qwc : qs) {
             Long value = calculateIndividualQueryResult(encountersWithComponents, qwc);
             if (value != null) {
@@ -2224,8 +2307,7 @@ public class AnalysisBean {
         }
 
     }
-    
-    
+
     public List<Replaceable> findReplaceblesInIndicatorQuery(String text) {
         List<Replaceable> ss = new ArrayList<>();
 
@@ -2250,7 +2332,7 @@ public class AnalysisBean {
         return ss;
 
     }
-    
+
     public QueryComponent findLastQuery(String qry) {
         if (qry == null) {
             return null;
