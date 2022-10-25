@@ -305,7 +305,7 @@
         <!-- https://mvnrepository.com/artifact/ca.uhn.hapi.fhir/hapi-fhir-structures-dstu3 -->
         <dependency>
             <groupId>ca.uhn.hapi.fhir</groupId>
-            <artifactId>hapi-fhir-structures-dstu3</artifactId>
+            <artifactId>hapi-fhir-structures-r4</artifactId>
             <version>6.1.2</version>
         </dependency>
 

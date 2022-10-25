@@ -47,18 +47,20 @@ import lk.gov.health.phsp.enums.InstitutionType;
 import lk.gov.health.phsp.facade.ApiKeyFacade;
 import lk.gov.health.phsp.facade.ClientFacade;
 import lk.gov.health.phsp.facade.EncounterFacade;
-import org.hl7.fhir.dstu3.model.BackboneElement;
-import org.hl7.fhir.dstu3.model.Base;
-import org.hl7.fhir.dstu3.model.Bundle;
-import org.hl7.fhir.dstu3.model.Bundle.BundleType;
-import org.hl7.fhir.dstu3.model.CapabilityStatement;
-import org.hl7.fhir.dstu3.model.CapabilityStatement.CapabilityStatementDocumentComponent;
-import org.hl7.fhir.dstu3.model.ContactPoint;
-import org.hl7.fhir.dstu3.model.DateTimeType;
-import org.hl7.fhir.dstu3.model.Enumerations;
-import org.hl7.fhir.dstu3.model.Narrative;
-import org.hl7.fhir.dstu3.model.OperationOutcome;
-import org.hl7.fhir.dstu3.model.Patient;
+import org.hl7.fhir.r4.model.BackboneElement;
+import org.hl7.fhir.r4.model.Base;
+import org.hl7.fhir.r4.model.Base;
+
+import org.hl7.fhir.r4.model.Bundle;
+import org.hl7.fhir.r4.model.Bundle.BundleType;
+import org.hl7.fhir.r4.model.CapabilityStatement;
+import org.hl7.fhir.r4.model.CapabilityStatement.CapabilityStatementDocumentComponent;
+import org.hl7.fhir.r4.model.ContactPoint;
+import org.hl7.fhir.r4.model.DateTimeType;
+import org.hl7.fhir.r4.model.Enumerations;
+import org.hl7.fhir.r4.model.Narrative;
+import org.hl7.fhir.r4.model.OperationOutcome;
+import org.hl7.fhir.r4.model.Patient;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -100,7 +102,7 @@ public class FhirResource {
 
         cs.addDocument(uc);
         cs.setName("cloud HIMS");
-        FhirContext ctx = FhirContext.forDstu3();
+        FhirContext ctx = FhirContext.forR4();
         IParser parser = ctx.newJsonParser();
 
         String serialized = parser.encodeResourceToString(cs);
@@ -127,7 +129,7 @@ public class FhirResource {
 
         Patient patient = fhirPatientFromClient(c);
 
-        FhirContext ctx = FhirContext.forDstu3();
+        FhirContext ctx = FhirContext.forR4();
         IParser parser = ctx.newJsonParser();
 
         String serialized = parser.encodeResourceToString(patient);
@@ -158,8 +160,8 @@ public class FhirResource {
             return errorMessageNoData();
         }
 
-        org.hl7.fhir.dstu3.model.Encounter encounter = fhirEcnounterFromEncounter(encounters.get(0));
-        FhirContext ctx = FhirContext.forDstu3();
+        org.hl7.fhir.r4.model.Encounter encounter = fhirEcnounterFromEncounter(encounters.get(0));
+        FhirContext ctx = FhirContext.forR4();
         IParser parser = ctx.newJsonParser();
 
         String serialized = parser.encodeResourceToString(encounter);
@@ -188,7 +190,7 @@ public class FhirResource {
 
         Patient patient = fhirPatientFromClient(c);
 
-        FhirContext ctx = FhirContext.forDstu3();
+        FhirContext ctx = FhirContext.forR4();
         IParser parser = ctx.newJsonParser();
 
         String serialized = parser.encodeResourceToString(patient);
@@ -210,14 +212,14 @@ public class FhirResource {
         return clientFacade.findFirstByJpql(j, m);
     }
 
-    public org.hl7.fhir.dstu3.model.Encounter fhirEcnounterFromEncounter(Encounter e) {
+    public org.hl7.fhir.r4.model.Encounter fhirEcnounterFromEncounter(Encounter e) {
         if (e == null) {
             return null;
         }
-        org.hl7.fhir.dstu3.model.Encounter fe = new org.hl7.fhir.dstu3.model.Encounter();
+        org.hl7.fhir.r4.model.Encounter fe = new org.hl7.fhir.r4.model.Encounter();
         fe.setId(e.getId().toString());
         if (e.getCompleted()) {
-            fe.setStatus(org.hl7.fhir.dstu3.model.Encounter.EncounterStatus.FINISHED);
+            fe.setStatus(org.hl7.fhir.r4.model.Encounter.EncounterStatus.FINISHED);
         }
         fe.getPeriod().setStart(e.getCreatedAt());
         fe.getPeriod().setEnd(e.getCompletedAt());
@@ -294,7 +296,7 @@ public class FhirResource {
     }
 
     private String errorMessageNoData() {
-        FhirContext ctx = FhirContext.forDstu2();
+        FhirContext ctx = FhirContext.forR4();
         IParser parser = ctx.newJsonParser();
 
         OperationOutcome oo = new OperationOutcome();
@@ -306,7 +308,7 @@ public class FhirResource {
     }
 
     private String errorMessageKey() {
-        FhirContext ctx = FhirContext.forDstu3();
+        FhirContext ctx = FhirContext.forR4();
         IParser parser = ctx.newJsonParser();
 
         OperationOutcome oo = new OperationOutcome();
