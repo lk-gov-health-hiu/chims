@@ -576,8 +576,8 @@ public class QueryComponentController implements Serializable {
             return;
         }
         removing.setRetired(true);
-        removing.setRetiredAt(new Date());
-        removing.setRetiredBy(webUserController.getLoggedUser());
+//        removing.setRetiredAt(new Date());
+//        removing.setRetiredBy(webUserController.getLoggedUser());
         getFacade().edit(removing);
         if (removing.getQueryLevel() == QueryLevel.Category) {
             categories = null;
@@ -2059,8 +2059,8 @@ public class QueryComponentController implements Serializable {
             return;
         }
         selectedQuery.setRetired(true);
-        selectedQuery.setRetiredAt(new Date());
-        selectedQuery.setRetiredBy(webUserController.getLoggedUser());
+//        selectedQuery.setRetiredAt(new Date());
+//        selectedQuery.setRetiredBy(webUserController.getLoggedUser());
         getFacade().edit(selectedQuery);
         selectedQuery = null;
         items = null;

@@ -166,8 +166,8 @@ public class DesignComponentFormSetController implements Serializable {
             return;
         }
         set.setRetired(true);
-        set.setRetiredAt(new Date());
-        set.setRetiredBy(webUserController.getLoggedUser());
+//        set.setRetiredAt(new Date());
+//        set.setRetiredBy(webUserController.getLoggedUser());
         getFacade().edit(set);
     }
 
@@ -436,8 +436,8 @@ public class DesignComponentFormSetController implements Serializable {
             return;
         }
         selected.setRetired(true);
-        selected.setRetiredAt(new Date());
-        selected.setRetiredBy(webUserController.getLoggedUser());
+//        selected.setRetiredAt(new Date());
+//        selected.setRetiredBy(webUserController.getLoggedUser());
         getFacade().edit(selected);
         items = null;
         insItems = null;

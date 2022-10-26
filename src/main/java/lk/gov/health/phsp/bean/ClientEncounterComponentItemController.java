@@ -843,8 +843,8 @@ public class ClientEncounterComponentItemController implements Serializable {
         }
 
         removingItem.getCi().setRetired(true);
-        removingItem.getCi().setRetiredAt(new Date());
-        removingItem.getCi().setRetiredBy(webUserController.getLoggedUser());
+//        removingItem.getCi().setRetiredAt(new Date());
+//        removingItem.getCi().setRetiredBy(webUserController.getLoggedUser());
         saveCi(removingItem.getCi());
 
         i.getAddedItems().remove(removingItem);

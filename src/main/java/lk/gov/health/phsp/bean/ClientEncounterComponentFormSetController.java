@@ -182,8 +182,8 @@ public class ClientEncounterComponentFormSetController implements Serializable {
             return "";
         }
         selected.setRetired(true);
-        selected.setRetiredAt(new Date());
-        selected.setRetiredBy(webUserController.getLoggedUser());
+//        selected.setRetiredAt(new Date());
+//        selected.setRetiredBy(webUserController.getLoggedUser());
         saveCfs(selected);
 
         Encounter e = selected.getEncounter();
@@ -209,8 +209,8 @@ public class ClientEncounterComponentFormSetController implements Serializable {
                 getEncounterFacade().edit(e);
             }
             s.setRetired(true);
-            s.setRetiredAt(new Date());
-            s.setRetiredBy(webUserController.getLoggedUser());
+//            s.setRetiredAt(new Date());
+//            s.setRetiredBy(webUserController.getLoggedUser());
             getFacade().edit(s);
         }
         userTransactionController.recordTransaction("Retire Selected Items");
@@ -462,11 +462,13 @@ public class ClientEncounterComponentFormSetController implements Serializable {
         if (s.getId() == null) {
             s.setCreatedAt(new Date());
             s.setCreatedBy(webUserController.getLoggedUser());
+            getFacade().create(s);
         } else {
 //            s.setLastEditBy(webUserController.getLoggedUser());
 //            s.setLastEditeAt(new Date());
+            getFacade().edit(s);
         }
-        saveCfs(s);
+
     }
 
     public List<ClientEncounterComponentFormSet> fillLastFiveCompletedEncountersFormSets(String type) {

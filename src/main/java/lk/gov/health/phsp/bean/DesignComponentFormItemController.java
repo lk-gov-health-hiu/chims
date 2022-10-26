@@ -250,8 +250,8 @@ public class DesignComponentFormItemController implements Serializable {
             return;
         }
         removingItem.setRetired(true);
-        removingItem.setRetiredAt(new Date());
-        removingItem.setRetiredBy(webUserController.getLoggedUser());
+//        removingItem.setRetiredAt(new Date());
+//        removingItem.setRetiredBy(webUserController.getLoggedUser());
         getFacade().edit(removingItem);
         fillItemsOfTheForm();
         JsfUtil.addSuccessMessage("Item removed.");
