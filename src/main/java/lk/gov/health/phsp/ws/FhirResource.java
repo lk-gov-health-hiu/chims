@@ -77,7 +77,7 @@ public class FhirResource {
     }
 
     @GET
-    @Path("/clint/{phn}")
+    @Path("/client/{phn}")
     @Produces("application/json")
     public String getClientByPhn(@Context HttpServletRequest requestContext,
             @PathParam("phn") String phn) {
