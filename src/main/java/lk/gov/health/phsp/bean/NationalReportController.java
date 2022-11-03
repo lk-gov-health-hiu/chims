@@ -560,10 +560,9 @@ public class NationalReportController implements Serializable {
 
         Row formNameRow = sheet.createRow(rowCount++);
         Row itemNameRow = sheet.createRow(rowCount++);
-
+        int colCount = 0;
         for (DataForm tdf : titleFormset.getForms()) {
 
-            int colCount = 0;
             for (DataItem tdi : tdf.getItems()) {
                 Cell formNameCell = formNameRow.createCell(colCount);
                 formNameCell.setCellValue(tdf.getDf().getName());
@@ -577,8 +576,9 @@ public class NationalReportController implements Serializable {
         for (ClientEncounterComponentFormSet c : cis) {
             DataFormset tdfs = fillClinicalDataFormset(c);
             Row dataRow = sheet.createRow(rowCount++);
+            colCount = 0;
             for (DataForm tdf : tdfs.getForms()) {
-                int colCount = 0;
+
                 for (DataItem tdi : tdf.getItems()) {
                     Cell formNameCell = dataRow.createCell(colCount);
                     if (tdi.getCi() == null) {
