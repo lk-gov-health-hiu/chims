@@ -577,78 +577,93 @@ public class NationalReportController implements Serializable {
             DataFormset tdfs = fillClinicalDataFormset(c);
             Row dataRow = sheet.createRow(rowCount++);
             colCount = 0;
-            for (DataForm tdf : tdfs.getForms()) {
+
+            for (DataForm tdf : titleFormset.getForms()) {
 
                 for (DataItem tdi : tdf.getItems()) {
                     Cell formNameCell = dataRow.createCell(colCount);
-                    if (tdi.getCi() == null) {
-                        continue;
-                    }
-                    if (tdi.getDi() == null) {
-                        continue;
-                    }
-                    if (tdi.getDi().getSelectionDataType() == null) {
-                        continue;
-                    }
-                    switch (tdi.getDi().getSelectionDataType()) {
-                        case Area_Reference:
-                        case Boolean:
-                            if (tdi.getCi().getBooleanValue() == null) {
-                                continue;
+                    formNameCell.setCellValue(tdf.getDf().getName());
+
+                    for (DataForm tcf : tdfs.getForms()) {
+
+                        for (DataItem tci : tcf.getItems()) {
+
+                            if (tci.getDi().equals(tdi.getDi())) {
+                                if (tci.getCi() == null) {
+                                    continue;
+                                }
+                                if (tci.getDi() == null) {
+                                    continue;
+                                }
+                                if (tci.getDi().getSelectionDataType() == null) {
+                                    continue;
+                                }
+                                switch (tci.getDi().getSelectionDataType()) {
+                                    case Area_Reference:
+                                    case Boolean:
+                                        if (tci.getCi().getBooleanValue() == null) {
+                                            continue;
+                                        }
+                                        formNameCell.setCellValue(tci.getCi().getBooleanValue());
+                                        break;
+                                    case Byte_Array:
+                                    case Client_Reference:
+                                    case DateTime:
+                                        if (tci.getCi().getDateValue() == null) {
+                                            continue;
+                                        }
+                                        formNameCell.setCellStyle(cellStyle);
+                                        formNameCell.setCellValue(tci.getCi().getDateValue());
+                                        break;
+                                    case Integer_Number:
+                                        if (tci.getCi().getIntegerNumberValue() == null) {
+                                            continue;
+                                        }
+                                        formNameCell.setCellValue(tci.getCi().getIntegerNumberValue());
+                                        break;
+                                    case Item_Reference:
+                                        if (tci.getCi().getItemValue() == null) {
+                                            continue;
+                                        }
+                                        formNameCell.setCellValue(tci.getCi().getItemValue().getName());
+                                        break;
+                                    case Long_Number:
+                                        if (tci.getCi().getLongNumberValue() == null) {
+                                            continue;
+                                        }
+                                        formNameCell.setCellValue(tci.getCi().getLongNumberValue());
+                                        break;
+                                    case Long_Text:
+                                        if (tci.getCi().getShortTextValue() == null) {
+                                            continue;
+                                        }
+                                        formNameCell.setCellValue(tci.getCi().getShortTextValue());
+                                        break;
+                                    case Prescreption_Reference:
+                                    case Prescreption_Request:
+                                    case Procedure_Request:
+                                    case Real_Number:
+                                        if (tci.getCi().getRealNumberValue() == null) {
+                                            continue;
+                                        }
+                                        formNameCell.setCellValue(tci.getCi().getShortTextValue());
+                                        break;
+                                    case Short_Text:
+                                        if (tci.getCi().getShortTextValue() == null) {
+                                            continue;
+                                        }
+                                        formNameCell.setCellValue(tci.getCi().getShortTextValue());
+                                        break;
+                                }
+
                             }
-                            formNameCell.setCellValue(tdi.getCi().getBooleanValue());
-                            break;
-                        case Byte_Array:
-                        case Client_Reference:
-                        case DateTime:
-                            if (tdi.getCi().getDateValue() == null) {
-                                continue;
-                            }
-                            formNameCell.setCellStyle(cellStyle);
-                            formNameCell.setCellValue(tdi.getCi().getDateValue());
-                            break;
-                        case Integer_Number:
-                            if (tdi.getCi().getIntegerNumberValue() == null) {
-                                continue;
-                            }
-                            formNameCell.setCellValue(tdi.getCi().getIntegerNumberValue());
-                            break;
-                        case Item_Reference:
-                            if (tdi.getCi().getItemValue() == null) {
-                                continue;
-                            }
-                            formNameCell.setCellValue(tdi.getCi().getItemValue().getName());
-                            break;
-                        case Long_Number:
-                            if (tdi.getCi().getLongNumberValue() == null) {
-                                continue;
-                            }
-                            formNameCell.setCellValue(tdi.getCi().getLongNumberValue());
-                            break;
-                        case Long_Text:
-                            if (tdi.getCi().getShortTextValue() == null) {
-                                continue;
-                            }
-                            formNameCell.setCellValue(tdi.getCi().getShortTextValue());
-                            break;
-                        case Prescreption_Reference:
-                        case Prescreption_Request:
-                        case Procedure_Request:
-                        case Real_Number:
-                            if (tdi.getCi().getRealNumberValue() == null) {
-                                continue;
-                            }
-                            formNameCell.setCellValue(tdi.getCi().getShortTextValue());
-                            break;
-                        case Short_Text:
-                            if (tdi.getCi().getShortTextValue() == null) {
-                                continue;
-                            }
-                            formNameCell.setCellValue(tdi.getCi().getShortTextValue());
-                            break;
+
+                        }
+
                     }
 
                     colCount++;
+
                 }
 
             }
@@ -953,7 +968,7 @@ public class NationalReportController implements Serializable {
                     cf.setParentComponent(cfs);
                     cf.setCss(df.getCss());
 
-                    clientEncounterComponentFormController.save(cf);
+//                    clientEncounterComponentFormController.save(cf);
                 }
 
                 DataForm f = new DataForm();
