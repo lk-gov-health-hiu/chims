@@ -582,8 +582,6 @@ public class NationalReportController implements Serializable {
 
                 for (DataItem tdi : tdf.getItems()) {
                     Cell formNameCell = dataRow.createCell(colCount);
-                    formNameCell.setCellValue(tdf.getDf().getName());
-
                     for (DataForm tcf : tdfs.getForms()) {
 
                         for (DataItem tci : tcf.getItems()) {
@@ -634,10 +632,10 @@ public class NationalReportController implements Serializable {
                                         formNameCell.setCellValue(tci.getCi().getLongNumberValue());
                                         break;
                                     case Long_Text:
-                                        if (tci.getCi().getShortTextValue() == null) {
+                                        if (tci.getCi().getLongTextValue() == null) {
                                             continue;
                                         }
-                                        formNameCell.setCellValue(tci.getCi().getShortTextValue());
+                                        formNameCell.setCellValue(tci.getCi().getLongTextValue());
                                         break;
                                     case Prescreption_Reference:
                                     case Prescreption_Request:
@@ -646,7 +644,7 @@ public class NationalReportController implements Serializable {
                                         if (tci.getCi().getRealNumberValue() == null) {
                                             continue;
                                         }
-                                        formNameCell.setCellValue(tci.getCi().getShortTextValue());
+                                        formNameCell.setCellValue(tci.getCi().getRealNumberValue());
                                         break;
                                     case Short_Text:
                                         if (tci.getCi().getShortTextValue() == null) {
