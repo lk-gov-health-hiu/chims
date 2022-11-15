@@ -914,7 +914,7 @@ public class ClientEncounterComponentFormSetController implements Serializable {
                                 save(ci);
                             } else if (ci.getReferanceDesignComponentFormItem().getDataPopulationStrategy() == DataPopulationStrategy.From_Last_Encounter) {
                                 updateFromLastEncounter(ci);
-                                save(ci);
+                               save(ci);
                             }
                             DataItem i = new DataItem();
                             i.setMultipleEntries(false);
