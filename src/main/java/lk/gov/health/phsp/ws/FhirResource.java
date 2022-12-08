@@ -26,12 +26,15 @@ package lk.gov.health.phsp.ws;
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.context.FhirVersionEnum;
 import ca.uhn.fhir.parser.IParser;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.ejb.EJB;
 import javax.enterprise.context.Dependent;
+import javax.faces.context.FacesContext;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.Produces;
@@ -61,6 +64,8 @@ import org.hl7.fhir.r4.model.Enumerations;
 import org.hl7.fhir.r4.model.Narrative;
 import org.hl7.fhir.r4.model.OperationOutcome;
 import org.hl7.fhir.r4.model.Patient;
+import org.hl7.fhir.r4.model.Resource;
+import org.hl7.fhir.r4.model.ResourceType;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -112,7 +117,7 @@ public class FhirResource {
     }
 
     @GET
-    @Path("/client/{phn}")
+    @Path("/Patient/{phn}")
     @Produces("application/json")
     public String getClientByPhn(@Context HttpServletRequest requestContext,
             @PathParam("phn") String phn) {
@@ -122,11 +127,35 @@ public class FhirResource {
             return errorMessageKey();
         }
 
-        Client c = finfFirstPatientsByPhn(phn);
-        if (c == null) {
-            return errorMessageNoData();
-        }
+        Long tid = null;
+        try {
+            tid = Long.valueOf(phn);
+        } catch (Exception e) {
 
+        }
+        Client c = null;
+        if (tid != null) {
+            c = findPatientsById(tid);
+        }
+        if (c != null) {
+            return patientToJson(c);
+        }
+        List<Client> cs = findPatientsByPhn(phn);
+        if (cs != null && !cs.isEmpty()) {
+            return patientToJson(cs);
+        }
+        cs = findPatientsByNic(phn);
+        if (cs != null && !cs.isEmpty()) {
+            return patientToJson(cs);
+        }
+        cs = findPatientsByPhone(phn);
+        if (cs != null && !cs.isEmpty()) {
+            return patientToJson(cs);
+        }
+        return errorMessageNoData();
+    }
+
+    public String patientToJson(Client c) {
         Patient patient = fhirPatientFromClient(c);
 
         FhirContext ctx = FhirContext.forR4();
@@ -137,8 +166,54 @@ public class FhirResource {
         return serialized;
     }
 
+    public String getBaseUrl() {
+        return "https://" + context.getBaseUri().getHost() + context.getBaseUri().getPath();
+    }
+
+    public String noData() {
+        OperationOutcome oo = new OperationOutcome();
+        OperationOutcome.OperationOutcomeIssueComponent c = oo.addIssue();
+        c.setSeverity(OperationOutcome.IssueSeverity.ERROR);
+        c.addExpression("No Data");
+        FhirContext ctx = FhirContext.forR4();
+        IParser parser = ctx.newJsonParser();
+        String serialized = parser.encodeResourceToString(oo);
+        return serialized;
+    }
+
+    public String patientToJson(List<Client> cs) {
+        if (cs == null || cs.isEmpty()) {
+            return noData();
+        }
+        if(cs.size()==1){
+            return patientToJson(cs.get(0));
+        }
+        
+        Bundle b = new Bundle();
+
+        b.setId(cs.toString());
+        b.setType(BundleType.SEARCHSET);
+        b.setTotal(cs.size());
+
+        for (Client c : cs) {
+            Bundle.BundleEntryComponent e = b.addEntry();
+            String temId = getBaseUrl() + "fhir/client/" + c.getId();
+            e.setFullUrl(temId);
+            Patient p = fhirPatientFromClient(c);
+            e.setResource(p);
+        }
+
+//        Patient patient = fhirPatientFromClient(c);
+        FhirContext ctx = FhirContext.forR4();
+        IParser parser = ctx.newJsonParser();
+
+        String serialized = parser.encodeResourceToString(b);
+
+        return serialized;
+    }
+
     @GET
-    @Path("/client/{phn}/encounter/")
+    @Path("/Patient/{phn}/encounter/")
     @Produces("application/json")
     public String getClientVisitByPhn(@Context HttpServletRequest requestContext,
             @PathParam("phn") String phn) {
@@ -148,7 +223,7 @@ public class FhirResource {
             return errorMessageKey();
         }
 
-        Client c = finfFirstPatientsByPhn(phn);
+        Client c = findFirstPatientsByPhn(phn);
         if (c == null) {
             return errorMessageNoData();
         }
@@ -180,7 +255,7 @@ public class FhirResource {
             return errorMessageKey();
         }
 
-        Client c = finfFirstPatientsByPhn(ins);
+        Client c = findFirstPatientsByPhn(ins);
         if (c == null) {
             return errorMessageNoData();
         }
@@ -205,11 +280,39 @@ public class FhirResource {
         return clientFacade.findByJpql(j, m);
     }
 
-    public Client finfFirstPatientsByPhn(String phn) {
+    public Client findFirstPatientsByPhn(String phn) {
         String j = "select c from Client c where c.retired=false and c.phn=:q order by c.id desc";
         Map m = new HashMap();
         m.put("q", phn.trim().toUpperCase());
         return clientFacade.findFirstByJpql(j, m);
+    }
+
+    public List<Client> findPatientsByPhn(String phn) {
+        String j = "select c from Client c where c.phn=:q";
+        Map m = new HashMap();
+        m.put("q", phn.trim().toUpperCase());
+        return clientFacade.findByJpql(j, m);
+    }
+
+    public Client findPatientsById(Long id) {
+        String j = "select c from Client c where c.id=:q";
+        Map m = new HashMap();
+        m.put("q", id);
+        return clientFacade.findFirstByJpql(j, m);
+    }
+
+    public List<Client> findPatientsByNic(String nic) {
+        String j = "select c from Client c where c.person.nic=:q";
+        Map m = new HashMap();
+        m.put("q", nic);
+        return clientFacade.findByJpql(j, m);
+    }
+
+    public List<Client> findPatientsByPhone(String nic) {
+        String j = "select c from Client c where (c.person.phone1=:q or c.person.phone2=:q) ";
+        Map m = new HashMap();
+        m.put("q", nic);
+        return clientFacade.findByJpql(j, m);
     }
 
     public org.hl7.fhir.r4.model.Encounter fhirEcnounterFromEncounter(Encounter e) {

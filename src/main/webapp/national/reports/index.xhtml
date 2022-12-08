@@ -80,10 +80,11 @@
                                                      action="#{reportController.toFunctioningHLcs}"
                                                      ajax="false"></p:commandButton>
                                     
-                                    <p:commandButton value="Clinical Data"   style="width:20em;margin:auto;"
+                                    <p:commandButton value="Clinical Data - Single Variable"   style="width:20em;margin:auto;"
                                                      action="#{reportController.toSingleVariableClinicalDataCounts()}"
                                                      ajax="false"></p:commandButton>
-
+                                    
+                                   
                                 </h:panelGrid>
                             </p:tab>
 
@@ -114,9 +115,10 @@
                                                      action="#{nationalReportController.toViewClinicalDataSingle()}"
                                                      ajax="false"></p:commandButton>
 
-                                    <p:commandButton value="Data Forms"   style="width:20em;margin:auto;"
-                                                     action="#{reportController.toViewDataForms()}"
+                                     <p:commandButton value="Clinical Data - Formset**"   style="width:20em;margin:auto;"
+                                                     action="#{reportController.toFormsetClinicalData()}"
                                                      ajax="false"></p:commandButton>
+
                                     
 
                                 </h:panelGrid>
