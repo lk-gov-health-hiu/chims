@@ -191,7 +191,7 @@ public class FhirResource {
         
         Bundle b = new Bundle();
 
-        b.setId(cs.toString());
+        b.setId(new Date().getTime() + "");
         b.setType(BundleType.SEARCHSET);
         b.setTotal(cs.size());
 
