@@ -83,20 +83,24 @@
                                 </f:facet>
 
                                 <p:commandButton  value="Edit" ajax="false"
+                                                  class="p-1"
                                                   action="#{webUserController.prepareEdit()}" >
                                     <f:setPropertyActionListener value="#{item}" target="#{webUserController.current}" ></f:setPropertyActionListener>
                                 </p:commandButton>
                                 <p:commandButton  value="Privileges" ajax="false"
+                                                  class="p-1"
                                                   action="#{webUserController.toManagePrivileges()}" >
                                     <f:setPropertyActionListener value="#{item}" 
                                                                  target="#{webUserController.current}" >
                                     </f:setPropertyActionListener>
                                 </p:commandButton>
                                 <p:commandButton  value="Password" ajax="false"
+                                                  class="p-1"
                                                   action="#{webUserController.prepareEditPassword()}" >
                                     <f:setPropertyActionListener value="#{item}" target="#{webUserController.current}" ></f:setPropertyActionListener>
                                 </p:commandButton>
                                 <p:commandButton  value="Delete" ajax="false"
+                                                  class="p-1"
                                                   action="#{webUserController.deleteUser()}" >
                                     <f:setPropertyActionListener value="#{item}" target="#{webUserController.current}" ></f:setPropertyActionListener>
                                 </p:commandButton>
