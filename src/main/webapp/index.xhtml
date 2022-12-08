@@ -30,6 +30,14 @@
                     <ez:dashboardNurse rendered="#{webUserController.loggedUser.nurse}"/>
                     <ez:dashboardMidwife rendered="#{webUserController.loggedUser.midwife}"/>
                 </h:panelGroup>
+                
+                
+                 <h:panelGroup rendered="true">
+                    
+                    
+                    <ez:dashboardSystemAdministrator rendered="#{webUserController.loggedUser.systemAdministrator}"/>
+                   
+                </h:panelGroup>
 
                 <!--                <h:panelGroup>
                                     <ez:userModules rendered="#{webUserController.loggedUser.systemAdministrator}"/>
