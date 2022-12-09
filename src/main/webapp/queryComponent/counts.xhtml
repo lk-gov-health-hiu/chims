@@ -46,14 +46,18 @@
                                 </f:facet>
 
                                 <p:commandButton ajax="false" 
-                                                 value="Edit" 
+                                                 value="Edit"
+                                                 class="m-1"
                                                  action="#{queryComponentController.toEditCount()}" >
                                     <f:setPropertyActionListener value="#{item}" target="#{queryComponentController.selected}" ></f:setPropertyActionListener>
                                 </p:commandButton>
 
 
 
-                                <p:commandButton ajax="false" value="Remove" action="#{queryComponentController.remove()}" 
+                                <p:commandButton ajax="false" 
+                                                 value="Remove"
+                                                 class="m-1"
+                                                 action="#{queryComponentController.remove()}" 
                                                  onclick="if (!confirm('Really want to do that?'))
                                                              return false">
                                     <f:setPropertyActionListener value="#{item}" target="#{queryComponentController.removing}" ></f:setPropertyActionListener>
