@@ -17,7 +17,7 @@
                     <p:panelGrid style="height: 100%;text-align: center;" columns="1">
                         <f:facet name="header" >
                             <p:outputLabel value="User List" ></p:outputLabel>
-                            <p:commandButton value="Download" ajax="false" >
+                            <p:commandButton value="Download" class="m-1" ajax="false" >
                                 <p:dataExporter target="datalist" type="xls" fileName="users" ></p:dataExporter>
                             </p:commandButton>
                             <p:commandButton ajax="false" value="Back" action="#{webUserController.toManageUserIndexForSystemAdmin()}" style="float: right;"/>
@@ -82,21 +82,29 @@
                                     <h:outputText value="Actions"/>
                                 </f:facet>
 
-                                <p:commandButton  value="Edit" ajax="false"
+                                <p:commandButton  value="Edit"
+                                                  class="m-1"
+                                                  ajax="false"
                                                   action="#{webUserController.prepareEdit()}" >
                                     <f:setPropertyActionListener value="#{item}" target="#{webUserController.current}" ></f:setPropertyActionListener>
                                 </p:commandButton>
-                                <p:commandButton  value="Privileges" ajax="false"
+                                <p:commandButton  value="Password"
+                                                  class="m-1"
+                                                  ajax="false"
                                                   action="#{webUserController.toManagePrivileges()}" >
                                     <f:setPropertyActionListener value="#{item}" 
                                                                  target="#{webUserController.current}" >
                                     </f:setPropertyActionListener>
                                 </p:commandButton>
-                                <p:commandButton  value="Password" ajax="false"
+                                <p:commandButton  value="Privileges"
+                                                  class="m-1"
+                                                  ajax="false"
                                                   action="#{webUserController.prepareEditPassword()}" >
                                     <f:setPropertyActionListener value="#{item}" target="#{webUserController.current}" ></f:setPropertyActionListener>
                                 </p:commandButton>
-                                <p:commandButton  value="Delete" ajax="false"
+                                <p:commandButton  value="Delete"
+                                                  class="m-1"
+                                                  ajax="false"
                                                   action="#{webUserController.deleteUser()}" >
                                     <f:setPropertyActionListener value="#{item}" target="#{webUserController.current}" ></f:setPropertyActionListener>
                                 </p:commandButton>
