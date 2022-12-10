@@ -33,7 +33,7 @@
 
                                             <div class="form-outline mb-4">
                                                 <label class="form-label m-1" for="txtUserName">User Name</label>
-                                                <p:inputText id="un"
+                                                <p:inputText id="txtUserName"
                                                              required="true" 
                                                              styleClass="w-100"
                                                              requiredMessage="Enter a Username"
@@ -43,11 +43,13 @@
                                             </div>
                                             <div class="form-outline mb-4">   
                                                 <label class="form-label m-1" for="pwd">Password</label>
-                                                <p:password id="pwd"       
+                                                
+                                                <p:password id="pwd"  size="100"     
                                                             toggleMask="true"
                                                             value="#{webUserController.password}" 
                                                             class="form-control w-100"
-                                                            
+                                                            required="true"
+                                                            requiredMessage="Please enter a password"
                                                             >
                                                 </p:password>
                                             </div>
