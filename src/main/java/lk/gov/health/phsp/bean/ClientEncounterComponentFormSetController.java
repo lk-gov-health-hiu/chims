@@ -277,12 +277,12 @@ public class ClientEncounterComponentFormSetController implements Serializable {
         selected.setCompleted(true);
         selected.setCompletedAt(new Date());
         selected.setCompletedBy(webUserController.getLoggedUser());
-        saveCfs(selected);
+//        saveCfs(selected);
         dataFormBean.executeCompleteEvents(dataFormset, selected, getWebUserController().getLoggedUser());
 //        loadOldNavigateToDataEntry(selected);
         formEditable = false;
         JsfUtil.addSuccessMessage("Completed");
-        userTransactionController.recordTransaction("Formset Completed");
+//        userTransactionController.recordTransaction("Formset Completed");
         return toViewFormset();
     }
 

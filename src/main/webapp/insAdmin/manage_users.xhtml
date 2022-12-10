@@ -72,18 +72,23 @@
                                     <h:outputText value="Actions"/>
                                 </f:facet>
                                 <p:commandLink  value="Edit" ajax="false"
+                                                class="m-1"
                                                 action="#{webUserController.prepareEdit()}" >
                                     <f:setPropertyActionListener value="#{item}" target="#{webUserController.current}" ></f:setPropertyActionListener>
                                 </p:commandLink>
                                 <p:spacer height="1" width="10" ></p:spacer>
-                                <p:commandLink  value="Privileges" ajax="false"
+                                <p:commandLink  value="Privileges"
+                                                ajax="false"
+                                                class="m-1"
                                                 action="#{webUserController.toManagePrivileges()}" >
                                     <f:setPropertyActionListener value="#{item}" 
                                                                  target="#{webUserController.current}" >
                                     </f:setPropertyActionListener>
                                 </p:commandLink>
                                 <p:spacer height="1" width="10" ></p:spacer>
-                                <p:commandLink  value="Password" ajax="false"
+                                <p:commandLink  value="Password"
+                                                ajax="false"
+                                                class="m-1"
                                                 action="#{webUserController.prepareEditPassword()}" >
                                     <f:setPropertyActionListener value="#{item}" target="#{webUserController.current}" ></f:setPropertyActionListener>
                                 </p:commandLink>

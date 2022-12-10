@@ -1978,25 +1978,25 @@ public class ClientController implements Serializable {
     }
 
     public List<Client> listPatientsByPhn(String phn) {
-        String j = "select c from Client c where c.retired=false and upper(c.phn)=:q order by c.phn";
+        String j = "select c from Client c where c.retired=false and c.phn=:q order by c.phn";
         Map m = new HashMap();
-        m.put("q", phn.trim().toUpperCase());
+        m.put("q", phn.trim());
         return getFacade().findByJpql(j, m);
     }
 
     public List<Client> listPatientsByNic(String phn) {
-        String j = "select c from Client c where c.retired=false and c.reservedClient<>:res and upper(c.person.nic)=:q order by c.phn";
+        String j = "select c from Client c where c.retired=false and c.reservedClient<>:res and c.person.nic=:q order by c.phn";
         Map m = new HashMap();
         m.put("res", true);
-        m.put("q", phn.trim().toUpperCase());
+        m.put("q", phn.trim());
         return getFacade().findByJpql(j, m);
     }
 
     public List<Client> listPatientsByPhone(String phn) {
-        String j = "select c from Client c where c.retired=false and c.reservedClient<>:res and (upper(c.person.phone1)=:q or upper(c.person.phone2)=:q) order by c.phn";
+        String j = "select c from Client c where c.retired=false and c.reservedClient<>:res and (c.person.phone1=:q or c.person.phone2=:q) order by c.phn";
         Map m = new HashMap();
         m.put("res", true);
-        m.put("q", phn.trim().toUpperCase());
+        m.put("q", phn.trim());
         return getFacade().findByJpql(j, m);
     }
 
@@ -2077,9 +2077,9 @@ public class ClientController implements Serializable {
         m = new HashMap();
         j = "select c from Client c "
                 + " where c.retired=false "
-                + " and upper(c.phn)=:q "
+                + " and c.phn=:q "
                 + " order by c.phn";
-        m.put("q", ids.trim().toUpperCase());
+        m.put("q", ids.trim());
         //// //System.out.println("m = " + m);
         //// //System.out.println("j = " + j);
         cs = getFacade().findByJpql(j, m);
@@ -2092,11 +2092,11 @@ public class ClientController implements Serializable {
         j = "select c from Client c "
                 + " where c.retired=false "
                 + " and ("
-                + " upper(c.person.phone1)=:q "
+                + " c.person.phone1=:q "
                 + " or "
-                + " upper(c.person.phone2)=:q "
+                + " c.person.phone2=:q "
                 + " or "
-                + " upper(c.person.nic)=:q "
+                + " c.person.nic=:q "
                 + " ) "
                 + " order by c.phn";
         cs = getFacade().findByJpql(j, m);
@@ -2144,7 +2144,7 @@ public class ClientController implements Serializable {
                 + " where c.retired=false "
                 + " and c.phn=:q "
                 + " order by c.phn";
-        m.put("q", ids.trim().toUpperCase());
+        m.put("q", ids.trim());
         //// //System.out.println("m = " + m);
         //// //System.out.println("j = " + j);
         objs = getFacade().findByJpql(j, m);
@@ -2231,9 +2231,9 @@ public class ClientController implements Serializable {
                 + ") ";
         j += " from Client c "
                 + " where c.retired=false "
-                + " and upper(c.phn)=:q "
+                + " and c.phn=:q "
                 + " order by c.phn";
-        m.put("q", ids.trim().toUpperCase());
+        m.put("q", ids.trim());
         objs = getFacade().findByJpql(j, m);
 
         if (objs != null && !objs.isEmpty()) {
@@ -2266,13 +2266,13 @@ public class ClientController implements Serializable {
                 + " where c.retired=false "
                 + " and c.reservedClient<>:res "
                 + " and ("
-                + " upper(c.person.phone1)=:q "
+                + " c.person.phone1=:q "
                 + " or "
-                + " upper(c.person.phone2)=:q "
+                + " c.person.phone2=:q "
                 + " or "
-                + " upper(c.person.nic)=:q "
+                + " c.person.nic=:q "
                 + " or "
-                + " upper(c.phn)=:q "
+                + " c.phn=:q "
                 + " or "
                 + " c.person.localReferanceNo=:q "
                 + " or "
@@ -2281,7 +2281,7 @@ public class ClientController implements Serializable {
                 + " order by c.phn";
         Map m = new HashMap();
         m.put("res", true);
-        m.put("q", ids.trim().toUpperCase());
+        m.put("q", ids.trim());
         return getFacade().findByJpql(j, m);
     }
 
