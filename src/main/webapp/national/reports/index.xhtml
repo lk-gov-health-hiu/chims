@@ -14,137 +14,92 @@
 
         <ui:composition template="/template.xhtml">
             <ui:define name="content">
-
-
                 <p:panelGrid columns="2" style="width: 100%;" styleClass="alignTop">
                     <f:facet name="header" >
                         <h:outputLabel value="Reports" ></h:outputLabel>
                     </f:facet>
                     <h:form>
-                        <p:accordionPanel style="width: 24rem;" activeIndex="#{webUserController.reportTabIndex}"
-
-                                          >
-
+                        <p:accordionPanel style="width: 24rem;" activeIndex="#{webUserController.reportTabIndex}" >
                             <p:ajax event="tabChange" update="@this" />
                             <p:tab title="Excel Templates"  >
                                 <h:panelGrid columns="1" >
                                     <p:commandButton value="Monthly Institution Summeries"   style="width:20em;margin:auto;"
                                                      action="#{reportController.toInstitutionMonthlySummeries()}"
                                                      ajax="false"></p:commandButton>
-
                                     <p:commandButton value="Consolidated Summeries"   style="width:20em;margin:auto;"
                                                      action="#{reportController.toConsolidateSummeries()}"
                                                      ajax="false"></p:commandButton>
-
                                     <p:commandButton value="My Summeries"   style="width:20em;margin:auto;"
                                                      action="#{reportController.toViewMySummeries()}"
                                                      ajax="false"></p:commandButton>
-
-
                                 </h:panelGrid>
-
                             </p:tab>
-
                             <p:tab title="Counts"  >
                                 <h:panelGrid columns="1" >
                                     <p:commandButton value="Institution-vice Clinic Visits"   style="width:20em;margin:auto;"
                                                      action="#{reportController.toViewClinicVisitsByInstitution()}"
                                                      ajax="false"></p:commandButton>
-
-
                                     <p:commandButton value="Institution-vice Client Registrations"   style="width:20em;margin:auto;"
                                                      action="#{reportController.toViewClientRegistrationsByInstitution()}"
                                                      ajax="false"></p:commandButton>
-
                                     <p:commandButton value="District vice Client Registrations" style="width:20em;margin:auto;"
                                                      action="#{reportController.toViewClientRegistrationsByDistrict()}"
                                                      rendered="#{webUserController.hasPrivilege('System_Administration')}"
                                                      ajax="false"></p:commandButton>
-
                                     <p:commandButton value="Province vice Client Registrations" style="width:20em;margin:auto;"
                                                      action="#{reportController.toViewClientRegistrationsByProvince()}"
                                                      rendered="#{webUserController.hasPrivilege('System_Administration')}"
                                                      ajax="false"></p:commandButton>
-
-
                                     <p:commandButton value="Daily Clinic Visits"   style="width:20em;margin:auto;"
                                                      action="#{reportController.toViewDailyClinicsVisitCounts()}"
                                                      ajax="false"></p:commandButton>
-
                                     <p:commandButton value="Daily Registrations"   style="width:20em;margin:auto;"
                                                      action="#{reportController.toViewDailyClinicsRegistrationCounts()}"
                                                      ajax="false"></p:commandButton>
-                                    
                                      <p:commandButton value="Functioning HLCs"  
                                                       style="width:20em;margin:auto;"
                                                      action="#{reportController.toFunctioningHLcs}"
                                                      ajax="false"></p:commandButton>
-                                    
                                     <p:commandButton value="Clinical Data - Single Variable"   style="width:20em;margin:auto;"
                                                      action="#{reportController.toSingleVariableClinicalDataCounts()}"
                                                      ajax="false"></p:commandButton>
-                                    
-                                   
                                 </h:panelGrid>
                             </p:tab>
-
                             <p:tab title="Lists" >
-
                                 <h:panelGrid columns="1" >
                                     <p:commandButton value="Client Registrations"   style="width:20em;margin:auto;"
                                                      action="#{reportController.toViewClientRegistrations()}"
                                                      ajax="false"></p:commandButton>
-
                                     <p:commandButton value="Clinic Enrollments"   style="width:20em;margin:auto;"
                                                      action="#{reportController.toViewClinicEnrollments()}"
                                                      ajax="false"></p:commandButton>
-
                                     <p:commandButton value="Clinic Visits"   style="width:20em;margin:auto;"
                                                      action="#{reportController.toViewClinicVisits()}"
                                                      ajax="false"></p:commandButton>
-
                                     <p:commandButton value="Longitudinal Clinic Visits"   style="width:20em;margin:auto;"
                                                      action="#{reportController.toViewLongitudinalClinicVisits()}"
                                                      ajax="false"></p:commandButton>
-
                                     <p:commandButton value="All Clients &amp; All Visits"   style="width:20em;margin:auto;"
                                                      action="#{reportController.toViewAllClientsAndAllClinicVisits()}"
                                                      ajax="false"></p:commandButton>
-                                    
                                     <p:commandButton value="Clinical Data - Single Variable"   style="width:20em;margin:auto;"
                                                      action="#{nationalReportController.toViewClinicalDataSingle()}"
                                                      ajax="false"></p:commandButton>
-
                                      <p:commandButton value="Clinical Data - Formset"   style="width:20em;margin:auto;"
                                                      action="#{reportController.toFormsetClinicalData()}"
                                                      ajax="false"></p:commandButton>
-
-                                    
-
                                 </h:panelGrid>
-
-
                             </p:tab>
-
                             <p:tab title="Data" >
                                 <h:panelGrid columns="1" >
-
-
                                     <p:commandButton value="Clinical Data"   style="width:20em;margin:auto;"
                                                      action="#{reportController.toSingleVariableClinicalData()}"
                                                      ajax="false"></p:commandButton>
-
                                     <p:commandButton value="Formset Data"   style="width:20em;margin:auto;"
                                                      action="#{reportController.toMultipleVariableClinicalData()}"
                                                      ajax="false"></p:commandButton>
-
-
                                 </h:panelGrid>
-
-
-
                             </p:tab>
-
                         </p:accordionPanel>
                     </h:form>
                     <p:panel style="width: calc(100vw - 28rem);">
@@ -152,15 +107,8 @@
 
                         </ui:insert>
                     </p:panel>
-
                 </p:panelGrid>
-
-
-
-
             </ui:define>
-
         </ui:composition>
-
     </h:body>
 </html>
