@@ -509,6 +509,89 @@ public class WebUserController implements Serializable {
         userTransactionController.recordTransaction("Manage Privileges in user list By SysAdmin or InsAdmin");
         return "/webUser/privileges";
     }
+    
+    public String toManagePrivilegesBySysAdmin() {
+
+        if (current == null) {
+            JsfUtil.addErrorMessage("Nothing Selected");
+            return "";
+        }
+        selectedNodes = new TreeNode[0];
+        List<UserPrivilege> userps = userPrivilegeList(current);
+
+        for (Object o : allPrivilegeRoot.getChildren()) {
+            TreeNode n;
+            if (o instanceof TreeNode) {
+                n = (TreeNode) o;
+            } else {
+                continue;
+            }
+            n.setSelected(false);
+            for (Object o1 : n.getChildren()) {
+                TreeNode n1;
+                if (o1 instanceof TreeNode) {
+                    n1 = (TreeNode) o1;
+                } else {
+                    continue;
+                }
+                n1.setSelected(false);
+                for (Object o2 : n1.getChildren()) {
+                    TreeNode n2;
+                    if (o2 instanceof TreeNode) {
+                        n2 = (TreeNode) o2;
+                    } else {
+                        continue;
+                    }
+                    n2.setSelected(false);
+                }
+            }
+        }
+        List<TreeNode> temSelected = new ArrayList<>();
+        for (UserPrivilege wup : userps) {
+            for (Object o : allPrivilegeRoot.getChildren()) {
+                TreeNode n;
+                if (o instanceof TreeNode) {
+                    n = (TreeNode) o;
+                } else {
+                    continue;
+                }
+                if (wup.getPrivilege().equals(((PrivilegeTreeNode) n).getP())) {
+                    n.setSelected(true);
+
+                    temSelected.add(n);
+                }
+                for (Object o1 : n.getChildren()) {
+                    TreeNode n1;
+                    if (o1 instanceof TreeNode) {
+                        n1 = (TreeNode) o1;
+                    } else {
+                        continue;
+                    }
+                    if (wup.getPrivilege().equals(((PrivilegeTreeNode) n1).getP())) {
+                        n1.setSelected(true);
+
+                        temSelected.add(n1);
+                    }
+                    for (Object o2 : n1.getChildren()) {
+                        TreeNode n2;
+                        if (o2 instanceof TreeNode) {
+                            n2 = (TreeNode) o2;
+                        } else {
+                            continue;
+                        }
+                        if (wup.getPrivilege().equals(((PrivilegeTreeNode) n2).getP())) {
+                            n2.setSelected(true);
+
+                            temSelected.add(n2);
+                        }
+                    }
+                }
+            }
+        }
+        selectedNodes = temSelected.toArray(new TreeNode[temSelected.size()]);
+        userTransactionController.recordTransaction("Manage Privileges in user list By SysAdmin");
+        return "/systemAdmin/privileges";
+    }
 
     public String toOpdModule() {
         userTransactionController.recordTransaction("To Opd Module");
@@ -520,7 +603,7 @@ public class WebUserController implements Serializable {
 
         TreeNode clientManagement = new PrivilegeTreeNode("Client Management", allPrivilegeRoot, Privilege.Client_Management);
         TreeNode encounterManagement = new PrivilegeTreeNode("Clinic Management", allPrivilegeRoot, Privilege.Encounter_Management);
-        TreeNode analytics = new PrivilegeTreeNode("Clinic Management", allPrivilegeRoot, Privilege.Analytics);
+        TreeNode analytics = new PrivilegeTreeNode("Analytics", allPrivilegeRoot, Privilege.Analytics);
         TreeNode institutionAdministration = new PrivilegeTreeNode("Institution Administration", allPrivilegeRoot, Privilege.Institution_Administration);
         TreeNode systemAdministration = new PrivilegeTreeNode("System Administration", allPrivilegeRoot, Privilege.System_Administration);
 
@@ -532,16 +615,16 @@ public class WebUserController implements Serializable {
         TreeNode search_client = new PrivilegeTreeNode("Search Client", clientManagement, Privilege.Search_client);
         //Clinic Management
         TreeNode add_to_clinic = new PrivilegeTreeNode("Add to Clinic", encounterManagement, Privilege.Add_to_clinic);
-        TreeNode remove_from_clinic = new PrivilegeTreeNode("Add to Clinic", encounterManagement, Privilege.Remove_from_clinic);
-        TreeNode add_clinic_visit = new PrivilegeTreeNode("Add to Clinic", encounterManagement, Privilege.Add_clinic_visit);
-        TreeNode complete_clinic_visit = new PrivilegeTreeNode("Add to Clinic", encounterManagement, Privilege.Complete_clinic_visit);
-        TreeNode incomplete_clinic_visit = new PrivilegeTreeNode("Add to Clinic", encounterManagement, Privilege.Incomplete_clinic_visit);
+        TreeNode remove_from_clinic = new PrivilegeTreeNode("Remove from Clinic", encounterManagement, Privilege.Remove_from_clinic);
+        TreeNode add_clinic_visit = new PrivilegeTreeNode("Add Clinic Visit", encounterManagement, Privilege.Add_clinic_visit);
+        TreeNode complete_clinic_visit = new PrivilegeTreeNode("Complete Clinic Visits", encounterManagement, Privilege.Complete_clinic_visit);
+        TreeNode incomplete_clinic_visit = new PrivilegeTreeNode("Incomplete Clinic Visits", encounterManagement, Privilege.Incomplete_clinic_visit);
         // Analytics
-        TreeNode counts = new PrivilegeTreeNode("Add to Clinic", analytics, Privilege.Counts);
-        TreeNode indicators = new PrivilegeTreeNode("Add to Clinic", analytics, Privilege.Indicators);
-        TreeNode templates = new PrivilegeTreeNode("Add to Clinic", analytics, Privilege.Templates);
-        TreeNode named_Lists = new PrivilegeTreeNode("Add to Clinic", analytics, Privilege.Named_Lists);
-        TreeNode anonymous_Lists = new PrivilegeTreeNode("Add to Clinic", analytics, Privilege.Anonymous_Lists);
+        TreeNode counts = new PrivilegeTreeNode("Counts", analytics, Privilege.Counts);
+        TreeNode indicators = new PrivilegeTreeNode("Indicators", analytics, Privilege.Indicators);
+        TreeNode templates = new PrivilegeTreeNode("Template", analytics, Privilege.Templates);
+        TreeNode named_Lists = new PrivilegeTreeNode("Named Lists", analytics, Privilege.Named_Lists);
+        TreeNode anonymous_Lists = new PrivilegeTreeNode("Anonymous Lists", analytics, Privilege.Anonymous_Lists);
         //Institution Administration
         TreeNode manage_Institution_Users = new PrivilegeTreeNode("Manage Users", institutionAdministration, Privilege.Manage_Institution_Users);
         TreeNode manage_Authorised_Areas = new PrivilegeTreeNode("Manage Areas", institutionAdministration, Privilege.Manage_Authorised_Areas);
@@ -1215,11 +1298,24 @@ public class WebUserController implements Serializable {
         userTransactionController.recordTransaction("Edit user list By SysAdmin or InsAdmin");
         return "/webUser/Edit";
     }
+    
+    public String prepareEditBySysAdmin() {
+        userTransactionController.recordTransaction("Edit user list By SysAdmin or InsAdmin");
+        return "/systemAdmin/Edit";
+    }
 
     public String prepareEditPassword() {
         password = "";
         passwordReenter = "";
         return "/webUser/Password";
+    }
+    
+
+    
+     public String prepareEditPasswordBySysAdmin() {
+        password = "";
+        passwordReenter = "";
+        return "/systemAdmin/Password";
     }
 
     public String deleteUser() {
@@ -1257,6 +1353,18 @@ public class WebUserController implements Serializable {
             JsfUtil.addSuccessMessage(("Updated"));
             userTransactionController.recordTransaction("webUser Update");
             return "manage_users";
+        } catch (Exception e) {
+            JsfUtil.addErrorMessage(e, e.getMessage());
+            return null;
+        }
+    }
+    
+    public String updateBySysAdmin() {
+        try {
+            getFacade().edit(current);
+            JsfUtil.addSuccessMessage(("Updated"));
+            userTransactionController.recordTransaction("webUser Update");
+            return toManageUserIndexForSystemAdmin();
         } catch (Exception e) {
             JsfUtil.addErrorMessage(e, e.getMessage());
             return null;
@@ -1311,6 +1419,56 @@ public class WebUserController implements Serializable {
         }
         userTransactionController.recordTransaction("update User Privileges By SysAdmin or InsAdmin");
         return "/webUser/manage_users";
+    }
+    
+    public String updateUserPrivilegesBySysAdmin() {
+
+        if (current == null) {
+            JsfUtil.addErrorMessage("Please select a user");
+            return "";
+        }
+        List<UserPrivilege> userps = userPrivilegeList(current);
+        List<Privilege> tps = new ArrayList<>();
+        if (selectedNodes != null && selectedNodes.length > 0) {
+            for (TreeNode node : selectedNodes) {
+                Privilege p;
+                p = ((PrivilegeTreeNode) node).getP();
+                if (p != null) {
+                    tps.add(p);
+                }
+            }
+        }
+        for (Privilege p : tps) {
+            boolean found = false;
+            for (UserPrivilege tup : userps) {
+
+                if (p != null && tup.getPrivilege() != null && p.equals(tup.getPrivilege())) {
+                    found = true;
+                }
+            }
+            if (!found) {
+                addWebUserPrivileges(current, p);
+            }
+        }
+
+        userps = userPrivilegeList(current);
+
+        for (UserPrivilege tup : userps) {
+            boolean found = false;
+            for (Privilege p : tps) {
+                if (p != null && tup.getPrivilege() != null && p.equals(tup.getPrivilege())) {
+                    found = true;
+                }
+            }
+            if (!found) {
+                tup.setRetired(true);
+                tup.setRetiredAt(new Date());
+                tup.setRetiredBy(loggedUser);
+                getUserPrivilegeFacade().edit(tup);
+            }
+        }
+        userTransactionController.recordTransaction("update User Privileges By SysAdmin or InsAdmin");
+        return toManageUserIndexForSystemAdmin();
     }
 
     public String updateMyDetails() {
@@ -1439,6 +1597,26 @@ public class WebUserController implements Serializable {
             JsfUtil.addSuccessMessage(("Password Changed."));
             userTransactionController.recordTransaction("webUser Password Changed");
             return "index";
+        } catch (Exception e) {
+            JsfUtil.addErrorMessage(e, ("PersistenceErrorOccured"));
+            userTransactionController.recordTransaction("webUser Password error");
+            return null;
+        }
+    }
+    
+    public String updatePasswordBySysAdmin() {
+        if (!password.equals(passwordReenter)) {
+            JsfUtil.addErrorMessage("Passwords do NOT match.");
+            userTransactionController.recordTransaction("webUser Password not match");
+            return "";
+        }
+        try {
+            String hashedPassword = commonController.hash(password);
+            current.setWebUserPassword(hashedPassword);
+            getFacade().edit(current);
+            JsfUtil.addSuccessMessage(("Password Changed."));
+            userTransactionController.recordTransaction("webUser Password Changed");
+            return toManageUserIndexForSystemAdmin();
         } catch (Exception e) {
             JsfUtil.addErrorMessage(e, ("PersistenceErrorOccured"));
             userTransactionController.recordTransaction("webUser Password error");

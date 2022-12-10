@@ -41,14 +41,14 @@
 
                                      >
 
-                            <p:column width="250" sortBy="#{item.person.name}" filterBy="#{item.person.name}" filterMatchMode="contains">
+                            <p:column  sortBy="#{item.person.name}" filterBy="#{item.person.name}" filterMatchMode="contains">
                                 <f:facet name="header">
                                     <h:outputText value="Name"/>
                                 </f:facet>
                                 <h:outputText value="#{item.person.name}"/>
                             </p:column>
 
-                            <p:column  width="150" sortBy="#{item.name}" filterBy="#{item.name}" filterMatchMode="contains">
+                            <p:column  sortBy="#{item.name}" filterBy="#{item.name}" filterMatchMode="contains">
                                 <f:facet name="header">
                                     <h:outputText value="Username"/>
                                 </f:facet>
@@ -62,15 +62,10 @@
                                 </f:facet>
                                 <h:outputText value="#{item.institution.name}"/>
                             </p:column>
-                            <p:column  width="120"  sortBy="#{item.telNo}" filterBy="#{item.telNo}" filterMatchMode="contains">
-                                <f:facet name="header">
-                                    <h:outputText value="Phone"/>
-                                </f:facet>
-                                <h:outputText value="#{item.telNo}"/>
-                            </p:column>
 
 
-                            <p:column  width="150"  sortBy="#{item.webUserRole}" filterBy="#{item.webUserRole}" filterMatchMode="contains">
+
+                            <p:column   sortBy="#{item.webUserRole}" filterBy="#{item.webUserRole}" filterMatchMode="contains">
                                 <f:facet name="header">
                                     <h:outputText value="Role"/>
                                 </f:facet>
@@ -82,32 +77,41 @@
                                     <h:outputText value="Actions"/>
                                 </f:facet>
 
-                                <p:commandButton  value="Edit"
-                                                  ajax="false"
-                                                  class="m-1"
-                                                  action="#{webUserController.prepareEdit()}" >
+                                <h:commandLink  id="linkEdit"
+                                                class="m-1"
+                                                action="#{webUserController.prepareEditBySysAdmin()}" >
+                                    <i class="bi bi-pencil-square"></i>
                                     <f:setPropertyActionListener value="#{item}" target="#{webUserController.current}" ></f:setPropertyActionListener>
-                                </p:commandButton>
-                                <p:commandButton  value="Password"
-                                                  ajax="false"
-                                                  class="m-1"
-                                                  action="#{webUserController.toManagePrivileges()}" >
+                                </h:commandLink>
+                                <p:tooltip for="linkEdit" value="Edit User Details" position="bottom"/>
+                                <h:commandLink  id="linkPassword"
+                                                class="m-1"
+                                                action="#{webUserController.prepareEditPasswordBySysAdmin()}" >
+                                    <i class="bi bi-person-fill-lock"></i>
                                     <f:setPropertyActionListener value="#{item}" 
-                                                                 target="#{webUserController.current}" >
-                                    </f:setPropertyActionListener>
-                                </p:commandButton>
-                                <p:commandButton  value="Privileges" 
-                                                  ajax="false"
-                                                  class="m-1"
-                                                  action="#{webUserController.prepareEditPassword()}" >
+                                                                 target="#{webUserController.current}" >                                    </f:setPropertyActionListener>
+                                    
+                                </h:commandLink>
+                                <p:tooltip for="linkPassword" value="Edit Password" position="bottom"/>
+
+                                <h:commandLink  id="linkPri"
+                                    class="m-1"
+                                    action="#{webUserController.toManagePrivilegesBySysAdmin()}" >
                                     <f:setPropertyActionListener value="#{item}" target="#{webUserController.current}" ></f:setPropertyActionListener>
-                                </p:commandButton>
-                                <p:commandButton  value="Delete" 
-                                                  class="m-1"
-                                                  ajax="false"
-                                                  action="#{webUserController.deleteUser()}" >
+                                    <i class="bi bi-file-earmark-lock2"></i>
+                                </h:commandLink>
+                                <p:tooltip for="linkPri" value="Edit User Privileges" position="bottom"/>
+
+
+                                <h:commandLink id="linkDelete"
+                                    class="m-1 text-warning"
+                                    onclick="return confirm('Are you sure that you want to delete this user?')"
+                                    action="#{webUserController.deleteUser()}" >
+                                    <i class="bi bi-file-earmark-x-fill"></i>
                                     <f:setPropertyActionListener value="#{item}" target="#{webUserController.current}" ></f:setPropertyActionListener>
-                                </p:commandButton>
+                                </h:commandLink>
+                                <p:tooltip for="linkDelete" value="Delete User" class="text-warning" position="bottom"/>
+
 
 
 
