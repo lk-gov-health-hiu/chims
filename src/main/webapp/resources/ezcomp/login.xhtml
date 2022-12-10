@@ -35,18 +35,20 @@
                                                 <label class="form-label m-1" for="txtUserName">User Name</label>
                                                 <p:inputText id="un"
                                                              required="true" 
+                                                             styleClass="w-100"
                                                              requiredMessage="Enter a Username"
                                                              autocomplete="off" value="#{webUserController.userName}" 
-                                                             class="form-control"
-                                                             style="text-align: left; margin: 5px; padding: 5px;">
+                                                             class="form-control w-100">
                                                 </p:inputText>
                                             </div>
                                             <div class="form-outline mb-4">   
-                                                <label class="form-label m-1" for="txtUserName">Password</label>
+                                                <label class="form-label m-1" for="pwd">Password</label>
                                                 <p:password id="pwd"       
                                                             toggleMask="true"
                                                             value="#{webUserController.password}" 
-                                                            class="form-control">
+                                                            class="form-control w-100"
+                                                            
+                                                            >
                                                 </p:password>
                                             </div>
 
