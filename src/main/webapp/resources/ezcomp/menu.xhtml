@@ -83,31 +83,23 @@
                     <p:menuitem value="Contact us" action="/contact"   ajax="false" />
                     <p:menuitem value="About us" action="/about_us"   ajax="false" />
                 </p:submenu>
-
-
-
                 <f:facet name="options">
-                    <p:inputText autocomplete="off"
+                    <p:inputText autocomplete="off" placeholder="Search by ID/PHN/Passport"
                                  value="#{clientController.searchingId}"/>
-                    <p:commandButton ajax="false" value="Search"
+                    <p:commandButton ajax="false" icon="pi pi-search"
                                      action="#{clientController.searchByAnyIdWithBasicData()}" 
                                      ></p:commandButton>
                     <p:spacer height="1" width="5" ></p:spacer>
                     <p:outputLabel value="|"></p:outputLabel>
                     <p:spacer height="1" width="5" ></p:spacer>
                     <p:commandButton action="#{webUserController.logOut()}" ajax="false"
-                                     rendered="#{webUserController.loggedUser ne null}" value="#{webUserController.loggedUser.name} - Logout" />
-
-
-
+                                     icon="pi pi-sign-out"
+                                     rendered="#{webUserController.loggedUser ne null}"  />
                 </f:facet>
             </p:menubar>
 
             <p:menubar  rendered="#{webUserController.loggedUser ne null}"  autoDisplay="false"   styleClass="verticalmenu">
-
-
                 <p:menuitem ajax="false" value="Home" icon="ui-icon-home" action="/index" />
-
                 <p:submenu label="Clients" rendered="#{webUserController.hasPrivilege('Client_Management')}" >
                     <p:menuitem ajax="false" value="Search by IDs" action="#{clientController.toSearchClientById()}" />
                     <p:menuitem ajax="false" value="Register New" action="#{clientController.toAddNewClient()}"  />
