@@ -21,11 +21,11 @@
                             <p:outputLabel value="#{v.code}" ></p:outputLabel>
                         </p:column>
                         <p:column headerText="Action" >
-                            <p:commandButton ajax="false" value="Edit" action="#{itemController.toEditVtm()}" >
+                            <p:commandButton ajax="false" class="m-1" value="Edit" action="#{itemController.toEditVtm()}" >
                                 <f:setPropertyActionListener value="#{v}" target="#{itemController.vtm}">
                                 </f:setPropertyActionListener>
                             </p:commandButton>
-                            <p:commandButton ajax="false" value="Delete" action="#{itemController.removeItem()}" >
+                            <p:commandButton ajax="false" class="m-1" value="Delete" action="#{itemController.removeItem()}" >
                                 <f:setPropertyActionListener value="#{v}" target="#{itemController.removingItem}">
                                 </f:setPropertyActionListener>
                             </p:commandButton>
