@@ -83,26 +83,26 @@
                                 </f:facet>
 
                                 <p:commandButton  value="Edit"
-                                                  class="m-1"
                                                   ajax="false"
+                                                  class="m-1"
                                                   action="#{webUserController.prepareEdit()}" >
                                     <f:setPropertyActionListener value="#{item}" target="#{webUserController.current}" ></f:setPropertyActionListener>
                                 </p:commandButton>
                                 <p:commandButton  value="Password"
-                                                  class="m-1"
                                                   ajax="false"
+                                                  class="m-1"
                                                   action="#{webUserController.toManagePrivileges()}" >
                                     <f:setPropertyActionListener value="#{item}" 
                                                                  target="#{webUserController.current}" >
                                     </f:setPropertyActionListener>
                                 </p:commandButton>
-                                <p:commandButton  value="Privileges"
-                                                  class="m-1"
+                                <p:commandButton  value="Privileges" 
                                                   ajax="false"
+                                                  class="m-1"
                                                   action="#{webUserController.prepareEditPassword()}" >
                                     <f:setPropertyActionListener value="#{item}" target="#{webUserController.current}" ></f:setPropertyActionListener>
                                 </p:commandButton>
-                                <p:commandButton  value="Delete"
+                                <p:commandButton  value="Delete" 
                                                   class="m-1"
                                                   ajax="false"
                                                   action="#{webUserController.deleteUser()}" >
