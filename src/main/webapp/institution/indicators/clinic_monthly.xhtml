@@ -9,30 +9,27 @@
 
     <body>
 
-        <ui:composition template="./index.xhtml">
+        <ui:composition template="/institution/indicators/index.xhtml">
 
             <ui:define name="reports">
                 <h:form>
-
-                    <div class="row" >
-                        <div class="col-md-12" >
-                            <p:outputLabel value="Indicator  - Clinic Monthly" ></p:outputLabel>
+                    <p:panelGrid columns="1" style="width: 100%">
+                        <f:facet name="header" >
+                            <p:outputLabel value="Indicator  - My Clinic Monthly" ></p:outputLabel>
                             <p:spacer height="1" width="70" ></p:spacer>
                             <p:commandButton value="Back"  
                                              immediate="true"
                                              action="#{indicatorController.toIndicatorIndex()}"
                                              ajax="false">
                             </p:commandButton>
-                        </div>
-                    </div>
+                        </f:facet>
 
-                    <div class="row" >
-                        <div class="col-md-12" >
-                            <p:panelGrid columns="2" class="w-100" style="border: 1px solid red;" >
+
+                        <h:panelGrid columns="1" styleClass="alignTop" >
+
+                            <p:panelGrid columns="2" >
                                 <p:outputLabel value="Indicator" for="indicator" ></p:outputLabel>
                                 <p:autoComplete id="indicator"
-                                                class="w-100"
-                                                inputStyleClass="w-100"
                                                 required="true" 
                                                 requiredMessage="Please select a report. To list reports, start entering few letters"
                                                 value="#{indicatorController.queryComponent}"
@@ -77,26 +74,23 @@
                                 </p:commandButton>
 
                             </p:panelGrid>
-                        </div>
-                    </div>
-
-                    <div class="row" >
-                        <div class="col-md-12" >
-                            <h:panelGrid columns="2" >
-                                <p:inputText value="Result" ></p:inputText>
-                                <p:inputText value="${indicatorController.result}" ></p:inputText>
-                            </h:panelGrid>
-                            <h:panelGrid columns="1" >
-                                <h:outputText value="#{indicatorController.message}" escape="false" ></h:outputText>
-                            </h:panelGrid>
-
-                        </div>
-                    </div>
 
 
 
+                        </h:panelGrid>
 
-                    
+
+                        <h:panelGrid columns="2" >
+                            <p:inputText value="Result" ></p:inputText>
+                            <p:inputText value="${indicatorController.result}" ></p:inputText>
+                        </h:panelGrid>
+                         <h:panelGrid columns="1" >
+                            <h:outputText value="#{indicatorController.message}" escape="false" ></h:outputText>
+                        </h:panelGrid>
+
+
+
+                    </p:panelGrid>
                 </h:form>
             </ui:define>
 
