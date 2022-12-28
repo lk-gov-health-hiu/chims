@@ -16,82 +16,84 @@
             <ui:define name="content">
 
 
-                <p:panelGrid columns="2" style="width: 100%;" styleClass="alignTop">
-                    <f:facet name="header" >
-                        <h:outputLabel value="Indicators" ></h:outputLabel>
-                    </f:facet>
-                    <h:form>
-                        <p:accordionPanel style="width: 24rem;" 
-                                          activeIndex="#{webUserController.indicatorTabIndex}"
-                                          >
+                <div class="row" >
+                    <div class="col-12" >
+                        <h1>
+                            <h:outputLabel value="Indicators" ></h:outputLabel>
+                        </h1>
+                    </div>
+                </div>
 
-                            <p:ajax event="tabChange" update="@this" />
+                <div class="row">
+                    <div class="col-md-3">
+                        <h:form>
+                            <p:accordionPanel style="width: 24rem;" 
+                                              activeIndex="#{webUserController.indicatorTabIndex}"
+                                              >
 
-                            <p:tab title="Institution Indicators"  >
-                                <h:panelGrid columns="1" >
-                                    <p:commandButton value="Clinic Monthly" 
+                                <p:ajax event="tabChange" update="@this" />
+
+                                <p:tab title="Institution Indicators"  >
+                                    <h:panelGrid columns="1" >
+                                        <p:commandButton value="Clinic Monthly" 
+                                                         style="width:20em;margin:auto;"
+                                                         action="#{indicatorController.toClinicMonthly()}"
+                                                         ajax="false"></p:commandButton>
+                                        <p:commandButton value="Hospital Monthly" 
+                                                         style="width:20em;margin:auto;"
+                                                         action="#{indicatorController.toHospitalMonthly()}"
+                                                         ajax="false"></p:commandButton>
+                                        <p:commandButton value="RDHS Monthly" 
+                                                         style="width:20em;margin:auto;"
+                                                         action="#{indicatorController.toRdhsMonthly()}"
+                                                         ajax="false"></p:commandButton>
+                                        <p:commandButton value="PDHS Monthly" 
+                                                         style="width:20em;margin:auto;"
+                                                         action="#{indicatorController.toPdhsMonthly()}"
+                                                         ajax="false"></p:commandButton>
+
+                                        <p:commandButton value="District Monthly" 
+                                                         style="width:20em;margin:auto;"
+                                                         action="#{indicatorController.toDistrictMonthly()}"
+                                                         ajax="false"></p:commandButton>
+
+                                        <p:commandButton value="Province Monthly" 
+                                                         style="width:20em;margin:auto;"
+                                                         action="#{indicatorController.toProvinceMonthly()}"
+                                                         ajax="false"></p:commandButton>
+
+                                        <p:commandButton value="National Monthly" 
+                                                         style="width:20em;margin:auto;"
+                                                         action="#{indicatorController.toNationalMonthly()}"
+                                                         ajax="false"></p:commandButton>
+
+                                        <hr/>
+
+
+                                    </h:panelGrid>
+
+                                </p:tab>
+                                <p:tab title="Counts" >
+                                    <p:commandButton value="Counts" 
                                                      style="width:20em;margin:auto;"
-                                                     action="#{indicatorController.toClinicMonthly()}"
+                                                     action="#{indicatorController.toProcesCounts()}"
                                                      ajax="false"></p:commandButton>
-                                    <p:commandButton value="Hospital Monthly" 
+                                    <p:commandButton value="Counts for Indicators" 
                                                      style="width:20em;margin:auto;"
-                                                     action="#{indicatorController.toHospitalMonthly()}"
+                                                     action="#{indicatorController.toProcesCountsForSelectedIndicators()}"
                                                      ajax="false"></p:commandButton>
-                                    <p:commandButton value="RDHS Monthly" 
-                                                     style="width:20em;margin:auto;"
-                                                     action="#{indicatorController.toRdhsMonthly()}"
-                                                     ajax="false"></p:commandButton>
-                                    <p:commandButton value="PDHS Monthly" 
-                                                     style="width:20em;margin:auto;"
-                                                     action="#{indicatorController.toPdhsMonthly()}"
-                                                     ajax="false"></p:commandButton>
-
-                                    <p:commandButton value="District Monthly" 
-                                                     style="width:20em;margin:auto;"
-                                                     action="#{indicatorController.toDistrictMonthly()}"
-                                                     ajax="false"></p:commandButton>
-
-                                    <p:commandButton value="Province Monthly" 
-                                                     style="width:20em;margin:auto;"
-                                                     action="#{indicatorController.toProvinceMonthly()}"
-                                                     ajax="false"></p:commandButton>
-
-                                    <p:commandButton value="National Monthly" 
-                                                     style="width:20em;margin:auto;"
-                                                     action="#{indicatorController.toNationalMonthly()}"
-                                                     ajax="false"></p:commandButton>
-
-                                    <hr/>
+                                </p:tab>
 
 
-                                </h:panelGrid>
+                            </p:accordionPanel>
+                        </h:form>
+                    </div>
+                    <div class="col-md-9" >
+                        <ui:insert name="reports">
 
-                            </p:tab>
-                            <p:tab title="Counts" >
-                                <p:commandButton value="Counts" 
-                                                 style="width:20em;margin:auto;"
-                                                 action="#{indicatorController.toProcesCounts()}"
-                                                 ajax="false"></p:commandButton>
-                                <p:commandButton value="Counts for Indicators" 
-                                                 style="width:20em;margin:auto;"
-                                                 action="#{indicatorController.toProcesCountsForSelectedIndicators()}"
-                                                 ajax="false"></p:commandButton>
-                            </p:tab>
-
-
-                        </p:accordionPanel>
-                    </h:form>
-
-
-                    <ui:insert name="reports">
-
-                    </ui:insert>
-
-
-                </p:panelGrid>
-
-
-
+                        </ui:insert>
+                    </div>
+                </div>
 
             </ui:define>
 

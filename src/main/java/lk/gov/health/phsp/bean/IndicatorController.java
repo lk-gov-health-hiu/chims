@@ -89,6 +89,8 @@ public class IndicatorController implements Serializable {
     InstitutionApplicationController institutionApplicationController;
     @Inject
     ApplicationController applicationController;
+    @Inject
+    WebUserController webUserController;
 
     @EJB
     ClientEncounterComponentItemFacade clientEncounterComponentItemFacade;
@@ -160,12 +162,26 @@ public class IndicatorController implements Serializable {
         institution = null;
         return "/indicators/hospital_monthly";
     }
+    
+    public String toHospitalMonthlyIa() {
+        message = "";
+        result = "";
+        institution = null;
+        return "/institution/indicators/hospital_monthly";
+    }
 
     public String toClinicMonthly() {
         message = "";
         result = "";
         institution = null;
         return "/indicators/clinic_monthly";
+    }
+    
+    public String toClinicMonthlyIa() {
+        message = "";
+        result = "";
+        institution = null;
+        return "/institution/indicators/clinic_monthly";
     }
 
     public String toDistrictMonthly() {
@@ -192,8 +208,41 @@ public class IndicatorController implements Serializable {
     }
 
     public String toIndicatorIndex() {
-        userTransactionController.recordTransaction("To View Indicators");
-        return "/indicators/index";
+        String forSys = "/indicators/index";
+        String forIns = "/institution/indicators/index";
+        String forMeu =  "/indicators/index";
+        String forMea = "/indicators/index";
+        String forClient = "";
+        String noAction = "";
+        String action = "";
+        switch (webUserController.getLoggedUser().getWebUserRole()) {
+            case Client:
+                action = forClient;
+                break;
+            case Doctor:
+            case Institution_Administrator:
+            case Institution_Super_User:
+            case Institution_User:
+            case Nurse:
+            case Midwife:
+                action = forIns;
+                break;
+            case Me_Admin:
+                action = forMea;
+                break;
+            case Me_Super_User:
+                action = forMeu;
+                break;
+            case Me_User:
+            case User:
+                action = noAction;
+                break;
+            case Super_User:
+            case System_Administrator:
+                action = forSys;
+                break;
+        }
+        return action;
     }
 
     public void runClinicCounts() {
