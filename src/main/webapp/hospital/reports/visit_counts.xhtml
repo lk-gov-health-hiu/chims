@@ -33,7 +33,7 @@
                             <p:calendar value="#{hospitalReportController.toDate}" pattern="dd MM yyyy hh:mm a" ></p:calendar>
 
 
-                            <p:commandButton value="Process" ajax="false"
+                            <p:commandButton value="process" ajax="false"
                                              action="#{hospitalReportController.fillClinicVisitsByInstitution()}"></p:commandButton>
                             <p:commandButton value="Download" ajax="false">
                                 <p:dataExporter type="xlsx" target="tbl" fileName="Clinic Visits by Institution" ></p:dataExporter>

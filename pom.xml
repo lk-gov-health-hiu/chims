@@ -3,11 +3,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.divudi</groupId>
-    <artifactId>chims</artifactId>
+    <artifactId>chimsdev</artifactId>
     <version>0.1</version>
     <packaging>war</packaging>
 
-    <name>chims</name>
+    <name>chimsdev</name>
 
     <properties>
         <endorsed.dir>${project.build.directory}/endorsed</endorsed.dir>
@@ -295,17 +295,15 @@
             <version>2.2.6</version>
         </dependency>
         
-        <!-- https://mvnrepository.com/artifact/ca.uhn.hapi.fhir/hapi-fhir-base -->
+        <!--HAPI FHIR Dependancies-->
         <dependency>
             <groupId>ca.uhn.hapi.fhir</groupId>
             <artifactId>hapi-fhir-base</artifactId>
             <version>6.1.2</version>
         </dependency>
-
-        <!-- https://mvnrepository.com/artifact/ca.uhn.hapi.fhir/hapi-fhir-structures-dstu3 -->
         <dependency>
             <groupId>ca.uhn.hapi.fhir</groupId>
-            <artifactId>hapi-fhir-structures-dstu3</artifactId>
+            <artifactId>hapi-fhir-structures-r4</artifactId>
             <version>6.1.2</version>
         </dependency>
 

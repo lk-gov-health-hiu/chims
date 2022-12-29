@@ -2144,7 +2144,7 @@ public class ClientController implements Serializable {
                 + " where c.retired=false "
                 + " and c.phn=:q "
                 + " order by c.phn";
-        m.put("q", ids.trim().toUpperCase());
+        m.put("q", ids.trim());
         //// //System.out.println("m = " + m);
         //// //System.out.println("j = " + j);
         objs = getFacade().findByJpql(j, m);

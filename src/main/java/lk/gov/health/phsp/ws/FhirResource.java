@@ -26,12 +26,15 @@ package lk.gov.health.phsp.ws;
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.context.FhirVersionEnum;
 import ca.uhn.fhir.parser.IParser;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.ejb.EJB;
 import javax.enterprise.context.Dependent;
+import javax.faces.context.FacesContext;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.Produces;
@@ -41,17 +44,33 @@ import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.PathParam;
 import lk.gov.health.phsp.entity.ApiKey;
 import lk.gov.health.phsp.entity.Client;
+import lk.gov.health.phsp.entity.Encounter;
+import lk.gov.health.phsp.enums.EncounterType;
+import lk.gov.health.phsp.enums.InstitutionType;
 import lk.gov.health.phsp.facade.ApiKeyFacade;
 import lk.gov.health.phsp.facade.ClientFacade;
-import org.hl7.fhir.dstu3.model.BackboneElement;
-import org.hl7.fhir.dstu3.model.Base;
-import org.hl7.fhir.dstu3.model.ContactPoint;
-import org.hl7.fhir.dstu3.model.Enumerations;
-import org.hl7.fhir.dstu3.model.Narrative;
-import org.hl7.fhir.dstu3.model.OperationOutcome;
-import org.hl7.fhir.dstu3.model.Patient;
+import lk.gov.health.phsp.facade.EncounterFacade;
 import org.json.JSONArray;
 import org.json.JSONObject;
+
+//HAPI FHIR IMPORTS
+
+import org.hl7.fhir.r4.model.BackboneElement;
+import org.hl7.fhir.r4.model.Base;
+import org.hl7.fhir.r4.model.Base;
+import org.hl7.fhir.r4.model.Bundle;
+import org.hl7.fhir.r4.model.Bundle.BundleType;
+import org.hl7.fhir.r4.model.CapabilityStatement;
+import org.hl7.fhir.r4.model.CapabilityStatement.CapabilityStatementDocumentComponent;
+import org.hl7.fhir.r4.model.ContactPoint;
+import org.hl7.fhir.r4.model.DateTimeType;
+import org.hl7.fhir.r4.model.Enumerations;
+import org.hl7.fhir.r4.model.Narrative;
+import org.hl7.fhir.r4.model.OperationOutcome;
+import org.hl7.fhir.r4.model.Patient;
+import org.hl7.fhir.r4.model.Resource;
+import org.hl7.fhir.r4.model.ResourceType;
+
 
 /**
  * REST Web Service
@@ -69,6 +88,8 @@ public class FhirResource {
     ApiKeyFacade apiKeyFacade;
     @EJB
     ClientFacade clientFacade;
+    @EJB
+    EncounterFacade encounterFacade;
 
     /**
      * Creates a new instance of GenericResource
@@ -77,7 +98,29 @@ public class FhirResource {
     }
 
     @GET
-    @Path("/clint/{phn}")
+    @Path("/capability_statement")
+    @Produces("application/json")
+    public String getCapabilityStatement(@Context HttpServletRequest requestContext) {
+        CapabilityStatement cs = new CapabilityStatement();
+        CapabilityStatementDocumentComponent uc = new CapabilityStatementDocumentComponent();
+        cs.getSoftware()
+                .setName("cloud HIMS FHIR Server")
+                .setVersion("1.0")
+                .setReleaseDateElement(new DateTimeType("2022-10-06"));
+
+        cs.addDocument(uc);
+        cs.setName("cloud HIMS");
+        FhirContext ctx = FhirContext.forR4();
+        IParser parser = ctx.newJsonParser();
+
+        String serialized = parser.encodeResourceToString(cs);
+
+        return serialized;
+
+    }
+
+    @GET
+    @Path("/Patient/{phn}")
     @Produces("application/json")
     public String getClientByPhn(@Context HttpServletRequest requestContext,
             @PathParam("phn") String phn) {
@@ -87,14 +130,145 @@ public class FhirResource {
             return errorMessageKey();
         }
 
-        Client c = finfFirstPatientsByPhn(phn);
+        Long tid = null;
+        try {
+            tid = Long.valueOf(phn);
+        } catch (Exception e) {
+
+        }
+        Client c = null;
+        if (tid != null) {
+            c = findPatientsById(tid);
+        }
+        if (c != null) {
+            return patientToJson(c);
+        }
+        List<Client> cs = findPatientsByPhn(phn);
+        if (cs != null && !cs.isEmpty()) {
+            return patientToJson(cs);
+        }
+        cs = findPatientsByNic(phn);
+        if (cs != null && !cs.isEmpty()) {
+            return patientToJson(cs);
+        }
+        cs = findPatientsByPhone(phn);
+        if (cs != null && !cs.isEmpty()) {
+            return patientToJson(cs);
+        }
+        return errorMessageNoData();
+    }
+
+    public String patientToJson(Client c) {
+        Patient patient = fhirPatientFromClient(c);
+
+        FhirContext ctx = FhirContext.forR4();
+        IParser parser = ctx.newJsonParser();
+
+        String serialized = parser.encodeResourceToString(patient);
+
+        return serialized;
+    }
+
+    public String getBaseUrl() {
+        return "https://" + context.getBaseUri().getHost() + context.getBaseUri().getPath();
+    }
+
+    public String noData() {
+        OperationOutcome oo = new OperationOutcome();
+        OperationOutcome.OperationOutcomeIssueComponent c = oo.addIssue();
+        c.setSeverity(OperationOutcome.IssueSeverity.ERROR);
+        c.addExpression("No Data");
+        FhirContext ctx = FhirContext.forR4();
+        IParser parser = ctx.newJsonParser();
+        String serialized = parser.encodeResourceToString(oo);
+        return serialized;
+    }
+
+    public String patientToJson(List<Client> cs) {
+        if (cs == null || cs.isEmpty()) {
+            return noData();
+        }
+        if(cs.size()==1){
+            return patientToJson(cs.get(0));
+        }
+        
+        Bundle b = new Bundle();
+
+        b.setId(new Date().getTime() + "");
+        b.setType(BundleType.SEARCHSET);
+        b.setTotal(cs.size());
+
+        for (Client c : cs) {
+            Bundle.BundleEntryComponent e = b.addEntry();
+            String temId = getBaseUrl() + "fhir/client/" + c.getId();
+            e.setFullUrl(temId);
+            Patient p = fhirPatientFromClient(c);
+            e.setResource(p);
+        }
+
+//        Patient patient = fhirPatientFromClient(c);
+        FhirContext ctx = FhirContext.forR4();
+        IParser parser = ctx.newJsonParser();
+
+        String serialized = parser.encodeResourceToString(b);
+
+        return serialized;
+    }
+
+    @GET
+    @Path("/Patient/{phn}/encounter/")
+    @Produces("application/json")
+    public String getClientVisitByPhn(@Context HttpServletRequest requestContext,
+            @PathParam("phn") String phn) {
+
+        String key = requestContext.getHeader("FHIR");
+        if (!isValidKey(key)) {
+            return errorMessageKey();
+        }
+
+        Client c = findFirstPatientsByPhn(phn);
         if (c == null) {
             return errorMessageNoData();
         }
 
         Patient patient = fhirPatientFromClient(c);
+        List<Encounter> encounters = findEncounters(c, null, null, false, null, false);
 
-        FhirContext ctx = FhirContext.forDstu3();
+        if (encounters == null || encounters.isEmpty()) {
+            return errorMessageNoData();
+        }
+
+        org.hl7.fhir.r4.model.Encounter encounter = fhirEcnounterFromEncounter(encounters.get(0));
+        FhirContext ctx = FhirContext.forR4();
+        IParser parser = ctx.newJsonParser();
+
+        String serialized = parser.encodeResourceToString(encounter);
+
+        return serialized;
+    }
+
+    @GET
+    @Path("/institution_client/{institution_code}")
+    @Produces("application/json")
+    public String getInstitutionClientByPhn(@Context HttpServletRequest requestContext,
+            @PathParam("ins") String ins) {
+
+        String key = requestContext.getHeader("FHIR");
+        if (!isValidKey(key)) {
+            return errorMessageKey();
+        }
+
+        Client c = findFirstPatientsByPhn(ins);
+        if (c == null) {
+            return errorMessageNoData();
+        }
+
+        Bundle b = new Bundle();
+        b.setType(BundleType.COLLECTION);
+
+        Patient patient = fhirPatientFromClient(c);
+
+        FhirContext ctx = FhirContext.forR4();
         IParser parser = ctx.newJsonParser();
 
         String serialized = parser.encodeResourceToString(patient);
@@ -109,11 +283,54 @@ public class FhirResource {
         return clientFacade.findByJpql(j, m);
     }
 
-    public Client finfFirstPatientsByPhn(String phn) {
+    public Client findFirstPatientsByPhn(String phn) {
         String j = "select c from Client c where c.retired=false and c.phn=:q order by c.id desc";
         Map m = new HashMap();
         m.put("q", phn.trim().toUpperCase());
         return clientFacade.findFirstByJpql(j, m);
+    }
+
+    public List<Client> findPatientsByPhn(String phn) {
+        String j = "select c from Client c where c.phn=:q";
+        Map m = new HashMap();
+        m.put("q", phn.trim().toUpperCase());
+        return clientFacade.findByJpql(j, m);
+    }
+
+    public Client findPatientsById(Long id) {
+        String j = "select c from Client c where c.id=:q";
+        Map m = new HashMap();
+        m.put("q", id);
+        return clientFacade.findFirstByJpql(j, m);
+    }
+
+    public List<Client> findPatientsByNic(String nic) {
+        String j = "select c from Client c where c.person.nic=:q";
+        Map m = new HashMap();
+        m.put("q", nic);
+        return clientFacade.findByJpql(j, m);
+    }
+
+    public List<Client> findPatientsByPhone(String nic) {
+        String j = "select c from Client c where (c.person.phone1=:q or c.person.phone2=:q) ";
+        Map m = new HashMap();
+        m.put("q", nic);
+        return clientFacade.findByJpql(j, m);
+    }
+
+    public org.hl7.fhir.r4.model.Encounter fhirEcnounterFromEncounter(Encounter e) {
+        if (e == null) {
+            return null;
+        }
+        org.hl7.fhir.r4.model.Encounter fe = new org.hl7.fhir.r4.model.Encounter();
+        fe.setId(e.getId().toString());
+        if (e.getCompleted()) {
+            fe.setStatus(org.hl7.fhir.r4.model.Encounter.EncounterStatus.FINISHED);
+        }
+        fe.getPeriod().setStart(e.getCreatedAt());
+        fe.getPeriod().setEnd(e.getCompletedAt());
+
+        return fe;
     }
 
     public Patient fhirPatientFromClient(Client client) {
@@ -123,6 +340,7 @@ public class FhirResource {
         if (client.getPerson() == null) {
             return null;
         }
+//        Create New FHIR Resource - Patient
         Patient patient = new Patient();
         patient.setId(client.getId().toString());
         patient.addIdentifier()
@@ -185,7 +403,7 @@ public class FhirResource {
     }
 
     private String errorMessageNoData() {
-        FhirContext ctx = FhirContext.forDstu2();
+        FhirContext ctx = FhirContext.forR4();
         IParser parser = ctx.newJsonParser();
 
         OperationOutcome oo = new OperationOutcome();
@@ -197,7 +415,7 @@ public class FhirResource {
     }
 
     private String errorMessageKey() {
-        FhirContext ctx = FhirContext.forDstu3();
+        FhirContext ctx = FhirContext.forR4();
         IParser parser = ctx.newJsonParser();
 
         OperationOutcome oo = new OperationOutcome();
@@ -269,6 +487,36 @@ public class FhirResource {
             return false;
         }
         return true;
+    }
+
+    public List<Encounter> findEncounters(Client client, List<InstitutionType> insTypes, EncounterType encType, boolean excludeCompleted, Integer maxRecordCount, boolean descending) {
+        String j = "select e from Encounter e where e.retired=false ";
+        Map m = new HashMap();
+        if (client != null) {
+            j += " and e.client=:c ";
+            m.put("c", client);
+        }
+        if (insTypes != null) {
+            j += " and e.institution.institutionType in :it ";
+            m.put("it", insTypes);
+        }
+        if (insTypes != null) {
+            j += " and e.encounterType=:et ";
+            m.put("et", encType);
+        }
+        if (excludeCompleted) {
+            j += " and e.completed=:com ";
+            m.put("com", false);
+        }
+        if (descending) {
+            j += " order by e.id desc";
+        }
+        if (maxRecordCount == null) {
+            return encounterFacade.findByJpql(j, m);
+        } else {
+            return encounterFacade.findByJpql(j, m, maxRecordCount);
+        }
+
     }
 
 }

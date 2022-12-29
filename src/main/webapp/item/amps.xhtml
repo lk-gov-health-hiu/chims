@@ -24,11 +24,11 @@
                             <p:outputLabel value="#{v.parent.name}" ></p:outputLabel>
                         </p:column>
                         <p:column headerText="Action" >
-                            <p:commandButton ajax="false" value="Edit" action="#{itemController.toEditAmp()}" >
+                            <p:commandButton ajax="false" value="Edit" class="m-1" action="#{itemController.toEditAmp()}" >
                                 <f:setPropertyActionListener value="#{v}" target="#{itemController.amp}">
                                 </f:setPropertyActionListener>
                             </p:commandButton>
-                            <p:commandButton ajax="false" value="Delete" action="#{itemController.removeItem()}" >
+                            <p:commandButton ajax="false" value="Delete" class="m-1" action="#{itemController.removeItem()}" >
                                 <f:setPropertyActionListener value="#{v}" target="#{itemController.removingItem}">
                                 </f:setPropertyActionListener>
                             </p:commandButton>

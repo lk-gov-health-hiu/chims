@@ -66,10 +66,10 @@
                             <h:outputText value="#{item.district.name}"/>
                         </p:column>
                         <p:column headerText="Actions" exportable="false" >
-                            <p:commandButton ajax="false" value="Edit" action="#{areaController.toEditAreaForSysAdmin()}" >
+                            <p:commandButton ajax="false" class="m-1" value="Edit" action="#{areaController.toEditAreaForSysAdmin()}" >
                                 <f:setPropertyActionListener value="#{item}" target="#{areaController.selected}" ></f:setPropertyActionListener>
                             </p:commandButton>
-                            <p:commandButton ajax="false" value="Delete" action="#{areaController.deleteAreaForSysAdmin()}"
+                            <p:commandButton ajax="false" class="m-1" value="Delete" action="#{areaController.deleteAreaForSysAdmin()}"
                                              onclick="return confirm('Are you sure?')">
                                 <f:setPropertyActionListener 
                                     value="#{item}" 

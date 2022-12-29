@@ -819,7 +819,7 @@ public class ClientEncounterComponentItemController implements Serializable {
         i.setAddingItem(ni);
 
         // //System.out.println("before recording user transaction");
-        userTransactionController.recordTransaction("Add Another - Clinic Forms");
+//        userTransactionController.recordTransaction("Add Another - Clinic Forms");
         // //System.out.println("after saving user transaction");
     }
 

@@ -46,7 +46,9 @@
                                         <h:outputText value="Actions"/>
                                     </f:facet>
 
-                                    <p:commandButton ajax="false" style="width: 7rem;"
+                                    <p:commandButton ajax="false" 
+                                                     class="m-1"
+                                                     style="width: 7rem;"
                                                      value="Edit" 
                                                      action="#{queryComponentController.toEditExcelTemplate()}" >
                                         <f:setPropertyActionListener value="#{item}" target="#{queryComponentController.selected}" ></f:setPropertyActionListener>
@@ -54,6 +56,7 @@
 
                                     <p:commandButton value="Download" 
                                                      ajax="false" 
+                                                     class="m-1"
                                                      onclick="PrimeFaces.monitorDownload(start, stop);" 
                                                      icon="ui-icon-arrowthick-1-s">
                                         <f:setPropertyActionListener value="#{item}" 
@@ -63,13 +66,17 @@
                                     </p:commandButton>
 
                                     <p:commandButton  ajax="false"
+                                                      class="m-1"
                                                       style="width: 7rem;"
                                                       value="Upload" action="#{uploadController.toUploadExcelTemplate()}" >
                                         <f:setPropertyActionListener value="#{item}" target="#{uploadController.selectedComponent}" ></f:setPropertyActionListener>
                                         <f:setPropertyActionListener value="#{item}" target="#{queryComponentController.selected}" ></f:setPropertyActionListener>
                                     </p:commandButton>
 
-                                    <p:commandButton ajax="false" value="Remove" action="#{queryComponentController.remove()}" 
+                                    <p:commandButton ajax="false"
+                                                     value="Remove" 
+                                                     class="m-1"
+                                                     action="#{queryComponentController.remove()}" 
                                                      onclick="if (!confirm('Really want to do that?'))
                                                                  return false"
                                                      style="width: 7rem;">

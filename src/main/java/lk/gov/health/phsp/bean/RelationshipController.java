@@ -847,6 +847,36 @@ public class RelationshipController implements Serializable {
         // //System.out.println("j = " + j);
         items = getFacade().findByJpql(j, m);
     }
+    
+    public void fillAllInstitutionPopulationData() {
+        // //System.out.println("fillInstitutionPopulationData");
+        if (getYear() == null) {
+            JsfUtil.addErrorMessage("No Year Selected.");
+            return;
+        }
+        String j = "select r from Relationship r "
+                + " where r.retired<>:ret "
+                + " and r.yearInt=:y";
+
+        Map m = new HashMap();
+        if (institution != null) {
+            j += " and r.institution=:ins  ";
+            m.put("ins", institution);
+        } else {
+            j += " and r.institution is not null  ";
+        }
+        if (rt != null) {
+            j += " and r.relationshipType=:rt ";
+            m.put("rt", rt);
+        } else {
+            j += " and r.relationshipType is not null  ";
+        }
+        m.put("y", getYear());
+        m.put("ret", true);
+        // //System.out.println("m = " + m);
+        // //System.out.println("j = " + j);
+        items = getFacade().findByJpql(j, m);
+    }
 
     public void fillAreaPopulationData() {
         if (getYear() == null) {
@@ -879,6 +909,12 @@ public class RelationshipController implements Serializable {
         userTransactionController.recordTransaction("To View Population Data for Institution");
         items = null;
         return "/institution/view_population_data";
+    }
+    
+    public String toViewPopulationDataForAllInstitution() {
+        userTransactionController.recordTransaction("To View Population Data for Institution");
+        items = null;
+        return "/institution/view_population_data_for_all_institutions";
     }
 
     public String toViewPopulationDataForArea() {
