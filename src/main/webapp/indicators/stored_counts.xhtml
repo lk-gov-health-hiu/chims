@@ -1,0 +1,92 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:fn="http://xmlns.jcp.org/jsp/jstl/functions">
+
+    <h:body>
+
+        <ui:composition template="/indicators/index.xhtml">
+
+            <ui:define name="reports">
+                <h:form>
+
+                    <h2>
+                        <p:outputLabel value="Stored Counts" ></p:outputLabel>
+                    </h2>
+                        
+
+                        <p:panelGrid columns="2"  style="width: 100%;" >
+                            
+
+                            <p:outputLabel id="lblFrom" value="Period Start" ></p:outputLabel>
+                            <p:datePicker 
+                                required="true"
+                                requiredMessage="Select the start date of the period"
+                                value="#{indicatorController.fromDate}" ></p:datePicker>
+
+                            <p:outputLabel id="lblTo" value="Period End" ></p:outputLabel>
+                            <p:datePicker 
+                                required="true"
+                                requiredMessage="Select the end date of the period"
+                                value="#{indicatorController.toDate}" ></p:datePicker>
+
+
+                        </p:panelGrid>
+
+                        <p:panelGrid columns="2" >
+
+                            <p:commandButton value="Process"  style="width:30em;margin:auto;" 
+                                             action="#{indicatorController.processStoredQueryResults()}"
+                                             ajax="false">
+                            </p:commandButton>
+                            <p:commandButton value="Download"  style="width:30em;margin:auto;" 
+                                             ajax="false">
+                                <p:dataExporter target="tbl" type="xlsx" fileName="stored_quert_results" ></p:dataExporter>
+                            </p:commandButton>
+
+
+
+                        </p:panelGrid>
+
+
+
+
+
+                    <p:dataTable value="#{indicatorController.storedQueryResults}" 
+                                     var="dq"
+                                     id="tbl"
+                                     rowKey="#{dq.id}"
+                                     selectionMode="single"
+
+                                     rows="10"
+                                     paginator="true"
+                                     paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                     currentPageReportTemplate="{startRecord}-{endRecord} of {totalRecords} records"
+                                     rowsPerPageTemplate="5,10,{ShowAll|'All'}"
+                                     >
+                             <p:column headerText="period_start"  sortBy="#{dq.resultFrom}" width="80" >
+                                 <h:outputText value="#{dq.resultFrom}" ></h:outputText>
+                            </p:column>
+                            <p:column headerText="period_start"  sortBy="#{dq.resultTo}" width="80" >
+                                <h:outputText value="#{dq.resultTo}" ></h:outputText>
+                            </p:column>
+                            <p:column headerText="query" sortBy="#{dq.queryComponent.name}" >
+                                <h:outputText value="#{dq.queryComponent.name}" ></h:outputText>
+                            </p:column>
+                            <p:column headerText="count" sortBy="#{dq.longValue}" >
+                                <h:outputText value="#{dq.longValue}" ></h:outputText>
+                            </p:column>
+                        </p:dataTable>
+
+
+                </h:form>
+            </ui:define>
+
+        </ui:composition>
+
+    </h:body>
+</html>
