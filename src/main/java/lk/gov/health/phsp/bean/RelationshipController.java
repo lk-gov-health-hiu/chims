@@ -555,8 +555,8 @@ public class RelationshipController implements Serializable {
 
         for (DesignComponentFormSet fs : selectedFormsets) {
             fs.setRetired(true);
-            fs.setRetiredAt(new Date());
-            fs.setRetiredBy(webUserController.getLoggedUser());
+//            fs.setRetiredAt(new Date());
+//            fs.setRetiredBy(webUserController.getLoggedUser());
             designComponentFormSetFacade.edit(fs);
 
             Relationship r;

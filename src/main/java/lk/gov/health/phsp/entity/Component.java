@@ -118,26 +118,26 @@ public class Component implements Serializable {
     /*
     Last Edit Properties
      */
-    @ManyToOne(fetch = FetchType.LAZY)
-    private WebUser lastEditBy;
-    @Temporal(javax.persistence.TemporalType.TIMESTAMP)
-    private Date lastEditeAt;
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    private WebUser lastEditBy;
+//    @Temporal(javax.persistence.TemporalType.TIMESTAMP)
+//    private Date lastEditeAt;
     /*
     Retire Reversal Properties
      */
-    @ManyToOne(fetch = FetchType.LAZY)
-    private WebUser retiredReversedBy;
-    @Temporal(javax.persistence.TemporalType.TIMESTAMP)
-    private Date retiredReversedAt;
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    private WebUser retiredReversedBy;
+//    @Temporal(javax.persistence.TemporalType.TIMESTAMP)
+//    private Date retiredReversedAt;
     /*
     Retire Properties
      */
     private boolean retired;
-    @ManyToOne(fetch = FetchType.LAZY)
-    private WebUser retiredBy;
-    @Temporal(javax.persistence.TemporalType.TIMESTAMP)
-    private Date retiredAt;
-    private String retireComments;
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    private WebUser retiredBy;
+//    @Temporal(javax.persistence.TemporalType.TIMESTAMP)
+//    private Date retiredAt;
+//    private String retireComments;
 
     private boolean completed;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
@@ -220,37 +220,37 @@ public class Component implements Serializable {
         this.createdAt = createdAt;
     }
 
-    public WebUser getLastEditBy() {
-        return lastEditBy;
-    }
+//    public WebUser getLastEditBy() {
+//        return lastEditBy;
+//    }
+//
+//    public void setLastEditBy(WebUser lastEditBy) {
+//        this.lastEditBy = lastEditBy;
+//    }
+//
+//    public Date getLastEditeAt() {
+//        return lastEditeAt;
+//    }
+//
+//    public void setLastEditeAt(Date lastEditeAt) {
+//        this.lastEditeAt = lastEditeAt;
+//    }
 
-    public void setLastEditBy(WebUser lastEditBy) {
-        this.lastEditBy = lastEditBy;
-    }
-
-    public Date getLastEditeAt() {
-        return lastEditeAt;
-    }
-
-    public void setLastEditeAt(Date lastEditeAt) {
-        this.lastEditeAt = lastEditeAt;
-    }
-
-    public WebUser getRetiredReversedBy() {
-        return retiredReversedBy;
-    }
-
-    public void setRetiredReversedBy(WebUser retiredReversedBy) {
-        this.retiredReversedBy = retiredReversedBy;
-    }
-
-    public Date getRetiredReversedAt() {
-        return retiredReversedAt;
-    }
-
-    public void setRetiredReversedAt(Date retiredReversedAt) {
-        this.retiredReversedAt = retiredReversedAt;
-    }
+//    public WebUser getRetiredReversedBy() {
+//        return retiredReversedBy;
+//    }
+//
+//    public void setRetiredReversedBy(WebUser retiredReversedBy) {
+//        this.retiredReversedBy = retiredReversedBy;
+//    }
+//
+//    public Date getRetiredReversedAt() {
+//        return retiredReversedAt;
+//    }
+//
+//    public void setRetiredReversedAt(Date retiredReversedAt) {
+//        this.retiredReversedAt = retiredReversedAt;
+//    }
 
     public boolean isRetired() {
         return retired;
@@ -260,29 +260,29 @@ public class Component implements Serializable {
         this.retired = retired;
     }
 
-    public WebUser getRetiredBy() {
-        return retiredBy;
-    }
+//    public WebUser getRetiredBy() {
+//        return retiredBy;
+//    }
+//
+//    public void setRetiredBy(WebUser retiredBy) {
+//        this.retiredBy = retiredBy;
+//    }
 
-    public void setRetiredBy(WebUser retiredBy) {
-        this.retiredBy = retiredBy;
-    }
-
-    public Date getRetiredAt() {
-        return retiredAt;
-    }
-
-    public void setRetiredAt(Date retiredAt) {
-        this.retiredAt = retiredAt;
-    }
-
-    public String getRetireComments() {
-        return retireComments;
-    }
-
-    public void setRetireComments(String retireComments) {
-        this.retireComments = retireComments;
-    }
+//    public Date getRetiredAt() {
+//        return retiredAt;
+//    }
+//
+//    public void setRetiredAt(Date retiredAt) {
+//        this.retiredAt = retiredAt;
+//    }
+//
+//    public String getRetireComments() {
+//        return retireComments;
+//    }
+//
+//    public void setRetireComments(String retireComments) {
+//        this.retireComments = retireComments;
+//    }
 
     public Double getOrderNo() {
         return orderNo;

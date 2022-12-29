@@ -71,6 +71,11 @@ public class AreaApplicationController {
         }
         return allAreas;
     }
+    
+    public void reloadAreas(){
+        allAreas = null;
+        getAllAreas();
+    }
 
     private List<Area> fillAllAreas() {
         String j;
