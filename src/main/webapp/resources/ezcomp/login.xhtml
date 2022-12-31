@@ -24,29 +24,25 @@
 
                                         <div class="text-center">
                                             <h:graphicImage library="image" name="himslogo.png" style="width: 185px;" alt="logo"></h:graphicImage>
-                                            <!--                                            <h4 class="mt-1 mb-5 pb-1">Cloud HIMS
-                                                                                        </h4>-->
                                         </div>
 
                                         <h:form>
-                                            <!--                                            <p>Please login to your account</p>-->
-
                                             <div class="form-outline mb-4">
                                                 <label class="form-label m-1" for="txtUserName">User Name</label>
                                                 <p:inputText id="txtUserName"
-                                                             required="true"
+                                                             required="true" 
                                                              styleClass="w-100"
                                                              requiredMessage="Enter a Username"
-                                                             autocomplete="off" value="#{webUserController.userName}"
+                                                             autocomplete="off" value="#{webUserController.userName}" 
                                                              class="form-control w-100">
                                                 </p:inputText>
                                             </div>
-                                            <div class="form-outline mb-4">  
+                                            <div class="form-outline mb-4">   
                                                 <label class="form-label m-1" for="pwd">Password</label>
-
-                                                <p:password id="pwd"  size="100"    
+                                                
+                                                <p:password id="pwd"  size="100"     
                                                             toggleMask="true"
-                                                            value="#{webUserController.password}"
+                                                            value="#{webUserController.password}" 
                                                             class="form-control w-100"
                                                             required="true"
                                                             requiredMessage="Please enter a password"
