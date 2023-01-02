@@ -24,29 +24,29 @@
 
                                         <div class="text-center">
                                             <h:graphicImage library="image" name="himslogo.png" style="width: 185px;" alt="logo"></h:graphicImage>
-
-                                            <h4 class="mt-1 mb-5 pb-1">Cloud Hospital Information Management System
-                                            </h4>
                                         </div>
 
                                         <h:form>
-                                            <p>Please login to your account</p>
-
                                             <div class="form-outline mb-4">
                                                 <label class="form-label m-1" for="txtUserName">User Name</label>
-                                                <p:inputText id="un"
+                                                <p:inputText id="txtUserName"
                                                              required="true" 
+                                                             styleClass="w-100"
                                                              requiredMessage="Enter a Username"
                                                              autocomplete="off" value="#{webUserController.userName}" 
-                                                             class="form-control"
-                                                             style="text-align: left; margin: 5px; padding: 5px;">
+                                                             class="form-control w-100">
                                                 </p:inputText>
                                             </div>
                                             <div class="form-outline mb-4">   
-                                                <label class="form-label m-1" for="txtUserName">Password</label>
-                                                <p:password id="pwd"                                                         
+                                                <label class="form-label m-1" for="pwd">Password</label>
+                                                
+                                                <p:password id="pwd"  size="100"     
+                                                            toggleMask="true"
                                                             value="#{webUserController.password}" 
-                                                            class="form-control">
+                                                            class="form-control w-100"
+                                                            required="true"
+                                                            requiredMessage="Please enter a password"
+                                                            >
                                                 </p:password>
                                             </div>
 
@@ -64,10 +64,10 @@
                                 <div class="col-lg-6 d-flex align-items-center gradient-custom-2" >
                                     <div class="text-white px-3 py-4 p-md-5 mx-md-4" >
                                         <h4 class="mb-4">cHIMS</h4>
-                                        <p class="small mb-0 text-start">Cloud HIMS
-                                            This is a Hospital base clinical information management system.
-                                            This system is being implemented at the Medical Research Institute (MRI) and certain hospitals.
-                                            Requests for investigations will be placed via this system and also the reports will be generated and viewed via this system.
+                                        <p class="small mb-0 text-start">
+                                            This is the Cloud HIMS. It is a cloud Based Hospital information management system. <br/>
+                                            This system is implemented at Healthy Lifestyle Centres by the NCD Unit and PSSP.<br/>
+                                            System was developed by the Health Information Unit of the Ministry of Health.<br/>
                                         </p>
                                     </div>
                                 </div>

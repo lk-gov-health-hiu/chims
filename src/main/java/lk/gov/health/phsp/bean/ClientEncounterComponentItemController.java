@@ -694,8 +694,8 @@ public class ClientEncounterComponentItemController implements Serializable {
             i.setCreatedBy(webUserController.getLoggedUser());
             getFacade().create(i);
         } else {
-            i.setLastEditBy(webUserController.getLoggedUser());
-            i.setLastEditeAt(new Date());
+//            i.setLastEditBy(webUserController.getLoggedUser());
+//            i.setLastEditeAt(new Date());
             getFacade().edit(i);
         }
 
@@ -819,7 +819,7 @@ public class ClientEncounterComponentItemController implements Serializable {
         i.setAddingItem(ni);
 
         // //System.out.println("before recording user transaction");
-        userTransactionController.recordTransaction("Add Another - Clinic Forms");
+//        userTransactionController.recordTransaction("Add Another - Clinic Forms");
         // //System.out.println("after saving user transaction");
     }
 
@@ -843,8 +843,8 @@ public class ClientEncounterComponentItemController implements Serializable {
         }
 
         removingItem.getCi().setRetired(true);
-        removingItem.getCi().setRetiredAt(new Date());
-        removingItem.getCi().setRetiredBy(webUserController.getLoggedUser());
+//        removingItem.getCi().setRetiredAt(new Date());
+//        removingItem.getCi().setRetiredBy(webUserController.getLoggedUser());
         saveCi(removingItem.getCi());
 
         i.getAddedItems().remove(removingItem);
@@ -982,8 +982,8 @@ public class ClientEncounterComponentItemController implements Serializable {
         if (fountVal != null) {
             if (code.equalsIgnoreCase("client_current_age_in_years")) {
                 Person p = client.getPerson();
-                fountVal.setLastEditeAt(new Date());
-                fountVal.setLastEditBy(webUserController.getLoggedUser());
+//                fountVal.setLastEditeAt(new Date());
+//                fountVal.setLastEditBy(webUserController.getLoggedUser());
                 fountVal.setShortTextValue(p.getAgeYears() + "");
                 fountVal.setRealNumberValue(Double.valueOf(p.getAgeYears()));
                 fountVal.setIntegerNumberValue(p.getAgeYears());
@@ -1029,8 +1029,8 @@ public class ClientEncounterComponentItemController implements Serializable {
         if (fountVal != null) {
             if (code.equalsIgnoreCase("client_current_age_in_years")) {
                 Person p = i.getForm().getFormset().getEfs().getClient().getPerson();
-                fountVal.setLastEditeAt(new Date());
-                fountVal.setLastEditBy(webUserController.getLoggedUser());
+//                fountVal.setLastEditeAt(new Date());
+//                fountVal.setLastEditBy(webUserController.getLoggedUser());
                 fountVal.setShortTextValue(p.getAgeYears() + "");
                 fountVal.setRealNumberValue(Double.valueOf(p.getAgeYears()));
                 fountVal.setIntegerNumberValue(p.getAgeYears());

@@ -50,10 +50,14 @@ import lk.gov.health.phsp.enums.InstitutionType;
 import lk.gov.health.phsp.facade.ApiKeyFacade;
 import lk.gov.health.phsp.facade.ClientFacade;
 import lk.gov.health.phsp.facade.EncounterFacade;
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+//HAPI FHIR IMPORTS
+
 import org.hl7.fhir.r4.model.BackboneElement;
 import org.hl7.fhir.r4.model.Base;
 import org.hl7.fhir.r4.model.Base;
-
 import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.Bundle.BundleType;
 import org.hl7.fhir.r4.model.CapabilityStatement;
@@ -66,8 +70,7 @@ import org.hl7.fhir.r4.model.OperationOutcome;
 import org.hl7.fhir.r4.model.Patient;
 import org.hl7.fhir.r4.model.Resource;
 import org.hl7.fhir.r4.model.ResourceType;
-import org.json.JSONArray;
-import org.json.JSONObject;
+
 
 /**
  * REST Web Service
@@ -191,7 +194,7 @@ public class FhirResource {
         
         Bundle b = new Bundle();
 
-        b.setId(cs.toString());
+        b.setId(new Date().getTime() + "");
         b.setType(BundleType.SEARCHSET);
         b.setTotal(cs.size());
 
@@ -337,6 +340,7 @@ public class FhirResource {
         if (client.getPerson() == null) {
             return null;
         }
+//        Create New FHIR Resource - Patient
         Patient patient = new Patient();
         patient.setId(client.getId().toString());
         patient.addIdentifier()

@@ -51,8 +51,8 @@ public class ClientEncounterComponentFormController implements Serializable {
             f.setCreatedBy(webUserController.getLoggedUser());
             getFacade().create(f);
         } else {
-            f.setLastEditBy(webUserController.getLoggedUser());
-            f.setLastEditeAt(new Date());
+//            f.setLastEditBy(webUserController.getLoggedUser());
+//            f.setLastEditeAt(new Date());
             getFacade().edit(f);
         }
     }

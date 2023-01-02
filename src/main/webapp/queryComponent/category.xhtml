@@ -39,15 +39,24 @@
                                         <h:outputText value="Actions"/>
                                     </f:facet>
 
-                                    <p:commandButton ajax="false" value="Edit" action="edit_category" >
+                                    <p:commandButton ajax="false" 
+                                                     value="Edit" 
+                                                     class="m-1"
+                                                     action="edit_category" >
                                         <f:setPropertyActionListener value="#{item}" target="#{queryComponentController.selected}" ></f:setPropertyActionListener>
                                     </p:commandButton>
 
-                                    <p:commandButton ajax="false" value="Subcategories" action="subcategory" >
+                                    <p:commandButton ajax="false"
+                                                     value="Subcategories"
+                                                     class="m-1"
+                                                     action="subcategory" >
                                         <f:setPropertyActionListener value="#{item}" target="#{queryComponentController.selectedCategory}" ></f:setPropertyActionListener>
                                     </p:commandButton>
 
-                                    <p:commandButton ajax="false" value="Remove" action="#{queryComponentController.remove()}" 
+                                    <p:commandButton ajax="false" 
+                                                     value="Remove"
+                                                     class="m-1"
+                                                     action="#{queryComponentController.remove()}" 
                                                      onclick="if (!confirm('Really want to do that?'))
                                                                  return false">
                                         <f:setPropertyActionListener value="#{item}" target="#{queryComponentController.removing}" ></f:setPropertyActionListener>
