@@ -46,6 +46,7 @@ import lk.gov.health.phsp.enums.InstitutionType;
 import lk.gov.health.phsp.enums.Privilege;
 import lk.gov.health.phsp.enums.PrivilegeTreeNode;
 import lk.gov.health.phsp.enums.RelationshipType;
+import lk.gov.health.phsp.facade.PersonFacade;
 import lk.gov.health.phsp.facade.UserPrivilegeFacade;
 import org.primefaces.model.StreamedContent;
 import org.primefaces.model.TreeNode;
@@ -187,6 +188,8 @@ public class WebUserController implements Serializable {
     private TreeNode allPrivilegeRoot;
     private TreeNode myPrivilegeRoot;
     private TreeNode[] selectedNodes;
+
+    private String institutionName;
 
     @PostConstruct
     public void init() {
@@ -715,6 +718,42 @@ public class WebUserController implements Serializable {
 //        return "/index";
 //    }
 //    
+    public boolean thisIsTheFirstLogin() {
+        String temSQL;
+        temSQL = "SELECT u FROM WebUser u";
+        WebUser u = getFacade().findFirstByJpql(temSQL);
+        if (u == null) {
+            return true;
+        }
+        return false;
+    }
+
+    public String createFirstUser() {
+        Institution ins = new Institution();
+        ins.setName(institutionName);
+        institutionFacade.create(ins);
+
+        WebUser nu = new WebUser();
+        Person np = new Person();
+        np.setName(userName);
+        nu.setName(userName);
+        nu.setInstitution(ins);
+        nu.setPerson(np);
+        nu.setWebUserPassword(password);
+        nu.setWebUserPassword(commonController.hash(password));
+        nu.setCreatedAt(new Date());
+        nu.setWebUserRole(WebUserRole.System_Administrator);
+        getFacade().create(nu);
+        List<Privilege> ps = new ArrayList<>();
+        for(Privilege p: Privilege.values()){
+            ps.add(p);
+        }
+        addWebUserPrivileges(nu, ps);
+        JsfUtil.addSuccessMessage(("A new User Created Successfully."));
+
+        return "/index";
+    }
+
     public String login() {
         //System.out.println("Login");
         loggableInstitutions = null;
@@ -2015,6 +2054,14 @@ public class WebUserController implements Serializable {
 
     public void setPasswordChangingUser(WebUser passwordChangingUser) {
         this.passwordChangingUser = passwordChangingUser;
+    }
+
+    public String getInstitutionName() {
+        return institutionName;
+    }
+
+    public void setInstitutionName(String institutionName) {
+        this.institutionName = institutionName;
     }
 
     @FacesConverter(forClass = WebUser.class)
