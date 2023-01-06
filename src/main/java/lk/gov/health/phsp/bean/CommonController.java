@@ -818,6 +818,35 @@ public class CommonController implements Serializable {
         return dateTimeToString(date, "dd MMMM yyyy");
     }
 
+    public static String anonymizeData(String input) {
+        if (input == null) {
+            return "";
+        }
+        if ("".equals(input)) {
+            return "";
+        }
+        String output = "";
+
+        ArrayList<Character> chars = new ArrayList<Character>();
+        StringBuilder builder = new StringBuilder();
+        for (char c : input.toCharArray()) {
+            char nc;
+            if (Character.isUpperCase(c)){
+                nc = (char) (Math.random() * 26 + 'A');
+            }else if(Character.isLowerCase(c)){
+                nc = (char) (Math.random() * 26 + 'a');
+            }else if (Character.isDigit(c)){
+                nc = (char) (Math.random() * 10 + '0');
+            }else{
+                nc =c;
+            }
+            builder.append(nc);
+        }
+        output = builder.toString();
+
+        return output;
+    }
+
     public static List<TimePeriod> getMonthPeriodsForQuarter(Integer year, Integer q) {
         List<lk.gov.health.phsp.pojcs.TimePeriod> ps = new ArrayList<>();
         if (year == null) {

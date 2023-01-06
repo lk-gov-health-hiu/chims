@@ -111,6 +111,8 @@ public class NationalReportController implements Serializable {
     ClientEncounterComponentItemController clientEncounterComponentItemController;
     @Inject
     InstitutionController institutionController;
+    @Inject
+    UserTransactionController userTransactionController;
 
     @EJB
     ClientFacade clientFacade;
@@ -466,7 +468,7 @@ public class NationalReportController implements Serializable {
 
         cis = null;
 
-        try ( FileOutputStream outputStream = new FileOutputStream(newFile)) {
+        try (FileOutputStream outputStream = new FileOutputStream(newFile)) {
             workbook.write(outputStream);
         } catch (Exception e) {
 
@@ -489,6 +491,13 @@ public class NationalReportController implements Serializable {
             JsfUtil.addErrorMessage("Please select a Formset");
             return;
         }
+
+        String name = "Downloaded RDHS Level Formset Data";
+        String description = "Downloaded RDHS Level Formset Data\n";
+        description += "RDHS = " + institution.getName() + "\n";
+        description += "From = " + fromDate + "\n";
+        description += "To = " + toDate + "\n";
+        userTransactionController.recordTransaction(name, description);
 
         String j = "select f "
                 + " from  ClientEncounterComponentFormSet f join f.encounter e"
@@ -563,6 +572,12 @@ public class NationalReportController implements Serializable {
         Row formNameRow = sheet.createRow(rowCount++);
         Row itemNameRow = sheet.createRow(rowCount++);
         int colCount = 0;
+        Cell formNameCelli1 = formNameRow.createCell(colCount);
+        formNameCelli1.setCellValue("Institution Name");
+        Cell itemNameCelli2 = itemNameRow.createCell(colCount);
+        itemNameCelli2.setCellValue("");
+        colCount++;
+
         for (DataForm tdf : titleFormset.getForms()) {
 
             for (DataItem tdi : tdf.getItems()) {
@@ -578,19 +593,15 @@ public class NationalReportController implements Serializable {
         for (ClientEncounterComponentFormSet c : cis) {
             DataFormset tdfs = fillClinicalDataFormset(c);
             Row dataRow = sheet.createRow(rowCount++);
-            
+
             colCount = 0;
-            
-            
-            if(c.getEncounter()!=null && c.getEncounter().getInstitution()!=null){
+
+            if (c.getEncounter() != null && c.getEncounter().getInstitution() != null) {
                 Cell insNameCell = dataRow.createCell(colCount);
                 insNameCell.setCellValue(c.getEncounter().getInstitution().getName());
-                colCount++;
-                
             }
-            
-            
-            
+
+            colCount++;
 
             for (DataForm tdf : titleFormset.getForms()) {
 
@@ -646,10 +657,16 @@ public class NationalReportController implements Serializable {
                                         formNameCell.setCellValue(tci.getCi().getLongNumberValue());
                                         break;
                                     case Long_Text:
-                                        if (tci.getCi().getLongTextValue() == null) {
+                                        String shl = tci.getCi().getLongTextValue();
+
+                                        if (shl == null) {
                                             continue;
                                         }
-                                        formNameCell.setCellValue(tci.getCi().getLongTextValue());
+                                        if (tci.getDi() != null && tci.getDi().getItem() != null
+                                                && tci.getDi().getItem().getContainsPersonallyIdentifiableData()) {
+                                            shl = CommonController.anonymizeData(shl);
+                                        }
+                                        formNameCell.setCellValue(shl);
                                         break;
                                     case Prescreption_Reference:
                                     case Prescreption_Request:
@@ -661,10 +678,16 @@ public class NationalReportController implements Serializable {
                                         formNameCell.setCellValue(tci.getCi().getRealNumberValue());
                                         break;
                                     case Short_Text:
-                                        if (tci.getCi().getShortTextValue() == null) {
+                                        String sh = tci.getCi().getShortTextValue();
+
+                                        if (sh == null) {
                                             continue;
                                         }
-                                        formNameCell.setCellValue(tci.getCi().getShortTextValue());
+                                        if (tci.getDi() != null && tci.getDi().getItem() != null
+                                                && tci.getDi().getItem().getContainsPersonallyIdentifiableData()) {
+                                            sh = CommonController.anonymizeData(sh);
+                                        }
+                                        formNameCell.setCellValue(sh);
                                         break;
                                 }
 
@@ -684,7 +707,7 @@ public class NationalReportController implements Serializable {
 
         cis = null;
 
-        try ( FileOutputStream outputStream = new FileOutputStream(newFile)) {
+        try (FileOutputStream outputStream = new FileOutputStream(newFile)) {
             workbook.write(outputStream);
         } catch (Exception e) {
 
@@ -698,7 +721,6 @@ public class NationalReportController implements Serializable {
         }
     }
 
-    
     public void createExcelFileOfFromsetDataForSelectedEncounters() {
         if (institution == null) {
             JsfUtil.addErrorMessage("Please select an institutions");
@@ -891,7 +913,7 @@ public class NationalReportController implements Serializable {
 
         cis = null;
 
-        try ( FileOutputStream outputStream = new FileOutputStream(newFile)) {
+        try (FileOutputStream outputStream = new FileOutputStream(newFile)) {
             workbook.write(outputStream);
         } catch (Exception e) {
 
@@ -905,8 +927,6 @@ public class NationalReportController implements Serializable {
         }
     }
 
-    
-    
     public void fillObservationValues() {
         String j;
         Map m = new HashMap();
