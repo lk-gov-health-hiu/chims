@@ -178,15 +178,14 @@ public class UserTransactionController implements Serializable {
         recordTransaction(action, "");
     }
 
-    public void recordTransaction(String action, String sessionId) {
-
-//        UserTransaction t = new UserTransaction();
-//        t.setTransactionName(action);
-//        t.setTransactionStart(new Date());
-//        t.setWebUser(webUserController.getLoggedUser());
-//        t.setIpAddress(webUserController.getIpAddress());
-//        t.setTransactionData(sessionId);
-//        getFacede().create(t);
+    public void recordTransaction(String action, String description) {
+        UserTransaction t = new UserTransaction();
+        t.setTransactionName(action);
+        t.setTransactionStart(new Date());
+        t.setWebUser(webUserController.getLoggedUser());
+        t.setIpAddress(webUserController.getIpAddress());
+        t.setDescription(description);
+        getFacede().create(t);
     }
 
     public void save(UserTransaction us) {

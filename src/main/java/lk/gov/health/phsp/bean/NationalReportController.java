@@ -109,6 +109,10 @@ public class NationalReportController implements Serializable {
     ClientEncounterComponentFormController clientEncounterComponentFormController;
     @Inject
     ClientEncounterComponentItemController clientEncounterComponentItemController;
+    @Inject
+    InstitutionController institutionController;
+    @Inject
+    UserTransactionController userTransactionController;
 
     @EJB
     ClientFacade clientFacade;
@@ -464,7 +468,246 @@ public class NationalReportController implements Serializable {
 
         cis = null;
 
-        try ( FileOutputStream outputStream = new FileOutputStream(newFile)) {
+        try (FileOutputStream outputStream = new FileOutputStream(newFile)) {
+            workbook.write(outputStream);
+        } catch (Exception e) {
+
+        }
+
+        InputStream stream;
+        try {
+            stream = new FileInputStream(newFile);
+            resultExcelFile = streamedContentController.generateStreamedContent(mimeType, FILE_NAME, stream);
+        } catch (FileNotFoundException ex) {
+        }
+    }
+
+    public void createExcelFileOfFromsetDataForSelectedEncountersForRdhs() {
+        if (institution == null) {
+            JsfUtil.addErrorMessage("Please select an institutions");
+            return;
+        }
+        if (designingComponentFormSet == null) {
+            JsfUtil.addErrorMessage("Please select a Formset");
+            return;
+        }
+
+        String name = "Downloaded RDHS Level Formset Data";
+        String description = "Downloaded RDHS Level Formset Data\n";
+        description += "RDHS = " + institution.getName() + "\n";
+        description += "From = " + fromDate + "\n";
+        description += "To = " + toDate + "\n";
+        userTransactionController.recordTransaction(name, description);
+
+        String j = "select f "
+                + " from  ClientEncounterComponentFormSet f join f.encounter e"
+                + " where f.retired<>:fr "
+                + " and f.referenceComponent=:ic ";
+        j += " and e.institution in :i "
+                + " and e.retired<>:er "
+                + " and e.encounterType=:t "
+                + " and e.encounterDate between :fd and :td"
+                + " order by e.id";
+        Map m = new HashMap();
+        m.put("fr", true);
+        m.put("ic", designingComponentFormSet);
+        m.put("i", institutionController.findChildrenInstitutions(institution));
+        m.put("er", true);
+
+        m.put("t", EncounterType.Clinic_Visit);
+        m.put("fd", fromDate);
+        m.put("td", toDate);
+
+        List<ClientEncounterComponentFormSet> cis = clientEncounterComponentFormSetFacade.findByJpql(j, m);
+
+        String FILE_NAME = designingComponentFormSet.getName() + "_data_of_" + institution.getName() + "_from_" + CommonController.formatDate(fromDate) + "_to_" + CommonController.formatDate(toDate) + ".xlsx";
+        String mimeType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+
+        String folder = "/tmp/";
+
+        File newFile = new File(folder + FILE_NAME);
+
+        XSSFWorkbook workbook = new XSSFWorkbook();
+        XSSFSheet sheet = workbook.createSheet("Client Values");
+
+        int rowCount = 0;
+
+        Row t1 = sheet.createRow(rowCount++);
+        Cell th1_lbl = t1.createCell(0);
+        th1_lbl.setCellValue("Report");
+        Cell th1_val = t1.createCell(1);
+        th1_val.setCellValue("Fromset Data");
+
+        Row t2 = sheet.createRow(rowCount++);
+        Cell th2_lbl = t2.createCell(0);
+        th2_lbl.setCellValue("From");
+        Cell th2_val = t2.createCell(1);
+        th2_val.setCellValue(CommonController.dateTimeToString(fromDate, "dd MMMM yyyy"));
+
+        Row t3 = sheet.createRow(rowCount++);
+        Cell th3_lbl = t3.createCell(0);
+        th3_lbl.setCellValue("To");
+        Cell th3_val = t3.createCell(1);
+        th3_val.setCellValue(CommonController.dateTimeToString(toDate, "dd MMMM yyyy"));
+
+        Row t4 = sheet.createRow(rowCount++);
+        Cell th4_lbl = t4.createCell(0);
+        th4_lbl.setCellValue("Institution");
+        Cell th4_val = t4.createCell(1);
+        th4_val.setCellValue(institution.getName());
+
+        Row t5a = sheet.createRow(rowCount++);
+        Cell th5a_lbl = t5a.createCell(0);
+        th5a_lbl.setCellValue("Formset");
+        Cell th5a_val = t5a.createCell(1);
+        th5a_val.setCellValue(designingComponentFormSet.getName());
+
+        CellStyle cellStyle = workbook.createCellStyle();
+        CreationHelper createHelper = workbook.getCreationHelper();
+        cellStyle.setDataFormat(
+                createHelper.createDataFormat().getFormat("dd/MMMM/yyyy hh:mm"));
+
+        DataFormset titleFormset = fillDesignComponantFormset(designingComponentFormSet);
+
+        Row formNameRow = sheet.createRow(rowCount++);
+        Row itemNameRow = sheet.createRow(rowCount++);
+        int colCount = 0;
+        Cell formNameCelli1 = formNameRow.createCell(colCount);
+        formNameCelli1.setCellValue("Institution Name");
+        Cell itemNameCelli2 = itemNameRow.createCell(colCount);
+        itemNameCelli2.setCellValue("");
+        colCount++;
+
+        for (DataForm tdf : titleFormset.getForms()) {
+
+            for (DataItem tdi : tdf.getItems()) {
+                Cell formNameCell = formNameRow.createCell(colCount);
+                formNameCell.setCellValue(tdf.getDf().getName());
+                Cell itemNameCell = itemNameRow.createCell(colCount);
+                itemNameCell.setCellValue(tdi.getDi().getName());
+                colCount++;
+            }
+
+        }
+
+        for (ClientEncounterComponentFormSet c : cis) {
+            DataFormset tdfs = fillClinicalDataFormset(c);
+            Row dataRow = sheet.createRow(rowCount++);
+
+            colCount = 0;
+
+            if (c.getEncounter() != null && c.getEncounter().getInstitution() != null) {
+                Cell insNameCell = dataRow.createCell(colCount);
+                insNameCell.setCellValue(c.getEncounter().getInstitution().getName());
+            }
+
+            colCount++;
+
+            for (DataForm tdf : titleFormset.getForms()) {
+
+                for (DataItem tdi : tdf.getItems()) {
+                    Cell formNameCell = dataRow.createCell(colCount);
+                    for (DataForm tcf : tdfs.getForms()) {
+
+                        for (DataItem tci : tcf.getItems()) {
+
+                            if (tci.getDi().equals(tdi.getDi())) {
+                                if (tci.getCi() == null) {
+                                    continue;
+                                }
+                                if (tci.getDi() == null) {
+                                    continue;
+                                }
+                                if (tci.getDi().getSelectionDataType() == null) {
+                                    continue;
+                                }
+                                switch (tci.getDi().getSelectionDataType()) {
+                                    case Area_Reference:
+                                    case Boolean:
+                                        if (tci.getCi().getBooleanValue() == null) {
+                                            continue;
+                                        }
+                                        formNameCell.setCellValue(tci.getCi().getBooleanValue());
+                                        break;
+                                    case Byte_Array:
+                                    case Client_Reference:
+                                    case DateTime:
+                                        if (tci.getCi().getDateValue() == null) {
+                                            continue;
+                                        }
+                                        formNameCell.setCellStyle(cellStyle);
+                                        formNameCell.setCellValue(tci.getCi().getDateValue());
+                                        break;
+                                    case Integer_Number:
+                                        if (tci.getCi().getIntegerNumberValue() == null) {
+                                            continue;
+                                        }
+                                        formNameCell.setCellValue(tci.getCi().getIntegerNumberValue());
+                                        break;
+                                    case Item_Reference:
+                                        if (tci.getCi().getItemValue() == null) {
+                                            continue;
+                                        }
+                                        formNameCell.setCellValue(tci.getCi().getItemValue().getName());
+                                        break;
+                                    case Long_Number:
+                                        if (tci.getCi().getLongNumberValue() == null) {
+                                            continue;
+                                        }
+                                        formNameCell.setCellValue(tci.getCi().getLongNumberValue());
+                                        break;
+                                    case Long_Text:
+                                        String shl = tci.getCi().getLongTextValue();
+
+                                        if (shl == null) {
+                                            continue;
+                                        }
+                                        if (tci.getDi() != null && tci.getDi().getItem() != null
+                                                && tci.getDi().getItem().getContainsPersonallyIdentifiableData()) {
+                                            shl = CommonController.anonymizeData(shl);
+                                        }
+                                        formNameCell.setCellValue(shl);
+                                        break;
+                                    case Prescreption_Reference:
+                                    case Prescreption_Request:
+                                    case Procedure_Request:
+                                    case Real_Number:
+                                        if (tci.getCi().getRealNumberValue() == null) {
+                                            continue;
+                                        }
+                                        formNameCell.setCellValue(tci.getCi().getRealNumberValue());
+                                        break;
+                                    case Short_Text:
+                                        String sh = tci.getCi().getShortTextValue();
+
+                                        if (sh == null) {
+                                            continue;
+                                        }
+                                        if (tci.getDi() != null && tci.getDi().getItem() != null
+                                                && tci.getDi().getItem().getContainsPersonallyIdentifiableData()) {
+                                            sh = CommonController.anonymizeData(sh);
+                                        }
+                                        formNameCell.setCellValue(sh);
+                                        break;
+                                }
+
+                            }
+
+                        }
+
+                    }
+
+                    colCount++;
+
+                }
+
+            }
+
+        }
+
+        cis = null;
+
+        try (FileOutputStream outputStream = new FileOutputStream(newFile)) {
             workbook.write(outputStream);
         } catch (Exception e) {
 
@@ -670,7 +913,7 @@ public class NationalReportController implements Serializable {
 
         cis = null;
 
-        try ( FileOutputStream outputStream = new FileOutputStream(newFile)) {
+        try (FileOutputStream outputStream = new FileOutputStream(newFile)) {
             workbook.write(outputStream);
         } catch (Exception e) {
 
