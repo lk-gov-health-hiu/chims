@@ -1,4 +1,4 @@
-# Cloud HIMS
+# Cloud HIMS - RPCS
 
 Opensource Platform for Collection and Analysis of Clinical Data
 
