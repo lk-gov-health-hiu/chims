@@ -140,7 +140,7 @@ Enable secure admin
 ./payara5/bin/asadmin enable-secure-admin
 ```
 
-Eestart the Payara Server 
+Restart the Payara Server 
 
 ```shell
 ./payara5/bin/asadmin restart-domain
