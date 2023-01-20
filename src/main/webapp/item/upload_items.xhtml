@@ -13,35 +13,35 @@
     </h:head>
 
     <h:body>
-        <ui:composition template="/template1.xhtml">
-            <ui:define name="content">
+        <ui:composition template="/systemAdmin/manage_metadata_index.xhtml">
+            <ui:define name="metadata">
                 <h:form enctype="multipart/form-data" >  
                     <p:messages ></p:messages>
                     <p:panelGrid columns="1">
                         <p:panelGrid columns="8"  >
                             <p:outputLabel value="Name Column" ></p:outputLabel>
-                            <p:selectOneMenu value="#{clientController.testNoCol}" >
+                            <p:selectOneMenu value="#{itemController.nameCol}" >
                                 <f:selectItem itemLabel="Select"></f:selectItem>
                                 <f:selectItems value="#{commonController.excelColumns}" ></f:selectItems>
                             </p:selectOneMenu>
                             <p:spacer ></p:spacer>
 
                             <p:outputLabel value="Code Column" ></p:outputLabel>
-                            <p:selectOneMenu value="#{clientController.labNoCol}" >
+                            <p:selectOneMenu value="#{itemController.codeCol}" >
                                 <f:selectItem itemLabel="Select"></f:selectItem>
                                 <f:selectItems value="#{commonController.excelColumns}" ></f:selectItems>
                             </p:selectOneMenu>
                             <p:spacer ></p:spacer>
 
                             <p:outputLabel value="Data Type Column" ></p:outputLabel>
-                            <p:selectOneMenu value="#{clientController.nameCol}" >
+                            <p:selectOneMenu value="#{itemController.dataTypeCol}" >
                                 <f:selectItem itemLabel="Select"></f:selectItem>
                                 <f:selectItems value="#{commonController.excelColumns}" ></f:selectItems>
                             </p:selectOneMenu>
 
 
                             <p:outputLabel value="Parent Column" ></p:outputLabel>
-                            <p:selectOneMenu value="#{clientController.ageColumn}" >
+                            <p:selectOneMenu value="#{itemController.parentCodeCol}" >
                                 <f:selectItem itemLabel="Select"></f:selectItem>
                                 <f:selectItems value="#{commonController.excelColumns}" ></f:selectItems>
                             </p:selectOneMenu>
