@@ -77,12 +77,12 @@
                                     </p:column>
                                 </p:dataTable>
 
-                               
+
                                 <p:commandButton value="Calculate"  style="width:30em;margin:auto;"
                                                  action="#{indicatorController.runClinicCountsForSelectedIndicators()}"
                                                  ajax="false">
                                 </p:commandButton>
-                                
+
                                 <p:commandButton value="Schedule"  style="width:30em;margin:auto;"
                                                  action="#{indicatorController.scheduleClinicCountsForSelectedIndicators()}"
                                                  ajax="false">
@@ -94,14 +94,14 @@
 
                         </h:panelGrid>
 
-
                         <h:panelGrid columns="2" >
-                            <p:outputLabel value="Results" ></p:outputLabel>
+                            
+                            <p:outputLabel value="Result" ></p:outputLabel>
                             <h:outputText value="#{indicatorController.result}" escape="false" ></h:outputText>
-                       
-                        <p:outputLabel value="Errors" ></p:outputLabel>
-                         <h:outputText value="#{indicatorController.message}" escape="false" ></h:outputText>
-                       
+
+                            <p:outputLabel value="Errors" ></p:outputLabel>
+                            <h:outputText value="#{indicatorController.message}" escape="false" ></h:outputText>
+
                         </h:panelGrid>
 
 

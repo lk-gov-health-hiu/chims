@@ -81,8 +81,11 @@
                     <div class="row" >
                         <div class="col-md-12" >
                             <h:panelGrid columns="2" >
-                                <p:inputText value="Result" ></p:inputText>
-                                <p:inputText value="${indicatorController.result}" ></p:inputText>
+                                <p:outputLabel value="Indicator" ></p:outputLabel>
+                                <p:inputText readonly="true" value="#{indicatorController.queryComponent.name}" ></p:inputText>
+                                
+                                <p:outputLabel value="Result" ></p:outputLabel>
+                                <p:inputText readonly="true" value="#{indicatorController.result}" ></p:inputText>
                             </h:panelGrid>
                             <h:panelGrid columns="1" >
                                 <h:outputText value="#{indicatorController.message}" escape="false" ></h:outputText>
