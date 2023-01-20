@@ -271,7 +271,7 @@ public class ItemController implements Serializable {
                     strDataType = cellValue(row.getCell(dataTypeColInt));
                 }
                 if (parentCodeColInt != null) {
-                    strDataType = cellValue(row.getCell(parentCodeColInt));
+                    strParentCode = cellValue(row.getCell(parentCodeColInt));
                 }
 
                 if (strName == null || strName.trim().equals("")) {
