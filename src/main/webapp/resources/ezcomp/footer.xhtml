@@ -23,6 +23,7 @@
                         <h:panelGroup rendered="#{preferenceController.footerText ne ''}" >
                             <h:outputLabel value="#{preferenceController.footerText}" escape="false" ></h:outputLabel>
                         </h:panelGroup>
+                        <h:outputLabel value="&nbsp;" ></h:outputLabel>
                         <h:outputText value="#{session.lastAccessedTime}">
                             <f:convertDateTime pattern="yyyy" type="date" />
                         </h:outputText>
@@ -41,6 +42,7 @@
                         <h:panelGroup rendered="#{preferenceController.footerText ne ''}" >
                             <h:outputLabel value="#{preferenceController.footerText}" escape="false" ></h:outputLabel>
                         </h:panelGroup>
+                        <h:outputLabel value="&nbsp;" ></h:outputLabel>
                         <h:outputText value="#{session.lastAccessedTime}">
                             <f:convertDateTime pattern="yyyy" type="date" />
                         </h:outputText>
