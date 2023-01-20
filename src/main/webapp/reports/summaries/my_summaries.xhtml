@@ -71,6 +71,7 @@
                                                      rendered="#{r.resultType eq 'excel_object'}"
                                                      disabled="#{!r.processCompleted}"
                                                      ajax="false" 
+                                                     class="m-1"
                                                      onclick="PrimeFaces.monitorDownload(start, stop);" 
                                                      icon="ui-icon-arrowthick-1-s">
                                         <f:setPropertyActionListener value="#{r}" 
@@ -82,6 +83,7 @@
                                                      rendered="#{r.resultType eq 'cell_values'}"
                                                      disabled="#{!r.processCompleted}"
                                                      ajax="false" 
+                                                     class="m-1"
                                                      action="#{reportController.createExcelFileForSelectedStoredQueryResult}">
                                         <f:setPropertyActionListener value="#{r}" 
                                                                      target="#{reportController.selectedStoredQueryResult}" 
@@ -91,6 +93,7 @@
                                                      rendered="#{r.resultType eq 'cell_values'}"
                                                      disabled="#{!r.processCompleted}"
                                                      ajax="false" 
+                                                     class="m-1"
                                                      onclick="PrimeFaces.monitorDownload(start, stop);" 
                                                      icon="ui-icon-arrowthick-1-s">
                                         <f:setPropertyActionListener value="#{r}" 
@@ -98,7 +101,7 @@
                                                                      ></f:setPropertyActionListener>
                                         <p:fileDownload value="#{reportController.downloadCreatedFromReport}" />
                                     </p:commandButton>
-                                    <p:commandButton ajax="false" action="#{reportController.removeReport()}"
+                                    <p:commandButton ajax="false" class="m-1" action="#{reportController.removeReport()}"
                                                      value="Remove">
                                         <f:setPropertyActionListener value="#{r}" target="#{reportController.removingResult}" ></f:setPropertyActionListener>
                                     </p:commandButton>
