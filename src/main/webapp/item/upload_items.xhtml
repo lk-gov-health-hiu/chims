@@ -1,0 +1,70 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <h:head>
+        <ui:define name="title">
+            Upload Items
+        </ui:define>
+    </h:head>
+
+    <h:body>
+        <ui:composition template="/template1.xhtml">
+            <ui:define name="content">
+                <h:form enctype="multipart/form-data" >  
+                    <p:messages ></p:messages>
+                    <p:panelGrid columns="1">
+                        <p:panelGrid columns="8"  >
+                            <p:outputLabel value="Name Column" ></p:outputLabel>
+                            <p:selectOneMenu value="#{clientController.testNoCol}" >
+                                <f:selectItem itemLabel="Select"></f:selectItem>
+                                <f:selectItems value="#{commonController.excelColumns}" ></f:selectItems>
+                            </p:selectOneMenu>
+                            <p:spacer ></p:spacer>
+
+                            <p:outputLabel value="Code Column" ></p:outputLabel>
+                            <p:selectOneMenu value="#{clientController.labNoCol}" >
+                                <f:selectItem itemLabel="Select"></f:selectItem>
+                                <f:selectItems value="#{commonController.excelColumns}" ></f:selectItems>
+                            </p:selectOneMenu>
+                            <p:spacer ></p:spacer>
+
+                            <p:outputLabel value="Data Type Column" ></p:outputLabel>
+                            <p:selectOneMenu value="#{clientController.nameCol}" >
+                                <f:selectItem itemLabel="Select"></f:selectItem>
+                                <f:selectItems value="#{commonController.excelColumns}" ></f:selectItems>
+                            </p:selectOneMenu>
+
+
+                            <p:outputLabel value="Parent Column" ></p:outputLabel>
+                            <p:selectOneMenu value="#{clientController.ageColumn}" >
+                                <f:selectItem itemLabel="Select"></f:selectItem>
+                                <f:selectItems value="#{commonController.excelColumns}" ></f:selectItems>
+                            </p:selectOneMenu>
+                            <p:spacer ></p:spacer>
+
+
+                        </p:panelGrid>
+                    </p:panelGrid>
+
+
+                    <h:panelGroup >
+                        <p:fileUpload value="#{itemController.file}" mode="simple"/>
+                        <p:commandButton ajax="false" value="Upload Results from Excel" 
+                                         action="#{itemController.importFromExcel()}"  ></p:commandButton>
+                    </h:panelGroup>
+
+
+                    <h:inputTextarea value="#{itemController.output}" class="w-100" rows="50" >
+                    </h:inputTextarea>
+
+                </h:form>
+            </ui:define>
+        </ui:composition>
+
+    </h:body>
+</html>
