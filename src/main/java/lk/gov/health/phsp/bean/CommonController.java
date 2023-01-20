@@ -70,6 +70,37 @@ public class CommonController implements Serializable {
     public CommonController() {
     }
 
+     public List<String> getExcelColumns() {
+        List<String> cs = new ArrayList<>();
+        cs.add("A");
+        cs.add("B");
+        cs.add("C");
+        cs.add("D");
+        cs.add("E");
+        cs.add("F");
+        cs.add("G");
+        cs.add("H");
+        cs.add("I");
+        cs.add("J");
+        cs.add("K");
+        cs.add("L");
+        cs.add("M");
+        cs.add("N");
+        cs.add("O");
+        cs.add("P");
+        cs.add("Q");
+        cs.add("R");
+        cs.add("S");
+        cs.add("T");
+        cs.add("U");
+        cs.add("V");
+        cs.add("W");
+        cs.add("X");
+        cs.add("Y");
+        cs.add("Z");
+        return cs;
+    }
+    
     public static Integer excelColFromHeader(String columnName) {
         if (columnName == null) {
             return null;
