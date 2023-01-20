@@ -17,7 +17,12 @@
             <table style="width: 98%; margin: auto;">
                 <tr>
                     <td>
-                        &copy; Ministry of Health, 
+                        <h:panelGroup rendered="#{preferenceController.footerText eq ''}" >
+                            &copy; Ministry of Health, 
+                        </h:panelGroup>
+                        <h:panelGroup rendered="#{preferenceController.footerText ne ''}" >
+                            <h:outputLabel value="#{preferenceController.footerText}" escape="false" ></h:outputLabel>
+                        </h:panelGroup>
                         <h:outputText value="#{session.lastAccessedTime}">
                             <f:convertDateTime pattern="yyyy" type="date" />
                         </h:outputText>
@@ -30,7 +35,12 @@
             <table style="width: 98%; margin: auto;">
                 <tr>
                     <td>
-                        &copy; Ministry of Health, 
+                        <h:panelGroup rendered="#{preferenceController.footerText eq ''}" >
+                            &copy; Ministry of Health, 
+                        </h:panelGroup>
+                        <h:panelGroup rendered="#{preferenceController.footerText ne ''}" >
+                            <h:outputLabel value="#{preferenceController.footerText}" escape="false" ></h:outputLabel>
+                        </h:panelGroup>
                         <h:outputText value="#{session.lastAccessedTime}">
                             <f:convertDateTime pattern="yyyy" type="date" />
                         </h:outputText>
