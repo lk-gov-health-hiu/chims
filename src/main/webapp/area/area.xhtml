@@ -9,20 +9,15 @@
     <body>
 
         <ui:composition template="./index.xhtml">
-
             <ui:define name="insTopic">
                 <p:outputLabel value="Area" ></p:outputLabel>
             </ui:define>
-
             <ui:define name="insContents">
-
                 <h:form id="AreaEditForm">
                     <h:panelGroup id="display">
                         <p:commandButton action="#{areaController.saveOrUpdateAreaForSystemAdmin}" 
                                          ajax="false"   class="m-1"     value="#{bundleClinical.Save}" 
                                          />
-
-
                         <p:panelGrid columns="2" rendered="#{areaController.selected != null}">
                             <p:outputLabel value="#{bundleClinical.EditAreaLabel_type}" for="type" />
                             <p:selectOneMenu id="type" 
