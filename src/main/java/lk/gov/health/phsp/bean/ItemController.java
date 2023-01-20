@@ -239,8 +239,8 @@ public class ItemController implements Serializable {
         Item parent = null;
 
         nameColInt = CommonController.excelColFromHeader(nameCol);
-        dataTypeColInt = CommonController.excelColFromHeader(parentCodeCol);
-        codeColInt = CommonController.excelColFromHeader(dataTypeCol);
+        dataTypeColInt = CommonController.excelColFromHeader(dataTypeCol);
+        codeColInt = CommonController.excelColFromHeader(codeCol);
         parentCodeColInt = CommonController.excelColFromHeader(parentCodeCol);
 
         JsfUtil.addSuccessMessage(file.getFileName());
