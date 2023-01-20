@@ -292,10 +292,7 @@ public class ItemController implements Serializable {
                     parentItem = findItemByCode(strParentCode);
                 }
 
-                if (parentItem == null) {
-                    output += "Skipping " + strName + " as there is not parent item with a code " + strParentCode + ".\n";
-                    continue;
-                }
+                
                 SelectionDataType selectionDataType = CommonController.selectionDataTypeFromString(strDataType);
                 Item importingItem = findItemByCode(strCode);
 

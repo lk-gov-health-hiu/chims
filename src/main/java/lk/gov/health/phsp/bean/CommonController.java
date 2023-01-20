@@ -61,7 +61,13 @@ public class CommonController implements Serializable {
     private static final long serialVersionUID = 1L;
 
     static SelectionDataType selectionDataTypeFromString(String strDataType) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        SelectionDataType[] dds = SelectionDataType.values();
+        for(SelectionDataType sdt:dds){
+            if(sdt.getLabel().equals(strDataType)){
+                return sdt;
+            }
+        }
+        return null;
     }
 
     /**
@@ -70,7 +76,7 @@ public class CommonController implements Serializable {
     public CommonController() {
     }
 
-     public List<String> getExcelColumns() {
+    public List<String> getExcelColumns() {
         List<String> cs = new ArrayList<>();
         cs.add("A");
         cs.add("B");
@@ -100,7 +106,7 @@ public class CommonController implements Serializable {
         cs.add("Z");
         return cs;
     }
-    
+
     public static Integer excelColFromHeader(String columnName) {
         if (columnName == null) {
             return null;
@@ -152,7 +158,7 @@ public class CommonController implements Serializable {
         }
         return null;
     }
-    
+
     public static String formatDate() {
         Date date = Calendar.getInstance().getTime();
         return formatDate(date);
@@ -918,14 +924,14 @@ public class CommonController implements Serializable {
         StringBuilder builder = new StringBuilder();
         for (char c : input.toCharArray()) {
             char nc;
-            if (Character.isUpperCase(c)){
+            if (Character.isUpperCase(c)) {
                 nc = (char) (Math.random() * 26 + 'A');
-            }else if(Character.isLowerCase(c)){
+            } else if (Character.isLowerCase(c)) {
                 nc = (char) (Math.random() * 26 + 'a');
-            }else if (Character.isDigit(c)){
+            } else if (Character.isDigit(c)) {
                 nc = (char) (Math.random() * 10 + '0');
-            }else{
-                nc =c;
+            } else {
+                nc = c;
             }
             builder.append(nc);
         }
