@@ -214,12 +214,10 @@ public class ItemController implements Serializable {
 
     // </editor-fold>    
     // <editor-fold defaultstate="collapsed" desc="Functions">
-    
-    
     public String toImportFromExcel() {
         return "/item/uploadItems";
     }
-    
+
     public String importFromExcel() {
         if (file == null) {
             JsfUtil.addErrorMessage("File ?");
@@ -289,12 +287,11 @@ public class ItemController implements Serializable {
                     continue;
                 }
 
-                if (strParentCode == null || strParentCode.trim().equals("")) {
-                    output += "Skipping the line without a parent code.\n";
-                    continue;
+                Item parentItem = null;
+                if (strParentCode != null && !strParentCode.trim().equals("")) {
+                    parentItem = findItemByCode(strParentCode);
                 }
 
-                Item parentItem = findItemByCode(strCode);
                 if (parentItem == null) {
                     output += "Skipping " + strName + " as there is not parent item with a code " + strParentCode + ".\n";
                     continue;
@@ -305,7 +302,7 @@ public class ItemController implements Serializable {
                 if (importingItem == null) {
                     createNewItem(ItemType.Dictionary_Item, parentItem, strName, strCode, count.intValue(), selectionDataType);
                     output += "Added " + strName + " as there is no existing item with a code " + strCode + ".\n";
-                }else{
+                } else {
                     output += "Skipped Addeing " + strName + " as there is already one existing item with a code " + strCode + ".\n";
                 }
 
@@ -313,7 +310,7 @@ public class ItemController implements Serializable {
 
             }
             startRow++;
-            file= null;
+            file = null;
             return "";
         } catch (IOException e) {
             output += e.getMessage();
