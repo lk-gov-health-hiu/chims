@@ -1135,6 +1135,45 @@ public class ReportController implements Serializable {
         userTransactionController.recordTransaction("To Single Variable Clinical Data");
         return action;
     }
+    
+    public String toFormsetClinicalDataRdhs() {
+        String forSys = "/national/reports/clinical_data_form_rdhs";
+        String forIns = "/national/reports/clinical_data_form_rdhs";
+        String forMeu = "/national/reports/clinical_data_form_rdhs";
+        String forMea = "/national/reports/clinical_data_form_rdhs";
+        String forClient = "";
+        String noAction = "";
+        String action = "";
+        switch (webUserController.getLoggedUser().getWebUserRole()) {
+            case Client:
+                action = forClient;
+                break;
+            case Doctor:
+            case Institution_Administrator:
+            case Institution_Super_User:
+            case Institution_User:
+            case Nurse:
+            case Midwife:
+                action = forIns;
+                break;
+            case Me_Admin:
+                action = forMea;
+                break;
+            case Me_Super_User:
+                action = forMeu;
+                break;
+            case Me_User:
+            case User:
+                action = noAction;
+                break;
+            case Super_User:
+            case System_Administrator:
+                action = forSys;
+                break;
+        }
+        userTransactionController.recordTransaction("To Single Variable Clinical Data");
+        return action;
+    }
 
     public String toViewMySummeries() {
 

@@ -16,8 +16,8 @@
 
                         <p:panelGrid columns="2" rendered="#{webUserController.selected != null}" style="margin: auto; text-align: left;">
                             <f:facet name="header" >
-                                <p:commandButton action="#{webUserController.updateBySysAdmin()}" value="#{bundleClinical.Save}" ajax="false" />
-                                <p:commandButton value="Back" action="#{webUserController.toManageUserIndexForSystemAdmin()}" ajax="false"/>
+                                <p:commandButton action="#{webUserController.updateBySysAdmin()}" value="#{bundleClinical.Save}" class="m-1" ajax="false" />
+                                <p:commandButton value="Back" class="m-1" action="#{webUserController.toManageUserIndexForSystemAdmin()}" ajax="false"/>
                             </f:facet>
 
                             <p:outputLabel value="Username" for="username" />

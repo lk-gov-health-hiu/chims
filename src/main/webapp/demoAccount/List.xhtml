@@ -58,10 +58,10 @@
                             <h:outputText value="#{item.comments}"/>
                         </p:column>
                         <f:facet name="footer">
-                            <p:commandButton id="createButton" icon="ui-icon-plus"   value="#{bundleDemo.Create}" actionListener="#{demoAccountController.prepareCreate}" update=":DemoAccountCreateForm" oncomplete="PF('DemoAccountCreateDialog').show()"/>
-                            <p:commandButton id="viewButton"   icon="ui-icon-search" value="#{bundleDemo.View}" update=":DemoAccountViewForm" oncomplete="PF('DemoAccountViewDialog').show()" disabled="#{empty demoAccountController.selected}"/>
-                            <p:commandButton id="editButton"   icon="ui-icon-pencil" value="#{bundleDemo.Edit}" update=":DemoAccountEditForm" oncomplete="PF('DemoAccountEditDialog').show()" disabled="#{empty demoAccountController.selected}"/>
-                            <p:commandButton id="deleteButton" icon="ui-icon-trash"  value="#{bundleDemo.Delete}" actionListener="#{demoAccountController.destroy}" update="datalist" disabled="#{empty demoAccountController.selected}"/>
+                            <p:commandButton id="createButton" class="m-1" icon="ui-icon-plus"   value="#{bundleDemo.Create}" actionListener="#{demoAccountController.prepareCreate}" update=":DemoAccountCreateForm" oncomplete="PF('DemoAccountCreateDialog').show()"/>
+                            <p:commandButton id="viewButton" class="m-1"  icon="ui-icon-search" value="#{bundleDemo.View}" update=":DemoAccountViewForm" oncomplete="PF('DemoAccountViewDialog').show()" disabled="#{empty demoAccountController.selected}"/>
+                            <p:commandButton id="editButton" class="m-1"  icon="ui-icon-pencil" value="#{bundleDemo.Edit}" update=":DemoAccountEditForm" oncomplete="PF('DemoAccountEditDialog').show()" disabled="#{empty demoAccountController.selected}"/>
+                            <p:commandButton id="deleteButton" class="m-1" icon="ui-icon-trash"  value="#{bundleDemo.Delete}" actionListener="#{demoAccountController.destroy}" update="datalist" disabled="#{empty demoAccountController.selected}"/>
                         </f:facet>
                     </p:dataTable>
                 </p:panel>

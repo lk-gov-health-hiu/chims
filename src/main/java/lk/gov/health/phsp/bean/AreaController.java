@@ -126,6 +126,10 @@ public class AreaController implements Serializable {
         return toListAreasForSysAdmin();
     }
 
+    public void reloadAreas(){
+        areaApplicationController.reloadAreas();
+    }
+    
     public String saveOrUpdateAreaForSystemAdmin() {
         if (selected == null) {
             JsfUtil.addErrorMessage("Please select an Area");
