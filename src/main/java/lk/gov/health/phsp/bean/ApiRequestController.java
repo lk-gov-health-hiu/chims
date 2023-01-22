@@ -1,6 +1,7 @@
 package lk.gov.health.phsp.bean;
 
 
+import lk.gov.health.phsp.entity.Preference;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.logging.Level;

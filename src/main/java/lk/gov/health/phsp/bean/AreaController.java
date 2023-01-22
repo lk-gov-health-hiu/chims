@@ -9,6 +9,7 @@ import lk.gov.health.phsp.facade.util.JsfUtil;
 import lk.gov.health.phsp.facade.util.JsfUtil.PersistAction;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -125,6 +126,10 @@ public class AreaController implements Serializable {
         return toListAreasForSysAdmin();
     }
 
+    public void reloadAreas(){
+        areaApplicationController.reloadAreas();
+    }
+    
     public String saveOrUpdateAreaForSystemAdmin() {
         if (selected == null) {
             JsfUtil.addErrorMessage("Please select an Area");
@@ -398,7 +403,6 @@ public class AreaController implements Serializable {
 //        }
 //
 //    }
-
 //
 //    public String uploadInstitutionDrainingAreas() {
 //        successMessage = "";
@@ -552,7 +556,6 @@ public class AreaController implements Serializable {
 //    }
 //
 //    
-    
 //    
 //    public String importUpdateUidFromCodeOfAreasFromExcel() {
 //        successMessage = "";
@@ -649,7 +652,6 @@ public class AreaController implements Serializable {
 //    }
 //
 //    
-    
 //    public void updateNationalAndProvincialPopulationFromDistrictPopulations() {
 //        for (RelationshipType t : getRts()) {
 //
@@ -689,7 +691,6 @@ public class AreaController implements Serializable {
 //        }
 //
 //    }
-
     public List<Area> getMohAreas() {
         if (mohAreas == null) {
             mohAreas = areaApplicationController.getAllAreas(AreaType.MOH);
@@ -726,7 +727,7 @@ public class AreaController implements Serializable {
     }
 
     public List<Area> rdhsAreas(Area province) {
-        return  areaApplicationController.getAllAreas(AreaType.RdhsAra);
+        return areaApplicationController.getAllAreas(AreaType.RdhsAra);
         //TODO
     }
 
@@ -736,7 +737,7 @@ public class AreaController implements Serializable {
 
     public List<Area> getPdhsAreas() {
         if (pdhsAreas == null) {
-            pdhsAreas =  areaApplicationController.getAllAreas(AreaType.PdhsArea);
+            pdhsAreas = areaApplicationController.getAllAreas(AreaType.PdhsArea);
         }
         return pdhsAreas;
     }
@@ -804,7 +805,6 @@ public class AreaController implements Serializable {
 //        List<Area> areas = getFacade().findByJpql(j, m);
 //        return areas;
 //    }
-
     public String drawArea() {
         polygonModel = new DefaultMapModel();
 
@@ -990,8 +990,6 @@ public class AreaController implements Serializable {
 //        }
 //        return "";
 //    }
-
-
 //
 //    public String saveGnCoordinates() {
 //        if (file == null || "".equals(file.getFileName())) {
@@ -1308,7 +1306,6 @@ public class AreaController implements Serializable {
 //        }
 //
 //    }
-
     public String toAddProvince() {
         selected = new Area();
         selected.setType(AreaType.Province);
@@ -1433,7 +1430,6 @@ public class AreaController implements Serializable {
 //        List<Area> areas = getFacade().findByJpql(j, m);
 //        return areas;
 //    }
-
 //    public List<Area> getAreas(AreaType areaType, Area parentArea, String qry) {
 //        String j;
 //        Map m = new HashMap();
@@ -1509,7 +1505,31 @@ public class AreaController implements Serializable {
     }
 
     public List<Area> getAreas(String qry, AreaType areaType) {
-        return areaApplicationController.completeAreas(qry, areaType);
+        return completeAreas(qry, areaType);
+    }
+
+    public List<Area> completeAreas(String qry, AreaType atype) {
+        List<Area> tas = new ArrayList<>();
+        for (Area a : getAllAreas(atype)) {
+            if (a.getName().toLowerCase().contains(qry.trim().toLowerCase())) {
+                tas.add(a);
+            }
+        }
+        return tas;
+    }
+
+    public List<Area> getAllAreas(AreaType at) {
+        List<Area> tas = new ArrayList<>();
+        if (at != null) {
+            for (Area a : areaApplicationController.getAllAreas()) {
+                if (a.getType() != null && a.getType().equals(at)) {
+                    tas.add(a);
+                }
+            }
+        } else {
+            tas = areaApplicationController.getAllAreas();
+        }
+        return tas;
     }
 
 //    public Area getAreaByCode(String code, AreaType areaType) {
@@ -1532,7 +1552,6 @@ public class AreaController implements Serializable {
 //        Area ta = getFacade().findFirstByJpql(j, m);
 //        return ta;
 //    }
-
 //    public Area getAreaByUid(Long code, AreaType areaType) {
 //        if (code == null) {
 //            return null;
@@ -1553,8 +1572,6 @@ public class AreaController implements Serializable {
 //        Area ta = getFacade().findFirstByJpql(j, m);
 //        return ta;
 //    }
-
-    
 //    
 //    public Area getAreaByName(String nameOrCode, AreaType areaType, boolean createNew, Area parentArea) {
 //        if (nameOrCode.trim().equals("")) {
@@ -1588,7 +1605,6 @@ public class AreaController implements Serializable {
 //    }
 //
 //    
-    
 //    public Area getGnAreaByCode(String code) {
 //        AreaType areaType = AreaType.GN;
 //        if (code.trim().equals("")) {
@@ -1624,7 +1640,6 @@ public class AreaController implements Serializable {
 //        Area ta = getFacade().findFirstByJpql(j, m);
 //        return ta;
 //    }
-
 //    public Area getGnAreaByNameAndCode(String name, String code) {
 //        AreaType areaType = AreaType.GN;
 //        if (name.trim().equals("")) {
@@ -1643,7 +1658,6 @@ public class AreaController implements Serializable {
 //        Area ta = getFacade().findFirstByJpql(j, m);
 //        return ta;
 //    }
-
     public AreaController() {
     }
 
@@ -1746,7 +1760,7 @@ public class AreaController implements Serializable {
     // <editor-fold defaultstate="collapsed" desc="Getters and Setters">
     public List<Area> getProvinces() {
         if (provinces == null) {
-            provinces =  areaApplicationController.getAllAreas(AreaType.Province);
+            provinces = areaApplicationController.getAllAreas(AreaType.Province);
         }
         return provinces;
     }
@@ -1757,7 +1771,7 @@ public class AreaController implements Serializable {
 
     public List<Area> getDsAreas() {
         if (dsAreas == null) {
-            dsAreas =  areaApplicationController.getAllAreas(AreaType.DsArea);
+            dsAreas = areaApplicationController.getAllAreas(AreaType.DsArea);
         }
         return dsAreas;
     }
@@ -1871,7 +1885,7 @@ public class AreaController implements Serializable {
     }
 
     public List<Area> getGnAreas() {
-        gnAreas =  areaApplicationController.getAllAreas(AreaType.GN);
+        gnAreas = areaApplicationController.getAllAreas(AreaType.GN);
         return gnAreas;
     }
 
@@ -1879,14 +1893,13 @@ public class AreaController implements Serializable {
 //        gnAreas = getAreas(AreaType.GN, null);
 //        return gnAreas;
 //    }
-
     public void setGnAreas(List<Area> gnAreas) {
         this.gnAreas = gnAreas;
     }
 
     public List<Area> getDistricts() {
         if (districts == null) {
-            districts =  areaApplicationController.getAllAreas(AreaType.District);
+            districts = areaApplicationController.getAllAreas(AreaType.District);
         }
         return districts;
     }

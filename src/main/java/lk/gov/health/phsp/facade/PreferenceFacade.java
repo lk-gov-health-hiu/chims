@@ -26,7 +26,7 @@ package lk.gov.health.phsp.facade;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import lk.gov.health.phsp.bean.Preference;
+import lk.gov.health.phsp.entity.Preference;
 
 /**
  *

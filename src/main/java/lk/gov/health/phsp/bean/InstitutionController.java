@@ -228,6 +228,30 @@ public class InstitutionController implements Serializable {
         }
         return tins;
     }
+    
+    
+    public List<Institution> findChildrenInstitutions(Institution ins) {
+        List<Institution> allIns = institutionApplicationController.getInstitutions();
+        List<Institution> cins = new ArrayList<>();
+        for (Institution i : allIns) {
+            if (i.getParent() == null) {
+                continue;
+            }
+            if (i.getParent().equals(ins)) {
+                cins.add(i);
+            }
+        }
+        List<Institution> tins = new ArrayList<>();
+        tins.addAll(cins);
+        if (cins.isEmpty()) {
+            return tins;
+        } else {
+            for (Institution i : cins) {
+                tins.addAll(findChildrenInstitutions(i));
+            }
+        }
+        return tins;
+    }
 
     public List<Institution> findInstitutions(InstitutionType type) {
         List<Institution> cins = institutionApplicationController.getInstitutions();
@@ -340,7 +364,7 @@ public class InstitutionController implements Serializable {
         for (Institution i : institutionApplicationController.getInstitutions()) {
             if (i.getName() != null && i.getName().equalsIgnoreCase(name)) {
                 if (ni != null) {
-                    // System.out.println("Duplicate Institution Name : " + name);
+                    // //System.out.println("Duplicate Institution Name : " + name);
                 }
                 ni = i;
             }

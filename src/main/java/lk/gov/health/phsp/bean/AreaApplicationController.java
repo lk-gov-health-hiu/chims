@@ -71,6 +71,11 @@ public class AreaApplicationController {
         }
         return allAreas;
     }
+    
+    public void reloadAreas(){
+        allAreas = null;
+        getAllAreas();
+    }
 
     private List<Area> fillAllAreas() {
         String j;
@@ -95,10 +100,14 @@ public class AreaApplicationController {
 
     public List<Area> getAllAreas(AreaType at) {
         List<Area> tas = new ArrayList<>();
-        for (Area a : getAllAreas()) {
-            if (a.getType() != null && a.getType().equals(at)) {
-                tas.add(a);
+        if (at != null) {
+            for (Area a : getAllAreas()) {
+                if (a.getType() != null && a.getType().equals(at)) {
+                    tas.add(a);
+                }
             }
+        } else {
+            tas = getAllAreas();
         }
         return tas;
     }
@@ -125,14 +134,6 @@ public class AreaApplicationController {
         return tas;
     }
 
-    public List<Area> completeAreas(String qry, AreaType atype) {
-        List<Area> tas = new ArrayList<>();
-        for (Area a : getAllAreas(atype)) {
-            if (a.getName().toLowerCase().contains(qry.trim().toLowerCase())) {
-                tas.add(a);
-            }
-        }
-        return tas;
-    }
+    
 
 }

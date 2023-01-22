@@ -170,13 +170,13 @@ public class DataItem {
                 if (ci.getInstitutionValue() != null) {
                     availableProcedures = relationshipController.proceduresPerformedInAProcedureRoom(ci.getInstitutionValue());
                 } else {
-                    // System.out.println("ci.getInstitutionValue() is null");
+                    // //System.out.println("ci.getInstitutionValue() is null");
                 }
             } else {
-                // System.out.println("ci is null");
+                // //System.out.println("ci is null");
             }
         } else {
-            // System.out.println("relationsip controller is null");
+            // //System.out.println("relationsip controller is null");
         }
         return availableProcedures;
     }

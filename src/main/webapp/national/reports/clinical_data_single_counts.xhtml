@@ -7,56 +7,46 @@
       xmlns:f="http://xmlns.jcp.org/jsf/core">
     <head>
         <ui:define name="head">
-            Clinical Data Reports
+            Clinical Data Counts
         </ui:define>
     </head>
     <body>
-        <ui:composition template="/hospital/reports/index.xhtml">
+
+        <ui:composition template="/national/reports/index.xhtml">
             <ui:define name="reports">
                 <h:form>
                     <p:panelGrid columns="1" class="w3-border w3-margin w3-card" >
                         <f:facet name="header" >
-                            <p:outputLabel value="Clinical Data Reports" ></p:outputLabel>
+                            <p:outputLabel value="Clinical Data Counts" ></p:outputLabel>
                         </f:facet>
 
 
                         <p:panelGrid columns="2" >
-                            <p:outputLabel value="Institution" for="ins" ></p:outputLabel>
-                            <p:autoComplete value="#{reportController.institution}"
-                                            id="ins"
-                                            requiredMessage="Please select a clinic. Selecting a Hospital will not give results."
-                                            required="true" forceSelection="true" maxResults="15" minQueryLength="3"
-                                            completeMethod="#{institutionController.completeInstitutions}"
-                                            var="i"
-                                            itemLabel="#{i.name}"
-                                            itemValue="#{i}">
-                            </p:autoComplete>
-
                             <p:outputLabel value="From" for="from" ></p:outputLabel>
-                            <p:calendar id="from" value="#{reportController.fromDate}" navigator="true"
+                            <p:calendar id="from" value="#{nationalReportController.fromDate}" navigator="true"
                                         required="true"
                                         requiredMessage="Select a start date"
                                         pattern="dd MM yyyy" ></p:calendar>
 
                             <p:outputLabel value="To" for="to" ></p:outputLabel>
-                            <p:calendar id="to" value="#{reportController.toDate}" navigator="true"
+                            <p:calendar id="to" value="#{nationalReportController.toDate}" navigator="true"
                                         required="true"
                                         requiredMessage="Select a start date"
                                         pattern="dd MM yyyy" ></p:calendar>
 
                             <p:outputLabel id="lblForm" value="Form-set" ></p:outputLabel>
-                            <p:selectOneMenu id="form" value="#{reportController.designingComponentFormSet}" >
+                            <p:selectOneMenu id="form" value="#{nationalReportController.designingComponentFormSet}" >
                                 <f:selectItem itemLabel="Select" ></f:selectItem>
                                 <f:selectItems value="#{designComponentFormSetController.items}" ></f:selectItems>
-                                <f:ajax listener="#{reportController.fillItemsofTheSelectedSet()}"
+                                <f:ajax listener="#{nationalReportController.fillItemsofTheSelectedSet()}"
                                         execute="form" render="item" ></f:ajax>
                             </p:selectOneMenu>
 
                             <p:outputLabel id="lblItem" value="item" ></p:outputLabel>
                             <p:selectOneMenu id="item" 
-                                             value="#{reportController.designComponentFormItem}"
+                                             value="#{nationalReportController.designComponentFormItem}"
                                              var="it">
-                                <f:selectItems value="#{reportController.designComponentFormItems}"
+                                <f:selectItems value="#{nationalReportController.designComponentFormItems}"
                                                var="ii"
                                                itemLabel="#{ii.name}"
                                                itemValue="#{ii}"></f:selectItems>
@@ -69,14 +59,31 @@
                             </p:selectOneMenu>
 
                             <p:spacer ></p:spacer>
-                            <p:commandButton value="Download" 
+                            <p:commandButton value="Process" 
                                              ajax="false" 
                                              oncomplete ="PrimeFaces.monitorDownload(start, stop);" 
                                              icon="ui-icon-arrowthick-1-s"
-                                             actionListener="#{reportController.createExcelFileOfClinicalEncounterItemsForSelectedDesignComponent()}">
-                                <p:fileDownload value="#{reportController.resultExcelFile}" />
+                                             actionListener="#{nationalReportController.createDataSingleCounts()}">
                             </p:commandButton>
+                            <p:commandButton value="Download" ajax="false">
+                                <p:dataExporter target="tbl" fileName="clinical data counts" type="xlsx" ></p:dataExporter>
+                            </p:commandButton>
+                            
                         </p:panelGrid>
+
+                        <p:dataTable id="tbl" value="#{nationalReportController.observationValueCounts}" var="o">
+                            <p:column headerText="Value" >
+                                <h:outputText rendered="#{o.intValue ne null}" value="#{o.intValue}" ></h:outputText>
+                                <h:outputText rendered="#{o.longValue ne null}" value="#{o.longValue}" ></h:outputText>
+                                <h:outputText rendered="#{o.realNumberValue ne null}" value="#{o.realNumberValue}" ></h:outputText>
+                                <h:outputText rendered="#{o.stringValue ne null}" value="#{o.stringValue}" ></h:outputText>
+                            </p:column>
+                            <p:column headerText="Count" >
+                                <h:outputText value="#{o.count}" ></h:outputText>
+                            </p:column>
+
+                        </p:dataTable>
+
                     </p:panelGrid>
                 </h:form>
             </ui:define>

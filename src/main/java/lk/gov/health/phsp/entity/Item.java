@@ -77,6 +77,7 @@ public class Item implements Serializable {
     private Long absoluteMinimumLong;
     private Long absoluteMaximumLong;
     private Boolean multipleEntiesPerClientStatus;
+    private Boolean containsPersonallyIdentifiableData;
 
     private int orderNo;
 
@@ -123,6 +124,8 @@ public class Item implements Serializable {
     @Transient
     private boolean dataTypePrescreption;
 
+    
+    
     public ItemType getItemType() {
         if(itemType==null){
             itemType = ItemType.Dictionary_Item;
@@ -485,6 +488,14 @@ public class Item implements Serializable {
 
     public void setLocalCode(String localCode) {
         this.localCode = localCode;
+    }
+
+    public Boolean getContainsPersonallyIdentifiableData() {
+        return containsPersonallyIdentifiableData;
+    }
+
+    public void setContainsPersonallyIdentifiableData(Boolean containsPersonallyIdentifiableData) {
+        this.containsPersonallyIdentifiableData = containsPersonallyIdentifiableData;
     }
     
     

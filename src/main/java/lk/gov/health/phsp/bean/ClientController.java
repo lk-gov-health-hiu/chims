@@ -288,7 +288,7 @@ public class ClientController implements Serializable {
         List<String> duplicatedPhnNumbers = getFacade().findString(j, intNo);
         items = new ArrayList<>();
         for (String dupPhn : duplicatedPhnNumbers) {
-            // System.out.println("dupPhn = " + dupPhn);
+            // //System.out.println("dupPhn = " + dupPhn);
             j = "select c"
                     + " from Client c "
                     + " where c.phn=:phn";
@@ -302,22 +302,22 @@ public class ClientController implements Serializable {
                 } else {
                     if (c.getPerson().getLocalReferanceNo() == null || c.getPerson().getLocalReferanceNo().trim().equals("")) {
                         c.setComments("Duplicate PHN. Old PHN Stored as Local Ref");
-                        // System.out.println("Duplicate PHN. Old PHN Stored as Local Ref");
-                        // System.out.println("c.getPhn()");
+                        // //System.out.println("Duplicate PHN. Old PHN Stored as Local Ref");
+                        // //System.out.println("c.getPhn()");
                         c.getPerson().setLocalReferanceNo(c.getPhn());
-                        // System.out.println("c.getPerson().getLocalReferanceNo() = " + c.getPerson().getLocalReferanceNo());
+                        // //System.out.println("c.getPerson().getLocalReferanceNo() = " + c.getPerson().getLocalReferanceNo());
                         c.setPhn(generateNewPhn(c.getCreateInstitution()));
-                        // System.out.println("c.getPhn()");
+                        // //System.out.println("c.getPhn()");
                     } else if (c.getPerson().getSsNumber() == null || c.getPerson().getSsNumber().trim().equals("")) {
                         c.setComments("Duplicate PHN. Old PHN Stored as SC No");
-                        // System.out.println("Duplicate PHN. Old PHN Stored as SC No");
-                        // System.out.println("c.getPhn()");
+                        // //System.out.println("Duplicate PHN. Old PHN Stored as SC No");
+                        // //System.out.println("c.getPhn()");
                         c.getPerson().setSsNumber(c.getPhn());
-                        // System.out.println("c.getPerson().getSsNumber() = " + c.getPerson().getSsNumber());
+                        // //System.out.println("c.getPerson().getSsNumber() = " + c.getPerson().getSsNumber());
                         c.setPhn(generateNewPhn(c.getCreateInstitution()));
-                        // System.out.println("c.getPhn()");
+                        // //System.out.println("c.getPhn()");
                     } else {
-                        // System.out.println("No Space to Store Old PHN");
+                        // //System.out.println("No Space to Store Old PHN");
                     }
                     getFacade().edit(c);
                 }
@@ -362,7 +362,7 @@ public class ClientController implements Serializable {
             cfs.setName(dfs.getName());
             cfs.setDescreption(dfs.getDescreption());
             cfs.setCss(dfs.getCss());
-            clientEncounterComponentFormSetController.save(cfs);
+            clientEncounterComponentFormSetController.saveCfs(cfs);
         }
         DataFormset fs = new DataFormset();
         Encounter e = cfs.getEncounter();
@@ -374,7 +374,7 @@ public class ClientController implements Serializable {
         int formCounter = 0;
 
         for (DesignComponentForm df : dfList) {
-            // System.out.println("df = " + df.getName());
+            // //System.out.println("df = " + df.getName());
 
             boolean skipThisForm = false;
             if (df.getComponentSex() == ComponentSex.For_Females && getSelected().getPerson().getSex().getCode().equalsIgnoreCase("sex_male")) {
@@ -397,7 +397,7 @@ public class ClientController implements Serializable {
 
                 ClientEncounterComponentForm cf = clientEncounterComponentFormController.getClientEncounterComponentForm(j, m);
 
-                // System.out.println("cf = " + cf);
+                // //System.out.println("cf = " + cf);
 
                 if (cf == null) {
                     cf = new ClientEncounterComponentForm();
@@ -428,7 +428,7 @@ public class ClientController implements Serializable {
 
                 for (DesignComponentFormItem dis : diList) {
 
-                    // System.out.println("dis = " + dis.getName());
+                    // //System.out.println("dis = " + dis.getName());
 
                     boolean disSkipThisItem = false;
                     if (dis.getComponentSex() == ComponentSex.For_Females && getSelected().getPerson().getSex().getCode().equalsIgnoreCase("sex_male")) {
@@ -438,13 +438,13 @@ public class ClientController implements Serializable {
                         disSkipThisItem = true;
                     }
 
-                    // System.out.println("disSkipThisItem = " + disSkipThisItem);
+                    // //System.out.println("disSkipThisItem = " + disSkipThisItem);
 
                     if (!disSkipThisItem) {
 
                         if (dis.isMultipleEntiesPerForm()) {
 
-                            // System.out.println("dis.isMultipleEntiesPerForm() = " + dis.isMultipleEntiesPerForm());
+                            // //System.out.println("dis.isMultipleEntiesPerForm() = " + dis.isMultipleEntiesPerForm());
 
                             j = "Select ci "
                                     + " from ClientEncounterComponentItem ci "
@@ -456,10 +456,10 @@ public class ClientController implements Serializable {
                             m.put("ret", false);
                             m.put("cf", cf);
                             m.put("dis", dis);
-                            // System.out.println("cf = " + cf.getId());
-                            // System.out.println("dis = " + dis.getId());
+                            // //System.out.println("cf = " + cf.getId());
+                            // //System.out.println("dis = " + dis.getId());
                             List<ClientEncounterComponentItem> cis = clientEncounterComponentItemController.getItems(j, m);
-                            // System.out.println("cis = " + cis);
+                            // //System.out.println("cis = " + cis);
 
                             itemCounter++;
                             ClientEncounterComponentItem ci = new ClientEncounterComponentItem();
@@ -517,11 +517,11 @@ public class ClientController implements Serializable {
                             m.put("ret", false);
                             m.put("cf", cf);
                             m.put("dis", dis);
-                            // System.out.println("cf = " + cf.getId());
-                            // System.out.println("dis = " + dis.getId());
+                            // //System.out.println("cf = " + cf.getId());
+                            // //System.out.println("dis = " + dis.getId());
                             ClientEncounterComponentItem ci;
                             ci = clientEncounterComponentItemController.getItem(j, m);
-                            // System.out.println("ci = " + ci);
+                            // //System.out.println("ci = " + ci);
                             if (ci != null) {
                                 DataItem i = new DataItem();
                                 i.setMultipleEntries(false);
@@ -680,7 +680,7 @@ public class ClientController implements Serializable {
     public void addCreatedDateFromCreatedAt() {
         String j = "select c from Client c where c.createdOn is null";
         List<Client> cs = getFacade().findByJpql(j, 1000);
-        // System.out.println("cs.getSize() = " + cs.size());
+        // //System.out.println("cs.getSize() = " + cs.size());
         for (Client c : cs) {
             if (c.getCreatedOn() == null) {
                 c.setCreatedOn(c.getCreatedAt());
@@ -1217,8 +1217,8 @@ public class ClientController implements Serializable {
 //                        colNo++;
 //                    }
 //                    Area gnArea = null;
-////                    //// System.out.println("gnAreaName = " + gnAreaName);
-////                    //// System.out.println("gnAreaCode = " + gnAreaCode);
+////                    //// //System.out.println("gnAreaName = " + gnAreaName);
+////                    //// //System.out.println("gnAreaCode = " + gnAreaCode);
 //                    if (gnAreaName != null && gnAreaCode != null) {
 ////                        gnArea = areaController.getGnAreaByNameAndCode(gnAreaName, gnAreaCode);
 //                    } else if (gnAreaName != null) {
@@ -1227,7 +1227,7 @@ public class ClientController implements Serializable {
 //                        gnArea = areaController.getGnAreaByCode(gnAreaCode);
 //                    }
 //                    if (gnArea != null) {
-////                        //// System.out.println("gnArea = " + gnArea.getName());
+////                        //// //System.out.println("gnArea = " + gnArea.getName());
 //                    }
 //
 //                    colNo = 0;
@@ -1355,9 +1355,9 @@ public class ClientController implements Serializable {
 //                                    Calendar tc = Calendar.getInstance();
 //                                    thisYear = tc.get(Calendar.YEAR);
 //                                    ageInYears = thisYear - birthYear;
-////                                    //// System.out.println("ageInYears = " + ageInYears);
+////                                    //// //System.out.println("ageInYears = " + ageInYears);
 //                                } catch (Exception e) {
-////                                    //// System.out.println("e = " + e);
+////                                    //// //System.out.println("e = " + e);
 //                                }
 //                                if (ageInYears < 0) {
 //                                    tdob = today;
@@ -1385,8 +1385,8 @@ public class ClientController implements Serializable {
 //                                c.setCreatedAt(reg);
 //                                break;
 //                            case "client_gn_area":
-//                                //// System.out.println("GN");
-//                                //// System.out.println("cellString = " + cellString);
+//                                //// //System.out.println("GN");
+//                                //// //System.out.println("cellString = " + cellString);
 //
 //                                Area tgn;
 //                                if (gnArea == null) {
@@ -1399,7 +1399,7 @@ public class ClientController implements Serializable {
 //                        colNo++;
 //                    }
 //
-//                    //// System.out.println("tgn = " + gnArea);
+//                    //// //System.out.println("tgn = " + gnArea);
 //                    if (gnArea != null) {
 //                        c.getPerson().setGnArea(gnArea);
 //                        c.getPerson().setDsArea(gnArea.getDsd());
@@ -1445,7 +1445,7 @@ public class ClientController implements Serializable {
 
     public void onTabChange(TabChangeEvent event) {
 
-        // ////// System.out.println("profileTabActiveIndex = " + profileTabActiveIndex);
+        // ////// //System.out.println("profileTabActiveIndex = " + profileTabActiveIndex);
         TabView tabView = (TabView) event.getComponent();
 
         profileTabActiveIndex = tabView.getChildren().indexOf(event.getTab());
@@ -1592,7 +1592,7 @@ public class ClientController implements Serializable {
             JsfUtil.addErrorMessage("You do not have an Institution. Please contact support.");
             return;
         }
-        //// System.out.println("webUserController.getLoggedUser().getInstitution() = " + webUserController.getLoggedUser().getInstitution().getLastHin());
+        //// //System.out.println("webUserController.getLoggedUser().getInstitution() = " + webUserController.getLoggedUser().getInstitution().getLastHin());
         if (webUserController.getLoggedUser().getInstitution().getPoiInstitution() != null) {
             poiIns = webUserController.getLoggedUser().getInstitution().getPoiInstitution();
         } else {
@@ -1608,7 +1608,7 @@ public class ClientController implements Serializable {
     public String generateNewPhn(Institution ins) {
         Institution poiIns;
         if (ins == null) {
-            // System.out.println("Ins is null");
+            // //System.out.println("Ins is null");
             return null;
         }
         if (ins.getPoiInstitution() != null) {
@@ -1617,7 +1617,7 @@ public class ClientController implements Serializable {
             poiIns = ins;
         }
         if (poiIns.getPoiNumber() == null || poiIns.getPoiNumber().trim().equals("")) {
-            // System.out.println("A Point of Issue is NOT assigned to the Institution. Please discuss with the System Administrator.");
+            // //System.out.println("A Point of Issue is NOT assigned to the Institution. Please discuss with the System Administrator.");
             return null;
         }
         return applicationController.createNewPersonalHealthNumberformat(poiIns);
@@ -1661,7 +1661,7 @@ public class ClientController implements Serializable {
     }
 
     public Date guessDob(YearMonthDay yearMonthDay) {
-        // ////// ////// System.out.println("year string is " + docStr);
+        // ////// ////// //System.out.println("year string is " + docStr);
         int years = 0;
         int month = 0;
         int day = 0;
@@ -1684,7 +1684,7 @@ public class ClientController implements Serializable {
 
             return now.getTime();
         } catch (Exception e) {
-            ////// ////// System.out.println("Error is " + e.getMessage());
+            ////// ////// //System.out.println("Error is " + e.getMessage());
             return new Date();
 
         }
@@ -1881,7 +1881,7 @@ public class ClientController implements Serializable {
     }
 
     public String searchByAnyIdWithBasicData() {
-        // System.out.println("searchByAnyIdWithBasicData");
+        // //System.out.println("searchByAnyIdWithBasicData");
         userTransactionController.recordTransaction("Search By Any Id");
         clearExistsValues();
         if (searchingId == null) {
@@ -1910,7 +1910,7 @@ public class ClientController implements Serializable {
     }
 
     public String searchByPhnWithBasicData() {
-        // System.out.println("searchByPhnWithBasicData");
+        // //System.out.println("searchByPhnWithBasicData");
         userTransactionController.recordTransaction("Search By PHN");
         clearExistsValues();
         if (searchingId == null) {
@@ -1978,25 +1978,25 @@ public class ClientController implements Serializable {
     }
 
     public List<Client> listPatientsByPhn(String phn) {
-        String j = "select c from Client c where c.retired=false and upper(c.phn)=:q order by c.phn";
+        String j = "select c from Client c where c.retired=false and c.phn=:q order by c.phn";
         Map m = new HashMap();
-        m.put("q", phn.trim().toUpperCase());
+        m.put("q", phn.trim());
         return getFacade().findByJpql(j, m);
     }
 
     public List<Client> listPatientsByNic(String phn) {
-        String j = "select c from Client c where c.retired=false and c.reservedClient<>:res and upper(c.person.nic)=:q order by c.phn";
+        String j = "select c from Client c where c.retired=false and c.reservedClient<>:res and c.person.nic=:q order by c.phn";
         Map m = new HashMap();
         m.put("res", true);
-        m.put("q", phn.trim().toUpperCase());
+        m.put("q", phn.trim());
         return getFacade().findByJpql(j, m);
     }
 
     public List<Client> listPatientsByPhone(String phn) {
-        String j = "select c from Client c where c.retired=false and c.reservedClient<>:res and (upper(c.person.phone1)=:q or upper(c.person.phone2)=:q) order by c.phn";
+        String j = "select c from Client c where c.retired=false and c.reservedClient<>:res and (c.person.phone1=:q or c.person.phone2=:q) order by c.phn";
         Map m = new HashMap();
         m.put("res", true);
-        m.put("q", phn.trim().toUpperCase());
+        m.put("q", phn.trim());
         return getFacade().findByJpql(j, m);
     }
 
@@ -2004,7 +2004,7 @@ public class ClientController implements Serializable {
         String j = "select c from Client c "
                 + " where c.retired=false "
                 + " and c.reservedClient<>:res "
-                + " and lower(c.person.localReferanceNo)=:q "
+                + " and c.person.localReferanceNo=:q "
                 + " and c.createInstitution=:ins "
                 + " order by c.phn";
         Map m = new HashMap();
@@ -2018,7 +2018,7 @@ public class ClientController implements Serializable {
         String j = "select c from Client c "
                 + " where c.retired=false "
                 + " and c.reservedClient<>:res "
-                + " and lower(c.person.localReferanceNo)=:q "
+                + " and c.person.localReferanceNo=:q "
                 + " order by c.phn";
         Map m = new HashMap();
         m.put("res", true);
@@ -2030,7 +2030,7 @@ public class ClientController implements Serializable {
         String j = "select c from Client c "
                 + " where c.retired=false "
                 + " and c.reservedClient<>:res "
-                + " and lower(c.person.ssNumber)=:q "
+                + " and c.person.ssNumber=:q "
                 + " order by c.phn";
         Map m = new HashMap();
         m.put("res", true);
@@ -2042,7 +2042,7 @@ public class ClientController implements Serializable {
         String j = "select c from Client c "
                 + " where c.retired=false "
                 + " and c.reservedClient<>:res "
-                + " and lower(c.person.drivingLicenseNumber)=:q "
+                + " and c.person.drivingLicenseNumber=:q "
                 + " order by c.phn";
         Map m = new HashMap();
         m.put("res", true);
@@ -2054,7 +2054,7 @@ public class ClientController implements Serializable {
         String j = "select c from Client c "
                 + " where c.retired=false "
                 + " and c.reservedClient<>:res "
-                + " and lower(c.person.passportNumber)=:q "
+                + " and c.person.passportNumber=:q "
                 + " order by c.phn";
         Map m = new HashMap();
         m.put("res", true);
@@ -2063,7 +2063,7 @@ public class ClientController implements Serializable {
     }
 
     public List<Client> listPatientsByIDsStepvice(String ids) {
-        //// System.out.println("ids = " + ids);
+        //// //System.out.println("ids = " + ids);
         if (ids == null || ids.trim().equals("")) {
             return null;
         }
@@ -2077,33 +2077,33 @@ public class ClientController implements Serializable {
         m = new HashMap();
         j = "select c from Client c "
                 + " where c.retired=false "
-                + " and upper(c.phn)=:q "
+                + " and c.phn=:q "
                 + " order by c.phn";
-        m.put("q", ids.trim().toUpperCase());
-        //// System.out.println("m = " + m);
-        //// System.out.println("j = " + j);
+        m.put("q", ids.trim());
+        //// //System.out.println("m = " + m);
+        //// //System.out.println("j = " + j);
         cs = getFacade().findByJpql(j, m);
 
         if (cs != null && !cs.isEmpty()) {
-            //// System.out.println("cs.size() = " + cs.size());
+            //// //System.out.println("cs.size() = " + cs.size());
             return cs;
         }
 
         j = "select c from Client c "
                 + " where c.retired=false "
                 + " and ("
-                + " upper(c.person.phone1)=:q "
+                + " c.person.phone1=:q "
                 + " or "
-                + " upper(c.person.phone2)=:q "
+                + " c.person.phone2=:q "
                 + " or "
-                + " upper(c.person.nic)=:q "
+                + " c.person.nic=:q "
                 + " ) "
                 + " order by c.phn";
         cs = getFacade().findByJpql(j, m);
-        //// System.out.println("m = " + m);
-        //// System.out.println("j = " + j);
+        //// //System.out.println("m = " + m);
+        //// //System.out.println("j = " + j);
         if (cs != null && !cs.isEmpty()) {
-            //// System.out.println("cs.size() = " + cs.size());
+            //// //System.out.println("cs.size() = " + cs.size());
             return cs;
         }
 
@@ -2144,9 +2144,9 @@ public class ClientController implements Serializable {
                 + " where c.retired=false "
                 + " and c.phn=:q "
                 + " order by c.phn";
-        m.put("q", ids.trim().toUpperCase());
-        //// System.out.println("m = " + m);
-        //// System.out.println("j = " + j);
+        m.put("q", ids.trim());
+        //// //System.out.println("m = " + m);
+        //// //System.out.println("j = " + j);
         objs = getFacade().findByJpql(j, m);
 
         if (objs != null && !objs.isEmpty()) {
@@ -2173,8 +2173,8 @@ public class ClientController implements Serializable {
                 + " ) "
                 + " order by c.phn";
         objs = getFacade().findByJpql(j, m);
-        //// System.out.println("m = " + m);
-        //// System.out.println("j = " + j);
+        //// //System.out.println("m = " + m);
+        //// //System.out.println("j = " + j);
         if (objs != null && !objs.isEmpty()) {
             cs = objectsToClientBasicDataObjects(objs);
             return cs;
@@ -2231,9 +2231,9 @@ public class ClientController implements Serializable {
                 + ") ";
         j += " from Client c "
                 + " where c.retired=false "
-                + " and upper(c.phn)=:q "
+                + " and c.phn=:q "
                 + " order by c.phn";
-        m.put("q", ids.trim().toUpperCase());
+        m.put("q", ids.trim());
         objs = getFacade().findByJpql(j, m);
 
         if (objs != null && !objs.isEmpty()) {
@@ -2266,13 +2266,13 @@ public class ClientController implements Serializable {
                 + " where c.retired=false "
                 + " and c.reservedClient<>:res "
                 + " and ("
-                + " upper(c.person.phone1)=:q "
+                + " c.person.phone1=:q "
                 + " or "
-                + " upper(c.person.phone2)=:q "
+                + " c.person.phone2=:q "
                 + " or "
-                + " upper(c.person.nic)=:q "
+                + " c.person.nic=:q "
                 + " or "
-                + " upper(c.phn)=:q "
+                + " c.phn=:q "
                 + " or "
                 + " c.person.localReferanceNo=:q "
                 + " or "
@@ -2281,7 +2281,7 @@ public class ClientController implements Serializable {
                 + " order by c.phn";
         Map m = new HashMap();
         m.put("res", true);
-        m.put("q", ids.trim().toUpperCase());
+        m.put("q", ids.trim());
         return getFacade().findByJpql(j, m);
     }
 
@@ -2292,7 +2292,7 @@ public class ClientController implements Serializable {
 
     public String saveClient() {
 
-        // System.out.println("saveClient");
+        // //System.out.println("saveClient");
 
         if (selected == null) {
             JsfUtil.addErrorMessage("Nothing to save");

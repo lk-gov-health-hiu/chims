@@ -1,12 +1,14 @@
 package lk.gov.health.phsp.bean;
 
-
+import lk.gov.health.phsp.entity.Preference;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.enterprise.context.SessionScoped;
 import javax.faces.component.UIComponent;
@@ -41,10 +43,27 @@ public class PreferenceController implements Serializable {
     private String limsKey;
     private String pharmacyBaseUrl;
     private String pharmacyKey;
+    private String reCAPTCHASiteKey;
+    private String reCAPTCHASecreatKey;
+    private String logoLink;
+    private String footerText;
+    private String loginDescreption;
+    private String headerText;
+    
+    
 
     // <editor-fold defaultstate="collapsed" desc="Getters and Setters">
     private PreferenceFacade getFacade() {
         return ejbFacade;
+    }
+
+    @PostConstruct
+    public void PreferenceController() {
+        loadPreferances();
+    }
+
+    public void init() {
+        loadPreferances();
     }
 
     public String findApplicationPreferanceValue(String name) {
@@ -52,25 +71,28 @@ public class PreferenceController implements Serializable {
         if (p != null) {
             return p.getLongTextValue();
         } else {
-            return "";
+            return null;
         }
     }
 
     public String toManagePreferences() {
-        dictionaryServiceBaseUrl = findApplicationPreferanceValue(dictionaryServiceBaseUrl);
-        dictionaryServiceKey = findApplicationPreferanceValue(dictionaryServiceKey);
-        facilityRegistryBaseUrl = findApplicationPreferanceValue(facilityRegistryBaseUrl);
-        facilityRegistryKey = findApplicationPreferanceValue(facilityRegistryKey);
-        procedureRoomBaseUrl = findApplicationPreferanceValue(procedureRoomBaseUrl);
-        procedureRoomKey = findApplicationPreferanceValue(procedureRoomKey);
-        limsBaseUrl = findApplicationPreferanceValue(limsBaseUrl);
-        limsKey = findApplicationPreferanceValue(limsKey);
-        pharmacyBaseUrl = findApplicationPreferanceValue(pharmacyBaseUrl);
-        pharmacyKey = findApplicationPreferanceValue(pharmacyKey);
+        loadPreferances();
         return "/systemAdmin/preferences";
     }
 
-    public void savePreferences(){
+    public void loadPreferances() {
+        reCAPTCHASecreatKey = findApplicationPreferanceValue("reCAPTCHASecreatKey");
+        reCAPTCHASiteKey = findApplicationPreferanceValue("reCAPTCHASiteKey");
+        
+        
+        loginDescreption = findApplicationPreferanceValue("loginDescreption");
+        logoLink = findApplicationPreferanceValue("logoLink");
+        headerText = findApplicationPreferanceValue("headerText");
+        footerText = findApplicationPreferanceValue("footerText");
+        
+    }
+
+    public void savePreferences() {
         savePreference("dictionaryServiceBaseUrl", dictionaryServiceBaseUrl);
         savePreference("dictionaryServiceKey", dictionaryServiceKey);
         savePreference("facilityRegistryBaseUrl", facilityRegistryBaseUrl);
@@ -81,8 +103,16 @@ public class PreferenceController implements Serializable {
         savePreference("limsKey", limsKey);
         savePreference("pharmacyBaseUrl", pharmacyBaseUrl);
         savePreference("pharmacyKey", pharmacyKey);
+        savePreference("reCAPTCHASecreatKey", reCAPTCHASecreatKey);
+        savePreference("reCAPTCHASiteKey", reCAPTCHASiteKey);
+        
+        savePreference("logoLink", logoLink);
+        savePreference("headerText", headerText);
+        savePreference("footerText", footerText);
+        savePreference("loginDescreption", loginDescreption);
+        
     }
-    
+
     public Preference findApplicationPreferance(String name) {
         if (name == null) {
             return null;
@@ -230,6 +260,8 @@ public class PreferenceController implements Serializable {
     public void setCommonController(CommonController commonController) {
         this.commonController = commonController;
     }
+    
+    
 
     public UserTransactionController getUserTransactionController() {
         return userTransactionController;
@@ -237,6 +269,54 @@ public class PreferenceController implements Serializable {
 
     public void setUserTransactionController(UserTransactionController userTransactionController) {
         this.userTransactionController = userTransactionController;
+    }
+
+    public String getReCAPTCHASiteKey() {
+        return reCAPTCHASiteKey;
+    }
+
+    public void setReCAPTCHASiteKey(String reCAPTCHASiteKey) {
+        this.reCAPTCHASiteKey = reCAPTCHASiteKey;
+    }
+
+    public String getReCAPTCHASecreatKey() {
+        return reCAPTCHASecreatKey;
+    }
+
+    public void setReCAPTCHASecreatKey(String reCAPTCHASecreatKey) {
+        this.reCAPTCHASecreatKey = reCAPTCHASecreatKey;
+    }
+
+    public String getLogoLink() {
+        return logoLink;
+    }
+
+    public void setLogoLink(String logoLink) {
+        this.logoLink = logoLink;
+    }
+
+    public String getFooterText() {
+        return footerText;
+    }
+
+    public void setFooterText(String footerText) {
+        this.footerText = footerText;
+    }
+
+    public String getLoginDescreption() {
+        return loginDescreption;
+    }
+
+    public void setLoginDescreption(String loginDescreption) {
+        this.loginDescreption = loginDescreption;
+    }
+
+    public String getHeaderText() {
+        return headerText;
+    }
+
+    public void setHeaderText(String headerText) {
+        this.headerText = headerText;
     }
 
     // </editor-fold>

@@ -40,6 +40,10 @@
                                                      action="#{hospitalReportController.toVisitCounts()}"
                                                      ajax="false"></p:commandButton>
 
+                                     <p:commandButton value="Institution-vice Formsets"   style="width:20em;margin:auto;"
+                                                     action="#{reportController.toViewFormsetCountsByInstitution()}"
+                                                     ajax="false"></p:commandButton>
+                                    
                                     <p:commandButton value="Daily Registrations"  rendered="false"  style="width:20em;margin:auto;"
                                                      action="#{hospitalReportController.toViewDailyClinicsRegistrationCounts()}"
                                                      ajax="false"></p:commandButton>
@@ -65,6 +69,10 @@
                                     <p:commandButton value="Clinic Visits"   style="width:20em;margin:auto;"
                                                      action="#{hospitalReportController.toViewClinicVisits()}"
                                                      ajax="false"></p:commandButton>
+                                    
+                                      <p:commandButton value="Form-sets"   style="width:20em;margin:auto;"
+                                                     action="#{reportController.toViewformsetList()}"
+                                                     ajax="false"></p:commandButton>
 
                                     <p:commandButton value="Longitudinal Clinic Visits" rendered="false"   style="width:20em;margin:auto;"
                                                      action="#{hospitalReportController.toViewLongitudinalClinicVisits()}"
@@ -78,8 +86,8 @@
                                                      action="#{hospitalReportController.toViewClinicalDataSingle()}"
                                                      ajax="false"></p:commandButton>
                                     
-                                    <p:commandButton value="Clinical Data - Multiple Variable"  rendered="false"  style="width:20em;margin:auto;"
-                                                     action="#{hospitalReportController.toViewClinicalDataSingle()}"
+                                    <p:commandButton value="Clinical Data - Form Set"  rendered="true"  style="width:20em;margin:auto;"
+                                                     action="#{hospitalReportController.toViewClinicalDataFormset()}"
                                                      ajax="false"></p:commandButton>
 
                                 </h:panelGrid>

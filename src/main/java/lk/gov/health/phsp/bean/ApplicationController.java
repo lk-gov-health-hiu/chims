@@ -73,7 +73,7 @@ public class ApplicationController {
 // <editor-fold defaultstate="collapsed" desc="Class Variables">
     private boolean demoSetup = false;
     private boolean production = true;
-    private String versionNo = "1.1.4";
+    private String versionNo = "1.2";
     private List<QueryComponent> queryComponents;
     private List<String> userTransactionTypes;
 
