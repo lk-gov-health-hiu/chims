@@ -2434,7 +2434,7 @@ public class ReportController implements Serializable {
 
     public void fillRegistrationsOfClientsByInstitution() {
 
-        String j = "select new lk.gov.health.phsp.pojcs.InstitutionCount(c.createdBy.institution, count(c)) "
+        String j = "select new lk.gov.health.phsp.pojcs.InstitutionCount(c.createInstitution, count(c)) "
                 + " from Client c "
                 + " where c.retired<>:ret "
                 + " and c.reservedClient<>:res ";
@@ -2444,12 +2444,12 @@ public class ReportController implements Serializable {
         j = j + " and c.createdAt between :fd and :td ";
 
         if (webUserController.getLoggedUser().isRestrictedToInstitution()) {
-            j = j + " and c.createdBy.institution in :ins ";
+            j = j + " and c.createInstitution in :ins ";
             m.put("ins", webUserController.getLoggableInstitutions());
         }
 
-        j = j + " group by c.createdBy.institution ";
-        j = j + " order by c.createdBy.institution.name ";
+        j = j + " group by c.createInstitution ";
+        j = j + " order by c.createInstitution.name ";
         m.put("fd", getFromDate());
         m.put("td", getToDate());
         List<Object> objs = getClientFacade().findAggregates(j, m);

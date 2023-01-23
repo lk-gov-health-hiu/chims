@@ -63,7 +63,6 @@ import org.primefaces.event.TabChangeEvent;
 import org.primefaces.model.file.UploadedFile;
 
 // </editor-fold>
-
 @Named("clientController")
 @SessionScoped
 public class ClientController implements Serializable {
@@ -157,7 +156,7 @@ public class ClientController implements Serializable {
     private String dateFormat;
     private List<String> reservePhnList;
     private int intNo;
-    
+
     private Encounter unregisteringClinic;
 
     private DataFormset dataFormset;
@@ -193,9 +192,9 @@ public class ClientController implements Serializable {
         loadClientFormDataEntry();
         return "/client/client";
     }
-    
+
     public String toRetireClient() {
-        if(selected==null){
+        if (selected == null) {
             JsfUtil.addErrorMessage("No client is selected");
             return "";
         }
@@ -398,7 +397,6 @@ public class ClientController implements Serializable {
                 ClientEncounterComponentForm cf = clientEncounterComponentFormController.getClientEncounterComponentForm(j, m);
 
                 // //System.out.println("cf = " + cf);
-
                 if (cf == null) {
                     cf = new ClientEncounterComponentForm();
 
@@ -429,7 +427,6 @@ public class ClientController implements Serializable {
                 for (DesignComponentFormItem dis : diList) {
 
                     // //System.out.println("dis = " + dis.getName());
-
                     boolean disSkipThisItem = false;
                     if (dis.getComponentSex() == ComponentSex.For_Females && getSelected().getPerson().getSex().getCode().equalsIgnoreCase("sex_male")) {
                         disSkipThisItem = true;
@@ -439,13 +436,11 @@ public class ClientController implements Serializable {
                     }
 
                     // //System.out.println("disSkipThisItem = " + disSkipThisItem);
-
                     if (!disSkipThisItem) {
 
                         if (dis.isMultipleEntiesPerForm()) {
 
                             // //System.out.println("dis.isMultipleEntiesPerForm() = " + dis.isMultipleEntiesPerForm());
-
                             j = "Select ci "
                                     + " from ClientEncounterComponentItem ci "
                                     + " where ci.retired=:ret "
@@ -840,18 +835,19 @@ public class ClientController implements Serializable {
         }
         String j = "select c from Client c "
                 + " where c.retired=:ret "
-                + " and c.reservedClient<>:res "
-                + " and c.id > :idf "
-                + " and c.id < :idt ";
+                + " and c.createInstitution=:ins";
         Map m = new HashMap();
         m.put("ret", false);
-        m.put("res", true);
-        m.put("idf", idFrom);
-        m.put("idt", idTo);
+        m.put("ins", institution);
         List<Client> cs = getFacade().findByJpql(j, m);
         for (Client c : cs) {
-            c.setCreateInstitution(institution);
-            getFacade().edit(c);
+            if (c.getCreatedBy() != null && c.getCreatedBy().getInstitution() != null) {
+                c.setCreateInstitution(c.getCreatedBy().getInstitution());
+                c.setPoiInstitution(institution);
+                getFacade().edit(c);
+                System.out.println("c = " + c.getId());
+            }
+
         }
         userTransactionController.recordTransaction("Update Client Created Institution");
     }
@@ -1138,7 +1134,6 @@ public class ClientController implements Serializable {
 //        }
 //        return true;
 //    }
-    
 //    
 //    public String importClientsFromExcel() {
 //
@@ -1434,7 +1429,6 @@ public class ClientController implements Serializable {
 //            return "";
 //        }
 //    }
-
     public void prepareToCapturePhotoWithWebCam() {
         goingToCaptureWebCamPhoto = true;
     }
@@ -1505,7 +1499,7 @@ public class ClientController implements Serializable {
         }
 
     }
-    
+
     public List<Encounter> fillEncounters(Client client, List<InstitutionType> insTypes, EncounterType encType, boolean excludeCompleted, Integer maxRecordCount, boolean descending) {
         String j = "select e from Encounter e where e.retired=false ";
         Map m = new HashMap();
@@ -1525,8 +1519,8 @@ public class ClientController implements Serializable {
             j += " and e.completed=:com ";
             m.put("com", false);
         }
-        if(descending){
-            j +=" order by e.id desc";
+        if (descending) {
+            j += " order by e.id desc";
         }
         if (maxRecordCount == null) {
             return encounterFacade.findByJpql(j, m);
@@ -2293,36 +2287,30 @@ public class ClientController implements Serializable {
     public String saveClient() {
 
         // //System.out.println("saveClient");
-
         if (selected == null) {
             JsfUtil.addErrorMessage("Nothing to save");
             return "";
         }
 
-        Institution createdIns = null;
+        Institution poiIns = null;
 
-        if (selected.getCreateInstitution() == null) {
-            if (webUserController.getLoggedUser().getInstitution().getPoiInstitution() != null) {
-                createdIns = webUserController.getLoggedUser().getInstitution().getPoiInstitution();
-            } else {
-                createdIns = webUserController.getLoggedUser().getInstitution();
-            }
-            selected.setCreateInstitution(createdIns);
+        if (webUserController.getLoggedUser().getInstitution().getPoiInstitution() != null) {
+            poiIns = webUserController.getLoggedUser().getInstitution().getPoiInstitution();
         } else {
-            createdIns = selected.getCreateInstitution();
+            poiIns = webUserController.getLoggedUser().getInstitution();
         }
 
-        if (createdIns == null || createdIns.getPoiNumber() == null || createdIns.getPoiNumber().trim().equals("")) {
+        if (poiIns == null || poiIns.getPoiNumber() == null || poiIns.getPoiNumber().trim().equals("")) {
             JsfUtil.addErrorMessage("The institution you logged has no POI. Can not generate a PHN.");
             return "";
         }
 
         if (selected.getPhn() == null || selected.getPhn().trim().equals("")) {
-            String newPhn = applicationController.createNewPersonalHealthNumberformat(createdIns);
+            String newPhn = applicationController.createNewPersonalHealthNumberformat(poiIns);
 
             int count = 0;
             while (checkPhnExists(newPhn, null)) {
-                newPhn = applicationController.createNewPersonalHealthNumberformat(createdIns);
+                newPhn = applicationController.createNewPersonalHealthNumberformat(poiIns);
                 count++;
                 if (count > 100) {
                     JsfUtil.addErrorMessage("Generating New PHN Failed. Client NOT saved. Please contact System Administrator.");
@@ -2364,16 +2352,16 @@ public class ClientController implements Serializable {
     }
 
     public void reserverPhn() {
-        Institution createdIns;
+        Institution poiInstitution;
         int i = 0;
 
         if (webUserController.getLoggedUser().getInstitution().getPoiInstitution() != null) {
-            createdIns = webUserController.getLoggedUser().getInstitution().getPoiInstitution();
+            poiInstitution = webUserController.getLoggedUser().getInstitution().getPoiInstitution();
         } else {
-            createdIns = webUserController.getLoggedUser().getInstitution();
+            poiInstitution = webUserController.getLoggedUser().getInstitution();
         }
 
-        if (createdIns == null) {
+        if (poiInstitution == null) {
             JsfUtil.addErrorMessage("No POI");
             return;
         }
@@ -2390,7 +2378,7 @@ public class ClientController implements Serializable {
         reservePhnList = new ArrayList<>();
 
         while (i < numberOfPhnToReserve) {
-            String newPhn = generateNewPhn(createdIns);
+            String newPhn = generateNewPhn(poiInstitution);
 
             if (!checkPhnExists(newPhn, null)) {
                 reservePhnList.add(newPhn);
@@ -2401,7 +2389,7 @@ public class ClientController implements Serializable {
                 rc.setCreatedBy(webUserController.getLoggedUser());
                 rc.setCreatedAt(new Date());
                 rc.setCreatedOn(new Date());
-                rc.setCreateInstitution(createdIns);
+                rc.setCreateInstitution(webUserController.getLoggedUser().getInstitution());
                 if (rc.getPerson().getCreatedAt() == null) {
                     rc.getPerson().setCreatedAt(new Date());
                 }
@@ -2430,9 +2418,7 @@ public class ClientController implements Serializable {
                 c.setCreatedOn(new Date());
             }
             if (c.getCreateInstitution() == null) {
-                if (webUserController.getLoggedUser().getInstitution().getPoiInstitution() != null) {
-                    c.setCreateInstitution(webUserController.getLoggedUser().getInstitution().getPoiInstitution());
-                } else if (webUserController.getLoggedUser().getInstitution() != null) {
+                if (webUserController.getLoggedUser() != null && webUserController.getLoggedUser().getInstitution() != null) {
                     c.setCreateInstitution(webUserController.getLoggedUser().getInstitution());
                 }
             }
@@ -2934,9 +2920,9 @@ public class ClientController implements Serializable {
         }
         return selectedClientsLastFiveClinicVisits;
     }
-    
-    public String removeFromClinic(){
-        if(unregisteringClinic==null){
+
+    public String removeFromClinic() {
+        if (unregisteringClinic == null) {
             JsfUtil.addErrorMessage("No Clinic Selected");
             return "";
         }
@@ -3018,8 +3004,6 @@ public class ClientController implements Serializable {
     public void setUnregisteringClinic(Encounter unregisteringClinic) {
         this.unregisteringClinic = unregisteringClinic;
     }
-    
-    
 
     // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="Inner Classes">

@@ -2243,13 +2243,13 @@ public class HospitalReportController implements Serializable {
         m.put("td", getToDate());
 
         if (institution != null) {
-            j += " and c.createdBy.institution in :ins ";
+            j += " and c.createInstitution in :ins ";
             List<Institution> ins = institutionApplicationController.findChildrenInstitutions(institution);
             ins.add(institution);
             m.put("ins", ins);
         } else {
             if (webUserController.getLoggedUser().isRestrictedToInstitution()) {
-                j += " and c.createdBy.institution in :ins ";
+                j += " and c.createInstitution in :ins ";
                 List<Institution> ins = webUserController.getLoggableInstitutions();
                 m.put("ins", ins);
             }
@@ -2408,7 +2408,7 @@ public class HospitalReportController implements Serializable {
 
     public void fillRegistrationsOfClientsByInstitution() {
 
-        String j = "select new lk.gov.health.phsp.pojcs.InstitutionCount(c.createdBy.institution, count(c)) "
+        String j = "select new lk.gov.health.phsp.pojcs.InstitutionCount(c.createInstitution, count(c)) "
                 + " from Client c "
                 + " where c.retired<>:ret "
                 + " and c.reservedClient<>:res ";
@@ -2417,11 +2417,11 @@ public class HospitalReportController implements Serializable {
         m.put("res", true);
         j = j + " and c.createdAt between :fd and :td ";
 
-        j = j + " and c.createdBy.institution in :ins ";
+        j = j + " and c.createInstitution in :ins ";
         m.put("ins", webUserController.getLoggableInstitutions());
 
-        j = j + " group by c.createdBy.institution ";
-        j = j + " order by c.createdBy.institution.name ";
+        j = j + " group by c.createInstitution ";
+        j = j + " order by c.createInstitution.name ";
         m.put("fd", getFromDate());
         m.put("td", getToDate());
         List<Object> objs = getClientFacade().findAggregates(j, m);

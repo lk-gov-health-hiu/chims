@@ -9,8 +9,6 @@ import lk.gov.health.phsp.entity.Item;
 import lk.gov.health.phsp.entity.Upload;
 import lk.gov.health.phsp.enums.WebUserRole;
 import lk.gov.health.phsp.facade.InstitutionFacade;
-import lk.gov.health.phsp.facade.ProjectInstitutionFacade;
-import lk.gov.health.phsp.facade.ProjectSourceOfFundFacade;
 import lk.gov.health.phsp.facade.UploadFacade;
 import lk.gov.health.phsp.facade.WebUserFacade;
 import lk.gov.health.phsp.facade.util.JsfUtil;
@@ -46,7 +44,6 @@ import lk.gov.health.phsp.enums.InstitutionType;
 import lk.gov.health.phsp.enums.Privilege;
 import lk.gov.health.phsp.enums.PrivilegeTreeNode;
 import lk.gov.health.phsp.enums.RelationshipType;
-import lk.gov.health.phsp.facade.PersonFacade;
 import lk.gov.health.phsp.facade.UserPrivilegeFacade;
 import org.primefaces.model.StreamedContent;
 import org.primefaces.model.TreeNode;
@@ -69,10 +66,6 @@ public class WebUserController implements Serializable {
     private InstitutionFacade institutionFacade;
     @EJB
     private UploadFacade uploadFacade;
-    @EJB
-    private ProjectInstitutionFacade projectInstitutionFacade;
-    @EJB
-    private ProjectSourceOfFundFacade projectSourceOfFundFacade;
     @EJB
     private UserPrivilegeFacade userPrivilegeFacade;
     /*
@@ -1981,14 +1974,6 @@ public class WebUserController implements Serializable {
 
     public void setSelectedFundComments(String selectedFundComments) {
         this.selectedFundComments = selectedFundComments;
-    }
-
-    public ProjectSourceOfFundFacade getProjectSourceOfFundFacade() {
-        return projectSourceOfFundFacade;
-    }
-
-    public ProjectInstitutionFacade getProjectInstitutionFacade() {
-        return projectInstitutionFacade;
     }
 
     public TreeNode getAllPrivilegeRoot() {
