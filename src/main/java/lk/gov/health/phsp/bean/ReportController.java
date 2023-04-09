@@ -620,8 +620,6 @@ public class ReportController implements Serializable {
         }
     }
 
-    
-    
     public void clearReportData() {
         if (institution == null) {
             JsfUtil.addErrorMessage("Please select an institutions");
@@ -1018,8 +1016,8 @@ public class ReportController implements Serializable {
         userTransactionController.recordTransaction("To Single Variable Clinical Data");
         return action;
     }
-    
-     public String toSingleVariableClinicalDataCounts() {
+
+    public String toSingleVariableClinicalDataCounts() {
         String forSys = "/national/reports/clinical_data_single_counts";
         String forIns = "/hospital/reports/clinical_data_single_counts";
         String forMeu = "/national/reports/clinical_data_single_counts";
@@ -1095,8 +1093,7 @@ public class ReportController implements Serializable {
         userTransactionController.recordTransaction("To Single Variable Clinical Data");
         return action;
     }
-    
-    
+
     public String toFormsetClinicalData() {
         String forSys = "/national/reports/clinical_data_form";
         String forIns = "/national/reports/clinical_data_form";
@@ -1135,7 +1132,7 @@ public class ReportController implements Serializable {
         userTransactionController.recordTransaction("To Single Variable Clinical Data");
         return action;
     }
-    
+
     public String toFormsetClinicalDataRdhs() {
         String forSys = "/national/reports/clinical_data_form_rdhs";
         String forIns = "/national/reports/clinical_data_form_rdhs";
@@ -2360,6 +2357,9 @@ public class ReportController implements Serializable {
             th5_11.setCellValue("Institution");
         }
 
+        Cell th5_12 = t5.createCell(11);
+        th5_12.setCellValue("Created date");
+
         int serial = 1;
 
         CellStyle cellStyle = workbook.createCellStyle();
@@ -2412,6 +2412,10 @@ public class ReportController implements Serializable {
                 Cell c11 = row.createCell(10);
                 c11.setCellValue(o.getCreateInstitution().getName());
             }
+
+            Cell c11 = row.createCell(11);
+            c11.setCellValue(o.getCreatedAt());
+            c11.setCellStyle(cellStyle);
 
             serial++;
 
@@ -2537,7 +2541,7 @@ public class ReportController implements Serializable {
             m.put("ins", institution);
         }
         clientEncounterComponentFormSets = clientEncounterComponentFormSetFacade.findByJpql(j, m, TemporalType.TIMESTAMP);
-        
+
     }
 
     public void fillRegistrationsOfClientsByDistrict() {
@@ -3998,8 +4002,6 @@ public class ReportController implements Serializable {
         return areaCounts;
     }
 
-    
-    
     public void setAreaCounts(List<AreaCount> areaCounts) {
         this.areaCounts = areaCounts;
     }
