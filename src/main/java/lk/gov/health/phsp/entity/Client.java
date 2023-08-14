@@ -43,6 +43,8 @@ public class Client implements Serializable {
     private Date createdOn;
     @ManyToOne(fetch = FetchType.LAZY)
     private Institution createInstitution;
+    @ManyToOne
+    private Institution poiInstitution;
     /*
     Last Edit Properties
      */
@@ -210,6 +212,8 @@ public class Client implements Serializable {
 
 // </editor-fold>
 
+    
+    
     public Institution getCreateInstitution() {
         return createInstitution;
     }
@@ -240,6 +244,14 @@ public class Client implements Serializable {
 
     public void setCreatedOn(Date createdOn) {
         this.createdOn = createdOn;
+    }
+
+    public Institution getPoiInstitution() {
+        return poiInstitution;
+    }
+
+    public void setPoiInstitution(Institution poiInstitution) {
+        this.poiInstitution = poiInstitution;
     }
 
     

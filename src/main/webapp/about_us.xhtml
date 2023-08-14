@@ -13,10 +13,12 @@
 
             <ui:define name="content">
 
-                <table  class="align-top w3-table-all w3-card-4 w3-margin" style="width: 90%;margin: auto;"  >
+                <table  class="align-top table table-striped" 
+                        
+                        style="width: 90%;margin: auto;"  >
                     <tr>
                         <th colspan="2" style="text-align: center;">
-                            NCD Module of HIMS. Version #{applicationController.versionNo} - 9.1
+                            NCD Module of HIMS. Version #{applicationController.versionNo}
                         </th>
                     </tr>
                     <tr>
@@ -37,6 +39,14 @@
                     </tr>
                     <tr>
                         <td>
+                            <p:outputLabel value="Logged Institution" ></p:outputLabel>
+                        </td>
+                        <td>
+                            <p:outputLabel value="#{webUserController.loggedUser.institution.name}" ></p:outputLabel>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
                             <p:outputLabel value="Logged Role" ></p:outputLabel>
                         </td>
                         <td>
@@ -48,15 +58,10 @@
                             <p:outputLabel value="Privileges" ></p:outputLabel>
                         </td>
                         <td>
-                            <table >
-                                <ui:repeat value="#{webUserController.loggedUserPrivileges}" var="p" >
-                                    <tr>
-                                        <td>
-                                            <p:outputLabel value="#{p.privilege}" ></p:outputLabel>
-                                        </td>
-                                    </tr>
-                                </ui:repeat>
-                            </table>
+                            <ui:repeat value="#{webUserController.loggedUserPrivileges}" var="p" >
+                                <p:outputLabel value="#{p.privilege}" ></p:outputLabel>
+                                <p:outputLabel value=", " ></p:outputLabel>
+                            </ui:repeat>
                         </td>
                     </tr>
                     <tr>
@@ -64,49 +69,14 @@
                             <p:outputLabel value="My Institutions" ></p:outputLabel>
                         </td>
                         <td>
-                            <table >
-                                <ui:repeat value="#{webUserController.loggableInstitutions}" var="i" >
-                                    <tr>
-                                        <td>
-                                            <p:outputLabel value="#{i.name}" ></p:outputLabel>
-                                        </td>
-                                    </tr>
-                                </ui:repeat>
-                            </table>
+                            <ui:repeat value="#{webUserController.loggableInstitutions}" var="i" >
+                                <p:outputLabel value="#{i.name}" ></p:outputLabel>
+                                <p:outputLabel value=", " ></p:outputLabel>
+                            </ui:repeat>
                         </td>
                     </tr>
-                    <tr>
-                        <td>
-                            <p:outputLabel value="Logged Institution" ></p:outputLabel>
-                        </td>
-                        <td>
-                            <p:outputLabel value="#{webUserController.loggedUser.institution.name}" ></p:outputLabel>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <p:outputLabel value="POI Institution" ></p:outputLabel>
-                        </td>
-                        <td>
-                            <p:outputLabel value="#{webUserController.loggedUser.institution.poiInstitution.name}" ></p:outputLabel>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <p:outputLabel value="POI Number" ></p:outputLabel>
-                        </td>
-                        <td>
-                            <p:outputLabel value="#{webUserController.loggedUser.institution.poiInstitution.poiNumber}" ></p:outputLabel>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <p:outputLabel value="Last POI" ></p:outputLabel>
-                        </td>
-                        <td>
-                            <p:outputLabel value="#{webUserController.loggedUser.institution.poiInstitution.lastHin}" ></p:outputLabel>
-                        </td>
-                    </tr>
+
+
                 </table>
 
 

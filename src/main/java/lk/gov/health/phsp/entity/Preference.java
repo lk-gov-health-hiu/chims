@@ -117,6 +117,9 @@ public class Preference implements Serializable {
     }
 
     public String getLongTextValue() {
+        if(longTextValue==null){
+            longTextValue = "";
+        }
         return longTextValue;
     }
 

@@ -83,7 +83,7 @@
         <dependency>
             <groupId>com.itextpdf</groupId>
             <artifactId>itextpdf</artifactId>
-            <version>5.5.13.1</version>
+            <version>5.5.13.3</version>
             <type>jar</type>
         </dependency>
         <!--        <dependency>
@@ -133,23 +133,23 @@
             <version>1.11</version>
             <type>jar</type>
         </dependency>
-        <dependency>
+<!--        <dependency>
             <groupId>javax</groupId>
             <artifactId>javaee-api</artifactId>
             <version>8.0</version>
             <type>jar</type>
-        </dependency>
-        <dependency>
+        </dependency>-->
+<!--        <dependency>
             <groupId>javax</groupId>
             <artifactId>javaee-web-api</artifactId>
             <version>7.0</version>
             <scope>provided</scope>
-        </dependency>
+        </dependency>-->
         
         <dependency>
             <groupId>org.primefaces</groupId>  
             <artifactId>primefaces</artifactId>  
-            <version>10.0.0</version>
+            <version>12.0.0</version>
             <type>jar</type>
         </dependency>  
        
@@ -185,7 +185,7 @@
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
-            <version>3.9</version>
+            <version>3.12.0</version>
         </dependency>
 
         <dependency> 
@@ -246,9 +246,9 @@
         <dependency>
             <groupId>org.json</groupId>
             <artifactId>json</artifactId>
-            <version>20190722</version>
+            <version>20230227</version>
         </dependency>
-<!--        <dependency>
+        <!--        <dependency>
             <groupId>org.jdom</groupId>
             <artifactId>jdom</artifactId>
             <version>2.0.2</version>
@@ -294,8 +294,24 @@
             <artifactId>jaxws-api</artifactId>
             <version>2.2.6</version>
         </dependency>
-
-                                         
+        
+        <!--HAPI FHIR Dependancies-->
+        <dependency>
+            <groupId>ca.uhn.hapi.fhir</groupId>
+            <artifactId>hapi-fhir-base</artifactId>
+            <version>6.1.2</version>
+        </dependency>
+        <dependency>
+            <groupId>ca.uhn.hapi.fhir</groupId>
+            <artifactId>hapi-fhir-structures-r4</artifactId>
+            <version>6.1.2</version>
+        </dependency>
+        <dependency>
+            <groupId>javax</groupId>
+            <artifactId>javaee-api</artifactId>
+            <version>8.0</version>
+            <type>jar</type>
+        </dependency>
     </dependencies>
 
     <build>

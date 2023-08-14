@@ -11,8 +11,8 @@
         <ui:composition template="/template.xhtml">
 
             <ui:define name="content">
-
-                <h:panelGroup rendered="true">
+                <!--<h1>Dashboard will be made available soon</h1>-->
+                <h:panelGroup rendered="false">
                     
                     
                     <ez:dashboardSystemAdministrator rendered="#{webUserController.loggedUser.systemAdministrator}"/>
@@ -29,6 +29,14 @@
                     <ez:dashboardDoctor rendered="#{webUserController.loggedUser.doctor}"/>
                     <ez:dashboardNurse rendered="#{webUserController.loggedUser.nurse}"/>
                     <ez:dashboardMidwife rendered="#{webUserController.loggedUser.midwife}"/>
+                </h:panelGroup>
+                
+                
+                 <h:panelGroup rendered="true">
+                    
+                    
+                    <ez:dashboardSystemAdministrator rendered="#{webUserController.loggedUser.systemAdministrator}"/>
+                   
                 </h:panelGroup>
 
                 <!--                <h:panelGroup>

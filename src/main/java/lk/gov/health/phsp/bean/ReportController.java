@@ -620,8 +620,6 @@ public class ReportController implements Serializable {
         }
     }
 
-    
-    
     public void clearReportData() {
         if (institution == null) {
             JsfUtil.addErrorMessage("Please select an institutions");
@@ -1018,8 +1016,8 @@ public class ReportController implements Serializable {
         userTransactionController.recordTransaction("To Single Variable Clinical Data");
         return action;
     }
-    
-     public String toSingleVariableClinicalDataCounts() {
+
+    public String toSingleVariableClinicalDataCounts() {
         String forSys = "/national/reports/clinical_data_single_counts";
         String forIns = "/hospital/reports/clinical_data_single_counts";
         String forMeu = "/national/reports/clinical_data_single_counts";
@@ -1062,6 +1060,84 @@ public class ReportController implements Serializable {
         String forIns = "/reports/clinical_data/multiple_variable_ia";
         String forMeu = "/reports/clinical_data/multiple_variable_meu";
         String forMea = "/reports/clinical_data/multiple_variable_mea";
+        String forClient = "";
+        String noAction = "";
+        String action = "";
+        switch (webUserController.getLoggedUser().getWebUserRole()) {
+            case Client:
+                action = forClient;
+                break;
+            case Doctor:
+            case Institution_Administrator:
+            case Institution_Super_User:
+            case Institution_User:
+            case Nurse:
+            case Midwife:
+                action = forIns;
+                break;
+            case Me_Admin:
+                action = forMea;
+                break;
+            case Me_Super_User:
+                action = forMeu;
+                break;
+            case Me_User:
+            case User:
+                action = noAction;
+                break;
+            case Super_User:
+            case System_Administrator:
+                action = forSys;
+                break;
+        }
+        userTransactionController.recordTransaction("To Single Variable Clinical Data");
+        return action;
+    }
+
+    public String toFormsetClinicalData() {
+        String forSys = "/national/reports/clinical_data_form";
+        String forIns = "/national/reports/clinical_data_form";
+        String forMeu = "/national/reports/clinical_data_form";
+        String forMea = "/national/reports/clinical_data_form";
+        String forClient = "";
+        String noAction = "";
+        String action = "";
+        switch (webUserController.getLoggedUser().getWebUserRole()) {
+            case Client:
+                action = forClient;
+                break;
+            case Doctor:
+            case Institution_Administrator:
+            case Institution_Super_User:
+            case Institution_User:
+            case Nurse:
+            case Midwife:
+                action = forIns;
+                break;
+            case Me_Admin:
+                action = forMea;
+                break;
+            case Me_Super_User:
+                action = forMeu;
+                break;
+            case Me_User:
+            case User:
+                action = noAction;
+                break;
+            case Super_User:
+            case System_Administrator:
+                action = forSys;
+                break;
+        }
+        userTransactionController.recordTransaction("To Single Variable Clinical Data");
+        return action;
+    }
+
+    public String toFormsetClinicalDataRdhs() {
+        String forSys = "/national/reports/clinical_data_form_rdhs";
+        String forIns = "/national/reports/clinical_data_form_rdhs";
+        String forMeu = "/national/reports/clinical_data_form_rdhs";
+        String forMea = "/national/reports/clinical_data_form_rdhs";
         String forClient = "";
         String noAction = "";
         String action = "";
@@ -2281,6 +2357,9 @@ public class ReportController implements Serializable {
             th5_11.setCellValue("Institution");
         }
 
+        Cell th5_12 = t5.createCell(11);
+        th5_12.setCellValue("Created date");
+
         int serial = 1;
 
         CellStyle cellStyle = workbook.createCellStyle();
@@ -2334,6 +2413,10 @@ public class ReportController implements Serializable {
                 c11.setCellValue(o.getCreateInstitution().getName());
             }
 
+            Cell c11 = row.createCell(11);
+            c11.setCellValue(o.getCreatedAt());
+            c11.setCellStyle(cellStyle);
+
             serial++;
 
         }
@@ -2355,7 +2438,7 @@ public class ReportController implements Serializable {
 
     public void fillRegistrationsOfClientsByInstitution() {
 
-        String j = "select new lk.gov.health.phsp.pojcs.InstitutionCount(c.createdBy.institution, count(c)) "
+        String j = "select new lk.gov.health.phsp.pojcs.InstitutionCount(c.createInstitution, count(c)) "
                 + " from Client c "
                 + " where c.retired<>:ret "
                 + " and c.reservedClient<>:res ";
@@ -2365,12 +2448,12 @@ public class ReportController implements Serializable {
         j = j + " and c.createdAt between :fd and :td ";
 
         if (webUserController.getLoggedUser().isRestrictedToInstitution()) {
-            j = j + " and c.createdBy.institution in :ins ";
+            j = j + " and c.createInstitution in :ins ";
             m.put("ins", webUserController.getLoggableInstitutions());
         }
 
-        j = j + " group by c.createdBy.institution ";
-        j = j + " order by c.createdBy.institution.name ";
+        j = j + " group by c.createInstitution ";
+        j = j + " order by c.createInstitution.name ";
         m.put("fd", getFromDate());
         m.put("td", getToDate());
         List<Object> objs = getClientFacade().findAggregates(j, m);
@@ -2458,7 +2541,7 @@ public class ReportController implements Serializable {
             m.put("ins", institution);
         }
         clientEncounterComponentFormSets = clientEncounterComponentFormSetFacade.findByJpql(j, m, TemporalType.TIMESTAMP);
-        
+
     }
 
     public void fillRegistrationsOfClientsByDistrict() {
@@ -3919,8 +4002,6 @@ public class ReportController implements Serializable {
         return areaCounts;
     }
 
-    
-    
     public void setAreaCounts(List<AreaCount> areaCounts) {
         this.areaCounts = areaCounts;
     }

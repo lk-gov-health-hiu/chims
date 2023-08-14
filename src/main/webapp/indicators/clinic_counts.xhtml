@@ -85,8 +85,15 @@
 
                         </h:panelGrid>
 
-                        <h:outputText value="#{indicatorController.result}" escape="false" ></h:outputText>
+                        <h:panelGrid columns="2" >
+                            <p:outputLabel value="Count" ></p:outputLabel>
+                            <p:inputText readonly="true" value="#{indicatorController.queryComponent.name}" ></p:inputText>
 
+                            <p:outputLabel value="Result" ></p:outputLabel>
+                            <p:inputTextarea readonly="true" value="#{indicatorController.result}" class="w-100" rows="20"></p:inputTextarea>
+                        </h:panelGrid>
+
+                      
 
 
                     </p:panelGrid>

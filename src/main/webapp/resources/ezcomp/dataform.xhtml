@@ -25,7 +25,6 @@
                            var="ii" >
 
                     <h:panelGroup id="gpDataAndButtonsMultiple" rendered="#{ii.multipleEntries}" >
-
                         <tr>
                             <td>
                                 <h:panelGroup id="gpRx" rendered="#{ii.di.renderType eq 'Prescreption'}" >
@@ -139,7 +138,6 @@
                                         </tr>
                                     </table>
                                 </h:panelGroup>
-
                                 <h:panelGroup id="gpPrs" rendered="#{ii.di.item.dataType eq 'Procedure_Request'}" >
                                     <table >
                                         <tr>
@@ -207,7 +205,6 @@
                                         </tr>
                                     </table>
                                 </h:panelGroup>
-
                                 <h:panelGroup id="gpMuIrDd" rendered="#{ii.di.item.dataType eq 'Item_Reference' and ii.di.renderType eq 'Drop_Down_Menu'}" >
                                     <table >
                                         <tr>
@@ -353,7 +350,6 @@
                     <h:panelGroup id="gpDataAndButtonsSingle" rendered="#{!ii.multipleEntries}" >
                         <tr>
                             <td>
-
                                 <h:panelGroup rendered="#{ii.di.renderType eq 'Input_Text' and ii.di.item.dataType eq'Short_Text'}" >
                                     <table >
                                         <tr>
@@ -511,7 +507,6 @@
                                         </tr>
                                     </table>
                                 </h:panelGroup>
-
                                 <h:panelGroup rendered="#{ii.di.renderType eq 'Date_Picker' and ii.di.item.dataType eq 'DateTime'}" >
                                     <table >
                                         <tr>
@@ -565,8 +560,6 @@
                                         </tr>
                                     </table>
                                 </h:panelGroup>
-
-
                                 <h:panelGroup rendered="#{ii.di.item.dataType eq 'Item_Reference' and ii.di.renderType eq 'Drop_Down_Menu'}" >
                                     <table >
                                         <tr>
@@ -625,7 +618,6 @@
                                         </tr>
                                     </table>
                                 </h:panelGroup>
-
                                 <h:panelGroup rendered="#{ii.di.renderType eq 'Boolean_Checkbox'}" >
                                     <table >
                                         <tr>
@@ -657,7 +649,6 @@
                                         </tr>
                                     </table>
                                 </h:panelGroup>
-
                                 <h:panelGroup rendered="#{ii.di.renderType eq 'Boolean_Button'}" >
                                     <table >
                                         <tr>
@@ -689,8 +680,6 @@
                                         </tr>
                                     </table>
                                 </h:panelGroup>
-
-
                                 <h:panelGroup rendered="#{ii.di.renderType eq 'Autocomplete' and ii.di.item.dataType eq 'Area_Reference'}" >
                                     <table >
                                         <tr>

@@ -1,27 +1,33 @@
+/*
+ * Open Hospital Management Information System
+ * Dr M H B Ariyaratne
+ * buddhika.ari@gmail.com
+ */
+
 package lk.gov.health.phsp.facade;
 
-import lk.gov.health.phsp.entity.ClientEncounterComponent;
+
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import lk.gov.health.phsp.entity.ApiKey;
 
 /**
  *
- * @author Dr M H B Ariyaratne, buddhika.ari@gmail.com
+ * @author Sniper 619
  */
 @Stateless
-public class ProjectInstitutionFacade extends AbstractFacade<ClientEncounterComponent> {
-
+public class ApiKeyFacade extends AbstractFacade<ApiKey> {
     @PersistenceContext(unitName = "hmisPU")
     private EntityManager em;
 
     @Override
     protected EntityManager getEntityManager() {
-        return em;
+        if(em == null){}return em;
     }
 
-    public ProjectInstitutionFacade() {
-        super(ClientEncounterComponent.class);
+    public ApiKeyFacade() {
+        super(ApiKey.class);
     }
-
+    
 }

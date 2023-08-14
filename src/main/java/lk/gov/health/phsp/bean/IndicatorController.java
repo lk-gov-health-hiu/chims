@@ -38,6 +38,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.ejb.EJB;
 import javax.inject.Inject;
+import javax.persistence.TemporalType;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
@@ -48,6 +49,7 @@ import lk.gov.health.phsp.entity.ClientEncounterComponentItem;
 import lk.gov.health.phsp.entity.Institution;
 import lk.gov.health.phsp.entity.Item;
 import lk.gov.health.phsp.entity.QueryComponent;
+import lk.gov.health.phsp.entity.StoredQueryResult;
 import lk.gov.health.phsp.entity.StoredRequest;
 import lk.gov.health.phsp.enums.EncounterType;
 import lk.gov.health.phsp.enums.InstitutionType;
@@ -59,6 +61,7 @@ import lk.gov.health.phsp.enums.TimePeriodType;
 import lk.gov.health.phsp.facade.ClientEncounterComponentItemFacade;
 import lk.gov.health.phsp.facade.EncounterFacade;
 import lk.gov.health.phsp.facade.InstitutionFacade;
+import lk.gov.health.phsp.facade.StoredQueryResultFacade;
 import lk.gov.health.phsp.facade.StoredRequestFacade;
 import lk.gov.health.phsp.pojcs.EncounterWithComponents;
 import lk.gov.health.phsp.pojcs.InstitutionDataQuery;
@@ -89,6 +92,8 @@ public class IndicatorController implements Serializable {
     InstitutionApplicationController institutionApplicationController;
     @Inject
     ApplicationController applicationController;
+    @Inject
+    WebUserController webUserController;
 
     @EJB
     ClientEncounterComponentItemFacade clientEncounterComponentItemFacade;
@@ -100,6 +105,8 @@ public class IndicatorController implements Serializable {
     AnalysisBean analysisBean;
     @EJB
     StoredRequestFacade storedRequestFacade;
+    @EJB
+    StoredQueryResultFacade storedQueryResultFacade;
 
     private Date fromDate;
     private Date toDate;
@@ -119,6 +126,7 @@ public class IndicatorController implements Serializable {
 
     private List<QueryComponent> selectedIndicators;
     private List<InstitutionDataQuery> dataQueries;
+    private List<StoredQueryResult> storedQueryResults;
 
     /**
      * Creates a new instance of IndicatorController
@@ -131,6 +139,13 @@ public class IndicatorController implements Serializable {
         result = "";
         institution = null;
         return "/indicators/clinic_counts_for_selected_indicators";
+    }
+
+    public String toStoredCounts() {
+        message = "";
+        result = "";
+        institution = null;
+        return "/indicators/stored_counts";
     }
 
     public String toProcesCounts() {
@@ -161,11 +176,25 @@ public class IndicatorController implements Serializable {
         return "/indicators/hospital_monthly";
     }
 
+    public String toHospitalMonthlyIa() {
+        message = "";
+        result = "";
+        institution = null;
+        return "/institution/indicators/hospital_monthly";
+    }
+
     public String toClinicMonthly() {
         message = "";
         result = "";
         institution = null;
         return "/indicators/clinic_monthly";
+    }
+
+    public String toClinicMonthlyIa() {
+        message = "";
+        result = "";
+        institution = null;
+        return "/institution/indicators/clinic_monthly";
     }
 
     public String toDistrictMonthly() {
@@ -192,8 +221,41 @@ public class IndicatorController implements Serializable {
     }
 
     public String toIndicatorIndex() {
-        userTransactionController.recordTransaction("To View Indicators");
-        return "/indicators/index";
+        String forSys = "/indicators/index";
+        String forIns = "/institution/indicators/index";
+        String forMeu = "/indicators/index";
+        String forMea = "/indicators/index";
+        String forClient = "";
+        String noAction = "";
+        String action = "";
+        switch (webUserController.getLoggedUser().getWebUserRole()) {
+            case Client:
+                action = forClient;
+                break;
+            case Doctor:
+            case Institution_Administrator:
+            case Institution_Super_User:
+            case Institution_User:
+            case Nurse:
+            case Midwife:
+                action = forIns;
+                break;
+            case Me_Admin:
+                action = forMea;
+                break;
+            case Me_Super_User:
+                action = forMeu;
+                break;
+            case Me_User:
+            case User:
+                action = noAction;
+                break;
+            case Super_User:
+            case System_Administrator:
+                action = forSys;
+                break;
+        }
+        return action;
     }
 
     public void runClinicCounts() {
@@ -285,7 +347,6 @@ public class IndicatorController implements Serializable {
                 tIns);
 
         //System.out.println("encounterIds = " + encounterIds.size());
-
         encountersWithComponents = findEncountersWithComponents(encounterIds);
         if (encountersWithComponents == null) {
             j.setErrorMessage("No data for the selected institution for the period");
@@ -301,7 +362,6 @@ public class IndicatorController implements Serializable {
         Long value = calculateIndividualQueryResult(encountersWithComponents, qwc);
 
         //System.out.println("value = " + value);
-
         j.setMessage("Clinic : " + tIns.getName() + "\n");
         j.setMessage(j.getMessage() + "From : " + CommonController.formatDate(fromDate) + "\n");
         j.setMessage(j.getMessage() + "To : " + CommonController.formatDate(toDate) + "\n");
@@ -508,10 +568,8 @@ public class IndicatorController implements Serializable {
     public Long calculateIndividualQueryResult(List<EncounterWithComponents> ewcs, QueryWithCriteria qwc) {
 
         //System.out.println("calculateIndividualQueryResult");
-
         //System.out.println("qwc = " + qwc);
         //System.out.println("ewcs = " + ewcs);
-
         Long result = 0l;
         if (ewcs == null) {
             JsfUtil.addErrorMessage("No Encounters");
@@ -1302,6 +1360,25 @@ public class IndicatorController implements Serializable {
         return ins;
     }
 
+    public void processStoredQueryResults() {
+
+        String j = "";
+        Map m = new HashMap();
+
+        j = "Select s "
+                + " from StoredQueryResult s "
+                + " where s.retired=:ret ";
+        m.put("ret", false);
+
+        j += " and s.resultFrom=:f ";
+        m.put("f", fromDate);
+        j += " and s.resultTo=:t ";
+        m.put("t", toDate);
+
+        storedQueryResults = storedQueryResultFacade.findByJpql(j, m,TemporalType.DATE);
+
+    }
+
     public void runAllInstitutionMonthly() {
         dataQueries = new ArrayList<>();
         if (queryComponent == null) {
@@ -1857,6 +1934,14 @@ public class IndicatorController implements Serializable {
 
     public void setDataQueries(List<InstitutionDataQuery> dataQueries) {
         this.dataQueries = dataQueries;
+    }
+
+    public List<StoredQueryResult> getStoredQueryResults() {
+        return storedQueryResults;
+    }
+
+    public void setStoredQueryResults(List<StoredQueryResult> storedQueryResults) {
+        this.storedQueryResults = storedQueryResults;
     }
 
 }

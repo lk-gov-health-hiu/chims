@@ -21,19 +21,19 @@
 
 
                         <h:outputLabel value="Name" for="webUserPerson" />
-                        <h:inputText id="webUserPerson" value="#{webUserController.selected.person.name}" title="#{bundle.EditWebUserTitle_webUserPerson}" >
-                        </h:inputText>
+                        <p:inputText id="webUserPerson" value="#{webUserController.selected.person.name}" title="#{bundle.EditWebUserTitle_webUserPerson}" >
+                        </p:inputText>
 
 
                         <h:outputLabel value="Username" for="name" />
-                        <h:inputText disabled="true" id="name" value="#{webUserController.selected.name}" title="#{bundle.EditWebUserTitle_name}" required="true" requiredMessage="#{bundle.EditWebUserRequiredMessage_name}"/>
+                        <p:inputText disabled="true" id="name" value="#{webUserController.selected.name}" title="#{bundle.EditWebUserTitle_name}" required="true" requiredMessage="#{bundle.EditWebUserRequiredMessage_name}"/>
 
 
                         <h:outputLabel value="Email" for="email" />
-                        <h:inputText id="email" value="#{webUserController.selected.email}" title="#{bundle.EditWebUserTitle_email}" />
+                        <p:inputText id="email" value="#{webUserController.selected.email}" title="#{bundle.EditWebUserTitle_email}" />
 
                         <h:outputLabel value="Phone" for="telNo" />
-                        <h:inputText id="telNo" value="#{webUserController.selected.telNo}" title="#{bundle.EditWebUserTitle_telNo}" />
+                        <p:inputText id="telNo" value="#{webUserController.selected.telNo}" title="#{bundle.EditWebUserTitle_telNo}" />
 
 
                         <h:outputLabel value="Institution" />
@@ -42,11 +42,11 @@
                         </h:outputText>
 
                         <h:outputLabel value="Language"  />
-                        <h:selectOneMenu value="#{webUserController.selected.defLocale}" >
+                        <p:selectOneMenu value="#{webUserController.selected.defLocale}" >
                             <f:selectItem itemLabel="Sinhala" itemValue="si" ></f:selectItem>
                             <f:selectItem itemLabel="Tamil" itemValue="ta" ></f:selectItem>
                             <f:selectItem itemLabel="English" itemValue="en" ></f:selectItem>
-                        </h:selectOneMenu>
+                        </p:selectOneMenu>
 
 
                         <p:spacer></p:spacer>
