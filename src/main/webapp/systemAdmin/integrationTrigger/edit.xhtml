@@ -1,0 +1,38 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <body>
+
+        <ui:composition template="/systemAdmin/integration_index.xhtml">
+
+            <ui:define name="subContent">
+                <h:form id="form" rendered="#{integrationTriggerController.selected ne null}">
+                    <h:panelGrid columns="2" rendered="#{integrationTriggerController.selected ne null}">
+                        <h:outputLabel value="Event:" />
+                        <h:selectOneMenu value="#{integrationTriggerController.selected.integrationEvent}">
+                            <f:selectItems value="#{integrationTriggerController.integrationEvents}" var="event" itemValue="#{event}" itemLabel="#{event.event}" />
+                        </h:selectOneMenu>
+
+                        <h:outputLabel value="Endpoint Name:" />
+                        <h:selectOneMenu value="#{integrationTriggerController.selected.integrationEndpoint}"  >
+                            <f:selectItem itemLabel="Select" ></f:selectItem>
+                            <f:selectItems value="#{integrationEndpointController.items}" var="i" itemLabel="#{i.name}" itemValue="#{i}" ></f:selectItems>
+                        </h:selectOneMenu>
+
+                      
+
+                    </h:panelGrid>
+
+                    <h:commandButton value="Save" action="#{integrationTriggerController.saveOrUpdateIntegrationTrigger}" />
+                    <h:commandButton value="Cancel" action="#{integrationTriggerController.navigateToList}" immediate="true" />
+                </h:form>
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

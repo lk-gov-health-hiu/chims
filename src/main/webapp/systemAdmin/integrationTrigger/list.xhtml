@@ -13,7 +13,7 @@
             <ui:define name="subContent">
                 <h:form id="listForm">
                     <p:dataTable 
-                        value="#{integrationEndpointController.items}"
+                        value="#{integrationTriggerController.items}"
                         var="item"
 
                         paginatorAlwaysVisible="false"
@@ -25,27 +25,27 @@
                         rowsPerPageTemplate="5,10,{ShowAll|'All'}"
                         >
                         <p:column>
-                            <f:facet name="header">Name</f:facet>
-                                #{item.name}
+                            <f:facet name="header">Event</f:facet>
+                                #{item.integrationEvent.event}
                         </p:column>
                         <p:column>
-                            <f:facet name="header">Endpoint URL</f:facet>
-                                #{item.endPointUrl}
+                            <f:facet name="header">Endpoint Name</f:facet>
+                                #{item.integrationEndpoint.name}
                         </p:column>
                         <p:column>
                             <f:facet name="header">Actions</f:facet>
                             <h:commandButton 
                                 value="View"
-                                action="#{integrationEndpointController.navigateToView()}" >
-                                <f:setPropertyActionListener value="#{item}" target="#{integrationEndpointController.selected}" ></f:setPropertyActionListener>
+                                action="#{integrationTriggerController.navigateToView()}" >
+                                <f:setPropertyActionListener value="#{item}" target="#{integrationTriggerController.selected}" ></f:setPropertyActionListener>
                             </h:commandButton>
-                            <h:commandButton value="Edit" action="#{integrationEndpointController.navigateToEdit()}" >
-                                <f:setPropertyActionListener value="#{item}" target="#{integrationEndpointController.selected}" ></f:setPropertyActionListener>
+                            <h:commandButton value="Edit" action="#{integrationTriggerController.navigateToEdit()}" >
+                                <f:setPropertyActionListener value="#{item}" target="#{integrationTriggerController.selected}" ></f:setPropertyActionListener>
                             </h:commandButton>
-                            <h:commandButton value="Delete" action="#{integrationEndpointController.deleteIntegrationEndpoint()}"
+                            <h:commandButton value="Delete" action="#{integrationTriggerController.deleteIntegrationTrigger()}"
                                              onclick="if (!confirm('Are you sure you want to delete this item?'))
                                                          return false;" >
-                                <f:setPropertyActionListener value="#{item}" target="#{integrationEndpointController.selected}" ></f:setPropertyActionListener>
+                                <f:setPropertyActionListener value="#{item}" target="#{integrationTriggerController.selected}" ></f:setPropertyActionListener>
                             </h:commandButton>
                         </p:column>
                     </p:dataTable>
