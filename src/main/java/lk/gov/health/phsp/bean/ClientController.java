@@ -222,8 +222,6 @@ public class ClientController implements Serializable {
         return "/client/push_result?faces-redirect=true"; // Navigate to the push_result page
     }
 
-    
-
     public String checkPushComplete() {
         if (pushComplete) {
             return toClientProfile(); // Navigate to the client profile page
@@ -1828,7 +1826,15 @@ public class ClientController implements Serializable {
                 selectedClients = listPatientsByNameAndDateOfBirth(searchQueryData.getName(), searchQueryData.getDateOfBirth());
                 break;
             case PART_OF_NAME_AND_AGE_IN_YEARS:
-
+               
+                break;
+            case PART_OF_NAME_AND_BIRTH_YEAR:
+                selectedClients = listPatientsByNameAndYearOfBirth(searchQueryData.getName(), searchQueryData.getBirthYear());
+                break;
+            case PART_OF_NAME_AND_BIRTH_YEAR_AND_MONTH:
+                selectedClients = listPatientsByNameAndYearOfBirthAndMonth(searchQueryData.getName(), searchQueryData.getBirthYear(), searchQueryData.getBirthMonth());
+                break;
+                
         }
 
         fhirOperationResults = new ArrayList<>(); // Initialize the list to store FhirOperationResult objects
