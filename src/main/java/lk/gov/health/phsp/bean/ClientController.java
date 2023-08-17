@@ -10,6 +10,8 @@ import lk.gov.health.phsp.bean.util.JsfUtil;
 import lk.gov.health.phsp.bean.util.JsfUtil.PersistAction;
 import lk.gov.health.phsp.facade.ClientFacade;
 import java.io.Serializable;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -47,6 +49,7 @@ import lk.gov.health.phsp.entity.DesignComponentFormSet;
 import lk.gov.health.phsp.entity.Encounter;
 import lk.gov.health.phsp.entity.FhirOperationResult;
 import lk.gov.health.phsp.entity.Institution;
+import lk.gov.health.phsp.entity.IntegrationEndpoint;
 import lk.gov.health.phsp.entity.Item;
 import lk.gov.health.phsp.entity.Person;
 import lk.gov.health.phsp.enums.AreaType;
@@ -218,6 +221,8 @@ public class ClientController implements Serializable {
         });
         return "/client/push_result?faces-redirect=true"; // Navigate to the push_result page
     }
+
+    
 
     public String checkPushComplete() {
         if (pushComplete) {
@@ -1798,6 +1803,7 @@ public class ClientController implements Serializable {
         }
 
         selectedClientsFromIntegrations = new ArrayList<>();
+        selectedClients = new ArrayList<>();
 
         switch (searchQueryData.getSearchCriteria()) {
             case NIC_ONLY:

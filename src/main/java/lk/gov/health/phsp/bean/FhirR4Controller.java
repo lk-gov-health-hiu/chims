@@ -41,9 +41,15 @@ import org.hl7.fhir.r4.model.Identifier;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.time.LocalDate;
+import java.util.HashMap;
+import java.util.Map;
+import lk.gov.health.phsp.entity.FhirResourceLink;
+import lk.gov.health.phsp.facade.FhirResourceLinkFacade;
 import lk.gov.health.phsp.pojcs.SearchQueryData;
 
 /**
@@ -59,6 +65,8 @@ public class FhirR4Controller implements Serializable {
 
     @EJB
     AuditEventFacade auditEventFacade;
+    @EJB
+    FhirResourceLinkFacade fhirResourceLinkFacade;
 
     @Inject
     ItemApplicationController itemApplicationController;
@@ -74,25 +82,34 @@ public class FhirR4Controller implements Serializable {
     public CompletableFuture<FhirOperationResult> createPatientInFhirServerAsync(Client client, IntegrationEndpoint endPoint) {
         System.out.println("Creating patient in FHIR server...");
         SecurityProtocol sp = endPoint.getSecurityProtocol();
-        String username = endPoint.getUserName(); // Assuming these methods exist in IntegrationEndpoint
+        String username = endPoint.getUserName();
         String password = endPoint.getPassword();
         Patient patient = convertToFhirPatient(client);
 
         return CompletableFuture.supplyAsync(() -> {
             FhirOperationResult result = new FhirOperationResult();
-            // Convert the Client object to a FHIR Patient resource
 
-            // Create a FHIR client
             FhirContext ctx = FhirContext.forR4();
-            String serverBase = endPoint.getEndPointUrl(); // Assuming the IntegrationEndpoint has a method to get the URL
+            String serverBase = endPoint.getEndPointUrl();
             IGenericClient fhirClient = ctx.newRestfulGenericClient(serverBase);
 
-            // Add authentication if needed
             if (sp == SecurityProtocol.BASIC_AUTHENTICATION) {
-
                 fhirClient.registerInterceptor(new BasicAuthInterceptor(username, password));
-            } else if (endPoint.getSecurityProtocol() == SecurityProtocol.API_KEY) {
-                // Handle API key authentication if needed
+            } else if (sp == SecurityProtocol.API_KEY) {
+                String apiKeyName = endPoint.getApiKeyName(); // Assuming this is the name of the API key header
+                String apiKeyValue = endPoint.getApiKeyValue();
+                // Add the API key to the client's headers
+                fhirClient.registerInterceptor(new IClientInterceptor() {
+                    @Override
+                    public void interceptRequest(IHttpRequest theRequest) {
+                        theRequest.addHeader(apiKeyName, apiKeyValue);
+                    }
+
+                    @Override
+                    public void interceptResponse(IHttpResponse theResponse) {
+                        // You can add response handling here if needed
+                    }
+                });
             }
             // Add other authentication methods as needed
 
@@ -103,12 +120,103 @@ public class FhirR4Controller implements Serializable {
                 result.setSuccess(true);
                 result.setMessage("Created new Patient with ID: " + id.getIdPart());
                 result.setResourceId(id);
+
+                // Call updateFhirResourceLink method
+                updateFhirResourceLink(client, endPoint, id.getIdPart());
+
             } else {
                 result.setSuccess(false);
                 result.setMessage("Failed to create new Patient");
             }
             return result;
         });
+    }
+
+    public CompletableFuture<FhirOperationResult> updatePatientInFhirServerAsync(Client client, IntegrationEndpoint endPoint, String resourceId) {
+        System.out.println("Updating patient in FHIR server...");
+        SecurityProtocol sp = endPoint.getSecurityProtocol();
+        String username = endPoint.getUserName();
+        String password = endPoint.getPassword();
+        Patient patient = convertToFhirPatient(client);
+
+        return CompletableFuture.supplyAsync(() -> {
+            FhirOperationResult result = new FhirOperationResult();
+
+            FhirContext ctx = FhirContext.forR4();
+            String serverBase = endPoint.getEndPointUrl();
+            IGenericClient fhirClient = ctx.newRestfulGenericClient(serverBase);
+
+            if (sp == SecurityProtocol.BASIC_AUTHENTICATION) {
+                fhirClient.registerInterceptor(new BasicAuthInterceptor(username, password));
+            } else if (sp == SecurityProtocol.API_KEY) {
+                String apiKeyName = endPoint.getApiKeyName();
+                String apiKeyValue = endPoint.getApiKeyValue();
+                fhirClient.registerInterceptor(new IClientInterceptor() {
+                    @Override
+                    public void interceptRequest(IHttpRequest theRequest) {
+                        theRequest.addHeader(apiKeyName, apiKeyValue);
+                    }
+
+                    @Override
+                    public void interceptResponse(IHttpResponse theResponse) {
+                        // You can add response handling here if needed
+                    }
+                });
+            }
+
+            // Set the resource ID for the update operation
+            patient.setId(resourceId);
+
+            // Perform the update operation
+            MethodOutcome outcome = fhirClient.update().resource(patient).execute();
+
+            if (outcome.getCreated()) {
+                result.setSuccess(false);
+                result.setMessage("Unexpectedly created a new Patient instead of updating");
+            } else if (outcome.getResource() != null) {
+                IdType id = (IdType) outcome.getId();
+                result.setSuccess(true);
+                result.setMessage("Updated Patient with ID: " + id.getIdPart());
+                result.setResourceId(id);
+            } else {
+                result.setSuccess(false);
+                result.setMessage("Failed to update Patient");
+            }
+            return result;
+        });
+    }
+
+    public void updateFhirResourceLink(Object object, IntegrationEndpoint endPoint, String fhirResourceId) {
+        // Search first for a record, if exists, nothing is needed, if not, create a new record
+        String jpql = "select l "
+                + " from FhirResourceLink l "
+                + " where l.integrationEndpoint = :ep "
+                + " and l.objectType = :objectType "
+                + " and l.objectId = :objectId"; // Completed JPQL
+        Map<String, Object> m = new HashMap<>();
+        m.put("ep", endPoint);
+        m.put("objectType", object.getClass().getName()); // Assuming you want to search by object's class name
+        m.put("objectId", getObjectID(object)); // Assuming you have a method to get the object's ID
+        FhirResourceLink l = fhirResourceLinkFacade.findFirstByJpql(jpql, m);
+        if (l == null) {
+            l = new FhirResourceLink();
+            l.setFhirResourceId(fhirResourceId);
+            l.setIntegrationEndpoint(endPoint);
+            l.setObjectType(object.getClass().getName());
+            l.setObjectId(getObjectID(object)); // Assuming you have a method to get the object's ID
+            // Added other fields
+            fhirResourceLinkFacade.create(l);
+        }
+    }
+
+    private Long getObjectID(Object object) {
+        try {
+            Method getIdMethod = object.getClass().getMethod("getId");
+            return (Long) getIdMethod.invoke(object);
+        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     public CompletableFuture<List<Client>> fetchClientsFromEndpoints(SearchQueryData sqd, IntegrationEndpoint endPoint) {
@@ -161,6 +269,7 @@ public class FhirR4Controller implements Serializable {
                         results = client.search()
                                 .forResource(Patient.class)
                                 .where(Patient.NAME.matches().value(sqd.getName()))
+                                .and(Patient.NAME.matches().values("text", sqd.getName())) // Matching the 'text' field inside the 'name' array
                                 .returnBundle(Bundle.class)
                                 .execute();
                         break;

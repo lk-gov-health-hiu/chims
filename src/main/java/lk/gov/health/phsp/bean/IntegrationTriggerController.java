@@ -3,6 +3,8 @@ package lk.gov.health.phsp.bean;
 import javax.inject.Named;
 import javax.enterprise.context.SessionScoped;
 import java.io.Serializable;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -27,10 +29,12 @@ import javax.inject.Inject;
 import lk.gov.health.phsp.bean.util.JsfUtil;
 import lk.gov.health.phsp.entity.Client;
 import lk.gov.health.phsp.entity.FhirOperationResult;
+import lk.gov.health.phsp.entity.FhirResourceLink;
 import lk.gov.health.phsp.entity.IntegrationEndpoint;
 import lk.gov.health.phsp.entity.IntegrationTrigger;
 import lk.gov.health.phsp.enums.CommunicationProtocol;
 import lk.gov.health.phsp.enums.IntegrationEvent;
+import lk.gov.health.phsp.facade.FhirResourceLinkFacade;
 import lk.gov.health.phsp.facade.IntegrationTriggerFacade;
 import lk.gov.health.phsp.pojcs.SearchQueryData;
 
@@ -44,6 +48,8 @@ public class IntegrationTriggerController implements Serializable {
 
     @EJB
     private IntegrationTriggerFacade ejbFacade;
+    @EJB
+    FhirResourceLinkFacade fhirResourceLinkFacade;
     private List<IntegrationTrigger> items = null;
     private IntegrationTrigger selected;
 
@@ -61,10 +67,10 @@ public class IntegrationTriggerController implements Serializable {
 
     public CompletableFuture<List<Client>> fetchClientsFromEndpoints(SearchQueryData sqd) {
         System.out.println("sqd = " + sqd);
-        if(sqd!=null){
+        if (sqd != null) {
             System.out.println("sqd = " + sqd.getSearchCriteria());
         }
-        System.out.println("fetchClientsFromEndpoints = " );
+        System.out.println("fetchClientsFromEndpoints = ");
         return CompletableFuture.supplyAsync(() -> {
             List<IntegrationTrigger> itemsNeededToBeTriggered = fillItems(IntegrationEvent.PATIENT_SEARCH);
             if (itemsNeededToBeTriggered == null || itemsNeededToBeTriggered.isEmpty()) {
@@ -120,7 +126,12 @@ public class IntegrationTriggerController implements Serializable {
                 CompletableFuture<FhirOperationResult> futureOutcome;
                 if (it.getIntegrationEndpoint().getCommunicationProtocol() == CommunicationProtocol.FHIR_R4) {
                     System.out.println("going to fhir async = ");
-                    futureOutcome = fhirR4Controller.createPatientInFhirServerAsync(client, it.getIntegrationEndpoint());
+                    String oldId = findFhirResourceLinkId(client, it.getIntegrationEndpoint());
+                    if (oldId == null) {
+                        futureOutcome = fhirR4Controller.createPatientInFhirServerAsync(client, it.getIntegrationEndpoint());
+                    } else {
+                        futureOutcome = fhirR4Controller.updatePatientInFhirServerAsync(client, it.getIntegrationEndpoint(),oldId );
+                    }
                     futureOutcomes.add(futureOutcome);
                 } else if (it.getIntegrationEndpoint().getCommunicationProtocol() == CommunicationProtocol.FHIR_R5) {
                     // TODO : Handle FHIR R5 
@@ -136,6 +147,34 @@ public class IntegrationTriggerController implements Serializable {
             ex.printStackTrace(); // Or log the exception
             return null; // Or handle the exception as needed
         });
+    }
+
+    public String findFhirResourceLinkId(Object object, IntegrationEndpoint endPoint) {
+        // Search first for a record, if exists, nothing is needed, if not, create a new record
+        String jpql = "select l "
+                + " from FhirResourceLink l "
+                + " where l.integrationEndpoint = :ep "
+                + " and l.objectType = :objectType "
+                + " and l.objectId = :objectId"; // Completed JPQL
+        Map<String, Object> m = new HashMap<>();
+        m.put("ep", endPoint);
+        m.put("objectType", object.getClass().getName()); // Assuming you want to search by object's class name
+        m.put("objectId", getObjectID(object)); // Assuming you have a method to get the object's ID
+        FhirResourceLink l = fhirResourceLinkFacade.findFirstByJpql(jpql, m);
+        if (l == null) {
+            return null;
+        }
+        return l.getFhirResourceId();
+    }
+
+    private Long getObjectID(Object object) {
+        try {
+            Method getIdMethod = object.getClass().getMethod("getId");
+            return (Long) getIdMethod.invoke(object);
+        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     public String navigateToAddNew() {
