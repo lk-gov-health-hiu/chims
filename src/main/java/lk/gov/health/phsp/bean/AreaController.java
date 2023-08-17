@@ -749,6 +749,8 @@ public class AreaController implements Serializable {
     public Area getAreaById(Long id) {
         return getFacade().find(id);
     }
+    
+    
 
 //    public Area getNationalArea() {
 //        String j = "select a from Area a "

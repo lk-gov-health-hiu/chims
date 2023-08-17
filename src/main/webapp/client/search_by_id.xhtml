@@ -3,63 +3,156 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:p="http://primefaces.org/ui">
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
 
     <body>
 
         <ui:composition template="./../template.xhtml">
 
             <ui:define name="content">
-                
-                <h:form >
-                    
-                    <p:panel header="Search by IDs" >
-                        <h:panelGrid columns="3" >
-                            <p:outputLabel value="PHN No" ></p:outputLabel>
-                            <p:inputText value="#{clientController.searchingPhn}"  autocomplete="off"  ></p:inputText>
-                            <p:commandButton ajax="false" class="m-1" value="Search" action="#{clientController.searchByPhn()}" ></p:commandButton>
-                            
-                            
-                           
-                            
-                            <p:outputLabel value="NIC No" ></p:outputLabel>
-                            <p:inputText value="#{clientController.searchingNicNo}"  autocomplete="off" ></p:inputText>
-                            <p:commandButton ajax="false" class="m-1" value="Search" action="#{clientController.searchByNic()}" ></p:commandButton>
-                            
-                            
-                            <p:outputLabel value="Telephone No" ></p:outputLabel>
-                            <p:inputText value="#{clientController.searchingPhoneNumber}"  autocomplete="off"  ></p:inputText>
-                            <p:commandButton ajax="false" class="m-1" value="Search" action="#{clientController.searchByPhoneNumber()}" ></p:commandButton>
-                            
-                            <p:outputLabel value="Driving License No" ></p:outputLabel>
-                            <p:inputText value="#{clientController.searchingDrivingLicenceNo}"  autocomplete="off" ></p:inputText>
-                            <p:commandButton ajax="false" class="m-1" value="Search" action="#{clientController.searchByDrivingLicenseNo()}" ></p:commandButton>
-                            
-                            <p:outputLabel value="Passport No" ></p:outputLabel>
-                            <p:inputText value="#{clientController.searchingPassportNo}"  autocomplete="off" ></p:inputText>
-                            <p:commandButton ajax="false" class="m-1" value="Search" action="#{clientController.searchByPassportNo()}" ></p:commandButton>
-                            
-                            
-                            <p:outputLabel value="Local Reference No" ></p:outputLabel>
-                            <p:inputText value="#{clientController.searchingLocalReferanceNo}"  autocomplete="off" ></p:inputText>
-                            <p:commandButton ajax="false" class="m-1" value="Search" action="#{clientController.searchByLocalReferanceNo()}" ></p:commandButton>
-                            
-                            <p:outputLabel value="Senior Citizen No" ></p:outputLabel>
-                            <p:inputText value="#{clientController.searchingSsNumber}"  autocomplete="off" ></p:inputText>
-                            <p:commandButton ajax="false" class="m-1" value="Search" action="#{clientController.searchBySsNo()}" ></p:commandButton>
-                            
-                            <p:commandButton ajax="false" class="m-1" value="Search By ID - Priority" action="#{clientController.searchById()}" ></p:commandButton>
-                            <p:commandButton ajax="false" class="m-1" value="Search By Any ID" action="#{clientController.searchByAllId()}" ></p:commandButton>
-                            <p:commandButton ajax="false" class="m-1" value="Clear" action="#{clientController.clearSearchById()}" ></p:commandButton>
-                            
-                            
-                        </h:panelGrid>
-                        
-                        
-                    </p:panel>
-                    
-                </h:form>
-                
+
+
+                <div class =" container-fluid" >
+                    <div class="row" >
+                        <div class="col-md-6" >
+                            <h:form >
+                                <p:panelGrid columns="3" >
+                                    <f:facet name="header" >
+                                        <h:outputText value="Search by a Single ID" ></h:outputText>
+                                    </f:facet>
+                                    <p:outputLabel value="PHN No" ></p:outputLabel>
+                                    <p:inputText value="#{clientController.searchingPhn}"  autocomplete="off"  ></p:inputText>
+                                    <p:commandButton ajax="false" class="m-1" value="Search" action="#{clientController.searchByPhn()}" ></p:commandButton>
+
+                                    <p:outputLabel value="NIC No" ></p:outputLabel>
+                                    <p:inputText value="#{clientController.searchingNicNo}"  autocomplete="off" ></p:inputText>
+                                    <p:commandButton ajax="false" class="m-1" value="Search" action="#{clientController.searchByNic()}" ></p:commandButton>
+
+                                    <p:outputLabel value="Telephone No" ></p:outputLabel>
+                                    <p:inputText value="#{clientController.searchingPhoneNumber}"  autocomplete="off"  ></p:inputText>
+                                    <p:commandButton ajax="false" class="m-1" value="Search" action="#{clientController.searchByPhoneNumber()}" ></p:commandButton>
+
+                                    <p:outputLabel value="Driving License No" ></p:outputLabel>
+                                    <p:inputText value="#{clientController.searchingDrivingLicenceNo}"  autocomplete="off" ></p:inputText>
+                                    <p:commandButton ajax="false" class="m-1" value="Search" action="#{clientController.searchByDrivingLicenseNo()}" ></p:commandButton>
+
+                                    <p:outputLabel value="Passport No" ></p:outputLabel>
+                                    <p:inputText value="#{clientController.searchingPassportNo}"  autocomplete="off" ></p:inputText>
+                                    <p:commandButton ajax="false" class="m-1" value="Search" action="#{clientController.searchByPassportNo()}" ></p:commandButton>
+
+
+                                    <p:outputLabel value="Local Reference No" ></p:outputLabel>
+                                    <p:inputText value="#{clientController.searchingLocalReferanceNo}"  autocomplete="off" ></p:inputText>
+                                    <p:commandButton ajax="false" class="m-1" value="Search" action="#{clientController.searchByLocalReferanceNo()}" ></p:commandButton>
+
+                                    <p:outputLabel value="Senior Citizen No" ></p:outputLabel>
+                                    <p:inputText value="#{clientController.searchingSsNumber}"  autocomplete="off" ></p:inputText>
+                                    <p:commandButton ajax="false" class="m-1" value="Search" action="#{clientController.searchBySsNo()}" ></p:commandButton>
+
+                                    <p:commandButton ajax="false" class="m-1" value="Search By ID - Priority" action="#{clientController.searchById()}" ></p:commandButton>
+                                    <p:commandButton ajax="false" class="m-1" value="Search By Any ID" action="#{clientController.searchByAllId()}" ></p:commandButton>
+                                    <p:commandButton ajax="false" class="m-1" value="Clear" action="#{clientController.clearSearchById()}" ></p:commandButton>
+
+
+                                </p:panelGrid>
+                            </h:form>
+                        </div>
+                        <div class="col-md-6" >
+                            <h:form>
+                                <div class="card" >
+                                    <div class="card-header" >
+                                        <h2> <h:outputText value="Advance Search"></h:outputText>
+                                        </h2>
+                                    </div>
+                                    <div class="card-header" >
+                                        <div class="form" >
+                                            <p:outputLabel value="Search Method"></p:outputLabel>
+                                            <p:selectOneMenu 
+                                                filter="true"
+                                                filterMatchMode="contains"
+                                                class="form-control" value="#{clientController.searchQueryData.searchCriteria}">
+                                                <f:selectItem itemLabel="Select" ></f:selectItem>
+                                                <f:selectItems value="#{commonController.searchCriteriae}" var="s" itemLabel="#{s.description}"></f:selectItems>
+                                                <p:ajax update="@form" />
+                                            </p:selectOneMenu>
+
+                                            <p:outputPanel rendered="#{clientController.searchQueryData.searchCriteria eq 'PART_OF_NAME_ONLY' or clientController.searchQueryData.searchCriteria.description.contains('name')}">
+                                                <p:outputLabel value="Name"></p:outputLabel>
+                                                <p:inputText  class="form-control" value="#{clientController.searchQueryData.name}"></p:inputText>
+                                            </p:outputPanel>
+
+                                            <p:outputPanel rendered="#{clientController.searchQueryData.searchCriteria eq 'NIC_ONLY'}">
+                                                <p:outputLabel value="NIC"></p:outputLabel>
+                                                <p:inputText  class="form-control" value="#{clientController.searchQueryData.nic}"></p:inputText>
+                                            </p:outputPanel>
+
+                                            <p:outputPanel rendered="#{clientController.searchQueryData.searchCriteria eq 'PHN_ONLY'}">
+                                                <p:outputLabel value="PHN"></p:outputLabel>
+                                                <p:inputText  class="form-control" value="#{clientController.searchQueryData.phn}"></p:inputText>
+                                            </p:outputPanel>
+
+                                            <p:outputPanel rendered="#{clientController.searchQueryData.searchCriteria eq 'PART_OF_NAME_AND_DATE_OF_BIRTH'}">
+                                                <p:outputLabel value="Birth Date"></p:outputLabel>
+                                                <p:datePicker  class="w-100" inputStyleClass="form-control" value="#{clientController.searchQueryData.dateOfBirth}" />
+                                            </p:outputPanel>
+
+                                            <p:outputPanel rendered="#{clientController.searchQueryData.searchCriteria eq 'PART_OF_NAME_AND_AGE_IN_YEARS'}">
+                                                <p:outputLabel value="Age in Years"></p:outputLabel>
+                                                <p:inputText class="form-control" value="#{clientController.searchQueryData.ageInYears}"></p:inputText>
+                                            </p:outputPanel>
+
+                                            <p:outputPanel rendered="#{clientController.searchQueryData.searchCriteria eq 'PASSPORT_ONLY'}">
+                                                <p:outputLabel value="Passport"></p:outputLabel>
+                                                <p:inputText  class="form-control" value="#{clientController.searchQueryData.passport}"></p:inputText>
+                                            </p:outputPanel>
+
+                                            <p:outputPanel rendered="#{clientController.searchQueryData.searchCriteria eq 'SCN_ONLY'}">
+                                                <p:outputLabel value="Senior Citizen Number"></p:outputLabel>
+                                                <p:inputText  class="form-control" value="#{clientController.searchQueryData.scn}"></p:inputText>
+                                            </p:outputPanel>
+
+                                            <p:outputPanel rendered="#{clientController.searchQueryData.searchCriteria eq 'DL_ONLY'}">
+                                                <p:outputLabel value="Driver's License"></p:outputLabel>
+                                                <p:inputText  class="form-control" value="#{clientController.searchQueryData.dl}"></p:inputText>
+                                            </p:outputPanel>
+
+                                            <p:outputPanel rendered="#{clientController.searchQueryData.searchCriteria eq 'TELEPHONE_NUMBER_ONLY'}">
+                                                <p:outputLabel value="Telephone Number"></p:outputLabel>
+                                                <p:inputText  class="form-control" value="#{clientController.searchQueryData.phone}"></p:inputText>
+                                            </p:outputPanel>
+
+                                            <p:outputPanel rendered="#{clientController.searchQueryData.searchCriteria eq 'PART_OF_NAME_AND_BIRTH_YEAR'}">
+                                                <p:outputLabel value="Birth Year"></p:outputLabel>
+                                                <p:inputText  class="form-control" value="#{clientController.searchQueryData.birthYear}"></p:inputText>
+                                            </p:outputPanel>
+
+                                            <p:outputPanel rendered="#{clientController.searchQueryData.searchCriteria eq 'PART_OF_NAME_AND_BIRTH_YEAR_AND_MONTH'}">
+                                                <p:outputLabel value="Birth Year"></p:outputLabel>
+                                                <p:inputText  class="form-control" value="#{clientController.searchQueryData.birthYear}"></p:inputText>
+                                                <p:outputLabel value="Birth Month"></p:outputLabel>
+                                                <p:inputText  class="form-control" value="#{clientController.searchQueryData.birthMonth}"></p:inputText>
+                                            </p:outputPanel>
+
+                                        </div>
+                                    </div>
+                                    <div class="card-footer" >
+                                        <h:commandButton value="Search" 
+                                                         class="btn-secondary"
+                                                         action="#{clientController.searchBySearchQueryData}"
+                                                         ></h:commandButton>
+                                    </div>
+                                </div>
+                            </h:form>
+                        </div>
+                    </div>
+                </div>
+
+
+
+
+
+
             </ui:define>
 
         </ui:composition>

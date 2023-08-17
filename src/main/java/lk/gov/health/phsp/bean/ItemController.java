@@ -292,7 +292,6 @@ public class ItemController implements Serializable {
                     parentItem = findItemByCode(strParentCode);
                 }
 
-                
                 SelectionDataType selectionDataType = CommonController.selectionDataTypeFromString(strDataType);
                 Item importingItem = findItemByCode(strCode);
 
@@ -1204,6 +1203,8 @@ public class ItemController implements Serializable {
     public void setSelected(Item selected) {
         this.selected = selected;
     }
+
+    
 
     public void saveDictionatyItemsAndCategories() {
         boolean needReload = false;

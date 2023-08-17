@@ -3,31 +3,43 @@ package lk.gov.health.phsp.bean;
 import javax.inject.Named;
 import javax.enterprise.context.SessionScoped;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
+import javax.annotation.Resource;
 import javax.ejb.EJB;
+import javax.enterprise.concurrent.ManagedExecutorService;
+import javax.enterprise.context.ApplicationScoped;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
 import javax.inject.Inject;
 import lk.gov.health.phsp.bean.util.JsfUtil;
+import lk.gov.health.phsp.entity.Client;
+import lk.gov.health.phsp.entity.FhirOperationResult;
 import lk.gov.health.phsp.entity.IntegrationEndpoint;
 import lk.gov.health.phsp.entity.IntegrationTrigger;
+import lk.gov.health.phsp.enums.CommunicationProtocol;
 import lk.gov.health.phsp.enums.IntegrationEvent;
 import lk.gov.health.phsp.facade.IntegrationTriggerFacade;
+import lk.gov.health.phsp.pojcs.SearchQueryData;
 
 /**
  *
  * @author buddh
  */
 @Named
-@SessionScoped
+@ApplicationScoped
 public class IntegrationTriggerController implements Serializable {
 
     @EJB
@@ -39,6 +51,92 @@ public class IntegrationTriggerController implements Serializable {
     private WebUserController webUserController;
     @Inject
     private CommonController commonController;
+    @Inject
+    FhirR4Controller fhirR4Controller;
+//    @Inject
+//    FhirR5Controller fhirR5Controller;
+
+    @Resource
+    private ManagedExecutorService executorService;
+
+    public CompletableFuture<List<Client>> fetchClientsFromEndpoints(SearchQueryData sqd) {
+        System.out.println("sqd = " + sqd);
+        if(sqd!=null){
+            System.out.println("sqd = " + sqd.getSearchCriteria());
+        }
+        System.out.println("fetchClientsFromEndpoints = " );
+        return CompletableFuture.supplyAsync(() -> {
+            List<IntegrationTrigger> itemsNeededToBeTriggered = fillItems(IntegrationEvent.PATIENT_SEARCH);
+            if (itemsNeededToBeTriggered == null || itemsNeededToBeTriggered.isEmpty()) {
+                return Collections.emptyList();
+            }
+
+            List<CompletableFuture<List<Client>>> futureClientsList = itemsNeededToBeTriggered.stream()
+                    .filter(it -> it.getIntegrationEndpoint() != null && it.getIntegrationEndpoint().getCommunicationProtocol() != null)
+                    .map(it -> {
+                        if (it.getIntegrationEndpoint().getCommunicationProtocol() == CommunicationProtocol.FHIR_R4) {
+                            return fhirR4Controller.fetchClientsFromEndpoints(sqd, it.getIntegrationEndpoint());
+                        } else if (it.getIntegrationEndpoint().getCommunicationProtocol() == CommunicationProtocol.FHIR_R5) {
+                            // Handle FHIR R5 if needed
+                            return null;
+                        } else {
+                            return null;
+                        }
+                    })
+                    .filter(Objects::nonNull)
+                    .collect(Collectors.toList());
+
+            CompletableFuture<Void> allFutures = CompletableFuture.allOf(futureClientsList.toArray(new CompletableFuture[0]));
+
+            return allFutures.thenApply(v -> futureClientsList.stream()
+                    .map(CompletableFuture::join)
+                    .flatMap(List::stream)
+                    .collect(Collectors.toList()))
+                    .join();
+        }, executorService);
+    }
+
+    public CompletableFuture<List<FhirOperationResult>> createNewClientsToEndpoints(Client client) {
+        System.out.println("Creating new clients to endpoints...");
+        return CompletableFuture.supplyAsync(() -> {
+            List<FhirOperationResult> outcomes = new ArrayList<>();
+            List<IntegrationTrigger> itemsNeededToBeTriggered = fillItems(IntegrationEvent.PATIENT_SAVE);
+            System.out.println("itemsNeededToBeTriggered = " + itemsNeededToBeTriggered);
+            if (itemsNeededToBeTriggered == null || itemsNeededToBeTriggered.isEmpty()) {
+                return outcomes;
+            }
+            System.out.println("before future outcomes");
+            List<CompletableFuture<FhirOperationResult>> futureOutcomes = new ArrayList<>();
+            for (IntegrationTrigger it : itemsNeededToBeTriggered) {
+                System.out.println("it = " + it);
+                System.out.println("it.getIntegrationEndpoint() = " + it.getIntegrationEndpoint());
+                if (it.getIntegrationEndpoint() == null) {
+                    continue;
+                }
+                System.out.println("it.getIntegrationEndpoint().getCommunicationProtocol() = " + it.getIntegrationEndpoint().getCommunicationProtocol());
+                if (it.getIntegrationEndpoint().getCommunicationProtocol() == null) {
+                    continue;
+                }
+                CompletableFuture<FhirOperationResult> futureOutcome;
+                if (it.getIntegrationEndpoint().getCommunicationProtocol() == CommunicationProtocol.FHIR_R4) {
+                    System.out.println("going to fhir async = ");
+                    futureOutcome = fhirR4Controller.createPatientInFhirServerAsync(client, it.getIntegrationEndpoint());
+                    futureOutcomes.add(futureOutcome);
+                } else if (it.getIntegrationEndpoint().getCommunicationProtocol() == CommunicationProtocol.FHIR_R5) {
+                    // TODO : Handle FHIR R5 
+                    continue;
+                } else {
+                    continue;
+                }
+            }
+            futureOutcomes.forEach(futureOutcome -> futureOutcome.thenAccept(outcomes::add));
+            CompletableFuture.allOf(futureOutcomes.toArray(new CompletableFuture[0])).join();
+            return outcomes;
+        }, executorService).exceptionally(ex -> {
+            ex.printStackTrace(); // Or log the exception
+            return null; // Or handle the exception as needed
+        });
+    }
 
     public String navigateToAddNew() {
         selected = new IntegrationTrigger();
@@ -134,9 +232,21 @@ public class IntegrationTriggerController implements Serializable {
         m.put("ret", false);
         return getFacade().findByJpql(jpql, m);
     }
+
+    private List<IntegrationTrigger> fillItems(IntegrationEvent ie) {
+        String jpql = "select i "
+                + " from IntegrationTrigger i "
+                + " where i.retired=:ret "
+                + " and i.integrationEvent=:ie "
+                + " order by i.integrationEvent";
+        Map m = new HashMap();
+        m.put("ret", false);
+        m.put("ie", ie);
+        return getFacade().findByJpql(jpql, m);
+    }
+
     // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="Converters">
-
     @FacesConverter(forClass = IntegrationTrigger.class)
     public static class IntegrationTriggerControllerConverter implements Converter {
 

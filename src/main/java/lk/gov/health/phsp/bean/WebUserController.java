@@ -875,7 +875,7 @@ public class WebUserController implements Serializable {
             return "/webUser/change_password_at_login";
         } else {
             passwordChangingUser = null;
-            prepareDashboards();
+//            prepareDashboards();
             JsfUtil.addSuccessMessage("Successfully Logged");
             return "/index";
         }

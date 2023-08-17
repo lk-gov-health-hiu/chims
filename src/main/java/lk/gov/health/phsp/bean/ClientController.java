@@ -12,12 +12,15 @@ import lk.gov.health.phsp.facade.ClientFacade;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.TimeZone;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
@@ -42,6 +45,7 @@ import lk.gov.health.phsp.entity.DesignComponentForm;
 import lk.gov.health.phsp.entity.DesignComponentFormItem;
 import lk.gov.health.phsp.entity.DesignComponentFormSet;
 import lk.gov.health.phsp.entity.Encounter;
+import lk.gov.health.phsp.entity.FhirOperationResult;
 import lk.gov.health.phsp.entity.Institution;
 import lk.gov.health.phsp.entity.Item;
 import lk.gov.health.phsp.entity.Person;
@@ -58,6 +62,8 @@ import lk.gov.health.phsp.pojcs.dataentry.DataFormset;
 import lk.gov.health.phsp.pojcs.dataentry.DataItem;
 import lk.gov.health.phsp.enums.EncounterType;
 import static lk.gov.health.phsp.enums.EncounterType.Client_Data;
+import lk.gov.health.phsp.enums.SearchCriteria;
+import lk.gov.health.phsp.pojcs.SearchQueryData;
 import org.primefaces.component.tabview.TabView;
 import org.primefaces.event.TabChangeEvent;
 import org.primefaces.model.file.UploadedFile;
@@ -106,11 +112,14 @@ public class ClientController implements Serializable {
     DesignComponentFormItemController designComponentFormItemController;
     @Inject
     ClientEncounterComponentItemController clientEncounterComponentItemController;
+    @Inject
+    IntegrationTriggerController integrationTriggerController;
     // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="Variables">
     private List<Client> items = null;
     private List<ClientBasicData> clients = null;
     private List<Client> selectedClients = null;
+    private List<Client> selectedClientsFromIntegrations = new ArrayList<>();
     private List<ClientBasicData> selectedClientsWithBasicData = null;
     private List<Client> importedClients = null;
 
@@ -163,6 +172,8 @@ public class ClientController implements Serializable {
     ClientEncounterComponentFormSet clientCefs;
     private DesignComponentFormSet clientDcfs;
 
+    private SearchQueryData searchQueryData;
+
     // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="Constructors">
     public ClientController() {
@@ -191,6 +202,36 @@ public class ClientController implements Serializable {
     public String toClient() {
         loadClientFormDataEntry();
         return "/client/client";
+    }
+
+    private List<FhirOperationResult> fhirOperationResults;
+    private boolean pushComplete = false;
+
+    public String pushToFhirServers() {
+        System.out.println("Starting push to FHIR servers...");
+        CompletableFuture<List<FhirOperationResult>> futureResults
+                = integrationTriggerController.createNewClientsToEndpoints(selected);
+        futureResults.thenAccept(results -> {
+            fhirOperationResults = results;
+            pushComplete = true; // Mark the operation as complete
+            System.out.println("Push to FHIR servers complete.");
+        });
+        return "/client/push_result?faces-redirect=true"; // Navigate to the push_result page
+    }
+
+    public String checkPushComplete() {
+        if (pushComplete) {
+            return toClientProfile(); // Navigate to the client profile page
+        }
+        return null; // Stay on the current page
+    }
+
+    public boolean isPushComplete() {
+        return pushComplete;
+    }
+
+    public void setPushComplete(boolean pushComplete) {
+        this.pushComplete = pushComplete;
     }
 
     public String toRetireClient() {
@@ -1714,17 +1755,95 @@ public class ClientController implements Serializable {
     }
 
     public String searchByNic() {
-        selectedClients = listPatientsByNic(searchingNicNo);
-        if (selectedClients.size() == 1) {
-            setSelected(selectedClients.get(0));
-            selectedClients = null;
-            clearSearchById();
-            return toClientProfile();
-        } else {
-            selected = null;
-            clearSearchById();
-            return toSelectClient();
+        System.out.println("searchByNic");
+        if (searchingNicNo == null || searchingNicNo.trim().equals("")) {
+            JsfUtil.addErrorMessage("Please enter a NIC to Search");
+            return "";
         }
+        selectedClients = listPatientsByNic(searchingNicNo);
+        selectedClientsFromIntegrations = new ArrayList<>();
+        fhirOperationResults = new ArrayList<>(); // Initialize the list to store FhirOperationResult objects
+
+        System.out.println("Selected clients from local search: " + selectedClients);
+
+        searchQueryData = new SearchQueryData();
+        searchQueryData.setSearchCriteria(SearchCriteria.NIC_ONLY);
+        searchQueryData.setNic(searchingNicNo);
+
+        CompletableFuture<List<Client>> futureClients = integrationTriggerController.fetchClientsFromEndpoints(searchQueryData);
+        futureClients.thenAccept(clients -> {
+            if (clients != null && !clients.isEmpty()) {
+                System.out.println("Selected clients from integrations: " + clients);
+                selectedClientsFromIntegrations.addAll(clients);
+            } else {
+                System.out.println("No clients found from integrations for NIC: " + searchingNicNo);
+            }
+        }).exceptionally(ex -> {
+            ex.printStackTrace();
+            return null;
+        });
+
+        // Do something with the fhirOperationResults list, if needed
+        return toSelectClient();
+    }
+
+    public String searchBySearchQueryData() {
+        if (searchQueryData == null) {
+            JsfUtil.addErrorMessage("Error");
+            return null;
+        }
+        if (searchQueryData.getSearchCriteria() == null) {
+            JsfUtil.addErrorMessage("Please select a search criteria");
+            return null;
+        }
+
+        selectedClientsFromIntegrations = new ArrayList<>();
+
+        switch (searchQueryData.getSearchCriteria()) {
+            case NIC_ONLY:
+                selectedClients = listPatientsByNic(searchQueryData.getNic());
+                break;
+            case DL_ONLY:
+                selectedClients = listPatientsByDrivingLicenseNo(searchQueryData.getDl());
+                break;
+            case PASSPORT_ONLY:
+                selectedClients = listPatientsByPassportNo(searchQueryData.getPassport());
+                break;
+            case PHN_ONLY:
+                selectedClients = listPatientsByPhn(searchQueryData.getPhn());
+                break;
+            case SCN_ONLY:
+                selectedClients = listPatientsByScn(searchQueryData.getScn());
+                break;
+            case TELEPHONE_NUMBER_ONLY:
+                selectedClients = listPatientsByPhone(searchQueryData.getPhone());
+                break;
+            case PART_OF_NAME_AND_DATE_OF_BIRTH:
+                selectedClients = listPatientsByNameAndDateOfBirth(searchQueryData.getName(), searchQueryData.getDateOfBirth());
+                break;
+            case PART_OF_NAME_AND_AGE_IN_YEARS:
+
+        }
+
+        fhirOperationResults = new ArrayList<>(); // Initialize the list to store FhirOperationResult objects
+
+        System.out.println("Selected clients from local search: " + selectedClients);
+
+        CompletableFuture<List<Client>> futureClients = integrationTriggerController.fetchClientsFromEndpoints(searchQueryData);
+        futureClients.thenAccept(clients -> {
+            if (clients != null && !clients.isEmpty()) {
+                System.out.println("Selected clients from integrations: " + clients);
+                selectedClientsFromIntegrations.addAll(clients);
+            } else {
+                System.out.println("No clients found from integrations for NIC: " + searchingNicNo);
+            }
+        }).exceptionally(ex -> {
+            ex.printStackTrace();
+            return null;
+        });
+
+        // Do something with the fhirOperationResults list, if needed
+        return toSelectClient();
     }
 
     public String searchByPhoneNumber() {
@@ -1788,7 +1907,7 @@ public class ClientController implements Serializable {
     }
 
     public String searchBySsNo() {
-        selectedClients = listPatientsBySsNo(searchingSsNumber);
+        selectedClients = listPatientsByScn(searchingSsNumber);
         if (selectedClients.size() == 1) {
             setSelected(selectedClients.get(0));
             selectedClients = null;
@@ -1822,7 +1941,7 @@ public class ClientController implements Serializable {
             selectedClients.addAll(listPatientsByLocalReferanceNo(searchingLocalReferanceNo));
         }
         if (searchingSsNumber != null && !searchingSsNumber.trim().equals("")) {
-            selectedClients.addAll(listPatientsBySsNo(searchingSsNumber));
+            selectedClients.addAll(listPatientsByScn(searchingSsNumber));
         }
 
         if (selectedClients == null || selectedClients.isEmpty()) {
@@ -1856,7 +1975,7 @@ public class ClientController implements Serializable {
         } else if (searchingLocalReferanceNo != null && !searchingLocalReferanceNo.trim().equals("")) {
             selectedClients = listPatientsByLocalReferanceNo(searchingLocalReferanceNo);
         } else if (searchingSsNumber != null && !searchingSsNumber.trim().equals("")) {
-            selectedClients = listPatientsBySsNo(searchingSsNumber);
+            selectedClients = listPatientsByScn(searchingSsNumber);
         }
         if (selectedClients == null || selectedClients.isEmpty()) {
             JsfUtil.addErrorMessage("No Results Found. Try different search criteria.");
@@ -1979,7 +2098,12 @@ public class ClientController implements Serializable {
     }
 
     public List<Client> listPatientsByNic(String phn) {
-        String j = "select c from Client c where c.retired=false and c.reservedClient<>:res and c.person.nic=:q order by c.phn";
+        String j = "select c "
+                + " from Client c "
+                + " where c.retired=false "
+                + " and c.reservedClient<>:res "
+                + " and c.person.nic=:q "
+                + " order by c.phn";
         Map m = new HashMap();
         m.put("res", true);
         m.put("q", phn.trim());
@@ -1991,6 +2115,53 @@ public class ClientController implements Serializable {
         Map m = new HashMap();
         m.put("res", true);
         m.put("q", phn.trim());
+        return getFacade().findByJpql(j, m);
+    }
+
+    public List<Client> listPatientsByNameAndDateOfBirth(String name, Date dob) {
+        String j = "select c "
+                + " from Client c "
+                + " where c.retired=false "
+                + " and (c.reservedClient is null or c.reservedClient<>:res) "
+                + " and c.person.name like :n "
+                + " and c.person.dateOfBirth=:dob"
+                + " order by c.person.name"; // Changed ordering
+        Map m = new HashMap();
+        m.put("res", true);
+        m.put("n", "%" + name.trim() + "%");
+        m.put("dob", dob);
+        return getFacade().findByJpql(j, m);
+    }
+
+    public List<Client> listPatientsByNameAndYearOfBirth(String name, Integer yob) {
+        String j = "select c "
+                + " from Client c "
+                + " where c.retired=false "
+                + " and (c.reservedClient is null or c.reservedClient<>:res) "
+                + " and c.person.name like :n "
+                + " and FUNCTION('YEAR', c.person.dateOfBirth) = :yob" // Extracting the year from dateOfBirth
+                + " order by c.person.name"; // Changed ordering
+        Map m = new HashMap();
+        m.put("res", true);
+        m.put("n", "%" + name.trim() + "%");
+        m.put("yob", yob); // Using yob for the year of birth
+        return getFacade().findByJpql(j, m);
+    }
+
+    public List<Client> listPatientsByNameAndYearOfBirthAndMonth(String name, Integer yob, Integer mob) {
+        String j = "select c "
+                + " from Client c "
+                + " where c.retired=false "
+                + " and (c.reservedClient is null or c.reservedClient<>:res) "
+                + " and c.person.name like :n "
+                + " and FUNCTION('YEAR', c.person.dateOfBirth) = :yob" // Extracting the year from dateOfBirth
+                + " and FUNCTION('MONTH', c.person.dateOfBirth) = :mob" // Extracting the month from dateOfBirth
+                + " order by c.person.name"; // Changed ordering
+        Map m = new HashMap();
+        m.put("res", true);
+        m.put("n", "%" + name.trim() + "%");
+        m.put("yob", yob); // Using yob for the year of birth
+        m.put("mob", mob); // Using mob for the month of birth
         return getFacade().findByJpql(j, m);
     }
 
@@ -2020,7 +2191,7 @@ public class ClientController implements Serializable {
         return getFacade().findByJpql(j, m);
     }
 
-    public List<Client> listPatientsBySsNo(String ssNo) {
+    public List<Client> listPatientsByScn(String ssNo) {
         String j = "select c from Client c "
                 + " where c.retired=false "
                 + " and c.reservedClient<>:res "
@@ -3003,6 +3174,33 @@ public class ClientController implements Serializable {
 
     public void setUnregisteringClinic(Encounter unregisteringClinic) {
         this.unregisteringClinic = unregisteringClinic;
+    }
+
+    public List<Client> getSelectedClientsFromIntegrations() {
+        return selectedClientsFromIntegrations;
+    }
+
+    public void setSelectedClientsFromIntegrations(List<Client> selectedClientsFromIntegrations) {
+        this.selectedClientsFromIntegrations = selectedClientsFromIntegrations;
+    }
+
+    public List<FhirOperationResult> getFhirOperationResults() {
+        return fhirOperationResults;
+    }
+
+    public void setFhirOperationResults(List<FhirOperationResult> fhirOperationResults) {
+        this.fhirOperationResults = fhirOperationResults;
+    }
+
+    public SearchQueryData getSearchQueryData() {
+        if (searchQueryData == null) {
+            searchQueryData = new SearchQueryData();
+        }
+        return searchQueryData;
+    }
+
+    public void setSearchQueryData(SearchQueryData searchQueryData) {
+        this.searchQueryData = searchQueryData;
     }
 
     // </editor-fold>
