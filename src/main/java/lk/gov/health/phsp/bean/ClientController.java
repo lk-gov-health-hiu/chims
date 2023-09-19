@@ -1593,7 +1593,11 @@ public class ClientController implements Serializable {
             poiIns = webUserController.getLoggedUser().getInstitution();
         }
         if (poiIns.getPoiNumber() == null || poiIns.getPoiNumber().trim().equals("")) {
-            JsfUtil.addErrorMessage("A Point of Issue is NOT assigned to your Institution. Please discuss with the System Administrator.");
+            Institution moh = institutionApplicationController.findMinistryOfHealth();
+            poiIns = moh;
+            if (poiIns.getPoiNumber() == null || poiIns.getPoiNumber().trim().equals("")) {
+                poiIns.setPoiNumber("385C");
+            }
             return;
         }
         selected.setPhn(applicationController.createNewPersonalHealthNumberformat(poiIns));
@@ -2286,24 +2290,37 @@ public class ClientController implements Serializable {
 
     public String saveClient() {
 
-        // //System.out.println("saveClient");
+        Institution poiIns;
+
         if (selected == null) {
             JsfUtil.addErrorMessage("Nothing to save");
             return "";
         }
 
-        Institution poiIns = null;
+        Institution createdIns = null;
 
-        if (webUserController.getLoggedUser().getInstitution().getPoiInstitution() != null) {
-            poiIns = webUserController.getLoggedUser().getInstitution().getPoiInstitution();
+        if (selected.getCreateInstitution() == null) {
+            if (webUserController.getLoggedUser().getInstitution().getPoiInstitution() != null) {
+                createdIns = webUserController.getLoggedUser().getInstitution().getPoiInstitution();
+                poiIns = webUserController.getLoggedUser().getInstitution().getPoiInstitution();;
+            } else {
+                createdIns = webUserController.getLoggedUser().getInstitution();
+                poiIns = webUserController.getLoggedUser().getInstitution();
+            }
+            selected.setCreateInstitution(createdIns);
         } else {
-            poiIns = webUserController.getLoggedUser().getInstitution();
+            createdIns = selected.getCreateInstitution();
+            poiIns = selected.getCreateInstitution();
         }
 
-        if (poiIns == null || poiIns.getPoiNumber() == null || poiIns.getPoiNumber().trim().equals("")) {
-            JsfUtil.addErrorMessage("The institution you logged has no POI. Can not generate a PHN.");
-            return "";
+        if (poiIns == null) {
+            poiIns = institutionApplicationController.findMinistryOfHealth();
         }
+        
+        if (poiIns.getPoiNumber() == null || poiIns.getPoiNumber().trim().equals("")) {
+            poiIns.setPoiNumber("385C");
+        }
+        
 
         if (selected.getPhn() == null || selected.getPhn().trim().equals("")) {
             String newPhn = applicationController.createNewPersonalHealthNumberformat(poiIns);

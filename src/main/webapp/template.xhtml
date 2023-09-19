@@ -25,57 +25,73 @@
         <p:growl   >
         </p:growl>
 
-        <h:panelGroup rendered="#{webUserController.thisIsTheFirstLogin()}" >
-            <ez:first_login/>
+
+        <h:panelGroup rendered="true" >
+            <div class="container-fluid" style="height: 80vh;" >
+                <div class="row" >
+                    <div class="col" >
+                        <h1>System is Down for the upgrade of the database.</h1>
+                        <h2>Sorry for the inconvenience</h2>
+                    </div>
+                </div>
+            </div>
         </h:panelGroup>
 
-        <h:panelGroup rendered="#{not webUserController.thisIsTheFirstLogin()}" >
+        <h:panelGroup rendered="false" >
 
-            <h:panelGroup rendered="#{webUserController.loggedUser.name eq 'buddhika' or true}" >
+            <h:panelGroup rendered="#{webUserController.thisIsTheFirstLogin()}" >
+                <ez:first_login/>
+            </h:panelGroup>
 
-                <div class="row">
-                    <div class="col-md-12" >
-                        <h:panelGroup rendered="#{webUserController.loggedUser ne null}">
-                            <ez:menu/>
-                        </h:panelGroup>
+            <h:panelGroup rendered="#{not webUserController.thisIsTheFirstLogin()}" >
+
+                <h:panelGroup rendered="#{webUserController.loggedUser.name eq 'buddhika' or true}" >
+
+                    <div class="row">
+                        <div class="col-md-12" >
+                            <h:panelGroup rendered="#{webUserController.loggedUser ne null}">
+                                <ez:menu/>
+                            </h:panelGroup>
+                        </div>
                     </div>
-                </div>
 
-                <div class="row" >
-                    <div class="col-md-12" >
-                        <h:panelGroup rendered="#{webUserController.loggedUser ne null}">
-                            <ui:insert name="content">
-                                Contents
+                    <div class="row" >
+                        <div class="col-md-12" >
+                            <h:panelGroup rendered="#{webUserController.loggedUser ne null}">
+                                <ui:insert name="content">
+                                    Contents
+                                </ui:insert>
+                            </h:panelGroup>
+                            <h:panelGroup rendered="#{webUserController.loggedUser eq null and webUserController.passwordChangingUser eq null}">
+                                <ez:login/>
+                                <div style="width: 50%; margin: auto;">
+                                    <ez:demo_login/>
+                                </div>
+                                <ui:insert name="timeout">
+                                </ui:insert>
+                            </h:panelGroup>
+                        </div>
+                    </div>
+
+
+                    <div class="row">
+                        <div class="col-md-12" >
+                            <h:panelGroup rendered="#{webUserController.loggedUser eq null and webUserController.passwordChangingUser ne null}">
+                                <ui:insert name="nonusercontent">
+                                </ui:insert>
+                            </h:panelGroup>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12" >
+                            <ui:insert name="bottom">
+                                <ez:footer/>
                             </ui:insert>
-                        </h:panelGroup>
-                        <h:panelGroup rendered="#{webUserController.loggedUser eq null and webUserController.passwordChangingUser eq null}">
-                            <ez:login/>
-                            <div style="width: 50%; margin: auto;">
-                                <ez:demo_login/>
-                            </div>
-                            <ui:insert name="timeout">
-                            </ui:insert>
-                        </h:panelGroup>
+                        </div>
                     </div>
-                </div>
 
-
-                <div class="row">
-                    <div class="col-md-12" >
-                        <h:panelGroup rendered="#{webUserController.loggedUser eq null and webUserController.passwordChangingUser ne null}">
-                            <ui:insert name="nonusercontent">
-                            </ui:insert>
-                        </h:panelGroup>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-md-12" >
-                        <ui:insert name="bottom">
-                            <ez:footer/>
-                        </ui:insert>
-                    </div>
-                </div>
+                </h:panelGroup>
 
             </h:panelGroup>
 
