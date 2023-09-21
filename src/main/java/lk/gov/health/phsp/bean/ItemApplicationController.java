@@ -57,6 +57,7 @@ public class ItemApplicationController {
     private List<Item> strengthUnits;
     private List<Item> issueUnits;
     private List<Item> dictionaryItemsAndCategories;
+    private List<Item> sexes;
 
     /**
      * Creates a new instance of ItemApplicationController
@@ -74,6 +75,40 @@ public class ItemApplicationController {
         List<ItemType> its = new ArrayList<>();
         its.add(ItemType.Dictionary_Category);
         return completeItem(its, qry);
+    }
+
+    public List<Item> getSexes() {
+        if (sexes == null) {
+//            sexes = findItemList("sex", ItemType.Dictionary_Item);
+            sexes = findChildDictionaryItems("sex");
+        }
+        return sexes;
+    }
+
+    public void setSexes(List<Item> sexes) {
+        this.sexes = sexes;
+    }
+
+    public Item getSex(String code) {
+        if (code == null) {
+            code = "";
+        }
+        List<Item> tss = getSexes();
+        Item m = null;
+        Item f = null;
+        for (Item i : tss) {
+            if (i.getName().toLowerCase().contains("f")) {
+                f = i;
+            } else if (i.getName().toLowerCase().contains("male")){
+                m = i;
+            }
+        }
+        code = code.toLowerCase();
+        if (code.contains("f")) {
+            return f;
+        } else {
+            return m;
+        }
     }
 
     public List<Item> completeDictionaryItemOrCategory(String qry) {
@@ -390,7 +425,7 @@ public class ItemApplicationController {
     public void invalidateItems() {
         items = null;
         packUnits = null;
-        dosageForms=null;
+        dosageForms = null;
         frequencyUnits = null;
         strengthUnits = null;
         durationUnits = null;
@@ -464,6 +499,14 @@ public class ItemApplicationController {
             dictionaryTypes.add(ItemType.Dictionary_Item);
         }
         return dictionaryTypes;
+    }
+
+    public ItemFacade getFacade() {
+        return facade;
+    }
+
+    public void setFacade(ItemFacade facade) {
+        this.facade = facade;
     }
 
 }

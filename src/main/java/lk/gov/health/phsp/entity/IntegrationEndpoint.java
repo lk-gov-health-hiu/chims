@@ -39,7 +39,10 @@ public class IntegrationEndpoint implements Serializable {
     private String description;
     private String userName;
     private String password;
+    @Deprecated
     private String apiKey;
+    private String apiKeyName;
+    private String apiKeyValue;
 
     /*
     Create Properties
@@ -66,8 +69,6 @@ public class IntegrationEndpoint implements Serializable {
         this.id = id;
     }
 
-    
-    
     @Override
     public int hashCode() {
         int hash = 0;
@@ -211,6 +212,22 @@ public class IntegrationEndpoint implements Serializable {
 
     public void setRetireComments(String retireComments) {
         this.retireComments = retireComments;
+    }
+
+    public String getApiKeyValue() {
+        return apiKeyValue;
+    }
+
+    public void setApiKeyValue(String apiKeyValue) {
+        this.apiKeyValue = apiKeyValue;
+    }
+
+    public String getApiKeyName() {
+        return apiKeyName;
+    }
+
+    public void setApiKeyName(String apiKeyName) {
+        this.apiKeyName = apiKeyName;
     }
 
 }

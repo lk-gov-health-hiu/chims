@@ -1,0 +1,40 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    <h:body>
+        <ui:composition template="/template.xhtml">
+            <ui:define name="content">
+                <p:poll interval="5" listener="#{clientController.checkPushComplete}" update="pushResultPanel" autoStart="true" stop="#{clientController.pushComplete}" />
+
+                <h:panelGroup id="pushResultPanel">
+                    <h:outputText value="Pushing to FHIR Server..." rendered="#{not clientController.pushComplete}" />
+
+                    <h:panelGroup rendered="#{clientController.pushComplete}">
+                        <!-- Display the results here -->
+                        <h:outputText value="Push complete!" />
+                        <!-- You can loop through fhirOperationResults to display individual results -->
+
+                        <ui:repeat value="#{clientController.fhirOperationResults}" var="o" >
+                            <hr/>
+                            <h:outputText value="#{o.message}" ></h:outputText>
+                            <br/>
+                            <h:outputText value="#{o.resourceId}" ></h:outputText>
+                            <br/>
+                            <h:outputText value="#{o.success}" ></h:outputText>
+                            <br/>
+                            <hr/>
+                        </ui:repeat>
+
+                    </h:panelGroup>
+                </h:panelGroup>
+            </ui:define>
+        </ui:composition>
+
+        <h:messages globalOnly="true" showDetail="true"/>
+    </h:body>
+
+</html>

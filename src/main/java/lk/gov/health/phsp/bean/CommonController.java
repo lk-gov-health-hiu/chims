@@ -16,11 +16,13 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Named;
+import lk.gov.health.phsp.entity.SecurityProtocol;
 import lk.gov.health.phsp.enums.ComponentSetType;
 import lk.gov.health.phsp.enums.ComponentSex;
 import lk.gov.health.phsp.enums.DataCompletionStrategy;
@@ -40,6 +42,7 @@ import lk.gov.health.phsp.enums.QueryType;
 import lk.gov.health.phsp.enums.QueryVariableEvaluationType;
 import lk.gov.health.phsp.enums.RelationshipType;
 import lk.gov.health.phsp.enums.RenderType;
+import lk.gov.health.phsp.enums.SearchCriteria;
 import lk.gov.health.phsp.enums.SelectionDataType;
 import lk.gov.health.phsp.enums.TimePeriodType;
 import lk.gov.health.phsp.pojcs.TimePeriod;
@@ -374,6 +377,10 @@ public class CommonController implements Serializable {
         }
     }
 
+    public List<SearchCriteria> getSearchCriteriae() {
+        return Arrays.asList(SearchCriteria.values());
+    }
+    
     public WebUserRole[] getWebUserRoles() {
         return WebUserRole.values();
     }

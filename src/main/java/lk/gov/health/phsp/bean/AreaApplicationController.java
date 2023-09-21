@@ -54,6 +54,15 @@ public class AreaApplicationController {
     public AreaApplicationController() {
     }
 
+    public Area getAreaByName(String name, AreaType type){
+        for(Area a: getAllAreas(type)){
+            if(a.getName().equalsIgnoreCase(name)){
+                return a;
+            }
+        }
+        return null;
+    }
+    
     public List<Area> getGnAreas() {
         if (gnAreas == null) {
             gnAreas = getAllGnAreas();

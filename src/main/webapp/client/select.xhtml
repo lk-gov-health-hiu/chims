@@ -11,11 +11,15 @@
         <ui:composition template="/template.xhtml">
 
             <ui:define name="content">
-                
+
                 <p:panel header="Select Client" style="height: 100%; text-align: center;" >
-                    
-                    
+
+
                     <h:form>
+
+                        <!-- Polling component to update the data every 5 seconds -->
+                        <p:poll interval="5"  update="integrationsTable" />
+
 
                         <p:dataTable value="#{clientController.selectedClients}" var="item">
 
@@ -98,15 +102,80 @@
                             </p:column>
 
                         </p:dataTable>
+
+
+                        <p:dataTable 
+                            id="integrationsTable" 
+                            value="#{clientController.selectedClientsFromIntegrations}" 
+                            emptyMessage="No Results from Interfacing"
+                            var="item">
+
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Name"/>
+                                </f:facet>
+                                <h:outputText value="#{item.person.name}"/>
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Gender"/>
+                                </f:facet>
+                                <h:outputText value="#{item.person.sex.name}"/>
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="PHN"/>
+                                </f:facet>
+                                <h:outputText value="#{item.phn}"/>
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Mobile No"/>
+                                </f:facet>
+                                <h:outputText value="#{item.person.phone1}">
+                                </h:outputText>
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Phone No"/>
+                                </f:facet>
+                                <h:outputText value="#{item.person.phone2}">
+                                </h:outputText>
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="NIC"/>
+                                </f:facet>
+                                <h:outputText value="#{item.person.nic}"/>
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Address"/>
+                                </f:facet>
+                                <h:outputText value="#{item.person.address}"/>
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Actions"/>
+                                </f:facet>
+                                <p:commandButton ajax="false" action="#{clientController.toClientProfile()}" value="View Profile" >
+                                    <f:setPropertyActionListener target="#{clientController.selected}" value="#{item}" ></f:setPropertyActionListener>
+                                </p:commandButton>
+                            </p:column>
+
+                        </p:dataTable>
+
+
+
                     </h:form>
 
 
-                    
+
                 </p:panel>
 
 
-              
-                
+
+
             </ui:define>
 
         </ui:composition>

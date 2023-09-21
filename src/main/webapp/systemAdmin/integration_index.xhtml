@@ -31,13 +31,23 @@
                         <p:panelGrid columns="1" style="width: 15%;" >
 
                             <p:commandButton icon="fa fa-user-plus"  ajax="false"
-                                             value="Add New" styleClass="btn300"
+                                             value="Add New Integration Endpoint" styleClass="btn300"
                                              action="#{integrationEndpointController.navigateToAddNew()}">
                             </p:commandButton>
 
                             <p:commandButton icon="fa fa-user-plus"  ajax="false"
-                                             value="List" styleClass="btn300"
+                                             value="List Integration Endpoints" styleClass="btn300"
                                              action="#{integrationEndpointController.navigateToList()}">
+                            </p:commandButton>
+                            
+                             <p:commandButton icon="fa fa-user-plus"  ajax="false"
+                                             value="Add New Integration Trigger" styleClass="btn300"
+                                             action="#{integrationTriggerController.navigateToAddNew()}">
+                            </p:commandButton>
+
+                            <p:commandButton icon="fa fa-user-plus"  ajax="false"
+                                             value="List Integration Triggers" styleClass="btn300"
+                                             action="#{integrationTriggerController.navigateToList()}">
                             </p:commandButton>
 
 
