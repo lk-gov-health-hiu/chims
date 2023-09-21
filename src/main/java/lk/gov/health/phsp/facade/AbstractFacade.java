@@ -116,35 +116,25 @@ public abstract class AbstractFacade<T extends Identifiable> {
         return q.getResultList();
     }
 
-    // Comment by Dr M H B Ariyaratne with assistance from ChatGPT from OpenAI
+    
     public T findFirstByJpql(String jpql, Map<String, Object> parameters) {
         try {
-            System.out.println("Entering findFirstByJpql method");
-            System.out.println("JPQL: " + jpql);
-
             TypedQuery<T> qry = getEntityManager().createQuery(jpql, entityClass);
             qry.setMaxResults(1);
-
             for (Map.Entry<String, Object> entry : parameters.entrySet()) {
                 String paramName = entry.getKey();
                 Object paramValue = entry.getValue();
-                System.out.println("Parameter: " + paramName + ", Value: " + paramValue);
-
                 if (paramValue instanceof Date) {
                     qry.setParameter(paramName, (Date) paramValue, TemporalType.DATE);
                 } else {
                     qry.setParameter(paramName, paramValue);
                 }
             }
-
             T result = qry.getSingleResult();
-            System.out.println("Result found: " + (result != null ? result.toString() : "null"));
             return result;
         } catch (NoResultException nre) {
-            System.out.println("No result found");
             return null;
         } catch (Exception e) {
-            System.out.println("Exception in findFirstByJpql: " + e.getMessage());
             e.printStackTrace();
             return null;
         }

@@ -33,7 +33,7 @@
 
             <div class="row">
                 <div class="col-md-12" >
-                    <h:panelGroup rendered="#{webUserController.loggedUser ne null}">
+                    <h:panelGroup rendered="#{sessionController.logged}">
                         <ez:menu/>
                     </h:panelGroup>
                 </div>
@@ -41,31 +41,19 @@
 
             <div class="row" >
                 <div class="col-md-12" >
-                    <h:panelGroup rendered="#{webUserController.loggedUser ne null}">
+                    <h:panelGroup rendered="#{sessionController.logged}">
                         <ui:insert name="content">
                             Contents
                         </ui:insert>
                     </h:panelGroup>
-                    <h:panelGroup rendered="#{webUserController.loggedUser eq null and webUserController.passwordChangingUser eq null}">
+                    <h:panelGroup rendered="#{not sessionController.logged}">
                         <ez:login/>
-                        <div style="width: 50%; margin: auto;">
-                            <ez:demo_login/>
-                        </div>
                         <ui:insert name="timeout">
                         </ui:insert>
                     </h:panelGroup>
                 </div>
             </div>
 
-
-            <div class="row">
-                <div class="col-md-12" >
-                    <h:panelGroup rendered="#{webUserController.loggedUser eq null and webUserController.passwordChangingUser ne null}">
-                        <ui:insert name="nonusercontent">
-                        </ui:insert>
-                    </h:panelGroup>
-                </div>
-            </div>
 
             <div class="row">
                 <div class="col-md-12" >

@@ -35,7 +35,7 @@ import lk.gov.health.phsp.pojcs.Identifiable;
 @Entity
 @XmlRootElement
 @Table
-public class WebUser implements Serializable, Identifiable  {
+public class WebUser implements Serializable, Identifiable {
 
     private static final long serialVersionUID = 1L;
 
@@ -131,7 +131,7 @@ public class WebUser implements Serializable, Identifiable  {
     private boolean restrictedToInstitution;
     @Transient
     private boolean currentlyInAssumedState;
-        @Transient
+    @Transient
     private WebUserRoleLevel webUserRoleLevel;
 
     public WebUser() {
@@ -477,10 +477,10 @@ public class WebUser implements Serializable, Identifiable  {
 
     public boolean isRestrictedToInstitution() {
         restrictedToInstitution = true;
-        WebUserRole ur ;
-        if(currentlyInAssumedState){
-            ur=assumedRole;
-        }else{
+        WebUserRole ur;
+        if (currentlyInAssumedState) {
+            ur = assumedRole;
+        } else {
             ur = this.getWebUserRole();
         }
         if (ur == null) {
@@ -499,7 +499,7 @@ public class WebUser implements Serializable, Identifiable  {
         }
         return restrictedToInstitution;
     }
-    
+
     public WebUserRoleLevel getWebUserRoleLevel() {
         if (webUserRole == null) {
             return webUserRoleLevel = null;
@@ -512,8 +512,8 @@ public class WebUser implements Serializable, Identifiable  {
                 case Institution_Administrator:
                 case Institution_Super_User:
                 case Institution_User:
-                     case Nurse:
-                     case Student:
+                case Nurse:
+                case Student:
                     webUserRoleLevel = WebUserRoleLevel.Hospital;
                     break;
                 case Me_Admin:
@@ -529,7 +529,7 @@ public class WebUser implements Serializable, Identifiable  {
                 case User:
                     webUserRoleLevel = WebUserRoleLevel.National;
                     break;
-                
+
             }
         }
         return webUserRoleLevel;
@@ -543,6 +543,4 @@ public class WebUser implements Serializable, Identifiable  {
         this.currentlyInAssumedState = currentlyInAssumedState;
     }
 
-    
-    
 }

@@ -25,12 +25,7 @@
                                     <div class="card-body p-md-5 mx-md-4">
 
                                         <div class="text-center">
-                                            <h:panelGroup rendered="#{preferenceController.logoLink eq ''}" >
-                                                <h:graphicImage library="image" name="himslogo.png" style="width: 185px;" alt="logo"></h:graphicImage>
-                                            </h:panelGroup>
-                                            <h:panelGroup rendered="#{preferenceController.logoLink ne ''}" >
-                                                <h:graphicImage value="#{preferenceController.logoLink}" style="width: 185px;" alt="logo"></h:graphicImage>
-                                            </h:panelGroup>
+                                            <h:graphicImage library="image" name="himslogo.png" style="width: 185px;" alt="logo"></h:graphicImage>
                                         </div>
 
                                         <h:form>
@@ -40,7 +35,7 @@
                                                              required="true" 
                                                              styleClass="w-100"
                                                              requiredMessage="Enter a Username"
-                                                             autocomplete="off" value="#{webUserController.userName}" 
+                                                             autocomplete="off" value="#{sessionController.username}" 
                                                              class="form-control w-100">
                                                 </p:inputText>
                                             </div>
@@ -49,7 +44,7 @@
 
                                                 <p:password id="pwd"  size="100"     
                                                             toggleMask="true"
-                                                            value="#{webUserController.password}" 
+                                                            value="#{sessionController.password}" 
                                                             class="form-control w-100"
                                                             required="true"
                                                             requiredMessage="Please enter a password"
@@ -62,7 +57,7 @@
                                                 <p:commandButton class="btn m-1 w-75 btn"
                                                                  value="Login"
                                                                  ajax="false"
-                                                                 action="#{webUserController.login()}" >
+                                                                 action="#{sessionController.login()}" >
                                                 </p:commandButton>    
                                             </div>
 
@@ -72,21 +67,6 @@
 
                                         </h:form>
 
-                                        <h:panelGroup rendered="false" >
-                                            <h:form >
-
-                                                <div class="text-center pt-1 mb-5 pb-1">
-                                                    <p:commandButton class="btn m-1 w-75 btn"
-                                                                     value="Check"
-                                                                     ajax="false"
-                                                                     action="#{webUserController.checkUsersExists()}" >
-                                                    </p:commandButton>  
-
-                                                    <h1>#{webUserController.usersExists}</h1>
-                                                </div>
-                                            </h:form>
-                                        </h:panelGroup>
-
 
 
                                     </div>
@@ -95,22 +75,12 @@
                                     <div class="text-white px-3 py-4 p-md-5 mx-md-4" >
 
                                         <h4 class="mb-4">
-                                            <h:panelGroup rendered="#{preferenceController.headerText eq ''}" >
-                                                cHIMS
-                                            </h:panelGroup>
-                                            <h:panelGroup rendered="#{preferenceController.headerText ne ''}" >
-                                                <h:outputLabel value="#{preferenceController.headerText}" escape="false" ></h:outputLabel>
-                                            </h:panelGroup>
+                                            cHIMS
                                         </h4>
                                         <p class="small mb-0 text-start">
-                                            <h:panelGroup rendered="#{preferenceController.loginDescreption eq ''}" >
-                                                This is the Cloud HIMS. It is a cloud Based Hospital information management system. <br/>
-                                                This system is implemented at Healthy Lifestyle Centres by the NCD Unit and PSSP.<br/>
-                                                System was developed by the Health Information Unit of the Ministry of Health.<br/>
-                                            </h:panelGroup>
-                                            <h:panelGroup rendered="#{preferenceController.loginDescreption ne ''}" >
-                                                <h:outputLabel value="#{preferenceController.loginDescreption}" escape="false" ></h:outputLabel>
-                                            </h:panelGroup>
+                                            This is the Cloud HIMS. It is a cloud Based Hospital information management system. <br/>
+                                            This system is implemented at Healthy Lifestyle Centres by the NCD Unit and PSSP.<br/>
+                                            System was developed by the Health Information Unit of the Ministry of Health.<br/>
                                         </p>
                                     </div>
                                 </div>
