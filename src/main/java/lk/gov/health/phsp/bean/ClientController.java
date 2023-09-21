@@ -66,6 +66,7 @@ import lk.gov.health.phsp.pojcs.dataentry.DataItem;
 import lk.gov.health.phsp.enums.EncounterType;
 import static lk.gov.health.phsp.enums.EncounterType.Client_Data;
 import lk.gov.health.phsp.enums.SearchCriteria;
+import lk.gov.health.phsp.facade.PersonFacade;
 import lk.gov.health.phsp.pojcs.SearchQueryData;
 import org.primefaces.component.tabview.TabView;
 import org.primefaces.event.TabChangeEvent;
@@ -79,6 +80,8 @@ public class ClientController implements Serializable {
     // <editor-fold defaultstate="collapsed" desc="EJBs">
     @EJB
     private lk.gov.health.phsp.facade.ClientFacade ejbFacade;
+    @EJB
+    PersonFacade personFacade;
     @EJB
     private EncounterFacade encounterFacade;
     // </editor-fold>
@@ -2627,7 +2630,8 @@ public class ClientController implements Serializable {
             if (c.getPerson().getCreatedBy() == null) {
                 c.getPerson().setCreatedBy(webUserController.getLoggedUser());
             }
-            getFacade().edit(c);
+            personFacade.create(c.getPerson());
+            getFacade().create(c);
         } else {
             c.setLastEditBy(webUserController.getLoggedUser());
             c.setLastEditeAt(new Date());

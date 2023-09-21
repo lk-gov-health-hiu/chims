@@ -46,7 +46,7 @@ public abstract class AbstractFacade<T extends Identifiable> {
         SequenceNumber sequence = getEntityManager().find(SequenceNumber.class, 1L); // Always 1 for the single row
         if (sequence == null) {
             sequence = new SequenceNumber();
-            sequence.setLastUsedId(0L);
+            sequence.setLastUsedId(92000000l);
             getEntityManager().persist(sequence);
         }
         Long nextId = sequence.getLastUsedId() + 1;
