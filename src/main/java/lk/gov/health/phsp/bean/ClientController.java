@@ -2013,6 +2013,7 @@ public class ClientController implements Serializable {
     }
 
     public String searchByAnyIdWithBasicData() {
+        System.out.println("1 = " + new Date().getTime());
         userTransactionController.recordTransaction("Search By Any Id");
         clearExistsValues();
         if (searchingId == null) {

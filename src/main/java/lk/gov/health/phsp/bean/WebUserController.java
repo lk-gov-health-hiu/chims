@@ -755,7 +755,7 @@ public class WebUserController implements Serializable {
             JsfUtil.addErrorMessage("Please enter the Password");
             return "";
         }
-        //System.out.println("password = " + password);
+        System.out.println("password = " + password);
         if (!checkLogin()) {
             JsfUtil.addErrorMessage("Username/Password Error. Please retry.");
             userTransactionController.recordTransaction("Failed Login Attempt", userName);
@@ -814,7 +814,7 @@ public class WebUserController implements Serializable {
     }
 
     private boolean checkLogin() {
-        //System.out.println("checkLogin");
+        System.out.println("checkLogin");
         if (getFacade() == null) {
             JsfUtil.addErrorMessage("Server Error");
             return false;
@@ -825,18 +825,18 @@ public class WebUserController implements Serializable {
         Map m = new HashMap();
         m.put("userName", userName.trim().toLowerCase());
         m.put("ret", false);
-        //System.out.println("m = " + m);
-        //System.out.println("temSQL = " + temSQL);
+        System.out.println("m = " + m);
+        System.out.println("temSQL = " + temSQL);
         loggedUser = getFacade().findFirstByJpql(temSQL, m);
-        //System.out.println("loggedUser = " + loggedUser);
+        System.out.println("loggedUser = " + loggedUser);
         if (loggedUser == null) {
             return false;
         }
         if (commonController.matchPassword(password, loggedUser.getWebUserPassword())) {
-            //System.out.println("Password matching" );
+            System.out.println("Password matching" );
             return true;
         } else {
-            //System.out.println("Password mismatch ");
+            System.out.println("Password mismatch ");
             loggedUser = null;
             return false;
         }
