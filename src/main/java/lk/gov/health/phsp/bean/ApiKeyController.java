@@ -40,7 +40,7 @@ public class ApiKeyController implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Inject
-    WebUserController sessionController;
+    WebUserController webUserController;
     @EJB
     private ApiKeyFacade ejbFacade;
     private ApiKey current;
@@ -65,7 +65,7 @@ public class ApiKeyController implements Serializable {
                 + " and a.dateOfExpiary > :ed "
                 + " order by a.dateOfExpiary";
         Map m = new HashMap();
-        m.put("wu", sessionController.getLoggedUser());
+        m.put("wu", webUserController.getLoggedUser());
         m.put("ed", new Date());
         items = getFacade().findByJpql(j, m, TemporalType.DATE);
     }
@@ -87,8 +87,8 @@ public class ApiKeyController implements Serializable {
     public void createNewApiKey() {
         UUID uuid = UUID.randomUUID();
         current = new ApiKey();
-        current.setWebUser(sessionController.getLoggedUser());
-        current.setInstitution(sessionController.getInstitution());
+        current.setWebUser(webUserController.getLoggedUser());
+        current.setInstitution(webUserController.getInstitution());
         current.setKeyType(ApiKeyType.FHIR);
         current.setKeyValue(uuid.toString());
         Calendar c = Calendar.getInstance();
@@ -111,7 +111,7 @@ public class ApiKeyController implements Serializable {
             JsfUtil.addSuccessMessage("Updated Successfully.");
         } else {
             current.setCreatedAt(new Date());
-            current.setCreater(getSessionController().getLoggedUser());
+            current.setCreater(getwebUserController().getLoggedUser());
             getFacade().create(current);
             JsfUtil.addSuccessMessage("Saved Successfully");
         }
@@ -129,8 +129,8 @@ public class ApiKeyController implements Serializable {
         this.ejbFacade = ejbFacade;
     }
 
-    private WebUserController getSessionController() {
-        return sessionController;
+    private WebUserController getwebUserController() {
+        return webUserController;
     }
 
     public ApiKeyController() {
@@ -151,7 +151,7 @@ public class ApiKeyController implements Serializable {
         if (removing != null) {
             removing.setRetired(true);
             removing.setRetiredAt(new Date());
-            removing.setRetirer(getSessionController().getLoggedUser());
+            removing.setRetirer(getwebUserController().getLoggedUser());
             getFacade().edit(removing);
             JsfUtil.addSuccessMessage("Removed Successfully");
         } else {

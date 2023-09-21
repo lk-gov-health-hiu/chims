@@ -35,7 +35,7 @@
                                                              required="true" 
                                                              styleClass="w-100"
                                                              requiredMessage="Enter a Username"
-                                                             autocomplete="off" value="#{sessionController.username}" 
+                                                             autocomplete="off" value="#{webUserController.userName}" 
                                                              class="form-control w-100">
                                                 </p:inputText>
                                             </div>
@@ -44,7 +44,7 @@
 
                                                 <p:password id="pwd"  size="100"     
                                                             toggleMask="true"
-                                                            value="#{sessionController.password}" 
+                                                            value="#{webUserController.password}" 
                                                             class="form-control w-100"
                                                             required="true"
                                                             requiredMessage="Please enter a password"
@@ -57,7 +57,7 @@
                                                 <p:commandButton class="btn m-1 w-75 btn"
                                                                  value="Login"
                                                                  ajax="false"
-                                                                 action="#{sessionController.login()}" >
+                                                                 action="#{webUserController.login()}" >
                                                 </p:commandButton>    
                                             </div>
 

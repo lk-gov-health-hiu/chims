@@ -33,7 +33,7 @@
 
             <div class="row">
                 <div class="col-md-12" >
-                    <h:panelGroup rendered="#{sessionController.logged}">
+                    <h:panelGroup rendered="#{webUserController.logged}">
                         <ez:menu/>
                     </h:panelGroup>
                 </div>
@@ -41,12 +41,12 @@
 
             <div class="row" >
                 <div class="col-md-12" >
-                    <h:panelGroup rendered="#{sessionController.logged}">
+                    <h:panelGroup rendered="#{webUserController.logged}">
                         <ui:insert name="content">
                             Contents
                         </ui:insert>
                     </h:panelGroup>
-                    <h:panelGroup rendered="#{not sessionController.logged}">
+                    <h:panelGroup rendered="#{not webUserController.logged}">
                         <ez:login/>
                         <ui:insert name="timeout">
                         </ui:insert>
