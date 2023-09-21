@@ -37,17 +37,36 @@
                             <f:selectItems value="#{integrationEndpointController.securityProtocols}" var="security" itemValue="#{security}" itemLabel="#{security.protocol}" />
                         </h:selectOneMenu>
 
+
+                        <h:outputLabel value="Simple Authentication" /><hr/>
+
                         <h:outputLabel value="Username:" />
                         <h:inputText value="#{integrationEndpointController.selected.userName}" />
 
                         <h:outputLabel value="Password:" />
                         <h:inputSecret value="#{integrationEndpointController.selected.password}" />
 
+                        <h:outputLabel value="API Authentication" /><hr/>
+
                         <h:outputLabel value="API Key Name:" />
                         <h:inputText value="#{integrationEndpointController.selected.apiKeyName}" />
+
+                        <h:outputLabel value="API Key Value:" />
+                        <h:inputText value="#{integrationEndpointController.selected.apiKeyValue}" />
+
+                        <h:outputLabel value="KeyCloak Authentication" /><hr/>
+
                         
-                         <h:outputLabel value="API Key Value:" />
-                         <h:inputText value="#{integrationEndpointController.selected.apiKeyValue}" />
+                        <h:outputLabel value="Client ID:" />
+                        <h:inputText value="#{integrationEndpointController.selected.keyCloackClientId}" />
+
+                        <h:outputLabel value="Client Secreat:" />
+                        <h:inputText value="#{integrationEndpointController.selected.keyCloackClientSecret}" />
+
+                        <h:outputLabel value="Token Acquiring URL:" />
+                        <h:inputText value="#{integrationEndpointController.selected.keyCloakTokenAcquiringUrl}" />
+
+
                     </p:panelGrid>
 
                     <h:commandButton value="Save" action="#{integrationEndpointController.saveOrUpdateIntegrationEndpoint}" />

@@ -13,6 +13,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import lk.gov.health.phsp.enums.CommunicationProtocol;
@@ -43,6 +44,13 @@ public class IntegrationEndpoint implements Serializable {
     private String apiKey;
     private String apiKeyName;
     private String apiKeyValue;
+
+    private String keyCloackClientId;
+    @Lob
+    private String keyCloackClientSecret;
+    @Lob
+    private String keyCloakTokenAcquiringUrl;
+
 
     /*
     Create Properties
@@ -94,6 +102,8 @@ public class IntegrationEndpoint implements Serializable {
         return "lk.gov.health.phsp.entity.IntegrationEndpoint[ id=" + id + " ]";
     }
 
+    
+    
     public IntegrationEndpointType getEndpointType() {
         return endpointType;
     }
@@ -228,6 +238,32 @@ public class IntegrationEndpoint implements Serializable {
 
     public void setApiKeyName(String apiKeyName) {
         this.apiKeyName = apiKeyName;
+    }
+
+   
+
+    public String getKeyCloackClientId() {
+        return keyCloackClientId;
+    }
+
+    public void setKeyCloackClientId(String keyCloackClientId) {
+        this.keyCloackClientId = keyCloackClientId;
+    }
+
+    public String getKeyCloackClientSecret() {
+        return keyCloackClientSecret;
+    }
+
+    public void setKeyCloackClientSecret(String keyCloackClientSecret) {
+        this.keyCloackClientSecret = keyCloackClientSecret;
+    }
+
+    public String getKeyCloakTokenAcquiringUrl() {
+        return keyCloakTokenAcquiringUrl;
+    }
+
+    public void setKeyCloakTokenAcquiringUrl(String keyCloakTokenAcquiringUrl) {
+        this.keyCloakTokenAcquiringUrl = keyCloakTokenAcquiringUrl;
     }
 
 }
