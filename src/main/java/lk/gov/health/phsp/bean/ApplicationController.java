@@ -244,7 +244,6 @@ public class ApplicationController {
             if (c.getCode() != null) {
                 if(c.getCode().equalsIgnoreCase(code)){
                     if(r!=null){
-                        System.err.println("THIS CODE HAS DUPLICATES : " + code);
                     }
                     r=c;
                 }

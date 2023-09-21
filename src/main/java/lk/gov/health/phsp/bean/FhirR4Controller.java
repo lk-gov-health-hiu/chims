@@ -86,7 +86,6 @@ public class FhirR4Controller implements Serializable {
     }
 
     public CompletableFuture<FhirOperationResult> createPatientInFhirServerAsync(Client client, IntegrationEndpoint endPoint) {
-        System.out.println("Creating patient in FHIR server...");
         SecurityProtocol sp = endPoint.getSecurityProtocol();
         String username = endPoint.getUserName();
         String password = endPoint.getPassword();
@@ -143,7 +142,6 @@ public class FhirR4Controller implements Serializable {
     }
 
     public CompletableFuture<FhirOperationResult> updatePatientInFhirServerAsync(Client client, IntegrationEndpoint endPoint, String resourceId) {
-        System.out.println("Updating patient in FHIR server...");
         SecurityProtocol sp = endPoint.getSecurityProtocol();
         String username = endPoint.getUserName();
         String password = endPoint.getPassword();
@@ -230,7 +228,6 @@ public class FhirR4Controller implements Serializable {
     }
 
     public CompletableFuture<List<Client>> fetchClientsFromEndpoints(SearchQueryData sqd, IntegrationEndpoint endPoint) {
-        System.out.println("fetchClientsFromEndpoints");
         return CompletableFuture.supplyAsync(() -> {
             List<Client> clients = new ArrayList<>();
 
@@ -268,7 +265,6 @@ public class FhirR4Controller implements Serializable {
             String status = "success"; // Assume success by default
             Bundle results = null;
             try {
-                System.out.println("sqd.getSearchCriteria() = " + sqd.getSearchCriteria());
                 switch (sqd.getSearchCriteria()) {
                     case NIC_ONLY:
                         results = searchByIdentifier("https://fhir.health.gov.lk/id/nic", sqd.getNic(), fhirClient);
@@ -395,7 +391,6 @@ public class FhirR4Controller implements Serializable {
         params.add(new BasicNameValuePair("client_id", clientId));
         System.out.println("clientId = " + clientId);
         params.add(new BasicNameValuePair("client_secret", clientSecret));
-        System.out.println("clientSecret = " + clientSecret);
         try {
             httpPost.setEntity(new UrlEncodedFormEntity(params));
 
@@ -407,10 +402,8 @@ public class FhirR4Controller implements Serializable {
             ObjectMapper objectMapper = new ObjectMapper();
             JsonNode jsonNode = objectMapper.readTree(responseBody);
             String accessToken = jsonNode.get("access_token").asText();
-            System.out.println("accessToken = " + accessToken);
             return accessToken;
         } catch (IOException e) {
-            System.out.println("Error acquiring token: " + e.getMessage());
             return null; // or you can return an empty string, depending on how you want to handle it in calling methods
         }
     }
@@ -449,7 +442,6 @@ public class FhirR4Controller implements Serializable {
             String status = "success"; // Assume success by default
             Bundle results = null;
             try {
-                System.out.println("sqd.getSearchCriteria() = " + sqd.getSearchCriteria());
                 results = searchByIdentifier("https://fhir.health.gov.lk/id/nic", sqd.getNic(), client);
                 if (results.getEntry().isEmpty()) {
                     status = "failure"; // No results found, consider this a failure if that's unexpected
@@ -469,7 +461,6 @@ public class FhirR4Controller implements Serializable {
     private Bundle searchByIdentifier(String system, String identifier, IGenericClient client) {
         System.out.println("client = " + client);
         System.out.println("system = " + system);
-        System.out.println("identifier = " + identifier);
         return client.search()
                 .forResource(Patient.class)
                 .where(Patient.IDENTIFIER.exactly().systemAndIdentifier(system, identifier))
@@ -509,7 +500,6 @@ public class FhirR4Controller implements Serializable {
             System.out.println("patient.getGender().toCode() = " + patient.getGender().toCode());
             // Assuming you have a way to map the FHIR gender to your custom Sex object
             Item sex = itemApplicationController.getSex(patient.getGender().toCode());
-            System.out.println("sex = " + sex);
             person.setSex(sex);
         }
 

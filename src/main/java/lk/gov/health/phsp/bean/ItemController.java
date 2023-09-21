@@ -500,7 +500,6 @@ public class ItemController implements Serializable {
                 cell = sheet.getCell(dosageFormCol, i);
                 dosageFormName = cell.getContents();
                 if (dosageFormName == null || dosageFormName.trim().equals("")) {
-                    System.err.println("No Dosage Form Specified in line no " + i);
                     continue;
                 }
                 String dosageFormCode = CommonController.prepareAsCode(
@@ -519,7 +518,6 @@ public class ItemController implements Serializable {
                 strengthUnitName = cell.getContents();
 
                 if (strengthUnitName == null || strengthUnitName.trim().equals("")) {
-                    System.err.println("No Strength Unit in line no " + i);
                     continue;
                 }
 
@@ -638,7 +636,6 @@ public class ItemController implements Serializable {
                 cell = sheet.getCell(ampCol, i);
                 ampName = cell.getContents();
                 if (ampName == null || ampName.trim().equals("")) {
-                    System.err.println("Amp is not given in line number " + i);
                 }
 
                 String ampCode = CommonController.prepareAsCode("amp_" + ampName);

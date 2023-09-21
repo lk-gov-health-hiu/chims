@@ -128,7 +128,6 @@ public abstract class AbstractFacade<T extends Identifiable> {
             for (Map.Entry<String, Object> entry : parameters.entrySet()) {
                 String paramName = entry.getKey();
                 Object paramValue = entry.getValue();
-                System.out.println("Parameter: " + paramName + ", Value: " + paramValue);
 
                 if (paramValue instanceof Date) {
                     qry.setParameter(paramName, (Date) paramValue, TemporalType.DATE);
@@ -138,13 +137,10 @@ public abstract class AbstractFacade<T extends Identifiable> {
             }
 
             T result = qry.getSingleResult();
-            System.out.println("Result found: " + (result != null ? result.toString() : "null"));
             return result;
         } catch (NoResultException nre) {
-            System.out.println("No result found");
             return null;
         } catch (Exception e) {
-            System.out.println("Exception in findFirstByJpql: " + e.getMessage());
             e.printStackTrace();
             return null;
         }
@@ -202,10 +198,8 @@ public abstract class AbstractFacade<T extends Identifiable> {
         try {
             System.out.println("Attempting to find entity with ID: " + id);
             T entity = getEntityManager().find(entityClass, id);
-            System.out.println("Entity found: " + entity);
             return entity;
         } catch (Exception e) {
-            System.out.println("Exception while finding entity: " + e.getMessage());
             e.printStackTrace();
             return null;
         }
@@ -266,7 +260,6 @@ public abstract class AbstractFacade<T extends Identifiable> {
             while (it.hasNext()) {
                 Map.Entry m = (Map.Entry) it.next();
                 String pPara = (String) m.getKey();
-                System.out.println("Parameter: " + pPara + ", Value: " + m.getValue());
 
                 if (m.getValue() instanceof Date) {
                     Date pVal = (Date) m.getValue();
@@ -278,10 +271,8 @@ public abstract class AbstractFacade<T extends Identifiable> {
             }
 
             List<T> results = qry.getResultList();
-            System.out.println("Results found: " + (results != null ? results.size() : "null"));
             return results;
         } catch (Exception e) {
-            System.out.println("Exception in findByJpql: " + e.getMessage());
             e.printStackTrace();
             return null;
         }

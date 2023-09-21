@@ -464,26 +464,20 @@ public class FhirResource {
     }
 
     private boolean isValidKey(String key) {
-        System.out.println("key = " + key);
         if (key == null || key.trim().equals("")) {
-            System.out.println("No key given");
             return false;
         }
         ApiKey k = findApiKey(key);
         if (k == null) {
-            System.out.println("No key found");
             return false;
         }
         if (k.getWebUser() == null) {
-            System.out.println("No user for the key");
             return false;
         }
         if (k.getWebUser().isRetired()) {
-            System.out.println("User Retired");
             return false;
         }
         if (k.getDateOfExpiary().before(new Date())) {
-            System.out.println("Key Expired");
             return false;
         }
         return true;
