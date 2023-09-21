@@ -19,6 +19,7 @@ import javax.persistence.TemporalType;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.ParameterExpression;
 import javax.persistence.criteria.Predicate;
+import lk.gov.health.phsp.entity.SequenceNumber;
 import lk.gov.health.phsp.pojcs.Identifiable;
 import org.eclipse.persistence.config.CacheUsage;
 import org.eclipse.persistence.config.QueryHints;
@@ -39,6 +40,19 @@ public abstract class AbstractFacade<T extends Identifiable> {
 
     public boolean isEntityManaged(T entity) {
         return getEntityManager().contains(entity);
+    }
+
+    public Long getNextId() {
+        SequenceNumber sequence = getEntityManager().find(SequenceNumber.class, 1L); // Always 1 for the single row
+        if (sequence == null) {
+            sequence = new SequenceNumber();
+            sequence.setLastUsedId(0L);
+            getEntityManager().persist(sequence);
+        }
+        Long nextId = sequence.getLastUsedId() + 1;
+        sequence.setLastUsedId(nextId);
+        getEntityManager().merge(sequence);
+        return nextId;
     }
 
     public List<Object> findObjects(String jpql, Map<String, Object> parameters) {
@@ -142,10 +156,14 @@ public abstract class AbstractFacade<T extends Identifiable> {
 
     protected abstract EntityManager getEntityManager();
 
+// Comment indicating the code was done by Dr M H B Ariyaratne with assistance from ChatGPT from OpenAI
     public void create(T entity) {
+        if (entity.getId() == null) {
+            entity.setId(getNextId());
+        }
         getEntityManager().persist(entity);
-        //getEntityManager().flush();
-
+        // Uncommenting flush if you want to immediately sync with the database
+        // getEntityManager().flush();
     }
 
     public void refresh(T entity) {
@@ -159,7 +177,7 @@ public abstract class AbstractFacade<T extends Identifiable> {
         }
         EntityManager em = getEntityManager();
         if (((Identifiable) entity).getId() == null) {
-            em.persist(entity);
+            create(entity);
         } else {
             if (em.contains(entity)) {
                 em.merge(entity);
@@ -168,7 +186,7 @@ public abstract class AbstractFacade<T extends Identifiable> {
                 if (managedEntity != null) {
                     em.merge(entity);
                 } else {
-                    em.persist(entity);
+                    create(entity);
                 }
             }
         }

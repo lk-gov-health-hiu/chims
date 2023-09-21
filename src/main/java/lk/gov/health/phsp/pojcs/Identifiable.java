@@ -11,4 +11,5 @@ package lk.gov.health.phsp.pojcs;
 public interface Identifiable {
     Long getId();
     
+    void setId(Long l);
 }
