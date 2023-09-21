@@ -206,7 +206,7 @@ public class ClientController implements Serializable {
     }
 
     public String toClient() {
-        loadClientFormDataEntry();
+//        loadClientFormDataEntry();
         return "/client/client";
     }
 
@@ -255,7 +255,7 @@ public class ClientController implements Serializable {
 
     public String toClientProfile() {
         selectedClientsLastFiveClinicVisits = null;
-        loadClientFormDataEntry();
+//        loadClientFormDataEntry();
         userTransactionController.recordTransaction("To Client Profile");
         return "/client/profile";
     }
@@ -2000,7 +2000,6 @@ public class ClientController implements Serializable {
     }
 
     public String searchByAnyIdWithBasicData() {
-        // //System.out.println("searchByAnyIdWithBasicData");
         userTransactionController.recordTransaction("Search By Any Id");
         clearExistsValues();
         if (searchingId == null) {

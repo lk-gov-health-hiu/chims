@@ -116,26 +116,20 @@ public abstract class AbstractFacade<T extends Identifiable> {
         return q.getResultList();
     }
 
-    // Comment by Dr M H B Ariyaratne with assistance from ChatGPT from OpenAI
+    
     public T findFirstByJpql(String jpql, Map<String, Object> parameters) {
         try {
-            System.out.println("Entering findFirstByJpql method");
-            System.out.println("JPQL: " + jpql);
-
             TypedQuery<T> qry = getEntityManager().createQuery(jpql, entityClass);
             qry.setMaxResults(1);
-
             for (Map.Entry<String, Object> entry : parameters.entrySet()) {
                 String paramName = entry.getKey();
                 Object paramValue = entry.getValue();
-
                 if (paramValue instanceof Date) {
                     qry.setParameter(paramName, (Date) paramValue, TemporalType.DATE);
                 } else {
                     qry.setParameter(paramName, paramValue);
                 }
             }
-
             T result = qry.getSingleResult();
             return result;
         } catch (NoResultException nre) {
@@ -198,8 +192,10 @@ public abstract class AbstractFacade<T extends Identifiable> {
         try {
             System.out.println("Attempting to find entity with ID: " + id);
             T entity = getEntityManager().find(entityClass, id);
+            System.out.println("Entity found: " + entity);
             return entity;
         } catch (Exception e) {
+            System.out.println("Exception while finding entity: " + e.getMessage());
             e.printStackTrace();
             return null;
         }
@@ -260,6 +256,7 @@ public abstract class AbstractFacade<T extends Identifiable> {
             while (it.hasNext()) {
                 Map.Entry m = (Map.Entry) it.next();
                 String pPara = (String) m.getKey();
+                System.out.println("Parameter: " + pPara + ", Value: " + m.getValue());
 
                 if (m.getValue() instanceof Date) {
                     Date pVal = (Date) m.getValue();
@@ -271,8 +268,10 @@ public abstract class AbstractFacade<T extends Identifiable> {
             }
 
             List<T> results = qry.getResultList();
+            System.out.println("Results found: " + (results != null ? results.size() : "null"));
             return results;
         } catch (Exception e) {
+            System.out.println("Exception in findByJpql: " + e.getMessage());
             e.printStackTrace();
             return null;
         }
