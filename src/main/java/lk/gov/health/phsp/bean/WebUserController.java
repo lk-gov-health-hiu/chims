@@ -505,7 +505,7 @@ public class WebUserController implements Serializable {
         userTransactionController.recordTransaction("Manage Privileges in user list By SysAdmin or InsAdmin");
         return "/webUser/privileges";
     }
-    
+
     public String toManagePrivilegesBySysAdmin() {
 
         if (current == null) {
@@ -821,7 +821,7 @@ public class WebUserController implements Serializable {
         nu.setWebUserRole(WebUserRole.System_Administrator);
         getFacade().create(nu);
         List<Privilege> ps = new ArrayList<>();
-        for(Privilege p: Privilege.values()){
+        for (Privilege p : Privilege.values()) {
             ps.add(p);
         }
         addWebUserPrivileges(nu, ps);
@@ -893,6 +893,25 @@ public class WebUserController implements Serializable {
             case Client:
             case Moh:
         }
+    }
+
+    private String usersExists;
+
+    public void checkUsersExists() {
+        if (thereAreUsersInTheSystem()) {
+            usersExists = "Users Exists";
+        } else {
+            usersExists = "Users Do Not Exists";
+        }
+    }
+
+    private boolean thereAreUsersInTheSystem() {
+        String jpql = "select w from WebUser w";
+        WebUser u = getFacade().findFirstByJpql(jpql);
+        if (u == null) {
+            return false;
+        }
+        return true;
     }
 
     private boolean checkLogin() {
@@ -1330,7 +1349,7 @@ public class WebUserController implements Serializable {
         userTransactionController.recordTransaction("Edit user list By SysAdmin or InsAdmin");
         return "/webUser/Edit";
     }
-    
+
     public String prepareEditBySysAdmin() {
         userTransactionController.recordTransaction("Edit user list By SysAdmin or InsAdmin");
         return "/systemAdmin/Edit";
@@ -1341,10 +1360,8 @@ public class WebUserController implements Serializable {
         passwordReenter = "";
         return "/webUser/Password";
     }
-    
 
-    
-     public String prepareEditPasswordBySysAdmin() {
+    public String prepareEditPasswordBySysAdmin() {
         password = "";
         passwordReenter = "";
         return "/systemAdmin/Password";
@@ -1390,7 +1407,7 @@ public class WebUserController implements Serializable {
             return null;
         }
     }
-    
+
     public String updateBySysAdmin() {
         try {
             getFacade().edit(current);
@@ -1452,7 +1469,7 @@ public class WebUserController implements Serializable {
         userTransactionController.recordTransaction("update User Privileges By SysAdmin or InsAdmin");
         return "/webUser/manage_users";
     }
-    
+
     public String updateUserPrivilegesBySysAdmin() {
 
         if (current == null) {
@@ -1635,7 +1652,7 @@ public class WebUserController implements Serializable {
             return null;
         }
     }
-    
+
     public String updatePasswordBySysAdmin() {
         if (!password.equals(passwordReenter)) {
             JsfUtil.addErrorMessage("Passwords do NOT match.");
@@ -2225,6 +2242,14 @@ public class WebUserController implements Serializable {
 
     public void setInstitutionName(String institutionName) {
         this.institutionName = institutionName;
+    }
+
+    public String getUsersExists() {
+        return usersExists;
+    }
+
+    public void setUsersExists(String usersExists) {
+        this.usersExists = usersExists;
     }
 
     @FacesConverter(forClass = WebUser.class)
