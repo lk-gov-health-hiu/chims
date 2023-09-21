@@ -1830,7 +1830,7 @@ public class ClientController implements Serializable {
                 selectedClients = listPatientsByNameAndDateOfBirth(searchQueryData.getName(), searchQueryData.getDateOfBirth());
                 break;
             case PART_OF_NAME_AND_AGE_IN_YEARS:
-               
+
                 break;
             case PART_OF_NAME_AND_BIRTH_YEAR:
                 selectedClients = listPatientsByNameAndYearOfBirth(searchQueryData.getName(), searchQueryData.getBirthYear());
@@ -1838,7 +1838,7 @@ public class ClientController implements Serializable {
             case PART_OF_NAME_AND_BIRTH_YEAR_AND_MONTH:
                 selectedClients = listPatientsByNameAndYearOfBirthAndMonth(searchQueryData.getName(), searchQueryData.getBirthYear(), searchQueryData.getBirthMonth());
                 break;
-                
+
         }
 
         fhirOperationResults = new ArrayList<>(); // Initialize the list to store FhirOperationResult objects
@@ -2499,11 +2499,10 @@ public class ClientController implements Serializable {
         if (poiIns == null) {
             poiIns = institutionApplicationController.findMinistryOfHealth();
         }
-        
+
         if (poiIns.getPoiNumber() == null || poiIns.getPoiNumber().trim().equals("")) {
             poiIns.setPoiNumber("385C");
         }
-        
 
         if (selected.getPhn() == null || selected.getPhn().trim().equals("")) {
             String newPhn = applicationController.createNewPersonalHealthNumberformat(poiIns);
@@ -2628,7 +2627,7 @@ public class ClientController implements Serializable {
             if (c.getPerson().getCreatedBy() == null) {
                 c.getPerson().setCreatedBy(webUserController.getLoggedUser());
             }
-            getFacade().create(c);
+            getFacade().edit(c);
         } else {
             c.setLastEditBy(webUserController.getLoggedUser());
             c.setLastEditeAt(new Date());
@@ -3082,9 +3081,17 @@ public class ClientController implements Serializable {
         return selectedId;
     }
 
+    // Comment by Dr M H B Ariyaratne with assistance from ChatGPT from OpenAI
     public void setSelectedId(Long selectedId) {
-        selected = getFacade().find(selectedId);
-        this.selectedId = selectedId;
+        try {
+            System.out.println("Attempting to find entity with ID: " + selectedId);
+            selected = getFacade().find(selectedId);
+            System.out.println("Entity found: " + selected);
+            this.selectedId = selectedId;
+        } catch (Exception e) {
+            System.out.println("Exception while finding entity: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 
     public List<ClientBasicData> getClients() {

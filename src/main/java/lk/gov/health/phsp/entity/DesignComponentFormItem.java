@@ -26,6 +26,7 @@ package lk.gov.health.phsp.entity;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -78,7 +79,7 @@ public class DesignComponentFormItem extends DesignComponent {
     @Lob
     private String regexValidationFailedMessage;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     private Item mimeType;
 
     @Enumerated(EnumType.STRING)
@@ -108,11 +109,11 @@ public class DesignComponentFormItem extends DesignComponent {
     @Enumerated(EnumType.STRING)
     private DataModificationStrategy dataModificationStrategy;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     private Area parentAreaOfAvailableAreas;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     private Item categoryOfAvailableItems;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     private Institution parentInstitutionOfAvailableInstitutions;
 
     

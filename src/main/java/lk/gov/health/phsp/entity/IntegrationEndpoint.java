@@ -18,13 +18,14 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import lk.gov.health.phsp.enums.CommunicationProtocol;
 import lk.gov.health.phsp.enums.IntegrationEndpointType;
+import lk.gov.health.phsp.pojcs.Identifiable;
 
 /**
  *
  * @author buddh
  */
 @Entity
-public class IntegrationEndpoint implements Serializable {
+public class IntegrationEndpoint implements Serializable, Identifiable  {
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -55,7 +56,7 @@ public class IntegrationEndpoint implements Serializable {
     /*
     Create Properties
      */
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private WebUser createdBy;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date createdAt;
@@ -63,7 +64,7 @@ public class IntegrationEndpoint implements Serializable {
     Retire Properties
      */
     private boolean retired;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private WebUser retiredBy;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date retiredAt;

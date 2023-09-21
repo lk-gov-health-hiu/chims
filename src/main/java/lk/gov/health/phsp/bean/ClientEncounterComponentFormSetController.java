@@ -840,12 +840,35 @@ public class ClientEncounterComponentFormSetController implements Serializable {
 
                 for (DesignComponentFormItem dis : diList) {
 
+                    System.out.println("Processing DesignComponentFormItem with ID: " + dis.getId());
+
                     boolean disSkipThisItem = false;
+
+                    if (dis.getComponentSex() == null) {
+                        System.out.println("ComponentSex is null for DesignComponentFormItem ID: " + dis.getId());
+                    } else {
+                        System.out.println("ComponentSex for DesignComponentFormItem ID " + dis.getId() + " is: " + dis.getComponentSex());
+                    }
+
+                    if (clientController.getSelected().getPerson().getSex() == null) {
+                        System.out.println("Person's sex is null");
+                    } else {
+                        System.out.println("Person's sex code is: " + clientController.getSelected().getPerson().getSex().getCode());
+                    }
+
                     if (dis.getComponentSex() == ComponentSex.For_Females && clientController.getSelected().getPerson().getSex().getCode().equalsIgnoreCase("sex_male")) {
+                        System.out.println("Skipping this item because it's for females and the client is male.");
                         disSkipThisItem = true;
                     }
                     if (dis.getComponentSex() == ComponentSex.For_Males && clientController.getSelected().getPerson().getSex().getCode().equalsIgnoreCase("sex_female")) {
+                        System.out.println("Skipping this item because it's for males and the client is female.");
                         disSkipThisItem = true;
+                    }
+
+                    if (disSkipThisItem) {
+                        System.out.println("Skipped DesignComponentFormItem with ID: " + dis.getId());
+                    } else {
+                        System.out.println("Processing DesignComponentFormItem with ID: " + dis.getId());
                     }
 
                     if (!disSkipThisItem) {
@@ -1342,8 +1365,12 @@ public class ClientEncounterComponentFormSetController implements Serializable {
     }
 
     public void updateFromClientValueSingle(ClientEncounterComponentItem ti, Client c, Map<String, ClientEncounterComponentItem> cvs) {
-
+        System.out.println("updateFromClientValueSingle");
         String code = ti.getItem().getCode();
+        System.out.println("ti = " + ti);
+        System.out.println("ti.getItem() = " + ti.getItem());
+        System.out.println("ti.getItem().getCode() = " + ti.getItem().getCode());
+
         switch (code) {
             case "client_name":
                 ti.setShortTextValue(c.getPerson().getName());

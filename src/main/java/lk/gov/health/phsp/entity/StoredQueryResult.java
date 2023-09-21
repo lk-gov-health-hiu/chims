@@ -39,6 +39,7 @@ import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlRootElement;
 import lk.gov.health.phsp.bean.CommonController;
 import lk.gov.health.phsp.enums.TimePeriodType;
+import lk.gov.health.phsp.pojcs.Identifiable;
 import org.eclipse.persistence.annotations.Cache;
 import org.eclipse.persistence.annotations.CacheType;
 
@@ -54,7 +55,7 @@ import org.eclipse.persistence.annotations.CacheType;
 )
 @Table
 @XmlRootElement
-public class StoredQueryResult implements Serializable {
+public class StoredQueryResult implements Serializable, Identifiable  {
 
     private static final long serialVersionUID = 1L;
     @Id

@@ -29,6 +29,7 @@ import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -40,6 +41,7 @@ import javax.persistence.Temporal;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 import lk.gov.health.phsp.enums.EncounterType;
+import lk.gov.health.phsp.pojcs.Identifiable;
 
 /**
  *
@@ -48,9 +50,9 @@ import lk.gov.health.phsp.enums.EncounterType;
 @Entity
 @Table
 @XmlRootElement
-public class Encounter implements Serializable {
+public class Encounter implements Serializable, Identifiable  {
 
-    @OneToMany(mappedBy = "itemEncounter")
+    @OneToMany(mappedBy = "itemEncounter",fetch = FetchType.EAGER)
     private List<ClientEncounterComponentItem> clientEncounterComponentItems;
 
     private static final long serialVersionUID = 1L;
@@ -58,9 +60,9 @@ public class Encounter implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     private Client client;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     private Area area;
     
     private boolean firstEncounter ;
@@ -81,16 +83,16 @@ public class Encounter implements Serializable {
 
     private String encounterNumber;
     
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     private Encounter parentEncounter;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     Institution institution;
     
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     Institution referalInstitution;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     private WebUser createdBy;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date createdAt;

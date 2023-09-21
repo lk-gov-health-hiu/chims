@@ -26,6 +26,7 @@ package lk.gov.health.phsp.entity;
 
 import java.util.List;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
@@ -38,7 +39,7 @@ import javax.xml.bind.annotation.XmlTransient;
 @XmlRootElement
 public class ClientEncounterComponentFormSet extends ClientEncounterComponent {
 
-    @OneToMany(mappedBy = "itemFormset")
+    @OneToMany(mappedBy = "itemFormset",fetch = FetchType.EAGER)
     private List<ClientEncounterComponentItem> clientEncounterComponentItems;
 
     @XmlTransient

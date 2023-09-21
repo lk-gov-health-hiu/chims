@@ -29,6 +29,7 @@ import java.util.Date;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -39,6 +40,7 @@ import javax.persistence.Temporal;
 import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlRootElement;
 import lk.gov.health.phsp.enums.SelectionDataType;
+import lk.gov.health.phsp.pojcs.Identifiable;
 
 /**
  *
@@ -47,7 +49,7 @@ import lk.gov.health.phsp.enums.SelectionDataType;
 @Entity
 @Table
 @XmlRootElement
-public class Item implements Serializable {
+public class Item implements Serializable, Identifiable  {
 
     private static final long serialVersionUID = 1L;
 
@@ -64,7 +66,7 @@ public class Item implements Serializable {
     private String code;
     private String barcode;
     private String localCode;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     private Item parent;
 
     @Lob

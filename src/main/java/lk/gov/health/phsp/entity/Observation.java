@@ -29,6 +29,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -38,6 +39,7 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.xml.bind.annotation.XmlRootElement;
 import lk.gov.health.phsp.enums.PrescriptionType;
+import lk.gov.health.phsp.pojcs.Identifiable;
 
 /**
  *
@@ -46,16 +48,16 @@ import lk.gov.health.phsp.enums.PrescriptionType;
 @Entity
 @Table
 @XmlRootElement
-public class Observation implements Serializable {
+public class Observation implements Serializable, Identifiable  {
 
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     private Item observation;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     private ClientEncounterComponentItem observationValue;
     @Lob
     private String description;
@@ -67,9 +69,9 @@ public class Observation implements Serializable {
     @Column(name = "ato")
     private Date to;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     private Client client;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     private Encounter encounter;
 
     /*

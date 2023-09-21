@@ -9,13 +9,14 @@ import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import lk.gov.health.phsp.pojcs.Identifiable;
 
 /**
  *
  * @author Dr M H B Ariyaratne thanks to CharGPT V 4.0
  */
 @Entity
-public class AuditEvent implements Serializable {
+public class AuditEvent implements Serializable , Identifiable {
 
     private static final long serialVersionUID = 1L;
     @Id
