@@ -963,13 +963,35 @@ public class ClientEncounterComponentFormSetController implements Serializable {
         int formCounter = 0;
 
         for (DesignComponentForm df : dfList) {
-            // //System.out.println("df = " + df.getName());
+            if (df == null) {
+                System.out.println("df is null");
+                continue;
+            }
+
+            System.out.println("df name: " + df.getName());
 
             boolean skipThisForm = false;
-            if (df.getComponentSex() == ComponentSex.For_Females && clientController.getSelected().getPerson().getSex().getCode().equalsIgnoreCase("sex_male")) {
+
+            if (df.getComponentSex() == null) {
+                System.out.println("df.getComponentSex() is null");
+            }
+
+            if (clientController == null) {
+                System.out.println("clientController is null");
+            } else if (clientController.getSelected() == null) {
+                System.out.println("clientController.getSelected() is null");
+            } else if (clientController.getSelected().getPerson() == null) {
+                System.out.println("clientController.getSelected().getPerson() is null");
+            } else if (clientController.getSelected().getPerson().getSex() == null) {
+                System.out.println("clientController.getSelected().getPerson().getSex() is null");
+            } else if (clientController.getSelected().getPerson().getSex().getCode() == null) {
+                System.out.println("clientController.getSelected().getPerson().getSex().getCode() is null");
+            }
+
+            if (df.getComponentSex() == ComponentSex.For_Females && "sex_male".equalsIgnoreCase(clientController.getSelected().getPerson().getSex().getCode())) {
                 skipThisForm = true;
             }
-            if (df.getComponentSex() == ComponentSex.For_Males && clientController.getSelected().getPerson().getSex().getCode().equalsIgnoreCase("sex_female")) {
+            if (df.getComponentSex() == ComponentSex.For_Males && "sex_female".equalsIgnoreCase(clientController.getSelected().getPerson().getSex().getCode())) {
                 skipThisForm = true;
             }
 
