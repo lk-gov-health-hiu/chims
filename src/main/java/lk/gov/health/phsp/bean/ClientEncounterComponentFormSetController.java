@@ -915,7 +915,7 @@ public class ClientEncounterComponentFormSetController implements Serializable {
                                 save(ci);
                             } else if (ci.getReferanceDesignComponentFormItem().getDataPopulationStrategy() == DataPopulationStrategy.From_Last_Encounter) {
                                 updateFromLastEncounter(ci);
-                               save(ci);
+                                save(ci);
                             }
                             DataItem i = new DataItem();
                             i.setMultipleEntries(false);
@@ -1018,8 +1018,34 @@ public class ClientEncounterComponentFormSetController implements Serializable {
 
                 for (DesignComponentFormItem dis : diList) {
 
-                    // //System.out.println("dis = " + dis.getName());
+                    System.out.println("dis = " + dis.getName());
                     boolean disSkipThisItem = false;
+
+                    if (dis.getComponentSex() == null) {
+                        System.out.println("dis.getComponentSex() null");
+                        continue;
+                    }
+                    if (clientController == null) {
+                        System.out.println("clientController null");
+                        continue;
+                    }
+                    if (clientController.getSelected() == null) {
+                        System.out.println("selected null");
+                        continue;
+                    }
+                    if (clientController.getSelected().getPerson() == null) {
+                        System.out.println("person null");
+                        continue;
+                    }
+                    if (clientController.getSelected().getPerson().getSex() == null) {
+                        System.out.println("sex null");
+                        continue;
+                    }
+                    if (clientController.getSelected().getPerson().getSex().getCode() == null) {
+                        System.out.println("code null");
+                        continue;
+                    }
+
                     if (dis.getComponentSex() == ComponentSex.For_Females && clientController.getSelected().getPerson().getSex().getCode().equalsIgnoreCase("sex_male")) {
                         disSkipThisItem = true;
                     }
