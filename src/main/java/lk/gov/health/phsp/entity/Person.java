@@ -25,11 +25,13 @@ package lk.gov.health.phsp.entity;
 
 import java.io.Serializable;
 import java.util.Date;
+import javax.jdo.annotations.Index;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -49,7 +51,7 @@ import org.joda.time.PeriodType;
 @Entity
 @XmlRootElement
 @Table
-public class Person implements Serializable, Identifiable  {
+public class Person implements Serializable, Identifiable {
 
 // <editor-fold defaultstate="collapsed" desc="Persistant Attributes">
     static final long serialVersionUID = 1L;
@@ -59,6 +61,7 @@ public class Person implements Serializable, Identifiable  {
 
     @ManyToOne(fetch = FetchType.EAGER)
     private Item title;
+    @Index
     private String name;
 
     @ManyToOne(fetch = FetchType.EAGER)
@@ -82,6 +85,7 @@ public class Person implements Serializable, Identifiable  {
     private String occupation;
 
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
+    @Index
     private Date dateOfBirth;
 
     private boolean dobIsAnApproximation;
@@ -89,18 +93,21 @@ public class Person implements Serializable, Identifiable  {
     @Lob
     private String address;
 
+    @Index
     private String phone1;
+    @Index
     private String phone2;
     private String email;
-
+    @Index
     private String nic;
-
+    @Index
     private String passportNumber;
 
     private String website;
     private String drivingLicenseNumber;
-
+    @Index
     private String localReferanceNo;
+    @Index
     private String ssNumber;
 
     @ManyToOne(fetch = FetchType.EAGER)

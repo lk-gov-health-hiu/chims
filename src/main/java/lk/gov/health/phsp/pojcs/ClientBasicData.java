@@ -65,8 +65,8 @@ public class ClientBasicData implements Serializable {
         this.createdAt = createdAt;
         this.sex = sex;
     }
-    
-    public ClientBasicData(String phn,String name, String nic, String address, String phone, String gnArea, String createdInstitution, Date dataOfBirth, Date createdAt, String sex) {
+
+    public ClientBasicData(String phn, String name, String nic, String address, String phone, String gnArea, String createdInstitution, Date dataOfBirth, Date createdAt, String sex) {
         this.phn = phn;
         this.name = name;
         this.nic = nic;
@@ -89,7 +89,7 @@ public class ClientBasicData implements Serializable {
         this.sex = sex;
         this.nic = nic;
     }
-    
+
     public ClientBasicData(Long id, String phn, String gnArea, String createdInstitution, Date dataOfBirth, Date createdAt, String sex, String nic, String name) {
         this.id = id;
         this.phn = phn;
@@ -112,7 +112,14 @@ public class ClientBasicData implements Serializable {
         this.address = address;
     }
 
-    
+    public ClientBasicData(Long id, String name, String sex, String nic, String phone) {
+        this.phone = phone;
+        this.name = name;
+        this.sex = sex;
+        this.id = id;
+        this.nic = nic;
+    }
+
     public ClientBasicData(Long id, String phn, String name, String nic, String phone, String address) {
         this.phn = phn;
         this.phone = phone;
@@ -121,8 +128,7 @@ public class ClientBasicData implements Serializable {
         this.nic = nic;
         this.address = address;
     }
-    
-    
+
     public String getPhn() {
         return phn;
     }
