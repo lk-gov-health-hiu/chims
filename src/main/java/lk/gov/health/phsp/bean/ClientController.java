@@ -2003,19 +2003,19 @@ public class ClientController implements Serializable {
     }
 
     public String searchByAnyIdWithBasicData() {
-        System.out.println("searchByAnyIdWithBasicData 1 = " + new Date().getTime());
+//        System.out.println("searchByAnyIdWithBasicData 1 = " + new Date().getTime());
         userTransactionController.recordTransaction("Search By Any Id");
         clearExistsValues();
         if (searchingId == null) {
             searchingId = "";
         }
-        System.out.println("searchByAnyIdWithBasicData 2 = " + new Date().getTime());
+//        System.out.println("searchByAnyIdWithBasicData 2 = " + new Date().getTime());
         selectedClientsWithBasicData = listPatientsByIDsStepviceWithBasicData(searchingId.trim().toUpperCase());
-        System.out.println("searchByAnyIdWithBasicData 3 = " + new Date().getTime());
+//        System.out.println("searchByAnyIdWithBasicData 3 = " + new Date().getTime());
         if (selectedClientsWithBasicData == null || selectedClientsWithBasicData.isEmpty()) {
             JsfUtil.addErrorMessage("No Results Found. Try different search criteria.");
             userTransactionController.recordTransaction("Search By Any Id Failed as no match");
-            System.out.println("searchByAnyIdWithBasicData 4 = " + new Date().getTime());
+//            System.out.println("searchByAnyIdWithBasicData 4 = " + new Date().getTime());
             return "/client/search_by_id";
         }
         if (selectedClientsWithBasicData.size() == 1) {
@@ -2023,13 +2023,13 @@ public class ClientController implements Serializable {
             selectedClients = null;
             searchingId = "";
             userTransactionController.recordTransaction("Search By Any Id returend single match");
-            System.out.println("searchByAnyIdWithBasicData 5 = " + new Date().getTime());
+//            System.out.println("searchByAnyIdWithBasicData 5 = " + new Date().getTime());
             return toClientProfile();
         } else {
             selected = null;
             searchingId = "";
             userTransactionController.recordTransaction("Search By Any Id returned multiple matches");
-            System.out.println("searchByAnyIdWithBasicData 6 = " + new Date().getTime());
+//            System.out.println("searchByAnyIdWithBasicData 6 = " + new Date().getTime());
             return toSelectClientBasic();
         }
     }
