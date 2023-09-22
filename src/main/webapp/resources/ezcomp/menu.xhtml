@@ -14,14 +14,8 @@
     <!-- IMPLEMENTATION -->
     <cc:implementation>
 
-        <ez:admin_menu rendered="#{webUserController.loggedUser.webUserRole.role eq 'sa'}"/>
+        <ez:admin_menu/>
         
-        <ez:institution_admin_menu  rendered="#{webUserController.loggedUser.webUserRole.role eq 'ia'}"/>
-        
-        <ez:institution_user_menu  rendered="#{webUserController.loggedUser.webUserRole.role eq 'iu'}"/>
-
-        <ez:me_menu  rendered="#{webUserController.loggedUser.webUserRole.role eq 'me'}"/>        
-       
 
 
     </cc:implementation>

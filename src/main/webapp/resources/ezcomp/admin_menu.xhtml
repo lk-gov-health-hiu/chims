@@ -13,7 +13,7 @@
     <!-- IMPLEMENTATION -->
     <cc:implementation>
         <h:form>  
-            <p:menubar  rendered="#{webUserController.loggedUser ne null}"  autoDisplay="true"   styleClass="horizontalmenu">
+            <p:menubar  rendered="#{webUserController.loggedUser ne null}"  autoDisplay="true"  >
                 <p:menuitem ajax="false" value="Home" icon="ui-icon-home" action="/index" />
                 <p:submenu label="Clients" rendered="#{webUserController.hasPrivilege('Client_Management')}" >
                     <p:menuitem ajax="false" value="Register New" action="#{clientController.toAddNewClient()}"  />
