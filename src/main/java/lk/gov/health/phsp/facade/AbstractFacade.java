@@ -246,8 +246,8 @@ public abstract class AbstractFacade<T extends Identifiable> {
     // Comment by Dr M H B Ariyaratne with assistance from ChatGPT from OpenAI
     public List<T> findByJpql(String jpql, Map<String, Object> parameters) {
         try {
-            System.out.println("Entering findByJpql method");
-            System.out.println("JPQL: " + jpql);
+//            System.out.println("Entering findByJpql method");
+//            System.out.println("JPQL: " + jpql);
 
             TypedQuery<T> qry = getEntityManager().createQuery(jpql, entityClass);
             Set s = parameters.entrySet();
