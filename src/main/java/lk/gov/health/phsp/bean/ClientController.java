@@ -261,6 +261,7 @@ public class ClientController implements Serializable {
     }
 
     public String toClientProfileById() {
+        System.out.println("toClientProfileById 1 = " + new Date().getTime());
         selected = getFacade().find(selectedId);
         if (selected == null) {
             JsfUtil.addErrorMessage("No such client");
@@ -268,7 +269,9 @@ public class ClientController implements Serializable {
         }
         selectedClientsClinics = null;
         selectedClientsLastFiveClinicVisits = null;
+        System.out.println("toClientProfileById 2 = " + new Date().getTime());
         userTransactionController.recordTransaction("To Client Profile");
+        System.out.println("toClientProfileById 3 = " + new Date().getTime());
         return "/client/profile";
     }
 
@@ -2000,18 +2003,19 @@ public class ClientController implements Serializable {
     }
 
     public String searchByAnyIdWithBasicData() {
-        System.out.println("1 = " + new Date().getTime());
+        System.out.println("searchByAnyIdWithBasicData 1 = " + new Date().getTime());
         userTransactionController.recordTransaction("Search By Any Id");
         clearExistsValues();
         if (searchingId == null) {
             searchingId = "";
         }
-
+        System.out.println("searchByAnyIdWithBasicData 2 = " + new Date().getTime());
         selectedClientsWithBasicData = listPatientsByIDsStepviceWithBasicData(searchingId.trim().toUpperCase());
-
+        System.out.println("searchByAnyIdWithBasicData 3 = " + new Date().getTime());
         if (selectedClientsWithBasicData == null || selectedClientsWithBasicData.isEmpty()) {
             JsfUtil.addErrorMessage("No Results Found. Try different search criteria.");
             userTransactionController.recordTransaction("Search By Any Id Failed as no match");
+            System.out.println("searchByAnyIdWithBasicData 4 = " + new Date().getTime());
             return "/client/search_by_id";
         }
         if (selectedClientsWithBasicData.size() == 1) {
@@ -2019,11 +2023,13 @@ public class ClientController implements Serializable {
             selectedClients = null;
             searchingId = "";
             userTransactionController.recordTransaction("Search By Any Id returend single match");
+            System.out.println("searchByAnyIdWithBasicData 5 = " + new Date().getTime());
             return toClientProfile();
         } else {
             selected = null;
             searchingId = "";
             userTransactionController.recordTransaction("Search By Any Id returned multiple matches");
+            System.out.println("searchByAnyIdWithBasicData 6 = " + new Date().getTime());
             return toSelectClientBasic();
         }
     }
@@ -2313,9 +2319,8 @@ public class ClientController implements Serializable {
                 + ") ";
         j += " from Client c "
                 + " where c.retired=false "
-                + " and c.phn=:q "
-                + " order by c.phn";
-        m.put("q", ids.trim());
+                + " and lower(c.phn)=:q ";
+        m.put("q", ids.trim().toLowerCase());
         //// //System.out.println("m = " + m);
         //// //System.out.println("j = " + j);
         objs = getFacade().findByJpql(j, m);
@@ -2340,7 +2345,7 @@ public class ClientController implements Serializable {
                 + " or "
                 + " c.person.phone2=:q "
                 + " or "
-                + " c.person.nic=:q "
+                + " lower(c.person.nic)=:q "
                 + " ) "
                 + " order by c.phn";
         objs = getFacade().findByJpql(j, m);
@@ -2362,9 +2367,9 @@ public class ClientController implements Serializable {
                 + " from Client c "
                 + " where c.retired=false "
                 + " and ("
-                + " c.person.localReferanceNo=:q "
+                + " lower(c.person.localReferanceNo)=:q "
                 + " or "
-                + " c.person.ssNumber=:q "
+                + " lower(c.person.ssNumber)=:q "
                 + " ) "
                 + " order by c.phn";
 
