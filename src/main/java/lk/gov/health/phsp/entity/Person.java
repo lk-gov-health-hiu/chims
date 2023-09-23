@@ -25,6 +25,7 @@ package lk.gov.health.phsp.entity;
 
 import java.io.Serializable;
 import java.util.Date;
+import javax.jdo.annotations.Index;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -35,7 +36,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.Transient;
-import javax.xml.bind.annotation.XmlRootElement;
 import lk.gov.health.phsp.pojcs.Identifiable;
 import org.joda.time.LocalDate;
 import org.joda.time.Period;
@@ -47,9 +47,8 @@ import org.joda.time.PeriodType;
  * Informatics)
  */
 @Entity
-@XmlRootElement
 @Table
-public class Person implements Serializable, Identifiable  {
+public class Person implements Serializable, Identifiable {
 
 // <editor-fold defaultstate="collapsed" desc="Persistant Attributes">
     static final long serialVersionUID = 1L;
@@ -81,6 +80,7 @@ public class Person implements Serializable, Identifiable  {
 
     private String occupation;
 
+    @Index
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date dateOfBirth;
 
@@ -89,19 +89,24 @@ public class Person implements Serializable, Identifiable  {
     @Lob
     private String address;
 
+    @Index
     private String phone1;
+    @Index
     private String phone2;
+    @Index
     private String email;
-
+    @Index
     private String nic;
-
+    @Index
     private String passportNumber;
+    @Index
+    private String localReferanceNo;
+    @Index
+    private String ssNumber;
 
     private String website;
     private String drivingLicenseNumber;
 
-    private String localReferanceNo;
-    private String ssNumber;
 
     @ManyToOne(fetch = FetchType.EAGER)
     private Area gnArea;

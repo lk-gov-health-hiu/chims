@@ -2010,7 +2010,7 @@ public class ClientController implements Serializable {
             searchingId = "";
         }
 //        System.out.println("searchByAnyIdWithBasicData 2 = " + new Date().getTime());
-        selectedClientsWithBasicData = listPatientsByIDsStepviceWithBasicData(searchingId.trim().toUpperCase());
+        selectedClientsWithBasicData = listPatientsByIDsWithBasicData(searchingId.trim().toUpperCase());
 //        System.out.println("searchByAnyIdWithBasicData 3 = " + new Date().getTime());
         if (selectedClientsWithBasicData == null || selectedClientsWithBasicData.isEmpty()) {
             JsfUtil.addErrorMessage("No Results Found. Try different search criteria.");
@@ -2380,6 +2380,51 @@ public class ClientController implements Serializable {
         }
 
         cs = new ArrayList<>();
+        return cs;
+    }
+
+    public List<ClientBasicData> listPatientsByIDsWithBasicData(String ids) {
+        Long st = new Date().getTime();
+        System.out.println("listPatientsByIDsWithBasicData - start - " + st);
+        List<ClientBasicData> cs = new ArrayList<>();
+        if (ids == null || ids.trim().equals("")) {
+            return cs;
+        }
+        String jpql;
+        Map m;
+        m = new HashMap();
+        jpql = "select new lk.gov.health.phsp.pojcs.ClientBasicData("
+                + "c.id, "
+                + "c.phn, "
+                + "c.person.name, "
+                + "c.person.nic, "
+                + "c.person.phone1, "
+                + "c.person.address "
+                + ") "
+                + " from Client c "
+                + " where c.retired=false "
+                + " and "
+                + " ("
+                + " lower(c.phn)=:q "
+                + " or "
+                + " lower(c.person.localReferanceNo)=:q "
+                + " or "
+                + " lower(c.person.ssNumber)=:q "
+                + " or "
+                + " c.person.phone1=:q "
+                + " or "
+                + " c.person.phone2=:q "
+                + " or "
+                + " lower(c.person.nic)=:q "
+                + " ) ";
+        m.put("q", ids.trim().toLowerCase());
+        System.out.println("m = " + m);
+        System.out.println("j = " + jpql);
+        cs = (List<ClientBasicData>) getFacade().findLightsByJpql(jpql, m);
+        System.out.println("cs size = " + cs.size());
+        Long ed = new Date().getTime();
+        System.out.println("listPatientsByIDsWithBasicData - end - " + ed);
+        System.out.println("listPatientsByIDsWithBasicData - Duration - " + (ed - st));
         return cs;
     }
 

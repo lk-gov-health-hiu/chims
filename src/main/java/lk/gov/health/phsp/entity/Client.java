@@ -2,6 +2,7 @@ package lk.gov.health.phsp.entity;
 
 import java.io.Serializable;
 import java.util.Date;
+import javax.jdo.annotations.Index;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -25,9 +26,11 @@ public class Client implements Serializable , Identifiable {
 
     private static final long serialVersionUID = 1L;
 
+    @Index
     @OneToOne(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
     private Person person;
 
+    @Index
     private String phn;
 
     private String comments;
