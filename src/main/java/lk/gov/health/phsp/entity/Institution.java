@@ -92,9 +92,6 @@ public class Institution implements Serializable, Identifiable  {
     @ManyToOne(fetch = FetchType.EAGER)
     private Area pdhsArea;
 
-    @OneToOne(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
-    private Coordinate coordinate;
-
     @ManyToOne
     private WebUser creater;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
@@ -144,9 +141,6 @@ public class Institution implements Serializable, Identifiable  {
     @Override
     public String toString() {
         String to = id + " " + code + " " + name + " " + address + " " + poiNumber + " ";
-        if (coordinate != null) {
-            to += coordinate.getLongitude() + " " + coordinate.getLatitude();
-        }
         to += institutionType;
         if (institutionType != null) {
             to += institutionType.getLabel();
@@ -224,16 +218,6 @@ public class Institution implements Serializable, Identifiable  {
         this.web = web;
     }
 
-    public Coordinate getCoordinate() {
-        if (coordinate == null) {
-            coordinate = new Coordinate();
-        }
-        return coordinate;
-    }
-
-    public void setCoordinate(Coordinate coordinate) {
-        this.coordinate = coordinate;
-    }
 
     public String getCode() {
         return code;

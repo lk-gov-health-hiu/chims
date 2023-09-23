@@ -2,9 +2,7 @@ package lk.gov.health.phsp.bean;
 
 import lk.gov.health.phsp.entity.Area;
 import lk.gov.health.phsp.enums.AreaType;
-import lk.gov.health.phsp.entity.Coordinate;
 import lk.gov.health.phsp.facade.AreaFacade;
-import lk.gov.health.phsp.facade.CoordinateFacade;
 import lk.gov.health.phsp.facade.util.JsfUtil;
 import lk.gov.health.phsp.facade.util.JsfUtil.PersistAction;
 
@@ -40,8 +38,7 @@ public class AreaController implements Serializable {
 
     @EJB
     private AreaFacade ejbFacade;
-    @EJB
-    private CoordinateFacade coordinateFacade;
+
     private List<Area> items = null;
     List<Area> mohAreas = null;
     List<Area> phiAreas = null;
@@ -808,26 +805,26 @@ public class AreaController implements Serializable {
 //        return areas;
 //    }
     public String drawArea() {
-        polygonModel = new DefaultMapModel();
-
-        //Polygon
-        Polygon polygon = new Polygon();
-
-        String j = "select c from Coordinate c where c.area=:a";
-        Map m = new HashMap();
-        m.put("a", selected);
-        List<Coordinate> cs = coordinateFacade.findByJpql(j, m);
-        for (Coordinate c : cs) {
-            LatLng coord = new LatLng(c.getLatitude(), c.getLongitude());
-            polygon.getPaths().add(coord);
-        }
-
-        polygon.setStrokeColor("#FF9900");
-        polygon.setFillColor("#FF9900");
-        polygon.setStrokeOpacity(0.7);
-        polygon.setFillOpacity(0.7);
-
-        polygonModel.addOverlay(polygon);
+//        polygonModel = new DefaultMapModel();
+//
+//        //Polygon
+//        Polygon polygon = new Polygon();
+//
+//        String j = "select c from Coordinate c where c.area=:a";
+//        Map m = new HashMap();
+//        m.put("a", selected);
+//        List<Coordinate> cs = coordinateFacade.findByJpql(j, m);
+//        for (Coordinate c : cs) {
+//            LatLng coord = new LatLng(c.getLatitude(), c.getLongitude());
+//            polygon.getPaths().add(coord);
+//        }
+//
+//        polygon.setStrokeColor("#FF9900");
+//        polygon.setFillColor("#FF9900");
+//        polygon.setStrokeOpacity(0.7);
+//        polygon.setFillOpacity(0.7);
+//
+//        polygonModel.addOverlay(polygon);
 
         return "/area/area_map";
     }
@@ -1780,14 +1777,6 @@ public class AreaController implements Serializable {
 
     public void setDsAreas(List<Area> dsAreas) {
         this.dsAreas = dsAreas;
-    }
-
-    public CoordinateFacade getCoordinateFacade() {
-        return coordinateFacade;
-    }
-
-    public void setCoordinateFacade(CoordinateFacade coordinateFacade) {
-        this.coordinateFacade = coordinateFacade;
     }
 
     public WebUserController getWebUserController() {

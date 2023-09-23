@@ -267,8 +267,6 @@ public class ApiResource {
             ja.put("institute_code", a.getCode());
             ja.put("name", a.getName());
             ja.put("hin", a.getPoiNumber());
-            ja.put("latitude", a.getCoordinate().getLatitude());
-            ja.put("longitude", a.getCoordinate().getLongitude());
             ja.put("address", a.getAddress());
             ja.put("type", a.getInstitutionType());
             ja.put("type_label", a.getInstitutionType().getLabel());
@@ -301,8 +299,6 @@ public class ApiResource {
             ja.put("institute_code", a.getCode());
             ja.put("name", a.getName());
             ja.put("hin", a.getPoiNumber());
-            ja.put("latitude", a.getCoordinate().getLatitude());
-            ja.put("longitude", a.getCoordinate().getLongitude());
             ja.put("address", a.getAddress());
             ja.put("type", a.getInstitutionType());
             ja.put("type_label", a.getInstitutionType().getLabel());

@@ -618,23 +618,23 @@ public class WebUserController implements Serializable {
         return "/change_my_password";
     }
 
-    public void markLocationOnMap() {
-        emptyModel = new DefaultMapModel();
-        if (current == null) {
-            return;
-        }
-        LatLng coord1 = new LatLng(current.getInstitution().getCoordinate().getLatitude(), current.getInstitution().getCoordinate().getLongitude());
-        emptyModel.addOverlay(new Marker(coord1, current.getInstitution().getAddress()));
-    }
-
-    public void markLocationOnMapForBidders() {
-        emptyModel = new DefaultMapModel();
-        if (current == null) {
-            return;
-        }
-        LatLng coord1 = new LatLng(current.getInstitution().getCoordinate().getLatitude(), current.getInstitution().getCoordinate().getLongitude());
-        emptyModel.addOverlay(new Marker(coord1, current.getInstitution().getAddress()));
-    }
+//    public void markLocationOnMap() {
+//        emptyModel = new DefaultMapModel();
+//        if (current == null) {
+//            return;
+//        }
+//        LatLng coord1 = new LatLng(current.getInstitution().getCoordinate().getLatitude(), current.getInstitution().getCoordinate().getLongitude());
+//        emptyModel.addOverlay(new Marker(coord1, current.getInstitution().getAddress()));
+//    }
+//
+//    public void markLocationOnMapForBidders() {
+//        emptyModel = new DefaultMapModel();
+//        if (current == null) {
+//            return;
+//        }
+//        LatLng coord1 = new LatLng(current.getInstitution().getCoordinate().getLatitude(), current.getInstitution().getCoordinate().getLongitude());
+//        emptyModel.addOverlay(new Marker(coord1, current.getInstitution().getAddress()));
+//    }
 
     public String viewMedia() {
         if (currentUpload == null) {
@@ -692,13 +692,13 @@ public class WebUserController implements Serializable {
         return downloadingFile;
     }
 
-    public String addMarker() {
-        Marker marker = new Marker(new LatLng(current.getInstitution().getCoordinate().getLatitude(), current.getInstitution().getCoordinate().getLongitude()), current.getName());
-        emptyModel.addOverlay(marker);
-        getInstitutionFacade().edit(getCurrent().getInstitution());
-        JsfUtil.addSuccessMessage("Location Recorded");
-        return "";
-    }
+//    public String addMarker() {
+//        Marker marker = new Marker(new LatLng(current.getInstitution().getCoordinate().getLatitude(), current.getInstitution().getCoordinate().getLongitude()), current.getName());
+//        emptyModel.addOverlay(marker);
+//        getInstitutionFacade().edit(getCurrent().getInstitution());
+//        JsfUtil.addSuccessMessage("Location Recorded");
+//        return "";
+//    }
 
     public String registerUser() {
         if (!current.getWebUserPassword().equals(password)) {
