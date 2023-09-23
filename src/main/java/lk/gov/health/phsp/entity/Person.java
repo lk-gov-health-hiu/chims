@@ -114,11 +114,11 @@ public class Person implements Serializable, Identifiable {
     private Area dsArea;
     @ManyToOne(fetch = FetchType.EAGER)
     private Area phmArea;
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     private Area mohArea;
     @ManyToOne(fetch = FetchType.EAGER)
     private Area district;
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     private Area province;
 
     //Created Properties
