@@ -28,6 +28,7 @@ public class Client implements Serializable , Identifiable {
 
     @Index
     @OneToOne(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+    @Index
     private Person person;
 
     @Index

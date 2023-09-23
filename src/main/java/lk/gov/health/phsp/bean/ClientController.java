@@ -2103,9 +2103,9 @@ public class ClientController implements Serializable {
     }
 
     public List<Client> listPatientsByPhn(String phn) {
-        String j = "select c from Client c where c.retired=false and c.phn=:q order by c.phn";
+        String j = "select c from Client c where c.retired=false and lower(c.phn)=:q";
         Map m = new HashMap();
-        m.put("q", phn.trim());
+        m.put("q", phn.trim().toLowerCase());
         return getFacade().findByJpql(j, m);
     }
 
@@ -2114,11 +2114,10 @@ public class ClientController implements Serializable {
                 + " from Client c "
                 + " where c.retired=false "
                 + " and c.reservedClient<>:res "
-                + " and c.person.nic=:q "
-                + " order by c.phn";
+                + " and lower(c.person.nic)=:q ";
         Map m = new HashMap();
         m.put("res", true);
-        m.put("q", phn.trim());
+        m.put("q", phn.trim().toLowerCase());
         return getFacade().findByJpql(j, m);
     }
 
@@ -2135,12 +2134,11 @@ public class ClientController implements Serializable {
                 + " from Client c "
                 + " where c.retired=false "
                 + " and (c.reservedClient is null or c.reservedClient<>:res) "
-                + " and c.person.name like :n "
-                + " and c.person.dateOfBirth=:dob"
-                + " order by c.person.name"; // Changed ordering
+                + " and lower(c.person.name) like :n "
+                + " and c.person.dateOfBirth=:dob"; // Changed ordering
         Map m = new HashMap();
         m.put("res", true);
-        m.put("n", "%" + name.trim() + "%");
+        m.put("n", "%" + name.trim().toLowerCase() + "%");
         m.put("dob", dob);
         return getFacade().findByJpql(j, m);
     }
@@ -2150,12 +2148,12 @@ public class ClientController implements Serializable {
                 + " from Client c "
                 + " where c.retired=false "
                 + " and (c.reservedClient is null or c.reservedClient<>:res) "
-                + " and c.person.name like :n "
+                + " and lower(c.person.name) like :n "
                 + " and FUNCTION('YEAR', c.person.dateOfBirth) = :yob" // Extracting the year from dateOfBirth
                 + " order by c.person.name"; // Changed ordering
         Map m = new HashMap();
         m.put("res", true);
-        m.put("n", "%" + name.trim() + "%");
+        m.put("n", "%" + name.trim().toLowerCase() + "%");
         m.put("yob", yob); // Using yob for the year of birth
         return getFacade().findByJpql(j, m);
     }
@@ -2165,13 +2163,13 @@ public class ClientController implements Serializable {
                 + " from Client c "
                 + " where c.retired=false "
                 + " and (c.reservedClient is null or c.reservedClient<>:res) "
-                + " and c.person.name like :n "
+                + " and lower(c.person.name) like :n "
                 + " and FUNCTION('YEAR', c.person.dateOfBirth) = :yob" // Extracting the year from dateOfBirth
                 + " and FUNCTION('MONTH', c.person.dateOfBirth) = :mob" // Extracting the month from dateOfBirth
                 + " order by c.person.name"; // Changed ordering
         Map m = new HashMap();
         m.put("res", true);
-        m.put("n", "%" + name.trim() + "%");
+        m.put("n", "%" + name.trim().toLowerCase() + "%");
         m.put("yob", yob); // Using yob for the year of birth
         m.put("mob", mob); // Using mob for the month of birth
         return getFacade().findByJpql(j, m);
@@ -2181,7 +2179,7 @@ public class ClientController implements Serializable {
         String j = "select c from Client c "
                 + " where c.retired=false "
                 + " and c.reservedClient<>:res "
-                + " and c.person.localReferanceNo=:q "
+                + " and lower(c.person.localReferanceNo)=:q "
                 + " and c.createInstitution=:ins "
                 + " order by c.phn";
         Map m = new HashMap();
@@ -2195,7 +2193,7 @@ public class ClientController implements Serializable {
         String j = "select c from Client c "
                 + " where c.retired=false "
                 + " and c.reservedClient<>:res "
-                + " and c.person.localReferanceNo=:q "
+                + " and lower(c.person.localReferanceNo)=:q "
                 + " order by c.phn";
         Map m = new HashMap();
         m.put("res", true);
@@ -2207,7 +2205,7 @@ public class ClientController implements Serializable {
         String j = "select c from Client c "
                 + " where c.retired=false "
                 + " and c.reservedClient<>:res "
-                + " and c.person.ssNumber=:q "
+                + " and lower(c.person.ssNumber)=:q "
                 + " order by c.phn";
         Map m = new HashMap();
         m.put("res", true);
@@ -2219,7 +2217,7 @@ public class ClientController implements Serializable {
         String j = "select c from Client c "
                 + " where c.retired=false "
                 + " and c.reservedClient<>:res "
-                + " and c.person.drivingLicenseNumber=:q "
+                + " and lower(c.person.drivingLicenseNumber)=:q "
                 + " order by c.phn";
         Map m = new HashMap();
         m.put("res", true);
@@ -2231,7 +2229,7 @@ public class ClientController implements Serializable {
         String j = "select c from Client c "
                 + " where c.retired=false "
                 + " and c.reservedClient<>:res "
-                + " and c.person.passportNumber=:q "
+                + " and lower(c.person.passportNumber)=:q "
                 + " order by c.phn";
         Map m = new HashMap();
         m.put("res", true);
@@ -2297,6 +2295,7 @@ public class ClientController implements Serializable {
     }
 
     public List<ClientBasicData> listPatientsByIDsStepviceWithBasicData(String ids) {
+        System.out.println("1 listPatientsByIDsStepviceWithBasicData = " + new Date().getTime());
         if (ids == null || ids.trim().equals("")) {
             return null;
         }
@@ -2309,27 +2308,7 @@ public class ClientController implements Serializable {
         String j;
         Map m;
         m = new HashMap();
-        j = "select new lk.gov.health.phsp.pojcs.ClientBasicData("
-                + "c.id, "
-                + "c.phn, "
-                + "c.person.name, "
-                + "c.person.nic, "
-                + "c.person.phone1, "
-                + "c.person.address "
-                + ") ";
-        j += " from Client c "
-                + " where c.retired=false "
-                + " and lower(c.phn)=:q ";
         m.put("q", ids.trim().toLowerCase());
-        //// //System.out.println("m = " + m);
-        //// //System.out.println("j = " + j);
-        objs = getFacade().findByJpql(j, m);
-
-        if (objs != null && !objs.isEmpty()) {
-            cs = objectsToClientBasicDataObjects(objs);
-            return cs;
-        }
-
         j = "select new lk.gov.health.phsp.pojcs.ClientBasicData("
                 + "c.id, "
                 + "c.phn, "
@@ -2346,11 +2325,12 @@ public class ClientController implements Serializable {
                 + " c.person.phone2=:q "
                 + " or "
                 + " lower(c.person.nic)=:q "
-                + " ) "
-                + " order by c.phn";
+                + " or "
+                + " lower(c.phn)=:q"
+                + " ) ";
         objs = getFacade().findByJpql(j, m);
-        //// //System.out.println("m = " + m);
-        //// //System.out.println("j = " + j);
+        System.out.println("m = " + m);
+        System.out.println("j = " + j);
         if (objs != null && !objs.isEmpty()) {
             cs = objectsToClientBasicDataObjects(objs);
             return cs;
@@ -2369,16 +2349,15 @@ public class ClientController implements Serializable {
                 + " and ("
                 + " lower(c.person.localReferanceNo)=:q "
                 + " or "
-                + " lower(c.person.ssNumber)=:q "
-                + " ) "
-                + " order by c.phn";
+                + " lower(c.person.ssNumber)=:q"
+                + " ) ";
 
         objs = getFacade().findByJpql(j, m);
         if (objs != null && !objs.isEmpty()) {
             cs = objectsToClientBasicDataObjects(objs);
             return cs;
         }
-
+        System.out.println("2 listPatientsByIDsStepviceWithBasicData = " + new Date().getTime());
         cs = new ArrayList<>();
         return cs;
     }

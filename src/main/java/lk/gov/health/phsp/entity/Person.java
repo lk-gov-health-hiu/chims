@@ -31,11 +31,13 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.Transient;
+import javax.xml.bind.annotation.XmlRootElement;
 import lk.gov.health.phsp.pojcs.Identifiable;
 import org.joda.time.LocalDate;
 import org.joda.time.Period;
@@ -47,6 +49,7 @@ import org.joda.time.PeriodType;
  * Informatics)
  */
 @Entity
+@XmlRootElement
 @Table
 public class Person implements Serializable, Identifiable {
 
@@ -58,30 +61,31 @@ public class Person implements Serializable, Identifiable {
 
     @ManyToOne(fetch = FetchType.EAGER)
     private Item title;
+    @Index
     private String name;
 
     @ManyToOne(fetch = FetchType.EAGER)
     private Item sex;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private Item citizenship;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private Item ethinicGroup;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private Item religion;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private Item mariatalStatus;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private Item educationStatus;
 
     private String occupation;
 
-    @Index
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
+    @Index
     private Date dateOfBirth;
 
     private boolean dobIsAnApproximation;
@@ -93,30 +97,28 @@ public class Person implements Serializable, Identifiable {
     private String phone1;
     @Index
     private String phone2;
-    @Index
     private String email;
     @Index
     private String nic;
     @Index
     private String passportNumber;
+
+    private String website;
+    private String drivingLicenseNumber;
     @Index
     private String localReferanceNo;
     @Index
     private String ssNumber;
 
-    private String website;
-    private String drivingLicenseNumber;
-
-
     @ManyToOne(fetch = FetchType.EAGER)
     private Area gnArea;
     @ManyToOne(fetch = FetchType.EAGER)
     private Area dsArea;
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     private Area phmArea;
     @ManyToOne(fetch = FetchType.LAZY)
     private Area mohArea;
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     private Area district;
     @ManyToOne(fetch = FetchType.LAZY)
     private Area province;
