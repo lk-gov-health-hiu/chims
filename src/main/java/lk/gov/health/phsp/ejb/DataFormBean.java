@@ -181,7 +181,6 @@ public class DataFormBean {
             }
             for (DataItem tItem : tForm.getItems()) {
                 if (tItem.getDi() == null || tItem.getDi().getSelectionDataType() == null) {
-                    System.err.println("Null in (tItem.getDi() == null || tItem.getDi().getSelectionDataType())");
                     continue;
                 }
 
@@ -189,11 +188,9 @@ public class DataFormBean {
                     if (tItem.getDi().getSelectionDataType() == SelectionDataType.Procedure_Request) {
                         for (DataItem ttItem : tItem.getAddedItems()) {
                             if (ttItem.getCi() == null) {
-                                System.err.println("ttItem.getCi() is null");
                                 continue;
                             }
                             if (ttItem.getCi().getItemValue() == null) {
-                                System.err.println("ttItem.getCi().getItemValue() is null");
                                 continue;
                             }
                             ApiRequest r = new ApiRequest();
@@ -214,11 +211,9 @@ public class DataFormBean {
                         apiRequestFacade.create(rfs);
                         for (DataItem ttItem : tItem.getAddedItems()) {
                             if (ttItem.getCi() == null) {
-                                System.err.println("ttItem.getCi() is null");
                                 continue;
                             }
                             if (ttItem.getCi().getPrescriptionValue() == null) {
-                                System.err.println("ttItem.getCi().getPrescriptionValue() is null");
                                 continue;
                             }
                             ApiRequest r = new ApiRequest();

@@ -68,9 +68,7 @@ public class IntegrationTriggerController implements Serializable {
     public CompletableFuture<List<Client>> fetchClientsFromEndpoints(SearchQueryData sqd) {
         System.out.println("sqd = " + sqd);
         if (sqd != null) {
-            System.out.println("sqd = " + sqd.getSearchCriteria());
         }
-        System.out.println("fetchClientsFromEndpoints = ");
         return CompletableFuture.supplyAsync(() -> {
             List<IntegrationTrigger> itemsNeededToBeTriggered = fillItems(IntegrationEvent.PATIENT_SEARCH);
             if (itemsNeededToBeTriggered == null || itemsNeededToBeTriggered.isEmpty()) {
@@ -103,7 +101,6 @@ public class IntegrationTriggerController implements Serializable {
     }
 
     public CompletableFuture<List<FhirOperationResult>> createNewClientsToEndpoints(Client client) {
-        System.out.println("Creating new clients to endpoints...");
         return CompletableFuture.supplyAsync(() -> {
             List<FhirOperationResult> outcomes = new ArrayList<>();
             List<IntegrationTrigger> itemsNeededToBeTriggered = fillItems(IntegrationEvent.PATIENT_SAVE);
@@ -111,7 +108,6 @@ public class IntegrationTriggerController implements Serializable {
             if (itemsNeededToBeTriggered == null || itemsNeededToBeTriggered.isEmpty()) {
                 return outcomes;
             }
-            System.out.println("before future outcomes");
             List<CompletableFuture<FhirOperationResult>> futureOutcomes = new ArrayList<>();
             for (IntegrationTrigger it : itemsNeededToBeTriggered) {
                 System.out.println("it = " + it);
@@ -119,13 +115,11 @@ public class IntegrationTriggerController implements Serializable {
                 if (it.getIntegrationEndpoint() == null) {
                     continue;
                 }
-                System.out.println("it.getIntegrationEndpoint().getCommunicationProtocol() = " + it.getIntegrationEndpoint().getCommunicationProtocol());
                 if (it.getIntegrationEndpoint().getCommunicationProtocol() == null) {
                     continue;
                 }
                 CompletableFuture<FhirOperationResult> futureOutcome;
                 if (it.getIntegrationEndpoint().getCommunicationProtocol() == CommunicationProtocol.FHIR_R4) {
-                    System.out.println("going to fhir async = ");
                     String oldId = findFhirResourceLinkId(client, it.getIntegrationEndpoint());
                     if (oldId == null) {
                         futureOutcome = fhirR4Controller.createPatientInFhirServerAsync(client, it.getIntegrationEndpoint());

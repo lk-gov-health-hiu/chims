@@ -635,7 +635,6 @@ public class DesignComponentFormSetController implements Serializable {
             System.out.println("value = " + value);
             java.lang.Long key;
             key = Long.valueOf(value);
-            System.out.println("key = " + key);
             return key;
         }
 

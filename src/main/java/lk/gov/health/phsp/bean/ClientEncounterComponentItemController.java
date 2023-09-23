@@ -351,7 +351,6 @@ public class ClientEncounterComponentItemController implements Serializable {
                         dataType = c.getReferanceDesignComponentFormItem().getItem().getDataType();
                     } else {
                         dataType = c.getReferanceDesignComponentFormItem().getItem().getDataType();
-                        System.err.println("Error in data types");
                     }
                 }
 
@@ -673,7 +672,6 @@ public class ClientEncounterComponentItemController implements Serializable {
 // Comment by Dr M H B Ariyaratne with assistance from ChatGPT from OpenAI
     public void saveCi(ClientEncounterComponentItem i) {
         if (i == null) {
-            System.out.println("ClientEncounterComponentItem is null");
             return;
         }
         if (i.getId() == null) {

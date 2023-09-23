@@ -945,7 +945,6 @@ public class ApiResource {
             JSONObject ja = new JSONObject();
 
             if (a.getRequestCeci() == null) {
-                System.err.println("a.getRequestCeci() is null");
                 continue;
             }
 
@@ -958,7 +957,6 @@ public class ApiResource {
             if (ci.getItemValue() != null) {
                 i = ci.getItemValue();
             } else {
-                System.err.println("ci.getItemValue() is null");
                 continue;
             }
 
@@ -966,7 +964,6 @@ public class ApiResource {
                 if (ci.getEncounter().getClient() != null) {
                     c = ci.getEncounter().getClient();
                 } else {
-                    System.err.println("ci.getEncounter().getClient() is null");
                     continue;
                 }
                 if (ci.getInstitutionValue() != null) {

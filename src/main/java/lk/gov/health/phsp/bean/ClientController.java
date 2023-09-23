@@ -214,13 +214,11 @@ public class ClientController implements Serializable {
     private boolean pushComplete = false;
 
     public String pushToFhirServers() {
-        System.out.println("Starting push to FHIR servers...");
         CompletableFuture<List<FhirOperationResult>> futureResults
                 = integrationTriggerController.createNewClientsToEndpoints(selected);
         futureResults.thenAccept(results -> {
             fhirOperationResults = results;
             pushComplete = true; // Mark the operation as complete
-            System.out.println("Push to FHIR servers complete.");
         });
         return "/client/push_result?faces-redirect=true"; // Navigate to the push_result page
     }
@@ -382,12 +380,10 @@ public class ClientController implements Serializable {
     // <editor-fold defaultstate="collapsed" desc="Functions">
     public void loadClientFormDataEntry() {
         if (selected == null) {
-            System.err.println("No Selected");
             return;
         }
         DesignComponentFormSet dfs = designComponentFormSetController.getClintFormSet(webUserController.getLoggedUser().getInstitution());
         if (dfs == null) {
-            System.err.println("No DFS");
             return;
         }
         ClientEncounterComponentFormSet cfs = clientEncounterComponentFormSetController.findClientEncounterFromset(
@@ -895,7 +891,6 @@ public class ClientController implements Serializable {
                 c.setCreateInstitution(c.getCreatedBy().getInstitution());
                 c.setPoiInstitution(institution);
                 getFacade().edit(c);
-                System.out.println("c = " + c.getId());
             }
 
         }
@@ -1777,8 +1772,6 @@ public class ClientController implements Serializable {
         selectedClientsFromIntegrations = new ArrayList<>();
         fhirOperationResults = new ArrayList<>(); // Initialize the list to store FhirOperationResult objects
 
-        System.out.println("Selected clients from local search: " + selectedClients);
-
         searchQueryData = new SearchQueryData();
         searchQueryData.setSearchCriteria(SearchCriteria.NIC_ONLY);
         searchQueryData.setNic(searchingNicNo);
@@ -1786,10 +1779,8 @@ public class ClientController implements Serializable {
         CompletableFuture<List<Client>> futureClients = integrationTriggerController.fetchClientsFromEndpoints(searchQueryData);
         futureClients.thenAccept(clients -> {
             if (clients != null && !clients.isEmpty()) {
-                System.out.println("Selected clients from integrations: " + clients);
                 selectedClientsFromIntegrations.addAll(clients);
             } else {
-                System.out.println("No clients found from integrations for NIC: " + searchingNicNo);
             }
         }).exceptionally(ex -> {
             ex.printStackTrace();
@@ -1849,15 +1840,11 @@ public class ClientController implements Serializable {
 
         fhirOperationResults = new ArrayList<>(); // Initialize the list to store FhirOperationResult objects
 
-        System.out.println("Selected clients from local search: " + selectedClients);
-
         CompletableFuture<List<Client>> futureClients = integrationTriggerController.fetchClientsFromEndpoints(searchQueryData);
         futureClients.thenAccept(clients -> {
             if (clients != null && !clients.isEmpty()) {
-                System.out.println("Selected clients from integrations: " + clients);
                 selectedClientsFromIntegrations.addAll(clients);
             } else {
-                System.out.println("No clients found from integrations for NIC: " + searchingNicNo);
             }
         }).exceptionally(ex -> {
             ex.printStackTrace();
@@ -2016,19 +2003,19 @@ public class ClientController implements Serializable {
     }
 
     public String searchByAnyIdWithBasicData() {
-        System.out.println("searchByAnyIdWithBasicData 1 = " + new Date().getTime());
+//        System.out.println("searchByAnyIdWithBasicData 1 = " + new Date().getTime());
         userTransactionController.recordTransaction("Search By Any Id");
         clearExistsValues();
         if (searchingId == null) {
             searchingId = "";
         }
-        System.out.println("searchByAnyIdWithBasicData 2 = " + new Date().getTime());
-        selectedClientsWithBasicData = listPatientsByIDsStepviceWithBasicData(searchingId.trim().toUpperCase());
-        System.out.println("searchByAnyIdWithBasicData 3 = " + new Date().getTime());
+//        System.out.println("searchByAnyIdWithBasicData 2 = " + new Date().getTime());
+        selectedClientsWithBasicData = listPatientsByIDsWithBasicData(searchingId.trim().toUpperCase());
+//        System.out.println("searchByAnyIdWithBasicData 3 = " + new Date().getTime());
         if (selectedClientsWithBasicData == null || selectedClientsWithBasicData.isEmpty()) {
             JsfUtil.addErrorMessage("No Results Found. Try different search criteria.");
             userTransactionController.recordTransaction("Search By Any Id Failed as no match");
-            System.out.println("searchByAnyIdWithBasicData 4 = " + new Date().getTime());
+//            System.out.println("searchByAnyIdWithBasicData 4 = " + new Date().getTime());
             return "/client/search_by_id";
         }
         if (selectedClientsWithBasicData.size() == 1) {
@@ -2036,13 +2023,13 @@ public class ClientController implements Serializable {
             selectedClients = null;
             searchingId = "";
             userTransactionController.recordTransaction("Search By Any Id returend single match");
-            System.out.println("searchByAnyIdWithBasicData 5 = " + new Date().getTime());
+//            System.out.println("searchByAnyIdWithBasicData 5 = " + new Date().getTime());
             return toClientProfile();
         } else {
             selected = null;
             searchingId = "";
             userTransactionController.recordTransaction("Search By Any Id returned multiple matches");
-            System.out.println("searchByAnyIdWithBasicData 6 = " + new Date().getTime());
+//            System.out.println("searchByAnyIdWithBasicData 6 = " + new Date().getTime());
             return toSelectClientBasic();
         }
     }
@@ -2393,6 +2380,51 @@ public class ClientController implements Serializable {
         }
 
         cs = new ArrayList<>();
+        return cs;
+    }
+
+    public List<ClientBasicData> listPatientsByIDsWithBasicData(String ids) {
+        Long st = new Date().getTime();
+        System.out.println("listPatientsByIDsWithBasicData - start - " + st);
+        List<ClientBasicData> cs = new ArrayList<>();
+        if (ids == null || ids.trim().equals("")) {
+            return cs;
+        }
+        String jpql;
+        Map m;
+        m = new HashMap();
+        jpql = "select new lk.gov.health.phsp.pojcs.ClientBasicData("
+                + "c.id, "
+                + "c.phn, "
+                + "c.person.name, "
+                + "c.person.nic, "
+                + "c.person.phone1, "
+                + "c.person.address "
+                + ") "
+                + " from Client c "
+                + " where c.retired=false "
+                + " and "
+                + " ("
+                + " lower(c.phn)=:q "
+                + " or "
+                + " lower(c.person.localReferanceNo)=:q "
+                + " or "
+                + " lower(c.person.ssNumber)=:q "
+                + " or "
+                + " c.person.phone1=:q "
+                + " or "
+                + " c.person.phone2=:q "
+                + " or "
+                + " lower(c.person.nic)=:q "
+                + " ) ";
+        m.put("q", ids.trim().toLowerCase());
+        System.out.println("m = " + m);
+        System.out.println("j = " + jpql);
+        cs = (List<ClientBasicData>) getFacade().findLightsByJpql(jpql, m);
+        System.out.println("cs size = " + cs.size());
+        Long ed = new Date().getTime();
+        System.out.println("listPatientsByIDsWithBasicData - end - " + ed);
+        System.out.println("listPatientsByIDsWithBasicData - Duration - " + (ed - st));
         return cs;
     }
 
@@ -3095,10 +3127,8 @@ public class ClientController implements Serializable {
         try {
             System.out.println("Attempting to find entity with ID: " + selectedId);
             selected = getFacade().find(selectedId);
-            System.out.println("Entity found: " + selected);
             this.selectedId = selectedId;
         } catch (Exception e) {
-            System.out.println("Exception while finding entity: " + e.getMessage());
             e.printStackTrace();
         }
     }

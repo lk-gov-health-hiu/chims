@@ -110,17 +110,14 @@ public class ApiRequestApplicationController implements Serializable {
             List<ApiRequest> irs = new ArrayList<>();
             for (ApiRequest presc : precrips) {
                 if (presc.getRequestCefs() == null) {
-                    System.err.println("No CEFS");
                     continue;
                 }
                 ClientEncounterComponentFormSet cefs = presc.getRequestCefs();
                 if (cefs.getEncounter() == null) {
-                    System.err.println("No enconter");
                     continue;
                 }
                 Encounter e = cefs.getEncounter();
                 if (e.getClient() == null) {
-                    System.err.println("No Client");
                     continue;
                 }
                 Client c = e.getClient();
