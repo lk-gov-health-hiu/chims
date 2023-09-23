@@ -47,7 +47,7 @@ public class WebUser implements Serializable, Identifiable {
     Long id;
 
     String webUserPassword;
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH })
     Person person;
     //Main Properties
     @Column(length = 50, nullable = false, unique = true)

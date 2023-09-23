@@ -26,6 +26,7 @@ package lk.gov.health.phsp.entity;
 import lk.gov.health.phsp.enums.ItemType;
 import java.io.Serializable;
 import java.util.Date;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -35,10 +36,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
-import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.Transient;
-import javax.xml.bind.annotation.XmlRootElement;
 import lk.gov.health.phsp.enums.SelectionDataType;
 import lk.gov.health.phsp.pojcs.Identifiable;
 
@@ -47,8 +46,6 @@ import lk.gov.health.phsp.pojcs.Identifiable;
  * @author User
  */
 @Entity
-@Table
-@XmlRootElement
 public class Item implements Serializable, Identifiable  {
 
     private static final long serialVersionUID = 1L;
@@ -66,7 +63,7 @@ public class Item implements Serializable, Identifiable  {
     private String code;
     private String barcode;
     private String localCode;
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     private Item parent;
 
     @Lob

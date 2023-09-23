@@ -255,6 +255,10 @@ public class ClientController implements Serializable {
 
     public String toClientProfile() {
         selectedClientsLastFiveClinicVisits = null;
+        updateYearDateMonth();
+        selectedClientChanged();
+        selectedClientsClinics = null;
+        selectedClientsLastFiveClinicVisits = null;
 //        loadClientFormDataEntry();
         userTransactionController.recordTransaction("To Client Profile");
         return "/client/profile";
@@ -266,6 +270,29 @@ public class ClientController implements Serializable {
         if (selected == null) {
             JsfUtil.addErrorMessage("No such client");
             return "";
+        }
+        if (selected.getPerson() == null) {
+            System.out.println("Person Null");
+            return "";
+        }
+        if (selected.getPerson().getGnArea() == null) {
+            System.out.println("Person Null");
+        } else {
+            if (selected.getPerson().getGnArea().getName() == null) {
+                System.out.println("selected.getPerson().getGnArea().getName() is null ");
+            }else{
+                System.out.println("selected.getPerson().getGnArea().getName() = " + selected.getPerson().getGnArea().getName());
+            }
+        }
+        if (selected.getPerson().getSex() == null) {
+            System.out.println("Dex Null");
+        } else {
+            if(selected.getPerson().getSex().getName()==null){
+                System.out.println("selected.getPerson().getSex().getName() is null");
+            }else{
+                System.out.println("selected.getPerson().getSex().getName() = " + selected.getPerson().getSex().getName());
+            }
+            
         }
         selectedClientsClinics = null;
         selectedClientsLastFiveClinicVisits = null;
@@ -2766,10 +2793,10 @@ public class ClientController implements Serializable {
 
     public void setSelected(Client selected) {
         this.selected = selected;
-        updateYearDateMonth();
-        selectedClientChanged();
-        selectedClientsClinics = null;
-        selectedClientsLastFiveClinicVisits = null;
+//        updateYearDateMonth();
+//        selectedClientChanged();
+//        selectedClientsClinics = null;
+//        selectedClientsLastFiveClinicVisits = null;
     }
 
     private ClientFacade getFacade() {

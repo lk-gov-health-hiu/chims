@@ -27,8 +27,7 @@ public class Client implements Serializable , Identifiable {
     private static final long serialVersionUID = 1L;
 
     @Index
-    @OneToOne(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
-    @Index
+    @OneToOne(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH })
     private Person person;
 
     @Index
@@ -44,9 +43,9 @@ public class Client implements Serializable , Identifiable {
     private Date createdAt;
     @Temporal(javax.persistence.TemporalType.DATE)
     private Date createdOn;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private Institution createInstitution;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private Institution poiInstitution;
     /*
     Last Edit Properties

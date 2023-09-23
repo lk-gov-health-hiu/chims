@@ -25,7 +25,9 @@ package lk.gov.health.phsp.entity;
 
 import java.io.Serializable;
 import java.util.Date;
+import javax.annotation.PostConstruct;
 import javax.jdo.annotations.Index;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -59,7 +61,7 @@ public class Person implements Serializable, Identifiable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.REFRESH })
     private Item title;
     @Index
     private String name;
@@ -67,19 +69,19 @@ public class Person implements Serializable, Identifiable {
     @ManyToOne(fetch = FetchType.EAGER)
     private Item sex;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.REFRESH })
     private Item citizenship;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.REFRESH })
     private Item ethinicGroup;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.REFRESH })
     private Item religion;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.REFRESH })
     private Item mariatalStatus;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.REFRESH })
     private Item educationStatus;
 
     private String occupation;
@@ -112,15 +114,15 @@ public class Person implements Serializable, Identifiable {
 
     @ManyToOne(fetch = FetchType.EAGER)
     private Area gnArea;
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH })
     private Area dsArea;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH })
     private Area phmArea;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.REFRESH })
     private Area mohArea;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.REFRESH })
     private Area district;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH })
     private Area province;
 
     //Created Properties
@@ -242,6 +244,9 @@ public class Person implements Serializable, Identifiable {
      * @return the gnArea
      */
     public Area getGnArea() {
+        if (gnArea == null) {
+            System.out.println("GN Area is NULL");
+        }
         return gnArea;
     }
 
@@ -600,6 +605,35 @@ public class Person implements Serializable, Identifiable {
         return getName();
     }
 // </editor-fold>
+
+    @PostConstruct
+    public void init() {
+        if (this.getGnArea() != null) {
+            System.out.println("this = " + this.getGnArea());
+        } else {
+            System.out.println("GN IS NULL");
+        }
+        if (this.getGnArea() != null) {
+
+        }
+        if (this.getDsArea() != null) {
+
+        }
+        if (this.getDistrict() != null) {
+
+        }
+        if (this.getProvince() != null) {
+
+        }
+        if (this.getSex() != null) {
+            System.out.println("this = " + this.getSex());
+        } else {
+            System.out.println("sex is null");
+        }
+        if (this.getTitle() != null) {
+
+        }
+    }
 
     public boolean isDobIsAnApproximation() {
         return dobIsAnApproximation;

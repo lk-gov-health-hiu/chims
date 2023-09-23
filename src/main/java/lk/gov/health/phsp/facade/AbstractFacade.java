@@ -189,12 +189,9 @@ public abstract class AbstractFacade<T extends Identifiable> {
     // Comment by Dr M H B Ariyaratne with assistance from ChatGPT from OpenAI
     public T find(Object id) {
         try {
-            System.out.println("Attempting to find entity with ID: " + id);
             T entity = getEntityManager().find(entityClass, id);
-            System.out.println("Entity found: " + entity);
             return entity;
         } catch (Exception e) {
-            System.out.println("Exception while finding entity: " + e.getMessage());
             e.printStackTrace();
             return null;
         }
