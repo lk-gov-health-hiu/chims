@@ -26,7 +26,7 @@ package lk.gov.health.phsp.entity;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.xml.bind.annotation.XmlRootElement;
+
 import lk.gov.health.phsp.enums.ItemArrangementStrategy;
 
 /**
@@ -34,7 +34,7 @@ import lk.gov.health.phsp.enums.ItemArrangementStrategy;
  * @author buddhika
  */
 @Entity
-@XmlRootElement
+
 public class DesignComponentForm extends DesignComponent {
     @Enumerated(EnumType.STRING)
     private ItemArrangementStrategy itemArrangementStrategy;

@@ -25,6 +25,7 @@ package lk.gov.health.phsp.entity;
 
 import java.io.Serializable;
 import java.util.Date;
+import javax.jdo.annotations.Index;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -36,7 +37,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.Transient;
-import javax.xml.bind.annotation.XmlRootElement;
+
 import lk.gov.health.phsp.bean.CommonController;
 import lk.gov.health.phsp.enums.TimePeriodType;
 import lk.gov.health.phsp.pojcs.Identifiable;
@@ -54,7 +55,7 @@ import org.eclipse.persistence.annotations.CacheType;
         alwaysRefresh = true
 )
 @Table
-@XmlRootElement
+
 public class StoredQueryResult implements Serializable, Identifiable  {
 
     private static final long serialVersionUID = 1L;
@@ -62,17 +63,24 @@ public class StoredQueryResult implements Serializable, Identifiable  {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    @Index
     private String name;
+    @Index
     private String resultType;
 
+    @Index
     @ManyToOne
     private Institution institution;
+    @Index
     @ManyToOne
     private Area area;
+    @Index
     @ManyToOne
     private WebUser webUser;
+    @Index
     @ManyToOne
     private QueryComponent queryComponent;
+    @Index
     @Enumerated(EnumType.STRING)
     private TimePeriodType timePeriodType;
 
@@ -122,6 +130,7 @@ public class StoredQueryResult implements Serializable, Identifiable  {
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date createdAt;
     //Retairing properties
+    @Index
     private boolean retired;
     @ManyToOne
     private WebUser retirer;

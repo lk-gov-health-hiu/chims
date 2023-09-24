@@ -26,6 +26,7 @@ package lk.gov.health.phsp.entity;
 import lk.gov.health.phsp.enums.ItemType;
 import java.io.Serializable;
 import java.util.Date;
+import javax.jdo.annotations.Index;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -56,13 +57,20 @@ public class Item implements Serializable, Identifiable  {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+    @Index
     @Enumerated(EnumType.STRING)
     ItemType itemType;
+    @Index
     String name;
+    @Index
     private String displayName;
+    @Index
     private String code;
+    @Index
     private String barcode;
+    @Index
     private String localCode;
+    @Index
     @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     private Item parent;
 
@@ -78,6 +86,7 @@ public class Item implements Serializable, Identifiable  {
     private Boolean multipleEntiesPerClientStatus;
     private Boolean containsPersonallyIdentifiableData;
 
+    @Index
     private int orderNo;
 
     @ManyToOne
@@ -90,6 +99,7 @@ public class Item implements Serializable, Identifiable  {
     private Date editedAt;
     //Retairing properties
     private boolean retired;
+    @Index
     @ManyToOne
     private WebUser retiredBy;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)

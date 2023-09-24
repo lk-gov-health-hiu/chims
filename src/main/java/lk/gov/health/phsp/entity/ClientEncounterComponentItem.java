@@ -24,6 +24,7 @@
 package lk.gov.health.phsp.entity;
 
 import java.util.Date;
+import javax.jdo.annotations.Index;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -32,7 +33,7 @@ import javax.persistence.FetchType;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
-import javax.xml.bind.annotation.XmlRootElement;
+
 import lk.gov.health.phsp.enums.DataRepresentationType;
 
 /**
@@ -40,15 +41,19 @@ import lk.gov.health.phsp.enums.DataRepresentationType;
  * @author buddhika
  */
 @Entity
-@XmlRootElement
+
 public class ClientEncounterComponentItem extends ClientEncounterComponent {
 
+    @Index
     @ManyToOne(fetch = FetchType.EAGER)
     private Client itemClient;
+    @Index
     @ManyToOne(fetch = FetchType.EAGER)
     private Encounter itemEncounter;
+    @Index
     @ManyToOne(fetch = FetchType.EAGER)
     private ClientEncounterComponentFormSet itemFormset;
+    @Index
     @Enumerated(EnumType.STRING)
     private DataRepresentationType dataRepresentationType;
 
@@ -62,8 +67,10 @@ public class ClientEncounterComponentItem extends ClientEncounterComponent {
     private Long longNumberValue;
     private Double realNumberValue;
     private Boolean booleanValue;
+    @Index
     @Temporal(javax.persistence.TemporalType.DATE)
     private Date dateValue;
+    @Index
     @ManyToOne(fetch = FetchType.EAGER)
     private Item itemValue;
     @ManyToOne(fetch = FetchType.EAGER)
@@ -71,6 +78,7 @@ public class ClientEncounterComponentItem extends ClientEncounterComponent {
     @ManyToOne(fetch = FetchType.EAGER)
     private Institution institutionValue;
     @ManyToOne(fetch = FetchType.EAGER)
+    @Index
     private Client clientValue;
     @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH })
     private Prescription prescriptionValue;

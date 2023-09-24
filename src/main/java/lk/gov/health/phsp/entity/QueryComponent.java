@@ -33,7 +33,7 @@ import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
-import javax.xml.bind.annotation.XmlRootElement;
+
 import lk.gov.health.phsp.enums.QueryCriteriaMatchType;
 import lk.gov.health.phsp.enums.QueryDataType;
 
@@ -49,7 +49,7 @@ import lk.gov.health.phsp.enums.RelationshipType;
  */
 @Entity
 @Table
-@XmlRootElement
+
 public class QueryComponent extends Component {
 
     @Lob

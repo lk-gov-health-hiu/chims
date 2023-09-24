@@ -32,7 +32,7 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import javax.xml.bind.annotation.XmlRootElement;
+
 import lk.gov.health.phsp.pojcs.Identifiable;
 
 /**
@@ -40,7 +40,7 @@ import lk.gov.health.phsp.pojcs.Identifiable;
  */
 @Entity
 @Table
-@XmlRootElement
+
 public class Phn implements Serializable, Identifiable  {
 
     private static final long serialVersionUID = 1L;

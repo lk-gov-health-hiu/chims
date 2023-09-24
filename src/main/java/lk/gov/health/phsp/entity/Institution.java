@@ -26,6 +26,7 @@ package lk.gov.health.phsp.entity;
 import lk.gov.health.phsp.enums.InstitutionType;
 import java.io.Serializable;
 import java.util.Date;
+import javax.jdo.annotations.Index;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -38,7 +39,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
-import javax.xml.bind.annotation.XmlRootElement;
+
 import lk.gov.health.phsp.pojcs.Identifiable;
 
 /**
@@ -46,19 +47,22 @@ import lk.gov.health.phsp.pojcs.Identifiable;
  * @author Dr M H B Ariyaratne, buddhika.ari@gmail.com
  */
 @Entity
-@XmlRootElement
+
 @Table
-public class Institution implements Serializable, Identifiable  {
+public class Institution implements Serializable, Identifiable {
 
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    @Index
     @Enumerated(EnumType.STRING)
     private InstitutionType institutionType;
 
+    @Index
     private String name;
+    @Index
     private String code;
     private String address;
     private String fax;
@@ -71,24 +75,34 @@ public class Institution implements Serializable, Identifiable  {
     private Institution poiInstitution;
     private Long lastHin;
 
+    @Index
     @ManyToOne(fetch = FetchType.EAGER)
     private Institution parent;
+    @Index
     @ManyToOne(fetch = FetchType.EAGER)
     private Area gnArea;
+    @Index
     @ManyToOne(fetch = FetchType.EAGER)
     private Area phmArea;
+    @Index
     @ManyToOne(fetch = FetchType.EAGER)
     private Area phiArea;
+    @Index
     @ManyToOne(fetch = FetchType.EAGER)
     private Area dsDivision;
+    @Index
     @ManyToOne(fetch = FetchType.EAGER)
     private Area mohArea;
+    @Index
     @ManyToOne(fetch = FetchType.EAGER)
     private Area district;
+    @Index
     @ManyToOne(fetch = FetchType.EAGER)
     private Area rdhsArea;
+    @Index
     @ManyToOne(fetch = FetchType.EAGER)
     private Area province;
+    @Index
     @ManyToOne(fetch = FetchType.EAGER)
     private Area pdhsArea;
 
@@ -101,6 +115,7 @@ public class Institution implements Serializable, Identifiable  {
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date editedAt;
     //Retairing properties
+    @Index
     private boolean retired;
     @ManyToOne
     private WebUser retirer;
@@ -145,11 +160,11 @@ public class Institution implements Serializable, Identifiable  {
         if (institutionType != null) {
             to += institutionType.getLabel();
         }
-        if(province!=null){
-            to+= province.getId();
+        if (province != null) {
+            to += province.getId();
         }
-        if(district!=null){
-            to+=district.getId();
+        if (district != null) {
+            to += district.getId();
         }
         return to;
     }
@@ -217,7 +232,6 @@ public class Institution implements Serializable, Identifiable  {
     public void setWeb(String web) {
         this.web = web;
     }
-
 
     public String getCode() {
         return code;

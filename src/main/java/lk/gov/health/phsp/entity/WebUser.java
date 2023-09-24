@@ -10,6 +10,7 @@ package lk.gov.health.phsp.entity;
 import lk.gov.health.phsp.enums.WebUserRole;
 import java.io.Serializable;
 import java.util.Date;
+import javax.jdo.annotations.Index;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -23,7 +24,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.Transient;
-import javax.xml.bind.annotation.XmlRootElement;
+
 import lk.gov.health.phsp.enums.WebUserRoleLevel;
 import lk.gov.health.phsp.pojcs.Identifiable;
 
@@ -33,7 +34,7 @@ import lk.gov.health.phsp.pojcs.Identifiable;
  * Informatics)
  */
 @Entity
-@XmlRootElement
+
 @Table
 public class WebUser implements Serializable, Identifiable {
 
@@ -47,9 +48,11 @@ public class WebUser implements Serializable, Identifiable {
     Long id;
 
     String webUserPassword;
+    @Index
     @OneToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH })
     Person person;
     //Main Properties
+    @Index
     @Column(length = 50, nullable = false, unique = true)
     String name;
     String description;
@@ -59,6 +62,7 @@ public class WebUser implements Serializable, Identifiable {
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     Date createdAt;
     //Retairing properties
+    @Index
     boolean retired;
     @ManyToOne
     WebUser retirer;

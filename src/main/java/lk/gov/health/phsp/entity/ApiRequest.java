@@ -25,6 +25,7 @@ package lk.gov.health.phsp.entity;
 
 import java.io.Serializable;
 import java.util.Date;
+import javax.jdo.annotations.Index;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -48,18 +49,23 @@ public class ApiRequest implements Serializable , Identifiable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    @Index
     @Column(length = 100)
     private String name;
 
+    @Index
     @ManyToOne(fetch = FetchType.EAGER)
     private Encounter encounter;
 
+    @Index
     @ManyToOne(fetch = FetchType.EAGER)
     private ClientEncounterComponentItem requestCeci;
 
+    @Index
     @ManyToOne(fetch = FetchType.EAGER)
     private DesignComponentFormItem requestDcfi;
 
+    @Index
     @ManyToOne(fetch = FetchType.EAGER)
     private ApiRequest parent;
 
@@ -106,6 +112,7 @@ public class ApiRequest implements Serializable , Identifiable {
     /*
     Retire Properties
      */
+    @Index
     private boolean retired;
     @ManyToOne(fetch = FetchType.EAGER)
     private WebUser retiredBy;

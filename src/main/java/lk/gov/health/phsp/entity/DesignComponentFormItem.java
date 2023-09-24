@@ -29,7 +29,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
-import javax.xml.bind.annotation.XmlRootElement;
+
 import lk.gov.health.phsp.enums.AvailableDataType;
 import lk.gov.health.phsp.enums.ComponentSetType;
 import lk.gov.health.phsp.enums.DataCompletionStrategy;
@@ -45,7 +45,7 @@ import lk.gov.health.phsp.enums.SelectionDataType;
  * @author sunila_soft
  */
 @Entity
-@XmlRootElement
+
 public class DesignComponentFormItem extends DesignComponent {
 
     private boolean required;

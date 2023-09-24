@@ -64,6 +64,7 @@ public class Client implements Serializable , Identifiable {
     /*
     Retire Properties
      */
+    @Index
     private boolean retired;
     private boolean reservedClient;
     @ManyToOne(fetch = FetchType.LAZY)

@@ -2093,10 +2093,15 @@ public class ClientController implements Serializable {
     public String searchByAnyId() {
         clearExistsValues();
         if (searchingId == null) {
-            searchingId = "";
+            JsfUtil.addErrorMessage("Enter a search text");
+            return "";
+        }
+        if (searchingId.trim().equals("")) {
+            JsfUtil.addErrorMessage("Enter a search text");
+            return "";
         }
 
-        selectedClients = listPatientsByIDsStepvice(searchingId.trim().toUpperCase());
+        selectedClients = listPatientsByIDs(searchingId.trim().toUpperCase());
 
         if (selectedClients == null || selectedClients.isEmpty()) {
             JsfUtil.addErrorMessage("No Results Found. Try different search criteria.");
@@ -2486,6 +2491,9 @@ public class ClientController implements Serializable {
     }
 
     public List<Client> listPatientsByIDs(String ids) {
+        Long start = new Date().getTime();
+        Long end;
+        System.out.println("Start = " + start);
         if (ids == null || ids.trim().equals("")) {
             return null;
         }
@@ -2497,19 +2505,24 @@ public class ClientController implements Serializable {
                 + " or "
                 + " c.person.phone2=:q "
                 + " or "
-                + " c.person.nic=:q "
+                + " lower(c.person.nic)=:q "
                 + " or "
-                + " c.phn=:q "
+                + " lower(c.phn)=:q "
                 + " or "
-                + " c.person.localReferanceNo=:q "
+                + " lower(c.person.localReferanceNo)=:q "
                 + " or "
-                + " c.person.ssNumber=:q "
+                + " lower(c.person.ssNumber)=:q "
                 + " ) "
                 + " order by c.phn";
         Map m = new HashMap();
         m.put("res", true);
-        m.put("q", ids.trim());
-        return getFacade().findByJpql(j, m);
+        m.put("q", ids.trim().toLowerCase());
+        List<Client> cs = getFacade().findByJpql(j, m);
+        System.out.println("list size " + cs.size());
+        end = new Date().getTime();
+        System.out.println("end = " + end);
+        System.out.println("duration = " + (end-start));
+        return cs;
     }
 
     public Client prepareCreate() {
