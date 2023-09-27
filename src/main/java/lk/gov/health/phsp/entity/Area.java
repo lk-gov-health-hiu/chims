@@ -28,6 +28,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import javax.jdo.annotations.Index;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -40,7 +41,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
-import javax.xml.bind.annotation.XmlRootElement;
+
 import javax.xml.bind.annotation.XmlTransient;
 import lk.gov.health.phsp.pojcs.Identifiable;
 
@@ -50,7 +51,7 @@ import lk.gov.health.phsp.pojcs.Identifiable;
  */
 @Entity
 @Table
-@XmlRootElement
+
 public class Area implements Serializable, Identifiable  {
 
     private static final long serialVersionUID = 1L;
@@ -59,27 +60,40 @@ public class Area implements Serializable, Identifiable  {
     private Long id;
 
     @Enumerated(EnumType.STRING)
+    @Index
     private AreaType type;
+    @Index
     private String name;
+    @Index
     private String code;
+    @Index
     private Long areauid;
+    @Index
     @ManyToOne(fetch = FetchType.EAGER)
     private Area parentArea;
 
+    @Index
     @ManyToOne(fetch = FetchType.EAGER)
     private Area phm;
+    @Index
     @ManyToOne(fetch = FetchType.EAGER)
     private Area phi;
+    @Index
     @ManyToOne(fetch = FetchType.EAGER)
     private Area dsd;
+    @Index
     @ManyToOne(fetch = FetchType.EAGER)
     private Area moh;
+    @Index
     @ManyToOne(fetch = FetchType.EAGER)
     private Area district;
+    @Index
     @ManyToOne(fetch = FetchType.EAGER)
     private Area province;
+    @Index
     @ManyToOne(fetch = FetchType.EAGER)
     private Area rdhsArea;
+    @Index
     @ManyToOne(fetch = FetchType.EAGER)
     private Area pdhsArea;
 
@@ -124,6 +138,7 @@ public class Area implements Serializable, Identifiable  {
     /*
     Retire Properties
      */
+    @Index
     private boolean retired;
     @ManyToOne(fetch = FetchType.EAGER)
     private WebUser retiredBy;

@@ -25,17 +25,20 @@ package lk.gov.health.phsp.entity;
 
 import java.io.Serializable;
 import java.util.Date;
+import javax.jdo.annotations.Index;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.Transient;
-import javax.xml.bind.annotation.XmlRootElement;
+
 import lk.gov.health.phsp.pojcs.Identifiable;
 
 /**
@@ -43,9 +46,8 @@ import lk.gov.health.phsp.pojcs.Identifiable;
  * @author buddhika
  */
 @Entity
-@Table
-@XmlRootElement
-public class Component implements Serializable, Identifiable  {
+@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
+public class Component implements Serializable, Identifiable {
 
     private static final long serialVersionUID = 1L;
 
@@ -56,24 +58,31 @@ public class Component implements Serializable, Identifiable  {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    @Index
     String name;
 
+    @Index
     private String code;
 
+    @Index
     @ManyToOne(fetch = FetchType.EAGER)
     private Item item;
 
     @Lob
     private String descreption;
 
+    @Index
     private Double orderNo;
 
+    @Index
     @ManyToOne(fetch = FetchType.EAGER)
     private Institution institution;
 
+    @Index
     @ManyToOne(fetch = FetchType.EAGER)
     private Component parentComponent;
 
+    @Index
     @ManyToOne(fetch = FetchType.EAGER)
     private Component referenceComponent;
 
@@ -114,6 +123,7 @@ public class Component implements Serializable, Identifiable  {
      */
     @ManyToOne(fetch = FetchType.EAGER)
     private WebUser createdBy;
+    @Index
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date createdAt;
     /*
@@ -133,15 +143,17 @@ public class Component implements Serializable, Identifiable  {
     /*
     Retire Properties
      */
+    @Index
     private boolean retired;
 //    @ManyToOne(fetch = FetchType.EAGER)
 //    private WebUser retiredBy;
 //    @Temporal(javax.persistence.TemporalType.TIMESTAMP)
 //    private Date retiredAt;
 //    private String retireComments;
-
+    @Index
     private boolean completed;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
+    @Index
     private Date completedAt;
     @ManyToOne(fetch = FetchType.EAGER)
     private WebUser completedBy;
@@ -236,7 +248,6 @@ public class Component implements Serializable, Identifiable  {
 //    public void setLastEditeAt(Date lastEditeAt) {
 //        this.lastEditeAt = lastEditeAt;
 //    }
-
 //    public WebUser getRetiredReversedBy() {
 //        return retiredReversedBy;
 //    }
@@ -252,7 +263,6 @@ public class Component implements Serializable, Identifiable  {
 //    public void setRetiredReversedAt(Date retiredReversedAt) {
 //        this.retiredReversedAt = retiredReversedAt;
 //    }
-
     public boolean isRetired() {
         return retired;
     }
@@ -268,7 +278,6 @@ public class Component implements Serializable, Identifiable  {
 //    public void setRetiredBy(WebUser retiredBy) {
 //        this.retiredBy = retiredBy;
 //    }
-
 //    public Date getRetiredAt() {
 //        return retiredAt;
 //    }
@@ -284,7 +293,6 @@ public class Component implements Serializable, Identifiable  {
 //    public void setRetireComments(String retireComments) {
 //        this.retireComments = retireComments;
 //    }
-
     public Double getOrderNo() {
         return orderNo;
     }

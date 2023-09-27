@@ -25,6 +25,7 @@ package lk.gov.health.phsp.entity;
 
 import java.io.Serializable;
 import java.util.Date;
+import javax.jdo.annotations.Index;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -47,15 +48,18 @@ public class Preference implements Serializable, Identifiable  {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    
+    @Index
     @Column(length = 100,nullable = false)
     private String name;
     @Lob
     private String longTextValue;
+    @Index
     @ManyToOne(fetch = FetchType.EAGER)
     private Institution institution;
+    @Index
     @ManyToOne(fetch = FetchType.EAGER)
     private WebUser webUser;
+    @Index
     private boolean applicationPreferance;
     
     /*

@@ -25,14 +25,14 @@
 package lk.gov.health.phsp.entity;
 
 import javax.persistence.Entity;
-import javax.xml.bind.annotation.XmlRootElement;
+
 
 /**
  *
  * @author buddhika
  */
 @Entity
-@XmlRootElement
+
 public class ClientEncounterComponentForm extends ClientEncounterComponent {
     
 }

@@ -39,7 +39,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.Transient;
-import javax.xml.bind.annotation.XmlRootElement;
+
 import lk.gov.health.phsp.pojcs.Identifiable;
 import org.joda.time.LocalDate;
 import org.joda.time.Period;
@@ -51,7 +51,7 @@ import org.joda.time.PeriodType;
  * Informatics)
  */
 @Entity
-@XmlRootElement
+
 @Table
 public class Person implements Serializable, Identifiable {
 
@@ -136,6 +136,7 @@ public class Person implements Serializable, Identifiable {
     private Date editedAt;
 
     //Retairing properties
+    @Index
     private boolean retired;
     @ManyToOne(fetch = FetchType.LAZY)
     private WebUser retiredBy;
