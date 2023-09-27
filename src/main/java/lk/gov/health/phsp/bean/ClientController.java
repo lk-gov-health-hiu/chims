@@ -2304,6 +2304,7 @@ public class ClientController implements Serializable {
                         + " from Client c "
                         + " where c.person=:p";
                 Map m1 = new HashMap();
+                m1.put("p", p);
                 Client c = getFacade().findFirstByJpql(j1, m1);
                 if(c!=null){
                     cs.add(c);
