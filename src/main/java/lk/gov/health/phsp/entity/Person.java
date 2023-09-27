@@ -245,7 +245,6 @@ public class Person implements Serializable, Identifiable {
      */
     public Area getGnArea() {
         if (gnArea == null) {
-            System.out.println("GN Area is NULL");
         }
         return gnArea;
     }
@@ -609,9 +608,7 @@ public class Person implements Serializable, Identifiable {
     @PostConstruct
     public void init() {
         if (this.getGnArea() != null) {
-            System.out.println("this = " + this.getGnArea());
         } else {
-            System.out.println("GN IS NULL");
         }
         if (this.getGnArea() != null) {
 
@@ -626,9 +623,7 @@ public class Person implements Serializable, Identifiable {
 
         }
         if (this.getSex() != null) {
-            System.out.println("this = " + this.getSex());
         } else {
-            System.out.println("sex is null");
         }
         if (this.getTitle() != null) {
 

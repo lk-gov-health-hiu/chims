@@ -5,6 +5,7 @@
 package lk.gov.health.phsp.entity;
 
 import java.io.Serializable;
+import javax.jdo.annotations.Index;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
@@ -18,6 +19,7 @@ public class SequenceNumber implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     private Long id = 1L; // Always 1 for the single row
+    @Index
     private Long lastUsedId;
 
     // Getters and setters

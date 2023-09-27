@@ -382,14 +382,11 @@ public class FhirR4Controller implements Serializable {
     }
 
     public String acquireToken(String clientId, String clientSecret, String tokenUrl) {
-        System.out.println("acquireToken");
         CloseableHttpClient httpClient = HttpClients.createDefault();
         HttpPost httpPost = new HttpPost(tokenUrl);
-        System.out.println("tokenUrl = " + tokenUrl);
         List<NameValuePair> params = new ArrayList<>();
         params.add(new BasicNameValuePair("grant_type", "client_credentials"));
         params.add(new BasicNameValuePair("client_id", clientId));
-        System.out.println("clientId = " + clientId);
         params.add(new BasicNameValuePair("client_secret", clientSecret));
         try {
             httpPost.setEntity(new UrlEncodedFormEntity(params));
@@ -459,8 +456,6 @@ public class FhirR4Controller implements Serializable {
     }
 
     private Bundle searchByIdentifier(String system, String identifier, IGenericClient client) {
-        System.out.println("client = " + client);
-        System.out.println("system = " + system);
         return client.search()
                 .forResource(Patient.class)
                 .where(Patient.IDENTIFIER.exactly().systemAndIdentifier(system, identifier))
@@ -496,8 +491,6 @@ public class FhirR4Controller implements Serializable {
 
         // Gender
         if (patient.getGender() != null) {
-            System.out.println("patient.getGender() = " + patient.getGender());
-            System.out.println("patient.getGender().toCode() = " + patient.getGender().toCode());
             // Assuming you have a way to map the FHIR gender to your custom Sex object
             Item sex = itemApplicationController.getSex(patient.getGender().toCode());
             person.setSex(sex);

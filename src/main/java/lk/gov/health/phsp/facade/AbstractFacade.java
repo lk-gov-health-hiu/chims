@@ -147,8 +147,12 @@ public abstract class AbstractFacade<T extends Identifiable> {
 
 // Comment indicating the code was done by Dr M H B Ariyaratne with assistance from ChatGPT from OpenAI
     public void create(T entity) {
+        System.out.println("create");
+        System.out.println("entity.getId() = " + entity.getId());
         if (entity.getId() == null) {
-            entity.setId(getNextId());
+            Long nextId= getNextId();
+            System.out.println("nextId = " + nextId);
+            entity.setId(nextId);
         }
         getEntityManager().persist(entity);
         // Uncommenting flush if you want to immediately sync with the database

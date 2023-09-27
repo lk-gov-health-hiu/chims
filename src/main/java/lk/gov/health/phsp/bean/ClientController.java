@@ -265,40 +265,30 @@ public class ClientController implements Serializable {
     }
 
     public String toClientProfileById() {
-        System.out.println("toClientProfileById 1 = " + new Date().getTime());
         selected = getFacade().find(selectedId);
         if (selected == null) {
             JsfUtil.addErrorMessage("No such client");
             return "";
         }
         if (selected.getPerson() == null) {
-            System.out.println("Person Null");
             return "";
         }
         if (selected.getPerson().getGnArea() == null) {
-            System.out.println("Person Null");
         } else {
             if (selected.getPerson().getGnArea().getName() == null) {
-                System.out.println("selected.getPerson().getGnArea().getName() is null ");
             }else{
-                System.out.println("selected.getPerson().getGnArea().getName() = " + selected.getPerson().getGnArea().getName());
             }
         }
         if (selected.getPerson().getSex() == null) {
-            System.out.println("Dex Null");
         } else {
             if(selected.getPerson().getSex().getName()==null){
-                System.out.println("selected.getPerson().getSex().getName() is null");
             }else{
-                System.out.println("selected.getPerson().getSex().getName() = " + selected.getPerson().getSex().getName());
             }
             
         }
         selectedClientsClinics = null;
         selectedClientsLastFiveClinicVisits = null;
-        System.out.println("toClientProfileById 2 = " + new Date().getTime());
         userTransactionController.recordTransaction("To Client Profile");
-        System.out.println("toClientProfileById 3 = " + new Date().getTime());
         return "/client/profile";
     }
 
@@ -1790,7 +1780,6 @@ public class ClientController implements Serializable {
     }
 
     public String searchByNic() {
-        System.out.println("searchByNic");
         if (searchingNicNo == null || searchingNicNo.trim().equals("")) {
             JsfUtil.addErrorMessage("Please enter a NIC to Search");
             return "";
@@ -2290,22 +2279,31 @@ public class ClientController implements Serializable {
             //// //System.out.println("cs.size() = " + cs.size());
             return cs;
         }
+        
+        List<Person> ps;
 
-        j = "select c from Client c "
+        j = "select c from Person c "
                 + " where c.retired=false "
                 + " and ("
-                + " c.person.phone1=:q "
+                + " c.phone1=:q "
                 + " or "
-                + " c.person.phone2=:q "
+                + " c.phone2=:q "
                 + " or "
-                + " c.person.nic=:q "
-                + " ) "
-                + " order by c.phn";
-        cs = getFacade().findByJpql(j, m);
-        //// //System.out.println("m = " + m);
-        //// //System.out.println("j = " + j);
-        if (cs != null && !cs.isEmpty()) {
-            //// //System.out.println("cs.size() = " + cs.size());
+                + " c.nic=:q "
+                + " ) ";
+        ps = personFacade.findByJpql(j, m);
+        if (ps != null && !ps.isEmpty()) {
+            cs =new ArrayList<>();
+            for(Person p:ps){
+                String j1="Select c "
+                        + " from Client c "
+                        + " where c.person=:p";
+                Map m1 = new HashMap();
+                Client c = getFacade().findFirstByJpql(j1, m1);
+                if(c!=null){
+                    cs.add(c);
+                }
+            }
             return cs;
         }
 
@@ -2322,7 +2320,6 @@ public class ClientController implements Serializable {
     }
 
     public List<ClientBasicData> listPatientsByIDsStepviceWithBasicData(String ids) {
-        System.out.println("1 listPatientsByIDsStepviceWithBasicData = " + new Date().getTime());
         if (ids == null || ids.trim().equals("")) {
             return null;
         }
@@ -2356,8 +2353,6 @@ public class ClientController implements Serializable {
                 + " lower(c.phn)=:q"
                 + " ) ";
         objs = getFacade().findByJpql(j, m);
-        System.out.println("m = " + m);
-        System.out.println("j = " + j);
         if (objs != null && !objs.isEmpty()) {
             cs = objectsToClientBasicDataObjects(objs);
             return cs;
@@ -2384,14 +2379,12 @@ public class ClientController implements Serializable {
             cs = objectsToClientBasicDataObjects(objs);
             return cs;
         }
-        System.out.println("2 listPatientsByIDsStepviceWithBasicData = " + new Date().getTime());
         cs = new ArrayList<>();
         return cs;
     }
 
     public List<ClientBasicData> listPatientsByIDsWithBasicData(String ids) {
         Long st = new Date().getTime();
-        System.out.println("listPatientsByIDsWithBasicData - start - " + st);
         List<ClientBasicData> cs = new ArrayList<>();
         if (ids == null || ids.trim().equals("")) {
             return cs;
@@ -2424,13 +2417,8 @@ public class ClientController implements Serializable {
                 + " lower(c.person.nic)=:q "
                 + " ) ";
         m.put("q", ids.trim().toLowerCase());
-        System.out.println("m = " + m);
-        System.out.println("j = " + jpql);
         cs = (List<ClientBasicData>) getFacade().findLightsByJpql(jpql, m);
-        System.out.println("cs size = " + cs.size());
         Long ed = new Date().getTime();
-        System.out.println("listPatientsByIDsWithBasicData - end - " + ed);
-        System.out.println("listPatientsByIDsWithBasicData - Duration - " + (ed - st));
         return cs;
     }
 
@@ -3131,7 +3119,6 @@ public class ClientController implements Serializable {
     // Comment by Dr M H B Ariyaratne with assistance from ChatGPT from OpenAI
     public void setSelectedId(Long selectedId) {
         try {
-            System.out.println("Attempting to find entity with ID: " + selectedId);
             selected = getFacade().find(selectedId);
             this.selectedId = selectedId;
         } catch (Exception e) {

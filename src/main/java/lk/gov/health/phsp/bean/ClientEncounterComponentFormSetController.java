@@ -1341,10 +1341,7 @@ public class ClientEncounterComponentFormSetController implements Serializable {
     }
 
     public void updateFromClientValueSingle(ClientEncounterComponentItem ti, Client c, Map<String, ClientEncounterComponentItem> cvs) {
-        System.out.println("updateFromClientValueSingle");
         String code = ti.getItem().getCode();
-        System.out.println("ti = " + ti);
-        System.out.println("ti.getItem() = " + ti.getItem());
 
         switch (code) {
             case "client_name":

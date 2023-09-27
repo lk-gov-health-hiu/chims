@@ -66,7 +66,6 @@ public class IntegrationTriggerController implements Serializable {
     private ManagedExecutorService executorService;
 
     public CompletableFuture<List<Client>> fetchClientsFromEndpoints(SearchQueryData sqd) {
-        System.out.println("sqd = " + sqd);
         if (sqd != null) {
         }
         return CompletableFuture.supplyAsync(() -> {
@@ -104,14 +103,11 @@ public class IntegrationTriggerController implements Serializable {
         return CompletableFuture.supplyAsync(() -> {
             List<FhirOperationResult> outcomes = new ArrayList<>();
             List<IntegrationTrigger> itemsNeededToBeTriggered = fillItems(IntegrationEvent.PATIENT_SAVE);
-            System.out.println("itemsNeededToBeTriggered = " + itemsNeededToBeTriggered);
             if (itemsNeededToBeTriggered == null || itemsNeededToBeTriggered.isEmpty()) {
                 return outcomes;
             }
             List<CompletableFuture<FhirOperationResult>> futureOutcomes = new ArrayList<>();
             for (IntegrationTrigger it : itemsNeededToBeTriggered) {
-                System.out.println("it = " + it);
-                System.out.println("it.getIntegrationEndpoint() = " + it.getIntegrationEndpoint());
                 if (it.getIntegrationEndpoint() == null) {
                     continue;
                 }
