@@ -276,15 +276,15 @@ public class ClientController implements Serializable {
         if (selected.getPerson().getGnArea() == null) {
         } else {
             if (selected.getPerson().getGnArea().getName() == null) {
-            }else{
+            } else {
             }
         }
         if (selected.getPerson().getSex() == null) {
         } else {
-            if(selected.getPerson().getSex().getName()==null){
-            }else{
+            if (selected.getPerson().getSex().getName() == null) {
+            } else {
             }
-            
+
         }
         selectedClientsClinics = null;
         selectedClientsLastFiveClinicVisits = null;
@@ -2284,7 +2284,7 @@ public class ClientController implements Serializable {
             //// //System.out.println("cs.size() = " + cs.size());
             return cs;
         }
-        
+
         List<Person> ps;
 
         j = "select c from Person c "
@@ -2298,15 +2298,15 @@ public class ClientController implements Serializable {
                 + " ) ";
         ps = personFacade.findByJpql(j, m);
         if (ps != null && !ps.isEmpty()) {
-            cs =new ArrayList<>();
-            for(Person p:ps){
-                String j1="Select c "
+            cs = new ArrayList<>();
+            for (Person p : ps) {
+                String j1 = "Select c "
                         + " from Client c "
                         + " where c.person=:p";
                 Map m1 = new HashMap();
                 m1.put("p", p);
                 Client c = getFacade().findFirstByJpql(j1, m1);
-                if(c!=null){
+                if (c != null) {
                     cs.add(c);
                 }
             }
@@ -2480,37 +2480,87 @@ public class ClientController implements Serializable {
     }
 
     public List<Client> listPatientsByIDs(String ids) {
+        System.out.println("listPatientsByIDs");
+        if (ids == null || ids.trim().equals("")) {
+            return null;
+        }
+        List<Client> cs;
+        cs = listPatientsByPHNs(ids);
+        if (cs != null && !cs.isEmpty()) {
+            return cs;
+        }
+        cs = listPatientsByPersonIDs(ids);
+        if (cs != null && !cs.isEmpty()) {
+            return cs;
+        }
+        return cs;
+    }
+
+    private List<Client> listPatientsByPHNs(String ids) {
         Long start = new Date().getTime();
         Long end;
-        System.out.println("Start = " + start);
         if (ids == null || ids.trim().equals("")) {
             return null;
         }
         String j = "select c from Client c "
                 + " where c.retired=false "
                 + " and c.reservedClient<>:res "
-                + " and ("
-                + " c.person.phone1=:q "
-                + " or "
-                + " c.person.phone2=:q "
-                + " or "
-                + " lower(c.person.nic)=:q "
-                + " or "
-                + " lower(c.phn)=:q "
-                + " or "
-                + " lower(c.person.localReferanceNo)=:q "
-                + " or "
-                + " lower(c.person.ssNumber)=:q "
-                + " ) "
-                + " order by c.phn";
+                + " and lower(c.phn)=:q";
         Map m = new HashMap();
         m.put("res", true);
         m.put("q", ids.trim().toLowerCase());
         List<Client> cs = getFacade().findByJpql(j, m);
-        System.out.println("list size " + cs.size());
         end = new Date().getTime();
-        System.out.println("end = " + end);
-        System.out.println("duration = " + (end-start));
+        System.out.println("listPatientsByPHNs duration = " + (end - start));
+        return cs;
+    }
+
+    private List<Client> listPatientsByPersonIDs(String ids) {
+        Long start = new Date().getTime();
+        Long end;
+        if (ids == null || ids.trim().equals("")) {
+            return null;
+        }
+        String j = "select c "
+                + " from Person c "
+                + " where c.retired=false "
+                + " and "
+                + " (c.phone1=:q "
+                + " or "
+                + " c.phone2=:q "
+                + " or "
+                + " lower(c.nic)=:q "
+                + " or "
+                + " lower(c.localReferanceNo)=:q "
+                + " or "
+                + " lower(c.ssNumber)=:q "
+                + " ) ";
+        Map m = new HashMap();
+        m.put("res", true);
+        m.put("q", ids.trim().toLowerCase());
+
+        List<Client> cs = new ArrayList<>();
+        List<Person> ps;
+
+        ps = personFacade.findByJpql(j, m);
+        
+        if (ps != null && !ps.isEmpty()) {
+            System.out.println("ps = " + ps.size());
+            ps = new ArrayList<>();
+            for (Person p : ps) {
+                String j1 = "Select c "
+                        + " from Client c "
+                        + " where c.person=:p";
+                Map m1 = new HashMap();
+                m1.put("p", p);
+                Client c = getFacade().findFirstByJpql(j1, m1);
+                if (c != null) {
+                    cs.add(c);
+                }
+            }
+        }
+        end = new Date().getTime();
+        System.out.println("listPatientsByPersonIDs duration = " + (end - start));
         return cs;
     }
 
@@ -2645,6 +2695,7 @@ public class ClientController implements Serializable {
                 }
                 rc.setReservedClient(true);
 
+                personFacade.create(rc.getPerson());
                 getFacade().create(rc);
                 i = i + 1;
             }
