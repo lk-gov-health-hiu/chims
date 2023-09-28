@@ -2080,6 +2080,7 @@ public class ClientController implements Serializable {
     }
 
     public String searchByAnyId() {
+        System.out.println("searchByAnyId");
         clearExistsValues();
         if (searchingId == null) {
             JsfUtil.addErrorMessage("Enter a search text");
@@ -2092,6 +2093,8 @@ public class ClientController implements Serializable {
 
         selectedClients = listPatientsByIDs(searchingId.trim().toUpperCase());
 
+        System.out.println("selectedClients = " + selectedClients.size());
+        
         if (selectedClients == null || selectedClients.isEmpty()) {
             JsfUtil.addErrorMessage("No Results Found. Try different search criteria.");
             userTransactionController.recordTransaction("Search By Any Id");
@@ -2546,14 +2549,15 @@ public class ClientController implements Serializable {
         
         if (ps != null && !ps.isEmpty()) {
             System.out.println("ps = " + ps.size());
-            ps = new ArrayList<>();
             for (Person p : ps) {
+                System.out.println("p = " + p);
                 String j1 = "Select c "
                         + " from Client c "
                         + " where c.person=:p";
                 Map m1 = new HashMap();
                 m1.put("p", p);
                 Client c = getFacade().findFirstByJpql(j1, m1);
+                System.out.println("c = " + c);
                 if (c != null) {
                     cs.add(c);
                 }
