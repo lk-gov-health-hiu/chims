@@ -819,7 +819,7 @@ public class WebUserController implements Serializable {
         }
 
         String temSQL;
-        temSQL = "SELECT u FROM WebUser u WHERE u.name=:userName and u.retired =:ret";
+        temSQL = "SELECT u FROM WebUser u WHERE u.name = :userName and u.retired = :ret";
         Map m = new HashMap();
         m.put("userName", userName.trim().toLowerCase());
         m.put("ret", false);

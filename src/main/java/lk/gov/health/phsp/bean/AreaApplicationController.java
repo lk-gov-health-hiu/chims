@@ -23,6 +23,7 @@
  */
 package lk.gov.health.phsp.bean;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -30,6 +31,7 @@ import java.util.Map;
 import javax.ejb.EJB;
 import javax.inject.Named;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.SessionScoped;
 import lk.gov.health.phsp.entity.Area;
 import lk.gov.health.phsp.enums.AreaType;
 import lk.gov.health.phsp.facade.AreaFacade;
@@ -39,8 +41,8 @@ import lk.gov.health.phsp.facade.AreaFacade;
  * @author buddhika
  */
 @Named
-@ApplicationScoped
-public class AreaApplicationController {
+@SessionScoped
+public class AreaApplicationController implements Serializable{
 
     @EJB
     private AreaFacade areaFacade;

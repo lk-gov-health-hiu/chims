@@ -24,6 +24,7 @@
 package lk.gov.health.phsp.bean;
 
 // <editor-fold defaultstate="collapsed" desc="Import">
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -31,6 +32,7 @@ import java.util.Map;
 import javax.ejb.EJB;
 import javax.inject.Named;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.SessionScoped;
 import lk.gov.health.phsp.entity.Institution;
 import lk.gov.health.phsp.entity.Relationship;
 import lk.gov.health.phsp.enums.InstitutionType;
@@ -45,8 +47,8 @@ import org.apache.commons.codec.digest.DigestUtils;
  * @author Dr M H B Ariyaratne<buddhika.ari@gmail.com>
  */
 @Named
-@ApplicationScoped
-public class InstitutionApplicationController {
+@SessionScoped
+public class InstitutionApplicationController implements Serializable{
 
 // <editor-fold defaultstate="collapsed" desc="EJBs">
     @EJB

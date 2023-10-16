@@ -117,24 +117,29 @@ public abstract class AbstractFacade<T extends Identifiable> {
     }
 
     public T findFirstByJpql(String jpql, Map<String, Object> parameters) {
+        TypedQuery<T> qry = null;
         try {
-            TypedQuery<T> qry = getEntityManager().createQuery(jpql, entityClass);
+            qry = getEntityManager().createQuery(jpql, entityClass);
             qry.setMaxResults(1);
-            for (Map.Entry<String, Object> entry : parameters.entrySet()) {
-                String paramName = entry.getKey();
-                Object paramValue = entry.getValue();
-                if (paramValue instanceof Date) {
-                    qry.setParameter(paramName, (Date) paramValue, TemporalType.DATE);
-                } else {
-                    qry.setParameter(paramName, paramValue);
+            if (parameters != null && !parameters.isEmpty()) {
+                for (Map.Entry<String, Object> entry : parameters.entrySet()) {
+                    String paramName = entry.getKey();
+                    Object paramValue = entry.getValue();
+                    if (paramValue instanceof Date) {
+                        qry.setParameter(paramName, (Date) paramValue, TemporalType.DATE);
+                    } else {
+                        qry.setParameter(paramName, paramValue);
+                    }
                 }
             }
-            T result = qry.getSingleResult();
-            return result;
+            return qry.getSingleResult();
         } catch (NoResultException nre) {
             return null;
         } catch (Exception e) {
             e.printStackTrace();
+            if (qry != null) {
+                qry.setMaxResults(0); // Reset query to avoid transaction issues
+            }
             return null;
         }
     }
@@ -295,25 +300,26 @@ public abstract class AbstractFacade<T extends Identifiable> {
 
 
     public List<T> findByJpql(String jpql, Map<String, Object> parameters) {
+        TypedQuery<T> qry = null;
         try {
-            TypedQuery<T> qry = getEntityManager().createQuery(jpql, entityClass);
-            Set s = parameters.entrySet();
-            Iterator it = s.iterator();
-            while (it.hasNext()) {
-                Map.Entry m = (Map.Entry) it.next();
-                String pPara = (String) m.getKey();
-                if (m.getValue() instanceof Date) {
-                    Date pVal = (Date) m.getValue();
-                    qry.setParameter(pPara, pVal, TemporalType.DATE);
-                } else {
-                    Object pVal = (Object) m.getValue();
-                    qry.setParameter(pPara, pVal);
+            qry = getEntityManager().createQuery(jpql, entityClass);
+            if (parameters != null && !parameters.isEmpty()) {
+                for (Map.Entry<String, Object> entry : parameters.entrySet()) {
+                    String paramName = entry.getKey();
+                    Object paramValue = entry.getValue();
+                    if (paramValue instanceof Date) {
+                        qry.setParameter(paramName, (Date) paramValue, TemporalType.DATE);
+                    } else {
+                        qry.setParameter(paramName, paramValue);
+                    }
                 }
             }
-            List<T> results = qry.getResultList();
-            return results;
+            return qry.getResultList();
         } catch (Exception e) {
             e.printStackTrace();
+            if (qry != null) {
+                qry.setMaxResults(0); // Reset query to avoid transaction issues
+            }
             return null;
         }
     }
