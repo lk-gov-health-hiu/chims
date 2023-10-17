@@ -30,26 +30,33 @@
 
                                 <div  style="float: right;" >
                                     <p:panelGrid columns="4" >
-                                        <p:commandButton  rendered="#{clientEncounterComponentFormSetController.selected.completed}"
-                                                          value="Mark Incomplete" action="#{clientEncounterComponentFormSetController.reverseCompleteFormset()}" ajax="false"
-                                                          onclick="if (!confirm('Really want to do mark the visit as incomplete?'))
-                                                                      return false"
-                                                          ></p:commandButton>
+                                        <p:commandButton  
+                                            rendered="#{clientEncounterComponentFormSetController.selected.completed}"
+                                            value="Mark Incomplete" action="#{clientEncounterComponentFormSetController.reverseCompleteFormset()}" ajax="false"
+                                            onclick="if (!confirm('Really want to do mark the visit as incomplete?'))
+                                                        return false"
+                                            ></p:commandButton>
 
-                                       
-                                        <p:commandButton  rendered="#{!clientEncounterComponentFormSetController.selected.completed}"
-                                                          value="Reload" 
-                                                          action="#{clientEncounterComponentFormSetController.toViewOrEditDataset()}" ajax="false"
-                                                          onclick="if (!confirm('Really want to do complete the visit?'))
-                                                                      return false"
-                                                          ></p:commandButton>
+                                        <p:commandButton 
+                                            value="Push to FHIR Server" 
+                                            ajax="false"
+                                            action="#{clientEncounterComponentFormSetController.pushToFhirServers()}"
+                                            style="float: right;"></p:commandButton>
+
+                                        <p:commandButton  
+                                            rendered="#{!clientEncounterComponentFormSetController.selected.completed}"
+                                            value="Reload" 
+                                            action="#{clientEncounterComponentFormSetController.toViewOrEditDataset()}" ajax="false"
+                                            onclick="if (!confirm('Really want to do complete the visit?'))
+                                                        return false"
+                                            ></p:commandButton>
 
                                         <p:commandButton  value="Delete" action="#{clientEncounterComponentFormSetController.deleteSelected()}" ajax="false"
                                                           onclick="if (!confirm('Really want to DELETE this data?'))
                                                                       return false"
                                                           ></p:commandButton>
-                                        
-                                         <p:commandButton  value="Client Profile" action="#{clientEncounterComponentFormSetController.toClientProfileFromEncounter()}" ajax="false" ></p:commandButton>
+
+                                        <p:commandButton  value="Client Profile" action="#{clientEncounterComponentFormSetController.toClientProfileFromEncounter()}" ajax="false" ></p:commandButton>
 
                                     </p:panelGrid>
                                 </div>

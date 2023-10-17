@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.concurrent.CompletableFuture;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
@@ -32,6 +33,7 @@ import lk.gov.health.phsp.entity.DesignComponentForm;
 import lk.gov.health.phsp.entity.DesignComponentFormItem;
 import lk.gov.health.phsp.entity.DesignComponentFormSet;
 import lk.gov.health.phsp.entity.Encounter;
+import lk.gov.health.phsp.entity.FhirOperationResult;
 import lk.gov.health.phsp.entity.Institution;
 import lk.gov.health.phsp.entity.Item;
 import lk.gov.health.phsp.entity.Prescription;
@@ -75,6 +77,8 @@ public class ClientEncounterComponentFormSetController implements Serializable {
     @Inject
     private DesignComponentFormSetController designComponentFormSetController;
     @Inject
+    IntegrationTriggerController integrationTriggerController;
+    @Inject
     private DesignComponentFormController designComponentFormController;
     @Inject
     private DesignComponentFormItemController designComponentFormItemController;
@@ -108,6 +112,9 @@ public class ClientEncounterComponentFormSetController implements Serializable {
     private Integer selectedTabIndex;
     private Date from;
     private Date to;
+
+    private List<FhirOperationResult> fhirOperationResults;
+    private boolean pushComplete = false;
 
     private List<ClientEncounterComponentFormSet> lastFiveClinicVisits;
 
@@ -175,6 +182,20 @@ public class ClientEncounterComponentFormSetController implements Serializable {
     }
 // </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="User Functions">
+
+    // Modified by Dr M H B Ariyaratne with assistance from ChatGPT from OpenAI
+    public String pushToFhirServers() {
+        System.out.println("pushToFhirServers in clientencountercomponentformsetcontroller");
+        System.out.println("Starting push to FHIR servers...");
+
+        // Call the synchronous version of createNewFormsetToEndpoints
+        fhirOperationResults = integrationTriggerController.createNewFormsetToEndpoints(selected);
+
+        pushComplete = true; // Mark the operation as complete
+        System.out.println("Push to FHIR servers clientencountercomponentformsetcontroller complete.");
+
+        return "/dataentry/push_result?faces-redirect=true"; // Navigate to the push_result page
+    }
 
     public String deleteSelected() {
         if (selected == null) {
@@ -915,7 +936,7 @@ public class ClientEncounterComponentFormSetController implements Serializable {
                                 save(ci);
                             } else if (ci.getReferanceDesignComponentFormItem().getDataPopulationStrategy() == DataPopulationStrategy.From_Last_Encounter) {
                                 updateFromLastEncounter(ci);
-                               save(ci);
+                                save(ci);
                             }
                             DataItem i = new DataItem();
                             i.setMultipleEntries(false);

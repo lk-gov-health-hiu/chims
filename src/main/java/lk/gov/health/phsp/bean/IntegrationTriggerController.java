@@ -28,6 +28,7 @@ import javax.faces.convert.FacesConverter;
 import javax.inject.Inject;
 import lk.gov.health.phsp.bean.util.JsfUtil;
 import lk.gov.health.phsp.entity.Client;
+import lk.gov.health.phsp.entity.ClientEncounterComponentFormSet;
 import lk.gov.health.phsp.entity.FhirOperationResult;
 import lk.gov.health.phsp.entity.FhirResourceLink;
 import lk.gov.health.phsp.entity.IntegrationEndpoint;
@@ -130,7 +131,7 @@ public class IntegrationTriggerController implements Serializable {
                     if (oldId == null) {
                         futureOutcome = fhirR4Controller.createPatientInFhirServerAsync(client, it.getIntegrationEndpoint());
                     } else {
-                        futureOutcome = fhirR4Controller.updatePatientInFhirServerAsync(client, it.getIntegrationEndpoint(),oldId );
+                        futureOutcome = fhirR4Controller.updatePatientInFhirServerAsync(client, it.getIntegrationEndpoint(), oldId);
                     }
                     futureOutcomes.add(futureOutcome);
                 } else if (it.getIntegrationEndpoint().getCommunicationProtocol() == CommunicationProtocol.FHIR_R5) {
@@ -147,6 +148,58 @@ public class IntegrationTriggerController implements Serializable {
             ex.printStackTrace(); // Or log the exception
             return null; // Or handle the exception as needed
         });
+    }
+
+    // Modified by Dr M H B Ariyaratne with assistance from ChatGPT from OpenAI
+    public List<FhirOperationResult> createNewFormsetToEndpoints(ClientEncounterComponentFormSet cecf) {
+        System.out.println("createNewFormsetToEndpoints");
+        List<FhirOperationResult> outcomes = new ArrayList<>();
+        List<IntegrationTrigger> itemsNeededToBeTriggered = fillItems(IntegrationEvent.ENCOUNTER_SAVE);
+        System.out.println("itemsNeededToBeTriggered = " + itemsNeededToBeTriggered);
+
+        if (itemsNeededToBeTriggered == null || itemsNeededToBeTriggered.isEmpty()) {
+            return outcomes;
+        }
+
+        System.out.println("before future outcomes");
+
+        for (IntegrationTrigger it : itemsNeededToBeTriggered) {
+            System.out.println("it = " + it);
+            System.out.println("it.getIntegrationEndpoint() = " + it.getIntegrationEndpoint());
+
+            if (it.getIntegrationEndpoint() == null) {
+                continue;
+            }
+
+            System.out.println("it.getIntegrationEndpoint().getCommunicationProtocol() = " + it.getIntegrationEndpoint().getCommunicationProtocol());
+
+            if (it.getIntegrationEndpoint().getCommunicationProtocol() == null) {
+                continue;
+            }
+
+            FhirOperationResult outcome;
+            if (it.getIntegrationEndpoint().getCommunicationProtocol() == CommunicationProtocol.FHIR_R4) {
+                System.out.println("going to fhir async = ");
+                String oldId = findFhirResourceLinkId(cecf, it.getIntegrationEndpoint());
+                System.out.println("oldId = " + oldId);
+
+                if (oldId == null) {
+                    outcome = fhirR4Controller.createFormsetInFhirServer(cecf, it.getIntegrationEndpoint());
+                } else {
+                    outcome = fhirR4Controller.updateFormsetInFhirServerAsync(cecf, it.getIntegrationEndpoint(), oldId);
+                }
+
+                outcomes.add(outcome);
+
+            } else if (it.getIntegrationEndpoint().getCommunicationProtocol() == CommunicationProtocol.FHIR_R5) {
+                // TODO: Handle FHIR R5 
+                continue;
+            } else {
+                continue;
+            }
+        }
+
+        return outcomes;
     }
 
     public String findFhirResourceLinkId(Object object, IntegrationEndpoint endPoint) {

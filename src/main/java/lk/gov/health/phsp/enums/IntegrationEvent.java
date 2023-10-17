@@ -9,8 +9,9 @@ package lk.gov.health.phsp.enums;
  * @author buddh
  */
 public enum IntegrationEvent {
-    PATIENT_SEARCH("PatientSearch"),
-    PATIENT_SAVE("PatientSave");
+    PATIENT_SEARCH("Patient Search"),
+    PATIENT_SAVE("Patient Save"),
+    ENCOUNTER_SAVE("Encounter Save");
 
     private final String event;
 

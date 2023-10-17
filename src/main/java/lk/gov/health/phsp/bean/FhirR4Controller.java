@@ -48,16 +48,32 @@ import org.slf4j.LoggerFactory;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
+import javax.enterprise.context.SessionScoped;
+import lk.gov.health.phsp.entity.ClientEncounterComponentForm;
+import lk.gov.health.phsp.entity.ClientEncounterComponentFormSet;
+import lk.gov.health.phsp.entity.ClientEncounterComponentItem;
 import lk.gov.health.phsp.entity.FhirResourceLink;
 import lk.gov.health.phsp.facade.FhirResourceLinkFacade;
 import lk.gov.health.phsp.pojcs.SearchQueryData;
+import org.hl7.fhir.r4.model.BooleanType;
+import org.hl7.fhir.r4.model.Bundle.BundleEntryComponent;
+import org.hl7.fhir.r4.model.Bundle.BundleType;
+import org.hl7.fhir.r4.model.CodeableConcept;
+import org.hl7.fhir.r4.model.Coding;
+import org.hl7.fhir.r4.model.Encounter;
+import org.hl7.fhir.r4.model.Encounter.EncounterStatus;
+import org.hl7.fhir.r4.model.Observation;
+import org.hl7.fhir.r4.model.Period;
+import org.hl7.fhir.r4.model.Quantity;
+import org.hl7.fhir.r4.model.Reference;
+import org.hl7.fhir.r4.model.StringType;
 
 /**
  *
  * @author buddh
  */
 @Named
-@ApplicationScoped
+@SessionScoped
 public class FhirR4Controller implements Serializable {
 
     @Resource
@@ -72,6 +88,8 @@ public class FhirR4Controller implements Serializable {
     ItemApplicationController itemApplicationController;
     @Inject
     AreaApplicationController areaApplicationController;
+    @Inject
+    ClientEncounterComponentItemController clientEncounterComponentItemController;
 
     /**
      * Creates a new instance of FhirR5Controller
@@ -130,6 +148,109 @@ public class FhirR4Controller implements Serializable {
             }
             return result;
         });
+    }
+
+    // Created by Dr M H B Ariyaratne with assistance from ChatGPT from OpenAI
+    public FhirOperationResult createFormsetInFhirServer(ClientEncounterComponentFormSet cecfs, IntegrationEndpoint endPoint) {
+        System.out.println("createFormsetInFhirServer...");
+        System.out.println("cecfs = " + cecfs);
+        FhirOperationResult result = new FhirOperationResult();
+
+        SecurityProtocol sp = endPoint.getSecurityProtocol();
+        String username = endPoint.getUserName();
+        String password = endPoint.getPassword();
+        Bundle bundle = convertToFhirBundle(cecfs);
+        System.out.println("bundle.toString() = " + bundle.toString());
+
+        FhirContext ctx = FhirContext.forR4();
+        // Modified by Dr M H B Ariyaratne with assistance from ChatGPT from OpenAI
+        String json = ctx.newJsonParser().setPrettyPrint(true).encodeResourceToString(bundle);
+        System.err.println("FHIR JSON: " + json);
+
+        String serverBase = endPoint.getEndPointUrl();
+        IGenericClient fhirClient = ctx.newRestfulGenericClient(serverBase);
+
+        if (sp == SecurityProtocol.BASIC_AUTHENTICATION) {
+            fhirClient.registerInterceptor(new BasicAuthInterceptor(username, password));
+        } else if (sp == SecurityProtocol.API_KEY) {
+            String apiKeyName = endPoint.getApiKeyName();
+            String apiKeyValue = endPoint.getApiKeyValue();
+            fhirClient.registerInterceptor(new IClientInterceptor() {
+                @Override
+                public void interceptRequest(IHttpRequest theRequest) {
+                    theRequest.addHeader(apiKeyName, apiKeyValue);
+                }
+
+                @Override
+                public void interceptResponse(IHttpResponse theResponse) {
+                    // Optional: handle response
+                }
+            });
+        }
+        // Add other authentication methods as needed
+
+        MethodOutcome outcome = fhirClient.create().resource(bundle).execute();
+
+        if (outcome.getCreated()) {
+            IdType id = (IdType) outcome.getId();
+            result.setSuccess(true);
+            result.setMessage("Created new Patient with ID: " + id.getIdPart());
+            result.setResourceId(id);
+            updateFhirResourceLink(cecfs, endPoint, id.getIdPart());
+        } else {
+            result.setSuccess(false);
+            result.setMessage("Failed to create new Patient");
+        }
+        return result;
+    }
+
+    public FhirOperationResult updateFormsetInFhirServerAsync(ClientEncounterComponentFormSet cecfs, IntegrationEndpoint endPoint, String oldId) {
+        System.out.println("createFormsetInFhirServer...");
+        System.out.println("cecfs = " + cecfs);
+        FhirOperationResult result = new FhirOperationResult();
+
+        SecurityProtocol sp = endPoint.getSecurityProtocol();
+        String username = endPoint.getUserName();
+        String password = endPoint.getPassword();
+        Bundle bundle = convertToFhirBundle(cecfs);
+        System.out.println("bundle.toString() = " + bundle.toString());
+
+        FhirContext ctx = FhirContext.forR4();
+        String serverBase = endPoint.getEndPointUrl();
+        IGenericClient fhirClient = ctx.newRestfulGenericClient(serverBase);
+
+        if (sp == SecurityProtocol.BASIC_AUTHENTICATION) {
+            fhirClient.registerInterceptor(new BasicAuthInterceptor(username, password));
+        } else if (sp == SecurityProtocol.API_KEY) {
+            String apiKeyName = endPoint.getApiKeyName();
+            String apiKeyValue = endPoint.getApiKeyValue();
+            fhirClient.registerInterceptor(new IClientInterceptor() {
+                @Override
+                public void interceptRequest(IHttpRequest theRequest) {
+                    theRequest.addHeader(apiKeyName, apiKeyValue);
+                }
+
+                @Override
+                public void interceptResponse(IHttpResponse theResponse) {
+                    // Optional: handle response
+                }
+            });
+        }
+        // Add other authentication methods as needed
+
+        MethodOutcome outcome = fhirClient.create().resource(bundle).execute();
+
+        if (outcome.getCreated()) {
+            IdType id = (IdType) outcome.getId();
+            result.setSuccess(true);
+            result.setMessage("Created new Patient with ID: " + id.getIdPart());
+            result.setResourceId(id);
+            updateFhirResourceLink(cecfs, endPoint, id.getIdPart());
+        } else {
+            result.setSuccess(false);
+            result.setMessage("Failed to create new Patient");
+        }
+        return result;
     }
 
     public CompletableFuture<FhirOperationResult> updatePatientInFhirServerAsync(Client client, IntegrationEndpoint endPoint, String resourceId) {
@@ -532,4 +653,152 @@ public class FhirR4Controller implements Serializable {
         return patient;
     }
 
+    public Bundle convertToFhirBundle(ClientEncounterComponentFormSet formset) {
+        System.out.println("convertToFhirBundle");
+        System.out.println("formset = " + formset);
+        Bundle bundle = new Bundle();
+        bundle.setType(BundleType.COLLECTION);
+
+        Client myPatient = formset.getEncounter().getClient();
+        System.out.println("myPatient = " + myPatient);
+        lk.gov.health.phsp.entity.Encounter myEncounter = formset.getEncounter();
+
+        // Assuming you have separate methods to convert to FHIR resources
+        Patient patientResource = convertToFhirPatient(myPatient);
+        System.out.println("myPatient = " + myPatient);
+        System.out.println("patientResource = " + patientResource);
+        Encounter encounterResource = convertToEncounter(myEncounter);
+        System.out.println("myEncounter = " + myEncounter);
+        System.out.println("encounterResource = " + encounterResource);
+
+        // Add Patient to the Bundle
+        BundleEntryComponent patientEntry = bundle.addEntry();
+        System.out.println("1 patientEntry = " + patientEntry);
+        System.out.println("patientResource = " + patientResource);
+        patientEntry.setResource(patientResource);
+        System.out.println("2 patientEntry = " + patientEntry);
+
+        // Add Encounter to the Bundle
+        BundleEntryComponent encounterEntry = bundle.addEntry();
+        System.out.println("1 encounterEntry = " + encounterEntry);
+        System.out.println("encounterResource = " + encounterResource);
+        encounterEntry.setResource(encounterResource);
+        System.out.println("2 encounterEntry = " + encounterEntry);
+
+        
+        List<ClientEncounterComponentItem> ceis = clientEncounterComponentItemController.getClientEncounterComponentItemOfAFormset(formset);
+        if (ceis == null) {
+            return bundle;
+        } else {
+            System.out.println("ceis = " + ceis.size());
+        }
+        if (formset.getClientEncounterComponentItems().isEmpty()) {
+            return bundle;
+        }
+
+       
+        // Add Observations to the Bundle
+        for (ClientEncounterComponentItem is : ceis) {
+            System.out.println("is = " + is);
+            Observation obsResource = convertToObservation(is);
+
+            System.out.println("obsResource = " + obsResource);
+            BundleEntryComponent obsEntry = bundle.addEntry();
+            System.out.println("1. obsEntry = " + obsEntry);
+            obsEntry.setResource(obsResource);
+            System.out.println("2. obsEntry = " + obsEntry);
+        }
+
+        System.out.println("bundle = " + bundle.toString());
+        return bundle;
+    }
+
+    public Encounter convertToEncounter(lk.gov.health.phsp.entity.Encounter myEncounter) {
+        Encounter fhirEncounter = new Encounter();
+
+        // Set Identifier
+        if (myEncounter.getId() != null) {
+            Identifier identifier = new Identifier();
+            identifier.setValue(myEncounter.getId().toString());
+            fhirEncounter.addIdentifier(identifier);
+        }
+
+        // Set Status
+        if (myEncounter.getCompleted()) {
+            fhirEncounter.setStatus(EncounterStatus.FINISHED);
+        } else {
+            fhirEncounter.setStatus(EncounterStatus.INPROGRESS); // Set to appropriate status if not completed
+        }
+
+        // Set Encounter Dates (Period)
+        Period period = new Period();
+        if (myEncounter.getEncounterFrom() != null) {
+            period.setStart(myEncounter.getEncounterFrom());
+        }
+        if (myEncounter.getEncounterTo() != null) {
+            period.setEnd(myEncounter.getEncounterTo());
+        }
+        fhirEncounter.setPeriod(period);
+
+        // Set Patient Reference
+        if (myEncounter.getClient() != null) {
+            fhirEncounter.setSubject(new Reference("Patient/" + myEncounter.getClient().getId()));
+        }
+
+        // Set Location (Institution)
+        if (myEncounter.getInstitution() != null) {
+            Encounter.EncounterLocationComponent location = new Encounter.EncounterLocationComponent(
+                    new Reference("Location/" + myEncounter.getInstitution().getId()));
+            fhirEncounter.addLocation(location);
+        }
+        return fhirEncounter;
+    }
+
+    public Observation convertToObservation(ClientEncounterComponentItem ceci) {
+        Observation obs = new Observation();
+
+        switch (ceci.getReferanceDesignComponentFormItem().getSelectionDataType()) {
+            case Boolean:
+                obs.setValue(new BooleanType(ceci.getBooleanValue()));
+                break;
+
+            case Integer_Number:
+                Quantity quantityInt = new Quantity();
+                quantityInt.setValue(ceci.getIntegerNumberValue());
+                obs.setValue(quantityInt);
+                break;
+
+            case Long_Number:
+                Quantity quantityLong = new Quantity();
+                quantityLong.setValue(ceci.getLongNumberValue());
+                obs.setValue(quantityLong);
+                break;
+
+            case Real_Number:
+                Quantity quantityReal = new Quantity();
+                quantityReal.setValue(ceci.getRealNumberValue());
+                obs.setValue(quantityReal);
+                break;
+
+            case Item_Reference:
+                CodeableConcept cc = new CodeableConcept();
+                cc.addCoding(new Coding().setCode(ceci.getItemValue().getCode()).setDisplay(ceci.getItemValue().getName()));
+                obs.setCode(cc);
+                break;
+
+            case Short_Text:
+                obs.setValue(new StringType(ceci.getShortTextValue()));
+                break;
+
+            case Long_Text:
+                obs.getDataAbsentReason().setText(ceci.getLongTextValue());
+                break;
+
+            default:
+                // Handle default case, if necessary
+                break;
+        }
+
+        return obs;
+    }
 }

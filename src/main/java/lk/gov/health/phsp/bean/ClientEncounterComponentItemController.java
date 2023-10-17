@@ -87,6 +87,16 @@ public class ClientEncounterComponentItemController implements Serializable {
         m.put("p", fs);
         formsetItems = getFacade().findByJpql(j, m);
     }
+    
+    public List<ClientEncounterComponentItem> getClientEncounterComponentItemOfAFormset(ClientEncounterComponentFormSet fs) {
+        String j = "select f from ClientEncounterComponentItem f "
+                + " where f.retired=false "
+                + " and f.parentComponent.parentComponent=:p "
+                + " order by f.orderNo";
+        Map m = new HashMap();
+        m.put("p", fs);
+        return getFacade().findByJpql(j, m);
+    }
 
     public List<ClientEncounterComponentItem> findClientEncounterComponentItemOfAForm(ClientEncounterComponentForm fs) {
         String j = "select f from ClientEncounterComponentItem f "
