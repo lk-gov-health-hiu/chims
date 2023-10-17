@@ -55,9 +55,9 @@ public class Observation implements Serializable, Identifiable  {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     private Item observation;
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     private ClientEncounterComponentItem observationValue;
     @Lob
     private String description;
@@ -69,9 +69,9 @@ public class Observation implements Serializable, Identifiable  {
     @Column(name = "ato")
     private Date to;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     private Client client;
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     private Encounter encounter;
 
     /*

@@ -53,9 +53,9 @@ public class UserPrivilege implements Serializable, Identifiable  {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     private WebUser webUser;
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     private Item item;
     @Enumerated(EnumType.STRING)
     private Privilege privilege;

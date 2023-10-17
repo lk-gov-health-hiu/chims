@@ -51,16 +51,16 @@ public class ApiRequest implements Serializable , Identifiable {
     @Column(length = 100)
     private String name;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     private Encounter encounter;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     private ClientEncounterComponentItem requestCeci;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     private DesignComponentFormItem requestDcfi;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     private ApiRequest parent;
 
     @Lob
@@ -88,17 +88,17 @@ public class ApiRequest implements Serializable , Identifiable {
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date responseReceivedAt;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     private ClientEncounterComponentItem responseCeci;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     private ClientEncounterComponentFormSet requestCefs;
 
     
     /*
     Create Properties
      */
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     private WebUser createdBy;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date createdAt;
@@ -107,7 +107,7 @@ public class ApiRequest implements Serializable , Identifiable {
     Retire Properties
      */
     private boolean retired;
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     private WebUser retiredBy;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date retiredAt;

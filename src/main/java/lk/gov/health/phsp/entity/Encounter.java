@@ -52,7 +52,7 @@ import lk.gov.health.phsp.pojcs.Identifiable;
 @XmlRootElement
 public class Encounter implements Serializable, Identifiable  {
 
-    @OneToMany(mappedBy = "itemEncounter",fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "itemEncounter",fetch = FetchType.LAZY)
     private List<ClientEncounterComponentItem> clientEncounterComponentItems;
 
     private static final long serialVersionUID = 1L;
@@ -60,9 +60,9 @@ public class Encounter implements Serializable, Identifiable  {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     private Client client;
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     private Area area;
     
     private boolean firstEncounter ;
@@ -83,16 +83,16 @@ public class Encounter implements Serializable, Identifiable  {
 
     private String encounterNumber;
     
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     private Encounter parentEncounter;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     Institution institution;
     
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     Institution referalInstitution;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     private WebUser createdBy;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date createdAt;

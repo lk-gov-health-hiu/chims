@@ -66,7 +66,7 @@ public class Item implements Serializable, Identifiable  {
     private String code;
     private String barcode;
     private String localCode;
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     private Item parent;
 
     @Lob

@@ -60,7 +60,7 @@ public class Component implements Serializable, Identifiable  {
 
     private String code;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     private Item item;
 
     @Lob
@@ -68,13 +68,13 @@ public class Component implements Serializable, Identifiable  {
 
     private Double orderNo;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     private Institution institution;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     private Component parentComponent;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     private Component referenceComponent;
 
     @Lob
@@ -112,21 +112,21 @@ public class Component implements Serializable, Identifiable  {
     /*
     Create Properties
      */
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     private WebUser createdBy;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date createdAt;
     /*
     Last Edit Properties
      */
-//    @ManyToOne(fetch = FetchType.EAGER)
+//    @ManyToOne(fetch = FetchType.LAZY)
 //    private WebUser lastEditBy;
 //    @Temporal(javax.persistence.TemporalType.TIMESTAMP)
 //    private Date lastEditeAt;
     /*
     Retire Reversal Properties
      */
-//    @ManyToOne(fetch = FetchType.EAGER)
+//    @ManyToOne(fetch = FetchType.LAZY)
 //    private WebUser retiredReversedBy;
 //    @Temporal(javax.persistence.TemporalType.TIMESTAMP)
 //    private Date retiredReversedAt;
@@ -134,7 +134,7 @@ public class Component implements Serializable, Identifiable  {
     Retire Properties
      */
     private boolean retired;
-//    @ManyToOne(fetch = FetchType.EAGER)
+//    @ManyToOne(fetch = FetchType.LAZY)
 //    private WebUser retiredBy;
 //    @Temporal(javax.persistence.TemporalType.TIMESTAMP)
 //    private Date retiredAt;
@@ -143,7 +143,7 @@ public class Component implements Serializable, Identifiable  {
     private boolean completed;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date completedAt;
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     private WebUser completedBy;
 
     public Long getId() {

@@ -8,6 +8,8 @@ import ca.uhn.fhir.rest.client.api.IHttpRequest;
 import ca.uhn.fhir.rest.client.api.IHttpResponse;
 import javax.inject.Named;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import javax.annotation.Resource;
 import javax.enterprise.concurrent.ManagedExecutorService;
@@ -18,10 +20,12 @@ import org.hl7.fhir.r4.model.Patient;
 import org.hl7.fhir.r4.model.Bundle;
 import ca.uhn.fhir.rest.client.interceptor.BasicAuthInterceptor;
 import ca.uhn.fhir.rest.client.interceptor.BearerTokenAuthInterceptor;
+import java.util.Date;
 import javax.ejb.EJB;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import lk.gov.health.phsp.entity.Area;
+import lk.gov.health.phsp.entity.AuditEvent;
 import lk.gov.health.phsp.entity.FhirOperationResult;
 import lk.gov.health.phsp.entity.Item;
 import lk.gov.health.phsp.entity.Person;
@@ -36,34 +40,51 @@ import org.hl7.fhir.r4.model.HumanName;
 import org.hl7.fhir.r4.model.IdType;
 import org.hl7.fhir.r4.model.Identifier;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
+import javax.enterprise.context.SessionScoped;
+import lk.gov.health.phsp.entity.ClientEncounterComponentForm;
+import lk.gov.health.phsp.entity.ClientEncounterComponentFormSet;
+import lk.gov.health.phsp.entity.ClientEncounterComponentItem;
 import lk.gov.health.phsp.entity.FhirResourceLink;
 import lk.gov.health.phsp.facade.FhirResourceLinkFacade;
 import lk.gov.health.phsp.pojcs.SearchQueryData;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.util.EntityUtils;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import org.hl7.fhir.r4.model.BooleanType;
+import org.hl7.fhir.r4.model.Bundle.BundleEntryComponent;
+import org.hl7.fhir.r4.model.Bundle.BundleType;
+import org.hl7.fhir.r4.model.CodeableConcept;
+import org.hl7.fhir.r4.model.Coding;
+import org.hl7.fhir.r4.model.Encounter;
+import org.hl7.fhir.r4.model.Encounter.EncounterStatus;
+import org.hl7.fhir.r4.model.Observation;
+import org.hl7.fhir.r4.model.Period;
+import org.hl7.fhir.r4.model.Quantity;
+import org.hl7.fhir.r4.model.Reference;
+import org.hl7.fhir.r4.model.StringType;
 
 /**
  *
  * @author buddh
  */
 @Named
-@ApplicationScoped
+@SessionScoped
 public class FhirR4Controller implements Serializable {
 
     @Resource
@@ -78,6 +99,8 @@ public class FhirR4Controller implements Serializable {
     ItemApplicationController itemApplicationController;
     @Inject
     AreaApplicationController areaApplicationController;
+    @Inject
+    ClientEncounterComponentItemController clientEncounterComponentItemController;
 
     /**
      * Creates a new instance of FhirR5Controller
@@ -140,6 +163,113 @@ public class FhirR4Controller implements Serializable {
             }
             return result;
         });
+    }
+
+    // Created by Dr M H B Ariyaratne with assistance from ChatGPT from OpenAI
+    public FhirOperationResult createFormsetInFhirServer(ClientEncounterComponentFormSet cecfs, IntegrationEndpoint endPoint) {
+        System.out.println("createFormsetInFhirServer...");
+        System.out.println("cecfs = " + cecfs);
+        FhirOperationResult result = new FhirOperationResult();
+
+        SecurityProtocol sp = endPoint.getSecurityProtocol();
+        String username = endPoint.getUserName();
+        String password = endPoint.getPassword();
+        Bundle bundle = convertToFhirBundle(cecfs);
+        System.out.println("bundle.toString() = " + bundle.toString());
+
+        FhirContext ctx = FhirContext.forR4();
+        // Modified by Dr M H B Ariyaratne with assistance from ChatGPT from OpenAI
+        String json = ctx.newJsonParser().setPrettyPrint(true).encodeResourceToString(bundle);
+        System.err.println("FHIR JSON: " + json);
+
+        String serverBase = endPoint.getEndPointUrl();
+        IGenericClient fhirClient = ctx.newRestfulGenericClient(serverBase);
+
+        if (sp == SecurityProtocol.BASIC_AUTHENTICATION) {
+            fhirClient.registerInterceptor(new BasicAuthInterceptor(username, password));
+        } else if (endPoint.getSecurityProtocol() == SecurityProtocol.KEYCLOAK) {
+            String token = acquireToken(endPoint.getKeyCloackClientId(), endPoint.getKeyCloackClientSecret(), endPoint.getKeyCloakTokenAcquiringUrl());
+            BearerTokenAuthInterceptor authInterceptor = new BearerTokenAuthInterceptor(token);
+            fhirClient.registerInterceptor(authInterceptor);
+        } else if (sp == SecurityProtocol.API_KEY) {
+            String apiKeyName = endPoint.getApiKeyName();
+            String apiKeyValue = endPoint.getApiKeyValue();
+            fhirClient.registerInterceptor(new IClientInterceptor() {
+                @Override
+                public void interceptRequest(IHttpRequest theRequest) {
+                    theRequest.addHeader(apiKeyName, apiKeyValue);
+                }
+
+                @Override
+                public void interceptResponse(IHttpResponse theResponse) {
+                    // Optional: handle response
+                }
+            });
+        }
+        // Add other authentication methods as needed
+
+        MethodOutcome outcome = fhirClient.create().resource(bundle).execute();
+
+        if (outcome.getCreated()) {
+            IdType id = (IdType) outcome.getId();
+            result.setSuccess(true);
+            result.setMessage("Created new Patient with ID: " + id.getIdPart());
+            result.setResourceId(id);
+            updateFhirResourceLink(cecfs, endPoint, id.getIdPart());
+        } else {
+            result.setSuccess(false);
+            result.setMessage("Failed to create new Patient");
+        }
+        return result;
+    }
+
+    public FhirOperationResult updateFormsetInFhirServerAsync(ClientEncounterComponentFormSet cecfs, IntegrationEndpoint endPoint, String oldId) {
+        System.out.println("createFormsetInFhirServer...");
+        System.out.println("cecfs = " + cecfs);
+        FhirOperationResult result = new FhirOperationResult();
+
+        SecurityProtocol sp = endPoint.getSecurityProtocol();
+        String username = endPoint.getUserName();
+        String password = endPoint.getPassword();
+        Bundle bundle = convertToFhirBundle(cecfs);
+        System.out.println("bundle.toString() = " + bundle.toString());
+
+        FhirContext ctx = FhirContext.forR4();
+        String serverBase = endPoint.getEndPointUrl();
+        IGenericClient fhirClient = ctx.newRestfulGenericClient(serverBase);
+
+        if (sp == SecurityProtocol.BASIC_AUTHENTICATION) {
+            fhirClient.registerInterceptor(new BasicAuthInterceptor(username, password));
+        } else if (sp == SecurityProtocol.API_KEY) {
+            String apiKeyName = endPoint.getApiKeyName();
+            String apiKeyValue = endPoint.getApiKeyValue();
+            fhirClient.registerInterceptor(new IClientInterceptor() {
+                @Override
+                public void interceptRequest(IHttpRequest theRequest) {
+                    theRequest.addHeader(apiKeyName, apiKeyValue);
+                }
+
+                @Override
+                public void interceptResponse(IHttpResponse theResponse) {
+                    // Optional: handle response
+                }
+            });
+        }
+        // Add other authentication methods as needed
+
+        MethodOutcome outcome = fhirClient.create().resource(bundle).execute();
+
+        if (outcome.getCreated()) {
+            IdType id = (IdType) outcome.getId();
+            result.setSuccess(true);
+            result.setMessage("Created new Patient with ID: " + id.getIdPart());
+            result.setResourceId(id);
+            updateFhirResourceLink(cecfs, endPoint, id.getIdPart());
+        } else {
+            result.setSuccess(false);
+            result.setMessage("Failed to create new Patient");
+        }
+        return result;
     }
 
     public CompletableFuture<FhirOperationResult> updatePatientInFhirServerAsync(Client client, IntegrationEndpoint endPoint, String resourceId) {
@@ -237,22 +367,22 @@ public class FhirR4Controller implements Serializable {
             // Create a FHIR client
             FhirContext ctx = FhirContext.forR4();
             String serverBase = endPoint.getEndPointUrl(); // Assuming this is the URL of the FHIR server
-            IGenericClient fhirClient = ctx.newRestfulGenericClient(serverBase);
+            IGenericClient client = ctx.newRestfulGenericClient(serverBase);
 
             // Apply security if needed
             if (endPoint.getSecurityProtocol() == SecurityProtocol.BASIC_AUTHENTICATION) {
                 String username = endPoint.getUserName();
                 String password = endPoint.getPassword();
-                fhirClient.registerInterceptor(new BasicAuthInterceptor(username, password));
+                client.registerInterceptor(new BasicAuthInterceptor(username, password));
             } else if (endPoint.getSecurityProtocol() == SecurityProtocol.KEYCLOAK) {
                 String token = acquireToken(endPoint.getKeyCloackClientId(), endPoint.getKeyCloackClientSecret(), endPoint.getKeyCloakTokenAcquiringUrl());
                 BearerTokenAuthInterceptor authInterceptor = new BearerTokenAuthInterceptor(token);
-                fhirClient.registerInterceptor(authInterceptor);
+                client.registerInterceptor(authInterceptor);
             } else if (endPoint.getSecurityProtocol() == SecurityProtocol.API_KEY) {
                 String apiKeyName = endPoint.getApiKeyName(); // Assuming this is the name of the API key header
                 String apiKeyValue = endPoint.getApiKeyValue();
                 // Add the API key to the client's headers
-                fhirClient.registerInterceptor(new IClientInterceptor() {
+                client.registerInterceptor(new IClientInterceptor() {
                     @Override
                     public void interceptRequest(IHttpRequest theRequest) {
                         theRequest.addHeader(apiKeyName, apiKeyValue);
@@ -271,16 +401,16 @@ public class FhirR4Controller implements Serializable {
                 System.out.println("sqd.getSearchCriteria() = " + sqd.getSearchCriteria());
                 switch (sqd.getSearchCriteria()) {
                     case NIC_ONLY:
-                        results = searchByIdentifier("https://fhir.health.gov.lk/id/nic", sqd.getNic(), fhirClient);
+                        results = searchByIdentifier("https://fhir.health.gov.lk/id/nic", sqd.getNic(), client);
                         break;
                     case PHN_ONLY:
-                        results = searchByIdentifier("https://fhir.health.gov.lk/id/phn", sqd.getPhn(), fhirClient);
+                        results = searchByIdentifier("https://fhir.health.gov.lk/id/phn", sqd.getPhn(), client);
                         break;
                     case PASSPORT_ONLY:
-                        results = searchByIdentifier("https://fhir.health.gov.lk/id/passport", sqd.getPassport(), fhirClient);
+                        results = searchByIdentifier("https://fhir.health.gov.lk/id/passport", sqd.getPassport(), client);
                         break;
                     case PART_OF_NAME_ONLY:
-                        results = fhirClient.search()
+                        results = client.search()
                                 .forResource(Patient.class)
                                 .where(Patient.NAME.matches().value(sqd.getName()))
                                 .and(Patient.NAME.matches().values("text", sqd.getName())) // Matching the 'text' field inside the 'name' array
@@ -290,7 +420,7 @@ public class FhirR4Controller implements Serializable {
                     case PART_OF_NAME_AND_BIRTH_YEAR:
                         String startDateOfYear = String.format("%04d-01-01", sqd.getBirthYear());
                         String endDateOfYear = String.format("%04d-12-31", sqd.getBirthYear());
-                        results = fhirClient.search()
+                        results = client.search()
                                 .forResource(Patient.class)
                                 .where(Patient.NAME.matches().value(sqd.getName()))
                                 .where(Patient.BIRTHDATE.afterOrEquals().day(startDateOfYear))
@@ -302,7 +432,7 @@ public class FhirR4Controller implements Serializable {
                     case PART_OF_NAME_AND_BIRTH_YEAR_AND_MONTH:
                         String startDate = String.format("%04d-%02d-01", sqd.getBirthYear(), sqd.getBirthMonth());
                         String endDate = String.format("%04d-%02d-%02d", sqd.getBirthYear(), sqd.getBirthMonth(), LocalDate.of(sqd.getBirthYear(), sqd.getBirthMonth(), 1).lengthOfMonth());
-                        results = fhirClient.search()
+                        results = client.search()
                                 .forResource(Patient.class)
                                 .where(Patient.NAME.matches().value(sqd.getName()))
                                 .where(Patient.BIRTHDATE.afterOrEquals().day(startDate))
@@ -312,7 +442,7 @@ public class FhirR4Controller implements Serializable {
                         break;
 
                     case DL_ONLY:
-                        results = fhirClient.search()
+                        results = client.search()
                                 .forResource(Patient.class)
                                 .where(Patient.IDENTIFIER.exactly().systemAndIdentifier("https://fhir.health.gov.lk/id/dl", sqd.getDl()))
                                 .returnBundle(Bundle.class)
@@ -320,7 +450,7 @@ public class FhirR4Controller implements Serializable {
                         break;
                     case PART_OF_NAME_AND_AGE_IN_YEARS:
                         LocalDate birthDateFromAge = LocalDate.now().minusYears(sqd.getAgeInYears());
-                        results = fhirClient.search()
+                        results = client.search()
                                 .forResource(Patient.class)
                                 .where(Patient.NAME.matches().value(sqd.getName()))
                                 .where(Patient.BIRTHDATE.beforeOrEquals().day(birthDateFromAge.toString()))
@@ -328,7 +458,7 @@ public class FhirR4Controller implements Serializable {
                                 .execute();
                         break;
                     case PART_OF_NAME_AND_DATE_OF_BIRTH:
-                        results = fhirClient.search()
+                        results = client.search()
                                 .forResource(Patient.class)
                                 .where(Patient.NAME.matches().value(sqd.getName()))
                                 .where(Patient.BIRTHDATE.exactly().day(sqd.getDateOfBirth().toString()))
@@ -336,14 +466,14 @@ public class FhirR4Controller implements Serializable {
                                 .execute();
                         break;
                     case SCN_ONLY:
-                        results = fhirClient.search()
+                        results = client.search()
                                 .forResource(Patient.class)
                                 .where(Patient.IDENTIFIER.exactly().systemAndIdentifier("https://fhir.health.gov.lk/id/scn", sqd.getScn()))
                                 .returnBundle(Bundle.class)
                                 .execute();
                         break;
                     case TELEPHONE_NUMBER_ONLY:
-                        results = fhirClient.search()
+                        results = client.search()
                                 .forResource(Patient.class)
                                 .where(Patient.TELECOM.exactly().systemAndIdentifier("phone", sqd.getPhone()))
                                 .returnBundle(Bundle.class)
@@ -625,6 +755,176 @@ public class FhirR4Controller implements Serializable {
         }
 
         return patient;
+    }
+
+    public Bundle convertToFhirBundle(ClientEncounterComponentFormSet formset) {
+        System.out.println("convertToFhirBundle");
+        System.out.println("formset = " + formset);
+        Bundle bundle = new Bundle();
+        bundle.setType(BundleType.COLLECTION);
+
+        Client myPatient = formset.getEncounter().getClient();
+        System.out.println("myPatient = " + myPatient);
+        lk.gov.health.phsp.entity.Encounter myEncounter = formset.getEncounter();
+
+        // Assuming you have separate methods to convert to FHIR resources
+        Patient patientResource = convertToFhirPatient(myPatient);
+        System.out.println("myPatient = " + myPatient);
+        System.out.println("patientResource = " + patientResource);
+        Encounter encounterResource = convertToEncounter(myEncounter);
+        System.out.println("myEncounter = " + myEncounter);
+        System.out.println("encounterResource = " + encounterResource);
+
+        // Add Patient to the Bundle
+        BundleEntryComponent patientEntry = bundle.addEntry();
+        System.out.println("1 patientEntry = " + patientEntry);
+        System.out.println("patientResource = " + patientResource);
+        patientEntry.setResource(patientResource);
+        System.out.println("2 patientEntry = " + patientEntry);
+
+        // Add Encounter to the Bundle
+        BundleEntryComponent encounterEntry = bundle.addEntry();
+        System.out.println("1 encounterEntry = " + encounterEntry);
+        System.out.println("encounterResource = " + encounterResource);
+        encounterEntry.setResource(encounterResource);
+        System.out.println("2 encounterEntry = " + encounterEntry);
+
+        List<ClientEncounterComponentItem> cecis = clientEncounterComponentItemController.getClientEncounterComponentItemOfAFormset(formset);
+
+        if (cecis == null) {
+            return bundle;
+        } else {
+            System.out.println("cecis = " + cecis.size());
+        }
+        if (cecis.isEmpty()) {
+            return bundle;
+        }
+
+        for (ClientEncounterComponentItem is : cecis) {
+            System.out.println("is = " + is);
+            Observation obsResource = convertToObservation(is);
+
+            System.out.println("obsResource = " + obsResource);
+            BundleEntryComponent obsEntry = bundle.addEntry();
+            System.out.println("1. obsEntry = " + obsEntry);
+            obsEntry.setResource(obsResource);
+            System.out.println("2. obsEntry = " + obsEntry);
+        }
+
+        System.out.println("bundle = " + bundle.toString());
+        return bundle;
+    }
+
+    public Encounter convertToEncounter(lk.gov.health.phsp.entity.Encounter myEncounter) {
+        Encounter fhirEncounter = new Encounter();
+
+        // Set Identifier
+        if (myEncounter.getId() != null) {
+            Identifier identifier = new Identifier();
+            identifier.setValue(myEncounter.getId().toString());
+            fhirEncounter.addIdentifier(identifier);
+        }
+
+        // Set Status
+        if (myEncounter.getCompleted()) {
+            fhirEncounter.setStatus(EncounterStatus.FINISHED);
+        } else {
+            fhirEncounter.setStatus(EncounterStatus.INPROGRESS); // Set to appropriate status if not completed
+        }
+
+        // Set Encounter Dates (Period)
+        Period period = new Period();
+        if (myEncounter.getEncounterFrom() != null) {
+            period.setStart(myEncounter.getEncounterFrom());
+        }
+        if (myEncounter.getEncounterTo() != null) {
+            period.setEnd(myEncounter.getEncounterTo());
+        }
+        fhirEncounter.setPeriod(period);
+
+        // Set Patient Reference
+        if (myEncounter.getClient() != null) {
+            fhirEncounter.setSubject(new Reference("Patient/" + myEncounter.getClient().getId()));
+        }
+
+        // Set Location (Institution)
+        if (myEncounter.getInstitution() != null) {
+            Encounter.EncounterLocationComponent location = new Encounter.EncounterLocationComponent(
+                    new Reference("Location/" + myEncounter.getInstitution().getId()));
+            fhirEncounter.addLocation(location);
+        }
+        return fhirEncounter;
+    }
+
+    // Modified by Dr M H B Ariyaratne with assistance from ChatGPT from OpenAI
+    public Observation convertToObservation(ClientEncounterComponentItem ceci) {
+        Observation obs = new Observation();
+
+        if (ceci.getReferanceDesignComponentFormItem() == null) {
+            return obs;
+        }
+        String nameOfObservation = ceci.getReferanceDesignComponentFormItem().getName();
+        String codeOfTheObservation = ceci.getReferanceDesignComponentFormItem().getCode();
+        String codingSystem = "terminology.chims.health.gov.lk";
+
+        CodeableConcept obsCode = new CodeableConcept();
+        obsCode.addCoding(new Coding().setCode(codeOfTheObservation).setSystem(codingSystem).setDisplay(nameOfObservation));
+        obs.setCode(obsCode);
+
+        switch (ceci.getReferanceDesignComponentFormItem().getSelectionDataType()) {
+            case Boolean:
+                obs.setValue(new BooleanType(ceci.getBooleanValue()));
+                break;
+
+            case Integer_Number:
+                if (ceci != null && ceci.getIntegerNumberValue() != null) {
+                    Quantity quantityInt = new Quantity();
+                    quantityInt.setValue(ceci.getIntegerNumberValue());
+                    obs.setValue(quantityInt);
+                }
+                break;
+
+            case Long_Number:
+                Quantity quantityLong = new Quantity();
+                quantityLong.setValue(ceci.getLongNumberValue());
+                obs.setValue(quantityLong);
+                break;
+
+            case Real_Number:
+                Quantity quantityReal = new Quantity();
+                quantityReal.setValue(ceci.getRealNumberValue());
+                obs.setValue(quantityReal);
+                break;
+
+            case Item_Reference:
+                CodeableConcept cc = new CodeableConcept();
+                if (ceci != null && ceci.getItemValue() != null) {
+                    Coding coding = new Coding().setSystem(codingSystem);
+                    if (ceci.getItemValue().getCode() != null) {
+                        coding.setCode(ceci.getItemValue().getCode());
+                    }
+                    if (ceci.getItemValue().getName() != null) {
+                        coding.setDisplay(ceci.getItemValue().getName());
+                    }
+                    cc.addCoding(coding);
+                }
+                obs.setValue(cc);
+                break;
+
+            case Short_Text:
+                obs.setValue(new StringType(ceci.getShortTextValue()));
+                break;
+
+            case Long_Text:
+                obs.getDataAbsentReason().setText(ceci.getLongTextValue());
+                break;
+
+            default:
+                // Handle default case, if necessary
+                break;
+        }
+
+        return obs;
     }
 
 }
