@@ -40,6 +40,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.xml.bind.annotation.XmlRootElement;
+import lk.gov.health.phsp.pojcs.Identifiable;
 
 /**
  *
@@ -48,7 +49,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Entity
 @XmlRootElement
 @Table
-public class Upload implements Serializable {
+public class Upload implements Serializable, Identifiable  {
 
     static final long serialVersionUID = 1L;
     @Id
@@ -74,7 +75,7 @@ public class Upload implements Serializable {
     String retireComments;
     @Lob
     @Column(columnDefinition = "LONGBLOB")
-    @Basic(fetch = FetchType.LAZY)
+    @Basic(fetch = FetchType.EAGER)
     byte[] baImage;
     String fileName;
     String fileType;

@@ -12,12 +12,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.Query;
 import javax.persistence.QueryHint;
 import javax.persistence.TemporalType;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.ParameterExpression;
 import javax.persistence.criteria.Predicate;
+import lk.gov.health.phsp.entity.SequenceNumber;
+import lk.gov.health.phsp.pojcs.Identifiable;
 import org.eclipse.persistence.config.CacheUsage;
 import org.eclipse.persistence.config.QueryHints;
 
@@ -26,13 +29,30 @@ import org.eclipse.persistence.config.QueryHints;
  * @author Dr. M H B Ariyaratne <buddhika.ari at gmail.com>
  * @param <T>
  */
-public abstract class AbstractFacade<T> {
+public abstract class AbstractFacade<T extends Identifiable> {
 
     private Class<T> entityClass;
 
     public void flush() {
         getEntityManager().flush();
 
+    }
+
+    public boolean isEntityManaged(T entity) {
+        return getEntityManager().contains(entity);
+    }
+
+    public Long getNextId() {
+        SequenceNumber sequence = getEntityManager().find(SequenceNumber.class, 1L); // Always 1 for the single row
+        if (sequence == null) {
+            sequence = new SequenceNumber();
+            sequence.setLastUsedId(0L);
+            getEntityManager().persist(sequence);
+        }
+        Long nextId = sequence.getLastUsedId() + 1;
+        sequence.setLastUsedId(nextId);
+        getEntityManager().merge(sequence);
+        return nextId;
     }
 
     public List<Object> findObjects(String jpql, Map<String, Object> parameters) {
@@ -96,32 +116,36 @@ public abstract class AbstractFacade<T> {
         return q.getResultList();
     }
 
+    // Comment by Dr M H B Ariyaratne with assistance from ChatGPT from OpenAI
     public T findFirstByJpql(String jpql, Map<String, Object> parameters) {
         try {
+            System.out.println("Entering findFirstByJpql method");
+            System.out.println("JPQL: " + jpql);
+
             TypedQuery<T> qry = getEntityManager().createQuery(jpql, entityClass);
-            Set s = parameters.entrySet();
-            Iterator it = s.iterator();
             qry.setMaxResults(1);
-            while (it.hasNext()) {
-                Map.Entry m = (Map.Entry) it.next();
-                String pPara = (String) m.getKey();
-                if (m.getValue() instanceof Date) {
-                    Date pVal = (Date) m.getValue();
-                    qry.setParameter(pPara, pVal, TemporalType.DATE);
 
+            for (Map.Entry<String, Object> entry : parameters.entrySet()) {
+                String paramName = entry.getKey();
+                Object paramValue = entry.getValue();
+                System.out.println("Parameter: " + paramName + ", Value: " + paramValue);
+
+                if (paramValue instanceof Date) {
+                    qry.setParameter(paramName, (Date) paramValue, TemporalType.DATE);
                 } else {
-                    Object pVal = (Object) m.getValue();
-                    qry.setParameter(pPara, pVal);
-
+                    qry.setParameter(paramName, paramValue);
                 }
             }
-            List<T> l = qry.getResultList();
-            if (l != null && l.isEmpty() == false) {
-                return l.get(0);
-            } else {
-                return null;
-            }
+
+            T result = qry.getSingleResult();
+            System.out.println("Result found: " + (result != null ? result.toString() : "null"));
+            return result;
+        } catch (NoResultException nre) {
+            System.out.println("No result found");
+            return null;
         } catch (Exception e) {
+            System.out.println("Exception in findFirstByJpql: " + e.getMessage());
+            e.printStackTrace();
             return null;
         }
     }
@@ -132,26 +156,59 @@ public abstract class AbstractFacade<T> {
 
     protected abstract EntityManager getEntityManager();
 
+// Comment indicating the code was done by Dr M H B Ariyaratne with assistance from ChatGPT from OpenAI
     public void create(T entity) {
+        if (entity.getId() == null) {
+            entity.setId(getNextId());
+        }
         getEntityManager().persist(entity);
-        //getEntityManager().flush();
-
+        // Uncommenting flush if you want to immediately sync with the database
+        // getEntityManager().flush();
     }
 
     public void refresh(T entity) {
         getEntityManager().refresh(entity);
     }
 
+// Comment by Dr M H B Ariyaratne with assistance from ChatGPT from OpenAI
     public void edit(T entity) {
-        getEntityManager().merge(entity);
+        if (entity == null) {
+            return;
+        }
+        EntityManager em = getEntityManager();
+        if (((Identifiable) entity).getId() == null) {
+            create(entity);
+        } else {
+            if (em.contains(entity)) {
+                em.merge(entity);
+            } else {
+                T managedEntity = em.find((Class<T>) entity.getClass(), ((Identifiable) entity).getId());
+                if (managedEntity != null) {
+                    em.merge(entity);
+                } else {
+                    create(entity);
+                }
+            }
+        }
+        em.flush();
     }
 
     public void remove(T entity) {
         getEntityManager().remove(getEntityManager().merge(entity));
     }
 
+    // Comment by Dr M H B Ariyaratne with assistance from ChatGPT from OpenAI
     public T find(Object id) {
-        return getEntityManager().find(entityClass, id);
+        try {
+            System.out.println("Attempting to find entity with ID: " + id);
+            T entity = getEntityManager().find(entityClass, id);
+            System.out.println("Entity found: " + entity);
+            return entity;
+        } catch (Exception e) {
+            System.out.println("Exception while finding entity: " + e.getMessage());
+            e.printStackTrace();
+            return null;
+        }
     }
 
     public List<T> findAll(boolean withoutRetired) {
@@ -196,14 +253,21 @@ public abstract class AbstractFacade<T> {
         return qry.getResultList();
     }
 
+    // Comment by Dr M H B Ariyaratne with assistance from ChatGPT from OpenAI
     public List<T> findByJpql(String jpql, Map<String, Object> parameters) {
         try {
+            System.out.println("Entering findByJpql method");
+            System.out.println("JPQL: " + jpql);
+
             TypedQuery<T> qry = getEntityManager().createQuery(jpql, entityClass);
             Set s = parameters.entrySet();
             Iterator it = s.iterator();
+
             while (it.hasNext()) {
                 Map.Entry m = (Map.Entry) it.next();
                 String pPara = (String) m.getKey();
+                System.out.println("Parameter: " + pPara + ", Value: " + m.getValue());
+
                 if (m.getValue() instanceof Date) {
                     Date pVal = (Date) m.getValue();
                     qry.setParameter(pPara, pVal, TemporalType.DATE);
@@ -212,8 +276,13 @@ public abstract class AbstractFacade<T> {
                     qry.setParameter(pPara, pVal);
                 }
             }
-            return qry.getResultList();
+
+            List<T> results = qry.getResultList();
+            System.out.println("Results found: " + (results != null ? results.size() : "null"));
+            return results;
         } catch (Exception e) {
+            System.out.println("Exception in findByJpql: " + e.getMessage());
+            e.printStackTrace();
             return null;
         }
     }

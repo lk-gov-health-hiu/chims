@@ -680,20 +680,19 @@ public class ClientEncounterComponentItemController implements Serializable {
 
     }
 
+// Comment by Dr M H B Ariyaratne with assistance from ChatGPT from OpenAI
     public void saveCi(ClientEncounterComponentItem i) {
         if (i == null) {
+            System.out.println("ClientEncounterComponentItem is null");
             return;
         }
         if (i.getId() == null) {
-//            i.setCreatedAt(new Date());
-//            i.setCreatedBy(webUserController.getLoggedUser());
             getFacade().create(i);
-        } else{
-             getFacade().edit(i);
+        } else {
+            getFacade().edit(i);
         }
-//        dataFormBean.saveCi(i);
     }
-    
+
     public void addAnother(ClientEncounterComponentItem i) {
 
         if (i == null) {

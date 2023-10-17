@@ -33,13 +33,14 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
+import lk.gov.health.phsp.pojcs.Identifiable;
 
 /**
  *
  * @author buddhika
  */
 @Entity
-public class StoredRequest implements Serializable {
+public class StoredRequest implements Serializable, Identifiable  {
 
     private static final long serialVersionUID = 1L;
     @Id

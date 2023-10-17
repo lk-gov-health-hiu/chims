@@ -29,13 +29,14 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import lk.gov.health.phsp.pojcs.Identifiable;
 
 /**
  *
  * @author buddhika
  */
 @Entity
-public class ReportRow implements Serializable {
+public class ReportRow implements Serializable, Identifiable  {
 
     private static final long serialVersionUID = 1L;
     @Id

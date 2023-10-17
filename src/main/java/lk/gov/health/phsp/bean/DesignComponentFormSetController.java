@@ -397,7 +397,7 @@ public class DesignComponentFormSetController implements Serializable {
         String j = "Select s from DesignComponentFormSet s "
                 + " where s.retired=false "
                 + " and s.institution is null"
-                + " and s.name like :q "
+                + " and lower(s.name) like :q "
                 + " order by s.name";
         Map m = new HashMap();
         m.put("q", "%" + qry.trim().toLowerCase() + "%");
@@ -632,8 +632,10 @@ public class DesignComponentFormSetController implements Serializable {
         }
 
         java.lang.Long getKey(String value) {
+            System.out.println("value = " + value);
             java.lang.Long key;
             key = Long.valueOf(value);
+            System.out.println("key = " + key);
             return key;
         }
 

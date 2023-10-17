@@ -25,6 +25,7 @@ import javax.persistence.Temporal;
 import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlRootElement;
 import lk.gov.health.phsp.enums.WebUserRoleLevel;
+import lk.gov.health.phsp.pojcs.Identifiable;
 
 /**
  *
@@ -34,7 +35,7 @@ import lk.gov.health.phsp.enums.WebUserRoleLevel;
 @Entity
 @XmlRootElement
 @Table
-public class WebUser implements Serializable {
+public class WebUser implements Serializable, Identifiable  {
 
     private static final long serialVersionUID = 1L;
 

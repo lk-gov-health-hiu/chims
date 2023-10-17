@@ -6,13 +6,14 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import lk.gov.health.phsp.pojcs.Identifiable;
 
 /**
  *
  * @author buddhika.ari@gmail.com & ChatGPT
  */
 @Entity
-public class FhirResourceLink implements Serializable {
+public class FhirResourceLink implements Serializable, Identifiable  {
 
     private static final long serialVersionUID = 1L;
     @Id

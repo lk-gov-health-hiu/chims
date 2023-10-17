@@ -36,6 +36,7 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlRootElement;
+import lk.gov.health.phsp.pojcs.Identifiable;
 
 /**
  *
@@ -44,7 +45,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Entity
 @Table
 @XmlRootElement
-public class Component implements Serializable {
+public class Component implements Serializable, Identifiable  {
 
     private static final long serialVersionUID = 1L;
 
@@ -59,7 +60,7 @@ public class Component implements Serializable {
 
     private String code;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private Item item;
 
     @Lob
@@ -67,13 +68,13 @@ public class Component implements Serializable {
 
     private Double orderNo;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     private Institution institution;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private Component parentComponent;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private Component referenceComponent;
 
     @Lob
@@ -111,21 +112,21 @@ public class Component implements Serializable {
     /*
     Create Properties
      */
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private WebUser createdBy;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date createdAt;
     /*
     Last Edit Properties
      */
-//    @ManyToOne(fetch = FetchType.LAZY)
+//    @ManyToOne(fetch = FetchType.EAGER)
 //    private WebUser lastEditBy;
 //    @Temporal(javax.persistence.TemporalType.TIMESTAMP)
 //    private Date lastEditeAt;
     /*
     Retire Reversal Properties
      */
-//    @ManyToOne(fetch = FetchType.LAZY)
+//    @ManyToOne(fetch = FetchType.EAGER)
 //    private WebUser retiredReversedBy;
 //    @Temporal(javax.persistence.TemporalType.TIMESTAMP)
 //    private Date retiredReversedAt;
@@ -133,7 +134,7 @@ public class Component implements Serializable {
     Retire Properties
      */
     private boolean retired;
-//    @ManyToOne(fetch = FetchType.LAZY)
+//    @ManyToOne(fetch = FetchType.EAGER)
 //    private WebUser retiredBy;
 //    @Temporal(javax.persistence.TemporalType.TIMESTAMP)
 //    private Date retiredAt;
@@ -142,7 +143,7 @@ public class Component implements Serializable {
     private boolean completed;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date completedAt;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private WebUser completedBy;
 
     public Long getId() {

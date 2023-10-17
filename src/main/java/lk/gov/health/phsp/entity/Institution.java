@@ -30,6 +30,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -38,6 +39,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.xml.bind.annotation.XmlRootElement;
+import lk.gov.health.phsp.pojcs.Identifiable;
 
 /**
  *
@@ -46,7 +48,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Entity
 @XmlRootElement
 @Table
-public class Institution implements Serializable {
+public class Institution implements Serializable, Identifiable  {
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -65,32 +67,32 @@ public class Institution implements Serializable {
     private String mobile;
     private String web;
     private String poiNumber;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     private Institution poiInstitution;
     private Long lastHin;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     private Institution parent;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     private Area gnArea;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     private Area phmArea;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     private Area phiArea;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     private Area dsDivision;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     private Area mohArea;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     private Area district;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     private Area rdhsArea;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     private Area province;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     private Area pdhsArea;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
     private Coordinate coordinate;
 
     @ManyToOne

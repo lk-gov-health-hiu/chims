@@ -38,7 +38,7 @@ import javax.xml.bind.annotation.XmlTransient;
 @Entity
 public class ClientEncounterComponentFormSet extends ClientEncounterComponent {
 
-    @OneToMany(mappedBy = "itemFormset")
+    @OneToMany(mappedBy = "itemFormset",fetch = FetchType.EAGER)
     private List<ClientEncounterComponentItem> clientEncounterComponentItems;
 
     

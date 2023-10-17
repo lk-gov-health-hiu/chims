@@ -130,7 +130,7 @@ public class DesignComponentFormController implements Serializable {
             return new ArrayList<>();
         }
         String j = "Select f from DesignComponentForm f "
-                + "where f.retired=false "
+                + " where f.retired=false "
                 + " and f.parentComponent=:pc "
                 + " order by f.orderNo";
         Map m = new HashMap();

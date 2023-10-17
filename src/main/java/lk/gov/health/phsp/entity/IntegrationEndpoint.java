@@ -13,17 +13,19 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import lk.gov.health.phsp.enums.CommunicationProtocol;
 import lk.gov.health.phsp.enums.IntegrationEndpointType;
+import lk.gov.health.phsp.pojcs.Identifiable;
 
 /**
  *
  * @author buddh
  */
 @Entity
-public class IntegrationEndpoint implements Serializable {
+public class IntegrationEndpoint implements Serializable, Identifiable  {
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -44,10 +46,17 @@ public class IntegrationEndpoint implements Serializable {
     private String apiKeyName;
     private String apiKeyValue;
 
+    private String keyCloackClientId;
+    @Lob
+    private String keyCloackClientSecret;
+    @Lob
+    private String keyCloakTokenAcquiringUrl;
+
+
     /*
     Create Properties
      */
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private WebUser createdBy;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date createdAt;
@@ -55,7 +64,7 @@ public class IntegrationEndpoint implements Serializable {
     Retire Properties
      */
     private boolean retired;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private WebUser retiredBy;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date retiredAt;
@@ -94,6 +103,8 @@ public class IntegrationEndpoint implements Serializable {
         return "lk.gov.health.phsp.entity.IntegrationEndpoint[ id=" + id + " ]";
     }
 
+    
+    
     public IntegrationEndpointType getEndpointType() {
         return endpointType;
     }
@@ -228,6 +239,32 @@ public class IntegrationEndpoint implements Serializable {
 
     public void setApiKeyName(String apiKeyName) {
         this.apiKeyName = apiKeyName;
+    }
+
+   
+
+    public String getKeyCloackClientId() {
+        return keyCloackClientId;
+    }
+
+    public void setKeyCloackClientId(String keyCloackClientId) {
+        this.keyCloackClientId = keyCloackClientId;
+    }
+
+    public String getKeyCloackClientSecret() {
+        return keyCloackClientSecret;
+    }
+
+    public void setKeyCloackClientSecret(String keyCloackClientSecret) {
+        this.keyCloackClientSecret = keyCloackClientSecret;
+    }
+
+    public String getKeyCloakTokenAcquiringUrl() {
+        return keyCloakTokenAcquiringUrl;
+    }
+
+    public void setKeyCloakTokenAcquiringUrl(String keyCloakTokenAcquiringUrl) {
+        this.keyCloakTokenAcquiringUrl = keyCloakTokenAcquiringUrl;
     }
 
 }

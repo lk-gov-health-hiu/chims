@@ -12,13 +12,14 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import lk.gov.health.phsp.enums.IntegrationEvent;
+import lk.gov.health.phsp.pojcs.Identifiable;
 
 /**
  *
  * @author buddh
  */
 @Entity
-public class IntegrationTrigger implements Serializable {
+public class IntegrationTrigger implements Serializable, Identifiable  {
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -32,7 +33,7 @@ public class IntegrationTrigger implements Serializable {
     /*
      Create Properties
      */
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private WebUser createdBy;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date createdAt;
@@ -40,7 +41,7 @@ public class IntegrationTrigger implements Serializable {
     Retire Properties
      */
     private boolean retired;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private WebUser retiredBy;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date retiredAt;

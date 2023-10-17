@@ -1,7 +1,6 @@
 package lk.gov.health.phsp.bean;
 
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.WebResource;
+
 import lk.gov.health.phsp.entity.Area;
 import lk.gov.health.phsp.entity.WebUser;
 import lk.gov.health.phsp.entity.Institution;
@@ -331,39 +330,6 @@ public class WebUserController implements Serializable {
         passwordReenter = "";
         userTransactionController.recordTransaction("To Add New User By InsAdmin");
         return "/insAdmin/create_new_user";
-    }
-
-    public void toProcedureRoom() {
-        String insList = null;
-        String baseUrl = "http://localhost:8080/ProcedureRoomService/resources/redirect";
-        String urlVals = "?API_KEY=EF16A5D4EF8AA6AA0580AF1390CF0600";
-        urlVals += "&UserId=" + loggedUser.getId();
-        urlVals += "&UserName=" + loggedUser.getName();
-        urlVals += "&UserRole=" + loggedUser.getWebUserRole();
-
-        for (Institution ins_ : institutionApplicationController.findChildrenInstitutions(loggedUser.getInstitution(), InstitutionType.Procedure_Room)) {
-            if (ins_.getId() != null) {
-                if (insList == null) {
-                    insList = ins_.getId().toString();
-                } else {
-                    insList += "A" + ins_.getId().toString();
-                }
-            }
-        }
-        urlVals += "&insList=" + insList;
-        urlVals += "&userInstitution=" + loggedUser.getInstitution().getId();
-
-        Client client = Client.create();
-        WebResource webResource1 = client.resource(baseUrl + urlVals);
-        com.sun.jersey.api.client.ClientResponse cr = webResource1.accept("text/plain").get(com.sun.jersey.api.client.ClientResponse.class);
-        String outpt = cr.getEntity(String.class);
-
-        ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
-        try {
-            externalContext.redirect(outpt);
-        } catch (IOException ex) {
-            Logger.getLogger(WebUserController.class.getName()).log(Level.SEVERE, null, ex);
-        }
     }
 
     public String toManageAllUsers() {

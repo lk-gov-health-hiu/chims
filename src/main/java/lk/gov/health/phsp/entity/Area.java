@@ -41,6 +41,7 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
+import lk.gov.health.phsp.pojcs.Identifiable;
 
 /**
  *
@@ -49,9 +50,9 @@ import javax.xml.bind.annotation.XmlTransient;
 @Entity
 @Table
 @XmlRootElement
-public class Area implements Serializable {
+public class Area implements Serializable, Identifiable  {
 
-    @OneToMany(mappedBy = "area")
+    @OneToMany(mappedBy = "area",fetch = FetchType.EAGER)
     private List<Coordinate> coordinates;
 
     private static final long serialVersionUID = 1L;
@@ -64,24 +65,24 @@ public class Area implements Serializable {
     private String name;
     private String code;
     private Long areauid;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     private Area parentArea;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private Area phm;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private Area phi;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private Area dsd;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private Area moh;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private Area district;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private Area province;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private Area rdhsArea;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private Area pdhsArea;
 
     private double centreLongitude;
@@ -98,27 +99,27 @@ public class Area implements Serializable {
     private Long femaleTargePopulation;
     
     
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private Institution pmci;
 
     /*
     Create Properties
      */
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private WebUser createdBy;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date createdAt;
     /*
     Last Edit Properties
      */
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private WebUser lastEditBy;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date lastEditeAt;
     /*
     Retire Reversal Properties
      */
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private WebUser retiredReversedBy;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date retiredReversedAt;
@@ -126,7 +127,7 @@ public class Area implements Serializable {
     Retire Properties
      */
     private boolean retired;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private WebUser retiredBy;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date retiredAt;

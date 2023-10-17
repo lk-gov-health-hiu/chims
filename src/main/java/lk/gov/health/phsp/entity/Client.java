@@ -13,11 +13,12 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.xml.bind.annotation.XmlRootElement;
+import lk.gov.health.phsp.pojcs.Identifiable;
 
 @Entity
 @Table
 @XmlRootElement
-public class Client implements Serializable {
+public class Client implements Serializable , Identifiable {
 
 // <editor-fold defaultstate="collapsed" desc="Attributes">
     @Id
@@ -26,7 +27,7 @@ public class Client implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
     private Person person;
 
     private String phn;
@@ -35,27 +36,27 @@ public class Client implements Serializable {
     /*
     Create Properties
      */
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private WebUser createdBy;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date createdAt;
     @Temporal(javax.persistence.TemporalType.DATE)
     private Date createdOn;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private Institution createInstitution;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     private Institution poiInstitution;
     /*
     Last Edit Properties
      */
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private WebUser lastEditBy;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date lastEditeAt;
     /*
     Retire Reversal Properties
      */
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private WebUser retiredReversedBy;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date retiredReversedAt;
@@ -64,7 +65,7 @@ public class Client implements Serializable {
      */
     private boolean retired;
     private boolean reservedClient;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private WebUser retiredBy;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date retiredAt;
