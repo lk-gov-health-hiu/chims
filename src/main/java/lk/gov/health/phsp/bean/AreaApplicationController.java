@@ -134,14 +134,22 @@ public class AreaApplicationController implements Serializable{
     }
 
     public List<Area> completeGnAreas(String qry, Area dsArea) {
-        List<Area> tas = new ArrayList<>();
-        for (Area a : getGnAreas()) {
-            if (a.getName().toLowerCase().contains(qry.trim().toLowerCase())) {
-                if (a.getParentArea().equals(dsArea)) {
-                    tas.add(a);
-                }
-            }
-        }
+        String j = "Select a "
+                + " from Area a"
+                + " where a.retired=:ret"
+                + " and a.type=:t "
+                + " and lower(a.name) like :n "
+                + " and a.parentArea=:p"
+                + " order by a.name";
+        Map m = new HashMap();
+        m.put("ret", false);
+        m.put("t", AreaType.GN);
+        m.put("p", dsArea);
+        m.put("n", "%" + qry.toLowerCase().trim() + "%");
+        System.out.println("m = " + m);
+        System.out.println("j = " + j);
+        List<Area> tas = areaFacade.findByJpql(j, m);
+        System.out.println("tas = " + tas.size());
         return tas;
     }
 

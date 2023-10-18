@@ -44,8 +44,10 @@ public class Client implements Serializable , Identifiable {
     @Temporal(javax.persistence.TemporalType.DATE)
     private Date createdOn;
     @ManyToOne(fetch = FetchType.EAGER)
+    @Index
     private Institution createInstitution;
     @ManyToOne(fetch = FetchType.EAGER)
+    @Index
     private Institution poiInstitution;
     /*
     Last Edit Properties

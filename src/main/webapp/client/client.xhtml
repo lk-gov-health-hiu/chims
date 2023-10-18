@@ -76,7 +76,8 @@
                                     <p:calendar  value="#{clientController.selected.person.dateOfBirth}" 
                                                  id="calDob"  navigator="true" pattern="dd/MM/yyyy" yearRange="1900:today"
                                                  required="true"
-                                                 class="form-control">
+                                                 class="w-100"
+                                                 inputStyleClass="form-control">
                                         <f:ajax event="dateSelect" listener="#{clientController.updateYearDateMonth}"
                                                 render="year month day" 
                                                 execute="@this"/>
@@ -266,11 +267,14 @@
 
                                 <div class="col-md-2" >
                                     <p:outputLabel value="GN Area:" for="gn" />
-                                    <p:autoComplete id="gn" value="#{clientController.selected.person.gnArea}"
+                                    <p:autoComplete id="gn"
+                                                    value="#{clientController.selected.person.gnArea}"
                                                     completeMethod="#{clientController.completeClientsGnArea}"
                                                     var="gn" itemLabel="#{gn.name}" itemValue="#{gn}"
                                                     maxResults="15" forceSelection="true" placeholder="Not Known"
-                                                    minQueryLength="3">
+                                                    minQueryLength="3"
+                                                    class="w-100"
+                                                    inputStyleClass="form-control">
                                         <p:column headerText="Name">
                                             <p:outputLabel value="#{gn.name}"></p:outputLabel>
                                         </p:column>
@@ -285,11 +289,15 @@
 
                                 <div class="col-md-2" >
                                     <p:outputLabel value="District:" for="district" />
-                                    <p:autoComplete required="true" id="district" value="#{clientController.selected.person.district}"
+                                    <p:autoComplete required="true" 
+                                                    id="district" 
+                                                    value="#{clientController.selected.person.district}"
                                                     completeMethod="#{areaController.completeDistricts}"
                                                     var="d" itemLabel="#{d.name}" itemValue="#{d}"
                                                     maxResults="15" forceSelection="true"
-                                                    minQueryLength="3">
+                                                    minQueryLength="3"
+                                                    class="w-100"
+                                                    inputStyleClass="form-control">
                                     </p:autoComplete>
 
                                 </div>
@@ -301,7 +309,9 @@
                                                     var="p" itemLabel="#{p.name}" itemValue="#{p}"
                                                     maxResults="15" forceSelection="true" disabled="true"
                                                     rendered="false"
-                                                    minQueryLength="3">
+                                                    minQueryLength="3"
+                                                    class="w-100"
+                                                    inputStyleClass="form-control">
                                     </p:autoComplete>
 
                                 </div>
@@ -313,7 +323,9 @@
                                                     var="phm" itemLabel="#{phm.name}" itemValue="#{phm}"
                                                     maxResults="15" forceSelection="true"
                                                     rendered="false"
-                                                    minQueryLength="3">
+                                                    minQueryLength="3"
+                                                    class="w-100"
+                                                    inputStyleClass="form-control">
                                     </p:autoComplete>
 
                                 </div>
@@ -325,7 +337,9 @@
                                                     completeMethod="#{areaController.completeMohAreas}"
                                                     var="m" itemLabel="#{m.name}" itemValue="#{m}"
                                                     maxResults="15" forceSelection="true"
-                                                    minQueryLength="3">
+                                                    minQueryLength="3"
+                                                    class="w-100"
+                                                    inputStyleClass="form-control">
                                     </p:autoComplete>
 
                                 </div>

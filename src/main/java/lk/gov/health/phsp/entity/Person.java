@@ -51,8 +51,6 @@ import org.joda.time.PeriodType;
  * Informatics)
  */
 @Entity
-
-@Table
 public class Person implements Serializable, Identifiable {
 
 // <editor-fold defaultstate="collapsed" desc="Persistant Attributes">

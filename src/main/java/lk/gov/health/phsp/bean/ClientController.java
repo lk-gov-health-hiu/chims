@@ -1688,6 +1688,8 @@ public class ClientController implements Serializable {
             return;
         }
         if (selected.getPerson().getGnArea() != null) {
+            System.out.println("selected.getPerson().getGnArea().getDsd() = " + selected.getPerson().getGnArea().getDsd());
+            System.out.println("selected.getPerson().getGnArea().getDistrict() = " + selected.getPerson().getGnArea().getDistrict());
             selected.getPerson().setDsArea(selected.getPerson().getGnArea().getDsd());
             selected.getPerson().setMohArea(selected.getPerson().getGnArea().getMoh());
             selected.getPerson().setPhmArea(selected.getPerson().getGnArea().getPhm());

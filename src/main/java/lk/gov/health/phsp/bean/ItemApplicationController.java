@@ -23,6 +23,7 @@
  */
 package lk.gov.health.phsp.bean;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -32,6 +33,7 @@ import java.util.Map;
 import javax.ejb.EJB;
 import javax.inject.Named;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.SessionScoped;
 import lk.gov.health.phsp.entity.Item;
 import lk.gov.health.phsp.enums.ItemType;
 import lk.gov.health.phsp.facade.ItemFacade;
@@ -40,9 +42,9 @@ import lk.gov.health.phsp.facade.ItemFacade;
  *
  * @author buddhika
  */
-@Named(value = "itemApplicationController")
-@ApplicationScoped
-public class ItemApplicationController {
+@Named
+@SessionScoped
+public class ItemApplicationController implements Serializable{
 
     @EJB
     private ItemFacade facade;

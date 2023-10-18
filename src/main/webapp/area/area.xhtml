@@ -30,7 +30,7 @@
 
                             <p:outputLabel value="#{bundleClinical.EditAreaLabel_name}" for="name" />
                             <p:inputText id="name" value="#{areaController.selected.name}" autocomplete="off" title="#{bundleClinical.EditAreaTitle_name}" />
-                            
+
                             <p:outputLabel value="#{bundleClinical.EditAreaLabel_code}" for="code" />
                             <p:inputText id="code" value="#{areaController.selected.code}" autocomplete="off" title="#{bundleClinical.EditAreaTitle_code}" />
 
@@ -42,7 +42,19 @@
                             <p:autoComplete id="parentArea" value="#{areaController.selected.parentArea}"
                                             completeMethod="#{areaController.completeAreas}"
                                             var="parentAreaItem" itemLabel="#{parentAreaItem.name}"
-                                            itemValue="#{parentAreaItem}"></p:autoComplete>                            
+                                            itemValue="#{parentAreaItem}"></p:autoComplete>  
+
+                            <p:outputLabel value="DS" for="ds" />
+                            <p:autoComplete id="ds" value="#{areaController.selected.dsd}"
+                                            completeMethod="#{areaController.completeDsAreas}"
+                                            var="parentAreaItem" itemLabel="#{parentAreaItem.name}"
+                                            itemValue="#{parentAreaItem}"></p:autoComplete>  
+
+                            <p:outputLabel value="District" for="dis" />
+                            <p:autoComplete id="dis" value="#{areaController.selected.district}"
+                                            completeMethod="#{areaController.completeDistricts}"
+                                            var="parentAreaItem" itemLabel="#{parentAreaItem.name}"
+                                            itemValue="#{parentAreaItem}"></p:autoComplete>  
 
 
                             <p:outputLabel value="#{bundleClinical.EditAreaLabel_centreLongitude}" for="centreLongitude" />

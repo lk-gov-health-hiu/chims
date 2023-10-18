@@ -51,8 +51,6 @@ import lk.gov.health.phsp.pojcs.Identifiable;
  * @author User
  */
 @Entity
-@Table
-
 public class Area implements Serializable, Identifiable  {
 
     private static final long serialVersionUID = 1L;
