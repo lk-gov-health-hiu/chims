@@ -45,13 +45,13 @@ import lk.gov.health.phsp.enums.DataRepresentationType;
 public class ClientEncounterComponentItem extends ClientEncounterComponent {
 
     @Index
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private Client itemClient;
     @Index
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private Encounter itemEncounter;
     @Index
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private ClientEncounterComponentFormSet itemFormset;
     @Index
     @Enumerated(EnumType.STRING)

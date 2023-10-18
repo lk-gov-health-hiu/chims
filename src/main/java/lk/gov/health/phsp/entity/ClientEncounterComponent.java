@@ -18,11 +18,11 @@ import javax.persistence.ManyToOne;
 public class ClientEncounterComponent extends Component  {
 
     @Index
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private Encounter encounter;
 
     @Index
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private Client client;
 
     public Encounter getEncounter() {

@@ -109,11 +109,11 @@ public class DesignComponentFormItem extends DesignComponent {
     @Enumerated(EnumType.STRING)
     private DataModificationStrategy dataModificationStrategy;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private Area parentAreaOfAvailableAreas;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private Item categoryOfAvailableItems;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private Institution parentInstitutionOfAvailableInstitutions;
 
     
