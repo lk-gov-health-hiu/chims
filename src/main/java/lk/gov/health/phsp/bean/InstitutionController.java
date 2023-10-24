@@ -16,6 +16,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.concurrent.CompletableFuture;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
@@ -32,6 +33,7 @@ import jxl.Sheet;
 import jxl.Workbook;
 import jxl.read.biff.BiffException;
 import lk.gov.health.phsp.entity.Area;
+import lk.gov.health.phsp.entity.FhirOperationResult;
 import lk.gov.health.phsp.enums.AreaType;
 import lk.gov.health.phsp.enums.InstitutionType;
 import lk.gov.health.phsp.facade.AreaFacade;
@@ -57,6 +59,8 @@ public class InstitutionController implements Serializable {
     InstitutionApplicationController institutionApplicationController;
     @Inject
     private UserTransactionController userTransactionController;
+    @Inject
+    IntegrationTriggerController integrationTriggerController;
 
     private List<Institution> items = null;
     private Institution selected;
@@ -78,6 +82,21 @@ public class InstitutionController implements Serializable {
     private String startMessage;
 
     private UploadedFile file;
+    private List<FhirOperationResult> fhirOperationResults;
+    private boolean pushComplete = false;
+    
+    
+    public String pushToFhirServers() {
+        System.out.println("Starting push to FHIR servers...");
+        CompletableFuture<List<FhirOperationResult>> futureResults
+                = integrationTriggerController.organizationToEndpoints(selected);
+        futureResults.thenAccept(results -> {
+            fhirOperationResults = results;
+            pushComplete = true; // Mark the operation as complete
+            System.out.println("Push to FHIR servers complete.");
+        });
+        return "/institution/push_result?faces-redirect=true"; // Navigate to the push_result page
+    }
 
     public Institution getInstitutionById(Long id) {
         return getFacade().find(id);
@@ -874,6 +893,24 @@ public class InstitutionController implements Serializable {
     public void setFile(UploadedFile file) {
         this.file = file;
     }
+
+    public List<FhirOperationResult> getFhirOperationResults() {
+        return fhirOperationResults;
+    }
+
+    public void setFhirOperationResults(List<FhirOperationResult> fhirOperationResults) {
+        this.fhirOperationResults = fhirOperationResults;
+    }
+
+    public boolean isPushComplete() {
+        return pushComplete;
+    }
+
+    public void setPushComplete(boolean pushComplete) {
+        this.pushComplete = pushComplete;
+    }
+    
+    
 
     @FacesConverter(forClass = Institution.class)
     public static class InstitutionControllerConverter implements Converter {

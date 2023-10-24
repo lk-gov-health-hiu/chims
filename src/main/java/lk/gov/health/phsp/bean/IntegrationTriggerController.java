@@ -31,6 +31,7 @@ import lk.gov.health.phsp.entity.Client;
 import lk.gov.health.phsp.entity.ClientEncounterComponentFormSet;
 import lk.gov.health.phsp.entity.FhirOperationResult;
 import lk.gov.health.phsp.entity.FhirResourceLink;
+import lk.gov.health.phsp.entity.Institution;
 import lk.gov.health.phsp.entity.IntegrationEndpoint;
 import lk.gov.health.phsp.entity.IntegrationTrigger;
 import lk.gov.health.phsp.enums.CommunicationProtocol;
@@ -149,6 +150,58 @@ public class IntegrationTriggerController implements Serializable {
             return null; // Or handle the exception as needed
         });
     }
+    
+    
+    
+    
+    
+    public CompletableFuture<List<FhirOperationResult>> organizationToEndpoints(Institution institution) {
+        System.out.println("Creating new clients to endpoints...");
+        return CompletableFuture.supplyAsync(() -> {
+            List<FhirOperationResult> outcomes = new ArrayList<>();
+            List<IntegrationTrigger> itemsNeededToBeTriggered = fillItems(IntegrationEvent.ORGANIZATION_SAVE);
+            System.out.println("itemsNeededToBeTriggered = " + itemsNeededToBeTriggered);
+            if (itemsNeededToBeTriggered == null || itemsNeededToBeTriggered.isEmpty()) {
+                return outcomes;
+            }
+            System.out.println("before future outcomes");
+            List<CompletableFuture<FhirOperationResult>> futureOutcomes = new ArrayList<>();
+            for (IntegrationTrigger it : itemsNeededToBeTriggered) {
+                System.out.println("it = " + it);
+                System.out.println("it.getIntegrationEndpoint() = " + it.getIntegrationEndpoint());
+                if (it.getIntegrationEndpoint() == null) {
+                    continue;
+                }
+                System.out.println("it.getIntegrationEndpoint().getCommunicationProtocol() = " + it.getIntegrationEndpoint().getCommunicationProtocol());
+                if (it.getIntegrationEndpoint().getCommunicationProtocol() == null) {
+                    continue;
+                }
+                CompletableFuture<FhirOperationResult> futureOutcome;
+                if (it.getIntegrationEndpoint().getCommunicationProtocol() == CommunicationProtocol.FHIR_R4) {
+                    System.out.println("going to fhir async = ");
+                    String oldId = findFhirResourceLinkId(institution, it.getIntegrationEndpoint());
+                    if (oldId == null) {
+                        futureOutcome = fhirR4Controller.createOrganizationInFhirServerAsync(institution, it.getIntegrationEndpoint());
+                    } else {
+                        futureOutcome = fhirR4Controller.updateOrganizationInFhirServerAsync(institution, it.getIntegrationEndpoint(), oldId);
+                    }
+                    futureOutcomes.add(futureOutcome);
+                } else if (it.getIntegrationEndpoint().getCommunicationProtocol() == CommunicationProtocol.FHIR_R5) {
+                    // TODO : Handle FHIR R5 
+                    continue;
+                } else {
+                    continue;
+                }
+            }
+            futureOutcomes.forEach(futureOutcome -> futureOutcome.thenAccept(outcomes::add));
+            CompletableFuture.allOf(futureOutcomes.toArray(new CompletableFuture[0])).join();
+            return outcomes;
+        }, executorService).exceptionally(ex -> {
+            ex.printStackTrace(); // Or log the exception
+            return null; // Or handle the exception as needed
+        });
+    }
+    
 
     // Modified by Dr M H B Ariyaratne with assistance from ChatGPT from OpenAI
     public List<FhirOperationResult> createNewFormsetToEndpoints(ClientEncounterComponentFormSet cecf) {

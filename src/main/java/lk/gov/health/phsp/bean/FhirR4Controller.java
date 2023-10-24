@@ -56,6 +56,7 @@ import lk.gov.health.phsp.entity.ClientEncounterComponentForm;
 import lk.gov.health.phsp.entity.ClientEncounterComponentFormSet;
 import lk.gov.health.phsp.entity.ClientEncounterComponentItem;
 import lk.gov.health.phsp.entity.FhirResourceLink;
+import lk.gov.health.phsp.entity.Institution;
 import lk.gov.health.phsp.facade.FhirResourceLinkFacade;
 import lk.gov.health.phsp.pojcs.SearchQueryData;
 import org.apache.http.NameValuePair;
@@ -74,6 +75,7 @@ import org.hl7.fhir.r4.model.Coding;
 import org.hl7.fhir.r4.model.Encounter;
 import org.hl7.fhir.r4.model.Encounter.EncounterStatus;
 import org.hl7.fhir.r4.model.Observation;
+import org.hl7.fhir.r4.model.Organization;
 import org.hl7.fhir.r4.model.Period;
 import org.hl7.fhir.r4.model.Quantity;
 import org.hl7.fhir.r4.model.Reference;
@@ -156,6 +158,63 @@ public class FhirR4Controller implements Serializable {
 
                 // Call updateFhirResourceLink method
                 updateFhirResourceLink(client, endPoint, id.getIdPart());
+
+            } else {
+                result.setSuccess(false);
+                result.setMessage("Failed to create new Patient");
+            }
+            return result;
+        });
+    }
+
+    public CompletableFuture<FhirOperationResult> createOrganizationInFhirServerAsync(Institution institution, IntegrationEndpoint endPoint) {
+        System.out.println("Creating patient in FHIR server...");
+        SecurityProtocol sp = endPoint.getSecurityProtocol();
+        String username = endPoint.getUserName();
+        String password = endPoint.getPassword();
+        Organization organization = convertToFhirOrganization(institution);
+
+        return CompletableFuture.supplyAsync(() -> {
+            FhirOperationResult result = new FhirOperationResult();
+
+            FhirContext ctx = FhirContext.forR4();
+            String serverBase = endPoint.getEndPointUrl();
+            IGenericClient fhirClient = ctx.newRestfulGenericClient(serverBase);
+
+            if (sp == SecurityProtocol.BASIC_AUTHENTICATION) {
+                fhirClient.registerInterceptor(new BasicAuthInterceptor(username, password));
+            } else if (endPoint.getSecurityProtocol() == SecurityProtocol.KEYCLOAK) {
+                String token = acquireToken(endPoint.getKeyCloackClientId(), endPoint.getKeyCloackClientSecret(), endPoint.getKeyCloakTokenAcquiringUrl());
+                BearerTokenAuthInterceptor authInterceptor = new BearerTokenAuthInterceptor(token);
+                fhirClient.registerInterceptor(authInterceptor);
+            } else if (sp == SecurityProtocol.API_KEY) {
+                String apiKeyName = endPoint.getApiKeyName(); // Assuming this is the name of the API key header
+                String apiKeyValue = endPoint.getApiKeyValue();
+                // Add the API key to the client's headers
+                fhirClient.registerInterceptor(new IClientInterceptor() {
+                    @Override
+                    public void interceptRequest(IHttpRequest theRequest) {
+                        theRequest.addHeader(apiKeyName, apiKeyValue);
+                    }
+
+                    @Override
+                    public void interceptResponse(IHttpResponse theResponse) {
+                        // You can add response handling here if needed
+                    }
+                });
+            }
+            // Add other authentication methods as needed
+
+            MethodOutcome outcome = fhirClient.create().resource(organization).execute();
+
+            if (outcome.getCreated()) {
+                IdType id = (IdType) outcome.getId();
+                result.setSuccess(true);
+                result.setMessage("Created new Patient with ID: " + id.getIdPart());
+                result.setResourceId(id);
+
+                // Call updateFhirResourceLink method
+                updateFhirResourceLink(institution, endPoint, id.getIdPart());
 
             } else {
                 result.setSuccess(false);
@@ -321,6 +380,61 @@ public class FhirR4Controller implements Serializable {
             } else {
                 result.setSuccess(false);
                 result.setMessage("Failed to update Patient");
+            }
+            return result;
+        });
+    }
+
+    // Modified by Dr M H B Ariyaratne with assistance from ChatGPT from OpenAI.
+    public CompletableFuture<FhirOperationResult> updateOrganizationInFhirServerAsync(Institution institution, IntegrationEndpoint endPoint, String resourceId) {
+        System.out.println("Updating organization in FHIR server...");
+        SecurityProtocol sp = endPoint.getSecurityProtocol();
+        String username = endPoint.getUserName();
+        String password = endPoint.getPassword();
+        Organization organization = convertToFhirOrganization(institution);
+
+        return CompletableFuture.supplyAsync(() -> {
+            FhirOperationResult result = new FhirOperationResult();
+
+            FhirContext ctx = FhirContext.forR4();
+            String serverBase = endPoint.getEndPointUrl();
+            IGenericClient fhirClient = ctx.newRestfulGenericClient(serverBase);
+
+            if (sp == SecurityProtocol.BASIC_AUTHENTICATION) {
+                fhirClient.registerInterceptor(new BasicAuthInterceptor(username, password));
+            } else if (sp == SecurityProtocol.API_KEY) {
+                String apiKeyName = endPoint.getApiKeyName();
+                String apiKeyValue = endPoint.getApiKeyValue();
+                fhirClient.registerInterceptor(new IClientInterceptor() {
+                    @Override
+                    public void interceptRequest(IHttpRequest theRequest) {
+                        theRequest.addHeader(apiKeyName, apiKeyValue);
+                    }
+
+                    @Override
+                    public void interceptResponse(IHttpResponse theResponse) {
+                        // You can add response handling here if needed
+                    }
+                });
+            }
+
+            // Set the resource ID for the update operation
+            organization.setId(resourceId);
+
+            // Perform the update operation
+            MethodOutcome outcome = fhirClient.update().resource(organization).execute();
+
+            if (outcome.getCreated()) {
+                result.setSuccess(false);
+                result.setMessage("Unexpectedly created a new Organization instead of updating");
+            } else if (outcome.getResource() != null) {
+                IdType id = (IdType) outcome.getId();
+                result.setSuccess(true);
+                result.setMessage("Updated Organization with ID: " + id.getIdPart());
+                result.setResourceId(id);
+            } else {
+                result.setSuccess(false);
+                result.setMessage("Failed to update Organization");
             }
             return result;
         });
@@ -755,6 +869,68 @@ public class FhirR4Controller implements Serializable {
         }
 
         return patient;
+    }
+
+    // Newly created by Dr M H B Ariyaratne with assistance from ChatGPT from OpenAI.
+    public Organization convertToFhirOrganization(Institution institution) {
+        Organization organization = new Organization();
+
+        // Identifiers
+        if (institution.getCode() != null) {
+            organization.addIdentifier(new Identifier().setSystem("https://fhir.health.gov.lk/id/institution-code").setValue(institution.getCode()));
+        }
+        if (institution.getPoiNumber() != null) {
+            organization.addIdentifier(new Identifier().setSystem("https://fhir.health.gov.lk/id/institution-poi").setValue(institution.getPoiNumber()));
+        }
+
+        // Name
+        if (institution.getName() != null) {
+            organization.setName(institution.getName());
+        }
+
+        // Type
+        if (institution.getInstitutionType() != null) {
+            CodeableConcept typeConcept = new CodeableConcept();
+            typeConcept.addCoding(new Coding().setCode(institution.getInstitutionType().name()));
+            organization.addType(typeConcept);
+        }
+
+        // Address
+        if (institution.getAddress() != null) {
+            Address address = new Address();
+            address.addLine(institution.getAddress());
+            if (institution.getGnArea() != null) {
+                address.setCity(institution.getGnArea().getName());
+                address.setDistrict(institution.getDsDivision().getName());
+                address.setState(institution.getDistrict().getName());
+                address.setCountry(institution.getProvince().getName());
+            }
+            organization.addAddress(address);
+        }
+
+        // Contact Information
+        if (institution.getPhone() != null || institution.getMobile() != null || institution.getEmail() != null || institution.getFax() != null) {
+            ContactPoint phoneContact = new ContactPoint().setSystem(ContactPointSystem.PHONE).setValue(institution.getPhone());
+            ContactPoint mobileContact = new ContactPoint().setSystem(ContactPointSystem.PHONE).setUse(ContactPointUse.MOBILE).setValue(institution.getMobile());
+            ContactPoint faxContact = new ContactPoint().setSystem(ContactPointSystem.FAX).setValue(institution.getFax());
+            ContactPoint emailContact = new ContactPoint().setSystem(ContactPointSystem.EMAIL).setValue(institution.getEmail());
+            organization.addTelecom(phoneContact);
+            organization.addTelecom(mobileContact);
+            organization.addTelecom(faxContact);
+            organization.addTelecom(emailContact);
+        }
+
+        // Web
+        if (institution.getWeb() != null) {
+            organization.addEndpoint(new Reference().setReference(institution.getWeb()));
+        }
+
+        // Parent Institution
+        if (institution.getParent() != null) {
+            organization.setPartOf(new Reference().setReference("Organization/" + institution.getParent().getId()));
+        }
+
+        return organization;
     }
 
     public Bundle convertToFhirBundle(ClientEncounterComponentFormSet formset) {

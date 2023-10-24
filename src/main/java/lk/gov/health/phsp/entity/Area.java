@@ -48,8 +48,6 @@ import lk.gov.health.phsp.pojcs.Identifiable;
  * @author User
  */
 @Entity
-@Table
-@XmlRootElement
 public class Area implements Serializable, Identifiable  {
 
     @OneToMany(mappedBy = "area",fetch = FetchType.LAZY)

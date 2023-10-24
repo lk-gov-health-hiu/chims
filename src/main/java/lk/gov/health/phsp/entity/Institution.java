@@ -46,8 +46,6 @@ import lk.gov.health.phsp.pojcs.Identifiable;
  * @author Dr M H B Ariyaratne, buddhika.ari@gmail.com
  */
 @Entity
-@XmlRootElement
-@Table
 public class Institution implements Serializable, Identifiable  {
 
     private static final long serialVersionUID = 1L;
