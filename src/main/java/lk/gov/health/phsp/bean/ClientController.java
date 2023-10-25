@@ -66,6 +66,7 @@ import lk.gov.health.phsp.pojcs.dataentry.DataItem;
 import lk.gov.health.phsp.enums.EncounterType;
 import static lk.gov.health.phsp.enums.EncounterType.Client_Data;
 import lk.gov.health.phsp.enums.SearchCriteria;
+import lk.gov.health.phsp.pojcs.FhirConverters;
 import lk.gov.health.phsp.pojcs.SearchQueryData;
 import org.primefaces.component.tabview.TabView;
 import org.primefaces.event.TabChangeEvent;
@@ -257,6 +258,13 @@ public class ClientController implements Serializable {
         loadClientFormDataEntry();
         userTransactionController.recordTransaction("To Client Profile");
         return "/client/profile";
+    }
+    
+    public String toClientProfileForPush() {
+        selectedClientsLastFiveClinicVisits = null;
+        loadClientFormDataEntry();
+        userTransactionController.recordTransaction("To Client Profile");
+        return "/client/profile_push";
     }
 
     public String toClientProfileById() {
@@ -1936,6 +1944,17 @@ public class ClientController implements Serializable {
         }
     }
 
+    public String pushSelectedLocationsToFhirServers() {
+        String jsonPlayLoad = FhirConverters.createPatientBundleJsonPayload(selectedClients);
+        // Print the JSON payload to the console
+        System.out.println("JSON Payload being sent:");
+        System.out.println(jsonPlayLoad);
+        List<FhirOperationResult> results = integrationTriggerController.postToMediators(jsonPlayLoad);
+        fhirOperationResults = results;
+        pushComplete = true; // Mark the operation as complete
+        return "/client/push_result_multiple?faces-redirect=true"; // Navigate to the push_result page
+    }
+
     public String searchByAllId() {
         selectedClients = new ArrayList<>();
         if (searchingPhn != null && !searchingPhn.trim().equals("")) {
@@ -2036,6 +2055,22 @@ public class ClientController implements Serializable {
             userTransactionController.recordTransaction("Search By Any Id returned multiple matches");
             return toSelectClientBasic();
         }
+    }
+
+    public String searchByAnyIdForPushing() {
+        // //System.out.println("searchByAnyIdWithBasicData");
+        userTransactionController.recordTransaction("Search By Any Id");
+        clearExistsValues();
+        if (searchingId == null) {
+            searchingId = "";
+        }
+        selectedClients = listPatientsByIDsStepvice(searchingId.trim().toUpperCase());
+        return navigateToPushPatients();
+
+    }
+
+    public String navigateToPushPatients() {
+        return "/client/push";
     }
 
     public String searchByPhnWithBasicData() {

@@ -1,0 +1,155 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <body>
+
+        <ui:composition template="/template.xhtml">
+
+            <ui:define name="content">
+
+                <p:panel header="Select Client" style="height: 100%; text-align: center;" >
+
+
+                    <h:form>
+
+                        <!-- Polling component to update the data every 5 seconds -->
+                        <p:poll interval="5"  update="" />
+
+                        <p:inputText autocomplete="off" placeholder="Search by ID/PHN/Passport"
+                                     value="#{clientController.searchingId}"/>
+
+
+
+                        <p:commandButton ajax="false" icon="pi pi-search" value="Search"
+                                         action="#{clientController.searchByAnyIdForPushing()}" 
+                                         ></p:commandButton>
+
+                        <p:commandButton ajax="false" icon="pi pi-search"
+                                         value="Push"
+                                         action="#{clientController.pushSelectedLocationsToFhirServers()}" 
+                                         ></p:commandButton>
+
+                        <h:panelGroup id="pushResults" >
+                            <!-- Display the results here -->
+                            <h:outputText value="Push complete!" rendered="#{clientController.pushComplete}"/>
+                            <!-- You can loop through fhirOperationResults to display individual results -->
+
+                            <ui:repeat value="#{clientController.fhirOperationResults}" var="o" >
+                                <hr/>
+                                <h:outputText value="#{o.message}" ></h:outputText>
+                                <br/>
+                                <h:outputText value="#{o.resourceId}" ></h:outputText>
+                                <br/>
+                                <h:outputText value="#{o.success}" ></h:outputText>
+                                <br/>
+                                <hr/>
+                            </ui:repeat>
+
+                        </h:panelGroup>
+
+
+                        <p:dataTable value="#{clientController.selectedClients}" var="item">
+
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Name"/>
+                                </f:facet>
+                                <h:outputText value="#{item.person.name}"/>
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Gender"/>
+                                </f:facet>
+                                <h:outputText value="#{item.person.sex.name}"/>
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="PHN"/>
+                                </f:facet>
+                                <h:outputText value="#{item.phn}"/>
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Phone No"/>
+                                </f:facet>
+                                <h:outputText value="#{item.person.phone1}">
+                                </h:outputText>
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="NIC"/>
+                                </f:facet>
+                                <h:outputText value="#{item.person.nic}"/>
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Religion"/>
+                                </f:facet>
+                                <h:outputText value="#{item.person.religion.name}">
+                                </h:outputText>
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Ethnicity"/>
+                                </f:facet>
+                                <h:outputText value="#{item.person.ethinicGroup.name}"/>
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Marietal Status"/>
+                                </f:facet>
+                                <h:outputText value="#{item.person.mariatalStatus.name}">
+                                </h:outputText>
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Citizenship"/>
+                                </f:facet>
+                                <h:outputText value="#{item.person.citizenship.name}"/>
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Address"/>
+                                </f:facet>
+                                <h:outputText value="#{item.person.address}"/>
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Phn"/>
+                                </f:facet>
+                                <h:outputText value="#{item.phn}"/>
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Actions"/>
+                                </f:facet>
+                                <p:commandButton ajax="false" action="#{clientController.toClientProfileForPush()}" value="View Profile" >
+                                    <f:setPropertyActionListener target="#{clientController.selected}" value="#{item}" ></f:setPropertyActionListener>
+                                </p:commandButton>
+                            </p:column>
+
+                        </p:dataTable>
+
+
+
+
+                    </h:form>
+
+
+
+                </p:panel>
+
+
+
+
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

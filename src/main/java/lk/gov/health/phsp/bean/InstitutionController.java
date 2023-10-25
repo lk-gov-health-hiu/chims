@@ -37,8 +37,10 @@ import lk.gov.health.phsp.entity.FhirOperationResult;
 import lk.gov.health.phsp.enums.AreaType;
 import lk.gov.health.phsp.enums.InstitutionType;
 import lk.gov.health.phsp.facade.AreaFacade;
+import lk.gov.health.phsp.pojcs.FhirConverters;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.primefaces.model.file.UploadedFile;
-
 
 @Named
 @SessionScoped
@@ -63,6 +65,9 @@ public class InstitutionController implements Serializable {
     IntegrationTriggerController integrationTriggerController;
 
     private List<Institution> items = null;
+
+    private List<Institution> selectedItems = null;
+
     private Institution selected;
     private Institution deleting;
     private List<Institution> myClinics;
@@ -84,20 +89,33 @@ public class InstitutionController implements Serializable {
     private UploadedFile file;
     private List<FhirOperationResult> fhirOperationResults;
     private boolean pushComplete = false;
-    
-    
-    public String pushToFhirServers() {
-        System.out.println("Starting push to FHIR servers...");
-        CompletableFuture<List<FhirOperationResult>> futureResults
-                = integrationTriggerController.organizationToEndpoints(selected);
-        futureResults.thenAccept(results -> {
-            fhirOperationResults = results;
-            pushComplete = true; // Mark the operation as complete
-            System.out.println("Push to FHIR servers complete.");
-        });
+
+    public String pushSelectedOrganizationsToFhirServers() {
+        pushComplete = false;
+        String jsonPlayLoad = FhirConverters.createOrganizationJsonPayload(selectedItems);
+        List<FhirOperationResult> results = integrationTriggerController.postToMediators(jsonPlayLoad);
+        fhirOperationResults = results;
+        pushComplete = true; // Mark the operation as complete
+        System.out.println("Push to FHIR servers complete.");
         return "/institution/push_result?faces-redirect=true"; // Navigate to the push_result page
     }
 
+    public String pushSelectedLocationsToFhirServers() {
+        String jsonPlayLoad = FhirConverters.createLocationJsonPayload(selectedItems);
+        List<FhirOperationResult> results = integrationTriggerController.postToMediators(jsonPlayLoad);
+        fhirOperationResults = results;
+        pushComplete = true; // Mark the operation as complete
+        return "/institution/push_result?faces-redirect=true"; // Navigate to the push_result page
+    }
+
+    public String checkPushComplete() {
+        if (pushComplete) {
+            return navigateToPushInstitutions();
+        }
+        return null;
+    }
+
+    // Modified by Dr M H B Ariyaratne with assistance from ChatGPT from OpenAI.
     public Institution getInstitutionById(Long id) {
         return getFacade().find(id);
     }
@@ -118,7 +136,7 @@ public class InstitutionController implements Serializable {
                 return unit;
             case Clinic:
             case MOH_Office:
-            
+
             case Other:
             case Partner:
 
@@ -137,7 +155,6 @@ public class InstitutionController implements Serializable {
         }
     }
 
-  
     public String toAddInstitution() {
         selected = new Institution();
         userTransactionController.recordTransaction("To Add Institution");
@@ -196,14 +213,17 @@ public class InstitutionController implements Serializable {
         userTransactionController.recordTransaction("To List Institutions");
         return "/institution/list";
     }
+    
+    public String navigateToPushInstitutions() {
+        userTransactionController.recordTransaction("To Push Institutions");
+        selectedItems = null;
+        return "/institution/push";
+    }
 
     public String toSearchInstitutions() {
         return "/institution/search";
     }
 
-    
-
-  
     public InstitutionController() {
     }
 
@@ -247,8 +267,7 @@ public class InstitutionController implements Serializable {
         }
         return tins;
     }
-    
-    
+
     public List<Institution> findChildrenInstitutions(Institution ins) {
         List<Institution> allIns = institutionApplicationController.getInstitutions();
         List<Institution> cins = new ArrayList<>();
@@ -623,7 +642,7 @@ public class InstitutionController implements Serializable {
         }
 
     }
-    
+
     public void saveOrUpdateInstitution() {
         if (selected == null) {
             JsfUtil.addErrorMessage("Nothing to select");
@@ -909,8 +928,14 @@ public class InstitutionController implements Serializable {
     public void setPushComplete(boolean pushComplete) {
         this.pushComplete = pushComplete;
     }
-    
-    
+
+    public List<Institution> getSelectedItems() {
+        return selectedItems;
+    }
+
+    public void setSelectedItems(List<Institution> selectedItems) {
+        this.selectedItems = selectedItems;
+    }
 
     @FacesConverter(forClass = Institution.class)
     public static class InstitutionControllerConverter implements Converter {

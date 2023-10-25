@@ -1,0 +1,237 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <body>
+
+        <ui:composition template="/template.xhtml">
+            <ui:define name="content">
+                <h:outputStylesheet library="css" name="tem1.css"/>
+                <p:panelGrid columns="2" style="width: 100%;" styleClass="alignTop" >
+                    <f:facet name="header" >
+                        <h:form>
+                            <p:outputLabel value="Summery - (PHN : #{clientController.selected.phn})" ></p:outputLabel>
+                            <p:spacer height="1" width="30"></p:spacer>
+
+                            <p:commandButton value="Delete" action="#{clientController.toRetireClient()}"
+                                             onclick="return confirm('Are you sure?')"
+                                             style="float: right;">
+                            </p:commandButton>
+                            <p:commandButton value="To Edit Details" action="#{clientController.toClient()}"
+                                             style="float: right;">
+                            </p:commandButton>
+                            <h:messages globalOnly="true" showDetail="true"/>
+                            <p:commandButton value="Push to FHIR Server" 
+                                             ajax="false"
+                                             action="#{clientController.pushToFhirServers()}"
+                                             style="float: right;">
+                            </p:commandButton>
+                            <p:commandButton value="To Print" action="/client/client_print" style="float: right;">
+                            </p:commandButton>
+                            <p:commandButton process="@this" ajax="false"
+                                             actionListener="#{clientController.prepareToCapturePhotoWithWebCam()}"
+                                             value="To Capture Photo" rendered="false"
+                                             action="capture" style="float: right;"/>
+                            <p:commandButton ajax="false" update="photoCap" 
+                                             actionListener="#{clientController.prepareToCapturePhotoWithWebCam()}"
+                                             value="To Upload Photo"  rendered="false"
+                                             action="upload" style="float: right;"/>
+                        </h:form>
+                    </f:facet>
+
+                    <p:panelGrid columns="2" columnClasses="width50percent width50percent">
+                        <p:panelGrid columns="2" >
+                            <h:form>
+                                <p:graphicImage  rendered="#{clientController.selected.person.sex.name eq 'Male'}"
+                                                 library="image" name="male.jpg" 
+                                                 class="profile-user-img img-fluid img-circle"
+                                                 style="width: 20rem;  margin: auto;" >
+                                </p:graphicImage>
+                                <p:graphicImage  rendered="#{clientController.selected.person.sex.name eq 'Female'}"
+                                                 class="profile-user-img img-fluid img-circle"
+                                                 library="image" name="female.png" style="width: 20rem;  margin: auto;" >
+                                </p:graphicImage>
+                            </h:form>
+
+                            <p:panelGrid columns="2" >
+                                <h:outputLabel value="Name" ></h:outputLabel>
+                                <h:outputLabel value="#{clientController.selected.person.nameWithTitle}" ></h:outputLabel>
+
+                                <h:outputLabel value="PHN" ></h:outputLabel>
+                                <h:outputLabel value="#{clientController.selected.phn}" ></h:outputLabel>
+
+                                <h:outputLabel value="GN Area" ></h:outputLabel>
+                                <h:outputLabel value="#{clientController.selected.person.gnArea.name}" ></h:outputLabel>
+
+                                <h:outputLabel value="Sex" ></h:outputLabel>
+                                <h:outputLabel value="#{clientController.selected.person.sex.name}" ></h:outputLabel>
+
+                                <h:outputLabel value="Age" ></h:outputLabel>
+                                <h:outputLabel value="#{clientController.selected.person.age}" ></h:outputLabel>
+
+                                <h:outputLabel value="Date of Birth" ></h:outputLabel>
+                                <h:outputLabel value="#{clientController.selected.person.dateOfBirth}" >
+                                    <f:convertDateTime pattern="dd MMMM yyyy" ></f:convertDateTime>
+                                </h:outputLabel>
+
+                                <h:outputLabel value="Phone 1" ></h:outputLabel>
+                                <h:outputLabel value="#{clientController.selected.person.phone1}" ></h:outputLabel>
+
+                                <h:outputLabel value="Phone 2" ></h:outputLabel>
+                                <h:outputLabel value="#{clientController.selected.person.phone2}" ></h:outputLabel>
+
+                                <h:outputLabel value="Local Ref. No." ></h:outputLabel>
+                                <h:outputLabel value="#{clientController.selected.person.localReferanceNo}" ></h:outputLabel>
+
+                                <h:outputLabel value="Senior Citizen No." ></h:outputLabel>
+                                <h:outputLabel value="#{clientController.selected.person.ssNumber}" ></h:outputLabel>
+
+                                <h:outputLabel value="Address" ></h:outputLabel>
+                                <h:outputLabel value="#{clientController.selected.person.address}" ></h:outputLabel>
+
+                                <h:outputLabel value="Date of Registration" ></h:outputLabel>
+                                <h:outputLabel value="#{clientController.selected.createdAt}" >
+                                    <f:convertDateTime pattern="dd MMMM yyyy" ></f:convertDateTime>
+                                </h:outputLabel>
+
+
+                            </p:panelGrid>
+                        </p:panelGrid>
+
+                        <p:panel>
+                            <h:form>
+
+                                <p:tabView >
+                                    <p:tab title="Input" >
+                                        <p:inputTextarea value="#{encounterController.tmpString}" cols="100" rows="30" ></p:inputTextarea>
+                                    </p:tab>
+                                    <p:tab  title="Data">
+                                        <p:dataTable value="#{clientController.selectedClientsLastFiveClinicVisits}" tableStyle="borderless"
+                                                     var="rcv">
+                                            <f:facet name="header">
+                                                Visits - 
+                                                <p:commandButton 
+                                                    ajax="false"
+                                                    action="#{clientEncounterComponentFormSetController.fillAllEncountersFormSetsOfSelectedClient('Clinic_Visit')}"
+                                                    class="small-box-footer" value="To View All Clinic Visits" >
+                                                </p:commandButton>
+                                            </f:facet>
+                                            <p:column headerText="Date" >
+                                                <p:outputLabel value="#{rcv.encounterDate}" >
+                                                    <f:convertDateTime pattern="dd MMMM yyyy" ></f:convertDateTime>
+                                                </p:outputLabel>
+                                            </p:column>
+                                            <p:column headerText="Place" >
+                                                <p:outputLabel value="#{rcv.institution.name}" >
+                                                </p:outputLabel>
+                                            </p:column>
+                                            <p:column headerText="Push" >
+                                                <p:commandButton ajax="false" value="Push" action="#{encounterController.pushTmpToFhirServers}">
+                                                    <f:setPropertyActionListener value="#{rcv}" target="#{encounterController.selected}" ></f:setPropertyActionListener>
+                                                </p:commandButton>
+                                            </p:column>
+                                        </p:dataTable>
+                                    </p:tab>
+                                    <p:tab title="output" >
+                                        <p:inputTextarea value="#{encounterController.temSenging}" cols="100" rows="30" ></p:inputTextarea>
+                                    </p:tab>
+                                </p:tabView>
+
+
+
+
+                            </h:form>
+                            <br/>
+
+                            <h:form>
+                                <p:dataTable id="tblClinics" value="#{clientController.selectedClientsClinics}" var="chlce" >
+                                    <f:facet name="header" id="tab_head">
+                                        Current Clinics                                        
+                                    </f:facet>
+                                    <p:column headerText="Clinic" >
+                                        <p:outputLabel value="#{chlce.institution.name}" ></p:outputLabel>
+                                    </p:column>
+                                    <p:column headerText="Number" >
+                                        <p:outputLabel value="#{chlce.encounterNumber}" ></p:outputLabel>
+                                    </p:column>
+                                    <p:column headerText="Fill New Encounter" >
+                                        <h:panelGroup rendered="#{chlce.institution eq webUserController.loggedUser.institution or 
+                                                                  chlce.institution.parent eq webUserController.loggedUser.institution  or 
+                                                                  chlce.institution.parent.parent eq webUserController.loggedUser.institution}" >
+                                            <h:dataTable value="#{designComponentFormSetController.getClinicFormSets(chlce.institution)}"
+                                                         var="cfs"  border="0" >
+                                                <h:column >
+                                                    <p:commandLink id="btnNewFormset" value="New #{cfs.name}" process="@this" update="@all"
+                                                                   action="#{clientEncounterComponentFormSetController.createNewAndNavigateToDataEntry(cfs)}" >
+                                                    </p:commandLink>
+                                                    <p:blockUI block=":#{p:resolveFirstComponentWithId('tblClinics', view).clientId}" trigger="btnNewFormset" >
+                                                        LOADING Patient data.<br/>
+                                                        Please wait.<br/>
+                                                        <p:graphicImage library="image" name="loading.gif" ></p:graphicImage>
+                                                    </p:blockUI>
+                                                </h:column>
+                                            </h:dataTable>
+                                        </h:panelGroup>
+                                    </p:column>
+                                    <p:column headerText="Actions" >
+                                        <p:commandButton value="Unregister" action="#{clientController.removeFromClinic()}" ajax="false" >
+                                            <f:setPropertyActionListener value="#{chlce}" target="#{clientController.unregisteringClinic}" ></f:setPropertyActionListener>
+                                        </p:commandButton>
+                                    </p:column>
+
+                                </p:dataTable>
+                            </h:form> 
+
+                            <br/>
+
+                            <h:form >
+
+                                <p:panelGrid columns="4" style="width: 100%;">
+                                    <f:facet name="header">
+                                        <h:outputLabel value="Enroll in a New Clinic" ></h:outputLabel>                                    
+                                    </f:facet>
+                                    <h:outputLabel value="Clinic" ></h:outputLabel>
+
+                                    <h:panelGroup >
+                                        <h:selectOneMenu value="#{clientController.selectedClinic}" 
+                                                         rendered="#{webUserController.loggedUser.systemAdministrator ne true 
+                                                                     and webUserController.loggedUser.superUser ne true  
+                                                                     and webUserController.loggedUser.meAdministrator ne true
+                                                                     and webUserController.loggedUser.meUser ne true
+                                                                     and webUserController.loggedUser.meSuperUser ne true
+                                                                     and webUserController.loggedUser.user ne true}" >
+                                            <f:selectItem itemLabel="Select the clinic" ></f:selectItem>
+                                            <f:selectItems value="#{institutionController.myClinics}" 
+                                                           var="shlc" itemValue="#{shlc}" itemLabel="#{shlc.name}"></f:selectItems>
+                                        </h:selectOneMenu>
+
+                                        <p:autoComplete completeMethod="#{institutionController.completeInstitutions}" 
+                                                        rendered="#{webUserController.loggedUser.systemAdministrator eq true 
+                                                                    or webUserController.loggedUser.superUser eq true}"
+                                                        value="#{clientController.selectedClinic}"  forceSelection="true" 
+                                                        maxResults="15" minQueryLength="4"
+                                                        var="shlc" itemValue="#{shlc}" itemLabel="#{shlc.name}">
+                                        </p:autoComplete>
+                                    </h:panelGroup>
+
+
+                                    <p:commandButton value="Enroll" ajax="false" 
+                                                     action="#{clientController.enrollInClinic()}" ></p:commandButton>
+<!--                                    <p:commandButton action="#{institutionController.refreshMyInstitutions()}" ajax="false" 
+                                                     icon="ui-icon-arrowrefresh-1-n" ></p:commandButton>-->
+                                </p:panelGrid>
+
+                            </h:form>
+
+                        </p:panel>
+
+                    </p:panelGrid>
+                </p:panelGrid>
+            </ui:define>
+        </ui:composition>
+    </body>
+</html>

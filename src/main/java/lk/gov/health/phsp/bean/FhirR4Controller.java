@@ -6,6 +6,7 @@ import ca.uhn.fhir.rest.client.api.IClientInterceptor;
 import ca.uhn.fhir.rest.client.api.IGenericClient;
 import ca.uhn.fhir.rest.client.api.IHttpRequest;
 import ca.uhn.fhir.rest.client.api.IHttpResponse;
+import ca.uhn.fhir.rest.client.api.ServerValidationModeEnum;
 import javax.inject.Named;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -80,6 +81,8 @@ import org.hl7.fhir.r4.model.Period;
 import org.hl7.fhir.r4.model.Quantity;
 import org.hl7.fhir.r4.model.Reference;
 import org.hl7.fhir.r4.model.StringType;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 /**
  *
@@ -222,6 +225,187 @@ public class FhirR4Controller implements Serializable {
             }
             return result;
         });
+    }
+
+    // Modified by Dr M H B Ariyaratne with assistance from ChatGPT from OpenAI.
+    public List<FhirOperationResult> createOrganizationsInFhirServer(List<Institution> institutions, IntegrationEndpoint endPoint) {
+        System.out.println("Creating organizations in FHIR server...");
+
+        List<FhirOperationResult> results = new ArrayList<>();
+
+        SecurityProtocol sp = endPoint.getSecurityProtocol();
+        String username = endPoint.getUserName();
+        String password = endPoint.getPassword();
+
+        FhirContext ctx = FhirContext.forR4();
+        String serverBase = endPoint.getEndPointUrl();
+        IGenericClient fhirClient = ctx.newRestfulGenericClient(serverBase);
+
+        if (sp == SecurityProtocol.BASIC_AUTHENTICATION) {
+            fhirClient.registerInterceptor(new BasicAuthInterceptor(username, password));
+        } else if (sp == SecurityProtocol.KEYCLOAK) {
+            String token = acquireToken(endPoint.getKeyCloackClientId(), endPoint.getKeyCloackClientSecret(), endPoint.getKeyCloakTokenAcquiringUrl());
+            BearerTokenAuthInterceptor authInterceptor = new BearerTokenAuthInterceptor(token);
+            fhirClient.registerInterceptor(authInterceptor);
+        } else if (sp == SecurityProtocol.API_KEY) {
+            String apiKeyName = endPoint.getApiKeyName();
+            String apiKeyValue = endPoint.getApiKeyValue();
+            fhirClient.registerInterceptor(new IClientInterceptor() {
+                @Override
+                public void interceptRequest(IHttpRequest theRequest) {
+                    theRequest.addHeader(apiKeyName, apiKeyValue);
+                }
+
+                @Override
+                public void interceptResponse(IHttpResponse theResponse) {
+                    // Optional response handling
+                }
+            });
+        }
+
+        // Create a new bundle to hold the resources
+        Bundle bundle = new Bundle();
+        bundle.setType(Bundle.BundleType.TRANSACTION);
+
+        for (Institution institution : institutions) {
+            Organization organization = convertToFhirOrganization(institution);
+
+            // Add each organization to the bundle as an entry
+            Bundle.BundleEntryComponent entry = new Bundle.BundleEntryComponent();
+            entry.setResource(organization);
+            entry.getRequest()
+                    .setMethod(Bundle.HTTPVerb.PUT)
+                    .setUrl("Organization/" + organization.getId());
+            bundle.addEntry(entry);
+        }
+
+        // Send the entire bundle to the FHIR server
+        Bundle response = fhirClient.transaction().withBundle(bundle).execute();
+
+        // Process the response to extract the results
+        for (Bundle.BundleEntryComponent respEntry : response.getEntry()) {
+            FhirOperationResult result = new FhirOperationResult();
+            if (respEntry.getResponse().getStatus().startsWith("201")) {
+                result.setSuccess(true);
+                result.setMessage("Successfully created Organization with ID: " + respEntry.getResource().getIdElement().getIdPart());
+                result.setResourceId(respEntry.getResource().getIdElement());
+            } else {
+                result.setSuccess(false);
+                result.setMessage("Failed to create new Organization. Status: " + respEntry.getResponse().getStatus());
+            }
+            results.add(result);
+        }
+
+        return results;
+    }
+
+    // Modified by Dr M H B Ariyaratne with assistance from ChatGPT from OpenAI.
+    public FhirOperationResult createOrganizationInFhirServer(Institution institution, IntegrationEndpoint endPoint) {
+        System.out.println("Creating organization in FHIR server...");
+        SecurityProtocol sp = endPoint.getSecurityProtocol();
+        String username = endPoint.getUserName();
+        String password = endPoint.getPassword();
+        Organization organization = convertToFhirOrganization(institution);
+
+        FhirOperationResult result = new FhirOperationResult();
+
+        FhirContext ctx = FhirContext.forR4();
+        String serverBase = endPoint.getEndPointUrl();
+        IGenericClient fhirClient = ctx.newRestfulGenericClient(serverBase);
+
+        if (sp == SecurityProtocol.BASIC_AUTHENTICATION) {
+            fhirClient.registerInterceptor(new BasicAuthInterceptor(username, password));
+        } else if (sp == SecurityProtocol.KEYCLOAK) {
+            String token = acquireToken(endPoint.getKeyCloackClientId(), endPoint.getKeyCloackClientSecret(), endPoint.getKeyCloakTokenAcquiringUrl());
+            BearerTokenAuthInterceptor authInterceptor = new BearerTokenAuthInterceptor(token);
+            fhirClient.registerInterceptor(authInterceptor);
+        } else if (sp == SecurityProtocol.API_KEY) {
+            String apiKeyName = endPoint.getApiKeyName();
+            String apiKeyValue = endPoint.getApiKeyValue();
+            fhirClient.registerInterceptor(new IClientInterceptor() {
+                @Override
+                public void interceptRequest(IHttpRequest theRequest) {
+                    theRequest.addHeader(apiKeyName, apiKeyValue);
+                }
+
+                @Override
+                public void interceptResponse(IHttpResponse theResponse) {
+                    // Optional response handling
+                }
+            });
+        }
+
+        MethodOutcome outcome = fhirClient.create().resource(organization).execute();
+
+        if (outcome.getCreated()) {
+            IdType id = (IdType) outcome.getId();
+            result.setSuccess(true);
+            result.setMessage("Created new Organization with ID: " + id.getIdPart());
+            result.setResourceId(id);
+
+            // Call updateFhirResourceLink method
+            updateFhirResourceLink(institution, endPoint, id.getIdPart());
+
+        } else {
+            result.setSuccess(false);
+            result.setMessage("Failed to create new Organization");
+        }
+
+        return result;
+    }
+
+    // Modified by Dr M H B Ariyaratne with assistance from ChatGPT from OpenAI.
+    public FhirOperationResult sendJsonPayloadToFhirR4(String jsonPayload, IntegrationEndpoint endPoint) {
+        System.out.println("Sending JSON payload to FHIR R4 server...");
+
+        SecurityProtocol sp = endPoint.getSecurityProtocol();
+        String username = endPoint.getUserName();
+        String password = endPoint.getPassword();
+
+        FhirOperationResult result = new FhirOperationResult();
+
+        FhirContext ctx = FhirContext.forR4();
+        String serverBase = endPoint.getEndPointUrl();
+        IGenericClient fhirClient = ctx.newRestfulGenericClient(serverBase);
+
+        if (sp == SecurityProtocol.BASIC_AUTHENTICATION) {
+            fhirClient.registerInterceptor(new BasicAuthInterceptor(username, password));
+        } else if (sp == SecurityProtocol.KEYCLOAK) {
+            String token = acquireToken(endPoint.getKeyCloackClientId(), endPoint.getKeyCloackClientSecret(), endPoint.getKeyCloakTokenAcquiringUrl());
+            BearerTokenAuthInterceptor authInterceptor = new BearerTokenAuthInterceptor(token);
+            fhirClient.registerInterceptor(authInterceptor);
+        } else if (sp == SecurityProtocol.API_KEY) {
+            String apiKeyName = endPoint.getApiKeyName();
+            String apiKeyValue = endPoint.getApiKeyValue();
+            fhirClient.registerInterceptor(new IClientInterceptor() {
+                @Override
+                public void interceptRequest(IHttpRequest theRequest) {
+                    theRequest.addHeader(apiKeyName, apiKeyValue);
+                }
+
+                @Override
+                public void interceptResponse(IHttpResponse theResponse) {
+                    // Optional response handling
+                }
+            });
+        }
+
+        // Convert the JSON payload string into a Bundle object
+        Bundle bundle = (Bundle) ctx.newJsonParser().parseResource(jsonPayload);
+
+        // Execute the transaction
+        Bundle response = fhirClient.transaction().withBundle(bundle).execute();
+
+        // Check the response to set the result (This is a basic check. You might need to adjust based on your needs)
+        if (response != null) {
+            result.setSuccess(true);
+            result.setMessage("Successfully processed the bundle transaction");
+        } else {
+            result.setSuccess(false);
+            result.setMessage("Failed to process the bundle transaction");
+        }
+
+        return result;
     }
 
     // Created by Dr M H B Ariyaratne with assistance from ChatGPT from OpenAI
@@ -438,6 +622,183 @@ public class FhirR4Controller implements Serializable {
             }
             return result;
         });
+    }
+
+    // Modified by Dr M H B Ariyaratne with assistance from ChatGPT from OpenAI.
+    public FhirOperationResult updateOrganizationInFhirServer(Institution institution, IntegrationEndpoint endPoint, String resourceId) {
+        System.out.println("Updating organization in FHIR server...");
+        SecurityProtocol sp = endPoint.getSecurityProtocol();
+        String username = endPoint.getUserName();
+        String password = endPoint.getPassword();
+        Organization organization = convertToFhirOrganization(institution);
+
+        FhirOperationResult result = new FhirOperationResult();
+
+        FhirContext ctx = FhirContext.forR4();
+        String serverBase = endPoint.getEndPointUrl();
+        IGenericClient fhirClient = ctx.newRestfulGenericClient(serverBase);
+
+        if (sp == SecurityProtocol.BASIC_AUTHENTICATION) {
+            fhirClient.registerInterceptor(new BasicAuthInterceptor(username, password));
+        } else if (sp == SecurityProtocol.API_KEY) {
+            String apiKeyName = endPoint.getApiKeyName();
+            String apiKeyValue = endPoint.getApiKeyValue();
+            fhirClient.registerInterceptor(new IClientInterceptor() {
+                @Override
+                public void interceptRequest(IHttpRequest theRequest) {
+                    theRequest.addHeader(apiKeyName, apiKeyValue);
+                }
+
+                @Override
+                public void interceptResponse(IHttpResponse theResponse) {
+                    // Optional response handling
+                }
+            });
+        }
+
+        // Set the resource ID for the update operation
+        organization.setId(resourceId);
+
+        // Perform the update operation
+        MethodOutcome outcome = fhirClient.update().resource(organization).execute();
+
+        if (outcome.getCreated()) {
+            result.setSuccess(false);
+            result.setMessage("Unexpectedly created a new Organization instead of updating");
+        } else if (outcome.getResource() != null) {
+            IdType id = (IdType) outcome.getId();
+            result.setSuccess(true);
+            result.setMessage("Updated Organization with ID: " + id.getIdPart());
+            result.setResourceId(id);
+        } else {
+            result.setSuccess(false);
+            result.setMessage("Failed to update Organization");
+        }
+
+        return result;
+    }
+
+    public static String replacePatientAndEncounterInBundle(String bundleJson, String patientJson, String encounterJson) {
+        JSONObject bundleObject = new JSONObject(bundleJson);
+        JSONArray entryArray = bundleObject.getJSONArray("entry");
+
+        JSONObject newPatient = new JSONObject(patientJson);
+        JSONObject newEncounter = new JSONObject(encounterJson);
+
+        String newPatientId = newPatient.getString("id");
+        String newEncounterId = newEncounter.getString("id");
+
+        for (int i = 0; i < entryArray.length(); i++) {
+            JSONObject entry = entryArray.getJSONObject(i);
+            JSONObject resource = entry.getJSONObject("resource");
+
+            // Replace Patient resource and URIs
+            if ("Patient".equals(resource.getString("resourceType"))) {
+                entry.put("resource", newPatient);
+                entry.put("fullUrl", "Patient/" + newPatientId);
+                JSONObject request = entry.getJSONObject("request");
+                request.put("url", "Patient/" + newPatientId);
+            }
+
+            // Replace Encounter resource and URIs
+            if ("Encounter".equals(resource.getString("resourceType"))) {
+                entry.put("resource", newEncounter);
+                entry.put("fullUrl", "Encounter/" + newEncounterId);
+                JSONObject request = entry.getJSONObject("request");
+                request.put("url", "Encounter/" + newEncounterId);
+            }
+
+            // Update Patient and Encounter references in other resources
+            replaceResourceReferences(resource, "Patient", newPatientId);
+            replaceResourceReferences(resource, "Encounter", newEncounterId);
+        }
+
+        return bundleObject.toString();
+    }
+
+// Helper method to replace references in resources
+    private static void replaceResourceReferences(JSONObject resource, String resourceType, String newId) {
+        for (String key : resource.keySet()) {
+            Object value = resource.get(key);
+            if (value instanceof JSONObject) {
+                JSONObject subObject = (JSONObject) value;
+                if (subObject.has("reference") && subObject.getString("reference").startsWith(resourceType + "/")) {
+                    subObject.put("reference", resourceType + "/" + newId);
+                }
+                replaceResourceReferences(subObject, resourceType, newId);
+            } else if (value instanceof JSONArray) {
+                JSONArray array = (JSONArray) value;
+                for (int i = 0; i < array.length(); i++) {
+                    Object item = array.get(i);
+                    if (item instanceof JSONObject) {
+                        replaceResourceReferences((JSONObject) item, resourceType, newId);
+                    }
+                }
+            }
+        }
+    }
+
+// Modified by Dr M H B Ariyaratne with assistance from ChatGPT from OpenAI.
+    public FhirOperationResult postJsonPayloadToFhirServer(String jsonPlayLoad, IntegrationEndpoint endPoint) {
+        System.out.println("Sending JSON payload to FHIR server...");
+        SecurityProtocol sp = endPoint.getSecurityProtocol();
+        String username = endPoint.getUserName();
+        String password = endPoint.getPassword();
+        FhirOperationResult result = new FhirOperationResult();
+        FhirContext ctx = FhirContext.forR4();
+
+        // Disable server validation on the FHIR context
+        ctx.getRestfulClientFactory().setServerValidationMode(ServerValidationModeEnum.NEVER);
+
+        String serverBase = endPoint.getEndPointUrl();
+        System.out.println("Target Base URL: " + serverBase);
+        IGenericClient fhirClient = ctx.newRestfulGenericClient(serverBase);
+
+        if (sp == SecurityProtocol.BASIC_AUTHENTICATION) {
+            fhirClient.registerInterceptor(new BasicAuthInterceptor(username, password));
+        } else if (sp == SecurityProtocol.API_KEY) {
+            String apiKeyName = endPoint.getApiKeyName();
+            String apiKeyValue = endPoint.getApiKeyValue();
+            fhirClient.registerInterceptor(new IClientInterceptor() {
+                @Override
+                public void interceptRequest(IHttpRequest theRequest) {
+                    theRequest.addHeader(apiKeyName, apiKeyValue);
+                }
+
+                @Override
+                public void interceptResponse(IHttpResponse theResponse) {
+                    // Optional response handling
+                }
+            });
+        }
+
+        // Parsing the given JSON payload to a Bundle object
+        Bundle bundle = (Bundle) ctx.newJsonParser().parseResource(jsonPlayLoad);
+
+        System.out.println("Attempting to send bundle as a POST request...");
+        Bundle response;
+        try {
+            response = fhirClient.transaction().withBundle(bundle).execute();
+            System.out.println("Bundle sent via POST method.");
+        } catch (Exception e) {
+            System.err.println("Error occurred while sending the bundle: " + e.getMessage());
+            e.printStackTrace();
+            result.setSuccess(false);
+            result.setMessage("Failed to send the bundle: " + e.getMessage());
+            return result;
+        }
+
+        // Evaluating the response to set the result
+        if (response != null && response.getType() == Bundle.BundleType.TRANSACTIONRESPONSE) {
+            System.out.println("Response received: " + response.toString());
+            result.setSuccess(true);
+            result.setMessage("Successfully processed the bundle transaction");
+        } else {
+            result.setSuccess(false);
+            result.setMessage("Failed to process the bundle transaction");
+        }
+
+        return result;
     }
 
     public void updateFhirResourceLink(Object object, IntegrationEndpoint endPoint, String fhirResourceId) {

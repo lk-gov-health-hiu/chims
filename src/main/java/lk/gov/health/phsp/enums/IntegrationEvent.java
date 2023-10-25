@@ -13,7 +13,8 @@ public enum IntegrationEvent {
     PATIENT_SAVE("Patient Save"),
     ENCOUNTER_SAVE("Encounter Save"),
     ORGANIZATION_SAVE("Organization Save"),
-    LOCATION_SAVE("Location Save");
+    LOCATION_SAVE("Location Save"),
+    MEDIATORS("Mediators");
 
     private final String event;
 

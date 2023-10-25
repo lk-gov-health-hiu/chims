@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.concurrent.CompletableFuture;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
@@ -25,8 +26,11 @@ import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
 import javax.inject.Inject;
 import lk.gov.health.phsp.entity.Client;
+import lk.gov.health.phsp.entity.FhirOperationResult;
 import lk.gov.health.phsp.entity.Institution;
 import lk.gov.health.phsp.enums.EncounterType;
+import lk.gov.health.phsp.pojcs.FhirConverters;
+import org.json.JSONObject;
 
 @Named("encounterController")
 @SessionScoped
@@ -40,8 +44,37 @@ public class EncounterController implements Serializable {
     private WebUserController webUserController;
     @Inject
     private UserTransactionController userTransactionController;
+    String tmpString;
+
+    private String temSenging;
+
+    @Inject
+    IntegrationTriggerController integrationTriggerController;
+
+    private List<FhirOperationResult> fhirOperationResults;
+    private boolean pushComplete = false;
 
     public EncounterController() {
+    }
+
+    // Modified by Dr M H B Ariyaratne with assistance from ChatGPT from OpenAI.
+    public String pushTmpToFhirServers() {
+        JSONObject joPt = FhirConverters.convertMyClientToFhirPatient(selected.getClient());
+        JSONObject joEn = FhirConverters.convertMyEncounterToFhirEncounter(selected, joPt);
+
+        // Convert the tmpString to a JSONObject
+        JSONObject bundleObject = new JSONObject(tmpString);
+
+        String jsonPlayLoad = FhirConverters.replacePatientAndEncounterInBundle(bundleObject, joPt, joEn);
+
+        // Print the JSON payload to the console
+        System.out.println("JSON Payload being sent:");
+        System.out.println(jsonPlayLoad);
+        temSenging = jsonPlayLoad;
+        List<FhirOperationResult> results = integrationTriggerController.postToMediators(jsonPlayLoad);
+        fhirOperationResults = results;
+        pushComplete = true; // Mark the operation as complete
+        return ""; // Navigate to the push_result page
     }
 
     public String createClinicEnrollNumber(Institution clinic) {
@@ -211,6 +244,30 @@ public class EncounterController implements Serializable {
         }
     }
 
+    public String getTmpString() {
+        return tmpString;
+    }
+
+    public void setTmpString(String tmpString) {
+        this.tmpString = tmpString;
+    }
+
+    public List<FhirOperationResult> getFhirOperationResults() {
+        return fhirOperationResults;
+    }
+
+    public void setFhirOperationResults(List<FhirOperationResult> fhirOperationResults) {
+        this.fhirOperationResults = fhirOperationResults;
+    }
+
+    public boolean isPushComplete() {
+        return pushComplete;
+    }
+
+    public void setPushComplete(boolean pushComplete) {
+        this.pushComplete = pushComplete;
+    }
+
     public Encounter getEncounter(java.lang.Long id) {
         return getFacade().find(id);
     }
@@ -229,6 +286,14 @@ public class EncounterController implements Serializable {
 
     public lk.gov.health.phsp.facade.EncounterFacade getEjbFacade() {
         return ejbFacade;
+    }
+
+    public String getTemSenging() {
+        return temSenging;
+    }
+
+    public void setTemSenging(String temSenging) {
+        this.temSenging = temSenging;
     }
 
     @FacesConverter(forClass = Encounter.class)

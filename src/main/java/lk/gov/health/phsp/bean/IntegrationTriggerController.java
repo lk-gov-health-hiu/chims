@@ -39,6 +39,8 @@ import lk.gov.health.phsp.enums.IntegrationEvent;
 import lk.gov.health.phsp.facade.FhirResourceLinkFacade;
 import lk.gov.health.phsp.facade.IntegrationTriggerFacade;
 import lk.gov.health.phsp.pojcs.SearchQueryData;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 /**
  *
@@ -150,57 +152,40 @@ public class IntegrationTriggerController implements Serializable {
             return null; // Or handle the exception as needed
         });
     }
-    
-    
-    
-    
-    
-    public CompletableFuture<List<FhirOperationResult>> organizationToEndpoints(Institution institution) {
-        System.out.println("Creating new clients to endpoints...");
-        return CompletableFuture.supplyAsync(() -> {
-            List<FhirOperationResult> outcomes = new ArrayList<>();
-            List<IntegrationTrigger> itemsNeededToBeTriggered = fillItems(IntegrationEvent.ORGANIZATION_SAVE);
-            System.out.println("itemsNeededToBeTriggered = " + itemsNeededToBeTriggered);
-            if (itemsNeededToBeTriggered == null || itemsNeededToBeTriggered.isEmpty()) {
-                return outcomes;
-            }
-            System.out.println("before future outcomes");
-            List<CompletableFuture<FhirOperationResult>> futureOutcomes = new ArrayList<>();
-            for (IntegrationTrigger it : itemsNeededToBeTriggered) {
-                System.out.println("it = " + it);
-                System.out.println("it.getIntegrationEndpoint() = " + it.getIntegrationEndpoint());
-                if (it.getIntegrationEndpoint() == null) {
-                    continue;
-                }
-                System.out.println("it.getIntegrationEndpoint().getCommunicationProtocol() = " + it.getIntegrationEndpoint().getCommunicationProtocol());
-                if (it.getIntegrationEndpoint().getCommunicationProtocol() == null) {
-                    continue;
-                }
-                CompletableFuture<FhirOperationResult> futureOutcome;
-                if (it.getIntegrationEndpoint().getCommunicationProtocol() == CommunicationProtocol.FHIR_R4) {
-                    System.out.println("going to fhir async = ");
-                    String oldId = findFhirResourceLinkId(institution, it.getIntegrationEndpoint());
-                    if (oldId == null) {
-                        futureOutcome = fhirR4Controller.createOrganizationInFhirServerAsync(institution, it.getIntegrationEndpoint());
-                    } else {
-                        futureOutcome = fhirR4Controller.updateOrganizationInFhirServerAsync(institution, it.getIntegrationEndpoint(), oldId);
-                    }
-                    futureOutcomes.add(futureOutcome);
-                } else if (it.getIntegrationEndpoint().getCommunicationProtocol() == CommunicationProtocol.FHIR_R5) {
-                    // TODO : Handle FHIR R5 
-                    continue;
-                } else {
-                    continue;
-                }
-            }
-            futureOutcomes.forEach(futureOutcome -> futureOutcome.thenAccept(outcomes::add));
-            CompletableFuture.allOf(futureOutcomes.toArray(new CompletableFuture[0])).join();
+
+   
+    public List<FhirOperationResult> postToMediators(String jsonPlayLoad) {
+        System.out.println("postToMediators");
+        System.out.println("jsonPlayLoad = " + jsonPlayLoad);
+        List<FhirOperationResult> outcomes = new ArrayList<>();
+        List<IntegrationTrigger> itemsNeededToBeTriggered = fillItems(IntegrationEvent.MEDIATORS);
+        System.out.println("itemsNeededToBeTriggered = " + itemsNeededToBeTriggered);
+
+        if (itemsNeededToBeTriggered == null || itemsNeededToBeTriggered.isEmpty()) {
             return outcomes;
-        }, executorService).exceptionally(ex -> {
-            ex.printStackTrace(); // Or log the exception
-            return null; // Or handle the exception as needed
-        });
+        }
+
+        System.out.println("before outcomes");
+        for (IntegrationTrigger it : itemsNeededToBeTriggered) {
+            if (it.getIntegrationEndpoint() == null) {
+                continue;
+            }
+            if (it.getIntegrationEndpoint().getCommunicationProtocol() == null) {
+                continue;
+            }
+
+            if (it.getIntegrationEndpoint().getCommunicationProtocol() == CommunicationProtocol.FHIR_R4) {
+                FhirOperationResult outcome;
+                outcome = fhirR4Controller.postJsonPayloadToFhirServer(jsonPlayLoad, it.getIntegrationEndpoint());
+                System.out.println("outcome = " + outcome);
+                outcomes.add(outcome);
+            }
+        }
+        return outcomes;
     }
+
+   
+
     
 
     // Modified by Dr M H B Ariyaratne with assistance from ChatGPT from OpenAI
