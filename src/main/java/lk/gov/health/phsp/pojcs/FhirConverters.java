@@ -2,7 +2,9 @@ package lk.gov.health.phsp.pojcs;
 
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
+import javax.faces.application.Application;
 import lk.gov.health.phsp.entity.Client;
 import lk.gov.health.phsp.entity.Institution;
 
@@ -199,6 +201,38 @@ public class FhirConverters {
 
             entryArray.put(patientEntry);
         }
+
+        bundleJson.put("entry", entryArray);
+
+        return bundleJson.toString(4); // '4' denotes 4 spaces indentation
+    }
+
+    public static String createPatientBundleJsonPayload(Client client) {
+        JSONObject bundleJson = new JSONObject();
+        String idPrefix = "Patient";
+
+        bundleJson.put("resourceType", "Bundle");
+        Date nd = new Date();
+        String bundleTxId = "cHIMS-transaction-bundle-create-pt" + nd.getTime();
+        bundleJson.put("id", bundleTxId);
+        bundleJson.put("type", "transaction");
+
+        JSONArray entryArray = new JSONArray();
+
+        // Creating Patient Entry
+        JSONObject patientEntry = new JSONObject();
+        JSONObject patientResource = convertMyClientToFhirPatient(client);
+
+        patientEntry.put("fullUrl", idPrefix + client.getId()); // Assuming PHN can be used as PatientID
+        patientEntry.put("resource", patientResource);
+
+        JSONObject patientRequest = new JSONObject();
+        patientRequest.put("method", "PUT");
+        
+        patientRequest.put("url", "Patient/" + idPrefix + client.getId());
+        patientEntry.put("request", patientRequest);
+
+        entryArray.put(patientEntry);
 
         bundleJson.put("entry", entryArray);
 

@@ -169,6 +169,64 @@ public class FhirR4Controller implements Serializable {
             return result;
         });
     }
+    
+    // Modified by Dr M H B Ariyaratne with assistance from ChatGPT from OpenAI
+
+public FhirOperationResult createPatientInFhirServer(Client client, IntegrationEndpoint endPoint) {
+    System.out.println("Creating patient in FHIR server...");
+    SecurityProtocol sp = endPoint.getSecurityProtocol();
+    String username = endPoint.getUserName();
+    String password = endPoint.getPassword();
+    Patient patient = convertToFhirPatient(client);
+
+    FhirOperationResult result = new FhirOperationResult();
+
+    FhirContext ctx = FhirContext.forR4();
+    String serverBase = endPoint.getEndPointUrl();
+    IGenericClient fhirClient = ctx.newRestfulGenericClient(serverBase);
+
+    if (sp == SecurityProtocol.BASIC_AUTHENTICATION) {
+        fhirClient.registerInterceptor(new BasicAuthInterceptor(username, password));
+    } else if (endPoint.getSecurityProtocol() == SecurityProtocol.KEYCLOAK) {
+        String token = acquireToken(endPoint.getKeyCloackClientId(), endPoint.getKeyCloackClientSecret(), endPoint.getKeyCloakTokenAcquiringUrl());
+        BearerTokenAuthInterceptor authInterceptor = new BearerTokenAuthInterceptor(token);
+        fhirClient.registerInterceptor(authInterceptor);
+    } else if (sp == SecurityProtocol.API_KEY) {
+        String apiKeyName = endPoint.getApiKeyName(); // Assuming this is the name of the API key header
+        String apiKeyValue = endPoint.getApiKeyValue();
+        // Add the API key to the client's headers
+        fhirClient.registerInterceptor(new IClientInterceptor() {
+            @Override
+            public void interceptRequest(IHttpRequest theRequest) {
+                theRequest.addHeader(apiKeyName, apiKeyValue);
+            }
+
+            @Override
+            public void interceptResponse(IHttpResponse theResponse) {
+                // You can add response handling here if needed
+            }
+        });
+    }
+    // Add other authentication methods as needed
+
+    MethodOutcome outcome = fhirClient.create().resource(patient).execute();
+
+    if (outcome.getCreated()) {
+        IdType id = (IdType) outcome.getId();
+        result.setSuccess(true);
+        result.setMessage("Created new Patient with ID: " + id.getIdPart());
+        result.setResourceId(id);
+
+        // Call updateFhirResourceLink method
+        updateFhirResourceLink(client, endPoint, id.getIdPart());
+
+    } else {
+        result.setSuccess(false);
+        result.setMessage("Failed to create new Patient");
+    }
+    return result;
+}
+
 
     public CompletableFuture<FhirOperationResult> createOrganizationInFhirServerAsync(Institution institution, IntegrationEndpoint endPoint) {
         System.out.println("Creating patient in FHIR server...");

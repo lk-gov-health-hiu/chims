@@ -211,6 +211,18 @@ public class ClientController implements Serializable {
     private List<FhirOperationResult> fhirOperationResults;
     private boolean pushComplete = false;
 
+    public String pushToFhirServersAsync() {
+        System.out.println("Starting push to FHIR servers...");
+        CompletableFuture<List<FhirOperationResult>> futureResults
+                = integrationTriggerController.createNewClientsToEndpoints(selected);
+        futureResults.thenAccept(results -> {
+            fhirOperationResults = results;
+            pushComplete = true; // Mark the operation as complete
+            System.out.println("Push to FHIR servers complete.");
+        });
+        return "/client/push_result?faces-redirect=true"; // Navigate to the push_result page
+    }
+    
     public String pushToFhirServers() {
         System.out.println("Starting push to FHIR servers...");
         CompletableFuture<List<FhirOperationResult>> futureResults
@@ -259,7 +271,7 @@ public class ClientController implements Serializable {
         userTransactionController.recordTransaction("To Client Profile");
         return "/client/profile";
     }
-    
+
     public String toClientProfileForPush() {
         selectedClientsLastFiveClinicVisits = null;
         loadClientFormDataEntry();
@@ -1944,13 +1956,17 @@ public class ClientController implements Serializable {
         }
     }
 
-    public String pushSelectedLocationsToFhirServers() {
-        String jsonPlayLoad = FhirConverters.createPatientBundleJsonPayload(selectedClients);
-        // Print the JSON payload to the console
-        System.out.println("JSON Payload being sent:");
-        System.out.println(jsonPlayLoad);
-        List<FhirOperationResult> results = integrationTriggerController.postToMediators(jsonPlayLoad);
-        fhirOperationResults = results;
+    public String pushSelectedPatientsToFhirMediator() {
+        fhirOperationResults = new ArrayList<>();
+        for (Client c : selectedClients) {
+            String jsonPlayLoad = FhirConverters.createPatientBundleJsonPayload(c);
+            // Print the JSON payload to the console
+            System.out.println("JSON Payload being sent:");
+            System.out.println(jsonPlayLoad);
+            List<FhirOperationResult> results = integrationTriggerController.postToMediators(jsonPlayLoad);
+            fhirOperationResults = results;
+        }
+
         pushComplete = true; // Mark the operation as complete
         return "/client/push_result_multiple?faces-redirect=true"; // Navigate to the push_result page
     }
