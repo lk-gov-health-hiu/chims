@@ -14,7 +14,9 @@ public enum IntegrationEvent {
     ENCOUNTER_SAVE("Encounter Save"),
     ORGANIZATION_SAVE("Organization Save"),
     LOCATION_SAVE("Location Save"),
-    MEDIATORS("Mediators");
+    MEDIATORS("Mediators"),
+    SERVICE_REQUEST_SEARCH("Service Request Search"),
+    SERVICE_REQUEST_UPDATE("Service Request Update"),;
 
     private final String event;
 

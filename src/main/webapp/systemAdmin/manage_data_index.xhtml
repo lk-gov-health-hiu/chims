@@ -14,11 +14,15 @@
                     <p:panel header="System Administration - Manage Data" >
                         <p:tabView orientation="left" >
 
-
+                            <p:tab title="Integration" >
+                                <p:commandButton ajax="false" value="Search Service Requests" 
+                                                 action="#{clientController.searchServiceRequests()}">
+                                </p:commandButton>
+                            </p:tab>
 
                             <p:tab title="Import" >
                                 <p:panelGrid columns="1" >
-                                     <p:commandButton ajax="false" action="/client/push" value="Push Patients" ></p:commandButton>
+                                    <p:commandButton ajax="false" action="/client/push" value="Push Patients" ></p:commandButton>
                                     <p:commandButton ajax="false" action="/client/import_clients" value="Import Patients" ></p:commandButton>
                                     <p:commandButton ajax="false" action="/systemAdmin/all_clients" value="Client List"  onclick="this.form.target = '_blank'" ></p:commandButton>
                                     <p:commandButton ajax="false" action="/systemAdmin/client_import_error_correction" value="Error Correction for Client Import" ></p:commandButton>

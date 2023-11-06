@@ -1,0 +1,80 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <body>
+
+        <ui:composition template="/template.xhtml">
+
+            <ui:define name="content">
+
+                <p:panel header="List Service Requests"
+                         style="height: 100%; text-align: center;" >
+
+
+                    <h:form>
+
+
+                        <p:commandButton ajax="false" value="Search Service Requests" 
+                                         action="#{clientController.searchServiceRequests()}">
+                        </p:commandButton>
+
+                        <p:dataTable value="#{clientController.searchedServiceRequests}" var="item">
+                            <p:column headerText="ID">
+                                <h:outputText value="#{item.id}" />
+                            </p:column>
+                            <p:column headerText="Status">
+                                <h:outputText value="#{item.status}" />
+                            </p:column>
+                            <p:column headerText="Intent">
+                                <h:outputText value="#{item.intent}" />
+                            </p:column>
+                            <p:column headerText="Priority">
+                                <h:outputText value="#{item.priority}" />
+                            </p:column>
+                            <p:column headerText="Code">
+                                <h:outputText value="#{item.code.coding[0].display}" />
+                            </p:column>
+                            <p:column headerText="Subject">
+                                <h:outputText value="#{item.subject.reference}" />
+                            </p:column>
+                            <p:column headerText="Encounter">
+                                <h:outputText value="#{item.encounter.reference}" />
+                            </p:column>
+                            <p:column headerText="Location">
+                                <h:outputText value="#{item.locationReference[0].display}" />
+                            </p:column>
+                            <p:column headerText="Actions">
+                                <p:commandButton value="Mark as Complete" ajax="false"
+                                                 action="#{clientController.markAndSendServiceRequestAsComplete()}">
+                                    <f:setPropertyActionListener 
+                                        value="#{item}" 
+                                        target="#{clientController.selectedServiceRequest}" ></f:setPropertyActionListener>
+                                </p:commandButton>
+                            </p:column>
+                        </p:dataTable>
+
+
+
+
+
+
+                    </h:form>
+
+
+
+                </p:panel>
+
+
+
+
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

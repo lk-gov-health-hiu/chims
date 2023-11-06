@@ -1,6 +1,10 @@
 package lk.gov.health.phsp.bean;
 
 // <editor-fold defaultstate="collapsed" desc="Import">
+import ca.uhn.fhir.context.FhirContext;
+import ca.uhn.fhir.parser.IParser;
+import ca.uhn.fhir.rest.api.MethodOutcome;
+import ca.uhn.fhir.rest.client.api.IGenericClient;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -68,6 +72,7 @@ import static lk.gov.health.phsp.enums.EncounterType.Client_Data;
 import lk.gov.health.phsp.enums.SearchCriteria;
 import lk.gov.health.phsp.pojcs.FhirConverters;
 import lk.gov.health.phsp.pojcs.SearchQueryData;
+import org.hl7.fhir.r4.model.ServiceRequest;
 import org.primefaces.component.tabview.TabView;
 import org.primefaces.event.TabChangeEvent;
 import org.primefaces.model.file.UploadedFile;
@@ -124,8 +129,11 @@ public class ClientController implements Serializable {
     private List<ClientBasicData> clients = null;
     private List<Client> selectedClients = null;
     private List<Client> selectedClientsFromIntegrations = new ArrayList<>();
+    private List<ServiceRequest> searchedServiceRequests = new ArrayList<>();
     private List<ClientBasicData> selectedClientsWithBasicData = null;
     private List<Client> importedClients = null;
+
+    ServiceRequest selectedServiceRequest;
 
     private List<ClientBasicData> selectedClientsBasic = null;
 
@@ -199,6 +207,10 @@ public class ClientController implements Serializable {
         return "/client/select";
     }
 
+    public String toListServiceRequests() {
+        return "/client/service_requests";
+    }
+
     public String toSelectClientBasic() {
         return "/client/select_basic";
     }
@@ -211,28 +223,19 @@ public class ClientController implements Serializable {
     private List<FhirOperationResult> fhirOperationResults;
     private boolean pushComplete = false;
 
-    public String pushToFhirServersAsync() {
-        System.out.println("Starting push to FHIR servers...");
-        CompletableFuture<List<FhirOperationResult>> futureResults
-                = integrationTriggerController.createNewClientsToEndpoints(selected);
-        futureResults.thenAccept(results -> {
-            fhirOperationResults = results;
-            pushComplete = true; // Mark the operation as complete
-            System.out.println("Push to FHIR servers complete.");
-        });
-        return "/client/push_result?faces-redirect=true"; // Navigate to the push_result page
-    }
-    
     public String pushToFhirServers() {
         System.out.println("Starting push to FHIR servers...");
-        CompletableFuture<List<FhirOperationResult>> futureResults
-                = integrationTriggerController.createNewClientsToEndpoints(selected);
-        futureResults.thenAccept(results -> {
-            fhirOperationResults = results;
-            pushComplete = true; // Mark the operation as complete
-            System.out.println("Push to FHIR servers complete.");
-        });
-        return "/client/push_result?faces-redirect=true"; // Navigate to the push_result page
+
+        // This method is now synchronous and will block until it completes.
+        List<FhirOperationResult> results = integrationTriggerController.createNewClientsToEndpoints(selected);
+
+        // Process the results immediately after the method call, as it's synchronous now.
+        fhirOperationResults = results;
+        pushComplete = true; // Mark the operation as complete
+        System.out.println("Push to FHIR servers complete.");
+
+        // Navigate to the push_result page
+        return "/client/push_result?faces-redirect=true";
     }
 
     public String checkPushComplete() {
@@ -1797,21 +1800,105 @@ public class ClientController implements Serializable {
         searchQueryData.setSearchCriteria(SearchCriteria.NIC_ONLY);
         searchQueryData.setNic(searchingNicNo);
 
-        CompletableFuture<List<Client>> futureClients = integrationTriggerController.fetchClientsFromEndpoints(searchQueryData);
-        futureClients.thenAccept(clients -> {
+        try {
+            // Fetch clients synchronously from endpoints
+            List<Client> clients = integrationTriggerController.fetchClientsFromEndpoints(searchQueryData);
             if (clients != null && !clients.isEmpty()) {
                 System.out.println("Selected clients from integrations: " + clients);
                 selectedClientsFromIntegrations.addAll(clients);
             } else {
                 System.out.println("No clients found from integrations for NIC: " + searchingNicNo);
             }
-        }).exceptionally(ex -> {
+        } catch (Exception ex) {
             ex.printStackTrace();
-            return null;
-        });
+        }
 
         // Do something with the fhirOperationResults list, if needed
         return toSelectClient();
+    }
+
+    public String searchServiceRequests() {
+        System.out.println("searchServiceRequests");
+        searchedServiceRequests = new ArrayList<>();
+        fhirOperationResults = new ArrayList<>(); // Initialize the list to store FhirOperationResult objects
+        try {
+            searchedServiceRequests = integrationTriggerController.fetchServiceRequestsFromEndpoints();
+
+            // Get a JSON parser instance
+            FhirContext ctx = FhirContext.forR4();
+            IParser jsonParser = ctx.newJsonParser().setPrettyPrint(true);
+
+            // Convert and print each ServiceRequest to JSON
+            for (ServiceRequest sr : searchedServiceRequests) {
+                String json = jsonParser.encodeResourceToString(sr);
+                System.out.println(json);
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return toListServiceRequests();
+    }
+
+    public void markAndSendServiceRequestAsComplete() {
+    if (selectedServiceRequest == null) {
+        JsfUtil.addErrorMessage("No ServiceRequest selected.");
+        return;
+    }
+    
+    // Set the status of the selectedServiceRequest to 'completed'
+    selectedServiceRequest.setStatus("completed"); // Adjust this if your status is not a simple String
+
+    // Now, use the FHIR client to update this service request in the FHIR server
+    FhirOperationResult result = integrationTriggerController.createNewClientsToEndpoints(selected);
+    updateServiceRequestInFhirServer(selectedServiceRequest);
+
+    // Check the operation result and show the message
+    if (result.isSuccess()) {
+        JsfUtil.addSuccessMessage("ServiceRequest marked as complete and updated successfully.");
+    } else {
+        JsfUtil.addErrorMessage("Failed to update ServiceRequest: " + result.getMessage());
+    }
+}
+
+    public FhirOperationResult updateServiceRequestStatus(String serviceRequestId, String newStatus) {
+        // Assume FhirOperationResult is a class that holds the result of a FHIR operation.
+        FhirOperationResult result = new FhirOperationResult();
+
+        // Setup FHIR client (this should be adjusted to your actual client setup method)
+        FhirContext ctx = FhirContext.forR4();
+        String serverBase = "your_fhir_server_url"; // Replace with your FHIR server URL
+        IGenericClient client = ctx.newRestfulGenericClient(serverBase);
+
+        // Fetch the existing ServiceRequest
+        ServiceRequest serviceRequest = client.read()
+                .resource(ServiceRequest.class)
+                .withId(serviceRequestId)
+                .execute();
+
+        // Update the status
+        serviceRequest.setStatus(ServiceRequest.ServiceRequestStatus.fromCode(newStatus));
+
+        // Update the ServiceRequest on the FHIR server
+        try {
+            MethodOutcome outcome = client.update()
+                    .resource(serviceRequest)
+                    .execute();
+
+            if (outcome.getCreated()) {
+                result.setSuccess(true);
+                result.setMessage("ServiceRequest status updated to: " + newStatus);
+                result.setResourceId(serviceRequest.getIdElement());
+            } else {
+                result.setSuccess(false);
+                result.setMessage("Failed to update ServiceRequest status");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            result.setSuccess(false);
+            result.setMessage("Exception when updating ServiceRequest status: " + e.getMessage());
+        }
+
+        return result;
     }
 
     public String searchBySearchQueryData() {
@@ -1864,19 +1951,14 @@ public class ClientController implements Serializable {
         fhirOperationResults = new ArrayList<>(); // Initialize the list to store FhirOperationResult objects
 
         System.out.println("Selected clients from local search: " + selectedClients);
+        List<Client> clients = integrationTriggerController.fetchClientsFromEndpoints(searchQueryData);
 
-        CompletableFuture<List<Client>> futureClients = integrationTriggerController.fetchClientsFromEndpoints(searchQueryData);
-        futureClients.thenAccept(clients -> {
-            if (clients != null && !clients.isEmpty()) {
-                System.out.println("Selected clients from integrations: " + clients);
-                selectedClientsFromIntegrations.addAll(clients);
-            } else {
-                System.out.println("No clients found from integrations for NIC: " + searchingNicNo);
-            }
-        }).exceptionally(ex -> {
-            ex.printStackTrace();
-            return null;
-        });
+        if (clients != null && !clients.isEmpty()) {
+            System.out.println("Selected clients from integrations: " + clients);
+            selectedClientsFromIntegrations.addAll(clients);
+        } else {
+            System.out.println("No clients found from integrations for NIC: " + searchingNicNo);
+        }
 
         // Do something with the fhirOperationResults list, if needed
         return toSelectClient();
@@ -3288,6 +3370,22 @@ public class ClientController implements Serializable {
 
     public void setSearchQueryData(SearchQueryData searchQueryData) {
         this.searchQueryData = searchQueryData;
+    }
+
+    public List<ServiceRequest> getSearchedServiceRequests() {
+        return searchedServiceRequests;
+    }
+
+    public void setSearchedServiceRequests(List<ServiceRequest> searchedServiceRequests) {
+        this.searchedServiceRequests = searchedServiceRequests;
+    }
+
+    public ServiceRequest getSelectedServiceRequest() {
+        return selectedServiceRequest;
+    }
+
+    public void setSelectedServiceRequest(ServiceRequest selectedServiceRequest) {
+        this.selectedServiceRequest = selectedServiceRequest;
     }
 
     // </editor-fold>
