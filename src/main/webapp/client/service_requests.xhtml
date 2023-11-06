@@ -22,8 +22,15 @@
                         <p:commandButton ajax="false" value="Search Service Requests" 
                                          action="#{clientController.searchServiceRequests()}">
                         </p:commandButton>
-
-                        <p:dataTable value="#{clientController.searchedServiceRequests}" var="item">
+                        
+                        <p:commandButton value="Download"
+                            ajax="false" >
+                            <p:dataExporter target="tbl" type="xlsx" fileName="service requests" ></p:dataExporter>
+                        </p:commandButton>
+                        
+                        <p:dataTable 
+                            id="tbl"
+                            value="#{clientController.searchedServiceRequests}" var="item">
                             <p:column headerText="ID">
                                 <h:outputText value="#{item.id}" />
                             </p:column>

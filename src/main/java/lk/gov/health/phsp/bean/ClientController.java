@@ -1840,25 +1840,17 @@ public class ClientController implements Serializable {
     }
 
     public void markAndSendServiceRequestAsComplete() {
-    if (selectedServiceRequest == null) {
-        JsfUtil.addErrorMessage("No ServiceRequest selected.");
-        return;
-    }
-    
-    // Set the status of the selectedServiceRequest to 'completed'
-    selectedServiceRequest.setStatus("completed"); // Adjust this if your status is not a simple String
+        if (selectedServiceRequest == null) {
+            JsfUtil.addErrorMessage("No ServiceRequest selected.");
+            return;
+        }
 
-    // Now, use the FHIR client to update this service request in the FHIR server
-    FhirOperationResult result = integrationTriggerController.createNewClientsToEndpoints(selected);
-    updateServiceRequestInFhirServer(selectedServiceRequest);
+        selectedServiceRequest.setStatus(ServiceRequest.ServiceRequestStatus.COMPLETED);
 
-    // Check the operation result and show the message
-    if (result.isSuccess()) {
-        JsfUtil.addSuccessMessage("ServiceRequest marked as complete and updated successfully.");
-    } else {
-        JsfUtil.addErrorMessage("Failed to update ServiceRequest: " + result.getMessage());
+        // Now, use the FHIR client to update this service request in the FHIR server
+        List<FhirOperationResult> results = integrationTriggerController.updateServiceRequestInFhirServer(selectedServiceRequest);
+
     }
-}
 
     public FhirOperationResult updateServiceRequestStatus(String serviceRequestId, String newStatus) {
         // Assume FhirOperationResult is a class that holds the result of a FHIR operation.
