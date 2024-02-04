@@ -11,12 +11,10 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
-import javax.persistence.Table;
 import javax.persistence.Temporal;
 import lk.gov.health.phsp.pojcs.Identifiable;
 
 @Entity
-@Table
 public class Client implements Serializable , Identifiable {
 
 // <editor-fold defaultstate="collapsed" desc="Attributes">

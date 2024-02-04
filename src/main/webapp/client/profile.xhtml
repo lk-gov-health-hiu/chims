@@ -97,6 +97,14 @@
                                 <h:outputLabel value="#{clientController.selected.createdAt}" >
                                     <f:convertDateTime pattern="dd MMMM yyyy" ></f:convertDateTime>
                                 </h:outputLabel>
+                                
+                                <h:outputLabel value="Registered By" ></h:outputLabel>
+                                <h:outputLabel value="#{clientController.selected.createdBy}" >
+                                </h:outputLabel>
+                                
+                                 <h:outputLabel value="Registered At" ></h:outputLabel>
+                                 <h:outputLabel value="#{clientController.selected.createInstitution.name}" >
+                                </h:outputLabel>
 
 
                             </p:panelGrid>

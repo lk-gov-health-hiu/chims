@@ -5,14 +5,14 @@
       xmlns:p="http://primefaces.org/ui"
       xmlns:f="http://xmlns.jcp.org/jsf/core">
     <h:head>
-        <title>Clients with wrong PHN Length</title>
+        <title>Clients with wrong Institute</title>
     </h:head>
     <h:body>
         <h:form  >
 
 
             <h:panelGrid columns="5" >
-                <p:outputLabel value="Institution" ></p:outputLabel>
+                <p:outputLabel value="Institution to Correct" ></p:outputLabel>
                 
                 <p:autoComplete value="#{clientController.institution}" 
                                 completeMethod="#{institutionController.completeInstitutions}"
@@ -25,6 +25,17 @@
                 <p:commandButton value="Update Clients for above Institution" ajax="false"
                                  action="#{clientController.updateClientCreatedInstitution()}">
                 </p:commandButton>
+                
+                
+                <p:commandButton value="Update Clients without a Created Institution" ajax="false"
+                                 action="#{clientController.updateClientWithoutCreatedInstitution()}">
+                </p:commandButton>
+                
+                
+                <p:commandButton value="Change Created Institution" ajax="false"
+                                 action="#{clientController.ch}">
+                </p:commandButton>
+                
 
             </h:panelGrid>
 

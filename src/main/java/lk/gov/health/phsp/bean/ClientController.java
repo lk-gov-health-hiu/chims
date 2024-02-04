@@ -913,6 +913,55 @@ public class ClientController implements Serializable {
         }
         userTransactionController.recordTransaction("Update Client Created Institution");
     }
+    
+    public void updateClientWithoutCreatedInstitution() {
+        String j = "select c from Client c "
+                + " where c.retired=:ret "
+                + " and c.createInstitution is null";
+        Map m = new HashMap();
+        m.put("ret", false);
+        List<Client> cs = getFacade().findByJpql(j, m, 1000);
+        for (Client c : cs) {
+            System.out.println("c = " + c);
+            if (c.getCreatedBy() != null && c.getCreatedBy().getInstitution() != null) {
+                System.out.println("c.getCreatedBy().getInstitution() = " + c.getCreatedBy().getInstitution());
+                c.setCreateInstitution(c.getCreatedBy().getInstitution());
+                if(c.getPoiInstitution()==null){
+                    if(c.getCreatedBy().getInstitution().getPoiInstitution()!=null){
+                        c.setPoiInstitution(c.getCreatedBy().getInstitution().getPoiInstitution());
+                    }else{
+                        c.setPoiInstitution(c.getCreatedBy().getInstitution());
+                    }
+                }
+                
+                getFacade().edit(c);
+            }
+
+        }
+        userTransactionController.recordTransaction("Update Client Created Institution");
+    }
+    
+    public String saveClient() {
+        String j = "select c from Client c "
+                + " where c.retired=:ret "
+                + " and c.createInstitution=:ci ";
+        Map m = new HashMap();
+        m.put("ret", false);
+        m.put("ci", institution);
+        List<Client> cs = getFacade().findByJpql(j, m, 1000);
+        for (Client c : cs) {
+            System.out.println("c = " + c);
+            if (c.getCreatedBy() != null && c.getCreatedBy().getInstitution() != null) {
+                System.out.println("c.getCreatedBy().getInstitution() = " + c.getCreatedBy().getInstitution());
+                c.setCreateInstitution(c.getCreatedBy().getInstitution());
+                getFacade().edit(c);
+            }else{
+                System.out.println("No created user for c = " + c);
+            }
+        }
+        userTransactionController.recordTransaction("Update Client Created Institution");
+        return null;
+    }
 
     public void updateClientDateOfBirth() {
         String j = "select c from Client c "
@@ -2575,84 +2624,7 @@ public class ClientController implements Serializable {
         return selected;
     }
 
-    public String saveClient() {
-
-        Institution poiIns;
-
-        if (selected == null) {
-            JsfUtil.addErrorMessage("Nothing to save");
-            return "";
-        }
-
-        Institution createdIns = null;
-
-        if (selected.getCreateInstitution() == null) {
-            if (webUserController.getLoggedUser().getInstitution().getPoiInstitution() != null) {
-                createdIns = webUserController.getLoggedUser().getInstitution().getPoiInstitution();
-                poiIns = webUserController.getLoggedUser().getInstitution().getPoiInstitution();;
-            } else {
-                createdIns = webUserController.getLoggedUser().getInstitution();
-                poiIns = webUserController.getLoggedUser().getInstitution();
-            }
-            selected.setCreateInstitution(createdIns);
-        } else {
-            createdIns = selected.getCreateInstitution();
-            poiIns = selected.getCreateInstitution();
-        }
-
-        if (poiIns == null) {
-            poiIns = institutionApplicationController.findMinistryOfHealth();
-        }
-
-        if (poiIns.getPoiNumber() == null || poiIns.getPoiNumber().trim().equals("")) {
-            poiIns.setPoiNumber("385C");
-        }
-
-        if (selected.getPhn() == null || selected.getPhn().trim().equals("")) {
-            String newPhn = applicationController.createNewPersonalHealthNumberformat(poiIns);
-
-            int count = 0;
-            while (checkPhnExists(newPhn, null)) {
-                newPhn = applicationController.createNewPersonalHealthNumberformat(poiIns);
-                count++;
-                if (count > 100) {
-                    JsfUtil.addErrorMessage("Generating New PHN Failed. Client NOT saved. Please contact System Administrator.");
-                    return "";
-                }
-            }
-            selected.setPhn(newPhn);
-        }
-
-        if (selected.getId() == null) {
-            if (checkPhnExists(selected.getPhn(), null)) {
-                JsfUtil.addErrorMessage("PHN already exists.");
-                return null;
-            }
-            if (selected.getPerson().getNic() != null && !selected.getPerson().getNic().trim().equals("")) {
-
-                if (checkNicExists(selected.getPerson().getNic(), null)) {
-                    JsfUtil.addErrorMessage("NIC already exists.");
-                    return null;
-                }
-            }
-        } else {
-            if (checkPhnExists(selected.getPhn(), selected)) {
-                JsfUtil.addErrorMessage("PHN already exists.");
-                return null;
-            }
-            if (selected.getPerson().getNic() != null && !selected.getPerson().getNic().trim().equals("")) {
-                if (checkNicExists(selected.getPerson().getNic(), selected)) {
-                    JsfUtil.addErrorMessage("NIC already exists.");
-                    return null;
-                }
-            }
-        }
-        selected.setReservedClient(false);
-
-        saveClient(selected);
-        JsfUtil.addSuccessMessage("Saved.");
-        return toClientProfile();
-    }
+   
 
     public void reserverPhn() {
         Institution poiInstitution;
