@@ -38,6 +38,7 @@ import lk.gov.health.phsp.enums.InstitutionType;
 import lk.gov.health.phsp.enums.Privilege;
 import lk.gov.health.phsp.enums.PrivilegeTreeNode;
 import lk.gov.health.phsp.enums.RelationshipType;
+import lk.gov.health.phsp.facade.PersonFacade;
 import lk.gov.health.phsp.facade.UserPrivilegeFacade;
 import org.primefaces.model.StreamedContent;
 import org.primefaces.model.TreeNode;
@@ -62,6 +63,8 @@ public class WebUserController implements Serializable {
     private UploadFacade uploadFacade;
     @EJB
     private UserPrivilegeFacade userPrivilegeFacade;
+    @EJB
+    PersonFacade personFacade;
     /*
     Controllers
      */
@@ -635,7 +638,6 @@ public class WebUserController implements Serializable {
 //        LatLng coord1 = new LatLng(current.getInstitution().getCoordinate().getLatitude(), current.getInstitution().getCoordinate().getLongitude());
 //        emptyModel.addOverlay(new Marker(coord1, current.getInstitution().getAddress()));
 //    }
-
     public String viewMedia() {
         if (currentUpload == null) {
             JsfUtil.addErrorMessage("Nothing is selected to view");
@@ -699,7 +701,6 @@ public class WebUserController implements Serializable {
 //        JsfUtil.addSuccessMessage("Location Recorded");
 //        return "";
 //    }
-
     public String registerUser() {
         if (!current.getWebUserPassword().equals(password)) {
             JsfUtil.addErrorMessage("Passwords are not matching. Please retry.");
@@ -1104,6 +1105,13 @@ public class WebUserController implements Serializable {
             JsfUtil.addErrorMessage("Username already exists. Please try another.");
             return "";
         }
+        if (getSelected().getPerson().getId() == null) {
+            getSelected().getPerson().setCreatedAt(new Date());
+            getSelected().getPerson().setCreatedBy(getLoggedUser());
+            personFacade.create(getSelected().getPerson());
+        } else {
+            personFacade.edit(getSelected().getPerson());
+        }
         if (getSelected().getId() != null) {
             getSelected().setLastEditBy(loggedUser);
             getSelected().setLastEditeAt(new Date());
@@ -1211,6 +1219,13 @@ public class WebUserController implements Serializable {
         if (userNameExsists(getSelected().getName())) {
             JsfUtil.addErrorMessage("Username already exists. Please try another.");
             return "";
+        }
+        if (getSelected().getPerson().getId() == null) {
+            getSelected().getPerson().setCreatedAt(new Date());
+            getSelected().getPerson().setCreatedBy(getLoggedUser());
+            personFacade.create(getSelected().getPerson());
+        } else {
+            personFacade.edit(getSelected().getPerson());
         }
 
         if (getSelected().getId() != null) {
