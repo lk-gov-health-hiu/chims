@@ -111,6 +111,7 @@ import lk.gov.health.phsp.facade.ReportCellFacade;
 import lk.gov.health.phsp.facade.ReportColumnFacade;
 import lk.gov.health.phsp.facade.ReportRowFacade;
 import lk.gov.health.phsp.pojcs.InstituteTypeCounts;
+import lk.gov.health.phsp.pojcs.ObservationValueCount;
 import lk.gov.health.phsp.pojcs.ReportTimePeriod;
 import lk.gov.health.phsp.pojcs.dataentry.DataForm;
 import lk.gov.health.phsp.pojcs.dataentry.DataFormset;
@@ -197,6 +198,8 @@ public class HospitalReportController implements Serializable {
     private Date fromDate;
     private Date toDate;
     private Institution institution;
+    private Long count;
+    private Item sex;
 
     private DesignComponentFormSet formset;
     private Area area;
@@ -204,6 +207,7 @@ public class HospitalReportController implements Serializable {
     private StreamedContent file;
     private String mergingMessage;
     private QueryComponent queryComponent;
+    private List<ObservationValueCount> observationValueCounts;
 
     private List<ClientEncounterComponentFormSet> clientEncounterComponentFormSets = null;
 
@@ -271,6 +275,41 @@ public class HospitalReportController implements Serializable {
         }
         downloadingFile = streamedContentController.generateStreamedContent(downloadingResult.getUpload().getFileType(), downloadingResult.getUpload().getFileName(), stream);
         return downloadingFile;
+    }
+    
+    public String toHospitalReportsCounts() {
+        count = null;
+        return "/hospital/counts/index";
+    }
+
+    public String toObservationValueCount() {
+        count = null;
+        return "/hospital/counts/observation_values";
+    }
+
+    public String toRegistrationCount() {
+        count = null;
+        return "/hospital/counts/registration_counts";
+    }
+
+    public String toClinicVisitCount() {
+        count = null;
+        return "/hospital/counts/clinic_visit_counts";
+    }
+
+    public String toObservationValueCountInt() {
+        count = null;
+        return "/hospital/counts/observation_values_int";
+    }
+
+    public String toObservationValueCountLong() {
+        count = null;
+        return "/hospital/counts/observation_values_long";
+    }
+
+    public String toObservationValueCountDbl() {
+        count = null;
+        return "/hospital/counts/observation_values_dbl";
     }
 
     public void fillFormSetCountsByInstitution() {
@@ -3998,6 +4037,50 @@ public class HospitalReportController implements Serializable {
     public List<AreaCount> getAreaCounts() {
         return areaCounts;
     }
+    
+    public void fillRegistrationCounts() {
+        String j;
+        Map m = new HashMap();
+
+        j = "select new lk.gov.health.phsp.pojcs.ObservationValueCount(count(c)) "
+                + " from Client c "
+                + " where c.retired=:ret ";
+        if (sex != null) {
+            j += " and c.person.sex.code=:s ";
+            m.put("s", sex.getCode());
+        }
+        if (institution != null) {
+            j += " and c.createInstitution=:ins ";
+            m.put("ins", institution);
+        }else{
+            j += " and c.createInstitution in :inss";
+            m.put("inss", webUserController.getLoggableInstitutions());
+        }
+        
+        
+        
+        j += " and c.createdAt between :fd and :td ";
+        m.put("ret", false);
+        m.put("fd", getFromDate());
+        m.put("td", getToDate());
+
+        observationValueCounts = new ArrayList<>();
+        System.out.println("m = " + m);
+        System.out.println("j = " + j);
+        List<Object> objs = clientFacade.findAggregates(j, m, TemporalType.TIMESTAMP);
+        if (objs == null) {
+            return;
+        }
+        for (Object o : objs) {
+            if (o instanceof ObservationValueCount) {
+                ObservationValueCount ic = (ObservationValueCount) o;
+                System.out.println("ic count= " + ic.getCount());
+                observationValueCounts.add(ic);
+            }
+        }
+
+    }
+    
 
     public void setAreaCounts(List<AreaCount> areaCounts) {
         this.areaCounts = areaCounts;
@@ -4034,5 +4117,31 @@ public class HospitalReportController implements Serializable {
     public void setSelectedStoredQueryResult(StoredQueryResult selectedStoredQueryResult) {
         this.selectedStoredQueryResult = selectedStoredQueryResult;
     }
+
+    public Long getCount() {
+        return count;
+    }
+
+    public void setCount(Long count) {
+        this.count = count;
+    }
+
+    public Item getSex() {
+        return sex;
+    }
+
+    public void setSex(Item sex) {
+        this.sex = sex;
+    }
+
+    public List<ObservationValueCount> getObservationValueCounts() {
+        return observationValueCounts;
+    }
+
+    public void setObservationValueCounts(List<ObservationValueCount> observationValueCounts) {
+        this.observationValueCounts = observationValueCounts;
+    }
+    
+    
 
 }

@@ -899,6 +899,43 @@ public class ReportController implements Serializable {
         userTransactionController.recordTransaction("To View Clinic Visits By Institution");
         return action;
     }
+    
+    public String toReportCounts() {
+        String forSys = "/national/counts/index";
+        String forIns = "/hospital/counts/index";
+        String forMe = "/national/counts/index";
+        String forClient = "/counts/index";
+        String forMoh = "/moh/counts/index";
+        String noAction = "";
+        String action = "";
+        switch (webUserController.getLoggedUser().getWebUserRole()) {
+            case Client:
+                action = forClient;
+                break;
+            case Doctor:
+            case Institution_Administrator:
+            case Institution_Super_User:
+            case Institution_User:
+            case Nurse:
+            case Midwife:
+                action = forIns;
+                break;
+            case Me_Admin:
+            case Me_Super_User:
+                action = forMe;
+                break;
+            case Me_User:
+            case User:
+                action = noAction;
+                break;
+            case Super_User:
+            case System_Administrator:
+                action = forSys;
+                break;
+        }
+        userTransactionController.recordTransaction("To View Clinic Visits By Institution");
+        return action;
+    }
 
     public String toInstitutionMonthlySummeries() {
         String forSys = "/reports/summaries/institution_monthly_summaries_sa";

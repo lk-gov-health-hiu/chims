@@ -1,0 +1,62 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <ui:define name="head">
+            Reports 
+        </ui:define>
+    </h:head>
+    <h:body>
+        <ui:composition template="/template.xhtml">
+            <ui:define name="content">
+                <p:panelGrid columns="2" style="width: 100%;" styleClass="alignTop">
+                    <f:facet name="header" >
+                        <h:outputLabel value="Reports" ></h:outputLabel>
+                    </f:facet>
+                    <h:form>
+                        <p:accordionPanel style="width: 24rem;" activeIndex="#{webUserController.reportTabIndex}"
+                                          >
+                            <p:ajax event="tabChange" update="@this" />
+                            <p:tab title="Counts"  >
+                                <h:panelGrid columns="1" >
+                                     <p:commandButton value="Registration Counts"   style="width:20em;margin:auto;"
+                                                      action="#{nationalReportController.toRegistrationCount()}"
+                                                     ajax="false"></p:commandButton>
+                                    <p:commandButton value="Clinic Visit Counts"   style="width:20em;margin:auto;"
+                                                     action="#{nationalReportController.toClinicVisitCount()}"
+                                                     ajax="false"></p:commandButton>
+                                    <p:commandButton value="String Observation Counts"   style="width:20em;margin:auto;"
+                                                     action="#{nationalReportController.toObservationValueCount()}"
+                                                     ajax="false"></p:commandButton>
+                                    <p:commandButton value="Integer Observation Counts"   style="width:20em;margin:auto;"
+                                                     action="#{nationalReportController.toObservationValueCountInt()}"
+                                                     ajax="false"></p:commandButton>
+                                     <p:commandButton value="Long Observation Counts"   style="width:20em;margin:auto;"
+                                                      action="#{nationalReportController.toObservationValueCountLong()}"
+                                                     ajax="false"></p:commandButton>
+                                      <p:commandButton value="Double Observation Counts"   style="width:20em;margin:auto;"
+                                                       action="#{nationalReportController.toObservationValueCountDbl()}"
+                                                     ajax="false"></p:commandButton>
+                                </h:panelGrid>
+                            </p:tab>
+                        </p:accordionPanel>
+                    </h:form>
+                    <p:panel style="width: calc(100vw - 28rem);">
+                        <ui:insert name="reports">
+                        </ui:insert>
+                    </p:panel>
+                </p:panelGrid>
+
+
+
+
+            </ui:define>
+
+        </ui:composition>
+
+    </h:body>
+</html>

@@ -1,0 +1,100 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <h:head >
+        <ui:define name="head">
+            Observation Counts
+        </ui:define>
+    </h:head>
+
+    <h:body>
+
+        <ui:composition template="/hospital/counts/index.xhtml">
+            <ui:define name="reports">
+                <h:form>
+                    <p:panelGrid columns="2" styleClass="alignTop" >
+                        <f:facet name="header" >
+                            <p:outputLabel value="Observation Counts - String" ></p:outputLabel>
+                        </f:facet>
+                        <p:panelGrid columns="1"   >
+                            <f:facet name="header" >
+                                <p:outputLabel value="Filters" >
+                                </p:outputLabel>
+
+                            </f:facet>
+                            <p:outputLabel value="From" ></p:outputLabel>
+                            <p:calendar value="#{nationalReportController.fromDate}" pattern="dd MM yyyy" ></p:calendar>
+                            <p:outputLabel value="To" ></p:outputLabel>
+                            <p:calendar value="#{nationalReportController.toDate}" pattern="dd MM yyyy" ></p:calendar>
+
+                            <p:outputLabel value="Sex:" for="sex" />
+                            <p:selectOneMenu id="sex"  value="#{nationalReportController.sex}" required="false" >
+                                <f:selectItem itemLabel="All" ></f:selectItem>
+                                <f:selectItems value="#{itemController.sexes}" var="s" itemLabel="#{s.name}"
+                                               itemValue="#{s}" ></f:selectItems>
+                            </p:selectOneMenu>
+
+                            <p:outputLabel value="Item" ></p:outputLabel>
+                            <p:autoComplete completeMethod="#{itemController.completeDictionaryItems}" 
+                                            value="#{nationalReportController.queryItem}"
+                                            var="ii"
+                                            itemLabel="#{ii.name}"
+                                            itemValue="#{ii}"></p:autoComplete>   
+
+                            <p:commandButton value="Process" ajax="false"
+                                             action="#{nationalReportController.fillObservationValues()}"></p:commandButton>
+                            <p:commandButton value="Download" ajax="false">
+                                <p:dataExporter type="xlsx" target="tbl" fileName="Observation Counts - #{nationalReportController.queryItem.name}" ></p:dataExporter>
+                            </p:commandButton>
+                        </p:panelGrid>
+
+                        <p:dataTable id="tbl" value="#{nationalReportController.observationValueCounts}" var="c"
+                                     rowIndexVar="n"
+                                     paginator="true"
+                                     rows="10"
+                                     rowsPerPageTemplate="10,20,30,40,50"
+                                     >
+                            <f:facet name="header"  >
+                                <p:outputLabel value="Observation Counts - #{nationalReportController.queryItem.name}" ></p:outputLabel>
+                                <p:outputLabel value="From : " ></p:outputLabel>
+                                <p:outputLabel value="#{hospitalReportController.fromDate}" >
+                                    <f:convertDateTime pattern="dd MMMM yyyy" ></f:convertDateTime>
+                                </p:outputLabel>
+                                <p:outputLabel value=" To :" ></p:outputLabel>
+                                <p:outputLabel value="#{hospitalReportController.toDate}" >
+                                    <f:convertDateTime pattern="dd MMMM yyyy" ></f:convertDateTime>
+                                </p:outputLabel>
+                            </f:facet>
+                            <p:column headerText="No" width="50" >
+                                <p:outputLabel value="#{n+1}" >
+                                </p:outputLabel>
+                            </p:column>
+                            <p:column headerText="Value" 
+                                      filterBy="#{c.stringValue}" 
+                                      filterMatchMode="contains" 
+                                      sortBy="#{c.stringValue}"
+                                      >
+                                <p:outputLabel value="#{c.stringValue}" ></p:outputLabel>
+                            </p:column>
+                            <p:column headerText="Count"  
+                                      sortBy="#{c.count}">
+                                <p:outputLabel value="#{c.count}" ></p:outputLabel>
+                            </p:column>
+                        </p:dataTable>
+
+                    </p:panelGrid>
+
+
+
+                </h:form>
+            </ui:define>
+
+        </ui:composition>
+
+    </h:body>
+</html>
