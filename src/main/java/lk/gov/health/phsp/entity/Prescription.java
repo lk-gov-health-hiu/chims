@@ -25,6 +25,7 @@ package lk.gov.health.phsp.entity;
 
 import java.io.Serializable;
 import java.util.Date;
+import javax.jdo.annotations.Index;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -35,8 +36,9 @@ import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
-import javax.xml.bind.annotation.XmlRootElement;
+
 import lk.gov.health.phsp.enums.PrescriptionType;
+import lk.gov.health.phsp.pojcs.Identifiable;
 
 /**
  *
@@ -44,8 +46,8 @@ import lk.gov.health.phsp.enums.PrescriptionType;
  */
 @Entity
 @Table
-@XmlRootElement
-public class Prescription implements Serializable {
+
+public class Prescription implements Serializable, Identifiable  {
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -118,6 +120,7 @@ public class Prescription implements Serializable {
     /*
     Retire Properties
      */
+    @Index
     private boolean retired;
     @ManyToOne
     private WebUser retiredBy;

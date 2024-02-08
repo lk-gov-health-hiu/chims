@@ -65,7 +65,7 @@
         <cookie-config>
             <http-only>true</http-only>
             <secure>true</secure>
-            <max-age>6000</max-age>
+            <max-age>600000</max-age>
         </cookie-config>
     </session-config>
     

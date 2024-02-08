@@ -47,11 +47,11 @@ public class ApiRequestApplicationController implements Serializable {
         if (r == null) {
             return false;
         }
-        // System.out.println("r.isConvaied() = " + r.isConvaied());
+        // //System.out.println("r.isConvaied() = " + r.isConvaied());
         r.setConvaied(true);
         r.setConvaiedAt(new Date());
         ejbFacade.edit(r);
-        // System.out.println("r.isConvaied() = " + r.isConvaied());
+        // //System.out.println("r.isConvaied() = " + r.isConvaied());
         return true;
     }
 
@@ -64,8 +64,8 @@ public class ApiRequestApplicationController implements Serializable {
     }
 
     public List<ApiRequest> getPendingProcedure(String id) {
-        // System.out.println("getPendingProcedure");
-        // System.out.println("id = " + id);
+        // //System.out.println("getPendingProcedure");
+        // //System.out.println("id = " + id);
         Map m = new HashMap();
         m.put("ret", false);
         m.put("con", false);
@@ -93,7 +93,7 @@ public class ApiRequestApplicationController implements Serializable {
     }
 
     public  List<PrescriptionPojo> getPendingPrescriptions() {
-        // System.out.println("getPendingPrescreptions");
+        // //System.out.println("getPendingPrescreptions");
         Map m = new HashMap();
         m.put("ret", false);
         m.put("con", false);
@@ -110,17 +110,14 @@ public class ApiRequestApplicationController implements Serializable {
             List<ApiRequest> irs = new ArrayList<>();
             for (ApiRequest presc : precrips) {
                 if (presc.getRequestCefs() == null) {
-                    System.err.println("No CEFS");
                     continue;
                 }
                 ClientEncounterComponentFormSet cefs = presc.getRequestCefs();
                 if (cefs.getEncounter() == null) {
-                    System.err.println("No enconter");
                     continue;
                 }
                 Encounter e = cefs.getEncounter();
                 if (e.getClient() == null) {
-                    System.err.println("No Client");
                     continue;
                 }
                 Client c = e.getClient();

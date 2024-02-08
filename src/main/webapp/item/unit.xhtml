@@ -17,7 +17,7 @@
                     <p:panelGrid columns="2" >
                         <f:facet name="header" >
                             <p:outputLabel value="Add/Edit Unit" ></p:outputLabel>
-                            <p:commandButton ajax="false" value="Save" action="#{itemController.saveUnit()}"></p:commandButton>
+                            <p:commandButton ajax="false" class="m-1" value="Save" action="#{itemController.saveUnit()}"></p:commandButton>
                         </f:facet>
                         <p:outputLabel value="Name" ></p:outputLabel>
                         <p:inputText value="#{itemController.unit.name}" ></p:inputText>

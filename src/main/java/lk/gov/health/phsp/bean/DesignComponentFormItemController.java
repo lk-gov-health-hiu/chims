@@ -64,7 +64,7 @@ public class DesignComponentFormItemController implements Serializable {
         String j = "select distinct(di.item) "
                 + " from DesignComponentFormItem di "
                 + " where di.retired<>:ret "
-                + " and (lower(di.item.name) like :qry or lower(di.item.code) like :qry) "
+                + " and (di.item.name like :qry or di.item.code like :qry) "
                 + " order by di.item.name  ";
         Map m = new HashMap();
         m.put("ret", true);
@@ -166,8 +166,8 @@ public class DesignComponentFormItemController implements Serializable {
             getFacade().create(selected);
             JsfUtil.addSuccessMessage("Saved Successfully.");
         } else {
-            selected.setLastEditBy(webUserController.getLoggedUser());
-            selected.setLastEditeAt(new Date());
+//            selected.setLastEditBy(webUserController.getLoggedUser());
+//            selected.setLastEditeAt(new Date());
             getFacade().edit(selected);
             JsfUtil.addSuccessMessage("Updated Successfully.");
         }
@@ -182,8 +182,8 @@ public class DesignComponentFormItemController implements Serializable {
             i.setCreatedBy(webUserController.getLoggedUser());
             getFacade().create(i);
         } else {
-            i.setLastEditBy(webUserController.getLoggedUser());
-            i.setLastEditeAt(new Date());
+//            i.setLastEditBy(webUserController.getLoggedUser());
+//            i.setLastEditeAt(new Date());
             getFacade().edit(i);
         }
     }
@@ -250,8 +250,8 @@ public class DesignComponentFormItemController implements Serializable {
             return;
         }
         removingItem.setRetired(true);
-        removingItem.setRetiredAt(new Date());
-        removingItem.setRetiredBy(webUserController.getLoggedUser());
+//        removingItem.setRetiredAt(new Date());
+//        removingItem.setRetiredBy(webUserController.getLoggedUser());
         getFacade().edit(removingItem);
         fillItemsOfTheForm();
         JsfUtil.addSuccessMessage("Item removed.");
@@ -322,8 +322,8 @@ public class DesignComponentFormItemController implements Serializable {
             getFacade().create(selected);
             JsfUtil.addSuccessMessage("Saved Successfully.");
         } else {
-            selected.setLastEditBy(webUserController.getLoggedUser());
-            selected.setLastEditeAt(new Date());
+//            selected.setLastEditBy(webUserController.getLoggedUser());
+//            selected.setLastEditeAt(new Date());
             getFacade().edit(selected);
             JsfUtil.addSuccessMessage("Updated Successfully.");
         }

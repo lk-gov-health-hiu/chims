@@ -99,8 +99,8 @@ public class DesignComponentFormController implements Serializable {
             getFacade().create(selected);
             JsfUtil.addSuccessMessage("Saved Successfully");
         } else {
-            selected.setLastEditBy(webUserController.getLoggedUser());
-            selected.setLastEditeAt(new Date());
+//            selected.setLastEditBy(webUserController.getLoggedUser());
+//            selected.setLastEditeAt(new Date());
             getFacade().edit(selected);
             JsfUtil.addSuccessMessage("Updated Successfully");
         }
@@ -115,8 +115,8 @@ public class DesignComponentFormController implements Serializable {
             f.setCreatedBy(webUserController.getLoggedUser());
             getFacade().create(f);
         } else {
-            f.setLastEditBy(webUserController.getLoggedUser());
-            f.setLastEditeAt(new Date());
+//            f.setLastEditBy(webUserController.getLoggedUser());
+//            f.setLastEditeAt(new Date());
             getFacade().edit(f);
         }
     }
@@ -130,7 +130,7 @@ public class DesignComponentFormController implements Serializable {
             return new ArrayList<>();
         }
         String j = "Select f from DesignComponentForm f "
-                + "where f.retired=false "
+                + " where f.retired=false "
                 + " and f.parentComponent=:pc "
                 + " order by f.orderNo";
         Map m = new HashMap();
@@ -162,8 +162,8 @@ public class DesignComponentFormController implements Serializable {
             return;
         }
         removingForm.setRetired(true);
-        removingForm.setRetiredAt(new Date());
-        removingForm.setRetiredBy(webUserController.getLoggedUser());
+//        removingForm.setRetiredAt(new Date());
+//        removingForm.setRetiredBy(webUserController.getLoggedUser());
         getFacade().edit(removingForm);
         fillFormsofTheSelectedSet();
         JsfUtil.addSuccessMessage("Item Removed");

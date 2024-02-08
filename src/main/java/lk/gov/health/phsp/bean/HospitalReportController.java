@@ -197,14 +197,17 @@ public class HospitalReportController implements Serializable {
     private Date fromDate;
     private Date toDate;
     private Institution institution;
-    private DesignComponentFormSet fromSet;
+
+    private DesignComponentFormSet formset;
     private Area area;
     private NcdReportTem ncdReportTem;
     private StreamedContent file;
     private String mergingMessage;
     private QueryComponent queryComponent;
-// </editor-fold> 
 
+    private List<ClientEncounterComponentFormSet> clientEncounterComponentFormSets = null;
+
+// </editor-fold> 
 // <editor-fold defaultstate="collapsed" desc="Constructors">
     /**
      * Creates a new instance of ReportController
@@ -268,6 +271,35 @@ public class HospitalReportController implements Serializable {
         }
         downloadingFile = streamedContentController.generateStreamedContent(downloadingResult.getUpload().getFileType(), downloadingResult.getUpload().getFileName(), stream);
         return downloadingFile;
+    }
+
+    public void fillFormSetCountsByInstitution() {
+
+        String j = "select new lk.gov.health.phsp.pojcs.InstitutionCount(c.institution, count(c)) "
+                + " from ClientEncounterComponentFormSet c "
+                + " where c.retired<>:ret "
+                + " and c.referenceComponent=:et ";
+        Map m = new HashMap();
+        m.put("ret", true);
+        m.put("et", formset);
+        j = j + " and c.createdAt between :fd and :td ";
+        j = j + " and c.institution in :inss ";
+        j = j + " group by c.institution ";
+        j = j + " order by c.institution.name ";
+        m.put("fd", getFromDate());
+        m.put("td", getToDate());
+        m.put("inss", webUserController.getLoggableInstitutions());
+        List<Object> objs = getClientFacade().findAggregates(j, m);
+        institutionCounts = new ArrayList<>();
+        reportCount = 0l;
+        for (Object o : objs) {
+            if (o instanceof InstitutionCount) {
+                InstitutionCount ic = (InstitutionCount) o;
+                institutionCounts.add(ic);
+                reportCount += ic.getCount();
+            }
+        }
+        userTransactionController.recordTransaction("Fill Clinic Visits By Institution");
     }
 
     public void listMyReports() {
@@ -375,6 +407,25 @@ public class HospitalReportController implements Serializable {
         designComponentFormItems = designComponentFormItemController.fillItemsOfTheFormSet(designingComponentFormSet);
     }
 
+    public void fillFormSetCountsByInstitutionList() {
+        String j = "select c "
+                + " from ClientEncounterComponentFormSet c "
+                + " where c.retired<>:ret "
+                + " and c.referenceComponent=:et ";
+        Map m = new HashMap();
+        m.put("ret", true);
+        m.put("et", formset);
+        j = j + " and c.createdAt between :fd and :td ";
+        m.put("fd", getFromDate());
+        m.put("td", getToDate());
+        if (institution != null) {
+            j = j + " and c.institution=:ins ";
+            m.put("ins", institution);
+        }
+        clientEncounterComponentFormSets = clientEncounterComponentFormSetFacade.findByJpql(j, m, TemporalType.TIMESTAMP);
+
+    }
+
     public void createExcelFileOfClinicalEncounterItemsForSelectedDesignComponent() {
 
         if (institution == null) {
@@ -393,7 +444,7 @@ public class HospitalReportController implements Serializable {
         String j = "select f "
                 + " from  ClientEncounterComponentItem f join f.itemEncounter e"
                 + " where f.retired<>:fr "
-                + " and lower(f.item.code)=:ic ";
+                + " and f.item.code=:ic ";
         j += " and e.institution=:i "
                 + " and e.retired<>:er "
                 + " and e.encounterType=:t "
@@ -1689,7 +1740,7 @@ public class HospitalReportController implements Serializable {
 //        int formCounter = 0;
 //
 //        for (DesignComponentForm df : dfList) {
-//            // System.out.println("df = " + df.getName());
+//            // //System.out.println("df = " + df.getName());
 //
 //            boolean skipThisForm = false;
 //            if (df.getComponentSex() == ComponentSex.For_Females && clientController.getSelected().getPerson().getSex().getCode().equalsIgnoreCase("sex_male")) {
@@ -1699,7 +1750,7 @@ public class HospitalReportController implements Serializable {
 //                skipThisForm = true;
 //            }
 //
-//            // System.out.println("skipThisForm = " + skipThisForm);
+//            // //System.out.println("skipThisForm = " + skipThisForm);
 //
 //            if (!skipThisForm) {
 //                formCounter++;
@@ -1711,11 +1762,11 @@ public class HospitalReportController implements Serializable {
 //                Map m = new HashMap();
 //                m.put("rf", df);
 //                m.put("cfs", cfs);
-//// // System.out.println("df = " + df.getId());
+//// // //System.out.println("df = " + df.getId());
 //
 //                ClientEncounterComponentForm cf = clientEncounterComponentFormController.getClientEncounterComponentForm(j, m);
 //
-//                // System.out.println("cf = " + cf);
+//                // //System.out.println("cf = " + cf);
 //
 //                if (cf == null) {
 //                    cf = new ClientEncounterComponentForm();
@@ -1730,7 +1781,7 @@ public class HospitalReportController implements Serializable {
 //                    cf.setParentComponent(cfs);
 //                    cf.setCss(df.getCss());
 //
-//                    clientEncounterComponentFormController.save(cf);
+//                    clientEncounterComponentFormController.saveCi(cf);
 //                }
 //
 //                DataForm f = new DataForm();
@@ -1746,7 +1797,7 @@ public class HospitalReportController implements Serializable {
 //
 //                for (DesignComponentFormItem dis : diList) {
 //
-//                    // System.out.println("dis = " + dis.getName());
+//                    // //System.out.println("dis = " + dis.getName());
 //
 //                    boolean disSkipThisItem = false;
 //                    if (dis.getComponentSex() == ComponentSex.For_Females && clientController.getSelected().getPerson().getSex().getCode().equalsIgnoreCase("sex_male")) {
@@ -1756,13 +1807,13 @@ public class HospitalReportController implements Serializable {
 //                        disSkipThisItem = true;
 //                    }
 //
-//                    // System.out.println("disSkipThisItem = " + disSkipThisItem);
+//                    // //System.out.println("disSkipThisItem = " + disSkipThisItem);
 //
 //                    if (!disSkipThisItem) {
 //
 //                        if (dis.isMultipleEntiesPerForm()) {
 //
-//                            // System.out.println("dis.isMultipleEntiesPerForm() = " + dis.isMultipleEntiesPerForm());
+//                            // //System.out.println("dis.isMultipleEntiesPerForm() = " + dis.isMultipleEntiesPerForm());
 //
 //                            j = "Select ci "
 //                                    + " from ClientEncounterComponentItem ci "
@@ -1774,10 +1825,10 @@ public class HospitalReportController implements Serializable {
 //                            m.put("ret", false);
 //                            m.put("cf", cf);
 //                            m.put("dis", dis);
-//                            // System.out.println("cf = " + cf.getId());
-//                            // System.out.println("dis = " + dis.getId());
+//                            // //System.out.println("cf = " + cf.getId());
+//                            // //System.out.println("dis = " + dis.getId());
 //                            List<ClientEncounterComponentItem> cis = clientEncounterComponentItemController.getItems(j, m);
-//                            // System.out.println("cis = " + cis);
+//                            // //System.out.println("cis = " + cis);
 //
 //                            itemCounter++;
 //                            ClientEncounterComponentItem ci = new ClientEncounterComponentItem();
@@ -1835,11 +1886,11 @@ public class HospitalReportController implements Serializable {
 //                            m.put("ret", false);
 //                            m.put("cf", cf);
 //                            m.put("dis", dis);
-//                            // System.out.println("cf = " + cf.getId());
-//                            // System.out.println("dis = " + dis.getId());
+//                            // //System.out.println("cf = " + cf.getId());
+//                            // //System.out.println("dis = " + dis.getId());
 //                            ClientEncounterComponentItem ci;
 //                            ci = clientEncounterComponentItemController.getItem(j, m);
-//                            // System.out.println("ci = " + ci);
+//                            // //System.out.println("ci = " + ci);
 //                            if (ci != null) {
 //                                DataItem i = new DataItem();
 //                                i.setMultipleEntries(false);
@@ -1930,9 +1981,9 @@ public class HospitalReportController implements Serializable {
         m.put("fd", fromDate);
         m.put("td", toDate);
 
-        System.out.println("m = " + m);
-        System.out.println("j = " + j);
-        System.out.println("designingComponentFormSet = " + designingComponentFormSet.getId());
+        //System.out.println("m = " + m);
+        //System.out.println("j = " + j);
+        //System.out.println("designingComponentFormSet = " + designingComponentFormSet.getId());
 
         List<ClientEncounterComponentItem> cis = clientEncounterComponentItemFacade.findByJpql(j, m);
 
@@ -1943,7 +1994,7 @@ public class HospitalReportController implements Serializable {
             return;
         }
 
-        System.out.println("cis = " + cis.size());
+        //System.out.println("cis = " + cis.size());
 
         String FILE_NAME = "form_set_values" + ".xlsx";
         String mimeType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
@@ -2000,8 +2051,7 @@ public class HospitalReportController implements Serializable {
         th5_4.setCellValue("Age in Years at Encounter");
         Cell th5_5 = t5.createCell(4);
         th5_5.setCellValue("Encounter at");
-        
-        
+
         Cell th5_6 = t5.createCell(5);
         th5_6.setCellValue("Short-text Value");
         Cell th5_7 = t5.createCell(6);
@@ -2352,7 +2402,7 @@ public class HospitalReportController implements Serializable {
             stream = new FileInputStream(newFile);
             resultExcelFile = streamedContentController.generateStreamedContent(mimeType, FILE_NAME, stream);
         } catch (FileNotFoundException ex) {
-            // System.out.println("File not found exception -->" + ex.getMessage());
+            // //System.out.println("File not found exception -->" + ex.getMessage());
         }
     }
 
@@ -2945,13 +2995,13 @@ public class HospitalReportController implements Serializable {
         m.put("ret", false);
         m.put("fd", fromDate);
         m.put("td", toDate);
-        System.out.println("m = " + m);
-        System.out.println("j = " + j);
+        //System.out.println("m = " + m);
+        //System.out.println("j = " + j);
         List<Institution> ins = institutionFacade.findByJpql(j, m);
-        System.out.println("ins = " + ins);
+        //System.out.println("ins = " + ins);
         Long n = 0l;
         for (Institution i : ins) {
-            System.out.println("i = " + i.getName());
+            //System.out.println("i = " + i.getName());
             boolean canInclude = false;
             if (i.getInstitutionType() != null) {
                 if (i.getInstitutionType().equals(type)) {
@@ -3753,6 +3803,14 @@ public class HospitalReportController implements Serializable {
         return institutionController;
     }
 
+    public List<ClientEncounterComponentFormSet> getClientEncounterComponentFormSets() {
+        return clientEncounterComponentFormSets;
+    }
+
+    public void setClientEncounterComponentFormSets(List<ClientEncounterComponentFormSet> clientEncounterComponentFormSets) {
+        this.clientEncounterComponentFormSets = clientEncounterComponentFormSets;
+    }
+
     public NcdReportTem getNcdReportTem() {
         return ncdReportTem;
     }
@@ -3961,12 +4019,12 @@ public class HospitalReportController implements Serializable {
         this.recalculate = recalculate;
     }
 
-    public DesignComponentFormSet getFromSet() {
-        return fromSet;
+    public DesignComponentFormSet getFormset() {
+        return formset;
     }
 
-    public void setFromSet(DesignComponentFormSet fromSet) {
-        this.fromSet = fromSet;
+    public void setFormset(DesignComponentFormSet formset) {
+        this.formset = formset;
     }
 
     public StoredQueryResult getSelectedStoredQueryResult() {

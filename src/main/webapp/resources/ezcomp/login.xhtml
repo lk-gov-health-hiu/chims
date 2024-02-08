@@ -3,7 +3,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:cc="http://xmlns.jcp.org/jsf/composite"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:p="http://primefaces.org/ui">
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
 
     <!-- INTERFACE -->
     <cc:interface>
@@ -11,65 +12,83 @@
 
     <!-- IMPLEMENTATION -->
     <cc:implementation>
+        <h:outputStylesheet library="css" name="login.css" ></h:outputStylesheet>
+
+
+        <section class="h-100 gradient-form" style="background-color: #eeee;">
+            <div class="container py-5 h-100" >
+                <div class="row d-flex justify-content-center align-items-center h-100" >
+                    <div class="col-xl-10" >
+                        <div class="card rounded-3 text-black" >
+                            <div class="row g-0" >
+                                <div class="col-lg-6" >
+                                    <div class="card-body p-md-5 mx-md-4">
+
+                                        <div class="text-center">
+                                            <h:graphicImage library="image" name="himslogo.png" style="width: 185px;" alt="logo"></h:graphicImage>
+                                        </div>
+
+                                        <h:form>
+                                            <div class="form-outline mb-4">
+                                                <label class="form-label m-1" for="txtUserName">User Name</label>
+                                                <p:inputText id="txtUserName"
+                                                             required="true" 
+                                                             styleClass="w-100"
+                                                             requiredMessage="Enter a Username"
+                                                             autocomplete="off" value="#{webUserController.userName}" 
+                                                             class="form-control w-100">
+                                                </p:inputText>
+                                            </div>
+                                            <div class="form-outline mb-4">   
+                                                <label class="form-label m-1" for="pwd">Password</label>
+
+                                                <p:password id="pwd"  size="100"     
+                                                            toggleMask="true"
+                                                            value="#{webUserController.password}" 
+                                                            class="form-control w-100"
+                                                            required="true"
+                                                            requiredMessage="Please enter a password"
+                                                            >
+                                                </p:password>
+                                            </div>
+
+
+                                            <div class="text-center pt-1 mb-5 pb-1">
+                                                <p:commandButton class="btn m-1 w-75 btn"
+                                                                 value="Login"
+                                                                 ajax="false"
+                                                                 action="#{webUserController.login()}" >
+                                                </p:commandButton>    
+                                            </div>
 
 
 
-        <h:form >
-            <div class="row" >
-                <div class="col-12 d-flex align-content-center m-2 p-2" >
-                    <p:graphicImage library="image" name="hmis_logo.png" class="m-auto w-25" ></p:graphicImage>
+
+
+                                        </h:form>
+
+
+
+                                    </div>
+                                </div>
+                                <div class="col-lg-6 d-flex align-items-center gradient-custom-2" >
+                                    <div class="text-white px-3 py-4 p-md-5 mx-md-4" >
+
+                                        <h4 class="mb-4">
+                                            cHIMS
+                                        </h4>
+                                        <p class="small mb-0 text-start">
+                                            This is the Cloud HIMS. It is a cloud Based Hospital information management system. <br/>
+                                            This system is implemented at Healthy Lifestyle Centres by the NCD Unit and PSSP.<br/>
+                                            System was developed by the Health Information Unit of the Ministry of Health.<br/>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-
-            <div class="row" >
-                <div class="col-12 d-flex align-content-center m-2 p-2" >
-                    <h:panelGroup rendered="#{applicationController.demoSetup}" >
-                        <h1  class="m-auto w-25">Demo Version - Scroll Down to Find User Credentials.</h1>
-                    </h:panelGroup>
-                    <h:panelGroup rendered="#{not applicationController.demoSetup}" >
-                        <h1  class="m-auto w-25">Cloud HIMS Login</h1>
-                    </h:panelGroup>
-                </div>
-            </div>
-
-
-            <div class="row" >
-                <div class="col-4" ></div>
-                <div class="col-4 d-flex align-content-center m-2 p-2">
-                    <h:outputLabel for="un" value="Username" class="m-auto form w-25"></h:outputLabel>
-                    <p:inputText id="un" required="true" autocomplete="off" value="#{webUserController.userName}" 
-                                 class="m-auto form form-control w-75"></p:inputText>
-                </div>
-                <div class="col-4" ></div>
-            </div>
-            <div class="row" >
-                <div class="col-4" ></div>
-                <div class="col-4 d-flex justify-content-start m-2 p-2" >
-                    <h:outputLabel for="pwd" value="Password" class="form w-25"></h:outputLabel>
-                    <p:password id="pwd" required="true" autocomplete="off" value="#{webUserController.password}" class="m-auto form form-control w-75"></p:password>
-                </div>
-                <div class="col-4" ></div>
-            </div>
-            <div class="row" >
-                <div class="col-4" ></div>
-                <div class="col-4 d-flex justify-content-start m-2 p-2" >
-                    <p:captcha  requiredMessage="Please prove that you are NOT a robot trying to peak into the data of Sri Lankan Patients."  label="Captcha" id="captcha" class="m-auto form form-control w-75"></p:captcha>
-                </div>
-                <div class="col-4" ></div>
-            </div>
-            <div class="row" >
-                <div class="col-4" ></div>
-                <div class="col-4 d-flex justify-content-end m-2 p-2" >
-                    <h:commandButton class="btn  btn-outline-primary w-75"   value="Login"
-                                     action="#{webUserController.login()}" ></h:commandButton>        
-                </div>
-                <div class="col-4" ></div>
-            </div>
-
-
-
-        </h:form>
-
-
+        </section>
     </cc:implementation>
 </html>

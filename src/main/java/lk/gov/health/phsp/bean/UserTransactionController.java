@@ -122,7 +122,7 @@ public class UserTransactionController implements Serializable {
 
         m.put("fd", getFromDate());
         m.put("td", getToDate());
-        
+
         if (ip != null && !ip.trim().equals("")) {
             j += " and c.ipAddress=:ip ";
             m.put("ip", ip.trim());
@@ -134,7 +134,7 @@ public class UserTransactionController implements Serializable {
         List<Object> objs = getClientFacade().findAggregates(j, m);
         suspiciousLogins = new ArrayList<>();
         loginCount = 0l;
-        
+
         for (Object o : objs) {
             if (o instanceof UserTransactionsCount) {
                 UserTransactionsCount ic = (UserTransactionsCount) o;
@@ -154,7 +154,7 @@ public class UserTransactionController implements Serializable {
         m.put("td", getToDate());
 
         if (searchText != null && !searchText.trim().equals("")) {
-            j += " and lower(u.transactionName)=:t ";
+            j += " and u.transactionName=:t ";
             m.put("t", searchText.trim().toLowerCase());
         }
         if (user != null) {
@@ -178,15 +178,16 @@ public class UserTransactionController implements Serializable {
         recordTransaction(action, "");
     }
 
-    public void recordTransaction(String action, String sessionId) {
-
-        UserTransaction t = new UserTransaction();
-        t.setTransactionName(action);
-        t.setTransactionStart(new Date());
-        t.setWebUser(webUserController.getLoggedUser());
-        t.setIpAddress(webUserController.getIpAddress());
-        t.setTransactionData(sessionId);
-        getFacede().create(t);
+    public void recordTransaction(String action, String description) {
+        if (webUserController.isHighSecurity()) {
+            UserTransaction t = new UserTransaction();
+            t.setTransactionName(action);
+            t.setTransactionStart(new Date());
+            t.setWebUser(webUserController.getLoggedUser());
+            t.setIpAddress(webUserController.getIpAddress());
+            t.setDescription(description);
+            getFacede().create(t);
+        }
     }
 
     public void save(UserTransaction us) {

@@ -7,7 +7,7 @@
       xmlns:f="http://xmlns.jcp.org/jsf/core">
 
     <body>
-        <ui:composition template="./../template.xhtml">
+        <ui:composition template="/template.xhtml">
             <ui:define name="content">
                 <p:panelGrid style="width: 100%;" columns="2" styleClass="alignTop" columnClasses="width80percent width20percent">
                     <f:facet name="header" >
@@ -21,27 +21,24 @@
                             <p:commandButton value="List Institutions" ajax="false"  style="width: 15rem; margin-top:1rem;"
                                              action="#{institutionController.toListInstitutions()}"></p:commandButton>
 
+                            <p:commandButton value="Add Population Data" ajax="false"  style="width: 15rem; margin-top:1rem;"
+                                             action="#{relationshipController.toAddPopulationDataForInstitution()}"></p:commandButton>
+
 
                             <p:commandButton value="View Population Data" ajax="false"  style="width: 15rem; margin-top:1rem;"
                                              action="#{relationshipController.toViewPopulationDataForInstitution()}"></p:commandButton>
 
-                            <p:commandButton value="Add Population Data" ajax="false"  style="width: 15rem; margin-top:1rem;"
-                                             action="#{relationshipController.toAddPopulationDataForInstitution()}"></p:commandButton>
 
-                            <p:commandButton value="Add Procedure Rooms" ajax="false"  style="width: 15rem; margin-top:1rem;"
-                                             action="#{relationshipController.toAddProcedureRoomForInstitution()}"></p:commandButton>
+                            <p:commandButton value="List Population Data" ajax="false"  style="width: 15rem; margin-top:1rem;"
+                                             action="#{relationshipController.toViewPopulationDataForAllInstitution()}"></p:commandButton>
 
 
-                            <p:commandButton value="Add Procedures for Rooms" ajax="false"  style="width: 15rem; margin-top:1rem;"
-                                             action="#{relationshipController.toAddProceduresForProcedureRooms()}"></p:commandButton>
 
+                            <p:commandButton styleClass="width25rem"  ajax="false"
+                                             value="Add Draining GN Areas for Health Institutions" 
+                                             action="#{areaController.toImportInstitutionDrainingAreas()}"  ></p:commandButton>
 
-                            <p:commandButton value="Import Institutions" ajax="false" 
-                                             style="width: 15rem; margin-top:1rem;"
-                                             action="#{institutionController.toImportInstitution()}"></p:commandButton>
-
-
-                            <p:commandButton value="Relod Institutions" ajax="false" 
+                            <p:commandButton value="Reload Institutions" ajax="false" 
                                              style="width: 15rem; margin-top:1rem;"
                                              action="#{institutionController.resetAllInstitutions()}">
 

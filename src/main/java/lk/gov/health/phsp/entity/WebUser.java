@@ -10,6 +10,7 @@ package lk.gov.health.phsp.entity;
 import lk.gov.health.phsp.enums.WebUserRole;
 import java.io.Serializable;
 import java.util.Date;
+import javax.jdo.annotations.Index;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -23,8 +24,9 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.Transient;
-import javax.xml.bind.annotation.XmlRootElement;
+
 import lk.gov.health.phsp.enums.WebUserRoleLevel;
+import lk.gov.health.phsp.pojcs.Identifiable;
 
 /**
  *
@@ -32,9 +34,9 @@ import lk.gov.health.phsp.enums.WebUserRoleLevel;
  * Informatics)
  */
 @Entity
-@XmlRootElement
+
 @Table
-public class WebUser implements Serializable {
+public class WebUser implements Serializable, Identifiable {
 
     private static final long serialVersionUID = 1L;
 
@@ -46,9 +48,11 @@ public class WebUser implements Serializable {
     Long id;
 
     String webUserPassword;
-    @OneToOne(cascade = CascadeType.ALL)
+    @Index
+    @OneToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH })
     Person person;
     //Main Properties
+    @Index
     @Column(length = 50, nullable = false, unique = true)
     String name;
     String description;
@@ -58,6 +62,7 @@ public class WebUser implements Serializable {
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     Date createdAt;
     //Retairing properties
+    @Index
     boolean retired;
     @ManyToOne
     WebUser retirer;
@@ -130,7 +135,7 @@ public class WebUser implements Serializable {
     private boolean restrictedToInstitution;
     @Transient
     private boolean currentlyInAssumedState;
-        @Transient
+    @Transient
     private WebUserRoleLevel webUserRoleLevel;
 
     public WebUser() {
@@ -476,10 +481,10 @@ public class WebUser implements Serializable {
 
     public boolean isRestrictedToInstitution() {
         restrictedToInstitution = true;
-        WebUserRole ur ;
-        if(currentlyInAssumedState){
-            ur=assumedRole;
-        }else{
+        WebUserRole ur;
+        if (currentlyInAssumedState) {
+            ur = assumedRole;
+        } else {
             ur = this.getWebUserRole();
         }
         if (ur == null) {
@@ -498,7 +503,7 @@ public class WebUser implements Serializable {
         }
         return restrictedToInstitution;
     }
-    
+
     public WebUserRoleLevel getWebUserRoleLevel() {
         if (webUserRole == null) {
             return webUserRoleLevel = null;
@@ -511,8 +516,8 @@ public class WebUser implements Serializable {
                 case Institution_Administrator:
                 case Institution_Super_User:
                 case Institution_User:
-                     case Nurse:
-                     case Student:
+                case Nurse:
+                case Student:
                     webUserRoleLevel = WebUserRoleLevel.Hospital;
                     break;
                 case Me_Admin:
@@ -528,7 +533,7 @@ public class WebUser implements Serializable {
                 case User:
                     webUserRoleLevel = WebUserRoleLevel.National;
                     break;
-                
+
             }
         }
         return webUserRoleLevel;
@@ -542,6 +547,4 @@ public class WebUser implements Serializable {
         this.currentlyInAssumedState = currentlyInAssumedState;
     }
 
-    
-    
 }

@@ -25,6 +25,7 @@ package lk.gov.health.phsp.entity;
 
 import java.io.Serializable;
 import java.util.Date;
+import javax.jdo.annotations.Index;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -34,32 +35,38 @@ import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
+import lk.gov.health.phsp.pojcs.Identifiable;
 
 /**
  *
  * @author buddhika
  */
 @Entity
-public class ApiRequest implements Serializable {
+public class ApiRequest implements Serializable , Identifiable {
 
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    @Index
     @Column(length = 100)
     private String name;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @Index
+    @ManyToOne(fetch = FetchType.EAGER)
     private Encounter encounter;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @Index
+    @ManyToOne(fetch = FetchType.EAGER)
     private ClientEncounterComponentItem requestCeci;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @Index
+    @ManyToOne(fetch = FetchType.EAGER)
     private DesignComponentFormItem requestDcfi;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @Index
+    @ManyToOne(fetch = FetchType.EAGER)
     private ApiRequest parent;
 
     @Lob
@@ -87,17 +94,17 @@ public class ApiRequest implements Serializable {
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date responseReceivedAt;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private ClientEncounterComponentItem responseCeci;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private ClientEncounterComponentFormSet requestCefs;
 
     
     /*
     Create Properties
      */
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private WebUser createdBy;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date createdAt;
@@ -105,8 +112,9 @@ public class ApiRequest implements Serializable {
     /*
     Retire Properties
      */
+    @Index
     private boolean retired;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private WebUser retiredBy;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date retiredAt;

@@ -166,8 +166,8 @@ public class DesignComponentFormSetController implements Serializable {
             return;
         }
         set.setRetired(true);
-        set.setRetiredAt(new Date());
-        set.setRetiredBy(webUserController.getLoggedUser());
+//        set.setRetiredAt(new Date());
+//        set.setRetiredBy(webUserController.getLoggedUser());
         getFacade().edit(set);
     }
 
@@ -182,7 +182,7 @@ public class DesignComponentFormSetController implements Serializable {
             return;
         }
 
-        // System.out.println("referanceSet = " + referanceSet);
+        // //System.out.println("referanceSet = " + referanceSet);
         referanceSet.getReferenceComponent();
         referanceSet.getParentComponent();
 
@@ -190,8 +190,8 @@ public class DesignComponentFormSetController implements Serializable {
         ns.setId(null);
         ns.setCreatedAt(new Date());
         ns.setCreatedBy(webUserController.getLoggedUser());
-        ns.setLastEditBy(null);
-        ns.setLastEditeAt(null);
+//        ns.setLastEditBy(null);
+//        ns.setLastEditeAt(null);
 
         getFacade().create(ns);
 
@@ -204,8 +204,8 @@ public class DesignComponentFormSetController implements Serializable {
             nf.setId(null);
             nf.setCreatedAt(new Date());
             nf.setCreatedBy(webUserController.getLoggedUser());
-            nf.setLastEditBy(null);
-            nf.setLastEditeAt(null);
+//            nf.setLastEditBy(null);
+//            nf.setLastEditeAt(null);
             nf.setReferenceComponent(f);
             nf.setParentComponent(ns);
             nf.setInstitution(institution);
@@ -217,8 +217,8 @@ public class DesignComponentFormSetController implements Serializable {
                 ni.setId(null);
                 ni.setCreatedAt(new Date());
                 ni.setCreatedBy(webUserController.getLoggedUser());
-                ni.setLastEditBy(null);
-                ni.setLastEditeAt(null);
+//                ni.setLastEditBy(null);
+//                ni.setLastEditeAt(null);
                 ni.setReferenceComponent(i);
                 ni.setParentComponent(nf);
                 ni.setInstitution(institution);
@@ -245,8 +245,8 @@ public class DesignComponentFormSetController implements Serializable {
         ns.setId(null);
         ns.setCreatedAt(new Date());
         ns.setCreatedBy(webUserController.getLoggedUser());
-        ns.setLastEditBy(null);
-        ns.setLastEditeAt(null);
+//        ns.setLastEditBy(null);
+//        ns.setLastEditeAt(null);
         ns.setReferenceComponent(referanceSet);
         ns.setInstitution(null);
         getFacade().create(ns);
@@ -256,8 +256,8 @@ public class DesignComponentFormSetController implements Serializable {
             nf.setId(null);
             nf.setCreatedAt(new Date());
             nf.setCreatedBy(webUserController.getLoggedUser());
-            nf.setLastEditBy(null);
-            nf.setLastEditeAt(null);
+//            nf.setLastEditBy(null);
+//            nf.setLastEditeAt(null);
             nf.setReferenceComponent(f);
             nf.setParentComponent(ns);
             nf.setInstitution(institution);
@@ -269,8 +269,8 @@ public class DesignComponentFormSetController implements Serializable {
                 ni.setId(null);
                 ni.setCreatedAt(new Date());
                 ni.setCreatedBy(webUserController.getLoggedUser());
-                ni.setLastEditBy(null);
-                ni.setLastEditeAt(null);
+//                ni.setLastEditBy(null);
+//                ni.setLastEditeAt(null);
                 ni.setReferenceComponent(i);
                 ni.setParentComponent(nf);
                 ni.setInstitution(institution);
@@ -327,7 +327,7 @@ public class DesignComponentFormSetController implements Serializable {
                 if (c != null) {
                     if (c instanceof DesignComponentFormSet) {
                         DesignComponentFormSet ts = (DesignComponentFormSet) r.getComponent();
-                        // System.out.println("ts.getComponentSetType() = " + ts.getComponentSetType());
+                        // //System.out.println("ts.getComponentSetType() = " + ts.getComponentSetType());
                         if (ts.getComponentSetType().equals(Patient_Pages)) {
                             fs = ts;
                         }
@@ -436,8 +436,8 @@ public class DesignComponentFormSetController implements Serializable {
             return;
         }
         selected.setRetired(true);
-        selected.setRetiredAt(new Date());
-        selected.setRetiredBy(webUserController.getLoggedUser());
+//        selected.setRetiredAt(new Date());
+//        selected.setRetiredBy(webUserController.getLoggedUser());
         getFacade().edit(selected);
         items = null;
         insItems = null;

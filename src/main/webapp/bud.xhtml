@@ -1,0 +1,51 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+
+    <h:head>
+        <h:outputStylesheet library="css" name="main.css" ></h:outputStylesheet>
+    </h:head>
+
+    <h:body>
+
+        <h:form >
+            <p:dataTable id="tbl" 
+                         value="#{webUserApplicationController.suspiciousUsers}" var="c"
+                         rowIndexVar="n"
+                         paginator="true"
+                         rows="10"
+                         rowsPerPageTemplate="10,20,30,40,50"
+                         rowKey="#{c}"
+                         >
+                <p:column headerText="User" 
+                          filterBy="#{c}" 
+                          filterMatchMode="contains" 
+                          sortBy="#{c}">
+                    <p:outputLabel value="#{c}" ></p:outputLabel>
+                </p:column>
+                <p:column headerText="Remove" >
+                    <p:commandButton value="Remove" 
+                                     action="#{webUserController.removeBlockedUser()}"
+                                     ajax="false"
+                                     >
+                        <f:setPropertyActionListener value="#{c}" target="#{webUserController.selectedUsername}" ></f:setPropertyActionListener>
+                    </p:commandButton>
+                </p:column>
+            </p:dataTable>
+        </h:form>
+
+
+    </h:body>
+
+
+
+
+
+
+</html>

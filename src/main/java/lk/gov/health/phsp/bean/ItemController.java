@@ -8,10 +8,13 @@ import lk.gov.health.phsp.bean.util.JsfUtil;
 import lk.gov.health.phsp.facade.ItemFacade;
 
 import java.io.Serializable;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -28,11 +31,18 @@ import jxl.Cell;
 import jxl.Sheet;
 import jxl.Workbook;
 import jxl.read.biff.BiffException;
+import lk.gov.health.phsp.entity.Area;
+import lk.gov.health.phsp.entity.Client;
 import lk.gov.health.phsp.entity.DesignComponentFormSet;
 import lk.gov.health.phsp.entity.Item;
 import lk.gov.health.phsp.entity.Relationship;
+import lk.gov.health.phsp.enums.AreaType;
 import lk.gov.health.phsp.enums.ItemType;
 import lk.gov.health.phsp.enums.RelationshipType;
+import lk.gov.health.phsp.enums.SelectionDataType;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.primefaces.model.file.UploadedFile;
 
 @Named
@@ -86,6 +96,13 @@ public class ItemController implements Serializable {
     private int itemCodeColumnNumber;
     private int parentCodeColumnNumber;
     private int startRow = 1;
+
+    private String codeCol;
+    private String dataTypeCol;
+    private String nameCol;
+    private String parentCodeCol;
+
+    private String output;
 
     public ItemController() {
     }
@@ -197,6 +214,207 @@ public class ItemController implements Serializable {
 
     // </editor-fold>    
     // <editor-fold defaultstate="collapsed" desc="Functions">
+    public String toImportFromExcel() {
+        return "/item/uploadItems";
+    }
+
+    public String importFromExcel() {
+        if (file == null) {
+            JsfUtil.addErrorMessage("File ?");
+            return "";
+        }
+
+        String strName = null;
+        String strCode = null;
+        String strDataType = null;
+        String strParentCode = null;
+        Integer nameColInt;
+        Integer codeColInt;
+        Integer dataTypeColInt;
+        Integer parentCodeColInt;
+
+        Item code = null;
+        Item parent = null;
+
+        nameColInt = CommonController.excelColFromHeader(nameCol);
+        dataTypeColInt = CommonController.excelColFromHeader(dataTypeCol);
+        codeColInt = CommonController.excelColFromHeader(codeCol);
+        parentCodeColInt = CommonController.excelColFromHeader(parentCodeCol);
+
+        JsfUtil.addSuccessMessage(file.getFileName());
+        XSSFWorkbook myWorkBook;
+
+        output = "";
+
+        try {
+            JsfUtil.addSuccessMessage(file.getFileName());
+            myWorkBook = new XSSFWorkbook(file.getInputStream());
+            XSSFSheet mySheet = myWorkBook.getSheetAt(0);
+            Iterator<Row> rowIterator = mySheet.iterator();
+            Long count = 0l;
+            startRow--;
+            while (rowIterator.hasNext()) {
+                Row row = rowIterator.next();
+                if (row.getRowNum() < startRow) {
+                    continue;
+                }
+
+                if (nameColInt != null) {
+                    strName = cellValue(row.getCell(nameColInt));
+                }
+                if (codeColInt != null) {
+                    strCode = cellValue(row.getCell(codeColInt));
+                }
+                if (dataTypeColInt != null) {
+                    strDataType = cellValue(row.getCell(dataTypeColInt));
+                }
+                if (parentCodeColInt != null) {
+                    strParentCode = cellValue(row.getCell(parentCodeColInt));
+                }
+
+                if (strName == null || strName.trim().equals("")) {
+                    output += "Skipping the line without a name.\n";
+                    continue;
+                }
+
+                if (strCode == null || strCode.trim().equals("")) {
+                    output += "Skipping the line without a code.\n";
+                    continue;
+                }
+
+                if (strDataType == null || strDataType.trim().equals("")) {
+                    output += "Skipping the line without a data type.\n";
+                    continue;
+                }
+
+                Item parentItem = null;
+                if (strParentCode != null && !strParentCode.trim().equals("")) {
+                    parentItem = findItemByCode(strParentCode);
+                }
+
+                SelectionDataType selectionDataType = CommonController.selectionDataTypeFromString(strDataType);
+                Item importingItem = findItemByCode(strCode);
+
+                if (importingItem == null) {
+                    createNewItem(ItemType.Dictionary_Item, parentItem, strName, strCode, count.intValue(), selectionDataType);
+                    output += "Added " + strName + " as there is no existing item with a code " + strCode + ".\n";
+                } else {
+                    output += "Skipped Addeing " + strName + " as there is already one existing item with a code " + strCode + ".\n";
+                }
+
+                count++;
+
+            }
+            startRow++;
+            file = null;
+            return "";
+        } catch (IOException e) {
+            output += e.getMessage();
+            JsfUtil.addErrorMessage(e.getMessage());
+            return "";
+        }
+
+    }
+
+    private String cellValue(org.apache.poi.ss.usermodel.Cell cell) {
+        String str = "";
+        if (cell == null) {
+            return str;
+        }
+        if (cell.getCellType() == null) {
+            return str;
+        }
+
+        /**
+         * if(cell.getCellType() == Cell.CELL_TYPE_FORMULA) {
+         * System.out.println("Formula is " + cell.getCellFormula());
+         * switch(cell.getCachedFormulaResultType()) { case
+         * Cell.CELL_TYPE_NUMERIC: System.out.println("Last evaluated as: " +
+         * cell.getNumericCellValue()); break; case Cell.CELL_TYPE_STRING:
+         * System.out.println("Last evaluated as \"" +
+         * cell.getRichStringCellValue() + "\""); break; } }
+         */
+        if (null != cell.getCellType()) {
+            switch (cell.getCellType()) {
+                case FORMULA:
+                    switch (cell.getCachedFormulaResultType()) {
+                        case NUMERIC:
+                            str = "\'" + cell.getNumericCellValue();
+                            break;
+                        case STRING:
+                            str = "\"" + cell.getRichStringCellValue() + "\"";
+                            break;
+                    }
+                    break;
+                case STRING:
+                    str = cell.getStringCellValue();
+                    break;
+                case BLANK:
+                    break;
+                case BOOLEAN:
+                    boolean b = cell.getBooleanCellValue();
+                    if (b) {
+                        str = "true";
+                    } else {
+                        str = "false";
+                    }
+                    break;
+                case NUMERIC:
+                    str = cell.getNumericCellValue() + "";
+                    break;
+                case _NONE:
+                    break;
+                default:
+                    break;
+            }
+        }
+        return str;
+    }
+
+    private int cellValueInt(org.apache.poi.ss.usermodel.Cell cell) {
+        int intNum = 0;
+        if (cell == null) {
+            return intNum;
+        }
+        if (cell.getCellType() == null) {
+            return intNum;
+        }
+        if (null != cell.getCellType()) {
+            switch (cell.getCellType()) {
+                case NUMERIC:
+                    Double d = cell.getNumericCellValue();
+                    intNum = d.intValue();
+                    break;
+                default:
+                    intNum = 0;
+                    break;
+            }
+        }
+        return intNum;
+    }
+
+    private Double cellValueDouble(org.apache.poi.ss.usermodel.Cell cell) {
+        Double dblNum = null;
+        if (cell == null) {
+            return dblNum;
+        }
+        if (cell.getCellType() == null) {
+            return dblNum;
+        }
+        if (null != cell.getCellType()) {
+            switch (cell.getCellType()) {
+                case NUMERIC:
+                    Double d = cell.getNumericCellValue();
+                    dblNum = d;
+                    break;
+                default:
+                    dblNum = 0.0;
+                    break;
+            }
+        }
+        return dblNum;
+    }
+
     public String importToExcel() {
         String dosageFormName;
         String ampName;
@@ -282,7 +500,6 @@ public class ItemController implements Serializable {
                 cell = sheet.getCell(dosageFormCol, i);
                 dosageFormName = cell.getContents();
                 if (dosageFormName == null || dosageFormName.trim().equals("")) {
-                    System.err.println("No Dosage Form Specified in line no " + i);
                     continue;
                 }
                 String dosageFormCode = CommonController.prepareAsCode(
@@ -301,7 +518,6 @@ public class ItemController implements Serializable {
                 strengthUnitName = cell.getContents();
 
                 if (strengthUnitName == null || strengthUnitName.trim().equals("")) {
-                    System.err.println("No Strength Unit in line no " + i);
                     continue;
                 }
 
@@ -314,13 +530,13 @@ public class ItemController implements Serializable {
                     strengthUnit.setItemType(ItemType.Strength_Unit);
                     save(strengthUnit);
                 }
-                // //// System.out.println("strengthUnit = " + strengthUnit.getName());
+                // //// //System.out.println("strengthUnit = " + strengthUnit.getName());
                 //Pack Unit
                 cell = sheet.getCell(packUnitCol, i);
                 packUnitName = cell.getContents();
 
                 if (packUnitName == null || packUnitName.trim().equals("")) {
-                    // System.out.println("No pack unit for line number " + i);
+                    // //System.out.println("No pack unit for line number " + i);
                     continue;
                 }
                 String packUnitCode = CommonController.prepareAsCode("pack_unit_" + packUnitName);
@@ -337,7 +553,7 @@ public class ItemController implements Serializable {
                 cell = sheet.getCell(issueUnitCol, i);
                 issueUnitName = cell.getContents();
                 if (issueUnitName == null || issueUnitName.trim().equals("")) {
-                    // System.out.println("Issue Unit is not found in line no " + i);
+                    // //System.out.println("Issue Unit is not found in line no " + i);
                     continue;
                 }
                 String issueUnitCode = CommonController.prepareAsCode("issue_unit_" + issueUnitName);
@@ -353,7 +569,7 @@ public class ItemController implements Serializable {
                 //StrengthOfAnMeasurementUnit
                 cell = sheet.getCell(strengthOfIssueUnitCol, i);
                 strStrength = cell.getContents();
-                // //// System.out.println("strStrength = " + strStrength);
+                // //// //System.out.println("strStrength = " + strStrength);
                 if (!strStrength.equals("")) {
                     try {
                         strengthUnitsPerIssueUnit = Double.parseDouble(strStrength);
@@ -367,7 +583,7 @@ public class ItemController implements Serializable {
                 //Issue Units Per Pack
                 cell = sheet.getCell(issueUnitsPerPackCol, i);
                 strPackSize = cell.getContents();
-                // //// System.out.println("strPackSize = " + strPackSize);
+                // //// //System.out.println("strPackSize = " + strPackSize);
                 if (!strPackSize.equals("")) {
                     try {
                         issueUnitsPerPack = Double.parseDouble(strPackSize);
@@ -381,9 +597,9 @@ public class ItemController implements Serializable {
                 //Vtm
                 cell = sheet.getCell(vtmCol, i);
                 vtmName = cell.getContents();
-                // //// System.out.println("strGenericName = " + strGenericName);
+                // //// //System.out.println("strGenericName = " + strGenericName);
                 if (vtmName == null || vtmName.trim().equals("")) {
-                    // System.out.println("VTM is not given in line no " + i);
+                    // //System.out.println("VTM is not given in line no " + i);
                 }
 
                 String vtmCode = CommonController.prepareAsCode("vtm_" + vtmName);
@@ -420,7 +636,6 @@ public class ItemController implements Serializable {
                 cell = sheet.getCell(ampCol, i);
                 ampName = cell.getContents();
                 if (ampName == null || ampName.trim().equals("")) {
-                    System.err.println("Amp is not given in line number " + i);
                 }
 
                 String ampCode = CommonController.prepareAsCode("amp_" + ampName);
@@ -514,7 +729,7 @@ public class ItemController implements Serializable {
 
     public List<String> completeItemCodes(String qry) {
         String j = "select i.code from Item i "
-                + " where lower(i.code) like :q "
+                + " where i.code like :q "
                 + "  and i.retired=false "
                 + " order by i.code";
         Map m = new HashMap();
@@ -903,6 +1118,24 @@ public class ItemController implements Serializable {
             item.setCreatedBy(webUserController.getLoggedUser());
             getFacade().create(item);
         }
+        itemApplicationController.getItems().add(item);
+        return item;
+    }
+
+    public Item createNewItem(ItemType itemType, Item parent, String name, String code, int orderNo, SelectionDataType sdp) {
+        Item item;
+        item = new Item();
+        item.setItemType(itemType);
+        item.setName(name);
+        item.setDisplayName(name);
+        item.setDataType(sdp);
+        item.setCode(code.trim().toLowerCase());
+        item.setParent(parent);
+        item.setOrderNo(orderNo);
+        item.setCreatedAt(new Date());
+        item.setCreatedBy(webUserController.getLoggedUser());
+        getFacade().create(item);
+        itemApplicationController.getItems().add(item);
         return item;
     }
 
@@ -967,6 +1200,8 @@ public class ItemController implements Serializable {
     public void setSelected(Item selected) {
         this.selected = selected;
     }
+
+    
 
     public void saveDictionatyItemsAndCategories() {
         boolean needReload = false;
@@ -1093,7 +1328,7 @@ public class ItemController implements Serializable {
         }
         if (qry != null) {
             m.put("n", "%" + qry.trim().toLowerCase() + "%");
-            j += " and lower(t.name) like :n ";
+            j += " and t.name like :n ";
         }
         j += " order by t.orderNo";
         List<Item> tis = getFacade().findByJpql(j, m);
@@ -1128,7 +1363,7 @@ public class ItemController implements Serializable {
         }
         if (qry != null) {
             m.put("n", "%" + qry.trim().toLowerCase() + "%");
-            j += " and (lower(t.name) like :n or lower(t.code) like :n) ";
+            j += " and (t.name like :n or t.code like :n) ";
         }
         j += " order by t.orderNo";
         return getFacade().findByJpql(j, m);
@@ -1441,6 +1676,46 @@ public class ItemController implements Serializable {
 
     public void setUnit(Item unit) {
         this.unit = unit;
+    }
+
+    public String getCodeCol() {
+        return codeCol;
+    }
+
+    public void setCodeCol(String codeCol) {
+        this.codeCol = codeCol;
+    }
+
+    public String getDataTypeCol() {
+        return dataTypeCol;
+    }
+
+    public void setDataTypeCol(String dataTypeCol) {
+        this.dataTypeCol = dataTypeCol;
+    }
+
+    public String getNameCol() {
+        return nameCol;
+    }
+
+    public void setNameCol(String nameCol) {
+        this.nameCol = nameCol;
+    }
+
+    public String getParentCodeCol() {
+        return parentCodeCol;
+    }
+
+    public void setParentCodeCol(String parentCodeCol) {
+        this.parentCodeCol = parentCodeCol;
+    }
+
+    public String getOutput() {
+        return output;
+    }
+
+    public void setOutput(String output) {
+        this.output = output;
     }
 
     @FacesConverter(forClass = Item.class)

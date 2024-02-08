@@ -26,28 +26,28 @@ package lk.gov.health.phsp.entity;
 import lk.gov.health.phsp.enums.ItemType;
 import java.io.Serializable;
 import java.util.Date;
+import javax.jdo.annotations.Index;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
-import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.Transient;
-import javax.xml.bind.annotation.XmlRootElement;
 import lk.gov.health.phsp.enums.SelectionDataType;
+import lk.gov.health.phsp.pojcs.Identifiable;
 
 /**
  *
  * @author User
  */
 @Entity
-@Table
-@XmlRootElement
-public class Item implements Serializable {
+public class Item implements Serializable, Identifiable  {
 
     private static final long serialVersionUID = 1L;
 
@@ -57,14 +57,21 @@ public class Item implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+    @Index
     @Enumerated(EnumType.STRING)
     ItemType itemType;
+    @Index
     String name;
+    @Index
     private String displayName;
+    @Index
     private String code;
+    @Index
     private String barcode;
+    @Index
     private String localCode;
-    @ManyToOne
+    @Index
+    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     private Item parent;
 
     @Lob
@@ -77,7 +84,9 @@ public class Item implements Serializable {
     private Long absoluteMinimumLong;
     private Long absoluteMaximumLong;
     private Boolean multipleEntiesPerClientStatus;
+    private Boolean containsPersonallyIdentifiableData;
 
+    @Index
     private int orderNo;
 
     @ManyToOne
@@ -90,6 +99,7 @@ public class Item implements Serializable {
     private Date editedAt;
     //Retairing properties
     private boolean retired;
+    @Index
     @ManyToOne
     private WebUser retiredBy;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
@@ -123,6 +133,8 @@ public class Item implements Serializable {
     @Transient
     private boolean dataTypePrescreption;
 
+    
+    
     public ItemType getItemType() {
         if(itemType==null){
             itemType = ItemType.Dictionary_Item;
@@ -485,6 +497,14 @@ public class Item implements Serializable {
 
     public void setLocalCode(String localCode) {
         this.localCode = localCode;
+    }
+
+    public Boolean getContainsPersonallyIdentifiableData() {
+        return containsPersonallyIdentifiableData;
+    }
+
+    public void setContainsPersonallyIdentifiableData(Boolean containsPersonallyIdentifiableData) {
+        this.containsPersonallyIdentifiableData = containsPersonallyIdentifiableData;
     }
     
     

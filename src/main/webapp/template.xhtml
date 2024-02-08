@@ -10,64 +10,58 @@
     <h:head id="headt">
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1"/>
-        <meta http-equiv="Content-Security-Policy"
-              content="default-src 'self'; img-src https://*; child-src 'none';"/>
         <link href="https://fonts.googleapis.com/css?family=Poppins;display=swap" rel="stylesheet"></link>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous"/>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.2/font/bootstrap-icons.css"></link>
         <title>#{bundle.Title}</title>
         <ui:insert name="head">
         </ui:insert>
         <h:outputStylesheet library="css" name="tem1.css"/>
-        <f:event type="preRenderView"
-                 listener="#{facesContext.externalContext.response.setHeader('X-Content-Type-Options', 'nosniff')}" />
-        <f:event type="preRenderView"
-                 listener="#{facesContext.externalContext.response.setHeader('X-XSS-Protection', '1; mode=block')}" />
     </h:head>
 
-    <h:body >
+    <h:body class="m-0 p-0">
         <ui:insert name="free">
         </ui:insert>
         <p:growl   >
         </p:growl>
 
-        <h:panelGroup rendered="#{webUserController.ipBlocked}" >
+        <h:panelGroup rendered="false" >
             <div class="container-fluid" >
-                <div class="row" >
-                    <div class="col-12" >
-                        <h1>Your IP is blocked.</h1>
-                    </div>
-                </div>
-                <div class="row" >
-                    <div class="col-12" >
-                        <h2>Please contact the hotline to unblock it.</h2>
+                <div class="row b-1" style="height: 50vh;">
+                    <div class="col-md-12 text-center text-warning align-middle"  style="height: 100%; border: 12px solid red;">
+                        <br/>
+                        <br/>
+                        <br/>
+                        <br/>
+                        <br/>
+                        <br/>
+                        <h1 class="text-warning align-middle">
+                            <a href="https://dmis.health.gov.lk" >Click Here to Log</a>
+                        </h1>
                     </div>
                 </div>
             </div>
-
         </h:panelGroup>
 
-        <h:panelGroup rendered="#{not webUserController.ipBlocked}" >
+        <h:panelGroup rendered="true" >
 
             <div class="row">
-                <div class="col-12" >
-                    <h:panelGroup rendered="#{webUserController.loggedUser ne null}">
+                <div class="col-md-12" >
+                    <h:panelGroup rendered="#{webUserController.logged}">
                         <ez:menu/>
                     </h:panelGroup>
                 </div>
             </div>
 
             <div class="row" >
-                <div class="col-12" >
-                    <h:panelGroup rendered="#{webUserController.loggedUser ne null}">
+                <div class="col-md-12" >
+                    <h:panelGroup rendered="#{webUserController.logged}">
                         <ui:insert name="content">
                             Contents
                         </ui:insert>
                     </h:panelGroup>
-                    <h:panelGroup rendered="#{webUserController.loggedUser eq null and webUserController.passwordChangingUser eq null}">
+                    <h:panelGroup rendered="#{not webUserController.logged}">
                         <ez:login/>
-                        <div style="width: 50%; margin: auto;">
-                            <ez:demo_login/>
-                        </div>
                         <ui:insert name="timeout">
                         </ui:insert>
                     </h:panelGroup>
@@ -76,16 +70,7 @@
 
 
             <div class="row">
-                <div class="col-12" >
-                    <h:panelGroup rendered="#{webUserController.loggedUser eq null and webUserController.passwordChangingUser ne null}">
-                        <ui:insert name="nonusercontent">
-                        </ui:insert>
-                    </h:panelGroup>
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col" >
+                <div class="col-md-12" >
                     <ui:insert name="bottom">
                         <ez:footer/>
                     </ui:insert>
@@ -93,6 +78,8 @@
             </div>
 
         </h:panelGroup>
+
+
 
     </h:body>
 

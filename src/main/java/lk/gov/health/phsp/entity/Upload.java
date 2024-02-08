@@ -26,6 +26,7 @@ package lk.gov.health.phsp.entity;
 import lk.gov.health.phsp.enums.UploadType;
 import java.io.Serializable;
 import java.util.Date;
+import javax.jdo.annotations.Index;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -39,33 +40,37 @@ import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
-import javax.xml.bind.annotation.XmlRootElement;
+
+import lk.gov.health.phsp.pojcs.Identifiable;
 
 /**
  *
  * @author buddhika
  */
 @Entity
-@XmlRootElement
+
 @Table
-public class Upload implements Serializable {
+public class Upload implements Serializable, Identifiable {
 
     static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     //Main Properties
     Long id;
-    
+
+    @Index
     @ManyToOne
     private Component component;
-    
+
     @ManyToOne
+    @Index
     Institution institution;
     @ManyToOne
     WebUser creater;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     Date createdAt;
     //Retairing properties
+    @Index
     boolean retired;
     @ManyToOne
     WebUser retirer;
@@ -74,7 +79,7 @@ public class Upload implements Serializable {
     String retireComments;
     @Lob
     @Column(columnDefinition = "LONGBLOB")
-    @Basic(fetch = FetchType.LAZY)
+    @Basic(fetch = FetchType.EAGER)
     byte[] baImage;
     String fileName;
     String fileType;
@@ -130,8 +135,6 @@ public class Upload implements Serializable {
         return "com.divudi.entity.Patient[ id=" + id + " ]";
     }
 
-    
-    
     public WebUser getCreater() {
         return creater;
     }

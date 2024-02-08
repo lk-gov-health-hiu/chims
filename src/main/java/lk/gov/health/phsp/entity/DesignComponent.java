@@ -26,7 +26,7 @@ package lk.gov.health.phsp.entity;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.xml.bind.annotation.XmlRootElement;
+
 import lk.gov.health.phsp.enums.ComponentSex;
 
 /**
@@ -34,7 +34,7 @@ import lk.gov.health.phsp.enums.ComponentSex;
  * @author sunila_soft
  */
 @Entity
-@XmlRootElement
+
 public class DesignComponent extends Component {
 
     @Enumerated(EnumType.STRING)

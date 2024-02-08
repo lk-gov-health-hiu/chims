@@ -1,0 +1,80 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <body>
+
+        <ui:composition template="/systemAdmin/integration_index.xhtml">
+
+            <ui:define name="subContent">
+                <h:form id="form">
+                    <p:panelGrid columns="2" rendered="#{integrationEndpointController.selected ne null}">
+                        <h:outputLabel value="Name:" />
+                        <h:inputText value="#{integrationEndpointController.selected.name}" />
+
+                        <h:outputLabel value="Endpoint URL:" />
+                        <h:inputText value="#{integrationEndpointController.selected.endPointUrl}" />
+
+                        <h:outputLabel value="Description:" />
+                        <h:inputTextarea value="#{integrationEndpointController.selected.description}" />
+
+                        <h:outputLabel value="Endpoint Type:" />
+                        <h:selectOneMenu value="#{integrationEndpointController.selected.endpointType}">
+                            <f:selectItems value="#{integrationEndpointController.integrationEndpointTypes}" var="type" itemValue="#{type}" itemLabel="#{type.type}" />
+                        </h:selectOneMenu>
+
+                        <h:outputLabel value="Communication Protocol:" />
+                        <h:selectOneMenu value="#{integrationEndpointController.selected.communicationProtocol}">
+                            <f:selectItems value="#{integrationEndpointController.communicationProtocols}" var="protocol" itemValue="#{protocol}" itemLabel="#{protocol.protocol}" />
+                        </h:selectOneMenu>
+
+                        <h:outputLabel value="Security Protocol:" />
+                        <h:selectOneMenu value="#{integrationEndpointController.selected.securityProtocol}">
+                            <f:selectItems value="#{integrationEndpointController.securityProtocols}" var="security" itemValue="#{security}" itemLabel="#{security.protocol}" />
+                        </h:selectOneMenu>
+
+
+                        <h:outputLabel value="Simple Authentication" /><hr/>
+
+                        <h:outputLabel value="Username:" />
+                        <h:inputText value="#{integrationEndpointController.selected.userName}" />
+
+                        <h:outputLabel value="Password:" />
+                        <h:inputSecret value="#{integrationEndpointController.selected.password}" />
+
+                        <h:outputLabel value="API Authentication" /><hr/>
+
+                        <h:outputLabel value="API Key Name:" />
+                        <h:inputText value="#{integrationEndpointController.selected.apiKeyName}" />
+
+                        <h:outputLabel value="API Key Value:" />
+                        <h:inputText value="#{integrationEndpointController.selected.apiKeyValue}" />
+
+                        <h:outputLabel value="KeyCloak Authentication" /><hr/>
+
+                        
+                        <h:outputLabel value="Client ID:" />
+                        <h:inputText value="#{integrationEndpointController.selected.keyCloackClientId}" />
+
+                        <h:outputLabel value="Client Secreat:" />
+                        <h:inputText value="#{integrationEndpointController.selected.keyCloackClientSecret}" />
+
+                        <h:outputLabel value="Token Acquiring URL:" />
+                        <h:inputText value="#{integrationEndpointController.selected.keyCloakTokenAcquiringUrl}" />
+
+
+                    </p:panelGrid>
+
+                    <h:commandButton value="Save" action="#{integrationEndpointController.saveOrUpdateIntegrationEndpoint}" />
+                    <h:commandButton value="Cancel" action="#{integrationEndpointController.navigateToList}" immediate="true" />
+                </h:form>
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

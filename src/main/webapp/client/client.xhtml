@@ -15,8 +15,8 @@
                         <div class="card-header" >
                             <div class="row" >
                                 <div class="col-md-3" >
-                                        <h:outputText  value="Add Client Details" rendered="#{clientController.selected.id eq null}"></h:outputText>
-                                        <h:outputText  value="Edit Client Details" rendered="#{clientController.selected.id ne null}"></h:outputText>
+                                    <h:outputText  value="Add Client Details" rendered="#{clientController.selected.id eq null}"></h:outputText>
+                                    <h:outputText  value="Edit Client Details" rendered="#{clientController.selected.id ne null}"></h:outputText>
                                 </div>
                                 <div class="col-md-2" >
                                     <h:commandButton class="btn btn-success btn-sm w-75"
@@ -76,7 +76,8 @@
                                     <p:calendar  value="#{clientController.selected.person.dateOfBirth}" 
                                                  id="calDob"  navigator="true" pattern="dd/MM/yyyy" yearRange="1900:today"
                                                  required="true"
-                                                 class="form-control">
+                                                 class="w-100"
+                                                 inputStyleClass="form-control">
                                         <f:ajax event="dateSelect" listener="#{clientController.updateYearDateMonth}"
                                                 render="year month day" 
                                                 execute="@this"/>
@@ -90,8 +91,6 @@
                                                      value="#{clientController.selected.phn}" title="Phn"
                                                      class="form-control"
                                                      placeholder="Generate New PHN">
-                                            <!--<f:validateRegex pattern="^([0-9]{4}+[2|3|4|5|6|7|8|9|B|C|D|F|G|H|J|K|M|P|Q|R|T|V|W|X|Y]{6}+[0-9]{1})?$" ></f:validateRegex>-->
-                                            <!--<f:validateRegex pattern="^([0-9]{4}+[2|3|4|5|6|7|8|9|B|C|D|F|G|H|J|K|M|P|Q|R|T|V|W|X|Y|b|c|d|f|g|h|j|k|m|p|q|r|t|v|w|x|y]{6}+[0-9]{1})?$" ></f:validateRegex>-->
                                         </p:inputText>
                                         <p:commandLink value="Generate new PHN" 
                                                        class="form-label"
@@ -114,6 +113,7 @@
                                 <div class="col-md-2" >
                                     <p:outputLabel value="Mariatal Status:" for="mariatalStatus"   class="form-label" />
                                     <p:selectOneMenu id="mariatalStatus" value="#{clientController.selected.person.mariatalStatus}" class="form-control">
+                                        <f:selectItem itemLabel="Select" ></f:selectItem>
                                         <f:selectItems value="#{itemController.marietalStatus}" var="m" itemLabel="#{m.name}"
                                                        itemValue="#{m}" ></f:selectItems>
                                     </p:selectOneMenu>
@@ -122,6 +122,7 @@
                                 <div class="col-md-2" >
                                     <p:outputLabel value="Ethinic Group:" for="ethinicGroup"   class="form-label" />
                                     <p:selectOneMenu id="ethinicGroup" value="#{clientController.selected.person.ethinicGroup}" class="form-control">
+                                        <f:selectItem itemLabel="Select" ></f:selectItem>
                                         <f:selectItems value="#{itemController.ethinicities}" var="e" itemLabel="#{e.name}"
                                                        itemValue="#{e}" ></f:selectItems>
                                     </p:selectOneMenu>
@@ -131,6 +132,7 @@
                                 <div class="col-md-2" >
                                     <p:outputLabel value="Religion:" for="religion"   class="form-label" />
                                     <p:selectOneMenu id="religion" value="#{clientController.selected.person.religion}" class="form-control" >
+                                        <f:selectItem itemLabel="Select" ></f:selectItem>
                                         <f:selectItems value="#{itemController.religions}" var="r" itemLabel="#{r.name}"
                                                        itemValue="#{r}" ></f:selectItems>
                                     </p:selectOneMenu>
@@ -139,6 +141,7 @@
                                 <div class="col-md-2" >
                                     <p:outputLabel value="Citizenship:" for="citizenship"   class="form-label" />
                                     <p:selectOneMenu id="citizenship" value="#{clientController.selected.person.citizenship}" class="form-control" >
+                                        <f:selectItem itemLabel="Select" ></f:selectItem>
                                         <f:selectItems value="#{itemController.citizenships}" var="c" itemLabel="#{c.name}"
                                                        itemValue="#{c}" ></f:selectItems>
                                     </p:selectOneMenu>
@@ -264,11 +267,14 @@
 
                                 <div class="col-md-2" >
                                     <p:outputLabel value="GN Area:" for="gn" />
-                                    <p:autoComplete id="gn" value="#{clientController.selected.person.gnArea}"
+                                    <p:autoComplete id="gn"
+                                                    value="#{clientController.selected.person.gnArea}"
                                                     completeMethod="#{clientController.completeClientsGnArea}"
                                                     var="gn" itemLabel="#{gn.name}" itemValue="#{gn}"
                                                     maxResults="15" forceSelection="true" placeholder="Not Known"
-                                                    minQueryLength="3">
+                                                    minQueryLength="3"
+                                                    class="w-100"
+                                                    inputStyleClass="form-control">
                                         <p:column headerText="Name">
                                             <p:outputLabel value="#{gn.name}"></p:outputLabel>
                                         </p:column>
@@ -283,11 +289,15 @@
 
                                 <div class="col-md-2" >
                                     <p:outputLabel value="District:" for="district" />
-                                    <p:autoComplete required="true" id="district" value="#{clientController.selected.person.district}"
+                                    <p:autoComplete required="true" 
+                                                    id="district" 
+                                                    value="#{clientController.selected.person.district}"
                                                     completeMethod="#{areaController.completeDistricts}"
                                                     var="d" itemLabel="#{d.name}" itemValue="#{d}"
                                                     maxResults="15" forceSelection="true"
-                                                    minQueryLength="3">
+                                                    minQueryLength="3"
+                                                    class="w-100"
+                                                    inputStyleClass="form-control">
                                     </p:autoComplete>
 
                                 </div>
@@ -299,7 +309,9 @@
                                                     var="p" itemLabel="#{p.name}" itemValue="#{p}"
                                                     maxResults="15" forceSelection="true" disabled="true"
                                                     rendered="false"
-                                                    minQueryLength="3">
+                                                    minQueryLength="3"
+                                                    class="w-100"
+                                                    inputStyleClass="form-control">
                                     </p:autoComplete>
 
                                 </div>
@@ -311,7 +323,9 @@
                                                     var="phm" itemLabel="#{phm.name}" itemValue="#{phm}"
                                                     maxResults="15" forceSelection="true"
                                                     rendered="false"
-                                                    minQueryLength="3">
+                                                    minQueryLength="3"
+                                                    class="w-100"
+                                                    inputStyleClass="form-control">
                                     </p:autoComplete>
 
                                 </div>
@@ -323,7 +337,9 @@
                                                     completeMethod="#{areaController.completeMohAreas}"
                                                     var="m" itemLabel="#{m.name}" itemValue="#{m}"
                                                     maxResults="15" forceSelection="true"
-                                                    minQueryLength="3">
+                                                    minQueryLength="3"
+                                                    class="w-100"
+                                                    inputStyleClass="form-control">
                                     </p:autoComplete>
 
                                 </div>

@@ -25,17 +25,20 @@ package lk.gov.health.phsp.entity;
 
 import java.io.Serializable;
 import java.util.Date;
+import javax.jdo.annotations.Index;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
-import javax.xml.bind.annotation.XmlRootElement;
+
 import lk.gov.health.phsp.enums.Privilege;
+import lk.gov.health.phsp.pojcs.Identifiable;
 
 /**
  *
@@ -43,17 +46,17 @@ import lk.gov.health.phsp.enums.Privilege;
  */
 @Entity
 @Table
-@XmlRootElement
-public class UserPrivilege implements Serializable {
+
+public class UserPrivilege implements Serializable, Identifiable  {
 
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     private WebUser webUser;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     private Item item;
     @Enumerated(EnumType.STRING)
     private Privilege privilege;
@@ -77,6 +80,7 @@ public class UserPrivilege implements Serializable {
     /*
     Retire Properties
      */
+    @Index
     private boolean retired;
     @ManyToOne
     private WebUser retiredBy;

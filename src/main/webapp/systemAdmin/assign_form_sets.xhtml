@@ -24,11 +24,24 @@
                                         <p:outputLabel value="Replace Formset" ></p:outputLabel>
                                     </f:facet>
                                     <p:outputLabel value="Formset" ></p:outputLabel>
-                                    <p:autoComplete id="refSet" value="#{relationshipController.formset}" 
-                                                    var="s" itemLabel="#{s.name}" itemValue="#{s}"
-                                                    completeMethod="#{designComponentFormSetController.completeFormSets}"
-                                                    forceSelection="true" maxResults="15" minQueryLength="3">
+                                    <p:autoComplete 
+                                        rendered="false"
+                                        value="#{relationshipController.formset}" 
+                                        var="s" itemLabel="#{s.name}" itemValue="#{s}"
+                                        completeMethod="#{designComponentFormSetController.completeFormSets}"
+                                        forceSelection="true" maxResults="15" minQueryLength="3">
                                     </p:autoComplete>
+                                    <p:selectOneMenu 
+                                        filter="true"
+                                        filterMatchMode="contains"
+                                        value="#{relationshipController.formset}" id="refSet" >
+                                        <f:selectItem itemLabel="Select" ></f:selectItem>
+                                        <f:selectItems value="#{designComponentFormSetController.items}" var="i" itemLabel="#{i.name}"
+                                                       itemValue="#{i}" ></f:selectItems>
+                                    </p:selectOneMenu>
+
+                                  
+
                                     <p:commandButton id="btnFillIns" value="Fill Institutions with this form" ajax="false"
                                                      action="#{relationshipController.fillInstitutionsForSelectedFormSet()}"
                                                      style="float: right;">

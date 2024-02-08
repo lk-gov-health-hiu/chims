@@ -21,11 +21,26 @@
                                              value="SAVE" ></p:commandButton>
                         </f:facet>
 
+                        
+                        <p:outputLabel value="Header" ></p:outputLabel>
+                        <p:inputText  class="w-100"  value="#{preferenceController.headerText}" ></p:inputText>
+
+                        <p:outputLabel value="Footer" ></p:outputLabel>
+                        <p:inputText  class="w-100"  value="#{preferenceController.footerText}" ></p:inputText>
+
+                        
+                        <p:outputLabel value="Logo Link" ></p:outputLabel>
+                        <p:inputText  class="w-100"  value="#{preferenceController.logoLink}" ></p:inputText>
+
+                        <p:outputLabel value="Login Page Description" ></p:outputLabel>
+                        <p:inputTextarea class="w-100" rows="10" value="#{preferenceController.loginDescreption}" ></p:inputTextarea>
+
+                        
                         <p:outputLabel value="reCAPTCHA Site Key" ></p:outputLabel>
-                        <p:inputText size="100" value="#{preferenceController.reCAPTCHASiteKey}" ></p:inputText>
+                        <p:inputText  class="w-100"  value="#{preferenceController.reCAPTCHASiteKey}" ></p:inputText>
 
                         <p:outputLabel value="reCAPTCHA Secreat Key" ></p:outputLabel>
-                        <p:inputText size="100" value="#{preferenceController.reCAPTCHASecreatKey}" ></p:inputText>
+                        <p:inputText  class="w-100"  value="#{preferenceController.reCAPTCHASecreatKey}" ></p:inputText>
 
 
                     </p:panelGrid>

@@ -6,7 +6,7 @@
       xmlns:p="http://primefaces.org/ui"
       xmlns:f="http://xmlns.jcp.org/jsf/core">
 
-    <body>
+    <h:body>
 
         <ui:composition template="/webUser/index.xhtml">
 
@@ -76,12 +76,12 @@
                             </p:autoComplete >
                             <p:spacer ></p:spacer>
 
-                            <p:outputLabel value="Area" for="area" />
+                            <p:outputLabel value="Area." for="area" />
                             <p:autoComplete  id="area" value="#{webUserController.selected.area}" 
-                                             completeMethod="#{areaController.completeAreas}"
+                                             completeMethod="#{areaController.completeDistricts}"
                                              var="i" itemLabel="#{i.name}" itemValue="#{i}" size="30"
                                              minQueryLength="4" maxResults="30"
-                                             forceSelection="true" required="true">
+                                             forceSelection="true" required="false">
                                 <p:column headerText="Name">
                                     <p:outputLabel value="#{i.name}"></p:outputLabel>
                                 </p:column>
@@ -125,6 +125,6 @@
             </ui:define>
         </ui:composition>
 
-    </body>
+    </h:body>
 </html>
 

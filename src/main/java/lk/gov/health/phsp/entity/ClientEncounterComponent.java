@@ -5,24 +5,24 @@
  */
 package lk.gov.health.phsp.entity;
 
+import javax.jdo.annotations.Index;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
-import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
  * @author buddhika
  */
 @Entity
-@XmlRootElement
-public class ClientEncounterComponent extends Component {
+public class ClientEncounterComponent extends Component  {
 
-    
-    @ManyToOne(fetch = FetchType.LAZY)
+    @Index
+    @ManyToOne(fetch = FetchType.EAGER)
     private Encounter encounter;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @Index
+    @ManyToOne(fetch = FetchType.EAGER)
     private Client client;
 
     public Encounter getEncounter() {

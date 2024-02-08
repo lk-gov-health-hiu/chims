@@ -26,9 +26,10 @@ package lk.gov.health.phsp.entity;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
-import javax.xml.bind.annotation.XmlRootElement;
+
 import lk.gov.health.phsp.enums.AvailableDataType;
 import lk.gov.health.phsp.enums.ComponentSetType;
 import lk.gov.health.phsp.enums.DataCompletionStrategy;
@@ -44,7 +45,7 @@ import lk.gov.health.phsp.enums.SelectionDataType;
  * @author sunila_soft
  */
 @Entity
-@XmlRootElement
+
 public class DesignComponentFormItem extends DesignComponent {
 
     private boolean required;
@@ -78,7 +79,7 @@ public class DesignComponentFormItem extends DesignComponent {
     @Lob
     private String regexValidationFailedMessage;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     private Item mimeType;
 
     @Enumerated(EnumType.STRING)
@@ -108,11 +109,11 @@ public class DesignComponentFormItem extends DesignComponent {
     @Enumerated(EnumType.STRING)
     private DataModificationStrategy dataModificationStrategy;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     private Area parentAreaOfAvailableAreas;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     private Item categoryOfAvailableItems;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     private Institution parentInstitutionOfAvailableInstitutions;
 
     

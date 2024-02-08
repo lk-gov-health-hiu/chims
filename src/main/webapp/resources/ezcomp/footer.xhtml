@@ -11,33 +11,12 @@
 
     <!-- IMPLEMENTATION -->
     <cc:implementation>
-
-
-        <h:panelGroup rendered="#{webUserController.loggedUser ne null}" >
-            <table style="width: 98%; margin: auto;">
-                <tr>
-                    <td>
-                        &copy; Ministry of Health, 
-                        <h:outputText value="#{session.lastAccessedTime}">
-                            <f:convertDateTime pattern="yyyy" type="date" />
-                        </h:outputText>
-                    </td>
-                </tr>
-            </table>
-        </h:panelGroup>
-
-        <h:panelGroup rendered="#{webUserController.loggedUser eq null}" >
-            <table style="width: 98%; margin: auto;">
-                <tr>
-                    <td>
-                        &copy; Ministry of Health, 
-                        <h:outputText value="#{session.lastAccessedTime}">
-                            <f:convertDateTime pattern="yyyy" type="date" />
-                        </h:outputText>
-                    </td>
-                </tr>
-            </table>
-        </h:panelGroup>
-
+        <table style="width: 98%; margin: auto;">
+            <tr>
+                <td>
+                    &copy; Ministry of Health, 
+                </td>
+            </tr>
+        </table>
     </cc:implementation>
 </html>

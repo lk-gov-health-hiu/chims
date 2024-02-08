@@ -30,7 +30,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.xml.bind.annotation.XmlRootElement;
+
+import lk.gov.health.phsp.pojcs.Identifiable;
 
 /**
  *
@@ -38,8 +39,8 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @Entity
 @Table
-@XmlRootElement
-public class IndividualQueryResult implements Serializable {
+
+public class IndividualQueryResult implements Serializable, Identifiable  {
 
     private static final long serialVersionUID = 1L;
     @Id

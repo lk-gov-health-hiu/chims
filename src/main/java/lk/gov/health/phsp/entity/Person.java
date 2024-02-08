@@ -25,17 +25,22 @@ package lk.gov.health.phsp.entity;
 
 import java.io.Serializable;
 import java.util.Date;
+import javax.annotation.PostConstruct;
+import javax.jdo.annotations.Index;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.Transient;
-import javax.xml.bind.annotation.XmlRootElement;
+
+import lk.gov.health.phsp.pojcs.Identifiable;
 import org.joda.time.LocalDate;
 import org.joda.time.Period;
 import org.joda.time.PeriodType;
@@ -46,9 +51,7 @@ import org.joda.time.PeriodType;
  * Informatics)
  */
 @Entity
-@XmlRootElement
-@Table
-public class Person implements Serializable {
+public class Person implements Serializable, Identifiable {
 
 // <editor-fold defaultstate="collapsed" desc="Persistant Attributes">
     static final long serialVersionUID = 1L;
@@ -56,63 +59,68 @@ public class Person implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.REFRESH })
     private Item title;
+    @Index
     private String name;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.REFRESH })
     private Item sex;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.REFRESH })
     private Item citizenship;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.REFRESH })
     private Item ethinicGroup;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.REFRESH })
     private Item religion;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.REFRESH })
     private Item mariatalStatus;
-    
-     @ManyToOne(fetch = FetchType.LAZY)
+
+    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.REFRESH })
     private Item educationStatus;
-     
-     private String occupation;
+
+    private String occupation;
 
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
+    @Index
     private Date dateOfBirth;
-    
+
     private boolean dobIsAnApproximation;
 
     @Lob
     private String address;
 
+    @Index
     private String phone1;
+    @Index
     private String phone2;
     private String email;
-
+    @Index
     private String nic;
-
+    @Index
     private String passportNumber;
 
     private String website;
     private String drivingLicenseNumber;
-    
+    @Index
     private String localReferanceNo;
+    @Index
     private String ssNumber;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.REFRESH })
     private Area gnArea;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.REFRESH })
     private Area dsArea;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.REFRESH })
     private Area phmArea;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.REFRESH })
     private Area mohArea;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER,  cascade = {CascadeType.MERGE, CascadeType.REFRESH })
     private Area district;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE,  CascadeType.REFRESH })
     private Area province;
 
     //Created Properties
@@ -126,6 +134,7 @@ public class Person implements Serializable {
     private Date editedAt;
 
     //Retairing properties
+    @Index
     private boolean retired;
     @ManyToOne(fetch = FetchType.LAZY)
     private WebUser retiredBy;
@@ -155,7 +164,7 @@ public class Person implements Serializable {
 // <editor-fold defaultstate="collapsed" desc="Functions">
 
     public void calAgeFromDob() {
-        ageCalculated=true;
+        ageCalculated = true;
         setAge("");
         setAgeInDays(0l);
         setAgeMonths(0);
@@ -212,7 +221,7 @@ public class Person implements Serializable {
     }
 
     public int getAgeYears() {
-       if (!ageCalculated) {
+        if (!ageCalculated) {
             calAgeFromDob();
         }
         return ageYears;
@@ -234,6 +243,8 @@ public class Person implements Serializable {
      * @return the gnArea
      */
     public Area getGnArea() {
+        if (gnArea == null) {
+        }
         return gnArea;
     }
 
@@ -349,8 +360,6 @@ public class Person implements Serializable {
         this.ageInDays = ageInDays;
     }
 
-    
-    
     public Item getSex() {
         return sex;
     }
@@ -415,9 +424,6 @@ public class Person implements Serializable {
         this.phone2 = phone2;
     }
 
-    
-    
-    
     public String getName() {
         return name;
     }
@@ -503,7 +509,7 @@ public class Person implements Serializable {
     }
 
     public void setDateOfBirth(Date dateOfBirth) {
-        ageCalculated=false;
+        ageCalculated = false;
         this.dateOfBirth = dateOfBirth;
     }
 
@@ -570,12 +576,6 @@ public class Person implements Serializable {
     public void setEducationStatus(Item educationStatus) {
         this.educationStatus = educationStatus;
     }
-    
-    
-    
-    
-    
-    
 
 // </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="Over-rides">
@@ -604,6 +604,31 @@ public class Person implements Serializable {
     }
 // </editor-fold>
 
+    @PostConstruct
+    public void init() {
+        if (this.getGnArea() != null) {
+        } else {
+        }
+        if (this.getGnArea() != null) {
+
+        }
+        if (this.getDsArea() != null) {
+
+        }
+        if (this.getDistrict() != null) {
+
+        }
+        if (this.getProvince() != null) {
+
+        }
+        if (this.getSex() != null) {
+        } else {
+        }
+        if (this.getTitle() != null) {
+
+        }
+    }
+
     public boolean isDobIsAnApproximation() {
         return dobIsAnApproximation;
     }
@@ -619,25 +644,23 @@ public class Person implements Serializable {
     public void setOccupation(String occupation) {
         this.occupation = occupation;
     }
-    
-    
 
     public String getTransPhoneNumbers() {
-        boolean phoneOneNotBlank=false;
-        boolean phoneTwoNotBlank=false;
-        if(phone1!=null && !phone1.trim().equals("")){
-            phoneOneNotBlank=true;
+        boolean phoneOneNotBlank = false;
+        boolean phoneTwoNotBlank = false;
+        if (phone1 != null && !phone1.trim().equals("")) {
+            phoneOneNotBlank = true;
         }
-        if(phone2!=null && !phone2.trim().equals("")){
-            phoneTwoNotBlank=true;
+        if (phone2 != null && !phone2.trim().equals("")) {
+            phoneTwoNotBlank = true;
         }
-        if(phoneOneNotBlank && phoneTwoNotBlank){
+        if (phoneOneNotBlank && phoneTwoNotBlank) {
             transPhoneNumbers = phone1 + ", " + phone2;
-        }else if(phoneOneNotBlank){
+        } else if (phoneOneNotBlank) {
             transPhoneNumbers = phone1;
-        }else if(phoneTwoNotBlank){
+        } else if (phoneTwoNotBlank) {
             transPhoneNumbers = phone2;
-        }else{
+        } else {
             transPhoneNumbers = "";
         }
         return transPhoneNumbers;

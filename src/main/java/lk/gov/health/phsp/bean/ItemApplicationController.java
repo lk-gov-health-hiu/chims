@@ -23,6 +23,7 @@
  */
 package lk.gov.health.phsp.bean;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -32,6 +33,7 @@ import java.util.Map;
 import javax.ejb.EJB;
 import javax.inject.Named;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.SessionScoped;
 import lk.gov.health.phsp.entity.Item;
 import lk.gov.health.phsp.enums.ItemType;
 import lk.gov.health.phsp.facade.ItemFacade;
@@ -40,9 +42,9 @@ import lk.gov.health.phsp.facade.ItemFacade;
  *
  * @author buddhika
  */
-@Named(value = "itemApplicationController")
-@ApplicationScoped
-public class ItemApplicationController {
+@Named
+@SessionScoped
+public class ItemApplicationController implements Serializable{
 
     @EJB
     private ItemFacade facade;
@@ -57,6 +59,7 @@ public class ItemApplicationController {
     private List<Item> strengthUnits;
     private List<Item> issueUnits;
     private List<Item> dictionaryItemsAndCategories;
+    private List<Item> sexes;
 
     /**
      * Creates a new instance of ItemApplicationController
@@ -74,6 +77,40 @@ public class ItemApplicationController {
         List<ItemType> its = new ArrayList<>();
         its.add(ItemType.Dictionary_Category);
         return completeItem(its, qry);
+    }
+
+    public List<Item> getSexes() {
+        if (sexes == null) {
+//            sexes = findItemList("sex", ItemType.Dictionary_Item);
+            sexes = findChildDictionaryItems("sex");
+        }
+        return sexes;
+    }
+
+    public void setSexes(List<Item> sexes) {
+        this.sexes = sexes;
+    }
+
+    public Item getSex(String code) {
+        if (code == null) {
+            code = "";
+        }
+        List<Item> tss = getSexes();
+        Item m = null;
+        Item f = null;
+        for (Item i : tss) {
+            if (i.getName().toLowerCase().contains("f")) {
+                f = i;
+            } else if (i.getName().toLowerCase().contains("male")){
+                m = i;
+            }
+        }
+        code = code.toLowerCase();
+        if (code.contains("f")) {
+            return f;
+        } else {
+            return m;
+        }
     }
 
     public List<Item> completeDictionaryItemOrCategory(String qry) {
@@ -286,7 +323,6 @@ public class ItemApplicationController {
             }
         }
         if (counter > 1) {
-            System.err.println("This item code is duplicated = " + code);
         }
         return item;
     }
@@ -354,7 +390,7 @@ public class ItemApplicationController {
                 ns.add(i);
             }
         }
-        Collections.sort(ns, Comparator.comparing(Item::getName));
+        Collections.sort(ns, Comparator.comparing(Item::getDisplayName));
         return ns;
     }
 
@@ -390,7 +426,7 @@ public class ItemApplicationController {
     public void invalidateItems() {
         items = null;
         packUnits = null;
-        dosageForms=null;
+        dosageForms = null;
         frequencyUnits = null;
         strengthUnits = null;
         durationUnits = null;
@@ -464,6 +500,14 @@ public class ItemApplicationController {
             dictionaryTypes.add(ItemType.Dictionary_Item);
         }
         return dictionaryTypes;
+    }
+
+    public ItemFacade getFacade() {
+        return facade;
+    }
+
+    public void setFacade(ItemFacade facade) {
+        this.facade = facade;
     }
 
 }

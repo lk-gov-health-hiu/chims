@@ -33,7 +33,7 @@ import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
-import javax.xml.bind.annotation.XmlRootElement;
+
 import lk.gov.health.phsp.enums.QueryCriteriaMatchType;
 import lk.gov.health.phsp.enums.QueryDataType;
 
@@ -49,7 +49,7 @@ import lk.gov.health.phsp.enums.RelationshipType;
  */
 @Entity
 @Table
-@XmlRootElement
+
 public class QueryComponent extends Component {
 
     @Lob
@@ -106,7 +106,7 @@ public class QueryComponent extends Component {
     private boolean required;
 
 
-//    @ManyToOne(fetch = FetchType.LAZY)
+//    @ManyToOne(fetch = FetchType.EAGER)
 //    private Client client;
 
     @Lob
@@ -121,29 +121,29 @@ public class QueryComponent extends Component {
     private Boolean booleanValue;
     @Temporal(javax.persistence.TemporalType.DATE)
     private Date dateValue;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private Item itemValue;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private Area areaValue;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private Institution institutionValue;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private Client clientValue;
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH })
     private Prescription prescriptionValue;
     
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH })
     private Observation observationValue;
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH })
     private Procedure procedureValue;
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH })
     private Movement movementValue;
     
 //
 //    private boolean completed;
 //    @Temporal(javax.persistence.TemporalType.TIMESTAMP)
 //    private Date completedAt;
-//    @ManyToOne(fetch = FetchType.LAZY)
+//    @ManyToOne(fetch = FetchType.EAGER)
 //    private WebUser completedBy;
 
     private Integer integerNumberValue2;

@@ -39,7 +39,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.Transient;
-import javax.xml.bind.annotation.XmlRootElement;
+
 import lk.gov.health.phsp.enums.AvailableDataType;
 import lk.gov.health.phsp.enums.ComponentSetType;
 import lk.gov.health.phsp.enums.DataCompletionStrategy;
@@ -49,6 +49,7 @@ import lk.gov.health.phsp.enums.ItemArrangementStrategy;
 import lk.gov.health.phsp.enums.PanelType;
 import lk.gov.health.phsp.enums.SelectionDataType;
 import lk.gov.health.phsp.enums.TimePeriodType;
+import lk.gov.health.phsp.pojcs.Identifiable;
 
 /**
  *
@@ -56,18 +57,18 @@ import lk.gov.health.phsp.enums.TimePeriodType;
  */
 @Entity
 @Table
-@XmlRootElement
-public class ConsolidatedQueryResult implements Serializable {
+
+public class ConsolidatedQueryResult implements Serializable, Identifiable  {
 
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private Institution institution;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private Area area;
 
     @Column(length = 180)
@@ -112,7 +113,7 @@ public class ConsolidatedQueryResult implements Serializable {
     @Lob
     private String regexValidationFailedMessage;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     private Item mimeType;
 
     @Enumerated(EnumType.STRING)
@@ -142,11 +143,11 @@ public class ConsolidatedQueryResult implements Serializable {
     @Enumerated(EnumType.STRING)
     private ItemArrangementStrategy itemArrangementStrategy;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     private Area parentAreaOfAvailableAreas;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     private Item categoryOfAvailableItems;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     private Institution parentInstitutionOfAvailableInstitutions;
 
     private Double topPercent;
@@ -164,10 +165,10 @@ public class ConsolidatedQueryResult implements Serializable {
     private String foregroundColour;
     private String borderColour;
     
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private Encounter encounter;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private Client client;
 
     @Lob
@@ -182,29 +183,29 @@ public class ConsolidatedQueryResult implements Serializable {
     private Boolean booleanValue;
     @Temporal(javax.persistence.TemporalType.DATE)
     private Date dateValue;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private Item itemValue;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private Area areaValue;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private Institution institutionValue;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private Client clientValue;
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH })
     private Prescription prescriptionValue;
     
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH })
     private Observation observationValue;
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH })
     private Procedure procedureValue;
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH })
     private Movement movementValue;
     
 
     private boolean completed;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date completedAt;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private WebUser completedBy;
 
     private Integer integerNumberValue2;

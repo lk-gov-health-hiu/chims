@@ -1,0 +1,47 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <title>Clients with wrong Institute</title>
+    </h:head>
+    <h:body>
+        <h:form  >
+
+
+            <h:panelGrid columns="5" >
+                <p:outputLabel value="Institution to Correct" ></p:outputLabel>
+                
+                <p:autoComplete value="#{clientController.institution}" 
+                                completeMethod="#{institutionController.completeInstitutions}"
+                                var="i"
+                                itemLabel="#{i.name}"
+                                itemValue="#{i}"
+                                forceSelection="true"
+                                ></p:autoComplete>
+                
+                <p:commandButton value="Update Clients for above Institution" ajax="false"
+                                 action="#{clientController.updateClientCreatedInstitution()}">
+                </p:commandButton>
+                
+                
+                <p:commandButton value="Update Clients without a Created Institution" ajax="false"
+                                 action="#{clientController.updateClientWithoutCreatedInstitution()}">
+                </p:commandButton>
+                
+                
+                <p:commandButton value="Change Created Institution" ajax="false"
+                                 action="#{clientController.ch}">
+                </p:commandButton>
+                
+
+            </h:panelGrid>
+
+
+
+        </h:form>
+    </h:body>
+</html>
+

@@ -34,7 +34,8 @@ import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
-import javax.xml.bind.annotation.XmlRootElement;
+
+import lk.gov.health.phsp.pojcs.Identifiable;
 
 /**
  *
@@ -42,8 +43,8 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @Entity
 @Table
-@XmlRootElement
-public class Movement implements Serializable {
+
+public class Movement implements Serializable, Identifiable  {
 
     private static final long serialVersionUID = 1L;
     @Id

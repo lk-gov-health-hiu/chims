@@ -12,10 +12,15 @@
         <ui:define name="metadata">
             <h:form id="ItemListForm">
                 
-                <p:commandButton value="Download" ajax="false" >
+                <p:commandButton value="Download" 
+                                 class="m-1"
+                                 ajax="false" >
                     <p:dataExporter target="datalist" type="xls" fileName="dictionary" ></p:dataExporter>
                 </p:commandButton>
-                <p:commandButton value="Reload" ajax="false" action="#{itemController.reloadItems()}" >
+                <p:commandButton value="Reload"
+                                 ajax="false" 
+                                 class="m-1"
+                                 action="#{itemController.reloadItems()}" >
                 </p:commandButton>
                 
                 <p:panel header="#{bundleClinical.ListItemTitle}">
@@ -30,7 +35,7 @@
                         <p:ajax event="rowSelect"   update="createButton viewButton editButton deleteButton"/>
                         <p:ajax event="rowUnselect" update="createButton viewButton editButton deleteButton"/>
 
-                        <p:column rendered="false" filterBy="#{item.id}" filterMatchMode="contains" sortBy="#{item.id}">
+                        <p:column rendered="true" filterBy="#{item.id}" filterMatchMode="contains" sortBy="#{item.id}">
                             <f:facet name="header">
                                 <h:outputText value="ID"/>
                             </f:facet>
@@ -80,10 +85,10 @@
                             <h:outputText value="#{item.parent.name}"/>
                         </p:column>
                         <f:facet name="footer">
-                            <p:commandButton id="createButton" icon="ui-icon-plus"   value="#{bundleClinical.Create}" actionListener="#{itemController.prepareCreate}" update=":ItemCreateForm" oncomplete="PF('ItemCreateDialog').show()"/>
-                            <p:commandButton id="viewButton"   icon="ui-icon-search" value="#{bundleClinical.View}" update=":ItemViewForm" oncomplete="PF('ItemViewDialog').show()" disabled="#{empty itemController.selected}"/>
-                            <p:commandButton id="editButton"   icon="ui-icon-pencil" value="#{bundleClinical.Edit}" update=":ItemEditForm" oncomplete="PF('ItemEditDialog').show()" disabled="#{empty itemController.selected}"/>
-                            <p:commandButton id="deleteButton" icon="ui-icon-trash"  value="#{bundleClinical.Delete}" actionListener="#{itemController.destroy}" update="datalist" disabled="#{empty itemController.selected}"/>
+                            <p:commandButton id="createButton" class="m-1" icon="ui-icon-plus"   value="#{bundleClinical.Create}" actionListener="#{itemController.prepareCreate}" update=":ItemCreateForm" oncomplete="PF('ItemCreateDialog').show()"/>
+                            <p:commandButton id="viewButton"  class="m-1" icon="ui-icon-search" value="#{bundleClinical.View}" update=":ItemViewForm" oncomplete="PF('ItemViewDialog').show()" disabled="#{empty itemController.selected}"/>
+                            <p:commandButton id="editButton"  class="m-1" icon="ui-icon-pencil" value="#{bundleClinical.Edit}" update=":ItemEditForm" oncomplete="PF('ItemEditDialog').show()" disabled="#{empty itemController.selected}"/>
+                            <p:commandButton id="deleteButton" class="m-1" icon="ui-icon-trash"  value="#{bundleClinical.Delete}" actionListener="#{itemController.destroy}" update="datalist" disabled="#{empty itemController.selected}"/>
                         </f:facet>
                     </p:dataTable>
                 </p:panel>

@@ -25,7 +25,6 @@
                            var="ii" >
 
                     <h:panelGroup id="gpDataAndButtonsMultiple" rendered="#{ii.multipleEntries}" >
-
                         <tr>
                             <td>
                                 <h:panelGroup id="gpRx" rendered="#{ii.di.renderType eq 'Prescreption'}" >
@@ -139,7 +138,6 @@
                                         </tr>
                                     </table>
                                 </h:panelGroup>
-
                                 <h:panelGroup id="gpPrs" rendered="#{ii.di.item.dataType eq 'Procedure_Request'}" >
                                     <table >
                                         <tr>
@@ -207,7 +205,6 @@
                                         </tr>
                                     </table>
                                 </h:panelGroup>
-
                                 <h:panelGroup id="gpMuIrDd" rendered="#{ii.di.item.dataType eq 'Item_Reference' and ii.di.renderType eq 'Drop_Down_Menu'}" >
                                     <table >
                                         <tr>
@@ -353,7 +350,6 @@
                     <h:panelGroup id="gpDataAndButtonsSingle" rendered="#{!ii.multipleEntries}" >
                         <tr>
                             <td>
-
                                 <h:panelGroup rendered="#{ii.di.renderType eq 'Input_Text' and ii.di.item.dataType eq'Short_Text'}" >
                                     <table >
                                         <tr>
@@ -365,7 +361,7 @@
                                                              required="#{ii.di.required}" 
                                                              requiredMessage="#{ii.di.requiredErrorMessage}" >
                                                     <p:ajax  event="blur" process="@this"  
-                                                             listener="#{clientEncounterComponentItemController.save(ii.ci)}" ></p:ajax>
+                                                             listener="#{clientEncounterComponentItemController.saveCi(ii.ci)}" ></p:ajax>
                                                 </p:inputText>
                                             </td>
                                             <td>
@@ -397,7 +393,7 @@
                                                 <p:inputText  styleClass="dataValueInputText" id="itIntC" value="#{ii.ci.integerNumberValue}" 
                                                               required="#{ii.di.required}" 
                                                               requiredMessage="#{ii.di.requiredErrorMessage}" >
-                                                    <p:ajax  event="blur" process="@this"   listener="#{clientEncounterComponentItemController.save(ii.ci)}" ></p:ajax>
+                                                    <p:ajax  event="blur" process="@this"   listener="#{clientEncounterComponentItemController.saveCi(ii.ci)}" ></p:ajax>
 
                                                 </p:inputText>
                                             </td>
@@ -430,7 +426,7 @@
                                                 <p:inputText  styleClass="dataValueInputText" id="itRnC" value="#{ii.ci.realNumberValue}" 
                                                               required="#{ii.di.required}" validatorMessage="#{ii.di.regexValidationFailedMessage}"
                                                               requiredMessage="#{ii.di.requiredErrorMessage}" >
-                                                    <p:ajax  event="blur" process="@this"  listener="#{clientEncounterComponentItemController.save(ii.ci)}" ></p:ajax>
+                                                    <p:ajax  event="blur" process="@this"  listener="#{clientEncounterComponentItemController.saveCi(ii.ci)}" ></p:ajax>
                                                 </p:inputText>
                                             </td>
                                             <td>
@@ -462,7 +458,7 @@
                                                 <p:inputText  styleClass="dataValueInputText" id="itLongC" value="#{ii.ci.longNumberValue}" 
                                                               required="#{ii.di.required}" 
                                                               requiredMessage="#{ii.di.requiredErrorMessage}" >
-                                                    <p:ajax  event="blur" process="@this"   listener="#{clientEncounterComponentItemController.save(ii.ci)}" ></p:ajax>
+                                                    <p:ajax  event="blur" process="@this"   listener="#{clientEncounterComponentItemController.saveCi(ii.ci)}" ></p:ajax>
                                                 </p:inputText>
                                             </td>
                                             <td>
@@ -495,7 +491,7 @@
                                                 <p:inputTextarea id="txtItaL" value="#{ii.ci.longTextValue}"  styleClass="dataValueInputTextArea" 
                                                                  required="#{ii.di.required}" 
                                                                  requiredMessage="#{ii.di.requiredErrorMessage}" >
-                                                    <p:ajax  event="blur" process="@this"   listener="#{clientEncounterComponentItemController.save(ii.ci)}" ></p:ajax>
+                                                    <p:ajax  event="blur" process="@this"   listener="#{clientEncounterComponentItemController.saveCi(ii.ci)}" ></p:ajax>
                                                 </p:inputTextarea>
                                             </td>
                                             <h:panelGroup rendered="#{ii.di.displayLastResult}" >
@@ -511,7 +507,6 @@
                                         </tr>
                                     </table>
                                 </h:panelGroup>
-
                                 <h:panelGroup rendered="#{ii.di.renderType eq 'Date_Picker' and ii.di.item.dataType eq 'DateTime'}" >
                                     <table >
                                         <tr>
@@ -523,7 +518,7 @@
                                                             required="#{ii.di.required}" navigator="true"
                                                             requiredMessage="#{ii.di.requiredErrorMessage}" 
                                                             pattern="dd MMMM yyyy">
-                                                    <p:ajax  event="blur" process="@this"   listener="#{clientEncounterComponentItemController.save(ii.ci)}" ></p:ajax>
+                                                    <p:ajax  event="blur" process="@this"   listener="#{clientEncounterComponentItemController.saveCi(ii.ci)}" ></p:ajax>
                                                 </p:calendar>
                                             </td>
                                             <h:panelGroup rendered="#{ii.di.displayLastResult}" >
@@ -549,7 +544,7 @@
                                                 <p:calendar id="calC" value="#{ii.ci.dateValue}" 
                                                             required="#{ii.di.required}" 
                                                             requiredMessage="#{ii.di.requiredErrorMessage}" pattern="dd MMMM yyyy">
-                                                    <p:ajax  event="blur" process="@this"   listener="#{clientEncounterComponentItemController.save(ii.ci)}" ></p:ajax>
+                                                    <p:ajax  event="blur" process="@this"   listener="#{clientEncounterComponentItemController.saveCi(ii.ci)}" ></p:ajax>
                                                 </p:calendar>
                                             </td>
                                             <h:panelGroup rendered="#{ii.di.displayLastResult}" >
@@ -565,8 +560,6 @@
                                         </tr>
                                     </table>
                                 </h:panelGroup>
-
-
                                 <h:panelGroup rendered="#{ii.di.item.dataType eq 'Item_Reference' and ii.di.renderType eq 'Drop_Down_Menu'}" >
                                     <table >
                                         <tr>
@@ -578,7 +571,7 @@
                                                     <f:selectItem itemLabel="Please select" ></f:selectItem>
                                                     <f:selectItems value="#{ii.availableItemsForSelection}" var="li"
                                                                    itemLabel="#{li.displayName}" itemValue="#{li}" ></f:selectItems>
-                                                    <p:ajax  event="blur" process="@this"   listener="#{clientEncounterComponentItemController.save(ii.ci)}" ></p:ajax>
+                                                    <p:ajax  event="blur" process="@this"   listener="#{clientEncounterComponentItemController.saveCi(ii.ci)}" ></p:ajax>
                                                 </p:selectOneMenu>
                                             </td>
                                             <h:panelGroup rendered="#{ii.di.displayLastResult}" >
@@ -608,7 +601,7 @@
                                                                 minQueryLength="3"  inputStyleClass="dataValueInputText"
                                                                 requiredMessage="#{ii.requiredErrorMessage}">
                                                     <p:ajax  event="blur" process="@this"   
-                                                             listener="#{clientEncounterComponentItemController.save(ii.ci)}" >
+                                                             listener="#{clientEncounterComponentItemController.saveCi(ii.ci)}" >
                                                     </p:ajax>
                                                 </p:autoComplete>
                                             </td>
@@ -625,7 +618,6 @@
                                         </tr>
                                     </table>
                                 </h:panelGroup>
-
                                 <h:panelGroup rendered="#{ii.di.renderType eq 'Boolean_Checkbox'}" >
                                     <table >
                                         <tr>
@@ -637,10 +629,10 @@
                                                                          required="#{ii.di.required}" 
                                                                          requiredMessage="#{ii.di.requiredErrorMessage}" >
                                                     <p:ajax  process="@this"   
-                                                             listener="#{clientEncounterComponentItemController.save(ii.ci)}" >
+                                                             listener="#{clientEncounterComponentItemController.saveCi(ii.ci)}" >
                                                     </p:ajax>
                                                     <p:ajax  process="@this"  event="blur" 
-                                                             listener="#{clientEncounterComponentItemController.save(ii.ci)}" >
+                                                             listener="#{clientEncounterComponentItemController.saveCi(ii.ci)}" >
                                                     </p:ajax>
                                                 </p:selectBooleanCheckbox>
                                             </td>
@@ -657,7 +649,6 @@
                                         </tr>
                                     </table>
                                 </h:panelGroup>
-
                                 <h:panelGroup rendered="#{ii.di.renderType eq 'Boolean_Button'}" >
                                     <table >
                                         <tr>
@@ -669,10 +660,10 @@
                                                                        required="#{ii.di.required}" 
                                                                        requiredMessage="#{ii.di.requiredErrorMessage}" >
                                                     <p:ajax  process="@this"   
-                                                             listener="#{clientEncounterComponentItemController.save(ii.ci)}" >
+                                                             listener="#{clientEncounterComponentItemController.saveCi(ii.ci)}" >
                                                     </p:ajax>
                                                     <p:ajax  process="@this"  event="blur" 
-                                                             listener="#{clientEncounterComponentItemController.save(ii.ci)}" >
+                                                             listener="#{clientEncounterComponentItemController.saveCi(ii.ci)}" >
                                                     </p:ajax>
                                                 </p:selectBooleanButton>
                                             </td>
@@ -689,8 +680,6 @@
                                         </tr>
                                     </table>
                                 </h:panelGroup>
-
-
                                 <h:panelGroup rendered="#{ii.di.renderType eq 'Autocomplete' and ii.di.item.dataType eq 'Area_Reference'}" >
                                     <table >
                                         <tr>
@@ -706,7 +695,7 @@
                                                                 required="#{ii.di.required}" 
                                                                 requiredMessage="#{ii.di.requiredErrorMessage}">
                                                     <p:ajax  event="blur" process="@this"   
-                                                             listener="#{clientEncounterComponentItemController.save(ii.ci)}" >
+                                                             listener="#{clientEncounterComponentItemController.saveCi(ii.ci)}" >
                                                     </p:ajax>
                                                 </p:autoComplete>
                                             </td>

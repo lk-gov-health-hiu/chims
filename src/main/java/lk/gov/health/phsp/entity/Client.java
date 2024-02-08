@@ -2,6 +2,7 @@ package lk.gov.health.phsp.entity;
 
 import java.io.Serializable;
 import java.util.Date;
+import javax.jdo.annotations.Index;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -10,14 +11,11 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
-import javax.persistence.Table;
 import javax.persistence.Temporal;
-import javax.xml.bind.annotation.XmlRootElement;
+import lk.gov.health.phsp.pojcs.Identifiable;
 
 @Entity
-@Table
-@XmlRootElement
-public class Client implements Serializable {
+public class Client implements Serializable , Identifiable {
 
 // <editor-fold defaultstate="collapsed" desc="Attributes">
     @Id
@@ -26,9 +24,11 @@ public class Client implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @Index
+    @OneToOne(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH })
     private Person person;
 
+    @Index
     private String phn;
 
     private String comments;
@@ -41,8 +41,12 @@ public class Client implements Serializable {
     private Date createdAt;
     @Temporal(javax.persistence.TemporalType.DATE)
     private Date createdOn;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
+    @Index
     private Institution createInstitution;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @Index
+    private Institution poiInstitution;
     /*
     Last Edit Properties
      */
@@ -60,6 +64,7 @@ public class Client implements Serializable {
     /*
     Retire Properties
      */
+    @Index
     private boolean retired;
     private boolean reservedClient;
     @ManyToOne(fetch = FetchType.LAZY)
@@ -210,6 +215,8 @@ public class Client implements Serializable {
 
 // </editor-fold>
 
+    
+    
     public Institution getCreateInstitution() {
         return createInstitution;
     }
@@ -240,6 +247,14 @@ public class Client implements Serializable {
 
     public void setCreatedOn(Date createdOn) {
         this.createdOn = createdOn;
+    }
+
+    public Institution getPoiInstitution() {
+        return poiInstitution;
+    }
+
+    public void setPoiInstitution(Institution poiInstitution) {
+        this.poiInstitution = poiInstitution;
     }
 
     

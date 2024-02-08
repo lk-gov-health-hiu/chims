@@ -25,6 +25,7 @@ package lk.gov.health.phsp.entity;
 
 import java.io.Serializable;
 import java.util.Date;
+import javax.jdo.annotations.Index;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -34,40 +35,44 @@ import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
+import lk.gov.health.phsp.pojcs.Identifiable;
 
 /**
  *
  * @author buddhika
  */
 @Entity
-public class Preference implements Serializable {
+public class Preference implements Serializable, Identifiable  {
 
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    
+    @Index
     @Column(length = 100,nullable = false)
     private String name;
     @Lob
     private String longTextValue;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @Index
+    @ManyToOne(fetch = FetchType.EAGER)
     private Institution institution;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @Index
+    @ManyToOne(fetch = FetchType.EAGER)
     private WebUser webUser;
+    @Index
     private boolean applicationPreferance;
     
     /*
     Create Properties
      */
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private WebUser createdBy;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date createdAt;
     /*
     Last Edit Properties
      */
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private WebUser lastEditBy;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date lastEditeAt;
@@ -117,6 +122,9 @@ public class Preference implements Serializable {
     }
 
     public String getLongTextValue() {
+        if(longTextValue==null){
+            longTextValue = "";
+        }
         return longTextValue;
     }
 

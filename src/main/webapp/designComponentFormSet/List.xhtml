@@ -28,6 +28,14 @@
 
                             <p:ajax event="rowSelect"   update="createButton viewButton editButton deleteButton addForm errorEheck"/>
                             <p:ajax event="rowUnselect" update="createButton viewButton editButton deleteButton addForm errorEheck"/>
+                            
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="ID"/>
+                                </f:facet>
+                                <h:outputText value="#{item.id}"/>
+                            </p:column>
+                            
                             <p:column>
                                 <f:facet name="header">
                                     <h:outputText value="#{bundleClinical.ListDesignComponentFormSetTitle_name}"/>
@@ -62,9 +70,7 @@
                                 <f:facet name="header">
                                     <h:outputText value="Last Edited at"/>
                                 </f:facet>
-                                <h:outputText value="#{item.lastEditeAt}">
-                                    <f:convertDateTime parent="dd MMM yy hh:mm a" ></f:convertDateTime>
-                                </h:outputText>
+                                
                             </p:column>
                             
                              <p:column>

@@ -45,13 +45,37 @@ public enum WebUserRole {
     Student("Student");
 
     private final String label;
-    
-    private WebUserRole(String label){
+    String role;
+
+    private WebUserRole(String label) {
         this.label = label;
     }
-    
-    public String getLabel(){
+
+    public String getLabel() {
         return label;
-    } 
+    }
+
+    public String getRole() {
+        switch (this) {
+            case Institution_Administrator:
+                return "ia";
+            case Doctor:
+            case Midwife:
+            case Moh:
+            case Nurse:
+            case Student:
+            case Institution_Super_User:
+            case Institution_User:
+                return "iu";
+            case Me_Admin:
+            case Me_Super_User:
+            case Me_User:
+                return "me";
+            case System_Administrator:
+                return "sa";
+            default:
+                return "";
+        }
+    }
 
 }

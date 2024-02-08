@@ -25,26 +25,29 @@ package lk.gov.health.phsp.entity;
 
 import java.io.Serializable;
 import java.util.Date;
+import javax.jdo.annotations.Index;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.Transient;
-import javax.xml.bind.annotation.XmlRootElement;
+
+import lk.gov.health.phsp.pojcs.Identifiable;
 
 /**
  *
  * @author buddhika
  */
 @Entity
-@Table
-@XmlRootElement
-public class Component implements Serializable {
+@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
+public class Component implements Serializable, Identifiable {
 
     private static final long serialVersionUID = 1L;
 
@@ -55,25 +58,32 @@ public class Component implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    @Index
     String name;
 
+    @Index
     private String code;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @Index
+    @ManyToOne(fetch = FetchType.EAGER)
     private Item item;
 
     @Lob
     private String descreption;
 
+    @Index
     private Double orderNo;
 
-    @ManyToOne
+    @Index
+    @ManyToOne(fetch = FetchType.EAGER)
     private Institution institution;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @Index
+    @ManyToOne(fetch = FetchType.EAGER)
     private Component parentComponent;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @Index
+    @ManyToOne(fetch = FetchType.EAGER)
     private Component referenceComponent;
 
     @Lob
@@ -111,38 +121,41 @@ public class Component implements Serializable {
     /*
     Create Properties
      */
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private WebUser createdBy;
+    @Index
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date createdAt;
     /*
     Last Edit Properties
      */
-    @ManyToOne(fetch = FetchType.LAZY)
-    private WebUser lastEditBy;
-    @Temporal(javax.persistence.TemporalType.TIMESTAMP)
-    private Date lastEditeAt;
+//    @ManyToOne(fetch = FetchType.EAGER)
+//    private WebUser lastEditBy;
+//    @Temporal(javax.persistence.TemporalType.TIMESTAMP)
+//    private Date lastEditeAt;
     /*
     Retire Reversal Properties
      */
-    @ManyToOne(fetch = FetchType.LAZY)
-    private WebUser retiredReversedBy;
-    @Temporal(javax.persistence.TemporalType.TIMESTAMP)
-    private Date retiredReversedAt;
+//    @ManyToOne(fetch = FetchType.EAGER)
+//    private WebUser retiredReversedBy;
+//    @Temporal(javax.persistence.TemporalType.TIMESTAMP)
+//    private Date retiredReversedAt;
     /*
     Retire Properties
      */
+    @Index
     private boolean retired;
-    @ManyToOne(fetch = FetchType.LAZY)
-    private WebUser retiredBy;
-    @Temporal(javax.persistence.TemporalType.TIMESTAMP)
-    private Date retiredAt;
-    private String retireComments;
-
+//    @ManyToOne(fetch = FetchType.EAGER)
+//    private WebUser retiredBy;
+//    @Temporal(javax.persistence.TemporalType.TIMESTAMP)
+//    private Date retiredAt;
+//    private String retireComments;
+    @Index
     private boolean completed;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
+    @Index
     private Date completedAt;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private WebUser completedBy;
 
     public Long getId() {
@@ -220,38 +233,36 @@ public class Component implements Serializable {
         this.createdAt = createdAt;
     }
 
-    public WebUser getLastEditBy() {
-        return lastEditBy;
-    }
-
-    public void setLastEditBy(WebUser lastEditBy) {
-        this.lastEditBy = lastEditBy;
-    }
-
-    public Date getLastEditeAt() {
-        return lastEditeAt;
-    }
-
-    public void setLastEditeAt(Date lastEditeAt) {
-        this.lastEditeAt = lastEditeAt;
-    }
-
-    public WebUser getRetiredReversedBy() {
-        return retiredReversedBy;
-    }
-
-    public void setRetiredReversedBy(WebUser retiredReversedBy) {
-        this.retiredReversedBy = retiredReversedBy;
-    }
-
-    public Date getRetiredReversedAt() {
-        return retiredReversedAt;
-    }
-
-    public void setRetiredReversedAt(Date retiredReversedAt) {
-        this.retiredReversedAt = retiredReversedAt;
-    }
-
+//    public WebUser getLastEditBy() {
+//        return lastEditBy;
+//    }
+//
+//    public void setLastEditBy(WebUser lastEditBy) {
+//        this.lastEditBy = lastEditBy;
+//    }
+//
+//    public Date getLastEditeAt() {
+//        return lastEditeAt;
+//    }
+//
+//    public void setLastEditeAt(Date lastEditeAt) {
+//        this.lastEditeAt = lastEditeAt;
+//    }
+//    public WebUser getRetiredReversedBy() {
+//        return retiredReversedBy;
+//    }
+//
+//    public void setRetiredReversedBy(WebUser retiredReversedBy) {
+//        this.retiredReversedBy = retiredReversedBy;
+//    }
+//
+//    public Date getRetiredReversedAt() {
+//        return retiredReversedAt;
+//    }
+//
+//    public void setRetiredReversedAt(Date retiredReversedAt) {
+//        this.retiredReversedAt = retiredReversedAt;
+//    }
     public boolean isRetired() {
         return retired;
     }
@@ -260,30 +271,28 @@ public class Component implements Serializable {
         this.retired = retired;
     }
 
-    public WebUser getRetiredBy() {
-        return retiredBy;
-    }
-
-    public void setRetiredBy(WebUser retiredBy) {
-        this.retiredBy = retiredBy;
-    }
-
-    public Date getRetiredAt() {
-        return retiredAt;
-    }
-
-    public void setRetiredAt(Date retiredAt) {
-        this.retiredAt = retiredAt;
-    }
-
-    public String getRetireComments() {
-        return retireComments;
-    }
-
-    public void setRetireComments(String retireComments) {
-        this.retireComments = retireComments;
-    }
-
+//    public WebUser getRetiredBy() {
+//        return retiredBy;
+//    }
+//
+//    public void setRetiredBy(WebUser retiredBy) {
+//        this.retiredBy = retiredBy;
+//    }
+//    public Date getRetiredAt() {
+//        return retiredAt;
+//    }
+//
+//    public void setRetiredAt(Date retiredAt) {
+//        this.retiredAt = retiredAt;
+//    }
+//
+//    public String getRetireComments() {
+//        return retireComments;
+//    }
+//
+//    public void setRetireComments(String retireComments) {
+//        this.retireComments = retireComments;
+//    }
     public Double getOrderNo() {
         return orderNo;
     }

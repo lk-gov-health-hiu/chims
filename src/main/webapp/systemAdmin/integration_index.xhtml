@@ -1,0 +1,71 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+
+    <h:head>
+        <h:outputStylesheet library="css" name="main.css" ></h:outputStylesheet>
+    </h:head>
+
+    <h:body>
+        <ui:composition template="/template.xhtml">
+            <ui:define name="content">
+                <p:panel style="height: 100%; text-align: center;" rendered="#{!webUserController.loggedUser.systemAdministrator}">
+                    <h1>You are NOT authorized</h1>
+                </p:panel>
+
+                <p:panelGrid style="width: 100%;" columns="2" styleClass="alignTop" 
+                             >
+
+                    <f:facet name="header" >
+                        <p:outputLabel value="Manage Integration Endpoints" ></p:outputLabel>
+                    </f:facet>                    
+
+                    <h:form>
+
+                        <p:panelGrid columns="1" style="width: 15%;" >
+
+                            <p:commandButton icon="fa fa-user-plus"  ajax="false"
+                                             value="Add New Integration Endpoint" styleClass="btn300"
+                                             action="#{integrationEndpointController.navigateToAddNew()}">
+                            </p:commandButton>
+
+                            <p:commandButton icon="fa fa-user-plus"  ajax="false"
+                                             value="List Integration Endpoints" styleClass="btn300"
+                                             action="#{integrationEndpointController.navigateToList()}">
+                            </p:commandButton>
+                            
+                             <p:commandButton icon="fa fa-user-plus"  ajax="false"
+                                             value="Add New Integration Trigger" styleClass="btn300"
+                                             action="#{integrationTriggerController.navigateToAddNew()}">
+                            </p:commandButton>
+
+                            <p:commandButton icon="fa fa-user-plus"  ajax="false"
+                                             value="List Integration Triggers" styleClass="btn300"
+                                             action="#{integrationTriggerController.navigateToList()}">
+                            </p:commandButton>
+
+
+
+
+                        </p:panelGrid>
+
+                    </h:form>
+
+                    <ui:insert name="subContent" >
+
+                    </ui:insert>                      
+
+                </p:panelGrid>
+
+            </ui:define>
+
+        </ui:composition>
+
+    </h:body>
+</html>

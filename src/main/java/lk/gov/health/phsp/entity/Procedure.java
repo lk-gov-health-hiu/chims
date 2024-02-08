@@ -25,6 +25,7 @@ package lk.gov.health.phsp.entity;
 
 import java.io.Serializable;
 import java.util.Date;
+import javax.jdo.annotations.Index;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -36,8 +37,9 @@ import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
-import javax.xml.bind.annotation.XmlRootElement;
+
 import lk.gov.health.phsp.enums.PrescriptionType;
+import lk.gov.health.phsp.pojcs.Identifiable;
 
 /**
  *
@@ -45,31 +47,36 @@ import lk.gov.health.phsp.enums.PrescriptionType;
  */
 @Entity
 @Table
-@XmlRootElement
-public class Procedure implements Serializable {
+
+public class Procedure implements Serializable, Identifiable  {
 
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    @Index
     @ManyToOne
     private Item procedure;
+    @Index
     @ManyToOne
     private ClientEncounterComponentItem observationValue;
     @Lob
     private String description;
     
-    
+    @Index
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     @Column(name = "afrom")
     private Date from;
+    @Index
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     @Column(name = "ato")
     private Date to;
 
+    @Index
     @ManyToOne
     private Client client;
+    @Index
     @ManyToOne
     private Encounter encounter;
 
@@ -97,6 +104,7 @@ public class Procedure implements Serializable {
     /*
     Retire Properties
      */
+    @Index
     private boolean retired;
     @ManyToOne
     private WebUser retiredBy;

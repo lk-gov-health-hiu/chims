@@ -16,11 +16,13 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Named;
+import lk.gov.health.phsp.entity.SecurityProtocol;
 import lk.gov.health.phsp.enums.ComponentSetType;
 import lk.gov.health.phsp.enums.ComponentSex;
 import lk.gov.health.phsp.enums.DataCompletionStrategy;
@@ -40,6 +42,7 @@ import lk.gov.health.phsp.enums.QueryType;
 import lk.gov.health.phsp.enums.QueryVariableEvaluationType;
 import lk.gov.health.phsp.enums.RelationshipType;
 import lk.gov.health.phsp.enums.RenderType;
+import lk.gov.health.phsp.enums.SearchCriteria;
 import lk.gov.health.phsp.enums.SelectionDataType;
 import lk.gov.health.phsp.enums.TimePeriodType;
 import lk.gov.health.phsp.pojcs.TimePeriod;
@@ -60,10 +63,103 @@ public class CommonController implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    static SelectionDataType selectionDataTypeFromString(String strDataType) {
+        SelectionDataType[] dds = SelectionDataType.values();
+        for(SelectionDataType sdt:dds){
+            if(sdt.getLabel().equals(strDataType)){
+                return sdt;
+            }
+        }
+        return null;
+    }
+
     /**
      * Creates a new instance of HOSecurity
      */
     public CommonController() {
+    }
+
+    public List<String> getExcelColumns() {
+        List<String> cs = new ArrayList<>();
+        cs.add("A");
+        cs.add("B");
+        cs.add("C");
+        cs.add("D");
+        cs.add("E");
+        cs.add("F");
+        cs.add("G");
+        cs.add("H");
+        cs.add("I");
+        cs.add("J");
+        cs.add("K");
+        cs.add("L");
+        cs.add("M");
+        cs.add("N");
+        cs.add("O");
+        cs.add("P");
+        cs.add("Q");
+        cs.add("R");
+        cs.add("S");
+        cs.add("T");
+        cs.add("U");
+        cs.add("V");
+        cs.add("W");
+        cs.add("X");
+        cs.add("Y");
+        cs.add("Z");
+        return cs;
+    }
+
+    public static Integer excelColFromHeader(String columnName) {
+        if (columnName == null) {
+            return null;
+        }
+        columnName = columnName.toUpperCase();
+        switch (columnName) {
+            case "A":
+                return 0;
+            case "B":
+                return 1;
+            case "C":
+                return 2;
+            case "D":
+                return 3;
+            case "E":
+                return 4;
+            case "F":
+                return 5;
+            case "G":
+                return 6;
+            case "H":
+                return 7;
+            case "I":
+                return 8;
+            case "J":
+                return 9;
+            case "K":
+                return 10;
+            case "L":
+                return 11;
+            case "M":
+                return 12;
+            case "N":
+                return 13;
+            case "O":
+                return 14;
+            case "P":
+                return 15;
+            case "Q":
+                return 16;
+            case "R":
+                return 17;
+            case "S":
+                return 18;
+            case "T":
+                return 19;
+            case "U":
+                return 20;
+        }
+        return null;
     }
 
     public static String formatDate() {
@@ -281,6 +377,10 @@ public class CommonController implements Serializable {
         }
     }
 
+    public List<SearchCriteria> getSearchCriteriae() {
+        return Arrays.asList(SearchCriteria.values());
+    }
+    
     public WebUserRole[] getWebUserRoles() {
         return WebUserRole.values();
     }
@@ -428,16 +528,16 @@ public class CommonController implements Serializable {
     }
 
     public static Date startOfTheMonth(Date d) {
-//        // System.out.println("startOfTheMonth from date");
-//        // System.out.println("d = " + d);
+//        // //System.out.println("startOfTheMonth from date");
+//        // //System.out.println("d = " + d);
         Calendar c = Calendar.getInstance();
         c.setTime(d);
         c.set(Calendar.DAY_OF_MONTH, 1);
         c.set(Calendar.HOUR, 0);
         c.set(Calendar.MINUTE, 0);
         c.set(Calendar.MILLISECOND, 1);
-//        // System.out.println("c = " + c);
-//        // System.out.println("c.getTime() = " + c.getTime());
+//        // //System.out.println("c = " + c);
+//        // //System.out.println("c.getTime() = " + c.getTime());
         return c.getTime();
     }
 
@@ -451,13 +551,13 @@ public class CommonController implements Serializable {
     }
 
     public static Date startOfTheMonth(Integer year, Integer month) {
-//        // System.out.println("startOfTheMonth from year and month");
-//        // System.out.println("year = " + year);
-//        // System.out.println("month = " + month);
+//        // //System.out.println("startOfTheMonth from year and month");
+//        // //System.out.println("year = " + year);
+//        // //System.out.println("month = " + month);
         Calendar c = Calendar.getInstance();
         c.set(Calendar.YEAR, year);
         c.set(Calendar.MONTH, month - 1);
-//        // System.out.println("c = " + c);
+//        // //System.out.println("c = " + c);
         return startOfTheMonth(c.getTime());
     }
 
@@ -816,6 +916,35 @@ public class CommonController implements Serializable {
             return "";
         }
         return dateTimeToString(date, "dd MMMM yyyy");
+    }
+
+    public static String anonymizeData(String input) {
+        if (input == null) {
+            return "";
+        }
+        if ("".equals(input)) {
+            return "";
+        }
+        String output = "";
+
+        ArrayList<Character> chars = new ArrayList<Character>();
+        StringBuilder builder = new StringBuilder();
+        for (char c : input.toCharArray()) {
+            char nc;
+            if (Character.isUpperCase(c)) {
+                nc = (char) (Math.random() * 26 + 'A');
+            } else if (Character.isLowerCase(c)) {
+                nc = (char) (Math.random() * 26 + 'a');
+            } else if (Character.isDigit(c)) {
+                nc = (char) (Math.random() * 10 + '0');
+            } else {
+                nc = c;
+            }
+            builder.append(nc);
+        }
+        output = builder.toString();
+
+        return output;
     }
 
     public static List<TimePeriod> getMonthPeriodsForQuarter(Integer year, Integer q) {
