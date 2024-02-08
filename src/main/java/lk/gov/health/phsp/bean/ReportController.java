@@ -496,7 +496,7 @@ public class ReportController implements Serializable {
         CellStyle cellStyle = workbook.createCellStyle();
         CreationHelper createHelper = workbook.getCreationHelper();
         cellStyle.setDataFormat(
-                createHelper.createDataFormat().getFormat("dd/MMMM/yyyy hh:mm"));
+                createHelper.createDataFormat().getFormat("dd/MMMM/yyyy HH:mm"));
 
         for (ClientEncounterComponentItem i : cis) {
             if (i.getItemEncounter() != null) {
@@ -2401,7 +2401,7 @@ public class ReportController implements Serializable {
 
         CellStyle cellStyle = workbook.createCellStyle();
         CreationHelper createHelper = workbook.getCreationHelper();
-        cellStyle.setDataFormat(createHelper.createDataFormat().getFormat("dd/MMMM/yyyy hh:mm"));
+        cellStyle.setDataFormat(createHelper.createDataFormat().getFormat("dd/MMMM/yyyy HH:mm"));
 
         for (Client o : tmpClients) {
 
@@ -2766,7 +2766,7 @@ public class ReportController implements Serializable {
         CellStyle cellStyle = workbook.createCellStyle();
         CreationHelper createHelper = workbook.getCreationHelper();
         cellStyle.setDataFormat(
-                createHelper.createDataFormat().getFormat("dd/MMMM/yyyy hh:mm"));
+                createHelper.createDataFormat().getFormat("dd/MMMM/yyyy HH:mm"));
 
         for (Object o : objs) {
             if (o instanceof EncounterBasicData) {
@@ -2929,7 +2929,7 @@ public class ReportController implements Serializable {
         CellStyle cellStyle = workbook.createCellStyle();
         CreationHelper createHelper = workbook.getCreationHelper();
         cellStyle.setDataFormat(
-                createHelper.createDataFormat().getFormat("dd/MMMM/yyyy hh:mm"));
+                createHelper.createDataFormat().getFormat("dd/MMMM/yyyy HH:mm"));
 
         for (Object o : objs) {
             if (o instanceof EncounterBasicData) {
@@ -3174,7 +3174,7 @@ public class ReportController implements Serializable {
         CellStyle cellStyle = workbook.createCellStyle();
         CreationHelper createHelper = workbook.getCreationHelper();
         cellStyle.setDataFormat(
-                createHelper.createDataFormat().getFormat("dd/MMMM/yyyy hh:mm"));
+                createHelper.createDataFormat().getFormat("dd/MMMM/yyyy HH:mm"));
 
         for (InstituteTypeCounts cbd : itCounts) {
 
@@ -3532,7 +3532,7 @@ public class ReportController implements Serializable {
                             CreationHelper createHelper = workbook.getCreationHelper();
                             if (rc.getDateFormat() == null || rc.getDateFormat().trim().equals("")) {
                                 cellStyle.setDataFormat(
-                                        createHelper.createDataFormat().getFormat("dd/MMMM/yyyy hh:mm"));
+                                        createHelper.createDataFormat().getFormat("dd/MMMM/yyyy HH:mm"));
                             } else {
                                 cellStyle.setDataFormat(
                                         createHelper.createDataFormat().getFormat(rc.getDateFormat()));
@@ -3651,7 +3651,7 @@ public class ReportController implements Serializable {
                             CreationHelper createHelper = workbook.getCreationHelper();
                             if (rc.getDateFormat() == null || rc.getDateFormat().trim().equals("")) {
                                 cellStyle.setDataFormat(
-                                        createHelper.createDataFormat().getFormat("dd/MMMM/yyyy hh:mm"));
+                                        createHelper.createDataFormat().getFormat("dd/MMMM/yyyy HH:mm"));
                             } else {
                                 cellStyle.setDataFormat(
                                         createHelper.createDataFormat().getFormat(rc.getDateFormat()));

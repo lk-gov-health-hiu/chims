@@ -39,7 +39,7 @@
                             </p:column>
                             <p:column headerText="Time" width="150" sortBy="#{s.encounter.createdAt}" >
                                 <p:outputLabel value="#{s.encounter.createdAt}" >
-                                    <f:convertDateTime pattern="hh:mm a" ></f:convertDateTime>
+                                    <f:convertDateTime pattern="HH:mm a" ></f:convertDateTime>
                                 </p:outputLabel>
                             </p:column>
                             <p:column headerText="Institution" sortBy="#{s.encounter.institution.name}">

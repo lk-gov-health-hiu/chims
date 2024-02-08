@@ -28,14 +28,20 @@
 
                             </f:facet>
                             <p:outputLabel value="From" ></p:outputLabel>
-                            <p:calendar value="#{hospitalReportController.fromDate}" pattern="dd MM yyyy hh:mm a" ></p:calendar>
+                            <p:calendar value="#{hospitalReportController.fromDate}" pattern="dd MM yyyy HH:mm a" ></p:calendar>
                             <p:outputLabel value="To" ></p:outputLabel>
-                            <p:calendar value="#{hospitalReportController.toDate}" pattern="dd MM yyyy hh:mm a" ></p:calendar>
+                            <p:calendar value="#{hospitalReportController.toDate}" pattern="dd MM yyyy HH:mm a" ></p:calendar>
 
 
-                            <p:commandButton value="process" ajax="false"
-                                             action="#{hospitalReportController.fillClinicVisitsByInstitution()}"></p:commandButton>
-                            <p:commandButton value="Download" ajax="false">
+                            <p:commandButton 
+                                value="process" 
+                                ajax="false"
+                                class="w-100 m-1"
+                                action="#{hospitalReportController.fillClinicVisitsByInstitution()}"></p:commandButton>
+                            <p:commandButton 
+                                class="w-100 m-1"
+                                value="Download" 
+                                ajax="false">
                                 <p:dataExporter type="xlsx" target="tbl" fileName="Clinic Visits by Institution" ></p:dataExporter>
                             </p:commandButton>
                         </p:panelGrid>

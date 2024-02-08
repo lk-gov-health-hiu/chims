@@ -1101,7 +1101,7 @@ public class QueryComponentController implements Serializable {
         CellStyle cellStyle = workbook.createCellStyle();
         CreationHelper createHelper = workbook.getCreationHelper();
         cellStyle.setDataFormat(
-                createHelper.createDataFormat().getFormat("dd/MMMM/yyyy hh:mm"));
+                createHelper.createDataFormat().getFormat("dd/MMMM/yyyy HH:mm"));
 
         List<QueryComponent> tmpQueryComponents = queries(selectedSubcategory);
         for (QueryComponent tmpQc : tmpQueryComponents) {

@@ -155,7 +155,7 @@ public abstract class AbstractFacade<T extends Identifiable> {
 //        System.out.println("create");
 //        System.out.println("entity.getId() = " + entity.getId());
         if (entity.getId() == null) {
-            Long nextId= getNextId();
+            Long nextId = getNextId();
 //            System.out.println("nextId = " + nextId);
             entity.setId(nextId);
         }
@@ -297,7 +297,6 @@ public abstract class AbstractFacade<T extends Identifiable> {
 
         return resultList;
     }
-
 
     public List<T> findByJpql(String jpql, Map<String, Object> parameters) {
         TypedQuery<T> qry = null;
@@ -1079,6 +1078,23 @@ public abstract class AbstractFacade<T extends Identifiable> {
             return qry.getResultList();
         } catch (Exception e) {
             return null;
+        }
+    }
+
+    public <T> List<T> findAggregates(String jpql, Map<String, Object> parameters, TemporalType tt, Class<T> type) {
+        TypedQuery<T> qry = getEntityManager().createQuery(jpql, type);
+        parameters.forEach((key, value) -> {
+            if (value instanceof Date) {
+                qry.setParameter(key, (Date) value, tt);
+            } else {
+                qry.setParameter(key, value);
+            }
+        });
+        try {
+            return qry.getResultList();
+        } catch (Exception e) {
+            // Consider logging the exception here for better debugging.
+            return new ArrayList<>(); // Return an empty list instead of null to avoid NullPointerExceptions.
         }
     }
 

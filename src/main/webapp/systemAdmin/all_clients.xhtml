@@ -21,9 +21,9 @@
 
                         <p:panelGrid columns="2" >
                             <p:outputLabel value="From" ></p:outputLabel>
-                            <p:calendar value="#{clientController.from}" pattern="dd MM yyyy hh:mm a" ></p:calendar>
+                            <p:calendar value="#{clientController.from}" pattern="dd MM yyyy HH:mm a" ></p:calendar>
                             <p:outputLabel value="To" ></p:outputLabel>
-                            <p:calendar value="#{clientController.to}" pattern="dd MM yyyy hh:mm a" ></p:calendar>
+                            <p:calendar value="#{clientController.to}" pattern="dd MM yyyy HH:mm a" ></p:calendar>
 
                         </p:panelGrid>
 
@@ -70,7 +70,7 @@
 
                             <p:column  headerText="Register On" sortBy="#{c.createdAt}" >
                                 <p:outputLabel value="#{c.createdAt}" >
-                                    <f:convertDateTime pattern="dd MMMM yyyy hh:mm a" timeZone="Asia/Colombo" ></f:convertDateTime>
+                                    <f:convertDateTime pattern="dd MMMM yyyy HH:mm a" timeZone="Asia/Colombo" ></f:convertDateTime>
                                 </p:outputLabel>
                             </p:column>
                             <p:column  headerText="PHN" sortBy="#{c.phn}" filterBy="#{c.phn}" filterMatchMode="contains">

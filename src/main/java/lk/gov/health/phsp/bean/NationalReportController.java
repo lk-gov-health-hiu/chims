@@ -371,7 +371,7 @@ public class NationalReportController implements Serializable {
         CellStyle cellStyle = workbook.createCellStyle();
         CreationHelper createHelper = workbook.getCreationHelper();
         cellStyle.setDataFormat(
-                createHelper.createDataFormat().getFormat("dd/MMMM/yyyy hh:mm"));
+                createHelper.createDataFormat().getFormat("dd/MMMM/yyyy HH:mm"));
 
         for (ClientEncounterComponentItem i : cis) {
             if (i.getItemEncounter() != null) {
@@ -565,7 +565,7 @@ public class NationalReportController implements Serializable {
         CellStyle cellStyle = workbook.createCellStyle();
         CreationHelper createHelper = workbook.getCreationHelper();
         cellStyle.setDataFormat(
-                createHelper.createDataFormat().getFormat("dd/MMMM/yyyy hh:mm"));
+                createHelper.createDataFormat().getFormat("dd/MMMM/yyyy HH:mm"));
 
         DataFormset titleFormset = fillDesignComponantFormset(designingComponentFormSet);
 
@@ -797,7 +797,7 @@ public class NationalReportController implements Serializable {
         CellStyle cellStyle = workbook.createCellStyle();
         CreationHelper createHelper = workbook.getCreationHelper();
         cellStyle.setDataFormat(
-                createHelper.createDataFormat().getFormat("dd/MMMM/yyyy hh:mm"));
+                createHelper.createDataFormat().getFormat("dd/MMMM/yyyy HH:mm"));
 
         DataFormset titleFormset = fillDesignComponantFormset(designingComponentFormSet);
 

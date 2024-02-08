@@ -185,8 +185,8 @@ public class AnalysisController {
 //        // //System.out.println("Find Registration Count");
 //        // //System.out.println("Sex = " + sex);
 //        // //System.out.println("dates start");
-        // //System.out.println("p From = " + CommonController.dateTimeToString(pFrom, "dd MMMM yyyy hh:mm"));
-        // //System.out.println("p To = " + CommonController.dateTimeToString(pTo, "dd MMMM yyyy hh:mm"));
+        // //System.out.println("p From = " + CommonController.dateTimeToString(pFrom, "dd MMMM yyyy HH:mm"));
+        // //System.out.println("p To = " + CommonController.dateTimeToString(pTo, "dd MMMM yyyy HH:mm"));
 //        // //System.out.println("dates end");
 
         if (pIns == null || pIns.isEmpty()) {

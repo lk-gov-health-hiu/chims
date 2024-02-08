@@ -3123,7 +3123,7 @@ public class ClientController implements Serializable {
 
     public String getDateTimeFormat() {
         if (dateTimeFormat == null) {
-            dateTimeFormat = "yyyy-MM-dd hh:mm:ss";
+            dateTimeFormat = "yyyy-MM-dd HH:mm:ss";
         }
         return dateTimeFormat;
     }

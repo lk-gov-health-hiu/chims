@@ -12,10 +12,10 @@
                 <h:form >
                     <p:panelGrid id="display" columns="2" style="margin: auto;" styleClass="fullWidth">
                         <h:outputLabel value="From" ></h:outputLabel>
-                        <p:calendar value="#{analysisController.from}"  pattern="dd MMMM yyyy hh:mm" ></p:calendar>
+                        <p:calendar value="#{analysisController.from}"  pattern="dd MMMM yyyy HH:mm" ></p:calendar>
 
                         <h:outputLabel value="To" ></h:outputLabel>
-                        <p:calendar value="#{analysisController.to}" pattern="dd MMMM yyyy hh:mm" ></p:calendar>
+                        <p:calendar value="#{analysisController.to}" pattern="dd MMMM yyyy HH:mm" ></p:calendar>
 
                         <p:commandButton ajax="false" value="Process" action="#{analysisController.fillStoredRequests()}"></p:commandButton>
 
@@ -39,17 +39,17 @@
                         </p:column>
                         <p:column headerText="Created at" sortBy="#{s.requestCreatedAt}">
                             <h:outputText value="#{s.requestCreatedAt}" >
-                                <f:convertDateTime pattern="dd MMMM yyyy hh:mm:ss" ></f:convertDateTime>
+                                <f:convertDateTime pattern="dd MMMM yyyy HH:mm:ss" ></f:convertDateTime>
                             </h:outputText>
                         </p:column>
                         <p:column headerText="Process Started at" sortBy="#{s.processStartedAt}">
                             <h:outputText value="#{s.processStartedAt}" >
-                                <f:convertDateTime pattern="dd MMMM yyyy hh:mm:ss" ></f:convertDateTime>
+                                <f:convertDateTime pattern="dd MMMM yyyy HH:mm:ss" ></f:convertDateTime>
                             </h:outputText>
                         </p:column>
                         <p:column headerText="Process Completed at" sortBy="#{s.processCompletedAt}" >
                             <h:outputText value="#{s.processCompletedAt}" >
-                                <f:convertDateTime pattern="dd MMMM yyyy hh:mm:ss" ></f:convertDateTime>
+                                <f:convertDateTime pattern="dd MMMM yyyy HH:mm:ss" ></f:convertDateTime>
                             </h:outputText>
                         </p:column>
                          <p:column headerText="Successful" sortBy="#{s.processSuccess}">

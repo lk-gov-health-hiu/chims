@@ -328,7 +328,7 @@ public class CommonController implements Serializable {
 
     public String dateToString(Date date, String format) {
 
-        DateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd HH:mm:ss");
         String strDate = dateFormat.format(date);
         return strDate;
     }

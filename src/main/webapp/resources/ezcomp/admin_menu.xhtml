@@ -29,12 +29,12 @@
 
                 <p:submenu label="Analysis" 
                            disabled="false" >
-                    <p:menuitem ajax="false" value="Queries" 
-                                action="#{queryComponentController.toQueryIndex()}"  />
+                    <p:menuitem ajax="false" value="Counts" 
+                                action="#{reportController.toReportCounts()}" rendered="true"  ></p:menuitem>
                     <p:menuitem ajax="false" value="Reports" 
                                 action="#{reportController.toViewReports()}" ></p:menuitem>
-                    <p:menuitem ajax="false" value="Counts" 
-                                action="#{reportController.toReportCounts()}"  ></p:menuitem>
+                    <p:menuitem ajax="false" value="Queries" 
+                                action="#{queryComponentController.toQueryIndex()}"  />
 
                     <p:menuitem ajax="false" value="Indicators" 
                                 action="#{indicatorController.toIndicatorIndex}" ></p:menuitem>

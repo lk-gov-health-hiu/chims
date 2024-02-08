@@ -19,9 +19,9 @@
                         <p:panelGrid columns="2" >
                             <p:panelGrid columns="2" >
                                 <p:outputLabel value="From" ></p:outputLabel>
-                                <p:calendar value="#{clientEncounterComponentFormSetController.from}" pattern="dd MM yyyy hh:mm a" ></p:calendar>
+                                <p:calendar value="#{clientEncounterComponentFormSetController.from}" pattern="dd MM yyyy HH:mm a" ></p:calendar>
                                 <p:outputLabel value="To" ></p:outputLabel>
-                                <p:calendar value="#{clientEncounterComponentFormSetController.to}" pattern="dd MM yyyy hh:mm a" ></p:calendar>
+                                <p:calendar value="#{clientEncounterComponentFormSetController.to}" pattern="dd MM yyyy HH:mm a" ></p:calendar>
                             </p:panelGrid>
 
                         </p:panelGrid>
@@ -120,7 +120,7 @@
 
                         <p:column  headerText="Date/Time"  sortBy="#{c.encounter.createdAt}" >
                             <p:outputLabel value="#{c.encounter.encounterFrom}" >
-                                <f:convertDateTime pattern="dd MM yyyy hh:mm a" ></f:convertDateTime>
+                                <f:convertDateTime pattern="dd MM yyyy HH:mm a" ></f:convertDateTime>
                             </p:outputLabel>
                         </p:column>
 

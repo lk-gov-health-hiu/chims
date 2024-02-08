@@ -24,9 +24,9 @@
                             </p:outputLabel>
                         </f:facet>
                         <p:outputLabel value="From" ></p:outputLabel>
-                        <p:calendar value="#{reportController.fromDate}" pattern="dd MM yyyy hh:mm a" ></p:calendar>
+                        <p:calendar value="#{reportController.fromDate}" pattern="dd MM yyyy HH:mm a" ></p:calendar>
                         <p:outputLabel value="To" ></p:outputLabel>
-                        <p:calendar value="#{reportController.toDate}" pattern="dd MM yyyy hh:mm a" ></p:calendar>
+                        <p:calendar value="#{reportController.toDate}" pattern="dd MM yyyy HH:mm a" ></p:calendar>
                         <p:outputLabel value="Institution / Unit" ></p:outputLabel>
                         <p:autoComplete   value="#{reportController.institution}" 
                                           completeMethod="#{webUserController.completeLoggableInstitutions}"

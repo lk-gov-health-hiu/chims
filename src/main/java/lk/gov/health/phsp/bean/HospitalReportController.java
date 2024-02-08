@@ -276,7 +276,7 @@ public class HospitalReportController implements Serializable {
         downloadingFile = streamedContentController.generateStreamedContent(downloadingResult.getUpload().getFileType(), downloadingResult.getUpload().getFileName(), stream);
         return downloadingFile;
     }
-    
+
     public String toHospitalReportsCounts() {
         count = null;
         return "/hospital/counts/index";
@@ -290,6 +290,11 @@ public class HospitalReportController implements Serializable {
     public String toRegistrationCount() {
         count = null;
         return "/hospital/counts/registration_counts";
+    }
+
+    public String toRegistrationCountDetailed() {
+        count = null;
+        return "/hospital/counts/registration_counts_detailed";
     }
 
     public String toClinicVisitCount() {
@@ -588,7 +593,7 @@ public class HospitalReportController implements Serializable {
         CellStyle cellStyle = workbook.createCellStyle();
         CreationHelper createHelper = workbook.getCreationHelper();
         cellStyle.setDataFormat(
-                createHelper.createDataFormat().getFormat("dd/MMMM/yyyy hh:mm"));
+                createHelper.createDataFormat().getFormat("dd/MMMM/yyyy HH:mm"));
 
         for (ClientEncounterComponentItem i : cis) {
             if (i.getItemEncounter() != null) {
@@ -1634,7 +1639,7 @@ public class HospitalReportController implements Serializable {
     public String toRegistrationCounts() {
         encounters = new ArrayList<>();
         institutionCounts = new ArrayList<>();
-        String action = "/hospital/reports/registration_counts";
+        String action = "/hospital/reports/client_registration_counts";
         return action;
     }
 
@@ -2023,7 +2028,6 @@ public class HospitalReportController implements Serializable {
         //System.out.println("m = " + m);
         //System.out.println("j = " + j);
         //System.out.println("designingComponentFormSet = " + designingComponentFormSet.getId());
-
         List<ClientEncounterComponentItem> cis = clientEncounterComponentItemFacade.findByJpql(j, m);
 
         //String phn, String gnArea, String institution, Date dataOfBirth, Date encounterAt, String sex
@@ -2034,7 +2038,6 @@ public class HospitalReportController implements Serializable {
         }
 
         //System.out.println("cis = " + cis.size());
-
         String FILE_NAME = "form_set_values" + ".xlsx";
         String mimeType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
 
@@ -2122,7 +2125,7 @@ public class HospitalReportController implements Serializable {
         CellStyle cellStyle = workbook.createCellStyle();
         CreationHelper createHelper = workbook.getCreationHelper();
         cellStyle.setDataFormat(
-                createHelper.createDataFormat().getFormat("dd/MMMM/yyyy hh:mm"));
+                createHelper.createDataFormat().getFormat("dd/MMMM/yyyy HH:mm"));
 
         for (ClientEncounterComponentItem i : cis) {
             if (i.getItemEncounter() != null) {
@@ -2281,6 +2284,187 @@ public class HospitalReportController implements Serializable {
         m.put("fd", getFromDate());
         m.put("td", getToDate());
 
+        String insName = "";
+
+        if (institution != null) {
+            j += " and c.createInstitution in :ins ";
+            List<Institution> ins = institutionApplicationController.findChildrenInstitutions(institution);
+            ins.add(institution);
+            insName = institution.getName();
+            m.put("ins", ins);
+        } else {
+            if (webUserController.getLoggedUser().isRestrictedToInstitution()) {
+                j += " and c.createInstitution in :ins ";
+                List<Institution> ins = webUserController.getLoggableInstitutions();
+                m.put("ins", ins);
+            }
+            insName = webUserController.getLoggedUser().getInstitution().getName();
+        }
+
+        List<Client> tmpClients = getClientFacade().findByJpql(j, m, TemporalType.TIMESTAMP);
+
+        String FILE_NAME = "client_registrations_list" + "_" + insName + "_from_" + CommonController.formatDate(fromDate, "dd MMMM yyyy HH_mm") + "_to_" + CommonController.formatDate(toDate, "dd MMMM yyyy HH_mm") + ".xlsx";
+        String mimeType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+
+        String folder = "/tmp/";
+
+        File newFile = new File(folder + FILE_NAME);
+
+        XSSFWorkbook workbook = new XSSFWorkbook();
+        XSSFSheet sheet = workbook.createSheet("Data");
+
+        int rowCount = 0;
+
+        Row t1 = sheet.createRow(rowCount++);
+        Cell th1_lbl = t1.createCell(0);
+        th1_lbl.setCellValue("Report");
+        Cell th1_val = t1.createCell(1);
+        th1_val.setCellValue("List of Clients");
+
+        Row t2 = sheet.createRow(rowCount++);
+        Cell th2_lbl = t2.createCell(0);
+        th2_lbl.setCellValue("From");
+        Cell th2_val = t2.createCell(1);
+        th2_val.setCellValue(CommonController.dateTimeToString(fromDate, "dd MMMM yyyy"));
+
+        Row t3 = sheet.createRow(rowCount++);
+        Cell th3_lbl = t3.createCell(0);
+        th3_lbl.setCellValue("To");
+        Cell th3_val = t3.createCell(1);
+        th3_val.setCellValue(CommonController.dateTimeToString(toDate, "dd MMMM yyyy"));
+
+        if (institution != null) {
+            Row t4 = sheet.createRow(rowCount++);
+            Cell th4_lbl = t4.createCell(0);
+            th4_lbl.setCellValue("Institution");
+            Cell th4_val = t4.createCell(1);
+            th4_val.setCellValue(institution.getName());
+        }
+
+        rowCount++;
+
+        Row t5 = sheet.createRow(rowCount);
+        Cell th5_1 = t5.createCell(0);
+        th5_1.setCellValue("Serial");
+
+        Cell th5_2 = t5.createCell(1);
+        th5_2.setCellValue("PHN");
+
+        Cell th5_3 = t5.createCell(2);
+        th5_3.setCellValue("Name");
+
+        Cell th5_4 = t5.createCell(3);
+        th5_4.setCellValue("NIC");
+
+        Cell th5_5 = t5.createCell(4);
+        th5_5.setCellValue("Birthday");
+
+        Cell th5_6 = t5.createCell(5);
+        th5_6.setCellValue("Age(yrs)");
+
+        Cell th5_7 = t5.createCell(6);
+        th5_7.setCellValue("Sex");
+
+        Cell th5_8 = t5.createCell(7);
+        th5_8.setCellValue("Address");
+
+        Cell th5_9 = t5.createCell(8);
+        th5_9.setCellValue("GN Areas");
+
+        Cell th5_10 = t5.createCell(9);
+        th5_10.setCellValue("Phone");
+
+        if (institution == null) {
+            Cell th5_11 = t5.createCell(10);
+            th5_11.setCellValue("Institution");
+        }
+
+        int serial = 1;
+
+        CellStyle cellStyle = workbook.createCellStyle();
+        CreationHelper createHelper = workbook.getCreationHelper();
+        cellStyle.setDataFormat(createHelper.createDataFormat().getFormat("dd/MMMM/yyyy HH:mm"));
+
+        for (Client o : tmpClients) {
+
+            Row row = sheet.createRow(++rowCount);
+
+            Cell c1 = row.createCell(0);
+            c1.setCellValue(serial);
+
+            Cell c2 = row.createCell(1);
+            c2.setCellValue(o.getPhn());
+
+            if (o.getPerson() == null) {
+                continue;
+            }
+
+            Cell c3 = row.createCell(2);
+            c3.setCellValue(o.getPerson().getName());
+
+            Cell c4 = row.createCell(3);
+            c4.setCellValue(o.getPerson().getNic());
+
+            Cell c5 = row.createCell(4);
+            c5.setCellValue(o.getPerson().getDateOfBirth());
+            c5.setCellStyle(cellStyle);
+
+            Cell c6 = row.createCell(5);
+            c6.setCellValue(o.getPerson().getAge());
+
+            Cell c7 = row.createCell(6);
+            if (o.getPerson().getSex() != null) {
+                c7.setCellValue(o.getPerson().getSex().getName());
+            }
+
+            Cell c8 = row.createCell(7);
+            c8.setCellValue(o.getPerson().getAddress());
+
+            Cell c9 = row.createCell(8);
+            if (o.getPerson().getGnArea() != null) {
+                c9.setCellValue(o.getPerson().getGnArea().getName());
+            }
+
+            Cell c10 = row.createCell(9);
+            c10.setCellValue(o.getPerson().getPhone1());
+
+            if (institution == null) {
+                Cell c11 = row.createCell(10);
+                c11.setCellValue(o.getCreateInstitution().getName());
+            }
+
+            serial++;
+
+        }
+
+        try (FileOutputStream outputStream = new FileOutputStream(newFile)) {
+            workbook.write(outputStream);
+        } catch (Exception e) {
+
+        }
+
+        InputStream stream;
+        try {
+            stream = new FileInputStream(newFile);
+            resultExcelFile = streamedContentController.generateStreamedContent(mimeType, FILE_NAME, stream);
+        } catch (FileNotFoundException ex) {
+            // //System.out.println("File not found exception -->" + ex.getMessage());
+        }
+    }
+
+    public void downloadClientRegistrationsWithReservedPhns() {
+        String j;
+        Map m = new HashMap();
+
+        j = "select c "
+                + " from Client c "
+                + " where (c.retired=:ret or c.retired is null) "
+                + " and c.createdAt between :fd and :td ";
+        m.put("ret", false);
+        m.put("res", false);
+        m.put("fd", getFromDate());
+        m.put("td", getToDate());
+
         if (institution != null) {
             j += " and c.createInstitution in :ins ";
             List<Institution> ins = institutionApplicationController.findChildrenInstitutions(institution);
@@ -2376,7 +2560,7 @@ public class HospitalReportController implements Serializable {
 
         CellStyle cellStyle = workbook.createCellStyle();
         CreationHelper createHelper = workbook.getCreationHelper();
-        cellStyle.setDataFormat(createHelper.createDataFormat().getFormat("dd/MMMM/yyyy hh:mm"));
+        cellStyle.setDataFormat(createHelper.createDataFormat().getFormat("dd/MMMM/yyyy HH:mm"));
 
         for (Client o : tmpClients) {
 
@@ -2463,7 +2647,36 @@ public class HospitalReportController implements Serializable {
         j = j + " order by c.createInstitution.name ";
         m.put("fd", getFromDate());
         m.put("td", getToDate());
-        List<Object> objs = getClientFacade().findAggregates(j, m);
+        List<Object> objs = getClientFacade().findAggregates(j, m, TemporalType.TIMESTAMP);
+        institutionCounts = new ArrayList<>();
+        reportCount = 0l;
+        for (Object o : objs) {
+            if (o instanceof InstitutionCount) {
+                InstitutionCount ic = (InstitutionCount) o;
+                institutionCounts.add(ic);
+                reportCount += ic.getCount();
+            }
+        }
+        userTransactionController.recordTransaction("Fill Registrations Of Clients By Institution");
+    }
+
+    public void fillRegistrationsOfClientsByInstitutionWithReservedPHNs() {
+        String j = "select new lk.gov.health.phsp.pojcs.InstitutionCount(c.createInstitution, count(c)) "
+                + " from Client c "
+                + " where c.retired<>:ret ";
+        Map m = new HashMap();
+        m.put("ret", true);
+        m.put("res", true);
+        j = j + " and c.createdAt between :fd and :td ";
+
+        j = j + " and c.createInstitution in :ins ";
+        m.put("ins", webUserController.getLoggableInstitutions());
+
+        j = j + " group by c.createInstitution ";
+        j = j + " order by c.createInstitution.name ";
+        m.put("fd", getFromDate());
+        m.put("td", getToDate());
+        List<Object> objs = getClientFacade().findAggregates(j, m, TemporalType.TIMESTAMP);
         institutionCounts = new ArrayList<>();
         reportCount = 0l;
         for (Object o : objs) {
@@ -2659,7 +2872,7 @@ public class HospitalReportController implements Serializable {
         //String phn, String gnArea, String institution, Date dataOfBirth, Date encounterAt, String sex
         List<Object> objs = getClientFacade().findAggregates(j, m, TemporalType.DATE);
 
-        String FILE_NAME = "client_clinic_registrations" + "_" + (new Date()) + ".xlsx";
+        String FILE_NAME = "clinic_registrations" + "_" + (new Date()) + ".xlsx";
         String mimeType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
 
         String folder = "/tmp/";
@@ -2911,11 +3124,10 @@ public class HospitalReportController implements Serializable {
         Cell th5_9 = t5.createCell(8);
         th5_9.setCellValue("Visit at");
 
-        Cell th5_10 = t5.createCell(9);
-        th5_10.setCellValue("Completed");
-
+//        Cell th5_10 = t5.createCell(9);
+//        th5_10.setCellValue("Completed");
         if (institution == null) {
-            Cell th5_11 = t5.createCell(10);
+            Cell th5_11 = t5.createCell(9);
             th5_11.setCellValue("Institution");
         }
 
@@ -2924,7 +3136,7 @@ public class HospitalReportController implements Serializable {
         CellStyle cellStyle = workbook.createCellStyle();
         CreationHelper createHelper = workbook.getCreationHelper();
         cellStyle.setDataFormat(
-                createHelper.createDataFormat().getFormat("dd/MMMM/yyyy hh:mm"));
+                createHelper.createDataFormat().getFormat("dd/MMMM/yyyy HH:mm"));
 
         for (Object o : objs) {
             if (o instanceof EncounterBasicData) {
@@ -2959,14 +3171,205 @@ public class HospitalReportController implements Serializable {
                 c9.setCellValue(cbd.getEncounterAt());
                 c9.setCellStyle(cellStyle);
 
-                Cell c11 = row.createCell(9);
-                if (cbd.getCompleted() != null && cbd.getCompleted()) {
-                    c11.setCellValue("Complete");
-                } else {
-                    c11.setCellValue("Incomplete");
-                }
+//                Cell c11 = row.createCell(9);
+//                if (cbd.getCompleted() != null && cbd.getCompleted()) {
+//                    c11.setCellValue("Complete");
+//                } else {
+//                    c11.setCellValue("Incomplete");
+//                }
                 if (institution == null) {
-                    Cell c10 = row.createCell(10);
+                    Cell c10 = row.createCell(9);
+                    c10.setCellValue(cbd.getInstitution());
+                }
+
+                serial++;
+            }
+        }
+
+        objs = null;
+        System.gc();
+
+        try (FileOutputStream outputStream = new FileOutputStream(newFile)) {
+            workbook.write(outputStream);
+        } catch (Exception e) {
+
+        }
+
+        InputStream stream;
+        try {
+            stream = new FileInputStream(newFile);
+            resultExcelFile = streamedContentController.generateStreamedContent(mimeType, FILE_NAME, stream);
+        } catch (FileNotFoundException ex) {
+
+        }
+
+    }
+
+    public void downloadClinicVisitsOld() {
+        String j;
+        Map m = new HashMap();
+
+        j = "select new lk.gov.health.phsp.pojcs.EncounterBasicData("
+                + "e.client.phn, "
+                + "e.client.person.name, "
+                + "e.client.person.dateOfBirth, "
+                + "e.client.person.sex.name, "
+                + "e.client.person.phone1, "
+                + "e.client.person.address, "
+                + "e.client.person.gnArea.name, "
+                + "e.institution.name, "
+                + "e.encounterDate,"
+                + "e.completed "
+                + ") from Encounter e "
+                + "where e.retired<>:ret "
+                + "and e.encounterType=:type "
+                + "and e.encounterDate between :fd and :td";
+
+        m.put("ret", false); // Assuming you want non-retired Encounters
+        m.put("type", EncounterType.Clinic_Visit);
+        m.put("fd", fromDate);
+        m.put("td", toDate);
+
+        // Adjust the institution filtering to match the count method logic
+        if (institution != null) {
+            j += " and e.institution = :ins "; // For a specific institution and its children
+            m.put("ins", institution);
+        } else {
+            // If counting or listing based on authorized institutions, adjust this logic to match the count method
+            List<Institution> authorizedInstitutions = webUserController.findAutherizedInstitutions();
+            if (!authorizedInstitutions.isEmpty()) {
+                j += " and e.institution in :ins ";
+                m.put("ins", authorizedInstitutions);
+            }
+        }
+
+        //String phn, String gnArea, String institution, Date dataOfBirth, Date encounterAt, String sex
+        List<Object> objs = getClientFacade().findAggregates(j, m);
+
+        String FILE_NAME = "client_clinic_visits" + "_" + (new Date()) + ".xlsx";
+        String mimeType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+
+        String folder = "/tmp/";
+
+        File newFile = new File(folder + FILE_NAME);
+
+        XSSFWorkbook workbook = new XSSFWorkbook();
+        XSSFSheet sheet = workbook.createSheet("Data");
+
+        int rowCount = 0;
+
+        Row t1 = sheet.createRow(rowCount++);
+        Cell th1_lbl = t1.createCell(0);
+        th1_lbl.setCellValue("Report");
+        Cell th1_val = t1.createCell(1);
+        th1_val.setCellValue("List of Clinic Visits");
+
+        Row t2 = sheet.createRow(rowCount++);
+        Cell th2_lbl = t2.createCell(0);
+        th2_lbl.setCellValue("From");
+        Cell th2_val = t2.createCell(1);
+        th2_val.setCellValue(CommonController.dateTimeToString(fromDate, "dd MMMM yyyy"));
+
+        Row t3 = sheet.createRow(rowCount++);
+        Cell th3_lbl = t3.createCell(0);
+        th3_lbl.setCellValue("To");
+        Cell th3_val = t3.createCell(1);
+        th3_val.setCellValue(CommonController.dateTimeToString(toDate, "dd MMMM yyyy"));
+
+        if (institution != null) {
+            Row t4 = sheet.createRow(rowCount++);
+            Cell th4_lbl = t4.createCell(0);
+            th4_lbl.setCellValue("Institution");
+            Cell th4_val = t4.createCell(1);
+            th4_val.setCellValue(institution.getName());
+        }
+
+        rowCount++;
+
+        Row t5 = sheet.createRow(rowCount);
+
+        Cell th5_1 = t5.createCell(0);
+        th5_1.setCellValue("Serial");
+
+        Cell th5_2 = t5.createCell(1);
+        th5_2.setCellValue("PHN");
+
+        Cell th5_3 = t5.createCell(2);
+        th5_3.setCellValue("Name");
+
+        Cell th5_4 = t5.createCell(3);
+        th5_4.setCellValue("Age in Years at Encounter");
+
+        Cell th5_5 = t5.createCell(4);
+        th5_5.setCellValue("Sex");
+
+        Cell th5_6 = t5.createCell(5);
+        th5_6.setCellValue("Phone");
+
+        Cell th5_7 = t5.createCell(6);
+        th5_7.setCellValue("Address");
+
+        Cell th5_8 = t5.createCell(7);
+        th5_8.setCellValue("GN Areas");
+
+        Cell th5_9 = t5.createCell(8);
+        th5_9.setCellValue("Visit at");
+
+//        Cell th5_10 = t5.createCell(9);
+//        th5_10.setCellValue("Completed");
+        if (institution == null) {
+            Cell th5_11 = t5.createCell(9);
+            th5_11.setCellValue("Institution");
+        }
+
+        int serial = 1;
+
+        CellStyle cellStyle = workbook.createCellStyle();
+        CreationHelper createHelper = workbook.getCreationHelper();
+        cellStyle.setDataFormat(
+                createHelper.createDataFormat().getFormat("dd/MMMM/yyyy HH:mm"));
+
+        for (Object o : objs) {
+            if (o instanceof EncounterBasicData) {
+                EncounterBasicData cbd = (EncounterBasicData) o;
+                Row row = sheet.createRow(++rowCount);
+
+                Cell c1 = row.createCell(0);
+                c1.setCellValue(serial);
+
+                Cell c2 = row.createCell(1);
+                c2.setCellValue(cbd.getPhn());
+
+                Cell c3 = row.createCell(2);
+                c3.setCellValue(cbd.getName());
+
+                Cell c4 = row.createCell(3);
+                c4.setCellValue(cbd.getAgeInYears());
+
+                Cell c5 = row.createCell(4);
+                c5.setCellValue(cbd.getSex());
+
+                Cell c6 = row.createCell(5);
+                c6.setCellValue(cbd.getPhone());
+
+                Cell c7 = row.createCell(6);
+                c7.setCellValue(cbd.getAddress());
+
+                Cell c8 = row.createCell(7);
+                c8.setCellValue(cbd.getGnArea());
+
+                Cell c9 = row.createCell(8);
+                c9.setCellValue(cbd.getEncounterAt());
+                c9.setCellStyle(cellStyle);
+
+//                Cell c11 = row.createCell(9);
+//                if (cbd.getCompleted() != null && cbd.getCompleted()) {
+//                    c11.setCellValue("Complete");
+//                } else {
+//                    c11.setCellValue("Incomplete");
+//                }
+                if (institution == null) {
+                    Cell c10 = row.createCell(9);
                     c10.setCellValue(cbd.getInstitution());
                 }
 
@@ -3179,7 +3582,7 @@ public class HospitalReportController implements Serializable {
         CellStyle cellStyle = workbook.createCellStyle();
         CreationHelper createHelper = workbook.getCreationHelper();
         cellStyle.setDataFormat(
-                createHelper.createDataFormat().getFormat("dd/MMMM/yyyy hh:mm"));
+                createHelper.createDataFormat().getFormat("dd/MMMM/yyyy HH:mm"));
 
         for (InstituteTypeCounts cbd : itCounts) {
 
@@ -3523,7 +3926,7 @@ public class HospitalReportController implements Serializable {
                             CreationHelper createHelper = workbook.getCreationHelper();
                             if (rc.getDateFormat() == null || rc.getDateFormat().trim().equals("")) {
                                 cellStyle.setDataFormat(
-                                        createHelper.createDataFormat().getFormat("dd/MMMM/yyyy hh:mm"));
+                                        createHelper.createDataFormat().getFormat("dd/MMMM/yyyy HH:mm"));
                             } else {
                                 cellStyle.setDataFormat(
                                         createHelper.createDataFormat().getFormat(rc.getDateFormat()));
@@ -3642,7 +4045,7 @@ public class HospitalReportController implements Serializable {
                             CreationHelper createHelper = workbook.getCreationHelper();
                             if (rc.getDateFormat() == null || rc.getDateFormat().trim().equals("")) {
                                 cellStyle.setDataFormat(
-                                        createHelper.createDataFormat().getFormat("dd/MMMM/yyyy hh:mm"));
+                                        createHelper.createDataFormat().getFormat("dd/MMMM/yyyy HH:mm"));
                             } else {
                                 cellStyle.setDataFormat(
                                         createHelper.createDataFormat().getFormat(rc.getDateFormat()));
@@ -4037,7 +4440,7 @@ public class HospitalReportController implements Serializable {
     public List<AreaCount> getAreaCounts() {
         return areaCounts;
     }
-    
+
     public void fillRegistrationCounts() {
         String j;
         Map m = new HashMap();
@@ -4052,13 +4455,11 @@ public class HospitalReportController implements Serializable {
         if (institution != null) {
             j += " and c.createInstitution=:ins ";
             m.put("ins", institution);
-        }else{
+        } else {
             j += " and c.createInstitution in :inss";
             m.put("inss", webUserController.getLoggableInstitutions());
         }
-        
-        
-        
+
         j += " and c.createdAt between :fd and :td ";
         m.put("ret", false);
         m.put("fd", getFromDate());
@@ -4080,7 +4481,45 @@ public class HospitalReportController implements Serializable {
         }
 
     }
-    
+
+    public void fillRegistrationCountsDetailed() {
+        String j;
+        Map<String, Object> m = new HashMap<>();
+
+        // Adjusted JPQL to include 'c.createInstitution' and 'count(c)' in the selection
+        j = "select new lk.gov.health.phsp.pojcs.ObservationValueCount(c.createInstitution, count(c)) "
+                + "from Client c "
+                + "where c.retired=:ret ";
+        if (sex != null) {
+            j += " and c.person.sex.code=:s ";
+            m.put("s", sex.getCode());
+        }
+        if (institution != null) {
+            j += " and c.createInstitution=:ins ";
+            m.put("ins", institution);
+        } else {
+            j += " and c.createInstitution in :inss";
+            m.put("inss", webUserController.getLoggableInstitutions());
+        }
+
+        j += " and c.createdAt between :fd and :td ";
+        m.put("ret", false);
+        m.put("fd", getFromDate());
+        m.put("td", getToDate());
+
+        observationValueCounts = new ArrayList<>();
+        System.out.println("m = " + m);
+        System.out.println("j = " + j);
+
+        // Using the updated findAggregates method signature
+        List<ObservationValueCount> objs = clientFacade.findAggregates(j, m, TemporalType.TIMESTAMP, ObservationValueCount.class);
+
+        // No need for null check, as the updated method returns an empty list instead of null
+        for (ObservationValueCount ic : objs) {
+            System.out.println("ic count= " + ic.getCount() + ", institution= " + (ic.getCreateInstitution() != null ? ic.getCreateInstitution().getName() : "null"));
+            observationValueCounts.add(ic);
+        }
+    }
 
     public void setAreaCounts(List<AreaCount> areaCounts) {
         this.areaCounts = areaCounts;
@@ -4141,7 +4580,5 @@ public class HospitalReportController implements Serializable {
     public void setObservationValueCounts(List<ObservationValueCount> observationValueCounts) {
         this.observationValueCounts = observationValueCounts;
     }
-    
-    
 
 }

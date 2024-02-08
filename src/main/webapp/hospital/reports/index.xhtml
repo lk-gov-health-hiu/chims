@@ -27,28 +27,28 @@
 
                             <p:ajax event="tabChange" update="@this" />
                             <p:tab title="Counts"  >
-                                <h:panelGrid columns="1" >
-                                    <p:commandButton value="Client Registrations"   style="width:20em;margin:auto;"
+                                <h:panelGrid columns="1" class="w-100" >
+                                    <p:commandButton value="Client Registration Counts"   class="w-100 m-1"
                                                      action="#{hospitalReportController.toRegistrationCounts()}"
                                                      ajax="false"></p:commandButton>
-                                    
-                                     <p:commandButton value="Clinic Registrations"   style="width:20em;margin:auto;"
-                                                      action="#{hospitalReportController.toClinicRegistrationCounts()}"
+
+                                    <p:commandButton value="Clinic Registration Counts"    class="w-100 m-1"
+                                                     action="#{hospitalReportController.toClinicRegistrationCounts()}"
                                                      ajax="false"></p:commandButton>
 
-                                    <p:commandButton value="Clinic Visits"   style="width:20em;margin:auto;"
+                                    <p:commandButton value="Clinic Visit Counts"    class="w-100 m-1"
                                                      action="#{hospitalReportController.toVisitCounts()}"
                                                      ajax="false"></p:commandButton>
 
-                                     <p:commandButton value="Institution-vice Formsets"   style="width:20em;margin:auto;"
+                                    <p:commandButton value="Institution-vice Formsets"    class="w-100 m-1"
                                                      action="#{reportController.toViewFormsetCountsByInstitution()}"
                                                      ajax="false"></p:commandButton>
-                                    
-                                    <p:commandButton value="Daily Registrations"  rendered="false"  style="width:20em;margin:auto;"
+
+                                    <p:commandButton value="Daily Registrations"  rendered="false"   class="w-100 m-1"
                                                      action="#{hospitalReportController.toViewDailyClinicsRegistrationCounts()}"
                                                      ajax="false"></p:commandButton>
 
-                                    <p:commandButton value="Daily Clinic Visits"   style="width:20em;margin:auto;"
+                                    <p:commandButton value="Daily Clinic Visits"    class="w-100 m-1"
                                                      action="#{hospitalReportController.toDailyVisitCounts()}"
                                                      ajax="false"></p:commandButton>
 
@@ -57,36 +57,36 @@
                             </p:tab>
 
                             <p:tab title="Lists" >
-                                <h:panelGrid columns="1" >
-                                    <p:commandButton value="Client Registrations"   style="width:20em;margin:auto;"
+                                <h:panelGrid columns="1" class="w-100" >
+                                    <p:commandButton value="Client Registrations"    class="w-100 m-1"
                                                      action="#{hospitalReportController.toViewClientRegistrations()}"
                                                      ajax="false"></p:commandButton>
 
-                                    <p:commandButton value="Clinic Registrations"   style="width:20em;margin:auto;"
+                                    <p:commandButton value="Clinic Registrations"    class="w-100 m-1"
                                                      action="#{hospitalReportController.toViewClinicRegistration()}"
                                                      ajax="false"></p:commandButton>
 
-                                    <p:commandButton value="Clinic Visits"   style="width:20em;margin:auto;"
+                                    <p:commandButton value="Clinic Visits"    class="w-100 m-1"
                                                      action="#{hospitalReportController.toViewClinicVisits()}"
                                                      ajax="false"></p:commandButton>
-                                    
-                                      <p:commandButton value="Form-sets"   style="width:20em;margin:auto;"
+
+                                    <p:commandButton value="Form-sets"    class="w-100 m-1"
                                                      action="#{reportController.toViewformsetList()}"
                                                      ajax="false"></p:commandButton>
 
-                                    <p:commandButton value="Longitudinal Clinic Visits" rendered="false"   style="width:20em;margin:auto;"
+                                    <p:commandButton value="Longitudinal Clinic Visits" rendered="false"    class="w-100 m-1"
                                                      action="#{hospitalReportController.toViewLongitudinalClinicVisits()}"
                                                      ajax="false"></p:commandButton>
 
-                                    <p:commandButton value="All Clients &amp; All Visits" rendered="false"  style="width:20em;margin:auto;"
+                                    <p:commandButton value="All Clients &amp; All Visits" rendered="false"   class="w-100 m-1"
                                                      action="#{hospitalReportController.toViewAllClientsAndAllClinicVisits()}"
                                                      ajax="false"></p:commandButton>
 
-                                    <p:commandButton value="Clinical Data - Single Variable"   style="width:20em;margin:auto;"
+                                    <p:commandButton value="Clinical Data - Single Variable"    class="w-100 m-1"
                                                      action="#{hospitalReportController.toViewClinicalDataSingle()}"
                                                      ajax="false"></p:commandButton>
-                                    
-                                    <p:commandButton value="Clinical Data - Form Set"  rendered="true"  style="width:20em;margin:auto;"
+
+                                    <p:commandButton value="Clinical Data - Form Set"  rendered="true"   class="w-100 m-1"
                                                      action="#{hospitalReportController.toViewClinicalDataFormset()}"
                                                      ajax="false"></p:commandButton>
 
@@ -95,7 +95,7 @@
 
                             </p:tab>
 
-                          
+
 
                         </p:accordionPanel>
                     </h:form>

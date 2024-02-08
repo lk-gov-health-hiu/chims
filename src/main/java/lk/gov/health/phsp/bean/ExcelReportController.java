@@ -1320,7 +1320,7 @@ public class ExcelReportController implements Serializable {
 
     private String currentTimeAsString() {
         Date date = Calendar.getInstance().getTime();
-        DateFormat dateFormat = new SimpleDateFormat("hh:mm:ss");
+        DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
         String strDate = dateFormat.format(date);
         return strDate;
     }

@@ -23,6 +23,8 @@
  */
 package lk.gov.health.phsp.pojcs;
 
+import lk.gov.health.phsp.entity.Institution;
+
 /**
  *
  * @author buddhika
@@ -34,11 +36,10 @@ public class ObservationValueCount {
     private Integer intValue;
     private Long longValue;
     private Double realNumberValue;
+    private Institution createInstitution; // Added field for Institution
     
+    // Constructors
     
-    
-    
-
     public ObservationValueCount() {
     }
 
@@ -46,33 +47,33 @@ public class ObservationValueCount {
         this.count = count;
     }
     
-    
-
     public ObservationValueCount(Double realNumberValue, Long count) {
-        this.count = count;
         this.realNumberValue = realNumberValue;
+        this.count = count;
     }
     
-    
-
     public ObservationValueCount(String stringValue, Long count) {
         this.stringValue = stringValue;
         this.count = count;
     }
 
     public ObservationValueCount(Integer intValue, Long count) {
-        this.count = count;
         this.intValue = intValue;
+        this.count = count;
     }
 
     public ObservationValueCount(Long longValue, Long count) {
-        this.count = count;
         this.longValue = longValue;
+        this.count = count;
     }
 
+    // Constructor including Institution
+    public ObservationValueCount(Institution createInstitution, Long count) {
+        this.createInstitution = createInstitution;
+        this.count = count;
+    }
     
-    
-    
+    // Getters and Setters
     
     public String getStringValue() {
         return stringValue;
@@ -113,7 +114,13 @@ public class ObservationValueCount {
     public void setRealNumberValue(Double realNumberValue) {
         this.realNumberValue = realNumberValue;
     }
-    
-    
-    
+
+    // Getter and setter for Institution
+    public Institution getCreateInstitution() {
+        return createInstitution;
+    }
+
+    public void setCreateInstitution(Institution createInstitution) {
+        this.createInstitution = createInstitution;
+    }
 }

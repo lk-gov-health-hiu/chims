@@ -23,13 +23,15 @@
                                 </p:outputLabel>
                             </f:facet>
                             <p:outputLabel value="From" ></p:outputLabel>
-                            <p:calendar value="#{hospitalReportController.fromDate}" pattern="dd MM yyyy hh:mm a" ></p:calendar>
+                            <p:calendar value="#{hospitalReportController.fromDate}" pattern="dd MM yyyy HH:mm a" ></p:calendar>
                             <p:outputLabel value="To" ></p:outputLabel>
-                            <p:calendar value="#{hospitalReportController.toDate}" pattern="dd MM yyyy hh:mm a" ></p:calendar>
+                            <p:calendar value="#{hospitalReportController.toDate}" pattern="dd MM yyyy HH:mm a" ></p:calendar>
 
                            <p:outputLabel value="Clinic" for="ins" ></p:outputLabel>
                             <p:selectOneMenu id="ins"
                                              required="true"
+                                             filter="true"
+                                             filterMatchMode="contains"
                                              value="#{hospitalReportController.institution}" >
                                 <f:selectItem itemLabel="Select Clinic" ></f:selectItem>
                                 <f:selectItems value="#{webUserController.loggableInstitutions}"

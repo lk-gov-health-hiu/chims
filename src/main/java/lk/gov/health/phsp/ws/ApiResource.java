@@ -559,8 +559,8 @@ public class ApiResource {
 //            // //System.out.println("totalCount = " + totalCount);
 //            // //System.out.println("intYear = " + intYear);
 //            // //System.out.println("intMonth = " + intMonth);
-//            // //System.out.println("from = " + CommonController.dateTimeToString(from, "dd MMMM yyyy hh:mm"));
-//            // //System.out.println("to = " + CommonController.dateTimeToString(to, "dd MMMM yyyy hh:mm"));
+//            // //System.out.println("from = " + CommonController.dateTimeToString(from, "dd MMMM yyyy HH:mm"));
+//            // //System.out.println("to = " + CommonController.dateTimeToString(to, "dd MMMM yyyy HH:mm"));
 //            
             if (totalCount != null && totalCount > 0) {
                 JSONObject ja = new JSONObject();

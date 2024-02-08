@@ -8,7 +8,7 @@
 
     <head>
         <ui:define name="head">
-            Clinic Visits
+            Clinic Visit List
         </ui:define>
     </head>
     <body>
@@ -19,18 +19,20 @@
 
                     <p:panelGrid columns="2"  class="w3-border w3-margin w3-card" >
                         <f:facet name="header" >
-                            <p:outputLabel value="Clinic Visits" >
+                            <p:outputLabel value="Clinic Visit List" >
                             </p:outputLabel>
                         </f:facet>
                         <p:outputLabel value="From" ></p:outputLabel>
-                        <p:calendar value="#{hospitalReportController.fromDate}" pattern="dd MM yyyy" ></p:calendar>
+                        <p:calendar value="#{hospitalReportController.fromDate}" pattern="dd MM yyyy HH:mm a" ></p:calendar>
 
                         <p:outputLabel value="To" ></p:outputLabel>
-                        <p:calendar value="#{hospitalReportController.toDate}" pattern="dd MM yyyy" ></p:calendar>
+                        <p:calendar value="#{hospitalReportController.toDate}" pattern="dd MM yyyy HH:mm a" ></p:calendar>
 
                         <p:outputLabel value="Clinic" for="ins" ></p:outputLabel>
                         <p:selectOneMenu id="ins"
                                          required="true"
+                                         filter="true"
+                                         filterMatchMode="contains"
                                          value="#{hospitalReportController.institution}" >
                             <f:selectItem itemLabel="Select Clinic" ></f:selectItem>
                             <f:selectItems value="#{webUserController.loggableInstitutions}"

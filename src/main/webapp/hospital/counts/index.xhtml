@@ -23,9 +23,16 @@
                             <p:ajax event="tabChange" update="@this" />
                             <p:tab title="Counts"  >
                                 <h:panelGrid columns="1" >
-                                    <p:commandButton value="Registration Counts"   style="width:20em;margin:auto;"
-                                                     action="#{hospitalReportController.toRegistrationCount()}"
-                                                     ajax="false"></p:commandButton>
+                                    <p:commandButton 
+                                        value="Total Registration Count"  
+                                        style="width:20em;margin:auto;"
+                                        action="#{hospitalReportController.toRegistrationCount()}"
+                                        ajax="false"></p:commandButton>
+                                     <p:commandButton 
+                                        value="Detailed Registration Count"  
+                                        style="width:20em;margin:auto;"
+                                        action="#{hospitalReportController.toRegistrationCountDetailed()}"
+                                        ajax="false"></p:commandButton>
                                     <p:commandButton value="Clinic Visit Counts"   style="width:20em;margin:auto;"
                                                      action="#{hospitalReportController.toClinicVisitCount()}"
                                                      ajax="false"></p:commandButton>
