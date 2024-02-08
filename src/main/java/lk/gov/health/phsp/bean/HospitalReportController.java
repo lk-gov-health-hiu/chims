@@ -3801,7 +3801,7 @@ public class HospitalReportController implements Serializable {
 
     public Date getFromDate() {
         if (fromDate == null) {
-            fromDate = CommonController.startOfTheYear();
+            fromDate = CommonController.startOfTheDate();
         }
         return fromDate;
     }
@@ -3812,7 +3812,7 @@ public class HospitalReportController implements Serializable {
 
     public Date getToDate() {
         if (toDate == null) {
-            toDate = new Date();
+            toDate = CommonController.endOfTheDate();
         }
         return toDate;
     }
