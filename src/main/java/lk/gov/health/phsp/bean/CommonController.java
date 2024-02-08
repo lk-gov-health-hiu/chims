@@ -65,8 +65,8 @@ public class CommonController implements Serializable {
 
     static SelectionDataType selectionDataTypeFromString(String strDataType) {
         SelectionDataType[] dds = SelectionDataType.values();
-        for(SelectionDataType sdt:dds){
-            if(sdt.getLabel().equals(strDataType)){
+        for (SelectionDataType sdt : dds) {
+            if (sdt.getLabel().equals(strDataType)) {
                 return sdt;
             }
         }
@@ -380,7 +380,7 @@ public class CommonController implements Serializable {
     public List<SearchCriteria> getSearchCriteriae() {
         return Arrays.asList(SearchCriteria.values());
     }
-    
+
     public WebUserRole[] getWebUserRoles() {
         return WebUserRole.values();
     }
@@ -544,9 +544,10 @@ public class CommonController implements Serializable {
     public static Date startOfTheDate(Date d) {
         Calendar c = Calendar.getInstance();
         c.setTime(d);
-        c.set(Calendar.HOUR, 0);
-        c.set(Calendar.MINUTE, 0);
-        c.set(Calendar.MILLISECOND, 1);
+        c.set(Calendar.HOUR_OF_DAY, 0); // Use HOUR_OF_DAY for 24-hour format
+        c.set(Calendar.MINUTE, 0); // Set minute to start of the hour
+        c.set(Calendar.SECOND, 0); // Also set second to start of the minute
+        c.set(Calendar.MILLISECOND, 0); // Set millisecond to start of the second
         return c.getTime();
     }
 
@@ -775,9 +776,10 @@ public class CommonController implements Serializable {
     public static Date endOfTheDate(Date d) {
         Calendar c = Calendar.getInstance();
         c.setTime(d);
-        c.set(Calendar.HOUR, c.getActualMaximum(Calendar.HOUR));
-        c.set(Calendar.MINUTE, c.getActualMaximum(Calendar.MINUTE));
-        c.set(Calendar.MILLISECOND, c.getActualMaximum(Calendar.MILLISECOND));
+        c.set(Calendar.HOUR_OF_DAY, 23); // Set hour to end of the day
+        c.set(Calendar.MINUTE, 59); // Set minute to last minute
+        c.set(Calendar.SECOND, 59); // Set second to last second
+        c.set(Calendar.MILLISECOND, 999); // Set millisecond to last millisecond
         return c.getTime();
     }
 

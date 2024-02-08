@@ -974,7 +974,7 @@ public class NationalReportController implements Serializable {
 
         j = "select new lk.gov.health.phsp.pojcs.ObservationValueCount(count(c)) "
                 + " from Client c "
-                + " where (c.retired=:ret or c.retired is null) ";
+                + " where c.retired=:ret ";
         if (sex != null) {
             j += " and c.person.sex.code=:s ";
             m.put("s", sex.getCode());
@@ -989,8 +989,8 @@ public class NationalReportController implements Serializable {
         m.put("td", getToDate());
 
         observationValueCounts = new ArrayList<>();
-        //System.out.println("m = " + m);
-        //System.out.println("j = " + j);
+        System.out.println("m = " + m);
+        System.out.println("j = " + j);
         List<Object> objs = clientFacade.findAggregates(j, m, TemporalType.TIMESTAMP);
         if (objs == null) {
             return;
@@ -998,6 +998,7 @@ public class NationalReportController implements Serializable {
         for (Object o : objs) {
             if (o instanceof ObservationValueCount) {
                 ObservationValueCount ic = (ObservationValueCount) o;
+                System.out.println("ic count= " + ic.getCount());
                 observationValueCounts.add(ic);
             }
         }
