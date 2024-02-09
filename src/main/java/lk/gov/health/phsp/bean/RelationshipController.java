@@ -911,6 +911,12 @@ public class RelationshipController implements Serializable {
         return "/institution/view_population_data";
     }
     
+    public String toViewPopulationDataForInstitutionIa() {
+        userTransactionController.recordTransaction("To View Population Data for Institution");
+        items = null;
+        return "/institution/indicators/view_population_data";
+    }
+    
     public String toViewPopulationDataForAllInstitution() {
         userTransactionController.recordTransaction("To View Population Data for Institution");
         items = null;
@@ -922,11 +928,23 @@ public class RelationshipController implements Serializable {
         items = null;
         return "/institution/view_population_data";
     }
+    
+    public String toViewPopulationDataForAreaIa() {
+        userTransactionController.recordTransaction("To View Population Data for Institution");
+        items = null;
+        return "/institution/indicators/view_population_data";
+    }
 
     public String toAddPopulationDataForInstitution() {
         userTransactionController.recordTransaction("To Add Population Data for Institution");
         items = null;
         return "/institution/add_population_data";
+    }
+    
+    public String toAddPopulationDataForInstitutionIa() {
+        userTransactionController.recordTransaction("To Add Population Data for Institution");
+        items = null;
+        return "/institution/indicators/add_population_data";
     }
 
     public String toAddProcedureRoomForInstitution() {
@@ -973,6 +991,12 @@ public class RelationshipController implements Serializable {
         userTransactionController.recordTransaction("To Add Population Data for Area");
         items = null;
         return "/area/add_population_data";
+    }
+    
+    public String toAddPopulationDataForAreaIa() {
+        userTransactionController.recordTransaction("To Add Population Data for Area");
+        items = null;
+        return "/institution/indicators/add_population_data";
     }
 
     public Relationship findRelationship(Area a, RelationshipType type, Integer year) {

@@ -29,6 +29,17 @@
 
                             <p:panelGrid columns="2" >
                                 <p:outputLabel value="Indicator" for="indicator" ></p:outputLabel>
+                                <p:autoComplete id="indicator"
+                                                required="true" 
+                                                requiredMessage="Please select a report. To list reports, start entering few letters"
+                                                value="#{indicatorController.queryComponent}"
+                                                completeMethod="#{queryComponentController.completeIndicators}"
+                                                var="q" forceSelection="true" maxResults="15" minQueryLength="3"
+                                                itemLabel="#{q.name}"
+                                                itemValue="#{q}">
+                                </p:autoComplete>
+
+                                <p:outputLabel value="Clinic" for="ins" ></p:outputLabel>
                                 <p:selectOneMenu id="ins"
                                                  filter="true"
                                                  filterMatchMode="contains"
@@ -38,20 +49,6 @@
                                                    var="i" 
                                                    itemLabel="#{i.name}"
                                                    itemValue="#{i}"></f:selectItems>
-                                    <p:ajax process="ins" update="mnuFs" ></p:ajax>
-                                </p:selectOneMenu>
-
-                                <p:outputLabel value="Clinic" for="ins" ></p:outputLabel>
-                                <p:selectOneMenu id="ins"
-                                                 filter="true"
-                                                 filterMatchMode="contains"
-                                                 value="#{hospitalReportController.institution}" >
-                                    <f:selectItem itemLabel="Select Clinic" ></f:selectItem>
-                                    <f:selectItems value="#{webUserController.loggableInstitutions}"
-                                                   var="i" 
-                                                   itemLabel="#{i.name}"
-                                                   itemValue="#{i}"></f:selectItems>
-                                    <p:ajax process="ins" update="mnuFs" ></p:ajax>
                                 </p:selectOneMenu>
 
 

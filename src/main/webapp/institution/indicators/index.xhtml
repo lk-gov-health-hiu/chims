@@ -52,6 +52,20 @@
                                                          ajax="false"></p:commandButton>
                                     </h:panelGrid>
                                 </p:tab>
+                                <p:tab title="Population Data" >
+                                    <h:panelGrid columns="1" class="w-100">
+                                        <p:commandButton 
+                                            value="Add Population Data" 
+                                            ajax="false"  
+                                            class="w-100 m-1"
+                                            action="#{relationshipController.toAddPopulationDataForInstitutionIa()}"></p:commandButton>
+                                        <p:commandButton 
+                                            value="View Population Data" 
+                                            ajax="false"  
+                                            class="w-100 m-1"
+                                            action="#{relationshipController.toViewPopulationDataForAreaIa()}"></p:commandButton>
+                                    </h:panelGrid>
+                                </p:tab>
 
 
                             </p:accordionPanel>
