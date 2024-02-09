@@ -191,6 +191,8 @@ public class HospitalReportController implements Serializable {
     private DesignComponentFormItemController designComponentFormItemController;
     @Inject
     private UserTransactionController userTransactionController;
+    @Inject
+    ClientEncounterComponentFormController clientEncounterComponentFormController;
 // </editor-fold>  
 // <editor-fold defaultstate="collapsed" desc="Class Variables">
     private List<Encounter> encounters;
@@ -333,7 +335,7 @@ public class HospitalReportController implements Serializable {
         m.put("fd", getFromDate());
         m.put("td", getToDate());
         m.put("inss", webUserController.getLoggableInstitutions());
-        List<Object> objs = getClientFacade().findAggregates(j, m);
+        List<Object> objs = getClientFacade().findAggregates(j, m, TemporalType.TIMESTAMP);
         institutionCounts = new ArrayList<>();
         reportCount = 0l;
         for (Object o : objs) {
@@ -2249,6 +2251,443 @@ public class HospitalReportController implements Serializable {
         }
     }
 
+    public void createExcelFileOfFromsetDataForSelectedEncounters() {
+        if (institution == null) {
+            JsfUtil.addErrorMessage("Please select an institutions");
+            return;
+        }
+        if (designingComponentFormSet == null) {
+            JsfUtil.addErrorMessage("Please select a Formset");
+            return;
+        }
+
+        String j = "select f "
+                + " from  ClientEncounterComponentFormSet f join f.encounter e"
+                + " where f.retired<>:fr "
+                + " and f.referenceComponent=:ic ";
+        j += " and e.institution=:i "
+                + " and e.retired<>:er "
+                + " and e.encounterType=:t "
+                + " and e.encounterDate between :fd and :td"
+                + " order by e.id";
+        Map m = new HashMap();
+        m.put("fr", true);
+        m.put("ic", designingComponentFormSet);
+        m.put("i", institution);
+        m.put("er", true);
+
+        m.put("t", EncounterType.Clinic_Visit);
+        m.put("fd", fromDate);
+        m.put("td", toDate);
+
+        List<ClientEncounterComponentFormSet> cis = clientEncounterComponentFormSetFacade.findByJpql(j, m, TemporalType.TIMESTAMP);
+
+        String FILE_NAME = designingComponentFormSet.getName() + "_data_of_" + institution.getName() + "_from_" + CommonController.formatDate(fromDate) + "_to_" + CommonController.formatDate(toDate) + ".xlsx";
+        String mimeType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+
+        String folder = "/tmp/";
+
+        File newFile = new File(folder + FILE_NAME);
+
+        XSSFWorkbook workbook = new XSSFWorkbook();
+        XSSFSheet sheet = workbook.createSheet("Client Values");
+
+        int rowCount = 0;
+
+        Row t1 = sheet.createRow(rowCount++);
+        Cell th1_lbl = t1.createCell(0);
+        th1_lbl.setCellValue("Report");
+        Cell th1_val = t1.createCell(1);
+        th1_val.setCellValue("Fromset Data");
+
+        Row t2 = sheet.createRow(rowCount++);
+        Cell th2_lbl = t2.createCell(0);
+        th2_lbl.setCellValue("From");
+        Cell th2_val = t2.createCell(1);
+        th2_val.setCellValue(CommonController.dateTimeToString(fromDate, "dd MMMM yyyy"));
+
+        Row t3 = sheet.createRow(rowCount++);
+        Cell th3_lbl = t3.createCell(0);
+        th3_lbl.setCellValue("To");
+        Cell th3_val = t3.createCell(1);
+        th3_val.setCellValue(CommonController.dateTimeToString(toDate, "dd MMMM yyyy"));
+
+        Row t4 = sheet.createRow(rowCount++);
+        Cell th4_lbl = t4.createCell(0);
+        th4_lbl.setCellValue("Institution");
+        Cell th4_val = t4.createCell(1);
+        th4_val.setCellValue(institution.getName());
+
+        Row t5a = sheet.createRow(rowCount++);
+        Cell th5a_lbl = t5a.createCell(0);
+        th5a_lbl.setCellValue("Formset");
+        Cell th5a_val = t5a.createCell(1);
+        th5a_val.setCellValue(designingComponentFormSet.getName());
+
+        CellStyle cellStyle = workbook.createCellStyle();
+        CreationHelper createHelper = workbook.getCreationHelper();
+        cellStyle.setDataFormat(
+                createHelper.createDataFormat().getFormat("dd/MMMM/yyyy HH:mm"));
+
+        DataFormset titleFormset = fillDesignComponantFormset(designingComponentFormSet);
+
+        Row formNameRow = sheet.createRow(rowCount++);
+        Row itemNameRow = sheet.createRow(rowCount++);
+        int colCount = 0;
+        for (DataForm tdf : titleFormset.getForms()) {
+
+            for (DataItem tdi : tdf.getItems()) {
+                Cell formNameCell = formNameRow.createCell(colCount);
+                formNameCell.setCellValue(tdf.getDf().getName());
+                Cell itemNameCell = itemNameRow.createCell(colCount);
+                itemNameCell.setCellValue(tdi.getDi().getName());
+                colCount++;
+            }
+
+        }
+
+        for (ClientEncounterComponentFormSet c : cis) {
+            DataFormset tdfs = fillClinicalDataFormset(c);
+            Row dataRow = sheet.createRow(rowCount++);
+            colCount = 0;
+
+            for (DataForm tdf : titleFormset.getForms()) {
+
+                for (DataItem tdi : tdf.getItems()) {
+                    Cell formNameCell = dataRow.createCell(colCount);
+                    for (DataForm tcf : tdfs.getForms()) {
+
+                        for (DataItem tci : tcf.getItems()) {
+
+                            if (tci.getDi().equals(tdi.getDi())) {
+                                if (tci.getCi() == null) {
+                                    continue;
+                                }
+                                if (tci.getDi() == null) {
+                                    continue;
+                                }
+                                if (tci.getDi().getSelectionDataType() == null) {
+                                    continue;
+                                }
+                                switch (tci.getDi().getSelectionDataType()) {
+                                    case Area_Reference:
+                                    case Boolean:
+                                        if (tci.getCi().getBooleanValue() == null) {
+                                            continue;
+                                        }
+                                        formNameCell.setCellValue(tci.getCi().getBooleanValue());
+                                        break;
+                                    case Byte_Array:
+                                    case Client_Reference:
+                                    case DateTime:
+                                        if (tci.getCi().getDateValue() == null) {
+                                            continue;
+                                        }
+                                        formNameCell.setCellStyle(cellStyle);
+                                        formNameCell.setCellValue(tci.getCi().getDateValue());
+                                        break;
+                                    case Integer_Number:
+                                        if (tci.getCi().getIntegerNumberValue() == null) {
+                                            continue;
+                                        }
+                                        formNameCell.setCellValue(tci.getCi().getIntegerNumberValue());
+                                        break;
+                                    case Item_Reference:
+                                        if (tci.getCi().getItemValue() == null) {
+                                            continue;
+                                        }
+                                        formNameCell.setCellValue(tci.getCi().getItemValue().getName());
+                                        break;
+                                    case Long_Number:
+                                        if (tci.getCi().getLongNumberValue() == null) {
+                                            continue;
+                                        }
+                                        formNameCell.setCellValue(tci.getCi().getLongNumberValue());
+                                        break;
+                                    case Long_Text:
+                                        if (tci.getCi().getLongTextValue() == null) {
+                                            continue;
+                                        }
+                                        formNameCell.setCellValue(tci.getCi().getLongTextValue());
+                                        break;
+                                    case Prescreption_Reference:
+                                    case Prescreption_Request:
+                                    case Procedure_Request:
+                                    case Real_Number:
+                                        if (tci.getCi().getRealNumberValue() == null) {
+                                            continue;
+                                        }
+                                        formNameCell.setCellValue(tci.getCi().getRealNumberValue());
+                                        break;
+                                    case Short_Text:
+                                        if (tci.getCi().getShortTextValue() == null) {
+                                            continue;
+                                        }
+                                        formNameCell.setCellValue(tci.getCi().getShortTextValue());
+                                        break;
+                                }
+
+                            }
+
+                        }
+
+                    }
+
+                    colCount++;
+
+                }
+
+            }
+
+        }
+
+        cis = null;
+
+        try (FileOutputStream outputStream = new FileOutputStream(newFile)) {
+            workbook.write(outputStream);
+        } catch (Exception e) {
+
+        }
+
+        InputStream stream;
+        try {
+            stream = new FileInputStream(newFile);
+            resultExcelFile = streamedContentController.generateStreamedContent(mimeType, FILE_NAME, stream);
+        } catch (FileNotFoundException ex) {
+        }
+    }
+
+    public DataFormset fillClinicalDataFormset(ClientEncounterComponentFormSet cfs) {
+        //System.out.println("loadOldNavigateToDataEntry");
+        if (cfs == null) {
+            return null;
+        }
+        //System.out.println("cfs = " + cfs.getId());
+        DesignComponentFormSet dfs = cfs.getReferanceDesignComponentFormSet();
+        //System.out.println("dfs = " + dfs.getId());
+
+        DataFormset fs = new DataFormset();
+
+        Encounter e = cfs.getEncounter();
+
+        fs.setDfs(dfs);
+        fs.setEfs(cfs);
+
+        List<DesignComponentForm> dfList = designComponentFormController.fillFormsofTheSelectedSet(dfs);
+
+        int formCounter = 0;
+
+        for (DesignComponentForm df : dfList) {
+            // //System.out.println("df = " + df.getName());
+
+            boolean skipThisForm = false;
+
+            // //System.out.println("skipThisForm = " + skipThisForm);
+            if (!skipThisForm) {
+                formCounter++;
+                String j = "select cf "
+                        + " from ClientEncounterComponentForm cf "
+                        + " where cf.referenceComponent=:rf "
+                        + " and cf.parentComponent=:cfs "
+                        + "order by cf.id desc";
+                Map m = new HashMap();
+                m.put("rf", df);
+                m.put("cfs", cfs);
+// // //System.out.println("df = " + df.getId());
+
+                ClientEncounterComponentForm cf = clientEncounterComponentFormController.getClientEncounterComponentForm(j, m);
+
+                // //System.out.println("cf = " + cf);
+                if (cf == null) {
+                    cf = new ClientEncounterComponentForm();
+
+                    cf.setEncounter(e);
+                    cf.setInstitution(dfs.getCurrentlyUsedIn());
+                    cf.setItem(df.getItem());
+
+                    cf.setReferenceComponent(df);
+                    cf.setName(df.getName());
+                    cf.setOrderNo(df.getOrderNo());
+                    cf.setParentComponent(cfs);
+                    cf.setCss(df.getCss());
+
+//                    clientEncounterComponentFormController.save(cf);
+                }
+
+                DataForm f = new DataForm();
+                f.cf = cf;
+                f.df = df;
+                f.formset = fs;
+                f.id = formCounter;
+                f.orderNo = formCounter;
+
+                List<DesignComponentFormItem> diList = designComponentFormItemController.fillItemsOfTheForm(df);
+
+                int itemCounter = 0;
+
+                for (DesignComponentFormItem dis : diList) {
+
+                    // //System.out.println("dis = " + dis.getName());
+                    boolean disSkipThisItem = false;
+
+                    // //System.out.println("disSkipThisItem = " + disSkipThisItem);
+                    if (!disSkipThisItem) {
+
+                        if (dis.isMultipleEntiesPerForm()) {
+
+                            // //System.out.println("dis.isMultipleEntiesPerForm() = " + dis.isMultipleEntiesPerForm());
+                            j = "Select ci "
+                                    + " from ClientEncounterComponentItem ci "
+                                    + " where ci.retired=:ret "
+                                    + " and ci.parentComponent=:cf "
+                                    + " and ci.referenceComponent=:dis "
+                                    + " order by ci.orderNo";
+                            m = new HashMap();
+                            m.put("ret", false);
+                            m.put("cf", cf);
+                            m.put("dis", dis);
+                            // //System.out.println("cf = " + cf.getId());
+                            // //System.out.println("dis = " + dis.getId());
+                            List<ClientEncounterComponentItem> cis = clientEncounterComponentItemController.getItems(j, m);
+                            // //System.out.println("cis = " + cis);
+
+                            itemCounter++;
+                            ClientEncounterComponentItem ci = new ClientEncounterComponentItem();
+
+                            ci.setEncounter(e);
+                            ci.setInstitution(dfs.getCurrentlyUsedIn());
+
+                            ci.setItemFormset(cfs);
+                            ci.setItemEncounter(e);
+                            ci.setItemClient(e.getClient());
+
+                            ci.setItem(dis.getItem());
+                            ci.setDescreption(dis.getDescreption());
+
+                            ci.setReferenceComponent(dis);
+                            ci.setParentComponent(cf);
+                            ci.setName(dis.getName());
+                            ci.setCss(dis.getCss());
+                            ci.setOrderNo(dis.getOrderNo());
+                            ci.setDataRepresentationType(DataRepresentationType.Encounter);
+                            DataItem i = new DataItem();
+                            i.setMultipleEntries(true);
+                            i.setCi(ci);
+                            i.di = dis;
+                            i.id = itemCounter;
+                            i.orderNo = itemCounter;
+                            i.form = f;
+
+                            if (cis != null && !cis.isEmpty()) {
+                                for (ClientEncounterComponentItem tci : cis) {
+                                    DataItem di = new DataItem();
+                                    di.setMultipleEntries(true);
+                                    di.setCi(tci);
+                                    di.di = dis;
+                                    di.id = itemCounter;
+                                    di.orderNo = tci.getOrderNo();
+                                    di.form = f;
+                                    i.getAddedItems().add(di);
+                                }
+                            }
+
+                            f.getItems().add(i);
+
+                        } else {
+
+                            j = "Select ci "
+                                    + " from ClientEncounterComponentItem ci "
+                                    + " where ci.retired=:ret "
+                                    + " and ci.parentComponent=:cf "
+                                    + " and ci.referenceComponent=:dis "
+                                    + " order by ci.orderNo";
+                            m = new HashMap();
+                            m.put("ret", false);
+                            m.put("cf", cf);
+                            m.put("dis", dis);
+                            // //System.out.println("cf = " + cf.getId());
+                            // //System.out.println("dis = " + dis.getId());
+                            ClientEncounterComponentItem ci;
+                            ci = clientEncounterComponentItemController.getItem(j, m);
+                            // //System.out.println("ci = " + ci);
+                            if (ci != null) {
+                                DataItem i = new DataItem();
+                                i.setMultipleEntries(false);
+                                i.setCi(ci);
+                                i.di = dis;
+                                i.id = itemCounter;
+                                i.orderNo = itemCounter;
+                                i.form = f;
+
+                                f.getItems().add(i);
+                            } else {
+                                itemCounter++;
+                                ci = new ClientEncounterComponentItem();
+                                ci.setEncounter(e);
+                                ci.setInstitution(dfs.getCurrentlyUsedIn());
+                                ci.setItemFormset(cfs);
+                                ci.setItemEncounter(e);
+                                ci.setItemClient(e.getClient());
+                                ci.setItem(dis.getItem());
+                                ci.setDescreption(dis.getDescreption());
+                                ci.setReferenceComponent(dis);
+                                ci.setParentComponent(cf);
+                                ci.setName(dis.getName());
+                                ci.setCss(dis.getCss());
+                                ci.setOrderNo(dis.getOrderNo());
+                                ci.setDataRepresentationType(DataRepresentationType.Encounter);
+
+                                DataItem i = new DataItem();
+                                i.setMultipleEntries(false);
+                                i.setCi(ci);
+                                i.di = dis;
+                                i.id = itemCounter;
+                                i.orderNo = itemCounter;
+                                i.form = f;
+
+                                f.getItems().add(i);
+                            }
+
+                        }
+
+                    }
+
+                }
+                fs.getForms().add(f);
+            }
+
+        }
+        return fs;
+    }
+
+    public DataFormset fillDesignComponantFormset(DesignComponentFormSet dfs) {
+        DataFormset fs = new DataFormset();
+        List<DesignComponentForm> dfList = designComponentFormController.fillFormsofTheSelectedSet(dfs);
+        int formCounter = 0;
+        for (DesignComponentForm df : dfList) {
+            formCounter++;
+            DataForm f = new DataForm();
+            f.df = df;
+            f.formset = fs;
+            f.id = formCounter;
+            f.orderNo = formCounter;
+            List<DesignComponentFormItem> diList = designComponentFormItemController.fillItemsOfTheForm(df);
+            int itemCounter = 0;
+            for (DesignComponentFormItem dis : diList) {
+                itemCounter++;
+                DataItem i = new DataItem();
+                i.setMultipleEntries(false);
+                i.di = dis;
+                i.id = itemCounter;
+                i.orderNo = itemCounter;
+                i.form = f;
+                f.getItems().add(i);
+            }
+            fs.getForms().add(f);
+        }
+        return fs;
+    }
+
     public void fillClientRegistrationForSysAdmin() {
         String j;
         Map m = new HashMap();
@@ -2704,7 +3143,7 @@ public class HospitalReportController implements Serializable {
         j = j + " order by e.institution.name ";
         m.put("fd", getFromDate());
         m.put("td", getToDate());
-        m.put("inss", webUserController.findAutherizedInstitutions());
+        m.put("inss", webUserController.getLoggableInstitutions());
         List<Object> objs = getClientFacade().findAggregates(j, m);
         institutionCounts = new ArrayList<>();
         reportCount = 0l;
@@ -2733,7 +3172,7 @@ public class HospitalReportController implements Serializable {
         j = j + " order by e.institution.name ";
         m.put("fd", getFromDate());
         m.put("td", getToDate());
-        m.put("inss", webUserController.findAutherizedInstitutions());
+        m.put("inss", webUserController.getLoggableInstitutions());
         List<Object> objs = getEncounterFacade().findAggregates(j, m, TemporalType.TIMESTAMP);
         institutionCounts = new ArrayList<>();
         reportCount = 0l;
@@ -3236,7 +3675,7 @@ public class HospitalReportController implements Serializable {
             m.put("ins", institution);
         } else {
             // If counting or listing based on authorized institutions, adjust this logic to match the count method
-            List<Institution> authorizedInstitutions = webUserController.findAutherizedInstitutions();
+            List<Institution> authorizedInstitutions = webUserController.getLoggableInstitutions();
             if (!authorizedInstitutions.isEmpty()) {
                 j += " and e.institution in :ins ";
                 m.put("ins", authorizedInstitutions);
@@ -3244,7 +3683,7 @@ public class HospitalReportController implements Serializable {
         }
 
         //String phn, String gnArea, String institution, Date dataOfBirth, Date encounterAt, String sex
-        List<Object> objs = getClientFacade().findAggregates(j, m);
+        List<Object> objs = getClientFacade().findAggregates(j, m, TemporalType.TIMESTAMP);
 
         String FILE_NAME = "client_clinic_visits" + "_" + (new Date()) + ".xlsx";
         String mimeType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
@@ -3745,6 +4184,7 @@ public class HospitalReportController implements Serializable {
     }
 
     public void downloadDailyClientRegistrationCounts() {
+        System.out.println("downloadDailyClientRegistrationCounts");
         String j;
         Map m = new HashMap();
 
@@ -3765,10 +4205,15 @@ public class HospitalReportController implements Serializable {
 
         j += " group by cast(e.createdAt as LocalDate)  "
                 + " order by cast(e.createdAt as LocalDate)";
-
+        System.out.println("j = " + j);
+        System.out.println("m = " + m);
         //String phn, String gnArea, String institution, Date dataOfBirth, Date encounterAt, String sex
-        List<Object> objs = getClientFacade().findAggregates(j, m);
-
+        List<Object> objs = getClientFacade().findAggregates(j, m, TemporalType.TIMESTAMP);
+        if (objs == null) {
+            resultExcelFile=null;
+            return ;
+        }
+        System.out.println("objs = " + objs.size());
         String FILE_NAME = "client_registrations_by_date" + "_" + (new Date()) + ".xlsx";
         String mimeType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
 

@@ -15,7 +15,7 @@
                 <h:form>
                     <p:panelGrid columns="1" style="width: 100%">
                         <f:facet name="header" >
-                            <p:outputLabel value="Indicator  - My Clinic Monthly" ></p:outputLabel>
+                            <p:outputLabel value="Process Clinic Counts" ></p:outputLabel>
                             <p:spacer height="1" width="70" ></p:spacer>
                             <p:commandButton value="Back"  
                                              immediate="true"
@@ -28,7 +28,9 @@
                         <h:panelGrid columns="1" styleClass="alignTop" >
 
                             <p:panelGrid columns="2" >
-                                <p:outputLabel value="Indicator" for="indicator" ></p:outputLabel>
+
+
+                                <p:outputLabel value="Clinic" for="ins" ></p:outputLabel>
                                 <p:selectOneMenu id="ins"
                                                  filter="true"
                                                  filterMatchMode="contains"
@@ -38,20 +40,6 @@
                                                    var="i" 
                                                    itemLabel="#{i.name}"
                                                    itemValue="#{i}"></f:selectItems>
-                                    <p:ajax process="ins" update="mnuFs" ></p:ajax>
-                                </p:selectOneMenu>
-
-                                <p:outputLabel value="Clinic" for="ins" ></p:outputLabel>
-                                <p:selectOneMenu id="ins"
-                                                 filter="true"
-                                                 filterMatchMode="contains"
-                                                 value="#{hospitalReportController.institution}" >
-                                    <f:selectItem itemLabel="Select Clinic" ></f:selectItem>
-                                    <f:selectItems value="#{webUserController.loggableInstitutions}"
-                                                   var="i" 
-                                                   itemLabel="#{i.name}"
-                                                   itemValue="#{i}"></f:selectItems>
-                                    <p:ajax process="ins" update="mnuFs" ></p:ajax>
                                 </p:selectOneMenu>
 
 
@@ -71,9 +59,24 @@
                                     <f:selectItems value="#{commonController.months}" var="m" itemValue="#{m.value}" itemLabel="#{m}" ></f:selectItems>
                                 </p:selectOneMenu>
 
+                                <p:outputLabel value="Count" for="count" ></p:outputLabel>
+                                <p:autoComplete id="count" value="#{indicatorController.queryComponent}"
+                                                var="c" inputStyle="width:50rem;"
+                                                itemLabel="#{c.name}"
+                                                itemValue="#{c}"
+                                                completeMethod="#{queryComponentController.completeCounts}" >
+                                    <p:column headerText="Name" >
+                                        <p:outputLabel value="#{c.name}" ></p:outputLabel>
+                                    </p:column>
+                                    <p:column headerText="Code" >
+                                        <p:outputLabel value="#{c.code}" ></p:outputLabel>
+                                    </p:column>
+                                </p:autoComplete>
+
+
                                 <p:spacer ></p:spacer>
                                 <p:commandButton value="Calculate"  style="width:30em;margin:auto;"
-                                                 action="#{indicatorController.runHlcMonthly()}"
+                                                 action="#{indicatorController.runClinicCounts}"
                                                  ajax="false">
                                 </p:commandButton>
 
@@ -83,14 +86,14 @@
 
                         </h:panelGrid>
 
-
                         <h:panelGrid columns="2" >
-                            <p:inputText value="Result" ></p:inputText>
-                            <p:inputText value="${indicatorController.result}" ></p:inputText>
+                            <p:outputLabel value="Count" ></p:outputLabel>
+                            <p:inputText readonly="true" value="#{indicatorController.queryComponent.name}" ></p:inputText>
+
+                            <p:outputLabel value="Result" ></p:outputLabel>
+                            <p:inputTextarea readonly="true" value="#{indicatorController.result}" class="w-100" rows="20"></p:inputTextarea>
                         </h:panelGrid>
-                        <h:panelGrid columns="1" >
-                            <h:outputText value="#{indicatorController.message}" escape="false" ></h:outputText>
-                        </h:panelGrid>
+
 
 
 

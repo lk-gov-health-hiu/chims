@@ -40,15 +40,17 @@
                                 </p:autoComplete>
 
                                 <p:outputLabel value="Institution" for="ins" ></p:outputLabel>
-                                <p:autoComplete value="#{indicatorController.institution}"
-                                                id="ins"
-                                                requiredMessage="Please select a clinic. Selecting a Hospital will not give results."
-                                                required="true" forceSelection="true" 
-                                                completeMethod="#{institutionController.completeHospitals}"
-                                                var="i"
-                                                itemLabel="#{i.name}"
-                                                itemValue="#{i}">
-                                </p:autoComplete>
+                                <p:selectOneMenu id="ins"
+                                                 filter="true"
+                                                 filterMatchMode="contains"
+                                                 value="#{indicatorController.institution}" >
+                                    <f:selectItem itemLabel="Select Clinic" ></f:selectItem>
+                                    <f:selectItems value="#{webUserController.loggableInstitutions}"
+                                                   var="i" 
+                                                   itemLabel="#{i.name}"
+                                                   itemValue="#{i}"></f:selectItems>
+                                    <p:ajax process="ins" update="mnuFs" ></p:ajax>
+                                </p:selectOneMenu>
 
 
                                 <p:outputLabel id="lblYear" value="Year" for="txtYear" ></p:outputLabel>

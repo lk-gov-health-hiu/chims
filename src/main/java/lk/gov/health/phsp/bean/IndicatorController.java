@@ -140,6 +140,13 @@ public class IndicatorController implements Serializable {
         institution = null;
         return "/indicators/clinic_counts_for_selected_indicators";
     }
+    
+    public String toProcesCountsForSelectedIndicatorsIa() {
+        message = "";
+        result = "";
+        institution = null;
+        return "/institution/indicators/clinic_counts_for_selected_indicators";
+    }
 
     public String toStoredCounts() {
         message = "";
@@ -153,6 +160,13 @@ public class IndicatorController implements Serializable {
         result = "";
         institution = null;
         return "/indicators/clinic_counts";
+    }
+    
+    public String toProcesCountsIa() {
+        message = "";
+        result = "";
+        institution = null;
+        return "/institution/indicators/clinic_counts";
     }
 
     public String toRdhsMonthly() {

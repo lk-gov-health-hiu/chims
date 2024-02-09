@@ -28,7 +28,10 @@
                             <p:calendar value="#{hospitalReportController.toDate}" pattern="dd MM yyyy" ></p:calendar>
 
                             <p:outputLabel value="Clinic" ></p:outputLabel>
-                            <p:selectOneMenu value="#{hospitalReportController.institution}" >
+                            <p:selectOneMenu 
+                                filter="true"
+                                filterMatchMode="contains"
+                                value="#{hospitalReportController.institution}" >
                                 <f:selectItem itemLabel="Please select" ></f:selectItem>
                                 <f:selectItems value="#{webUserController.loggableInstitutions}"
                                                var="ins"

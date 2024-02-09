@@ -25,54 +25,32 @@
                                 <p:ajax event="tabChange" update="@this" />
 
                                 <p:tab title="Institution Indicators"  >
-                                    <h:panelGrid columns="1" >
+                                    <h:panelGrid columns="1" class="w-100">
                                         <p:commandButton value="Clinic Monthly" 
-                                                         class="w-75"
-                                                         action="#{indicatorController.toClinicMonthly()}"
+                                                         class="w-100 m-1"
+                                                         action="#{indicatorController.toClinicMonthlyIa()}"
                                                          ajax="false"></p:commandButton>
                                         <p:commandButton value="Hospital Monthly" 
-                                                         class="w-75"
-                                                         action="#{indicatorController.toHospitalMonthly()}"
-                                                         ajax="false"></p:commandButton>
-                                        <p:commandButton value="RDHS Monthly" 
-                                                         class="w-75"
-                                                         action="#{indicatorController.toRdhsMonthly()}"
-                                                         ajax="false"></p:commandButton>
-                                        <p:commandButton value="PDHS Monthly" 
-                                                         class="w-75"
-                                                         action="#{indicatorController.toPdhsMonthly()}"
+                                                         class="w-100 m-1"
+                                                         action="#{indicatorController.toHospitalMonthlyIa()}"
                                                          ajax="false"></p:commandButton>
 
-                                        <p:commandButton value="District Monthly" 
-                                                         class="w-75"
-                                                         action="#{indicatorController.toDistrictMonthly()}"
-                                                         ajax="false"></p:commandButton>
-
-                                        <p:commandButton value="Province Monthly" 
-                                                         class="w-75"
-                                                         action="#{indicatorController.toProvinceMonthly()}"
-                                                         ajax="false"></p:commandButton>
-
-                                        <p:commandButton value="National Monthly" 
-                                                         class="w-75"
-                                                         action="#{indicatorController.toNationalMonthly()}"
-                                                         ajax="false"></p:commandButton>
-
-                                        <hr/>
 
 
                                     </h:panelGrid>
 
                                 </p:tab>
                                 <p:tab title="Counts" >
-                                    <p:commandButton value="Counts" 
-                                                     class="w-75"
-                                                     action="#{indicatorController.toProcesCounts()}"
-                                                     ajax="false"></p:commandButton>
-                                    <p:commandButton value="Counts for Indicators" 
-                                                     class="w-75"
-                                                     action="#{indicatorController.toProcesCountsForSelectedIndicators()}"
-                                                     ajax="false"></p:commandButton>
+                                    <h:panelGrid columns="1" class="w-100">
+                                        <p:commandButton value="Counts" 
+                                                         class="w-100 m-1"
+                                                         action="#{indicatorController.toProcesCountsIa()}"
+                                                         ajax="false"></p:commandButton>
+                                        <p:commandButton value="Counts for Indicators" 
+                                                         class="w-100 m-1"
+                                                         action="#{indicatorController.toProcesCountsForSelectedIndicatorsIa()}"
+                                                         ajax="false"></p:commandButton>
+                                    </h:panelGrid>
                                 </p:tab>
 
 

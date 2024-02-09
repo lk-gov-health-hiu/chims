@@ -30,6 +30,8 @@
                         <p:outputLabel value="Registered Hospital" for="ins" ></p:outputLabel>
                         <p:selectOneMenu id="ins"
                                          required="true"
+                                         filter="true"
+                                         filterMatchMode="contains"
                                          value="#{hospitalReportController.institution}" >
                             <f:selectItem itemLabel="Select Hospital" ></f:selectItem>
                             <f:selectItems value="#{webUserController.loggableInstitutions}"

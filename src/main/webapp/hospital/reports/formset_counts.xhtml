@@ -38,9 +38,15 @@
                                             forceSelection="true" maxResults="15" minQueryLength="3">
                             </p:autoComplete>
 
-                            <p:commandButton value="Process" ajax="false"
-                                             action="#{hospitalReportController.fillFormSetCountsByInstitution()}"></p:commandButton>
-                            <p:commandButton value="Download" ajax="false">
+                            <p:commandButton 
+                                value="Process" 
+                                ajax="false"
+                                class="w-100 m-1"
+                                action="#{hospitalReportController.fillFormSetCountsByInstitution()}"></p:commandButton>
+                            <p:commandButton 
+                                class="w-100 m-1"
+                                value="Download" 
+                                ajax="false">
                                 <p:dataExporter type="xlsx" target="tbl" fileName="Form-set Counts by Institution" ></p:dataExporter>
                             </p:commandButton>
                         </p:panelGrid>

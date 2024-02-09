@@ -30,7 +30,6 @@
 
                         <p:outputLabel value="Clinic" for="ins" ></p:outputLabel>
                         <p:selectOneMenu id="ins"
-                                         required="true"
                                          filter="true"
                                          filterMatchMode="contains"
                                          value="#{hospitalReportController.institution}" >
@@ -43,6 +42,13 @@
 
 
                         <p:spacer ></p:spacer>
+                        <p:commandButton value="Download 1" 
+                                         ajax="false" 
+                                         oncomplete ="PrimeFaces.monitorDownload(start, stop);" 
+                                         icon="ui-icon-arrowthick-1-s"
+                                         actionListener="#{hospitalReportController.downloadClinicVisitsOld()}">
+                            <p:fileDownload value="#{hospitalReportController.resultExcelFile}" />
+                        </p:commandButton>
                         <p:commandButton value="Download" 
                                          ajax="false" 
                                          oncomplete ="PrimeFaces.monitorDownload(start, stop);" 

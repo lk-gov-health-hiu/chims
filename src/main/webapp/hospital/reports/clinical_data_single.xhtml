@@ -28,11 +28,11 @@
                                              value="#{hospitalReportController.institution}" >
                                 <f:selectItem itemLabel="Select Clinic" ></f:selectItem>
                                 <f:selectItems value="#{webUserController.loggableInstitutions}"
-                                            var="i" 
-                                            itemLabel="#{i.name}"
-                                            itemValue="#{i}"></f:selectItems>
+                                               var="i" 
+                                               itemLabel="#{i.name}"
+                                               itemValue="#{i}"></f:selectItems>
                             </p:selectOneMenu>
-                            
+
 
                             <p:outputLabel value="From" for="from" ></p:outputLabel>
                             <p:calendar id="from" value="#{hospitalReportController.fromDate}" navigator="true"
@@ -47,7 +47,11 @@
                                         pattern="dd MM yyyy" ></p:calendar>
 
                             <p:outputLabel id="lblForm" value="Form-set" ></p:outputLabel>
-                            <p:selectOneMenu id="form" value="#{hospitalReportController.designingComponentFormSet}" >
+                            <p:selectOneMenu 
+                                id="form" 
+                                filter="true"
+                                filterMatchMode="contains"
+                                value="#{hospitalReportController.designingComponentFormSet}" >
                                 <f:selectItem itemLabel="Select" ></f:selectItem>
                                 <f:selectItems value="#{designComponentFormSetController.items}" ></f:selectItems>
                                 <f:ajax listener="#{hospitalReportController.fillItemsofTheSelectedSet()}"
@@ -56,16 +60,18 @@
 
                             <p:outputLabel id="lblItem" value="item" ></p:outputLabel>
                             <p:selectOneMenu id="item" 
+                                             filter="true"
+                                             filterMatchMode="contains"
                                              value="#{hospitalReportController.designComponentFormItem}"
                                              var="it">
                                 <f:selectItems value="#{hospitalReportController.designComponentFormItems}"
                                                var="ii"
                                                itemLabel="#{ii.name}"
                                                itemValue="#{ii}"></f:selectItems>
-                                <p:column headerText="Form" >
+                                <p:column headerText="Form" filterBy="#{it.parentComponent.name}" filterMatchMode="contains" >
                                     <p:outputLabel value="#{it.parentComponent.name}" ></p:outputLabel>
                                 </p:column>
-                                <p:column headerText="Variable" >
+                                <p:column headerText="Variable"  filterBy="#{it.name}" filterMatchMode="contains">
                                     <p:outputLabel value="#{it.name}" ></p:outputLabel>
                                 </p:column>
                             </p:selectOneMenu>

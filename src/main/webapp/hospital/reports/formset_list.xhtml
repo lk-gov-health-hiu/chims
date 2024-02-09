@@ -38,17 +38,26 @@
                                             forceSelection="true" maxResults="15" minQueryLength="3">
                             </p:autoComplete>
                             <p:outputLabel value="Clinic" ></p:outputLabel>
-                            <p:selectOneMenu   value="#{hospitalReportController.institution}" 
-                                               required="true">
+                            <p:selectOneMenu   
+                                filter="true"
+                                filterMatchMode="contains"
+                                value="#{hospitalReportController.institution}" 
+                                required="false">
                                 <f:selectItem itemLabel="Select a Clinic" ></f:selectItem>
                                 <f:selectItems value="#{webUserController.loggableInstitutions}"
-                                              var="i" itemLabel="#{i.name}" itemValue="#{i}">
+                                               var="i" itemLabel="#{i.name}" itemValue="#{i}">
                                 </f:selectItems>
                             </p:selectOneMenu >
 
-                            <p:commandButton value="Process" ajax="false"
-                                             action="#{hospitalReportController.fillFormSetCountsByInstitutionList()}"></p:commandButton>
-                            <p:commandButton value="Download" ajax="false">
+                            <p:commandButton 
+                                value="Process" 
+                                ajax="false"
+                                class="w-100 m-1"
+                                action="#{hospitalReportController.fillFormSetCountsByInstitutionList()}"></p:commandButton>
+                            <p:commandButton 
+                                value="Download" 
+                                class="w-100 m-1"
+                                ajax="false">
                                 <p:dataExporter type="xlsx" target="tbl" fileName="Form-set Lists by Institution" ></p:dataExporter>
                             </p:commandButton>
                         </p:panelGrid>
@@ -71,16 +80,16 @@
                                 <p:outputLabel value="#{s.encounter.institution.name}" style="color: #{s.completed?'green':'red'};" >
                                 </p:outputLabel>
                             </p:column>
-                            <p:column headerText="Name" width="50" >
+                            <p:column headerText="Name"  >
                                 <p:outputLabel value="#{s.encounter.client.person.name}" ></p:outputLabel>
                             </p:column>
-                            <p:column headerText="Age" width="50" >
+                            <p:column headerText="Age" >
                                 <p:outputLabel value="#{s.encounter.client.person.age}" ></p:outputLabel>
                             </p:column>
                             <p:column headerText="Sex"  >
                                 <p:outputLabel value="#{s.encounter.client.person.sex.name}" ></p:outputLabel>
                             </p:column>
-                            
+
                             <p:column headerText="GN Area"  >
                                 <p:outputLabel value="#{s.encounter.client.person.gnArea.name}" ></p:outputLabel>
                             </p:column>

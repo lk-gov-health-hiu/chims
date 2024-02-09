@@ -21,45 +21,49 @@
 
 
                         <p:panelGrid columns="2" >
-                            <p:outputLabel value="Institution" for="ins" ></p:outputLabel>
-                            <p:autoComplete value="#{hospitalReportController.institution}"
-                                            id="ins"
-                                            requiredMessage="Please select a clinic. Selecting a Hospital will not give results."
-                                            required="true" forceSelection="true" maxResults="15" minQueryLength="3"
-                                            completeMethod="#{institutionController.completeInstitutions}"
-                                            var="i"
-                                            itemLabel="#{i.name}"
-                                            itemValue="#{i}">
-                            </p:autoComplete>
+                            
+                            <p:outputLabel value="Clinic" for="ins" ></p:outputLabel>
+                            <p:selectOneMenu id="ins"
+                                             filter="true"
+                                             filterMatchMode="contains"
+                                             value="#{hospitalReportController.institution}" >
+                                <f:selectItem itemLabel="Select Clinic" ></f:selectItem>
+                                <f:selectItems value="#{webUserController.loggableInstitutions}"
+                                               var="i" 
+                                               itemLabel="#{i.name}"
+                                               itemValue="#{i}"></f:selectItems>
+                                <p:ajax process="ins" update="mnuFs" ></p:ajax>
+                            </p:selectOneMenu>
 
                             <p:outputLabel value="From" for="from" ></p:outputLabel>
                             <p:calendar id="from" value="#{hospitalReportController.fromDate}" navigator="true"
                                         required="true"
                                         requiredMessage="Select a start date"
-                                        pattern="dd MM yyyy" ></p:calendar>
+                                        pattern="dd MM yyyy HH:mm" ></p:calendar>
 
                             <p:outputLabel value="To" for="to" ></p:outputLabel>
                             <p:calendar id="to" value="#{hospitalReportController.toDate}" navigator="true"
                                         required="true"
                                         requiredMessage="Select a start date"
-                                        pattern="dd MM yyyy" ></p:calendar>
+                                        pattern="dd MM yyyy HH:mm" ></p:calendar>
 
-                            <p:outputLabel id="lblForm" value="Form-set" ></p:outputLabel>
-                            <p:selectOneMenu id="form" value="#{hospitalReportController.designingComponentFormSet}" >
+                            <p:outputLabel value="Formset" ></p:outputLabel>
+                            <p:selectOneMenu id="mnuFs" value="#{hospitalReportController.designingComponentFormSet}" >
                                 <f:selectItem itemLabel="Select" ></f:selectItem>
-                                <f:selectItems value="#{designComponentFormSetController.items}" ></f:selectItems>
-                                <f:ajax listener="#{hospitalReportController.fillItemsofTheSelectedSet()}"
-                                        execute="form" render="item" ></f:ajax>
+                                <f:selectItems value="#{designComponentFormSetController.getClinicFormSets(hospitalReportController.institution)}"
+                                               var="fs"
+                                               itemLabel="#{fs.name}"
+                                               itemValue="#{fs}" ></f:selectItems>
                             </p:selectOneMenu>
 
-                            
+
 
                             <p:spacer ></p:spacer>
                             <p:commandButton value="Download" 
                                              ajax="false" 
                                              oncomplete ="PrimeFaces.monitorDownload(start, stop);" 
                                              icon="ui-icon-arrowthick-1-s"
-                                             actionListener="#{hospitalReportController.createExcelFileOfFormsetData()}">
+                                             actionListener="#{hospitalReportController.createExcelFileOfFromsetDataForSelectedEncounters()}">
                                 <p:fileDownload value="#{hospitalReportController.resultExcelFile}" />
                             </p:commandButton>
                         </p:panelGrid>
