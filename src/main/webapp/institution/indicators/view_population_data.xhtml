@@ -34,8 +34,10 @@
                         <p:selectOneMenu id="ins"
                                          filter="true"
                                          filterMatchMode="contains"
+                                         required="true"
+                                         requiredMessage="Select an Institution or a Clinic"
                                          value="#{relationshipController.institution}" >
-                            <f:selectItem itemLabel="Select Clinic" ></f:selectItem>
+                            <f:selectItem itemLabel="Select Institution or Clinic" ></f:selectItem>
                             <f:selectItems value="#{webUserController.loggableInstitutions}"
                                            var="i" 
                                            itemLabel="#{i.name}"
