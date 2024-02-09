@@ -27,16 +27,25 @@
 
 
 
-                <p:submenu label="Analysis" 
-                           disabled="false" >
-                    <p:menuitem ajax="false" value="Reports" 
-                                action="#{reportController.toViewReports()}" ></p:menuitem>
-                    <p:menuitem ajax="false" value="Indicators" 
-                                action="#{indicatorController.toIndicatorIndex}" ></p:menuitem>
-                    <p:menuitem ajax="false" value="Counts" 
-                                action="#{reportController.toReportCounts()}" rendered="false"  ></p:menuitem>
-                    <p:menuitem ajax="false" value="Queries" rendered="false"
-                                action="#{queryComponentController.toQueryIndex()}"  />
+                <p:submenu 
+                    label="Analysis" 
+                    disabled="false" >
+                    <p:menuitem 
+                        ajax="false" value="Reports" 
+                        action="#{reportController.toViewReports()}" ></p:menuitem>
+                    <p:menuitem 
+                        ajax="false" value="Indicators" 
+                        action="#{indicatorController.toIndicatorIndex}" ></p:menuitem>
+                    <p:menuitem 
+                        ajax="false" value="Counts" 
+                        action="#{reportController.toReportCounts()}" 
+                        rendered="false"  ></p:menuitem>
+                    <p:menuitem 
+                        ajax="false" 
+                        value="Queries"
+                        rendered="false"
+                        action="#{queryComponentController.toQueryIndex()}"
+                        />
                 </p:submenu>
                 <!--//Disabled the Menu-->
                 <p:submenu label="Institution Administration"  
