@@ -55,7 +55,10 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.PrintWriter;
+import java.text.SimpleDateFormat;
 import java.util.Iterator;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.persistence.TemporalType;
@@ -299,6 +302,110 @@ public class ReportController implements Serializable {
         userTransactionController.recordTransaction("List Existing Monthly Reports");
     }
 
+    public void createCsvFileOfClinicalEncounterItemsForSelectedDesignComponent() {
+        if (designComponentFormItem == null) {
+            JsfUtil.addErrorMessage("Please select a variable");
+            return;
+        }
+        if (designComponentFormItem.getItem() == null
+                || designComponentFormItem.getItem().getCode() == null) {
+            JsfUtil.addErrorMessage("Error in selected variable.");
+            return;
+        }
+
+        String j = "select f "
+                + " from ClientEncounterComponentItem f join f.itemEncounter e"
+                + " where f.retired<>:fr "
+                + " and f.item.code=:ic "
+                + " and e.retired<>:er "
+                + " and e.encounterType=:t "
+                + " and e.encounterDate between :fd and :td"
+                + " order by e.id";
+        Map m = new HashMap();
+        m.put("fr", true);
+        m.put("ic", designComponentFormItem.getItem().getCode().toLowerCase());
+        m.put("er", true);
+        m.put("t", EncounterType.Clinic_Visit);
+        m.put("fd", fromDate);
+        m.put("td", toDate);
+
+        List<ClientEncounterComponentItem> cis = clientEncounterComponentItemFacade.findByJpql(j, m);
+
+        String fileName = "client_values_" + new SimpleDateFormat("yyyyMMddHHmm").format(new Date()) + ".csv";
+        String folder = "/tmp/";
+        File csvFile = new File(folder + fileName);
+
+        try (PrintWriter writer = new PrintWriter(new FileOutputStream(csvFile))) {
+            // Headers
+            writer.println("Serial,PHN,Sex,Age at Encounter,Encounter Date,Short-text Value,Long Value,Int Value,Real Value,Item Value,Completed,Name,Address,Mobile,Phone,GN Area");
+
+            int serial = 1;
+
+            for (ClientEncounterComponentItem i : cis) {
+                if (i.getItemEncounter() != null) {
+                    Encounter e = i.getItemEncounter();
+                    if (e.getClient() == null) {
+                        continue;
+                    }
+                    Client c = e.getClient();
+                    if (c == null) {
+                        continue;
+                    }
+                    Person p = c.getPerson();
+                    if (p == null) {
+                        continue;
+                    }
+
+                    String sexName = "";
+                    if (p != null && p.getSex() != null) {
+                        sexName = p.getSex().getName();
+                    }
+                    String gnAreaName = "";
+                    if (p != null && p.getGnArea() != null) {
+                        gnAreaName = p.getGnArea().getName();
+                    }
+
+                    // Data Row
+                    String dataRow = String.format(
+                            "%d,%s,%s,%d,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s",
+                            serial,
+                            Optional.ofNullable(c.getPhn()).orElse(""),
+                            sexName, // Replaced with the variable
+                            CommonController.calculateAge(p.getDateOfBirth(), e.getEncounterDate()),
+                            Optional.ofNullable(e.getEncounterDate()).map(ed -> CommonController.dateTimeToString(ed, "dd/MM/yyyy HH:mm")).orElse(""),
+                            Optional.ofNullable(i.getShortTextValue()).orElse(""),
+                            Optional.ofNullable(i.getLongNumberValue()).map(Object::toString).orElse(""),
+                            Optional.ofNullable(i.getIntegerNumberValue()).map(Object::toString).orElse(""),
+                            Optional.ofNullable(i.getRealNumberValue()).map(Object::toString).orElse(""),
+                            Optional.ofNullable(i.getItemValue()).map(Item::getName).orElse(""),
+                            Optional.ofNullable(i.getParentComponent()).map(pc -> pc.getParentComponent().isCompleted() ? "Complete" : "Not Completed").orElse(""),
+                            Optional.ofNullable(p.getName()).orElse(""),
+                            Optional.ofNullable(p.getAddress()).orElse(""),
+                            Optional.ofNullable(p.getPhone1()).orElse(""),
+                            Optional.ofNullable(p.getPhone2()).orElse(""),
+                            gnAreaName // Replaced with the variable
+                    );
+                    writer.println(dataRow);
+
+                    serial++;
+                }
+            }
+        } catch (Exception e) {
+            // Handle exceptions
+        }
+
+        try {
+            InputStream stream = new FileInputStream(csvFile);
+            resultExcelFile = DefaultStreamedContent.builder()
+                    .name(fileName)
+                    .contentType("text/csv")
+                    .stream(() -> stream)
+                    .build();
+        } catch (FileNotFoundException e) {
+            // Handle exception
+        }
+    }
+    
     public void listExistingReports() {
         if (institution == null) {
             JsfUtil.addErrorMessage("Please select an institutions");
@@ -620,6 +727,8 @@ public class ReportController implements Serializable {
         }
     }
 
+    
+
     public void clearReportData() {
         if (institution == null) {
             JsfUtil.addErrorMessage("Please select an institutions");
@@ -899,7 +1008,7 @@ public class ReportController implements Serializable {
         userTransactionController.recordTransaction("To View Clinic Visits By Institution");
         return action;
     }
-    
+
     public String toReportCounts() {
         String forSys = "/national/counts/index";
         String forIns = "/hospital/counts/index";

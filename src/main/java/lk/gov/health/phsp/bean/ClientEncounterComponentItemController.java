@@ -34,11 +34,9 @@ import javax.script.ScriptException;
 import lk.gov.health.phsp.ejb.DataFormBean;
 import lk.gov.health.phsp.entity.Client;
 import lk.gov.health.phsp.entity.Component;
-import lk.gov.health.phsp.entity.DesignComponentFormItem;
 import lk.gov.health.phsp.entity.Encounter;
 import lk.gov.health.phsp.entity.Person;
 import lk.gov.health.phsp.entity.Prescription;
-import lk.gov.health.phsp.enums.DataPopulationStrategy;
 import lk.gov.health.phsp.enums.DataRepresentationType;
 import lk.gov.health.phsp.enums.RenderType;
 import lk.gov.health.phsp.enums.SelectionDataType;
@@ -46,12 +44,12 @@ import lk.gov.health.phsp.pojcs.dataentry.DataForm;
 import lk.gov.health.phsp.pojcs.dataentry.DataFormset;
 import lk.gov.health.phsp.pojcs.dataentry.DataItem;
 
-@Named("clientEncounterComponentItemController")
+@Named
 @SessionScoped
 public class ClientEncounterComponentItemController implements Serializable {
 
     @EJB
-    private lk.gov.health.phsp.facade.ClientEncounterComponentItemFacade ejbFacade;
+    private ClientEncounterComponentItemFacade ejbFacade;
 
     @EJB
     DataFormBean dataFormBean;
