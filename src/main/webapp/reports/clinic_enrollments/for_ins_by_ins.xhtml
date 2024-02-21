@@ -6,54 +6,48 @@
       xmlns:p="http://primefaces.org/ui"
       xmlns:f="http://xmlns.jcp.org/jsf/core">
 
-    <head>
+    <h:head >
         <ui:define name="head">
-            Institution-vice Client Registrations
+            Institution-vice Clinic Registrations
         </ui:define>
-    </head>
-    <body>
+    </h:head>
+
+    <h:body>
 
         <ui:composition template="/reports/index.xhtml">
             <ui:define name="reports">
                 <h:form>
                     <p:panelGrid columns="2" styleClass="alignTop" >
                         <f:facet name="header" >
-                            <p:outputLabel value="Institution-vice Client Registrations" ></p:outputLabel>
+                            <p:outputLabel value="Institution-vice Clinic Registrations" ></p:outputLabel>
                         </f:facet>
                         <p:panelGrid columns="1"   >
                             <f:facet name="header" >
                                 <p:outputLabel value="Filters" >
                                 </p:outputLabel>
+
                             </f:facet>
                             <p:outputLabel value="From" ></p:outputLabel>
-                            <p:calendar value="#{reportController.fromDate}" pattern="dd MM yyyy" ></p:calendar>
-
+                            <p:calendar value="#{reportController.fromDate}" pattern="dd MM yyyy hh:mm a" ></p:calendar>
                             <p:outputLabel value="To" ></p:outputLabel>
-                            <p:calendar value="#{reportController.toDate}" pattern="dd MM yyyy" ></p:calendar>
-
-                            <p:commandButton 
-                                value="Process" 
-                                ajax="false"
-                                             action="#{reportController.fillRegistrationsOfClientsByInstitutionNational()}"></p:commandButton>
+                            <p:calendar value="#{reportController.toDate}" pattern="dd MM yyyy hh:mm a" ></p:calendar>
 
 
-                            <p:commandButton value="Download" id="btnDe" ajax="false">
-                                <p:dataExporter id="de" type="xlsx" target=":#{p:resolveFirstComponentWithId('tbl', view).clientId}" fileName="Client Registrations by Institution" ></p:dataExporter>
+                            <p:commandButton value="Process" ajax="false"
+                                             action="#{reportController.fillClinicRegistrationsByInstitution()}"></p:commandButton>
+                            <p:commandButton value="Download" ajax="false">
+                                <p:dataExporter type="xlsx" target="tbl" fileName="Clinic Enrollements by Institution" ></p:dataExporter>
                             </p:commandButton>
-
-
                         </p:panelGrid>
 
-
-                        <p:dataTable id="tbl" 
-                                     value="#{reportController.institutionCounts}" var="c"
+                        <p:dataTable id="tbl" value="#{reportController.institutionCounts}" var="c"
                                      rowIndexVar="n"
                                      paginator="true"
                                      rows="10"
                                      rowsPerPageTemplate="10,20,30,40,50"
                                      >
-                            <f:facet name="header"   >
-                                <p:outputLabel value="Client Registrations by Institution" ></p:outputLabel>
+                            <f:facet name="header"  >
+                                <p:outputLabel value="Clinic REGISTRATIONS by Institution" ></p:outputLabel>
                                 <p:outputLabel value="From : " ></p:outputLabel>
                                 <p:outputLabel value="#{reportController.fromDate}" >
                                     <f:convertDateTime pattern="dd MMMM yyyy" ></f:convertDateTime>
@@ -81,14 +75,14 @@
                                       >
                                 <p:outputLabel value="#{c.institution.rdhsArea.name}" ></p:outputLabel>
                             </p:column>
-                            <p:column headerText="Type" 
-                                      filterBy="#{c.institution.institutionType.label}" 
+                            <p:column headerText="Hospital" 
+                                      filterBy="#{c.institution.parent.name}" 
                                       filterMatchMode="contains" 
-                                      sortBy="#{c.institution.institutionType.label}"
+                                      sortBy="#{c.institution.parent.name}"
                                       >
-                                <p:outputLabel value="#{c.institution.institutionType.label}" ></p:outputLabel>
+                                <p:outputLabel value="#{c.institution.parent.name}" ></p:outputLabel>
                             </p:column>
-                            <p:column headerText="Institution" 
+                            <p:column headerText="Clinic" 
                                       filterBy="#{c.institution.name}" 
                                       filterMatchMode="contains" 
                                       sortBy="#{c.institution.name}"
@@ -104,13 +98,14 @@
                             </f:facet>
                         </p:dataTable>
 
-
                     </p:panelGrid>
+
+
 
                 </h:form>
             </ui:define>
 
         </ui:composition>
 
-    </body>
+    </h:body>
 </html>

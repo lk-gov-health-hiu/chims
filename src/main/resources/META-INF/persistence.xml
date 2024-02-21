@@ -4,7 +4,7 @@
         <description>cHIMS</description>
         <provider>com.objectdb.jpa.Provider</provider>
         <properties>
-            <property name="javax.persistence.jdbc.url" value="objectdb://192.168.1.155/chims24feb1.odb"/>
+            <property name="javax.persistence.jdbc.url" value="objectdb://192.168.1.155/chims24feb2.odb"/>
             <property name="javax.persistence.jdbc.user" value="admin"/>
             <property name="javax.persistence.jdbc.password" value="admin"/>
             <property name="javax.persistence.schema-generation.database.action" value="create-or-extend-tables"/>

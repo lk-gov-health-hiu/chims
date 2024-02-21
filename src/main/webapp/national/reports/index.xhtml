@@ -36,12 +36,23 @@
                             </p:tab>
                             <p:tab title="Counts"  >
                                 <h:panelGrid columns="1" >
+                                    
+                                     <p:commandButton value="Institution-vice Client Registrations"   style="width:20em;margin:auto;"
+                                                     action="#{reportController.toViewClientRegistrationsByInstitution()}"
+                                                     ajax="false"></p:commandButton>
+                                    
+                                    
+                                    <p:commandButton value="Institution-vice Clinic Registrations"   
+                                                     style="width:20em;margin:auto;"
+                                                     action="#{reportController.toViewClinicRegistrationsByInstitution()}"
+                                                     ajax="false"></p:commandButton>
+                                    
                                     <p:commandButton value="Institution-vice Clinic Visits"   style="width:20em;margin:auto;"
                                                      action="#{reportController.toViewClinicVisitsByInstitution()}"
                                                      ajax="false"></p:commandButton>
-                                    <p:commandButton value="Institution-vice Client Registrations"   style="width:20em;margin:auto;"
-                                                     action="#{reportController.toViewClientRegistrationsByInstitution()}"
-                                                     ajax="false"></p:commandButton>
+                                   
+                                    
+                                    
                                     <p:commandButton value="District vice Client Registrations" style="width:20em;margin:auto;"
                                                      action="#{reportController.toViewClientRegistrationsByDistrict()}"
                                                      rendered="#{webUserController.hasPrivilege('System_Administration')}"
@@ -95,10 +106,16 @@
                             </p:tab>
                             <p:tab title="Data" >
                                 <h:panelGrid columns="1" >
-                                    <p:commandButton value="Clinical Data"   style="width:20em;margin:auto;"
-                                                     action="#{reportController.toSingleVariableClinicalData()}"
+                                    <p:commandButton value="Clinical Data - All Institutes"   style="width:20em;margin:auto;"
+                                                     action="#{reportController.toSingleVariableClinicalDataNational()}"
                                                      ajax="false"></p:commandButton>
-                                    <p:commandButton value="Formset Data"   style="width:20em;margin:auto;"
+                                    
+                                    <p:commandButton value="Clinical Data - Selected Institutes"   style="width:20em;margin:auto;"
+                                                     action="#{reportController.toSi }"
+                                                     ajax="false"></p:commandButton>
+                                    
+                                    
+                                    <p:commandButton value="Formset Data - Selected Institute"   style="width:20em;margin:auto;"
                                                      action="#{reportController.toMultipleVariableClinicalData()}"
                                                      ajax="false"></p:commandButton>
                                 </h:panelGrid>

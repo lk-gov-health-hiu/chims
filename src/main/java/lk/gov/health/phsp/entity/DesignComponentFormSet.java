@@ -37,7 +37,6 @@ import lk.gov.health.phsp.enums.PanelType;
  * @author sunila_soft
  */
 @Entity
-
 public class DesignComponentFormSet extends DesignComponent  {
     
     @Transient

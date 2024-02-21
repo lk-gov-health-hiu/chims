@@ -47,18 +47,28 @@
 
                             <p:tab title="Counts"  >
                                 <h:panelGrid columns="1" >
-                                    <p:commandButton value="Institution-vice Clinic Visits"   style="width:20em;margin:auto;"
-                                                     action="#{reportController.toViewClinicVisitsByInstitution()}"
-                                                     ajax="false"></p:commandButton>
-                                    
-                                    <p:commandButton value="Institution-vice Formsets"   style="width:20em;margin:auto;"
-                                                     action="#{reportController.toViewFormsetCountsByInstitution()}"
-                                                     ajax="false"></p:commandButton>
 
 
                                     <p:commandButton value="Institution-vice Client Registrations"   style="width:20em;margin:auto;"
                                                      action="#{reportController.toViewClientRegistrationsByInstitution()}"
                                                      ajax="false"></p:commandButton>
+
+                                    
+                                    <p:commandButton value="Institution-vice Clinic REGISTRATIONS"   style="width:20em;margin:auto;"
+                                                     action="#{reportController.toViewClinicRegistrationsByInstitution()}"
+                                                     ajax="false"></p:commandButton>
+                                    
+                                    <p:commandButton value="Institution-vice Clinic VISITS"   style="width:20em;margin:auto;"
+                                                     action="#{reportController.toViewClinicVisitsByInstitution()}"
+                                                     ajax="false"></p:commandButton>
+
+
+
+
+                                    <p:commandButton value="Institution-vice Formsets"   style="width:20em;margin:auto;"
+                                                     action="#{reportController.toViewFormsetCountsByInstitution()}"
+                                                     ajax="false"></p:commandButton>
+
 
                                     <p:commandButton value="District vice Client Registrations" style="width:20em;margin:auto;"
                                                      action="#{reportController.toViewClientRegistrationsByDistrict()}"
@@ -78,9 +88,9 @@
                                     <p:commandButton value="Daily Registrations"   style="width:20em;margin:auto;"
                                                      action="#{reportController.toViewDailyClinicsRegistrationCounts()}"
                                                      ajax="false"></p:commandButton>
-                                    
-                                     <p:commandButton value="Functioning HLCs"  
-                                                      style="width:20em;margin:auto;"
+
+                                    <p:commandButton value="Functioning HLCs"  
+                                                     style="width:20em;margin:auto;"
                                                      action="#{reportController.toFunctioningHLcs}"
                                                      ajax="false"></p:commandButton>
 
@@ -101,7 +111,7 @@
                                     <p:commandButton value="Clinic Visits"   style="width:20em;margin:auto;"
                                                      action="#{reportController.toViewClinicVisits()}"
                                                      ajax="false"></p:commandButton>
-                                    
+
                                     <p:commandButton value="Form-sets"   style="width:20em;margin:auto;"
                                                      action="#{reportController.toViewformsetList()}"
                                                      ajax="false"></p:commandButton>
@@ -113,7 +123,7 @@
                                     <p:commandButton value="All Clients &amp; All Visits"   style="width:20em;margin:auto;"
                                                      action="#{reportController.toViewAllClientsAndAllClinicVisits()}"
                                                      ajax="false"></p:commandButton>
-                                    
+
                                     <p:commandButton value="Clinical Data - Single Variable"   style="width:20em;margin:auto;"
                                                      action="#{nationalReportController.toViewClinicalDataSingle()}"
                                                      ajax="false"></p:commandButton>

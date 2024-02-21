@@ -34,7 +34,6 @@ import lk.gov.health.phsp.enums.ComponentSex;
  * @author sunila_soft
  */
 @Entity
-
 public class DesignComponent extends Component {
 
     @Enumerated(EnumType.STRING)

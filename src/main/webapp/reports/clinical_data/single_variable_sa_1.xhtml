@@ -11,7 +11,7 @@
         </ui:define>
     </head>
     <body>
-        <ui:composition template="/national/reports/index.xhtml">
+        <ui:composition template="/reports/index.xhtml">
             <ui:define name="reports">
                 <h:form>
                     <p:panelGrid columns="1" class="w3-border w3-margin w3-card" >
@@ -21,6 +21,16 @@
 
 
                         <p:panelGrid columns="2" >
+                            <p:outputLabel value="Institution" for="ins" ></p:outputLabel>
+                            <p:autoComplete value="#{reportController.institution}"
+                                            id="ins"
+                                            requiredMessage="Please select a clinic. Selecting a Hospital will not give results."
+                                            required="true" forceSelection="true" maxResults="15" minQueryLength="3"
+                                            completeMethod="#{institutionController.completeInstitutions}"
+                                            var="i"
+                                            itemLabel="#{i.name}"
+                                            itemValue="#{i}">
+                            </p:autoComplete>
 
                             <p:outputLabel value="From" for="from" ></p:outputLabel>
                             <p:calendar id="from" value="#{reportController.fromDate}" navigator="true"
@@ -58,16 +68,14 @@
                                 </p:column>
                             </p:selectOneMenu>
                             
-                            <p:spacer/>
-                           
+                            <p:spacer ></p:spacer>
                             <p:commandButton value="Download" 
                                              ajax="false" 
                                              oncomplete ="PrimeFaces.monitorDownload(start, stop);" 
                                              icon="ui-icon-arrowthick-1-s"
-                                             actionListener="#{reportController.createCsvFileOfClinicalEncounterItemsForSelectedDesignComponent()}">
+                                             actionListener="#{reportController.createExcelFileOfClinicalEncounterItemsForSelectedDesignComponent()}">
                                 <p:fileDownload value="#{reportController.resultExcelFile}" />
                             </p:commandButton>
-                           
                         </p:panelGrid>
                     </p:panelGrid>
                 </h:form>
