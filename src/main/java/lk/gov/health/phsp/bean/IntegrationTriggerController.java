@@ -178,7 +178,7 @@ public class IntegrationTriggerController implements Serializable {
             FhirOperationResult outcome;
             if (it.getIntegrationEndpoint().getCommunicationProtocol() == CommunicationProtocol.FHIR_R4) {
                 System.out.println("processing FHIR R4 = ");
-                String oldId = findFhirResourceLinkId(sr, it.getIntegrationEndpoint());
+//                String oldId = findFhirResourceLinkId(sr, it.getIntegrationEndpoint());
                 outcome = fhirR4Controller.updateServiceRequestInFhirServer(sr, it.getIntegrationEndpoint());
 //                if (oldId == null) {
 //                    outcome = fhirR4Controller.updateServiceRequestInFhirServer(sr, it.getIntegrationEndpoint());
