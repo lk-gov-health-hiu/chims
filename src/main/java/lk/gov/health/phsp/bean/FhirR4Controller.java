@@ -7,6 +7,15 @@ import ca.uhn.fhir.rest.client.api.IGenericClient;
 import ca.uhn.fhir.rest.client.api.IHttpRequest;
 import ca.uhn.fhir.rest.client.api.IHttpResponse;
 import ca.uhn.fhir.rest.client.api.ServerValidationModeEnum;
+import ca.uhn.fhir.context.FhirContext;
+import ca.uhn.fhir.rest.api.MethodOutcome;
+import ca.uhn.fhir.rest.client.api.IClientInterceptor;
+import ca.uhn.fhir.rest.client.api.IHttpRequest;
+import ca.uhn.fhir.rest.client.api.IHttpResponse;
+import ca.uhn.fhir.rest.client.impl.GenericClient;
+import org.hl7.fhir.r4.model.IdType;
+import org.hl7.fhir.r4.model.Patient;
+import org.hl7.fhir.instance.model.api.IIdType;
 import javax.inject.Named;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -47,9 +56,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.HashMap;
 import java.util.Map;
 import javax.enterprise.context.SessionScoped;
@@ -122,21 +134,97 @@ public class FhirR4Controller implements Serializable {
         Patient patient = convertToFhirPatient(client);
 
         FhirOperationResult result = new FhirOperationResult();
+        FhirContext ctx = FhirContext.forR4();
+        String serverBase = endPoint.getEndPointUrl();
+        IGenericClient fhirClient = ctx.newRestfulGenericClient(serverBase);
+
+        // Log serialized patient JSON
+        String serializedPatient = ctx.newJsonParser().setPrettyPrint(true).encodeResourceToString(patient);
+        System.out.println("Serialized Patient JSON: " + serializedPatient);
+
+        // Custom interceptor for logging request details
+        fhirClient.registerInterceptor(new IClientInterceptor() {
+            @Override
+            public void interceptRequest(IHttpRequest theRequest) {
+                System.out.println("Request URL: " + theRequest.getUri());
+                // This approach does not directly expose method and headers for logging here due to API constraints.
+            }
+
+            @Override
+            public void interceptResponse(IHttpResponse theResponse) {
+                // Optionally handle the response
+            }
+        });
+
+        // Basic Authentication
+        if (sp == SecurityProtocol.BASIC_AUTHENTICATION) {
+            fhirClient.registerInterceptor(new BasicAuthInterceptor(username, password));
+        } // Keycloak Authentication
+        else if (sp == SecurityProtocol.KEYCLOAK) {
+            String token = acquireToken(endPoint.getKeyCloackClientId(), endPoint.getKeyCloackClientSecret(), endPoint.getKeyCloakTokenAcquiringUrl());
+            fhirClient.registerInterceptor(new BearerTokenAuthInterceptor(token));
+        } // API Key Authentication
+        else if (sp == SecurityProtocol.API_KEY) {
+            fhirClient.registerInterceptor(new IClientInterceptor() {
+                @Override
+                public void interceptRequest(IHttpRequest theRequest) {
+                    theRequest.addHeader(endPoint.getApiKeyName(), endPoint.getApiKeyValue());
+                }
+
+                @Override
+                public void interceptResponse(IHttpResponse theResponse) {
+                    // Optionally handle the response
+                }
+            });
+        }
+
+        // Execute the create operation
+        try {
+            MethodOutcome outcome = fhirClient.create().resource(patient).execute();
+            System.out.println("Request sent to: " + serverBase); // Log the server base URL
+
+            if (outcome.getCreated()) {
+                IdType id = (IdType) outcome.getId();
+                result.setSuccess(true);
+                result.setMessage("Created new Patient with ID: " + id.getIdPart());
+                result.setResourceId(id);
+                System.out.println("Created new Patient with ID: " + id.getIdPart());
+            } else {
+                result.setSuccess(false);
+                result.setMessage("Failed to create new Patient");
+            }
+        } catch (Exception e) {
+            System.err.println("Error during FHIR operation: " + e.getMessage());
+            e.printStackTrace();
+            result.setSuccess(false);
+            result.setMessage("Exception occurred: " + e.getMessage());
+        }
+
+        return result;
+    }
+
+    public FhirOperationResult updateServiceRequestInFhirServer(ServiceRequest serviceRequest, IntegrationEndpoint endPoint) {
+        System.out.println("Updating ServiceRequest in FHIR server...");
+        SecurityProtocol sp = endPoint.getSecurityProtocol();
+        String username = endPoint.getUserName();
+        String password = endPoint.getPassword();
+
+        FhirOperationResult result = new FhirOperationResult();
 
         FhirContext ctx = FhirContext.forR4();
         String serverBase = endPoint.getEndPointUrl();
         IGenericClient fhirClient = ctx.newRestfulGenericClient(serverBase);
 
+        // Setup the authentication
         if (sp == SecurityProtocol.BASIC_AUTHENTICATION) {
             fhirClient.registerInterceptor(new BasicAuthInterceptor(username, password));
-        } else if (endPoint.getSecurityProtocol() == SecurityProtocol.KEYCLOAK) {
+        } else if (sp == SecurityProtocol.KEYCLOAK) {
             String token = acquireToken(endPoint.getKeyCloackClientId(), endPoint.getKeyCloackClientSecret(), endPoint.getKeyCloakTokenAcquiringUrl());
             BearerTokenAuthInterceptor authInterceptor = new BearerTokenAuthInterceptor(token);
             fhirClient.registerInterceptor(authInterceptor);
         } else if (sp == SecurityProtocol.API_KEY) {
-            String apiKeyName = endPoint.getApiKeyName(); // Assuming this is the name of the API key header
+            String apiKeyName = endPoint.getApiKeyName();
             String apiKeyValue = endPoint.getApiKeyValue();
-            // Add the API key to the client's headers
             fhirClient.registerInterceptor(new IClientInterceptor() {
                 @Override
                 public void interceptRequest(IHttpRequest theRequest) {
@@ -145,84 +233,28 @@ public class FhirR4Controller implements Serializable {
 
                 @Override
                 public void interceptResponse(IHttpResponse theResponse) {
-                    // You can add response handling here if needed
+                    // No action needed on the response for now
                 }
             });
         }
-        // Add other authentication methods as needed
 
-        MethodOutcome outcome = fhirClient.create().resource(patient).execute();
+        // Perform the update operation
+        MethodOutcome outcome = fhirClient.update().resource(serviceRequest).execute();
 
-        if (outcome.getCreated()) {
+        if (outcome != null && outcome.getId() != null) {
             IdType id = (IdType) outcome.getId();
             result.setSuccess(true);
-            result.setMessage("Created new Patient with ID: " + id.getIdPart());
+            result.setMessage("ServiceRequest updated successfully with ID: " + id.getIdPart());
             result.setResourceId(id);
 
-            // Call updateFhirResourceLink method
-            updateFhirResourceLink(client, endPoint, id.getIdPart());
-
+            // Here you might want to link the updated ServiceRequest with your local data, if needed
+            // updateFhirResourceLink(serviceRequest, endPoint, id.getIdPart());
         } else {
             result.setSuccess(false);
-            result.setMessage("Failed to create new Patient");
+            result.setMessage("Failed to update ServiceRequest");
         }
         return result;
     }
-    
-    public FhirOperationResult updateServiceRequestInFhirServer(ServiceRequest serviceRequest, IntegrationEndpoint endPoint) {
-    System.out.println("Updating ServiceRequest in FHIR server...");
-    SecurityProtocol sp = endPoint.getSecurityProtocol();
-    String username = endPoint.getUserName();
-    String password = endPoint.getPassword();
-
-    FhirOperationResult result = new FhirOperationResult();
-
-    FhirContext ctx = FhirContext.forR4();
-    String serverBase = endPoint.getEndPointUrl();
-    IGenericClient fhirClient = ctx.newRestfulGenericClient(serverBase);
-
-    // Setup the authentication
-    if (sp == SecurityProtocol.BASIC_AUTHENTICATION) {
-        fhirClient.registerInterceptor(new BasicAuthInterceptor(username, password));
-    } else if (sp == SecurityProtocol.KEYCLOAK) {
-        String token = acquireToken(endPoint.getKeyCloackClientId(), endPoint.getKeyCloackClientSecret(), endPoint.getKeyCloakTokenAcquiringUrl());
-        BearerTokenAuthInterceptor authInterceptor = new BearerTokenAuthInterceptor(token);
-        fhirClient.registerInterceptor(authInterceptor);
-    } else if (sp == SecurityProtocol.API_KEY) {
-        String apiKeyName = endPoint.getApiKeyName();
-        String apiKeyValue = endPoint.getApiKeyValue();
-        fhirClient.registerInterceptor(new IClientInterceptor() {
-            @Override
-            public void interceptRequest(IHttpRequest theRequest) {
-                theRequest.addHeader(apiKeyName, apiKeyValue);
-            }
-
-            @Override
-            public void interceptResponse(IHttpResponse theResponse) {
-                // No action needed on the response for now
-            }
-        });
-    }
-
-    // Perform the update operation
-    MethodOutcome outcome = fhirClient.update().resource(serviceRequest).execute();
-
-    if (outcome != null && outcome.getId() != null) {
-        IdType id = (IdType) outcome.getId();
-        result.setSuccess(true);
-        result.setMessage("ServiceRequest updated successfully with ID: " + id.getIdPart());
-        result.setResourceId(id);
-
-        // Here you might want to link the updated ServiceRequest with your local data, if needed
-        // updateFhirResourceLink(serviceRequest, endPoint, id.getIdPart());
-
-    } else {
-        result.setSuccess(false);
-        result.setMessage("Failed to update ServiceRequest");
-    }
-    return result;
-}
-
 
     // Modified by Dr M H B Ariyaratne with assistance from ChatGPT from OpenAI
     public FhirOperationResult createPatientInFhirServer1(Client client, IntegrationEndpoint endPoint) {
@@ -1550,7 +1582,16 @@ public class FhirR4Controller implements Serializable {
         }
 
         // Date of Birth
-        patient.setBirthDate(person.getDateOfBirth());
+        if (person.getDateOfBirth() != null) {
+            SimpleDateFormat fhirDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            String formattedDateOfBirth = fhirDateFormat.format(person.getDateOfBirth());
+            try {
+                patient.setBirthDate(fhirDateFormat.parse(formattedDateOfBirth));
+            } catch (ParseException e) {
+                e.printStackTrace();
+                // Handle the error appropriately
+            }
+        }
 
         // Address
         if (person.getAddress() != null) {

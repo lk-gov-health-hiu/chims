@@ -5,6 +5,7 @@ import javax.enterprise.context.SessionScoped;
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -157,7 +158,12 @@ public class IntegrationTriggerController implements Serializable {
 
         return outcomes;
     }
-    
+
+    public String formatDateForFhir(Date date) {
+        SimpleDateFormat fhirDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        return fhirDateFormat.format(date);
+    }
+
     public List<FhirOperationResult> updateServiceRequestInFhirServer(ServiceRequest sr) {
         System.out.println("Creating new clients to endpoints...");
         List<FhirOperationResult> outcomes = new ArrayList<>();
