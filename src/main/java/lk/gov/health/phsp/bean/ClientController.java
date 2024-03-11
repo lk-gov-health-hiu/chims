@@ -237,6 +237,17 @@ public class ClientController implements Serializable {
         // Navigate to the push_result page
         return "/client/push_result?faces-redirect=true";
     }
+    
+    
+    public String pushToFhirMediators() {
+        System.out.println("Starting push to FHIR Mediators...");
+        List<FhirOperationResult> results = integrationTriggerController.createNewClientsToEndpoints(selected);
+        fhirOperationResults = results;
+        pushComplete = true; // Mark the operation as complete
+        System.out.println("Push to FHIR servers complete.");
+        return "/client/push_result?faces-redirect=true";
+    }
+
 
     public String checkPushComplete() {
         if (pushComplete) {
