@@ -1,0 +1,195 @@
+{
+    "resourceType": "Bundle",
+    "id": "3c1b6529-6e0e-4290-84ef-b87fa70dec6d",
+    "meta": {
+        "profile": [
+            "http://fhir.health.gov.lk/ips/StructureDefinition/hims-transactional-bundle"
+        ]
+    },
+    "identifier": {
+        "system": "http://fhir.health.gov.lk/ips/identifier/hims-transactional",
+        "value": "3c1b6529-6e0e-4290-84ef-b87fa70dec6d"
+    },
+    "type": "transaction",
+    "timestamp": "2024-03-12T01:45:30+01:00",
+    "entry": [
+        {
+            "fullUrl": "http://hapi-fhir:8080/fhir/Patient/100200300400",
+            "resource": {
+                "resourceType": "Patient",
+                "id": "100200300400",
+                "meta": {
+                    "profile": [
+                        "http://fhir.health.gov.lk/ips/StructureDefinition/hims-patient"
+                    ]
+                },
+                "identifier": [
+                    {
+                        "type": {
+                            "coding": [
+                                {
+                                    "system": "http://fhir.health.gov.lk/ips/CodeSystem/cs-identifier-types",
+                                    "code": "PHN"
+                                }
+                            ],
+                            "text": "Personal Health Number"
+                        },
+                        "system": "http://fhir.health.gov.lk/ips/identifier/phn",
+                        "value": "100200300400"
+                    },
+                    {
+                        "type": {
+                            "coding": [
+                                {
+                                    "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                                    "code": "PPN"
+                                }
+                            ],
+                            "text": "Passport number"
+                        },
+                        "system": "http://fhir.health.gov.lk/ips/identifier/passport",
+                        "value": "100200300400"
+                    },
+                    {
+                        "type": {
+                            "coding": [
+                                {
+                                    "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                                    "code": "PPN"
+                                }
+                            ],
+                            "text": "Passport number"
+                        },
+                        "system": "http://fhir.health.gov.lk/ips/identifier/passport",
+                        "value": "100200300400"
+                    },
+                    {
+                        "type": {
+                            "coding": [
+                                {
+                                    "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                                    "code": "DL"
+                                }
+                            ],
+                            "text": "Driver's license number"
+                        },
+                        "system": "http://fhir.health.gov.lk/ips/identifier/drivers",
+                        "value": "100200300400"
+                    },
+                    {
+                        "type": {
+                            "coding": [
+                                {
+                                    "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                                    "code": "DL"
+                                }
+                            ],
+                            "text": "Driver's license number"
+                        },
+                        "system": "http://fhir.health.gov.lk/ips/identifier/drivers",
+                        "value": "100200300400"
+                    },
+                    {
+                        "type": {
+                            "coding": [
+                                {
+                                    "system": "http://fhir.health.gov.lk/ips/CodeSystem/cs-identifier-types",
+                                    "code": "NIC"
+                                }
+                            ],
+                            "text": "National identity number"
+                        },
+                        "system": "http://fhir.health.gov.lk/ips/identifier/nic",
+                        "value": "752584524v"
+                    },
+                    {
+                        "type": {
+                            "coding": [
+                                {
+                                    "system": "http://fhir.health.gov.lk/ips/CodeSystem/cs-identifier-types",
+                                    "code": "NIC"
+                                }
+                            ],
+                            "text": "National identity number"
+                        },
+                        "system": "http://fhir.health.gov.lk/ips/identifier/nic",
+                        "value": "752584524v"
+                    },
+                    {
+                        "type": {
+                            "coding": [
+                                {
+                                    "system": "http://fhir.health.gov.lk/ips/CodeSystem/cs-identifier-types",
+                                    "code": "SCN"
+                                }
+                            ],
+                            "text": "Senior Citizen Number"
+                        },
+                        "system": "http://fhir.health.gov.lk/ips/identifier/scn",
+                        "value": "752584524v"
+                    },
+                    {
+                        "type": {
+                            "coding": [
+                                {
+                                    "system": "http://fhir.health.gov.lk/ips/CodeSystem/cs-identifier-types",
+                                    "code": "SCN"
+                                }
+                            ],
+                            "text": "Senior Citizen Number"
+                        },
+                        "system": "http://fhir.health.gov.lk/ips/identifier/scn",
+                        "value": "752584524v"
+                    }
+                ],
+                "name": [
+                    {
+                        "use": "official",
+                        "family": "Ariyaratne",
+                        "given": [
+                            "Morapitiya Hewa",
+                            "Buddhika"
+                        ],
+                        "prefix": [
+                            "Dr"
+                        ]
+                    }
+                ],
+                "telecom": [
+                    {
+                        "system": "phone",
+                        "value": "0715812399"
+                    },
+                    {
+                        "system": "email",
+                        "value": "buddhika.ari@gmail.com"
+                    },
+                    {
+                        "system": "email",
+                        "value": "buddhika.ari@gmail.com"
+                    }
+                ],
+                "gender": "male",
+                "birthDate": "1975-09-14",
+                "address": [
+                    {
+                        "type": "postal",
+                        "line": [
+                            "36",
+                            "Thalagahahena Road"
+                        ],
+                        "city": "Galle",
+                        "district": "Galle",
+                        "state": "Southern",
+                        "postalCode": "80000",
+                        "country": "LK"
+                    }
+                ]
+            },
+            "request": {
+                "method": "PUT",
+                "url": "Patient/100200300400"
+            }
+        }
+    ]
+}

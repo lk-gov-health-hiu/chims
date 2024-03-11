@@ -40,6 +40,11 @@
                                              action="#{integrationEndpointController.navigateToList()}">
                             </p:commandButton>
                             
+                            <p:commandButton icon="fa fa-user-plus"  ajax="false"
+                                             value="Test Integration Endpoints" styleClass="btn300"
+                                             action="#{integrationEndpointController.navigateToTest()}">
+                            </p:commandButton>
+                            
                              <p:commandButton icon="fa fa-user-plus"  ajax="false"
                                              value="Add New Integration Trigger" styleClass="btn300"
                                              action="#{integrationTriggerController.navigateToAddNew()}">

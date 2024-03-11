@@ -96,6 +96,10 @@ import org.hl7.fhir.r4.model.ServiceRequest;
 import org.hl7.fhir.r4.model.StringType;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import ca.uhn.fhir.context.FhirContext;
+import ca.uhn.fhir.parser.IParser;
+import ca.uhn.fhir.rest.api.EncodingEnum;
+import org.hl7.fhir.r4.model.Bundle;
 
 /**
  *
@@ -201,6 +205,80 @@ public class FhirR4Controller implements Serializable {
         }
 
         return result;
+    }
+
+    public FhirOperationResult createResourcesInFhirServer(Bundle bundle, IntegrationEndpoint endPoint) {
+        SecurityProtocol sp = endPoint.getSecurityProtocol();
+        String username = endPoint.getUserName();
+        String password = endPoint.getPassword();
+
+        FhirOperationResult result = new FhirOperationResult();
+        FhirContext ctx = FhirContext.forR4();
+        String serverBase = endPoint.getEndPointUrl();
+        IGenericClient fhirClient = ctx.newRestfulGenericClient(serverBase);
+        fhirClient.setEncoding(EncodingEnum.JSON);
+
+        // Custom interceptor for simplifying the Accept header and handling API Key if necessary
+        fhirClient.registerInterceptor(new IClientInterceptor() {
+            @Override
+            public void interceptRequest(IHttpRequest theRequest) {
+                // Ensure the Accept header is set to expect a JSON response
+                theRequest.removeHeaders("Accept");
+                theRequest.addHeader("Accept", "*/*");
+
+                // If the security protocol is API_KEY, add the custom API key header here
+                if (sp == SecurityProtocol.API_KEY) {
+                    theRequest.addHeader(endPoint.getApiKeyName(), endPoint.getApiKeyValue());
+                }
+            }
+
+            @Override
+            public void interceptResponse(IHttpResponse theResponse) {
+                // Response handling can be implemented here if needed.
+            }
+        });
+
+        // Handle Basic Authentication and Keycloak (Bearer Token) Authentication
+        if (sp == SecurityProtocol.BASIC_AUTHENTICATION) {
+            fhirClient.registerInterceptor(new BasicAuthInterceptor(username, password));
+        } else if (sp == SecurityProtocol.KEYCLOAK) {
+            String token = acquireToken(endPoint.getKeyCloackClientId(), endPoint.getKeyCloackClientSecret(), endPoint.getKeyCloakTokenAcquiringUrl());
+            fhirClient.registerInterceptor(new BearerTokenAuthInterceptor(token));
+        }
+
+        // Serialize and log the bundle for debugging purposes
+        String serializedBundle = ctx.newJsonParser().setPrettyPrint(true).encodeResourceToString(bundle);
+        System.out.println("Serialized Bundle JSON: " + serializedBundle);
+
+        // Execute the transaction operation with the bundle
+        try {
+            Bundle responseBundle = fhirClient.transaction().withBundle(bundle).execute();
+            System.out.println("Transaction executed successfully.");
+
+            // Log the status of each operation in the transaction
+            responseBundle.getEntry().forEach(entry -> System.out.println("Response: " + entry.getResponse().getStatus()));
+
+            result.setSuccess(true);
+            result.setMessage("Bundle processed by FHIR server.");
+        } catch (Exception e) {
+            System.err.println("Error during FHIR operation: " + e.getMessage());
+            e.printStackTrace();
+
+            result.setSuccess(false);
+            result.setMessage("Exception occurred: " + e.getMessage());
+        }
+
+        return result;
+    }
+
+    public Bundle convertJsonToBundle(String jsonBundle) {
+        FhirContext ctx = FhirContext.forR4();
+        IParser parser = ctx.newJsonParser();
+
+        // Assuming the JSON string is a valid FHIR Bundle representation
+        Bundle bundle = parser.parseResource(Bundle.class, jsonBundle);
+
+        return bundle;
     }
 
     public FhirOperationResult updateServiceRequestInFhirServer(ServiceRequest serviceRequest, IntegrationEndpoint endPoint) {

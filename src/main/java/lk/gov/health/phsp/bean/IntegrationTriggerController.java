@@ -159,6 +159,13 @@ public class IntegrationTriggerController implements Serializable {
         return outcomes;
     }
 
+    
+    
+    
+    
+    
+    
+    
     public String formatDateForFhir(Date date) {
         SimpleDateFormat fhirDateFormat = new SimpleDateFormat("yyyy-MM-dd");
         return fhirDateFormat.format(date);

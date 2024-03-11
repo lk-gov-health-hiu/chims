@@ -72,6 +72,7 @@ import static lk.gov.health.phsp.enums.EncounterType.Client_Data;
 import lk.gov.health.phsp.enums.SearchCriteria;
 import lk.gov.health.phsp.pojcs.FhirConverters;
 import lk.gov.health.phsp.pojcs.SearchQueryData;
+import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.ServiceRequest;
 import org.primefaces.component.tabview.TabView;
 import org.primefaces.event.TabChangeEvent;
@@ -123,6 +124,9 @@ public class ClientController implements Serializable {
     ClientEncounterComponentItemController clientEncounterComponentItemController;
     @Inject
     IntegrationTriggerController integrationTriggerController;
+    @Inject
+    FhirR4Controller fhirR4Controller;
+    private IntegrationEndpoint integrationEndpoint;
     // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="Variables">
     private List<Client> items = null;
@@ -155,6 +159,7 @@ public class ClientController implements Serializable {
     private String searchingSsNumber;
     private String uploadDetails;
     private String errorCode;
+    private String sampleJsonInput;
     private YearMonthDay yearMonthDay;
     private Institution selectedClinic;
     private int profileTabActiveIndex;
@@ -185,6 +190,7 @@ public class ClientController implements Serializable {
     private DesignComponentFormSet clientDcfs;
 
     private SearchQueryData searchQueryData;
+    private String responseMessage;
 
     // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="Constructors">
@@ -237,17 +243,23 @@ public class ClientController implements Serializable {
         // Navigate to the push_result page
         return "/client/push_result?faces-redirect=true";
     }
-    
-    
-    public String pushToFhirMediators() {
+
+    public void pushToFhirMediators() {
         System.out.println("Starting push to FHIR Mediators...");
         List<FhirOperationResult> results = integrationTriggerController.createNewClientsToEndpoints(selected);
         fhirOperationResults = results;
         pushComplete = true; // Mark the operation as complete
         System.out.println("Push to FHIR servers complete.");
-        return "/client/push_result?faces-redirect=true";
     }
 
+    public void postJsonToMediators() {
+        Bundle bundle = fhirR4Controller.convertJsonToBundle(sampleJsonInput);
+        FhirOperationResult result = fhirR4Controller.createResourcesInFhirServer(bundle, integrationEndpoint);
+        responseMessage = "Operation Result: " + (result.isSuccess() ? "Success" : "Failure") + "\nMessage: " + result.getMessage();
+        FhirContext ctx = FhirContext.forR4();
+        String serializedBundle = ctx.newJsonParser().setPrettyPrint(true).encodeResourceToString(bundle);
+        responseMessage += "\nBundle: " + serializedBundle;
+    }
 
     public String checkPushComplete() {
         if (pushComplete) {
@@ -3389,6 +3401,32 @@ public class ClientController implements Serializable {
 
     public void setSelectedServiceRequest(ServiceRequest selectedServiceRequest) {
         this.selectedServiceRequest = selectedServiceRequest;
+    }
+
+    public String getSampleJsonInput() {
+        return sampleJsonInput;
+    }
+
+    public void setSampleJsonInput(String sampleJsonInput) {
+        this.sampleJsonInput = sampleJsonInput;
+    }
+
+    public IntegrationEndpoint getIntegrationEndpoint() {
+        return integrationEndpoint;
+    }
+
+    
+    
+    public void setIntegrationEndpoint(IntegrationEndpoint integrationEndpoint) {
+        this.integrationEndpoint = integrationEndpoint;
+    }
+
+    public String getResponseMessage() {
+        return responseMessage;
+    }
+
+    public void setResponseMessage(String responseMessage) {
+        this.responseMessage = responseMessage;
     }
 
     // </editor-fold>
