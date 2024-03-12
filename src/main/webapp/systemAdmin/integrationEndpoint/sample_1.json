@@ -1,0 +1,200 @@
+I want to have a method to generate an entry for the bundle with the following data 
+
+the required json frmat is below
+
+here placeholders are given with two curly brackets like {{placeholder}}
+
+I want all place holders as parameters 
+that part will be added only if given a not null value
+there are 2 entries like nic1 and nic2, in such case we have to use a list of strings, if provided, one entry or two entry of multiple entries should be able to add
+
+The issue is with the address lines. there is no placeholder for it. But I need to get a list of strings as a parameters for strings
+
+so do you think it is best to go with one method or have multiple methods? if you propose muliple methods, can I have the names and parameters for each method? (No content is neede for any method as of now)
+
+ {
+            "fullUrl": "http://hapi-fhir:8080/fhir/Patient/{{patient}}",
+            "resource": {
+                "resourceType": "Patient",
+                "id": "{{patient}}",
+                "meta": {
+                    "profile": [
+                        "http://fhir.health.gov.lk/ips/StructureDefinition/ips-patient"
+                    ]
+                },
+                "extension": [
+                    {
+                        "url": "http://fhir.health.gov.lk/ips/StructureDefinition/patient-registration-system",
+                        "valueReference": {
+                            "reference": "Device/{{deviceinformation}}"
+                        }
+                    }
+                ],
+                "identifier": [
+                    {
+                        "type": {
+                            "coding": [
+                                {
+                                    "system": "http://fhir.health.gov.lk/ips/CodeSystem/cs-identifier-types",
+                                    "code": "PHN"
+                                }
+                            ],
+                            "text": "Personal Health Number"
+                        },
+                        "system": "http://fhir.health.gov.lk/ips/identifier/phn",
+                        "value": "{{PHN}}"
+                    },
+                    {
+                        "type": {
+                            "coding": [
+                                {
+                                    "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                                    "code": "PPN"
+                                }
+                            ],
+                            "text": "Passport number"
+                        },
+                        "system": "http://fhir.health.gov.lk/ips/identifier/passport",
+                        "value": "{{PPN1}}"
+                    },
+                    {
+                        "type": {
+                            "coding": [
+                                {
+                                    "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                                    "code": "PPN"
+                                }
+                            ],
+                            "text": "Passport number"
+                        },
+                        "system": "http://fhir.health.gov.lk/ips/identifier/passport",
+                        "value": "{{PPN2}}"
+                    },
+                    {
+                        "type": {
+                            "coding": [
+                                {
+                                    "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                                    "code": "DL"
+                                }
+                            ],
+                            "text": "Driver's license number"
+                        },
+                        "system": "http://fhir.health.gov.lk/ips/identifier/drivers",
+                        "value": "{{DL1}}"
+                    },
+                    {
+                        "type": {
+                            "coding": [
+                                {
+                                    "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                                    "code": "DL"
+                                }
+                            ],
+                            "text": "Driver's license number"
+                        },
+                        "system": "http://fhir.health.gov.lk/ips/identifier/drivers",
+                        "value": "{{DL2}}"
+                    },
+                    {
+                        "type": {
+                            "coding": [
+                                {
+                                    "system": "http://fhir.health.gov.lk/ips/CodeSystem/cs-identifier-types",
+                                    "code": "NIC"
+                                }
+                            ],
+                            "text": "National identity number"
+                        },
+                        "system": "http://fhir.health.gov.lk/ips/identifier/nic",
+                        "value": "{{NIC1}}"
+                    },
+                    {
+                        "type": {
+                            "coding": [
+                                {
+                                    "system": "http://fhir.health.gov.lk/ips/CodeSystem/cs-identifier-types",
+                                    "code": "NIC"
+                                }
+                            ],
+                            "text": "National identity number"
+                        },
+                        "system": "http://fhir.health.gov.lk/ips/identifier/nic",
+                        "value": "{{NIC2}}"
+                    },
+                    {
+                        "type": {
+                            "coding": [
+                                {
+                                    "system": "http://fhir.health.gov.lk/ips/CodeSystem/cs-identifier-types",
+                                    "code": "SCN"
+                                }
+                            ],
+                            "text": "Senior Citizen Number"
+                        },
+                        "system": "http://fhir.health.gov.lk/ips/identifier/scn",
+                        "value": "{{SCN1}}"
+                    },
+                    {
+                        "type": {
+                            "coding": [
+                                {
+                                    "system": "http://fhir.health.gov.lk/ips/CodeSystem/cs-identifier-types",
+                                    "code": "SCN"
+                                }
+                            ],
+                            "text": "Senior Citizen Number"
+                        },
+                        "system": "http://fhir.health.gov.lk/ips/identifier/scn",
+                        "value": "{{SCN2}}"
+                    }
+                ],
+                "name": [
+                    {
+                        "use": "official",
+                        "family": "{{LastName}}",
+                        "given": [
+                            "{{FirstName}}",
+                            "{{FirstName}}"
+                        ],
+                        "prefix": [
+                            "{{NamePrefix}}"
+                        ]
+                    }
+                ],
+                "telecom": [
+                    {
+                        "system": "phone",
+                        "value": "{{PhoneNumber}}"
+                    },
+                    {
+                        "system": "email",
+                        "value": "{{Email}}"
+                    },
+                    {
+                        "system": "email",
+                        "value": "{{Email}}"
+                    }
+                ],
+                "gender": "{{gender}}",
+                "birthDate": "{{birthdate}}",
+                "address": [
+                    {
+                        "type": "postal",
+                        "line": [
+                            "177",
+                            "Nawala Road"
+                        ],
+                        "city": "{{city}}",
+                        "district": "{{district}}",
+                        "state": "{{state}}",
+                        "postalCode": "{{postalCode}}",
+                        "country": "{{country}}"
+                    }
+                ]
+            },
+            "request": {
+                "method": "PUT",
+                "url": "Patient/{{patient}}"
+            }
+        }

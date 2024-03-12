@@ -11,10 +11,10 @@
         <ui:composition template="./../template.xhtml">
 
             <ui:define name="content">
-                
+
                 <p:panel header="Select Client" style="height: 100%; text-align: center;" >
-                    
-                    
+
+
                     <h:form>
 
                         <p:dataTable value="#{clientController.selectedClientsWithBasicData}" var="item">
@@ -54,7 +54,17 @@
                                 <f:facet name="header">
                                     <h:outputText value="Actions"/>
                                 </f:facet>
-                                <p:commandButton ajax="false" action="#{clientController.toClientProfileById()}" value="View Profile" >
+                                <p:commandButton 
+                                    ajax="false" 
+                                    class="m-1"
+                                    action="#{clientController.toClientProfileById()}" value="View Profile" >
+                                    <f:setPropertyActionListener target="#{clientController.selectedId}" value="#{item.id}" ></f:setPropertyActionListener>
+                                </p:commandButton>
+                                <p:commandButton 
+                                    ajax="false" 
+                                    class="m-1"
+                                    action="#{clientController.navigateToTestSendingPatientToEndPoint()}"
+                                    value="Push to NEHR" >
                                     <f:setPropertyActionListener target="#{clientController.selectedId}" value="#{item.id}" ></f:setPropertyActionListener>
                                 </p:commandButton>
                             </p:column>
@@ -63,12 +73,12 @@
                     </h:form>
 
 
-                    
+
                 </p:panel>
 
 
-              
-                
+
+
             </ui:define>
 
         </ui:composition>

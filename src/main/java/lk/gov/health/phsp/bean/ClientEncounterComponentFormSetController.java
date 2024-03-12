@@ -1,6 +1,7 @@
 package lk.gov.health.phsp.bean;
 
 // <editor-fold defaultstate="collapsed" desc="Import">
+import ca.uhn.fhir.context.FhirContext;
 import lk.gov.health.phsp.entity.ClientEncounterComponentFormSet;
 import lk.gov.health.phsp.bean.util.JsfUtil;
 import lk.gov.health.phsp.bean.util.JsfUtil.PersistAction;
@@ -12,6 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -35,6 +37,7 @@ import lk.gov.health.phsp.entity.DesignComponentFormSet;
 import lk.gov.health.phsp.entity.Encounter;
 import lk.gov.health.phsp.entity.FhirOperationResult;
 import lk.gov.health.phsp.entity.Institution;
+import lk.gov.health.phsp.entity.IntegrationEndpoint;
 import lk.gov.health.phsp.entity.Item;
 import lk.gov.health.phsp.entity.Prescription;
 import lk.gov.health.phsp.enums.ComponentSex;
@@ -52,6 +55,7 @@ import lk.gov.health.phsp.pojcs.dataentry.DataForm;
 import lk.gov.health.phsp.pojcs.dataentry.DataFormset;
 import lk.gov.health.phsp.pojcs.dataentry.DataItem;
 import org.apache.commons.lang3.SerializationUtils;
+import org.hl7.fhir.r4.model.Bundle;
 // </editor-fold>
 
 @Named("clientEncounterComponentFormSetController")
@@ -100,6 +104,8 @@ public class ClientEncounterComponentFormSetController implements Serializable {
     UserTransactionController userTransactionController;
     @Inject
     ApiRequestApplicationController apiRequestApplicationController;
+    @Inject
+    FhirR4Controller fhirR4Controller;
 // </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="Class Variables">
     private List<ClientEncounterComponentFormSet> items = null;
@@ -117,6 +123,9 @@ public class ClientEncounterComponentFormSetController implements Serializable {
     private boolean pushComplete = false;
 
     private List<ClientEncounterComponentFormSet> lastFiveClinicVisits;
+    private IntegrationEndpoint integrationEndpoint;
+    private String responseMessage;
+    
 
 // </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="Constructors">
@@ -184,7 +193,44 @@ public class ClientEncounterComponentFormSetController implements Serializable {
 // <editor-fold defaultstate="collapsed" desc="User Functions">
 
     // Modified by Dr M H B Ariyaratne with assistance from ChatGPT from OpenAI
+    
+    
+     public void postPatientEncounterBundleToMediators() {
+        Bundle bundle = clientController.createTransactionalBundleWithUUID(UUID.randomUUID().toString());
+        Bundle.BundleEntryComponent patientEntry = clientController.createPatientEntry(selected.getClient());
+        clientController.addEntryToBundle(bundle, patientEntry);
+        FhirOperationResult result = fhirR4Controller.createResourcesInFhirServer(bundle, integrationEndpoint);
+        responseMessage = "Operation Result: " + (result.isSuccess() ? "Success" : "Failure") + "\nMessage: " + result.getMessage();
+        FhirContext ctx = FhirContext.forR4();
+        String serializedBundle = ctx.newJsonParser().setPrettyPrint(true).encodeResourceToString(bundle);
+        responseMessage += "\nBundle: " + serializedBundle;
+    }
+    
+    
+    
+    
     public String pushToFhirServers() {
+        System.out.println("pushToFhirServers in clientencountercomponentformsetcontroller");
+        System.out.println("Starting push to FHIR servers...");
+
+        // Call the synchronous version of createNewFormsetToEndpoints
+        fhirOperationResults = integrationTriggerController.createNewFormsetToEndpoints(selected);
+
+        pushComplete = true; // Mark the operation as complete
+        System.out.println("Push to FHIR servers clientencountercomponentformsetcontroller complete.");
+
+        return "/dataentry/push_result?faces-redirect=true"; // Navigate to the push_result page
+    }
+    
+    public String navigateToTestPushingToNehr(){
+        if(selected==null){
+            JsfUtil.addErrorMessage("Please select to Push");
+            return "";
+        }
+        return "";
+    }
+    
+    public String pushToNehr() {
         System.out.println("pushToFhirServers in clientencountercomponentformsetcontroller");
         System.out.println("Starting push to FHIR servers...");
 
@@ -2031,6 +2077,8 @@ public class ClientEncounterComponentFormSetController implements Serializable {
     public ClientEncounterComponentFormSet getSelected() {
         return selected;
     }
+    
+    
 
     public void setSelected(ClientEncounterComponentFormSet selected) {
         this.selected = selected;
@@ -2213,6 +2261,22 @@ public class ClientEncounterComponentFormSetController implements Serializable {
 
     public void setDataFormset(DataFormset dataFormset) {
         this.dataFormset = dataFormset;
+    }
+
+    public IntegrationEndpoint getIntegrationEndpoint() {
+        return integrationEndpoint;
+    }
+
+    public void setIntegrationEndpoint(IntegrationEndpoint integrationEndpoint) {
+        this.integrationEndpoint = integrationEndpoint;
+    }
+
+    public String getResponseMessage() {
+        return responseMessage;
+    }
+
+    public void setResponseMessage(String responseMessage) {
+        this.responseMessage = responseMessage;
     }
 
 // </editor-fold>    
