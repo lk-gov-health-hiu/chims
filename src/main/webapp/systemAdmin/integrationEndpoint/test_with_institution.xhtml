@@ -1,0 +1,72 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <body>
+
+        <ui:composition template="/systemAdmin/integration_index.xhtml">
+
+            <ui:define name="subContent">
+                <h:form id="listForm">
+
+
+
+
+
+                    <p:panelGrid columns="2" class="w-100" >
+                        <p:outputLabel value="End Point" ></p:outputLabel>
+                        <p:selectOneMenu id="selectItem" 
+                                         value="#{institutionController.integrationEndpoint}" 
+                                         filter="true" 
+                                         filterMatchMode="startsWith" 
+                                         styleClass="w-100">
+                            <f:selectItem itemLabel="Select Item" itemValue="" noSelectionOption="true"/>
+                            <f:selectItems value="#{integrationEndpointController.items}" 
+                                           var="item" 
+                                           itemLabel="#{item.name}" 
+                                           itemValue="#{item}" />
+                        </p:selectOneMenu>
+                        
+                        <p:outputLabel value="HIN" ></p:outputLabel>
+                        <p:outputLabel value="#{institutionController.selected.hin}" ></p:outputLabel>
+                        
+                        <p:outputLabel value="Name" ></p:outputLabel>
+                        <p:outputLabel value="#{institutionController.selected.name}" ></p:outputLabel>
+                        
+                        <p:outputLabel value="Type" ></p:outputLabel>
+                        <p:outputLabel value="#{institutionController.selected.institutionType}" ></p:outputLabel>
+                        
+                        <p:outputLabel value="Created Date" ></p:outputLabel>
+                        <p:outputLabel value="#{institutionController.selected.createdAt}" >
+                            <f:convertDateTime pattern="dd MMMM yyyy HH:mm a" ></f:convertDateTime>
+                        </p:outputLabel>
+                        
+                        <p:outputLabel value="Parent" ></p:outputLabel>
+                        <p:outputLabel value="#{institutionController.selected.parent.name}" >
+                        </p:outputLabel>
+                        
+                        <p:outputLabel value="Parent" ></p:outputLabel>
+                        <p:commandButton value="#{institutionController.navigateToPushInstitutions}" ajax="false" >
+                            <f:setPropertyActionListener 
+                                value="#{institutionController.selected.parent}" 
+                                target="#{institutionController.selected}" ></f:setPropertyActionListener>
+                        </p:commandButton>
+                        
+                        <p:commandButton ajax="false" value="Push as Organization" action="#{institutionController.postOrganizationBundleToMediators()}" ></p:commandButton>
+                        <p:commandButton ajax="false" value="Push as Location" action="#{institutionController.postLocationBundleToMediators()}" ></p:commandButton>
+                        
+                        <p:outputLabel value="Response" ></p:outputLabel>
+                        <p:inputTextarea class="w-100" value="#{institutionController.responseMessage}" ></p:inputTextarea>
+                    </p:panelGrid>
+
+                </h:form>
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

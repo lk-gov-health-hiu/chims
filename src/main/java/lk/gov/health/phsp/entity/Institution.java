@@ -55,6 +55,8 @@ public class Institution implements Serializable, Identifiable  {
 
     @Enumerated(EnumType.STRING)
     private InstitutionType institutionType;
+    
+    private String hin;
 
     private String name;
     private String code;
@@ -428,5 +430,15 @@ public class Institution implements Serializable, Identifiable  {
     public void setMohArea(Area mohArea) {
         this.mohArea = mohArea;
     }
+
+    public String getHin() {
+        return hin;
+    }
+
+    public void setHin(String hin) {
+        this.hin = hin;
+    }
+    
+    
 
 }

@@ -1,5 +1,6 @@
 package lk.gov.health.phsp.bean;
 
+import ca.uhn.fhir.context.FhirContext;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -16,6 +17,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -34,10 +36,12 @@ import jxl.Workbook;
 import jxl.read.biff.BiffException;
 import lk.gov.health.phsp.entity.Area;
 import lk.gov.health.phsp.entity.FhirOperationResult;
+import lk.gov.health.phsp.entity.IntegrationEndpoint;
 import lk.gov.health.phsp.enums.AreaType;
 import lk.gov.health.phsp.enums.InstitutionType;
 import lk.gov.health.phsp.facade.AreaFacade;
 import lk.gov.health.phsp.pojcs.FhirConverters;
+import org.hl7.fhir.r4.model.Bundle;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.primefaces.model.file.UploadedFile;
@@ -63,7 +67,12 @@ public class InstitutionController implements Serializable {
     private UserTransactionController userTransactionController;
     @Inject
     IntegrationTriggerController integrationTriggerController;
+    @Inject
+    FhirController fhirController;
+    @Inject
+    FhirR4Controller fhirR4Controller;
 
+    
     private List<Institution> items = null;
 
     private List<Institution> selectedItems = null;
@@ -89,6 +98,40 @@ public class InstitutionController implements Serializable {
     private UploadedFile file;
     private List<FhirOperationResult> fhirOperationResults;
     private boolean pushComplete = false;
+
+    IntegrationEndpoint integrationEndpoint;
+    String responseMessage;
+    
+
+    public String navigateToTestSendingOrganizationToEndPoint() {
+        if (selected == null) {
+            JsfUtil.addErrorMessage("No Institution is selected");
+            return "";
+        }
+        return "/systemAdmin/integrationEndpoint/test_with_institution";
+    }
+
+    public void postOrganizationBundleToMediators() {
+        Bundle bundle = fhirController.createTransactionalBundleWithUUID(UUID.randomUUID().toString());
+        Bundle.BundleEntryComponent patientEntry = fhirController.createOrganizationEntry(selected);
+        fhirController.addEntryToBundle(bundle, patientEntry);
+        FhirOperationResult result = fhirR4Controller.createResourcesInFhirServer(bundle, integrationEndpoint);
+        responseMessage = "Operation Result: " + (result.isSuccess() ? "Success" : "Failure") + "\nMessage: " + result.getMessage();
+        FhirContext ctx = FhirContext.forR4();
+        String serializedBundle = ctx.newJsonParser().setPrettyPrint(true).encodeResourceToString(bundle);
+        responseMessage += "\nBundle: " + serializedBundle;
+    }
+    
+    public void postLocationBundleToMediators() {
+        Bundle bundle = fhirController.createTransactionalBundleWithUUID(UUID.randomUUID().toString());
+        Bundle.BundleEntryComponent patientEntry = fhirController.createLocationEntry(selected);
+        fhirController.addEntryToBundle(bundle, patientEntry);
+        FhirOperationResult result = fhirR4Controller.createResourcesInFhirServer(bundle, integrationEndpoint);
+        responseMessage = "Operation Result: " + (result.isSuccess() ? "Success" : "Failure") + "\nMessage: " + result.getMessage();
+        FhirContext ctx = FhirContext.forR4();
+        String serializedBundle = ctx.newJsonParser().setPrettyPrint(true).encodeResourceToString(bundle);
+        responseMessage += "\nBundle: " + serializedBundle;
+    }
 
     public String pushSelectedOrganizationsToFhirServers() {
         pushComplete = false;
@@ -213,7 +256,7 @@ public class InstitutionController implements Serializable {
         userTransactionController.recordTransaction("To List Institutions");
         return "/institution/list";
     }
-    
+
     public String navigateToPushInstitutions() {
         userTransactionController.recordTransaction("To Push Institutions");
         selectedItems = null;
@@ -937,6 +980,24 @@ public class InstitutionController implements Serializable {
         this.selectedItems = selectedItems;
     }
 
+    public IntegrationEndpoint getIntegrationEndpoint() {
+        return integrationEndpoint;
+    }
+
+    public void setIntegrationEndpoint(IntegrationEndpoint integrationEndpoint) {
+        this.integrationEndpoint = integrationEndpoint;
+    }
+
+    public String getResponseMessage() {
+        return responseMessage;
+    }
+
+    public void setResponseMessage(String responseMessage) {
+        this.responseMessage = responseMessage;
+    }
+
+    
+    
     @FacesConverter(forClass = Institution.class)
     public static class InstitutionControllerConverter implements Converter {
 

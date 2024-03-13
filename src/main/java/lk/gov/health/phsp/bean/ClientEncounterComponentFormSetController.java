@@ -93,6 +93,8 @@ public class ClientEncounterComponentFormSetController implements Serializable {
     @Inject
     private ClientController clientController;
     @Inject
+    private FhirController fhirController;
+    @Inject
     private WebUserController webUserController;
     @Inject
     private EncounterController encounterController;
@@ -125,7 +127,6 @@ public class ClientEncounterComponentFormSetController implements Serializable {
     private List<ClientEncounterComponentFormSet> lastFiveClinicVisits;
     private IntegrationEndpoint integrationEndpoint;
     private String responseMessage;
-    
 
 // </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="Constructors">
@@ -193,22 +194,19 @@ public class ClientEncounterComponentFormSetController implements Serializable {
 // <editor-fold defaultstate="collapsed" desc="User Functions">
 
     // Modified by Dr M H B Ariyaratne with assistance from ChatGPT from OpenAI
-    
-    
-     public void postPatientEncounterBundleToMediators() {
-        Bundle bundle = clientController.createTransactionalBundleWithUUID(UUID.randomUUID().toString());
-        Bundle.BundleEntryComponent patientEntry = clientController.createPatientEntry(selected.getClient());
-        clientController.addEntryToBundle(bundle, patientEntry);
+    public void postPatientEncounterBundleToMediators() {
+        Bundle bundle = fhirController.createTransactionalBundleWithUUID(UUID.randomUUID().toString());
+        Bundle.BundleEntryComponent patientEntry = fhirController.createPatientEntry(selected.getClient());
+        fhirController.addEntryToBundle(bundle, patientEntry);
         FhirOperationResult result = fhirR4Controller.createResourcesInFhirServer(bundle, integrationEndpoint);
         responseMessage = "Operation Result: " + (result.isSuccess() ? "Success" : "Failure") + "\nMessage: " + result.getMessage();
         FhirContext ctx = FhirContext.forR4();
         String serializedBundle = ctx.newJsonParser().setPrettyPrint(true).encodeResourceToString(bundle);
         responseMessage += "\nBundle: " + serializedBundle;
     }
+
     
-    
-    
-    
+
     public String pushToFhirServers() {
         System.out.println("pushToFhirServers in clientencountercomponentformsetcontroller");
         System.out.println("Starting push to FHIR servers...");
@@ -221,15 +219,15 @@ public class ClientEncounterComponentFormSetController implements Serializable {
 
         return "/dataentry/push_result?faces-redirect=true"; // Navigate to the push_result page
     }
-    
-    public String navigateToTestPushingToNehr(){
-        if(selected==null){
+
+    public String navigateToTestPushingToNehr() {
+        if (selected == null) {
             JsfUtil.addErrorMessage("Please select to Push");
             return "";
         }
         return "";
     }
-    
+
     public String pushToNehr() {
         System.out.println("pushToFhirServers in clientencountercomponentformsetcontroller");
         System.out.println("Starting push to FHIR servers...");
@@ -2077,8 +2075,6 @@ public class ClientEncounterComponentFormSetController implements Serializable {
     public ClientEncounterComponentFormSet getSelected() {
         return selected;
     }
-    
-    
 
     public void setSelected(ClientEncounterComponentFormSet selected) {
         this.selected = selected;
