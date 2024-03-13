@@ -19,9 +19,7 @@
                                      action="#{institutionController.pushSelectedLocationsToFhirServers()}" >
                     </p:commandButton>
                     
-                    <p:commandButton ajax="false" value="Push to NEHR" 
-                                     action="#{clientController.navigateToTestSendingPatientToEndPoint()}" >
-                    </p:commandButton>
+                    
 
 
                     <p:dataTable id="datalist" value="#{institutionController.items}" var="item"

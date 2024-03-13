@@ -70,6 +70,7 @@ public class Institution implements Serializable, Identifiable  {
     @ManyToOne(fetch = FetchType.LAZY)
     private Institution poiInstitution;
     private Long lastHin;
+    private String uuid;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Institution parent;
@@ -437,6 +438,14 @@ public class Institution implements Serializable, Identifiable  {
 
     public void setHin(String hin) {
         this.hin = hin;
+    }
+
+    public String getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
     }
     
     

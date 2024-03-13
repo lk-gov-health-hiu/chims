@@ -12,8 +12,11 @@
             <h:form id="InstitutionEditForm">
                 <h:panelGroup id="display">
 
-                    <p:commandButton ajax="false" actionListener="#{institutionController.update}" value="#{bundleClinical.Save}" update="display,:InstitutionListForm:datalist" oncomplete="handleSubmit(args, 'InstitutionEditDialog');"/>
-                    <p:commandButton ajax="false" value="#{bundleClinical.Cancel}" onclick="InstitutionEditDialog.hide()"/>
+                    <p:commandButton class="m-1" ajax="false" actionListener="#{institutionController.update}" value="#{bundleClinical.Save}" update="display,:InstitutionListForm:datalist" oncomplete="handleSubmit(args, 'InstitutionEditDialog');"/>
+                    <p:commandButton  class="m-1"  ajax="false" value="#{bundleClinical.Cancel}" onclick="InstitutionEditDialog.hide()"/>
+                    <p:commandButton ajax="false" value="Push to NEHR" 
+                                     action="#{institutionController.navigateToTestSendingOrganizationToEndPoint()}" >
+                    </p:commandButton>
 
                     <p:tabView  rendered="#{institutionController.selected != null}">
 

@@ -50,7 +50,8 @@
                         </p:outputLabel>
                         
                         <p:outputLabel value="Parent" ></p:outputLabel>
-                        <p:commandButton value="#{institutionController.navigateToPushInstitutions}" ajax="false" >
+                        <p:commandButton value="Load Parent" 
+                                         action="#{institutionController.navigateToTestSendingOrganizationToEndPoint}" ajax="false" >
                             <f:setPropertyActionListener 
                                 value="#{institutionController.selected.parent}" 
                                 target="#{institutionController.selected}" ></f:setPropertyActionListener>

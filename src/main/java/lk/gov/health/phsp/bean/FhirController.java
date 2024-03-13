@@ -11,11 +11,14 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
+import javax.ejb.EJB;
 import lk.gov.health.phsp.entity.Area;
 import lk.gov.health.phsp.entity.Client;
 import lk.gov.health.phsp.entity.Institution;
 import lk.gov.health.phsp.entity.Item;
 import lk.gov.health.phsp.entity.Person;
+import lk.gov.health.phsp.facade.InstitutionFacade;
 import org.hl7.fhir.r4.model.Address;
 import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.CodeableConcept;
@@ -40,6 +43,9 @@ import org.hl7.fhir.r4.model.Reference;
 @Named(value = "fhirController")
 @SessionScoped
 public class FhirController implements Serializable {
+
+    @EJB
+    InstitutionFacade institutionFacade;
 
     /**
      * Creates a new instance of FhirController
@@ -252,7 +258,15 @@ public class FhirController implements Serializable {
     }
 
     public Bundle.BundleEntryComponent createOrganizationEntry(Institution ins) {
-        String organizationId = ins.getId().toString();
+        if (ins.getUuid() == null || ins.getUuid().trim().equals("")) {
+            ins.setUuid(UUID.randomUUID().toString());
+            if (ins.getId() == null) {
+                institutionFacade.create(ins);
+            } else {
+                institutionFacade.edit(ins);
+            }
+        }
+        String organizationId = ins.getUuid();
         String facilityId = ins.getHin();
         String organizationName = ins.getName();
         return createOrganizationEntry(organizationId, facilityId, organizationName);
@@ -299,6 +313,15 @@ public class FhirController implements Serializable {
     public Bundle.BundleEntryComponent createLocationEntry(Institution ins) {
         List<ContactPoint> telecoms = new ArrayList<>();
 
+        if (ins.getUuid() == null || ins.getUuid().trim().equals("")) {
+            ins.setUuid(UUID.randomUUID().toString());
+            if (ins.getId() == null) {
+                institutionFacade.create(ins);
+            } else {
+                institutionFacade.edit(ins);
+            }
+        }
+
         if (ins.getPhone() != null) {
             ContactPoint phoneContact = new ContactPoint();
             phoneContact.setSystem(ContactPointSystem.PHONE);
@@ -323,7 +346,7 @@ public class FhirController implements Serializable {
             telecoms.add(emailContact);
         }
 
-        String locationId = ins.getId().toString();
+        String locationId = ins.getUuid();
         List<String> identifierValues = new ArrayList<>();
         if (ins.getHin() != null) {
             identifierValues.add(ins.getHin());
@@ -333,9 +356,9 @@ public class FhirController implements Serializable {
         Address address = stringToAddress(ins.getAddress());
 
         String managingOrganizationId;
-        
+
         if (ins.getParent() != null) {
-             managingOrganizationId = ins.getParent().getId().toString();
+            managingOrganizationId = ins.getParent().getId().toString();
         }
         return createLocationEntry(locationId, identifierValues, locationStatus, locationName, telecoms, address, locationId);
     }
