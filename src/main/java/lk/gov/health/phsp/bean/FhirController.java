@@ -21,8 +21,10 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import javax.ejb.EJB;
 import javax.inject.Inject;
 import lk.gov.health.phsp.entity.Area;
@@ -626,14 +628,18 @@ public class FhirController implements Serializable {
         meta.addProfile("http://fhir.health.gov.lk/ips/StructureDefinition/providers-location");
         location.setMeta(meta);
 
-        // Set Identifiers
-        identifierValues.forEach(value -> {
-            Identifier identifier = new Identifier();
-            identifier.setType(new CodeableConcept(new Coding("http://fhir.health.gov.lk/ips/CodeSystem/cs-identifier-types", "PLOC", "Provider location identifier")));
-            identifier.setSystem("http://fhir.health.gov.lk/ips/identifier/provider-location");
-            identifier.setValue(value);
-            location.addIdentifier(identifier);
-        });
+        // Ensure at least one identifier is provided
+        if (identifierValues != null && !identifierValues.isEmpty()) {
+            identifierValues.forEach(value -> {
+                if (value != null && !value.trim().isEmpty()) {
+                    Identifier identifier = new Identifier();
+                    identifier.setType(new CodeableConcept(new Coding("http://fhir.health.gov.lk/ips/CodeSystem/cs-identifier-types", "PLOC", "Provider Location")));
+                    identifier.setSystem("http://fhir.health.gov.lk/ips/identifier/provider-location");
+                    identifier.setValue(value.trim());
+                    location.addIdentifier(identifier);
+                }
+            });
+        }
 
         // Set Status
         if (locationStatus != null && !locationStatus.trim().isEmpty()) {
@@ -655,17 +661,25 @@ public class FhirController implements Serializable {
             location.setAddress(address);
         }
 
-        // Set Managing Organization
+        // Set Managing Organization Reference
         if (managingOrganizationId != null && !managingOrganizationId.trim().isEmpty()) {
             location.setManagingOrganization(new Reference("Organization/" + managingOrganizationId.trim()));
         }
+
+        // Generate narrative text for robust management
+        String narrativeText = "Location Name: " + (locationName != null ? locationName : "Not Specified");
+        narrativeText += ". Status: " + (locationStatus != null ? locationStatus : "Not Specified");
+        narrativeText += ". Status: " + locationStatus;
+
+        Narrative narrative = new Narrative();
+        narrative.setStatus(Narrative.NarrativeStatus.GENERATED);
+        narrative.setDivAsString("<div xmlns=\"http://www.w3.org/1999/xhtml\">" + narrativeText + "</div>");
+        location.setText(narrative);
 
         // Creating Bundle Entry
         Bundle.BundleEntryComponent entryComponent = new Bundle.BundleEntryComponent();
         entryComponent.setFullUrl("http://hapi-fhir:8080/fhir/Location/" + locationId);
         entryComponent.setResource(location);
-
-        // Set request part of the entry (for transaction type Bundle)
         entryComponent.getRequest().setMethod(Bundle.HTTPVerb.PUT).setUrl("Location/" + locationId);
 
         return entryComponent;
