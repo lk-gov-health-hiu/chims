@@ -84,6 +84,7 @@ public class WebUser implements Serializable, Identifiable  {
     private Area area;
 
     String code;
+    private String uuid;
 
     /*
     Last Edit Properties
@@ -475,6 +476,8 @@ public class WebUser implements Serializable, Identifiable  {
         this.assumedArea = assumedArea;
     }
 
+    
+    
     public boolean isRestrictedToInstitution() {
         restrictedToInstitution = true;
         WebUserRole ur ;
@@ -541,6 +544,14 @@ public class WebUser implements Serializable, Identifiable  {
 
     public void setCurrentlyInAssumedState(boolean currentlyInAssumedState) {
         this.currentlyInAssumedState = currentlyInAssumedState;
+    }
+
+    public String getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
     }
 
     

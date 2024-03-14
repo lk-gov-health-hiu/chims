@@ -57,6 +57,7 @@ import lk.gov.health.phsp.pojcs.dataentry.DataItem;
 import org.apache.commons.lang3.SerializationUtils;
 import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.Patient;
+import org.hl7.fhir.r4.model.Practitioner;
 // </editor-fold>
 
 @Named("clientEncounterComponentFormSetController")
@@ -203,10 +204,15 @@ public class ClientEncounterComponentFormSetController implements Serializable {
         Bundle bundle = fhirController.createTransactionalBundleWithUUID(UUID.randomUUID().toString());
         Bundle.BundleEntryComponent patientEntry = fhirController.createPatientEntry(selected.getEncounter().getClient());
         Patient patient = fhirController.extractPatientFromEntry(patientEntry);
-        Bundle.BundleEntryComponent encounterEntry = fhirController.createEncounterEntry(patient, null, null, null, selected.getEncounter().getCompleted(), selected.getEncounter().getCreatedAt(), selected.getEncounter().getCompletedAt());
+        Bundle.BundleEntryComponent practitionerEntry = fhirController.createPractitionerEntry(selected.getCompletedBy());
+        Practitioner practitioner = fhirController.extractPractitionerFromEntry(practitionerEntry);
+        List<Practitioner> practitioners= new ArrayList<>();
+        practitioners.add(practitioner);
+        Bundle.BundleEntryComponent encounterEntry = fhirController.createEncounterEntry(patient, practitioners, null, null, selected.getEncounter().getCompleted(), selected.getEncounter().getCreatedAt(), selected.getEncounter().getCompletedAt());
         String bundleJson = fhirController.bundleToJson(bundle);
         
         fhirController.addEntryToBundle(bundle, patientEntry);
+        fhirController.addEntryToBundle(bundle, practitionerEntry);
         fhirController.addEntryToBundle(bundle, encounterEntry);
         boolean validationSuccessful = 
                 fhirController.validate(integrationEndpoint.getStructureDefinition(), bundleJson);

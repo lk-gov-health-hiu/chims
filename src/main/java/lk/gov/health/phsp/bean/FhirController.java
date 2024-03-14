@@ -17,6 +17,7 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -28,8 +29,10 @@ import lk.gov.health.phsp.entity.FhirOperationResult;
 import lk.gov.health.phsp.entity.Institution;
 import lk.gov.health.phsp.entity.Item;
 import lk.gov.health.phsp.entity.Person;
+import lk.gov.health.phsp.entity.WebUser;
 import lk.gov.health.phsp.facade.ClientFacade;
 import lk.gov.health.phsp.facade.InstitutionFacade;
+import lk.gov.health.phsp.facade.WebUserFacade;
 import org.hl7.fhir.instance.model.api.IBaseResource;
 import org.hl7.fhir.r4.model.Address;
 import org.hl7.fhir.r4.model.Bundle;
@@ -45,6 +48,7 @@ import org.hl7.fhir.r4.model.HumanName;
 import org.hl7.fhir.r4.model.Identifier;
 import org.hl7.fhir.r4.model.Location;
 import org.hl7.fhir.r4.model.Meta;
+import org.hl7.fhir.r4.model.Narrative;
 import org.hl7.fhir.r4.model.Organization;
 import org.hl7.fhir.r4.model.Patient;
 import org.hl7.fhir.r4.model.Period;
@@ -65,6 +69,8 @@ public class FhirController implements Serializable {
     InstitutionFacade institutionFacade;
     @EJB
     ClientFacade clientFacade;
+    @EJB
+    WebUserFacade webUserFacade;
 
     /**
      * Creates a new instance of FhirController
@@ -93,58 +99,57 @@ public class FhirController implements Serializable {
             Date end) {
 
         Encounter encounter = new Encounter();
-        encounter.setId("TargetFacilityEncounterExample");
+        encounter.setId(UUID.randomUUID().toString()); // Use UUID or some unique identifier for Encounter itself
         encounter.getMeta().addProfile("http://fhir.health.gov.lk/ips/StructureDefinition/target-facility-encounter");
 
-        // Check if finished is not null and true
         encounter.setStatus((finished != null && finished) ? Encounter.EncounterStatus.FINISHED : Encounter.EncounterStatus.INPROGRESS);
         encounter.setClass_(new Coding("http://terminology.hl7.org/CodeSystem/v3-ActCode", "AMB", null));
 
-        // Set subject if patient is not null
         if (patient != null) {
-            encounter.setSubject(new Reference(patient.getIdElement().getValue()));
+            encounter.setSubject(new Reference("Patient/" + patient.getIdElement().getIdPart()));
         }
 
-        // Add participants if practitioners list is not null or empty
         if (practitioners != null && !practitioners.isEmpty()) {
-            practitioners.forEach(practitioner -> {
-                Encounter.EncounterParticipantComponent participantComponent = new Encounter.EncounterParticipantComponent();
-                participantComponent.setIndividual(new Reference(practitioner.getIdElement().getValue()));
-                encounter.addParticipant(participantComponent);
-            });
+            for (Practitioner practitioner : practitioners) {
+                Encounter.EncounterParticipantComponent participant = new Encounter.EncounterParticipantComponent();
+                participant.setIndividual(new Reference("Practitioner/" + practitioner.getIdElement().getIdPart()));
+                encounter.addParticipant(participant);
+            }
         }
 
-        // Set period
         Period period = new Period();
         period.setStart(start);
         period.setEnd(end);
         encounter.setPeriod(period);
 
-        // Add reasonCodes if reasonCodes list is not null or empty
         if (reasonCodes != null && !reasonCodes.isEmpty()) {
-            reasonCodes.forEach(code -> {
+            for (String code : reasonCodes) {
                 CodeableConcept reason = new CodeableConcept();
                 reason.addCoding(new Coding("http://snomed.info/sct", code, null));
                 encounter.addReasonCode(reason);
-            });
+            }
         }
 
-        // Add locations if locations list is not null or empty
         if (locations != null && !locations.isEmpty()) {
-            locations.forEach(location -> {
+            for (Location location : locations) {
                 Encounter.EncounterLocationComponent locationComponent = new Encounter.EncounterLocationComponent();
-                locationComponent.setLocation(new Reference(location.getIdElement().getValue()));
+                locationComponent.setLocation(new Reference("Location/" + location.getIdElement().getIdPart()));
                 encounter.addLocation(locationComponent);
-            });
+            }
         }
 
-        // Creating Bundle Entry
+        // Generate a simple narrative text for the Encounter
+        String narrativeText = "Encounter details...";
+        // Here you would dynamically generate the narrative text as needed
+        Narrative narrative = new Narrative();
+        narrative.setStatus(Narrative.NarrativeStatus.GENERATED);
+        narrative.setDivAsString("<div xmlns=\"http://www.w3.org/1999/xhtml\">" + narrativeText + "</div>");
+        encounter.setText(narrative);
+
         Bundle.BundleEntryComponent entryComponent = new Bundle.BundleEntryComponent();
         entryComponent.setFullUrl("http://hapi-fhir:8080/fhir/Encounter/" + encounter.getId());
         entryComponent.setResource(encounter);
-        entryComponent.getRequest()
-                .setMethod(Bundle.HTTPVerb.PUT)
-                .setUrl("Encounter/" + encounter.getId());
+        entryComponent.getRequest().setMethod(Bundle.HTTPVerb.PUT).setUrl("Encounter/" + encounter.getId());
 
         return entryComponent;
     }
@@ -187,6 +192,13 @@ public class FhirController implements Serializable {
     public Patient extractPatientFromEntry(Bundle.BundleEntryComponent entry) {
         if (entry != null && entry.getResource() instanceof Patient) {
             return (Patient) entry.getResource();
+        }
+        return null; // or throw an exception if you prefer
+    }
+
+    public Practitioner extractPractitionerFromEntry(Bundle.BundleEntryComponent entry) {
+        if (entry != null && entry.getResource() instanceof Practitioner) {
+            return (Practitioner) entry.getResource();
         }
         return null; // or throw an exception if you prefer
     }
@@ -574,6 +586,104 @@ public class FhirController implements Serializable {
 
         // Set request part of the entry (for transaction type Bundle)
         entryComponent.getRequest().setMethod(Bundle.HTTPVerb.PUT).setUrl("Location/" + locationId);
+
+        return entryComponent;
+    }
+
+    public Bundle.BundleEntryComponent createPractitionerEntry(WebUser user) {
+        if (user == null) {
+            return null;
+        }
+        if (user.getPerson() == null) {
+            return null;
+        }
+        if (user.getUuid() == null) {
+            user.setUuid(UUID.randomUUID().toString());
+            if (user.getId() == null) {
+                webUserFacade.create(user);
+            } else {
+                webUserFacade.edit(user);
+            }
+        }
+        List<ContactPoint> telecoms = new ArrayList<>();
+        ContactPoint p1 = new ContactPoint();
+
+        if (user.getPerson().getPhone1() != null) {
+            ContactPoint phoneContact = new ContactPoint();
+            phoneContact.setSystem(ContactPointSystem.PHONE);
+            phoneContact.setValue(user.getPerson().getPhone1());
+            phoneContact.setUse(ContactPointUse.WORK);
+            telecoms.add(phoneContact);
+        }
+
+        if (user.getPerson().getPhone2() != null) {
+            ContactPoint phoneContact = new ContactPoint();
+            phoneContact.setSystem(ContactPointSystem.PHONE);
+            phoneContact.setValue(user.getPerson().getPhone2());
+            phoneContact.setUse(ContactPointUse.HOME);
+            telecoms.add(phoneContact);
+        }
+
+        if (user.getEmail() != null) {
+            ContactPoint emailContact = new ContactPoint();
+            emailContact.setSystem(ContactPointSystem.EMAIL);
+            emailContact.setValue(user.getEmail());
+            emailContact.setUse(ContactPointUse.HOME);
+            telecoms.add(emailContact);
+        }
+
+        String id = user.getUuid();
+
+        String title = null;
+        if (user.getPerson().getTitle() != null) {
+            title = user.getPerson().getTitle().getName();
+        }
+        String name = null;
+        name = user.getPerson().getName();
+        return createPractitionerEntry(telecoms, id, title, name);
+    }
+
+    public Bundle.BundleEntryComponent createPractitionerEntry(
+            List<ContactPoint> telecoms,
+            String id,
+            String title,
+            String name) {
+
+        Practitioner practitioner = new Practitioner();
+        practitioner.setId(id);
+
+        // Set Meta
+        Meta meta = new Meta();
+        meta.addProfile("http://fhir.health.gov.lk/ips/StructureDefinition/practitioner");
+        practitioner.setMeta(meta);
+
+        // Set name
+        HumanName humanName = new HumanName();
+        if (title != null && !title.isEmpty()) {
+            humanName.addPrefix(title);
+        }
+        humanName.setFamily(name); // Set the same name for the family
+        humanName.addGiven(name); // Set the same name for given
+        humanName.setText(name); // Also set the name as text
+        practitioner.addName(humanName); // Correctly add the HumanName after setting all its fields
+
+        // Set telecoms
+        if (telecoms != null) {
+            practitioner.setTelecom(telecoms);
+        }
+
+        // Generate a simple narrative
+        String narrativeText = String.format("Practitioner: %s", name);
+        Narrative narrative = new Narrative();
+        narrative.setStatus(Narrative.NarrativeStatus.GENERATED);
+        narrative.setDivAsString("<div xmlns=\"http://www.w3.org/1999/xhtml\">" + narrativeText + "</div>");
+        practitioner.setText(narrative);
+
+        // Creating Bundle Entry
+        Bundle.BundleEntryComponent entryComponent = new Bundle.BundleEntryComponent();
+        entryComponent.setFullUrl("http://hapi-fhir:8080/fhir/Practitioner/" + id);
+        entryComponent.setResource(practitioner);
+        entryComponent.getRequest().setMethod(Bundle.HTTPVerb.PUT).setUrl("Practitioner/" + id);
 
         return entryComponent;
     }
