@@ -21,6 +21,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
 import java.util.UUID;
 import javax.ejb.EJB;
 import javax.inject.Inject;
@@ -433,12 +434,27 @@ public class FhirController implements Serializable {
         }
         String organizationId = ins.getUuid();
 
+        // Generate a 5-digit numeric HIN if hinId is null or blank
+        if (ins.getHin() == null || ins.getHin().trim().isEmpty()) {
+            ins.setHin(generateRandomNumericHIN(5));
+            institutionFacade.edit(ins);
+        }
         String hinId = ins.getHin();
+
         String organizationName = ins.getName();
         return createOrganizationEntry(organizationId, hinId, organizationName);
     }
 
-    public Bundle.BundleEntryComponent createOrganizationEntry(String organizationId, String facilityId, String organizationName) {
+    public String generateRandomNumericHIN(int length) {
+        Random random = new Random();
+        StringBuilder hinId = new StringBuilder(length);
+        for (int i = 0; i < length; i++) {
+            hinId.append(random.nextInt(10)); // Append a random digit (0-9)
+        }
+        return hinId.toString();
+    }
+
+    public Bundle.BundleEntryComponent createOrganizationEntry(String organizationId, String hinId, String organizationName) {
         Organization organization = new Organization();
         organization.setId(organizationId);
 
@@ -446,31 +462,31 @@ public class FhirController implements Serializable {
         meta.addProfile("http://fhir.health.gov.lk/ips/StructureDefinition/organization");
         organization.setMeta(meta);
 
-        // Identifier for the organization with HIN
-        Identifier hinIdentifier = new Identifier()
-                .setType(new CodeableConcept().addCoding(new Coding("http://terminology.hl7.org/CodeSystem/v2-0203", "XX", "Organization identifier")))
-                .setSystem("http://fhir.health.gov.lk/ips/identifier/hin")
-                .setValue(facilityId);
-        organization.addIdentifier(hinIdentifier);
+        // Correctly adding HIN identifier with its value
+        if (hinId != null && !hinId.isEmpty()) {
+            Identifier hinIdentifier = new Identifier()
+                    .setType(new CodeableConcept().addCoding(new Coding("http://terminology.hl7.org/CodeSystem/v2-0203", "XX", "Organization identifier")))
+                    .setSystem("http://fhir.health.gov.lk/ips/identifier/hin")
+                    .setValue(hinId); // Ensure this is the correct HIN value
+            organization.addIdentifier(hinIdentifier);
+        }
 
         if (organizationName != null && !organizationName.trim().isEmpty()) {
             organization.setName(organizationName.trim());
         }
 
-        // Construct narrative text
-        String narrativeText = "Organization: " + organizationName + ". Facility ID: " + facilityId + ". Summary or description of the organization.";
-
+        // Narrative construction remains the same
+        String narrativeText = "Organization: " + organizationName + ". HIN: " + hinId + ". Summary or description of the organization.";
         Narrative narrative = new Narrative();
         narrative.setStatus(Narrative.NarrativeStatus.GENERATED);
-        String narrativeDiv = "<div xmlns=\"http://www.w3.org/1999/xhtml\">" + narrativeText + "</div>";
-        narrative.setDivAsString(narrativeDiv);
+        narrative.setDivAsString("<div xmlns=\"http://www.w3.org/1999/xhtml\">" + narrativeText + "</div>");
         organization.setText(narrative);
 
         Bundle.BundleEntryComponent entryComponent = new Bundle.BundleEntryComponent();
         entryComponent.setFullUrl("http://hapi-fhir:8080/fhir/Organization/" + organizationId);
         entryComponent.setResource(organization);
         entryComponent.getRequest().setMethod(Bundle.HTTPVerb.PUT).setUrl("Organization/" + organizationId);
-        System.out.println("entryComponent = " + entryComponent.toString());
+
         return entryComponent;
     }
 
