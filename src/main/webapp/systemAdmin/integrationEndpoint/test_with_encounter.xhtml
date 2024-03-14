@@ -47,6 +47,11 @@
                             <f:convertDateTime pattern="dd MMMM yyyy" ></f:convertDateTime>
                         </p:outputLabel>
                         
+                        <p:outputLabel value="Clinic" ></p:outputLabel>
+                        <p:outputLabel value="#{clientEncounterComponentFormSetController.selected.encounter.encounterDate}" >
+                            <f:convertDateTime pattern="dd MMMM yyyy" ></f:convertDateTime>
+                        </p:outputLabel>
+                        
                         <p:spacer ></p:spacer>
                         <p:commandButton ajax="false" value="Push" action="#{clientEncounterComponentFormSetController.postPatientEncounterBundleToMediators()}" ></p:commandButton>
                         

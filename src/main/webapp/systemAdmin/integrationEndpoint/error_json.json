@@ -1,131 +1,37 @@
 {
-    "resourceType": "Bundle",
-    "id": "08bb57c5-67e1-4cd0-850b-ed4fb7f41e58",
+    "resourceType": "Device",
+    "id": "DeviceInformationExample",
     "meta": {
-        "profile": ["http://fhir.health.gov.lk/ips/StructureDefinition/hims-transactional-bundle"]
+        "profile": ["http://fhir.health.gov.lk/ips/StructureDefinition/device-information"]
     },
-    "identifier": {
-        "system": "http://fhir.health.gov.lk/ips/identifier/hims-transactional",
-        "value": "08bb57c5-67e1-4cd0-850b-ed4fb7f41e58"
+    "text": {
+        "status": "generated",
+        "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\"><p><b>Generated Narrative: Device</b><a name=\"DeviceInformationExample\"> </a><a name=\"hcDeviceInformationExample\"> </a></p><div style=\"display: inline-block; background-color: #d9e0e7; padding: 6px; margin: 4px; border: 1px solid #8da1b4; border-radius: 5px; line-height: 60%\"><p style=\"margin-bottom: 0px\">Resource Device &quot;DeviceInformationExample&quot; </p><p style=\"margin-bottom: 0px\">Profile: <a href=\"StructureDefinition-device-information.html\">Device Information</a></p></div><p><b>identifier</b>: <code>http://fhir.health.gov.lk/ips/identifier/system-id</code>/OpenMRS-1234-1</p><p><b>status</b>: active</p><p><b>type</b>: Medical record <span style=\"background: LightGoldenRodYellow; margin: 4px; border: 1px solid khaki\"> (<a href=\"https://browser.ihtsdotools.org/\">SNOMED CT</a>#129465004)</span></p><h3>Versions</h3><table class=\"grid\"><tr><td style=\"display: none\">-</td><td><b>Type</b></td><td><b>Value</b></td></tr><tr><td style=\"display: none\">*</td><td>OpenMRS <span style=\"background: LightGoldenRodYellow; margin: 4px; border: 1px solid khaki\"> (<a href=\"CodeSystem-cs-device-classification.html\">Device Classification Codes</a>#OpenMRS)</span></td><td>2.5.0</td></tr></table><p><b>owner</b>: <a href=\"Organization-OrganizationExample.html\">Organization/OrganizationExample</a> &quot;Some Health Facility&quot;</p><p><b>location</b>: <a href=\"Location-ProvidersLocationExample.html\">Location/ProvidersLocationExample</a> &quot;Name for the location&quot;</p></div>"
     },
-    "type": "transaction",
-    "timestamp": "2024-03-14T10:42:55.501+05:30",
-    "entry": [{
-            "fullUrl": "http://hapi-fhir:8080/fhir/Patient/06705ba9-fb85-47fe-b606-55bdcb11e96c",
-            "resource": {
-                "resourceType": "Patient",
-                "id": "06705ba9-fb85-47fe-b606-55bdcb11e96c",
-                "meta": {
-                    "profile": ["http://fhir.health.gov.lk/ips/StructureDefinition/ips-patient"]
-                },
-                "identifier": [{
-                        "type": {
-                            "coding": [{
-                                    "system": "http://fhir.health.gov.lk/ips/CodeSystem/cs-identifier-types",
-                                    "code": "PHN"
-                                }]
-                        },
-                        "system": "http://fhir.health.gov.lk/ips/identifier/phn",
-                        "value": "1011000310"
-                    }, {
-                        "type": {
-                            "coding": [{
-                                    "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
-                                    "code": "PPN"
-                                }]
-                        },
-                        "system": "http://fhir.health.gov.lk/ips/identifier/passport",
-                        "value": "123456789"
-                    }, {
-                        "type": {
-                            "coding": [{
-                                    "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
-                                    "code": "DL"
-                                }]
-                        },
-                        "system": "http://fhir.health.gov.lk/ips/identifier/drivers",
-                        "value": "123456789"
-                    }, {
-                        "type": {
-                            "coding": [{
-                                    "system": "http://fhir.health.gov.lk/ips/CodeSystem/cs-identifier-types",
-                                    "code": "NIC"
-                                }]
-                        },
-                        "system": "http://fhir.health.gov.lk/ips/identifier/nic",
-                        "value": "752584524v"
-                    }, {
-                        "type": {
-                            "coding": [{
-                                    "system": "http://fhir.health.gov.lk/ips/CodeSystem/cs-identifier-types",
-                                    "code": "SCN"
-                                }]
-                        },
-                        "system": "http://fhir.health.gov.lk/ips/identifier/scn",
-                        "value": "123456789"
-                    }],
-                "name": [{
-                        "use": "official",
-                        "family": "BUDDHIKA ARIYARATNE",
-                        "given": ["BUDDHIKA ARIYARATNE"],
-                        "prefix": ["Dr"]
-                    }],
-                "telecom": [{
-                        "system": "phone",
-                        "value": "0715812399"
-                    }, {
-                        "system": "phone",
-                        "value": "0912241603"
-                    }, {
-                        "system": "email",
-                        "value": "buddhika.ari@gmail.com"
-                    }],
-                "gender": "male",
-                "birthDate": "1975-09-14",
-                "address": [{
-                        "type": "postal",
-                        "line": ["BATAGANWILA, GALLE"],
-                        "city": "Madawalamulla North",
-                        "district": "Galle",
-                        "country": "lk"
+    "identifier": [{
+            "system": "http://fhir.health.gov.lk/ips/identifier/system-id",
+            "value": "OpenMRS-1234-1"
+        }],
+    "status": "active",
+    "type": {
+        "coding": [{
+                "system": "http://snomed.info/sct",
+                "code": "129465004"
+            }]
+    },
+    "version": [{
+            "type": {
+                "coding": [{
+                        "system": "http://fhir.health.gov.lk/ips/CodeSystem/cs-device-classification",
+                        "code": "OpenMRS"
                     }]
             },
-            "request": {
-                "method": "PUT",
-                "url": "Patient/06705ba9-fb85-47fe-b606-55bdcb11e96c"
-            }
-        }, {
-            "fullUrl": "http://hapi-fhir:8080/fhir/Encounter/TargetFacilityEncounterExample",
-            "resource": {
-                "resourceType": "Encounter",
-                "id": "TargetFacilityEncounterExample",
-                "meta": {
-                    "profile": ["http://fhir.health.gov.lk/ips/StructureDefinition/target-facility-encounter"]
-                },
-                "text": {
-                    "status": "generated",
-                    "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">Encounter from 2022-09-10 to ongoing for patient 06705ba9-fb85-47fe-b606-55bdcb11e96c.</div>"
-                },
-                "status": "in-progress",
-                "class": {
-                    "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
-                    "code": "AMB"
-                },
-                "subject": {
-                    "reference": "06705ba9-fb85-47fe-b606-55bdcb11e96c"
-                },
-                "participant": [{
-                        "individual": {
-                            "reference": "9606a961-b1ee-4d6f-8406-9493128db406"
-                        }
-                    }],
-                "period": {
-                    "start": "2022-09-10T15:25:50+05:30"
-                }
-            },
-            "request": {
-                "method": "PUT",
-                "url": "Encounter/TargetFacilityEncounterExample"
-            }
-        }]
+            "value": "2.5.0"
+        }],
+    "owner": {
+        "reference": "Organization/OrganizationExample"
+    },
+    "location": {
+        "reference": "Location/ProvidersLocationExample"
+    }
 }

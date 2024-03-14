@@ -23,13 +23,16 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 import javax.ejb.EJB;
+import javax.inject.Inject;
 import lk.gov.health.phsp.entity.Area;
 import lk.gov.health.phsp.entity.Client;
 import lk.gov.health.phsp.entity.FhirOperationResult;
 import lk.gov.health.phsp.entity.Institution;
 import lk.gov.health.phsp.entity.Item;
 import lk.gov.health.phsp.entity.Person;
+import lk.gov.health.phsp.entity.Preference;
 import lk.gov.health.phsp.entity.WebUser;
+import lk.gov.health.phsp.enums.InstitutionType;
 import lk.gov.health.phsp.facade.ClientFacade;
 import lk.gov.health.phsp.facade.InstitutionFacade;
 import lk.gov.health.phsp.facade.WebUserFacade;
@@ -41,6 +44,7 @@ import org.hl7.fhir.r4.model.Coding;
 import org.hl7.fhir.r4.model.ContactPoint;
 import org.hl7.fhir.r4.model.ContactPoint.ContactPointSystem;
 import org.hl7.fhir.r4.model.ContactPoint.ContactPointUse;
+import org.hl7.fhir.r4.model.Device;
 import org.hl7.fhir.r4.model.Encounter;
 import org.hl7.fhir.r4.model.Enumerations;
 import org.hl7.fhir.r4.model.Extension;
@@ -71,6 +75,11 @@ public class FhirController implements Serializable {
     ClientFacade clientFacade;
     @EJB
     WebUserFacade webUserFacade;
+
+    @Inject
+    InstitutionController institutionController;
+    @Inject
+    PreferenceController preferenceController;
 
     /**
      * Creates a new instance of FhirController
@@ -132,6 +141,12 @@ public class FhirController implements Serializable {
 
         if (locations != null && !locations.isEmpty()) {
             for (Location location : locations) {
+                // Check if the location or its ID element is null
+                if (location == null || location.getIdElement() == null || location.getIdElement().getIdPart() == null) {
+                    System.out.println("Warning: A location is null or does not have an ID.");
+                    continue; // Skip this location
+                }
+
                 Encounter.EncounterLocationComponent locationComponent = new Encounter.EncounterLocationComponent();
                 locationComponent.setLocation(new Reference("Location/" + location.getIdElement().getIdPart()));
                 encounter.addLocation(locationComponent);
@@ -192,6 +207,27 @@ public class FhirController implements Serializable {
     public Patient extractPatientFromEntry(Bundle.BundleEntryComponent entry) {
         if (entry != null && entry.getResource() instanceof Patient) {
             return (Patient) entry.getResource();
+        }
+        return null; // or throw an exception if you prefer
+    }
+
+    public Organization extractOrganizationFromEntry(Bundle.BundleEntryComponent entry) {
+        if (entry != null && entry.getResource() instanceof Organization) {
+            return (Organization) entry.getResource();
+        }
+        return null; // or throw an exception if you prefer
+    }
+
+    public Location extractLocationFromEntry(Bundle.BundleEntryComponent entry) {
+        if (entry != null && entry.getResource() instanceof Location) {
+            return (Location) entry.getResource();
+        }
+        return null; // or throw an exception if you prefer
+    }
+
+    public Device extractDeviceFromEntry(Bundle.BundleEntryComponent entry) {
+        if (entry != null && entry.getResource() instanceof Device) {
+            return (Device) entry.getResource();
         }
         return null; // or throw an exception if you prefer
     }
@@ -396,12 +432,49 @@ public class FhirController implements Serializable {
             }
         }
         String organizationId = ins.getUuid();
-        String facilityId = ins.getHin();
+
+        String hinId = ins.getHin();
         String organizationName = ins.getName();
-        return createOrganizationEntry(organizationId, facilityId, organizationName);
+        return createOrganizationEntry(organizationId, hinId, organizationName);
     }
 
-    public Bundle.BundleEntryComponent createOrganizationEntry(
+    public Bundle.BundleEntryComponent createOrganizationEntry(String organizationId, String facilityId, String organizationName) {
+        Organization organization = new Organization();
+        organization.setId(organizationId);
+
+        Meta meta = new Meta();
+        meta.addProfile("http://fhir.health.gov.lk/ips/StructureDefinition/organization");
+        organization.setMeta(meta);
+
+        // Identifier for the organization with HIN
+        Identifier hinIdentifier = new Identifier()
+                .setType(new CodeableConcept().addCoding(new Coding("http://terminology.hl7.org/CodeSystem/v2-0203", "XX", "Organization identifier")))
+                .setSystem("http://fhir.health.gov.lk/ips/identifier/hin")
+                .setValue(facilityId);
+        organization.addIdentifier(hinIdentifier);
+
+        if (organizationName != null && !organizationName.trim().isEmpty()) {
+            organization.setName(organizationName.trim());
+        }
+
+        // Construct narrative text
+        String narrativeText = "Organization: " + organizationName + ". Facility ID: " + facilityId + ". Summary or description of the organization.";
+
+        Narrative narrative = new Narrative();
+        narrative.setStatus(Narrative.NarrativeStatus.GENERATED);
+        String narrativeDiv = "<div xmlns=\"http://www.w3.org/1999/xhtml\">" + narrativeText + "</div>";
+        narrative.setDivAsString(narrativeDiv);
+        organization.setText(narrative);
+
+        Bundle.BundleEntryComponent entryComponent = new Bundle.BundleEntryComponent();
+        entryComponent.setFullUrl("http://hapi-fhir:8080/fhir/Organization/" + organizationId);
+        entryComponent.setResource(organization);
+        entryComponent.getRequest().setMethod(Bundle.HTTPVerb.PUT).setUrl("Organization/" + organizationId);
+        System.out.println("entryComponent = " + entryComponent.toString());
+        return entryComponent;
+    }
+
+    public Organization createOrganization(
             String organizationId,
             String facilityId,
             String organizationName) {
@@ -428,15 +501,7 @@ public class FhirController implements Serializable {
             organization.setName(organizationName.trim());
         }
 
-        // Creating Bundle Entry
-        Bundle.BundleEntryComponent entryComponent = new Bundle.BundleEntryComponent();
-        entryComponent.setFullUrl("http://hapi-fhir:8080/fhir/Organization/" + organizationId);
-        entryComponent.setResource(organization);
-
-        // Set request part of the entry (for transaction type Bundle)
-        entryComponent.getRequest().setMethod(Bundle.HTTPVerb.PUT).setUrl("Organization/" + organizationId);
-
-        return entryComponent;
+        return organization;
     }
 
     public Bundle.BundleEntryComponent createLocationEntry(Institution ins) {
@@ -590,6 +655,60 @@ public class FhirController implements Serializable {
         return entryComponent;
     }
 
+    public Location createLocation(
+            String locationId,
+            List<String> identifierValues,
+            String locationStatus,
+            String locationName,
+            List<ContactPoint> telecoms,
+            Address address,
+            String managingOrganizationId) {
+
+        Location location = new Location();
+        location.setId(locationId);
+
+        // Set Meta
+        Meta meta = new Meta();
+        meta.addProfile("http://fhir.health.gov.lk/ips/StructureDefinition/providers-location");
+        location.setMeta(meta);
+
+        // Set Identifiers
+        identifierValues.forEach(value -> {
+            Identifier identifier = new Identifier();
+            identifier.setType(new CodeableConcept(new Coding("http://fhir.health.gov.lk/ips/CodeSystem/cs-identifier-types", "PLOC", "Provider location identifier")));
+            identifier.setSystem("http://fhir.health.gov.lk/ips/identifier/provider-location");
+            identifier.setValue(value);
+            location.addIdentifier(identifier);
+        });
+
+        // Set Status
+        if (locationStatus != null && !locationStatus.trim().isEmpty()) {
+            location.setStatus(Location.LocationStatus.fromCode(locationStatus.toLowerCase()));
+        }
+
+        // Set Name
+        if (locationName != null && !locationName.trim().isEmpty()) {
+            location.setName(locationName.trim());
+        }
+
+        // Set Telecoms
+        if (telecoms != null) {
+            location.setTelecom(telecoms);
+        }
+
+        // Set Address
+        if (address != null) {
+            location.setAddress(address);
+        }
+
+        // Set Managing Organization
+        if (managingOrganizationId != null && !managingOrganizationId.trim().isEmpty()) {
+            location.setManagingOrganization(new Reference("Organization/" + managingOrganizationId.trim()));
+        }
+
+        return location;
+    }
+
     public Bundle.BundleEntryComponent createPractitionerEntry(WebUser user) {
         if (user == null) {
             return null;
@@ -684,6 +803,121 @@ public class FhirController implements Serializable {
         entryComponent.setFullUrl("http://hapi-fhir:8080/fhir/Practitioner/" + id);
         entryComponent.setResource(practitioner);
         entryComponent.getRequest().setMethod(Bundle.HTTPVerb.PUT).setUrl("Practitioner/" + id);
+
+        return entryComponent;
+    }
+
+    public Bundle.BundleEntryComponent createDeviceEntry() {
+        Institution moh = institutionController.findInstitutionByName("Ministry of Health");
+        Preference device = preferenceController.findApplicationPreferance("device_id");
+        String deviceId = device.getLongTextValue();
+        if (deviceId == null || deviceId.trim().equals("")) {
+            device.setLongTextValue(UUID.randomUUID().toString());
+            preferenceController.savePreference(device);
+        }
+
+        if (moh == null) {
+            moh = new Institution();
+            moh.setName("Ministry of Health");
+            moh.setInstitutionType(InstitutionType.Ministry_of_Health);
+            institutionController.saveOrUpdateInstitution(moh);
+        }
+        Institution hiu = institutionController.findInstitutionByName("Health Information Unit");
+        if (hiu == null) {
+            hiu = new Institution();
+            hiu.setName("Health Information Unit");
+            hiu.setParent(moh);
+            hiu.setInstitutionType(InstitutionType.Other);
+            institutionController.saveOrUpdateInstitution(hiu);
+        }
+
+        Bundle.BundleEntryComponent orgEntry = createOrganizationEntry(moh);
+        System.out.println("orgEntry = " + orgEntry);
+        Bundle.BundleEntryComponent locationEntry = createLocationEntry(hiu);
+        System.out.println("locationEntry = " + locationEntry);
+
+        Organization owner = extractOrganizationFromEntry(orgEntry);
+        System.out.println("owner = " + owner);
+        Location location = extractLocationFromEntry(locationEntry);
+        System.out.println("location = " + location);
+
+        Coding typeCoding = new Coding();
+        typeCoding.setSystem("http://snomed.info/sct");
+        typeCoding.setCode("706690007");
+
+        boolean active = true;
+        String identifierValue = "Version";
+        String versionNumber = "2.0.1";
+        Coding versionCoding = new Coding();
+        versionCoding.setSystem("http://snomed.info/sct");
+        versionCoding.setCode("22303008");
+
+        return createDeviceEntry(deviceId,
+                owner,
+                location,
+                typeCoding,
+                active,
+                identifierValue,
+                versionNumber,
+                versionCoding);
+    }
+
+    public Bundle.BundleEntryComponent createDeviceEntry(
+            String deviceId,
+            Organization owner,
+            Location location,
+            Coding typeCoding,
+            boolean active,
+            String identifierValue,
+            String versionNumber,
+            Coding versionCoding) {
+
+        Device device = new Device();
+        // Set ID and Meta
+        device.setId(deviceId);
+        device.getMeta().addProfile("http://fhir.health.gov.lk/ips/StructureDefinition/device-information");
+
+        // Set Identifier
+        device.addIdentifier(new Identifier().setSystem("http://fhir.health.gov.lk/ips/identifier/system-id").setValue(identifierValue));
+
+        // Set Status
+        device.setStatus(active ? Device.FHIRDeviceStatus.ACTIVE : Device.FHIRDeviceStatus.INACTIVE);
+
+        // Set Type
+        device.setType(new CodeableConcept().addCoding(typeCoding));
+
+        // Set Version
+        Device.DeviceVersionComponent versionComponent = new Device.DeviceVersionComponent();
+        versionComponent.setType(new CodeableConcept().addCoding(versionCoding));
+        versionComponent.setValue(versionNumber);
+        device.addVersion(versionComponent);
+
+        // Set Owner and Location References
+        System.out.println("owner = " + owner);
+        if (owner != null) {
+            device.setOwner(new Reference("Organization/" + owner.getIdElement().getIdPart()));
+            System.out.println("owner.getIdElement().getIdPart() = " + owner.getIdElement().getIdPart());
+        }
+        System.out.println("location = " + location);
+        if (location != null) {
+            device.setLocation(new Reference("Location/" + location.getIdElement().getIdPart()));
+            System.out.println("location.getIdElement().getIdPart() = " + location.getIdElement().getIdPart());
+        }
+
+        // Generate Narrative
+        String narrativeText = "Device: " + identifierValue + (active ? " (Active)" : " (Inactive)")
+                + ". Version: " + versionNumber + " - " + versionCoding.getCode();
+
+        Narrative narrative = new Narrative();
+        narrative.setStatus(Narrative.NarrativeStatus.GENERATED);
+        narrative.setDivAsString("<div xmlns=\"http://www.w3.org/1999/xhtml\">" + narrativeText + "</div>");
+        device.setText(narrative);
+
+        // Bundle Entry Component
+        Bundle.BundleEntryComponent entryComponent = new Bundle.BundleEntryComponent();
+        entryComponent.setFullUrl("http://hapi-fhir:8080/fhir/Device/" + device.getId());
+        entryComponent.setResource(device);
+        entryComponent.getRequest().setMethod(Bundle.HTTPVerb.PUT).setUrl("Device/" + device.getId());
 
         return entryComponent;
     }

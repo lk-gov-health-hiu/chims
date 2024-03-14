@@ -63,6 +63,7 @@
                                 <p:commandButton 
                                     ajax="false" 
                                     class="m-1"
+                                    rendered="false"
                                     action="#{clientController.navigateToTestSendingPatientToEndPoint()}"
                                     value="Push to NEHR" >
                                     <f:setPropertyActionListener target="#{clientController.selectedId}" value="#{item.id}" ></f:setPropertyActionListener>

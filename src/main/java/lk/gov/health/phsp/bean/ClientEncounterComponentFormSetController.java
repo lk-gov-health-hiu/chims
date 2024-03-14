@@ -56,6 +56,9 @@ import lk.gov.health.phsp.pojcs.dataentry.DataFormset;
 import lk.gov.health.phsp.pojcs.dataentry.DataItem;
 import org.apache.commons.lang3.SerializationUtils;
 import org.hl7.fhir.r4.model.Bundle;
+import org.hl7.fhir.r4.model.Device;
+import org.hl7.fhir.r4.model.Location;
+import org.hl7.fhir.r4.model.Organization;
 import org.hl7.fhir.r4.model.Patient;
 import org.hl7.fhir.r4.model.Practitioner;
 // </editor-fold>
@@ -196,40 +199,67 @@ public class ClientEncounterComponentFormSetController implements Serializable {
 // <editor-fold defaultstate="collapsed" desc="User Functions">
 
     // Modified by Dr M H B Ariyaratne with assistance from ChatGPT from OpenAI
-    
-    
-    
-    
     public void postPatientEncounterBundleToMediators() {
         Bundle bundle = fhirController.createTransactionalBundleWithUUID(UUID.randomUUID().toString());
+
+        Device device = null;
+        Patient patient;
+        Organization organization = null;
+        Location location = null;
+        Bundle.BundleEntryComponent deviceEntry = fhirController.createDeviceEntry();
+        device = fhirController.extractDeviceFromEntry(deviceEntry);
+
+        Bundle.BundleEntryComponent orgEntry = null;
+        Bundle.BundleEntryComponent locationEntry = null;
+
+        if (selected.getInstitution() != null) {
+            locationEntry = fhirController.createLocationEntry(selected.getInstitution());
+            location = fhirController.extractLocationFromEntry(locationEntry);
+            if (selected.getInstitution().getParent() != null) {
+                orgEntry = fhirController.createOrganizationEntry(selected.getInstitution().getParent());
+                organization = fhirController.extractOrganizationFromEntry(orgEntry);
+            }
+        }
+
         Bundle.BundleEntryComponent patientEntry = fhirController.createPatientEntry(selected.getEncounter().getClient());
-        Patient patient = fhirController.extractPatientFromEntry(patientEntry);
+        patient = fhirController.extractPatientFromEntry(patientEntry);
         Bundle.BundleEntryComponent practitionerEntry = fhirController.createPractitionerEntry(selected.getCompletedBy());
         Practitioner practitioner = fhirController.extractPractitionerFromEntry(practitionerEntry);
-        List<Practitioner> practitioners= new ArrayList<>();
+
+        List<Practitioner> practitioners = new ArrayList<>();
         practitioners.add(practitioner);
-        Bundle.BundleEntryComponent encounterEntry = fhirController.createEncounterEntry(patient, practitioners, null, null, selected.getEncounter().getCompleted(), selected.getEncounter().getCreatedAt(), selected.getEncounter().getCompletedAt());
-        String bundleJson = fhirController.bundleToJson(bundle);
-        
+
+        List<Location> locations = new ArrayList<>();
+        locations.add(location);
+
+        Bundle.BundleEntryComponent encounterEntry = fhirController.createEncounterEntry(patient, practitioners, locations, null, selected.getEncounter().getCompleted(), selected.getEncounter().getCreatedAt(), selected.getEncounter().getCompletedAt());
+
+        fhirController.addEntryToBundle(bundle, deviceEntry);
+        if (orgEntry != null) {
+            fhirController.addEntryToBundle(bundle, orgEntry);
+        }
+        if (locationEntry != null) {
+            fhirController.addEntryToBundle(bundle, locationEntry);
+        }
         fhirController.addEntryToBundle(bundle, patientEntry);
         fhirController.addEntryToBundle(bundle, practitionerEntry);
         fhirController.addEntryToBundle(bundle, encounterEntry);
-        boolean validationSuccessful = 
-                fhirController.validate(integrationEndpoint.getStructureDefinition(), bundleJson);
-        if(!validationSuccessful){
+
+        String bundleJson = fhirController.bundleToJson(bundle);
+        boolean validationSuccessful
+                = fhirController.validate(integrationEndpoint.getStructureDefinition(), bundleJson);
+        if (!validationSuccessful) {
             responseMessage = "Validatino Failed for /n";
             responseMessage += bundleJson;
             return;
         }
-        
+
         FhirOperationResult result = fhirR4Controller.createResourcesInFhirServer(bundle, integrationEndpoint);
         responseMessage = "Operation Result: " + (result.isSuccess() ? "Success" : "Failure") + "\nMessage: " + result.getMessage();
         FhirContext ctx = FhirContext.forR4();
         String serializedBundle = ctx.newJsonParser().setPrettyPrint(true).encodeResourceToString(bundle);
         responseMessage += "\nBundle: " + serializedBundle;
     }
-
-    
 
     public String pushToFhirServers() {
 
@@ -923,7 +953,6 @@ public class ClientEncounterComponentFormSetController implements Serializable {
 
                 for (DesignComponentFormItem dis : diList) {
 
-
                     boolean disSkipThisItem = false;
 
                     if (dis.getComponentSex() == null) {
@@ -1063,7 +1092,6 @@ public class ClientEncounterComponentFormSetController implements Serializable {
             if (df == null) {
                 continue;
             }
-
 
             boolean skipThisForm = false;
 
