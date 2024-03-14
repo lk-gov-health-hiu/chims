@@ -201,6 +201,7 @@ public class ClientEncounterComponentFormSetController implements Serializable {
     // Modified by Dr M H B Ariyaratne with assistance from ChatGPT from OpenAI
     public void postPatientEncounterBundleToMediators() {
         Bundle bundle = fhirController.createTransactionalBundleWithUUID(UUID.randomUUID().toString());
+        Date encDate = selected.getCreatedAt();
 
         Device device = null;
         Patient patient;
@@ -233,6 +234,10 @@ public class ClientEncounterComponentFormSetController implements Serializable {
         locations.add(location);
 
         Bundle.BundleEntryComponent encounterEntry = fhirController.createEncounterEntry(patient, practitioners, locations, null, selected.getEncounter().getCompleted(), selected.getEncounter().getCreatedAt(), selected.getEncounter().getCompletedAt());
+        org.hl7.fhir.r4.model.Encounter encounter = fhirController.extractEncounter(encounterEntry);
+
+        Bundle.BundleEntryComponent bpEntry = fhirController.createBloodPressureObservationEntry(patient, encounter, organization, location, device, practitioner, encDate, 136, 86, true, UUID.randomUUID().toString());
+        Bundle.BundleEntryComponent cholesterolEntry = fhirController.createTotalCholesterolObservationEntry(patient, encounter, organization, location, device, practitioner, encDate, 208, true, UUID.randomUUID().toString());
 
         fhirController.addEntryToBundle(bundle, deviceEntry);
         if (orgEntry != null) {
@@ -244,6 +249,8 @@ public class ClientEncounterComponentFormSetController implements Serializable {
         fhirController.addEntryToBundle(bundle, patientEntry);
         fhirController.addEntryToBundle(bundle, practitionerEntry);
         fhirController.addEntryToBundle(bundle, encounterEntry);
+        fhirController.addEntryToBundle(bundle, bpEntry);
+        fhirController.addEntryToBundle(bundle, cholesterolEntry);
 
         String bundleJson = fhirController.bundleToJson(bundle);
         boolean validationSuccessful

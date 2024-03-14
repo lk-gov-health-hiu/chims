@@ -1,23 +1,23 @@
 {
     "resourceType": "Bundle",
-    "id": "f609c83a-6cd8-460e-b835-3b6895e1b906",
+    "id": "921ebba6-0a0a-483a-85e1-41d558fd64a7",
     "meta": {
         "profile": [
-            "http://fhir.health.gov.lk/ips/StructureDefinition/hims-transactional-bundle"
+            "http://fhir.health.gov.lk/ips/StructureDefinition/hhims-transactional-bundle"
         ]
     },
     "identifier": {
-        "system": "http://fhir.health.gov.lk/ips/identifier/hims-transactional",
-        "value": "21d93071-42da-47e9-b9c3-202d23186826"
+        "system": "http://fhir.health.gov.lk/ips/identifier/hhims-transactional",
+        "value": "f7d67808-e653-4afd-8385-73417d4a4f90"
     },
     "type": "transaction",
-    "timestamp": "2022-08-14T13:23:55.329Z",
+    "timestamp": "2024-02-14T11:43:36.489Z",
     "entry": [
         {
-            "fullUrl": "http://hapi-fhir:8080/fhir/Patient/5812b972-68f3-49a5-8435-783d1f7a093f",
+            "fullUrl": "http://hapi-fhir:8080/fhir/Patient/106712ca-9082-4874-bfc5-9580bdcab8ff",
             "resource": {
                 "resourceType": "Patient",
-                "id": "5812b972-68f3-49a5-8435-783d1f7a093f",
+                "id": "106712ca-9082-4874-bfc5-9580bdcab8ff",
                 "meta": {
                     "profile": [
                         "http://fhir.health.gov.lk/ips/StructureDefinition/ips-patient"
@@ -27,7 +27,7 @@
                     {
                         "url": "http://fhir.health.gov.lk/ips/StructureDefinition/patient-registration-system",
                         "valueReference": {
-                            "reference": "Device/eb4ce9fd-e995-43fb-b662-8bc565dc1be6"
+                            "reference": "Device/34dce25d-2216-4a2d-9f37-0c3b4c36a073"
                         }
                     }
                 ],
@@ -43,7 +43,7 @@
                             "text": "Personal Health Number"
                         },
                         "system": "http://fhir.health.gov.lk/ips/identifier/phn",
-                        "value": "265367"
+                        "value": "224807"
                     },
                     {
                         "type": {
@@ -56,7 +56,7 @@
                             "text": "Passport number"
                         },
                         "system": "http://fhir.health.gov.lk/ips/identifier/passport",
-                        "value": "402553"
+                        "value": "718457"
                     },
                     {
                         "type": {
@@ -69,7 +69,7 @@
                             "text": "Passport number"
                         },
                         "system": "http://fhir.health.gov.lk/ips/identifier/passport",
-                        "value": "391607"
+                        "value": "813148"
                     },
                     {
                         "type": {
@@ -82,7 +82,7 @@
                             "text": "Driver's license number"
                         },
                         "system": "http://fhir.health.gov.lk/ips/identifier/drivers",
-                        "value": "838191"
+                        "value": "865309"
                     },
                     {
                         "type": {
@@ -95,7 +95,7 @@
                             "text": "Driver's license number"
                         },
                         "system": "http://fhir.health.gov.lk/ips/identifier/drivers",
-                        "value": "250198"
+                        "value": "83912"
                     },
                     {
                         "type": {
@@ -108,7 +108,7 @@
                             "text": "National identity number"
                         },
                         "system": "http://fhir.health.gov.lk/ips/identifier/nic",
-                        "value": "5506511766"
+                        "value": "8349068295"
                     },
                     {
                         "type": {
@@ -121,7 +121,7 @@
                             "text": "National identity number"
                         },
                         "system": "http://fhir.health.gov.lk/ips/identifier/nic",
-                        "value": "9224143515"
+                        "value": "9284020956"
                     },
                     {
                         "type": {
@@ -134,7 +134,7 @@
                             "text": "Senior Citizen Number"
                         },
                         "system": "http://fhir.health.gov.lk/ips/identifier/scn",
-                        "value": "7061345809"
+                        "value": "3180566211"
                     },
                     {
                         "type": {
@@ -147,38 +147,38 @@
                             "text": "Senior Citizen Number"
                         },
                         "system": "http://fhir.health.gov.lk/ips/identifier/scn",
-                        "value": "4743809305"
+                        "value": "2512922519"
                     }
                 ],
                 "name": [
                     {
                         "use": "official",
-                        "family": "Bernier",
+                        "family": "Ullrich",
                         "given": [
-                            "Kaitlin",
-                            "Shirley"
+                            "Mallory",
+                            "Alice"
                         ],
                         "prefix": [
-                            "Mrs."
+                            "Miss"
                         ]
                     }
                 ],
                 "telecom": [
                     {
                         "system": "phone",
-                        "value": "670-444-1103"
+                        "value": "773-627-3041"
                     },
                     {
                         "system": "email",
-                        "value": "Bud_Becker@yahoo.com"
+                        "value": "Margarette_Jacobson@yahoo.com"
                     },
                     {
                         "system": "email",
-                        "value": "Andrew_Mitchell98@hotmail.com"
+                        "value": "Waldo.Pouros@hotmail.com"
                     }
                 ],
-                "gender": "other",
-                "birthDate": "1946-08-14",
+                "gender": "female",
+                "birthDate": "1994-02-14",
                 "address": [
                     {
                         "type": "postal",
@@ -196,14 +196,14 @@
             },
             "request": {
                 "method": "PUT",
-                "url": "Patient/5812b972-68f3-49a5-8435-783d1f7a093f"
+                "url": "Patient/106712ca-9082-4874-bfc5-9580bdcab8ff"
             }
         },
         {
-            "fullUrl": "http://hapi-fhir:8080/fhir/Encounter/237fa24f-43a5-4b02-8140-e0aaea5f8289",
+            "fullUrl": "http://hapi-fhir:8080/fhir/Encounter/2c44bb32-c082-4e1f-b3c9-f2d2b1fab7eb",
             "resource": {
                 "resourceType": "Encounter",
-                "id": "237fa24f-43a5-4b02-8140-e0aaea5f8289",
+                "id": "2c44bb32-c082-4e1f-b3c9-f2d2b1fab7eb",
                 "meta": {
                     "profile": [
                         "http://fhir.health.gov.lk/ips/StructureDefinition/target-facility-encounter"
@@ -215,25 +215,25 @@
                     "code": "AMB"
                 },
                 "subject": {
-                    "reference": "Patient/5812b972-68f3-49a5-8435-783d1f7a093f"
+                    "reference": "Patient/106712ca-9082-4874-bfc5-9580bdcab8ff"
                 },
                 "participant": [
                     {
                         "individual": {
-                            "reference": "Practitioner/a3dec12f-33a0-42a8-895c-e9afa360e2f3"
+                            "reference": "Practitioner/328411e8-cebd-41ea-a6ef-38174fc4cbd1"
                         }
                     }
                 ],
                 "period": {
-                    "start": "2022-08-14T13:23:55.329Z",
-                    "end": "2022-08-14T13:23:55.329Z"
+                    "start": "2024-02-14T11:43:36.489Z",
+                    "end": "2024-02-14T11:43:36.489Z"
                 },
                 "reasonCode": [
                     {
                         "coding": [
                             {
                                 "system": "http://snomed.info/sct",
-                                "code": "60046008"
+                                "code": "36989005"
                             }
                         ]
                     }
@@ -241,91 +241,94 @@
                 "location": [
                     {
                         "location": {
-                            "reference": "Location/f7127362-d8f4-4ea1-b4f3-571bd89fc820"
+                            "reference": "Location/5023dd15-b44b-486b-bae3-65fea2c5576c"
                         }
                     }
                 ]
             },
             "request": {
                 "method": "PUT",
-                "url": "Encounter/237fa24f-43a5-4b02-8140-e0aaea5f8289"
+                "url": "Encounter/2c44bb32-c082-4e1f-b3c9-f2d2b1fab7eb"
             }
         },
         {
-            "fullUrl": "http://hapi-fhir:8080/fhir/Condition/1fd5b64e-69b9-4f30-9768-710953a0c14f",
+            "fullUrl": "http://hapi-fhir:8080/fhir/Condition/5d566788-9470-4038-93d7-6eb300e8600f",
             "resource": {
                 "resourceType": "Condition",
-                "id": "1fd5b64e-69b9-4f30-9768-710953a0c14f",
+                "id": "5d566788-9470-4038-93d7-6eb300e8600f",
                 "meta": {
                     "profile": [
-                        "http://fhir.health.gov.lk/ips/StructureDefinition/medical-history"
+                        "http://fhir.health.gov.lk/ips/StructureDefinition/no-medical-history"
                     ]
                 },
                 "clinicalStatus": {
                     "coding": [
                         {
                             "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
-                            "code": "active"
+                            "code": "inactive"
                         }
                     ]
                 },
-                "verificationStatus": {
-                    "coding": [
-                        {
-                            "system": "http://terminology.hl7.org/CodeSystem/condition-ver-status",
-                            "code": "confirmed"
-                        }
-                    ]
-                },
-                "category": [
-                    {
-                        "coding": [
-                            {
-                                "system": "http://terminology.hl7.org/CodeSystem/condition-category",
-                                "code": "problem-list-item"
-                            }
-                        ]
-                    }
-                ],
                 "code": {
                     "coding": [
                         {
-                            "system": "http://snomed.info/sct",
-                            "code": "313435000"
+                            "system": "http://hl7.org/fhir/uv/ips/CodeSystem/absent-unknown-uv-ips",
+                            "code": "no-problem-info"
                         }
                     ]
                 },
                 "subject": {
-                    "reference": "Patient/5812b972-68f3-49a5-8435-783d1f7a093f"
+                    "reference": "Patient/106712ca-9082-4874-bfc5-9580bdcab8ff"
                 },
                 "encounter": {
-                    "reference": "Encounter/237fa24f-43a5-4b02-8140-e0aaea5f8289"
+                    "reference": "Encounter/2c44bb32-c082-4e1f-b3c9-f2d2b1fab7eb"
                 },
-                "recordedDate": "2022-08-14T13:23:55.329Z",
-                "recorder": {
-                    "reference": "Practitioner/a3dec12f-33a0-42a8-895c-e9afa360e2f3"
+                "recordedDate": "2024-02-14T11:43:36.489Z"
+            },
+            "request": {
+                "method": "PUT",
+                "url": "Condition/5d566788-9470-4038-93d7-6eb300e8600f"
+            }
+        },
+        {
+            "fullUrl": "http://hapi-fhir:8080/fhir/Communication/95a5725c-8976-4cef-82b5-03951ecce300",
+            "resource": {
+                "resourceType": "Communication",
+                "id": "95a5725c-8976-4cef-82b5-03951ecce300",
+                "meta": {
+                    "profile": [
+                        "http://fhir.health.gov.lk/ips/StructureDefinition/notifiable-diseases-notified"
+                    ]
                 },
-                "asserter": {
-                    "reference": "Practitioner/a3dec12f-33a0-42a8-895c-e9afa360e2f3"
+                "status": "completed",
+                "subject": {
+                    "reference": "Patient/106712ca-9082-4874-bfc5-9580bdcab8ff"
+                },
+                "encounter": {
+                    "reference": "Encounter/2c44bb32-c082-4e1f-b3c9-f2d2b1fab7eb"
+                },
+                "sent": "2024-02-14T11:43:36.489Z",
+                "sender": {
+                    "reference": "Device/34dce25d-2216-4a2d-9f37-0c3b4c36a073"
                 }
             },
             "request": {
                 "method": "PUT",
-                "url": "Condition/1fd5b64e-69b9-4f30-9768-710953a0c14f"
+                "url": "Communication/95a5725c-8976-4cef-82b5-03951ecce300"
             }
         },
         {
-            "fullUrl": "http://hapi-fhir:8080/fhir/Observation/3e7334d2-2102-488a-9729-eab4d6143dab",
+            "fullUrl": "http://hapi-fhir:8080/fhir/Observation/610ba513-51ed-43bd-a52d-a73adcd8918c",
             "resource": {
                 "resourceType": "Observation",
-                "id": "3e7334d2-2102-488a-9729-eab4d6143dab",
+                "id": "610ba513-51ed-43bd-a52d-a73adcd8918c",
                 "meta": {
                     "profile": [
                         "http://fhir.health.gov.lk/ips/StructureDefinition/weight"
                     ]
                 },
                 "device": {
-                    "reference": "Device/eb4ce9fd-e995-43fb-b662-8bc565dc1be6"
+                    "reference": "Device/34dce25d-2216-4a2d-9f37-0c3b4c36a073"
                 },
                 "status": "final",
                 "category": [
@@ -348,18 +351,18 @@
                     "text": "Body Weight"
                 },
                 "subject": {
-                    "reference": "Patient/5812b972-68f3-49a5-8435-783d1f7a093f"
+                    "reference": "Patient/106712ca-9082-4874-bfc5-9580bdcab8ff"
                 },
                 "encounter": {
-                    "reference": "Encounter/237fa24f-43a5-4b02-8140-e0aaea5f8289"
+                    "reference": "Encounter/2c44bb32-c082-4e1f-b3c9-f2d2b1fab7eb"
                 },
-                "effectiveDateTime": "2022-08-14T13:23:55.329Z",
+                "effectiveDateTime": "2024-02-14T11:43:36.489Z",
                 "performer": [
                     {
                         "reference": "Organization/OrganizationExample"
                     },
                     {
-                        "reference": "Practitioner/a3dec12f-33a0-42a8-895c-e9afa360e2f3"
+                        "reference": "Practitioner/328411e8-cebd-41ea-a6ef-38174fc4cbd1"
                     }
                 ],
                 "valueQuantity": {
@@ -371,642 +374,32 @@
             },
             "request": {
                 "method": "PUT",
-                "url": "Observation/3e7334d2-2102-488a-9729-eab4d6143dab"
+                "url": "Observation/610ba513-51ed-43bd-a52d-a73adcd8918c"
             }
         },
         {
-            "fullUrl": "http://hapi-fhir:8080/fhir/Observation/37cab809-bf95-4121-9451-336a3f71b929",
-            "resource": {
-                "resourceType": "Observation",
-                "id": "37cab809-bf95-4121-9451-336a3f71b929",
-                "meta": {
-                    "profile": [
-                        "http://fhir.health.gov.lk/ips/StructureDefinition/risk-behaviour-tobacco-smoker"
-                    ]
-                },
-                "device": {
-                    "reference": "Device/eb4ce9fd-e995-43fb-b662-8bc565dc1be6"
-                },
-                "status": "final",
-                "category": [
-                    {
-                        "coding": [
-                            {
-                                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
-                                "code": "social-history"
-                            }
-                        ]
-                    }
-                ],
-                "code": {
-                    "coding": [
-                        {
-                            "system": "http://loinc.org",
-                            "code": "81229-7"
-                        }
-                    ],
-                    "text": "Tobacco smoking status for tobacco smoker"
-                },
-                "subject": {
-                    "reference": "Patient/5812b972-68f3-49a5-8435-783d1f7a093f"
-                },
-                "encounter": {
-                    "reference": "Encounter/237fa24f-43a5-4b02-8140-e0aaea5f8289"
-                },
-                "effectiveDateTime": "2022-08-14T13:23:55.329Z",
-                "performer": [
-                    {
-                        "reference": "Organization/OrganizationExample"
-                    },
-                    {
-                        "reference": "Practitioner/a3dec12f-33a0-42a8-895c-e9afa360e2f3"
-                    }
-                ],
-                "valueCodeableConcept": {
-                    "coding": [
-                        {
-                            "system": "http://loinc.org",
-                            "code": "LA18982-1"
-                        }
-                    ],
-                    "text": "Light tobacco smoker"
-                }
-            },
-            "request": {
-                "method": "PUT",
-                "url": "Observation/37cab809-bf95-4121-9451-336a3f71b929"
-            }
-        },
-        {
-            "fullUrl": "http://hapi-fhir:8080/fhir/Observation/6b723110-e51f-4f3f-9ea4-abd26076be1a",
-            "resource": {
-                "resourceType": "Observation",
-                "id": "6b723110-e51f-4f3f-9ea4-abd26076be1a",
-                "meta": {
-                    "profile": [
-                        "http://fhir.health.gov.lk/ips/StructureDefinition/risk-behaviour-physical-activity"
-                    ]
-                },
-                "device": {
-                    "reference": "Device/eb4ce9fd-e995-43fb-b662-8bc565dc1be6"
-                },
-                "status": "final",
-                "category": [
-                    {
-                        "coding": [
-                            {
-                                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
-                                "code": "activity"
-                            }
-                        ]
-                    }
-                ],
-                "code": {
-                    "coding": [
-                        {
-                            "system": "http://snomed.info/sct",
-                            "code": "106020009"
-                        }
-                    ],
-                    "text": "Physical Activity"
-                },
-                "subject": {
-                    "reference": "Patient/5812b972-68f3-49a5-8435-783d1f7a093f"
-                },
-                "encounter": {
-                    "reference": "Encounter/237fa24f-43a5-4b02-8140-e0aaea5f8289"
-                },
-                "effectiveDateTime": "2022-08-14T13:23:55.329Z",
-                "performer": [
-                    {
-                        "reference": "Organization/OrganizationExample"
-                    },
-                    {
-                        "reference": "Practitioner/a3dec12f-33a0-42a8-895c-e9afa360e2f3"
-                    }
-                ],
-                "valueCodeableConcept": {
-                    "coding": [
-                        {
-                            "system": "http://snomed.info/sct",
-                            "code": "9011000175102"
-                        }
-                    ],
-                    "text": "Physically not active"
-                }
-            },
-            "request": {
-                "method": "PUT",
-                "url": "Observation/6b723110-e51f-4f3f-9ea4-abd26076be1a"
-            }
-        },
-        {
-            "fullUrl": "http://hapi-fhir:8080/fhir/Observation/a4ed57f2-edcf-43d1-9c26-b09caa9ccdfe",
-            "resource": {
-                "resourceType": "Observation",
-                "id": "a4ed57f2-edcf-43d1-9c26-b09caa9ccdfe",
-                "meta": {
-                    "profile": [
-                        "http://fhir.health.gov.lk/ips/StructureDefinition/blood-pressure"
-                    ]
-                },
-                "device": {
-                    "reference": "Device/eb4ce9fd-e995-43fb-b662-8bc565dc1be6"
-                },
-                "status": "final",
-                "category": [
-                    {
-                        "coding": [
-                            {
-                                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
-                                "code": "vital-signs"
-                            }
-                        ]
-                    }
-                ],
-                "code": {
-                    "coding": [
-                        {
-                            "system": "http://loinc.org",
-                            "code": "85354-9"
-                        }
-                    ],
-                    "text": "Blood Pressure"
-                },
-                "subject": {
-                    "reference": "Patient/5812b972-68f3-49a5-8435-783d1f7a093f"
-                },
-                "encounter": {
-                    "reference": "Encounter/237fa24f-43a5-4b02-8140-e0aaea5f8289"
-                },
-                "effectiveDateTime": "2022-08-14T13:23:55.329Z",
-                "performer": [
-                    {
-                        "reference": "Organization/OrganizationExample"
-                    },
-                    {
-                        "reference": "Practitioner/a3dec12f-33a0-42a8-895c-e9afa360e2f3"
-                    }
-                ],
-                "component": [
-                    {
-                        "code": {
-                            "coding": [
-                                {
-                                    "system": "http://loinc.org",
-                                    "code": "8480-6"
-                                }
-                            ]
-                        },
-                        "valueQuantity": {
-                            "value": 106,
-                            "unit": "mmHg",
-                            "system": "http://unitsofmeasure.org",
-                            "code": "mm[Hg]"
-                        }
-                    },
-                    {
-                        "code": {
-                            "coding": [
-                                {
-                                    "system": "http://loinc.org",
-                                    "code": "8462-4"
-                                }
-                            ]
-                        },
-                        "valueQuantity": {
-                            "value": 60,
-                            "unit": "mmHg",
-                            "system": "http://unitsofmeasure.org",
-                            "code": "mm[Hg]"
-                        }
-                    }
-                ]
-            },
-            "request": {
-                "method": "PUT",
-                "url": "Observation/a4ed57f2-edcf-43d1-9c26-b09caa9ccdfe"
-            }
-        },
-        {
-            "fullUrl": "http://hapi-fhir:8080/fhir/Observation/a37dcb1a-c3f0-47fe-be25-78044c50a0f7",
-            "resource": {
-                "resourceType": "Observation",
-                "id": "a37dcb1a-c3f0-47fe-be25-78044c50a0f7",
-                "meta": {
-                    "profile": [
-                        "http://fhir.health.gov.lk/ips/StructureDefinition/height"
-                    ]
-                },
-                "device": {
-                    "reference": "Device/eb4ce9fd-e995-43fb-b662-8bc565dc1be6"
-                },
-                "status": "final",
-                "category": [
-                    {
-                        "coding": [
-                            {
-                                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
-                                "code": "vital-signs"
-                            }
-                        ]
-                    }
-                ],
-                "code": {
-                    "coding": [
-                        {
-                            "system": "http://loinc.org",
-                            "code": "8302-2"
-                        }
-                    ],
-                    "text": "Body Height"
-                },
-                "subject": {
-                    "reference": "Patient/5812b972-68f3-49a5-8435-783d1f7a093f"
-                },
-                "encounter": {
-                    "reference": "Encounter/237fa24f-43a5-4b02-8140-e0aaea5f8289"
-                },
-                "effectiveDateTime": "2022-08-14T13:23:55.329Z",
-                "performer": [
-                    {
-                        "reference": "Organization/OrganizationExample"
-                    },
-                    {
-                        "reference": "Practitioner/a3dec12f-33a0-42a8-895c-e9afa360e2f3"
-                    }
-                ],
-                "valueQuantity": {
-                    "value": 185,
-                    "unit": "cm",
-                    "system": "http://unitsofmeasure.org",
-                    "code": "cm"
-                }
-            },
-            "request": {
-                "method": "PUT",
-                "url": "Observation/a37dcb1a-c3f0-47fe-be25-78044c50a0f7"
-            }
-        },
-        {
-            "fullUrl": "http://hapi-fhir:8080/fhir/Observation/9ed93f9b-d5e2-4142-b032-a6dd202ccba0",
-            "resource": {
-                "resourceType": "Observation",
-                "id": "9ed93f9b-d5e2-4142-b032-a6dd202ccba0",
-                "meta": {
-                    "profile": [
-                        "http://fhir.health.gov.lk/ips/StructureDefinition/bmi"
-                    ]
-                },
-                "device": {
-                    "reference": "Device/eb4ce9fd-e995-43fb-b662-8bc565dc1be6"
-                },
-                "status": "final",
-                "category": [
-                    {
-                        "coding": [
-                            {
-                                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
-                                "code": "vital-signs"
-                            }
-                        ]
-                    }
-                ],
-                "code": {
-                    "coding": [
-                        {
-                            "system": "http://loinc.org",
-                            "code": "39156-5"
-                        }
-                    ],
-                    "text": "Body mass index (BMI)"
-                },
-                "subject": {
-                    "reference": "Patient/5812b972-68f3-49a5-8435-783d1f7a093f"
-                },
-                "encounter": {
-                    "reference": "Encounter/237fa24f-43a5-4b02-8140-e0aaea5f8289"
-                },
-                "effectiveDateTime": "2022-08-14T13:23:55.329Z",
-                "performer": [
-                    {
-                        "reference": "Organization/OrganizationExample"
-                    },
-                    {
-                        "reference": "Practitioner/a3dec12f-33a0-42a8-895c-e9afa360e2f3"
-                    }
-                ],
-                "valueQuantity": {
-                    "value": 16.2,
-                    "unit": "kg/m2",
-                    "system": "http://unitsofmeasure.org",
-                    "code": "kg/m2"
-                },
-                "derivedFrom": [
-                    {
-                        "reference": "Observation/3e7334d2-2102-488a-9729-eab4d6143dab"
-                    },
-                    {
-                        "reference": "Observation/a37dcb1a-c3f0-47fe-be25-78044c50a0f7"
-                    }
-                ]
-            },
-            "request": {
-                "method": "PUT",
-                "url": "Observation/9ed93f9b-d5e2-4142-b032-a6dd202ccba0"
-            }
-        },
-        {
-            "fullUrl": "http://hapi-fhir:8080/fhir/Observation/b592eeb4-53d2-4f40-bb7f-d8e1c194c6c1",
-            "resource": {
-                "resourceType": "Observation",
-                "id": "b592eeb4-53d2-4f40-bb7f-d8e1c194c6c1",
-                "meta": {
-                    "profile": [
-                        "http://fhir.health.gov.lk/ips/StructureDefinition/random-blood-sugar"
-                    ]
-                },
-                "device": {
-                    "reference": "Device/eb4ce9fd-e995-43fb-b662-8bc565dc1be6"
-                },
-                "status": "final",
-                "category": [
-                    {
-                        "coding": [
-                            {
-                                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
-                                "code": "laboratory"
-                            }
-                        ]
-                    }
-                ],
-                "code": {
-                    "coding": [
-                        {
-                            "system": "http://loinc.org",
-                            "code": "15074-8"
-                        }
-                    ],
-                    "text": "Glucose"
-                },
-                "subject": {
-                    "reference": "Patient/5812b972-68f3-49a5-8435-783d1f7a093f"
-                },
-                "encounter": {
-                    "reference": "Encounter/237fa24f-43a5-4b02-8140-e0aaea5f8289"
-                },
-                "effectiveDateTime": "2022-08-14T13:23:55.329Z",
-                "performer": [
-                    {
-                        "reference": "Organization/OrganizationExample"
-                    },
-                    {
-                        "reference": "Practitioner/a3dec12f-33a0-42a8-895c-e9afa360e2f3"
-                    }
-                ],
-                "valueQuantity": {
-                    "value": 6.3,
-                    "unit": "mmol/L",
-                    "system": "http://unitsofmeasure.org",
-                    "code": "mmol/L"
-                },
-                "interpretation": [
-                    {
-                        "coding": [
-                            {
-                                "system": "http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation",
-                                "code": "H"
-                            }
-                        ]
-                    }
-                ],
-                "referenceRange": [
-                    {
-                        "low": {
-                            "value": 3.1,
-                            "unit": "mmol/L",
-                            "system": "http://unitsofmeasure.org",
-                            "code": "mmol/L"
-                        },
-                        "high": {
-                            "value": 6.2,
-                            "unit": "mmol/L",
-                            "system": "http://unitsofmeasure.org",
-                            "code": "mmol/L"
-                        },
-                        "type": {
-                            "coding": [
-                                {
-                                    "system": "http://terminology.hl7.org/CodeSystem/referencerange-meaning",
-                                    "code": "type"
-                                }
-                            ]
-                        }
-                    }
-                ]
-            },
-            "request": {
-                "method": "PUT",
-                "url": "Observation/b592eeb4-53d2-4f40-bb7f-d8e1c194c6c1"
-            }
-        },
-        {
-            "fullUrl": "http://hapi-fhir:8080/fhir/Observation/fd44c36c-b34e-4a1d-b5a4-e5614d8717b3",
-            "resource": {
-                "resourceType": "Observation",
-                "id": "fd44c36c-b34e-4a1d-b5a4-e5614d8717b3",
-                "meta": {
-                    "profile": [
-                        "http://fhir.health.gov.lk/ips/StructureDefinition/fasting-blood-sugar"
-                    ]
-                },
-                "device": {
-                    "reference": "Device/eb4ce9fd-e995-43fb-b662-8bc565dc1be6"
-                },
-                "status": "final",
-                "category": [
-                    {
-                        "coding": [
-                            {
-                                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
-                                "code": "laboratory"
-                            }
-                        ]
-                    }
-                ],
-                "code": {
-                    "coding": [
-                        {
-                            "system": "http://loinc.org",
-                            "code": "76629-5"
-                        }
-                    ],
-                    "text": "Fasting glucose"
-                },
-                "subject": {
-                    "reference": "Patient/5812b972-68f3-49a5-8435-783d1f7a093f"
-                },
-                "encounter": {
-                    "reference": "Encounter/237fa24f-43a5-4b02-8140-e0aaea5f8289"
-                },
-                "effectiveDateTime": "2022-08-14T13:23:55.329Z",
-                "performer": [
-                    {
-                        "reference": "Organization/OrganizationExample"
-                    },
-                    {
-                        "reference": "Practitioner/a3dec12f-33a0-42a8-895c-e9afa360e2f3"
-                    }
-                ],
-                "valueQuantity": {
-                    "value": 5.4,
-                    "unit": "mmol/L",
-                    "system": "http://unitsofmeasure.org",
-                    "code": "mmol/L"
-                },
-                "interpretation": [
-                    {
-                        "coding": [
-                            {
-                                "system": "http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation",
-                                "code": "N"
-                            }
-                        ]
-                    }
-                ],
-                "referenceRange": [
-                    {
-                        "low": {
-                            "value": 3.9,
-                            "unit": "mmol/L",
-                            "system": "http://unitsofmeasure.org",
-                            "code": "mmol/L"
-                        },
-                        "high": {
-                            "value": 5.6,
-                            "unit": "mmol/L",
-                            "system": "http://unitsofmeasure.org",
-                            "code": "mmol/L"
-                        },
-                        "type": {
-                            "coding": [
-                                {
-                                    "system": "http://terminology.hl7.org/CodeSystem/referencerange-meaning",
-                                    "code": "type"
-                                }
-                            ]
-                        }
-                    }
-                ]
-            },
-            "request": {
-                "method": "PUT",
-                "url": "Observation/fd44c36c-b34e-4a1d-b5a4-e5614d8717b3"
-            }
-        },
-        {
-            "fullUrl": "http://hapi-fhir:8080/fhir/Observation/5ef877bc-8d1d-48cc-bb59-8f92d5ea0d24",
-            "resource": {
-                "resourceType": "Observation",
-                "id": "5ef877bc-8d1d-48cc-bb59-8f92d5ea0d24",
-                "meta": {
-                    "profile": [
-                        "http://fhir.health.gov.lk/ips/StructureDefinition/total-cholesterol"
-                    ]
-                },
-                "device": {
-                    "reference": "Device/eb4ce9fd-e995-43fb-b662-8bc565dc1be6"
-                },
-                "status": "final",
-                "category": [
-                    {
-                        "coding": [
-                            {
-                                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
-                                "code": "laboratory"
-                            }
-                        ]
-                    }
-                ],
-                "code": {
-                    "coding": [
-                        {
-                            "system": "http://loinc.org",
-                            "code": "2093-3"
-                        }
-                    ],
-                    "text": "Cholesterol"
-                },
-                "subject": {
-                    "reference": "Patient/5812b972-68f3-49a5-8435-783d1f7a093f"
-                },
-                "encounter": {
-                    "reference": "Encounter/237fa24f-43a5-4b02-8140-e0aaea5f8289"
-                },
-                "effectiveDateTime": "2022-08-14T13:23:55.329Z",
-                "performer": [
-                    {
-                        "reference": "Organization/OrganizationExample"
-                    },
-                    {
-                        "reference": "Practitioner/a3dec12f-33a0-42a8-895c-e9afa360e2f3"
-                    }
-                ],
-                "valueQuantity": {
-                    "value": 6.3,
-                    "unit": "mmol/L",
-                    "system": "http://unitsofmeasure.org",
-                    "code": "mmol/L"
-                },
-                "interpretation": [
-                    {
-                        "coding": [
-                            {
-                                "system": "http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation",
-                                "code": "H"
-                            }
-                        ]
-                    }
-                ],
-                "referenceRange": [
-                    {
-                        "high": {
-                            "value": 5,
-                            "unit": "mmol/L",
-                            "system": "http://unitsofmeasure.org",
-                            "code": "mmol/L"
-                        },
-                        "type": {
-                            "coding": [
-                                {
-                                    "system": "http://terminology.hl7.org/CodeSystem/referencerange-meaning",
-                                    "code": "type"
-                                }
-                            ]
-                        }
-                    }
-                ]
-            },
-            "request": {
-                "method": "PUT",
-                "url": "Observation/5ef877bc-8d1d-48cc-bb59-8f92d5ea0d24"
-            }
-        },
-        {
-            "fullUrl": "http://hapi-fhir:8080/fhir/AllergyIntolerance/5282cf51-96ec-47a9-aa39-6304f1cf8198",
+            "fullUrl": "http://hapi-fhir:8080/fhir/AllergyIntolerance/8adfa942-765b-416c-ade6-2519cfb36272",
             "resource": {
                 "resourceType": "AllergyIntolerance",
-                "id": "5282cf51-96ec-47a9-aa39-6304f1cf8198",
+                "id": "8adfa942-765b-416c-ade6-2519cfb36272",
                 "meta": {
                     "profile": [
-                        "http://fhir.health.gov.lk/ips/StructureDefinition/no-allergy-intolerance"
+                        "http://fhir.health.gov.lk/ips/StructureDefinition/allergy-intolerance"
                     ]
                 },
                 "clinicalStatus": {
                     "coding": [
                         {
                             "system": "http://terminology.hl7.org/CodeSystem/allergyintolerance-clinical",
-                            "code": "inactive"
+                            "code": "active"
+                        }
+                    ]
+                },
+                "verificationStatus": {
+                    "coding": [
+                        {
+                            "system": "http://terminology.hl7.org/CodeSystem/allergyintolerance-verification",
+                            "code": "confirmed"
                         }
                     ]
                 },
@@ -1014,49 +407,80 @@
                 "code": {
                     "coding": [
                         {
-                            "system": "http://hl7.org/fhir/uv/ips/CodeSystem/absent-unknown-uv-ips",
-                            "code": "no-allergy-info"
+                            "system": "http://snomed.info/sct",
+                            "code": "414285001"
                         }
                     ],
-                    "text": "No information about allergies"
+                    "text": "Allergy to food"
                 },
                 "patient": {
-                    "reference": "Patient/5812b972-68f3-49a5-8435-783d1f7a093f"
+                    "reference": "Patient/106712ca-9082-4874-bfc5-9580bdcab8ff"
                 },
                 "encounter": {
-                    "reference": "Encounter/237fa24f-43a5-4b02-8140-e0aaea5f8289"
+                    "reference": "Encounter/2c44bb32-c082-4e1f-b3c9-f2d2b1fab7eb"
+                },
+                "onsetDateTime": "2024-02-14T11:43:36.489Z",
+                "recorder": {
+                    "reference": "Practitioner/328411e8-cebd-41ea-a6ef-38174fc4cbd1"
                 }
             },
             "request": {
                 "method": "PUT",
-                "url": "AllergyIntolerance/5282cf51-96ec-47a9-aa39-6304f1cf8198"
+                "url": "AllergyIntolerance/8adfa942-765b-416c-ade6-2519cfb36272"
             }
         },
         {
-            "fullUrl": "http://hapi-fhir:8080/fhir/MedicationRequest/2f26cd72-c0fb-4eed-a4ad-ac5e74b3ee24",
+            "fullUrl": "http://hapi-fhir:8080/fhir/MedicationRequest/57c2c42c-5063-43da-b473-2860a717b321",
             "resource": {
                 "resourceType": "MedicationRequest",
-                "id": "2f26cd72-c0fb-4eed-a4ad-ac5e74b3ee24",
+                "id": "57c2c42c-5063-43da-b473-2860a717b321",
                 "meta": {
                     "profile": [
-                        "http://fhir.health.gov.lk/ips/StructureDefinition/no-medication-requested"
+                        "http://fhir.health.gov.lk/ips/StructureDefinition/medication-request"
                     ]
                 },
+                "identifier": [
+                    {
+                        "type": {
+                            "coding": [
+                                {
+                                    "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                                    "code": "FILL",
+                                    "display": "Filler Identifier"
+                                }
+                            ],
+                            "text": "Prescription identifier"
+                        },
+                        "system": "http://fhir.health.gov.lk/ips/identifier/medication",
+                        "value": "3008bcf1-4988-48e0-b54d-773a6820ef76"
+                    }
+                ],
                 "status": "completed",
                 "intent": "order",
                 "medicationCodeableConcept": {
                     "coding": [
                         {
-                            "system": "http://hl7.org/fhir/uv/ips/CodeSystem/absent-unknown-uv-ips",
-                            "code": "no-medication-info"
+                            "system": "http://fhir.health.gov.lk/ips/CodeSystem/cs-medication-name-msd",
+                            "code": "01103901"
                         }
-                    ]
+                    ],
+                    "text": "Medication"
                 },
                 "subject": {
-                    "reference": "Patient/5812b972-68f3-49a5-8435-783d1f7a093f"
+                    "reference": "Patient/106712ca-9082-4874-bfc5-9580bdcab8ff"
                 },
                 "encounter": {
-                    "reference": "Encounter/237fa24f-43a5-4b02-8140-e0aaea5f8289"
+                    "reference": "Encounter/2c44bb32-c082-4e1f-b3c9-f2d2b1fab7eb"
+                },
+                "authoredOn": "2024-02-14T11:43:36.489Z",
+                "requester": {
+                    "reference": "Practitioner/328411e8-cebd-41ea-a6ef-38174fc4cbd1"
+                },
+                "performer": {
+                    "reference": "Practitioner/328411e8-cebd-41ea-a6ef-38174fc4cbd1"
+                },
+                "recorder": {
+                    "reference": "Practitioner/328411e8-cebd-41ea-a6ef-38174fc4cbd1"
                 },
                 "note": [
                     {
@@ -1064,156 +488,225 @@
                             "reference": "Organization/OrganizationExample"
                         },
                         "time": "2023-10-11T17:21:33-08:00",
-                        "text": "Additional information"
+                        "text": "Additional information regarding the patient's medication prescription"
                     }
                 ],
-                "authoredOn": "2022-08-14T13:23:55.329Z"
+                "dosageInstruction": [
+                    {
+                        "timing": {
+                            "repeat": {
+                                "count": 2,
+                                "duration": 2,
+                                "durationUnit": "d",
+                                "frequency": 2,
+                                "period": 3,
+                                "periodUnit": "d"
+                            },
+                            "code": {
+                                "coding": [
+                                    {
+                                        "system": "http://fhir.health.gov.lk/ips/CodeSystem/cs-drug-frequency",
+                                        "code": "LK-DF-04"
+                                    }
+                                ]
+                            }
+                        },
+                        "doseAndRate": [
+                            {
+                                "doseQuantity": {
+                                    "value": 3
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "dispenseRequest": {
+                    "quantity": {
+                        "value": 5
+                    }
+                }
             },
             "request": {
                 "method": "PUT",
-                "url": "MedicationRequest/2f26cd72-c0fb-4eed-a4ad-ac5e74b3ee24"
+                "url": "MedicationRequest/57c2c42c-5063-43da-b473-2860a717b321"
             }
         },
         {
-            "fullUrl": "http://hapi-fhir:8080/fhir/RiskAssessment/375b2e52-6e8f-4a5b-a8c8-483541099909",
+            "fullUrl": "http://hapi-fhir:8080/fhir/MedicationDispense/d8542512-67de-48fd-9ac4-edd21022e767",
             "resource": {
-                "resourceType": "RiskAssessment",
-                "id": "375b2e52-6e8f-4a5b-a8c8-483541099909",
+                "resourceType": "MedicationDispense",
+                "id": "d8542512-67de-48fd-9ac4-edd21022e767",
                 "meta": {
                     "profile": [
-                        "http://fhir.health.gov.lk/ips/StructureDefinition/cvd-risk-category"
+                        "http://fhir.health.gov.lk/ips/StructureDefinition/drug-dispensation"
                     ]
                 },
-                "status": "final",
-                "code": {
+                "status": "completed",
+                "medicationCodeableConcept": {
+                    "coding": [
+                        {
+                            "system": "http://fhir.health.gov.lk/ips/CodeSystem/cs-medication-name-msd",
+                            "code": "01103901"
+                        }
+                    ],
+                    "text": "Medication"
+                },
+                "subject": {
+                    "reference": "Patient/106712ca-9082-4874-bfc5-9580bdcab8ff"
+                },
+                "context": {
+                    "reference": "Encounter/2c44bb32-c082-4e1f-b3c9-f2d2b1fab7eb"
+                },
+                "performer": [
+                    {
+                        "actor": {
+                            "reference": "Practitioner/328411e8-cebd-41ea-a6ef-38174fc4cbd1"
+                        }
+                    }
+                ],
+                "location": {
+                    "reference": "Location/5023dd15-b44b-486b-bae3-65fea2c5576c"
+                },
+                "authorizingPrescription": [
+                    {
+                        "reference": "MedicationRequest/57c2c42c-5063-43da-b473-2860a717b321"
+                    }
+                ],
+                "whenHandedOver": "2024-02-14T11:43:36.489Z",
+                "receiver": [
+                    {
+                        "reference": "Patient/106712ca-9082-4874-bfc5-9580bdcab8ff"
+                    }
+                ]
+            },
+            "request": {
+                "method": "PUT",
+                "url": "MedicationDispense/d8542512-67de-48fd-9ac4-edd21022e767"
+            }
+        },
+        {
+            "fullUrl": "http://hapi-fhir:8080/fhir/MedicationAdministration/94327e68-4247-40d9-9a58-d474a36fb934",
+            "resource": {
+                "resourceType": "MedicationAdministration",
+                "id": "94327e68-4247-40d9-9a58-d474a36fb934",
+                "meta": {
+                    "profile": [
+                        "http://fhir.health.gov.lk/ips/StructureDefinition/injection"
+                    ]
+                },
+                "status": "completed",
+                "medicationCodeableConcept": {
                     "coding": [
                         {
                             "system": "http://snomed.info/sct",
-                            "code": "441829007"
+                            "code": "2571007"
                         }
                     ],
-                    "text": "Assessment for risk of cardiovascular disease"
+                    "text": "Busulfan"
                 },
                 "subject": {
-                    "reference": "Patient/5812b972-68f3-49a5-8435-783d1f7a093f"
+                    "reference": "Patient/106712ca-9082-4874-bfc5-9580bdcab8ff"
                 },
-                "encounter": {
-                    "reference": "Encounter/237fa24f-43a5-4b02-8140-e0aaea5f8289"
+                "context": {
+                    "reference": "Encounter/2c44bb32-c082-4e1f-b3c9-f2d2b1fab7eb"
                 },
-                "occurrenceDateTime": "2022-08-14T13:23:55.329Z",
-                "performer": {
-                    "reference": "Practitioner/a3dec12f-33a0-42a8-895c-e9afa360e2f3"
-                },
-                "basis": [
+                "effectiveDateTime": "2024-02-14T11:43:36.489Z",
+                "performer": [
                     {
-                        "reference": "Patient/5812b972-68f3-49a5-8435-783d1f7a093f"
-                    },
-                    {
-                        "reference": "Observation/37cab809-bf95-4121-9451-336a3f71b929"
-                    },
-                    {
-                        "reference": "Observation/5ef877bc-8d1d-48cc-bb59-8f92d5ea0d24"
-                    },
-                    {
-                        "reference": "Observation/a4ed57f2-edcf-43d1-9c26-b09caa9ccdfe"
-                    },
-                    {
-                        "reference": "Observation/{{randomBloodSugar}}"
-                    },
-                    {
-                        "reference": "Observation/fd44c36c-b34e-4a1d-b5a4-e5614d8717b3"
-                    }
-                ],
-                "prediction": [
-                    {
-                        "outcome": {
-                            "coding": [
-                                {
-                                    "system": "http://snomed.info/sct",
-                                    "code": "395112001"
-                                }
-                            ],
-                            "text": "Risk of heart attack"
-                        },
-                        "probabilityDecimal": 0.02,
-                        "qualitativeRisk": {
-                            "coding": [
-                                {
-                                    "system": "http://fhir.health.gov.lk/ips/CodeSystem/cs-cvd-risk-category",
-                                    "code": "Critical"
-                                }
-                            ],
-                            "text": "Risk Category"
-                        },
-                        "whenRange": {
-                            "low": {
-                                "value": 39,
-                                "unit": "years",
-                                "system": "http://unitsofmeasure.org",
-                                "code": "a"
-                            },
-                            "high": {
-                                "value": 49,
-                                "unit": "years",
-                                "system": "http://unitsofmeasure.org",
-                                "code": "a"
-                            }
+                        "actor": {
+                            "reference": "Practitioner/328411e8-cebd-41ea-a6ef-38174fc4cbd1"
                         }
                     }
-                ]
+                ],
+                "dosage": {
+                    "route": {
+                        "coding": [
+                            {
+                                "system": "http://snomed.info/sct",
+                                "code": "47625008"
+                            }
+                        ],
+                        "text": "Intravenous route"
+                    },
+                    "dose": {
+                        "value": 12
+                    }
+                }
             },
             "request": {
                 "method": "PUT",
-                "url": "RiskAssessment/375b2e52-6e8f-4a5b-a8c8-483541099909"
+                "url": "MedicationAdministration/94327e68-4247-40d9-9a58-d474a36fb934"
             }
         },
         {
-            "fullUrl": "http://hapi-fhir:8080/fhir/CarePlan/517a6e74-b633-4de1-a8f7-8c0563605aea",
+            "fullUrl": "http://hapi-fhir:8080/fhir/ImagingStudy/bfe908ff-7166-4c0a-b4df-72e3c6c3bce6",
             "resource": {
-                "resourceType": "CarePlan",
-                "id": "517a6e74-b633-4de1-a8f7-8c0563605aea",
+                "resourceType": "ImagingStudy",
+                "id": "bfe908ff-7166-4c0a-b4df-72e3c6c3bce6",
                 "meta": {
                     "profile": [
-                        "http://fhir.health.gov.lk/ips/StructureDefinition/follow-up-at-hlc"
+                        "http://fhir.health.gov.lk/ips/StructureDefinition/imaging-study"
                     ]
                 },
-                "status": "active",
-                "intent": "order",
+                "status": "registered",
                 "subject": {
-                    "reference": "Patient/5812b972-68f3-49a5-8435-783d1f7a093f"
+                    "reference": "Patient/106712ca-9082-4874-bfc5-9580bdcab8ff"
                 },
                 "encounter": {
-                    "reference": "Encounter/237fa24f-43a5-4b02-8140-e0aaea5f8289"
+                    "reference": "Encounter/2c44bb32-c082-4e1f-b3c9-f2d2b1fab7eb"
                 },
-                "period": {
-                    "start": "2022-08-14T13:23:55.329Z"
-                },
-                "contributor": [
+                "started": "2024-02-14T11:43:36.489Z",
+                "basedOn": [
                     {
-                        "reference": "Organization/OrganizationExample"
+                        "reference": "ServiceRequest/3a69d170-e4ce-4185-acc4-eaa275a72315"
                     }
                 ],
-                "activity": [
+                "referrer": {
+                    "reference": "Practitioner/328411e8-cebd-41ea-a6ef-38174fc4cbd1"
+                },
+                "location": {
+                    "reference": "Location/5023dd15-b44b-486b-bae3-65fea2c5576c"
+                },
+                "description": "Imaging Description",
+                "series": [
                     {
-                        "reference": {
-                            "reference": "ServiceRequest/0c2a37ea-b165-4d7a-a83e-5c911ff957e8"
-                        }
+                        "uid": "2.16.124.113543.6003.1154777499.30246.19789.3503430045.1",
+                        "modality": {
+                            "system": "http://dicom.nema.org/resources/ontology/DCM",
+                            "code": "DX"
+                        },
+                        "performer": [
+                            {
+                                "actor": {
+                                    "reference": "Practitioner/328411e8-cebd-41ea-a6ef-38174fc4cbd1"
+                                }
+                            }
+                        ],
+                        "instance": [
+                            {
+                                "uid": "2.16.124.113543.6003.1154777499.30246.19789.3503430045.1.1",
+                                "sopClass": {
+                                    "system": "urn:ietf:rfc:3986",
+                                    "code": "urn:oid:1.2.840.10008.5.1.4.1.1.2"
+                                }
+                            }
+                        ]
                     }
                 ]
             },
             "request": {
                 "method": "PUT",
-                "url": "CarePlan/517a6e74-b633-4de1-a8f7-8c0563605aea"
+                "url": "ImagingStudy/bfe908ff-7166-4c0a-b4df-72e3c6c3bce6"
             }
         },
         {
-            "fullUrl": "http://hapi-fhir:8080/fhir/ServiceRequest/0c2a37ea-b165-4d7a-a83e-5c911ff957e8",
+            "fullUrl": "http://hapi-fhir:8080/fhir/ServiceRequest/bc3fa01c-58fe-465e-a2a8-b39fd80c9d64",
             "resource": {
                 "resourceType": "ServiceRequest",
-                "id": "0c2a37ea-b165-4d7a-a83e-5c911ff957e8",
+                "id": "bc3fa01c-58fe-465e-a2a8-b39fd80c9d64",
                 "meta": {
                     "profile": [
-                        "http://fhir.health.gov.lk/ips/StructureDefinition/follow-up-plan"
+                        "http://fhir.health.gov.lk/ips/StructureDefinition/general-referral-request"
                     ]
                 },
                 "status": "completed",
@@ -1222,54 +715,201 @@
                     "coding": [
                         {
                             "system": "http://snomed.info/sct",
-                            "code": "410321003"
+                            "code": "3457005"
                         }
                     ],
-                    "text": "Follow up at HLC"
+                    "text": "Patient referral"
                 },
                 "subject": {
-                    "reference": "Patient/5812b972-68f3-49a5-8435-783d1f7a093f"
+                    "reference": "Patient/106712ca-9082-4874-bfc5-9580bdcab8ff"
                 },
                 "encounter": {
-                    "reference": "Encounter/237fa24f-43a5-4b02-8140-e0aaea5f8289"
+                    "reference": "Encounter/2c44bb32-c082-4e1f-b3c9-f2d2b1fab7eb"
                 },
-                "occurrenceTiming": {
-                    "repeat": {
-                        "count": 1,
-                        "duration": 3,
-                        "durationUnit": "mo"
-                    }
-                },
+                "occurrenceDateTime": "2024-02-14T11:43:36.489Z",
                 "requester": {
-                    "reference": "Practitioner/a3dec12f-33a0-42a8-895c-e9afa360e2f3"
+                    "reference": "Practitioner/328411e8-cebd-41ea-a6ef-38174fc4cbd1"
                 },
                 "locationReference": [
                     {
-                        "reference": "Location/f7127362-d8f4-4ea1-b4f3-571bd89fc820"
-                    }
-                ],
-                "reasonCode": [
-                    {
-                        "coding": [
-                            {
-                                "system": "http://fhir.health.gov.lk/ips/CodeSystem/cs-follow-up-reasons",
-                                "code": "Followed-in-3-years-at-hlc"
-                            }
-                        ],
-                        "text": "Followed in 6 months at HLC"
+                        "reference": "Location/5023dd15-b44b-486b-bae3-65fea2c5576c"
                     }
                 ]
             },
             "request": {
                 "method": "PUT",
-                "url": "ServiceRequest/0c2a37ea-b165-4d7a-a83e-5c911ff957e8"
+                "url": "ServiceRequest/bc3fa01c-58fe-465e-a2a8-b39fd80c9d64"
             }
         },
         {
-            "fullUrl": "http://hapi-fhir:8080/fhir/Practitioner/a3dec12f-33a0-42a8-895c-e9afa360e2f3",
+            "fullUrl": "http://hapi-fhir:8080/fhir/ServiceRequest/06111b04-7b70-4cfa-9546-52a0280066b0",
+            "resource": {
+                "resourceType": "ServiceRequest",
+                "id": "06111b04-7b70-4cfa-9546-52a0280066b0",
+                "meta": {
+                    "profile": [
+                        "http://fhir.health.gov.lk/ips/StructureDefinition/investigations-request"
+                    ]
+                },
+                "status": "completed",
+                "intent": "order",
+                "code": {
+                    "coding": [
+                        {
+                            "system": "http://fhir.health.gov.lk/ips/CodeSystem/cs-investigation",
+                            "code": "FBC-WBC-th/uL"
+                        }
+                    ],
+                    "text": "Investigation requested"
+                },
+                "subject": {
+                    "reference": "Patient/106712ca-9082-4874-bfc5-9580bdcab8ff"
+                },
+                "encounter": {
+                    "reference": "Encounter/2c44bb32-c082-4e1f-b3c9-f2d2b1fab7eb"
+                },
+                "occurrenceDateTime": "2024-02-14T11:43:36.489Z",
+                "authoredOn": "2024-02-14T11:43:36.489Z",
+                "requester": {
+                    "reference": "Practitioner/328411e8-cebd-41ea-a6ef-38174fc4cbd1"
+                },
+                "locationReference": [
+                    {
+                        "reference": "Location/5023dd15-b44b-486b-bae3-65fea2c5576c"
+                    }
+                ]
+            },
+            "request": {
+                "method": "PUT",
+                "url": "ServiceRequest/06111b04-7b70-4cfa-9546-52a0280066b0"
+            }
+        },
+        {
+            "fullUrl": "http://hapi-fhir:8080/fhir/ServiceRequest/73d79406-b726-4991-b0e1-af84f6cfe99a",
+            "resource": {
+                "resourceType": "ServiceRequest",
+                "id": "73d79406-b726-4991-b0e1-af84f6cfe99a",
+                "meta": {
+                    "profile": [
+                        "http://fhir.health.gov.lk/ips/StructureDefinition/procedures-request"
+                    ]
+                },
+                "status": "completed",
+                "intent": "order",
+                "code": {
+                    "coding": [
+                        {
+                            "system": "http://fhir.health.gov.lk/ips/CodeSystem/cs-procedure",
+                            "code": "Cleaning-and-Dressing"
+                        }
+                    ],
+                    "text": "Cleaning and Dressing"
+                },
+                "subject": {
+                    "reference": "Patient/106712ca-9082-4874-bfc5-9580bdcab8ff"
+                },
+                "encounter": {
+                    "reference": "Encounter/2c44bb32-c082-4e1f-b3c9-f2d2b1fab7eb"
+                },
+                "occurrenceDateTime": "2024-02-14T11:43:36.489Z",
+                "requester": {
+                    "reference": "Practitioner/328411e8-cebd-41ea-a6ef-38174fc4cbd1"
+                },
+                "locationReference": [
+                    {
+                        "reference": "Location/5023dd15-b44b-486b-bae3-65fea2c5576c"
+                    }
+                ]
+            },
+            "request": {
+                "method": "PUT",
+                "url": "ServiceRequest/73d79406-b726-4991-b0e1-af84f6cfe99a"
+            }
+        },
+        {
+            "fullUrl": "http://hapi-fhir:8080/fhir/ServiceRequest/3a69d170-e4ce-4185-acc4-eaa275a72315",
+            "resource": {
+                "resourceType": "ServiceRequest",
+                "id": "3a69d170-e4ce-4185-acc4-eaa275a72315",
+                "meta": {
+                    "profile": [
+                        "http://fhir.health.gov.lk/ips/StructureDefinition/imaging-request"
+                    ]
+                },
+                "status": "completed",
+                "intent": "order",
+                "code": {
+                    "coding": [
+                        {
+                            "system": "http://fhir.health.gov.lk/ips/CodeSystem/cs-procedure-imaging",
+                            "code": "X-Ray"
+                        }
+                    ],
+                    "text": "Imaging requested"
+                },
+                "subject": {
+                    "reference": "Patient/106712ca-9082-4874-bfc5-9580bdcab8ff"
+                },
+                "encounter": {
+                    "reference": "Encounter/2c44bb32-c082-4e1f-b3c9-f2d2b1fab7eb"
+                },
+                "occurrenceDateTime": "2024-02-14T11:43:36.489Z",
+                "authoredOn": "2024-02-14T11:43:36.489Z",
+                "requester": {
+                    "reference": "Practitioner/328411e8-cebd-41ea-a6ef-38174fc4cbd1"
+                },
+                "locationReference": [
+                    {
+                        "reference": "Location/5023dd15-b44b-486b-bae3-65fea2c5576c"
+                    }
+                ]
+            },
+            "request": {
+                "method": "PUT",
+                "url": "ServiceRequest/3a69d170-e4ce-4185-acc4-eaa275a72315"
+            }
+        },
+        {
+            "fullUrl": "http://hapi-fhir:8080/fhir/Task/16e37c24-9918-46f6-9e6b-68fe3364d877",
+            "resource": {
+                "resourceType": "Task",
+                "id": "16e37c24-9918-46f6-9e6b-68fe3364d877",
+                "meta": {
+                    "profile": [
+                        "http://fhir.health.gov.lk/ips/StructureDefinition/referral-task"
+                    ]
+                },
+                "status": "completed",
+                "intent": "order",
+                "priority": "routine",
+                "description": "some information regarding the need for the referral request, if any.",
+                "focus": {
+                    "reference": "ServiceRequest/bc3fa01c-58fe-465e-a2a8-b39fd80c9d64"
+                },
+                "for": {
+                    "reference": "Patient/106712ca-9082-4874-bfc5-9580bdcab8ff"
+                },
+                "encounter": {
+                    "reference": "Encounter/2c44bb32-c082-4e1f-b3c9-f2d2b1fab7eb"
+                },
+                "authoredOn": "2024-02-14T11:43:36.489Z",
+                "requester": {
+                    "reference": "Practitioner/328411e8-cebd-41ea-a6ef-38174fc4cbd1"
+                },
+                "location": {
+                    "reference": "Location/5023dd15-b44b-486b-bae3-65fea2c5576c"
+                }
+            },
+            "request": {
+                "method": "PUT",
+                "url": "Task/16e37c24-9918-46f6-9e6b-68fe3364d877"
+            }
+        },
+        {
+            "fullUrl": "http://hapi-fhir:8080/fhir/Practitioner/328411e8-cebd-41ea-a6ef-38174fc4cbd1",
             "resource": {
                 "resourceType": "Practitioner",
-                "id": "a3dec12f-33a0-42a8-895c-e9afa360e2f3",
+                "id": "328411e8-cebd-41ea-a6ef-38174fc4cbd1",
                 "meta": {
                     "profile": [
                         "http://fhir.health.gov.lk/ips/StructureDefinition/practitioner"
@@ -1277,39 +917,39 @@
                 },
                 "name": [
                     {
-                        "family": "Ledner",
+                        "family": "Hayes",
                         "given": [
-                            "Horacio",
-                            "Dino"
+                            "Jayme",
+                            "Quinten"
                         ],
                         "prefix": [
-                            "Mr."
+                            "Mrs."
                         ]
                     }
                 ],
                 "telecom": [
                     {
                         "system": "phone",
-                        "value": "653-972-6229",
+                        "value": "736-344-7276",
                         "use": "work"
                     },
                     {
                         "system": "email",
-                        "value": "Katlynn.Zieme@gmail.com",
+                        "value": "Forrest_Erdman2@yahoo.com",
                         "use": "home"
                     }
                 ]
             },
             "request": {
                 "method": "PUT",
-                "url": "Practitioner/a3dec12f-33a0-42a8-895c-e9afa360e2f3"
+                "url": "Practitioner/328411e8-cebd-41ea-a6ef-38174fc4cbd1"
             }
         },
         {
-            "fullUrl": "http://hapi-fhir:8080/fhir/Location/f7127362-d8f4-4ea1-b4f3-571bd89fc820",
+            "fullUrl": "http://hapi-fhir:8080/fhir/Location/5023dd15-b44b-486b-bae3-65fea2c5576c",
             "resource": {
                 "resourceType": "Location",
-                "id": "f7127362-d8f4-4ea1-b4f3-571bd89fc820",
+                "id": "5023dd15-b44b-486b-bae3-65fea2c5576c",
                 "meta": {
                     "profile": [
                         "http://fhir.health.gov.lk/ips/StructureDefinition/providers-location"
@@ -1327,7 +967,7 @@
                             "text": "Provider location identifier"
                         },
                         "system": "http://fhir.health.gov.lk/ips/identifier/provider-location",
-                        "value": "Location-ID-1"
+                        "value": "613985"
                     },
                     {
                         "type": {
@@ -1340,7 +980,7 @@
                             "text": "Provider location identifier"
                         },
                         "system": "http://fhir.health.gov.lk/ips/identifier/provider-location",
-                        "value": "Location-ID-2"
+                        "value": "613985"
                     }
                 ],
                 "status": "active",
@@ -1348,15 +988,15 @@
                 "telecom": [
                     {
                         "system": "phone",
-                        "value": "407-796-4280"
+                        "value": "757-558-2695"
                     },
                     {
                         "system": "email",
-                        "value": "Linwood_Osinski@yahoo.com"
+                        "value": "Rene_Leffler37@gmail.com"
                     },
                     {
                         "system": "email",
-                        "value": "Rashad.Graham81@yahoo.com"
+                        "value": "Arnaldo.Balistreri68@yahoo.com"
                     }
                 ],
                 "address": {
@@ -1377,7 +1017,7 @@
             },
             "request": {
                 "method": "PUT",
-                "url": "Location/f7127362-d8f4-4ea1-b4f3-571bd89fc820"
+                "url": "Location/5023dd15-b44b-486b-bae3-65fea2c5576c"
             }
         },
         {
@@ -1402,7 +1042,7 @@
                             "text": "Organization identifier"
                         },
                         "system": "http://fhir.health.gov.lk/ips/identifier/hin",
-                        "value": "83473"
+                        "value": "facility1"
                     }
                 ],
                 "name": "Some Health Facility"
@@ -1413,10 +1053,10 @@
             }
         },
         {
-            "fullUrl": "http://hapi-fhir:8080/fhir/Device/eb4ce9fd-e995-43fb-b662-8bc565dc1be6",
+            "fullUrl": "http://hapi-fhir:8080/fhir/Device/34dce25d-2216-4a2d-9f37-0c3b4c36a073",
             "resource": {
                 "resourceType": "Device",
-                "id": "eb4ce9fd-e995-43fb-b662-8bc565dc1be6",
+                "id": "34dce25d-2216-4a2d-9f37-0c3b4c36a073",
                 "meta": {
                     "profile": [
                         "http://fhir.health.gov.lk/ips/StructureDefinition/device-information"
@@ -1425,7 +1065,7 @@
                 "identifier": [
                     {
                         "system": "http://fhir.health.gov.lk/ips/identifier/system-id",
-                        "value": "{{device-system-id}}"
+                        "value": "6679087376"
                     }
                 ],
                 "status": "active",
@@ -1454,12 +1094,12 @@
                     "reference": "Organization/OrganizationExample"
                 },
                 "location": {
-                    "reference": "Location/f7127362-d8f4-4ea1-b4f3-571bd89fc820"
+                    "reference": "Location/5023dd15-b44b-486b-bae3-65fea2c5576c"
                 }
             },
             "request": {
                 "method": "PUT",
-                "url": "Device/eb4ce9fd-e995-43fb-b662-8bc565dc1be6"
+                "url": "Device/34dce25d-2216-4a2d-9f37-0c3b4c36a073"
             }
         }
     ]

@@ -47,6 +47,7 @@ import org.hl7.fhir.r4.model.Coding;
 import org.hl7.fhir.r4.model.ContactPoint;
 import org.hl7.fhir.r4.model.ContactPoint.ContactPointSystem;
 import org.hl7.fhir.r4.model.ContactPoint.ContactPointUse;
+import org.hl7.fhir.r4.model.DateTimeType;
 import org.hl7.fhir.r4.model.Device;
 import org.hl7.fhir.r4.model.Encounter;
 import org.hl7.fhir.r4.model.Enumerations;
@@ -56,12 +57,15 @@ import org.hl7.fhir.r4.model.Identifier;
 import org.hl7.fhir.r4.model.Location;
 import org.hl7.fhir.r4.model.Meta;
 import org.hl7.fhir.r4.model.Narrative;
+import org.hl7.fhir.r4.model.Observation;
 import org.hl7.fhir.r4.model.Organization;
 import org.hl7.fhir.r4.model.Patient;
 import org.hl7.fhir.r4.model.Period;
 import org.hl7.fhir.r4.model.Practitioner;
+import org.hl7.fhir.r4.model.Quantity;
 import org.hl7.fhir.r4.model.Reference;
 import org.hl7.fhir.r4.model.Resource;
+import org.hl7.fhir.r4.model.SimpleQuantity;
 import org.hl7.fhir.r4.model.StructureDefinition;
 
 /**
@@ -211,35 +215,49 @@ public class FhirController implements Serializable {
         if (entry != null && entry.getResource() instanceof Patient) {
             return (Patient) entry.getResource();
         }
-        return null; // or throw an exception if you prefer
+        return null;
     }
 
     public Organization extractOrganizationFromEntry(Bundle.BundleEntryComponent entry) {
         if (entry != null && entry.getResource() instanceof Organization) {
             return (Organization) entry.getResource();
         }
-        return null; // or throw an exception if you prefer
+        return null;
     }
 
     public Location extractLocationFromEntry(Bundle.BundleEntryComponent entry) {
         if (entry != null && entry.getResource() instanceof Location) {
             return (Location) entry.getResource();
         }
-        return null; // or throw an exception if you prefer
+        return null;
     }
 
     public Device extractDeviceFromEntry(Bundle.BundleEntryComponent entry) {
         if (entry != null && entry.getResource() instanceof Device) {
             return (Device) entry.getResource();
         }
-        return null; // or throw an exception if you prefer
+        return null;
+    }
+
+    public Encounter extractEncounter(Bundle.BundleEntryComponent entry) {
+        if (entry != null && entry.getResource() instanceof Encounter) {
+            return (Encounter) entry.getResource();
+        }
+        return null;
+    }
+
+    public Observation extractObservation(Bundle.BundleEntryComponent entry) {
+        if (entry != null && entry.getResource() instanceof Observation) {
+            return (Observation) entry.getResource();
+        }
+        return null;
     }
 
     public Practitioner extractPractitionerFromEntry(Bundle.BundleEntryComponent entry) {
         if (entry != null && entry.getResource() instanceof Practitioner) {
             return (Practitioner) entry.getResource();
         }
-        return null; // or throw an exception if you prefer
+        return null;
     }
 
     public Bundle.BundleEntryComponent createPatientEntry(Client chimsPatient) {
@@ -681,6 +699,117 @@ public class FhirController implements Serializable {
         entryComponent.setFullUrl("http://hapi-fhir:8080/fhir/Location/" + locationId);
         entryComponent.setResource(location);
         entryComponent.getRequest().setMethod(Bundle.HTTPVerb.PUT).setUrl("Location/" + locationId);
+
+        return entryComponent;
+    }
+
+    public Bundle.BundleEntryComponent createBloodPressureObservationEntry(
+            Patient patient,
+            Encounter encounter,
+            Organization organization,
+            Location location,
+            Device device,
+            Practitioner practitioner,
+            Date performedDate,
+            Number systolicBP,
+            Number diastolicBP,
+            boolean active,
+            String identifier) {
+
+        Observation observation = new Observation();
+        observation.setId(identifier);
+        observation.setMeta(new Meta().addProfile("http://fhir.health.gov.lk/ips/StructureDefinition/blood-pressure"));
+        observation.setStatus(active ? Observation.ObservationStatus.FINAL : Observation.ObservationStatus.AMENDED);
+        observation.setCategory(Collections.singletonList(new CodeableConcept(new Coding("http://terminology.hl7.org/CodeSystem/observation-category", "vital-signs", "Vital Signs"))));
+        observation.setCode(new CodeableConcept().addCoding(new Coding("http://loinc.org", "85354-9", "Blood Pressure")));
+        observation.setSubject(new Reference("Patient/" + patient.getIdElement().getIdPart()));
+        observation.setEncounter(new Reference("Encounter/" + encounter.getIdElement().getIdPart()));
+        observation.setEffective(new DateTimeType(performedDate));
+        observation.setPerformer(Arrays.asList(
+                new Reference("Organization/" + organization.getIdElement().getIdPart()),
+                new Reference("Practitioner/" + practitioner.getIdElement().getIdPart())
+        ));
+        observation.setDevice(new Reference("Device/" + device.getIdElement().getIdPart()));
+
+        // Components for systolic and diastolic blood pressure
+        Observation.ObservationComponentComponent systolicComponent = new Observation.ObservationComponentComponent()
+                .setCode(new CodeableConcept().addCoding(new Coding("http://loinc.org", "8480-6", "Systolic Blood Pressure")))
+                .setValue(new Quantity(systolicBP.doubleValue()).setUnit("mmHg").setSystem("http://unitsofmeasure.org").setCode("mm[Hg]"));
+        Observation.ObservationComponentComponent diastolicComponent = new Observation.ObservationComponentComponent()
+                .setCode(new CodeableConcept().addCoding(new Coding("http://loinc.org", "8462-4", "Diastolic Blood Pressure")))
+                .setValue(new Quantity(diastolicBP.doubleValue()).setUnit("mmHg").setSystem("http://unitsofmeasure.org").setCode("mm[Hg]"));
+
+        observation.setComponent(Arrays.asList(systolicComponent, diastolicComponent));
+
+        // Constructing the narrative (text representation)
+        Narrative narrative = new Narrative();
+        narrative.setStatus(Narrative.NarrativeStatus.GENERATED);
+        String div = "<div xmlns=\"http://www.w3.org/1999/xhtml\"><p>Blood Pressure Observation for patient '"
+                + patient.getName().stream().findFirst().orElse(new HumanName()).getText()
+                + "'.</p><p>Systolic: " + systolicBP + " mmHg, Diastolic: " + diastolicBP + " mmHg.</p></div>";
+        narrative.setDivAsString(div);
+        observation.setText(narrative);
+
+        Bundle.BundleEntryComponent entryComponent = new Bundle.BundleEntryComponent();
+        entryComponent.setFullUrl("http://hapi-fhir:8080/fhir/Observation/" + identifier);
+        entryComponent.setResource(observation);
+        entryComponent.getRequest().setMethod(Bundle.HTTPVerb.PUT).setUrl("Observation/" + identifier);
+
+        return entryComponent;
+    }
+
+    public Bundle.BundleEntryComponent createTotalCholesterolObservationEntry(
+            Patient patient,
+            Encounter encounter,
+            Organization organization,
+            Location location,
+            Device device,
+            Practitioner practitioner,
+            Date performedDate,
+            Number cholesterolValue,
+            boolean active,
+            String identifier) {
+
+        Observation observation = new Observation();
+        observation.setId(identifier);
+        observation.setMeta(new Meta().addProfile("http://fhir.health.gov.lk/ips/StructureDefinition/total-cholesterol"));
+        observation.setStatus(active ? Observation.ObservationStatus.FINAL : Observation.ObservationStatus.AMENDED);
+        observation.setCategory(Collections.singletonList(new CodeableConcept(new Coding("http://terminology.hl7.org/CodeSystem/observation-category", "laboratory", "Laboratory"))));
+        observation.setCode(new CodeableConcept().addCoding(new Coding("http://loinc.org", "2093-3", "Cholesterol")));
+        observation.setSubject(new Reference("Patient/" + patient.getIdElement().getIdPart()));
+        observation.setEncounter(new Reference("Encounter/" + encounter.getIdElement().getIdPart()));
+        observation.setEffective(new DateTimeType(performedDate));
+        observation.setPerformer(Arrays.asList(
+                new Reference("Organization/" + organization.getIdElement().getIdPart()),
+                new Reference("Practitioner/" + practitioner.getIdElement().getIdPart())
+        ));
+        observation.setDevice(new Reference("Device/" + device.getIdElement().getIdPart()));
+
+        // Value for total cholesterol
+        observation.setValue(new Quantity(cholesterolValue.doubleValue()).setUnit("mmol/L").setSystem("http://unitsofmeasure.org").setCode("mmol/L"));
+
+        // Interpretation of cholesterol value
+        CodeableConcept interpretation = new CodeableConcept().addCoding(new Coding("http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation", "H", "High"));
+        observation.setInterpretation(Collections.singletonList(interpretation));
+
+        // Reference range for total cholesterol
+        Observation.ObservationReferenceRangeComponent referenceRange = new Observation.ObservationReferenceRangeComponent()
+                .setHigh(new SimpleQuantity().setValue(5).setUnit("mmol/L").setSystem("http://unitsofmeasure.org").setCode("mmol/L"));
+        observation.setReferenceRange(Collections.singletonList(referenceRange));
+
+        // Constructing the narrative (text representation)
+        Narrative narrative = new Narrative();
+        narrative.setStatus(Narrative.NarrativeStatus.GENERATED);
+        String div = "<div xmlns=\"http://www.w3.org/1999/xhtml\"><p>Total Cholesterol Observation for patient '"
+                + patient.getName().stream().findFirst().orElse(new HumanName()).getText()
+                + "'.</p><p>Value: " + cholesterolValue + " mmol/L. Interpretation: High. Reference range: Up to 5 mmol/L.</p></div>";
+        narrative.setDivAsString(div);
+        observation.setText(narrative);
+
+        Bundle.BundleEntryComponent entryComponent = new Bundle.BundleEntryComponent();
+        entryComponent.setFullUrl("http://hapi-fhir:8080/fhir/Observation/" + identifier);
+        entryComponent.setResource(observation);
+        entryComponent.getRequest().setMethod(Bundle.HTTPVerb.PUT).setUrl("Observation/" + identifier);
 
         return entryComponent;
     }
