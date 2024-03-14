@@ -101,6 +101,11 @@ public class IntegrationEndpointController implements Serializable {
         items = fillAllItems();
         return "/systemAdmin/integrationEndpoint/test";
     }
+    
+    public String navigateToTestPatientSearch() {
+        items = fillAllItems();
+        return "/systemAdmin/integrationEndpoint/test_with_patients_search";
+    }
 
     public List<IntegrationEndpointType> getIntegrationEndpointTypes() {
         return Arrays.asList(IntegrationEndpointType.values());

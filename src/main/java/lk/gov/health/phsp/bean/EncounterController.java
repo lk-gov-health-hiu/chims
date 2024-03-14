@@ -66,10 +66,8 @@ public class EncounterController implements Serializable {
         JSONObject bundleObject = new JSONObject(tmpString);
 
         String jsonPlayLoad = FhirConverters.replacePatientAndEncounterInBundle(bundleObject, joPt, joEn);
-
         // Print the JSON payload to the console
-        System.out.println("JSON Payload being sent:");
-        System.out.println(jsonPlayLoad);
+        // Print the JSON payload to the console
         temSenging = jsonPlayLoad;
         List<FhirOperationResult> results = integrationTriggerController.postToMediators(jsonPlayLoad);
         fhirOperationResults = results;

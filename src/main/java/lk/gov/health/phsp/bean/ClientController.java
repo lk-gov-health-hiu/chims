@@ -250,7 +250,6 @@ public class ClientController implements Serializable {
     private boolean pushComplete = false;
 
     public String pushToFhirServers() {
-        System.out.println("Starting push to FHIR servers...");
 
         // This method is now synchronous and will block until it completes.
         List<FhirOperationResult> results = integrationTriggerController.createNewClientsToEndpoints(selected);
@@ -258,18 +257,15 @@ public class ClientController implements Serializable {
         // Process the results immediately after the method call, as it's synchronous now.
         fhirOperationResults = results;
         pushComplete = true; // Mark the operation as complete
-        System.out.println("Push to FHIR servers complete.");
 
         // Navigate to the push_result page
         return "/client/push_result?faces-redirect=true";
     }
 
     public void pushToFhirMediators() {
-        System.out.println("Starting push to FHIR Mediators...");
         List<FhirOperationResult> results = integrationTriggerController.createNewClientsToEndpoints(selected);
         fhirOperationResults = results;
         pushComplete = true; // Mark the operation as complete
-        System.out.println("Push to FHIR servers complete.");
     }
 
     public void postJsonToMediators() {
@@ -298,6 +294,15 @@ public class ClientController implements Serializable {
         FhirContext ctx = FhirContext.forR4();
         String serializedBundle = ctx.newJsonParser().setPrettyPrint(true).encodeResourceToString(bundle);
         responseMessage += "\nBundle: " + serializedBundle;
+    }
+    
+    public void searchPatientFromNehr() {
+        Patient searchedPatient = fhirR4Controller.getPatientFromFhirServer(searchingId, integrationEndpoint);
+        if(searchedPatient==null || searchedPatient.isEmpty()){
+            responseMessage = "Error in getting patient";
+            return;
+        }
+        responseMessage = fhirController.serializeResourceToJson(searchedPatient);
     }
 
 
@@ -466,12 +471,10 @@ public class ClientController implements Serializable {
     // <editor-fold defaultstate="collapsed" desc="Functions">
     public void loadClientFormDataEntry() {
         if (selected == null) {
-            System.err.println("No Selected");
             return;
         }
         DesignComponentFormSet dfs = designComponentFormSetController.getClintFormSet(webUserController.getLoggedUser().getInstitution());
         if (dfs == null) {
-            System.err.println("No DFS");
             return;
         }
         ClientEncounterComponentFormSet cfs = clientEncounterComponentFormSetController.findClientEncounterFromset(
@@ -979,7 +982,6 @@ public class ClientController implements Serializable {
                 c.setCreateInstitution(c.getCreatedBy().getInstitution());
                 c.setPoiInstitution(institution);
                 getFacade().edit(c);
-                System.out.println("c = " + c.getId());
             }
 
         }
@@ -1852,7 +1854,6 @@ public class ClientController implements Serializable {
     }
 
     public String searchByNic() {
-        System.out.println("searchByNic");
         if (searchingNicNo == null || searchingNicNo.trim().equals("")) {
             JsfUtil.addErrorMessage("Please enter a NIC to Search");
             return "";
@@ -1860,8 +1861,6 @@ public class ClientController implements Serializable {
         selectedClients = listPatientsByNic(searchingNicNo);
         selectedClientsFromIntegrations = new ArrayList<>();
         fhirOperationResults = new ArrayList<>(); // Initialize the list to store FhirOperationResult objects
-
-        System.out.println("Selected clients from local search: " + selectedClients);
 
         searchQueryData = new SearchQueryData();
         searchQueryData.setSearchCriteria(SearchCriteria.NIC_ONLY);
@@ -1871,10 +1870,8 @@ public class ClientController implements Serializable {
             // Fetch clients synchronously from endpoints
             List<Client> clients = integrationTriggerController.fetchClientsFromEndpoints(searchQueryData);
             if (clients != null && !clients.isEmpty()) {
-                System.out.println("Selected clients from integrations: " + clients);
                 selectedClientsFromIntegrations.addAll(clients);
             } else {
-                System.out.println("No clients found from integrations for NIC: " + searchingNicNo);
             }
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -1885,7 +1882,6 @@ public class ClientController implements Serializable {
     }
 
     public String searchServiceRequests() {
-        System.out.println("searchServiceRequests");
         searchedServiceRequests = new ArrayList<>();
         fhirOperationResults = new ArrayList<>(); // Initialize the list to store FhirOperationResult objects
         try {
@@ -1898,7 +1894,6 @@ public class ClientController implements Serializable {
             // Convert and print each ServiceRequest to JSON
             for (ServiceRequest sr : searchedServiceRequests) {
                 String json = jsonParser.encodeResourceToString(sr);
-                System.out.println(json);
             }
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -2008,15 +2003,11 @@ public class ClientController implements Serializable {
         }
 
         fhirOperationResults = new ArrayList<>(); // Initialize the list to store FhirOperationResult objects
-
-        System.out.println("Selected clients from local search: " + selectedClients);
         List<Client> clients = integrationTriggerController.fetchClientsFromEndpoints(searchQueryData);
 
         if (clients != null && !clients.isEmpty()) {
-            System.out.println("Selected clients from integrations: " + clients);
             selectedClientsFromIntegrations.addAll(clients);
         } else {
-            System.out.println("No clients found from integrations for NIC: " + searchingNicNo);
         }
 
         // Do something with the fhirOperationResults list, if needed
@@ -2102,8 +2093,7 @@ public class ClientController implements Serializable {
         for (Client c : selectedClients) {
             String jsonPlayLoad = FhirConverters.createPatientBundleJsonPayload(c);
             // Print the JSON payload to the console
-            System.out.println("JSON Payload being sent:");
-            System.out.println(jsonPlayLoad);
+            // Print the JSON payload to the console
             List<FhirOperationResult> results = integrationTriggerController.postToMediators(jsonPlayLoad);
             fhirOperationResults = results;
         }
@@ -3276,12 +3266,9 @@ public class ClientController implements Serializable {
     // Comment by Dr M H B Ariyaratne with assistance from ChatGPT from OpenAI
     public void setSelectedId(Long selectedId) {
         try {
-            System.out.println("Attempting to find entity with ID: " + selectedId);
             selected = getFacade().find(selectedId);
-            System.out.println("Entity found: " + selected);
             this.selectedId = selectedId;
         } catch (Exception e) {
-            System.out.println("Exception while finding entity: " + e.getMessage());
             e.printStackTrace();
         }
     }

@@ -56,17 +56,18 @@
 
                         <h:outputLabel value="KeyCloak Authentication" /><hr/>
 
-                        
+
                         <h:outputLabel value="Client ID:" class="w-100"/>
                         <h:inputText value="#{integrationEndpointController.selected.keyCloackClientId}" class="w-100"/>
 
                         <h:outputLabel value="Client Secreat:" />
                         <h:inputText value="#{integrationEndpointController.selected.keyCloackClientSecret}" />
 
-                        <h:outputLabel value="Token Acquiring URL:" />class="w-100"
+                        <h:outputLabel value="Token Acquiring URL:" />
                         <h:inputText value="#{integrationEndpointController.selected.keyCloakTokenAcquiringUrl}" class="w-100"/>
 
-
+                        <h:outputLabel value="Strucure Definition:" />
+                        <h:inputTextarea value="#{integrationEndpointController.selected.structureDefinition}" class="w-100"/>
                     </p:panelGrid>
 
                     <h:commandButton value="Save" action="#{integrationEndpointController.saveOrUpdateIntegrationEndpoint}" />

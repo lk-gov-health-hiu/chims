@@ -139,7 +139,6 @@ public class InstitutionController implements Serializable {
         List<FhirOperationResult> results = integrationTriggerController.postToMediators(jsonPlayLoad);
         fhirOperationResults = results;
         pushComplete = true; // Mark the operation as complete
-        System.out.println("Push to FHIR servers complete.");
         return "/institution/push_result?faces-redirect=true"; // Navigate to the push_result page
     }
 

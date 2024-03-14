@@ -172,6 +172,8 @@ public class FhirR4Controller implements Serializable {
             fhirClient.registerInterceptor(new IClientInterceptor() {
                 @Override
                 public void interceptRequest(IHttpRequest theRequest) {
+                    theRequest.removeHeaders("Accept");
+                    theRequest.addHeader("Accept", "*/*");
                     theRequest.addHeader(endPoint.getApiKeyName(), endPoint.getApiKeyValue());
                 }
 
@@ -207,6 +209,67 @@ public class FhirR4Controller implements Serializable {
         return result;
     }
 
+    public Patient getPatientFromFhirServer(String patientIdentifier, IntegrationEndpoint endPoint) {
+        SecurityProtocol sp = endPoint.getSecurityProtocol();
+        String username = endPoint.getUserName();
+        String password = endPoint.getPassword();
+
+        FhirContext ctx = FhirContext.forR4();
+        String serverBase = endPoint.getEndPointUrl();
+        IGenericClient fhirClient = ctx.newRestfulGenericClient(serverBase);
+        fhirClient.setEncoding(EncodingEnum.JSON);
+
+        // Basic Authentication
+        if (sp == SecurityProtocol.BASIC_AUTHENTICATION) {
+            fhirClient.registerInterceptor(new BasicAuthInterceptor(username, password));
+        } // Keycloak Authentication
+        else if (sp == SecurityProtocol.KEYCLOAK) {
+            String token = acquireToken(endPoint.getKeyCloackClientId(), endPoint.getKeyCloackClientSecret(), endPoint.getKeyCloakTokenAcquiringUrl());
+            fhirClient.registerInterceptor(new BearerTokenAuthInterceptor(token));
+        } // API Key Authentication
+        else if (sp == SecurityProtocol.API_KEY) {
+            fhirClient.registerInterceptor(new IClientInterceptor() {
+                @Override
+                public void interceptRequest(IHttpRequest theRequest) {
+                    theRequest.removeHeaders("Accept");
+                    theRequest.addHeader("Accept", "*/*");
+                    theRequest.addHeader(endPoint.getApiKeyName(), endPoint.getApiKeyValue());
+                }
+
+                @Override
+                public void interceptResponse(IHttpResponse theResponse) {
+                    // Optionally handle the response if needed
+                }
+            });
+        }
+
+        try {
+            // Print out the constructed URL for debugging purposes
+            String constructedUrl = serverBase + "/Patient?identifier=" + patientIdentifier;
+            System.out.println("Constructed URL: " + constructedUrl);
+
+            // Retrieve the Patient resource by identifier
+            Bundle results = fhirClient
+                    .search()
+                    .forResource(Patient.class)
+                    .where(Patient.IDENTIFIER.exactly().code(patientIdentifier))
+                    .returnBundle(Bundle.class)
+                    .execute();
+
+            if (!results.getEntry().isEmpty()) {
+                // Assuming the first entry is the desired patient
+                return (Patient) results.getEntry().get(0).getResource();
+            } else {
+                System.out.println("Patient not found.");
+                return null; // No patient found
+            }
+        } catch (Exception e) {
+            System.err.println("Error retrieving patient: " + e.getMessage());
+            e.printStackTrace();
+            return null; // An error occurred
+        }
+    }
+
     public FhirOperationResult createResourcesInFhirServer(Bundle bundle, IntegrationEndpoint endPoint) {
         SecurityProtocol sp = endPoint.getSecurityProtocol();
         String username = endPoint.getUserName();
@@ -218,32 +281,26 @@ public class FhirR4Controller implements Serializable {
         IGenericClient fhirClient = ctx.newRestfulGenericClient(serverBase);
         fhirClient.setEncoding(EncodingEnum.JSON);
 
-        // Custom interceptor for simplifying the Accept header and handling API Key if necessary
-        fhirClient.registerInterceptor(new IClientInterceptor() {
-            @Override
-            public void interceptRequest(IHttpRequest theRequest) {
-                // Ensure the Accept header is set to expect a JSON response
-                theRequest.removeHeaders("Accept");
-                theRequest.addHeader("Accept", "*/*");
-
-                // If the security protocol is API_KEY, add the custom API key header here
-                if (sp == SecurityProtocol.API_KEY) {
-                    theRequest.addHeader(endPoint.getApiKeyName(), endPoint.getApiKeyValue());
-                }
-            }
-
-            @Override
-            public void interceptResponse(IHttpResponse theResponse) {
-                // Response handling can be implemented here if needed.
-            }
-        });
-
         // Handle Basic Authentication and Keycloak (Bearer Token) Authentication
         if (sp == SecurityProtocol.BASIC_AUTHENTICATION) {
             fhirClient.registerInterceptor(new BasicAuthInterceptor(username, password));
         } else if (sp == SecurityProtocol.KEYCLOAK) {
             String token = acquireToken(endPoint.getKeyCloackClientId(), endPoint.getKeyCloackClientSecret(), endPoint.getKeyCloakTokenAcquiringUrl());
             fhirClient.registerInterceptor(new BearerTokenAuthInterceptor(token));
+        } else if (sp == SecurityProtocol.API_KEY) {
+            fhirClient.registerInterceptor(new IClientInterceptor() {
+                @Override
+                public void interceptRequest(IHttpRequest theRequest) {
+                    theRequest.removeHeaders("Accept");
+                    theRequest.addHeader("Accept", "*/*");
+                    if (sp == SecurityProtocol.API_KEY) {
+                        theRequest.addHeader(endPoint.getApiKeyName(), endPoint.getApiKeyValue());
+                    }
+                }
+                @Override
+                public void interceptResponse(IHttpResponse theResponse) {
+                }
+            });
         }
 
         // Serialize and log the bundle for debugging purposes

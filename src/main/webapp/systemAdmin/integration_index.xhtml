@@ -41,8 +41,13 @@
                             </p:commandButton>
                             
                             <p:commandButton icon="fa fa-user-plus"  ajax="false"
-                                             value="Test Integration Endpoints" styleClass="btn300"
+                                             value="Test Integration Endpoint with JSON" styleClass="btn300"
                                              action="#{integrationEndpointController.navigateToTest()}">
+                            </p:commandButton>
+                            
+                            <p:commandButton icon="fa fa-user-plus"  ajax="false"
+                                             value="Test Integration Endpoint with Patient Search" styleClass="btn300"
+                                             action="#{integrationEndpointController.navigateToTestPatientSearch()}">
                             </p:commandButton>
                             
                              <p:commandButton icon="fa fa-user-plus"  ajax="false"

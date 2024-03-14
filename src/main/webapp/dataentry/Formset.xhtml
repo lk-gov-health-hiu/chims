@@ -43,7 +43,15 @@
                                         <p:commandButton value="Push to FHIR Server" 
                                                          ajax="false"
                                                          class="m-1"
+                                                         rendered="false"
                                                          action="#{clientController.pushToFhirServers()}"
+                                                         style="float: right;">
+                                        </p:commandButton>
+                                        
+                                        <p:commandButton value="Push to NEHR" 
+                                                         ajax="false"
+                                                         class="m-1"
+                                                         action="#{clientEncounterComponentFormSetController.navigateToTestPushingToNehr()}"
                                                          style="float: right;">
                                         </p:commandButton>
 

@@ -1,0 +1,52 @@
+{
+  "resourceType": "Bundle",
+  "id": "275b336d-b674-4a8b-afec-90422befe6fa",
+  "meta": {
+    "profile": [ "http://fhir.health.gov.lk/ips/StructureDefinition/hims-transactional-bundle" ]
+  },
+  "identifier": {
+    "system": "http://fhir.health.gov.lk/ips/identifier/hims-transactional",
+    "value": "275b336d-b674-4a8b-afec-90422befe6fa"
+  },
+  "type": "transaction",
+  "timestamp": "2024-03-13T10:09:56.601+05:30",
+  "entry": [ {
+    "fullUrl": "http://hapi-fhir:8080/fhir/Location/f464f870-0600-4622-8e9d-9ca0eb308403",
+    "resource": {
+      "resourceType": "Location",
+      "id": "f464f870-0600-4622-8e9d-9ca0eb308403",
+      "meta": {
+        "profile": [ "http://fhir.health.gov.lk/ips/StructureDefinition/providers-location" ]
+      },
+      "identifier": [ {
+        "type": {
+          "coding": [ {
+            "system": "http://fhir.health.gov.lk/ips/CodeSystem/cs-identifier-types",
+            "code": "PLOC",
+            "display": "Provider location identifier"
+          } ]
+        },
+        "system": "http://fhir.health.gov.lk/ips/identifier/provider-location"
+      } ],
+      "status": "active",
+      "name": "HLC BH Balapitiya",
+      "telecom": [ {
+        "system": "phone",
+        "use": "work"
+      }, {
+        "system": "phone",
+        "use": "mobile"
+      }, {
+        "system": "email",
+        "use": "home"
+      } ],
+      "managingOrganization": {
+        "reference": "Organization/18c26bf7-becc-48aa-8b47-18d853b805e0"
+      }
+    },
+    "request": {
+      "method": "PUT",
+      "url": "Location/f464f870-0600-4622-8e9d-9ca0eb308403"
+    }
+  } ]
+}

@@ -24,6 +24,8 @@ public class Client implements Serializable , Identifiable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+    
+    private String uuid;
 
     private static final long serialVersionUID = 1L;
 
@@ -253,6 +255,14 @@ public class Client implements Serializable , Identifiable {
 
     public void setPoiInstitution(Institution poiInstitution) {
         this.poiInstitution = poiInstitution;
+    }
+
+    public String getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
     }
 
     

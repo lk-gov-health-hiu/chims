@@ -1,5 +1,14 @@
 package lk.gov.health.phsp.bean;
 
+import ca.uhn.fhir.context.FhirContext;
+import ca.uhn.fhir.context.support.DefaultProfileValidationSupport;
+import ca.uhn.fhir.context.support.ValidationSupportContext;
+import ca.uhn.fhir.parser.IParser;
+import ca.uhn.fhir.validation.FhirValidator;
+import ca.uhn.fhir.validation.IInstanceValidatorModule;
+import ca.uhn.fhir.validation.IValidatorModule;
+import ca.uhn.fhir.validation.SingleValidationMessage;
+import ca.uhn.fhir.validation.ValidationResult;
 import javax.inject.Named;
 import javax.enterprise.context.SessionScoped;
 import java.io.Serializable;
@@ -15,10 +24,13 @@ import java.util.UUID;
 import javax.ejb.EJB;
 import lk.gov.health.phsp.entity.Area;
 import lk.gov.health.phsp.entity.Client;
+import lk.gov.health.phsp.entity.FhirOperationResult;
 import lk.gov.health.phsp.entity.Institution;
 import lk.gov.health.phsp.entity.Item;
 import lk.gov.health.phsp.entity.Person;
+import lk.gov.health.phsp.facade.ClientFacade;
 import lk.gov.health.phsp.facade.InstitutionFacade;
+import org.hl7.fhir.instance.model.api.IBaseResource;
 import org.hl7.fhir.r4.model.Address;
 import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.CodeableConcept;
@@ -26,6 +38,7 @@ import org.hl7.fhir.r4.model.Coding;
 import org.hl7.fhir.r4.model.ContactPoint;
 import org.hl7.fhir.r4.model.ContactPoint.ContactPointSystem;
 import org.hl7.fhir.r4.model.ContactPoint.ContactPointUse;
+import org.hl7.fhir.r4.model.Encounter;
 import org.hl7.fhir.r4.model.Enumerations;
 import org.hl7.fhir.r4.model.Extension;
 import org.hl7.fhir.r4.model.HumanName;
@@ -34,7 +47,11 @@ import org.hl7.fhir.r4.model.Location;
 import org.hl7.fhir.r4.model.Meta;
 import org.hl7.fhir.r4.model.Organization;
 import org.hl7.fhir.r4.model.Patient;
+import org.hl7.fhir.r4.model.Period;
+import org.hl7.fhir.r4.model.Practitioner;
 import org.hl7.fhir.r4.model.Reference;
+import org.hl7.fhir.r4.model.Resource;
+import org.hl7.fhir.r4.model.StructureDefinition;
 
 /**
  *
@@ -46,11 +63,95 @@ public class FhirController implements Serializable {
 
     @EJB
     InstitutionFacade institutionFacade;
+    @EJB
+    ClientFacade clientFacade;
 
     /**
      * Creates a new instance of FhirController
      */
     public FhirController() {
+    }
+
+    public String bundleToJson(IBaseResource bundleResource) {
+        FhirContext fhirContext = FhirContext.forR4();
+        IParser parser = fhirContext.newJsonParser();
+        return parser.encodeResourceToString(bundleResource);
+    }
+
+    public String serializeResourceToJson(Resource resource) {
+        FhirContext ctx = FhirContext.forR4();
+        return ctx.newJsonParser().setPrettyPrint(true).encodeResourceToString(resource);
+    }
+
+    public Bundle.BundleEntryComponent createEncounterEntry(
+            Patient patient,
+            List<Practitioner> practitioners,
+            List<Location> locations,
+            List<String> reasonCodes,
+            Boolean finished,
+            Date start,
+            Date end) {
+
+        Encounter encounter = new Encounter();
+        encounter.setId("TargetFacilityEncounterExample");
+        encounter.getMeta().addProfile("http://fhir.health.gov.lk/ips/StructureDefinition/target-facility-encounter");
+
+        // Check if finished is not null and true
+        encounter.setStatus((finished != null && finished) ? Encounter.EncounterStatus.FINISHED : Encounter.EncounterStatus.INPROGRESS);
+        encounter.setClass_(new Coding("http://terminology.hl7.org/CodeSystem/v3-ActCode", "AMB", null));
+
+        // Set subject if patient is not null
+        if (patient != null) {
+            encounter.setSubject(new Reference(patient.getIdElement().getValue()));
+        }
+
+        // Add participants if practitioners list is not null or empty
+        if (practitioners != null && !practitioners.isEmpty()) {
+            practitioners.forEach(practitioner -> {
+                Encounter.EncounterParticipantComponent participantComponent = new Encounter.EncounterParticipantComponent();
+                participantComponent.setIndividual(new Reference(practitioner.getIdElement().getValue()));
+                encounter.addParticipant(participantComponent);
+            });
+        }
+
+        // Set period
+        Period period = new Period();
+        period.setStart(start);
+        period.setEnd(end);
+        encounter.setPeriod(period);
+
+        // Add reasonCodes if reasonCodes list is not null or empty
+        if (reasonCodes != null && !reasonCodes.isEmpty()) {
+            reasonCodes.forEach(code -> {
+                CodeableConcept reason = new CodeableConcept();
+                reason.addCoding(new Coding("http://snomed.info/sct", code, null));
+                encounter.addReasonCode(reason);
+            });
+        }
+
+        // Add locations if locations list is not null or empty
+        if (locations != null && !locations.isEmpty()) {
+            locations.forEach(location -> {
+                Encounter.EncounterLocationComponent locationComponent = new Encounter.EncounterLocationComponent();
+                locationComponent.setLocation(new Reference(location.getIdElement().getValue()));
+                encounter.addLocation(locationComponent);
+            });
+        }
+
+        // Creating Bundle Entry
+        Bundle.BundleEntryComponent entryComponent = new Bundle.BundleEntryComponent();
+        entryComponent.setFullUrl("http://hapi-fhir:8080/fhir/Encounter/" + encounter.getId());
+        entryComponent.setResource(encounter);
+        entryComponent.getRequest()
+                .setMethod(Bundle.HTTPVerb.PUT)
+                .setUrl("Encounter/" + encounter.getId());
+
+        return entryComponent;
+    }
+
+    public boolean validate(String structureDefinitionString, String fhirJsonMessageString) {
+        //todo
+        return true;
     }
 
     public Bundle createTransactionalBundleWithUUID(String uuid) {
@@ -83,8 +184,24 @@ public class FhirController implements Serializable {
         bundle.addEntry(entry);
     }
 
+    public Patient extractPatientFromEntry(Bundle.BundleEntryComponent entry) {
+        if (entry != null && entry.getResource() instanceof Patient) {
+            return (Patient) entry.getResource();
+        }
+        return null; // or throw an exception if you prefer
+    }
+
     public Bundle.BundleEntryComponent createPatientEntry(Client chimsPatient) {
-        String patientId = chimsPatient.getId().toString();
+        if (chimsPatient.getUuid() == null) {
+            chimsPatient.setUuid(UUID.randomUUID().toString());
+            if (chimsPatient.getId() == null) {
+                clientFacade.create(chimsPatient);
+            } else {
+                clientFacade.edit(chimsPatient);
+            }
+        }
+
+        String patientId = chimsPatient.getUuid();
         String deviceInformation = null;
         List<String> phnList = new ArrayList<>();
         if (chimsPatient.getPhn() != null && !chimsPatient.getPhn().trim().isEmpty()) {
@@ -355,12 +472,20 @@ public class FhirController implements Serializable {
         String locationName = ins.getName();
         Address address = stringToAddress(ins.getAddress());
 
-        String managingOrganizationId;
+        String managingOrganizationId = "";
 
         if (ins.getParent() != null) {
-            managingOrganizationId = ins.getParent().getId().toString();
+            if (ins.getParent().getUuid() == null) {
+                ins.getParent().setUuid(UUID.randomUUID().toString());
+                if (ins.getParent().getId() == null) {
+                    institutionFacade.create(ins.getParent());
+                } else {
+                    institutionFacade.edit(ins.getParent());
+                }
+            }
+            managingOrganizationId = ins.getParent().getUuid();
         }
-        return createLocationEntry(locationId, identifierValues, locationStatus, locationName, telecoms, address, locationId);
+        return createLocationEntry(locationId, identifierValues, locationStatus, locationName, telecoms, address, managingOrganizationId);
     }
 
     public Address stringToAddress(String addressString) {

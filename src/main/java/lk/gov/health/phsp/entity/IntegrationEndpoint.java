@@ -25,7 +25,7 @@ import lk.gov.health.phsp.pojcs.Identifiable;
  * @author buddh
  */
 @Entity
-public class IntegrationEndpoint implements Serializable, Identifiable  {
+public class IntegrationEndpoint implements Serializable, Identifiable {
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -51,6 +51,8 @@ public class IntegrationEndpoint implements Serializable, Identifiable  {
     private String keyCloackClientSecret;
     @Lob
     private String keyCloakTokenAcquiringUrl;
+    @Lob
+    private String structureDefinition;
 
 
     /*
@@ -103,12 +105,12 @@ public class IntegrationEndpoint implements Serializable, Identifiable  {
         return "lk.gov.health.phsp.entity.IntegrationEndpoint[ id=" + id + " ]";
     }
 
-    
-    
     public IntegrationEndpointType getEndpointType() {
         return endpointType;
     }
 
+    
+    
     public void setEndpointType(IntegrationEndpointType endpointType) {
         this.endpointType = endpointType;
     }
@@ -241,8 +243,6 @@ public class IntegrationEndpoint implements Serializable, Identifiable  {
         this.apiKeyName = apiKeyName;
     }
 
-   
-
     public String getKeyCloackClientId() {
         return keyCloackClientId;
     }
@@ -265,6 +265,14 @@ public class IntegrationEndpoint implements Serializable, Identifiable  {
 
     public void setKeyCloakTokenAcquiringUrl(String keyCloakTokenAcquiringUrl) {
         this.keyCloakTokenAcquiringUrl = keyCloakTokenAcquiringUrl;
+    }
+
+    public String getStructureDefinition() {
+        return structureDefinition;
+    }
+
+    public void setStructureDefinition(String structureDefinition) {
+        this.structureDefinition = structureDefinition;
     }
 
 }

@@ -72,11 +72,8 @@ public class IntegrationTriggerController implements Serializable {
     private ManagedExecutorService executorService;
 
     public List<Client> fetchClientsFromEndpoints(SearchQueryData sqd) {
-        System.out.println("sqd = " + sqd);
         if (sqd != null) {
-            System.out.println("sqd = " + sqd.getSearchCriteria());
         }
-        System.out.println("fetchClientsFromEndpoints = ");
 
         List<IntegrationTrigger> itemsNeededToBeTriggered = fillItems(IntegrationEvent.PATIENT_SEARCH);
         if (itemsNeededToBeTriggered == null || itemsNeededToBeTriggered.isEmpty()) {
@@ -104,7 +101,6 @@ public class IntegrationTriggerController implements Serializable {
     }
 
     public List<ServiceRequest> fetchServiceRequestsFromEndpoints() {
-        System.out.println("fetchServiceRequestsFromEndpoints");
         List<IntegrationTrigger> itemsToTrigger = fillItems(IntegrationEvent.SERVICE_REQUEST_SEARCH);
         if (itemsToTrigger == null || itemsToTrigger.isEmpty()) {
             return Collections.emptyList();
@@ -122,25 +118,19 @@ public class IntegrationTriggerController implements Serializable {
     }
 
     public List<FhirOperationResult> createNewClientsToEndpoints(Client client) {
-        System.out.println("Creating new clients to endpoints...");
         List<FhirOperationResult> outcomes = new ArrayList<>();
         List<IntegrationTrigger> itemsNeededToBeTriggered = fillItems(IntegrationEvent.PATIENT_SAVE);
-        System.out.println("itemsNeededToBeTriggered = " + itemsNeededToBeTriggered);
         if (itemsNeededToBeTriggered == null || itemsNeededToBeTriggered.isEmpty()) {
             return outcomes;
         }
-        System.out.println("before outcomes");
 
         for (IntegrationTrigger it : itemsNeededToBeTriggered) {
-            System.out.println("it = " + it);
-            System.out.println("it.getIntegrationEndpoint() = " + it.getIntegrationEndpoint());
             if (it.getIntegrationEndpoint() == null || it.getIntegrationEndpoint().getCommunicationProtocol() == null) {
                 continue;
             }
 
             FhirOperationResult outcome;
             if (it.getIntegrationEndpoint().getCommunicationProtocol() == CommunicationProtocol.FHIR_R4) {
-                System.out.println("processing FHIR R4 = ");
                 String oldId = findFhirResourceLinkId(client, it.getIntegrationEndpoint());
                 if (oldId == null) {
                     outcome = fhirR4Controller.createPatientInFhirServer(client, it.getIntegrationEndpoint());
@@ -172,25 +162,19 @@ public class IntegrationTriggerController implements Serializable {
     }
 
     public List<FhirOperationResult> updateServiceRequestInFhirServer(ServiceRequest sr) {
-        System.out.println("Creating new clients to endpoints...");
         List<FhirOperationResult> outcomes = new ArrayList<>();
         List<IntegrationTrigger> itemsNeededToBeTriggered = fillItems(IntegrationEvent.SERVICE_REQUEST_UPDATE);
-        System.out.println("itemsNeededToBeTriggered = " + itemsNeededToBeTriggered);
         if (itemsNeededToBeTriggered == null || itemsNeededToBeTriggered.isEmpty()) {
             return outcomes;
         }
-        System.out.println("before outcomes");
 
         for (IntegrationTrigger it : itemsNeededToBeTriggered) {
-            System.out.println("it = " + it);
-            System.out.println("it.getIntegrationEndpoint() = " + it.getIntegrationEndpoint());
             if (it.getIntegrationEndpoint() == null || it.getIntegrationEndpoint().getCommunicationProtocol() == null) {
                 continue;
             }
 
             FhirOperationResult outcome;
             if (it.getIntegrationEndpoint().getCommunicationProtocol() == CommunicationProtocol.FHIR_R4) {
-                System.out.println("processing FHIR R4 = ");
 //                String oldId = findFhirResourceLinkId(sr, it.getIntegrationEndpoint());
                 outcome = fhirR4Controller.updateServiceRequestInFhirServer(sr, it.getIntegrationEndpoint());
 //                if (oldId == null) {
@@ -211,17 +195,13 @@ public class IntegrationTriggerController implements Serializable {
     }
 
     public List<FhirOperationResult> postToMediators(String jsonPlayLoad) {
-        System.out.println("postToMediators");
-        System.out.println("jsonPlayLoad = " + jsonPlayLoad);
         List<FhirOperationResult> outcomes = new ArrayList<>();
         List<IntegrationTrigger> itemsNeededToBeTriggered = fillItems(IntegrationEvent.MEDIATORS);
-        System.out.println("itemsNeededToBeTriggered = " + itemsNeededToBeTriggered);
 
         if (itemsNeededToBeTriggered == null || itemsNeededToBeTriggered.isEmpty()) {
             return outcomes;
         }
 
-        System.out.println("before outcomes");
         for (IntegrationTrigger it : itemsNeededToBeTriggered) {
             if (it.getIntegrationEndpoint() == null) {
                 continue;
@@ -233,7 +213,6 @@ public class IntegrationTriggerController implements Serializable {
             if (it.getIntegrationEndpoint().getCommunicationProtocol() == CommunicationProtocol.FHIR_R4) {
                 FhirOperationResult outcome;
                 outcome = fhirR4Controller.postJsonPayloadToFhirServer(jsonPlayLoad, it.getIntegrationEndpoint());
-                System.out.println("outcome = " + outcome);
                 outcomes.add(outcome);
             }
         }
@@ -242,26 +221,20 @@ public class IntegrationTriggerController implements Serializable {
 
     // Modified by Dr M H B Ariyaratne with assistance from ChatGPT from OpenAI
     public List<FhirOperationResult> createNewFormsetToEndpoints(ClientEncounterComponentFormSet cecf) {
-        System.out.println("createNewFormsetToEndpoints");
         List<FhirOperationResult> outcomes = new ArrayList<>();
         List<IntegrationTrigger> itemsNeededToBeTriggered = fillItems(IntegrationEvent.ENCOUNTER_SAVE);
-        System.out.println("itemsNeededToBeTriggered = " + itemsNeededToBeTriggered);
 
         if (itemsNeededToBeTriggered == null || itemsNeededToBeTriggered.isEmpty()) {
             return outcomes;
         }
 
-        System.out.println("before future outcomes");
 
         for (IntegrationTrigger it : itemsNeededToBeTriggered) {
-            System.out.println("it = " + it);
-            System.out.println("it.getIntegrationEndpoint() = " + it.getIntegrationEndpoint());
 
             if (it.getIntegrationEndpoint() == null) {
                 continue;
             }
 
-            System.out.println("it.getIntegrationEndpoint().getCommunicationProtocol() = " + it.getIntegrationEndpoint().getCommunicationProtocol());
 
             if (it.getIntegrationEndpoint().getCommunicationProtocol() == null) {
                 continue;
@@ -269,9 +242,7 @@ public class IntegrationTriggerController implements Serializable {
 
             FhirOperationResult outcome;
             if (it.getIntegrationEndpoint().getCommunicationProtocol() == CommunicationProtocol.FHIR_R4) {
-                System.out.println("going to fhir async = ");
                 String oldId = findFhirResourceLinkId(cecf, it.getIntegrationEndpoint());
-                System.out.println("oldId = " + oldId);
 
                 if (oldId == null) {
                     outcome = fhirR4Controller.createFormsetInFhirServer(cecf, it.getIntegrationEndpoint());
