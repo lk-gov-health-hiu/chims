@@ -59,6 +59,13 @@
                                                         return false"
                                             ></p:commandButton>
 
+                                        <p:commandButton value="Push to NEHR" 
+                                                         ajax="false"
+                                                         class="m-1"
+                                                         action="#{clientEncounterComponentFormSetController.navigateToTestPushingToNehr()}"
+                                                         style="float: right;">
+                                        </p:commandButton>
+
                                         <p:commandButton  value="Delete" action="#{clientEncounterComponentFormSetController.deleteSelected()}" ajax="false"
                                                           onclick="if (!confirm('Really want to DELETE this data?'))
                                                                       return false"

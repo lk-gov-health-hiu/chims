@@ -203,6 +203,54 @@ public class ClientEncounterComponentFormSetController implements Serializable {
         Bundle bundle = fhirController.createTransactionalBundleWithUUID(UUID.randomUUID().toString());
         Date encDate = selected.getCreatedAt();
 
+        Number sbp = null;
+        Number dbp = null;
+        Number tc = null;
+        Number fbs = null;
+        Number rbs = null;
+        Number ht = null;
+        Number bmi = null;
+
+        ClientEncounterComponentItem ceciSbp = findFormsetValue("medical_examination_blood_pressure_systolic");
+        ClientEncounterComponentItem cecidbp = findFormsetValue("medical_examination_blood_pressure_diastolic");
+        ClientEncounterComponentItem ceciHt = findFormsetValue("height");
+        ClientEncounterComponentItem ceciBmi = findFormsetValue("bmi");
+        ClientEncounterComponentItem ceciTc = findFormsetValue("client_total_cholesterol_mmol_l");
+        ClientEncounterComponentItem ceciFbs = findFormsetValue("investigation_fbs");
+        ClientEncounterComponentItem ceciRbs = findFormsetValue("client_rbs");
+
+        
+        if (ceciSbp != null) {
+            sbp = ceciSbp.getIntegerNumberValue();
+        }
+        if (cecidbp != null) {
+            dbp = cecidbp.getIntegerNumberValue();
+        }
+        if (ceciTc != null) {
+            tc = ceciTc.getRealNumberValue();
+        }
+        if (ceciFbs != null) {
+            fbs = ceciFbs.getRealNumberValue();
+        }
+        if (ceciRbs != null) {
+            rbs = ceciRbs.getRealNumberValue();
+        }
+        if (ceciHt != null) {
+            ht = ceciHt.getRealNumberValue();
+        }
+        if (ceciBmi != null) {
+            bmi = ceciBmi.getRealNumberValue();
+        }
+        
+        System.out.println("SBP: " + sbp);
+        System.out.println("DBP: " + dbp);
+        System.out.println("TC: " + tc);
+        System.out.println("FBS: " + fbs);
+        System.out.println("RBS: " + rbs);
+        System.out.println("HT: " + ht);
+        System.out.println("BMI: " + bmi);
+
+
         Device device = null;
         Patient patient;
         Organization organization = null;
@@ -236,8 +284,8 @@ public class ClientEncounterComponentFormSetController implements Serializable {
         Bundle.BundleEntryComponent encounterEntry = fhirController.createEncounterEntry(patient, practitioners, locations, null, selected.getEncounter().getCompleted(), selected.getEncounter().getCreatedAt(), selected.getEncounter().getCompletedAt());
         org.hl7.fhir.r4.model.Encounter encounter = fhirController.extractEncounter(encounterEntry);
 
-        Bundle.BundleEntryComponent bpEntry = fhirController.createBloodPressureObservationEntry(patient, encounter, organization, location, device, practitioner, encDate, 136, 86, true, UUID.randomUUID().toString());
-        Bundle.BundleEntryComponent cholesterolEntry = fhirController.createTotalCholesterolObservationEntry(patient, encounter, organization, location, device, practitioner, encDate, 208, true, UUID.randomUUID().toString());
+        Bundle.BundleEntryComponent bpEntry;
+        Bundle.BundleEntryComponent cholesterolEntry;
 
         fhirController.addEntryToBundle(bundle, deviceEntry);
         if (orgEntry != null) {
@@ -249,23 +297,72 @@ public class ClientEncounterComponentFormSetController implements Serializable {
         fhirController.addEntryToBundle(bundle, patientEntry);
         fhirController.addEntryToBundle(bundle, practitionerEntry);
         fhirController.addEntryToBundle(bundle, encounterEntry);
-        fhirController.addEntryToBundle(bundle, bpEntry);
-        fhirController.addEntryToBundle(bundle, cholesterolEntry);
-
-        String bundleJson = fhirController.bundleToJson(bundle);
-        boolean validationSuccessful
-                = fhirController.validate(integrationEndpoint.getStructureDefinition(), bundleJson);
-        if (!validationSuccessful) {
-            responseMessage = "Validatino Failed for /n";
-            responseMessage += bundleJson;
-            return;
+        
+        
+        
+        if(sbp!=null && dbp!=null){
+            bpEntry = fhirController.createBloodPressureObservationEntry(patient, encounter, organization, location, device, practitioner, encDate, sbp, dbp, true, UUID.randomUUID().toString());
+            fhirController.addEntryToBundle(bundle, bpEntry);
         }
+        
+        if(tc!=null){
+            cholesterolEntry = fhirController.createTotalCholesterolObservationEntry(patient, encounter, organization, location, device, practitioner, encDate, tc, true, UUID.randomUUID().toString());
+            fhirController.addEntryToBundle(bundle, cholesterolEntry);
+        }
+
+        
 
         FhirOperationResult result = fhirR4Controller.createResourcesInFhirServer(bundle, integrationEndpoint);
         responseMessage = "Operation Result: " + (result.isSuccess() ? "Success" : "Failure") + "\nMessage: " + result.getMessage();
         FhirContext ctx = FhirContext.forR4();
         String serializedBundle = ctx.newJsonParser().setPrettyPrint(true).encodeResourceToString(bundle);
         responseMessage += "\nBundle: " + serializedBundle;
+    }
+
+    public ClientEncounterComponentItem findFormsetValue(String variableCode) {
+        if (variableCode == null) {
+            //System.out.println("variableCode is null");
+            return null;
+        }
+        if (variableCode.trim().equals("")) {
+            return null;
+        }
+        ClientEncounterComponentItem temc = null;
+        for (DataForm f : dataFormset.getForms()) {
+            for (DataItem di : f.getItems()) {
+                if (di == null) {
+                    continue;
+                }
+                if (di.getDi() == null) {
+                    continue;
+                }
+                if (di.getDi().getItem() == null) {
+                    continue;
+                }
+                if (di.getDi().getItem().getCode() == null) {
+                    continue;
+                }
+                if (di.getDi().getItem().getCode().equalsIgnoreCase(variableCode)) {
+                    return di.getCi();
+//                    if (di.getAddedItems() == null) {
+//                        //System.out.println("di is null " );
+//                        continue;
+//                    }
+//                    for (DataItem tdi : di.getAddedItems()) {
+//                        System.out.println("tdi = " + tdi);
+//                        System.out.println("tdi = " + tdi.getAddedItems());
+//                        //TODO : Add Logic for Other Data Types in addition to Item Referance
+//                        if (tdi.getCi() != null && tdi.getCi().getItemValue() != null && tdi.getCi().getItemValue().getCode() != null) {
+//                            if (tdi.getCi().getItemValue().getCode().equalsIgnoreCase(valueCode)) {
+//                                temc = tdi.getCi();
+//                            }
+//                        }
+//                    }
+//
+                }
+            }
+        }
+        return temc;
     }
 
     public String pushToFhirServers() {
