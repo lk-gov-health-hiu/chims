@@ -26,6 +26,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
 import javax.inject.Inject;
+import kotlin.collections.ArrayDeque;
 import lk.gov.health.phsp.ejb.DataFormBean;
 import lk.gov.health.phsp.entity.ApiRequest;
 import lk.gov.health.phsp.entity.Client;
@@ -213,6 +214,15 @@ public class ClientEncounterComponentFormSetController implements Serializable {
         Number bmi = null;
         Number wt = null;
 
+        Number cvdRiskLab = null;
+        Number cvdRiskNonLab = null;
+
+        String cvdRiskCatLab = null;
+        String cvdRiskCatNonLab = null;
+
+        String cvdRiskCat = null;
+        Number cvdRisk = null;
+
         ClientEncounterComponentItem ceciSbp = findFormsetValue("medical_examination_blood_pressure_systolic");
         ClientEncounterComponentItem cecidbp = findFormsetValue("medical_examination_blood_pressure_diastolic");
         ClientEncounterComponentItem ceciHt = findFormsetValue("height");
@@ -221,6 +231,40 @@ public class ClientEncounterComponentFormSetController implements Serializable {
         ClientEncounterComponentItem ceciTc = findFormsetValue("client_total_cholesterol_mmol_l");
         ClientEncounterComponentItem ceciFbs = findFormsetValue("investigation_fbs");
         ClientEncounterComponentItem ceciRbs = findFormsetValue("client_rbs");
+
+        ClientEncounterComponentItem ceciCvdRiskNonLab = findFormsetValue("cvd_risk_factor_non_lab");
+        ClientEncounterComponentItem ceciCvdRiskLab = findFormsetValue("cvd_risk_factor_lab");
+        ClientEncounterComponentItem ceciCvdRiskCatNonLab = findFormsetValue("cvd_risk_category_non_lab");
+        ClientEncounterComponentItem ceciCvdRiskCatLab = findFormsetValue("cvd_risk_category_lab_method");
+
+        if (ceciCvdRiskLab != null) {
+            cvdRiskLab = ceciCvdRiskLab.getIntegerNumberValue();
+        }
+        if (ceciCvdRiskNonLab != null) {
+            cvdRiskNonLab = ceciCvdRiskNonLab.getIntegerNumberValue();
+        }
+
+        if (ceciCvdRiskCatLab != null) {
+            cvdRiskCatLab = ceciCvdRiskCatLab.getShortTextValue();
+        }
+
+        if (ceciCvdRiskCatNonLab != null) {
+            cvdRiskCatNonLab = ceciCvdRiskCatNonLab.getShortTextValue();
+        }
+
+        if (cvdRiskLab != null) {
+            cvdRisk = cvdRiskLab;
+        } else if (cvdRiskNonLab != null) {
+            cvdRisk = cvdRiskNonLab;
+        }
+        
+        if (cvdRiskCatLab != null) {
+            cvdRiskCat = cvdRiskCatLab;
+        } else if (cvdRiskNonLab != null) {
+            cvdRiskCat = cvdRiskCatNonLab;
+        }
+        
+        
 
         if (ceciSbp != null) {
             sbp = ceciSbp.getIntegerNumberValue();
@@ -277,7 +321,15 @@ public class ClientEncounterComponentFormSetController implements Serializable {
 
         Bundle.BundleEntryComponent patientEntry = fhirController.createPatientEntry(selected.getEncounter().getClient());
         patient = fhirController.extractPatientFromEntry(patientEntry);
-        Bundle.BundleEntryComponent practitionerEntry = fhirController.createPractitionerEntry(selected.getCompletedBy());
+        Bundle.BundleEntryComponent practitionerEntry = null;
+        if (selected.getCompletedBy() != null) {
+            practitionerEntry = fhirController.createPractitionerEntry(selected.getCompletedBy());
+        } else if (selected.getCreatedBy() != null) {
+            practitionerEntry = fhirController.createPractitionerEntry(selected.getCreatedBy());
+        } else {
+            practitionerEntry = fhirController.createPractitionerEntry(webUserController.getLoggedUser());
+        }
+
         Practitioner practitioner = fhirController.extractPractitionerFromEntry(practitionerEntry);
 
         List<Practitioner> practitioners = new ArrayList<>();
@@ -289,13 +341,14 @@ public class ClientEncounterComponentFormSetController implements Serializable {
         Bundle.BundleEntryComponent encounterEntry = fhirController.createEncounterEntry(patient, practitioners, locations, null, selected.getEncounter().getCompleted(), selected.getEncounter().getCreatedAt(), selected.getEncounter().getCompletedAt());
         org.hl7.fhir.r4.model.Encounter encounter = fhirController.extractEncounter(encounterEntry);
 
-        Bundle.BundleEntryComponent bpEntry;
-        Bundle.BundleEntryComponent cholesterolEntry;
-        Bundle.BundleEntryComponent fbsEntry;
-        Bundle.BundleEntryComponent rbsEntry;
-        Bundle.BundleEntryComponent heightEntry;
-        Bundle.BundleEntryComponent weightEntry;
-        Bundle.BundleEntryComponent bmiEntry;
+        Bundle.BundleEntryComponent bpEntry=null;
+        Bundle.BundleEntryComponent cholesterolEntry=null;
+        Bundle.BundleEntryComponent fbsEntry=null;
+        Bundle.BundleEntryComponent rbsEntry=null;
+        Bundle.BundleEntryComponent heightEntry=null;
+        Bundle.BundleEntryComponent weightEntry=null;
+        Bundle.BundleEntryComponent bmiEntry=null;
+        Bundle.BundleEntryComponent cvdEntry=null;
 
         fhirController.addEntryToBundle(bundle, deviceEntry);
         if (orgEntry != null) {
@@ -325,22 +378,35 @@ public class ClientEncounterComponentFormSetController implements Serializable {
             rbsEntry = fhirController.createRandomBloodSugarObservationEntry(patient, encounter, organization, location, device, practitioner, encDate, rbs, true, UUID.randomUUID().toString());
             fhirController.addEntryToBundle(bundle, rbsEntry);
         }
-        Observation weight =null;
-        Observation height=null;
+
+        Observation weight = null;
+        Observation height = null;
         if (ht != null) {
             heightEntry = fhirController.createHeightObservationEntry(patient, encounter, organization, location, device, practitioner, encDate, ht, true, UUID.randomUUID().toString());
             fhirController.addEntryToBundle(bundle, heightEntry);
             height = fhirController.extractObservation(heightEntry);
         }
-        if(wt!=null){
+        if (wt != null) {
             weightEntry = fhirController.createWeightObservationEntry(patient, encounter, organization, location, device, practitioner, encDate, wt, true, UUID.randomUUID().toString());
             fhirController.addEntryToBundle(bundle, weightEntry);
             weight = fhirController.extractObservation(weightEntry);
         }
-//        if(bmi!=null){
-//            bmiEntry = fhirController.createBMIObservationEntry(patient, encounter, organization, location, device, practitioner, encDate, wt, true, UUID.randomUUID().toString(), weight, height);
-//            fhirController.addEntryToBundle(bundle, bmiEntry);
-//        }
+        if (bmi != null) {
+            bmiEntry = fhirController.createBMIObservationEntry(patient, encounter, organization, location, device, practitioner, encDate, wt, true, UUID.randomUUID().toString(), weight, height);
+            fhirController.addEntryToBundle(bundle, bmiEntry);
+        }
+        
+        List<Observation> observations = new ArrayList<>();
+        observations.add(fhirController.extractObservation(bmiEntry));
+        observations.add(fhirController.extractObservation(fbsEntry));
+        observations.add(fhirController.extractObservation(rbsEntry));
+        observations.add(fhirController.extractObservation(cholesterolEntry));
+        
+        
+        
+        if(cvdRisk!=null && cvdRiskCat!=null){
+            cvdEntry = fhirController.createCVDRiskAssessmentEntry(patient, encounter, organization, practitioner, encDate, cvdRisk.doubleValue(), cvdRiskCatNonLab, observations);
+        }
         
 
         FhirOperationResult result = fhirR4Controller.createResourcesInFhirServer(bundle, integrationEndpoint);

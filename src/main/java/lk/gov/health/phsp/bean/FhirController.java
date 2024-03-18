@@ -48,6 +48,7 @@ import org.hl7.fhir.r4.model.ContactPoint;
 import org.hl7.fhir.r4.model.ContactPoint.ContactPointSystem;
 import org.hl7.fhir.r4.model.ContactPoint.ContactPointUse;
 import org.hl7.fhir.r4.model.DateTimeType;
+import org.hl7.fhir.r4.model.DecimalType;
 import org.hl7.fhir.r4.model.Device;
 import org.hl7.fhir.r4.model.Encounter;
 import org.hl7.fhir.r4.model.Enumerations;
@@ -63,8 +64,10 @@ import org.hl7.fhir.r4.model.Patient;
 import org.hl7.fhir.r4.model.Period;
 import org.hl7.fhir.r4.model.Practitioner;
 import org.hl7.fhir.r4.model.Quantity;
+import org.hl7.fhir.r4.model.Range;
 import org.hl7.fhir.r4.model.Reference;
 import org.hl7.fhir.r4.model.Resource;
+import org.hl7.fhir.r4.model.RiskAssessment;
 import org.hl7.fhir.r4.model.SimpleQuantity;
 import org.hl7.fhir.r4.model.StructureDefinition;
 
@@ -1068,6 +1071,66 @@ public class FhirController implements Serializable {
         entryComponent.setFullUrl("http://hapi-fhir:8080/fhir/Observation/" + identifier);
         entryComponent.setResource(observation);
         entryComponent.getRequest().setMethod(Bundle.HTTPVerb.PUT).setUrl("Observation/" + identifier);
+
+        return entryComponent;
+    }
+
+     public Bundle.BundleEntryComponent createCVDRiskAssessmentEntry(
+            Patient patient,
+            Encounter encounter,
+            Organization organization,
+            Practitioner practitioner,
+            Date performedDate,
+            double probability,
+            String cvdRiskCategoryText,
+            List<Observation> basisObservations) {
+
+        RiskAssessment riskAssessment = new RiskAssessment();
+        riskAssessment.setId("CVDRiskCategoryExample");
+        riskAssessment.setMeta(new Meta().addProfile("http://fhir.health.gov.lk/ips/StructureDefinition/cvd-risk-category"));
+        riskAssessment.setStatus(RiskAssessment.RiskAssessmentStatus.FINAL);
+        riskAssessment.setCode(new CodeableConcept(new Coding("http://snomed.info/sct", "441829007", "Assessment for risk of cardiovascular disease")));
+        riskAssessment.setSubject(new Reference("Patient/" + patient.getIdElement().getIdPart()));
+        riskAssessment.setEncounter(new Reference("Encounter/" + encounter.getIdElement().getIdPart()));
+        riskAssessment.setOccurrence(new DateTimeType(performedDate));
+        riskAssessment.setPerformer(new Reference("Practitioner/" + practitioner.getIdElement().getIdPart()));
+
+        // Convert Observations to References safely
+         // Safely convert Observations to References
+        List<Reference> basisReferences = new ArrayList<>();
+        if (basisObservations != null) {
+            for (Observation obs : basisObservations) {
+                if (obs != null && obs.getIdElement() != null && obs.getIdElement().getIdPart() != null) {
+                    Reference reference = new Reference("Observation/" + obs.getIdElement().getIdPart());
+                    basisReferences.add(reference);
+                }
+            }
+        }
+        riskAssessment.setBasis(basisReferences);
+
+        RiskAssessment.RiskAssessmentPredictionComponent prediction = new RiskAssessment.RiskAssessmentPredictionComponent();
+        prediction.setOutcome(new CodeableConcept(new Coding("http://snomed.info/sct", "395112001", "Risk of heart attack")));
+        prediction.setProbability(new DecimalType(probability));
+        prediction.setQualitativeRisk(new CodeableConcept(new Coding("http://fhir.health.gov.lk/ips/CodeSystem/cs-cvd-risk-category", "Critical", cvdRiskCategoryText)));
+        
+        Range whenRange = new Range();
+        whenRange.setLow(new SimpleQuantity().setValue(39).setUnit("years").setSystem("http://unitsofmeasure.org").setCode("a"));
+        whenRange.setHigh(new SimpleQuantity().setValue(49).setUnit("years").setSystem("http://unitsofmeasure.org").setCode("a"));
+        prediction.setWhen(whenRange);
+        
+        riskAssessment.setPrediction(Collections.singletonList(prediction));
+
+        Narrative narrative = new Narrative();
+        narrative.setStatus(Narrative.NarrativeStatus.GENERATED);
+        String div = "<div xmlns=\"http://www.w3.org/1999/xhtml\"><p>CVD Risk Assessment for patient '" 
+                + patient.getName().stream().findFirst().orElse(new HumanName()).getText() 
+                + "'.</p><p>Probability of heart attack: " + probability + "%. Age range: 39-49 years.</p></div>";
+        riskAssessment.setText(narrative);
+
+        Bundle.BundleEntryComponent entryComponent = new Bundle.BundleEntryComponent();
+        entryComponent.setFullUrl("http://hapi-fhir:8080/fhir/RiskAssessment/CVDRiskCategoryExample");
+        entryComponent.setResource(riskAssessment);
+        entryComponent.getRequest().setMethod(Bundle.HTTPVerb.PUT).setUrl("RiskAssessment/CVDRiskCategoryExample");
 
         return entryComponent;
     }
