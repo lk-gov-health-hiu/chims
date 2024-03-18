@@ -911,10 +911,13 @@ public class FhirController implements Serializable {
 
         // Constructing the narrative (text representation)
         Narrative narrative = new Narrative();
-        narrative.setStatus(Narrative.NarrativeStatus.GENERATED);
-        String div = "<div xmlns=\"http://www.w3.org/1999/xhtml\"><p>BMI Observation for patient '"
+        // Before setting the narrative, ensure it's properly formed. The div string looks correct, but let's explicitly set it again
+        String div = "<div xmlns=\"http://www.w3.org/1999/xhtml\">"
+                + "<p>BMI Observation for patient '"
                 + patient.getName().stream().findFirst().orElse(new HumanName()).getText()
                 + "'.</p><p>BMI: " + bmiValue + " kg/m2.</p><p>Derived from weight and height observations.</p></div>";
+
+        narrative.setDivAsString(div);
         observation.setText(narrative);
 
         Bundle.BundleEntryComponent entryComponent = new Bundle.BundleEntryComponent();
