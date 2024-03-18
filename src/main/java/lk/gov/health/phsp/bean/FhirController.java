@@ -889,34 +889,26 @@ public class FhirController implements Serializable {
         observation.setId(identifier);
         observation.setMeta(new Meta().addProfile("http://fhir.health.gov.lk/ips/StructureDefinition/bmi"));
         observation.setStatus(active ? Observation.ObservationStatus.FINAL : Observation.ObservationStatus.AMENDED);
-        observation.setCategory(Collections.singletonList(new CodeableConcept(new Coding("http://terminology.hl7.org/CodeSystem/observation-category", "vital-signs", "Vital Signs"))));
+        observation.setCategory(Collections.singletonList(new CodeableConcept(new Coding("http://terminology.hl7.org/CodeSystem/observation-category", "vital-signs", null))));
         observation.setCode(new CodeableConcept().addCoding(new Coding("http://loinc.org", "39156-5", "Body mass index (BMI)")));
         observation.setSubject(new Reference("Patient/" + patient.getIdElement().getIdPart()));
         observation.setEncounter(new Reference("Encounter/" + encounter.getIdElement().getIdPart()));
-        observation.setEffective(new DateTimeType(performedDate));
+        observation.setEffective(new DateTimeType(performedDate)); // Ensure this date is in the correct format
         observation.setPerformer(Arrays.asList(
                 new Reference("Organization/" + organization.getIdElement().getIdPart()),
                 new Reference("Practitioner/" + practitioner.getIdElement().getIdPart())
         ));
         observation.setDevice(new Reference("Device/" + device.getIdElement().getIdPart()));
-
-        // Value for BMI
         observation.setValue(new Quantity(bmiValue.doubleValue()).setUnit("kg/m2").setSystem("http://unitsofmeasure.org").setCode("kg/m2"));
-
-        // Linking to the weight and height observations that were used to calculate BMI
         observation.setDerivedFrom(Arrays.asList(
                 new Reference("Observation/" + weightObservation.getIdElement().getIdPart()),
                 new Reference("Observation/" + heightObservation.getIdElement().getIdPart())
         ));
 
-        // Constructing the narrative (text representation)
-        Narrative narrative = new Narrative();
-        // Before setting the narrative, ensure it's properly formed. The div string looks correct, but let's explicitly set it again
-        String div = "<div xmlns=\"http://www.w3.org/1999/xhtml\">"
-                + "<p>BMI Observation for patient '"
+        Narrative narrative = new Narrative().setStatus(Narrative.NarrativeStatus.GENERATED);
+        String div = "<div xmlns=\"http://www.w3.org/1999/xhtml\"><p>BMI Observation for patient '"
                 + patient.getName().stream().findFirst().orElse(new HumanName()).getText()
                 + "'.</p><p>BMI: " + bmiValue + " kg/m2.</p><p>Derived from weight and height observations.</p></div>";
-
         narrative.setDivAsString(div);
         observation.setText(narrative);
 
@@ -958,12 +950,14 @@ public class FhirController implements Serializable {
         // Value for weight
         observation.setValue(new Quantity(weightValue.doubleValue()).setUnit("kg").setSystem("http://unitsofmeasure.org").setCode("kg"));
 
-        // Constructing the narrative (text representation)
+        // Constructing the narrative (text representation) directly
         Narrative narrative = new Narrative();
         narrative.setStatus(Narrative.NarrativeStatus.GENERATED);
-        String div = "<div xmlns=\"http://www.w3.org/1999/xhtml\"><p>Weight Observation for patient '"
+        String div = "<div xmlns=\"http://www.w3.org/1999/xhtml\">"
+                + "<p>Weight Observation for patient '"
                 + patient.getName().stream().findFirst().orElse(new HumanName()).getText()
                 + "'.</p><p>Weight: " + weightValue + " kg.</p></div>";
+        narrative.setDivAsString(div);
         observation.setText(narrative);
 
         Bundle.BundleEntryComponent entryComponent = new Bundle.BundleEntryComponent();
@@ -1004,12 +998,13 @@ public class FhirController implements Serializable {
         // Value for height
         observation.setValue(new Quantity(heightValue.doubleValue()).setUnit("cm").setSystem("http://unitsofmeasure.org").setCode("cm"));
 
-        // Constructing the narrative (text representation)
+        // Constructing the narrative (text representation) with corrected div setting
         Narrative narrative = new Narrative();
         narrative.setStatus(Narrative.NarrativeStatus.GENERATED);
         String div = "<div xmlns=\"http://www.w3.org/1999/xhtml\"><p>Height Observation for patient '"
                 + patient.getName().stream().findFirst().orElse(new HumanName()).getText()
                 + "'.</p><p>Height: " + heightValue + " cm.</p></div>";
+        narrative.setDivAsString(div);
         observation.setText(narrative);
 
         Bundle.BundleEntryComponent entryComponent = new Bundle.BundleEntryComponent();

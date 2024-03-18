@@ -337,10 +337,10 @@ public class ClientEncounterComponentFormSetController implements Serializable {
             fhirController.addEntryToBundle(bundle, weightEntry);
             weight = fhirController.extractObservation(weightEntry);
         }
-        if(bmi!=null){
-            bmiEntry = fhirController.createBMIObservationEntry(patient, encounter, organization, location, device, practitioner, encDate, wt, true, UUID.randomUUID().toString(), weight, height);
-            fhirController.addEntryToBundle(bundle, bmiEntry);
-        }
+//        if(bmi!=null){
+//            bmiEntry = fhirController.createBMIObservationEntry(patient, encounter, organization, location, device, practitioner, encDate, wt, true, UUID.randomUUID().toString(), weight, height);
+//            fhirController.addEntryToBundle(bundle, bmiEntry);
+//        }
         
 
         FhirOperationResult result = fhirR4Controller.createResourcesInFhirServer(bundle, integrationEndpoint);
