@@ -249,6 +249,7 @@ public class ClientController implements Serializable {
     private List<FhirOperationResult> fhirOperationResults;
     private boolean pushComplete = false;
 
+    @Deprecated
     public String pushToFhirServers() {
 
         // This method is now synchronous and will block until it completes.
@@ -262,6 +263,7 @@ public class ClientController implements Serializable {
         return "/client/push_result?faces-redirect=true";
     }
 
+    
     public void pushToFhirMediators() {
         List<FhirOperationResult> results = integrationTriggerController.createNewClientsToEndpoints(selected);
         fhirOperationResults = results;

@@ -58,6 +58,7 @@ import org.apache.commons.lang3.SerializationUtils;
 import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.Device;
 import org.hl7.fhir.r4.model.Location;
+import org.hl7.fhir.r4.model.Observation;
 import org.hl7.fhir.r4.model.Organization;
 import org.hl7.fhir.r4.model.Patient;
 import org.hl7.fhir.r4.model.Practitioner;
@@ -210,16 +211,17 @@ public class ClientEncounterComponentFormSetController implements Serializable {
         Number rbs = null;
         Number ht = null;
         Number bmi = null;
+        Number wt = null;
 
         ClientEncounterComponentItem ceciSbp = findFormsetValue("medical_examination_blood_pressure_systolic");
         ClientEncounterComponentItem cecidbp = findFormsetValue("medical_examination_blood_pressure_diastolic");
         ClientEncounterComponentItem ceciHt = findFormsetValue("height");
+        ClientEncounterComponentItem ceciWt = findFormsetValue("weight");
         ClientEncounterComponentItem ceciBmi = findFormsetValue("bmi");
         ClientEncounterComponentItem ceciTc = findFormsetValue("client_total_cholesterol_mmol_l");
         ClientEncounterComponentItem ceciFbs = findFormsetValue("investigation_fbs");
         ClientEncounterComponentItem ceciRbs = findFormsetValue("client_rbs");
 
-        
         if (ceciSbp != null) {
             sbp = ceciSbp.getIntegerNumberValue();
         }
@@ -238,18 +240,21 @@ public class ClientEncounterComponentFormSetController implements Serializable {
         if (ceciHt != null) {
             ht = ceciHt.getRealNumberValue();
         }
+        if (ceciWt != null) {
+            wt = ceciWt.getRealNumberValue();
+        }
         if (ceciBmi != null) {
             bmi = ceciBmi.getRealNumberValue();
         }
-        
+
         System.out.println("SBP: " + sbp);
         System.out.println("DBP: " + dbp);
         System.out.println("TC: " + tc);
         System.out.println("FBS: " + fbs);
         System.out.println("RBS: " + rbs);
         System.out.println("HT: " + ht);
+        System.out.println("HT: " + wt);
         System.out.println("BMI: " + bmi);
-
 
         Device device = null;
         Patient patient;
@@ -286,6 +291,11 @@ public class ClientEncounterComponentFormSetController implements Serializable {
 
         Bundle.BundleEntryComponent bpEntry;
         Bundle.BundleEntryComponent cholesterolEntry;
+        Bundle.BundleEntryComponent fbsEntry;
+        Bundle.BundleEntryComponent rbsEntry;
+        Bundle.BundleEntryComponent heightEntry;
+        Bundle.BundleEntryComponent weightEntry;
+        Bundle.BundleEntryComponent bmiEntry;
 
         fhirController.addEntryToBundle(bundle, deviceEntry);
         if (orgEntry != null) {
@@ -297,19 +307,40 @@ public class ClientEncounterComponentFormSetController implements Serializable {
         fhirController.addEntryToBundle(bundle, patientEntry);
         fhirController.addEntryToBundle(bundle, practitionerEntry);
         fhirController.addEntryToBundle(bundle, encounterEntry);
-        
-        
-        
-        if(sbp!=null && dbp!=null){
+
+        if (sbp != null && dbp != null) {
             bpEntry = fhirController.createBloodPressureObservationEntry(patient, encounter, organization, location, device, practitioner, encDate, sbp, dbp, true, UUID.randomUUID().toString());
             fhirController.addEntryToBundle(bundle, bpEntry);
         }
-        
-        if(tc!=null){
+
+        if (tc != null) {
             cholesterolEntry = fhirController.createTotalCholesterolObservationEntry(patient, encounter, organization, location, device, practitioner, encDate, tc, true, UUID.randomUUID().toString());
             fhirController.addEntryToBundle(bundle, cholesterolEntry);
         }
-
+        if (fbs != null) {
+            fbsEntry = fhirController.createFastingBloodSugarObservationEntry(patient, encounter, organization, location, device, practitioner, encDate, fbs, true, UUID.randomUUID().toString());
+            fhirController.addEntryToBundle(bundle, fbsEntry);
+        }
+        if (rbs != null) {
+            rbsEntry = fhirController.createRandomBloodSugarObservationEntry(patient, encounter, organization, location, device, practitioner, encDate, rbs, true, UUID.randomUUID().toString());
+            fhirController.addEntryToBundle(bundle, rbsEntry);
+        }
+        Observation weight =null;
+        Observation height=null;
+        if (ht != null) {
+            heightEntry = fhirController.createHeightObservationEntry(patient, encounter, organization, location, device, practitioner, encDate, ht, true, UUID.randomUUID().toString());
+            fhirController.addEntryToBundle(bundle, heightEntry);
+            height = fhirController.extractObservation(heightEntry);
+        }
+        if(wt!=null){
+            weightEntry = fhirController.createWeightObservationEntry(patient, encounter, organization, location, device, practitioner, encDate, wt, true, UUID.randomUUID().toString());
+            fhirController.addEntryToBundle(bundle, weightEntry);
+            weight = fhirController.extractObservation(weightEntry);
+        }
+        if(bmi!=null){
+            bmiEntry = fhirController.createBMIObservationEntry(patient, encounter, organization, location, device, practitioner, encDate, wt, true, UUID.randomUUID().toString(), weight, height);
+            fhirController.addEntryToBundle(bundle, bmiEntry);
+        }
         
 
         FhirOperationResult result = fhirR4Controller.createResourcesInFhirServer(bundle, integrationEndpoint);

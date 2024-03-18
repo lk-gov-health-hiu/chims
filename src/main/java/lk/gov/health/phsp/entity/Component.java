@@ -56,6 +56,8 @@ public class Component implements Serializable, Identifiable  {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    private String uuid;
+    
     String name;
 
     private String code;
@@ -437,6 +439,8 @@ public class Component implements Serializable, Identifiable  {
         return parentDesignComponentForm;
     }
 
+    
+    
     public DesignComponentFormItem getParentDesignComponentFormItem() {
         if (parentComponent instanceof DesignComponentFormItem) {
             parentDesignComponentFormItem = (DesignComponentFormItem) parentComponent;
@@ -484,6 +488,14 @@ public class Component implements Serializable, Identifiable  {
             parentClientEncounterComponentItem = (ClientEncounterComponentForm) parentComponent;
         }
         return parentClientEncounterComponentItem;
+    }
+
+    public String getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
     }
 
 }

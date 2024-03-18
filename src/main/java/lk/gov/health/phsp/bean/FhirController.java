@@ -814,6 +814,266 @@ public class FhirController implements Serializable {
         return entryComponent;
     }
 
+    public Bundle.BundleEntryComponent createFastingBloodSugarObservationEntry(
+            Patient patient,
+            Encounter encounter,
+            Organization organization,
+            Location location,
+            Device device,
+            Practitioner practitioner,
+            Date performedDate,
+            Number fastingBloodSugarValue,
+            boolean active,
+            String identifier) {
+
+        Observation observation = new Observation();
+        observation.setId(identifier);
+        observation.setMeta(new Meta().addProfile("http://fhir.health.gov.lk/ips/StructureDefinition/fasting-blood-sugar"));
+        observation.setStatus(active ? Observation.ObservationStatus.FINAL : Observation.ObservationStatus.AMENDED);
+        observation.setCategory(Collections.singletonList(new CodeableConcept(new Coding("http://terminology.hl7.org/CodeSystem/observation-category", "laboratory", "Laboratory"))));
+        observation.setCode(new CodeableConcept().addCoding(new Coding("http://loinc.org", "76629-5", "Fasting glucose")));
+        observation.setSubject(new Reference("Patient/" + patient.getIdElement().getIdPart()));
+        observation.setEncounter(new Reference("Encounter/" + encounter.getIdElement().getIdPart()));
+        observation.setEffective(new DateTimeType(performedDate));
+        observation.setPerformer(Arrays.asList(
+                new Reference("Organization/" + organization.getIdElement().getIdPart()),
+                new Reference("Practitioner/" + practitioner.getIdElement().getIdPart())
+        ));
+        observation.setDevice(new Reference("Device/" + device.getIdElement().getIdPart()));
+
+        // Value for fasting blood sugar
+        observation.setValue(new Quantity(fastingBloodSugarValue.doubleValue()).setUnit("mmol/L").setSystem("http://unitsofmeasure.org").setCode("mmol/L"));
+
+        // Interpretation of fasting blood sugar value
+        CodeableConcept interpretation = new CodeableConcept().addCoding(new Coding("http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation", "N", "Normal"));
+        observation.setInterpretation(Collections.singletonList(interpretation));
+
+        // Reference range for fasting blood sugar
+        Observation.ObservationReferenceRangeComponent referenceRange = new Observation.ObservationReferenceRangeComponent()
+                .setLow(new SimpleQuantity().setValue(3.9).setUnit("mmol/L").setSystem("http://unitsofmeasure.org").setCode("mmol/L"))
+                .setHigh(new SimpleQuantity().setValue(5.6).setUnit("mmol/L").setSystem("http://unitsofmeasure.org").setCode("mmol/L"));
+        observation.setReferenceRange(Collections.singletonList(referenceRange));
+
+        // Constructing the narrative (text representation)
+        Narrative narrative = new Narrative();
+        narrative.setStatus(Narrative.NarrativeStatus.GENERATED);
+        String div = "<div xmlns=\"http://www.w3.org/1999/xhtml\"><p>Fasting Blood Sugar Observation for patient '"
+                + patient.getName().stream().findFirst().orElse(new HumanName()).getText()
+                + "'.</p><p>Value: " + fastingBloodSugarValue + " mmol/L. Interpretation: Normal. Reference range: 3.9 to 5.6 mmol/L.</p></div>";
+        narrative.setDivAsString(div);
+        observation.setText(narrative);
+
+        Bundle.BundleEntryComponent entryComponent = new Bundle.BundleEntryComponent();
+        entryComponent.setFullUrl("http://hapi-fhir:8080/fhir/Observation/" + identifier);
+        entryComponent.setResource(observation);
+        entryComponent.getRequest().setMethod(Bundle.HTTPVerb.PUT).setUrl("Observation/" + identifier);
+
+        return entryComponent;
+    }
+
+    public Bundle.BundleEntryComponent createBMIObservationEntry(
+            Patient patient,
+            Encounter encounter,
+            Organization organization,
+            Location location,
+            Device device,
+            Practitioner practitioner,
+            Date performedDate,
+            Number bmiValue,
+            boolean active,
+            String identifier,
+            Observation weightObservation,
+            Observation heightObservation) {
+
+        Observation observation = new Observation();
+        observation.setId(identifier);
+        observation.setMeta(new Meta().addProfile("http://fhir.health.gov.lk/ips/StructureDefinition/bmi"));
+        observation.setStatus(active ? Observation.ObservationStatus.FINAL : Observation.ObservationStatus.AMENDED);
+        observation.setCategory(Collections.singletonList(new CodeableConcept(new Coding("http://terminology.hl7.org/CodeSystem/observation-category", "vital-signs", "Vital Signs"))));
+        observation.setCode(new CodeableConcept().addCoding(new Coding("http://loinc.org", "39156-5", "Body mass index (BMI)")));
+        observation.setSubject(new Reference("Patient/" + patient.getIdElement().getIdPart()));
+        observation.setEncounter(new Reference("Encounter/" + encounter.getIdElement().getIdPart()));
+        observation.setEffective(new DateTimeType(performedDate));
+        observation.setPerformer(Arrays.asList(
+                new Reference("Organization/" + organization.getIdElement().getIdPart()),
+                new Reference("Practitioner/" + practitioner.getIdElement().getIdPart())
+        ));
+        observation.setDevice(new Reference("Device/" + device.getIdElement().getIdPart()));
+
+        // Value for BMI
+        observation.setValue(new Quantity(bmiValue.doubleValue()).setUnit("kg/m2").setSystem("http://unitsofmeasure.org").setCode("kg/m2"));
+
+        // Linking to the weight and height observations that were used to calculate BMI
+        observation.setDerivedFrom(Arrays.asList(
+                new Reference("Observation/" + weightObservation.getIdElement().getIdPart()),
+                new Reference("Observation/" + heightObservation.getIdElement().getIdPart())
+        ));
+
+        // Constructing the narrative (text representation)
+        Narrative narrative = new Narrative();
+        narrative.setStatus(Narrative.NarrativeStatus.GENERATED);
+        String div = "<div xmlns=\"http://www.w3.org/1999/xhtml\"><p>BMI Observation for patient '"
+                + patient.getName().stream().findFirst().orElse(new HumanName()).getText()
+                + "'.</p><p>BMI: " + bmiValue + " kg/m2.</p><p>Derived from weight and height observations.</p></div>";
+        observation.setText(narrative);
+
+        Bundle.BundleEntryComponent entryComponent = new Bundle.BundleEntryComponent();
+        entryComponent.setFullUrl("http://hapi-fhir:8080/fhir/Observation/" + identifier);
+        entryComponent.setResource(observation);
+        entryComponent.getRequest().setMethod(Bundle.HTTPVerb.PUT).setUrl("Observation/" + identifier);
+
+        return entryComponent;
+    }
+
+    public Bundle.BundleEntryComponent createWeightObservationEntry(
+            Patient patient,
+            Encounter encounter,
+            Organization organization,
+            Location location,
+            Device device,
+            Practitioner practitioner,
+            Date performedDate,
+            Number weightValue,
+            boolean active,
+            String identifier) {
+
+        Observation observation = new Observation();
+        observation.setId(identifier);
+        observation.setMeta(new Meta().addProfile("http://fhir.health.gov.lk/ips/StructureDefinition/weight"));
+        observation.setStatus(active ? Observation.ObservationStatus.FINAL : Observation.ObservationStatus.AMENDED);
+        observation.setCategory(Collections.singletonList(new CodeableConcept(new Coding("http://terminology.hl7.org/CodeSystem/observation-category", "vital-signs", "Vital Signs"))));
+        observation.setCode(new CodeableConcept().addCoding(new Coding("http://loinc.org", "29463-7", "Body Weight")));
+        observation.setSubject(new Reference("Patient/" + patient.getIdElement().getIdPart()));
+        observation.setEncounter(new Reference("Encounter/" + encounter.getIdElement().getIdPart()));
+        observation.setEffective(new DateTimeType(performedDate));
+        observation.setPerformer(Arrays.asList(
+                new Reference("Organization/" + organization.getIdElement().getIdPart()),
+                new Reference("Practitioner/" + practitioner.getIdElement().getIdPart())
+        ));
+        observation.setDevice(new Reference("Device/" + device.getIdElement().getIdPart()));
+
+        // Value for weight
+        observation.setValue(new Quantity(weightValue.doubleValue()).setUnit("kg").setSystem("http://unitsofmeasure.org").setCode("kg"));
+
+        // Constructing the narrative (text representation)
+        Narrative narrative = new Narrative();
+        narrative.setStatus(Narrative.NarrativeStatus.GENERATED);
+        String div = "<div xmlns=\"http://www.w3.org/1999/xhtml\"><p>Weight Observation for patient '"
+                + patient.getName().stream().findFirst().orElse(new HumanName()).getText()
+                + "'.</p><p>Weight: " + weightValue + " kg.</p></div>";
+        observation.setText(narrative);
+
+        Bundle.BundleEntryComponent entryComponent = new Bundle.BundleEntryComponent();
+        entryComponent.setFullUrl("http://hapi-fhir:8080/fhir/Observation/" + identifier);
+        entryComponent.setResource(observation);
+        entryComponent.getRequest().setMethod(Bundle.HTTPVerb.PUT).setUrl("Observation/" + identifier);
+
+        return entryComponent;
+    }
+
+    public Bundle.BundleEntryComponent createHeightObservationEntry(
+            Patient patient,
+            Encounter encounter,
+            Organization organization,
+            Location location,
+            Device device,
+            Practitioner practitioner,
+            Date performedDate,
+            Number heightValue,
+            boolean active,
+            String identifier) {
+
+        Observation observation = new Observation();
+        observation.setId(identifier);
+        observation.setMeta(new Meta().addProfile("http://fhir.health.gov.lk/ips/StructureDefinition/height"));
+        observation.setStatus(active ? Observation.ObservationStatus.FINAL : Observation.ObservationStatus.AMENDED);
+        observation.setCategory(Collections.singletonList(new CodeableConcept(new Coding("http://terminology.hl7.org/CodeSystem/observation-category", "vital-signs", "Vital Signs"))));
+        observation.setCode(new CodeableConcept().addCoding(new Coding("http://loinc.org", "8302-2", "Body Height")));
+        observation.setSubject(new Reference("Patient/" + patient.getIdElement().getIdPart()));
+        observation.setEncounter(new Reference("Encounter/" + encounter.getIdElement().getIdPart()));
+        observation.setEffective(new DateTimeType(performedDate));
+        observation.setPerformer(Arrays.asList(
+                new Reference("Organization/" + organization.getIdElement().getIdPart()),
+                new Reference("Practitioner/" + practitioner.getIdElement().getIdPart())
+        ));
+        observation.setDevice(new Reference("Device/" + device.getIdElement().getIdPart()));
+
+        // Value for height
+        observation.setValue(new Quantity(heightValue.doubleValue()).setUnit("cm").setSystem("http://unitsofmeasure.org").setCode("cm"));
+
+        // Constructing the narrative (text representation)
+        Narrative narrative = new Narrative();
+        narrative.setStatus(Narrative.NarrativeStatus.GENERATED);
+        String div = "<div xmlns=\"http://www.w3.org/1999/xhtml\"><p>Height Observation for patient '"
+                + patient.getName().stream().findFirst().orElse(new HumanName()).getText()
+                + "'.</p><p>Height: " + heightValue + " cm.</p></div>";
+        observation.setText(narrative);
+
+        Bundle.BundleEntryComponent entryComponent = new Bundle.BundleEntryComponent();
+        entryComponent.setFullUrl("http://hapi-fhir:8080/fhir/Observation/" + identifier);
+        entryComponent.setResource(observation);
+        entryComponent.getRequest().setMethod(Bundle.HTTPVerb.PUT).setUrl("Observation/" + identifier);
+
+        return entryComponent;
+    }
+
+    public Bundle.BundleEntryComponent createRandomBloodSugarObservationEntry(
+            Patient patient,
+            Encounter encounter,
+            Organization organization,
+            Location location,
+            Device device,
+            Practitioner practitioner,
+            Date performedDate,
+            Number randomBloodSugarValue,
+            boolean active,
+            String identifier) {
+
+        Observation observation = new Observation();
+        observation.setId(identifier);
+        observation.setMeta(new Meta().addProfile("http://fhir.health.gov.lk/ips/StructureDefinition/random-blood-sugar"));
+        observation.setStatus(active ? Observation.ObservationStatus.FINAL : Observation.ObservationStatus.AMENDED);
+        observation.setCategory(Collections.singletonList(new CodeableConcept(new Coding("http://terminology.hl7.org/CodeSystem/observation-category", "laboratory", "Laboratory"))));
+        observation.setCode(new CodeableConcept().addCoding(new Coding("http://loinc.org", "15074-8", "Glucose")));
+        observation.setSubject(new Reference("Patient/" + patient.getIdElement().getIdPart()));
+        observation.setEncounter(new Reference("Encounter/" + encounter.getIdElement().getIdPart()));
+        observation.setEffective(new DateTimeType(performedDate));
+        observation.setPerformer(Arrays.asList(
+                new Reference("Organization/" + organization.getIdElement().getIdPart()),
+                new Reference("Practitioner/" + practitioner.getIdElement().getIdPart())
+        ));
+        observation.setDevice(new Reference("Device/" + device.getIdElement().getIdPart()));
+
+        // Value for random blood sugar
+        observation.setValue(new Quantity(randomBloodSugarValue.doubleValue()).setUnit("mmol/L").setSystem("http://unitsofmeasure.org").setCode("mmol/L"));
+
+        // Interpretation of random blood sugar value
+        CodeableConcept interpretation = new CodeableConcept().addCoding(new Coding("http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation", "H", "High"));
+        observation.setInterpretation(Collections.singletonList(interpretation));
+
+        // Reference range for random blood sugar
+        Observation.ObservationReferenceRangeComponent referenceRange = new Observation.ObservationReferenceRangeComponent()
+                .setLow(new SimpleQuantity().setValue(3.1).setUnit("mmol/L").setSystem("http://unitsofmeasure.org").setCode("mmol/L"))
+                .setHigh(new SimpleQuantity().setValue(6.2).setUnit("mmol/L").setSystem("http://unitsofmeasure.org").setCode("mmol/L"));
+        observation.setReferenceRange(Collections.singletonList(referenceRange));
+
+        // Constructing the narrative (text representation)
+        Narrative narrative = new Narrative();
+        narrative.setStatus(Narrative.NarrativeStatus.GENERATED);
+        String div = "<div xmlns=\"http://www.w3.org/1999/xhtml\"><p>Random Blood Sugar Observation for patient '"
+                + patient.getName().stream().findFirst().orElse(new HumanName()).getText()
+                + "'.</p><p>Value: " + randomBloodSugarValue + " mmol/L. Interpretation: High. Reference range: 3.1 to 6.2 mmol/L.</p></div>";
+        narrative.setDivAsString(div);
+        observation.setText(narrative);
+
+        Bundle.BundleEntryComponent entryComponent = new Bundle.BundleEntryComponent();
+        entryComponent.setFullUrl("http://hapi-fhir:8080/fhir/Observation/" + identifier);
+        entryComponent.setResource(observation);
+        entryComponent.getRequest().setMethod(Bundle.HTTPVerb.PUT).setUrl("Observation/" + identifier);
+
+        return entryComponent;
+    }
+
     public Location createLocation(
             String locationId,
             List<String> identifierValues,

@@ -30,31 +30,34 @@
                                            itemLabel="#{item.name}" 
                                            itemValue="#{item}" />
                         </p:selectOneMenu>
-                        
+
                         <p:outputLabel value="Name" ></p:outputLabel>
                         <p:outputLabel value="#{clientEncounterComponentFormSetController.selected.encounter.client.person.nameWithTitle}" ></p:outputLabel>
-                        
+
                         <p:outputLabel value="PHN" ></p:outputLabel>
                         <p:outputLabel value="#{clientEncounterComponentFormSetController.selected.encounter.client.phn}" ></p:outputLabel>
-                        
+
                         <p:outputLabel value="Created Date" ></p:outputLabel>
                         <p:outputLabel value="#{clientEncounterComponentFormSetController.selected.createdAt}" >
                             <f:convertDateTime pattern="dd MMMM yyyy HH:mm a" ></f:convertDateTime>
                         </p:outputLabel>
-                        
+
                         <p:outputLabel value="Visit Date" ></p:outputLabel>
                         <p:outputLabel value="#{clientEncounterComponentFormSetController.selected.encounter.encounterDate}" >
                             <f:convertDateTime pattern="dd MMMM yyyy" ></f:convertDateTime>
                         </p:outputLabel>
-                        
+
                         <p:outputLabel value="Clinic" ></p:outputLabel>
                         <p:outputLabel value="#{clientEncounterComponentFormSetController.selected.encounter.encounterDate}" >
                             <f:convertDateTime pattern="dd MMMM yyyy" ></f:convertDateTime>
                         </p:outputLabel>
-                        
+
                         <p:spacer ></p:spacer>
-                        <p:commandButton ajax="false" value="Push" action="#{clientEncounterComponentFormSetController.postPatientEncounterBundleToMediators()}" ></p:commandButton>
-                        
+                        <p:commandButton 
+                            ajax="false" 
+                            value="Push"
+                            action="#{clientEncounterComponentFormSetController.postPatientEncounterBundleToMediators()}" ></p:commandButton>
+
                         <p:outputLabel value="Response" ></p:outputLabel>
                         <p:inputTextarea class="w-100" value="#{clientEncounterComponentFormSetController.responseMessage}" ></p:inputTextarea>
                     </p:panelGrid>
