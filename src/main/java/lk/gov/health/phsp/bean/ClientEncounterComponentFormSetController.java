@@ -26,6 +26,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
 import javax.inject.Inject;
+import javax.persistence.TemporalType;
 import kotlin.collections.ArrayDeque;
 import lk.gov.health.phsp.ejb.DataFormBean;
 import lk.gov.health.phsp.entity.ApiRequest;
@@ -214,18 +215,15 @@ public class ClientEncounterComponentFormSetController implements Serializable {
 
     public void postSelectedPatientEncountersToNehr() {
         responseMessage = "";
-        pushedRecords =0;
+        pushedRecords = 0;
         for (ClientEncounterComponentFormSet fs : selectedItems) {
             responseMessage += "\n\n\n";
-            loadOldNavigateToDataEntry(fs);
+            loadOldData(fs);
             responseMessage += postPatientEncounterBundleToMediators(fs);
             pushedRecords++;
         }
-
     }
 
-    
-    
     public String postPatientEncounterBundleToMediators(ClientEncounterComponentFormSet pe) {
         String resMsg = "";
         Bundle bundle = fhirController.createTransactionalBundleWithUUID(UUID.randomUUID().toString());
@@ -446,13 +444,19 @@ public class ClientEncounterComponentFormSetController implements Serializable {
         resMsg = "Operation Result: " + (result.isSuccess() ? "Success" : "Failure");
         resMsg += "\nMessage: " + result.getMessage();
 
-        // Serialize the Resource object if it's not null
-        if (result.getResource() != null) {
-            FhirContext ctx = FhirContext.forR4();
-            String serializedResource = ctx.newJsonParser().setPrettyPrint(true).encodeResourceToString(result.getResource());
-            resMsg += "\nResource: " + serializedResource;
+        FhirContext ctx = FhirContext.forR4();
+
+// Check if the responseBundle is not null and serialize it
+        if (result.getResponseBundle() != null) {
+            String serializedBundle = ctx.newJsonParser().setPrettyPrint(true).encodeResourceToString(result.getResponseBundle());
+            resMsg += "\nResponse Bundle: " + serializedBundle;
+        } else if (result.getOperationOutcome() != null) {
+            // If the operation failed and there's an OperationOutcome, serialize it
+            String serializedOutcome = ctx.newJsonParser().setPrettyPrint(true).encodeResourceToString(result.getOperationOutcome());
+            resMsg += "\nOperation Outcome: " + serializedOutcome;
         } else {
-            resMsg += "\nNo resource available.";
+            // Fallback message if neither response bundle nor operation outcome is available
+            resMsg += "\nNo detailed response available.";
         }
 
         return resMsg;
@@ -1004,13 +1008,14 @@ public class ClientEncounterComponentFormSetController implements Serializable {
     public List<ClientEncounterComponentFormSet> fillEncountersFormSets(Date fromDate, Date toDate) {
         List<ClientEncounterComponentFormSet> fs;
         Map m = new HashMap();
-        String j = "select s from ClientEncounterComponentFormSet s where "
-                + " s.retired=false ";
-        j += " and s.encounterFrom between :fd and :td ";
+        String j = "select s "
+                + " from ClientEncounterComponentFormSet s "
+                + " where s.retired=false ";
+        j += " and s.encounter.encounterDate between :fd and :td ";
         m.put("fd", fromDate);
-        m.put("to", toDate);
-        j += " order by s.encounter.encounterFrom desc";
-        fs = getFacade().findByJpql(j, m);
+        m.put("td", toDate);
+        j += " order by s.encounter.encounterDate desc";
+        fs = getFacade().findByJpql(j, m, TemporalType.DATE);
         if (fs == null) {
             fs = new ArrayList<>();
         }
@@ -1620,6 +1625,242 @@ public class ClientEncounterComponentFormSetController implements Serializable {
                 }
                 fs.getForms().add(f);
             }
+
+        }
+
+        dataFormset = fs;
+        selected = cfs;
+    }
+
+    public void loadOldData(ClientEncounterComponentFormSet cfs) {
+        //System.out.println("loadOldNavigateToDataEntry");
+        if (cfs == null) {
+            return;
+        }
+        //System.out.println("cfs = " + cfs.getId());
+        DesignComponentFormSet dfs = cfs.getReferanceDesignComponentFormSet();
+        //System.out.println("dfs = " + dfs.getId());
+
+        DataFormset fs = new DataFormset();
+
+        Encounter e = cfs.getEncounter();
+
+        fs.setDfs(dfs);
+        fs.setEfs(cfs);
+
+        List<DesignComponentForm> dfList = designComponentFormController.fillFormsofTheSelectedSet(dfs);
+
+        int formCounter = 0;
+
+        for (DesignComponentForm df : dfList) {
+            if (df == null) {
+                continue;
+            }
+
+            boolean skipThisForm = false;
+
+            if (df.getComponentSex() == null) {
+            }
+
+            formCounter++;
+            String j = "select cf "
+                    + " from ClientEncounterComponentForm cf "
+                    + " where cf.referenceComponent=:rf "
+                    + " and cf.parentComponent=:cfs "
+                    + "order by cf.id desc";
+            Map m = new HashMap();
+            m.put("rf", df);
+            m.put("cfs", cfs);
+// // //System.out.println("df = " + df.getId());
+
+            ClientEncounterComponentForm cf = clientEncounterComponentFormController.getClientEncounterComponentForm(j, m);
+
+            // //System.out.println("cf = " + cf);
+            if (cf == null) {
+                cf = new ClientEncounterComponentForm();
+
+                cf.setEncounter(e);
+                cf.setInstitution(dfs.getCurrentlyUsedIn());
+                cf.setItem(df.getItem());
+
+                cf.setReferenceComponent(df);
+                cf.setName(df.getName());
+                cf.setOrderNo(df.getOrderNo());
+                cf.setParentComponent(cfs);
+                cf.setCss(df.getCss());
+
+                clientEncounterComponentFormController.save(cf);
+            }
+
+            DataForm f = new DataForm();
+            f.cf = cf;
+            f.df = df;
+            f.formset = fs;
+            f.id = formCounter;
+            f.orderNo = formCounter;
+
+            List<DesignComponentFormItem> diList = designComponentFormItemController.fillItemsOfTheForm(df);
+
+            int itemCounter = 0;
+
+            for (DesignComponentFormItem dis : diList) {
+
+                boolean disSkipThisItem = false;
+
+                if (dis.getComponentSex() == null) {
+                    continue;
+                }
+                if (clientController == null) {
+                    continue;
+                }
+                if (clientController.getSelected() == null) {
+                    continue;
+                }
+                if (clientController.getSelected().getPerson() == null) {
+                    continue;
+                }
+                if (clientController.getSelected().getPerson().getSex() == null) {
+                    continue;
+                }
+                if (clientController.getSelected().getPerson().getSex().getCode() == null) {
+                    continue;
+                }
+
+                if (dis.getComponentSex() == ComponentSex.For_Females && clientController.getSelected().getPerson().getSex().getCode().equalsIgnoreCase("sex_male")) {
+                    disSkipThisItem = true;
+                }
+                if (dis.getComponentSex() == ComponentSex.For_Males && clientController.getSelected().getPerson().getSex().getCode().equalsIgnoreCase("sex_female")) {
+                    disSkipThisItem = true;
+                }
+
+                // //System.out.println("disSkipThisItem = " + disSkipThisItem);
+                if (!disSkipThisItem) {
+
+                    if (dis.isMultipleEntiesPerForm()) {
+
+                        // //System.out.println("dis.isMultipleEntiesPerForm() = " + dis.isMultipleEntiesPerForm());
+                        j = "Select ci "
+                                + " from ClientEncounterComponentItem ci "
+                                + " where ci.retired=:ret "
+                                + " and ci.parentComponent=:cf "
+                                + " and ci.referenceComponent=:dis "
+                                + " order by ci.orderNo";
+                        m = new HashMap();
+                        m.put("ret", false);
+                        m.put("cf", cf);
+                        m.put("dis", dis);
+                        // //System.out.println("cf = " + cf.getId());
+                        // //System.out.println("dis = " + dis.getId());
+                        List<ClientEncounterComponentItem> cis = clientEncounterComponentItemController.getItems(j, m);
+                        // //System.out.println("cis = " + cis);
+
+                        itemCounter++;
+                        ClientEncounterComponentItem ci = new ClientEncounterComponentItem();
+
+                        ci.setEncounter(e);
+                        ci.setInstitution(dfs.getCurrentlyUsedIn());
+
+                        ci.setItemFormset(cfs);
+                        ci.setItemEncounter(e);
+                        ci.setItemClient(e.getClient());
+
+                        ci.setItem(dis.getItem());
+                        ci.setDescreption(dis.getDescreption());
+
+                        ci.setReferenceComponent(dis);
+                        ci.setParentComponent(cf);
+                        ci.setName(dis.getName());
+                        ci.setCss(dis.getCss());
+                        ci.setOrderNo(dis.getOrderNo());
+                        ci.setDataRepresentationType(DataRepresentationType.Encounter);
+                        DataItem i = new DataItem();
+                        i.setMultipleEntries(true);
+                        i.setCi(ci);
+                        i.di = dis;
+                        i.id = itemCounter;
+                        i.orderNo = itemCounter;
+                        i.form = f;
+                        i.setAvailableItemsForSelection(itemController.findItemList(dis.getCategoryOfAvailableItems()));
+
+                        if (cis != null && !cis.isEmpty()) {
+                            for (ClientEncounterComponentItem tci : cis) {
+                                DataItem di = new DataItem();
+                                di.setMultipleEntries(true);
+                                di.setCi(tci);
+                                di.di = dis;
+                                di.id = itemCounter;
+                                di.orderNo = tci.getOrderNo();
+                                di.form = f;
+                                di.setAvailableItemsForSelection(itemController.findItemList(dis.getCategoryOfAvailableItems()));
+                                i.getAddedItems().add(di);
+                            }
+                        }
+
+                        f.getItems().add(i);
+
+                    } else {
+
+                        j = "Select ci "
+                                + " from ClientEncounterComponentItem ci "
+                                + " where ci.retired=:ret "
+                                + " and ci.parentComponent=:cf "
+                                + " and ci.referenceComponent=:dis "
+                                + " order by ci.orderNo";
+                        m = new HashMap();
+                        m.put("ret", false);
+                        m.put("cf", cf);
+                        m.put("dis", dis);
+                        // //System.out.println("cf = " + cf.getId());
+                        // //System.out.println("dis = " + dis.getId());
+                        ClientEncounterComponentItem ci;
+                        ci = clientEncounterComponentItemController.getItem(j, m);
+                        // //System.out.println("ci = " + ci);
+                        if (ci != null) {
+                            DataItem i = new DataItem();
+                            i.setMultipleEntries(false);
+                            i.setCi(ci);
+                            i.di = dis;
+                            i.id = itemCounter;
+                            i.orderNo = itemCounter;
+                            i.form = f;
+                            i.setAvailableItemsForSelection(itemController.findItemList(dis.getCategoryOfAvailableItems()));
+
+                            f.getItems().add(i);
+                        } else {
+                            itemCounter++;
+                            ci = new ClientEncounterComponentItem();
+                            ci.setEncounter(e);
+                            ci.setInstitution(dfs.getCurrentlyUsedIn());
+                            ci.setItemFormset(cfs);
+                            ci.setItemEncounter(e);
+                            ci.setItemClient(e.getClient());
+                            ci.setItem(dis.getItem());
+                            ci.setDescreption(dis.getDescreption());
+                            ci.setReferenceComponent(dis);
+                            ci.setParentComponent(cf);
+                            ci.setName(dis.getName());
+                            ci.setCss(dis.getCss());
+                            ci.setOrderNo(dis.getOrderNo());
+                            ci.setDataRepresentationType(DataRepresentationType.Encounter);
+
+                            DataItem i = new DataItem();
+                            i.setMultipleEntries(false);
+                            i.setCi(ci);
+                            i.di = dis;
+                            i.id = itemCounter;
+                            i.orderNo = itemCounter;
+                            i.form = f;
+                            i.setAvailableItemsForSelection(itemController.findItemList(dis.getCategoryOfAvailableItems()));
+
+                            f.getItems().add(i);
+                        }
+
+                    }
+
+                }
+
+            }
+            fs.getForms().add(f);
 
         }
 

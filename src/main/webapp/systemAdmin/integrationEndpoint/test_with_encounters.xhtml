@@ -20,16 +20,16 @@
                     <p:panelGrid columns="2" class="w-100" >
                         <p:outputLabel value="From" ></p:outputLabel>
                         <p:calendar value="#{clientEncounterComponentFormSetController.from}" navigator="true" ></p:calendar>
-                       
+
                         <p:outputLabel value="To" ></p:outputLabel>
                         <p:calendar value="#{clientEncounterComponentFormSetController.to}" navigator="true" ></p:calendar>
-                       
+
                         <p:spacer ></p:spacer>
                         <p:commandButton
                             ajax="false"
                             value="Search"
                             action="#{clientEncounterComponentFormSetController.listEncountersFormSets}"></p:commandButton>
-                        
+
                         <p:outputLabel value="End Point" ></p:outputLabel>
                         <p:selectOneMenu id="selectItem" 
                                          value="#{clientEncounterComponentFormSetController.integrationEndpoint}" 
@@ -43,41 +43,28 @@
                                            itemValue="#{item}" />
                         </p:selectOneMenu>
 
-                        <p:outputLabel value="Name" ></p:outputLabel>
-                        <p:outputLabel value="#{clientEncounterComponentFormSetController.selected.encounter.client.person.nameWithTitle}" ></p:outputLabel>
 
-                        <p:outputLabel value="PHN" ></p:outputLabel>
-                        <p:outputLabel value="#{clientEncounterComponentFormSetController.selected.encounter.client.phn}" ></p:outputLabel>
 
-                        <p:outputLabel value="Created Date" ></p:outputLabel>
-                        <p:outputLabel value="#{clientEncounterComponentFormSetController.selected.createdAt}" >
-                            <f:convertDateTime pattern="dd MMMM yyyy HH:mm a" ></f:convertDateTime>
-                        </p:outputLabel>
-
-                        <p:outputLabel value="Visit Date" ></p:outputLabel>
-                        <p:outputLabel value="#{clientEncounterComponentFormSetController.selected.encounter.encounterDate}" >
-                            <f:convertDateTime pattern="dd MMMM yyyy" ></f:convertDateTime>
-                        </p:outputLabel>
-
-                        <p:outputLabel value="Clinic" ></p:outputLabel>
-                        <p:outputLabel value="#{clientEncounterComponentFormSetController.selected.encounter.encounterDate}" >
-                            <f:convertDateTime pattern="dd MMMM yyyy" ></f:convertDateTime>
-                        </p:outputLabel>
 
                         <p:spacer ></p:spacer>
-                        <p:commandButton 
-                            ajax="false" 
-                            value="Push"
-                            action="#{clientEncounterComponentFormSetController.postSelectedPatientEncountersToNehr()}" ></p:commandButton>
+                        <p:commandButton value="Push" actionListener="#{clientEncounterComponentFormSetController.postSelectedPatientEncountersToNehr}">
+                            <p:ajax process="tbl" update="pushedRecordsCount responseText" />
+                        </p:commandButton>
 
-                        <p:outputLabel value="Response" ></p:outputLabel>
-                        <p:inputTextarea class="w-100" value="#{clientEncounterComponentFormSetController.responseMessage}" ></p:inputTextarea>
+                        <p:outputLabel value="Count Pushed up to now" for="pushedRecordsCount"/>
+                        <p:outputLabel id="pushedRecordsCount" value="#{clientEncounterComponentFormSetController.pushedRecords}" />
+
+                        <p:outputLabel value="Response" for="responseText"/>
+                        <p:inputTextarea rows="10" id="responseText" class="w-100" value="#{clientEncounterComponentFormSetController.responseMessage}"  />
+
                     </p:panelGrid>
-                    
+
                     <p:dataTable value="#{clientEncounterComponentFormSetController.items}"
                                  paginator="true"
+                                 id="tbl"
                                  rows="20"
                                  var="r"
+                                 selectionPageOnly="false"
                                  rowKey="#{r.id}"
                                  selection="#{clientEncounterComponentFormSetController.selectedItems}">
                         <p:column selectionMode="multiple" width="50"></p:column>
@@ -90,7 +77,7 @@
                         <p:column headerText="Patient" >
                             <h:outputText value="#{r.encounter.client.person.name}" ></h:outputText>
                         </p:column>
-                    
+
                     </p:dataTable>
 
                 </h:form>

@@ -99,7 +99,9 @@ import org.json.JSONObject;
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.parser.IParser;
 import ca.uhn.fhir.rest.api.EncodingEnum;
+import ca.uhn.fhir.rest.server.exceptions.BaseServerResponseException;
 import org.hl7.fhir.r4.model.Bundle;
+import org.hl7.fhir.r4.model.OperationOutcome;
 
 /**
  *
@@ -297,17 +299,16 @@ public class FhirR4Controller implements Serializable {
                         theRequest.addHeader(endPoint.getApiKeyName(), endPoint.getApiKeyValue());
                     }
                 }
+
                 @Override
                 public void interceptResponse(IHttpResponse theResponse) {
                 }
             });
         }
 
-        // Serialize and log the bundle for debugging purposes
         String serializedBundle = ctx.newJsonParser().setPrettyPrint(true).encodeResourceToString(bundle);
         System.out.println("Serialized Bundle JSON: " + serializedBundle);
 
-        // Execute the transaction operation with the bundle
         try {
             Bundle responseBundle = fhirClient.transaction().withBundle(bundle).execute();
             System.out.println("Transaction executed successfully.");
@@ -317,9 +318,19 @@ public class FhirR4Controller implements Serializable {
 
             result.setSuccess(true);
             result.setMessage("Bundle processed by FHIR server.");
+            result.setResponseBundle(responseBundle); // Set the response bundle in the result
         } catch (Exception e) {
             System.err.println("Error during FHIR operation: " + e.getMessage());
             e.printStackTrace();
+
+            // Check if the exception is a FHIR client exception and extract OperationOutcome
+            if (e instanceof BaseServerResponseException) {
+                BaseServerResponseException bsre = (BaseServerResponseException) e;
+                if (bsre.getOperationOutcome() != null) {
+                    OperationOutcome operationOutcome = (OperationOutcome) bsre.getOperationOutcome();
+                    result.setOperationOutcome(operationOutcome); // Set the OperationOutcome in the result
+                }
+            }
 
             result.setSuccess(false);
             result.setMessage("Exception occurred: " + e.getMessage());
