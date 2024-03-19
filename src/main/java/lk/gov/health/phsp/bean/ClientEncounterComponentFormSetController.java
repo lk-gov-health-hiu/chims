@@ -134,6 +134,7 @@ public class ClientEncounterComponentFormSetController implements Serializable {
     private List<ClientEncounterComponentFormSet> lastFiveClinicVisits;
     private IntegrationEndpoint integrationEndpoint;
     private String responseMessage;
+    private int pushedRecords;
 
 // </editor-fold>
 // <editor-fold defaultstate="collapsed" desc="Constructors">
@@ -213,13 +214,18 @@ public class ClientEncounterComponentFormSetController implements Serializable {
 
     public void postSelectedPatientEncountersToNehr() {
         responseMessage = "";
+        pushedRecords =0;
         for (ClientEncounterComponentFormSet fs : selectedItems) {
             responseMessage += "\n\n\n";
-            responseMessage += postPatientEncounterBundleToMediators(selected);
+            loadOldNavigateToDataEntry(fs);
+            responseMessage += postPatientEncounterBundleToMediators(fs);
+            pushedRecords++;
         }
 
     }
 
+    
+    
     public String postPatientEncounterBundleToMediators(ClientEncounterComponentFormSet pe) {
         String resMsg = "";
         Bundle bundle = fhirController.createTransactionalBundleWithUUID(UUID.randomUUID().toString());
@@ -2591,6 +2597,14 @@ public class ClientEncounterComponentFormSetController implements Serializable {
 
     public void setResponseMessage(String responseMessage) {
         this.responseMessage = responseMessage;
+    }
+
+    public int getPushedRecords() {
+        return pushedRecords;
+    }
+
+    public void setPushedRecords(int pushedRecords) {
+        this.pushedRecords = pushedRecords;
     }
 
 // </editor-fold>    

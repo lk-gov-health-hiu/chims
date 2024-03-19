@@ -68,11 +68,30 @@
                         <p:commandButton 
                             ajax="false" 
                             value="Push"
-                            action="#{clientEncounterComponentFormSetController.postPatientEncounterBundleToMediators()}" ></p:commandButton>
+                            action="#{clientEncounterComponentFormSetController.postSelectedPatientEncountersToNehr()}" ></p:commandButton>
 
                         <p:outputLabel value="Response" ></p:outputLabel>
                         <p:inputTextarea class="w-100" value="#{clientEncounterComponentFormSetController.responseMessage}" ></p:inputTextarea>
                     </p:panelGrid>
+                    
+                    <p:dataTable value="#{clientEncounterComponentFormSetController.items}"
+                                 paginator="true"
+                                 rows="20"
+                                 var="r"
+                                 rowKey="#{r.id}"
+                                 selection="#{clientEncounterComponentFormSetController.selectedItems}">
+                        <p:column selectionMode="multiple" width="50"></p:column>
+                        <p:column headerText="Date" >
+                            <h:outputText value="#{r.encounter.encounterDate}" ></h:outputText>
+                        </p:column>
+                        <p:column headerText="Clinic" >
+                            <h:outputText value="#{r.encounter.institution.name}" ></h:outputText>
+                        </p:column>
+                        <p:column headerText="Patient" >
+                            <h:outputText value="#{r.encounter.client.person.name}" ></h:outputText>
+                        </p:column>
+                    
+                    </p:dataTable>
 
                 </h:form>
             </ui:define>
