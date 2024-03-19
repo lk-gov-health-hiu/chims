@@ -164,6 +164,12 @@ public class ClientEncounterComponentFormSetController implements Serializable {
         }
     }
 
+    public String navigateToExportPastData() {
+        selectedItems = new ArrayList<>();
+        items = new ArrayList<>();
+        return "/systemAdmin/integrationEndpoint/test_with_encounters";
+    }
+
     public String toViewOrEditDataset() {
         if (selected == null) {
             JsfUtil.addErrorMessage("Nothing selected.");
@@ -202,8 +208,22 @@ public class ClientEncounterComponentFormSetController implements Serializable {
 
     // Modified by Dr M H B Ariyaratne with assistance from ChatGPT from OpenAI
     public void postPatientEncounterBundleToMediators() {
+        responseMessage = postPatientEncounterBundleToMediators(selected);
+    }
+
+    public void postSelectedPatientEncountersToNehr() {
+        responseMessage = "";
+        for (ClientEncounterComponentFormSet fs : selectedItems) {
+            responseMessage += "\n\n\n";
+            responseMessage += postPatientEncounterBundleToMediators(selected);
+        }
+
+    }
+
+    public String postPatientEncounterBundleToMediators(ClientEncounterComponentFormSet pe) {
+        String resMsg = "";
         Bundle bundle = fhirController.createTransactionalBundleWithUUID(UUID.randomUUID().toString());
-        Date encDate = selected.getCreatedAt();
+        Date encDate = pe.getCreatedAt();
 
         Number sbp = null;
         Number dbp = null;
@@ -237,6 +257,8 @@ public class ClientEncounterComponentFormSetController implements Serializable {
         ClientEncounterComponentItem ceciCvdRiskCatNonLab = findFormsetValue("cvd_risk_category_non_lab");
         ClientEncounterComponentItem ceciCvdRiskCatLab = findFormsetValue("cvd_risk_category_lab_method");
 
+        List<ClientEncounterComponentItem> ceciPmhx = findFormsetValues("client_disease_conditions");
+
         if (ceciCvdRiskLab != null) {
             cvdRiskLab = ceciCvdRiskLab.getIntegerNumberValue();
         }
@@ -257,14 +279,12 @@ public class ClientEncounterComponentFormSetController implements Serializable {
         } else if (cvdRiskNonLab != null) {
             cvdRisk = cvdRiskNonLab;
         }
-        
+
         if (cvdRiskCatLab != null) {
             cvdRiskCat = cvdRiskCatLab;
         } else if (cvdRiskNonLab != null) {
             cvdRiskCat = cvdRiskCatNonLab;
         }
-        
-        
 
         if (ceciSbp != null) {
             sbp = ceciSbp.getIntegerNumberValue();
@@ -310,22 +330,22 @@ public class ClientEncounterComponentFormSetController implements Serializable {
         Bundle.BundleEntryComponent orgEntry = null;
         Bundle.BundleEntryComponent locationEntry = null;
 
-        if (selected.getInstitution() != null) {
-            locationEntry = fhirController.createLocationEntry(selected.getInstitution());
+        if (pe.getInstitution() != null) {
+            locationEntry = fhirController.createLocationEntry(pe.getInstitution());
             location = fhirController.extractLocationFromEntry(locationEntry);
-            if (selected.getInstitution().getParent() != null) {
-                orgEntry = fhirController.createOrganizationEntry(selected.getInstitution().getParent());
+            if (pe.getInstitution().getParent() != null) {
+                orgEntry = fhirController.createOrganizationEntry(pe.getInstitution().getParent());
                 organization = fhirController.extractOrganizationFromEntry(orgEntry);
             }
         }
 
-        Bundle.BundleEntryComponent patientEntry = fhirController.createPatientEntry(selected.getEncounter().getClient());
+        Bundle.BundleEntryComponent patientEntry = fhirController.createPatientEntry(pe.getEncounter().getClient());
         patient = fhirController.extractPatientFromEntry(patientEntry);
         Bundle.BundleEntryComponent practitionerEntry = null;
-        if (selected.getCompletedBy() != null) {
-            practitionerEntry = fhirController.createPractitionerEntry(selected.getCompletedBy());
-        } else if (selected.getCreatedBy() != null) {
-            practitionerEntry = fhirController.createPractitionerEntry(selected.getCreatedBy());
+        if (pe.getCompletedBy() != null) {
+            practitionerEntry = fhirController.createPractitionerEntry(pe.getCompletedBy());
+        } else if (pe.getCreatedBy() != null) {
+            practitionerEntry = fhirController.createPractitionerEntry(pe.getCreatedBy());
         } else {
             practitionerEntry = fhirController.createPractitionerEntry(webUserController.getLoggedUser());
         }
@@ -338,17 +358,17 @@ public class ClientEncounterComponentFormSetController implements Serializable {
         List<Location> locations = new ArrayList<>();
         locations.add(location);
 
-        Bundle.BundleEntryComponent encounterEntry = fhirController.createEncounterEntry(patient, practitioners, locations, null, selected.getEncounter().getCompleted(), selected.getEncounter().getCreatedAt(), selected.getEncounter().getCompletedAt());
+        Bundle.BundleEntryComponent encounterEntry = fhirController.createEncounterEntry(patient, practitioners, locations, null, pe.getEncounter().getCompleted(), pe.getEncounter().getCreatedAt(), pe.getEncounter().getCompletedAt());
         org.hl7.fhir.r4.model.Encounter encounter = fhirController.extractEncounter(encounterEntry);
 
-        Bundle.BundleEntryComponent bpEntry=null;
-        Bundle.BundleEntryComponent cholesterolEntry=null;
-        Bundle.BundleEntryComponent fbsEntry=null;
-        Bundle.BundleEntryComponent rbsEntry=null;
-        Bundle.BundleEntryComponent heightEntry=null;
-        Bundle.BundleEntryComponent weightEntry=null;
-        Bundle.BundleEntryComponent bmiEntry=null;
-        Bundle.BundleEntryComponent cvdEntry=null;
+        Bundle.BundleEntryComponent bpEntry = null;
+        Bundle.BundleEntryComponent cholesterolEntry = null;
+        Bundle.BundleEntryComponent fbsEntry = null;
+        Bundle.BundleEntryComponent rbsEntry = null;
+        Bundle.BundleEntryComponent heightEntry = null;
+        Bundle.BundleEntryComponent weightEntry = null;
+        Bundle.BundleEntryComponent bmiEntry = null;
+        Bundle.BundleEntryComponent cvdEntry = null;
 
         fhirController.addEntryToBundle(bundle, deviceEntry);
         if (orgEntry != null) {
@@ -395,25 +415,41 @@ public class ClientEncounterComponentFormSetController implements Serializable {
             bmiEntry = fhirController.createBMIObservationEntry(patient, encounter, organization, location, device, practitioner, encDate, wt, true, UUID.randomUUID().toString(), weight, height);
             fhirController.addEntryToBundle(bundle, bmiEntry);
         }
-        
+
+        List<Bundle.BundleEntryComponent> pmHxs = new ArrayList<>();
+        if (ceciPmhx != null && !ceciPmhx.isEmpty()) {
+            for (ClientEncounterComponentItem ceci : ceciPmhx) {
+                Bundle.BundleEntryComponent pnHx = fhirController.createMedicalHistoryConditionEntry(patient, encounter, practitioner, practitioner, encDate, true, true, ceci.getItem().getCodingSystem(), ceci.getItem().getCodingSystemCode(), ceci.getItem().getName());
+                pmHxs.add(pnHx);
+                fhirController.addEntryToBundle(bundle, pnHx);
+            }
+        }
+
         List<Observation> observations = new ArrayList<>();
         observations.add(fhirController.extractObservation(bmiEntry));
         observations.add(fhirController.extractObservation(fbsEntry));
         observations.add(fhirController.extractObservation(rbsEntry));
         observations.add(fhirController.extractObservation(cholesterolEntry));
-        
-        
-        
-        if(cvdRisk!=null && cvdRiskCat!=null){
+
+        if (cvdRisk != null && cvdRiskCat != null) {
             cvdEntry = fhirController.createCVDRiskAssessmentEntry(patient, encounter, organization, practitioner, encDate, cvdRisk.doubleValue(), cvdRiskCatNonLab, observations);
+            fhirController.addEntryToBundle(bundle, cvdEntry);
         }
-        
 
         FhirOperationResult result = fhirR4Controller.createResourcesInFhirServer(bundle, integrationEndpoint);
-        responseMessage = "Operation Result: " + (result.isSuccess() ? "Success" : "Failure") + "\nMessage: " + result.getMessage();
-        FhirContext ctx = FhirContext.forR4();
-        String serializedBundle = ctx.newJsonParser().setPrettyPrint(true).encodeResourceToString(bundle);
-        responseMessage += "\nBundle: " + serializedBundle;
+        resMsg = "Operation Result: " + (result.isSuccess() ? "Success" : "Failure");
+        resMsg += "\nMessage: " + result.getMessage();
+
+        // Serialize the Resource object if it's not null
+        if (result.getResource() != null) {
+            FhirContext ctx = FhirContext.forR4();
+            String serializedResource = ctx.newJsonParser().setPrettyPrint(true).encodeResourceToString(result.getResource());
+            resMsg += "\nResource: " + serializedResource;
+        } else {
+            resMsg += "\nNo resource available.";
+        }
+
+        return resMsg;
     }
 
     public ClientEncounterComponentItem findFormsetValue(String variableCode) {
@@ -460,6 +496,49 @@ public class ClientEncounterComponentFormSetController implements Serializable {
             }
         }
         return temc;
+    }
+
+    public List<ClientEncounterComponentItem> findFormsetValues(String variableCode) {
+        if (variableCode == null) {
+            return null;
+        }
+        if (variableCode.trim().equals("")) {
+            return null;
+        }
+        List<ClientEncounterComponentItem> lsts = new ArrayList<>();
+        ClientEncounterComponentItem temc = null;
+        for (DataForm f : dataFormset.getForms()) {
+            for (DataItem di : f.getItems()) {
+                if (di == null) {
+                    continue;
+                }
+                if (di.getDi() == null) {
+                    continue;
+                }
+                if (di.getDi().getItem() == null) {
+                    continue;
+                }
+                if (di.getDi().getItem().getCode() == null) {
+                    continue;
+                }
+                if (di.getDi().getItem().getCode().equalsIgnoreCase(variableCode)) {
+                    lsts.add(di.getCi());
+                    for (DataItem tdi : di.getAddedItems()) {
+                        System.out.println("tdi = " + tdi);
+                        System.out.println("tdi = " + tdi.getAddedItems());
+                        //TODO : Add Logic for Other Data Types in addition to Item Referance
+                        if (tdi.getCi() != null && tdi.getCi().getItemValue() != null && tdi.getCi().getItemValue().getCode() != null) {
+                            if (tdi.getCi().getItemValue().getCode().equalsIgnoreCase(variableCode)) {
+                                temc = tdi.getCi();
+                                lsts.add(temc);
+                            }
+                        }
+                    }
+
+                }
+            }
+        }
+        return lsts;
     }
 
     public String pushToFhirServers() {
@@ -906,6 +985,26 @@ public class ClientEncounterComponentFormSetController implements Serializable {
         } else {
             fs = getFacade().findByJpql(j, m, count);
         }
+        if (fs == null) {
+            fs = new ArrayList<>();
+        }
+        return fs;
+    }
+
+    public void listEncountersFormSets() {
+        items = fillEncountersFormSets(from, to);
+    }
+
+    public List<ClientEncounterComponentFormSet> fillEncountersFormSets(Date fromDate, Date toDate) {
+        List<ClientEncounterComponentFormSet> fs;
+        Map m = new HashMap();
+        String j = "select s from ClientEncounterComponentFormSet s where "
+                + " s.retired=false ";
+        j += " and s.encounterFrom between :fd and :td ";
+        m.put("fd", fromDate);
+        m.put("to", toDate);
+        j += " order by s.encounter.encounterFrom desc";
+        fs = getFacade().findByJpql(j, m);
         if (fs == null) {
             fs = new ArrayList<>();
         }

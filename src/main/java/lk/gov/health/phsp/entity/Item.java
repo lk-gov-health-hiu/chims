@@ -72,6 +72,9 @@ public class Item implements Serializable, Identifiable  {
     @Lob
     private String descreption;
     private SelectionDataType dataType;
+    private String codingSystem;
+    private String codingSystemCode;
+    
     private Double absoluteMinimumDbl;
     private Double absoluteMaximumDbl;
     private Integer absoluteMinimumInt;
@@ -499,6 +502,26 @@ public class Item implements Serializable, Identifiable  {
     public void setContainsPersonallyIdentifiableData(Boolean containsPersonallyIdentifiableData) {
         this.containsPersonallyIdentifiableData = containsPersonallyIdentifiableData;
     }
+
+    public String getCodingSystem() {
+        if(codingSystem==null || codingSystem.isEmpty()){
+            codingSystem = "http://snomed.info/sct";
+        }
+        return codingSystem;
+    }
+
+    public void setCodingSystem(String codingSystem) {
+        this.codingSystem = codingSystem;
+    }
+
+    public String getCodingSystemCode() {
+        return codingSystemCode;
+    }
+
+    public void setCodingSystemCode(String codingSystemCode) {
+        this.codingSystemCode = codingSystemCode;
+    }
+    
     
     
 

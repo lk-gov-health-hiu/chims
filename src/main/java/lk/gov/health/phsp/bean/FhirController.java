@@ -44,6 +44,7 @@ import org.hl7.fhir.r4.model.Address;
 import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.CodeableConcept;
 import org.hl7.fhir.r4.model.Coding;
+import org.hl7.fhir.r4.model.Condition;
 import org.hl7.fhir.r4.model.ContactPoint;
 import org.hl7.fhir.r4.model.ContactPoint.ContactPointSystem;
 import org.hl7.fhir.r4.model.ContactPoint.ContactPointUse;
@@ -1018,6 +1019,53 @@ public class FhirController implements Serializable {
         return entryComponent;
     }
 
+    public Bundle.BundleEntryComponent createMedicalHistoryConditionEntry(
+            Patient patient,
+            Encounter encounter,
+            Practitioner recorder,
+            Practitioner asserter,
+            Date recordedDate,
+            Boolean active,
+            Boolean confirmed,
+            String system,
+            String code,
+            String name) {
+
+        Condition condition = new Condition();
+        condition.setId("MedicalHistoryExample");
+        condition.setMeta(new Meta().addProfile("http://fhir.health.gov.lk/ips/StructureDefinition/medical-history"));
+        condition.setClinicalStatus(new CodeableConcept(new Coding("http://terminology.hl7.org/CodeSystem/condition-clinical", active ? "active" : "inactive", null)));
+        condition.setVerificationStatus(new CodeableConcept(new Coding("http://terminology.hl7.org/CodeSystem/condition-ver-status", confirmed ? "confirmed" : "unconfirmed", null)));
+        condition.setCategory(Arrays.asList(new CodeableConcept(new Coding("http://terminology.hl7.org/CodeSystem/condition-category", "problem-list-item", null))));
+        condition.setCode(new CodeableConcept().addCoding(new Coding(system, code, name)));
+        condition.setSubject(new Reference("Patient/" + patient.getIdElement().getIdPart()));
+        condition.setEncounter(new Reference("Encounter/" + encounter.getIdElement().getIdPart()));
+        condition.setRecordedDate(recordedDate);
+        condition.setRecorder(new Reference("Practitioner/" + recorder.getIdElement().getIdPart()));
+        condition.setAsserter(new Reference("Practitioner/" + asserter.getIdElement().getIdPart()));
+
+        // Constructing the narrative (text representation)
+        Narrative narrative = new Narrative();
+        narrative.setStatus(Narrative.NarrativeStatus.GENERATED);
+        String div = String.format("<div xmlns=\"http://www.w3.org/1999/xhtml\"><p><b>Generated Narrative: Condition</b></p><p><b>clinicalStatus</b>: %s</p><p><b>verificationStatus</b>: %s</p><p><b>category</b>: Problem List Item</p><p><b>code</b>: %s (%s#%s)</p><p><b>subject</b>: %s</p><p><b>encounter</b>: %s</p><p><b>recordedDate</b>: %s</p><p><b>recorder</b>: %s</p><p><b>asserter</b>: %s</p></div>",
+                active ? "Active" : "Inactive",
+                confirmed ? "Confirmed" : "Unconfirmed",
+                name, system, code,
+                "Patient/PatientExample", // This and the following references should be dynamically generated based on actual data
+                "Encounter/TargetFacilityEncounterExample",
+                recordedDate.toString(),
+                "Practitioner/GeneralPractitionerExample",
+                "Practitioner/GeneralPractitionerExample");
+        narrative.setDivAsString(div);
+        condition.setText(narrative);
+
+        Bundle.BundleEntryComponent entryComponent = new Bundle.BundleEntryComponent();
+        entryComponent.setFullUrl("urn:uuid:" + condition.getId());
+        entryComponent.setResource(condition);
+
+        return entryComponent;
+    }
+
     public Bundle.BundleEntryComponent createRandomBloodSugarObservationEntry(
             Patient patient,
             Encounter encounter,
@@ -1075,7 +1123,55 @@ public class FhirController implements Serializable {
         return entryComponent;
     }
 
-     public Bundle.BundleEntryComponent createCVDRiskAssessmentEntry(
+    public Bundle.BundleEntryComponent createTobaccoSmokerObservationEntry(
+            Patient patient,
+            Encounter encounter,
+            Organization organization,
+            Location location,
+            Device device,
+            Practitioner practitioner,
+            Date performedDate,
+            boolean isSmoker,
+            boolean active,
+            String identifier) {
+
+        Observation observation = new Observation();
+        observation.setId(identifier);
+        observation.setMeta(new Meta().addProfile("http://fhir.health.gov.lk/ips/StructureDefinition/risk-behaviour-tobacco-smoker"));
+        observation.setStatus(active ? Observation.ObservationStatus.FINAL : Observation.ObservationStatus.AMENDED);
+        observation.setCategory(Collections.singletonList(new CodeableConcept(new Coding("http://terminology.hl7.org/CodeSystem/observation-category", "social-history", "Social History"))));
+        observation.setCode(new CodeableConcept().addCoding(new Coding("http://loinc.org", "81229-7", "Tobacco smoking status for tobacco smoker")));
+        observation.setSubject(new Reference("Patient/" + patient.getIdElement().getIdPart()));
+        observation.setEncounter(new Reference("Encounter/" + encounter.getIdElement().getIdPart()));
+        observation.setEffective(new DateTimeType(performedDate));
+        observation.setPerformer(Arrays.asList(
+                new Reference("Organization/" + organization.getIdElement().getIdPart()),
+                new Reference("Practitioner/" + practitioner.getIdElement().getIdPart())
+        ));
+        observation.setDevice(new Reference("Device/" + device.getIdElement().getIdPart()));
+
+        // Set the value based on isSmoker boolean
+        String smokingStatus = isSmoker ? "Current every day smoker" : "Never smoker";
+        String smokingCode = isSmoker ? "LA15920-4" : "LA18976-3"; // Example codes, please verify against the actual coding system
+        observation.setValue(new CodeableConcept().addCoding(new Coding("http://loinc.org", smokingCode, smokingStatus)));
+
+        // Constructing the narrative (text representation)
+        Narrative narrative = new Narrative();
+        narrative.setStatus(Narrative.NarrativeStatus.GENERATED);
+        String div = "<div xmlns=\"http://www.w3.org/1999/xhtml\"><p>Tobacco Smoker Observation for patient '"
+                + patient.getName().stream().findFirst().orElse(new HumanName()).getText()
+                + "'.</p><p>Status: " + smokingStatus + ".</p></div>";
+        observation.setText(narrative);
+
+        Bundle.BundleEntryComponent entryComponent = new Bundle.BundleEntryComponent();
+        entryComponent.setFullUrl("http://hapi-fhir:8080/fhir/Observation/" + identifier);
+        entryComponent.setResource(observation);
+        entryComponent.getRequest().setMethod(Bundle.HTTPVerb.PUT).setUrl("Observation/" + identifier);
+
+        return entryComponent;
+    }
+
+    public Bundle.BundleEntryComponent createCVDRiskAssessmentEntry(
             Patient patient,
             Encounter encounter,
             Organization organization,
@@ -1096,14 +1192,10 @@ public class FhirController implements Serializable {
         riskAssessment.setPerformer(new Reference("Practitioner/" + practitioner.getIdElement().getIdPart()));
 
         // Convert Observations to References safely
-         // Safely convert Observations to References
         List<Reference> basisReferences = new ArrayList<>();
-        if (basisObservations != null) {
-            for (Observation obs : basisObservations) {
-                if (obs != null && obs.getIdElement() != null && obs.getIdElement().getIdPart() != null) {
-                    Reference reference = new Reference("Observation/" + obs.getIdElement().getIdPart());
-                    basisReferences.add(reference);
-                }
+        for (Observation obs : basisObservations) {
+            if (obs != null && obs.getIdElement() != null && obs.getIdElement().getIdPart() != null) {
+                basisReferences.add(new Reference("Observation/" + obs.getIdElement().getIdPart()));
             }
         }
         riskAssessment.setBasis(basisReferences);
@@ -1112,25 +1204,29 @@ public class FhirController implements Serializable {
         prediction.setOutcome(new CodeableConcept(new Coding("http://snomed.info/sct", "395112001", "Risk of heart attack")));
         prediction.setProbability(new DecimalType(probability));
         prediction.setQualitativeRisk(new CodeableConcept(new Coding("http://fhir.health.gov.lk/ips/CodeSystem/cs-cvd-risk-category", "Critical", cvdRiskCategoryText)));
-        
-        Range whenRange = new Range();
-        whenRange.setLow(new SimpleQuantity().setValue(39).setUnit("years").setSystem("http://unitsofmeasure.org").setCode("a"));
-        whenRange.setHigh(new SimpleQuantity().setValue(49).setUnit("years").setSystem("http://unitsofmeasure.org").setCode("a"));
-        prediction.setWhen(whenRange);
-        
+
+        prediction.setWhen(new Range().setLow(new SimpleQuantity().setValue(39).setUnit("years").setSystem("http://unitsofmeasure.org").setCode("a"))
+                .setHigh(new SimpleQuantity().setValue(49).setUnit("years").setSystem("http://unitsofmeasure.org").setCode("a")));
+
         riskAssessment.setPrediction(Collections.singletonList(prediction));
 
-        Narrative narrative = new Narrative();
-        narrative.setStatus(Narrative.NarrativeStatus.GENERATED);
-        String div = "<div xmlns=\"http://www.w3.org/1999/xhtml\"><p>CVD Risk Assessment for patient '" 
-                + patient.getName().stream().findFirst().orElse(new HumanName()).getText() 
-                + "'.</p><p>Probability of heart attack: " + probability + "%. Age range: 39-49 years.</p></div>";
-        riskAssessment.setText(narrative);
+        // Setting narrative
+        String narrativeText = String.format("<div xmlns=\"http://www.w3.org/1999/xhtml\"><p><b>Generated Narrative with Details</b></p><p><b>Status</b>: %s</p><p><b>Code</b>: %s</p><p><b>Subject</b>: %s</p><p><b>Encounter</b>: %s</p><p><b>Occurrence</b>: %s</p><p><b>Performer</b>: %s</p><p><b>Risk Assessment Detail</b>: Probability - %s%%; Age range - 39-49 years.</p></div>",
+                riskAssessment.getStatus().getDisplay(),
+                riskAssessment.getCode().getCodingFirstRep().getDisplay(),
+                patient.getName().stream().findFirst().orElse(new HumanName()).getText(),
+                "Encounter/" + encounter.getIdElement().getIdPart(),
+                performedDate.toString(),
+                "Practitioner/" + practitioner.getIdElement().getIdPart(),
+                probability);
+
+        riskAssessment.getText().setStatus(Narrative.NarrativeStatus.GENERATED);
+        riskAssessment.getText().setDivAsString(narrativeText);
 
         Bundle.BundleEntryComponent entryComponent = new Bundle.BundleEntryComponent();
-        entryComponent.setFullUrl("http://hapi-fhir:8080/fhir/RiskAssessment/CVDRiskCategoryExample");
+        entryComponent.setFullUrl("http://hapi-fhir:8080/fhir/RiskAssessment/" + riskAssessment.getId());
         entryComponent.setResource(riskAssessment);
-        entryComponent.getRequest().setMethod(Bundle.HTTPVerb.PUT).setUrl("RiskAssessment/CVDRiskCategoryExample");
+        entryComponent.getRequest().setMethod(Bundle.HTTPVerb.PUT).setUrl("RiskAssessment/" + riskAssessment.getId());
 
         return entryComponent;
     }

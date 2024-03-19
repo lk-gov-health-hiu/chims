@@ -52,9 +52,19 @@
                                     <f:ajax event="change" execute="@this" render=":#{p:resolveFirstComponentWithId('tabValidation', view).clientId}" ></f:ajax>
                                 </h:selectOneMenu>
 
+                                <h:outputLabel value="Coding System:" for="codingSystem" />
+                                <h:inputText id="codingSystem" required="false"
+                                             value="#{itemController.selected.codingSystem}" 
+                                             title="Coding System" >
+                                </h:inputText>
+                                
+                                 <h:outputLabel value="Code in the Coding System:" for="codingSystemCode" />
+                                <h:inputText id="codingSystemCode" required="false"
+                                             value="#{itemController.selected.codingSystemCode}" 
+                                             title="Coding System Code" >
+                                </h:inputText>
 
-
-                                <h:outputLabel value="Contains Personally identifiable data" for="personallyIdentifiable" />
+                                <h:outputLabel value="-" for="personallyIdentifiable" />
                                 <p:selectBooleanCheckbox id="personallyIdentifiable" 
                                                          value="#{itemController.selected.containsPersonallyIdentifiableData}" ></p:selectBooleanCheckbox>
 
