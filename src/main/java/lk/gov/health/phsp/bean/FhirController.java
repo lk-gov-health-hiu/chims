@@ -154,7 +154,6 @@ public class FhirController implements Serializable {
             for (Location location : locations) {
                 // Check if the location or its ID element is null
                 if (location == null || location.getIdElement() == null || location.getIdElement().getIdPart() == null) {
-                    System.out.println("Warning: A location is null or does not have an ID.");
                     continue; // Skip this location
                 }
 
@@ -1408,14 +1407,13 @@ public class FhirController implements Serializable {
         }
 
         Bundle.BundleEntryComponent orgEntry = createOrganizationEntry(moh);
-        System.out.println("orgEntry = " + orgEntry);
+        // System.out.println("orgEntry = " + orgEntry);
         Bundle.BundleEntryComponent locationEntry = createLocationEntry(hiu);
-        System.out.println("locationEntry = " + locationEntry);
+        // System.out.println("locationEntry = " + locationEntry);
 
         Organization owner = extractOrganizationFromEntry(orgEntry);
-        System.out.println("owner = " + owner);
+        // System.out.println("owner = " + owner);
         Location location = extractLocationFromEntry(locationEntry);
-        System.out.println("location = " + location);
 
         Coding typeCoding = new Coding();
         typeCoding.setSystem("http://snomed.info/sct");
@@ -1467,17 +1465,15 @@ public class FhirController implements Serializable {
         versionComponent.setType(new CodeableConcept().addCoding(versionCoding));
         versionComponent.setValue(versionNumber);
         device.addVersion(versionComponent);
+        // Set Owner and Location References
 
         // Set Owner and Location References
-        System.out.println("owner = " + owner);
+        // System.out.println("owner = " + owner);
         if (owner != null) {
             device.setOwner(new Reference("Organization/" + owner.getIdElement().getIdPart()));
-            System.out.println("owner.getIdElement().getIdPart() = " + owner.getIdElement().getIdPart());
         }
-        System.out.println("location = " + location);
         if (location != null) {
             device.setLocation(new Reference("Location/" + location.getIdElement().getIdPart()));
-            System.out.println("location.getIdElement().getIdPart() = " + location.getIdElement().getIdPart());
         }
 
         // Generate Narrative

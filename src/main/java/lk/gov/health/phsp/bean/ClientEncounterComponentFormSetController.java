@@ -221,6 +221,7 @@ public class ClientEncounterComponentFormSetController implements Serializable {
             loadOldData(fs);
             responseMessage += postPatientEncounterBundleToMediators(fs);
             pushedRecords++;
+            System.out.println(pushedRecords + " Formset ID Pushed = " + fs.getId());
         }
     }
 
@@ -315,14 +316,13 @@ public class ClientEncounterComponentFormSetController implements Serializable {
             bmi = ceciBmi.getRealNumberValue();
         }
 
-        System.out.println("SBP: " + sbp);
-        System.out.println("DBP: " + dbp);
-        System.out.println("TC: " + tc);
-        System.out.println("FBS: " + fbs);
-        System.out.println("RBS: " + rbs);
-        System.out.println("HT: " + ht);
-        System.out.println("HT: " + wt);
-        System.out.println("BMI: " + bmi);
+        // System.out.println("SBP: " + sbp);
+        // System.out.println("DBP: " + dbp);
+        // System.out.println("TC: " + tc);
+        // System.out.println("FBS: " + fbs);
+        // System.out.println("RBS: " + rbs);
+        // System.out.println("HT: " + ht);
+        // System.out.println("HT: " + wt);
 
         Device device = null;
         Patient patient;
@@ -464,7 +464,7 @@ public class ClientEncounterComponentFormSetController implements Serializable {
 
     public ClientEncounterComponentItem findFormsetValue(String variableCode) {
         if (variableCode == null) {
-            //System.out.println("variableCode is null");
+            //// System.out.println("variableCode is null");
             return null;
         }
         if (variableCode.trim().equals("")) {
@@ -488,12 +488,12 @@ public class ClientEncounterComponentFormSetController implements Serializable {
                 if (di.getDi().getItem().getCode().equalsIgnoreCase(variableCode)) {
                     return di.getCi();
 //                    if (di.getAddedItems() == null) {
-//                        //System.out.println("di is null " );
+//                        //// System.out.println("di is null " );
 //                        continue;
 //                    }
 //                    for (DataItem tdi : di.getAddedItems()) {
-//                        System.out.println("tdi = " + tdi);
-//                        System.out.println("tdi = " + tdi.getAddedItems());
+//                        // System.out.println("tdi = " + tdi);
+//                        // System.out.println("tdi = " + tdi.getAddedItems());
 //                        //TODO : Add Logic for Other Data Types in addition to Item Referance
 //                        if (tdi.getCi() != null && tdi.getCi().getItemValue() != null && tdi.getCi().getItemValue().getCode() != null) {
 //                            if (tdi.getCi().getItemValue().getCode().equalsIgnoreCase(valueCode)) {
@@ -534,8 +534,7 @@ public class ClientEncounterComponentFormSetController implements Serializable {
                 if (di.getDi().getItem().getCode().equalsIgnoreCase(variableCode)) {
                     lsts.add(di.getCi());
                     for (DataItem tdi : di.getAddedItems()) {
-                        System.out.println("tdi = " + tdi);
-                        System.out.println("tdi = " + tdi.getAddedItems());
+                        // System.out.println("tdi = " + tdi);
                         //TODO : Add Logic for Other Data Types in addition to Item Referance
                         if (tdi.getCi() != null && tdi.getCi().getItemValue() != null && tdi.getCi().getItemValue().getCode() != null) {
                             if (tdi.getCi().getItemValue().getCode().equalsIgnoreCase(variableCode)) {
@@ -1380,13 +1379,13 @@ public class ClientEncounterComponentFormSetController implements Serializable {
     }
 
     public void loadOldNavigateToDataEntry(ClientEncounterComponentFormSet cfs) {
-        //System.out.println("loadOldNavigateToDataEntry");
+        //// System.out.println("loadOldNavigateToDataEntry");
         if (cfs == null) {
             return;
         }
-        //System.out.println("cfs = " + cfs.getId());
+        //// System.out.println("cfs = " + cfs.getId());
         DesignComponentFormSet dfs = cfs.getReferanceDesignComponentFormSet();
-        //System.out.println("dfs = " + dfs.getId());
+        //// System.out.println("dfs = " + dfs.getId());
 
         DataFormset fs = new DataFormset();
 
@@ -1423,7 +1422,7 @@ public class ClientEncounterComponentFormSetController implements Serializable {
                 skipThisForm = true;
             }
 
-            // //System.out.println("skipThisForm = " + skipThisForm);
+            // //// System.out.println("skipThisForm = " + skipThisForm);
             if (!skipThisForm) {
                 formCounter++;
                 String j = "select cf "
@@ -1434,11 +1433,11 @@ public class ClientEncounterComponentFormSetController implements Serializable {
                 Map m = new HashMap();
                 m.put("rf", df);
                 m.put("cfs", cfs);
-// // //System.out.println("df = " + df.getId());
+// // //// System.out.println("df = " + df.getId());
 
                 ClientEncounterComponentForm cf = clientEncounterComponentFormController.getClientEncounterComponentForm(j, m);
 
-                // //System.out.println("cf = " + cf);
+                // //// System.out.println("cf = " + cf);
                 if (cf == null) {
                     cf = new ClientEncounterComponentForm();
 
@@ -1496,12 +1495,12 @@ public class ClientEncounterComponentFormSetController implements Serializable {
                         disSkipThisItem = true;
                     }
 
-                    // //System.out.println("disSkipThisItem = " + disSkipThisItem);
+                    // //// System.out.println("disSkipThisItem = " + disSkipThisItem);
                     if (!disSkipThisItem) {
 
                         if (dis.isMultipleEntiesPerForm()) {
 
-                            // //System.out.println("dis.isMultipleEntiesPerForm() = " + dis.isMultipleEntiesPerForm());
+                            // //// System.out.println("dis.isMultipleEntiesPerForm() = " + dis.isMultipleEntiesPerForm());
                             j = "Select ci "
                                     + " from ClientEncounterComponentItem ci "
                                     + " where ci.retired=:ret "
@@ -1512,10 +1511,10 @@ public class ClientEncounterComponentFormSetController implements Serializable {
                             m.put("ret", false);
                             m.put("cf", cf);
                             m.put("dis", dis);
-                            // //System.out.println("cf = " + cf.getId());
-                            // //System.out.println("dis = " + dis.getId());
+                            // //// System.out.println("cf = " + cf.getId());
+                            // //// System.out.println("dis = " + dis.getId());
                             List<ClientEncounterComponentItem> cis = clientEncounterComponentItemController.getItems(j, m);
-                            // //System.out.println("cis = " + cis);
+                            // //// System.out.println("cis = " + cis);
 
                             itemCounter++;
                             ClientEncounterComponentItem ci = new ClientEncounterComponentItem();
@@ -1573,11 +1572,11 @@ public class ClientEncounterComponentFormSetController implements Serializable {
                             m.put("ret", false);
                             m.put("cf", cf);
                             m.put("dis", dis);
-                            // //System.out.println("cf = " + cf.getId());
-                            // //System.out.println("dis = " + dis.getId());
+                            // //// System.out.println("cf = " + cf.getId());
+                            // //// System.out.println("dis = " + dis.getId());
                             ClientEncounterComponentItem ci;
                             ci = clientEncounterComponentItemController.getItem(j, m);
-                            // //System.out.println("ci = " + ci);
+                            // //// System.out.println("ci = " + ci);
                             if (ci != null) {
                                 DataItem i = new DataItem();
                                 i.setMultipleEntries(false);
@@ -1633,13 +1632,13 @@ public class ClientEncounterComponentFormSetController implements Serializable {
     }
 
     public void loadOldData(ClientEncounterComponentFormSet cfs) {
-        //System.out.println("loadOldNavigateToDataEntry");
+        //// System.out.println("loadOldNavigateToDataEntry");
         if (cfs == null) {
             return;
         }
-        //System.out.println("cfs = " + cfs.getId());
+        //// System.out.println("cfs = " + cfs.getId());
         DesignComponentFormSet dfs = cfs.getReferanceDesignComponentFormSet();
-        //System.out.println("dfs = " + dfs.getId());
+        //// System.out.println("dfs = " + dfs.getId());
 
         DataFormset fs = new DataFormset();
 
@@ -1671,11 +1670,11 @@ public class ClientEncounterComponentFormSetController implements Serializable {
             Map m = new HashMap();
             m.put("rf", df);
             m.put("cfs", cfs);
-// // //System.out.println("df = " + df.getId());
+// // //// System.out.println("df = " + df.getId());
 
             ClientEncounterComponentForm cf = clientEncounterComponentFormController.getClientEncounterComponentForm(j, m);
 
-            // //System.out.println("cf = " + cf);
+            // //// System.out.println("cf = " + cf);
             if (cf == null) {
                 cf = new ClientEncounterComponentForm();
 
@@ -1733,12 +1732,12 @@ public class ClientEncounterComponentFormSetController implements Serializable {
                     disSkipThisItem = true;
                 }
 
-                // //System.out.println("disSkipThisItem = " + disSkipThisItem);
+                // //// System.out.println("disSkipThisItem = " + disSkipThisItem);
                 if (!disSkipThisItem) {
 
                     if (dis.isMultipleEntiesPerForm()) {
 
-                        // //System.out.println("dis.isMultipleEntiesPerForm() = " + dis.isMultipleEntiesPerForm());
+                        // //// System.out.println("dis.isMultipleEntiesPerForm() = " + dis.isMultipleEntiesPerForm());
                         j = "Select ci "
                                 + " from ClientEncounterComponentItem ci "
                                 + " where ci.retired=:ret "
@@ -1749,10 +1748,10 @@ public class ClientEncounterComponentFormSetController implements Serializable {
                         m.put("ret", false);
                         m.put("cf", cf);
                         m.put("dis", dis);
-                        // //System.out.println("cf = " + cf.getId());
-                        // //System.out.println("dis = " + dis.getId());
+                        // //// System.out.println("cf = " + cf.getId());
+                        // //// System.out.println("dis = " + dis.getId());
                         List<ClientEncounterComponentItem> cis = clientEncounterComponentItemController.getItems(j, m);
-                        // //System.out.println("cis = " + cis);
+                        // //// System.out.println("cis = " + cis);
 
                         itemCounter++;
                         ClientEncounterComponentItem ci = new ClientEncounterComponentItem();
@@ -1810,11 +1809,11 @@ public class ClientEncounterComponentFormSetController implements Serializable {
                         m.put("ret", false);
                         m.put("cf", cf);
                         m.put("dis", dis);
-                        // //System.out.println("cf = " + cf.getId());
-                        // //System.out.println("dis = " + dis.getId());
+                        // //// System.out.println("cf = " + cf.getId());
+                        // //// System.out.println("dis = " + dis.getId());
                         ClientEncounterComponentItem ci;
                         ci = clientEncounterComponentItemController.getItem(j, m);
-                        // //System.out.println("ci = " + ci);
+                        // //// System.out.println("ci = " + ci);
                         if (ci != null) {
                             DataItem i = new DataItem();
                             i.setMultipleEntries(false);

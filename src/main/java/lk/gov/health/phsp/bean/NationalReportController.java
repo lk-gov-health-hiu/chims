@@ -953,8 +953,8 @@ public class NationalReportController implements Serializable {
 //        ClientEncounterComponentItem c = new ClientEncounterComponentItem();
 //        c.getEncounter().getClient().getPerson().getSex().getCode();
         observationValueCounts = new ArrayList<>();
-        //System.out.println("m = " + m);
-        //System.out.println("j = " + j);
+        //// System.out.println("m = " + m);
+        //// System.out.println("j = " + j);
         List<Object> objs = clientFacade.findAggregates(j, m);
         if (objs == null) {
             return;
@@ -989,8 +989,8 @@ public class NationalReportController implements Serializable {
         m.put("td", getToDate());
 
         observationValueCounts = new ArrayList<>();
-        //System.out.println("m = " + m);
-        //System.out.println("j = " + j);
+        //// System.out.println("m = " + m);
+        //// System.out.println("j = " + j);
         List<Object> objs = clientFacade.findAggregates(j, m, TemporalType.TIMESTAMP);
         if (objs == null) {
             return;
@@ -1023,8 +1023,8 @@ public class NationalReportController implements Serializable {
         m.put("td", getToDate());
 
         observationValueCounts = new ArrayList<>();
-        //System.out.println("m = " + m);
-        //System.out.println("j = " + j);
+        //// System.out.println("m = " + m);
+        //// System.out.println("j = " + j);
         List<Object> objs = clientFacade.findAggregates(j, m, TemporalType.TIMESTAMP);
         if (objs == null) {
             return;
@@ -1062,8 +1062,8 @@ public class NationalReportController implements Serializable {
         m.put("td", getToDate());
 
         observationValueCounts = new ArrayList<>();
-        //System.out.println("m = " + m);
-        //System.out.println("j = " + j);
+        //// System.out.println("m = " + m);
+        //// System.out.println("j = " + j);
         List<Object> objs = clientFacade.findAggregates(j, m);
         if (objs == null) {
             return;
@@ -1101,8 +1101,8 @@ public class NationalReportController implements Serializable {
         m.put("td", getToDate());
 
         observationValueCounts = new ArrayList<>();
-        //System.out.println("m = " + m);
-        //System.out.println("j = " + j);
+        //// System.out.println("m = " + m);
+        //// System.out.println("j = " + j);
         List<Object> objs = clientFacade.findAggregates(j, m);
         if (objs == null) {
             return;
@@ -1140,8 +1140,8 @@ public class NationalReportController implements Serializable {
         m.put("td", getToDate());
 
         observationValueCounts = new ArrayList<>();
-        //System.out.println("m = " + m);
-        //System.out.println("j = " + j);
+        //// System.out.println("m = " + m);
+        //// System.out.println("j = " + j);
         List<Object> objs = clientFacade.findAggregates(j, m);
         if (objs == null) {
             return;
@@ -1156,13 +1156,13 @@ public class NationalReportController implements Serializable {
     }
 
     public DataFormset fillClinicalDataFormset(ClientEncounterComponentFormSet cfs) {
-        //System.out.println("loadOldNavigateToDataEntry");
+        //// System.out.println("loadOldNavigateToDataEntry");
         if (cfs == null) {
             return null;
         }
-        //System.out.println("cfs = " + cfs.getId());
+        //// System.out.println("cfs = " + cfs.getId());
         DesignComponentFormSet dfs = cfs.getReferanceDesignComponentFormSet();
-        //System.out.println("dfs = " + dfs.getId());
+        //// System.out.println("dfs = " + dfs.getId());
 
         DataFormset fs = new DataFormset();
 
@@ -1176,11 +1176,11 @@ public class NationalReportController implements Serializable {
         int formCounter = 0;
 
         for (DesignComponentForm df : dfList) {
-            // //System.out.println("df = " + df.getName());
+            // //// System.out.println("df = " + df.getName());
 
             boolean skipThisForm = false;
 
-            // //System.out.println("skipThisForm = " + skipThisForm);
+            // //// System.out.println("skipThisForm = " + skipThisForm);
             if (!skipThisForm) {
                 formCounter++;
                 String j = "select cf "
@@ -1191,11 +1191,11 @@ public class NationalReportController implements Serializable {
                 Map m = new HashMap();
                 m.put("rf", df);
                 m.put("cfs", cfs);
-// // //System.out.println("df = " + df.getId());
+// // //// System.out.println("df = " + df.getId());
 
                 ClientEncounterComponentForm cf = clientEncounterComponentFormController.getClientEncounterComponentForm(j, m);
 
-                // //System.out.println("cf = " + cf);
+                // //// System.out.println("cf = " + cf);
                 if (cf == null) {
                     cf = new ClientEncounterComponentForm();
 
@@ -1225,15 +1225,15 @@ public class NationalReportController implements Serializable {
 
                 for (DesignComponentFormItem dis : diList) {
 
-                    // //System.out.println("dis = " + dis.getName());
+                    // //// System.out.println("dis = " + dis.getName());
                     boolean disSkipThisItem = false;
 
-                    // //System.out.println("disSkipThisItem = " + disSkipThisItem);
+                    // //// System.out.println("disSkipThisItem = " + disSkipThisItem);
                     if (!disSkipThisItem) {
 
                         if (dis.isMultipleEntiesPerForm()) {
 
-                            // //System.out.println("dis.isMultipleEntiesPerForm() = " + dis.isMultipleEntiesPerForm());
+                            // //// System.out.println("dis.isMultipleEntiesPerForm() = " + dis.isMultipleEntiesPerForm());
                             j = "Select ci "
                                     + " from ClientEncounterComponentItem ci "
                                     + " where ci.retired=:ret "
@@ -1244,10 +1244,10 @@ public class NationalReportController implements Serializable {
                             m.put("ret", false);
                             m.put("cf", cf);
                             m.put("dis", dis);
-                            // //System.out.println("cf = " + cf.getId());
-                            // //System.out.println("dis = " + dis.getId());
+                            // //// System.out.println("cf = " + cf.getId());
+                            // //// System.out.println("dis = " + dis.getId());
                             List<ClientEncounterComponentItem> cis = clientEncounterComponentItemController.getItems(j, m);
-                            // //System.out.println("cis = " + cis);
+                            // //// System.out.println("cis = " + cis);
 
                             itemCounter++;
                             ClientEncounterComponentItem ci = new ClientEncounterComponentItem();
@@ -1303,11 +1303,11 @@ public class NationalReportController implements Serializable {
                             m.put("ret", false);
                             m.put("cf", cf);
                             m.put("dis", dis);
-                            // //System.out.println("cf = " + cf.getId());
-                            // //System.out.println("dis = " + dis.getId());
+                            // //// System.out.println("cf = " + cf.getId());
+                            // //// System.out.println("dis = " + dis.getId());
                             ClientEncounterComponentItem ci;
                             ci = clientEncounterComponentItemController.getItem(j, m);
-                            // //System.out.println("ci = " + ci);
+                            // //// System.out.println("ci = " + ci);
                             if (ci != null) {
                                 DataItem i = new DataItem();
                                 i.setMultipleEntries(false);

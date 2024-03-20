@@ -327,11 +327,11 @@ public class ItemController implements Serializable {
 
         /**
          * if(cell.getCellType() == Cell.CELL_TYPE_FORMULA) {
-         * System.out.println("Formula is " + cell.getCellFormula());
+         * // System.out.println("Formula is " + cell.getCellFormula());
          * switch(cell.getCachedFormulaResultType()) { case
-         * Cell.CELL_TYPE_NUMERIC: System.out.println("Last evaluated as: " +
+         * Cell.CELL_TYPE_NUMERIC: // System.out.println("Last evaluated as: " +
          * cell.getNumericCellValue()); break; case Cell.CELL_TYPE_STRING:
-         * System.out.println("Last evaluated as \"" +
+         * // System.out.println("Last evaluated as \"" +
          * cell.getRichStringCellValue() + "\""); break; } }
          */
         if (null != cell.getCellType()) {
@@ -530,13 +530,13 @@ public class ItemController implements Serializable {
                     strengthUnit.setItemType(ItemType.Strength_Unit);
                     save(strengthUnit);
                 }
-                // //// //System.out.println("strengthUnit = " + strengthUnit.getName());
+                // //// //// System.out.println("strengthUnit = " + strengthUnit.getName());
                 //Pack Unit
                 cell = sheet.getCell(packUnitCol, i);
                 packUnitName = cell.getContents();
 
                 if (packUnitName == null || packUnitName.trim().equals("")) {
-                    // //System.out.println("No pack unit for line number " + i);
+                    // //// System.out.println("No pack unit for line number " + i);
                     continue;
                 }
                 String packUnitCode = CommonController.prepareAsCode("pack_unit_" + packUnitName);
@@ -553,7 +553,7 @@ public class ItemController implements Serializable {
                 cell = sheet.getCell(issueUnitCol, i);
                 issueUnitName = cell.getContents();
                 if (issueUnitName == null || issueUnitName.trim().equals("")) {
-                    // //System.out.println("Issue Unit is not found in line no " + i);
+                    // //// System.out.println("Issue Unit is not found in line no " + i);
                     continue;
                 }
                 String issueUnitCode = CommonController.prepareAsCode("issue_unit_" + issueUnitName);
@@ -569,7 +569,7 @@ public class ItemController implements Serializable {
                 //StrengthOfAnMeasurementUnit
                 cell = sheet.getCell(strengthOfIssueUnitCol, i);
                 strStrength = cell.getContents();
-                // //// //System.out.println("strStrength = " + strStrength);
+                // //// //// System.out.println("strStrength = " + strStrength);
                 if (!strStrength.equals("")) {
                     try {
                         strengthUnitsPerIssueUnit = Double.parseDouble(strStrength);
@@ -583,7 +583,7 @@ public class ItemController implements Serializable {
                 //Issue Units Per Pack
                 cell = sheet.getCell(issueUnitsPerPackCol, i);
                 strPackSize = cell.getContents();
-                // //// //System.out.println("strPackSize = " + strPackSize);
+                // //// //// System.out.println("strPackSize = " + strPackSize);
                 if (!strPackSize.equals("")) {
                     try {
                         issueUnitsPerPack = Double.parseDouble(strPackSize);
@@ -597,9 +597,9 @@ public class ItemController implements Serializable {
                 //Vtm
                 cell = sheet.getCell(vtmCol, i);
                 vtmName = cell.getContents();
-                // //// //System.out.println("strGenericName = " + strGenericName);
+                // //// //// System.out.println("strGenericName = " + strGenericName);
                 if (vtmName == null || vtmName.trim().equals("")) {
-                    // //System.out.println("VTM is not given in line no " + i);
+                    // //// System.out.println("VTM is not given in line no " + i);
                 }
 
                 String vtmCode = CommonController.prepareAsCode("vtm_" + vtmName);

@@ -46,9 +46,9 @@ public class RequestController {
     public String getRemoteAddress() {
         HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
         String ipAddress = request.getHeader("X-FORWARDED-FOR");
-        // //System.out.println("ipAddress = " + ipAddress);
+        // //// System.out.println("ipAddress = " + ipAddress);
         ipAddress = request.getRemoteAddr();
-        // //System.out.println("ipAddress = " + ipAddress);
+        // //// System.out.println("ipAddress = " + ipAddress);
         return ipAddress;
     }
 

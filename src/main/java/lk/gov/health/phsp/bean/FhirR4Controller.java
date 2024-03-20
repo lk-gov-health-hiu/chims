@@ -1,21 +1,11 @@
 package lk.gov.health.phsp.bean;
 
-import ca.uhn.fhir.context.FhirContext;
-import ca.uhn.fhir.rest.api.MethodOutcome;
-import ca.uhn.fhir.rest.client.api.IClientInterceptor;
 import ca.uhn.fhir.rest.client.api.IGenericClient;
-import ca.uhn.fhir.rest.client.api.IHttpRequest;
-import ca.uhn.fhir.rest.client.api.IHttpResponse;
 import ca.uhn.fhir.rest.client.api.ServerValidationModeEnum;
-import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.rest.api.MethodOutcome;
 import ca.uhn.fhir.rest.client.api.IClientInterceptor;
 import ca.uhn.fhir.rest.client.api.IHttpRequest;
 import ca.uhn.fhir.rest.client.api.IHttpResponse;
-import ca.uhn.fhir.rest.client.impl.GenericClient;
-import org.hl7.fhir.r4.model.IdType;
-import org.hl7.fhir.r4.model.Patient;
-import org.hl7.fhir.instance.model.api.IIdType;
 import javax.inject.Named;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -27,15 +17,11 @@ import lk.gov.health.phsp.entity.Client;
 import lk.gov.health.phsp.entity.IntegrationEndpoint;
 import lk.gov.health.phsp.entity.SecurityProtocol;
 import org.hl7.fhir.r4.model.Patient;
-import org.hl7.fhir.r4.model.Bundle;
 import ca.uhn.fhir.rest.client.interceptor.BasicAuthInterceptor;
 import ca.uhn.fhir.rest.client.interceptor.BearerTokenAuthInterceptor;
-import java.util.Date;
 import javax.ejb.EJB;
-import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import lk.gov.health.phsp.entity.Area;
-import lk.gov.health.phsp.entity.AuditEvent;
 import lk.gov.health.phsp.entity.FhirOperationResult;
 import lk.gov.health.phsp.entity.Item;
 import lk.gov.health.phsp.entity.Person;
@@ -49,8 +35,6 @@ import org.hl7.fhir.r4.model.Enumerations.AdministrativeGender;
 import org.hl7.fhir.r4.model.HumanName;
 import org.hl7.fhir.r4.model.IdType;
 import org.hl7.fhir.r4.model.Identifier;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
@@ -58,14 +42,10 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.HashMap;
 import java.util.Map;
 import javax.enterprise.context.SessionScoped;
-import lk.gov.health.phsp.entity.ClientEncounterComponentForm;
 import lk.gov.health.phsp.entity.ClientEncounterComponentFormSet;
 import lk.gov.health.phsp.entity.ClientEncounterComponentItem;
 import lk.gov.health.phsp.entity.FhirResourceLink;
@@ -133,7 +113,7 @@ public class FhirR4Controller implements Serializable {
     }
 
     public FhirOperationResult createPatientInFhirServer(Client client, IntegrationEndpoint endPoint) {
-        System.out.println("Creating patient in FHIR server...");
+        // System.out.println("Creating patient in FHIR server...");
         SecurityProtocol sp = endPoint.getSecurityProtocol();
         String username = endPoint.getUserName();
         String password = endPoint.getPassword();
@@ -146,13 +126,13 @@ public class FhirR4Controller implements Serializable {
 
         // Log serialized patient JSON
         String serializedPatient = ctx.newJsonParser().setPrettyPrint(true).encodeResourceToString(patient);
-        System.out.println("Serialized Patient JSON: " + serializedPatient);
+        // System.out.println("Serialized Patient JSON: " + serializedPatient);
 
         // Custom interceptor for logging request details
         fhirClient.registerInterceptor(new IClientInterceptor() {
             @Override
             public void interceptRequest(IHttpRequest theRequest) {
-                System.out.println("Request URL: " + theRequest.getUri());
+                // System.out.println("Request URL: " + theRequest.getUri());
                 // This approach does not directly expose method and headers for logging here due to API constraints.
             }
 
@@ -189,14 +169,14 @@ public class FhirR4Controller implements Serializable {
         // Execute the create operation
         try {
             MethodOutcome outcome = fhirClient.create().resource(patient).execute();
-            System.out.println("Request sent to: " + serverBase); // Log the server base URL
+            // System.out.println("Request sent to: " + serverBase); // Log the server base URL
 
             if (outcome.getCreated()) {
                 IdType id = (IdType) outcome.getId();
                 result.setSuccess(true);
                 result.setMessage("Created new Patient with ID: " + id.getIdPart());
                 result.setResourceId(id);
-                System.out.println("Created new Patient with ID: " + id.getIdPart());
+                // System.out.println("Created new Patient with ID: " + id.getIdPart());
             } else {
                 result.setSuccess(false);
                 result.setMessage("Failed to create new Patient");
@@ -248,7 +228,7 @@ public class FhirR4Controller implements Serializable {
         try {
             // Print out the constructed URL for debugging purposes
             String constructedUrl = serverBase + "/Patient?identifier=" + patientIdentifier;
-            System.out.println("Constructed URL: " + constructedUrl);
+            // System.out.println("Constructed URL: " + constructedUrl);
 
             // Retrieve the Patient resource by identifier
             Bundle results = fhirClient
@@ -262,7 +242,7 @@ public class FhirR4Controller implements Serializable {
                 // Assuming the first entry is the desired patient
                 return (Patient) results.getEntry().get(0).getResource();
             } else {
-                System.out.println("Patient not found.");
+                // System.out.println("Patient not found.");
                 return null; // No patient found
             }
         } catch (Exception e) {
@@ -307,14 +287,14 @@ public class FhirR4Controller implements Serializable {
         }
 
         String serializedBundle = ctx.newJsonParser().setPrettyPrint(true).encodeResourceToString(bundle);
-        System.out.println("Serialized Bundle JSON: " + serializedBundle);
+        // System.out.println("Serialized Bundle JSON: " + serializedBundle);
 
         try {
             Bundle responseBundle = fhirClient.transaction().withBundle(bundle).execute();
-            System.out.println("Transaction executed successfully.");
+            // System.out.println("Transaction executed successfully.");
 
             // Log the status of each operation in the transaction
-            responseBundle.getEntry().forEach(entry -> System.out.println("Response: " + entry.getResponse().getStatus()));
+//            responseBundle.getEntry().forEach(entry -> // System.out.println("Response: " + entry.getResponse().getStatus()));
 
             result.setSuccess(true);
             result.setMessage("Bundle processed by FHIR server.");
@@ -350,7 +330,7 @@ public class FhirR4Controller implements Serializable {
     }
 
     public FhirOperationResult updateServiceRequestInFhirServer(ServiceRequest serviceRequest, IntegrationEndpoint endPoint) {
-        System.out.println("Updating ServiceRequest in FHIR server...");
+        // System.out.println("Updating ServiceRequest in FHIR server...");
         SecurityProtocol sp = endPoint.getSecurityProtocol();
         String username = endPoint.getUserName();
         String password = endPoint.getPassword();
@@ -404,7 +384,7 @@ public class FhirR4Controller implements Serializable {
 
     // Modified by Dr M H B Ariyaratne with assistance from ChatGPT from OpenAI
     public FhirOperationResult createPatientInFhirServer1(Client client, IntegrationEndpoint endPoint) {
-        System.out.println("Creating patient in FHIR server...");
+        // System.out.println("Creating patient in FHIR server...");
         SecurityProtocol sp = endPoint.getSecurityProtocol();
         String username = endPoint.getUserName();
         String password = endPoint.getPassword();
@@ -459,7 +439,7 @@ public class FhirR4Controller implements Serializable {
     }
 
     public CompletableFuture<FhirOperationResult> createOrganizationInFhirServerAsync(Institution institution, IntegrationEndpoint endPoint) {
-        System.out.println("Creating patient in FHIR server...");
+        // System.out.println("Creating patient in FHIR server...");
         SecurityProtocol sp = endPoint.getSecurityProtocol();
         String username = endPoint.getUserName();
         String password = endPoint.getPassword();
@@ -517,7 +497,7 @@ public class FhirR4Controller implements Serializable {
 
     // Modified by Dr M H B Ariyaratne with assistance from ChatGPT from OpenAI.
     public List<FhirOperationResult> createOrganizationsInFhirServer(List<Institution> institutions, IntegrationEndpoint endPoint) {
-        System.out.println("Creating organizations in FHIR server...");
+        // System.out.println("Creating organizations in FHIR server...");
 
         List<FhirOperationResult> results = new ArrayList<>();
 
@@ -589,7 +569,7 @@ public class FhirR4Controller implements Serializable {
 
     // Modified by Dr M H B Ariyaratne with assistance from ChatGPT from OpenAI.
     public FhirOperationResult createOrganizationInFhirServer(Institution institution, IntegrationEndpoint endPoint) {
-        System.out.println("Creating organization in FHIR server...");
+        // System.out.println("Creating organization in FHIR server...");
         SecurityProtocol sp = endPoint.getSecurityProtocol();
         String username = endPoint.getUserName();
         String password = endPoint.getPassword();
@@ -644,7 +624,7 @@ public class FhirR4Controller implements Serializable {
 
     // Modified by Dr M H B Ariyaratne with assistance from ChatGPT from OpenAI.
     public FhirOperationResult sendJsonPayloadToFhirR4(String jsonPayload, IntegrationEndpoint endPoint) {
-        System.out.println("Sending JSON payload to FHIR R4 server...");
+        // System.out.println("Sending JSON payload to FHIR R4 server...");
 
         SecurityProtocol sp = endPoint.getSecurityProtocol();
         String username = endPoint.getUserName();
@@ -698,15 +678,15 @@ public class FhirR4Controller implements Serializable {
 
     // Created by Dr M H B Ariyaratne with assistance from ChatGPT from OpenAI
     public FhirOperationResult createFormsetInFhirServer(ClientEncounterComponentFormSet cecfs, IntegrationEndpoint endPoint) {
-        System.out.println("createFormsetInFhirServer...");
-        System.out.println("cecfs = " + cecfs);
+        // System.out.println("createFormsetInFhirServer...");
+        // System.out.println("cecfs = " + cecfs);
         FhirOperationResult result = new FhirOperationResult();
 
         SecurityProtocol sp = endPoint.getSecurityProtocol();
         String username = endPoint.getUserName();
         String password = endPoint.getPassword();
         Bundle bundle = convertToFhirBundle(cecfs);
-        System.out.println("bundle.toString() = " + bundle.toString());
+        // System.out.println("bundle.toString() = " + bundle.toString());
 
         FhirContext ctx = FhirContext.forR4();
         // Modified by Dr M H B Ariyaratne with assistance from ChatGPT from OpenAI
@@ -755,15 +735,15 @@ public class FhirR4Controller implements Serializable {
     }
 
     public FhirOperationResult updateFormsetInFhirServerAsync(ClientEncounterComponentFormSet cecfs, IntegrationEndpoint endPoint, String oldId) {
-        System.out.println("createFormsetInFhirServer...");
-        System.out.println("cecfs = " + cecfs);
+        // System.out.println("createFormsetInFhirServer...");
+        // System.out.println("cecfs = " + cecfs);
         FhirOperationResult result = new FhirOperationResult();
 
         SecurityProtocol sp = endPoint.getSecurityProtocol();
         String username = endPoint.getUserName();
         String password = endPoint.getPassword();
         Bundle bundle = convertToFhirBundle(cecfs);
-        System.out.println("bundle.toString() = " + bundle.toString());
+        // System.out.println("bundle.toString() = " + bundle.toString());
 
         FhirContext ctx = FhirContext.forR4();
         String serverBase = endPoint.getEndPointUrl();
@@ -804,7 +784,7 @@ public class FhirR4Controller implements Serializable {
     }
 
     public CompletableFuture<FhirOperationResult> updatePatientInFhirServerAsync(Client client, IntegrationEndpoint endPoint, String resourceId) {
-        System.out.println("Updating patient in FHIR server...");
+        // System.out.println("Updating patient in FHIR server...");
         SecurityProtocol sp = endPoint.getSecurityProtocol();
         String username = endPoint.getUserName();
         String password = endPoint.getPassword();
@@ -858,7 +838,7 @@ public class FhirR4Controller implements Serializable {
     }
 
     public FhirOperationResult updatePatientInFhirServer(Client client, IntegrationEndpoint endPoint, String resourceId) {
-        System.out.println("Updating patient in FHIR server...");
+        // System.out.println("Updating patient in FHIR server...");
         SecurityProtocol sp = endPoint.getSecurityProtocol();
         String username = endPoint.getUserName();
         String password = endPoint.getPassword();
@@ -911,7 +891,7 @@ public class FhirR4Controller implements Serializable {
 
     // Modified by Dr M H B Ariyaratne with assistance from ChatGPT from OpenAI.
     public CompletableFuture<FhirOperationResult> updateOrganizationInFhirServerAsync(Institution institution, IntegrationEndpoint endPoint, String resourceId) {
-        System.out.println("Updating organization in FHIR server...");
+        // System.out.println("Updating organization in FHIR server...");
         SecurityProtocol sp = endPoint.getSecurityProtocol();
         String username = endPoint.getUserName();
         String password = endPoint.getPassword();
@@ -966,7 +946,7 @@ public class FhirR4Controller implements Serializable {
 
     // Modified by Dr M H B Ariyaratne with assistance from ChatGPT from OpenAI.
     public FhirOperationResult updateOrganizationInFhirServer(Institution institution, IntegrationEndpoint endPoint, String resourceId) {
-        System.out.println("Updating organization in FHIR server...");
+        // System.out.println("Updating organization in FHIR server...");
         SecurityProtocol sp = endPoint.getSecurityProtocol();
         String username = endPoint.getUserName();
         String password = endPoint.getPassword();
@@ -1080,7 +1060,7 @@ public class FhirR4Controller implements Serializable {
 
 // Modified by Dr M H B Ariyaratne with assistance from ChatGPT from OpenAI.
     public FhirOperationResult postJsonPayloadToFhirServer(String jsonPlayLoad, IntegrationEndpoint endPoint) {
-        System.out.println("Sending JSON payload to FHIR server...");
+        // System.out.println("Sending JSON payload to FHIR server...");
         SecurityProtocol sp = endPoint.getSecurityProtocol();
         String username = endPoint.getUserName();
         String password = endPoint.getPassword();
@@ -1091,7 +1071,7 @@ public class FhirR4Controller implements Serializable {
         ctx.getRestfulClientFactory().setServerValidationMode(ServerValidationModeEnum.NEVER);
 
         String serverBase = endPoint.getEndPointUrl();
-        System.out.println("Target Base URL: " + serverBase);
+        // System.out.println("Target Base URL: " + serverBase);
         IGenericClient fhirClient = ctx.newRestfulGenericClient(serverBase);
 
         if (sp == SecurityProtocol.BASIC_AUTHENTICATION) {
@@ -1115,11 +1095,11 @@ public class FhirR4Controller implements Serializable {
         // Parsing the given JSON payload to a Bundle object
         Bundle bundle = (Bundle) ctx.newJsonParser().parseResource(jsonPlayLoad);
 
-        System.out.println("Attempting to send bundle as a POST request...");
+        // System.out.println("Attempting to send bundle as a POST request...");
         Bundle response;
         try {
             response = fhirClient.transaction().withBundle(bundle).execute();
-            System.out.println("Bundle sent via POST method.");
+            // System.out.println("Bundle sent via POST method.");
         } catch (Exception e) {
             System.err.println("Error occurred while sending the bundle: " + e.getMessage());
             e.printStackTrace();
@@ -1130,7 +1110,7 @@ public class FhirR4Controller implements Serializable {
 
         // Evaluating the response to set the result
         if (response != null && response.getType() == Bundle.BundleType.TRANSACTIONRESPONSE) {
-            System.out.println("Response received: " + response.toString());
+            // System.out.println("Response received: " + response.toString());
             result.setSuccess(true);
             result.setMessage("Successfully processed the bundle transaction");
         } else {
@@ -1175,7 +1155,7 @@ public class FhirR4Controller implements Serializable {
     }
 
     public List<Client> fetchClientsFromEndpoints(SearchQueryData sqd, IntegrationEndpoint endPoint) {
-        System.out.println("fetchClientsFromEndpoints");
+        // System.out.println("fetchClientsFromEndpoints");
         List<Client> clients = new ArrayList<>();
 
         // Create a FHIR client
@@ -1186,7 +1166,7 @@ public class FhirR4Controller implements Serializable {
         String status = "success"; // Assume success by default
         Bundle results = null;
         try {
-            System.out.println("sqd.getSearchCriteria() = " + sqd.getSearchCriteria());
+            // System.out.println("sqd.getSearchCriteria() = " + sqd.getSearchCriteria());
             results = performSearchBasedOnCriteria(client, sqd);
 
             // Convert the results to Client objects
@@ -1202,7 +1182,7 @@ public class FhirR4Controller implements Serializable {
     }
 
     public List<ServiceRequest> fetchServiceRequestsFromEndpoints(IntegrationEndpoint endPoint) {
-        System.out.println("fetchServiceRequestsFromEndpoints");
+        // System.out.println("fetchServiceRequestsFromEndpoints");
 
         // Create a FHIR context and client
         FhirContext ctx = FhirContext.forR4();
@@ -1224,7 +1204,7 @@ public class FhirR4Controller implements Serializable {
             }
         } catch (Exception e) {
             status = "failure"; // An exception occurred, so mark the operation as a failure
-            System.out.println("Error fetching ServiceRequests: " + e.getMessage());
+            // System.out.println("Error fetching ServiceRequests: " + e.getMessage());
         }
 
         return serviceRequests;
@@ -1261,7 +1241,7 @@ public class FhirR4Controller implements Serializable {
 
     private Bundle performSearchBasedOnCriteria(IGenericClient client, SearchQueryData sqd) {
         Bundle results = null;
-        System.out.println("sqd.getSearchCriteria() = " + sqd.getSearchCriteria());
+        // System.out.println("sqd.getSearchCriteria() = " + sqd.getSearchCriteria());
         switch (sqd.getSearchCriteria()) {
             case NIC_ONLY:
                 results = searchByIdentifier("https://fhir.health.gov.lk/id/nic", sqd.getNic(), client);
@@ -1347,7 +1327,7 @@ public class FhirR4Controller implements Serializable {
     }
 
     public CompletableFuture<List<Client>> fetchClientsFromEndpoints1(SearchQueryData sqd, IntegrationEndpoint endPoint) {
-        System.out.println("fetchClientsFromEndpoints");
+        // System.out.println("fetchClientsFromEndpoints");
         return CompletableFuture.supplyAsync(() -> {
             List<Client> clients = new ArrayList<>();
 
@@ -1385,7 +1365,7 @@ public class FhirR4Controller implements Serializable {
             String status = "success"; // Assume success by default
             Bundle results = null;
             try {
-                System.out.println("sqd.getSearchCriteria() = " + sqd.getSearchCriteria());
+                // System.out.println("sqd.getSearchCriteria() = " + sqd.getSearchCriteria());
                 switch (sqd.getSearchCriteria()) {
                     case NIC_ONLY:
                         results = searchByIdentifier("https://fhir.health.gov.lk/id/nic", sqd.getNic(), client);
@@ -1488,16 +1468,16 @@ public class FhirR4Controller implements Serializable {
     }
 
     public String acquireToken(String clientId, String clientSecret, String tokenUrl) {
-        System.out.println("acquireToken");
+        // System.out.println("acquireToken");
         CloseableHttpClient httpClient = HttpClients.createDefault();
         HttpPost httpPost = new HttpPost(tokenUrl);
-        System.out.println("tokenUrl = " + tokenUrl);
+        // System.out.println("tokenUrl = " + tokenUrl);
         List<NameValuePair> params = new ArrayList<>();
         params.add(new BasicNameValuePair("grant_type", "client_credentials"));
         params.add(new BasicNameValuePair("client_id", clientId));
-        System.out.println("clientId = " + clientId);
+        // System.out.println("clientId = " + clientId);
         params.add(new BasicNameValuePair("client_secret", clientSecret));
-        System.out.println("clientSecret = " + clientSecret);
+        // System.out.println("clientSecret = " + clientSecret);
         CloseableHttpResponse response = null;
         try {
             httpPost.setEntity(new UrlEncodedFormEntity(params));
@@ -1509,14 +1489,14 @@ public class FhirR4Controller implements Serializable {
             JsonNode jsonNode = objectMapper.readTree(responseBody);
             if (jsonNode.hasNonNull("access_token")) {
                 String accessToken = jsonNode.get("access_token").asText();
-                System.out.println("accessToken = " + accessToken);
+                // System.out.println("accessToken = " + accessToken);
                 return accessToken;
             } else {
-                System.out.println("Error: The JSON response does not contain an 'access_token' field.");
+                // System.out.println("Error: The JSON response does not contain an 'access_token' field.");
                 return null;
             }
         } catch (IOException e) {
-            System.out.println("Error acquiring token: " + e.getMessage());
+            // System.out.println("Error acquiring token: " + e.getMessage());
             e.printStackTrace(); // This prints the full stack trace, including the line number where the exception occurred.
             return null; // or you can return an empty string, depending on how you want to handle it in calling methods
         } finally {
@@ -1526,7 +1506,7 @@ public class FhirR4Controller implements Serializable {
                 }
                 httpClient.close();
             } catch (IOException ex) {
-                System.out.println("Error closing resources: " + ex.getMessage());
+                // System.out.println("Error closing resources: " + ex.getMessage());
                 ex.printStackTrace();
             }
         }
@@ -1566,7 +1546,7 @@ public class FhirR4Controller implements Serializable {
             String status = "success"; // Assume success by default
             Bundle results = null;
             try {
-                System.out.println("sqd.getSearchCriteria() = " + sqd.getSearchCriteria());
+                // System.out.println("sqd.getSearchCriteria() = " + sqd.getSearchCriteria());
                 results = searchByIdentifier("https://fhir.health.gov.lk/id/nic", sqd.getNic(), client);
                 if (results.getEntry().isEmpty()) {
                     status = "failure"; // No results found, consider this a failure if that's unexpected
@@ -1584,9 +1564,9 @@ public class FhirR4Controller implements Serializable {
     }
 
     private Bundle searchByIdentifier(String system, String identifier, IGenericClient client) {
-        System.out.println("client = " + client);
-        System.out.println("system = " + system);
-        System.out.println("identifier = " + identifier);
+        // System.out.println("client = " + client);
+        // System.out.println("system = " + system);
+        // System.out.println("identifier = " + identifier);
         return client.search()
                 .forResource(Patient.class)
                 .where(Patient.IDENTIFIER.exactly().systemAndIdentifier(system, identifier))
@@ -1595,7 +1575,7 @@ public class FhirR4Controller implements Serializable {
     }
 
     private Bundle searchAllServiceRequests(IGenericClient client) {
-        System.out.println("client = " + client);
+        // System.out.println("client = " + client);
 
         return client.search()
                 .forResource(ServiceRequest.class)
@@ -1631,11 +1611,11 @@ public class FhirR4Controller implements Serializable {
 
         // Gender
         if (patient.getGender() != null) {
-            System.out.println("patient.getGender() = " + patient.getGender());
-            System.out.println("patient.getGender().toCode() = " + patient.getGender().toCode());
+            // System.out.println("patient.getGender() = " + patient.getGender());
+            // System.out.println("patient.getGender().toCode() = " + patient.getGender().toCode());
             // Assuming you have a way to map the FHIR gender to your custom Sex object
             Item sex = itemApplicationController.getSex(patient.getGender().toCode());
-            System.out.println("sex = " + sex);
+            // System.out.println("sex = " + sex);
             person.setSex(sex);
         }
 
@@ -1825,60 +1805,60 @@ public class FhirR4Controller implements Serializable {
     }
 
     public Bundle convertToFhirBundle(ClientEncounterComponentFormSet formset) {
-        System.out.println("convertToFhirBundle");
-        System.out.println("formset = " + formset);
+        // System.out.println("convertToFhirBundle");
+        // System.out.println("formset = " + formset);
         Bundle bundle = new Bundle();
         bundle.setType(BundleType.COLLECTION);
 
         Client myPatient = formset.getEncounter().getClient();
-        System.out.println("myPatient = " + myPatient);
+        // System.out.println("myPatient = " + myPatient);
         lk.gov.health.phsp.entity.Encounter myEncounter = formset.getEncounter();
 
         // Assuming you have separate methods to convert to FHIR resources
         Patient patientResource = convertToFhirPatient(myPatient);
-        System.out.println("myPatient = " + myPatient);
-        System.out.println("patientResource = " + patientResource);
+        // System.out.println("myPatient = " + myPatient);
+        // System.out.println("patientResource = " + patientResource);
         Encounter encounterResource = convertToEncounter(myEncounter);
-        System.out.println("myEncounter = " + myEncounter);
-        System.out.println("encounterResource = " + encounterResource);
+        // System.out.println("myEncounter = " + myEncounter);
+        // System.out.println("encounterResource = " + encounterResource);
 
         // Add Patient to the Bundle
         BundleEntryComponent patientEntry = bundle.addEntry();
-        System.out.println("1 patientEntry = " + patientEntry);
-        System.out.println("patientResource = " + patientResource);
+        // System.out.println("1 patientEntry = " + patientEntry);
+        // System.out.println("patientResource = " + patientResource);
         patientEntry.setResource(patientResource);
-        System.out.println("2 patientEntry = " + patientEntry);
+        // System.out.println("2 patientEntry = " + patientEntry);
 
         // Add Encounter to the Bundle
         BundleEntryComponent encounterEntry = bundle.addEntry();
-        System.out.println("1 encounterEntry = " + encounterEntry);
-        System.out.println("encounterResource = " + encounterResource);
+        // System.out.println("1 encounterEntry = " + encounterEntry);
+        // System.out.println("encounterResource = " + encounterResource);
         encounterEntry.setResource(encounterResource);
-        System.out.println("2 encounterEntry = " + encounterEntry);
+        // System.out.println("2 encounterEntry = " + encounterEntry);
 
         List<ClientEncounterComponentItem> cecis = clientEncounterComponentItemController.getClientEncounterComponentItemOfAFormset(formset);
 
         if (cecis == null) {
             return bundle;
         } else {
-            System.out.println("cecis = " + cecis.size());
+            // System.out.println("cecis = " + cecis.size());
         }
         if (cecis.isEmpty()) {
             return bundle;
         }
 
         for (ClientEncounterComponentItem is : cecis) {
-            System.out.println("is = " + is);
+            // System.out.println("is = " + is);
             Observation obsResource = convertToObservation(is);
 
-            System.out.println("obsResource = " + obsResource);
+            // System.out.println("obsResource = " + obsResource);
             BundleEntryComponent obsEntry = bundle.addEntry();
-            System.out.println("1. obsEntry = " + obsEntry);
+            // System.out.println("1. obsEntry = " + obsEntry);
             obsEntry.setResource(obsResource);
-            System.out.println("2. obsEntry = " + obsEntry);
+            // System.out.println("2. obsEntry = " + obsEntry);
         }
 
-        System.out.println("bundle = " + bundle.toString());
+        // System.out.println("bundle = " + bundle.toString());
         return bundle;
     }
 
