@@ -1149,17 +1149,22 @@ public class FhirController implements Serializable {
         ));
         observation.setDevice(new Reference("Device/" + device.getIdElement().getIdPart()));
 
-        // Set the value based on isSmoker boolean
+        // Adjust these codes and descriptions to match your data accurately
         String smokingStatus = isSmoker ? "Current every day smoker" : "Never smoker";
-        String smokingCode = isSmoker ? "LA15920-4" : "LA18976-3"; // Example codes, please verify against the actual coding system
-        observation.setValue(new CodeableConcept().addCoding(new Coding("http://loinc.org", smokingCode, smokingStatus)));
+        String smokingCode = isSmoker ? "LA15920-4" : "LA18976-3"; // These are example codes
 
-        // Constructing the narrative (text representation)
+        CodeableConcept valueCodeableConcept = new CodeableConcept();
+        valueCodeableConcept.addCoding(new Coding("http://loinc.org", smokingCode, smokingStatus));
+        valueCodeableConcept.setText(smokingStatus); // Setting text here
+        observation.setValue(valueCodeableConcept);
+
+        // Constructing the narrative (text representation) correctly
         Narrative narrative = new Narrative();
         narrative.setStatus(Narrative.NarrativeStatus.GENERATED);
-        String div = "<div xmlns=\"http://www.w3.org/1999/xhtml\"><p>Tobacco Smoker Observation for patient '"
-                + patient.getName().stream().findFirst().orElse(new HumanName()).getText()
+        String div = "<div xmlns=\"http://www.w3.org/1999/xhtml\">"
+                + "<p>Tobacco Smoker Observation for patient '" + patient.getName().stream().findFirst().orElse(new HumanName()).getText()
                 + "'.</p><p>Status: " + smokingStatus + ".</p></div>";
+        narrative.setDivAsString(div);
         observation.setText(narrative);
 
         Bundle.BundleEntryComponent entryComponent = new Bundle.BundleEntryComponent();

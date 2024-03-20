@@ -256,6 +256,7 @@ public class ClientEncounterComponentFormSetController implements Serializable {
         ClientEncounterComponentItem ceciTc = findFormsetValue("client_total_cholesterol_mmol_l");
         ClientEncounterComponentItem ceciFbs = findFormsetValue("investigation_fbs");
         ClientEncounterComponentItem ceciRbs = findFormsetValue("client_rbs");
+        ClientEncounterComponentItem ceciSmoking = findFormsetValue("client_tobacco_smoking_status");
 
         ClientEncounterComponentItem ceciCvdRiskNonLab = findFormsetValue("cvd_risk_factor_non_lab");
         ClientEncounterComponentItem ceciCvdRiskLab = findFormsetValue("cvd_risk_factor_lab");
@@ -323,7 +324,6 @@ public class ClientEncounterComponentFormSetController implements Serializable {
         // System.out.println("RBS: " + rbs);
         // System.out.println("HT: " + ht);
         // System.out.println("HT: " + wt);
-
         Device device = null;
         Patient patient;
         Organization organization = null;
@@ -428,6 +428,22 @@ public class ClientEncounterComponentFormSetController implements Serializable {
                 fhirController.addEntryToBundle(bundle, pnHx);
             }
         }
+
+        Bundle.BundleEntryComponent smokingBundle;
+        if (ceciSmoking != null) {
+            if (ceciSmoking.getItemValue() != null) {
+                if (ceciSmoking.getItemValue().getCode().contains("none")) {
+                    smokingBundle = fhirController.createTobaccoSmokerObservationEntry(patient, encounter, organization, location, device, practitioner, encDate, false, true, UUID.randomUUID().toString());
+                } else {
+                    smokingBundle = fhirController.createTobaccoSmokerObservationEntry(patient, encounter, organization, location, device, practitioner, encDate, true, true, UUID.randomUUID().toString());
+                }
+            } else {
+                smokingBundle = fhirController.createTobaccoSmokerObservationEntry(patient, encounter, organization, location, device, practitioner, encDate, false, true, UUID.randomUUID().toString());
+            }
+        } else {
+            smokingBundle = fhirController.createTobaccoSmokerObservationEntry(patient, encounter, organization, location, device, practitioner, encDate, false, true, UUID.randomUUID().toString());
+        }
+        fhirController.addEntryToBundle(bundle, smokingBundle);
 
         List<Observation> observations = new ArrayList<>();
         observations.add(fhirController.extractObservation(bmiEntry));

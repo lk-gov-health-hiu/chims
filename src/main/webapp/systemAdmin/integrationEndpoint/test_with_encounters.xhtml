@@ -58,6 +58,8 @@
                         <p:inputTextarea rows="10" id="responseText" class="w-100" value="#{clientEncounterComponentFormSetController.responseMessage}"  />
 
                     </p:panelGrid>
+                    
+                    <p:poll update="pushedRecordsCount responseText" ></p:poll>
 
                     <p:dataTable value="#{clientEncounterComponentFormSetController.items}"
                                  paginator="true"
