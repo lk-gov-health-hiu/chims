@@ -3,6 +3,7 @@ package lk.gov.health.phsp.entity;
 
 import java.io.Serializable;
 import java.util.Date;
+import javax.jdo.annotations.Index;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -24,8 +25,10 @@ public class ApiKey implements Serializable, Identifiable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     
+    @Index
     private ApiKeyType keyType;
     private String keyValue;
+    @Index
     @ManyToOne
     private WebUser webUser;
     @Temporal(javax.persistence.TemporalType.DATE)
@@ -33,11 +36,13 @@ public class ApiKey implements Serializable, Identifiable {
     
     @ManyToOne
     private WebUser creater;
+    @Index
     @ManyToOne
     private Institution institution;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date createdAt;
     //Retairing properties
+    @Index
     private boolean retired;
     @ManyToOne
     private WebUser retirer;

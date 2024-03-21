@@ -2417,7 +2417,7 @@ public class HospitalReportController implements Serializable {
         m.put("res", true);
         j = j + " and c.createdAt between :fd and :td ";
 
-        j = j + " and c.createInstitution in :ins ";
+        j = j + " and (c.createInstitution in :ins or c.createdBy.institution in :ins or c.poiInstitution in :ins ) ";
         m.put("ins", webUserController.getLoggableInstitutions());
 
         j = j + " group by c.createInstitution ";

@@ -35,7 +35,7 @@
                         <p:ajax event="rowSelect"   update="createButton viewButton editButton deleteButton"/>
                         <p:ajax event="rowUnselect" update="createButton viewButton editButton deleteButton"/>
 
-                        <p:column rendered="false" filterBy="#{item.id}" filterMatchMode="contains" sortBy="#{item.id}">
+                        <p:column rendered="true" filterBy="#{item.id}" filterMatchMode="contains" sortBy="#{item.id}">
                             <f:facet name="header">
                                 <h:outputText value="ID"/>
                             </f:facet>

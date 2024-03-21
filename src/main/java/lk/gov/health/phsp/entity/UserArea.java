@@ -25,6 +25,7 @@ package lk.gov.health.phsp.entity;
 
 import java.io.Serializable;
 import java.util.Date;
+import javax.jdo.annotations.Index;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -32,7 +33,7 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
-import javax.xml.bind.annotation.XmlRootElement;
+
 import lk.gov.health.phsp.pojcs.Identifiable;
 
 /**
@@ -41,7 +42,7 @@ import lk.gov.health.phsp.pojcs.Identifiable;
  */
 @Entity
 @Table
-@XmlRootElement
+
 public class UserArea implements Serializable, Identifiable  {
 
     private static final long serialVersionUID = 1L;
@@ -49,8 +50,10 @@ public class UserArea implements Serializable, Identifiable  {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    @Index
     @ManyToOne
     private WebUser webUser;
+    @Index
     @ManyToOne
     private Item item;
     
@@ -73,6 +76,7 @@ public class UserArea implements Serializable, Identifiable  {
     /*
     Retire Properties
      */
+    @Index
     private boolean retired;
     @ManyToOne
     private WebUser retiredBy;

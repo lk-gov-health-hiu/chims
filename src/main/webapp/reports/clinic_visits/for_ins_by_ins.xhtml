@@ -35,8 +35,13 @@
 
                             <p:commandButton value="Process" ajax="false"
                                              action="#{reportController.fillClinicVisitsByInstitution()}"></p:commandButton>
-                            <p:commandButton value="Download" ajax="false">
-                                <p:dataExporter type="xlsx" target="tbl" fileName="Clinic Visits by Institution" ></p:dataExporter>
+                            <p:commandButton 
+                                value="Download *" 
+                                ajax="false">
+                                <p:dataExporter 
+                                    type="xlsx" 
+                                    target="tbl" 
+                                    fileName="Clinic Visits by Institution" ></p:dataExporter>
                             </p:commandButton>
                         </p:panelGrid>
 

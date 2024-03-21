@@ -25,6 +25,7 @@ package lk.gov.health.phsp.entity;
 
 import java.io.Serializable;
 import java.util.Date;
+import javax.jdo.annotations.Index;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -61,6 +62,7 @@ public class InstitutionComponent implements Serializable, Identifiable  {
     /*
     Retire Properties
      */
+    @Index
     private boolean retired;
     @ManyToOne(fetch = FetchType.LAZY)
     private WebUser retiredBy;

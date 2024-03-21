@@ -6,6 +6,7 @@ package lk.gov.health.phsp.entity;
 
 import java.io.Serializable;
 import java.util.Date;
+import javax.jdo.annotations.Index;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -31,9 +32,12 @@ public class IntegrationEndpoint implements Serializable, Identifiable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+    @Index
     private IntegrationEndpointType endpointType;
+    @Index
     @Enumerated(EnumType.STRING)
     private CommunicationProtocol communicationProtocol;
+    @Index
     @Enumerated(EnumType.STRING)
     private SecurityProtocol securityProtocol;
     private String endPointUrl;
@@ -65,6 +69,7 @@ public class IntegrationEndpoint implements Serializable, Identifiable {
     /*
     Retire Properties
      */
+    @Index
     private boolean retired;
     @ManyToOne(fetch = FetchType.LAZY)
     private WebUser retiredBy;
