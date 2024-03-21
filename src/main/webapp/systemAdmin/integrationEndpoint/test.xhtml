@@ -1,0 +1,45 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <body>
+
+        <ui:composition template="/systemAdmin/integration_index.xhtml">
+
+            <ui:define name="subContent">
+                <h:form id="listForm">
+
+
+
+                    <p:panelGrid columns="2" class="w-100" >
+                        <p:outputLabel value="End Point" ></p:outputLabel>
+                        <p:selectOneMenu id="selectItem" 
+                                         value="#{institutionController.integrationEndpoint}" 
+                                         filter="true" 
+                                         filterMatchMode="startsWith" 
+                                         styleClass="w-100">
+                            <f:selectItem itemLabel="Select Item" itemValue="" noSelectionOption="true"/>
+                            <f:selectItems value="#{integrationEndpointController.items}" 
+                                           var="item" 
+                                           itemLabel="#{item.name}" 
+                                           itemValue="#{item}" />
+                        </p:selectOneMenu>
+                        <p:outputLabel value="Input Json " ></p:outputLabel>
+                        <p:inputTextarea class="w-100" value="#{clientController.sampleJsonInput}" ></p:inputTextarea>
+                        <p:spacer ></p:spacer>
+                        <p:commandButton ajax="false" value="Test" action="#{clientController.postJsonToMediators}" ></p:commandButton>
+                        <p:outputLabel value="Response" ></p:outputLabel>
+                        <p:inputTextarea class="w-100" value="#{clientController.responseMessage}" ></p:inputTextarea>
+                    </p:panelGrid>
+
+                </h:form>
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

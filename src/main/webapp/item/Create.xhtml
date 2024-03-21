@@ -12,7 +12,7 @@
             <h:form id="ItemCreateForm">
                 <h:panelGroup id="display">
                     <p:panelGrid columns="2" rendered="#{itemController.selected != null}">
-                        
+
                         <h:outputLabel value="#{bundleClinical.EditItemLabel_itemType}" for="itemType" />
                         <h:selectOneMenu
                             id="itemType" value="#{itemController.selected.itemType}" title="#{bundleClinical.EditItemTitle_itemType}" >
@@ -62,7 +62,7 @@
                         <h:inputText id="maxDbl" 
                                      value="#{itemController.selected.absoluteMaximumDbl}" title="SelectionDataType" >
                         </h:inputText>
-                        
+
                         <h:outputLabel value="Absolute Minimum for Integer Numbers:" for="minInt" />
                         <h:inputText id="minInt" 
                                      value="#{itemController.selected.absoluteMinimumInt}" title="SelectionDataType" >
@@ -70,10 +70,21 @@
 
                         <h:outputLabel value="Absolute Maximum for Integer Integer" for="maxInt" />
                         <h:inputText id="maxInt" 
-                                         value="#{itemController.selected.absoluteMaximumInt}" title="SelectionDataType" >
+                                     value="#{itemController.selected.absoluteMaximumInt}" title="SelectionDataType" >
                         </h:inputText>
 
 
+                        <h:outputLabel value="Coding System:" for="codingSystem" />
+                        <h:inputText id="codingSystem" required="false"
+                                     value="#{itemController.selected.codingSystem}" 
+                                     title="Coding System" >
+                        </h:inputText>
+
+                        <h:outputLabel value="Code in the Coding System:" for="codingSystemCode" />
+                        <h:inputText id="codingSystemCode" required="false"
+                                     value="#{itemController.selected.codingSystemCode}" 
+                                     title="Coding System Code" >
+                        </h:inputText>
 
                         <h:outputLabel value="Contains Personally identifiable data" for="personallyIdentifiable" />
                         <p:selectBooleanCheckbox id="personallyIdentifiable" 

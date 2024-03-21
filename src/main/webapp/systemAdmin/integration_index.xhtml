@@ -40,6 +40,21 @@
                                              action="#{integrationEndpointController.navigateToList()}">
                             </p:commandButton>
                             
+                            <p:commandButton icon="fa fa-user-plus"  ajax="false"
+                                             value="Send Date to NEHR" styleClass="btn300"
+                                             action="#{clientEncounterComponentFormSetController.navigateToExportPastData()}">
+                            </p:commandButton>
+                            
+                            <p:commandButton icon="fa fa-user-plus"  ajax="false"
+                                             value="Test Integration Endpoint with JSON" styleClass="btn300"
+                                             action="#{integrationEndpointController.navigateToTest()}">
+                            </p:commandButton>
+                            
+                            <p:commandButton icon="fa fa-user-plus"  ajax="false"
+                                             value="Test Integration Endpoint with Patient Search" styleClass="btn300"
+                                             action="#{integrationEndpointController.navigateToTestPatientSearch()}">
+                            </p:commandButton>
+                            
                              <p:commandButton icon="fa fa-user-plus"  ajax="false"
                                              value="Add New Integration Trigger" styleClass="btn300"
                                              action="#{integrationTriggerController.navigateToAddNew()}">

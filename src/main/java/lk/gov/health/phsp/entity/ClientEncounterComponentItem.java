@@ -24,7 +24,6 @@
 package lk.gov.health.phsp.entity;
 
 import java.util.Date;
-import javax.jdo.annotations.Index;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -33,7 +32,7 @@ import javax.persistence.FetchType;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
-
+import javax.xml.bind.annotation.XmlRootElement;
 import lk.gov.health.phsp.enums.DataRepresentationType;
 
 /**
@@ -41,19 +40,15 @@ import lk.gov.health.phsp.enums.DataRepresentationType;
  * @author buddhika
  */
 @Entity
-
+@XmlRootElement
 public class ClientEncounterComponentItem extends ClientEncounterComponent {
 
-    @Index
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     private Client itemClient;
-    @Index
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     private Encounter itemEncounter;
-    @Index
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     private ClientEncounterComponentFormSet itemFormset;
-    @Index
     @Enumerated(EnumType.STRING)
     private DataRepresentationType dataRepresentationType;
 
@@ -67,27 +62,24 @@ public class ClientEncounterComponentItem extends ClientEncounterComponent {
     private Long longNumberValue;
     private Double realNumberValue;
     private Boolean booleanValue;
-    @Index
     @Temporal(javax.persistence.TemporalType.DATE)
     private Date dateValue;
-    @Index
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     private Item itemValue;
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     private Area areaValue;
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     private Institution institutionValue;
-    @ManyToOne(fetch = FetchType.EAGER)
-    @Index
+    @ManyToOne(fetch = FetchType.LAZY)
     private Client clientValue;
-    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH })
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Prescription prescriptionValue;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH })
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Observation observationValue;
-    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH })
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Procedure procedureValue;
-    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH })
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Movement movementValue;
 
     private Integer integerNumberValue2;

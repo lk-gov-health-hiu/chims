@@ -1,0 +1,836 @@
+{
+  "resourceType" : "Bundle",
+  "type" : "transaction",
+  "entry" : [{
+    "fullUrl" : "Patient/HHIMSPatientExample",
+    "resource" : {
+      "resourceType" : "Patient",
+      "id" : "HHIMSPatientExample",
+      "meta" : {
+        "profile" : ["http://openhie.org/fhir/sri-lanka/StructureDefinition/hhims-patient"]
+      },
+      "text" : {
+        "status" : "generated",
+        "div" : "<div xmlns=\"http://www.w3.org/1999/xhtml\"><p><b>Generated Narrative: Patient</b><a name=\"HHIMSPatientExample\"> </a></p><div style=\"display: inline-block; background-color: #d9e0e7; padding: 6px; margin: 4px; border: 1px solid #8da1b4; border-radius: 5px; line-height: 60%\"><p style=\"margin-bottom: 0px\">Resource Patient &quot;HHIMSPatientExample&quot; </p><p style=\"margin-bottom: 0px\">Profile: <a href=\"StructureDefinition-hhims-patient.html\">HHIMS Patient</a></p></div><p><b>identifier</b>: Personal Health Number:\u00a0personal health number, National identity number:\u00a0A patient may have multiple national identity numbers.</p><p><b>name</b>: Mr. Mike John Smith (OFFICIAL)</p><p><b>telecom</b>: <a href=\"tel:+27829999999\">+27829999999</a>, <a href=\"mailto:someone@something.com\">someone@something.com</a>, <a href=\"mailto:someone2@something.com\">someone2@something.com</a></p><p><b>gender</b>: male</p><p><b>birthDate</b>: 1983-05-22</p><p><b>address</b>: 177 Nawala Road Nugegoda Colombo 32350 Sri Lanka </p></div>"
+      },
+      "identifier" : [{
+        "type" : {
+          "coding" : [{
+            "system" : "http://openhie.org/fhir/sri-lanka/CodeSystem/cs-identifier-types",
+            "code" : "PHN"
+          }],
+          "text" : "Personal Health Number"
+        },
+        "system" : "http://openhie.org/fhir/sri-lanka/identifier/phn",
+        "value" : "personal health number"
+      },
+      {
+        "extension" : [{
+          "url" : "http://openhie.org/fhir/sri-lanka/StructureDefinition/multiple-values-for-patient-identifier",
+          "valueString" : "National identity number-1"
+        },
+        {
+          "url" : "http://openhie.org/fhir/sri-lanka/StructureDefinition/multiple-values-for-patient-identifier",
+          "valueString" : "National identity number-2"
+        }],
+        "type" : {
+          "coding" : [{
+            "system" : "http://terminology.hl7.org/CodeSystem/v2-0203",
+            "code" : "NNLKA"
+          }],
+          "text" : "National identity number"
+        },
+        "system" : "http://openhie.org/fhir/sri-lanka/identifier/nic",
+        "value" : "A patient may have multiple national identity numbers."
+      }],
+      "name" : [{
+        "use" : "official",
+        "family" : "Smith",
+        "given" : ["Mr.",
+        "Mike",
+        "John"]
+      }],
+      "telecom" : [{
+        "system" : "phone",
+        "value" : "+27829999999"
+      },
+      {
+        "system" : "email",
+        "value" : "someone@something.com"
+      },
+      {
+        "system" : "email",
+        "value" : "someone2@something.com"
+      }],
+      "gender" : "male",
+      "birthDate" : "1983-05-22",
+      "address" : [{
+        "type" : "postal",
+        "line" : ["177",
+        "Nawala Road"],
+        "city" : "Nugegoda",
+        "district" : "Ampara",
+        "state" : "Colombo",
+        "postalCode" : "32350",
+        "country" : "Sri Lanka"
+      }]
+    },
+    "request" : {
+      "method" : "PUT",
+      "url" : "Patient/HHIMSPatientExample"
+    }
+  },
+  {
+    "fullUrl" : "Encounter/TargetFacilityEncounterExample",
+    "resource" : {
+      "resourceType" : "Encounter",
+      "id" : "TargetFacilityEncounterExample",
+      "meta" : {
+        "profile" : ["http://openhie.org/fhir/sri-lanka/StructureDefinition/target-facility-encounter"]
+      },
+      "text" : {
+        "status" : "generated",
+        "div" : "<div xmlns=\"http://www.w3.org/1999/xhtml\"><p><b>Generated Narrative: Encounter</b><a name=\"TargetFacilityEncounterExample\"> </a></p><div style=\"display: inline-block; background-color: #d9e0e7; padding: 6px; margin: 4px; border: 1px solid #8da1b4; border-radius: 5px; line-height: 60%\"><p style=\"margin-bottom: 0px\">Resource Encounter &quot;TargetFacilityEncounterExample&quot; </p><p style=\"margin-bottom: 0px\">Profile: <a href=\"StructureDefinition-target-facility-encounter.html\">Target Facility Encounter</a></p></div><p><b>status</b>: finished</p><p><b>class</b>: ambulatory (Details: http://terminology.hl7.org/CodeSystem/v3-ActCode code AMB = 'ambulatory', stated as 'null')</p><p><b>subject</b>: <a href=\"Patient-HIMSPatientExample.html\">Patient/HIMSPatientExample</a> &quot; SMITH&quot;</p><h3>Participants</h3><table class=\"grid\"><tr><td style=\"display: none\">-</td><td><b>Individual</b></td></tr><tr><td style=\"display: none\">*</td><td><a href=\"#Practitioner_GeneralPractitionerExample\">See above (Practitioner/GeneralPractitionerExample)</a></td></tr></table><p><b>period</b>: 2022-12-01 --&gt; 2023-01-20</p><p><b>reasonCode</b>: 140004 <span style=\"background: LightGoldenRodYellow; margin: 4px; border: 1px solid khaki\"> (<a href=\"https://browser.ihtsdotools.org/\">SNOMED CT</a>#140004)</span></p><h3>Locations</h3><table class=\"grid\"><tr><td style=\"display: none\">-</td><td><b>Location</b></td></tr><tr><td style=\"display: none\">*</td><td><a href=\"#Location_ProvidersLocationExample\">See above (Location/ProvidersLocationExample)</a></td></tr></table></div>"
+      },
+      "status" : "finished",
+      "class" : {
+        "system" : "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+        "code" : "AMB"
+      },
+      "subject" : {
+        "reference" : "Patient/HIMSPatientExample"
+      },
+      "participant" : [{
+        "individual" : {
+          "reference" : "Practitioner/GeneralPractitionerExample"
+        }
+      }],
+      "period" : {
+        "start" : "2022-12-01",
+        "end" : "2023-01-20"
+      },
+      "reasonCode" : [{
+        "coding" : [{
+          "system" : "http://snomed.info/sct",
+          "code" : "140004"
+        }]
+      }],
+      "location" : [{
+        "location" : {
+          "reference" : "Location/ProvidersLocationExample"
+        }
+      }]
+    },
+    "request" : {
+      "method" : "PUT",
+      "url" : "Encounter/TargetFacilityEncounterExample"
+    }
+  },
+  {
+    "fullUrl" : "Observation/WeightExample",
+    "resource" : {
+      "resourceType" : "Observation",
+      "id" : "WeightExample",
+      "meta" : {
+        "profile" : ["http://openhie.org/fhir/sri-lanka/StructureDefinition/weight"]
+      },
+      "text" : {
+        "status" : "generated",
+        "div" : "<div xmlns=\"http://www.w3.org/1999/xhtml\"><p><b>Generated Narrative: Observation</b><a name=\"WeightExample\"> </a></p><div style=\"display: inline-block; background-color: #d9e0e7; padding: 6px; margin: 4px; border: 1px solid #8da1b4; border-radius: 5px; line-height: 60%\"><p style=\"margin-bottom: 0px\">Resource Observation &quot;WeightExample&quot; </p><p style=\"margin-bottom: 0px\">Profile: <a href=\"StructureDefinition-weight.html\">Patient Weight Observation</a></p></div><p><b>status</b>: final</p><p><b>category</b>: Vital Signs <span style=\"background: LightGoldenRodYellow; margin: 4px; border: 1px solid khaki\"> (<a href=\"http://terminology.hl7.org/5.3.0/CodeSystem-observation-category.html\">Observation Category Codes</a>#vital-signs)</span></p><p><b>code</b>: Body Weight <span style=\"background: LightGoldenRodYellow; margin: 4px; border: 1px solid khaki\"> (<a href=\"https://loinc.org/\">LOINC</a>#29463-7)</span></p><p><b>subject</b>: <a href=\"Patient-HIMSPatientExample.html\">Patient/HIMSPatientExample</a> &quot; SMITH&quot;</p><p><b>encounter</b>: <a href=\"#Encounter_TargetFacilityEncounterExample\">See above (Encounter/TargetFacilityEncounterExample)</a></p><p><b>effective</b>: 2022-11-30</p><p><b>performer</b>: </p><ul><li><a href=\"Organization-OrganizationExample.html\">Organization/OrganizationExample</a> &quot;Some Health Facility&quot;</li><li><a href=\"#Practitioner_GeneralPractitionerExample\">See above (Practitioner/GeneralPractitionerExample)</a></li></ul><p><b>value</b>: 110 kg<span style=\"background: LightGoldenRodYellow\"> (Details: UCUM code kg = 'kg')</span></p></div>"
+      },
+      "status" : "final",
+      "category" : [{
+        "coding" : [{
+          "system" : "http://terminology.hl7.org/CodeSystem/observation-category",
+          "code" : "vital-signs"
+        }]
+      }],
+      "code" : {
+        "coding" : [{
+          "system" : "http://loinc.org",
+          "code" : "29463-7"
+        }],
+        "text" : "Body Weight"
+      },
+      "subject" : {
+        "reference" : "Patient/HIMSPatientExample"
+      },
+      "encounter" : {
+        "reference" : "Encounter/TargetFacilityEncounterExample"
+      },
+      "effectiveDateTime" : "2022-11-30",
+      "performer" : [{
+        "reference" : "Organization/OrganizationExample"
+      },
+      {
+        "reference" : "Practitioner/GeneralPractitionerExample"
+      }],
+      "valueQuantity" : {
+        "value" : 110,
+        "unit" : "kg",
+        "system" : "http://unitsofmeasure.org",
+        "code" : "kg"
+      }
+    },
+    "request" : {
+      "method" : "PUT",
+      "url" : "Observation/WeightExample"
+    }
+  },
+  {
+    "fullUrl" : "Location/ProvidersLocationExample",
+    "resource" : {
+      "resourceType" : "Location",
+      "id" : "ProvidersLocationExample",
+      "meta" : {
+        "profile" : ["http://openhie.org/fhir/sri-lanka/StructureDefinition/providers-location"]
+      },
+      "text" : {
+        "status" : "generated",
+        "div" : "<div xmlns=\"http://www.w3.org/1999/xhtml\"><p><b>Generated Narrative: Location</b><a name=\"ProvidersLocationExample\"> </a></p><div style=\"display: inline-block; background-color: #d9e0e7; padding: 6px; margin: 4px; border: 1px solid #8da1b4; border-radius: 5px; line-height: 60%\"><p style=\"margin-bottom: 0px\">Resource Location &quot;ProvidersLocationExample&quot; </p><p style=\"margin-bottom: 0px\">Profile: <a href=\"StructureDefinition-providers-location.html\">Providers Location</a></p></div><p><b>identifier</b>: Provider location identifier:\u00a0A provider's location may be associated with multiple identifiers.</p><p><b>status</b>: active</p><p><b>name</b>: Name for the location</p><p><b>telecom</b>: <a href=\"tel:+27829999999\">+27829999999</a>, <a href=\"mailto:someone@something.com\">someone@something.com</a>, <a href=\"mailto:someone2@something.com\">someone2@something.com</a></p><p><b>address</b>: 177 Nawala Road Nugegoda Colombo 32350 Sri Lanka </p><p><b>managingOrganization</b>: <a href=\"Organization-OrganizationExample.html\">Organization/OrganizationExample</a> &quot;Some Health Facility&quot;</p></div>"
+      },
+      "identifier" : [{
+        "extension" : [{
+          "url" : "http://openhie.org/fhir/sri-lanka/StructureDefinition/multiple-values-for-patient-identifier",
+          "valueString" : "Location-ID-1"
+        },
+        {
+          "url" : "http://openhie.org/fhir/sri-lanka/StructureDefinition/multiple-values-for-patient-identifier",
+          "valueString" : "Location-ID-2"
+        }],
+        "type" : {
+          "coding" : [{
+            "system" : "http://terminology.hl7.org/CodeSystem/v2-0203",
+            "code" : "PIN"
+          }],
+          "text" : "Provider location identifier"
+        },
+        "system" : "http://openhie.org/fhir/sri-lanka/identifier/provider-location",
+        "value" : "A provider's location may be associated with multiple identifiers."
+      }],
+      "status" : "active",
+      "name" : "Name for the location",
+      "telecom" : [{
+        "system" : "phone",
+        "value" : "+27829999999"
+      },
+      {
+        "system" : "email",
+        "value" : "someone@something.com"
+      },
+      {
+        "system" : "email",
+        "value" : "someone2@something.com"
+      }],
+      "address" : {
+        "type" : "postal",
+        "line" : ["177",
+        "Nawala Road"],
+        "city" : "Nugegoda",
+        "district" : "Ampara",
+        "state" : "Colombo",
+        "postalCode" : "32350",
+        "country" : "Sri Lanka"
+      },
+      "managingOrganization" : {
+        "reference" : "Organization/OrganizationExample"
+      }
+    },
+    "request" : {
+      "method" : "PUT",
+      "url" : "Location/ProvidersLocationExample"
+    }
+  },
+  {
+    "fullUrl" : "Communication/NotifiableDiseasesNotifiedExample",
+    "resource" : {
+      "resourceType" : "Communication",
+      "id" : "NotifiableDiseasesNotifiedExample",
+      "meta" : {
+        "profile" : ["http://openhie.org/fhir/sri-lanka/StructureDefinition/notifiable-diseases-notified"]
+      },
+      "text" : {
+        "status" : "generated",
+        "div" : "<div xmlns=\"http://www.w3.org/1999/xhtml\"><p><b>Generated Narrative: Communication</b><a name=\"NotifiableDiseasesNotifiedExample\"> </a></p><div style=\"display: inline-block; background-color: #d9e0e7; padding: 6px; margin: 4px; border: 1px solid #8da1b4; border-radius: 5px; line-height: 60%\"><p style=\"margin-bottom: 0px\">Resource Communication &quot;NotifiableDiseasesNotifiedExample&quot; </p><p style=\"margin-bottom: 0px\">Profile: <a href=\"StructureDefinition-notifiable-diseases-notified.html\">Notifiable Diseases Notified</a></p></div><p><b>status</b>: completed</p><p><b>subject</b>: <a href=\"#Patient_HHIMSPatientExample\">See above (Patient/HHIMSPatientExample)</a></p><p><b>encounter</b>: <a href=\"#Encounter_TargetFacilityEncounterExample\">See above (Encounter/TargetFacilityEncounterExample)</a></p><p><b>sent</b>: 2023-10-06 13:28:17-0500</p></div>"
+      },
+      "status" : "completed",
+      "subject" : {
+        "reference" : "Patient/HHIMSPatientExample"
+      },
+      "encounter" : {
+        "reference" : "Encounter/TargetFacilityEncounterExample"
+      },
+      "sent" : "2023-10-06T13:28:17-05:00"
+    },
+    "request" : {
+      "method" : "PUT",
+      "url" : "Communication/NotifiableDiseasesNotifiedExample"
+    }
+  },
+  {
+    "fullUrl" : "ServiceRequest/GeneralReferralServiceRequestExample",
+    "resource" : {
+      "resourceType" : "ServiceRequest",
+      "id" : "GeneralReferralServiceRequestExample",
+      "meta" : {
+        "profile" : ["http://openhie.org/fhir/sri-lanka/StructureDefinition/general-referral-request"]
+      },
+      "status" : "completed",
+      "intent" : "order",
+      "code" : {
+        "coding" : [{
+          "system" : "http://snomed.info/sct",
+          "code" : "3457005"
+        }],
+        "text" : "Patient referral"
+      },
+      "subject" : {
+        "reference" : "Patient/HHIMSPatientExample"
+      },
+      "encounter" : {
+        "reference" : "Encounter/TargetFacilityEncounterExample"
+      },
+      "occurrenceDateTime" : "2023-10-06T13:28:17-05:00",
+      "requester" : {
+        "reference" : "Practitioner/GeneralPractitionerExample"
+      },
+      "locationReference" : [{
+        "reference" : "Location/ProvidersLocationExample"
+      }]
+    },
+    "request" : {
+      "method" : "PUT",
+      "url" : "ServiceRequest/GeneralReferralServiceRequestExample"
+    }
+  },
+  {
+    "fullUrl" : "Practitioner/GeneralPractitionerExample",
+    "resource" : {
+      "resourceType" : "Practitioner",
+      "id" : "GeneralPractitionerExample",
+      "meta" : {
+        "profile" : ["http://openhie.org/fhir/sri-lanka/StructureDefinition/practitioner"]
+      },
+      "name" : [{
+        "family" : "Smith",
+        "given" : ["Tom",
+        "Junes"],
+        "prefix" : ["Dr"]
+      }],
+      "telecom" : [{
+        "system" : "phone",
+        "value" : "27537652509",
+        "use" : "work"
+      },
+      {
+        "system" : "email",
+        "value" : "someone@something.org",
+        "use" : "home"
+      }]
+    },
+    "request" : {
+      "method" : "PUT",
+      "url" : "Practitioner/GeneralPractitionerExample"
+    }
+  },
+  {
+    "fullUrl" : "Task/HHIMSReferralTaskExample",
+    "resource" : {
+      "resourceType" : "Task",
+      "id" : "HHIMSReferralTaskExample",
+      "meta" : {
+        "profile" : ["http://openhie.org/fhir/sri-lanka/StructureDefinition/referral-task"]
+      },
+      "status" : "completed",
+      "intent" : "order",
+      "priority" : "routine",
+      "description" : "some information regarding the need for the referral request, if any.",
+      "focus" : {
+        "reference" : "ServiceRequest/GeneralReferralServiceRequestExample"
+      },
+      "for" : {
+        "reference" : "Patient/HHIMSPatientExample"
+      },
+      "encounter" : {
+        "reference" : "Encounter/TargetFacilityEncounterExample"
+      },
+      "authoredOn" : "2023-10-06T13:28:17-05:00",
+      "requester" : {
+        "reference" : "Practitioner/GeneralPractitionerExample"
+      },
+      "location" : {
+        "reference" : "Location/ProvidersLocationExample"
+      }
+    },
+    "request" : {
+      "method" : "PUT",
+      "url" : "Task/HHIMSReferralTaskExample"
+    }
+  },
+  {
+    "fullUrl" : "AllergyIntolerance/AllergiesExample",
+    "resource" : {
+      "resourceType" : "AllergyIntolerance",
+      "id" : "AllergiesExample",
+      "meta" : {
+        "profile" : ["http://openhie.org/fhir/sri-lanka/StructureDefinition/allergy-intolerance"]
+      },
+      "clinicalStatus" : {
+        "coding" : [{
+          "system" : "http://terminology.hl7.org/CodeSystem/allergyintolerance-clinical",
+          "code" : "active"
+        }]
+      },
+      "verificationStatus" : {
+        "coding" : [{
+          "system" : "http://terminology.hl7.org/CodeSystem/allergyintolerance-verification",
+          "code" : "confirmed"
+        }]
+      },
+      "type" : "allergy",
+      "code" : {
+        "coding" : [{
+          "system" : "http://snomed.info/sct",
+          "code" : "414285001"
+        }],
+        "text" : "Allergy to food"
+      },
+      "patient" : {
+        "reference" : "Patient/HHIMSPatientExample"
+      },
+      "encounter" : {
+        "reference" : "Encounter/TargetFacilityEncounterExample"
+      },
+      "onsetDateTime" : "2023-10-11T17:21:33-08:00",
+      "recorder" : {
+        "reference" : "Practitioner/GeneralPractitionerExample"
+      }
+    },
+    "request" : {
+      "method" : "PUT",
+      "url" : "AllergyIntolerance/AllergiesExample"
+    }
+  },
+  {
+    "fullUrl" : "MedicationRequest/PrescriptionsExample",
+    "resource" : {
+      "resourceType" : "MedicationRequest",
+      "id" : "PrescriptionsExample",
+      "meta" : {
+        "profile" : ["http://openhie.org/fhir/sri-lanka/StructureDefinition/medication-request"]
+      },
+      "identifier" : [{
+        "type" : {
+          "coding" : [{
+            "system" : "http://terminology.hl7.org/CodeSystem/v2-0203",
+            "code" : "FILL",
+            "display" : "Filler Identifier"
+          }],
+          "text" : "Prescription identifier"
+        },
+        "system" : "http://openhie.org/fhir/sri-lanka/identifier/prescription",
+        "value" : "prescription-12345"
+      }],
+      "status" : "completed",
+      "intent" : "order",
+      "medicationCodeableConcept" : {
+        "coding" : [{
+          "system" : "http://openhie.org/fhir/sri-lanka/CodeSystem/cs-medication-name",
+          "code" : "Vitamin-A-&-D"
+        }],
+        "text" : "Medication"
+      },
+      "subject" : {
+        "reference" : "Patient/HHIMSPatientExample"
+      },
+      "encounter" : {
+        "reference" : "Encounter/TargetFacilityEncounterExample"
+      },
+      "authoredOn" : "2023-10-11T17:21:33-08:00",
+      "requester" : {
+        "reference" : "Practitioner/GeneralPractitionerExample"
+      },
+      "performer" : {
+        "reference" : "Practitioner/GeneralPractitionerExample"
+      },
+      "recorder" : {
+        "reference" : "Practitioner/GeneralPractitionerExample"
+      },
+      "note" : [{
+        "authorReference" : {
+          "reference" : "Organization/OrganizationExample"
+        },
+        "time" : "2023-10-11T17:21:33-08:00",
+        "text" : "Additional information regarding the patient's medication prescription"
+      }],
+      "dosageInstruction" : [{
+        "timing" : {
+          "repeat" : {
+            "count" : 2,
+            "duration" : 2,
+            "durationUnit" : "d",
+            "frequency" : 2,
+            "period" : 3,
+            "periodUnit" : "d"
+          },
+          "code" : {
+            "coding" : [{
+              "system" : "http://terminology.hl7.org/CodeSystem/v3-GTSAbbreviation",
+              "code" : "BID"
+            }]
+          }
+        },
+        "doseAndRate" : [{
+          "doseQuantity" : {
+            "value" : 3
+          }
+        }]
+      }],
+      "dispenseRequest" : {
+        "quantity" : {
+          "value" : 5
+        }
+      }
+    },
+    "request" : {
+      "method" : "PUT",
+      "url" : "MedicationRequest/PrescriptionsExample"
+    }
+  },
+  {
+    "fullUrl" : "Procedure/ProceduresExample",
+    "resource" : {
+      "resourceType" : "Procedure",
+      "id" : "ProceduresExample",
+      "meta" : {
+        "profile" : ["http://openhie.org/fhir/sri-lanka/StructureDefinition/procedure"]
+      },
+      "status" : "in-progress",
+      "category" : {
+        "coding" : [{
+          "system" : "http://snomed.info/sct",
+          "code" : "409073007"
+        }]
+      },
+      "code" : {
+        "coding" : [{
+          "system" : "http://openhie.org/fhir/sri-lanka/CodeSystem/cs-procedure-imaging",
+          "code" : "X-Ray"
+        }]
+      },
+      "subject" : {
+        "reference" : "Patient/HHIMSPatientExample"
+      },
+      "encounter" : {
+        "reference" : "Encounter/TargetFacilityEncounterExample"
+      },
+      "performedDateTime" : "2023-10-11T17:21:33-08:00",
+      "recorder" : {
+        "reference" : "Practitioner/GeneralPractitionerExample"
+      },
+      "asserter" : {
+        "reference" : "Practitioner/GeneralPractitionerExample"
+      },
+      "performer" : [{
+        "actor" : {
+          "reference" : "Practitioner/GeneralPractitionerExample"
+        }
+      }],
+      "location" : {
+        "reference" : "Location/ProvidersLocationExample"
+      }
+    },
+    "request" : {
+      "method" : "PUT",
+      "url" : "Procedure/ProceduresExample"
+    }
+  },
+  {
+    "fullUrl" : "MedicationAdministration/InjectionsExample",
+    "resource" : {
+      "resourceType" : "MedicationAdministration",
+      "id" : "InjectionsExample",
+      "meta" : {
+        "profile" : ["http://openhie.org/fhir/sri-lanka/StructureDefinition/injection"]
+      },
+      "status" : "completed",
+      "medicationCodeableConcept" : {
+        "coding" : [{
+          "system" : "http://snomed.info/sct",
+          "code" : "2571007"
+        }],
+        "text" : "Busulfan"
+      },
+      "subject" : {
+        "reference" : "Patient/HHIMSPatientExample"
+      },
+      "context" : {
+        "reference" : "Encounter/TargetFacilityEncounterExample"
+      },
+      "effectiveDateTime" : "2023-10-11T17:21:33-08:00",
+      "performer" : [{
+        "actor" : {
+          "reference" : "Practitioner/GeneralPractitionerExample"
+        }
+      }],
+      "dosage" : {
+        "route" : {
+          "coding" : [{
+            "system" : "http://snomed.info/sct",
+            "code" : "47625008"
+          }],
+          "text" : "Intravenous route"
+        },
+        "dose" : {
+          "value" : 12
+        }
+      }
+    },
+    "request" : {
+      "method" : "PUT",
+      "url" : "MedicationAdministration/InjectionsExample"
+    }
+  },
+  {
+    "fullUrl" : "MedicationDispense/DrugDispensationExample",
+    "resource" : {
+      "resourceType" : "MedicationDispense",
+      "id" : "DrugDispensationExample",
+      "meta" : {
+        "profile" : ["http://openhie.org/fhir/sri-lanka/StructureDefinition/drug-dispensation"]
+      },
+      "status" : "completed",
+      "medicationCodeableConcept" : {
+        "coding" : [{
+          "system" : "http://openhie.org/fhir/sri-lanka/CodeSystem/cs-medication-name",
+          "code" : "Vitamin-A-&-D"
+        }],
+        "text" : "Medication"
+      },
+      "subject" : {
+        "reference" : "Patient/HHIMSPatientExample"
+      },
+      "context" : {
+        "reference" : "Encounter/TargetFacilityEncounterExample"
+      },
+      "performer" : [{
+        "actor" : {
+          "reference" : "Practitioner/GeneralPractitionerExample"
+        }
+      }],
+      "location" : {
+        "reference" : "Location/ProvidersLocationExample"
+      },
+      "authorizingPrescription" : [{
+        "reference" : "MedicationRequest/PrescriptionsExample"
+      }],
+      "whenHandedOver" : "2023-10-11T17:21:33-08:00",
+      "receiver" : [{
+        "reference" : "Patient/HHIMSPatientExample"
+      }]
+    },
+    "request" : {
+      "method" : "PUT",
+      "url" : "MedicationDispense/DrugDispensationExample"
+    }
+  },
+  {
+    "fullUrl" : "ServiceRequest/InvestigationsServiceRequestExample",
+    "resource" : {
+      "resourceType" : "ServiceRequest",
+      "id" : "InvestigationsServiceRequestExample",
+      "meta" : {
+        "profile" : ["http://openhie.org/fhir/sri-lanka/StructureDefinition/investigations-request"]
+      },
+      "status" : "completed",
+      "intent" : "order",
+      "code" : {
+        "coding" : [{
+          "system" : "http://openhie.org/fhir/sri-lanka/CodeSystem/cs-investigation",
+          "code" : "FBC-WBC-th/uL"
+        }],
+        "text" : "Investigation requested"
+      },
+      "subject" : {
+        "reference" : "Patient/HHIMSPatientExample"
+      },
+      "encounter" : {
+        "reference" : "Encounter/TargetFacilityEncounterExample"
+      },
+      "occurrenceDateTime" : "2023-10-06T13:28:17-05:00",
+      "requester" : {
+        "reference" : "Practitioner/GeneralPractitionerExample"
+      },
+      "locationReference" : [{
+        "reference" : "Location/ProvidersLocationExample"
+      }]
+    },
+    "request" : {
+      "method" : "PUT",
+      "url" : "ServiceRequest/InvestigationsServiceRequestExample"
+    }
+  },
+  {
+    "fullUrl" : "Task/InvestigationsTaskExample",
+    "resource" : {
+      "resourceType" : "Task",
+      "id" : "InvestigationsTaskExample",
+      "meta" : {
+        "profile" : ["http://openhie.org/fhir/sri-lanka/StructureDefinition/investigations-task"]
+      },
+      
+      "basedOn" : [{
+        "reference" : "ServiceRequest/InvestigationsServiceRequestExample"
+      }],
+      "status" : "completed",
+      "intent" : "order",
+      "priority" : "routine",
+      "description" : "some information regarding the need for the investigations request, if any.",
+      "for" : {
+        "reference" : "Patient/HHIMSPatientExample"
+      },
+      "encounter" : {
+        "reference" : "Encounter/TargetFacilityEncounterExample"
+      },
+      "executionPeriod" : {
+        "start" : "2023-10-06T13:28:17-05:00",
+        "end" : "2023-10-09T16:28:17-05:00"
+      },
+      "authoredOn" : "2023-10-06T13:28:17-05:00",
+      "requester" : {
+        "reference" : "Practitioner/GeneralPractitionerExample"
+      },
+      "location" : {
+        "reference" : "Location/ProvidersLocationExample"
+      }
+    },
+    "request" : {
+      "method" : "PUT",
+      "url" : "Task/InvestigationsTaskExample"
+    }
+  },
+  {
+    "fullUrl" : "ServiceRequest/ImagingServiceRequestExample",
+    "resource" : {
+      "resourceType" : "ServiceRequest",
+      "id" : "ImagingServiceRequestExample",
+      "meta" : {
+        "profile" : ["http://openhie.org/fhir/sri-lanka/StructureDefinition/imaging-request"]
+      },
+      
+      "status" : "completed",
+      "intent" : "order",
+      "code" : {
+        "coding" : [{
+          "system" : "http://openhie.org/fhir/sri-lanka/CodeSystem/cs-procedure-imaging",
+          "code" : "X-Ray"
+        }],
+        "text" : "Imaging requested"
+      },
+      "subject" : {
+        "reference" : "Patient/HHIMSPatientExample"
+      },
+      "encounter" : {
+        "reference" : "Encounter/TargetFacilityEncounterExample"
+      },
+      "occurrenceDateTime" : "2023-10-06T13:28:17-05:00",
+      "requester" : {
+        "reference" : "Practitioner/GeneralPractitionerExample"
+      },
+      "locationReference" : [{
+        "reference" : "Location/ProvidersLocationExample"
+      }]
+    },
+    "request" : {
+      "method" : "PUT",
+      "url" : "ServiceRequest/ImagingServiceRequestExample"
+    }
+  },
+  {
+    "fullUrl" : "Task/ImagingTaskExample",
+    "resource" : {
+      "resourceType" : "Task",
+      "id" : "ImagingTaskExample",
+      "meta" : {
+        "profile" : ["http://openhie.org/fhir/sri-lanka/StructureDefinition/imaging-task"]
+      },
+      
+      "basedOn" : [{
+        "reference" : "ServiceRequest/ImagingServiceRequestExample"
+      }],
+      "status" : "completed",
+      "intent" : "order",
+      "priority" : "routine",
+      "description" : "some information regarding the need for the imaging request, if any.",
+      "for" : {
+        "reference" : "Patient/HHIMSPatientExample"
+      },
+      "encounter" : {
+        "reference" : "Encounter/TargetFacilityEncounterExample"
+      },
+      "executionPeriod" : {
+        "start" : "2023-10-06T13:28:17-05:00",
+        "end" : "2023-10-09T16:28:17-05:00"
+      },
+      "authoredOn" : "2023-10-06T13:28:17-05:00",
+      "requester" : {
+        "reference" : "Practitioner/GeneralPractitionerExample"
+      },
+      "location" : {
+        "reference" : "Location/ProvidersLocationExample"
+      }
+    },
+    "request" : {
+      "method" : "PUT",
+      "url" : "Task/ImagingTaskExample"
+    }
+  },
+  {
+    "fullUrl" : "ImagingStudy/ImagingExample",
+    "resource" : {
+      "resourceType" : "ImagingStudy",
+      "id" : "ImagingExample",
+      "meta" : {
+        "profile" : ["http://openhie.org/fhir/sri-lanka/StructureDefinition/imaging-study"]
+      },
+     
+      "status" : "registered",
+      "subject" : {
+        "reference" : "Patient/HHIMSPatientExample"
+      },
+      "encounter" : {
+        "reference" : "Encounter/TargetFacilityEncounterExample"
+      },
+      "started" : "2023-10-06T13:28:17-05:00",
+      "basedOn" : [{
+        "reference" : "ServiceRequest/ImagingServiceRequestExample"
+      }],
+      "referrer" : {
+        "reference" : "Practitioner/GeneralPractitionerExample"
+      },
+      "procedureReference" : {
+        "reference" : "Procedure/ProceduresExample"
+      },
+      "location" : {
+        "reference" : "Location/ProvidersLocationExample"
+      },
+      "description" : "Imaging Description",
+      "series" : [{
+        "uid" : "89c0c298-6c30-11ee-b962-0242ac120002",
+        "modality" : {
+          "system" : "http://dicom.nema.org/resources/ontology/DCM",
+          "code" : "XA"
+        },
+        "performer" : [{
+          "actor" : {
+            "reference" : "Practitioner/GeneralPractitionerExample"
+          }
+        }]
+      }]
+    },
+    "request" : {
+      "method" : "PUT",
+      "url" : "ImagingStudy/ImagingExample"
+    }
+  }]
+}

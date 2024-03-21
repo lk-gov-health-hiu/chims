@@ -1,5 +1,6 @@
 package lk.gov.health.phsp.bean;
 
+
 import lk.gov.health.phsp.entity.Area;
 import lk.gov.health.phsp.entity.WebUser;
 import lk.gov.health.phsp.entity.Institution;
@@ -11,6 +12,7 @@ import lk.gov.health.phsp.facade.UploadFacade;
 import lk.gov.health.phsp.facade.WebUserFacade;
 import lk.gov.health.phsp.facade.util.JsfUtil;
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -20,11 +22,14 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.ejb.EJB;
 import javax.enterprise.context.SessionScoped;
 import javax.faces.component.UIComponent;
+import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
@@ -93,8 +98,6 @@ public class WebUserController implements Serializable {
     /*
     Variables
      */
-    private boolean highSecurity = false;
-
     private List<WebUser> items = null;
     private List<Upload> companyUploads;
 
@@ -139,7 +142,6 @@ public class WebUserController implements Serializable {
     private UploadedFile file;
     private String comments;
     private Boolean ipBlocked;
-    boolean logged;
 
     private StreamedContent downloadingFile;
 
@@ -618,23 +620,23 @@ public class WebUserController implements Serializable {
         return "/change_my_password";
     }
 
-//    public void markLocationOnMap() {
-//        emptyModel = new DefaultMapModel();
-//        if (current == null) {
-//            return;
-//        }
-//        LatLng coord1 = new LatLng(current.getInstitution().getCoordinate().getLatitude(), current.getInstitution().getCoordinate().getLongitude());
-//        emptyModel.addOverlay(new Marker(coord1, current.getInstitution().getAddress()));
-//    }
-//
-//    public void markLocationOnMapForBidders() {
-//        emptyModel = new DefaultMapModel();
-//        if (current == null) {
-//            return;
-//        }
-//        LatLng coord1 = new LatLng(current.getInstitution().getCoordinate().getLatitude(), current.getInstitution().getCoordinate().getLongitude());
-//        emptyModel.addOverlay(new Marker(coord1, current.getInstitution().getAddress()));
-//    }
+    public void markLocationOnMap() {
+        emptyModel = new DefaultMapModel();
+        if (current == null) {
+            return;
+        }
+        LatLng coord1 = new LatLng(current.getInstitution().getCoordinate().getLatitude(), current.getInstitution().getCoordinate().getLongitude());
+        emptyModel.addOverlay(new Marker(coord1, current.getInstitution().getAddress()));
+    }
+
+    public void markLocationOnMapForBidders() {
+        emptyModel = new DefaultMapModel();
+        if (current == null) {
+            return;
+        }
+        LatLng coord1 = new LatLng(current.getInstitution().getCoordinate().getLatitude(), current.getInstitution().getCoordinate().getLongitude());
+        emptyModel.addOverlay(new Marker(coord1, current.getInstitution().getAddress()));
+    }
 
     public String viewMedia() {
         if (currentUpload == null) {
@@ -692,13 +694,13 @@ public class WebUserController implements Serializable {
         return downloadingFile;
     }
 
-//    public String addMarker() {
-//        Marker marker = new Marker(new LatLng(current.getInstitution().getCoordinate().getLatitude(), current.getInstitution().getCoordinate().getLongitude()), current.getName());
-//        emptyModel.addOverlay(marker);
-//        getInstitutionFacade().edit(getCurrent().getInstitution());
-//        JsfUtil.addSuccessMessage("Location Recorded");
-//        return "";
-//    }
+    public String addMarker() {
+        Marker marker = new Marker(new LatLng(current.getInstitution().getCoordinate().getLatitude(), current.getInstitution().getCoordinate().getLongitude()), current.getName());
+        emptyModel.addOverlay(marker);
+        getInstitutionFacade().edit(getCurrent().getInstitution());
+        JsfUtil.addSuccessMessage("Location Recorded");
+        return "";
+    }
 
     public String registerUser() {
         if (!current.getWebUserPassword().equals(password)) {
@@ -722,11 +724,80 @@ public class WebUserController implements Serializable {
         webUserApplicationController.removeFromLoggedUsers(userName);
         userTransactionController.recordTransaction("Logout");
         loggedUser = null;
-        logged = false;
+        return "/index";
+    }
+
+//    public String login() {
+//        userTransactionController.recordTransaction("login");
+//        return login(false);
+//    }
+//    public String login(boolean withoutPassword) {
+//        loggableInstitutions = null;
+//        loggablePmcis = null;
+//        loggableGnAreas = null;
+//        institutionController.setMyClinics(null);
+//        if (userName == null || userName.trim().equals("")) {
+//            JsfUtil.addErrorMessage("Please enter a Username");
+//            return "";
+//        }
+//        if (!withoutPassword) {
+//            if (password == null || password.trim().equals("")) {
+//                JsfUtil.addErrorMessage("Please enter the Password");
+//                return "";
+//            }
+//        }
+//        
+//        if (!checkLogin(withoutPassword)) {
+//            JsfUtil.addErrorMessage("Username/Password Error. Please retry.");
+//            userTransactionController.recordTransaction("Failed Login Attempt", userName);
+//            return "";
+//        }
+//        if (assumedPrivileges == null) {
+//            loggedUserPrivileges = userPrivilegeList(loggedUser);
+//        }
+//        JsfUtil.addSuccessMessage("Successfully Logged");
+//        userTransactionController.recordTransaction("Successful Login");
+//        return "/index";
+//    }
+//    
+    public boolean thisIsTheFirstLogin() {
+        String temSQL;
+        temSQL = "SELECT u FROM WebUser u";
+        WebUser u = getFacade().findFirstByJpql(temSQL);
+        if (u == null) {
+            return true;
+        }
+        return false;
+    }
+
+    public String createFirstUser() {
+        Institution ins = new Institution();
+        ins.setName(institutionName);
+        institutionFacade.create(ins);
+
+        WebUser nu = new WebUser();
+        Person np = new Person();
+        np.setName(userName);
+        nu.setName(userName);
+        nu.setInstitution(ins);
+        nu.setPerson(np);
+        nu.setWebUserPassword(password);
+        nu.setWebUserPassword(commonController.hash(password));
+        nu.setCreatedAt(new Date());
+        nu.setWebUserRole(WebUserRole.System_Administrator);
+        getFacade().create(nu);
+        List<Privilege> ps = new ArrayList<>();
+        for (Privilege p : Privilege.values()) {
+            ps.add(p);
+        }
+        addWebUserPrivileges(nu, ps);
+        JsfUtil.addSuccessMessage(("A new User Created Successfully."));
+
         return "/index";
     }
 
     public String login() {
+        //// System.out.println("Login");
         loggableInstitutions = null;
         loggableClinics = null;
         loggableHospitals = null;
@@ -739,29 +810,26 @@ public class WebUserController implements Serializable {
             return "";
         }
         userName = userName.toLowerCase().trim();
-
-        if (highSecurity) {
-
-            if (webUserApplicationController.userBlocked(userName)) {
-                JsfUtil.addErrorMessage("This user is blocked due to multiple failed login attempts. Please contact the hotline.");
-                return "";
-            }
-            if (webUserApplicationController.userAlreadyLogged(userName)) {
-                JsfUtil.addErrorMessage("This user is already logged to the system. If you have any concerns, please contact the hotline.");
-                return "";
-            }
+        //// System.out.println("userName = " + userName);
+        if (webUserApplicationController.userBlocked(userName)) {
+            JsfUtil.addErrorMessage("This user is blocked due to multiple failed login attempts. Please contact the hotline.");
+            return "";
+        }
+        if (webUserApplicationController.userAlreadyLogged(userName)) {
+            JsfUtil.addErrorMessage("This user is already logged to the system. If you have any concerns, please contact the hotline.");
+            return "";
         }
         if (password == null || password.trim().equals("")) {
             JsfUtil.addErrorMessage("Please enter the Password");
             return "";
         }
+        //// System.out.println("password = " + password);
         if (!checkLogin()) {
             JsfUtil.addErrorMessage("Username/Password Error. Please retry.");
             userTransactionController.recordTransaction("Failed Login Attempt", userName);
             webUserApplicationController.addFailedAttempt(getIpAddress(), getUserName());
             return "";
         }
-        logged = true;
         loggedUserPrivileges = userPrivilegeList(loggedUser);
         clientController.setClientDcfs(null);
 
@@ -773,7 +841,7 @@ public class WebUserController implements Serializable {
             return "/webUser/change_password_at_login";
         } else {
             passwordChangingUser = null;
-            prepareDashboards();
+//            prepareDashboards();
             JsfUtil.addSuccessMessage("Successfully Logged");
             return "/index";
         }
@@ -813,6 +881,7 @@ public class WebUserController implements Serializable {
     }
 
     private boolean checkLogin() {
+        //// System.out.println("checkLogin");
         if (getFacade() == null) {
             JsfUtil.addErrorMessage("Server Error");
             return false;
@@ -823,13 +892,18 @@ public class WebUserController implements Serializable {
         Map m = new HashMap();
         m.put("userName", userName.trim().toLowerCase());
         m.put("ret", false);
+        //// System.out.println("m = " + m);
+        //// System.out.println("temSQL = " + temSQL);
         loggedUser = getFacade().findFirstByJpql(temSQL, m);
+        //// System.out.println("loggedUser = " + loggedUser);
         if (loggedUser == null) {
             return false;
         }
         if (commonController.matchPassword(password, loggedUser.getWebUserPassword())) {
+            //// System.out.println("Password matching" );
             return true;
         } else {
+            //// System.out.println("Password mismatch ");
             loggedUser = null;
             return false;
         }
@@ -1959,14 +2033,6 @@ public class WebUserController implements Serializable {
         return loggableHospitals;
     }
 
-    public boolean isLogged() {
-        return logged;
-    }
-
-    public void setLogged(boolean logged) {
-        this.logged = logged;
-    }
-
     public List<Institution> getLoggableProcedureRooms() {
         if (loggableProcedureRooms == null) {
             Map<Long, Institution> mapPrs = new HashMap<>();
@@ -2150,10 +2216,6 @@ public class WebUserController implements Serializable {
 
     public void setUsersExists(String usersExists) {
         this.usersExists = usersExists;
-    }
-
-    public boolean isHighSecurity() {
-        return highSecurity;
     }
 
     @FacesConverter(forClass = WebUser.class)

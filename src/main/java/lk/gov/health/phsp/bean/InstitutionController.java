@@ -1,5 +1,6 @@
 package lk.gov.health.phsp.bean;
 
+import ca.uhn.fhir.context.FhirContext;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -16,6 +17,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
@@ -32,11 +35,16 @@ import jxl.Sheet;
 import jxl.Workbook;
 import jxl.read.biff.BiffException;
 import lk.gov.health.phsp.entity.Area;
+import lk.gov.health.phsp.entity.FhirOperationResult;
+import lk.gov.health.phsp.entity.IntegrationEndpoint;
 import lk.gov.health.phsp.enums.AreaType;
 import lk.gov.health.phsp.enums.InstitutionType;
 import lk.gov.health.phsp.facade.AreaFacade;
+import lk.gov.health.phsp.pojcs.FhirConverters;
+import org.hl7.fhir.r4.model.Bundle;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.primefaces.model.file.UploadedFile;
-
 
 @Named
 @SessionScoped
@@ -57,8 +65,18 @@ public class InstitutionController implements Serializable {
     InstitutionApplicationController institutionApplicationController;
     @Inject
     private UserTransactionController userTransactionController;
+    @Inject
+    IntegrationTriggerController integrationTriggerController;
+    @Inject
+    FhirController fhirController;
+    @Inject
+    FhirR4Controller fhirR4Controller;
 
+    
     private List<Institution> items = null;
+
+    private List<Institution> selectedItems = null;
+
     private Institution selected;
     private Institution deleting;
     private List<Institution> myClinics;
@@ -78,7 +96,68 @@ public class InstitutionController implements Serializable {
     private String startMessage;
 
     private UploadedFile file;
+    private List<FhirOperationResult> fhirOperationResults;
+    private boolean pushComplete = false;
 
+    IntegrationEndpoint integrationEndpoint;
+    String responseMessage;
+    
+
+    public String navigateToTestSendingOrganizationToEndPoint() {
+        if (selected == null) {
+            JsfUtil.addErrorMessage("No Institution is selected");
+            return "";
+        }
+        return "/systemAdmin/integrationEndpoint/test_with_institution";
+    }
+
+    public void postOrganizationBundleToMediators() {
+        Bundle bundle = fhirController.createTransactionalBundleWithUUID(UUID.randomUUID().toString());
+        Bundle.BundleEntryComponent patientEntry = fhirController.createOrganizationEntry(selected);
+        fhirController.addEntryToBundle(bundle, patientEntry);
+        FhirOperationResult result = fhirR4Controller.createResourcesInFhirServer(bundle, integrationEndpoint);
+        responseMessage = "Operation Result: " + (result.isSuccess() ? "Success" : "Failure") + "\nMessage: " + result.getMessage();
+        FhirContext ctx = FhirContext.forR4();
+        String serializedBundle = ctx.newJsonParser().setPrettyPrint(true).encodeResourceToString(bundle);
+        responseMessage += "\nBundle: " + serializedBundle;
+    }
+    
+    public void postLocationBundleToMediators() {
+        Bundle bundle = fhirController.createTransactionalBundleWithUUID(UUID.randomUUID().toString());
+        Bundle.BundleEntryComponent patientEntry = fhirController.createLocationEntry(selected);
+        fhirController.addEntryToBundle(bundle, patientEntry);
+        FhirOperationResult result = fhirR4Controller.createResourcesInFhirServer(bundle, integrationEndpoint);
+        responseMessage = "Operation Result: " + (result.isSuccess() ? "Success" : "Failure") + "\nMessage: " + result.getMessage();
+        FhirContext ctx = FhirContext.forR4();
+        String serializedBundle = ctx.newJsonParser().setPrettyPrint(true).encodeResourceToString(bundle);
+        responseMessage += "\nBundle: " + serializedBundle;
+    }
+
+    public String pushSelectedOrganizationsToFhirServers() {
+        pushComplete = false;
+        String jsonPlayLoad = FhirConverters.createOrganizationJsonPayload(selectedItems);
+        List<FhirOperationResult> results = integrationTriggerController.postToMediators(jsonPlayLoad);
+        fhirOperationResults = results;
+        pushComplete = true; // Mark the operation as complete
+        return "/institution/push_result?faces-redirect=true"; // Navigate to the push_result page
+    }
+
+    public String pushSelectedLocationsToFhirServers() {
+        String jsonPlayLoad = FhirConverters.createLocationJsonPayload(selectedItems);
+        List<FhirOperationResult> results = integrationTriggerController.postToMediators(jsonPlayLoad);
+        fhirOperationResults = results;
+        pushComplete = true; // Mark the operation as complete
+        return "/institution/push_result?faces-redirect=true"; // Navigate to the push_result page
+    }
+
+    public String checkPushComplete() {
+        if (pushComplete) {
+            return navigateToPushInstitutions();
+        }
+        return null;
+    }
+
+    // Modified by Dr M H B Ariyaratne with assistance from ChatGPT from OpenAI.
     public Institution getInstitutionById(Long id) {
         return getFacade().find(id);
     }
@@ -99,7 +178,7 @@ public class InstitutionController implements Serializable {
                 return unit;
             case Clinic:
             case MOH_Office:
-            
+
             case Other:
             case Partner:
 
@@ -118,7 +197,6 @@ public class InstitutionController implements Serializable {
         }
     }
 
-  
     public String toAddInstitution() {
         selected = new Institution();
         userTransactionController.recordTransaction("To Add Institution");
@@ -178,13 +256,16 @@ public class InstitutionController implements Serializable {
         return "/institution/list";
     }
 
+    public String navigateToPushInstitutions() {
+        userTransactionController.recordTransaction("To Push Institutions");
+        selectedItems = null;
+        return "/institution/push";
+    }
+
     public String toSearchInstitutions() {
         return "/institution/search";
     }
 
-    
-
-  
     public InstitutionController() {
     }
 
@@ -228,8 +309,7 @@ public class InstitutionController implements Serializable {
         }
         return tins;
     }
-    
-    
+
     public List<Institution> findChildrenInstitutions(Institution ins) {
         List<Institution> allIns = institutionApplicationController.getInstitutions();
         List<Institution> cins = new ArrayList<>();
@@ -364,7 +444,7 @@ public class InstitutionController implements Serializable {
         for (Institution i : institutionApplicationController.getInstitutions()) {
             if (i.getName() != null && i.getName().equalsIgnoreCase(name)) {
                 if (ni != null) {
-                    // //System.out.println("Duplicate Institution Name : " + name);
+                    // //// System.out.println("Duplicate Institution Name : " + name);
                 }
                 ni = i;
             }
@@ -604,7 +684,7 @@ public class InstitutionController implements Serializable {
         }
 
     }
-    
+
     public void saveOrUpdateInstitution() {
         if (selected == null) {
             JsfUtil.addErrorMessage("Nothing to select");
@@ -875,6 +955,48 @@ public class InstitutionController implements Serializable {
         this.file = file;
     }
 
+    public List<FhirOperationResult> getFhirOperationResults() {
+        return fhirOperationResults;
+    }
+
+    public void setFhirOperationResults(List<FhirOperationResult> fhirOperationResults) {
+        this.fhirOperationResults = fhirOperationResults;
+    }
+
+    public boolean isPushComplete() {
+        return pushComplete;
+    }
+
+    public void setPushComplete(boolean pushComplete) {
+        this.pushComplete = pushComplete;
+    }
+
+    public List<Institution> getSelectedItems() {
+        return selectedItems;
+    }
+
+    public void setSelectedItems(List<Institution> selectedItems) {
+        this.selectedItems = selectedItems;
+    }
+
+    public IntegrationEndpoint getIntegrationEndpoint() {
+        return integrationEndpoint;
+    }
+
+    public void setIntegrationEndpoint(IntegrationEndpoint integrationEndpoint) {
+        this.integrationEndpoint = integrationEndpoint;
+    }
+
+    public String getResponseMessage() {
+        return responseMessage;
+    }
+
+    public void setResponseMessage(String responseMessage) {
+        this.responseMessage = responseMessage;
+    }
+
+    
+    
     @FacesConverter(forClass = Institution.class)
     public static class InstitutionControllerConverter implements Converter {
 

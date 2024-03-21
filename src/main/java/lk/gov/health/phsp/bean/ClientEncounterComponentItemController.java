@@ -87,6 +87,16 @@ public class ClientEncounterComponentItemController implements Serializable {
         m.put("p", fs);
         formsetItems = getFacade().findByJpql(j, m);
     }
+    
+    public List<ClientEncounterComponentItem> getClientEncounterComponentItemOfAFormset(ClientEncounterComponentFormSet fs) {
+        String j = "select f from ClientEncounterComponentItem f "
+                + " where f.retired=false "
+                + " and f.parentComponent.parentComponent=:p "
+                + " order by f.orderNo";
+        Map m = new HashMap();
+        m.put("p", fs);
+        return getFacade().findByJpql(j, m);
+    }
 
     public List<ClientEncounterComponentItem> findClientEncounterComponentItemOfAForm(ClientEncounterComponentForm fs) {
         String j = "select f from ClientEncounterComponentItem f "
@@ -288,14 +298,14 @@ public class ClientEncounterComponentItemController implements Serializable {
 //    
     public void calculate(DataItem i) {
 
-        //System.out.println("Calculate");
+        //// System.out.println("Calculate");
         if (i == null) {
-            //System.out.println("i is null");
+            //// System.out.println("i is null");
             return;
         }
 
         if (i.getDi().getCalculationScript() == null || i.getDi().getCalculationScript().trim().equals("")) {
-            //System.out.println("i.getDi().getCalculationScript() = " + i.getDi().getCalculationScript());
+            //// System.out.println("i.getDi().getCalculationScript() = " + i.getDi().getCalculationScript());
             return;
         }
 
@@ -313,25 +323,25 @@ public class ClientEncounterComponentItemController implements Serializable {
         List<Replaceable> replacingBlocks = findReplaceblesInCalculationString(i.getDi().getCalculationScript());
 
         for (Replaceable r : replacingBlocks) {
-//            //System.out.println("r = " + r);
+//            //// System.out.println("r = " + r);
             if (r.getPef().equalsIgnoreCase("f")) {
-//                //System.out.println("r.getPef() = " + r.getPef());
+//                //// System.out.println("r.getPef() = " + r.getPef());
                 if (r.getSm().equalsIgnoreCase("s")) {
-//                    //System.out.println("r.getSm() = " + r.getSm());
+//                    //// System.out.println("r.getSm() = " + r.getSm());
                     r.setClientEncounterComponentItem(findFormsetValue(i, r.getVariableCode()));
-//                    //System.out.println("1 r.getClientEncounterComponentItem() = " + r.getClientEncounterComponentItem());
+//                    //// System.out.println("1 r.getClientEncounterComponentItem() = " + r.getClientEncounterComponentItem());
                 } else {
                     r.setClientEncounterComponentItem(findFormsetValue(i, r.getVariableCode(), r.getValueCode()));
-                    //System.out.println("2 r.getClientEncounterComponentItem() = " + r.getClientEncounterComponentItem());
+                    //// System.out.println("2 r.getClientEncounterComponentItem() = " + r.getClientEncounterComponentItem());
                 }
             } else if (r.getPef().equalsIgnoreCase("p")) {
-//                //System.out.println("2. r.getPef() = " + r.getPef());
+//                //// System.out.println("2. r.getPef() = " + r.getPef());
                 r.setClientEncounterComponentItem(findClientValue(i, r.getVariableCode()));
-//                //System.out.println("r.getClientEncounterComponentItem() = " + r.getClientEncounterComponentItem());
+//                //// System.out.println("r.getClientEncounterComponentItem() = " + r.getClientEncounterComponentItem());
             }
             if (r.getClientEncounterComponentItem() != null) {
                 ClientEncounterComponentItem c = r.getClientEncounterComponentItem();
-                //System.out.println("c = " + c);
+                //// System.out.println("c = " + c);
                 if (c == null || c.getReferanceDesignComponentFormItem() == null || c.getReferanceDesignComponentFormItem().getItem() == null) {
                     continue;
                 } else {
@@ -395,20 +405,20 @@ public class ClientEncounterComponentItemController implements Serializable {
                         }
                         break;
                 }
-                //System.out.println("r.getSelectedValue() = " + r.getSelectedValue());
+                //// System.out.println("r.getSelectedValue() = " + r.getSelectedValue());
 
             } else {
-                //System.out.println("r.getDefaultValue() = " + r.getDefaultValue());
+                //// System.out.println("r.getDefaultValue() = " + r.getDefaultValue());
                 r.setSelectedValue(r.getDefaultValue());
 
             }
         }
 
         String javaStringToEvaluate = addTemplateToReport(i.getDi().getCalculationScript().trim(), replacingBlocks);
-        //System.out.println("javaStringToEvaluate = " + javaStringToEvaluate);
+        //// System.out.println("javaStringToEvaluate = " + javaStringToEvaluate);
         String result = evaluateScript(javaStringToEvaluate);
 
-        //System.out.println("result = " + result);
+        //// System.out.println("result = " + result);
         if (null == i.getDi().getItem().getDataType()) {
             i.getCi().setShortTextValue(result);
         } else {
@@ -542,20 +552,20 @@ public class ClientEncounterComponentItemController implements Serializable {
     }
 
     public ClientEncounterComponentItem findFormsetValue(DataItem i, String variableCode, String valueCode) {
-        //System.out.println("2 findFormsetValue");
+        //// System.out.println("2 findFormsetValue");
         if (i == null) {
-            //System.out.println("i null");
+            //// System.out.println("i null");
             return null;
         }
         if (variableCode == null) {
-            //System.out.println("variableCode is null");
+            //// System.out.println("variableCode is null");
             return null;
         }
         if (variableCode.trim().equals("")) {
             return null;
         }
         if (valueCode == null) {
-            //System.out.println("valueCode is null");
+            //// System.out.println("valueCode is null");
             return null;
         }
         if (valueCode.trim().equals("")) {
@@ -563,12 +573,12 @@ public class ClientEncounterComponentItemController implements Serializable {
         }
 
         DataFormset s = i.getForm().getFormset();
-        //System.out.println("s = " + s);
+        //// System.out.println("s = " + s);
         ClientEncounterComponentItem temc = null;
         for (DataForm f : s.getForms()) {
-            //System.out.println("f = " + f.getDf().getName());
+            //// System.out.println("f = " + f.getDf().getName());
             for (DataItem di : f.getItems()) {
-                //System.out.println("di = " + di);
+                //// System.out.println("di = " + di);
                 if (di == null) {
                     continue;
                 }
@@ -583,12 +593,12 @@ public class ClientEncounterComponentItemController implements Serializable {
                 }
                 if (di.getDi().getItem().getCode().equalsIgnoreCase(variableCode)) {
                     if (di.getAddedItems() == null) {
-                        //System.out.println("di is null " );
+                        //// System.out.println("di is null " );
                         continue;
                     }
                     for (DataItem tdi : di.getAddedItems()) {
-                        //System.out.println("tdi = " + tdi);
-                        //System.out.println("tdi = " + tdi.getAddedItems());
+                        //// System.out.println("tdi = " + tdi);
+                        //// System.out.println("tdi = " + tdi.getAddedItems());
                         //TODO : Add Logic for Other Data Types in addition to Item Referance
                         if (tdi.getCi() != null && tdi.getCi().getItemValue() != null && tdi.getCi().getItemValue().getCode() != null) {
                             if (tdi.getCi().getItemValue().getCode().equalsIgnoreCase(valueCode)) {
@@ -731,24 +741,24 @@ public class ClientEncounterComponentItemController implements Serializable {
     }
 
     public void addAnotherDataItem(DataItem i) {
-        // //System.out.println("addAnother");
-        // //System.out.println("Dataitem i = " + i);
+        // //// System.out.println("addAnother");
+        // //// System.out.println("Dataitem i = " + i);
 
         if (i == null) {
             JsfUtil.addErrorMessage("No Data Item");
             return;
         }
 
-        // //System.out.println("i.getAddingItem() = " + i.getAddingItem());
+        // //// System.out.println("i.getAddingItem() = " + i.getAddingItem());
         if (i.getAddingItem() == null) {
             JsfUtil.addErrorMessage("No Adding Item");
             return;
         }
 
-        // //System.out.println("i.getAddingItem().getCi() = " + i.getAddingItem().getCi());
+        // //// System.out.println("i.getAddingItem().getCi() = " + i.getAddingItem().getCi());
         if (i.getAddingItem().getCi() == null) {
             JsfUtil.addErrorMessage("No CI for Adding Item");
-            // //System.out.println("No CI for Adding Item");
+            // //// System.out.println("No CI for Adding Item");
             return;
         }
 
@@ -756,25 +766,25 @@ public class ClientEncounterComponentItemController implements Serializable {
             JsfUtil.addErrorMessage("No Item value for CI");
             return;
         } else {
-            // //System.out.println("i.getAddingItem().getCi().getItemValue() = " + i.getAddingItem().getCi().getItemValue().getName());
+            // //// System.out.println("i.getAddingItem().getCi().getItemValue() = " + i.getAddingItem().getCi().getItemValue().getName());
         }
 
-        // //System.out.println("going to saveCi");
-        // //System.out.println("i.getAddingItem().getCi().getId() = " + i.getAddingItem().getCi().getId());
+        // //// System.out.println("going to saveCi");
+        // //// System.out.println("i.getAddingItem().getCi().getId() = " + i.getAddingItem().getCi().getId());
         saveCi(i.getAddingItem().getCi());
 
-        // //System.out.println("saved");
-        // //System.out.println("i.getAddingItem().getCi().getId() = " + i.getAddingItem().getCi().getId());
+        // //// System.out.println("saved");
+        // //// System.out.println("i.getAddingItem().getCi().getId() = " + i.getAddingItem().getCi().getId());
         i.getAddedItems().add(i.getAddingItem());
 
         if (i.getAddingItem().getCi().getItemValue() == null) {
             JsfUtil.addErrorMessage("No Item value for CI");
             return;
         } else {
-            // //System.out.println("i.getAddingItem().getCi().getItemValue() = " + i.getAddingItem().getCi().getItemValue().getName());
+            // //// System.out.println("i.getAddingItem().getCi().getItemValue() = " + i.getAddingItem().getCi().getItemValue().getName());
         }
 
-        // //System.out.println("before new nci");
+        // //// System.out.println("before new nci");
         ClientEncounterComponentItem nci = new ClientEncounterComponentItem();
 
         nci.setEncounter(i.getForm().getFormset().getEfs().getEncounter());
@@ -804,7 +814,7 @@ public class ClientEncounterComponentItemController implements Serializable {
             nci.setPrescriptionValue(p);
         }
 
-        // //System.out.println("before new ni");
+        // //// System.out.println("before new ni");
         DataItem ni = new DataItem();
         ni.setMultipleEntries(true);
         ni.setCi(nci);
@@ -815,14 +825,14 @@ public class ClientEncounterComponentItemController implements Serializable {
 
         i.setAddingItem(ni);
 
-        // //System.out.println("before recording user transaction");
+        // //// System.out.println("before recording user transaction");
 //        userTransactionController.recordTransaction("Add Another - Clinic Forms");
-        // //System.out.println("after saving user transaction");
+        // //// System.out.println("after saving user transaction");
     }
 
     public void removeDataItem(DataItem i, DataItem removingItem) {
-        // //System.out.println("removeDataItem");
-        // //System.out.println("Dataitem i = " + i);
+        // //// System.out.println("removeDataItem");
+        // //// System.out.println("Dataitem i = " + i);
 
         if (i == null) {
             JsfUtil.addErrorMessage("No Data Item");
@@ -1010,18 +1020,18 @@ public class ClientEncounterComponentItemController implements Serializable {
     }
 
     private ClientEncounterComponentItem findClientValue(DataItem i, String code) {
-        //System.out.println("code = " + code);
-        //System.out.println("i = " + i);
+        //// System.out.println("code = " + code);
+        //// System.out.println("i = " + i);
         if (i == null) {
             return null;
         }
-        //System.out.println("i = " + i);
-        //System.out.println("i.getForm() = " + i.getForm());
-        //System.out.println("i.getForm().getFormset() = " + i.getForm().getFormset());
-        //System.out.println("i.getForm().getFormset().getMapOfClientValues() = " + i.getForm().getFormset().getMapOfClientValues());
+        //// System.out.println("i = " + i);
+        //// System.out.println("i.getForm() = " + i.getForm());
+        //// System.out.println("i.getForm().getFormset() = " + i.getForm().getFormset());
+        //// System.out.println("i.getForm().getFormset().getMapOfClientValues() = " + i.getForm().getFormset().getMapOfClientValues());
 
         ClientEncounterComponentItem fountVal = i.getForm().getFormset().getMapOfClientValues().get(code.toLowerCase());
-        //System.out.println("fountVal = " + fountVal);
+        //// System.out.println("fountVal = " + fountVal);
 
         if (fountVal != null) {
             if (code.equalsIgnoreCase("client_current_age_in_years")) {

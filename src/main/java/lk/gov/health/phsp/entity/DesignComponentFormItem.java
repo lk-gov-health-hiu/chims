@@ -79,7 +79,7 @@ public class DesignComponentFormItem extends DesignComponent {
     @Lob
     private String regexValidationFailedMessage;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     private Item mimeType;
 
     @Enumerated(EnumType.STRING)
@@ -109,11 +109,11 @@ public class DesignComponentFormItem extends DesignComponent {
     @Enumerated(EnumType.STRING)
     private DataModificationStrategy dataModificationStrategy;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     private Area parentAreaOfAvailableAreas;
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     private Item categoryOfAvailableItems;
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     private Institution parentInstitutionOfAvailableInstitutions;
 
     

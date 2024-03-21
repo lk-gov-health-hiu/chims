@@ -18,25 +18,36 @@
                             <p:spacer height="1" width="30"></p:spacer>
 
                             <p:commandButton value="Delete" action="#{clientController.toRetireClient()}"
+                                             class="m-1"
                                              onclick="return confirm('Are you sure?')"
                                              style="float: right;">
                             </p:commandButton>
-                            <p:commandButton value="To Edit Details" action="#{clientController.toClient()}"
+                            <p:commandButton value="To Edit Details"
+                                             class="m-1"
+                                             action="#{clientController.toClient()}"
                                              style="float: right;">
                             </p:commandButton>
                             <h:messages globalOnly="true" showDetail="true"/>
                             <p:commandButton value="Push to FHIR Server" 
                                              ajax="false"
+                                             rendered="false"
+                                             class="m-1"
                                              action="#{clientController.pushToFhirServers()}"
                                              style="float: right;">
                             </p:commandButton>
-                            <p:commandButton value="To Print" action="/client/client_print" style="float: right;">
+                            <p:commandButton value="To Print"
+                                             class="m-1"
+                                             action="/client/client_print"
+                                             style="float: right;">
                             </p:commandButton>
                             <p:commandButton process="@this" ajax="false"
                                              actionListener="#{clientController.prepareToCapturePhotoWithWebCam()}"
                                              value="To Capture Photo" rendered="false"
+                                             class="m-1"
                                              action="capture" style="float: right;"/>
-                            <p:commandButton ajax="false" update="photoCap" 
+                            <p:commandButton ajax="false"
+                                             class="m-1"
+                                             update="photoCap" 
                                              actionListener="#{clientController.prepareToCapturePhotoWithWebCam()}"
                                              value="To Upload Photo"  rendered="false"
                                              action="upload" style="float: right;"/>

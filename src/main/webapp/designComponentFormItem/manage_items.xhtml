@@ -19,6 +19,9 @@
                         <p:panelGrid columns="2" styleClass="alignTop" style="margin: auto; text-align: left;" >
                             <f:facet name="header" >
                                 <p:commandButton ajax="false" value="Back to Manage Forms" action="/designComponentFormSet/manage_forms" style="float: right;" ></p:commandButton>
+                                <p:commandButton ajax="false" value="Download"  style="float: right;" >
+                                    <p:dataExporter target="lst" type="xls" fileName="metadata" ></p:dataExporter>
+                                </p:commandButton>
                             </f:facet>
                             <p:panel header="Existing Forms Items" >  
                                 <p:dataTable id="lst" value="#{designComponentFormItemController.designComponentFormItems}" var="f" >
@@ -30,6 +33,14 @@
                                     
                                     <p:column headerText="Name" >
                                         <p:outputLabel id="txtName" value="#{f.name}" >
+                                        </p:outputLabel>
+                                    </p:column>
+                                    <p:column headerText="Code" >
+                                        <p:outputLabel value="#{f.item.code}" >
+                                        </p:outputLabel>
+                                    </p:column>
+                                    <p:column headerText="Data Type" >
+                                        <p:outputLabel value="#{f.selectionDataType}" >
                                         </p:outputLabel>
                                     </p:column>
                                     

@@ -25,9 +25,10 @@ package lk.gov.health.phsp.entity;
 
 import java.io.Serializable;
 import java.util.Date;
-import javax.jdo.annotations.Index;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -36,7 +37,8 @@ import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
-
+import javax.xml.bind.annotation.XmlRootElement;
+import lk.gov.health.phsp.enums.PrescriptionType;
 import lk.gov.health.phsp.pojcs.Identifiable;
 
 /**
@@ -45,6 +47,7 @@ import lk.gov.health.phsp.pojcs.Identifiable;
  */
 @Entity
 @Table
+@XmlRootElement
 public class Observation implements Serializable, Identifiable  {
 
     private static final long serialVersionUID = 1L;
@@ -52,11 +55,9 @@ public class Observation implements Serializable, Identifiable  {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @Index
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     private Item observation;
-    @Index
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     private ClientEncounterComponentItem observationValue;
     @Lob
     private String description;
@@ -68,11 +69,9 @@ public class Observation implements Serializable, Identifiable  {
     @Column(name = "ato")
     private Date to;
 
-    @Index
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     private Client client;
-    @Index
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     private Encounter encounter;
 
     /*
@@ -99,7 +98,6 @@ public class Observation implements Serializable, Identifiable  {
     /*
     Retire Properties
      */
-    @Index
     private boolean retired;
     @ManyToOne
     private WebUser retiredBy;

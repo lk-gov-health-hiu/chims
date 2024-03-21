@@ -101,7 +101,7 @@ public class InstitutionApplicationController {
 
     public List<Institution> getHospitals() {
         fillHospitals();
-//        // //System.out.println("hospitals = " + hospitals.size());
+//        // //// System.out.println("hospitals = " + hospitals.size());
         return hospitals;
     }
 
@@ -135,15 +135,15 @@ public class InstitutionApplicationController {
     public Long findInstitutionPopulationData(Institution tins, RelationshipType ttr, Integer ty) {
 
         if (ty == null) {
-            // //System.out.println("No Year");
+            // //// System.out.println("No Year");
             return 0l;
         }
         if (tins == null) {
-            // //System.out.println("No Institution");
+            // //// System.out.println("No Institution");
             return 0l;
         }
         if (ttr == null) {
-            // //System.out.println("No Relationship Type");
+            // //// System.out.println("No Relationship Type");
             return 0l;
         }
 
@@ -161,8 +161,8 @@ public class InstitutionApplicationController {
         m.put("y", ty);
         m.put("ret", true);
 
-        // //System.out.println("m = " + m);
-        // //System.out.println("j = " + j);
+        // //// System.out.println("m = " + m);
+        // //// System.out.println("j = " + j);
         Relationship tr = relationshipFacade.findFirstByJpql(j, m);
         if (tr == null) {
             return 0l;
@@ -173,11 +173,11 @@ public class InstitutionApplicationController {
     public List<Relationship> findInstitutionPopulationData(Institution tins, Integer ty) {
 
         if (ty == null) {
-            // //System.out.println("No Year");
+            // //// System.out.println("No Year");
             return null;
         }
         if (tins == null) {
-            // //System.out.println("No Institution");
+            // //// System.out.println("No Institution");
             return null;
         }
 
@@ -193,8 +193,8 @@ public class InstitutionApplicationController {
         m.put("y", ty);
         m.put("ret", true);
 
-        // //System.out.println("m = " + m);
-        // //System.out.println("j = " + j);
+        // //// System.out.println("m = " + m);
+        // //// System.out.println("j = " + j);
         List<Relationship> tr = relationshipFacade.findByJpql(j, m);
         return tr;
     }
@@ -225,14 +225,14 @@ public class InstitutionApplicationController {
     }
     
     public Institution findMinistryOfHealth() {
-        //System.out.println("find MoH");
+        //// System.out.println("find MoH");
         Institution ri = null;
         for (Institution i : getInstitutions()) {
             if (i.getInstitutionType().equals(InstitutionType.Ministry_of_Health)) {
                 ri = i;
             }
         }
-        //System.out.println("ri = " + ri);
+        //// System.out.println("ri = " + ri);
         return ri;
     }
 

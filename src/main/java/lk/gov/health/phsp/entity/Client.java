@@ -2,7 +2,6 @@ package lk.gov.health.phsp.entity;
 
 import java.io.Serializable;
 import java.util.Date;
-import javax.jdo.annotations.Index;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -13,24 +12,26 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
+import javax.xml.bind.annotation.XmlRootElement;
 import lk.gov.health.phsp.pojcs.Identifiable;
 
 @Entity
 @Table
+@XmlRootElement
 public class Client implements Serializable , Identifiable {
 
 // <editor-fold defaultstate="collapsed" desc="Attributes">
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+    
+    private String uuid;
 
     private static final long serialVersionUID = 1L;
 
-    @Index
-    @OneToOne(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH })
+    @OneToOne(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     private Person person;
 
-    @Index
     private String phn;
 
     private String comments;
@@ -43,9 +44,9 @@ public class Client implements Serializable , Identifiable {
     private Date createdAt;
     @Temporal(javax.persistence.TemporalType.DATE)
     private Date createdOn;
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     private Institution createInstitution;
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     private Institution poiInstitution;
     /*
     Last Edit Properties
@@ -64,7 +65,6 @@ public class Client implements Serializable , Identifiable {
     /*
     Retire Properties
      */
-    @Index
     private boolean retired;
     private boolean reservedClient;
     @ManyToOne(fetch = FetchType.LAZY)
@@ -255,6 +255,14 @@ public class Client implements Serializable , Identifiable {
 
     public void setPoiInstitution(Institution poiInstitution) {
         this.poiInstitution = poiInstitution;
+    }
+
+    public String getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
     }
 
     

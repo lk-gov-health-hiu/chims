@@ -28,7 +28,7 @@ import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
-
+import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
 /**
@@ -36,13 +36,12 @@ import javax.xml.bind.annotation.XmlTransient;
  * @author buddhika
  */
 @Entity
-
 public class ClientEncounterComponentFormSet extends ClientEncounterComponent {
 
-    @OneToMany(mappedBy = "itemFormset",fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "itemFormset",fetch = FetchType.LAZY)
     private List<ClientEncounterComponentItem> clientEncounterComponentItems;
 
-    @XmlTransient
+    
     public List<ClientEncounterComponentItem> getClientEncounterComponentItems() {
         return clientEncounterComponentItems;
     }

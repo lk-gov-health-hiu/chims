@@ -26,7 +26,6 @@ package lk.gov.health.phsp.entity;
 import lk.gov.health.phsp.enums.InstitutionType;
 import java.io.Serializable;
 import java.util.Date;
-import javax.jdo.annotations.Index;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -39,7 +38,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
-
+import javax.xml.bind.annotation.XmlRootElement;
 import lk.gov.health.phsp.pojcs.Identifiable;
 
 /**
@@ -47,22 +46,19 @@ import lk.gov.health.phsp.pojcs.Identifiable;
  * @author Dr M H B Ariyaratne, buddhika.ari@gmail.com
  */
 @Entity
-
-@Table
-public class Institution implements Serializable, Identifiable {
+public class Institution implements Serializable, Identifiable  {
 
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @Index
     @Enumerated(EnumType.STRING)
     private InstitutionType institutionType;
+    
+    private String hin;
 
-    @Index
     private String name;
-    @Index
     private String code;
     private String address;
     private String fax;
@@ -71,40 +67,34 @@ public class Institution implements Serializable, Identifiable {
     private String mobile;
     private String web;
     private String poiNumber;
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     private Institution poiInstitution;
     private Long lastHin;
+    private String uuid;
 
-    @Index
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     private Institution parent;
-    @Index
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     private Area gnArea;
-    @Index
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     private Area phmArea;
-    @Index
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     private Area phiArea;
-    @Index
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     private Area dsDivision;
-    @Index
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     private Area mohArea;
-    @Index
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     private Area district;
-    @Index
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     private Area rdhsArea;
-    @Index
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     private Area province;
-    @Index
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     private Area pdhsArea;
+
+    @OneToOne(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    private Coordinate coordinate;
 
     @ManyToOne
     private WebUser creater;
@@ -115,7 +105,6 @@ public class Institution implements Serializable, Identifiable {
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date editedAt;
     //Retairing properties
-    @Index
     private boolean retired;
     @ManyToOne
     private WebUser retirer;
@@ -156,15 +145,18 @@ public class Institution implements Serializable, Identifiable {
     @Override
     public String toString() {
         String to = id + " " + code + " " + name + " " + address + " " + poiNumber + " ";
+        if (coordinate != null) {
+            to += coordinate.getLongitude() + " " + coordinate.getLatitude();
+        }
         to += institutionType;
         if (institutionType != null) {
             to += institutionType.getLabel();
         }
-        if (province != null) {
-            to += province.getId();
+        if(province!=null){
+            to+= province.getId();
         }
-        if (district != null) {
-            to += district.getId();
+        if(district!=null){
+            to+=district.getId();
         }
         return to;
     }
@@ -231,6 +223,17 @@ public class Institution implements Serializable, Identifiable {
 
     public void setWeb(String web) {
         this.web = web;
+    }
+
+    public Coordinate getCoordinate() {
+        if (coordinate == null) {
+            coordinate = new Coordinate();
+        }
+        return coordinate;
+    }
+
+    public void setCoordinate(Coordinate coordinate) {
+        this.coordinate = coordinate;
     }
 
     public String getCode() {
@@ -428,5 +431,23 @@ public class Institution implements Serializable, Identifiable {
     public void setMohArea(Area mohArea) {
         this.mohArea = mohArea;
     }
+
+    public String getHin() {
+        return hin;
+    }
+
+    public void setHin(String hin) {
+        this.hin = hin;
+    }
+
+    public String getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
+    }
+    
+    
 
 }

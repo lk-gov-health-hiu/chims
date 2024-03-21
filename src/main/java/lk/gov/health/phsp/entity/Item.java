@@ -26,8 +26,6 @@ package lk.gov.health.phsp.entity;
 import lk.gov.health.phsp.enums.ItemType;
 import java.io.Serializable;
 import java.util.Date;
-import javax.jdo.annotations.Index;
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -37,8 +35,10 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.Transient;
+import javax.xml.bind.annotation.XmlRootElement;
 import lk.gov.health.phsp.enums.SelectionDataType;
 import lk.gov.health.phsp.pojcs.Identifiable;
 
@@ -47,6 +47,8 @@ import lk.gov.health.phsp.pojcs.Identifiable;
  * @author User
  */
 @Entity
+@Table
+@XmlRootElement
 public class Item implements Serializable, Identifiable  {
 
     private static final long serialVersionUID = 1L;
@@ -57,26 +59,22 @@ public class Item implements Serializable, Identifiable  {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    @Index
     @Enumerated(EnumType.STRING)
     ItemType itemType;
-    @Index
     String name;
-    @Index
     private String displayName;
-    @Index
     private String code;
-    @Index
     private String barcode;
-    @Index
     private String localCode;
-    @Index
-    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+    @ManyToOne(fetch = FetchType.LAZY)
     private Item parent;
 
     @Lob
     private String descreption;
     private SelectionDataType dataType;
+    private String codingSystem;
+    private String codingSystemCode;
+    
     private Double absoluteMinimumDbl;
     private Double absoluteMaximumDbl;
     private Integer absoluteMinimumInt;
@@ -86,7 +84,6 @@ public class Item implements Serializable, Identifiable  {
     private Boolean multipleEntiesPerClientStatus;
     private Boolean containsPersonallyIdentifiableData;
 
-    @Index
     private int orderNo;
 
     @ManyToOne
@@ -99,7 +96,6 @@ public class Item implements Serializable, Identifiable  {
     private Date editedAt;
     //Retairing properties
     private boolean retired;
-    @Index
     @ManyToOne
     private WebUser retiredBy;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
@@ -506,6 +502,26 @@ public class Item implements Serializable, Identifiable  {
     public void setContainsPersonallyIdentifiableData(Boolean containsPersonallyIdentifiableData) {
         this.containsPersonallyIdentifiableData = containsPersonallyIdentifiableData;
     }
+
+    public String getCodingSystem() {
+        if(codingSystem==null || codingSystem.isEmpty()){
+            codingSystem = "http://snomed.info/sct";
+        }
+        return codingSystem;
+    }
+
+    public void setCodingSystem(String codingSystem) {
+        this.codingSystem = codingSystem;
+    }
+
+    public String getCodingSystemCode() {
+        return codingSystemCode;
+    }
+
+    public void setCodingSystemCode(String codingSystemCode) {
+        this.codingSystemCode = codingSystemCode;
+    }
+    
     
     
 

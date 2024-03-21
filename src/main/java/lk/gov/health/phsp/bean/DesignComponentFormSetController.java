@@ -182,7 +182,7 @@ public class DesignComponentFormSetController implements Serializable {
             return;
         }
 
-        // //System.out.println("referanceSet = " + referanceSet);
+        // //// System.out.println("referanceSet = " + referanceSet);
         referanceSet.getReferenceComponent();
         referanceSet.getParentComponent();
 
@@ -327,7 +327,7 @@ public class DesignComponentFormSetController implements Serializable {
                 if (c != null) {
                     if (c instanceof DesignComponentFormSet) {
                         DesignComponentFormSet ts = (DesignComponentFormSet) r.getComponent();
-                        // //System.out.println("ts.getComponentSetType() = " + ts.getComponentSetType());
+                        // //// System.out.println("ts.getComponentSetType() = " + ts.getComponentSetType());
                         if (ts.getComponentSetType().equals(Patient_Pages)) {
                             fs = ts;
                         }

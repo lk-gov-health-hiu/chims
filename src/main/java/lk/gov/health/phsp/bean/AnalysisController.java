@@ -174,25 +174,25 @@ public class AnalysisController {
 
         j += " and s.institution in :ins ";
         m.put("ins", pIns);
-        // //System.out.println("j = " + j);
-        // //System.out.println("m = " + m);
+        // //// System.out.println("j = " + j);
+        // //// System.out.println("m = " + m);
         fs = getEncounterFacade().findLongByJpql(j, m);
 
         return fs;
     }
 
     public Long findRegistrationCount(Date pFrom, Date pTo, List<Institution> pIns, Item sex) {
-//        // //System.out.println("Find Registration Count");
-//        // //System.out.println("Sex = " + sex);
-//        // //System.out.println("dates start");
-        // //System.out.println("p From = " + CommonController.dateTimeToString(pFrom, "dd MMMM yyyy hh:mm"));
-        // //System.out.println("p To = " + CommonController.dateTimeToString(pTo, "dd MMMM yyyy hh:mm"));
-//        // //System.out.println("dates end");
+//        // //// System.out.println("Find Registration Count");
+//        // //// System.out.println("Sex = " + sex);
+//        // //// System.out.println("dates start");
+        // //// System.out.println("p From = " + CommonController.dateTimeToString(pFrom, "dd MMMM yyyy hh:mm"));
+        // //// System.out.println("p To = " + CommonController.dateTimeToString(pTo, "dd MMMM yyyy hh:mm"));
+//        // //// System.out.println("dates end");
 
         if (pIns == null || pIns.isEmpty()) {
             return null;
         }
-        // //System.out.println("Pins Count = " + pIns.size());
+        // //// System.out.println("Pins Count = " + pIns.size());
         Long fs;
         Map m = new HashMap();
         String j = "select count(c) from Client c ";
@@ -209,10 +209,10 @@ public class AnalysisController {
         j += " and c.createInstitution in :ins ";
         m.put("ins", pIns);
 
-//        // //System.out.println("j = " + j);
+//        // //// System.out.println("j = " + j);
         fs = getClientFacade().findLongByJpql(j, m, TemporalType.DATE);
 
-//        // //System.out.println("fs = " + fs);
+//        // //// System.out.println("fs = " + fs);
         return fs;
     }
 

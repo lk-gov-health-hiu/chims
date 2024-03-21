@@ -5,6 +5,7 @@ import javax.enterprise.context.SessionScoped;
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -28,8 +29,10 @@ import javax.faces.convert.FacesConverter;
 import javax.inject.Inject;
 import lk.gov.health.phsp.bean.util.JsfUtil;
 import lk.gov.health.phsp.entity.Client;
+import lk.gov.health.phsp.entity.ClientEncounterComponentFormSet;
 import lk.gov.health.phsp.entity.FhirOperationResult;
 import lk.gov.health.phsp.entity.FhirResourceLink;
+import lk.gov.health.phsp.entity.Institution;
 import lk.gov.health.phsp.entity.IntegrationEndpoint;
 import lk.gov.health.phsp.entity.IntegrationTrigger;
 import lk.gov.health.phsp.enums.CommunicationProtocol;
@@ -37,6 +40,9 @@ import lk.gov.health.phsp.enums.IntegrationEvent;
 import lk.gov.health.phsp.facade.FhirResourceLinkFacade;
 import lk.gov.health.phsp.facade.IntegrationTriggerFacade;
 import lk.gov.health.phsp.pojcs.SearchQueryData;
+import org.hl7.fhir.r4.model.ServiceRequest;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 /**
  *
@@ -65,78 +71,196 @@ public class IntegrationTriggerController implements Serializable {
     @Resource
     private ManagedExecutorService executorService;
 
-    public CompletableFuture<List<Client>> fetchClientsFromEndpoints(SearchQueryData sqd) {
+    public List<Client> fetchClientsFromEndpoints(SearchQueryData sqd) {
         if (sqd != null) {
         }
-        return CompletableFuture.supplyAsync(() -> {
-            List<IntegrationTrigger> itemsNeededToBeTriggered = fillItems(IntegrationEvent.PATIENT_SEARCH);
-            if (itemsNeededToBeTriggered == null || itemsNeededToBeTriggered.isEmpty()) {
-                return Collections.emptyList();
+
+        List<IntegrationTrigger> itemsNeededToBeTriggered = fillItems(IntegrationEvent.PATIENT_SEARCH);
+        if (itemsNeededToBeTriggered == null || itemsNeededToBeTriggered.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        List<List<Client>> clientsList = new ArrayList<>();
+        for (IntegrationTrigger it : itemsNeededToBeTriggered) {
+            if (it.getIntegrationEndpoint() != null && it.getIntegrationEndpoint().getCommunicationProtocol() != null) {
+                if (it.getIntegrationEndpoint().getCommunicationProtocol() == CommunicationProtocol.FHIR_R4) {
+                    List<Client> clients = fhirR4Controller.fetchClientsFromEndpoints(sqd, it.getIntegrationEndpoint());
+                    if (clients != null) {
+                        clientsList.add(clients);
+                    }
+                } else if (it.getIntegrationEndpoint().getCommunicationProtocol() == CommunicationProtocol.FHIR_R5) {
+                    // Handle FHIR R5 if needed
+                }
+                // Other protocols could be handled here
             }
+        }
 
-            List<CompletableFuture<List<Client>>> futureClientsList = itemsNeededToBeTriggered.stream()
-                    .filter(it -> it.getIntegrationEndpoint() != null && it.getIntegrationEndpoint().getCommunicationProtocol() != null)
-                    .map(it -> {
-                        if (it.getIntegrationEndpoint().getCommunicationProtocol() == CommunicationProtocol.FHIR_R4) {
-                            return fhirR4Controller.fetchClientsFromEndpoints(sqd, it.getIntegrationEndpoint());
-                        } else if (it.getIntegrationEndpoint().getCommunicationProtocol() == CommunicationProtocol.FHIR_R5) {
-                            // Handle FHIR R5 if needed
-                            return null;
-                        } else {
-                            return null;
-                        }
-                    })
-                    .filter(Objects::nonNull)
-                    .collect(Collectors.toList());
-
-            CompletableFuture<Void> allFutures = CompletableFuture.allOf(futureClientsList.toArray(new CompletableFuture[0]));
-
-            return allFutures.thenApply(v -> futureClientsList.stream()
-                    .map(CompletableFuture::join)
-                    .flatMap(List::stream)
-                    .collect(Collectors.toList()))
-                    .join();
-        }, executorService);
+        return clientsList.stream()
+                .flatMap(List::stream)
+                .collect(Collectors.toList());
     }
 
-    public CompletableFuture<List<FhirOperationResult>> createNewClientsToEndpoints(Client client) {
-        return CompletableFuture.supplyAsync(() -> {
-            List<FhirOperationResult> outcomes = new ArrayList<>();
-            List<IntegrationTrigger> itemsNeededToBeTriggered = fillItems(IntegrationEvent.PATIENT_SAVE);
-            if (itemsNeededToBeTriggered == null || itemsNeededToBeTriggered.isEmpty()) {
-                return outcomes;
+    public List<ServiceRequest> fetchServiceRequestsFromEndpoints() {
+        List<IntegrationTrigger> itemsToTrigger = fillItems(IntegrationEvent.SERVICE_REQUEST_SEARCH);
+        if (itemsToTrigger == null || itemsToTrigger.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        List<ServiceRequest> serviceRequests = new ArrayList<>();
+        for (IntegrationTrigger trigger : itemsToTrigger) {
+            IntegrationEndpoint endpoint = trigger.getIntegrationEndpoint();
+            if (endpoint != null && endpoint.getCommunicationProtocol() == CommunicationProtocol.FHIR_R4) {
+                serviceRequests.addAll(fhirR4Controller.fetchServiceRequestsFromEndpoints(endpoint));
             }
-            List<CompletableFuture<FhirOperationResult>> futureOutcomes = new ArrayList<>();
-            for (IntegrationTrigger it : itemsNeededToBeTriggered) {
-                if (it.getIntegrationEndpoint() == null) {
-                    continue;
-                }
-                if (it.getIntegrationEndpoint().getCommunicationProtocol() == null) {
-                    continue;
-                }
-                CompletableFuture<FhirOperationResult> futureOutcome;
-                if (it.getIntegrationEndpoint().getCommunicationProtocol() == CommunicationProtocol.FHIR_R4) {
-                    String oldId = findFhirResourceLinkId(client, it.getIntegrationEndpoint());
-                    if (oldId == null) {
-                        futureOutcome = fhirR4Controller.createPatientInFhirServerAsync(client, it.getIntegrationEndpoint());
-                    } else {
-                        futureOutcome = fhirR4Controller.updatePatientInFhirServerAsync(client, it.getIntegrationEndpoint(),oldId );
-                    }
-                    futureOutcomes.add(futureOutcome);
-                } else if (it.getIntegrationEndpoint().getCommunicationProtocol() == CommunicationProtocol.FHIR_R5) {
-                    // TODO : Handle FHIR R5 
-                    continue;
-                } else {
-                    continue;
-                }
-            }
-            futureOutcomes.forEach(futureOutcome -> futureOutcome.thenAccept(outcomes::add));
-            CompletableFuture.allOf(futureOutcomes.toArray(new CompletableFuture[0])).join();
+            // Additional communication protocols can be handled here if necessary
+        }
+        return serviceRequests;
+    }
+
+    public List<FhirOperationResult> createNewClientsToEndpoints(Client client) {
+        List<FhirOperationResult> outcomes = new ArrayList<>();
+        List<IntegrationTrigger> itemsNeededToBeTriggered = fillItems(IntegrationEvent.PATIENT_SAVE);
+        if (itemsNeededToBeTriggered == null || itemsNeededToBeTriggered.isEmpty()) {
             return outcomes;
-        }, executorService).exceptionally(ex -> {
-            ex.printStackTrace(); // Or log the exception
-            return null; // Or handle the exception as needed
-        });
+        }
+
+        for (IntegrationTrigger it : itemsNeededToBeTriggered) {
+            if (it.getIntegrationEndpoint() == null || it.getIntegrationEndpoint().getCommunicationProtocol() == null) {
+                continue;
+            }
+
+            FhirOperationResult outcome;
+            if (it.getIntegrationEndpoint().getCommunicationProtocol() == CommunicationProtocol.FHIR_R4) {
+                String oldId = findFhirResourceLinkId(client, it.getIntegrationEndpoint());
+                if (oldId == null) {
+                    outcome = fhirR4Controller.createPatientInFhirServer(client, it.getIntegrationEndpoint());
+                } else {
+                    outcome = fhirR4Controller.updatePatientInFhirServer(client, it.getIntegrationEndpoint(), oldId);
+                }
+                outcomes.add(outcome);
+            } else if (it.getIntegrationEndpoint().getCommunicationProtocol() == CommunicationProtocol.FHIR_R5) {
+                // TODO: Handle FHIR R5
+                continue;
+            } else {
+                continue;
+            }
+        }
+
+        return outcomes;
+    }
+
+    
+    
+    
+    
+    
+    
+    
+    public String formatDateForFhir(Date date) {
+        SimpleDateFormat fhirDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        return fhirDateFormat.format(date);
+    }
+
+    public List<FhirOperationResult> updateServiceRequestInFhirServer(ServiceRequest sr) {
+        List<FhirOperationResult> outcomes = new ArrayList<>();
+        List<IntegrationTrigger> itemsNeededToBeTriggered = fillItems(IntegrationEvent.SERVICE_REQUEST_UPDATE);
+        if (itemsNeededToBeTriggered == null || itemsNeededToBeTriggered.isEmpty()) {
+            return outcomes;
+        }
+
+        for (IntegrationTrigger it : itemsNeededToBeTriggered) {
+            if (it.getIntegrationEndpoint() == null || it.getIntegrationEndpoint().getCommunicationProtocol() == null) {
+                continue;
+            }
+
+            FhirOperationResult outcome;
+            if (it.getIntegrationEndpoint().getCommunicationProtocol() == CommunicationProtocol.FHIR_R4) {
+//                String oldId = findFhirResourceLinkId(sr, it.getIntegrationEndpoint());
+                outcome = fhirR4Controller.updateServiceRequestInFhirServer(sr, it.getIntegrationEndpoint());
+//                if (oldId == null) {
+//                    outcome = fhirR4Controller.updateServiceRequestInFhirServer(sr, it.getIntegrationEndpoint());
+//                } else {
+//                    outcome = fhirR4Controller.updateServiceRequestInFhirServer(sr, it.getIntegrationEndpoint(), oldId);
+//                }
+                outcomes.add(outcome);
+            } else if (it.getIntegrationEndpoint().getCommunicationProtocol() == CommunicationProtocol.FHIR_R5) {
+                // TODO: Handle FHIR R5
+                continue;
+            } else {
+                continue;
+            }
+        }
+
+        return outcomes;
+    }
+
+    public List<FhirOperationResult> postToMediators(String jsonPlayLoad) {
+        List<FhirOperationResult> outcomes = new ArrayList<>();
+        List<IntegrationTrigger> itemsNeededToBeTriggered = fillItems(IntegrationEvent.MEDIATORS);
+
+        if (itemsNeededToBeTriggered == null || itemsNeededToBeTriggered.isEmpty()) {
+            return outcomes;
+        }
+
+        for (IntegrationTrigger it : itemsNeededToBeTriggered) {
+            if (it.getIntegrationEndpoint() == null) {
+                continue;
+            }
+            if (it.getIntegrationEndpoint().getCommunicationProtocol() == null) {
+                continue;
+            }
+
+            if (it.getIntegrationEndpoint().getCommunicationProtocol() == CommunicationProtocol.FHIR_R4) {
+                FhirOperationResult outcome;
+                outcome = fhirR4Controller.postJsonPayloadToFhirServer(jsonPlayLoad, it.getIntegrationEndpoint());
+                outcomes.add(outcome);
+            }
+        }
+        return outcomes;
+    }
+
+    // Modified by Dr M H B Ariyaratne with assistance from ChatGPT from OpenAI
+    public List<FhirOperationResult> createNewFormsetToEndpoints(ClientEncounterComponentFormSet cecf) {
+        List<FhirOperationResult> outcomes = new ArrayList<>();
+        List<IntegrationTrigger> itemsNeededToBeTriggered = fillItems(IntegrationEvent.ENCOUNTER_SAVE);
+
+        if (itemsNeededToBeTriggered == null || itemsNeededToBeTriggered.isEmpty()) {
+            return outcomes;
+        }
+
+
+        for (IntegrationTrigger it : itemsNeededToBeTriggered) {
+
+            if (it.getIntegrationEndpoint() == null) {
+                continue;
+            }
+
+
+            if (it.getIntegrationEndpoint().getCommunicationProtocol() == null) {
+                continue;
+            }
+
+            FhirOperationResult outcome;
+            if (it.getIntegrationEndpoint().getCommunicationProtocol() == CommunicationProtocol.FHIR_R4) {
+                String oldId = findFhirResourceLinkId(cecf, it.getIntegrationEndpoint());
+
+                if (oldId == null) {
+                    outcome = fhirR4Controller.createFormsetInFhirServer(cecf, it.getIntegrationEndpoint());
+                } else {
+                    outcome = fhirR4Controller.updateFormsetInFhirServerAsync(cecf, it.getIntegrationEndpoint(), oldId);
+                }
+
+                outcomes.add(outcome);
+
+            } else if (it.getIntegrationEndpoint().getCommunicationProtocol() == CommunicationProtocol.FHIR_R5) {
+                // TODO: Handle FHIR R5 
+                continue;
+            } else {
+                continue;
+            }
+        }
+
+        return outcomes;
     }
 
     public String findFhirResourceLinkId(Object object, IntegrationEndpoint endPoint) {

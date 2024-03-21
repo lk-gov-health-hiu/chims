@@ -46,7 +46,7 @@ public abstract class AbstractFacade<T extends Identifiable> {
         SequenceNumber sequence = getEntityManager().find(SequenceNumber.class, 1L); // Always 1 for the single row
         if (sequence == null) {
             sequence = new SequenceNumber();
-            sequence.setLastUsedId(92000000l);
+            sequence.setLastUsedId(0L);
             getEntityManager().persist(sequence);
         }
         Long nextId = sequence.getLastUsedId() + 1;
@@ -116,19 +116,24 @@ public abstract class AbstractFacade<T extends Identifiable> {
         return q.getResultList();
     }
 
+    // Comment by Dr M H B Ariyaratne with assistance from ChatGPT from OpenAI
     public T findFirstByJpql(String jpql, Map<String, Object> parameters) {
         try {
+
             TypedQuery<T> qry = getEntityManager().createQuery(jpql, entityClass);
             qry.setMaxResults(1);
+
             for (Map.Entry<String, Object> entry : parameters.entrySet()) {
                 String paramName = entry.getKey();
                 Object paramValue = entry.getValue();
+
                 if (paramValue instanceof Date) {
                     qry.setParameter(paramName, (Date) paramValue, TemporalType.DATE);
                 } else {
                     qry.setParameter(paramName, paramValue);
                 }
             }
+
             T result = qry.getSingleResult();
             return result;
         } catch (NoResultException nre) {
@@ -147,12 +152,8 @@ public abstract class AbstractFacade<T extends Identifiable> {
 
 // Comment indicating the code was done by Dr M H B Ariyaratne with assistance from ChatGPT from OpenAI
     public void create(T entity) {
-//        System.out.println("create");
-//        System.out.println("entity.getId() = " + entity.getId());
         if (entity.getId() == null) {
-            Long nextId= getNextId();
-//            System.out.println("nextId = " + nextId);
-            entity.setId(nextId);
+            entity.setId(getNextId());
         }
         getEntityManager().persist(entity);
         // Uncommenting flush if you want to immediately sync with the database
@@ -243,65 +244,18 @@ public abstract class AbstractFacade<T extends Identifiable> {
         return qry.getResultList();
     }
 
-    public List<?> findLightsByJpql(String jpql, Map<String, Object> parameters) {
-        Query qry = getEntityManager().createQuery(jpql);
-        Set<Map.Entry<String, Object>> entries = parameters.entrySet();
-
-        for (Map.Entry<String, Object> entry : entries) {
-            String paramName = entry.getKey();
-            Object paramValue = entry.getValue();
-
-            if (paramValue instanceof Date) {
-                qry.setParameter(paramName, (Date) paramValue, TemporalType.DATE);
-            } else {
-                qry.setParameter(paramName, paramValue);
-            }
-        }
-
-        List<?> resultList;
-        try {
-            resultList = qry.getResultList();
-        } catch (Exception e) {
-            resultList = new ArrayList<>();
-        }
-
-        return resultList;
-    }
-
-    public List<?> findLightsByJpql(String jpql, Map<String, Object> parameters, TemporalType tt) {
-        Query qry = getEntityManager().createQuery(jpql);
-        Set<Map.Entry<String, Object>> entries = parameters.entrySet();
-
-        for (Map.Entry<String, Object> entry : entries) {
-            String paramName = entry.getKey();
-            Object paramValue = entry.getValue();
-
-            if (paramValue instanceof Date) {
-                qry.setParameter(paramName, (Date) paramValue, tt);
-            } else {
-                qry.setParameter(paramName, paramValue);
-            }
-        }
-
-        List<?> resultList;
-        try {
-            resultList = qry.getResultList();
-        } catch (Exception e) {
-            resultList = new ArrayList<>();
-        }
-
-        return resultList;
-    }
-
-
+    // Comment by Dr M H B Ariyaratne with assistance from ChatGPT from OpenAI
     public List<T> findByJpql(String jpql, Map<String, Object> parameters) {
         try {
+
             TypedQuery<T> qry = getEntityManager().createQuery(jpql, entityClass);
             Set s = parameters.entrySet();
             Iterator it = s.iterator();
+
             while (it.hasNext()) {
                 Map.Entry m = (Map.Entry) it.next();
                 String pPara = (String) m.getKey();
+
                 if (m.getValue() instanceof Date) {
                     Date pVal = (Date) m.getValue();
                     qry.setParameter(pPara, pVal, TemporalType.DATE);
@@ -310,6 +264,7 @@ public abstract class AbstractFacade<T extends Identifiable> {
                     qry.setParameter(pPara, pVal);
                 }
             }
+
             List<T> results = qry.getResultList();
             return results;
         } catch (Exception e) {

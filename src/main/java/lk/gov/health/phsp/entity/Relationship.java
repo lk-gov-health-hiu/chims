@@ -27,7 +27,6 @@ package lk.gov.health.phsp.entity;
 import java.io.Serializable;
 import java.util.Calendar;
 import java.util.Date;
-import javax.jdo.annotations.Index;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -39,7 +38,7 @@ import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
-
+import javax.xml.bind.annotation.XmlRootElement;
 import lk.gov.health.phsp.enums.RelationshipType;
 import lk.gov.health.phsp.pojcs.Identifiable;
 
@@ -49,7 +48,7 @@ import lk.gov.health.phsp.pojcs.Identifiable;
  */
 @Entity
 @Table
-
+@XmlRootElement
 public class Relationship implements Serializable , Identifiable {
 
     private static final long serialVersionUID = 1L;
@@ -57,42 +56,31 @@ public class Relationship implements Serializable , Identifiable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @Index
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     private Institution fromInstitution;
-    @Index
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     private Institution toInstitution;
-    @Index
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     private Institution institution;
-    @Index
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     private Item fromItem;
-    @Index
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     private Item toItem;
-    @Index
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     private Item item;
-    @Index
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     private Area fromArea;
-    @Index
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     private Area toArea;
-    @Index
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     private Area area;
-    @Index
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     private Item itemUnit;
-    @Index
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     private Item toItemUnit;
     
-    @Index
-    @ManyToOne(fetch = FetchType.EAGER)
+    
+    @ManyToOne(fetch = FetchType.LAZY)
     private Component component;
     
     private Double dblValue;
@@ -107,7 +95,6 @@ public class Relationship implements Serializable , Identifiable {
     private int dataInt;
 
     @Enumerated(EnumType.STRING)
-    @Index
     private RelationshipType relationshipType;
     
     
@@ -146,7 +133,6 @@ public class Relationship implements Serializable , Identifiable {
     /*
     Retire Properties
      */
-    @Index
     private boolean retired;
     @ManyToOne
     private WebUser retiredBy;

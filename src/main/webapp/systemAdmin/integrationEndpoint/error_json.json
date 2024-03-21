@@ -1,0 +1,37 @@
+{
+    "resourceType": "Device",
+    "id": "DeviceInformationExample",
+    "meta": {
+        "profile": ["http://fhir.health.gov.lk/ips/StructureDefinition/device-information"]
+    },
+    "text": {
+        "status": "generated",
+        "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\"><p><b>Generated Narrative: Device</b><a name=\"DeviceInformationExample\"> </a><a name=\"hcDeviceInformationExample\"> </a></p><div style=\"display: inline-block; background-color: #d9e0e7; padding: 6px; margin: 4px; border: 1px solid #8da1b4; border-radius: 5px; line-height: 60%\"><p style=\"margin-bottom: 0px\">Resource Device &quot;DeviceInformationExample&quot; </p><p style=\"margin-bottom: 0px\">Profile: <a href=\"StructureDefinition-device-information.html\">Device Information</a></p></div><p><b>identifier</b>: <code>http://fhir.health.gov.lk/ips/identifier/system-id</code>/OpenMRS-1234-1</p><p><b>status</b>: active</p><p><b>type</b>: Medical record <span style=\"background: LightGoldenRodYellow; margin: 4px; border: 1px solid khaki\"> (<a href=\"https://browser.ihtsdotools.org/\">SNOMED CT</a>#129465004)</span></p><h3>Versions</h3><table class=\"grid\"><tr><td style=\"display: none\">-</td><td><b>Type</b></td><td><b>Value</b></td></tr><tr><td style=\"display: none\">*</td><td>OpenMRS <span style=\"background: LightGoldenRodYellow; margin: 4px; border: 1px solid khaki\"> (<a href=\"CodeSystem-cs-device-classification.html\">Device Classification Codes</a>#OpenMRS)</span></td><td>2.5.0</td></tr></table><p><b>owner</b>: <a href=\"Organization-OrganizationExample.html\">Organization/OrganizationExample</a> &quot;Some Health Facility&quot;</p><p><b>location</b>: <a href=\"Location-ProvidersLocationExample.html\">Location/ProvidersLocationExample</a> &quot;Name for the location&quot;</p></div>"
+    },
+    "identifier": [{
+            "system": "http://fhir.health.gov.lk/ips/identifier/system-id",
+            "value": "OpenMRS-1234-1"
+        }],
+    "status": "active",
+    "type": {
+        "coding": [{
+                "system": "http://snomed.info/sct",
+                "code": "129465004"
+            }]
+    },
+    "version": [{
+            "type": {
+                "coding": [{
+                        "system": "http://fhir.health.gov.lk/ips/CodeSystem/cs-device-classification",
+                        "code": "OpenMRS"
+                    }]
+            },
+            "value": "2.5.0"
+        }],
+    "owner": {
+        "reference": "Organization/OrganizationExample"
+    },
+    "location": {
+        "reference": "Location/ProvidersLocationExample"
+    }
+}

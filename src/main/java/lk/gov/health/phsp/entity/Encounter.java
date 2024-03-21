@@ -26,7 +26,6 @@ package lk.gov.health.phsp.entity;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
-import javax.jdo.annotations.Index;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -39,7 +38,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
-
+import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 import lk.gov.health.phsp.enums.EncounterType;
 import lk.gov.health.phsp.pojcs.Identifiable;
@@ -50,10 +49,10 @@ import lk.gov.health.phsp.pojcs.Identifiable;
  */
 @Entity
 @Table
+@XmlRootElement
+public class Encounter implements Serializable, Identifiable  {
 
-public class Encounter implements Serializable, Identifiable {
-
-    @OneToMany(mappedBy = "itemEncounter", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "itemEncounter",fetch = FetchType.LAZY)
     private List<ClientEncounterComponentItem> clientEncounterComponentItems;
 
     private static final long serialVersionUID = 1L;
@@ -61,51 +60,43 @@ public class Encounter implements Serializable, Identifiable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @Index
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     private Client client;
-    @Index
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     private Area area;
-    @Index
-    private boolean firstEncounter;
-    @Index
+    
+    private boolean firstEncounter ;
+
     @Temporal(javax.persistence.TemporalType.DATE)
     private Date encounterDate;
-    @Index
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date encounterFrom;
-    @Index
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date encounterTo;
-
+    
     private Integer encounterYear;
     private Integer encounterMonth;
     private Integer encounterQuarter;
 
-    @Index
     @Enumerated(EnumType.STRING)
     private EncounterType encounterType;
 
     private String encounterNumber;
-
-    @Index
-    @ManyToOne(fetch = FetchType.EAGER)
+    
+    @ManyToOne(fetch = FetchType.LAZY)
     private Encounter parentEncounter;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     Institution institution;
-
-    @Index
-    @ManyToOne(fetch = FetchType.EAGER)
+    
+    @ManyToOne(fetch = FetchType.LAZY)
     Institution referalInstitution;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     private WebUser createdBy;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date createdAt;
 
-    @Index
     private boolean retired;
     @ManyToOne
     private WebUser retiredBy;
@@ -119,14 +110,14 @@ public class Encounter implements Serializable, Identifiable {
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date retiredReversedAt;
 
-    /*
+/*
     Last Edit Properties
      */
     @ManyToOne
     private WebUser lastEditBy;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
-    private Date lastEditeAt;
-
+    private Date lastEditeAt;    
+    
     private boolean completed;
     @ManyToOne
     private WebUser completedBy;
@@ -390,5 +381,8 @@ public class Encounter implements Serializable, Identifiable {
     public void setRetireComments(String retireComments) {
         this.retireComments = retireComments;
     }
+    
+    
+    
 
 }

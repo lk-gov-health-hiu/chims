@@ -28,9 +28,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import javax.jdo.annotations.Index;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -42,7 +39,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
-
+import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 import lk.gov.health.phsp.pojcs.Identifiable;
 
@@ -51,9 +48,10 @@ import lk.gov.health.phsp.pojcs.Identifiable;
  * @author User
  */
 @Entity
-@Table
-
 public class Area implements Serializable, Identifiable  {
+
+    @OneToMany(mappedBy = "area",fetch = FetchType.LAZY)
+    private List<Coordinate> coordinates;
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -61,41 +59,28 @@ public class Area implements Serializable, Identifiable  {
     private Long id;
 
     @Enumerated(EnumType.STRING)
-    @Index
     private AreaType type;
-    @Index
     private String name;
-    @Index
     private String code;
-    @Index
     private Long areauid;
-    @Index
-    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.REFRESH})
+    @ManyToOne(fetch = FetchType.LAZY)
     private Area parentArea;
 
-    @Index
-    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.REFRESH})
+    @ManyToOne(fetch = FetchType.LAZY)
     private Area phm;
-    @Index
-    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.REFRESH})
+    @ManyToOne(fetch = FetchType.LAZY)
     private Area phi;
-    @Index
-    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.REFRESH})
+    @ManyToOne(fetch = FetchType.LAZY)
     private Area dsd;
-    @Index
-    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.REFRESH})
+    @ManyToOne(fetch = FetchType.LAZY)
     private Area moh;
-    @Index
-    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.REFRESH})
+    @ManyToOne(fetch = FetchType.LAZY)
     private Area district;
-    @Index
-    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.REFRESH})
+    @ManyToOne(fetch = FetchType.LAZY)
     private Area province;
-    @Index
-    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.REFRESH})
+    @ManyToOne(fetch = FetchType.LAZY)
     private Area rdhsArea;
-    @Index
-    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.REFRESH})
+    @ManyToOne(fetch = FetchType.LAZY)
     private Area pdhsArea;
 
     private double centreLongitude;
@@ -112,36 +97,35 @@ public class Area implements Serializable, Identifiable  {
     private Long femaleTargePopulation;
     
     
-    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.REFRESH})
+    @ManyToOne(fetch = FetchType.LAZY)
     private Institution pmci;
 
     /*
     Create Properties
      */
-    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.REFRESH})
+    @ManyToOne(fetch = FetchType.LAZY)
     private WebUser createdBy;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date createdAt;
     /*
     Last Edit Properties
      */
-    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.REFRESH})
+    @ManyToOne(fetch = FetchType.LAZY)
     private WebUser lastEditBy;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date lastEditeAt;
     /*
     Retire Reversal Properties
      */
-    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.REFRESH})
+    @ManyToOne(fetch = FetchType.LAZY)
     private WebUser retiredReversedBy;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date retiredReversedAt;
     /*
     Retire Properties
      */
-    @Index
     private boolean retired;
-    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.REFRESH})
+    @ManyToOne(fetch = FetchType.LAZY)
     private WebUser retiredBy;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date retiredAt;
@@ -238,12 +222,10 @@ public class Area implements Serializable, Identifiable  {
         this.zoomLavel = zoomLavel;
     }
 
-    @Override
     public Long getId() {
         return id;
     }
 
-    @Override
     public void setId(Long id) {
         this.id = id;
     }
@@ -304,6 +286,17 @@ public class Area implements Serializable, Identifiable  {
         this.retiredReversedAt = retiredReversedAt;
     }
 
+    @XmlTransient
+    public List<Coordinate> getCoordinates() {
+        if (coordinates == null) {
+            coordinates = new ArrayList<>();
+        }
+        return coordinates;
+    }
+
+    public void setCoordinates(List<Coordinate> coordinates) {
+        this.coordinates = coordinates;
+    }
 
     public Date getCreatedAt() {
         return createdAt;

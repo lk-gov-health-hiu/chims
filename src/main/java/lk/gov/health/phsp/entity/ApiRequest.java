@@ -25,7 +25,6 @@ package lk.gov.health.phsp.entity;
 
 import java.io.Serializable;
 import java.util.Date;
-import javax.jdo.annotations.Index;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -49,24 +48,19 @@ public class ApiRequest implements Serializable , Identifiable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @Index
     @Column(length = 100)
     private String name;
 
-    @Index
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     private Encounter encounter;
 
-    @Index
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     private ClientEncounterComponentItem requestCeci;
 
-    @Index
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     private DesignComponentFormItem requestDcfi;
 
-    @Index
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     private ApiRequest parent;
 
     @Lob
@@ -94,17 +88,17 @@ public class ApiRequest implements Serializable , Identifiable {
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date responseReceivedAt;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     private ClientEncounterComponentItem responseCeci;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     private ClientEncounterComponentFormSet requestCefs;
 
     
     /*
     Create Properties
      */
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     private WebUser createdBy;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date createdAt;
@@ -112,9 +106,8 @@ public class ApiRequest implements Serializable , Identifiable {
     /*
     Retire Properties
      */
-    @Index
     private boolean retired;
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     private WebUser retiredBy;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date retiredAt;

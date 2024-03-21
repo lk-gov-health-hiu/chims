@@ -322,12 +322,12 @@ public class IndicatorController implements Serializable {
     }
 
     public void runClinicCountsForRequests(InstitutionDataQuery dq) {
-        //System.out.println("runClinicCountsForRequests");
-        //System.out.println("tMonth = " + year);
-        //System.out.println("tYear = " + month);
+        //// System.out.println("runClinicCountsForRequests");
+        //// System.out.println("tMonth = " + year);
+        //// System.out.println("tYear = " + month);
         Institution tIns = dq.getInstitution();
         QueryComponent tQc = dq.getQuery();
-        //System.out.println("tQc = " + tQc);
+        //// System.out.println("tQc = " + tQc);
         if (tIns.getInstitutionType() == null) {
             JsfUtil.addErrorMessage("No Type for the institution");
             return;
@@ -346,14 +346,14 @@ public class IndicatorController implements Serializable {
                 toDate,
                 tIns);
 
-        //System.out.println("encounterIds = " + encounterIds.size());
+        //// System.out.println("encounterIds = " + encounterIds.size());
         encountersWithComponents = findEncountersWithComponents(encounterIds);
         if (encountersWithComponents == null) {
             j.setErrorMessage("No data for the selected institution for the period");
             JsfUtil.addErrorMessage("No data?");
             return;
         }
-        //System.out.println("encounterIds.size() = " + encounterIds.size());
+        //// System.out.println("encounterIds.size() = " + encounterIds.size());
 
         QueryWithCriteria qwc = new QueryWithCriteria();
         qwc.setQuery(tQc);
@@ -361,7 +361,7 @@ public class IndicatorController implements Serializable {
 
         Long value = calculateIndividualQueryResult(encountersWithComponents, qwc);
 
-        //System.out.println("value = " + value);
+        //// System.out.println("value = " + value);
         j.setMessage("Clinic : " + tIns.getName() + "\n");
         j.setMessage(j.getMessage() + "From : " + CommonController.formatDate(fromDate) + "\n");
         j.setMessage(j.getMessage() + "To : " + CommonController.formatDate(toDate) + "\n");
@@ -378,7 +378,7 @@ public class IndicatorController implements Serializable {
     }
 
     public void runClinicCountsForRequestsForAllInstitutions() {
-        //System.out.println("runClinicCountsForRequestsForAllInstitutions");
+        //// System.out.println("runClinicCountsForRequestsForAllInstitutions");
 
         fromDate = CommonController.startOfTheMonth(year, month, true);
         toDate = CommonController.endOfTheMonth(year, month, true);
@@ -567,9 +567,9 @@ public class IndicatorController implements Serializable {
 
     public Long calculateIndividualQueryResult(List<EncounterWithComponents> ewcs, QueryWithCriteria qwc) {
 
-        //System.out.println("calculateIndividualQueryResult");
-        //System.out.println("qwc = " + qwc);
-        //System.out.println("ewcs = " + ewcs);
+        //// System.out.println("calculateIndividualQueryResult");
+        //// System.out.println("qwc = " + qwc);
+        //// System.out.println("ewcs = " + ewcs);
         Long result = 0l;
         if (ewcs == null) {
             JsfUtil.addErrorMessage("No Encounters");
@@ -1084,7 +1084,7 @@ public class IndicatorController implements Serializable {
         m.put("fd", fromDate);
         m.put("td", toDate);
         List<Long> encs = encounterFacade.findLongList(j, m);
-        //System.out.println("encs = " + encs.size());
+        //// System.out.println("encs = " + encs.size());
         return encs;
     }
 

@@ -36,7 +36,7 @@ public class IntegrationTrigger implements Serializable, Identifiable  {
     /*
      Create Properties
      */
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     private WebUser createdBy;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date createdAt;
@@ -45,7 +45,7 @@ public class IntegrationTrigger implements Serializable, Identifiable  {
      */
     @Index
     private boolean retired;
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     private WebUser retiredBy;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date retiredAt;

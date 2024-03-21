@@ -25,21 +25,17 @@ package lk.gov.health.phsp.entity;
 
 import java.io.Serializable;
 import java.util.Date;
-import javax.annotation.PostConstruct;
-import javax.jdo.annotations.Index;
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.Transient;
-
+import javax.xml.bind.annotation.XmlRootElement;
 import lk.gov.health.phsp.pojcs.Identifiable;
 import org.joda.time.LocalDate;
 import org.joda.time.Period;
@@ -51,9 +47,9 @@ import org.joda.time.PeriodType;
  * Informatics)
  */
 @Entity
-
+@XmlRootElement
 @Table
-public class Person implements Serializable, Identifiable {
+public class Person implements Serializable, Identifiable  {
 
 // <editor-fold defaultstate="collapsed" desc="Persistant Attributes">
     static final long serialVersionUID = 1L;
@@ -61,33 +57,31 @@ public class Person implements Serializable, Identifiable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.REFRESH })
+    @ManyToOne(fetch = FetchType.LAZY)
     private Item title;
-    @Index
     private String name;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     private Item sex;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.REFRESH })
+    @ManyToOne(fetch = FetchType.LAZY)
     private Item citizenship;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.REFRESH })
+    @ManyToOne(fetch = FetchType.LAZY)
     private Item ethinicGroup;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.REFRESH })
+    @ManyToOne(fetch = FetchType.LAZY)
     private Item religion;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.REFRESH })
+    @ManyToOne(fetch = FetchType.LAZY)
     private Item mariatalStatus;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.REFRESH })
+    @ManyToOne(fetch = FetchType.LAZY)
     private Item educationStatus;
 
     private String occupation;
 
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
-    @Index
     private Date dateOfBirth;
 
     private boolean dobIsAnApproximation;
@@ -95,34 +89,31 @@ public class Person implements Serializable, Identifiable {
     @Lob
     private String address;
 
-    @Index
     private String phone1;
-    @Index
     private String phone2;
     private String email;
-    @Index
+
     private String nic;
-    @Index
+
     private String passportNumber;
 
     private String website;
     private String drivingLicenseNumber;
-    @Index
+
     private String localReferanceNo;
-    @Index
     private String ssNumber;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     private Area gnArea;
-    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH })
+    @ManyToOne(fetch = FetchType.LAZY)
     private Area dsArea;
-    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH })
+    @ManyToOne(fetch = FetchType.LAZY)
     private Area phmArea;
-    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.REFRESH })
+    @ManyToOne(fetch = FetchType.LAZY)
     private Area mohArea;
-    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.REFRESH })
+    @ManyToOne(fetch = FetchType.LAZY)
     private Area district;
-    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH })
+    @ManyToOne(fetch = FetchType.LAZY)
     private Area province;
 
     //Created Properties
@@ -136,7 +127,6 @@ public class Person implements Serializable, Identifiable {
     private Date editedAt;
 
     //Retairing properties
-    @Index
     private boolean retired;
     @ManyToOne(fetch = FetchType.LAZY)
     private WebUser retiredBy;
@@ -245,8 +235,6 @@ public class Person implements Serializable, Identifiable {
      * @return the gnArea
      */
     public Area getGnArea() {
-        if (gnArea == null) {
-        }
         return gnArea;
     }
 
@@ -605,31 +593,6 @@ public class Person implements Serializable, Identifiable {
         return getName();
     }
 // </editor-fold>
-
-    @PostConstruct
-    public void init() {
-        if (this.getGnArea() != null) {
-        } else {
-        }
-        if (this.getGnArea() != null) {
-
-        }
-        if (this.getDsArea() != null) {
-
-        }
-        if (this.getDistrict() != null) {
-
-        }
-        if (this.getProvince() != null) {
-
-        }
-        if (this.getSex() != null) {
-        } else {
-        }
-        if (this.getTitle() != null) {
-
-        }
-    }
 
     public boolean isDobIsAnApproximation() {
         return dobIsAnApproximation;

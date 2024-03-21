@@ -4,7 +4,10 @@
  */
 package lk.gov.health.phsp.entity;
 
+import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.IdType;
+import org.hl7.fhir.r4.model.OperationOutcome;
+import org.hl7.fhir.r4.model.Resource;
 
 /**
  *
@@ -15,6 +18,18 @@ public class FhirOperationResult {
     private boolean success;
     private String message;
     private IdType resourceId;
+    private Resource resource;
+    private Bundle responseBundle; 
+    private OperationOutcome operationOutcome;
+
+    // Getter and setter for responseBundle
+    public Bundle getResponseBundle() {
+        return responseBundle;
+    }
+
+    public void setResponseBundle(Bundle responseBundle) {
+        this.responseBundle = responseBundle;
+    }
 
     public FhirOperationResult() {
     }
@@ -43,6 +58,25 @@ public class FhirOperationResult {
         this.resourceId = resourceId;
     }
 
+    public Resource getResource() {
+        return resource;
+    }
+
+    public void setResource(Resource resource) {
+        this.resource = resource;
+    }
+
+    public OperationOutcome getOperationOutcome() {
+        return operationOutcome;
+    }
+
+    public void setOperationOutcome(OperationOutcome operationOutcome) {
+        this.operationOutcome = operationOutcome;
+    }
+    
+    
+
+    
     
     
 }
