@@ -251,7 +251,6 @@
                                         </tr>
                                     </table>
                                 </h:panelGroup>
-
                                 <h:panelGroup id="gpMultipleItemAc" rendered="#{ii.di.item.dataType eq 'Item_Reference' and ii.di.renderType eq 'Autocomplete'}" >
                                     <table>
                                         <tr>
@@ -301,7 +300,6 @@
                                         </tr>
                                     </table>
                                 </h:panelGroup>
-
                                 <h:panelGroup rendered="#{ii.di.renderType eq 'Autocomplete' and ii.di.item.dataType eq 'Area_Reference'}" >
                                     <table>
                                         <tr>
@@ -342,7 +340,6 @@
                                         </h:panelGroup>
                                     </table>
                                 </h:panelGroup>
-
                             </td>
                         </tr>
                     </h:panelGroup>
@@ -390,12 +387,16 @@
                                                 <p:outputLabel for="itIntC"  styleClass="dataLabel" value="#{ii.di.name}"  style="#{ii.di.css}" ></p:outputLabel>
                                             </td>
                                             <td>
-                                                <p:inputText  styleClass="dataValueInputText" id="itIntC" value="#{ii.ci.integerNumberValue}" 
-                                                              required="#{ii.di.required}" 
-                                                              requiredMessage="#{ii.di.requiredErrorMessage}" >
+                                                <p:inputNumber  
+                                                    maxValue="#{ii.di.item.absoluteMaximumInt}" 
+                                                    minValue="#{ii.di.item.absoluteMinimumInt}"
+                                                    styleClass="dataValueInputText"
+                                                    id="itIntC" 
+                                                    value="#{ii.ci.integerNumberValue}" 
+                                                    required="#{ii.di.required}" 
+                                                    requiredMessage="#{ii.di.requiredErrorMessage}" >
                                                     <p:ajax  event="blur" process="@this"   listener="#{clientEncounterComponentItemController.saveCi(ii.ci)}" ></p:ajax>
-
-                                                </p:inputText>
+                                                </p:inputNumber>
                                             </td>
                                             <td>
                                                 <h:panelGroup rendered="#{ii.di.calculateButton}" >
@@ -423,11 +424,16 @@
                                                 <p:outputLabel for="itRnC"  styleClass="dataLabel" value="#{ii.di.name}"  style="#{ii.di.css}" ></p:outputLabel>
                                             </td>
                                             <td>
-                                                <p:inputText  styleClass="dataValueInputText" id="itRnC" value="#{ii.ci.realNumberValue}" 
-                                                              required="#{ii.di.required}" validatorMessage="#{ii.di.regexValidationFailedMessage}"
-                                                              requiredMessage="#{ii.di.requiredErrorMessage}" >
+                                                <p:inputNumber
+                                                    maxValue="#{ii.di.item.absoluteMaximumDbl}" 
+                                                    minValue="#{ii.di.item.absoluteMinimumDbl}"
+                                                    styleClass="dataValueInputText" id="itRnC" 
+                                                    value="#{ii.ci.realNumberValue}" 
+                                                    required="#{ii.di.required}"
+                                                    validatorMessage="#{ii.di.regexValidationFailedMessage}"
+                                                    requiredMessage="#{ii.di.requiredErrorMessage}" >
                                                     <p:ajax  event="blur" process="@this"  listener="#{clientEncounterComponentItemController.saveCi(ii.ci)}" ></p:ajax>
-                                                </p:inputText>
+                                                </p:inputNumber>
                                             </td>
                                             <td>
                                                 <h:panelGroup rendered="#{ii.di.calculateButton}" >
@@ -455,11 +461,16 @@
                                                 <p:outputLabel for="itLongC"  styleClass="dataLabel" value="#{ii.di.name}"  style="#{ii.di.css}" ></p:outputLabel>
                                             </td>
                                             <td>
-                                                <p:inputText  styleClass="dataValueInputText" id="itLongC" value="#{ii.ci.longNumberValue}" 
-                                                              required="#{ii.di.required}" 
-                                                              requiredMessage="#{ii.di.requiredErrorMessage}" >
+                                                <p:inputNumber 
+                                                    maxValue="#{ii.di.item.absoluteMaximumLong}" 
+                                                    minValue="#{ii.di.item.absoluteMinimumLong}"
+                                                    styleClass="dataValueInputText" 
+                                                    id="itLongC" 
+                                                    value="#{ii.ci.longNumberValue}" 
+                                                    required="#{ii.di.required}" 
+                                                    requiredMessage="#{ii.di.requiredErrorMessage}" >
                                                     <p:ajax  event="blur" process="@this"   listener="#{clientEncounterComponentItemController.saveCi(ii.ci)}" ></p:ajax>
-                                                </p:inputText>
+                                                </p:inputNumber>
                                             </td>
                                             <td>
                                                 <h:panelGroup rendered="#{ii.di.calculateButton}" >

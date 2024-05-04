@@ -47,7 +47,7 @@ import lk.gov.health.phsp.pojcs.Identifiable;
  * @author User
  */
 @Entity
-public class Item implements Serializable, Identifiable  {
+public class Item implements Serializable, Identifiable {
 
     private static final long serialVersionUID = 1L;
 
@@ -133,10 +133,8 @@ public class Item implements Serializable, Identifiable  {
     @Transient
     private boolean dataTypePrescreption;
 
-    
-    
     public ItemType getItemType() {
-        if(itemType==null){
+        if (itemType == null) {
             itemType = ItemType.Dictionary_Item;
         }
         return itemType;
@@ -276,7 +274,7 @@ public class Item implements Serializable, Identifiable  {
     }
 
     public String getDisplayName() {
-        if(displayName==null||displayName.trim().equals("")){
+        if (displayName == null || displayName.trim().equals("")) {
             displayName = name;
         }
         return displayName;
@@ -295,7 +293,7 @@ public class Item implements Serializable, Identifiable  {
     }
 
     public SelectionDataType getDataType() {
-        if(dataType==null){
+        if (dataType == null) {
             dataType = SelectionDataType.Short_Text;
         }
         return dataType;
@@ -306,6 +304,9 @@ public class Item implements Serializable, Identifiable  {
     }
 
     public Double getAbsoluteMinimumDbl() {
+        if (absoluteMinimumDbl == null) {
+            absoluteMinimumDbl = Double.MIN_VALUE;
+        }
         return absoluteMinimumDbl;
     }
 
@@ -314,6 +315,9 @@ public class Item implements Serializable, Identifiable  {
     }
 
     public Double getAbsoluteMaximumDbl() {
+        if (absoluteMaximumDbl == null) {
+            absoluteMaximumDbl = Double.MAX_VALUE;
+        }
         return absoluteMaximumDbl;
     }
 
@@ -322,6 +326,9 @@ public class Item implements Serializable, Identifiable  {
     }
 
     public Integer getAbsoluteMinimumInt() {
+        if (absoluteMinimumInt == null) {
+            absoluteMinimumInt = Integer.MIN_VALUE;
+        }
         return absoluteMinimumInt;
     }
 
@@ -330,6 +337,9 @@ public class Item implements Serializable, Identifiable  {
     }
 
     public Integer getAbsoluteMaximumInt() {
+        if (absoluteMaximumInt == null) {
+            absoluteMaximumInt = Integer.MAX_VALUE;
+        }
         return absoluteMaximumInt;
     }
 
@@ -468,6 +478,9 @@ public class Item implements Serializable, Identifiable  {
     }
 
     public Long getAbsoluteMinimumLong() {
+        if (absoluteMinimumLong == null) {
+            absoluteMinimumLong = Long.MIN_VALUE;
+        }
         return absoluteMinimumLong;
     }
 
@@ -476,6 +489,9 @@ public class Item implements Serializable, Identifiable  {
     }
 
     public Long getAbsoluteMaximumLong() {
+        if (absoluteMaximumLong == null) {
+            absoluteMaximumLong = Long.MAX_VALUE;
+        }
         return absoluteMaximumLong;
     }
 
@@ -506,7 +522,5 @@ public class Item implements Serializable, Identifiable  {
     public void setContainsPersonallyIdentifiableData(Boolean containsPersonallyIdentifiableData) {
         this.containsPersonallyIdentifiableData = containsPersonallyIdentifiableData;
     }
-    
-    
 
 }
