@@ -2890,6 +2890,191 @@ public class HospitalReportController implements Serializable {
             // //System.out.println("File not found exception -->" + ex.getMessage());
         }
     }
+    
+    
+    
+    
+    public void downloadClientRegistrationsCheck() {
+        String j;
+        Map m = new HashMap();
+
+        j = "select c "
+                + " from Client c "
+                + " where (c.retired=:ret or c.retired is null) "
+                + " and c.createdAt between :fd and :td ";
+        m.put("ret", false);
+        m.put("res", false);
+        m.put("fd", getFromDate());
+        m.put("td", getToDate());
+
+        String insName = "";
+
+        if (institution != null) {
+            j += " and c.createInstitution in :ins ";
+            List<Institution> ins = institutionApplicationController.findChildrenInstitutions(institution);
+            ins.add(institution);
+            insName = institution.getName();
+            m.put("ins", ins);
+        } else {
+            if (webUserController.getLoggedUser().isRestrictedToInstitution()) {
+                j += " and c.createInstitution in :ins ";
+                List<Institution> ins = webUserController.getLoggableInstitutions();
+                m.put("ins", ins);
+            }
+            insName = webUserController.getLoggedUser().getInstitution().getName();
+        }
+
+        List<Client> tmpClients = getClientFacade().findByJpql(j, m, TemporalType.TIMESTAMP);
+
+        String FILE_NAME = "client_registrations_list" + "_" + insName + "_from_" + CommonController.formatDate(fromDate, "dd MMMM yyyy HH_mm") + "_to_" + CommonController.formatDate(toDate, "dd MMMM yyyy HH_mm") + ".xlsx";
+        String mimeType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+
+        String folder = "/tmp/";
+
+        File newFile = new File(folder + FILE_NAME);
+
+        XSSFWorkbook workbook = new XSSFWorkbook();
+        XSSFSheet sheet = workbook.createSheet("Data");
+
+        int rowCount = 0;
+
+        Row t1 = sheet.createRow(rowCount++);
+        Cell th1_lbl = t1.createCell(0);
+        th1_lbl.setCellValue("Report");
+        Cell th1_val = t1.createCell(1);
+        th1_val.setCellValue("List of Clients");
+
+        Row t2 = sheet.createRow(rowCount++);
+        Cell th2_lbl = t2.createCell(0);
+        th2_lbl.setCellValue("From");
+        Cell th2_val = t2.createCell(1);
+        th2_val.setCellValue(CommonController.dateTimeToString(fromDate, "dd MMMM yyyy"));
+
+        Row t3 = sheet.createRow(rowCount++);
+        Cell th3_lbl = t3.createCell(0);
+        th3_lbl.setCellValue("To");
+        Cell th3_val = t3.createCell(1);
+        th3_val.setCellValue(CommonController.dateTimeToString(toDate, "dd MMMM yyyy"));
+
+        if (institution != null) {
+            Row t4 = sheet.createRow(rowCount++);
+            Cell th4_lbl = t4.createCell(0);
+            th4_lbl.setCellValue("Institution");
+            Cell th4_val = t4.createCell(1);
+            th4_val.setCellValue(institution.getName());
+        }
+
+        rowCount++;
+
+        Row t5 = sheet.createRow(rowCount);
+        Cell th5_1 = t5.createCell(0);
+        th5_1.setCellValue("Serial");
+
+        Cell th5_2 = t5.createCell(1);
+        th5_2.setCellValue("PHN");
+
+        Cell th5_3 = t5.createCell(2);
+        th5_3.setCellValue("Name");
+
+        Cell th5_4 = t5.createCell(3);
+        th5_4.setCellValue("NIC");
+
+        Cell th5_5 = t5.createCell(4);
+        th5_5.setCellValue("Birthday");
+
+        Cell th5_6 = t5.createCell(5);
+        th5_6.setCellValue("Age(yrs)");
+
+        Cell th5_7 = t5.createCell(6);
+        th5_7.setCellValue("Sex");
+
+        Cell th5_8 = t5.createCell(7);
+        th5_8.setCellValue("Address");
+
+        Cell th5_9 = t5.createCell(8);
+        th5_9.setCellValue("GN Areas");
+
+        Cell th5_10 = t5.createCell(9);
+        th5_10.setCellValue("Phone");
+
+        if (institution == null) {
+            Cell th5_11 = t5.createCell(10);
+            th5_11.setCellValue("Institution");
+        }
+
+        int serial = 1;
+
+        CellStyle cellStyle = workbook.createCellStyle();
+        CreationHelper createHelper = workbook.getCreationHelper();
+        cellStyle.setDataFormat(createHelper.createDataFormat().getFormat("dd/MMMM/yyyy HH:mm"));
+
+        for (Client o : tmpClients) {
+
+            Row row = sheet.createRow(++rowCount);
+
+            Cell c1 = row.createCell(0);
+            c1.setCellValue(serial);
+
+            Cell c2 = row.createCell(1);
+            c2.setCellValue(o.getPhn());
+
+            if (o.getPerson() == null) {
+                continue;
+            }
+
+            Cell c3 = row.createCell(2);
+            c3.setCellValue(o.getPerson().getName());
+
+            Cell c4 = row.createCell(3);
+            c4.setCellValue(o.getPerson().getNic());
+
+            Cell c5 = row.createCell(4);
+            c5.setCellValue(o.getPerson().getDateOfBirth());
+            c5.setCellStyle(cellStyle);
+
+            Cell c6 = row.createCell(5);
+            c6.setCellValue(o.getPerson().getAge());
+
+            Cell c7 = row.createCell(6);
+            if (o.getPerson().getSex() != null) {
+                c7.setCellValue(o.getPerson().getSex().getName());
+            }
+
+            Cell c8 = row.createCell(7);
+            c8.setCellValue(o.getPerson().getAddress());
+
+            Cell c9 = row.createCell(8);
+            if (o.getPerson().getGnArea() != null) {
+                c9.setCellValue(o.getPerson().getGnArea().getName());
+            }
+
+            Cell c10 = row.createCell(9);
+            c10.setCellValue(o.getPerson().getPhone1());
+
+            if (institution == null) {
+                Cell c11 = row.createCell(10);
+                c11.setCellValue(o.getCreateInstitution().getName());
+            }
+
+            serial++;
+
+        }
+
+        try (FileOutputStream outputStream = new FileOutputStream(newFile)) {
+            workbook.write(outputStream);
+        } catch (Exception e) {
+
+        }
+
+        InputStream stream;
+        try {
+            stream = new FileInputStream(newFile);
+            resultExcelFile = streamedContentController.generateStreamedContent(mimeType, FILE_NAME, stream);
+        } catch (FileNotFoundException ex) {
+            // //System.out.println("File not found exception -->" + ex.getMessage());
+        }
+    }
+    
 
     public void downloadClientRegistrationsWithReservedPhns() {
         String j;

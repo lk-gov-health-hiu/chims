@@ -1221,6 +1221,13 @@ public class CommonController implements Serializable {
         return str;
     }
 
+    public static String removeNonAlphanumeric(String input) {
+        if (input == null) {
+            return null;
+        }
+        return input.replaceAll("[^a-zA-Z0-9]", "");
+    }
+
     public static String prepareAsCode(String str) {
         String after = str.trim().replaceAll(" +", "_");
         return after.toLowerCase();

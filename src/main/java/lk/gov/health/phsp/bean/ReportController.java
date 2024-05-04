@@ -331,7 +331,7 @@ public class ReportController implements Serializable {
 
         List<ClientEncounterComponentItem> cis = clientEncounterComponentItemFacade.findByJpql(j, m);
 
-        String fileName =  designComponentFormItem.getItem().getName() 
+        String fileName = CommonController.removeNonAlphanumeric(designComponentFormItem.getItem().getName()) 
                 + "_from_"
                 + CommonController.formatDate(fromDate, "dd_MMMM_yyyy")
                 + "_to_" 
