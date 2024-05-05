@@ -394,9 +394,11 @@
                                                     id="itIntC" 
                                                     value="#{ii.ci.integerNumberValue}" 
                                                     required="#{ii.di.required}" 
+                                                    validatorMessage="Given Value is out of range"
                                                     requiredMessage="#{ii.di.requiredErrorMessage}" >
-                                                    <p:ajax  event="blur" process="@this"   listener="#{clientEncounterComponentItemController.saveCi(ii.ci)}" ></p:ajax>
+                                                    <p:ajax  event="blur" process="@this" update="@this msgitIntC itIntC"   listener="#{clientEncounterComponentItemController.saveCi(ii.ci)}" ></p:ajax>
                                                 </p:inputNumber>
+                                                <p:message for="itIntC" id="msgitIntC" ></p:message>
                                             </td>
                                             <td>
                                                 <h:panelGroup rendered="#{ii.di.calculateButton}" >
@@ -424,16 +426,31 @@
                                                 <p:outputLabel for="itRnC"  styleClass="dataLabel" value="#{ii.di.name}"  style="#{ii.di.css}" ></p:outputLabel>
                                             </td>
                                             <td>
-                                                <p:inputNumber
-                                                    maxValue="#{ii.di.item.absoluteMaximumDbl}" 
-                                                    minValue="#{ii.di.item.absoluteMinimumDbl}"
-                                                    styleClass="dataValueInputText" id="itRnC" 
-                                                    value="#{ii.ci.realNumberValue}" 
+                                                <p:inputText
+                                                    styleClass="dataValueInputText"
+                                                    id="itRnC"
+                                                    inputmode="numeric"
+                                                    value="#{ii.ci.realNumberValue}"
                                                     required="#{ii.di.required}"
-                                                    validatorMessage="#{ii.di.regexValidationFailedMessage}"
-                                                    requiredMessage="#{ii.di.requiredErrorMessage}" >
-                                                    <p:ajax  event="blur" process="@this"  listener="#{clientEncounterComponentItemController.saveCi(ii.ci)}" ></p:ajax>
-                                                </p:inputNumber>
+                                                    validatorMessage="#{ii.di.name} is out of range. Use a value between #{ii.di.item.absoluteMinimumDbl} and #{ii.di.item.absoluteMaximumDbl}."
+                                                    requiredMessage="#{ii.di.requiredErrorMessage}">
+                                                    <f:validateDoubleRange
+                                                        minimum="#{ii.di.item.absoluteMinimumDbl}"
+                                                        maximum="#{ii.di.item.absoluteMaximumDbl}" />
+                                                    <p:ajax event="blur" process="@this itRnC" update="@this itRnC msgitRnC ttitRnC" listener="#{clientEncounterComponentItemController.saveCi(ii.ci)}" />
+                                                </p:inputText>
+                                                <p:message id="msgitRnC" for="itRnC" ></p:message>
+
+
+                                                <p:tooltip id="ttitRnC" for="itRnC"  >
+                                                    <p:panelGrid columns="2" class="text-danger" >
+                                                        <h:outputText value="Minimum Value" ></h:outputText>
+                                                        <h:outputText value="#{ii.di.item.absoluteMinimumDbl}" ></h:outputText><!-- comment -->
+                                                        <h:outputText value="Maximum Value" ></h:outputText><!-- comment -->
+                                                        <h:outputText value="#{ii.di.item.absoluteMaximumDbl}" ></h:outputText>
+                                                    </p:panelGrid>
+                                                </p:tooltip>
+
                                             </td>
                                             <td>
                                                 <h:panelGroup rendered="#{ii.di.calculateButton}" >
@@ -464,6 +481,7 @@
                                                 <p:inputNumber 
                                                     maxValue="#{ii.di.item.absoluteMaximumLong}" 
                                                     minValue="#{ii.di.item.absoluteMinimumLong}"
+
                                                     styleClass="dataValueInputText" 
                                                     id="itLongC" 
                                                     value="#{ii.ci.longNumberValue}" 
