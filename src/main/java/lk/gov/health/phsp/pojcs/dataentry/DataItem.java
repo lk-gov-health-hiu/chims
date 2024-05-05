@@ -52,9 +52,13 @@ public class DataItem {
     private List<DataItem> addedItems;
     private DataItem addingItem;
     private Boolean multipleEntries;
+    private boolean hasError=false;
+    private String errorMessage;
 
     private List<Item> availableItemsForSelection;
     private List<Item> availableProcedures;
+    
+    
 
     public List<Item> completeAvailableItemsForSelection(String qry) {
         List<Item> tis = new ArrayList<>();
@@ -201,6 +205,22 @@ public class DataItem {
         ItemController itemController = CDI.current().select(ItemController.class).get();
         pis = itemController.completeItemstByCode(parentCode, qry);
         return pis;
+    }
+
+    public boolean isHasError() {
+        return hasError;
+    }
+
+    public void setHasError(boolean hasError) {
+        this.hasError = hasError;
+    }
+
+    public String getErrorMessage() {
+        return errorMessage;
+    }
+
+    public void setErrorMessage(String errorMessage) {
+        this.errorMessage = errorMessage;
     }
 
 }

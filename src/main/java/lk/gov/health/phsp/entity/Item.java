@@ -304,9 +304,9 @@ public class Item implements Serializable, Identifiable {
     }
 
     public Double getAbsoluteMinimumDbl() {
-        if (absoluteMinimumDbl == null) {
-            absoluteMinimumDbl = Double.MIN_VALUE;
-        }
+//        if (absoluteMinimumDbl == null) {
+//            absoluteMinimumDbl = Double.MIN_VALUE;
+//        }
         return absoluteMinimumDbl;
     }
 
@@ -315,9 +315,9 @@ public class Item implements Serializable, Identifiable {
     }
 
     public Double getAbsoluteMaximumDbl() {
-        if (absoluteMaximumDbl == null) {
-            absoluteMaximumDbl = Double.MAX_VALUE;
-        }
+//        if (absoluteMaximumDbl == null) {
+//            absoluteMaximumDbl = Double.MAX_VALUE;
+//        }
         return absoluteMaximumDbl;
     }
 
@@ -326,9 +326,9 @@ public class Item implements Serializable, Identifiable {
     }
 
     public Integer getAbsoluteMinimumInt() {
-        if (absoluteMinimumInt == null) {
-            absoluteMinimumInt = Integer.MIN_VALUE;
-        }
+//        if (absoluteMinimumInt == null) {
+//            absoluteMinimumInt = Integer.MIN_VALUE;
+//        }
         return absoluteMinimumInt;
     }
 
@@ -337,9 +337,9 @@ public class Item implements Serializable, Identifiable {
     }
 
     public Integer getAbsoluteMaximumInt() {
-        if (absoluteMaximumInt == null) {
-            absoluteMaximumInt = Integer.MAX_VALUE;
-        }
+//        if (absoluteMaximumInt == null) {
+//            absoluteMaximumInt = Integer.MAX_VALUE;
+//        }
         return absoluteMaximumInt;
     }
 
@@ -478,9 +478,9 @@ public class Item implements Serializable, Identifiable {
     }
 
     public Long getAbsoluteMinimumLong() {
-        if (absoluteMinimumLong == null) {
-            absoluteMinimumLong = Long.MIN_VALUE;
-        }
+//        if (absoluteMinimumLong == null) {
+//            absoluteMinimumLong = Long.MIN_VALUE;
+//        }
         return absoluteMinimumLong;
     }
 
@@ -489,9 +489,9 @@ public class Item implements Serializable, Identifiable {
     }
 
     public Long getAbsoluteMaximumLong() {
-        if (absoluteMaximumLong == null) {
-            absoluteMaximumLong = Long.MAX_VALUE;
-        }
+//        if (absoluteMaximumLong == null) {
+//            absoluteMaximumLong = Long.MAX_VALUE;
+//        }
         return absoluteMaximumLong;
     }
 

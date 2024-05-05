@@ -35,6 +35,7 @@ import lk.gov.health.phsp.ejb.DataFormBean;
 import lk.gov.health.phsp.entity.Client;
 import lk.gov.health.phsp.entity.Component;
 import lk.gov.health.phsp.entity.Encounter;
+import lk.gov.health.phsp.entity.Item;
 import lk.gov.health.phsp.entity.Person;
 import lk.gov.health.phsp.entity.Prescription;
 import lk.gov.health.phsp.enums.DataRepresentationType;
@@ -676,6 +677,57 @@ public class ClientEncounterComponentItemController implements Serializable {
             getFacade().create(i);
         } else {
             getFacade().edit(i);
+        }
+    }
+
+    public void saveDataItem(DataItem i) {
+        i.setHasError(false);
+        i.setErrorMessage(null);
+        System.out.println("saveDataItem");
+        System.out.println("i = " + i);
+        if (i == null || i.getCi() == null || i.getDi() == null || i.getDi().getItem() == null) {
+            System.out.println("null return 1");
+            return;
+        }
+
+        Item item = i.getDi().getItem();
+        if (item.getDataType() == SelectionDataType.Real_Number) {
+            System.out.println("real");
+            Double min = item.getAbsoluteMinimumDbl();
+            Double max = item.getAbsoluteMaximumDbl();
+            Double value = i.getCi().getRealNumberValue();
+            System.out.println("value = " + value);
+            System.out.println("min = " + min);
+            System.out.println("max = " + max);
+            if (value != null) {
+                System.out.println("value not null");
+                if (min != null && value < min) {
+                    i.setHasError(true);
+                    System.out.println("value is less than minimum value");
+                    System.out.println("this is before minimum message");
+                    JsfUtil.addErrorMessage(String.format("The given value %.2f is lower than the allowable minimum of %.2f. Please enter a value within the range.", value, min));
+                    i.setErrorMessage(String.format("The given value %.2f is lower than the allowable minimum of %.2f. Please enter a value within the range.", value, min));
+                    System.out.println("this is after minimum message");
+                    i.getCi().setRealNumberValue(null);
+                    return;
+                }
+                if (max != null && value > max) {
+                    i.setHasError(true);
+                    System.out.println("value is more than the max value ");
+                    System.out.println("this is before the max message");
+                    JsfUtil.addErrorMessage(String.format("The given value %.2f is higher than the allowable maximum of %.2f. Please enter a value within the range.", value, max));
+                    i.setErrorMessage(String.format("The given value %.2f is higher than the allowable maximum of %.2f. Please enter a value within the range.", value, max));
+                    System.out.println("this is after the maximum message");
+                    i.getCi().setRealNumberValue(null);
+                    return;
+                }
+            }
+        }
+
+        if (i.getCi().getId() == null) {
+            getFacade().create(i.getCi());
+        } else {
+            getFacade().edit(i.getCi());
         }
     }
 
