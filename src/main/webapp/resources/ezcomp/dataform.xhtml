@@ -426,17 +426,18 @@
                                                 <p:outputLabel for="itRnC"  styleClass="dataLabel" value="#{ii.di.name}"  style="#{ii.di.css}" ></p:outputLabel>
                                             </td>
                                             <td>
+                                                Min -  #{ii.di.item.absoluteMinimumDbl}
+                                                Max - #{ii.di.item.absoluteMaximumDbl}
                                                 <p:inputText
                                                     styleClass="dataValueInputText"
                                                     id="itRnC"
-                                                    inputmode="numeric"
                                                     value="#{ii.ci.realNumberValue}"
                                                     required="#{ii.di.required}"
                                                     validatorMessage="#{ii.di.name} is out of range. Use a value between #{ii.di.item.absoluteMinimumDbl} and #{ii.di.item.absoluteMaximumDbl}."
                                                     requiredMessage="#{ii.di.requiredErrorMessage}">
-                                                    <f:validateDoubleRange
-                                                        minimum="#{ii.di.item.absoluteMinimumDbl}"
-                                                        maximum="#{ii.di.item.absoluteMaximumDbl}" />
+                                                    <f:validateDoubleRange 
+                                                        minimum="0"
+                                                        maximum="1000000" />
                                                     <p:ajax event="blur" process="@this itRnC" update="@this itRnC msgitRnC ttitRnC" listener="#{clientEncounterComponentItemController.saveCi(ii.ci)}" />
                                                 </p:inputText>
                                                 <p:message id="msgitRnC" for="itRnC" ></p:message>
