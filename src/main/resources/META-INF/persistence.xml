@@ -8,6 +8,15 @@
             <property name="javax.persistence.jdbc.user" value="admin"/>
             <property name="javax.persistence.jdbc.password" value="admin"/>
             <property name="javax.persistence.schema-generation.database.action" value="create-or-extend-tables"/>
+            
+            
+            
+             <!-- ObjectDB Logging Configuration -->
+            <property name="objectdb.log.level" value="FINE"/>
+            <property name="objectdb.log.query" value="true"/>
+            <!-- To log SQL-like queries (ObjectDB's internal operations) -->
+            <property name="objectdb.log.sql" value="true"/>
+            
         </properties>
     </persistence-unit>
 </persistence>

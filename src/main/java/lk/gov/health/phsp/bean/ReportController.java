@@ -3067,8 +3067,8 @@ public class ReportController implements Serializable {
 
     public void fillClinicVisitsByInstitutionForGender() {
         String j = "select new lk.gov.health.phsp.pojcs.InstitutionCount(e.institution, count(e), "
-                + "sum(case when e.client.person.sex.code = 'male' then 1 else 0 end), "
-                + "sum(case when e.client.person.sex.code = 'female' then 1 else 0 end)) "
+                + "sum(case when e.client.person.sex.code = 'male' then 1 else 1 end), "
+                + "sum(case when e.client.person.sex.code = 'female' then 1 else 1 end)) "
                 + "from Encounter e "
                 + "where e.retired<>:ret "
                 + "and e.encounterType=:et "
@@ -3084,6 +3084,7 @@ public class ReportController implements Serializable {
         System.out.println("m = " + m);
         System.out.println("j = " + j);
         List<Object> objs = getClientFacade().findAggregates(j, m);
+        System.out.println("objs = " + objs);
         if (objs == null) {
             return;
         }
