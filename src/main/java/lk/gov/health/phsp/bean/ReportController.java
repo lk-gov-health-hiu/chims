@@ -3066,42 +3066,56 @@ public class ReportController implements Serializable {
     }
 
     public void fillClinicVisitsByInstitutionForGender() {
-        String j = "select new lk.gov.health.phsp.pojcs.InstitutionCount(e.institution, count(e), "
-                + "sum(case when e.client.person.sex.code = 'male' then 1 else 1 end), "
-                + "sum(case when e.client.person.sex.code = 'female' then 1 else 1 end)) "
-                + "from Encounter e "
-                + "where e.retired<>:ret "
-                + "and e.encounterType=:et "
-                + "and e.encounterDate between :fd and :td "
-                + "group by e.institution "
-                + "order by e.institution.name";
+    // Fetch institutions first
+    String institutionQuery = "SELECT DISTINCT e.institution FROM Encounter e WHERE e.retired <> :ret AND e.encounterType = :et AND e.encounterDate BETWEEN :fd AND :td";
+    Map params = new HashMap<>();
+    params.put("ret", true);
+    params.put("et", EncounterType.Clinic_Visit);
+    params.put("fd", getFromDate());
+    params.put("td", getToDate());
 
-        Map m = new HashMap<>();
-        m.put("ret", true);
-        m.put("et", EncounterType.Clinic_Visit);
-        m.put("fd", getFromDate());
-        m.put("td", getToDate());
-        System.out.println("m = " + m);
-        System.out.println("j = " + j);
-        List<Object> objs = getClientFacade().findAggregates(j, m);
-        System.out.println("objs = " + objs);
-        if (objs == null) {
-            return;
-        }
-        System.out.println("objs = " + objs.size());
-        institutionCounts = new ArrayList<>();
-        reportCount = 0L;
-        for (Object o : objs) {
-            if (o instanceof InstitutionCount) {
-                InstitutionCount ic = (InstitutionCount) o;
-                institutionCounts.add(ic);
-                reportCount += ic.getCount();
-                reportCountMale += ic.getMaleCount();
-                reportCountFemale += ic.getFemaleCount();
-            }
-        }
-        userTransactionController.recordTransaction("Fill Clinic Visits By Institution");
+    System.out.println("Fetching institutions with parameters: " + params);
+    List<Institution> institutions = institutionFacade.findByJpql(institutionQuery, params);
+    System.out.println("Institutions found: " + institutions.size());
+
+    // Prepare the collection to store results
+    institutionCounts = new ArrayList<>();
+    reportCount = 0L;
+    reportCountFemale = 0L;
+    reportCountMale = 0L;
+
+    // Loop through each institution and query counts
+    for (Institution ins : institutions) {
+        System.out.println("Processing institution: " + ins.getName());
+        
+        long totalCount = getCount("SELECT COUNT(e) FROM Encounter e WHERE e.institution = :inst AND e.retired <> :ret AND e.encounterType = :et AND e.encounterDate BETWEEN :fd AND :td", ins, params);
+        long maleCount = getCount("SELECT COUNT(e) FROM Encounter e WHERE e.institution = :inst AND e.client.person.sex.code = 'male' AND e.retired <> :ret AND e.encounterType = :et AND e.encounterDate BETWEEN :fd AND :td", ins, params);
+        long femaleCount = getCount("SELECT COUNT(e) FROM Encounter e WHERE e.institution = :inst AND e.client.person.sex.code = 'female' AND e.retired <> :ret AND e.encounterType = :et AND e.encounterDate BETWEEN :fd AND :td", ins, params);
+
+        System.out.println("Total count for " + ins.getName() + ": " + totalCount);
+        System.out.println("Male count for " + ins.getName() + ": " + maleCount);
+        System.out.println("Female count for " + ins.getName() + ": " + femaleCount);
+
+        // Create new InstitutionCount and add to list
+        InstitutionCount ic = new InstitutionCount(ins, totalCount, maleCount, femaleCount);
+        institutionCounts.add(ic);
+        reportCount += totalCount;
+        reportCountMale += maleCount;
+        reportCountFemale += femaleCount;
     }
+
+    System.out.println("Final report - Total visits: " + reportCount + ", Male: " + reportCountMale + ", Female: " + reportCountFemale);
+    userTransactionController.recordTransaction("Fill Clinic Visits By Institution");
+}
+
+private long getCount(String query, Institution institution, Map<String, Object> params) {
+    System.out.println("Executing query for institution: " + institution.getName() + " with query: " + query);
+    params.put("inst", institution);
+    long result = getClientFacade().findLongByJpql(query, params);
+    System.out.println("Result for " + institution.getName() + ": " + result);
+    return result;
+}
+
 
     public void fillClinicRegistrationsByInstitution() {
 
