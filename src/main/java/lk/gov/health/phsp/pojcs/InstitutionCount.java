@@ -33,12 +33,21 @@ public class InstitutionCount {
 
     private Institution institution;
     private Long count;
+    private Long maleCount;
+    private Long femaleCount;
 
     public InstitutionCount(Institution institution, Long count) {
         this.institution = institution;
         this.count = count;
     }
     
+    public InstitutionCount(Institution institution, Long count, Long maleCount, Long femaleCount) {
+        this.institution = institution;
+        this.count = count;
+        this.maleCount = maleCount;
+        this.femaleCount = femaleCount;
+    }
+
 
     public InstitutionCount() {
     }
@@ -60,6 +69,22 @@ public class InstitutionCount {
 
     public void setCount(Long count) {
         this.count = count;
+    }
+
+    public Long getMaleCount() {
+        return maleCount;
+    }
+
+    public void setMaleCount(Long maleCount) {
+        this.maleCount = maleCount;
+    }
+
+    public Long getFemaleCount() {
+        return femaleCount;
+    }
+
+    public void setFemaleCount(Long femaleCount) {
+        this.femaleCount = femaleCount;
     }
     
     
