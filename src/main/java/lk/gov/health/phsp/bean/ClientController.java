@@ -1617,10 +1617,10 @@ public class ClientController implements Serializable {
             JsfUtil.addErrorMessage("Please save the client first before enrolling.");
             return;
         }
-        if (encounterController.clinicEnrolmentExists(selectedClinic, selected)) {
-            JsfUtil.addErrorMessage("This client is already enrolled.");
-            return;
-        }
+//        if (encounterController.clinicEnrolmentExists(selectedClinic, selected)) {
+//            JsfUtil.addErrorMessage("This client is already enrolled.");
+//            return;
+//        }
         Encounter encounter = new Encounter();
         encounter.setClient(selected);
         encounter.setEncounterType(EncounterType.Clinic_Enroll);

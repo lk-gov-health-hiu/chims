@@ -30,6 +30,7 @@ import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.persistence.TemporalType;
 import javax.servlet.http.HttpServletRequest;
 import lk.gov.health.phsp.entity.Person;
 import lk.gov.health.phsp.entity.Relationship;
@@ -728,6 +729,7 @@ public class WebUserController implements Serializable {
     }
 
     public String login() {
+        System.out.println("Login " + this);
         loggableInstitutions = null;
         loggableClinics = null;
         loggableHospitals = null;
@@ -740,7 +742,7 @@ public class WebUserController implements Serializable {
             return "";
         }
         userName = userName.toLowerCase().trim();
-
+        System.out.println("userName = " + userName);
         if (highSecurity) {
 
             if (webUserApplicationController.userBlocked(userName)) {
@@ -752,6 +754,7 @@ public class WebUserController implements Serializable {
                 return "";
             }
         }
+        System.out.println("password = " + password);
         if (password == null || password.trim().equals("")) {
             JsfUtil.addErrorMessage("Please enter the Password");
             return "";
@@ -814,20 +817,30 @@ public class WebUserController implements Serializable {
     }
 
     private boolean checkLogin() {
+        System.out.println("checkLogin");
         if (getFacade() == null) {
             JsfUtil.addErrorMessage("Server Error");
             return false;
         }
 
         String temSQL;
-        temSQL = "SELECT u FROM WebUser u WHERE u.name = :userName and u.retired = :ret";
+        temSQL = "SELECT u FROM WebUser u WHERE lower(u.name) = :userName and u.retired = :ret";
         Map m = new HashMap();
         m.put("userName", userName.trim().toLowerCase());
         m.put("ret", false);
-        loggedUser = getFacade().findFirstByJpql(temSQL, m);
+        System.out.println("m = " + m);
+        System.out.println("temSQL = " + temSQL);
+        List<WebUser> selectedUsers = getFacade().findByJpql(temSQL, m, TemporalType.DATE, 1);
+        System.out.println("selectedUsers = " + selectedUsers);
+        if(selectedUsers==null || selectedUsers.isEmpty()){
+            return false;
+        }
+        loggedUser = selectedUsers.get(0);
+        System.out.println("loggedUser = " + loggedUser);
         if (loggedUser == null) {
             return false;
         }
+        System.out.println("loggedUser.getWebUserPassword() = " + loggedUser.getWebUserPassword());
         if (commonController.matchPassword(password, loggedUser.getWebUserPassword())) {
             return true;
         } else {
