@@ -1039,12 +1039,12 @@ public abstract class AbstractFacade<T extends Identifiable> {
         return findString(strJQL, map, tt, 0);
     }
 
-    public List<Object[]> findAggregates(String jpql, Map<String, Object> parameters) {
+    public List<Object> findAggregates(String jpql, Map<String, Object> parameters) {
         return findAggregates(jpql, parameters, TemporalType.DATE);
     }
 
-    public List<Object[]> findAggregates(String jpql) {
-        TypedQuery<Object[]> qry = getEntityManager().createQuery(jpql, Object[].class);
+    public List<Object> findAggregates(String jpql) {
+        TypedQuery<Object> qry = getEntityManager().createQuery(jpql, Object.class);
         try {
             return qry.getResultList();
         } catch (Exception e) {
@@ -1053,8 +1053,8 @@ public abstract class AbstractFacade<T extends Identifiable> {
         }
     }
 
-    public List<Object[]> findAggregates(String jpql, Map<String, Object> parameters, TemporalType tt) {
-        TypedQuery<Object[]> qry = getEntityManager().createQuery(jpql, Object[].class);
+    public List<Object> findAggregates(String jpql, Map<String, Object> parameters, TemporalType tt) {
+        TypedQuery<Object> qry = getEntityManager().createQuery(jpql, Object.class);
         Set s = parameters.entrySet();
         Iterator it = s.iterator();
         while (it.hasNext()) {
@@ -1076,7 +1076,7 @@ public abstract class AbstractFacade<T extends Identifiable> {
         }
     }
 
-    private void setParameterObjectList(TypedQuery<Object[]> qry, Map<String, Object> parameters, TemporalType temporalType) {
+    private void setParameterObjectList(TypedQuery<?> qry, Map<String, Object> parameters, TemporalType temporalType) {
         if (parameters == null) {
             return;
         }
