@@ -41,6 +41,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import javax.annotation.Resource;
+import javax.enterprise.concurrent.ManagedExecutorService;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.ejb.EJB;
@@ -110,6 +113,9 @@ public class ExcelReportController implements Serializable {
     @Inject
     ApplicationController applicationController;
 
+    @Resource
+    private ManagedExecutorService executorService;
+
     /**
      * Creates a new instance of ExcelReportController
      */
@@ -147,6 +153,7 @@ public class ExcelReportController implements Serializable {
                 return true;
             } else {
                 JsfUtil.addErrorMessage("Report Error. Please check details.");
+                updateOnFailure(storedQueryResult);
                 encountersWithComponents = null;
                 queriesWithCriteria = null;
                 return false;
@@ -158,6 +165,10 @@ public class ExcelReportController implements Serializable {
             return false;
         }
 
+    }
+
+    public CompletableFuture<Boolean> processReportAsync(StoredQueryResult storedQueryResult) {
+        return CompletableFuture.supplyAsync(() -> processReport(storedQueryResult), executorService);
     }
 
     public List<EncounterWithComponents> findEncountersWithComponents(List<Long> ids) {
@@ -250,6 +261,8 @@ public class ExcelReportController implements Serializable {
         } catch (IOException ex) {
             sqr.setErrorMessage("IO Exception. " + ex.getMessage());
             getStoreQueryResultFacade().edit(sqr);
+            updateOnFailure(sqr);
+            return null;
         }
 
         XSSFWorkbook workbook;
@@ -507,10 +520,12 @@ public class ExcelReportController implements Serializable {
         } catch (FileNotFoundException e) {
             sqr.setErrorMessage("IO Exception. " + e.getMessage());
             getStoreQueryResultFacade().edit(sqr);
+            updateOnFailure(sqr);
             return success;
         } catch (IOException e) {
             sqr.setErrorMessage("IO Exception. " + e.getMessage());
             getStoreQueryResultFacade().edit(sqr);
+            updateOnFailure(sqr);
             return success;
         }
 

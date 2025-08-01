@@ -787,12 +787,7 @@ public class HospitalReportController implements Serializable {
         setFromDate(sqr.getResultFrom());
         setToDate(sqr.getResultTo());
         JsfUtil.addSuccessMessage("Added to the Queue to Process");
-        boolean reportDone = getExcelReportController().processReport(sqr);
-        if (reportDone) {
-            JsfUtil.addSuccessMessage("Report Created. Please click the list button to list it.");
-        } else {
-            JsfUtil.addErrorMessage("Error");
-        }
+        getExcelReportController().processReportAsync(sqr);
 
     }
 
