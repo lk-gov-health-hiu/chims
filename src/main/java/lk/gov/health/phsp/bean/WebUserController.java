@@ -803,7 +803,7 @@ public class WebUserController implements Serializable {
         }
     }
 
-    private boolean thereAreUsersInTheSystem() {
+    public boolean thereAreUsersInTheSystem() {
         String jpql = "select w from WebUser w";
         WebUser u = getFacade().findFirstByJpql(jpql);
         if (u == null) {
@@ -849,21 +849,59 @@ public class WebUserController implements Serializable {
         return getFacade().findByJpql(temSQL, m);
     }
 
-    public void createDemoUser() {
+    public String createDemoUser() {
+        if (institutionName == null || institutionName.trim().isEmpty()) {
+            JsfUtil.addErrorMessage("Please enter an Institution Name.");
+            return "";
+        }
+        if (userName == null || userName.trim().isEmpty()) {
+            JsfUtil.addErrorMessage("Please enter an Admin Username.");
+            return "";
+        }
+        if (password == null || password.trim().isEmpty()) {
+            JsfUtil.addErrorMessage("Please enter a Password.");
+            return "";
+        }
+        if (!password.equals(passwordReenter)) {
+            JsfUtil.addErrorMessage("Passwords do not match. Please retry.");
+            return "";
+        }
+        if (!passwordStrengthCheck(password)) {
+            return "";
+        }
+        if (thereAreUsersInTheSystem()) {
+            JsfUtil.addErrorMessage("Setup already completed. Please log in.");
+            return "";
+        }
+
         Institution i = new Institution();
-        i.setName(userName);
+        i.setName(institutionName.trim());
+        i.setCreatedAt(new Date());
         institutionController.saveOrUpdateInstitution(i);
 
-        Person p = new Person();
-        p.setName("Administrator");
-
         WebUser u = new WebUser();
-        u.setName("admin");
+        u.setName(userName.trim().toLowerCase());
         u.setWebUserPassword(commonController.hash(password));
         u.setWebUserRole(WebUserRole.System_Administrator);
+        u.setInstitution(i);
+        u.setCreatedAt(new Date());
+        getFacade().create(u);
 
-        save(u);
+        List<Privilege> privileges = getInitialPrivileges(WebUserRole.System_Administrator);
+        for (Privilege p : privileges) {
+            UserPrivilege up = new UserPrivilege();
+            up.setCreatedAt(new Date());
+            up.setWebUser(u);
+            up.setPrivilege(p);
+            getUserPrivilegeFacade().create(up);
+        }
 
+        loggedUser = u;
+        logged = true;
+        loggedUserPrivileges = userPrivilegeList(u);
+        webUserApplicationController.addToLoggedUsers(u.getName());
+        JsfUtil.addSuccessMessage("Setup complete. Welcome, " + u.getName() + "!");
+        return "/index";
     }
 
     List<Privilege> getInitialPrivileges(WebUserRole role) {

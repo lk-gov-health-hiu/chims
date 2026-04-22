@@ -1,0 +1,111 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <h:head>
+        <title>cHIMS — First Time Setup</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1"/>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+              rel="stylesheet"
+              integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+              crossorigin="anonymous"/>
+        <h:outputStylesheet library="css" name="tem1.css"/>
+    </h:head>
+
+    <h:body>
+        <p:growl/>
+
+        <h:panelGroup rendered="#{webUserController.thereAreUsersInTheSystem()}">
+            <div class="container py-5 text-center">
+                <h3>Setup already completed.</h3>
+                <p><h:link outcome="/index">Go to Login</h:link></p>
+            </div>
+        </h:panelGroup>
+
+        <h:panelGroup rendered="#{not webUserController.thereAreUsersInTheSystem()}">
+            <section class="h-100 gradient-form" style="background-color: #eeee;">
+                <div class="container py-5">
+                    <div class="row d-flex justify-content-center align-items-center">
+                        <div class="col-xl-6">
+                            <div class="card rounded-3 text-black">
+                                <div class="card-body p-md-5">
+
+                                    <h4 class="text-center mb-4">First Time Setup</h4>
+                                    <p class="text-muted text-center small mb-4">
+                                        Create your institution and the initial System Administrator account.
+                                    </p>
+
+                                    <h:form>
+                                        <div class="form-outline mb-3">
+                                            <label class="form-label" for="institutionName">Institution Name</label>
+                                            <p:inputText id="institutionName"
+                                                         value="#{webUserController.institutionName}"
+                                                         required="true"
+                                                         requiredMessage="Please enter the institution name"
+                                                         styleClass="w-100"
+                                                         autocomplete="off"
+                                                         class="form-control"/>
+                                        </div>
+
+                                        <div class="form-outline mb-3">
+                                            <label class="form-label" for="adminUsername">Admin Username</label>
+                                            <p:inputText id="adminUsername"
+                                                         value="#{webUserController.userName}"
+                                                         required="true"
+                                                         requiredMessage="Please enter a username"
+                                                         styleClass="w-100"
+                                                         autocomplete="off"
+                                                         class="form-control"/>
+                                        </div>
+
+                                        <div class="form-outline mb-3">
+                                            <label class="form-label" for="setupPwd">Password</label>
+                                            <p:password id="setupPwd"
+                                                        value="#{webUserController.password}"
+                                                        required="true"
+                                                        requiredMessage="Please enter a password"
+                                                        toggleMask="true"
+                                                        styleClass="w-100"
+                                                        class="form-control"/>
+                                            <small class="text-muted">
+                                                Min 8 characters — must include upper, lower, digit, and special character.
+                                            </small>
+                                        </div>
+
+                                        <div class="form-outline mb-4">
+                                            <label class="form-label" for="setupPwd2">Confirm Password</label>
+                                            <p:password id="setupPwd2"
+                                                        value="#{webUserController.passwordReenter}"
+                                                        required="true"
+                                                        requiredMessage="Please confirm your password"
+                                                        toggleMask="true"
+                                                        styleClass="w-100"
+                                                        class="form-control"/>
+                                        </div>
+
+                                        <div class="text-center">
+                                            <p:commandButton value="Create Institution &amp; Admin"
+                                                             ajax="false"
+                                                             action="#{webUserController.createDemoUser()}"
+                                                             styleClass="btn btn-primary w-75"/>
+                                        </div>
+
+                                        <div class="text-center mt-3">
+                                            <h:link outcome="/index" styleClass="small text-muted">Back to Login</h:link>
+                                        </div>
+                                    </h:form>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </h:panelGroup>
+
+    </h:body>
+</html>
