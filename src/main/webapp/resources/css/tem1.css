@@ -12,6 +12,23 @@
 }
 
 
+.ui-menubar {
+    border-radius: 0;
+    border: none;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    background: #ffffff !important;
+    padding: 0.5rem 1rem !important;
+}
+
+.ui-menubar .ui-menuitem-link {
+    border-radius: 4px;
+    margin: 0 2px;
+}
+
+.ui-menubar .ui-menuitem-link:hover {
+    background: #f8f9fa !important;
+}
+
 .ui-widget {
     font-family: 'Poppins',Arial,sans-serif;
     font-size: 1.0em;

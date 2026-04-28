@@ -7,12 +7,28 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/CascadeStyleSheet.css to ed
     Author     : dilunda
 */
 .gradient-custom-2 {
-    /*background: rgb(0,23,36);*/
-/*    background: -moz-linear-gradient(90deg, rgba(0,23,36,1) 0%, rgba(0,125,21,0.7399334733893557) 55%, rgba(0,212,255,1) 100%);
-    background: -webkit-linear-gradient(90deg, rgba(0,23,36,1) 0%, rgba(0,125,21,0.7399334733893557) 55%, rgba(0,212,255,1) 100%);
-    background: linear-gradient(90deg, rgba(0,23,36,1) 0%, rgba(0,125,21,0.7399334733893557) 55%, rgba(0,212,255,1) 100%);
-    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#001724",endColorstr="#00d4ff",GradientType=1);*/
-background:#2196F3;
+    background: linear-gradient(to right, #2196F3, #21CBF3);
+}
+
+.card {
+    border: none;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+}
+
+.form-control:focus {
+    box-shadow: 0 0 0 0.25rem rgba(33, 150, 243, 0.25);
+    border-color: #2196F3;
+}
+
+.btn-primary {
+    background-color: #2196F3;
+    border: none;
+    padding: 0.6rem 1.2rem;
+    font-weight: 500;
+}
+
+.btn-primary:hover {
+    background-color: #1976D2;
 }
 
 @media (min-width: 768px) {
