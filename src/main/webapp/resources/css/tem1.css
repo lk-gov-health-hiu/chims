@@ -291,3 +291,192 @@
 .ui-tabs.ui-tabs-left > .ui-tabs-panels {
    width: 90%;
 }
+
+/* Dark Mode Styles - Refined Palette */
+.dark-mode body, body.dark-mode {
+    background-color: #141729 !important; /* Deeper Dark Blue-Grey background */
+    color: #ffffff !important;
+}
+
+.dark-mode .ui-menubar {
+    background: #1c213a !important; /* Slightly lighter for menu */
+    border: 1px solid #2d3454 !important;
+}
+
+.dark-mode .ui-menubar .ui-menuitem-link,
+.dark-mode .ui-menubar .ui-menuitem-text,
+.dark-mode .ui-menubar .ui-submenu-link,
+.dark-mode .ui-menu-list .ui-menuitem-text,
+.dark-mode .ui-menu-list .ui-submenu-link {
+    color: #ffffff !important;
+}
+
+.dark-mode .ui-menubar .ui-menuitem-link:hover,
+.dark-mode .ui-menu-list .ui-menuitem-link:hover {
+    background: #45506b !important;
+}
+
+.dark-mode .menuText {
+    color: #ffffff !important;
+}
+
+.dark-mode .ui-widget-content, 
+.dark-mode .ui-datatable, 
+.dark-mode .ui-datatable-data > tr,
+.dark-mode .ui-datatable-data > tr > td,
+.dark-mode .ui-panel-content,
+.dark-mode .ui-dialog-content,
+.dark-mode .ui-menu.ui-menu-child,
+.dark-mode .ui-panelgrid,
+.dark-mode .ui-panelgrid .ui-panelgrid-cell,
+.dark-mode .ui-panel {
+    background: #141729 !important;
+    color: #ffffff !important;
+    border-color: #2d3454 !important;
+}
+
+.dark-mode .ui-widget-header,
+.dark-mode .ui-datatable-header,
+.dark-mode .ui-column-header,
+.dark-mode .ui-dialog-titlebar {
+    background: #1c213a !important;
+    color: #ffffff !important;
+    border-color: #2d3454 !important;
+}
+
+.dark-mode .ui-selectonemenu,
+.dark-mode .ui-selectonemenu-label,
+.dark-mode .ui-autocomplete-input,
+.dark-mode .ui-inputfield {
+    background: #141729 !important;
+    color: #ffffff !important;
+    border-color: #2d3454 !important;
+}
+
+.dark-mode .ui-selectonemenu-panel,
+.dark-mode .ui-autocomplete-panel,
+.dark-mode .ui-selectonemenu-items-wrapper {
+    background: #141729 !important;
+    color: #ffffff !important;
+}
+
+.dark-mode .ui-selectonemenu-items .ui-selectonemenu-item,
+.dark-mode .ui-autocomplete-items .ui-autocomplete-item {
+    color: #ffffff !important;
+}
+
+/* Selected/Hovered items and Focused fields - Blue background with Black text */
+.dark-mode .ui-selectonemenu-items .ui-selectonemenu-item.ui-state-hover,
+.dark-mode .ui-selectonemenu-items .ui-selectonemenu-item.ui-state-highlight,
+.dark-mode .ui-autocomplete-items .ui-autocomplete-item.ui-state-hover,
+.dark-mode .ui-autocomplete-items .ui-autocomplete-item.ui-state-highlight,
+.dark-mode .ui-selectonemenu.ui-state-focus,
+.dark-mode .ui-selectonemenu.ui-state-focus .ui-selectonemenu-label,
+.dark-mode .ui-inputfield.ui-state-focus,
+.dark-mode .ui-autocomplete-input.ui-state-focus {
+    background: #e3f2fd !important;
+    color: #000000 !important;
+}
+
+.dark-mode .ui-selectonemenu .ui-selectonemenu-trigger {
+    background: #1c213a !important;
+    color: #ffffff !important;
+}
+
+.dark-mode .ui-button:not(.ui-button-icon-only) {
+    background: #144d37 !important; /* Requested green for buttons */
+    border-color: #1a6347 !important;
+    color: #ffffff !important;
+}
+
+.dark-mode .card {
+    background-color: #1c213a !important;
+    color: #ffffff !important;
+    border-color: #2d3454 !important;
+}
+
+.dark-mode a {
+    color: #ffffff; /* Keeping links white/readable on this background */
+    text-decoration: underline;
+}
+
+.dark-mode .text-dark,
+.dark-mode .card-title,
+.dark-mode h1,
+.dark-mode h2,
+.dark-mode h3,
+.dark-mode h4,
+.dark-mode h5,
+.dark-mode h6 {
+    color: #ffffff !important;
+}
+
+/* Icons styling - #144d37 as requested */
+.dark-mode .ui-icon, 
+.dark-mode .pi,
+.dark-mode .fas,
+.dark-mode .far,
+.dark-mode .bi {
+    color: #144d37 !important;
+}
+
+/* Specific fix for floating button icon - keep white for visibility */
+.dark-mode .btn-secondary i {
+    color: #ffffff !important;
+}
+
+.dark-mode .btn-secondary {
+    background-color: #144d37 !important;
+    border-color: #1a6347 !important;
+}
+
+.dark-mode .ui-state-default {
+    background: #36415a !important;
+    color: #ffffff !important;
+    border-color: #45506b !important;
+}
+
+.dark-mode .ui-state-hover {
+    background: #45506b !important;
+}
+
+.dark-mode .ui-state-active {
+    background: #144d37 !important;
+    color: #ffffff !important;
+}
+
+.dark-mode table.greenTable {
+    background-color: #141729 !important;
+    border: 1px solid #2d3454 !important;
+}
+
+.dark-mode table.greenTable tbody td {
+    color: #ffffff !important;
+}
+
+.dark-mode .ui-dialog, 
+.dark-mode .ui-confirm-dialog {
+    background: #141729 !important;
+    border: 1px solid #2d3454 !important;
+}
+
+.dark-mode .ui-tabs-nav,
+.dark-mode .ui-tabs-panels {
+    background: #141729 !important;
+    color: #ffffff !important;
+    border-color: #2d3454 !important;
+}
+
+.dark-mode .ui-tabs-nav li.ui-state-active {
+    background: #1c213a !important;
+    border-color: #144d37 !important;
+}
+
+.dark-mode .ui-tabs-nav li {
+    background: #141729 !important;
+}
+
+.dark-mode .ui-paginator {
+    background: #1c213a !important;
+    border-color: #2d3454 !important;
+}

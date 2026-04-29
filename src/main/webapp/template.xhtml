@@ -17,11 +17,61 @@
         <ui:insert name="head">
         </ui:insert>
         <h:outputStylesheet library="css" name="tem1.css"/>
+        <script type="text/javascript">
+            function applyTheme() {
+                const theme = localStorage.getItem('theme') || 'light';
+                const icon = document.getElementById('themeIcon');
+                if (theme === 'dark') {
+                    document.documentElement.classList.add('dark-mode');
+                    document.body.classList.add('dark-mode');
+                    if (icon) {
+                        icon.classList.remove('bi-moon-fill');
+                        icon.classList.add('bi-sun-fill');
+                    }
+                } else {
+                    document.documentElement.classList.remove('dark-mode');
+                    document.body.classList.remove('dark-mode');
+                    if (icon) {
+                        icon.classList.remove('bi-sun-fill');
+                        icon.classList.add('bi-moon-fill');
+                    }
+                }
+            }
+
+            function toggleDarkMode() {
+                if (document.documentElement.classList.contains('dark-mode')) {
+                    localStorage.setItem('theme', 'light');
+                } else {
+                    localStorage.setItem('theme', 'dark');
+                }
+                applyTheme();
+            }
+
+            // Apply theme immediately
+            (function() {
+                const theme = localStorage.getItem('theme') || 'light';
+                if (theme === 'dark') {
+                    document.documentElement.classList.add('dark-mode');
+                }
+            })();
+            
+            document.addEventListener('DOMContentLoaded', applyTheme);
+        </script>
     </h:head>
 
     <h:body class="m-0 p-0">
         <ui:insert name="free">
         </ui:insert>
+        
+        <!-- Floating Dark Mode Toggle -->
+        <div style="position: fixed; bottom: 20px; right: 20px; z-index: 9999;">
+            <button type="button" onclick="toggleDarkMode()" class="btn btn-secondary rounded-circle shadow" 
+                    style="width: 50px; height: 50px; display: flex; align-items: center; justify-content: center;"
+                    title="Toggle Dark Mode">
+                <i id="themeIcon" class="bi bi-moon-fill"></i>
+            </button>
+        </div>
+
         <p:growl   >
         </p:growl>
 

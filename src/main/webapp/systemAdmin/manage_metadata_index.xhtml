@@ -30,6 +30,9 @@
                                     <p:commandButton styleClass="width18rem"  ajax="false" action="#{itemController.toManageDictionary()}" value="Manage Dictionaty" ></p:commandButton>
                                     <p:commandButton styleClass="width18rem"  ajax="false" action="#{itemController.addInitialMetadata()}" value="Add Initial Metadata" ></p:commandButton>
                                     <p:commandButton styleClass="width18rem"  ajax="false" action="#{itemController.toImportFromExcel()}" value="Upload Dictionary Items" ></p:commandButton>
+                                    <p:commandButton styleClass="width18rem"  ajax="false" action="#{itemController.retireAllDictionaryItems()}" 
+                                                     value="Delete All Dictionary Items" 
+                                                     onclick="if (!confirm('Are you sure you want to delete all dictionary items?')) return false;" ></p:commandButton>
                                 </p:panelGrid>
                             </p:tab>
 
