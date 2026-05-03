@@ -47,7 +47,7 @@
                                 </div>
 
                                 <div class="col-md-2" >
-                                    <p:outputLabel value="Age (Years): *"  class="form-label"  />
+                                    <p:outputLabel value="Age (Years):" class="form-label"  /><span class="req-mark"> *</span>
                                     <p:inputText autocomplete="off"  id="year"  
                                                  value="#{clientController.yearMonthDay.year}" 
                                                  class="form-control">
@@ -72,7 +72,7 @@
                                 </div>
 
                                 <div class="col-md-2" >
-                                    <p:outputLabel value="Date of Birth: *"  class="form-label"/>
+                                    <p:outputLabel value="Date of Birth:" for="calDob" class="form-label"/>
                                     <p:calendar  value="#{clientController.selected.person.dateOfBirth}" 
                                                  id="calDob"  navigator="true" pattern="dd/MM/yyyy" yearRange="1900:today"
                                                  required="true"

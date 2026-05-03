@@ -233,99 +233,80 @@ public class ItemController implements Serializable {
         Integer dataTypeColInt;
         Integer parentCodeColInt;
 
-        Item code = null;
-        Item parent = null;
-
         nameColInt = CommonController.excelColFromHeader(nameCol);
         dataTypeColInt = CommonController.excelColFromHeader(dataTypeCol);
         codeColInt = CommonController.excelColFromHeader(codeCol);
         parentCodeColInt = CommonController.excelColFromHeader(parentCodeCol);
 
-        JsfUtil.addSuccessMessage(file.getFileName());
         org.apache.poi.ss.usermodel.Workbook myWorkBook;
-
         output = "";
+        int added = 0;
+        int updated = 0;
+        int errors = 0;
 
         try {
-            JsfUtil.addSuccessMessage(file.getFileName());
             myWorkBook = org.apache.poi.ss.usermodel.WorkbookFactory.create(file.getInputStream());
             org.apache.poi.ss.usermodel.Sheet mySheet = myWorkBook.getSheetAt(0);
             Iterator<Row> rowIterator = mySheet.iterator();
-            Long nextId = findMaxId() + 1;
             List<Item> allItems = itemApplicationController.getItems();
+            // Always skip row 0 (header); startRow field is not incremented to avoid skip drift
+            final int headerRows = 1;
             while (rowIterator.hasNext()) {
                 Row row = rowIterator.next();
-                if (row.getRowNum() < startRow) {
+                if (row.getRowNum() < headerRows) {
                     continue;
                 }
 
-                if (nameColInt != null) {
-                    strName = cellValue(row.getCell(nameColInt));
-                }
-                if (codeColInt != null) {
-                    strCode = cellValue(row.getCell(codeColInt));
-                }
-                if (dataTypeColInt != null) {
-                    strDataType = cellValue(row.getCell(dataTypeColInt));
-                }
-                if (parentCodeColInt != null) {
-                    strParentCode = cellValue(row.getCell(parentCodeColInt));
-                }
+                strName = nameColInt != null ? cellValue(row.getCell(nameColInt)) : null;
+                strCode = codeColInt != null ? cellValue(row.getCell(codeColInt)) : null;
+                strDataType = dataTypeColInt != null ? cellValue(row.getCell(dataTypeColInt)) : null;
+                strParentCode = parentCodeColInt != null ? cellValue(row.getCell(parentCodeColInt)) : null;
 
                 if (strName == null || strName.trim().equals("")) {
-                    output += "Skipping the line without a name.\n";
+                    output += "Row " + row.getRowNum() + ": Skipping — no name.\n";
                     continue;
                 }
-
                 if (strCode == null || strCode.trim().equals("")) {
-                    output += "Skipping the line without a code.\n";
+                    output += "Row " + row.getRowNum() + ": Skipping — no code.\n";
                     continue;
                 }
-
                 if (strDataType == null || strDataType.trim().equals("")) {
-                    output += "Skipping the line without a data type.\n";
+                    output += "Row " + row.getRowNum() + ": Skipping — no data type.\n";
                     continue;
-                }
-
-                Item parentItem = null;
-                if (strParentCode != null && !strParentCode.trim().equals("")) {
-                    parentItem = findItemByCode(strParentCode);
-                    if (parentItem == null) {
-                        parentItem = findItemByName(strParentCode);
-                    }
                 }
 
                 SelectionDataType selectionDataType = CommonController.selectionDataTypeFromString(strDataType);
-                Item importingItem = findItemByCode(strCode);
+                try {
+                    // importItem() runs entirely within one JTA transaction, resolving parent
+                    // and existing item lookups in the same persistence context — this avoids
+                    // the CascadeType.PERSIST detached-entity exception ("Transaction aborted")
+                    // that occurred when parent entities from cache were passed across transactions.
+                    Item importedItem = getFacade().importItem(
+                            strName.trim(), strCode.trim(),
+                            selectionDataType,
+                            (strParentCode != null ? strParentCode.trim() : null),
+                            webUserController.getLoggedUser());
 
-                if (importingItem == null) {
-                    importingItem = new Item();
-                    importingItem.setId(nextId++);
-                    importingItem.setItemType(ItemType.Dictionary_Item);
-                    importingItem.setParent(parentItem);
-                    importingItem.setName(strName);
-                    importingItem.setCode(strCode);
-                    importingItem.setOrderNo(0);
-                    importingItem.setDataType(selectionDataType);
-                    importingItem.setCreatedAt(new Date());
-                    importingItem.setCreatedBy(webUserController.getLoggedUser());
-                    getFacade().create(importingItem);
-                    output += "Added " + strName + " as there is no existing item with a code " + strCode + ".\n";
-                } else {
-                    importingItem.setParent(parentItem);
-                    importingItem.setName(strName);
-                    importingItem.setDataType(selectionDataType);
-                    importingItem.setEditedAt(new Date());
-                    importingItem.setEditedBy(webUserController.getLoggedUser());
-                    getFacade().edit(importingItem);
-                    output += "Updated " + strName + " as there is already one existing item with a code " + strCode + ".\n";
-                }
-                
-                if (allItems != null && !allItems.contains(importingItem)) {
-                    allItems.add(importingItem);
+                    if (importedItem != null) {
+                        boolean isNew = (importedItem.getEditedAt() == null);
+                        if (isNew) {
+                            output += "Added: " + strName + " [" + strCode + "]\n";
+                            added++;
+                        } else {
+                            output += "Updated: " + strName + " [" + strCode + "]\n";
+                            updated++;
+                        }
+                        if (allItems != null && !allItems.contains(importedItem)) {
+                            allItems.add(importedItem);
+                        }
+                    }
+                } catch (Exception rowEx) {
+                    output += "Row " + row.getRowNum() + " error (" + strName + "): " + rowEx.getMessage() + "\n";
+                    errors++;
                 }
             }
-            startRow++;
+            output += "\nSummary: " + added + " added, " + updated + " updated, " + errors + " errors.\n";
+            itemApplicationController.invalidateItems();
             file = null;
             return "";
         } catch (IOException e) {
@@ -1142,7 +1123,6 @@ public class ItemController implements Serializable {
         item = getFacade().findFirstByJpql(j, m);
         if (item == null) {
             item = new Item();
-            item.setId(findMaxId() + 1);
             item.setItemType(itemType);
             item.setName(name);
             item.setCode(code.trim().toLowerCase());
@@ -1171,7 +1151,6 @@ public class ItemController implements Serializable {
     public Item createNewItem(ItemType itemType, Item parent, String name, String code, int orderNo, SelectionDataType sdp) {
         Item item;
         item = new Item();
-        item.setId(findMaxId() + 1);
         item.setItemType(itemType);
         item.setName(name);
         item.setDisplayName(name);

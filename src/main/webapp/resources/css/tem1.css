@@ -12,37 +12,304 @@
 }
 
 
+/* ============================================================
+   Sticky-footer layout
+   ============================================================ */
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.chims-page-wrap {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+}
+
+.chims-content {
+    flex: 1;
+}
+
+/* ============================================================
+   cHIMS — GitHub-inspired navigation & layout
+   ============================================================ */
+
+/* -- Top header bar (dark, like GitHub's global nav) -- */
+.chims-header {
+    background: #24292f;
+    padding: 0.5rem 1rem;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    border-bottom: 1px solid #30363d;
+}
+
+.chims-header-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 100%;
+    gap: 0.75rem;
+}
+
+/* Brand / Logo */
+.chims-brand {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    text-decoration: none;
+    flex-shrink: 0;
+}
+
+.chims-logo-img {
+    height: 28px;
+    width: 28px;
+    object-fit: contain;
+    border-radius: 50%;
+    background: #fff;
+    padding: 2px;
+}
+
+.chims-brand-text {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    font-size: 1rem;
+    font-weight: 600;
+    line-height: 1;
+    white-space: nowrap;
+}
+
+.chims-brand-c {
+    color: #58a6ff;
+}
+
+.chims-brand-hims {
+    color: #ffffff;
+}
+
+/* Header right-side actions */
+.chims-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Search form inside header */
+.chims-search-form,
+.chims-logout-form {
+    display: inline-flex;
+    margin: 0;
+    padding: 0;
+}
+
+.chims-search-input,
+.chims-search-input.ui-inputfield {
+    background: #30363d !important;
+    border: 1px solid #484f58 !important;
+    border-radius: 6px !important;
+    color: #c9d1d9 !important;
+    font-size: 0.8125rem !important;
+    padding: 0.3rem 0.65rem !important;
+    width: 240px !important;
+    transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.chims-search-input::placeholder,
+.chims-search-input.ui-inputfield::placeholder {
+    color: #8b949e !important;
+}
+
+.chims-search-input:focus,
+.chims-search-input.ui-inputfield.ui-state-focus {
+    background: #0d1117 !important;
+    border-color: #58a6ff !important;
+    box-shadow: 0 0 0 3px rgba(88, 166, 255, 0.2) !important;
+    color: #f0f6fc !important;
+}
+
+/* Icon buttons in header */
+.chims-icon-btn,
+.chims-icon-btn.ui-button {
+    background: transparent !important;
+    border: 1px solid #484f58 !important;
+    border-radius: 6px !important;
+    color: #c9d1d9 !important;
+    padding: 0.3rem 0.55rem !important;
+    cursor: pointer;
+    font-size: 0.875rem !important;
+    transition: background 0.15s ease, border-color 0.15s ease;
+    line-height: 1.4;
+}
+
+.chims-icon-btn:hover,
+.chims-icon-btn.ui-button:hover,
+.chims-icon-btn.ui-state-hover {
+    background: #30363d !important;
+    border-color: #8b949e !important;
+    color: #f0f6fc !important;
+}
+
+.chims-icon-btn .ui-button-text {
+    display: none !important;
+}
+
+.chims-theme-btn {
+    border: 1px solid #484f58;
+}
+
+/* User chip */
+.chims-user-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    background: #30363d;
+    border: 1px solid #484f58;
+    border-radius: 2rem;
+    padding: 0.2rem 0.65rem;
+    font-size: 0.8rem;
+    color: #c9d1d9;
+    white-space: nowrap;
+}
+
+/* -- Secondary navigation menubar -- */
+.chims-navbar-wrap {
+    background: #ffffff;
+    border-bottom: 1px solid #d0d7de;
+}
+
+.chims-nav-form,
+.chims-nav-form > div {
+    margin: 0;
+    padding: 0;
+}
+
+.chims-menubar.ui-menubar,
 .ui-menubar {
-    border-radius: 0;
-    border: none;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    border-radius: 0 !important;
+    border: none !important;
+    border-bottom: none !important;
+    box-shadow: none !important;
     background: #ffffff !important;
-    padding: 0.5rem 1rem !important;
+    padding: 0 0.75rem !important;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif !important;
 }
 
 .ui-menubar .ui-menuitem-link {
-    border-radius: 4px;
-    margin: 0 2px;
+    border-radius: 0 !important;
+    margin: 0 !important;
+    padding: 0.65rem 0.85rem !important;
+    color: #57606a !important;
+    font-size: 0.875rem !important;
+    font-weight: 400 !important;
+    border-bottom: 2px solid transparent !important;
+    transition: color 0.15s ease, border-color 0.15s ease !important;
 }
 
-.ui-menubar .ui-menuitem-link:hover {
-    background: #f8f9fa !important;
+.ui-menubar .ui-menuitem-link:hover,
+.ui-menubar .ui-menuitem-link.ui-state-hover {
+    background: transparent !important;
+    color: #1f2328 !important;
+    border-bottom-color: #fd8c73 !important;
 }
 
+.ui-menubar .ui-menuitem.ui-menuitem-active > .ui-menuitem-link {
+    color: #1f2328 !important;
+    font-weight: 600 !important;
+    border-bottom-color: #fd8c73 !important;
+}
+
+/* Dropdown sub-menus */
+.ui-menu.ui-menu-child {
+    border: 1px solid #d0d7de !important;
+    border-radius: 6px !important;
+    box-shadow: 0 8px 24px rgba(140,149,159,0.2) !important;
+    padding: 0.25rem 0 !important;
+    background: #ffffff !important;
+}
+
+.ui-menu.ui-menu-child .ui-menuitem-link {
+    border-bottom: none !important;
+    padding: 0.45rem 1rem !important;
+    font-size: 0.875rem !important;
+    color: #1f2328 !important;
+}
+
+.ui-menu.ui-menu-child .ui-menuitem-link:hover {
+    background: #f6f8fa !important;
+    border-bottom: none !important;
+    color: #0969da !important;
+}
+
+.ui-menubar .ui-widget {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+}
+
+/* -- Footer -- */
+.chims-footer {
+    background: #f6f8fa;
+    border-top: 1px solid #d0d7de;
+    padding: 1.5rem 1rem;
+    margin-top: 3rem;
+}
+
+.chims-footer-inner {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    font-size: 0.8125rem;
+    color: #57606a;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+}
+
+.chims-footer-brand {
+    font-weight: 600;
+    color: #0969da;
+}
+
+.chims-footer-sep {
+    color: #d0d7de;
+}
+
+.chims-footer-link {
+    color: #57606a;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.chims-footer-link:hover {
+    color: #0969da;
+    text-decoration: underline;
+}
+
+.chims-footer-emblem-link {
+    display: inline-flex;
+    align-items: center;
+    text-decoration: none;
+    flex-shrink: 0;
+}
+
+.chims-footer-emblem {
+    height: 36px;
+    width: auto;
+}
+
+/* ============================================================
+   General widget font
+   ============================================================ */
 .ui-widget {
-    font-family: 'Poppins',Arial,sans-serif;
-    font-size: 1.0em;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    font-size: 0.9375rem;
 }
 .ui-widget input,
 .ui-widget select,
 .ui-widget textarea,
 .ui-widget button {
-  font-family: 'Poppins',Arial,sans-serif;
-}
-
-
-.ui-menubar .ui-widget  {
-    font-family: 'Poppins', sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
 }
 
 
@@ -292,15 +559,33 @@
    width: 90%;
 }
 
-/* Dark Mode Styles - Refined Palette */
+/* ============================================================
+   Dark Mode — Purple (BootstrapDash-inspired)
+   ============================================================ */
 .dark-mode body, body.dark-mode {
-    background-color: #141729 !important; /* Deeper Dark Blue-Grey background */
-    color: #ffffff !important;
+    background-color: #161d31 !important;
+    color: #d0d2d6 !important;
+}
+
+/* Header */
+.dark-mode .chims-header {
+    background: #283046 !important;
+    border-bottom-color: #3b4253 !important;
+}
+
+.dark-mode .chims-navbar-wrap {
+    background: #283046 !important;
+    border-bottom-color: #3b4253 !important;
+}
+
+.dark-mode .chims-menubar.ui-menubar,
+.dark-mode .ui-menubar {
+    background: #283046 !important;
 }
 
 .dark-mode .ui-menubar {
-    background: #1c213a !important; /* Slightly lighter for menu */
-    border: 1px solid #2d3454 !important;
+    background: #283046 !important;
+    border: 1px solid #3b4253 !important;
 }
 
 .dark-mode .ui-menubar .ui-menuitem-link,
@@ -308,20 +593,23 @@
 .dark-mode .ui-menubar .ui-submenu-link,
 .dark-mode .ui-menu-list .ui-menuitem-text,
 .dark-mode .ui-menu-list .ui-submenu-link {
-    color: #ffffff !important;
+    color: #d0d2d6 !important;
 }
 
 .dark-mode .ui-menubar .ui-menuitem-link:hover,
 .dark-mode .ui-menu-list .ui-menuitem-link:hover {
-    background: #45506b !important;
+    background: #3b4253 !important;
+    color: #f0f0f0 !important;
+    border-bottom-color: #7367f0 !important;
 }
 
 .dark-mode .menuText {
-    color: #ffffff !important;
+    color: #d0d2d6 !important;
 }
 
-.dark-mode .ui-widget-content, 
-.dark-mode .ui-datatable, 
+/* Content panels, tables, dialogs */
+.dark-mode .ui-widget-content,
+.dark-mode .ui-datatable,
 .dark-mode .ui-datatable-data > tr,
 .dark-mode .ui-datatable-data > tr > td,
 .dark-mode .ui-panel-content,
@@ -330,42 +618,43 @@
 .dark-mode .ui-panelgrid,
 .dark-mode .ui-panelgrid .ui-panelgrid-cell,
 .dark-mode .ui-panel {
-    background: #141729 !important;
-    color: #ffffff !important;
-    border-color: #2d3454 !important;
+    background: #283046 !important;
+    color: #d0d2d6 !important;
+    border-color: #3b4253 !important;
 }
 
 .dark-mode .ui-widget-header,
 .dark-mode .ui-datatable-header,
 .dark-mode .ui-column-header,
 .dark-mode .ui-dialog-titlebar {
-    background: #1c213a !important;
-    color: #ffffff !important;
-    border-color: #2d3454 !important;
+    background: #242b3d !important;
+    color: #d0d2d6 !important;
+    border-color: #3b4253 !important;
 }
 
+/* Inputs & Selects */
 .dark-mode .ui-selectonemenu,
 .dark-mode .ui-selectonemenu-label,
 .dark-mode .ui-autocomplete-input,
 .dark-mode .ui-inputfield {
-    background: #141729 !important;
-    color: #ffffff !important;
-    border-color: #2d3454 !important;
+    background: #283046 !important;
+    color: #d0d2d6 !important;
+    border-color: #3b4253 !important;
 }
 
 .dark-mode .ui-selectonemenu-panel,
 .dark-mode .ui-autocomplete-panel,
 .dark-mode .ui-selectonemenu-items-wrapper {
-    background: #141729 !important;
-    color: #ffffff !important;
+    background: #283046 !important;
+    color: #d0d2d6 !important;
 }
 
 .dark-mode .ui-selectonemenu-items .ui-selectonemenu-item,
 .dark-mode .ui-autocomplete-items .ui-autocomplete-item {
-    color: #ffffff !important;
+    color: #d0d2d6 !important;
 }
 
-/* Selected/Hovered items and Focused fields - Blue background with Black text */
+/* Focused / selected items */
 .dark-mode .ui-selectonemenu-items .ui-selectonemenu-item.ui-state-hover,
 .dark-mode .ui-selectonemenu-items .ui-selectonemenu-item.ui-state-highlight,
 .dark-mode .ui-autocomplete-items .ui-autocomplete-item.ui-state-hover,
@@ -374,32 +663,69 @@
 .dark-mode .ui-selectonemenu.ui-state-focus .ui-selectonemenu-label,
 .dark-mode .ui-inputfield.ui-state-focus,
 .dark-mode .ui-autocomplete-input.ui-state-focus {
-    background: #e3f2fd !important;
-    color: #000000 !important;
+    background: #3b4253 !important;
+    color: #d0d2d6 !important;
 }
 
 .dark-mode .ui-selectonemenu .ui-selectonemenu-trigger {
-    background: #1c213a !important;
-    color: #ffffff !important;
+    background: #242b3d !important;
+    color: #d0d2d6 !important;
 }
 
+/* Buttons — purple accent */
 .dark-mode .ui-button:not(.ui-button-icon-only) {
-    background: #144d37 !important; /* Requested green for buttons */
-    border-color: #1a6347 !important;
+    background: #7367f0 !important;
+    border-color: #6259e0 !important;
     color: #ffffff !important;
 }
 
+.dark-mode .ui-button:not(.ui-button-icon-only):hover,
+.dark-mode .ui-button:not(.ui-button-icon-only).ui-state-hover {
+    background: #6259e0 !important;
+    border-color: #5248cc !important;
+}
+
+/* Cards */
 .dark-mode .card {
-    background-color: #1c213a !important;
-    color: #ffffff !important;
-    border-color: #2d3454 !important;
+    background-color: #283046 !important;
+    color: #d0d2d6 !important;
+    border-color: #3b4253 !important;
 }
 
+.dark-mode .card-header {
+    background: #242b3d !important;
+    color: #d0d2d6 !important;
+    border-color: #3b4253 !important;
+}
+
+/* Bootstrap form controls */
+.dark-mode .form-control,
+.dark-mode .form-select {
+    background: #283046 !important;
+    color: #d0d2d6 !important;
+    border-color: #3b4253 !important;
+}
+
+.dark-mode .form-control:focus,
+.dark-mode .form-select:focus {
+    background: #283046 !important;
+    color: #d0d2d6 !important;
+    border-color: #7367f0 !important;
+    box-shadow: 0 0 0 0.2rem rgba(115,103,240,0.25) !important;
+}
+
+/* Links */
 .dark-mode a {
-    color: #ffffff; /* Keeping links white/readable on this background */
+    color: #9c8fff;
+    text-decoration: none;
+}
+
+.dark-mode a:hover {
+    color: #b8afff;
     text-decoration: underline;
 }
 
+/* Headings & text */
 .dark-mode .text-dark,
 .dark-mode .card-title,
 .dark-mode h1,
@@ -408,75 +734,224 @@
 .dark-mode h4,
 .dark-mode h5,
 .dark-mode h6 {
-    color: #ffffff !important;
+    color: #d0d2d6 !important;
 }
 
-/* Icons styling - #144d37 as requested */
-.dark-mode .ui-icon, 
+/* Icons — purple accent */
+.dark-mode .ui-icon,
 .dark-mode .pi,
 .dark-mode .fas,
 .dark-mode .far,
 .dark-mode .bi {
-    color: #144d37 !important;
+    color: #7367f0 !important;
 }
 
-/* Specific fix for floating button icon - keep white for visibility */
+/* Header action icons stay light */
+.dark-mode .chims-icon-btn .bi,
+.dark-mode .chims-icon-btn .pi {
+    color: #c9d1d9 !important;
+}
+
 .dark-mode .btn-secondary i {
     color: #ffffff !important;
 }
 
 .dark-mode .btn-secondary {
-    background-color: #144d37 !important;
-    border-color: #1a6347 !important;
+    background-color: #7367f0 !important;
+    border-color: #6259e0 !important;
 }
 
+/* UI states */
 .dark-mode .ui-state-default {
-    background: #36415a !important;
-    color: #ffffff !important;
-    border-color: #45506b !important;
+    background: #3b4253 !important;
+    color: #d0d2d6 !important;
+    border-color: #454d63 !important;
 }
 
 .dark-mode .ui-state-hover {
-    background: #45506b !important;
+    background: #454d63 !important;
 }
 
 .dark-mode .ui-state-active {
-    background: #144d37 !important;
+    background: #7367f0 !important;
     color: #ffffff !important;
 }
 
+/* Tables */
 .dark-mode table.greenTable {
-    background-color: #141729 !important;
-    border: 1px solid #2d3454 !important;
+    background-color: #283046 !important;
+    border: 1px solid #3b4253 !important;
 }
 
 .dark-mode table.greenTable tbody td {
-    color: #ffffff !important;
+    color: #d0d2d6 !important;
 }
 
-.dark-mode .ui-dialog, 
+/* Dialogs */
+.dark-mode .ui-dialog,
 .dark-mode .ui-confirm-dialog {
-    background: #141729 !important;
-    border: 1px solid #2d3454 !important;
+    background: #283046 !important;
+    border: 1px solid #3b4253 !important;
 }
 
+/* Tabs */
 .dark-mode .ui-tabs-nav,
 .dark-mode .ui-tabs-panels {
-    background: #141729 !important;
-    color: #ffffff !important;
-    border-color: #2d3454 !important;
+    background: #283046 !important;
+    color: #d0d2d6 !important;
+    border-color: #3b4253 !important;
 }
 
 .dark-mode .ui-tabs-nav li.ui-state-active {
-    background: #1c213a !important;
-    border-color: #144d37 !important;
+    background: #242b3d !important;
+    border-color: #7367f0 !important;
 }
 
 .dark-mode .ui-tabs-nav li {
-    background: #141729 !important;
+    background: #283046 !important;
 }
 
+/* Paginator */
 .dark-mode .ui-paginator {
-    background: #1c213a !important;
-    border-color: #2d3454 !important;
+    background: #242b3d !important;
+    border-color: #3b4253 !important;
+}
+
+/* Footer — fully themed in dark mode */
+.dark-mode .chims-footer {
+    background: #283046 !important;
+    border-top-color: #3b4253 !important;
+}
+
+.dark-mode .chims-footer-inner {
+    color: #b4b7bd !important;
+}
+
+.dark-mode .chims-footer-brand {
+    color: #9c8fff !important;
+}
+
+.dark-mode .chims-footer-sep {
+    color: #3b4253 !important;
+}
+
+.dark-mode .chims-footer-link {
+    color: #b4b7bd !important;
+    text-decoration: none;
+}
+
+.dark-mode .chims-footer-link:hover {
+    color: #9c8fff !important;
+    text-decoration: underline;
+}
+
+/* Calendar / Date picker */
+.dark-mode .ui-datepicker,
+.dark-mode .ui-datepicker table {
+    background: #283046 !important;
+    color: #d0d2d6 !important;
+    border-color: #3b4253 !important;
+}
+
+.dark-mode .ui-datepicker-header {
+    background: #242b3d !important;
+    color: #d0d2d6 !important;
+    border-color: #3b4253 !important;
+}
+
+.dark-mode .ui-datepicker td span,
+.dark-mode .ui-datepicker td a {
+    background: transparent !important;
+    color: #d0d2d6 !important;
+}
+
+.dark-mode .ui-datepicker td.ui-datepicker-today span {
+    background: #3b4253 !important;
+    color: #9c8fff !important;
+}
+
+.dark-mode .ui-datepicker td span:hover,
+.dark-mode .ui-datepicker td a:hover {
+    background: #7367f0 !important;
+    color: #ffffff !important;
+}
+
+.dark-mode .ui-calendar .ui-inputtext {
+    background: #283046 !important;
+    color: #d0d2d6 !important;
+    border-color: #3b4253 !important;
+}
+
+/* ============================================================
+   Floating Theme Toggle Button (bottom-right)
+   ============================================================ */
+.chims-theme-fab {
+    position: fixed;
+    bottom: 1.75rem;
+    right: 1.75rem;
+    z-index: 9999;
+    width: 3.25rem;
+    height: 3.25rem;
+    border-radius: 50%;
+    border: 1px solid #d0d7de;
+    background: #ffffff;
+    color: #1f2328;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 4px 14px rgba(140,149,159,0.35);
+    padding: 0;
+    transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, transform 0.15s ease;
+}
+
+.chims-theme-fab:hover {
+    background: #f6f8fa;
+    border-color: #8b949e;
+    box-shadow: 0 6px 18px rgba(140,149,159,0.55);
+    transform: scale(1.08);
+}
+
+.chims-theme-fab #themeIcon {
+    font-size: 1.5rem;
+    color: #1f2328 !important;
+    display: block;
+    line-height: 1;
+}
+
+.dark-mode .chims-theme-fab {
+    background: #283046 !important;
+    border-color: #3b4253 !important;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.5) !important;
+}
+
+.dark-mode .chims-theme-fab:hover {
+    background: #3b4253 !important;
+    border-color: #454d63 !important;
+}
+
+.dark-mode .chims-theme-fab #themeIcon {
+    color: #d0d2d6 !important;
+}
+
+/* Spin animation on click */
+@keyframes theme-spin {
+    0%   { transform: rotate(0deg)   scale(1);    }
+    40%  { transform: rotate(200deg) scale(1.25); }
+    100% { transform: rotate(360deg) scale(1);    }
+}
+
+.theme-spin-anim {
+    animation: theme-spin 0.55s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Required field indicator — red asterisk */
+.ui-required-indicator {
+    color: #ea5455 !important;
+    font-weight: bold;
+}
+
+.req-mark {
+    color: #ea5455;
+    font-weight: bold;
 }

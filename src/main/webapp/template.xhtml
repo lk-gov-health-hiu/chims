@@ -39,6 +39,14 @@
             }
 
             function toggleDarkMode() {
+                const icon = document.getElementById('themeIcon');
+                if (icon) {
+                    icon.classList.add('theme-spin-anim');
+                    icon.addEventListener('animationend', function handler() {
+                        icon.classList.remove('theme-spin-anim');
+                        icon.removeEventListener('animationend', handler);
+                    });
+                }
                 if (document.documentElement.classList.contains('dark-mode')) {
                     localStorage.setItem('theme', 'light');
                 } else {
@@ -62,74 +70,37 @@
     <h:body class="m-0 p-0">
         <ui:insert name="free">
         </ui:insert>
-        
-        <!-- Floating Dark Mode Toggle -->
-        <div style="position: fixed; bottom: 20px; right: 20px; z-index: 9999;">
-            <button type="button" onclick="toggleDarkMode()" class="btn btn-secondary rounded-circle shadow" 
-                    style="width: 50px; height: 50px; display: flex; align-items: center; justify-content: center;"
-                    title="Toggle Dark Mode">
-                <i id="themeIcon" class="bi bi-moon-fill"></i>
-            </button>
-        </div>
 
-        <p:growl   >
-        </p:growl>
+        <p:growl />
 
-        <h:panelGroup rendered="false" >
-            <div class="container-fluid" >
-                <div class="row b-1" style="height: 50vh;">
-                    <div class="col-md-12 text-center text-warning align-middle"  style="height: 100%; border: 12px solid red;">
-                        <br/>
-                        <br/>
-                        <br/>
-                        <br/>
-                        <br/>
-                        <br/>
-                        <h1 class="text-warning align-middle">
-                            <a href="https://dmis.health.gov.lk" >Click Here to Log</a>
-                        </h1>
-                    </div>
-                </div>
+        <h:panelGroup layout="block" styleClass="chims-page-wrap" rendered="#{webUserController.logged}">
+            <!-- Top header + nav (inside admin_menu component) -->
+            <ez:menu/>
+
+            <!-- Page content -->
+            <div class="chims-content container-fluid px-3 pt-3 pb-5">
+                <ui:insert name="content">
+                    Contents
+                </ui:insert>
             </div>
+
+            <!-- Footer pinned to bottom -->
+            <ui:insert name="bottom">
+                <ez:footer/>
+            </ui:insert>
         </h:panelGroup>
 
-        <h:panelGroup rendered="true" >
-
-            <div class="row">
-                <div class="col-md-12" >
-                    <h:panelGroup rendered="#{webUserController.logged}">
-                        <ez:menu/>
-                    </h:panelGroup>
-                </div>
-            </div>
-
-            <div class="row" >
-                <div class="col-md-12" >
-                    <h:panelGroup rendered="#{webUserController.logged}">
-                        <ui:insert name="content">
-                            Contents
-                        </ui:insert>
-                    </h:panelGroup>
-                    <h:panelGroup rendered="#{not webUserController.logged}">
-                        <ez:login/>
-                        <ui:insert name="timeout">
-                        </ui:insert>
-                    </h:panelGroup>
-                </div>
-            </div>
-
-
-            <div class="row">
-                <div class="col-md-12" >
-                    <ui:insert name="bottom">
-                        <ez:footer/>
-                    </ui:insert>
-                </div>
-            </div>
-
+        <h:panelGroup rendered="#{not webUserController.logged}">
+            <ez:login/>
+            <ui:insert name="timeout">
+            </ui:insert>
         </h:panelGroup>
 
-
+        <!-- Global floating theme toggle — always visible -->
+        <button type="button" onclick="toggleDarkMode()"
+                class="chims-theme-fab" title="Toggle dark / light mode">
+            <i id="themeIcon" class="bi bi-moon-fill" />
+        </button>
 
     </h:body>
 
