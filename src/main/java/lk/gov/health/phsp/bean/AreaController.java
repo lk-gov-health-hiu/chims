@@ -6,8 +6,13 @@ import lk.gov.health.phsp.facade.AreaFacade;
 import lk.gov.health.phsp.facade.util.JsfUtil;
 import lk.gov.health.phsp.facade.util.JsfUtil.PersistAction;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -16,6 +21,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.ejb.EJBException;
+import jxl.Cell;
+import jxl.Sheet;
+import jxl.Workbook;
+import jxl.read.biff.BiffException;
 import javax.enterprise.context.SessionScoped;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
@@ -86,6 +95,13 @@ public class AreaController implements Serializable {
     private Integer areaColumnNumber;
     private Integer startRow = 1;
     private Integer year;
+
+    private Integer importAreaTypeColumnNumber = 0;
+    private Integer importAreaNameColumnNumber = 1;
+    private Integer importAreaCodeColumnNumber = 2;
+    private Integer importAreaUidColumnNumber = 3;
+    private Integer importParentAreaNameColumnNumber = 4;
+    private Integer importAreaDistrictNameColumnNumber = 5;
 
     private RelationshipType rt;
     private RelationshipType[] rts;
@@ -203,6 +219,123 @@ public class AreaController implements Serializable {
         startMessage += "Column Numbers are Zero Based. For example, Column A is 0. Column B is 1.";
         startMessage += "Row Numbers are Zero Based. For example, Row 1 is 0. Row 2 is 1.";
         return "/area/import_draining_gn_areas_for_institutions";
+    }
+
+    public String toImportAreas() {
+        successMessage = "";
+        failureMessage = "";
+        startMessage = "Upload areas from an XLS file exported from the area list. Column numbers are zero-based (A=0, B=1...). Start Row 1 skips the header row.";
+        userTransactionController.recordTransaction("Import Areas from Excel");
+        return "/area/import_areas";
+    }
+
+    public String importAreasFromExcel() {
+        successMessage = "";
+        failureMessage = "";
+        String nl = "<br/>";
+
+        if (file == null) {
+            JsfUtil.addErrorMessage("No file selected.");
+            failureMessage = "No file selected.";
+            return "";
+        }
+
+        try {
+            InputStream in = file.getInputStream();
+            File tmp = new File(Calendar.getInstance().getTimeInMillis() + file.getFileName());
+            FileOutputStream out = new FileOutputStream(tmp);
+            byte[] buf = new byte[1024];
+            int read;
+            while ((read = in.read(buf)) != -1) {
+                out.write(buf, 0, read);
+            }
+            in.close();
+            out.flush();
+            out.close();
+
+            Workbook w = Workbook.getWorkbook(tmp);
+            Sheet sheet = w.getSheet(0);
+            int created = 0;
+            int skipped = 0;
+
+            for (int i = startRow; i < sheet.getRows(); i++) {
+                Cell typeCell = sheet.getCell(importAreaTypeColumnNumber, i);
+                Cell nameCell = sheet.getCell(importAreaNameColumnNumber, i);
+                Cell codeCell = sheet.getCell(importAreaCodeColumnNumber, i);
+                Cell uidCell  = sheet.getCell(importAreaUidColumnNumber, i);
+                Cell parentCell = sheet.getCell(importParentAreaNameColumnNumber, i);
+                Cell districtCell = sheet.getCell(importAreaDistrictNameColumnNumber, i);
+
+                String typStr  = typeCell.getContents().trim();
+                String name    = nameCell.getContents().trim();
+                String code    = codeCell.getContents().trim();
+                String uidStr  = uidCell.getContents().trim();
+                String parentName = parentCell.getContents().trim();
+                String districtName = districtCell.getContents().trim();
+
+                if (name.isEmpty()) {
+                    skipped++;
+                    continue;
+                }
+
+                AreaType areaType = null;
+                for (AreaType at : AreaType.values()) {
+                    if (at.name().equalsIgnoreCase(typStr)) {
+                        areaType = at;
+                        break;
+                    }
+                }
+                if (areaType == null) {
+                    failureMessage += "Row " + i + ": unknown area type '" + typStr + "' — skipped." + nl;
+                    skipped++;
+                    continue;
+                }
+
+                Area existing = areaApplicationController.getAreaByName(name, areaType);
+                if (existing != null) {
+                    skipped++;
+                    continue;
+                }
+
+                Area newArea = new Area();
+                newArea.setName(name);
+                newArea.setType(areaType);
+                newArea.setCode(code.isEmpty() ? null : code);
+
+                if (!uidStr.isEmpty()) {
+                    try {
+                        newArea.setAreauid(Long.parseLong(uidStr));
+                    } catch (NumberFormatException e) {
+                        failureMessage += "Row " + i + ": non-numeric UID '" + uidStr + "' ignored." + nl;
+                    }
+                }
+
+                if (!parentName.isEmpty()) {
+                    Area parent = areaApplicationController.getAreaByName(parentName, null);
+                    newArea.setParentArea(parent);
+                }
+
+                if (!districtName.isEmpty()) {
+                    Area district = areaApplicationController.getAreaByName(districtName, AreaType.District);
+                    newArea.setDistrict(district);
+                }
+
+                newArea.setCreatedAt(new Date());
+                newArea.setCreatedBy(webUserController.getLoggedUser());
+                getFacade().create(newArea);
+                created++;
+            }
+
+            areaApplicationController.reloadAreas();
+            successMessage = "Done. Created: " + created + ". Skipped (duplicate or bad type): " + skipped + ".";
+            JsfUtil.addSuccessMessage(successMessage);
+            return "";
+
+        } catch (IOException | BiffException ex) {
+            JsfUtil.addErrorMessage(ex.getMessage());
+            failureMessage = "Error: " + ex.getMessage();
+            return "";
+        }
     }
 
 //    public String uploadPopulationOfGnAreas() {
@@ -1858,6 +1991,24 @@ public class AreaController implements Serializable {
     public void setAreaColumnNumber(Integer areaColumnNumber) {
         this.areaColumnNumber = areaColumnNumber;
     }
+
+    public Integer getImportAreaTypeColumnNumber() { return importAreaTypeColumnNumber; }
+    public void setImportAreaTypeColumnNumber(Integer v) { this.importAreaTypeColumnNumber = v; }
+
+    public Integer getImportAreaNameColumnNumber() { return importAreaNameColumnNumber; }
+    public void setImportAreaNameColumnNumber(Integer v) { this.importAreaNameColumnNumber = v; }
+
+    public Integer getImportAreaCodeColumnNumber() { return importAreaCodeColumnNumber; }
+    public void setImportAreaCodeColumnNumber(Integer v) { this.importAreaCodeColumnNumber = v; }
+
+    public Integer getImportAreaUidColumnNumber() { return importAreaUidColumnNumber; }
+    public void setImportAreaUidColumnNumber(Integer v) { this.importAreaUidColumnNumber = v; }
+
+    public Integer getImportParentAreaNameColumnNumber() { return importParentAreaNameColumnNumber; }
+    public void setImportParentAreaNameColumnNumber(Integer v) { this.importParentAreaNameColumnNumber = v; }
+
+    public Integer getImportAreaDistrictNameColumnNumber() { return importAreaDistrictNameColumnNumber; }
+    public void setImportAreaDistrictNameColumnNumber(Integer v) { this.importAreaDistrictNameColumnNumber = v; }
 
     public AreaFacade getEjbFacade() {
         return ejbFacade;

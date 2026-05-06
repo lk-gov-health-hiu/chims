@@ -1,0 +1,74 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <body>
+        <ui:composition template="./index.xhtml">
+
+            <ui:define name="insTopic">
+                <p:outputLabel value="Import Areas from Excel"/>
+            </ui:define>
+
+            <ui:define name="insContents">
+                <h:form enctype="multipart/form-data">
+
+                    <p:panel header="Instructions" style="margin-bottom:1rem;">
+                        <p>Upload an XLS file exported from the Area list page. Column numbers are zero-based (A=0, B=1, ...).</p>
+                        <p>Default columns match the standard area export: Type(0), Name(1), Code(2), ID(3), Parent(4), District(5).</p>
+                        <p>Existing areas (matched by name + type) are skipped. Only XLS format is supported.</p>
+                    </p:panel>
+
+                    <p:panelGrid columns="2" style="margin-bottom:1rem;">
+                        <p:outputLabel value="Start Row (0-based, 1 skips header)"/>
+                        <p:inputText value="#{areaController.startRow}"/>
+
+                        <p:outputLabel value="Type Column No."/>
+                        <p:inputText value="#{areaController.importAreaTypeColumnNumber}"/>
+
+                        <p:outputLabel value="Name Column No."/>
+                        <p:inputText value="#{areaController.importAreaNameColumnNumber}"/>
+
+                        <p:outputLabel value="Code Column No."/>
+                        <p:inputText value="#{areaController.importAreaCodeColumnNumber}"/>
+
+                        <p:outputLabel value="Area ID (UID) Column No."/>
+                        <p:inputText value="#{areaController.importAreaUidColumnNumber}"/>
+
+                        <p:outputLabel value="Parent Area Name Column No."/>
+                        <p:inputText value="#{areaController.importParentAreaNameColumnNumber}"/>
+
+                        <p:outputLabel value="District Name Column No."/>
+                        <p:inputText value="#{areaController.importAreaDistrictNameColumnNumber}"/>
+
+                        <p:outputLabel value="File (.xls only)" for="areaFile"/>
+                        <p:fileUpload id="areaFile" value="#{areaController.file}" mode="simple"/>
+                    </p:panelGrid>
+
+                    <p:commandButton ajax="false" value="Import Areas"
+                                     action="#{areaController.importAreasFromExcel()}"/>
+
+                    <p:panel rendered="#{not empty areaController.startMessage}"
+                             header="Info" style="margin-top:1rem;">
+                        <h:outputText value="#{areaController.startMessage}" escape="false"/>
+                    </p:panel>
+
+                    <p:panel rendered="#{not empty areaController.successMessage}"
+                             header="Result" style="margin-top:1rem;">
+                        <h:outputText value="#{areaController.successMessage}" escape="false"/>
+                    </p:panel>
+
+                    <p:panel rendered="#{not empty areaController.failureMessage}"
+                             header="Warnings / Errors" style="margin-top:1rem;">
+                        <h:outputText value="#{areaController.failureMessage}" escape="false"/>
+                    </p:panel>
+
+                </h:form>
+            </ui:define>
+
+        </ui:composition>
+    </body>
+</html>
