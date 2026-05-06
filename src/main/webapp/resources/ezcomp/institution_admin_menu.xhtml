@@ -43,25 +43,39 @@
                 <!--//Disabled the Menu-->
                 <p:submenu label="Institution Administration"  
                            rendered="#{webUserController.hasPrivilege('Institution_Administration')}"  >
-                    <p:menuitem value="Manage Users" 
+                    <p:menuitem value="Manage Users" icon="pi pi-users"
                                 action="/insAdmin/user_index" ajax="false"
                                 rendered="#{webUserController.hasPrivilege('Institution_Administration')}" />
-                    <p:menuitem value="Manage Institutions" action="/insAdmin/institution_index" rendered="#{webUserController.hasPrivilege('Institution_Administration')}" />
-                    <p:menuitem value="Manage Areas" action="/insAdmin/area_index" ajax="false" rendered="#{webUserController.hasPrivilege('Institution_Administration')}" />
-                    <p:menuitem value="Manage Metadata" action="/insAdmin/data_index"   ajax="false"  rendered="#{webUserController.hasPrivilege('Institution_Administration')}"/>
+                    <p:menuitem value="Manage Institutions" icon="pi pi-building"
+                                action="/insAdmin/institution_index" ajax="false"
+                                rendered="#{webUserController.hasPrivilege('Institution_Administration')}" />
+                    <p:menuitem value="Manage Areas" icon="pi pi-map"
+                                action="/insAdmin/area_index" ajax="false"
+                                rendered="#{webUserController.hasPrivilege('Institution_Administration')}" />
+                    <p:menuitem value="Manage Metadata" icon="pi pi-database"
+                                action="/insAdmin/data_index" ajax="false"
+                                rendered="#{webUserController.hasPrivilege('Institution_Administration')}"/>
                 </p:submenu>
                 <!--//Disabled the Menu-->
-                <p:submenu label="System Administration"  
+                <p:submenu label="System Administration"
                            disabled="false"
-                           rendered="#{webUserController.hasPrivilege('System_Administration')}"  >
-                    <p:menuitem value="Manage Users" action="#{webUserController.toManageUserIndexForSystemAdmin()}"  ajax="false" />
-                    <p:menuitem value="Manage Institutions" action="/institution/index"     ajax="false" />
-                    <p:menuitem value="Manage Areas" action="/area/index" ajax="false"    />
-                    <p:menuitem value="Manage Metadata" action="/systemAdmin/manage_metadata_index"    ajax="false" />
-                    <p:menuitem value="Manage Data" action="/systemAdmin/manage_data_index"    ajax="false" />
-                    <p:menuitem value="Manage Interfaces" action="/systemAdmin/integration_index"    ajax="false" />
-                    <p:menuitem value="Manage Analysis"  action="/queryComponent/index"     ajax="false" />
-                    <p:menuitem value="Manage Preferances"  action="#{preferenceController.toManagePreferences()}"     ajax="false" />
+                           rendered="#{webUserController.hasPrivilege('System_Administration')}">
+                    <p:menuitem value="Manage Users" icon="pi pi-users"
+                                action="#{webUserController.toManageUserIndexForSystemAdmin()}" ajax="false" />
+                    <p:menuitem value="Manage Institutions" icon="pi pi-building"
+                                action="/institution/index" ajax="false" />
+                    <p:menuitem value="Manage Areas" icon="pi pi-map"
+                                action="/area/index" ajax="false" />
+                    <p:menuitem value="Manage Metadata" icon="pi pi-database"
+                                action="/systemAdmin/manage_metadata_index" ajax="false" />
+                    <p:menuitem value="Manage Data" icon="pi pi-table"
+                                action="/systemAdmin/manage_data_index" ajax="false" />
+                    <p:menuitem value="Manage Interfaces" icon="pi pi-sitemap"
+                                action="/systemAdmin/integration_index" ajax="false" />
+                    <p:menuitem value="Manage Analysis" icon="pi pi-chart-bar"
+                                action="/queryComponent/index" ajax="false" />
+                    <p:menuitem value="Manage Preferences" icon="pi pi-cog"
+                                action="#{preferenceController.toManagePreferences()}" ajax="false" />
                 </p:submenu>
                 <p:submenu label="Settings" >
                     <p:menuitem value="Change My Password" action="#{webUserController.toChangeMyPassword()}" ajax="false" />

@@ -18,8 +18,7 @@
                     <p:commandButton value="Delete Selected" ajax="false"
                                      style="margin-right:0.5rem;"
                                      action="#{institutionController.deleteSelectedItems()}"
-                                     onclick="return confirm('Are you sure you want to delete the selected institutions? This cannot be undone.');"
-                                     disabled="#{empty institutionController.selectedItems}"/>
+                                     onclick="return confirm('Are you sure you want to delete the selected institutions? This cannot be undone.');"/>
 
                     <p:dataTable id="datalist" value="#{institutionController.items}" var="item"
                                  selectionMode="multiple"
