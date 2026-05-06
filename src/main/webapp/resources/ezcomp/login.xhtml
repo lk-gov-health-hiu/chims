@@ -25,6 +25,7 @@
                 <!-- Login form card -->
                 <div class="login-card">
                     <h:form>
+                        <p:defaultCommand target="signinBtn" />
                         <div class="mb-3">
                             <label class="form-label" for="txtUserName">Username</label>
                             <p:inputText id="txtUserName"
@@ -46,7 +47,8 @@
                         </div>
 
                         <div class="mb-2">
-                            <p:commandButton styleClass="btn-signin"
+                            <p:commandButton id="signinBtn"
+                                             styleClass="btn-signin"
                                              value="Sign in"
                                              ajax="false"
                                              action="#{webUserController.login()}" />

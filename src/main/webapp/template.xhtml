@@ -64,6 +64,31 @@
             })();
             
             document.addEventListener('DOMContentLoaded', applyTheme);
+
+            // Global delete confirmation — intercepts all delete/remove/retire buttons
+            document.addEventListener('click', function(e) {
+                var btn = e.target.closest('button, input[type="button"], input[type="submit"]');
+                if (!btn) return;
+                var text = (btn.textContent || btn.value || '').trim().toLowerCase();
+                if (/\b(delete|remove|retire|unregister)\b/.test(text)) {
+                    // Try to find a meaningful label from the nearest row or panel
+                    var label = '';
+                    var row = btn.closest('tr');
+                    if (row) {
+                        var cells = row.querySelectorAll('td');
+                        if (cells.length > 0) {
+                            label = cells[0].textContent.trim();
+                        }
+                    }
+                    var msg = label
+                        ? 'Are you sure you want to delete "' + label + '"?\nThis action cannot be undone.'
+                        : 'Are you sure you want to delete this record?\nThis action cannot be undone.';
+                    if (!window.confirm(msg)) {
+                        e.preventDefault();
+                        e.stopImmediatePropagation();
+                    }
+                }
+            }, true); // capture phase — fires before PrimeFaces handlers
         </script>
     </h:head>
 
