@@ -38,7 +38,11 @@
                                              value="Add Draining GN Areas for Health Institutions" 
                                              action="#{areaController.toImportInstitutionDrainingAreas()}"  ></p:commandButton>
 
-                            <p:commandButton value="Reload Institutions" ajax="false" 
+                            <p:commandButton value="Import Institutions from Excel" ajax="false"
+                                             style="width: 15rem; margin-top:1rem;"
+                                             action="#{institutionController.toImportInstitution()}"></p:commandButton>
+
+                            <p:commandButton value="Reload Institutions" ajax="false"
                                              style="width: 15rem; margin-top:1rem;"
                                              action="#{institutionController.resetAllInstitutions()}">
 
