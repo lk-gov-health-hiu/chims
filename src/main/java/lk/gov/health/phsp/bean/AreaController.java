@@ -13,6 +13,7 @@ import java.io.InputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -47,6 +48,9 @@ public class AreaController implements Serializable {
 
     @EJB
     private AreaFacade ejbFacade;
+
+    @EJB
+    private AreaImportService areaImportService;
 
     private List<Area> items = null;
     List<Area> mohAreas = null;
@@ -102,6 +106,11 @@ public class AreaController implements Serializable {
     private Integer importAreaUidColumnNumber = 3;
     private Integer importParentAreaNameColumnNumber = 4;
     private Integer importAreaDistrictNameColumnNumber = 5;
+
+    private volatile boolean importRunning = false;
+    private int[] importProgress = new int[4]; // [0]=processed [1]=total [2]=created [3]=skipped
+    private final boolean[] importRunningFlag = {false};
+    private List<String> importWarnings = Collections.synchronizedList(new ArrayList<>());
 
     private RelationshipType rt;
     private RelationshipType[] rts;
@@ -232,7 +241,6 @@ public class AreaController implements Serializable {
     public String importAreasFromExcel() {
         successMessage = "";
         failureMessage = "";
-        String nl = "<br/>";
 
         if (file == null) {
             JsfUtil.addErrorMessage("No file selected.");
@@ -240,103 +248,65 @@ public class AreaController implements Serializable {
             return "";
         }
 
+        if (importRunning) {
+            JsfUtil.addErrorMessage("Import already in progress.");
+            return "";
+        }
+
         try {
             InputStream in = file.getInputStream();
-            File tmp = new File(Calendar.getInstance().getTimeInMillis() + file.getFileName());
-            FileOutputStream out = new FileOutputStream(tmp);
             byte[] buf = new byte[1024];
+            java.io.ByteArrayOutputStream baos = new java.io.ByteArrayOutputStream();
             int read;
             while ((read = in.read(buf)) != -1) {
-                out.write(buf, 0, read);
+                baos.write(buf, 0, read);
             }
             in.close();
-            out.flush();
-            out.close();
+            byte[] fileData = baos.toByteArray();
 
-            Workbook w = Workbook.getWorkbook(tmp);
-            Sheet sheet = w.getSheet(0);
-            int created = 0;
-            int skipped = 0;
+            importProgress = new int[4];
+            importWarnings = Collections.synchronizedList(new ArrayList<>());
+            importRunningFlag[0] = true;
+            importRunning = true;
 
-            for (int i = startRow; i < sheet.getRows(); i++) {
-                Cell typeCell = sheet.getCell(importAreaTypeColumnNumber, i);
-                Cell nameCell = sheet.getCell(importAreaNameColumnNumber, i);
-                Cell codeCell = sheet.getCell(importAreaCodeColumnNumber, i);
-                Cell uidCell  = sheet.getCell(importAreaUidColumnNumber, i);
-                Cell parentCell = sheet.getCell(importParentAreaNameColumnNumber, i);
-                Cell districtCell = sheet.getCell(importAreaDistrictNameColumnNumber, i);
+            areaImportService.runImport(
+                    fileData, startRow,
+                    importAreaTypeColumnNumber, importAreaNameColumnNumber,
+                    importAreaCodeColumnNumber, importAreaUidColumnNumber,
+                    importParentAreaNameColumnNumber, importAreaDistrictNameColumnNumber,
+                    webUserController.getLoggedUser().getId(),
+                    importProgress, importRunningFlag, importWarnings);
 
-                String typStr  = typeCell.getContents().trim();
-                String name    = nameCell.getContents().trim();
-                String code    = codeCell.getContents().trim();
-                String uidStr  = uidCell.getContents().trim();
-                String parentName = parentCell.getContents().trim();
-                String districtName = districtCell.getContents().trim();
-
-                if (name.isEmpty()) {
-                    skipped++;
-                    continue;
-                }
-
-                AreaType areaType = null;
-                for (AreaType at : AreaType.values()) {
-                    if (at.name().equalsIgnoreCase(typStr)) {
-                        areaType = at;
-                        break;
-                    }
-                }
-                if (areaType == null) {
-                    failureMessage += "Row " + i + ": unknown area type '" + typStr + "' — skipped." + nl;
-                    skipped++;
-                    continue;
-                }
-
-                Area existing = areaApplicationController.getAreaByName(name, areaType);
-                if (existing != null) {
-                    skipped++;
-                    continue;
-                }
-
-                Area newArea = new Area();
-                newArea.setName(name);
-                newArea.setType(areaType);
-                newArea.setCode(code.isEmpty() ? null : code);
-
-                if (!uidStr.isEmpty()) {
-                    try {
-                        newArea.setAreauid(Long.parseLong(uidStr));
-                    } catch (NumberFormatException e) {
-                        failureMessage += "Row " + i + ": non-numeric UID '" + uidStr + "' ignored." + nl;
-                    }
-                }
-
-                if (!parentName.isEmpty()) {
-                    Area parent = areaApplicationController.getAreaByName(parentName, null);
-                    newArea.setParentArea(parent);
-                }
-
-                if (!districtName.isEmpty()) {
-                    Area district = areaApplicationController.getAreaByName(districtName, AreaType.District);
-                    newArea.setDistrict(district);
-                }
-
-                newArea.setCreatedAt(new Date());
-                newArea.setCreatedBy(webUserController.getLoggedUser());
-                getFacade().create(newArea);
-                created++;
-            }
-
-            areaApplicationController.reloadAreas();
-            successMessage = "Done. Created: " + created + ". Skipped (duplicate or bad type): " + skipped + ".";
-            JsfUtil.addSuccessMessage(successMessage);
             return "";
 
-        } catch (IOException | BiffException ex) {
+        } catch (IOException ex) {
+            importRunning = false;
             JsfUtil.addErrorMessage(ex.getMessage());
-            failureMessage = "Error: " + ex.getMessage();
+            failureMessage = "Error reading file: " + ex.getMessage();
             return "";
         }
     }
+
+    public boolean isImportRunning() {
+        if (importRunning && !importRunningFlag[0]) {
+            importRunning = false;
+        }
+        return importRunning;
+    }
+
+    public int getImportProcessed() { return importProgress[0]; }
+    public int getImportTotal()     { return importProgress[1]; }
+    public int getImportCreated()   { return importProgress[2]; }
+    public int getImportSkipped()   { return importProgress[3]; }
+
+    public int getImportPercent() {
+        int total = importProgress[1];
+        if (total <= 0) return 0;
+        int pct = (int) (importProgress[0] * 100L / total);
+        return Math.min(pct, 100);
+    }
+
+    public List<String> getImportWarnings() { return importWarnings; }
 
 //    public String uploadPopulationOfGnAreas() {
 //        successMessage = "";
