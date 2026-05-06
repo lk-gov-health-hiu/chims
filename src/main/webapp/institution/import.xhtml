@@ -10,86 +10,119 @@
         <ui:composition template="/institution/index.xhtml">
             <ui:define name="insContents">
 
-                <h:form id="InstitutionCreateForm" style="padding-top: 1rem;"  enctype="multipart/form-data">
+                <!-- Upload form — hidden while import is running -->
+                <h:form enctype="multipart/form-data" rendered="#{!institutionController.importRunning}">
 
-                    <h:panelGroup id="display">
-                        <p:commandButton ajax="false" 
-                                         action="#{institutionController.importInstitutions()}" 
-                                         value="Import"/>
+                    <p:panel header="Instructions" style="margin-bottom:1rem;">
+                        <p>Upload an XLS file with institution names. Column A = Institution Name, Column B = POI Number.</p>
+                        <p>Each row creates one institution of the selected type plus an HLC Clinic linked to it.</p>
+                        <p>Duplicates (matching name) are skipped automatically.</p>
+                    </p:panel>
 
+                    <p:panelGrid columns="2" style="margin-bottom:1rem;">
 
-                        <p>Start Row - 1</p>
-                        <p>Institution Name Column - 1 / A</p><!-- comment -->
-                        <p>POI Column - 2 / B</p>
+                        <p:outputLabel value="File (.xls only)" for="file"/>
+                        <p:fileUpload id="file" value="#{institutionController.file}" mode="simple"/>
 
-                        <p:panelGrid columns="2">
-                            <p:outputLabel value="File" for="file" />
-                            <p:fileUpload id="file" value="#{institutionController.file}" mode="simple"/>
+                        <p:outputLabel value="Type:" for="institutionType"/>
+                        <p:selectOneMenu id="institutionType"
+                                         value="#{institutionController.institutionType}"
+                                         required="true">
+                            <f:selectItems value="#{applicationController.institutionTypes}"
+                                           var="institutionTypes"
+                                           itemValue="#{institutionTypes}"
+                                           itemLabel="#{institutionTypes.label}"/>
+                        </p:selectOneMenu>
 
-                            <p:outputLabel value="Type:" for="institutionType" />
-                            <p:selectOneMenu id="institutionType" 
-                                             value="#{institutionController.institutionType}" title="InstitutionType" 
-                                             required="true" >
-                                <f:selectItems value="#{applicationController.institutionTypes}" 
-                                               var="institutionTypes"
-                                               itemValue="#{institutionTypes}"
+                        <p:outputLabel value="Parent:" for="parent"/>
+                        <p:autoComplete id="parent" value="#{institutionController.parent}"
+                                        required="true"
+                                        completeMethod="#{institutionController.completeInstitutions}"
+                                        var="i" itemLabel="#{i.name}" itemValue="#{i}"
+                                        forceSelection="true" maxResults="15" minQueryLength="3"/>
 
-                                               itemLabel="#{institutionTypes.label}"></f:selectItems>
-                            </p:selectOneMenu>
+                        <p:outputLabel value="Province:" for="province"/>
+                        <p:autoComplete id="province" value="#{institutionController.province}"
+                                        completeMethod="#{areaController.completeProvinces}"
+                                        required="true"
+                                        var="province" itemLabel="#{province.name}" itemValue="#{province}"
+                                        maxResults="15" forceSelection="true" minQueryLength="3"/>
 
+                        <p:outputLabel value="PDHS Area:" for="pdhsArea"/>
+                        <p:autoComplete id="pdhsArea" value="#{institutionController.pdhsArea}"
+                                        completeMethod="#{areaController.completePdhsAreas}"
+                                        required="true"
+                                        var="pdhsArea" itemLabel="#{pdhsArea.name}" itemValue="#{pdhsArea}"
+                                        maxResults="15" forceSelection="true" minQueryLength="3"/>
 
-                            <p:outputLabel value="Parent:" for="parent" />
-                            <p:autoComplete  id="parent" value="#{institutionController.parent}" 
-                                             required="true"
-                                             completeMethod="#{institutionController.completeInstitutions}"
-                                             var="i" itemLabel="#{i.name}" itemValue="#{i}" forceSelection="true"
-                                             maxResults="15" minQueryLength="3">
-                            </p:autoComplete >
+                        <p:outputLabel value="District:" for="district"/>
+                        <p:autoComplete id="district" value="#{institutionController.district}"
+                                        completeMethod="#{areaController.completeDistricts}"
+                                        required="true"
+                                        var="district" itemLabel="#{district.name}" itemValue="#{district}"
+                                        maxResults="15" forceSelection="true" minQueryLength="3"/>
 
+                        <p:outputLabel value="RDHS Area:" for="rdhsArea"/>
+                        <p:autoComplete id="rdhsArea" value="#{institutionController.rdhsArea}"
+                                        completeMethod="#{areaController.completeRdhsAreas}"
+                                        required="true"
+                                        var="rdhsArea" itemLabel="#{rdhsArea.name}" itemValue="#{rdhsArea}"
+                                        maxResults="15" forceSelection="true" minQueryLength="3"/>
 
+                    </p:panelGrid>
 
-                            <p:outputLabel value="Province:" for="province" />
-                            <p:autoComplete id="province" value="#{institutionController.province}"
-                                            completeMethod="#{areaController.completeProvinces}" required="true"
-                                            var="province" itemLabel="#{province.name}" itemValue="#{province}"
-                                            maxResults="15" forceSelection="true"
-                                            minQueryLength="3">
-                            </p:autoComplete>
+                    <p:commandButton ajax="false" value="Import Institutions"
+                                     action="#{institutionController.importInstitutions()}"/>
 
-                            <p:outputLabel value="PDHS Area:" for="pdhsArea" />
-                            <p:autoComplete id="pdhsArea" value="#{institutionController.pdhsArea}"
-                                            completeMethod="#{areaController.completePdhsAreas}"
-                                            required="true"
-                                            var="pdhsArea" itemLabel="#{pdhsArea.name}" itemValue="#{pdhsArea}"
-                                            maxResults="15" forceSelection="true"
-                                            minQueryLength="3">
-                            </p:autoComplete>
-
-                            <p:outputLabel value="District:" for="district" />
-                            <p:autoComplete id="district" value="#{institutionController.district}"
-                                            completeMethod="#{areaController.completeDistricts}"
-                                            required="true"
-                                            var="district" itemLabel="#{district.name}" itemValue="#{district}"
-                                            maxResults="15" forceSelection="true"
-                                            minQueryLength="3">
-                            </p:autoComplete>
-
-                            <p:outputLabel value="RDHS Area:" for="rdhsArea" />
-                            <p:autoComplete id="rdhsArea" value="#{institutionController.rdhsArea}"
-                                            completeMethod="#{areaController.completeRdhsAreas}"
-                                            required="true"
-                                            var="rdhsArea" itemLabel="#{rdhsArea.name}" itemValue="#{rdhsArea}"
-                                            maxResults="15" forceSelection="true"
-                                            minQueryLength="3">
-                            </p:autoComplete>
-
-
-                        </p:panelGrid>                            
-
-                    </h:panelGroup>
+                    <p:panel rendered="#{not empty institutionController.failureMessage}"
+                             header="Error" style="margin-top:1rem;">
+                        <h:outputText value="#{institutionController.failureMessage}" escape="false"/>
+                    </p:panel>
                 </h:form>
+
+                <!-- Progress form — polled every 2 seconds while import runs -->
+                <h:form id="progressForm">
+                    <h:panelGroup id="progressPanel" layout="block">
+                        <p:panel rendered="#{institutionController.importRunning}" style="margin-top:1rem;">
+                            <f:facet name="header">Importing Institutions...</f:facet>
+                            <p:progressBar value="#{institutionController.importPercent}"
+                                           labelTemplate="{value}%"
+                                           style="margin-bottom:0.8rem;"/>
+                            <p>
+                                <strong>Processed:</strong> #{institutionController.importProcessed} of #{institutionController.importTotal} rows
+                            </p>
+                            <p>
+                                <strong>Created:</strong> #{institutionController.importCreated} &#160;
+                                <strong>Skipped:</strong> #{institutionController.importSkipped}
+                            </p>
+                        </p:panel>
+                    </h:panelGroup>
+
+                    <h:panelGroup id="donePanel" layout="block">
+                        <p:panel rendered="#{!institutionController.importRunning and institutionController.importTotal gt 0}"
+                                 style="margin-top:1rem;">
+                            <f:facet name="header">Import Complete</f:facet>
+                            <p style="color:green;">
+                                <strong>Created:</strong> #{institutionController.importCreated} &#160;
+                                <strong>Skipped:</strong> #{institutionController.importSkipped} &#160;
+                                <strong>Total rows processed:</strong> #{institutionController.importProcessed}
+                            </p>
+                            <p:dataList value="#{institutionController.importWarnings}" var="w"
+                                        rendered="#{not empty institutionController.importWarnings}"
+                                        style="color:orange; margin-top:0.5rem;">
+                                <h:outputText value="#{w}"/>
+                            </p:dataList>
+                        </p:panel>
+                    </h:panelGroup>
+
+                    <p:poll id="importPoll"
+                            interval="2"
+                            autoStart="true"
+                            update="progressPanel donePanel"
+                            stop="#{!institutionController.importRunning}"/>
+                </h:form>
+
             </ui:define>
         </ui:composition>
-
     </body>
 </html>
