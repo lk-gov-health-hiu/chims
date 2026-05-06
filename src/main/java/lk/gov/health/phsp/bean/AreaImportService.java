@@ -4,46 +4,53 @@ import java.io.ByteArrayInputStream;
 import java.util.Date;
 import java.util.List;
 import javax.ejb.Asynchronous;
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import jxl.Cell;
 import jxl.Sheet;
 import jxl.Workbook;
 import lk.gov.health.phsp.entity.Area;
 import lk.gov.health.phsp.entity.WebUser;
 import lk.gov.health.phsp.enums.AreaType;
+import lk.gov.health.phsp.facade.AreaFacade;
+import lk.gov.health.phsp.facade.WebUserFacade;
 
 @Stateless
 public class AreaImportService {
 
-    @PersistenceContext(unitName = "hmisPU")
-    private EntityManager em;
+    @EJB
+    private AreaFacade areaFacade;
+
+    @EJB
+    private WebUserFacade webUserFacade;
 
     @Inject
     private AreaApplicationController areaApplicationController;
 
+    /**
+     * Main async entry point — runs with NO transaction so each facade.create()
+     * gets its own transaction. Avoids rolled-back-transaction cascade failures.
+     */
     @Asynchronous
-    @TransactionAttribute(TransactionAttributeType.REQUIRED)
+    @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
     public void runImport(byte[] fileData,
                           int startRow,
                           int typeCol, int nameCol, int codeCol,
                           int uidCol, int parentCol, int districtCol,
                           Long createdById,
-                          int[] progress,    // [0]=processed [1]=total [2]=created [3]=skipped
+                          int[] progress,
                           boolean[] running,
                           List<String> warnings) {
         try {
-            WebUser createdBy = em.getReference(WebUser.class, createdById);
+            WebUser createdBy = webUserFacade.find(createdById);
             Workbook w = Workbook.getWorkbook(new ByteArrayInputStream(fileData));
             Sheet sheet = w.getSheet(0);
             int totalRows = Math.max(0, sheet.getRows() - startRow);
             progress[1] = totalRows;
 
-            int batch = 0;
             for (int i = startRow; i < sheet.getRows(); i++) {
                 progress[0]++;
 
@@ -102,22 +109,24 @@ public class AreaImportService {
 
                 area.setCreatedAt(new Date());
                 area.setCreatedBy(createdBy);
-                em.persist(area);
-                progress[2]++;
 
-                if (++batch % 100 == 0) {
-                    em.flush();
-                    em.clear();
-                    createdBy = em.getReference(WebUser.class, createdById);
+                try {
+                    areaFacade.create(area); // own transaction (REQUIRED on stateless)
+                    progress[2]++;
+                } catch (Exception ex) {
+                    warnings.add("Row " + i + " (" + name + "): save failed — " + ex.getMessage());
+                    progress[3]++;
                 }
             }
-            em.flush();
 
         } catch (Exception ex) {
             warnings.add("Fatal error: " + ex.getMessage());
         } finally {
             running[0] = false;
-            areaApplicationController.reloadAreas();
+            try {
+                areaApplicationController.reloadAreas();
+            } catch (Exception ignored) {
+            }
         }
     }
 
