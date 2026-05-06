@@ -60,33 +60,38 @@
 
                 <!-- Progress form — polled every 2 seconds while import is running -->
                 <h:form id="progressForm">
-                    <p:panel id="progressPanel" rendered="#{areaController.importRunning}" style="margin-top:1rem;">
-                        <f:facet name="header">Importing Areas...</f:facet>
-                        <p:progressBar value="#{areaController.importPercent}"
-                                       labelTemplate="{value}%"
-                                       style="margin-bottom:0.8rem;"/>
-                        <p>
-                            <strong>Processed:</strong> #{areaController.importProcessed} of #{areaController.importTotal} rows
-                        </p>
-                        <p>
-                            <strong>Created:</strong> #{areaController.importCreated} &#160;
-                            <strong>Skipped:</strong> #{areaController.importSkipped}
-                        </p>
-                    </p:panel>
+                    <!-- Always-present wrapper so AJAX update always has a DOM target -->
+                    <h:panelGroup id="progressPanel" layout="block">
+                        <p:panel rendered="#{areaController.importRunning}" style="margin-top:1rem;">
+                            <f:facet name="header">Importing Areas...</f:facet>
+                            <p:progressBar value="#{areaController.importPercent}"
+                                           labelTemplate="{value}%"
+                                           style="margin-bottom:0.8rem;"/>
+                            <p>
+                                <strong>Processed:</strong> #{areaController.importProcessed} of #{areaController.importTotal} rows
+                            </p>
+                            <p>
+                                <strong>Created:</strong> #{areaController.importCreated} &#160;
+                                <strong>Skipped:</strong> #{areaController.importSkipped}
+                            </p>
+                        </p:panel>
+                    </h:panelGroup>
 
-                    <p:panel id="donePanel" rendered="#{!areaController.importRunning and areaController.importTotal gt 0}" style="margin-top:1rem;">
-                        <f:facet name="header">Import Complete</f:facet>
-                        <p style="color:green;">
-                            <strong>Created:</strong> #{areaController.importCreated} &#160;
-                            <strong>Skipped:</strong> #{areaController.importSkipped} &#160;
-                            <strong>Total rows processed:</strong> #{areaController.importProcessed}
-                        </p>
-                        <p:dataList value="#{areaController.importWarnings}" var="w"
-                                    rendered="#{not empty areaController.importWarnings}"
-                                    style="color:orange; margin-top:0.5rem;">
-                            <h:outputText value="#{w}"/>
-                        </p:dataList>
-                    </p:panel>
+                    <h:panelGroup id="donePanel" layout="block">
+                        <p:panel rendered="#{!areaController.importRunning and areaController.importTotal gt 0}" style="margin-top:1rem;">
+                            <f:facet name="header">Import Complete</f:facet>
+                            <p style="color:green;">
+                                <strong>Created:</strong> #{areaController.importCreated} &#160;
+                                <strong>Skipped:</strong> #{areaController.importSkipped} &#160;
+                                <strong>Total rows processed:</strong> #{areaController.importProcessed}
+                            </p>
+                            <p:dataList value="#{areaController.importWarnings}" var="w"
+                                        rendered="#{not empty areaController.importWarnings}"
+                                        style="color:orange; margin-top:0.5rem;">
+                                <h:outputText value="#{w}"/>
+                            </p:dataList>
+                        </p:panel>
+                    </h:panelGroup>
 
                     <p:poll id="importPoll"
                             interval="2"
