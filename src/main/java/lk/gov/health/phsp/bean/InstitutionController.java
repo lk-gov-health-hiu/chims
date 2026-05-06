@@ -66,6 +66,7 @@ public class InstitutionController implements Serializable {
     private List<Institution> items = null;
     private Institution selected;
     private Institution deleting;
+    private List<Institution> selectedItems;
     private List<Institution> myClinics;
     private List<Area> gnAreasOfSelected;
     private Area area;
@@ -641,6 +642,22 @@ public class InstitutionController implements Serializable {
             items = null;    // Invalidate list of items to trigger re-query.
         }
     }
+
+    public void deleteSelectedItems() {
+        if (selectedItems == null || selectedItems.isEmpty()) {
+            JsfUtil.addErrorMessage("No institutions selected.");
+            return;
+        }
+        for (Institution ins : selectedItems) {
+            getFacade().remove(ins);
+        }
+        items = null;
+        selectedItems = null;
+        institutionApplicationController.resetAllInstitutions();
+    }
+
+    public List<Institution> getSelectedItems() { return selectedItems; }
+    public void setSelectedItems(List<Institution> selectedItems) { this.selectedItems = selectedItems; }
 
     public List<Institution> getItems() {
         if (items == null) {
