@@ -58,8 +58,18 @@
                                                                  value="Login"
                                                                  ajax="false"
                                                                  action="#{webUserController.login()}" >
-                                                </p:commandButton>    
+                                                </p:commandButton>
                                             </div>
+
+                                            <h:panelGroup rendered="#{not webUserController.thereAreUsersInTheSystem()}">
+                                                <div class="text-center border-top pt-3 mt-2">
+                                                    <p class="text-muted small mb-2">No users found. Is this a fresh installation?</p>
+                                                    <p:commandButton class="btn btn-outline-secondary m-1 w-75"
+                                                                     value="First Time Setup"
+                                                                     ajax="false"
+                                                                     action="#{webUserController.toSetupFirstAdmin()}"/>
+                                                </div>
+                                            </h:panelGroup>
 
 
 

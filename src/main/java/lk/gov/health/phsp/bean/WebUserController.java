@@ -807,13 +807,69 @@ public class WebUserController implements Serializable {
         }
     }
 
-    private boolean thereAreUsersInTheSystem() {
+    public boolean thereAreUsersInTheSystem() {
         String jpql = "select w from WebUser w";
         WebUser u = getFacade().findFirstByJpql(jpql);
-        if (u == null) {
-            return false;
+        return u != null;
+    }
+
+    public String toSetupFirstAdmin() {
+        if (thereAreUsersInTheSystem()) {
+            return "/index";
         }
-        return true;
+        current = new WebUser();
+        password = "";
+        passwordReenter = "";
+        institutionName = "";
+        return "/setup";
+    }
+
+    public String setupFirstAdmin() {
+        if (thereAreUsersInTheSystem()) {
+            JsfUtil.addErrorMessage("Setup is only allowed on a fresh installation with no existing users.");
+            return "";
+        }
+        if (institutionName == null || institutionName.trim().isEmpty()) {
+            JsfUtil.addErrorMessage("Please enter an Institution Name.");
+            return "";
+        }
+        if (current == null || current.getName() == null || current.getName().trim().isEmpty()) {
+            JsfUtil.addErrorMessage("Please enter a Username.");
+            return "";
+        }
+        if (password == null || password.trim().isEmpty()) {
+            JsfUtil.addErrorMessage("Please enter a Password.");
+            return "";
+        }
+        if (!password.equals(passwordReenter)) {
+            JsfUtil.addErrorMessage("Passwords do not match.");
+            return "";
+        }
+        if (!passwordStrengthCheck(password)) {
+            return "";
+        }
+
+        Institution institution = new Institution();
+        institution.setName(institutionName.trim());
+        institution.setCreatedAt(new Date());
+        institutionFacade.create(institution);
+
+        current.setName(current.getName().toLowerCase().trim());
+        current.setWebUserPassword(commonController.hash(password));
+        current.setWebUserRole(WebUserRole.System_Administrator);
+        current.setCreatedAt(new Date());
+        current.setInstitution(institution);
+        getFacade().create(current);
+
+        loggedUser = current;
+        logged = true;
+        addWebUserPrivileges(current, getInitialPrivileges(WebUserRole.System_Administrator));
+        loggedUserPrivileges = userPrivilegeList(current);
+        webUserApplicationController.addToLoggedUsers(current.getName());
+        userTransactionController.recordTransaction("First Time Setup - Admin Created");
+
+        JsfUtil.addSuccessMessage("Setup complete. Welcome, " + current.getName() + "!");
+        return "/index";
     }
 
     private boolean checkLogin() {
