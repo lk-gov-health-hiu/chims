@@ -23,10 +23,16 @@
  */
 package lk.gov.health.phsp.facade;
 
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import lk.gov.health.phsp.entity.Item;
+import lk.gov.health.phsp.entity.WebUser;
+import lk.gov.health.phsp.enums.ItemType;
+import lk.gov.health.phsp.enums.SelectionDataType;
 
 /**
  *
@@ -46,5 +52,75 @@ public class ItemFacade extends AbstractFacade<Item> {
     public ItemFacade() {
         super(Item.class);
     }
-    
+
+    /**
+     * Imports a single dictionary item within one JTA transaction.
+     * All entity lookups (parent, existing item) happen inside this transaction,
+     * avoiding detached-entity + CascadeType.PERSIST conflicts that cause
+     * "Transaction aborted" when the import loop calls create/edit across
+     * separate transactions with a cached (detached) parent reference.
+     */
+    public Item importItem(String name, String code, SelectionDataType dataType,
+                           String parentCode, WebUser createdBy) {
+        Item parentItem = null;
+        if (parentCode != null && !parentCode.trim().isEmpty()) {
+            Map<String, Object> p = new HashMap<>();
+            p.put("code", parentCode.trim().toLowerCase());
+            // Prefer non-retired parents; fall back to retired only if nothing active exists
+            parentItem = findFirstByJpql(
+                    "select i from Item i where lower(i.code)=:code and i.retired=false order by i.id desc", p);
+            if (parentItem == null) {
+                p.clear();
+                p.put("name", parentCode.trim().toLowerCase());
+                parentItem = findFirstByJpql(
+                        "select i from Item i where lower(i.name)=:name and i.retired=false order by i.id desc", p);
+            }
+            if (parentItem == null) {
+                // Last resort: accept a retired item (will be un-retired so the hierarchy is visible)
+                p.clear();
+                p.put("code", parentCode.trim().toLowerCase());
+                parentItem = findFirstByJpql(
+                        "select i from Item i where lower(i.code)=:code order by i.id desc", p);
+                if (parentItem == null) {
+                    p.clear();
+                    p.put("name", parentCode.trim().toLowerCase());
+                    parentItem = findFirstByJpql(
+                            "select i from Item i where lower(i.name)=:name order by i.id desc", p);
+                }
+                if (parentItem != null && parentItem.isRetired()) {
+                    parentItem.setRetired(false);
+                    edit(parentItem);
+                }
+            }
+        }
+
+        Map<String, Object> p2 = new HashMap<>();
+        p2.put("code", code.trim().toLowerCase());
+        Item importingItem = findFirstByJpql(
+                "select i from Item i where lower(i.code)=:code order by i.id desc", p2);
+
+        SelectionDataType resolvedType = (dataType != null) ? dataType : SelectionDataType.Short_Text;
+
+        if (importingItem == null) {
+            importingItem = new Item();
+            importingItem.setItemType(ItemType.Dictionary_Item);
+            importingItem.setParent(parentItem);
+            importingItem.setName(name);
+            importingItem.setCode(code.trim().toLowerCase());
+            importingItem.setOrderNo(0);
+            importingItem.setDataType(resolvedType);
+            importingItem.setCreatedAt(new Date());
+            importingItem.setCreatedBy(createdBy);
+            create(importingItem);
+        } else {
+            importingItem.setParent(parentItem);
+            importingItem.setName(name);
+            importingItem.setDataType(resolvedType);
+            importingItem.setRetired(false);
+            importingItem.setEditedAt(new Date());
+            importingItem.setEditedBy(createdBy);
+            edit(importingItem);
+        }
+        return importingItem;
+    }
 }

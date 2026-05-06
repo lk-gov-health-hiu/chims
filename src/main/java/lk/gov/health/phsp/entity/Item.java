@@ -71,7 +71,7 @@ public class Item implements Serializable, Identifiable  {
     @Index
     private String localCode;
     @Index
-    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.REFRESH})
     private Item parent;
 
     @Lob

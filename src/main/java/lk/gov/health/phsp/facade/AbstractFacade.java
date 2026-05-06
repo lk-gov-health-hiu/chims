@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import javax.persistence.EntityManager;
+import javax.persistence.LockModeType;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
 import javax.persistence.QueryHint;
@@ -43,7 +44,7 @@ public abstract class AbstractFacade<T extends Identifiable> {
     }
 
     public Long getNextId() {
-        SequenceNumber sequence = getEntityManager().find(SequenceNumber.class, 1L); // Always 1 for the single row
+        SequenceNumber sequence = getEntityManager().find(SequenceNumber.class, 1L, LockModeType.PESSIMISTIC_WRITE); // Always 1 for the single row
         if (sequence == null) {
             sequence = new SequenceNumber();
             sequence.setLastUsedId(92000000l);
