@@ -22,9 +22,10 @@
                         <p:dataExporter target="datalist" type="xls" fileName="areas"/>
                     </p:commandButton>
 
-                    <p:commandButton ajax="false" value="Delete Selected"
+                    <p:commandButton value="Delete Selected"
                                      style="margin-right:0.5rem;"
                                      action="#{areaController.deleteSelectedAreas()}"
+                                     update="datalist"
                                      onclick="return confirm('Are you sure you want to delete the selected areas? This cannot be undone.');"/>
 
                     <p:dataTable id="datalist" value="#{areaController.items}"
@@ -36,45 +37,48 @@
                                  rows="10"
                                  rowsPerPageTemplate="10,20,30,40,50">
 
+                        <p:ajax event="rowSelect"/>
+                        <p:ajax event="rowUnselect"/>
+
                         <p:column selectionMode="multiple" style="width:2.5rem; text-align:center;" exportable="false"/>
 
-                        <p:column sortBy="#{item.type}">
+                        <p:column sortBy="#{item.type}" onclick="event.stopPropagation()">
                             <f:facet name="header">
                                 <h:outputText value="#{bundleClinical.ListAreaTitle_type}"/>
                             </f:facet>
                             <h:outputText value="#{item.type}"/>
                         </p:column>
-                        <p:column sortBy="#{item.name}" filterBy="#{item.name}" filterMatchMode="contains">
+                        <p:column sortBy="#{item.name}" filterBy="#{item.name}" filterMatchMode="contains" onclick="event.stopPropagation()">
                             <f:facet name="header">
                                 <h:outputText value="#{bundleClinical.ListAreaTitle_name}"/>
                             </f:facet>
                             <h:outputText value="#{item.name}"/>
                         </p:column>
-                        <p:column sortBy="#{item.code}" filterBy="#{item.code}">
+                        <p:column sortBy="#{item.code}" filterBy="#{item.code}" onclick="event.stopPropagation()">
                             <f:facet name="header">
                                 <h:outputText value="#{bundleClinical.ListAreaTitle_code}"/>
                             </f:facet>
                             <h:outputText value="#{item.code}"/>
                         </p:column>
-                        <p:column sortBy="#{item.areauid}" filterBy="#{item.areauid}" filterMatchMode="contains">
+                        <p:column sortBy="#{item.areauid}" filterBy="#{item.areauid}" filterMatchMode="contains" onclick="event.stopPropagation()">
                             <f:facet name="header">
                                 <h:outputText value="ID"/>
                             </f:facet>
                             <h:outputText value="#{item.areauid}"/>
                         </p:column>
-                        <p:column sortBy="#{item.parentArea.name}" filterBy="#{item.parentArea.name}" filterMatchMode="contains">
+                        <p:column sortBy="#{item.parentArea.name}" filterBy="#{item.parentArea.name}" filterMatchMode="contains" onclick="event.stopPropagation()">
                             <f:facet name="header">
                                 <h:outputText value="#{bundleClinical.ListAreaTitle_parentArea}"/>
                             </f:facet>
                             <h:outputText value="#{item.parentArea.name}"/>
                         </p:column>
-                        <p:column sortBy="#{item.district.name}" filterBy="#{item.district.name}" filterMatchMode="contains">
+                        <p:column sortBy="#{item.district.name}" filterBy="#{item.district.name}" filterMatchMode="contains" onclick="event.stopPropagation()">
                             <f:facet name="header">
                                 <h:outputText value="District"/>
                             </f:facet>
                             <h:outputText value="#{item.district.name}"/>
                         </p:column>
-                        <p:column headerText="Actions" exportable="false">
+                        <p:column headerText="Actions" exportable="false" onclick="event.stopPropagation()">
                             <p:commandButton ajax="false" class="m-1" value="Edit"
                                              action="#{areaController.toEditAreaForSysAdmin()}">
                                 <f:setPropertyActionListener value="#{item}" target="#{areaController.selected}"/>

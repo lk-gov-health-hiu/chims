@@ -149,10 +149,10 @@ public class AreaController implements Serializable {
         return toListAreasForSysAdmin();
     }
 
-    public String deleteSelectedAreas() {
+    public void deleteSelectedAreas() {
         if (selectedAreas == null || selectedAreas.isEmpty()) {
             JsfUtil.addErrorMessage("No areas selected.");
-            return "";
+            return;
         }
         Date now = new Date();
         for (Area a : selectedAreas) {
@@ -161,9 +161,8 @@ public class AreaController implements Serializable {
             a.setRetiredBy(webUserController.getLoggedUser());
             getFacade().edit(a);
         }
-        items = null;
+        items = areaApplicationController.getAllAreas();
         selectedAreas = null;
-        return toListAreasForSysAdmin();
     }
 
     public List<Area> getSelectedAreas() { return selectedAreas; }
