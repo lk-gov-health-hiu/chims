@@ -65,6 +65,7 @@ public class ItemController implements Serializable {
 
     private List<Item> items = null;
     private Item selected;
+    private List<Item> selectedItems;
     private Item selectedParent;
     private Item removingItem;
     private List<Item> titles;
@@ -1093,6 +1094,27 @@ public class ItemController implements Serializable {
             }
         }
     }
+
+    public void destroySelected() {
+        if (selectedItems == null || selectedItems.isEmpty()) {
+            JsfUtil.addErrorMessage("No items selected.");
+            return;
+        }
+        Date now = new Date();
+        for (Item i : selectedItems) {
+            i.setRetired(true);
+            i.setRetiredAt(now);
+            i.setRetiredBy(webUserController.getLoggedUser());
+            getFacade().edit(i);
+        }
+        items = null;
+        selectedItems = null;
+        itemApplicationController.invalidateItems();
+        JsfUtil.addSuccessMessage("Selected items deleted.");
+    }
+
+    public List<Item> getSelectedItems() { return selectedItems; }
+    public void setSelectedItems(List<Item> selectedItems) { this.selectedItems = selectedItems; }
 
     public void retireAllDictionaryItems() {
         String j = "select i from Item i where i.retired=false and i.itemType=:it";
