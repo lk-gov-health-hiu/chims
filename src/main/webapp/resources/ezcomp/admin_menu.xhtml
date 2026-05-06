@@ -6,93 +6,167 @@
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:p="http://primefaces.org/ui">
 
-    <!-- INTERFACE -->
     <cc:interface>
     </cc:interface>
 
-    <!-- IMPLEMENTATION -->
     <cc:implementation>
-        <h:form>  
-            <p:menubar  rendered="#{webUserController.loggedUser ne null}"  autoDisplay="true"  >
-                <p:menuitem ajax="false" value="Home" icon="ui-icon-home" action="/index" />
-                <p:submenu label="Clients" rendered="#{webUserController.hasPrivilege('Client_Management')}" >
-                    <p:menuitem ajax="false" value="Register New" action="#{clientController.toAddNewClient()}"  />
-                    <p:menuitem ajax="false" value="Reserver PHN" 
-                                action="#{clientController.toReserverPhn()}"  />
-                    <p:menuitem ajax="false" value="Search" action="#{clientController.toSearchClientById()}" />
+        <!-- GitHub-style top header bar -->
+        <div class="chims-header">
+            <div class="chims-header-inner">
+                <!-- Brand / Logo -->
+                <a class="chims-brand" href="#{request.contextPath}/app/index.xhtml">
+                    <h:graphicImage library="image" name="himslogo.png"
+                                    styleClass="chims-logo-img" alt="cHIMS" />
+                    <span class="chims-brand-text">
+                        <span class="chims-brand-c">c</span><span class="chims-brand-hims">HIMS</span>
+                    </span>
+                </a>
 
-                </p:submenu>
+                <!-- Right side actions -->
+                <div class="chims-header-actions">
+                    <h:form styleClass="chims-search-form">
+                        <p:inputText autocomplete="off"
+                                     placeholder="&#xF52A; Search by ID / PHN / Passport"
+                                     styleClass="chims-search-input"
+                                     value="#{clientController.searchingId}" />
+                        <p:commandButton ajax="false"
+                                         icon="pi pi-search"
+                                         styleClass="chims-icon-btn"
+                                         action="#{clientController.searchByAnyId()}" />
+                    </h:form>
 
+                    <!-- User greeting -->
+                    <span class="chims-user-chip" rendered="#{webUserController.loggedUser ne null}">
+                        <i class="bi bi-person-circle" />
+                        <h:outputText value="#{webUserController.loggedUser.name}" />
+                    </span>
 
+                    <!-- Logout -->
+                    <h:form styleClass="chims-logout-form">
+                        <p:commandButton action="#{webUserController.logOut()}"
+                                         ajax="false"
+                                         icon="pi pi-sign-out"
+                                         styleClass="chims-icon-btn"
+                                         rendered="#{webUserController.loggedUser ne null}"
+                                         title="Sign out" />
+                    </h:form>
+                </div>
+            </div>
+        </div>
 
+        <!-- Navigation menu bar -->
+        <div class="chims-navbar-wrap">
+            <h:form styleClass="chims-nav-form">
+                <p:menubar rendered="#{webUserController.loggedUser ne null}" autoDisplay="true" styleClass="chims-menubar">
+                    <p:menuitem ajax="false" value="Home" icon="pi pi-home" action="/index" />
 
+                    <p:submenu label="Clients"
+                               rendered="#{webUserController.hasPrivilege('Client_Management')}">
+                        <p:menuitem ajax="false" value="Register New"
+                                    icon="pi pi-user-plus"
+                                    action="#{clientController.toAddNewClient()}" />
+                        <p:menuitem ajax="false" value="Reserve PHN"
+                                    icon="pi pi-id-card"
+                                    action="#{clientController.toReserverPhn()}" />
+                        <p:menuitem ajax="false" value="Search"
+                                    icon="pi pi-search"
+                                    action="#{clientController.toSearchClientById()}" />
+                    </p:submenu>
 
-                <p:submenu label="Analysis" 
-                           disabled="false" >
-                    <p:menuitem ajax="false" value="Queries" 
-                                action="#{queryComponentController.toQueryIndex()}"  />
-                    <p:menuitem ajax="false" value="Reports" 
-                                action="#{reportController.toViewReports()}" ></p:menuitem>
-                    <p:menuitem ajax="false" value="Counts" 
-                                action="#{nationalReportController.toNationalReportsCounts()}"  ></p:menuitem>
+                    <p:submenu label="Analysis">
+                        <p:menuitem ajax="false" value="Queries"
+                                    icon="pi pi-filter"
+                                    action="#{queryComponentController.toQueryIndex()}" />
+                        <p:menuitem ajax="false" value="Reports"
+                                    icon="pi pi-chart-bar"
+                                    action="#{reportController.toViewReports()}" />
+                        <p:menuitem ajax="false" value="Counts"
+                                    icon="pi pi-list"
+                                    action="#{nationalReportController.toNationalReportsCounts()}" />
+                        <p:menuitem ajax="false" value="Indicators"
+                                    icon="pi pi-chart-line"
+                                    action="#{indicatorController.toIndicatorIndex}" />
+                    </p:submenu>
 
-                    <p:menuitem ajax="false" value="Indicators" 
-                                action="#{indicatorController.toIndicatorIndex}" ></p:menuitem>
-                </p:submenu>
-                <!--//Disabled the Menu-->
-                <p:submenu label="Institution Administration"  
-                           rendered="#{webUserController.hasPrivilege('Institution_Administration')}"  >
-                    <p:menuitem value="Manage Users" 
-                                action="/insAdmin/user_index" ajax="false"
-                                rendered="#{webUserController.hasPrivilege('Institution_Administration')}" />
-                    <p:menuitem value="Manage Institutions" action="/insAdmin/institution_index" rendered="#{webUserController.hasPrivilege('Institution_Administration')}" />
-                    <p:menuitem value="Manage Areas" action="/insAdmin/area_index" ajax="false" rendered="#{webUserController.hasPrivilege('Institution_Administration')}" />
-                    <p:menuitem value="Manage Metadata" action="/insAdmin/data_index"   ajax="false"  rendered="#{webUserController.hasPrivilege('Institution_Administration')}"/>
-                </p:submenu>
-                <!--//Disabled the Menu-->
-                <p:submenu label="System Administration"  
-                           disabled="false"
-                           rendered="#{webUserController.hasPrivilege('System_Administration')}"  >
-                    <p:menuitem value="Manage Users" action="#{webUserController.toManageUserIndexForSystemAdmin()}"  ajax="false" />
-                    <p:menuitem value="Manage Institutions" action="/institution/index"     ajax="false" />
-                    <p:menuitem value="Manage Areas" action="/area/index" ajax="false"    />
-                    <p:menuitem value="Manage Metadata" action="/systemAdmin/manage_metadata_index"    ajax="false" />
-                    <p:menuitem value="Manage Data" action="/systemAdmin/manage_data_index"    ajax="false" />
-                    <p:menuitem value="Manage Interfaces" action="/systemAdmin/integration_index"    ajax="false" />
-                    <p:menuitem value="Manage Analysis"  action="/queryComponent/index"     ajax="false" />
-                    <p:menuitem value="Manage Preferances"  action="#{preferenceController.toManagePreferences()}"     ajax="false" />
-                </p:submenu>
-                <p:submenu label="Settings" >
-                    <p:menuitem value="Change My Password" action="#{webUserController.toChangeMyPassword()}" ajax="false" />
-                    <p:menuitem value="Change My Details" action="#{webUserController.toChangeMyDetails()}" ajax="false" />
-                    <p:menuitem value="Manage My API Keys" action="#{apiKeyController.toManageMyApiKeys()}" ajax="false" 
-                                ></p:menuitem>
-                </p:submenu>
+                    <p:submenu label="Institution Admin"
+                               rendered="#{webUserController.hasPrivilege('Institution_Administration')}">
+                        <p:menuitem value="Manage Users"
+                                    icon="pi pi-users"
+                                    action="/insAdmin/user_index" ajax="false" />
+                        <p:menuitem value="Manage Institutions"
+                                    icon="pi pi-building"
+                                    action="/insAdmin/institution_index" />
+                        <p:menuitem value="Manage Areas"
+                                    icon="pi pi-map"
+                                    action="/insAdmin/area_index" ajax="false" />
+                        <p:menuitem value="Manage Metadata"
+                                    icon="pi pi-database"
+                                    action="/insAdmin/data_index" ajax="false" />
+                    </p:submenu>
 
-                <p:submenu label="Help" >
-                    <p:menuitem value="User Manual (Sinhala)" action="/wikis"   ajax="false" />
-                    <p:menuitem value="User Manual (Tamil)" action="/wikit"   ajax="false" />
-                    <p:menuitem value="User Manual (English)" action="/wiki"   ajax="false" />
-                    <p:menuitem value="Issue Tracker" url="https://github.com/lk-gov-health-hiu/pssp/issues"   ajax="false"  target="_blank" />
-                    <p:menuitem value="Troubleshooting" action="/troubleschooter"    ajax="false" />
-                    <p:menuitem value="Feedback" action="/feedback"   ajax="false" />
-                    <p:menuitem value="Contact us" action="/contact"   ajax="false" />
-                    <p:menuitem value="About us" action="/about_us"   ajax="false" />
-                </p:submenu>
-                <f:facet name="options">
-                    <p:inputText autocomplete="off" placeholder="Search by ID/PHN/Passport"
-                                 value="#{clientController.searchingId}"/>
-                    <p:commandButton ajax="false" icon="pi pi-search"
-                                     action="#{clientController.searchByAnyId()}" 
-                                     ></p:commandButton>
-                    <p:spacer height="1" width="5" ></p:spacer>
-                    <p:outputLabel value="|"></p:outputLabel>
-                    <p:spacer height="1" width="5" ></p:spacer>
-                    <p:commandButton action="#{webUserController.logOut()}" ajax="false"
-                                     icon="pi pi-sign-out"
-                                     rendered="#{webUserController.loggedUser ne null}"  />
-                </f:facet>
-            </p:menubar>
-        </h:form>
+                    <p:submenu label="System Admin"
+                               rendered="#{webUserController.hasPrivilege('System_Administration')}">
+                        <p:menuitem value="Manage Users"
+                                    icon="pi pi-users"
+                                    action="#{webUserController.toManageUserIndexForSystemAdmin()}" ajax="false" />
+                        <p:menuitem value="Manage Institutions"
+                                    icon="pi pi-building"
+                                    action="/institution/index" ajax="false" />
+                        <p:menuitem value="Manage Areas"
+                                    icon="pi pi-map"
+                                    action="/area/index" ajax="false" />
+                        <p:menuitem value="Manage Metadata"
+                                    icon="pi pi-database"
+                                    action="/systemAdmin/manage_metadata_index" ajax="false" />
+                        <p:menuitem value="Manage Data"
+                                    icon="pi pi-table"
+                                    action="/systemAdmin/manage_data_index" ajax="false" />
+                        <p:menuitem value="Manage Interfaces"
+                                    icon="pi pi-sitemap"
+                                    action="/systemAdmin/integration_index" ajax="false" />
+                        <p:menuitem value="Manage Analysis"
+                                    icon="pi pi-chart-bar"
+                                    action="/queryComponent/index" ajax="false" />
+                        <p:menuitem value="Preferences"
+                                    icon="pi pi-cog"
+                                    action="#{preferenceController.toManagePreferences()}" ajax="false" />
+                    </p:submenu>
+
+                    <p:submenu label="Settings">
+                        <p:menuitem value="Change Password"
+                                    icon="pi pi-lock"
+                                    action="#{webUserController.toChangeMyPassword()}" ajax="false" />
+                        <p:menuitem value="My Details"
+                                    icon="pi pi-user-edit"
+                                    action="#{webUserController.toChangeMyDetails()}" ajax="false" />
+                        <p:menuitem value="API Keys"
+                                    icon="pi pi-key"
+                                    action="#{apiKeyController.toManageMyApiKeys()}" ajax="false" />
+                    </p:submenu>
+
+                    <p:submenu label="Help">
+                        <p:menuitem value="User Manual (Sinhala)"
+                                    icon="pi pi-book"
+                                    action="/wikis" ajax="false" />
+                        <p:menuitem value="User Manual (Tamil)"
+                                    icon="pi pi-book"
+                                    action="/wikit" ajax="false" />
+                        <p:menuitem value="User Manual (English)"
+                                    icon="pi pi-book"
+                                    action="/wiki" ajax="false" />
+                        <p:menuitem value="Issue Tracker"
+                                    icon="pi pi-github"
+                                    url="https://github.com/lk-gov-health-hiu/pssp/issues"
+                                    ajax="false" target="_blank" />
+                        <p:menuitem value="Troubleshooting"
+                                    icon="pi pi-wrench"
+                                    action="/troubleschooter" ajax="false" />
+                        <p:menuitem value="About"
+                                    icon="pi pi-info-circle"
+                                    action="/about_us" ajax="false" />
+                    </p:submenu>
+                </p:menubar>
+            </h:form>
+        </div>
     </cc:implementation>
 </html>

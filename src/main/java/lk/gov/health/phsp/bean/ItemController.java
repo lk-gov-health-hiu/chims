@@ -233,82 +233,87 @@ public class ItemController implements Serializable {
         Integer dataTypeColInt;
         Integer parentCodeColInt;
 
-        Item code = null;
-        Item parent = null;
-
         nameColInt = CommonController.excelColFromHeader(nameCol);
         dataTypeColInt = CommonController.excelColFromHeader(dataTypeCol);
         codeColInt = CommonController.excelColFromHeader(codeCol);
         parentCodeColInt = CommonController.excelColFromHeader(parentCodeCol);
 
-        JsfUtil.addSuccessMessage(file.getFileName());
-        XSSFWorkbook myWorkBook;
-
+        org.apache.poi.ss.usermodel.Workbook myWorkBook;
         output = "";
+        int added = 0;
+        int updated = 0;
+        int errors = 0;
 
         try {
-            JsfUtil.addSuccessMessage(file.getFileName());
-            myWorkBook = new XSSFWorkbook(file.getInputStream());
-            XSSFSheet mySheet = myWorkBook.getSheetAt(0);
+            myWorkBook = org.apache.poi.ss.usermodel.WorkbookFactory.create(file.getInputStream());
+            org.apache.poi.ss.usermodel.Sheet mySheet = myWorkBook.getSheetAt(0);
             Iterator<Row> rowIterator = mySheet.iterator();
-            Long count = 0l;
-            startRow--;
+            List<Item> allItems = itemApplicationController.getItems();
+            // Always skip row 0 (header); startRow field is not incremented to avoid skip drift
+            final int headerRows = 1;
             while (rowIterator.hasNext()) {
                 Row row = rowIterator.next();
-                if (row.getRowNum() < startRow) {
+                if (row.getRowNum() < headerRows) {
                     continue;
                 }
 
-                if (nameColInt != null) {
-                    strName = cellValue(row.getCell(nameColInt));
-                }
-                if (codeColInt != null) {
-                    strCode = cellValue(row.getCell(codeColInt));
-                }
-                if (dataTypeColInt != null) {
-                    strDataType = cellValue(row.getCell(dataTypeColInt));
-                }
-                if (parentCodeColInt != null) {
-                    strParentCode = cellValue(row.getCell(parentCodeColInt));
-                }
+                strName = nameColInt != null ? cellValue(row.getCell(nameColInt)) : null;
+                strCode = codeColInt != null ? cellValue(row.getCell(codeColInt)) : null;
+                strDataType = dataTypeColInt != null ? cellValue(row.getCell(dataTypeColInt)) : null;
+                strParentCode = parentCodeColInt != null ? cellValue(row.getCell(parentCodeColInt)) : null;
 
                 if (strName == null || strName.trim().equals("")) {
-                    output += "Skipping the line without a name.\n";
+                    output += "Row " + row.getRowNum() + ": Skipping — no name.\n";
                     continue;
                 }
-
                 if (strCode == null || strCode.trim().equals("")) {
-                    output += "Skipping the line without a code.\n";
+                    output += "Row " + row.getRowNum() + ": Skipping — no code.\n";
                     continue;
                 }
-
                 if (strDataType == null || strDataType.trim().equals("")) {
-                    output += "Skipping the line without a data type.\n";
+                    output += "Row " + row.getRowNum() + ": Skipping — no data type.\n";
                     continue;
-                }
-
-                Item parentItem = null;
-                if (strParentCode != null && !strParentCode.trim().equals("")) {
-                    parentItem = findItemByCode(strParentCode);
                 }
 
                 SelectionDataType selectionDataType = CommonController.selectionDataTypeFromString(strDataType);
-                Item importingItem = findItemByCode(strCode);
+                try {
+                    // importItem() runs entirely within one JTA transaction, resolving parent
+                    // and existing item lookups in the same persistence context — this avoids
+                    // the CascadeType.PERSIST detached-entity exception ("Transaction aborted")
+                    // that occurred when parent entities from cache were passed across transactions.
+                    Item importedItem = getFacade().importItem(
+                            strName.trim(), strCode.trim(),
+                            selectionDataType,
+                            (strParentCode != null ? strParentCode.trim() : null),
+                            webUserController.getLoggedUser());
 
-                if (importingItem == null) {
-                    createNewItem(ItemType.Dictionary_Item, parentItem, strName, strCode, count.intValue(), selectionDataType);
-                    output += "Added " + strName + " as there is no existing item with a code " + strCode + ".\n";
-                } else {
-                    output += "Skipped Addeing " + strName + " as there is already one existing item with a code " + strCode + ".\n";
+                    if (importedItem != null) {
+                        boolean isNew = (importedItem.getEditedAt() == null);
+                        if (isNew) {
+                            output += "Added: " + strName + " [" + strCode + "]\n";
+                            added++;
+                        } else {
+                            output += "Updated: " + strName + " [" + strCode + "]\n";
+                            updated++;
+                        }
+                        if (allItems != null && !allItems.contains(importedItem)) {
+                            allItems.add(importedItem);
+                        }
+                    }
+                } catch (Exception rowEx) {
+                    output += "Row " + row.getRowNum() + " error (" + strName + "): " + rowEx.getMessage() + "\n";
+                    errors++;
                 }
-
-                count++;
-
             }
-            startRow++;
+            output += "\nSummary: " + added + " added, " + updated + " updated, " + errors + " errors.\n";
+            itemApplicationController.invalidateItems();
             file = null;
             return "";
         } catch (IOException e) {
+            output += e.getMessage();
+            JsfUtil.addErrorMessage(e.getMessage());
+            return "";
+        } catch (Exception e) {
             output += e.getMessage();
             JsfUtil.addErrorMessage(e.getMessage());
             return "";
@@ -1045,17 +1050,18 @@ public class ItemController implements Serializable {
                 + "Dictionary_Item:male_title:Mr:mr:0" + System.lineSeparator()
                 + "Dictionary_Item:female_title:Mrs:mrs:1" + System.lineSeparator()
                 + "Dictionary_Item:female_title:Miss:miss:2" + System.lineSeparator()
-                + "Dictionary_Item:male_title:Master:master:3" + System.lineSeparator()
-                + "Dictionary_Item:male_or_female_title:Baby:baby:4" + System.lineSeparator()
-                + "Dictionary_Item:male_or_female_title:Rev:rev:5" + System.lineSeparator()
-                + "Dictionary_Item:female_title:Ms:ms:6" + System.lineSeparator()
-                + "Dictionary_Item:male_or_female_title:Dr:dr:7" + System.lineSeparator()
+                + "Dictionary_Item:male_or_female_title:Baby:baby:3" + System.lineSeparator()
+                + "Dictionary_Item:male_or_female_title:Baby of:baby_of:4" + System.lineSeparator()
+                + "Dictionary_Item:male_or_female_title:Baby of:baby_of_2:5" + System.lineSeparator()
+                + "Dictionary_Item:male_or_female_title:Dr:dr:6" + System.lineSeparator()
+                + "Dictionary_Item:female_title:Dr(Miss):drmiss:7" + System.lineSeparator()
                 + "Dictionary_Item:female_title:Dr(Mrs):drmrs:8" + System.lineSeparator()
-                + "Dictionary_Item:female_title:Dr(Miss):drmiss:9" + System.lineSeparator()
-                + "Dictionary_Item:female_title:Dr(Ms):drms:10" + System.lineSeparator()
-                + "Dictionary_Item:male_or_female_title:Rt Rev:rtrev:11" + System.lineSeparator()
-                + "Dictionary_Item:male_or_female_title:Baby of:baby_of:12" + System.lineSeparator()
-                + "Dictionary_Item:male_or_female_title:Other:title_other:13" + System.lineSeparator();
+                + "Dictionary_Item:female_title:Dr(Ms):drms:9" + System.lineSeparator()
+                + "Dictionary_Item:male_title:Master:master:10" + System.lineSeparator()
+                + "Dictionary_Item:female_title:Ms:ms:11" + System.lineSeparator()
+                + "Dictionary_Item:male_or_female_title:Other:title_other:12" + System.lineSeparator()
+                + "Dictionary_Item:male_or_female_title:Rev:rev:13" + System.lineSeparator()
+                + "Dictionary_Item:male_or_female_title:Rt Rev:rtrev:14" + System.lineSeparator();
         addInitialMetadata(initialData);
     }
 
@@ -1088,24 +1094,32 @@ public class ItemController implements Serializable {
         }
     }
 
+    public void retireAllDictionaryItems() {
+        String j = "select i from Item i where i.retired=false and i.itemType=:it";
+        Map m = new HashMap();
+        m.put("it", ItemType.Dictionary_Item);
+        List<Item> tis = getFacade().findByJpql(j, m);
+        for (Item i : tis) {
+            i.setRetired(true);
+            i.setRetiredAt(new Date());
+            i.setRetiredBy(webUserController.getLoggedUser());
+            getFacade().edit(i);
+        }
+        itemApplicationController.invalidateItems();
+        JsfUtil.addSuccessMessage("All dictionary items retired.");
+    }
+
     public Item createItem(ItemType itemType, Item parent, String name, String code, int orderNo) {
-        Item item;
+        Item item = findItemByCode(code);
+        if (item != null) {
+            return item;
+        }
+
         Map m = new HashMap();
         String j = "select i from Item i "
-                + " where i.retired=false "
-                + " and i.itemType=:it ";
-        if (parent != null) {
-            j += " and i.parent=:p ";
-            m.put("p", parent);
-        }
-        j += " and i.name=:name "
-                + " and i.code=:code "
-                + " order by i.id";
+                + " where i.code=:code ";
 
-        m.put("it", itemType);
-
-        m.put("name", name);
-        m.put("code", code);
+        m.put("code", code.trim().toLowerCase());
         item = getFacade().findFirstByJpql(j, m);
         if (item == null) {
             item = new Item();
@@ -1118,8 +1132,20 @@ public class ItemController implements Serializable {
             item.setCreatedBy(webUserController.getLoggedUser());
             getFacade().create(item);
         }
-        itemApplicationController.getItems().add(item);
+        if (itemApplicationController.getItems() != null && !itemApplicationController.getItems().contains(item)) {
+            itemApplicationController.getItems().add(item);
+        }
         return item;
+    }
+
+    public Long findMaxId() {
+        String j = "select max(i.id) from Item i";
+        Long maxId = getFacade().findLongByJpql(j);
+        if (maxId == null || maxId < 90000000) {
+            return 90000000L;
+        } else {
+            return maxId;
+        }
     }
 
     public Item createNewItem(ItemType itemType, Item parent, String name, String code, int orderNo, SelectionDataType sdp) {
@@ -1139,12 +1165,33 @@ public class ItemController implements Serializable {
         return item;
     }
 
+    public Item findItemByName(String name) {
+        if (name == null || name.trim().equals("")) {
+            return null;
+        }
+        name = name.trim();
+        
+        // Search in Cache first
+        for (Item i : itemApplicationController.getItems()) {
+            if (i.getName() != null && i.getName().equalsIgnoreCase(name)) {
+                return i;
+            }
+        }
+        
+        // Search in Database if not in Cache
+        Map m = new HashMap();
+        String j = "select i from Item i where lower(i.name)=:name order by i.id desc";
+        m.put("name", name.toLowerCase());
+        return getFacade().findFirstByJpql(j, m);
+    }
+
     public Item findItemByCode(String code) {
-        Item item = null;
         if (code == null || code.trim().equals("")) {
-            return item;
+            return null;
         }
         code = code.trim();
+        
+        // Search in Cache first
         for (Item i : itemApplicationController.getItems()) {
             if (i.getCode() != null) {
                 if (i.getCode().trim().equalsIgnoreCase(code)) {
@@ -1152,7 +1199,12 @@ public class ItemController implements Serializable {
                 }
             }
         }
-        return item;
+        
+        // Search in Database if not in Cache
+        Map m = new HashMap();
+        String j = "select i from Item i where lower(i.code)=:code order by i.id desc";
+        m.put("code", code.toLowerCase());
+        return getFacade().findFirstByJpql(j, m);
     }
 
     public Item findItemByCode(String code, ItemType type) {

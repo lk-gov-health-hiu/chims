@@ -6,8 +6,14 @@ import lk.gov.health.phsp.facade.AreaFacade;
 import lk.gov.health.phsp.facade.util.JsfUtil;
 import lk.gov.health.phsp.facade.util.JsfUtil.PersistAction;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -16,6 +22,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.ejb.EJBException;
+import jxl.Cell;
+import jxl.Sheet;
+import jxl.Workbook;
+import jxl.read.biff.BiffException;
 import javax.enterprise.context.SessionScoped;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
@@ -38,6 +48,9 @@ public class AreaController implements Serializable {
 
     @EJB
     private AreaFacade ejbFacade;
+
+    @EJB
+    private AreaImportService areaImportService;
 
     private List<Area> items = null;
     List<Area> mohAreas = null;
@@ -86,6 +99,18 @@ public class AreaController implements Serializable {
     private Integer areaColumnNumber;
     private Integer startRow = 1;
     private Integer year;
+
+    private Integer importAreaTypeColumnNumber = 0;
+    private Integer importAreaNameColumnNumber = 1;
+    private Integer importAreaCodeColumnNumber = 2;
+    private Integer importAreaUidColumnNumber = 3;
+    private Integer importParentAreaNameColumnNumber = 4;
+    private Integer importAreaDistrictNameColumnNumber = 5;
+
+    private volatile boolean importRunning = false;
+    private int[] importProgress = new int[4]; // [0]=processed [1]=total [2]=created [3]=skipped
+    private final boolean[] importRunningFlag = {false};
+    private List<String> importWarnings = Collections.synchronizedList(new ArrayList<>());
 
     private RelationshipType rt;
     private RelationshipType[] rts;
@@ -204,6 +229,84 @@ public class AreaController implements Serializable {
         startMessage += "Row Numbers are Zero Based. For example, Row 1 is 0. Row 2 is 1.";
         return "/area/import_draining_gn_areas_for_institutions";
     }
+
+    public String toImportAreas() {
+        successMessage = "";
+        failureMessage = "";
+        startMessage = "Upload areas from an XLS file exported from the area list. Column numbers are zero-based (A=0, B=1...). Start Row 1 skips the header row.";
+        userTransactionController.recordTransaction("Import Areas from Excel");
+        return "/area/import_areas";
+    }
+
+    public String importAreasFromExcel() {
+        successMessage = "";
+        failureMessage = "";
+
+        if (file == null) {
+            JsfUtil.addErrorMessage("No file selected.");
+            failureMessage = "No file selected.";
+            return "";
+        }
+
+        if (importRunning) {
+            JsfUtil.addErrorMessage("Import already in progress.");
+            return "";
+        }
+
+        try {
+            InputStream in = file.getInputStream();
+            byte[] buf = new byte[1024];
+            java.io.ByteArrayOutputStream baos = new java.io.ByteArrayOutputStream();
+            int read;
+            while ((read = in.read(buf)) != -1) {
+                baos.write(buf, 0, read);
+            }
+            in.close();
+            byte[] fileData = baos.toByteArray();
+
+            importProgress = new int[4];
+            importWarnings = Collections.synchronizedList(new ArrayList<>());
+            importRunningFlag[0] = true;
+            importRunning = true;
+
+            areaImportService.runImport(
+                    fileData, startRow,
+                    importAreaTypeColumnNumber, importAreaNameColumnNumber,
+                    importAreaCodeColumnNumber, importAreaUidColumnNumber,
+                    importParentAreaNameColumnNumber, importAreaDistrictNameColumnNumber,
+                    webUserController.getLoggedUser().getId(),
+                    importProgress, importRunningFlag, importWarnings);
+
+            return "";
+
+        } catch (IOException ex) {
+            importRunning = false;
+            JsfUtil.addErrorMessage(ex.getMessage());
+            failureMessage = "Error reading file: " + ex.getMessage();
+            return "";
+        }
+    }
+
+    public boolean isImportRunning() {
+        if (importRunning && !importRunningFlag[0]) {
+            importRunning = false;
+        }
+        return importRunning;
+    }
+
+    public int getImportProcessed() { return importProgress[0]; }
+    public int getImportTotal()     { return importProgress[1]; }
+    public int getImportCreated()   { return importProgress[2]; }
+    public int getImportSkipped()   { return importProgress[3]; }
+
+    public int getImportPercent() {
+        int total = importProgress[1];
+        if (total <= 0) return 0;
+        int pct = (int) (importProgress[0] * 100L / total);
+        return Math.min(pct, 100);
+    }
+
+    public List<String> getImportWarnings() { return importWarnings; }
 
 //    public String uploadPopulationOfGnAreas() {
 //        successMessage = "";
@@ -1858,6 +1961,24 @@ public class AreaController implements Serializable {
     public void setAreaColumnNumber(Integer areaColumnNumber) {
         this.areaColumnNumber = areaColumnNumber;
     }
+
+    public Integer getImportAreaTypeColumnNumber() { return importAreaTypeColumnNumber; }
+    public void setImportAreaTypeColumnNumber(Integer v) { this.importAreaTypeColumnNumber = v; }
+
+    public Integer getImportAreaNameColumnNumber() { return importAreaNameColumnNumber; }
+    public void setImportAreaNameColumnNumber(Integer v) { this.importAreaNameColumnNumber = v; }
+
+    public Integer getImportAreaCodeColumnNumber() { return importAreaCodeColumnNumber; }
+    public void setImportAreaCodeColumnNumber(Integer v) { this.importAreaCodeColumnNumber = v; }
+
+    public Integer getImportAreaUidColumnNumber() { return importAreaUidColumnNumber; }
+    public void setImportAreaUidColumnNumber(Integer v) { this.importAreaUidColumnNumber = v; }
+
+    public Integer getImportParentAreaNameColumnNumber() { return importParentAreaNameColumnNumber; }
+    public void setImportParentAreaNameColumnNumber(Integer v) { this.importParentAreaNameColumnNumber = v; }
+
+    public Integer getImportAreaDistrictNameColumnNumber() { return importAreaDistrictNameColumnNumber; }
+    public void setImportAreaDistrictNameColumnNumber(Integer v) { this.importAreaDistrictNameColumnNumber = v; }
 
     public AreaFacade getEjbFacade() {
         return ejbFacade;

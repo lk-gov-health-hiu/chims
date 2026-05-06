@@ -5,18 +5,32 @@
       xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:h="http://xmlns.jcp.org/jsf/html">
 
-    <!-- INTERFACE -->
     <cc:interface>
     </cc:interface>
 
-    <!-- IMPLEMENTATION -->
     <cc:implementation>
-        <table style="width: 98%; margin: auto;">
-            <tr>
-                <td>
-                    &copy; Ministry of Health, 
-                </td>
-            </tr>
-        </table>
+        <footer class="chims-footer">
+            <div class="chims-footer-inner">
+                <a href="https://www.health.gov.lk/" target="_blank" class="chims-footer-emblem-link">
+                    <h:graphicImage library="image" name="sl_gov_emblem.svg"
+                                    styleClass="chims-footer-emblem" alt="Sri Lanka Government Emblem" />
+                </a>
+                <span class="chims-footer-brand">cHIMS</span>
+                <span class="chims-footer-sep">·</span>
+                <a href="https://www.health.gov.lk/" target="_blank" class="chims-footer-link">
+                    &#169; Ministry of Health, Sri Lanka
+                </a>
+                <span class="chims-footer-sep">·</span>
+                <span>Health Information Unit</span>
+                <span class="chims-footer-sep">·</span>
+                <a href="#{request.contextPath}/app/about_us" class="chims-footer-link">About</a>
+                <span class="chims-footer-sep">·</span>
+                <a href="https://github.com/lk-gov-health-hiu/pssp/issues"
+                   target="_blank" class="chims-footer-link">
+                    <i class="bi bi-github" style="font-size:0.8rem;" />
+                    Issues
+                </a>
+            </div>
+        </footer>
     </cc:implementation>
 </html>
