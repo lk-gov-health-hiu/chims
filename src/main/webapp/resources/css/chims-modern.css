@@ -1,0 +1,542 @@
+/* ============================================================
+   chims-modern.css — Fox Admin–inspired visual refresh
+   Loaded AFTER tem1.css, so selectors here win for shared rules.
+   Layer is additive: it tweaks PrimeFaces primitives and adds
+   utility classes (cards, stat tiles) without restructuring HTML.
+   ============================================================ */
+
+/* ---------- Theme tokens ---------- */
+:root {
+    --cm-primary: #5e72e4;
+    --cm-primary-hover: #4c5fd0;
+    --cm-primary-soft: #eef0fc;
+    --cm-success: #2dce89;
+    --cm-info: #11cdef;
+    --cm-warning: #fb6340;
+    --cm-danger: #f5365c;
+
+    --cm-bg: #f6f8fb;
+    --cm-surface: #ffffff;
+    --cm-surface-alt: #f8fafc;
+    --cm-border: #e3e7ee;
+    --cm-border-strong: #cbd2dc;
+
+    --cm-text: #1f2937;
+    --cm-text-muted: #6b7280;
+    --cm-text-soft: #9aa3af;
+
+    --cm-radius-sm: 6px;
+    --cm-radius: 10px;
+    --cm-radius-lg: 14px;
+
+    --cm-shadow-xs: 0 1px 2px rgba(15, 23, 42, 0.04);
+    --cm-shadow-sm: 0 2px 6px rgba(15, 23, 42, 0.06), 0 1px 2px rgba(15, 23, 42, 0.04);
+    --cm-shadow-md: 0 6px 18px rgba(15, 23, 42, 0.08), 0 2px 6px rgba(15, 23, 42, 0.05);
+    --cm-shadow-lg: 0 14px 32px rgba(15, 23, 42, 0.12), 0 4px 10px rgba(15, 23, 42, 0.06);
+
+    --cm-transition: all 0.18s ease;
+}
+
+.dark-mode {
+    --cm-primary: #7c8df0;
+    --cm-primary-hover: #5e72e4;
+    --cm-primary-soft: #1f2547;
+    --cm-success: #34d399;
+    --cm-info: #38bdf8;
+    --cm-warning: #fb923c;
+    --cm-danger: #f87171;
+
+    --cm-bg: #0f172a;
+    --cm-surface: #1e293b;
+    --cm-surface-alt: #243047;
+    --cm-border: #334155;
+    --cm-border-strong: #475569;
+
+    --cm-text: #f1f5f9;
+    --cm-text-muted: #cbd5e1;
+    --cm-text-soft: #94a3b8;
+
+    --cm-shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.4);
+    --cm-shadow-sm: 0 2px 6px rgba(0, 0, 0, 0.45), 0 1px 2px rgba(0, 0, 0, 0.3);
+    --cm-shadow-md: 0 6px 18px rgba(0, 0, 0, 0.5), 0 2px 6px rgba(0, 0, 0, 0.35);
+    --cm-shadow-lg: 0 14px 32px rgba(0, 0, 0, 0.55), 0 4px 10px rgba(0, 0, 0, 0.35);
+}
+
+/* ---------- Body / page surface ---------- */
+body {
+    background-color: var(--cm-bg) !important;
+    color: var(--cm-text);
+}
+
+.dark-mode body {
+    background-color: var(--cm-bg) !important;
+    color: var(--cm-text);
+}
+
+.chims-content {
+    color: var(--cm-text);
+}
+
+/* ---------- Generic card / stat tile utilities ---------- */
+.cm-card {
+    background: var(--cm-surface);
+    border: 1px solid var(--cm-border);
+    border-radius: var(--cm-radius);
+    box-shadow: var(--cm-shadow-sm);
+    padding: 1.25rem;
+    transition: var(--cm-transition);
+}
+
+.cm-card:hover {
+    box-shadow: var(--cm-shadow-md);
+    transform: translateY(-1px);
+}
+
+.cm-card-header {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--cm-text);
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.cm-stat-tile {
+    background: var(--cm-surface);
+    border: 1px solid var(--cm-border);
+    border-radius: var(--cm-radius);
+    box-shadow: var(--cm-shadow-sm);
+    padding: 1.25rem 1.4rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    transition: var(--cm-transition);
+}
+
+.cm-stat-tile:hover {
+    box-shadow: var(--cm-shadow-md);
+    transform: translateY(-1px);
+}
+
+.cm-stat-tile .cm-stat-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    background: var(--cm-primary-soft);
+    color: var(--cm-primary);
+    flex-shrink: 0;
+}
+
+.cm-stat-tile.cm-stat-success .cm-stat-icon { background: rgba(45, 206, 137, 0.12); color: var(--cm-success); }
+.cm-stat-tile.cm-stat-info    .cm-stat-icon { background: rgba(17, 205, 239, 0.12); color: var(--cm-info); }
+.cm-stat-tile.cm-stat-warning .cm-stat-icon { background: rgba(251, 99, 64, 0.12);  color: var(--cm-warning); }
+.cm-stat-tile.cm-stat-danger  .cm-stat-icon { background: rgba(245, 54, 92, 0.12);  color: var(--cm-danger); }
+
+.cm-stat-tile .cm-stat-body {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.2;
+    min-width: 0;
+}
+
+.cm-stat-tile .cm-stat-value {
+    font-size: 1.6rem;
+    font-weight: 600;
+    color: var(--cm-text);
+    letter-spacing: -0.02em;
+}
+
+.cm-stat-tile .cm-stat-label {
+    font-size: 0.8125rem;
+    color: var(--cm-text-muted);
+    margin-top: 0.15rem;
+}
+
+/* Two-line stack for dashboard rows */
+.cm-stat-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.25rem;
+}
+
+/* ---------- PrimeFaces panel & fieldset ---------- */
+.ui-panel,
+.ui-fieldset {
+    border: 1px solid var(--cm-border) !important;
+    border-radius: var(--cm-radius) !important;
+    background: var(--cm-surface) !important;
+    box-shadow: var(--cm-shadow-sm) !important;
+    color: var(--cm-text);
+}
+
+.ui-panel .ui-panel-titlebar,
+.ui-fieldset .ui-fieldset-legend {
+    background: var(--cm-surface-alt) !important;
+    border: none !important;
+    border-bottom: 1px solid var(--cm-border) !important;
+    border-radius: var(--cm-radius) var(--cm-radius) 0 0 !important;
+    padding: 0.75rem 1rem !important;
+    color: var(--cm-text) !important;
+    font-weight: 600 !important;
+}
+
+.ui-panel .ui-panel-content {
+    background: var(--cm-surface) !important;
+    color: var(--cm-text) !important;
+    padding: 1rem 1.1rem !important;
+    border: none !important;
+}
+
+/* ---------- PrimeFaces dialogs ---------- */
+.ui-dialog {
+    border: 1px solid var(--cm-border) !important;
+    border-radius: var(--cm-radius-lg) !important;
+    box-shadow: var(--cm-shadow-lg) !important;
+    overflow: hidden;
+}
+
+.ui-dialog .ui-dialog-titlebar {
+    background: var(--cm-surface-alt) !important;
+    color: var(--cm-text) !important;
+    border: none !important;
+    border-bottom: 1px solid var(--cm-border) !important;
+    padding: 0.85rem 1.1rem !important;
+}
+
+.ui-dialog .ui-dialog-content {
+    background: var(--cm-surface) !important;
+    color: var(--cm-text) !important;
+    padding: 1.1rem !important;
+}
+
+.ui-overlay-mask,
+.ui-widget-overlay {
+    background: rgba(15, 23, 42, 0.45) !important;
+}
+
+/* ---------- Buttons ---------- */
+.ui-button,
+.ui-button.ui-state-default,
+.ui-button.ui-widget {
+    background: var(--cm-primary) !important;
+    border: 1px solid var(--cm-primary) !important;
+    color: #ffffff !important;
+    border-radius: var(--cm-radius-sm) !important;
+    padding: 0.45rem 0.95rem !important;
+    font-weight: 500 !important;
+    box-shadow: var(--cm-shadow-xs) !important;
+    transition: var(--cm-transition) !important;
+}
+
+.ui-button:hover,
+.ui-button.ui-state-hover {
+    background: var(--cm-primary-hover) !important;
+    border-color: var(--cm-primary-hover) !important;
+    box-shadow: var(--cm-shadow-sm) !important;
+    transform: translateY(-1px);
+}
+
+.ui-button.ui-state-focus,
+.ui-button:focus {
+    outline: none !important;
+    box-shadow: 0 0 0 3px rgba(94, 114, 228, 0.25) !important;
+}
+
+.ui-button.ui-state-disabled,
+.ui-button:disabled {
+    opacity: 0.55 !important;
+    box-shadow: none !important;
+    transform: none !important;
+}
+
+/* Secondary / outlined variant */
+.ui-button.ui-button-secondary,
+.ui-button.ui-button-flat,
+.ui-button-text-only.ui-state-default[class*="secondary"] {
+    background: var(--cm-surface) !important;
+    color: var(--cm-text) !important;
+    border-color: var(--cm-border-strong) !important;
+}
+
+.ui-button.ui-button-secondary:hover,
+.ui-button.ui-button-flat:hover {
+    background: var(--cm-surface-alt) !important;
+    color: var(--cm-text) !important;
+    border-color: var(--cm-border-strong) !important;
+}
+
+/* ---------- Form fields ---------- */
+.ui-inputfield,
+.ui-inputtext,
+.ui-selectonemenu,
+.ui-selectmanymenu,
+.ui-spinner-input,
+.ui-password input {
+    background: var(--cm-surface) !important;
+    border: 1px solid var(--cm-border-strong) !important;
+    border-radius: var(--cm-radius-sm) !important;
+    color: var(--cm-text) !important;
+    padding: 0.45rem 0.7rem !important;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease !important;
+}
+
+.ui-inputfield:hover,
+.ui-inputtext:hover,
+.ui-selectonemenu:hover {
+    border-color: var(--cm-primary) !important;
+}
+
+.ui-inputfield.ui-state-focus,
+.ui-inputfield:focus,
+.ui-selectonemenu.ui-state-focus,
+.ui-state-focus.ui-inputtext {
+    outline: none !important;
+    border-color: var(--cm-primary) !important;
+    box-shadow: 0 0 0 3px rgba(94, 114, 228, 0.18) !important;
+}
+
+.ui-inputfield::placeholder { color: var(--cm-text-soft) !important; }
+
+/* SelectOneMenu trigger */
+.ui-selectonemenu .ui-selectonemenu-trigger {
+    background: transparent !important;
+    border: none !important;
+    color: var(--cm-text-muted) !important;
+}
+
+/* Dropdown panel */
+.ui-selectonemenu-panel,
+.ui-selectchecboxmenu-panel,
+.ui-autocomplete-panel,
+.ui-overlaypanel {
+    background: var(--cm-surface) !important;
+    border: 1px solid var(--cm-border) !important;
+    border-radius: var(--cm-radius) !important;
+    box-shadow: var(--cm-shadow-md) !important;
+    color: var(--cm-text) !important;
+}
+
+.ui-selectonemenu-items .ui-selectonemenu-item {
+    padding: 0.45rem 0.85rem !important;
+    color: var(--cm-text) !important;
+}
+
+.ui-selectonemenu-items .ui-selectonemenu-item.ui-state-highlight,
+.ui-selectonemenu-items .ui-selectonemenu-item.ui-state-hover {
+    background: var(--cm-primary-soft) !important;
+    color: var(--cm-primary) !important;
+}
+
+/* ---------- Checkbox / radio (don't break apple-checkbox-table elsewhere) ---------- */
+.ui-chkbox-box:not(.apple-checkbox-table .ui-chkbox-box),
+.ui-radiobutton-box {
+    border: 2px solid var(--cm-border-strong) !important;
+    background: var(--cm-surface) !important;
+    border-radius: var(--cm-radius-sm) !important;
+    transition: var(--cm-transition) !important;
+}
+
+.ui-radiobutton-box {
+    border-radius: 50% !important;
+}
+
+.ui-chkbox-box.ui-state-active:not(.apple-checkbox-table .ui-chkbox-box),
+.ui-radiobutton-box.ui-state-active {
+    background: var(--cm-primary) !important;
+    border-color: var(--cm-primary) !important;
+}
+
+/* ---------- DataTable ---------- */
+.ui-datatable {
+    border: 1px solid var(--cm-border) !important;
+    border-radius: var(--cm-radius) !important;
+    overflow: hidden;
+    background: var(--cm-surface) !important;
+    box-shadow: var(--cm-shadow-sm) !important;
+}
+
+.ui-datatable .ui-datatable-header,
+.ui-datatable thead th,
+.ui-datatable .ui-datatable-thead > tr > th {
+    background: var(--cm-surface-alt) !important;
+    color: var(--cm-text) !important;
+    border: none !important;
+    border-bottom: 1px solid var(--cm-border) !important;
+    font-weight: 600 !important;
+    padding: 0.7rem 0.85rem !important;
+}
+
+.ui-datatable tbody tr,
+.ui-datatable .ui-datatable-data > tr {
+    background: var(--cm-surface) !important;
+    color: var(--cm-text) !important;
+    transition: background-color 0.12s ease !important;
+}
+
+.ui-datatable .ui-datatable-data > tr > td {
+    border-color: var(--cm-border) !important;
+    padding: 0.65rem 0.85rem !important;
+    color: var(--cm-text) !important;
+}
+
+.ui-datatable .ui-datatable-data > tr:hover > td {
+    background-color: var(--cm-surface-alt) !important;
+}
+
+.ui-datatable .ui-datatable-data > tr.ui-state-highlight > td {
+    background-color: var(--cm-primary-soft) !important;
+    color: var(--cm-text) !important;
+}
+
+/* Paginator */
+.ui-paginator {
+    background: var(--cm-surface) !important;
+    border: none !important;
+    border-top: 1px solid var(--cm-border) !important;
+    color: var(--cm-text) !important;
+    padding: 0.5rem !important;
+}
+
+.ui-paginator .ui-paginator-page,
+.ui-paginator .ui-paginator-next,
+.ui-paginator .ui-paginator-prev,
+.ui-paginator .ui-paginator-first,
+.ui-paginator .ui-paginator-last {
+    background: transparent !important;
+    border: 1px solid transparent !important;
+    border-radius: var(--cm-radius-sm) !important;
+    color: var(--cm-text-muted) !important;
+    margin: 0 0.1rem !important;
+    min-width: 2rem;
+    text-align: center;
+}
+
+.ui-paginator .ui-paginator-page:hover,
+.ui-paginator .ui-paginator-next:hover,
+.ui-paginator .ui-paginator-prev:hover {
+    background: var(--cm-surface-alt) !important;
+    color: var(--cm-text) !important;
+}
+
+.ui-paginator .ui-paginator-page.ui-state-active {
+    background: var(--cm-primary) !important;
+    color: #ffffff !important;
+    border-color: var(--cm-primary) !important;
+}
+
+/* ---------- Tabs ---------- */
+.ui-tabs.ui-tabs-top > .ui-tabs-nav,
+.ui-tabs .ui-tabs-nav {
+    background: transparent !important;
+    border: none !important;
+    border-bottom: 1px solid var(--cm-border) !important;
+    padding: 0 !important;
+}
+
+.ui-tabs .ui-tabs-nav li {
+    background: transparent !important;
+    border: none !important;
+    margin: 0 0.25rem 0 0 !important;
+}
+
+.ui-tabs .ui-tabs-nav li a,
+.ui-tabs .ui-tabs-nav li .ui-tabs-anchor {
+    color: var(--cm-text-muted) !important;
+    padding: 0.65rem 1rem !important;
+    border-bottom: 2px solid transparent !important;
+    transition: var(--cm-transition);
+}
+
+.ui-tabs .ui-tabs-nav li.ui-state-active a,
+.ui-tabs .ui-tabs-nav li.ui-tabs-selected a {
+    color: var(--cm-primary) !important;
+    border-bottom-color: var(--cm-primary) !important;
+    font-weight: 600 !important;
+}
+
+.ui-tabs .ui-tabs-panel {
+    background: var(--cm-surface) !important;
+    color: var(--cm-text) !important;
+    padding: 1rem 0.25rem !important;
+    border: none !important;
+}
+
+/* ---------- Messages / growl ---------- */
+.ui-message,
+.ui-messages {
+    border-radius: var(--cm-radius-sm) !important;
+    border: 1px solid var(--cm-border) !important;
+    background: var(--cm-surface) !important;
+    color: var(--cm-text) !important;
+    padding: 0.65rem 0.85rem !important;
+}
+
+.ui-messages-info-summary, .ui-message-info { color: var(--cm-info) !important; }
+.ui-messages-warn-summary, .ui-message-warn { color: var(--cm-warning) !important; }
+.ui-messages-error-summary, .ui-message-error { color: var(--cm-danger) !important; }
+.ui-messages-success-summary, .ui-message-success { color: var(--cm-success) !important; }
+
+.ui-growl-item {
+    border-radius: var(--cm-radius) !important;
+    box-shadow: var(--cm-shadow-md) !important;
+    border: 1px solid var(--cm-border) !important;
+    background: var(--cm-surface) !important;
+}
+
+/* ---------- Badges / tags ---------- */
+.cm-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0.2rem 0.55rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    border-radius: 999px;
+    background: var(--cm-primary-soft);
+    color: var(--cm-primary);
+    line-height: 1.4;
+}
+
+.cm-badge.cm-badge-success { background: rgba(45, 206, 137, 0.14); color: var(--cm-success); }
+.cm-badge.cm-badge-warning { background: rgba(251, 99, 64, 0.14);  color: var(--cm-warning); }
+.cm-badge.cm-badge-danger  { background: rgba(245, 54, 92, 0.14);  color: var(--cm-danger); }
+.cm-badge.cm-badge-info    { background: rgba(17, 205, 239, 0.14); color: var(--cm-info); }
+.cm-badge.cm-badge-muted   { background: var(--cm-surface-alt);    color: var(--cm-text-muted); }
+
+/* ---------- Scrollbar (subtle) ---------- */
+*::-webkit-scrollbar { width: 10px; height: 10px; }
+*::-webkit-scrollbar-track { background: transparent; }
+*::-webkit-scrollbar-thumb {
+    background: var(--cm-border-strong);
+    border-radius: 999px;
+    border: 2px solid transparent;
+    background-clip: padding-box;
+}
+*::-webkit-scrollbar-thumb:hover { background: var(--cm-text-soft); background-clip: padding-box; }
+
+/* ---------- Dark-mode tweaks for legacy chims-* classes that pre-date this layer ---------- */
+.dark-mode .chims-content,
+.dark-mode body {
+    background-color: var(--cm-bg) !important;
+    color: var(--cm-text) !important;
+}
+
+.dark-mode .ui-widget-content,
+.dark-mode .ui-widget {
+    color: var(--cm-text);
+}
+
+/* Apple-checkbox tables stay as defined in jsfcrud.css (issue #356);
+   only adopt our row palette for them when not selected. */
+.apple-checkbox-table.ui-datatable .ui-datatable-data > tr > td {
+    background-color: var(--cm-surface) !important;
+}
+.apple-checkbox-table.ui-datatable .ui-datatable-data > tr.ui-state-highlight > td {
+    background-color: var(--cm-primary-soft) !important;
+}

@@ -11,7 +11,68 @@
         <ui:composition template="/template.xhtml">
 
             <ui:define name="content">
-                <!--<h1>Dashboard will be made available soon</h1>-->
+
+                <!-- Modern welcome / stat row -->
+                <h:panelGroup layout="block" styleClass="cm-card" style="margin-bottom: 1.25rem;">
+                    <div style="display:flex; align-items:center; gap:1rem; flex-wrap:wrap; justify-content:space-between;">
+                        <div>
+                            <div style="font-size:1.25rem; font-weight:600;">
+                                Welcome back, <h:outputText value="#{webUserController.loggedUser.name}"/>
+                            </div>
+                            <div style="color:var(--cm-text-muted); margin-top:0.15rem;">
+                                cHIMS — Clinical Health Information Management System
+                            </div>
+                        </div>
+                        <span class="cm-badge cm-badge-info">
+                            <i class="bi bi-shield-check"/>&#160; signed in
+                        </span>
+                    </div>
+                </h:panelGroup>
+
+                <h:panelGroup layout="block" styleClass="cm-stat-row">
+
+                    <h:panelGroup layout="block" styleClass="cm-stat-tile">
+                        <span class="cm-stat-icon"><i class="bi bi-building"/></span>
+                        <span class="cm-stat-body">
+                            <span class="cm-stat-value">
+                                <h:outputText value="#{institutionApplicationController.institutions.size()}"/>
+                            </span>
+                            <span class="cm-stat-label">Institutions</span>
+                        </span>
+                    </h:panelGroup>
+
+                    <h:panelGroup layout="block" styleClass="cm-stat-tile cm-stat-success">
+                        <span class="cm-stat-icon"><i class="bi bi-geo-alt"/></span>
+                        <span class="cm-stat-body">
+                            <span class="cm-stat-value">
+                                <h:outputText value="#{areaApplicationController.allAreas.size()}"/>
+                            </span>
+                            <span class="cm-stat-label">Areas</span>
+                        </span>
+                    </h:panelGroup>
+
+                    <h:panelGroup layout="block" styleClass="cm-stat-tile cm-stat-info">
+                        <span class="cm-stat-icon"><i class="bi bi-person-badge"/></span>
+                        <span class="cm-stat-body">
+                            <span class="cm-stat-value">
+                                <h:outputText value="#{webUserController.loggedUser.webUserRole}"/>
+                            </span>
+                            <span class="cm-stat-label">Role</span>
+                        </span>
+                    </h:panelGroup>
+
+                    <h:panelGroup layout="block" styleClass="cm-stat-tile cm-stat-warning">
+                        <span class="cm-stat-icon"><i class="bi bi-clock-history"/></span>
+                        <span class="cm-stat-body">
+                            <span class="cm-stat-value" style="font-size:1.05rem;">
+                                <h:outputText value="#{webUserController.loggedUser.institution.name}"/>
+                            </span>
+                            <span class="cm-stat-label">Institution</span>
+                        </span>
+                    </h:panelGroup>
+
+                </h:panelGroup>
+
                 <h:panelGroup rendered="false">
                     
                     
