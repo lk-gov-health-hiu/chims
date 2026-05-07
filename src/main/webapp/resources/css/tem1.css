@@ -956,16 +956,10 @@ body {
     font-weight: bold;
 }
 
-/* ── DataTable row hover & selection ── */
-.ui-datatable .ui-datatable-data > tr:hover > td {
-    background-color: #e8f4fd !important;
-}
+/* ── DataTable selection highlight ── */
 .ui-datatable .ui-datatable-data > tr.ui-state-highlight > td {
     background-color: #cce5ff !important;
     color: #004085 !important;
-}
-.dark-mode .ui-datatable .ui-datatable-data > tr:hover > td {
-    background-color: #3b4a5f !important;
 }
 .dark-mode .ui-datatable .ui-datatable-data > tr.ui-state-highlight > td {
     background-color: #2d4f6f !important;

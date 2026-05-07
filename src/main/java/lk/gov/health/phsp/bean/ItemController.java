@@ -1113,6 +1113,14 @@ public class ItemController implements Serializable {
         JsfUtil.addSuccessMessage("Selected items deleted.");
     }
 
+    public void selectAllDictionaryItems() {
+        selectedItems = new ArrayList<>(getItems());
+    }
+
+    public void deselectAllDictionaryItems() {
+        selectedItems = new ArrayList<>();
+    }
+
     public List<Item> getSelectedItems() { return selectedItems; }
     public void setSelectedItems(List<Item> selectedItems) { this.selectedItems = selectedItems; }
 

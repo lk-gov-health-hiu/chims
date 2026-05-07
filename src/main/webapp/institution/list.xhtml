@@ -15,22 +15,35 @@
                         <p:dataExporter target="datalist" type="xls" fileName="institutions"/>
                     </p:commandButton>
 
+                    <p:commandButton value="Select All"
+                                     style="margin-right:0.5rem;"
+                                     action="#{institutionController.selectAllInstitutions()}"
+                                     update="datalist"
+                                     process="@this"/>
+
+                    <p:commandButton value="Deselect All"
+                                     style="margin-right:0.5rem;"
+                                     action="#{institutionController.deselectAllInstitutions()}"
+                                     process="@this"
+                                     oncomplete="PF('institutionTable').unselectAllRows();"/>
+
                     <p:commandButton value="Delete Selected"
                                      style="margin-right:0.5rem;"
                                      action="#{institutionController.deleteSelectedItems()}"
                                      update="datalist"
                                      onclick="return confirm('Are you sure you want to delete the selected institutions? This cannot be undone.');"/>
 
-                    <p:dataTable id="datalist" value="#{institutionController.items}" var="item"
-                                 selectionMode="multiple"
+                    <p:dataTable id="datalist" widgetVar="institutionTable" value="#{institutionController.items}" var="item"
                                  selection="#{institutionController.selectedItems}"
+                                 styleClass="apple-checkbox-table"
                                  paginator="true"
                                  rowKey="#{item.id}"
                                  rows="10"
                                  rowsPerPageTemplate="10,20,30,40,50">
 
-                        <p:ajax event="rowSelect"/>
-                        <p:ajax event="rowUnselect"/>
+                        <p:ajax event="rowSelectCheckbox"/>
+                        <p:ajax event="rowUnselectCheckbox"/>
+                        <p:ajax event="toggleSelect"/>
 
                         <p:column selectionMode="multiple" style="width:2.5rem; text-align:center;" exportable="false"/>
 

@@ -656,6 +656,14 @@ public class InstitutionController implements Serializable {
         institutionApplicationController.resetAllInstitutions();
     }
 
+    public void selectAllInstitutions() {
+        selectedItems = new ArrayList<>(getItems());
+    }
+
+    public void deselectAllInstitutions() {
+        selectedItems = new ArrayList<>();
+    }
+
     public List<Institution> getSelectedItems() { return selectedItems; }
     public void setSelectedItems(List<Institution> selectedItems) { this.selectedItems = selectedItems; }
 

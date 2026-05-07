@@ -165,6 +165,14 @@ public class AreaController implements Serializable {
         selectedAreas = null;
     }
 
+    public void selectAllAreas() {
+        selectedAreas = new ArrayList<>(getItems());
+    }
+
+    public void deselectAllAreas() {
+        selectedAreas = new ArrayList<>();
+    }
+
     public List<Area> getSelectedAreas() { return selectedAreas; }
     public void setSelectedAreas(List<Area> selectedAreas) { this.selectedAreas = selectedAreas; }
 
