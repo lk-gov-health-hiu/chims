@@ -1067,6 +1067,48 @@ td > h\:commandLink > i.bi,
     vertical-align: middle;
 }
 
+/* ============================================================
+   Top menubar — more breathing room between root items, and
+   make sure chip icons sit flush against their label text in
+   dropdown menuitems (Help → User Manual etc.).
+   ============================================================ */
+
+/* Root-level menubar items get extra horizontal padding */
+.chims-menubar.ui-menubar > .ui-menubar-root-list > .ui-menuitem > .ui-menuitem-link,
+.ui-menubar > .ui-menubar-root-list > .ui-menuitem > .ui-menuitem-link {
+    padding: 0.7rem 1.15rem !important;
+    gap: 0.55rem;
+}
+.chims-menubar.ui-menubar > .ui-menubar-root-list > .ui-menuitem,
+.ui-menubar > .ui-menubar-root-list > .ui-menuitem {
+    margin: 0 0.15rem !important;
+}
+
+/* Dropdown menuitem links — flex layout so chip + text + caret line up
+   on a single baseline with consistent gaps. */
+.ui-menu.ui-menu-child .ui-menuitem-link,
+.ui-menu-list .ui-menuitem-link {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 0.55rem !important;
+    padding: 0.5rem 0.95rem !important;
+}
+
+/* Reset the right-margin on icons inside the flex link — the gap above
+   already provides the spacing, so the chip sits flush against the text. */
+.ui-menu.ui-menu-child .ui-menuitem-link > .ui-menuitem-icon,
+.ui-menu-list .ui-menuitem-link > .ui-menuitem-icon,
+.chims-menubar > .ui-menubar-root-list > .ui-menuitem > .ui-menuitem-link > .ui-menuitem-icon {
+    margin-right: 0 !important;
+    flex-shrink: 0;
+}
+
+/* Submenu caret spacing inside top-level items */
+.chims-menubar > .ui-menubar-root-list > .ui-menuitem > .ui-menuitem-link > .ui-submenu-icon {
+    margin-left: 0.45rem !important;
+    color: var(--cm-text-soft) !important;
+}
+
 /* Header brand link via h:link should not pick up an underline */
 a.chims-brand,
 .chims-brand,
@@ -1075,8 +1117,46 @@ a.chims-brand:hover,
     text-decoration: none !important;
 }
 
-/* (Work Sans was previously applied here; reverted on user request — the
-   app now uses the existing Poppins / system stack from tem1.css.) */
+/* ============================================================
+   Inter — system-wide font (requested by user)
+   ============================================================ */
+:root {
+    --cm-font: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+}
+body,
+.ui-widget,
+.ui-widget *,
+.ui-widget input,
+.ui-widget select,
+.ui-widget textarea,
+.ui-widget button,
+.chims-content,
+.chims-header,
+.chims-footer,
+.chims-menubar,
+.cm-card,
+.cm-stat-tile,
+.cm-analysis-card,
+.cm-page-title,
+.cm-hero,
+.btn,
+.form-control,
+.form-select,
+.form-label,
+.login-wrapper,
+.login-card,
+.login-card * {
+    font-family: var(--cm-font) !important;
+}
+.cm-hero-title,
+.cm-page-title-text,
+.cm-stat-value,
+.cm-analysis-value,
+h1, h2, h3, h4, h5, h6 {
+    font-family: var(--cm-font) !important;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+}
 
 /* ============================================================
    Help submenu — keep every item on one line, no wrapping
