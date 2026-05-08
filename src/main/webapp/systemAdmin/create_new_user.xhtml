@@ -16,106 +16,102 @@
                     <h1>You are NOT authorized</h1>
                 </p:panel>
                 
-                <p:panel id="WebUserEditDlg" header="Edit User Detais" style="text-align: center; height: 100%;" rendered="#{webUserController.loggedUser.systemAdministrator}">
+                <p:panel id="WebUserEditDlg" header="Edit User Details" styleClass="cm-form-panel" rendered="#{webUserController.loggedUser.systemAdministrator}">
                     <h:form id="WebUserEditForm">
 
-                        <p:panelGrid  columns="3" rendered="#{webUserController.selected != null}" style="margin: auto; text-align: left;">
+                        <p:panelGrid  columns="4" rendered="#{webUserController.selected != null}" styleClass="cm-form-grid" style="margin: auto; text-align: left; width: 100%;">
                             <f:facet name="header" >
                                 <p:commandButton ajax="false" class="m-1" action="#{webUserController.saveNewWebUserBySysAdmin()}" value="#{bundleClinical.Save}" />
                                 <p:commandButton ajax="false" value="Back" class="m-1" action="index" process="@this" update="@all">
                                 </p:commandButton>
                             </f:facet>
 
-                            <p:outputLabel value="Title" for="title" />
-                            <p:selectOneMenu id="title"  value="#{webUserController.selected.person.title}"  >
+                            <p:outputLabel value="Title" for="title" styleClass="cm-form-label"/>
+                            <p:selectOneMenu id="title"  value="#{webUserController.selected.person.title}" styleClass="cm-form-field">
                                 <f:selectItems value="#{itemController.titles}" var="t" itemLabel="#{t.name}"
                                                itemValue="#{t}" ></f:selectItems>
                             </p:selectOneMenu>
-                            <p:spacer ></p:spacer>
-
-                            <p:outputLabel value="Name" for="name" />
-                            <p:inputText 
-                                autocomplete="off" 
-                                id="name"  size="30"
+                            <p:outputLabel value="Name" for="name" styleClass="cm-form-label"/>
+                            <p:inputText
+                                autocomplete="off"
+                                id="name"
                                 required="true"
+                                styleClass="cm-form-field"
                                 value="#{webUserController.selected.person.name}"
                                 title="Name" />
-                            <p:spacer ></p:spacer>
 
-
-
-                            <p:outputLabel value="Username" for="username" />
-                            <p:inputText  id="username" value="#{webUserController.selected.name}" title="#{bundleClinical.EditWebUserTitle_name}" size="30"
+                            <p:outputLabel value="Username" for="username" styleClass="cm-form-label"/>
+                            <p:inputText  id="username" value="#{webUserController.selected.name}" title="#{bundleClinical.EditWebUserTitle_name}"
+                                          styleClass="cm-form-field"
                                         autocomplete="false"   required="true" requiredMessage="#{bundleClinical.EditWebUserRequiredMessage_name}">
                                 <f:ajax execute="@this" render="lblune" event="blur" ></f:ajax>
                             </p:inputText>
+                            <p:outputLabel value="#{bundleClinical.EditWebUserLabel_email}" for="email" styleClass="cm-form-label"/>
+                            <p:inputText  autocomplete="false" id="email" styleClass="cm-form-field"
+                                          value="#{webUserController.selected.email}" title="#{bundleClinical.EditWebUserTitle_email}" />
+
                             <p:outputLabel id="lblune"
-                                           style="color: red;"
+                                           styleClass="cm-form-label"
+                                           style="color: var(--cm-danger); grid-column: span 4;"
                                            value="#{webUserController.userNameExsists()?'Username is already taken. Please try another.':''}" ></p:outputLabel>
 
-                            <p:outputLabel value="Password" for="password" />
-                            <p:password  id="password" value="#{webUserController.password}" title="Password" size="30"
+                            <p:outputLabel value="Password" for="password" styleClass="cm-form-label"/>
+                            <p:password  id="password" value="#{webUserController.password}" title="Password"
+                                          styleClass="cm-form-field"
                                           required="true" requiredMessage="Password is required."/>
-                            <p:spacer ></p:spacer>
-
-
-                            <p:outputLabel value="Re-enter Password" for="passwordReenter" />
-                            <p:password   id="passwordReenter" value="#{webUserController.passwordReenter}" title="Re-enter Password" size="30"
+                            <p:outputLabel value="Re-enter Password" for="passwordReenter" styleClass="cm-form-label"/>
+                            <p:password   id="passwordReenter" value="#{webUserController.passwordReenter}" title="Re-enter Password"
+                                          styleClass="cm-form-field"
                                       autocomplete="false"     required="true" requiredMessage="Password is required."/>
-                            <p:spacer ></p:spacer>
 
-
-
-
-                            <p:outputLabel value="#{bundleClinical.EditWebUserLabel_institution}" for="institution" />
-                            <p:autoComplete  id="institution" value="#{webUserController.selected.institution}" 
+                            <p:outputLabel value="#{bundleClinical.EditWebUserLabel_institution}" for="institution" styleClass="cm-form-label"/>
+                            <p:autoComplete  id="institution" value="#{webUserController.selected.institution}"
                                              completeMethod="#{institutionController.completeInstitutions}"
-                                             var="i" itemLabel="#{i.name}" itemValue="#{i}" size="30"
+                                             var="i" itemLabel="#{i.name}" itemValue="#{i}"
+                                             styleClass="cm-form-field"
                                              forceSelection="true" required="true"
-                                             minQueryLength="4" maxResults="30">
+                                             minQueryLength="2" maxResults="30">
+                                <p:column headerText="Name">
+                                    <p:outputLabel value="#{i.name}"></p:outputLabel>
+                                </p:column>
+                                <p:column headerText="Code">
+                                    <p:outputLabel value="#{i.code}"></p:outputLabel>
+                                </p:column>
+                                <p:column headerText="Type">
+                                    <p:outputLabel value="#{i.institutionType}"></p:outputLabel>
+                                </p:column>
                             </p:autoComplete >
-                            <p:spacer ></p:spacer>
-
-                            <p:outputLabel value="Area" for="area" />
-                            <p:autoComplete  id="area" value="#{webUserController.selected.area}" 
+                            <p:outputLabel value="Area" for="area" styleClass="cm-form-label"/>
+                            <p:autoComplete  id="area" value="#{webUserController.selected.area}"
                                              completeMethod="#{areaController.completeAreas}"
-                                             var="i" itemLabel="#{i.name}" itemValue="#{i}" size="30"
-                                             minQueryLength="4" maxResults="30"
+                                             var="i" itemLabel="#{i.name}" itemValue="#{i}"
+                                             styleClass="cm-form-field"
+                                             minQueryLength="2" maxResults="30"
                                              forceSelection="true" required="true">
                                 <p:column headerText="Name">
                                     <p:outputLabel value="#{i.name}"></p:outputLabel>
                                 </p:column>
-                                  <p:column headerText="Parent">
+                                <p:column headerText="Parent">
                                     <p:outputLabel value="#{i.parentArea.name}"></p:outputLabel>
                                 </p:column>
-                                 <p:column headerText="Type">
+                                <p:column headerText="Type">
                                     <p:outputLabel value="#{i.type}"></p:outputLabel>
                                 </p:column>
-                                
-                                
                             </p:autoComplete >
-                            <p:spacer ></p:spacer>
 
-                            <p:outputLabel value="#{bundleClinical.EditWebUserLabel_email}" for="email" />
-                            <p:inputText  autocomplete="false" id="email" value="#{webUserController.selected.email}" title="#{bundleClinical.EditWebUserTitle_email}" size="30" />
-                            <p:spacer ></p:spacer>
-
-                            <p:outputLabel value="Telephone Number" for="telNo" />
+                            <p:outputLabel value="Telephone Number" for="telNo" styleClass="cm-form-label"/>
                             <p:inputText id="telNo"
-                                          autocomplete="false" size="30"
+                                          autocomplete="false" styleClass="cm-form-field"
                                           value="#{webUserController.selected.telNo}" title="#{bundleClinical.EditWebUserTitle_telNo}" />
-                            <p:spacer ></p:spacer>
-
-                            <p:outputLabel value="Role" for="webUserRole" />
-                            <p:selectOneMenu  id="webUserRole" value="#{webUserController.selected.webUserRole}"  required="true">
+                            <p:outputLabel value="Role" for="webUserRole" styleClass="cm-form-label"/>
+                            <p:selectOneMenu  id="webUserRole" value="#{webUserController.selected.webUserRole}" styleClass="cm-form-field" required="true">
                                 <f:selectItem itemLabel="Select" ></f:selectItem>
-                                <f:selectItems value="#{applicationController.webUserRoles}" 
-                                               var="webUserRoles" 
-                                               itemLabel="#{webUserRoles.label}" 
+                                <f:selectItems value="#{applicationController.webUserRoles}"
+                                               var="webUserRoles"
+                                               itemLabel="#{webUserRoles.label}"
                                                itemValue="#{webUserRoles}" >
                                 </f:selectItems>
                             </p:selectOneMenu>
-                            <p:spacer ></p:spacer>
                         </p:panelGrid>
                     </h:form>
                 </p:panel>

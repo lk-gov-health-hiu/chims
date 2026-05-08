@@ -1079,3 +1079,165 @@ a.chims-brand:hover,
 .chims-brand:hover {
     text-decoration: none !important;
 }
+
+/* ============================================================
+   Work Sans — system-wide font
+   ============================================================ */
+:root {
+    --cm-font: "Work Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+}
+body,
+.ui-widget,
+.ui-widget *,
+.ui-widget input,
+.ui-widget select,
+.ui-widget textarea,
+.ui-widget button,
+.chims-content,
+.chims-header,
+.chims-footer,
+.chims-menubar,
+.cm-card,
+.cm-stat-tile,
+.cm-analysis-card,
+.cm-page-title,
+.cm-hero,
+.btn,
+.form-control,
+.form-select,
+.form-label {
+    font-family: var(--cm-font) !important;
+}
+.cm-hero-title,
+.cm-page-title-text,
+.cm-stat-value,
+.cm-analysis-value,
+h1, h2, h3, h4, h5, h6 {
+    font-family: var(--cm-font) !important;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+}
+
+/* Login page */
+body.login-body,
+.login-wrapper,
+.login-card,
+.login-card * {
+    font-family: var(--cm-font) !important;
+}
+
+/* ============================================================
+   Help submenu — keep every item on one line, no wrapping
+   (e.g. "User Manual (Sinhala)")
+   ============================================================ */
+.ui-menu-list .ui-menuitem-text,
+.ui-menubar  .ui-menuitem-text {
+    white-space: nowrap !important;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.ui-menu.ui-menu-child {
+    min-width: 220px;
+}
+
+/* ============================================================
+   Form grid — uses the previously empty 3rd column for a 2nd
+   label/field pair. Edit/Add User and similar forms share this.
+   ============================================================ */
+.cm-form-panel {
+    border-radius: 14px !important;
+    box-shadow: var(--cm-shadow-md) !important;
+    background: var(--cm-surface) !important;
+    margin: 0.25rem auto !important;
+    max-width: 1100px;
+}
+.cm-form-panel .ui-panel-titlebar,
+.cm-form-panel .ui-panel-content {
+    background: var(--cm-surface) !important;
+}
+
+.cm-form-grid {
+    border: none !important;
+    width: 100% !important;
+    max-width: 1040px;
+}
+.cm-form-grid > * {
+    border: none !important;
+}
+.cm-form-grid .ui-panelgrid-cell,
+.cm-form-grid > tbody > tr > td {
+    border: none !important;
+    padding: 0.55rem 0.7rem !important;
+    vertical-align: middle !important;
+    background: transparent !important;
+}
+
+/* Label cells: muted, right-aligned for clean alignment */
+.cm-form-label,
+.cm-form-grid .cm-form-label,
+.ui-outputlabel.cm-form-label {
+    color: var(--cm-text-muted) !important;
+    font-weight: 500 !important;
+    font-size: 0.85rem !important;
+    text-align: right !important;
+    padding-right: 0.5rem !important;
+    white-space: nowrap;
+}
+
+/* Field cells: each input/dropdown/autocomplete fills its cell width */
+.cm-form-grid .cm-form-field,
+.cm-form-grid .ui-inputfield.cm-form-field,
+.cm-form-grid .ui-selectonemenu.cm-form-field,
+.cm-form-grid .ui-autocomplete.cm-form-field,
+.cm-form-grid .ui-password.cm-form-field {
+    width: 100% !important;
+    min-width: 220px;
+}
+.cm-form-grid .ui-inputfield.cm-form-field input,
+.cm-form-grid .ui-password.cm-form-field input,
+.cm-form-grid .ui-autocomplete.cm-form-field input {
+    width: 100% !important;
+}
+.cm-form-grid .ui-selectonemenu.cm-form-field {
+    display: flex !important;
+}
+.cm-form-grid .ui-selectonemenu.cm-form-field .ui-selectonemenu-label {
+    flex: 1 !important;
+    width: auto !important;
+}
+
+/* Make the panelgrid lay out cells responsively at narrow widths */
+.cm-form-grid > tbody > tr > td:nth-child(2),
+.cm-form-grid > tbody > tr > td:nth-child(4) {
+    width: 35%;
+}
+.cm-form-grid > tbody > tr > td:nth-child(1),
+.cm-form-grid > tbody > tr > td:nth-child(3) {
+    width: 15%;
+}
+
+/* On screens narrower than 900px collapse to single label/field column */
+@media (max-width: 900px) {
+    .cm-form-grid > tbody > tr > td:nth-child(2),
+    .cm-form-grid > tbody > tr > td:nth-child(4),
+    .cm-form-grid > tbody > tr > td:nth-child(1),
+    .cm-form-grid > tbody > tr > td:nth-child(3) {
+        width: 100%;
+        display: block;
+    }
+}
+
+/* ============================================================
+   Generic form panel polish — applies to legacy forms that
+   were rendered with empty width / no styling
+   ============================================================ */
+.ui-panel.ui-widget {
+    background: var(--cm-surface) !important;
+    border-radius: 14px !important;
+}
+.ui-panelgrid > tbody > tr > td {
+    background: transparent !important;
+}
+.cm-fluid {
+    width: 100% !important;
+}
