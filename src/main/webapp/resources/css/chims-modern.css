@@ -1241,3 +1241,32 @@ body.login-body,
 .cm-fluid {
     width: 100% !important;
 }
+
+/* ============================================================
+   Global panelGrid relief — covers legacy 3-column layouts that
+   we have not converted to cm-form-grid yet. Empty <p:spacer>
+   cells collapse, and the sibling field cell stretches to use
+   the freed-up space.
+   ============================================================ */
+
+/* Collapse cells that only contain an empty spacer span */
+.ui-panelgrid > tbody > tr > td.ui-panelgrid-cell:has(> .ui-spacer:only-child),
+.ui-panelgrid-cell:has(> .ui-spacer:only-child) {
+    width: 0 !important;
+    padding: 0 !important;
+}
+
+/* Inputs / dropdowns / autocompletes inside any panelGrid cell stretch
+   to fill the cell so the form does not look pinched */
+.ui-panelgrid-cell > .ui-inputfield,
+.ui-panelgrid-cell > .ui-inputtext,
+.ui-panelgrid-cell > .ui-selectonemenu,
+.ui-panelgrid-cell > .ui-autocomplete,
+.ui-panelgrid-cell > .ui-password {
+    width: 100% !important;
+    min-width: 220px;
+}
+.ui-panelgrid-cell > .ui-autocomplete > input,
+.ui-panelgrid-cell > .ui-password > input {
+    width: 100% !important;
+}
