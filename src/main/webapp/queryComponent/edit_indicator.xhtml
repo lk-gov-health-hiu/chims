@@ -36,7 +36,7 @@
                                          requiredMessage="Need to enter a code"
                                          title="Code" />
 
-                            <p:outputLabel value="Descreption" for="descreption" />
+                            <p:outputLabel value="Description" for="descreption" />
                             <p:inputTextarea rows="4" cols="30" id="descreption"  styleClass="fullWidth"
                                              value="#{queryComponentController.selected.descreption}" 
                                              title="#{bundleQuery.CreateQueryComponentTitle_descreption}" />
@@ -62,7 +62,7 @@
                             <p:panelGrid id="lblCountDetails"  columns="2" >
                                  <p:outputLabel value="Code" ></p:outputLabel>
                                  <p:inputText readonly="true" value="#{queryComponentController.selectedCount.code}" ></p:inputText>
-                                 <p:outputLabel value="Descreption" ></p:outputLabel>
+                                 <p:outputLabel value="Description" ></p:outputLabel>
                                  <p:outputLabel value="#{queryComponentController.selectedCount.descreption}" ></p:outputLabel>
                             </p:panelGrid>
                            
@@ -78,7 +78,7 @@
                             <p:panelGrid id="lblPopDetails"  columns="2" >
                                  <p:outputLabel value="Code" ></p:outputLabel>
                                  <p:inputText readonly="true" value="#{queryComponentController.selectedPopulation.code}" ></p:inputText>
-                                 <p:outputLabel value="Descreption" ></p:outputLabel>
+                                 <p:outputLabel value="Description" ></p:outputLabel>
                                  <p:outputLabel value="#{queryComponentController.selectedPopulation.descreption}" ></p:outputLabel>
                             </p:panelGrid>
                             

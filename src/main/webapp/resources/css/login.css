@@ -16,7 +16,7 @@ body {
 
 .login-box {
     width: 100%;
-    max-width: 440px;
+    max-width: 480px;
 }
 
 .login-header {
@@ -25,8 +25,13 @@ body {
 }
 
 .login-header .app-logo {
-    height: 64px;
-    margin-bottom: 1rem;
+    height: auto;
+    width: 100%;
+    max-width: 380px;
+    margin-bottom: 1.5rem;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .login-header h1 {

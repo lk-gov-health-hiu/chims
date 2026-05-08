@@ -64,8 +64,8 @@ public class ItemController implements Serializable {
     RelationshipController relationshipController;
 
     private List<Item> items = null;
+    private List<Item> selectedItems = null;
     private Item selected;
-    private List<Item> selectedItems;
     private Item selectedParent;
     private Item removingItem;
     private List<Item> titles;
@@ -1095,26 +1095,38 @@ public class ItemController implements Serializable {
         }
     }
 
+    public void selectAllDictionaryItems() {
+        selectedItems = (items == null) ? new ArrayList<>() : new ArrayList<>(items);
+    }
+
+    public void deselectAllDictionaryItems() {
+        selectedItems = new ArrayList<>();
+    }
+
     public void destroySelected() {
         if (selectedItems == null || selectedItems.isEmpty()) {
-            JsfUtil.addErrorMessage("No items selected.");
+            JsfUtil.addErrorMessage("No dictionary items selected");
             return;
         }
-        Date now = new Date();
         for (Item i : selectedItems) {
             i.setRetired(true);
-            i.setRetiredAt(now);
+            i.setRetiredAt(new Date());
             i.setRetiredBy(webUserController.getLoggedUser());
             getFacade().edit(i);
         }
+        JsfUtil.addSuccessMessage(selectedItems.size() + " item(s) deleted.");
+        selectedItems = new ArrayList<>();
         items = null;
-        selectedItems = null;
         itemApplicationController.invalidateItems();
-        JsfUtil.addSuccessMessage("Selected items deleted.");
     }
 
-    public List<Item> getSelectedItems() { return selectedItems; }
-    public void setSelectedItems(List<Item> selectedItems) { this.selectedItems = selectedItems; }
+    public List<Item> getSelectedItems() {
+        return selectedItems;
+    }
+
+    public void setSelectedItems(List<Item> selectedItems) {
+        this.selectedItems = selectedItems;
+    }
 
     public void retireAllDictionaryItems() {
         String j = "select i from Item i where i.retired=false and i.itemType=:it";

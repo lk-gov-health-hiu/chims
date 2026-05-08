@@ -19,42 +19,41 @@
                 <h:form  >
 
 
-                    <p:panelGrid columns="3" >
+                    <p:panelGrid columns="4" styleClass="cm-form-grid" style="width:100%;">
 
-                        <p:outputLabel value="Year" for="txtYear" ></p:outputLabel>
-                        <p:spacer height="1" width="10"></p:spacer>
-                        <p:inputText id="txtYear" required="true" value="#{relationshipController.year}" ></p:inputText>
+                        <p:outputLabel value="Year" for="txtYear" styleClass="cm-form-label"/>
+                        <p:inputText id="txtYear" required="true" styleClass="cm-form-field" value="#{relationshipController.year}" ></p:inputText>
 
-                        <p:outputLabel value="Population Data Type" for="cmbType" ></p:outputLabel>
-                        <p:spacer height="1" width="10"></p:spacer>
-                        <p:selectOneMenu id="cmbType" value="#{relationshipController.rt}" required="true">
+                        <p:outputLabel value="Population Data Type" for="cmbType" styleClass="cm-form-label"/>
+                        <p:selectOneMenu id="cmbType" value="#{relationshipController.rt}" styleClass="cm-form-field" required="true">
                             <f:selectItem itemLabel="Please select" ></f:selectItem>
                             <f:selectItems value="#{areaController.rts}" ></f:selectItems>
                         </p:selectOneMenu>
 
-                        <p:outputLabel value="Area" for="acIns" ></p:outputLabel>
-                        <p:spacer height="1" width="10"></p:spacer>
+                        <p:outputLabel value="Area" for="acIns" styleClass="cm-form-label"/>
                         <p:autoComplete id="acIns" value="#{relationshipController.area}" required="true"
                                         completeMethod="#{areaController.completeAreas}"
-                                        var="a" maxResults="20" minQueryLength="4"
+                                        styleClass="cm-form-field"
+                                        var="a" maxResults="20" minQueryLength="2"
                                         itemLabel="#{a.name}" forceSelection="true"
                                         itemValue="#{a}">
                             <p:column headerText="Name" >
                                 <p:outputLabel value="#{a.name}" ></p:outputLabel>
+                            </p:column>
+                            <p:column headerText="Parent" >
+                                <p:outputLabel value="#{a.parentArea.name}" ></p:outputLabel>
                             </p:column>
                             <p:column headerText="Type" >
                                 <p:outputLabel value="#{a.type}" ></p:outputLabel>
                             </p:column>
                         </p:autoComplete>
 
-                        <p:outputLabel value="Population Value" for="txtPop" ></p:outputLabel>
-                        <p:spacer height="1" width="10"></p:spacer>
-                        <p:inputText id="txtPop" required="true" value="#{relationshipController.populationValue}" ></p:inputText>
+                        <p:outputLabel value="Population Value" for="txtPop" styleClass="cm-form-label"/>
+                        <p:inputText id="txtPop" required="true" styleClass="cm-form-field" value="#{relationshipController.populationValue}" ></p:inputText>
 
-                        <p:spacer></p:spacer>
-                        <p:spacer></p:spacer>
-                        <p:commandButton ajax="false" value="Add" 
-                                         action="#{relationshipController.saveInstitutionRelationshipDate()}"  ></p:commandButton>
+                        <p:outputLabel styleClass="cm-form-span4" />
+                        <p:commandButton ajax="false" value="Add"
+                                         action="#{relationshipController.saveInstitutionRelationshipDate()}" />
                     </p:panelGrid>
 
 

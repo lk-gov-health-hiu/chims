@@ -80,3 +80,59 @@ tr.jsfcrud_even_row {
     left: 50%;
     top: 50%;
 }
+
+/* Apple Notes / Reminders style checkboxes — applied globally so every
+   PrimeFaces checkbox in the app gets the rounded purple look. */
+.ui-chkbox .ui-chkbox-box {
+    width: 20px !important;
+    height: 20px !important;
+    border: 2px solid #c7c7cc !important;
+    background: #ffffff !important;
+    border-radius: 50% !important;
+    position: relative !important;
+    box-sizing: border-box !important;
+    transition: background-color 0.15s ease, border-color 0.15s ease !important;
+    box-shadow: none !important;
+}
+
+.ui-chkbox .ui-chkbox-box.ui-state-hover {
+    border-color: #7367f0 !important;
+    background: #ffffff !important;
+}
+
+.ui-chkbox .ui-chkbox-box.ui-state-active,
+.ui-chkbox .ui-chkbox-box.ui-state-active.ui-state-hover {
+    border-color: #7367f0 !important;
+    background: #7367f0 !important;
+}
+
+/* Hide PrimeFaces icon font; tick drawn via CSS pseudo-element below */
+.ui-chkbox .ui-chkbox-box .ui-chkbox-icon {
+    display: none !important;
+}
+
+.ui-chkbox .ui-chkbox-box.ui-state-active::after {
+    content: "";
+    position: absolute;
+    left: 5px;
+    top: 1px;
+    width: 5px;
+    height: 10px;
+    border: solid #ffffff;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+    box-sizing: border-box;
+}
+
+/* Legacy explicit class — keep for callers that opt in */
+.apple-checkbox-table .ui-chkbox .ui-chkbox-box {
+    /* same as global, just ensures specificity wins inside data tables */
+    width: 20px !important;
+    height: 20px !important;
+    border-radius: 50% !important;
+}
+
+/* Suppress per-row hover specifically inside apple-checkbox tables */
+.apple-checkbox-table.ui-datatable .ui-datatable-data > tr:hover > td {
+    background-color: transparent !important;
+}

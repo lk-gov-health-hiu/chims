@@ -53,6 +53,7 @@ public class AreaController implements Serializable {
     private AreaImportService areaImportService;
 
     private List<Area> items = null;
+    private List<Area> selectedAreas = null;
     List<Area> mohAreas = null;
     List<Area> phiAreas = null;
     List<Area> rdhsAreas = null;
@@ -170,6 +171,39 @@ public class AreaController implements Serializable {
 
     public void reloadAreas(){
         areaApplicationController.reloadAreas();
+    }
+
+    public void selectAllAreas() {
+        selectedAreas = (items == null) ? new ArrayList<>() : new ArrayList<>(items);
+    }
+
+    public void deselectAllAreas() {
+        selectedAreas = new ArrayList<>();
+    }
+
+    public void deleteSelectedAreas() {
+        if (selectedAreas == null || selectedAreas.isEmpty()) {
+            JsfUtil.addErrorMessage("No areas selected");
+            return;
+        }
+        for (Area a : selectedAreas) {
+            a.setRetired(true);
+            a.setRetiredAt(new Date());
+            a.setRetiredBy(webUserController.getLoggedUser());
+            getFacade().edit(a);
+        }
+        JsfUtil.addSuccessMessage(selectedAreas.size() + " area(s) deleted.");
+        selectedAreas = new ArrayList<>();
+        items = null;
+        userTransactionController.recordTransaction("Delete Selected Areas");
+    }
+
+    public List<Area> getSelectedAreas() {
+        return selectedAreas;
+    }
+
+    public void setSelectedAreas(List<Area> selectedAreas) {
+        this.selectedAreas = selectedAreas;
     }
     
     public String saveOrUpdateAreaForSystemAdmin() {

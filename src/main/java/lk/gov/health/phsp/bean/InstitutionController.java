@@ -1,11 +1,9 @@
 package lk.gov.health.phsp.bean;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Collections;
 import lk.gov.health.phsp.entity.Institution;
 import lk.gov.health.phsp.bean.util.JsfUtil;
 import lk.gov.health.phsp.bean.util.JsfUtil.PersistAction;
@@ -50,9 +48,6 @@ public class InstitutionController implements Serializable {
     @EJB
     private AreaFacade areaFacade;
 
-    @EJB
-    private InstitutionImportService institutionImportService;
-
     @Inject
     private WebUserController webUserController;
 
@@ -64,9 +59,9 @@ public class InstitutionController implements Serializable {
     private UserTransactionController userTransactionController;
 
     private List<Institution> items = null;
+    private List<Institution> selectedItems = null;
     private Institution selected;
     private Institution deleting;
-    private List<Institution> selectedItems;
     private List<Institution> myClinics;
     private List<Area> gnAreasOfSelected;
     private Area area;
@@ -84,11 +79,6 @@ public class InstitutionController implements Serializable {
     private String startMessage;
 
     private UploadedFile file;
-
-    private volatile boolean importRunning = false;
-    private int[] importProgress = new int[4];
-    private final boolean[] importRunningFlag = {false};
-    private List<String> importWarnings = Collections.synchronizedList(new ArrayList<>());
 
     public Institution getInstitutionById(Long id) {
         return getFacade().find(id);
@@ -525,73 +515,96 @@ public class InstitutionController implements Serializable {
         successMessage = "";
         failureMessage = "";
 
-        if (file == null) {
-            JsfUtil.addErrorMessage("No file selected.");
-            return "";
-        }
-        if (institutionType == null) {
-            JsfUtil.addErrorMessage("Please select an Institution Type.");
-            return "";
-        }
-        if (importRunning) {
-            JsfUtil.addErrorMessage("Import already in progress.");
-            return "";
-        }
+        String newLine = "<br/>";
 
         try {
-            InputStream in = file.getInputStream();
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            byte[] buf = new byte[1024];
-            int read;
-            while ((read = in.read(buf)) != -1) {
-                baos.write(buf, 0, read);
+
+            File inputWorkbook;
+            Workbook w;
+            Cell cell;
+            InputStream in;
+
+            lk.gov.health.phsp.facade.util.JsfUtil.addSuccessMessage(file.getFileName());
+
+            try {
+                lk.gov.health.phsp.facade.util.JsfUtil.addSuccessMessage(file.getFileName());
+                in = file.getInputStream();
+                File f;
+                f = new File(Calendar.getInstance().getTimeInMillis() + file.getFileName());
+                FileOutputStream out = new FileOutputStream(f);
+                Integer read = 0;
+                byte[] bytes = new byte[1024];
+                while ((read = in.read(bytes)) != -1) {
+                    out.write(bytes, 0, read);
+                }
+                in.close();
+                out.flush();
+                out.close();
+
+                inputWorkbook = new File(f.getAbsolutePath());
+
+                successMessage += "File Uploaded Successfully." + newLine;
+
+                w = Workbook.getWorkbook(inputWorkbook);
+                Sheet sheet = w.getSheet(0);
+                int startRow = 1;
+
+                for (Integer i = startRow; i < sheet.getRows(); i++) {
+
+                    Institution newIns = new Institution();
+                    Institution newClinic = new Institution();
+                    String insName;
+                    String poi;
+
+                    cell = sheet.getCell(0, i);
+                    insName = cell.getContents();
+
+                    cell = sheet.getCell(1, i);
+                    poi = cell.getContents();
+
+                    newIns.setPoiNumber(poi);
+                    newIns.setName(institutionType.getLabel() + " " + insName);
+                    newIns.setInstitutionType(institutionType);
+                    newIns.setCreatedAt(new Date());
+                    newIns.setCreater(webUserController.getLoggedUser());
+                    newIns.setDistrict(district);
+                    newIns.setLastHin(0l);
+
+                    newIns.setParent(parent);
+                    newIns.setPdhsArea(pdhsArea);
+                    newIns.setProvince(province);
+                    newIns.setRdhsArea(rdhsArea);
+                    getFacade().create(newIns);
+
+                    newClinic.setName("HLC " + insName);
+                    newClinic.setInstitutionType(InstitutionType.Clinic);
+                    newClinic.setCreatedAt(new Date());
+                    newClinic.setCreater(webUserController.getLoggedUser());
+                    newClinic.setDistrict(district);
+                    newClinic.setLastHin(0l);
+                    newClinic.setPoiInstitution(newIns);
+                    newClinic.setParent(newIns);
+                    newClinic.setPdhsArea(pdhsArea);
+                    newClinic.setProvince(province);
+                    newClinic.setRdhsArea(rdhsArea);
+                    getFacade().create(newClinic);
+
+                    institutionApplicationController.setInstitutions(null);
+
+                }
+                lk.gov.health.phsp.facade.util.JsfUtil.addSuccessMessage("Completed. Please check success and failure messages.");
+                return "";
+            } catch (IOException | BiffException ex) {
+                lk.gov.health.phsp.facade.util.JsfUtil.addErrorMessage(ex.getMessage());
+                failureMessage += "Error. " + ex.getMessage() + ". Aborting the process." + newLine;
+                return "";
             }
-            in.close();
-
-            importProgress = new int[4];
-            importWarnings = Collections.synchronizedList(new ArrayList<>());
-            importRunningFlag[0] = true;
-            importRunning = true;
-
-            institutionImportService.runImport(
-                    baos.toByteArray(),
-                    webUserController.getLoggedUser().getId(),
-                    institutionType,
-                    parent   != null ? parent.getId()   : null,
-                    province != null ? province.getId() : null,
-                    pdhsArea != null ? pdhsArea.getId() : null,
-                    district != null ? district.getId() : null,
-                    rdhsArea != null ? rdhsArea.getId() : null,
-                    importProgress, importRunningFlag, importWarnings);
-
-            return "";
-        } catch (IOException ex) {
-            importRunning = false;
-            JsfUtil.addErrorMessage(ex.getMessage());
-            failureMessage = "Error reading file: " + ex.getMessage();
+        } catch (IndexOutOfBoundsException e) {
+            failureMessage += "Error. " + e.getMessage() + ". Aborting the process." + newLine;
             return "";
         }
+
     }
-
-    public boolean isImportRunning() {
-        if (importRunning && !importRunningFlag[0]) {
-            importRunning = false;
-        }
-        return importRunning;
-    }
-
-    public int getImportProcessed() { return importProgress[0]; }
-    public int getImportTotal()     { return importProgress[1]; }
-    public int getImportCreated()   { return importProgress[2]; }
-    public int getImportSkipped()   { return importProgress[3]; }
-
-    public int getImportPercent() {
-        int total = importProgress[1];
-        if (total <= 0) return 0;
-        return (int) Math.min(importProgress[0] * 100L / total, 100);
-    }
-
-    public List<String> getImportWarnings() { return importWarnings; }
     
     public void saveOrUpdateInstitution() {
         if (selected == null) {
@@ -643,21 +656,38 @@ public class InstitutionController implements Serializable {
         }
     }
 
-    public void deleteSelectedItems() {
-        if (selectedItems == null || selectedItems.isEmpty()) {
-            JsfUtil.addErrorMessage("No institutions selected.");
-            return;
-        }
-        for (Institution ins : selectedItems) {
-            getFacade().remove(ins);
-        }
-        items = null;
-        selectedItems = null;
-        institutionApplicationController.resetAllInstitutions();
+    public void selectAllInstitutions() {
+        selectedItems = (items == null) ? new ArrayList<>() : new ArrayList<>(items);
     }
 
-    public List<Institution> getSelectedItems() { return selectedItems; }
-    public void setSelectedItems(List<Institution> selectedItems) { this.selectedItems = selectedItems; }
+    public void deselectAllInstitutions() {
+        selectedItems = new ArrayList<>();
+    }
+
+    public void deleteSelectedItems() {
+        if (selectedItems == null || selectedItems.isEmpty()) {
+            JsfUtil.addErrorMessage("No institutions selected");
+            return;
+        }
+        for (Institution i : selectedItems) {
+            i.setRetired(true);
+            i.setRetiredAt(new Date());
+            i.setRetirer(webUserController.getLoggedUser());
+            getFacade().edit(i);
+        }
+        JsfUtil.addSuccessMessage(selectedItems.size() + " institution(s) deleted.");
+        selectedItems = new ArrayList<>();
+        items = null;
+        userTransactionController.recordTransaction("Delete Selected Institutions");
+    }
+
+    public List<Institution> getSelectedItems() {
+        return selectedItems;
+    }
+
+    public void setSelectedItems(List<Institution> selectedItems) {
+        this.selectedItems = selectedItems;
+    }
 
     public List<Institution> getItems() {
         if (items == null) {
