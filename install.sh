@@ -24,6 +24,7 @@ POOL_NAME="chims_v2"
 
 # Banner
 echo -e "${BOLD}cHIMS v${NEW_VERSION} Installer${NC}"
+echo -e "${CYAN}Modern UI build (Fox Admin–inspired): refreshed dashboard, analysis cards, polished tables/buttons.${NC}"
 
 # Check sudo
 if [[ "$EUID" -eq 0 ]]; then error "Run as a normal user (with sudo access), not root."; fi
@@ -79,8 +80,17 @@ fi
 section "4. Building and Deploying"
 mvn package -DskipTests
 WAR_FILE="target/chims-${NEW_VERSION}.war"
-"${ASADMIN}" deploy --force=true "${WAR_FILE}"
+APP_NAME="chims-${NEW_VERSION}"
+
+# Use redeploy when the app already exists; otherwise fresh deploy.
+if "${ASADMIN}" list-applications 2>/dev/null | grep -q "^${APP_NAME}\b"; then
+    info "Existing deployment detected — redeploying ${APP_NAME}"
+    "${ASADMIN}" redeploy --name "${APP_NAME}" "${WAR_FILE}"
+else
+    "${ASADMIN}" deploy --force=true --name "${APP_NAME}" "${WAR_FILE}"
+fi
 
 success "Installation complete!"
 SERVER_IP=$(hostname -I | awk '{print $1}')
-info "Access at: http://${SERVER_IP}:8080/chims-${NEW_VERSION}"
+info "Access at: http://${SERVER_IP}:8080/${APP_NAME}"
+warn "If the UI looks unchanged after an upgrade, hard-refresh your browser (Ctrl+Shift+R) to clear cached CSS."
