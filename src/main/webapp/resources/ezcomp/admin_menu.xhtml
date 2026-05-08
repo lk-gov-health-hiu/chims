@@ -63,6 +63,7 @@
                                 action="/index" />
 
                     <p:submenu label="Clients"
+                               icon="bi bi-heart-pulse-fill cm-icon-chip"
                                rendered="#{webUserController.hasPrivilege('Client_Management')}">
                         <p:menuitem ajax="false" value="Register New"
                                     icon="bi bi-person-plus-fill cm-icon-chip"
@@ -75,7 +76,8 @@
                                     action="#{clientController.toSearchClientById()}" />
                     </p:submenu>
 
-                    <p:submenu label="Analysis">
+                    <p:submenu label="Analysis"
+                               icon="bi bi-bar-chart-line-fill cm-icon-chip">
                         <p:menuitem ajax="false" value="Queries"
                                     icon="bi bi-funnel-fill cm-icon-chip"
                                     action="#{queryComponentController.toQueryIndex()}" />
@@ -91,6 +93,7 @@
                     </p:submenu>
 
                     <p:submenu label="Institution Admin"
+                               icon="bi bi-bank2 cm-icon-chip"
                                rendered="#{webUserController.hasPrivilege('Institution_Administration')}">
                         <p:menuitem value="Manage Users"
                                     icon="bi bi-people-fill cm-icon-chip"
@@ -107,6 +110,7 @@
                     </p:submenu>
 
                     <p:submenu label="System Admin"
+                               icon="bi bi-shield-shaded cm-icon-chip"
                                rendered="#{webUserController.hasPrivilege('System_Administration')}">
                         <p:menuitem value="Manage Users"
                                     icon="bi bi-people-fill cm-icon-chip"
@@ -134,7 +138,8 @@
                                     action="#{preferenceController.toManagePreferences()}" ajax="false" />
                     </p:submenu>
 
-                    <p:submenu label="Settings">
+                    <p:submenu label="Settings"
+                               icon="bi bi-gear-fill cm-icon-chip">
                         <p:menuitem value="Change Password"
                                     icon="bi bi-shield-lock-fill cm-icon-chip"
                                     action="#{webUserController.toChangeMyPassword()}" ajax="false" />
@@ -146,7 +151,8 @@
                                     action="#{apiKeyController.toManageMyApiKeys()}" ajax="false" />
                     </p:submenu>
 
-                    <p:submenu label="Help">
+                    <p:submenu label="Help"
+                               icon="bi bi-question-circle-fill cm-icon-chip">
                         <p:menuitem value="User Manual (Sinhala)"
                                     icon="bi bi-book-half cm-icon-chip"
                                     outcome="/wikis" />
