@@ -220,10 +220,12 @@ body {
     background: rgba(15, 23, 42, 0.45) !important;
 }
 
-/* ---------- Buttons ---------- */
-.ui-button,
-.ui-button.ui-state-default,
-.ui-button.ui-widget {
+/* ---------- Buttons — scoped to skip the GitHub-style header chrome
+   (chims-icon-btn, chims-theme-fab) so the top-bar search/logout buttons
+   keep their existing transparent / dark look. ---------- */
+.ui-button:not(.chims-icon-btn):not(.chims-theme-fab),
+.ui-button.ui-state-default:not(.chims-icon-btn):not(.chims-theme-fab),
+.ui-button.ui-widget:not(.chims-icon-btn):not(.chims-theme-fab) {
     background: var(--cm-primary) !important;
     border: 1px solid var(--cm-primary) !important;
     color: #ffffff !important;
@@ -234,25 +236,56 @@ body {
     transition: var(--cm-transition) !important;
 }
 
-.ui-button:hover,
-.ui-button.ui-state-hover {
+.ui-button:not(.chims-icon-btn):not(.chims-theme-fab):hover,
+.ui-button.ui-state-hover:not(.chims-icon-btn):not(.chims-theme-fab) {
     background: var(--cm-primary-hover) !important;
     border-color: var(--cm-primary-hover) !important;
     box-shadow: var(--cm-shadow-sm) !important;
     transform: translateY(-1px);
 }
 
-.ui-button.ui-state-focus,
-.ui-button:focus {
+.ui-button.ui-state-focus:not(.chims-icon-btn):not(.chims-theme-fab),
+.ui-button:focus:not(.chims-icon-btn):not(.chims-theme-fab) {
     outline: none !important;
-    box-shadow: 0 0 0 3px rgba(94, 114, 228, 0.25) !important;
+    box-shadow: 0 0 0 3px rgba(115, 103, 240, 0.25) !important;
 }
 
-.ui-button.ui-state-disabled,
-.ui-button:disabled {
+.ui-button.ui-state-disabled:not(.chims-icon-btn):not(.chims-theme-fab),
+.ui-button:disabled:not(.chims-icon-btn):not(.chims-theme-fab) {
     opacity: 0.55 !important;
     box-shadow: none !important;
     transform: none !important;
+}
+
+/* Header icon buttons stay neutral with a thin outline; override Saga's
+   solid-blue defaults. */
+.chims-icon-btn,
+.chims-icon-btn.ui-button,
+.chims-icon-btn.ui-button.ui-state-default {
+    background: transparent !important;
+    border: 1px solid #484f58 !important;
+    color: #c9d1d9 !important;
+    border-radius: 6px !important;
+    padding: 0.3rem 0.55rem !important;
+    box-shadow: none !important;
+    min-height: 0 !important;
+    width: auto !important;
+    min-width: 0 !important;
+}
+.chims-icon-btn:hover,
+.chims-icon-btn.ui-button:hover,
+.chims-icon-btn.ui-button.ui-state-hover {
+    background: #30363d !important;
+    border-color: #8b949e !important;
+    color: #f0f6fc !important;
+    transform: none !important;
+    box-shadow: none !important;
+}
+.chims-icon-btn .ui-button-text { display: none !important; }
+.chims-icon-btn .ui-icon,
+.chims-icon-btn .pi {
+    color: #c9d1d9 !important;
+    font-size: 0.95rem !important;
 }
 
 /* Secondary / outlined variant */
