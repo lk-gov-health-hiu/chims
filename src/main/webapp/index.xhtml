@@ -3,6 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:ez="http://xmlns.jcp.org/jsf/composite/ezcomp"
       xmlns:p="http://primefaces.org/ui">
 
@@ -11,38 +12,227 @@
         <ui:composition template="/template.xhtml">
 
             <ui:define name="content">
-                <!--<h1>Dashboard will be made available soon</h1>-->
+
+                <!-- Page title bar -->
+                <div class="cm-page-title">
+                    <div>
+                        <div class="cm-page-title-text">
+                            Welcome back, <h:outputText value="#{webUserController.loggedUser.name}"/>
+                        </div>
+                        <div class="cm-page-sub">
+                            cHIMS — Clinical Health Information Management System
+                        </div>
+                    </div>
+                    <span class="cm-crumb">
+                        <i class="bi bi-house-door"/> Home
+                        <i class="bi bi-chevron-right"/>
+                        Dashboard
+                    </span>
+                </div>
+
+                <!-- Institution hero -->
+                <div class="cm-hero">
+                    <span class="cm-hero-icon"><i class="bi bi-hospital"/></span>
+                    <div style="flex:1; min-width:0;">
+                        <div class="cm-hero-title">
+                            <h:outputText value="#{webUserController.loggedUser.institution.name}"/>
+                        </div>
+                        <div class="cm-hero-sub">
+                            Patient overview &#183;
+                            <h:outputText value="#{webUserController.loggedUser.webUserRole.label}"/>
+                        </div>
+                    </div>
+                    <span class="cm-badge cm-badge-info" style="background:rgba(255,255,255,0.18); color:#fff;">
+                        <i class="bi bi-shield-check"/>&#160; signed in
+                    </span>
+                </div>
+
+                <!-- Section: patient stats -->
+                <div class="cm-section-heading">
+                    <h2>Patient Details</h2>
+                    <span class="cm-section-rule"/>
+                </div>
+
+                <h:panelGroup layout="block" styleClass="cm-stat-row">
+
+                    <h:panelGroup layout="block" styleClass="cm-stat-tile">
+                        <span class="cm-stat-icon"><i class="bi bi-people"/></span>
+                        <span class="cm-stat-body">
+                            <span class="cm-stat-value">
+                                <h:outputText value="#{hospitalDashboardController.totalNumberOfRegisteredClients}">
+                                    <f:convertNumber pattern="#,##0"/>
+                                </h:outputText>
+                            </span>
+                            <span class="cm-stat-label">Registered Clients</span>
+                        </span>
+                    </h:panelGroup>
+
+                    <h:panelGroup layout="block" styleClass="cm-stat-tile cm-stat-success">
+                        <span class="cm-stat-icon"><i class="bi bi-clipboard2-pulse"/></span>
+                        <span class="cm-stat-body">
+                            <span class="cm-stat-value">
+                                <h:outputText value="#{hospitalDashboardController.totalNumberOfClinicEnrolments}">
+                                    <f:convertNumber pattern="#,##0"/>
+                                </h:outputText>
+                            </span>
+                            <span class="cm-stat-label">Clinic Enrolments</span>
+                        </span>
+                    </h:panelGroup>
+
+                    <h:panelGroup layout="block" styleClass="cm-stat-tile cm-stat-info">
+                        <span class="cm-stat-icon"><i class="bi bi-calendar-check"/></span>
+                        <span class="cm-stat-body">
+                            <span class="cm-stat-value">
+                                <h:outputText value="#{hospitalDashboardController.totalNumberOfClinicVisits}">
+                                    <f:convertNumber pattern="#,##0"/>
+                                </h:outputText>
+                            </span>
+                            <span class="cm-stat-label">Clinic Visits (YTD)</span>
+                        </span>
+                    </h:panelGroup>
+
+                    <h:panelGroup layout="block" styleClass="cm-stat-tile cm-stat-warning">
+                        <span class="cm-stat-icon"><i class="bi bi-heart-pulse"/></span>
+                        <span class="cm-stat-body">
+                            <span class="cm-stat-value">
+                                <h:outputText value="#{hospitalDashboardController.totalNumberOfCvsRiskClients}">
+                                    <f:convertNumber pattern="#,##0"/>
+                                </h:outputText>
+                            </span>
+                            <span class="cm-stat-label">High CVS Risk</span>
+                        </span>
+                    </h:panelGroup>
+
+                </h:panelGroup>
+
+                <!-- Section: analysis -->
+                <div class="cm-section-heading">
+                    <h2>Analysis</h2>
+                    <span class="cm-section-rule"/>
+                </div>
+
+                <h:form>
+                    <div class="cm-analysis-row">
+
+                        <!-- Queries -->
+                        <div class="cm-analysis-card">
+                            <div class="cm-analysis-head">
+                                <span class="cm-analysis-title">
+                                    <span class="cm-analysis-icon"><i class="bi bi-search"/></span>
+                                    Queries
+                                </span>
+                            </div>
+                            <div class="cm-analysis-body">
+                                <div class="cm-analysis-value">
+                                    <h:outputText value="#{queryComponentController.queries().size()}">
+                                        <f:convertNumber pattern="#,##0"/>
+                                    </h:outputText>
+                                </div>
+                                <div class="cm-analysis-desc">
+                                    Saved query definitions available to run against your institution's patient data.
+                                </div>
+                            </div>
+                            <div class="cm-analysis-foot">
+                                <p:commandLink ajax="false"
+                                               action="#{queryComponentController.toQueryIndex()}">
+                                    Open Queries <i class="bi bi-arrow-right-short"/>
+                                </p:commandLink>
+                            </div>
+                        </div>
+
+                        <!-- Reports -->
+                        <div class="cm-analysis-card cm-an-success">
+                            <div class="cm-analysis-head">
+                                <span class="cm-analysis-title">
+                                    <span class="cm-analysis-icon"><i class="bi bi-file-earmark-bar-graph"/></span>
+                                    Reports
+                                </span>
+                            </div>
+                            <div class="cm-analysis-body">
+                                <div class="cm-analysis-value">
+                                    <i class="bi bi-graph-up-arrow" style="font-size:1.6rem; color:var(--cm-success);"/>
+                                </div>
+                                <div class="cm-analysis-desc">
+                                    Registration, clinic and data-form reports for your institution.
+                                </div>
+                            </div>
+                            <div class="cm-analysis-foot">
+                                <p:commandLink ajax="false"
+                                               action="#{reportController.toViewReports()}">
+                                    Open Reports <i class="bi bi-arrow-right-short"/>
+                                </p:commandLink>
+                            </div>
+                        </div>
+
+                        <!-- Counts -->
+                        <div class="cm-analysis-card cm-an-info">
+                            <div class="cm-analysis-head">
+                                <span class="cm-analysis-title">
+                                    <span class="cm-analysis-icon"><i class="bi bi-123"/></span>
+                                    Counts
+                                </span>
+                            </div>
+                            <div class="cm-analysis-body">
+                                <div class="cm-analysis-value">
+                                    <h:outputText value="#{hospitalDashboardController.totalNumberOfRegisteredClients
+                                                          + hospitalDashboardController.totalNumberOfClinicEnrolments
+                                                          + hospitalDashboardController.totalNumberOfClinicVisits}">
+                                        <f:convertNumber pattern="#,##0"/>
+                                    </h:outputText>
+                                </div>
+                                <div class="cm-analysis-desc">
+                                    Aggregate count records across registrations, enrolments and visits.
+                                </div>
+                            </div>
+                            <div class="cm-analysis-foot">
+                                <p:commandLink ajax="false"
+                                               action="#{nationalReportController.toNationalReportsCounts()}">
+                                    Open Counts <i class="bi bi-arrow-right-short"/>
+                                </p:commandLink>
+                            </div>
+                        </div>
+
+                        <!-- Indicators -->
+                        <div class="cm-analysis-card cm-an-warning">
+                            <div class="cm-analysis-head">
+                                <span class="cm-analysis-title">
+                                    <span class="cm-analysis-icon"><i class="bi bi-bullseye"/></span>
+                                    Indicators
+                                </span>
+                            </div>
+                            <div class="cm-analysis-body">
+                                <div class="cm-analysis-value">
+                                    <h:outputText value="#{queryComponentController.fillIndicators().size()}">
+                                        <f:convertNumber pattern="#,##0"/>
+                                    </h:outputText>
+                                </div>
+                                <div class="cm-analysis-desc">
+                                    Programme indicators tracked for your institution catchment.
+                                </div>
+                            </div>
+                            <div class="cm-analysis-foot">
+                                <p:commandLink ajax="false"
+                                               action="#{indicatorController.toIndicatorIndex}">
+                                    Open Indicators <i class="bi bi-arrow-right-short"/>
+                                </p:commandLink>
+                            </div>
+                        </div>
+
+                    </div>
+                </h:form>
+
                 <h:panelGroup rendered="false">
-                    
-                    
                     <ez:dashboardSystemAdministrator rendered="#{webUserController.loggedUser.systemAdministrator}"/>
                     <ez:dashboardSuperUser rendered="#{webUserController.loggedUser.superUser}"/>
                     <ez:dashboardUser rendered="#{webUserController.loggedUser.user}"/>
-
                     <ez:dashboardMeAdministrator rendered="#{webUserController.loggedUser.meAdministrator}"/>
                     <ez:dashboardMeSuperUser rendered="#{webUserController.loggedUser.meSuperUser}"/>
                     <ez:dashboardMeUser rendered="#{webUserController.loggedUser.meUser}"/>
-
                     <ez:dashboardInstitution rendered="#{webUserController.loggedUser.institutionUser or webUserController.loggedUser.institutionAdministrator or webUserController.loggedUser.institutionSuperUser or webUserController.loggedUser.doctor or webUserController.loggedUser.nurse}"/>
-
-
                     <ez:dashboardDoctor rendered="#{webUserController.loggedUser.doctor}"/>
                     <ez:dashboardNurse rendered="#{webUserController.loggedUser.nurse}"/>
                     <ez:dashboardMidwife rendered="#{webUserController.loggedUser.midwife}"/>
                 </h:panelGroup>
-                
-                
-                 <h:panelGroup rendered="false">
-                    
-                    
-                    <ez:dashboardSystemAdministrator rendered="#{webUserController.loggedUser.systemAdministrator}"/>
-                   
-                </h:panelGroup>
-
-                <!--                <h:panelGroup>
-                                    <ez:userModules rendered="#{webUserController.loggedUser.systemAdministrator}"/>
-                                </h:panelGroup>-->
-
 
             </ui:define>
         </ui:composition>

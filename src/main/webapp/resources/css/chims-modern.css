@@ -1,0 +1,983 @@
+/* ============================================================
+   chims-modern.css — Fox Admin–inspired visual refresh
+   Loaded AFTER tem1.css, so selectors here win for shared rules.
+   Layer is additive: it tweaks PrimeFaces primitives and adds
+   utility classes (cards, stat tiles) without restructuring HTML.
+   ============================================================ */
+
+/* ---------- Theme tokens ---------- */
+:root {
+    --cm-primary: #5e72e4;
+    --cm-primary-hover: #4c5fd0;
+    --cm-primary-soft: #eef0fc;
+    --cm-success: #2dce89;
+    --cm-info: #11cdef;
+    --cm-warning: #fb6340;
+    --cm-danger: #f5365c;
+
+    --cm-bg: #f6f8fb;
+    --cm-surface: #ffffff;
+    --cm-surface-alt: #f8fafc;
+    --cm-border: #e3e7ee;
+    --cm-border-strong: #cbd2dc;
+
+    --cm-text: #1f2937;
+    --cm-text-muted: #6b7280;
+    --cm-text-soft: #9aa3af;
+
+    --cm-radius-sm: 6px;
+    --cm-radius: 10px;
+    --cm-radius-lg: 14px;
+
+    --cm-shadow-xs: 0 1px 2px rgba(15, 23, 42, 0.04);
+    --cm-shadow-sm: 0 2px 6px rgba(15, 23, 42, 0.06), 0 1px 2px rgba(15, 23, 42, 0.04);
+    --cm-shadow-md: 0 6px 18px rgba(15, 23, 42, 0.08), 0 2px 6px rgba(15, 23, 42, 0.05);
+    --cm-shadow-lg: 0 14px 32px rgba(15, 23, 42, 0.12), 0 4px 10px rgba(15, 23, 42, 0.06);
+
+    --cm-transition: all 0.18s ease;
+}
+
+.dark-mode {
+    --cm-primary: #7c8df0;
+    --cm-primary-hover: #5e72e4;
+    --cm-primary-soft: #1f2547;
+    --cm-success: #34d399;
+    --cm-info: #38bdf8;
+    --cm-warning: #fb923c;
+    --cm-danger: #f87171;
+
+    --cm-bg: #0f172a;
+    --cm-surface: #1e293b;
+    --cm-surface-alt: #243047;
+    --cm-border: #334155;
+    --cm-border-strong: #475569;
+
+    --cm-text: #f1f5f9;
+    --cm-text-muted: #cbd5e1;
+    --cm-text-soft: #94a3b8;
+
+    --cm-shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.4);
+    --cm-shadow-sm: 0 2px 6px rgba(0, 0, 0, 0.45), 0 1px 2px rgba(0, 0, 0, 0.3);
+    --cm-shadow-md: 0 6px 18px rgba(0, 0, 0, 0.5), 0 2px 6px rgba(0, 0, 0, 0.35);
+    --cm-shadow-lg: 0 14px 32px rgba(0, 0, 0, 0.55), 0 4px 10px rgba(0, 0, 0, 0.35);
+}
+
+/* ---------- Body / page surface ---------- */
+body {
+    background-color: var(--cm-bg) !important;
+    color: var(--cm-text);
+}
+
+.dark-mode body {
+    background-color: var(--cm-bg) !important;
+    color: var(--cm-text);
+}
+
+.chims-content {
+    color: var(--cm-text);
+}
+
+/* ---------- Generic card / stat tile utilities ---------- */
+.cm-card {
+    background: var(--cm-surface);
+    border: 1px solid var(--cm-border);
+    border-radius: var(--cm-radius);
+    box-shadow: var(--cm-shadow-sm);
+    padding: 1.25rem;
+    transition: var(--cm-transition);
+}
+
+.cm-card:hover {
+    box-shadow: var(--cm-shadow-md);
+    transform: translateY(-1px);
+}
+
+.cm-card-header {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--cm-text);
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.cm-stat-tile {
+    background: var(--cm-surface);
+    border: 1px solid var(--cm-border);
+    border-radius: var(--cm-radius);
+    box-shadow: var(--cm-shadow-sm);
+    padding: 1.25rem 1.4rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    transition: var(--cm-transition);
+}
+
+.cm-stat-tile:hover {
+    box-shadow: var(--cm-shadow-md);
+    transform: translateY(-1px);
+}
+
+.cm-stat-tile .cm-stat-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    background: var(--cm-primary-soft);
+    color: var(--cm-primary);
+    flex-shrink: 0;
+}
+
+.cm-stat-tile.cm-stat-success .cm-stat-icon { background: rgba(45, 206, 137, 0.12); color: var(--cm-success); }
+.cm-stat-tile.cm-stat-info    .cm-stat-icon { background: rgba(17, 205, 239, 0.12); color: var(--cm-info); }
+.cm-stat-tile.cm-stat-warning .cm-stat-icon { background: rgba(251, 99, 64, 0.12);  color: var(--cm-warning); }
+.cm-stat-tile.cm-stat-danger  .cm-stat-icon { background: rgba(245, 54, 92, 0.12);  color: var(--cm-danger); }
+
+.cm-stat-tile .cm-stat-body {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.2;
+    min-width: 0;
+}
+
+.cm-stat-tile .cm-stat-value {
+    font-size: 1.6rem;
+    font-weight: 600;
+    color: var(--cm-text);
+    letter-spacing: -0.02em;
+}
+
+.cm-stat-tile .cm-stat-label {
+    font-size: 0.8125rem;
+    color: var(--cm-text-muted);
+    margin-top: 0.15rem;
+}
+
+/* Two-line stack for dashboard rows */
+.cm-stat-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.25rem;
+}
+
+/* ---------- PrimeFaces panel & fieldset ---------- */
+.ui-panel,
+.ui-fieldset {
+    border: 1px solid var(--cm-border) !important;
+    border-radius: var(--cm-radius) !important;
+    background: var(--cm-surface) !important;
+    box-shadow: var(--cm-shadow-sm) !important;
+    color: var(--cm-text);
+}
+
+.ui-panel .ui-panel-titlebar,
+.ui-fieldset .ui-fieldset-legend {
+    background: var(--cm-surface-alt) !important;
+    border: none !important;
+    border-bottom: 1px solid var(--cm-border) !important;
+    border-radius: var(--cm-radius) var(--cm-radius) 0 0 !important;
+    padding: 0.75rem 1rem !important;
+    color: var(--cm-text) !important;
+    font-weight: 600 !important;
+}
+
+.ui-panel .ui-panel-content {
+    background: var(--cm-surface) !important;
+    color: var(--cm-text) !important;
+    padding: 1rem 1.1rem !important;
+    border: none !important;
+}
+
+/* ---------- PrimeFaces dialogs ---------- */
+.ui-dialog {
+    border: 1px solid var(--cm-border) !important;
+    border-radius: var(--cm-radius-lg) !important;
+    box-shadow: var(--cm-shadow-lg) !important;
+    overflow: hidden;
+}
+
+.ui-dialog .ui-dialog-titlebar {
+    background: var(--cm-surface-alt) !important;
+    color: var(--cm-text) !important;
+    border: none !important;
+    border-bottom: 1px solid var(--cm-border) !important;
+    padding: 0.85rem 1.1rem !important;
+}
+
+.ui-dialog .ui-dialog-content {
+    background: var(--cm-surface) !important;
+    color: var(--cm-text) !important;
+    padding: 1.1rem !important;
+}
+
+.ui-overlay-mask,
+.ui-widget-overlay {
+    background: rgba(15, 23, 42, 0.45) !important;
+}
+
+/* ---------- Buttons ---------- */
+.ui-button,
+.ui-button.ui-state-default,
+.ui-button.ui-widget {
+    background: var(--cm-primary) !important;
+    border: 1px solid var(--cm-primary) !important;
+    color: #ffffff !important;
+    border-radius: var(--cm-radius-sm) !important;
+    padding: 0.45rem 0.95rem !important;
+    font-weight: 500 !important;
+    box-shadow: var(--cm-shadow-xs) !important;
+    transition: var(--cm-transition) !important;
+}
+
+.ui-button:hover,
+.ui-button.ui-state-hover {
+    background: var(--cm-primary-hover) !important;
+    border-color: var(--cm-primary-hover) !important;
+    box-shadow: var(--cm-shadow-sm) !important;
+    transform: translateY(-1px);
+}
+
+.ui-button.ui-state-focus,
+.ui-button:focus {
+    outline: none !important;
+    box-shadow: 0 0 0 3px rgba(94, 114, 228, 0.25) !important;
+}
+
+.ui-button.ui-state-disabled,
+.ui-button:disabled {
+    opacity: 0.55 !important;
+    box-shadow: none !important;
+    transform: none !important;
+}
+
+/* Secondary / outlined variant */
+.ui-button.ui-button-secondary,
+.ui-button.ui-button-flat,
+.ui-button-text-only.ui-state-default[class*="secondary"] {
+    background: var(--cm-surface) !important;
+    color: var(--cm-text) !important;
+    border-color: var(--cm-border-strong) !important;
+}
+
+.ui-button.ui-button-secondary:hover,
+.ui-button.ui-button-flat:hover {
+    background: var(--cm-surface-alt) !important;
+    color: var(--cm-text) !important;
+    border-color: var(--cm-border-strong) !important;
+}
+
+/* ---------- Form fields ---------- */
+.ui-inputfield,
+.ui-inputtext,
+.ui-selectonemenu,
+.ui-selectmanymenu,
+.ui-spinner-input,
+.ui-password input {
+    background: var(--cm-surface) !important;
+    border: 1px solid var(--cm-border-strong) !important;
+    border-radius: var(--cm-radius-sm) !important;
+    color: var(--cm-text) !important;
+    padding: 0.45rem 0.7rem !important;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease !important;
+}
+
+.ui-inputfield:hover,
+.ui-inputtext:hover,
+.ui-selectonemenu:hover {
+    border-color: var(--cm-primary) !important;
+}
+
+.ui-inputfield.ui-state-focus,
+.ui-inputfield:focus,
+.ui-selectonemenu.ui-state-focus,
+.ui-state-focus.ui-inputtext {
+    outline: none !important;
+    border-color: var(--cm-primary) !important;
+    box-shadow: 0 0 0 3px rgba(94, 114, 228, 0.18) !important;
+}
+
+.ui-inputfield::placeholder { color: var(--cm-text-soft) !important; }
+
+/* SelectOneMenu trigger */
+.ui-selectonemenu .ui-selectonemenu-trigger {
+    background: transparent !important;
+    border: none !important;
+    color: var(--cm-text-muted) !important;
+}
+
+/* Dropdown panel */
+.ui-selectonemenu-panel,
+.ui-selectchecboxmenu-panel,
+.ui-autocomplete-panel,
+.ui-overlaypanel {
+    background: var(--cm-surface) !important;
+    border: 1px solid var(--cm-border) !important;
+    border-radius: var(--cm-radius) !important;
+    box-shadow: var(--cm-shadow-md) !important;
+    color: var(--cm-text) !important;
+}
+
+.ui-selectonemenu-items .ui-selectonemenu-item {
+    padding: 0.45rem 0.85rem !important;
+    color: var(--cm-text) !important;
+}
+
+.ui-selectonemenu-items .ui-selectonemenu-item.ui-state-highlight,
+.ui-selectonemenu-items .ui-selectonemenu-item.ui-state-hover {
+    background: var(--cm-primary-soft) !important;
+    color: var(--cm-primary) !important;
+}
+
+/* ---------- Checkbox / radio (don't break apple-checkbox-table elsewhere) ---------- */
+.ui-chkbox-box:not(.apple-checkbox-table .ui-chkbox-box),
+.ui-radiobutton-box {
+    border: 2px solid var(--cm-border-strong) !important;
+    background: var(--cm-surface) !important;
+    border-radius: var(--cm-radius-sm) !important;
+    transition: var(--cm-transition) !important;
+}
+
+.ui-radiobutton-box {
+    border-radius: 50% !important;
+}
+
+.ui-chkbox-box.ui-state-active:not(.apple-checkbox-table .ui-chkbox-box),
+.ui-radiobutton-box.ui-state-active {
+    background: var(--cm-primary) !important;
+    border-color: var(--cm-primary) !important;
+}
+
+/* ---------- DataTable ---------- */
+.ui-datatable {
+    border: 1px solid var(--cm-border) !important;
+    border-radius: var(--cm-radius) !important;
+    overflow: hidden;
+    background: var(--cm-surface) !important;
+    box-shadow: var(--cm-shadow-sm) !important;
+}
+
+.ui-datatable .ui-datatable-header,
+.ui-datatable thead th,
+.ui-datatable .ui-datatable-thead > tr > th {
+    background: var(--cm-surface-alt) !important;
+    color: var(--cm-text) !important;
+    border: none !important;
+    border-bottom: 1px solid var(--cm-border) !important;
+    font-weight: 600 !important;
+    padding: 0.7rem 0.85rem !important;
+}
+
+.ui-datatable tbody tr,
+.ui-datatable .ui-datatable-data > tr {
+    background: var(--cm-surface) !important;
+    color: var(--cm-text) !important;
+    transition: background-color 0.12s ease !important;
+}
+
+.ui-datatable .ui-datatable-data > tr > td {
+    border-color: var(--cm-border) !important;
+    padding: 0.65rem 0.85rem !important;
+    color: var(--cm-text) !important;
+}
+
+.ui-datatable .ui-datatable-data > tr:hover > td {
+    background-color: var(--cm-surface-alt) !important;
+}
+
+.ui-datatable .ui-datatable-data > tr.ui-state-highlight > td {
+    background-color: var(--cm-primary-soft) !important;
+    color: var(--cm-text) !important;
+}
+
+/* Paginator */
+.ui-paginator {
+    background: var(--cm-surface) !important;
+    border: none !important;
+    border-top: 1px solid var(--cm-border) !important;
+    color: var(--cm-text) !important;
+    padding: 0.5rem !important;
+}
+
+.ui-paginator .ui-paginator-page,
+.ui-paginator .ui-paginator-next,
+.ui-paginator .ui-paginator-prev,
+.ui-paginator .ui-paginator-first,
+.ui-paginator .ui-paginator-last {
+    background: transparent !important;
+    border: 1px solid transparent !important;
+    border-radius: var(--cm-radius-sm) !important;
+    color: var(--cm-text-muted) !important;
+    margin: 0 0.1rem !important;
+    min-width: 2rem;
+    text-align: center;
+}
+
+.ui-paginator .ui-paginator-page:hover,
+.ui-paginator .ui-paginator-next:hover,
+.ui-paginator .ui-paginator-prev:hover {
+    background: var(--cm-surface-alt) !important;
+    color: var(--cm-text) !important;
+}
+
+.ui-paginator .ui-paginator-page.ui-state-active {
+    background: var(--cm-primary) !important;
+    color: #ffffff !important;
+    border-color: var(--cm-primary) !important;
+}
+
+/* ---------- Tabs ---------- */
+.ui-tabs.ui-tabs-top > .ui-tabs-nav,
+.ui-tabs .ui-tabs-nav {
+    background: transparent !important;
+    border: none !important;
+    border-bottom: 1px solid var(--cm-border) !important;
+    padding: 0 !important;
+}
+
+.ui-tabs .ui-tabs-nav li {
+    background: transparent !important;
+    border: none !important;
+    margin: 0 0.25rem 0 0 !important;
+}
+
+.ui-tabs .ui-tabs-nav li a,
+.ui-tabs .ui-tabs-nav li .ui-tabs-anchor {
+    color: var(--cm-text-muted) !important;
+    padding: 0.65rem 1rem !important;
+    border-bottom: 2px solid transparent !important;
+    transition: var(--cm-transition);
+}
+
+.ui-tabs .ui-tabs-nav li.ui-state-active a,
+.ui-tabs .ui-tabs-nav li.ui-tabs-selected a {
+    color: var(--cm-primary) !important;
+    border-bottom-color: var(--cm-primary) !important;
+    font-weight: 600 !important;
+}
+
+.ui-tabs .ui-tabs-panel {
+    background: var(--cm-surface) !important;
+    color: var(--cm-text) !important;
+    padding: 1rem 0.25rem !important;
+    border: none !important;
+}
+
+/* ---------- Messages / growl ---------- */
+.ui-message,
+.ui-messages {
+    border-radius: var(--cm-radius-sm) !important;
+    border: 1px solid var(--cm-border) !important;
+    background: var(--cm-surface) !important;
+    color: var(--cm-text) !important;
+    padding: 0.65rem 0.85rem !important;
+}
+
+.ui-messages-info-summary, .ui-message-info { color: var(--cm-info) !important; }
+.ui-messages-warn-summary, .ui-message-warn { color: var(--cm-warning) !important; }
+.ui-messages-error-summary, .ui-message-error { color: var(--cm-danger) !important; }
+.ui-messages-success-summary, .ui-message-success { color: var(--cm-success) !important; }
+
+.ui-growl-item {
+    border-radius: var(--cm-radius) !important;
+    box-shadow: var(--cm-shadow-md) !important;
+    border: 1px solid var(--cm-border) !important;
+    background: var(--cm-surface) !important;
+}
+
+/* ---------- Badges / tags ---------- */
+.cm-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0.2rem 0.55rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    border-radius: 999px;
+    background: var(--cm-primary-soft);
+    color: var(--cm-primary);
+    line-height: 1.4;
+}
+
+.cm-badge.cm-badge-success { background: rgba(45, 206, 137, 0.14); color: var(--cm-success); }
+.cm-badge.cm-badge-warning { background: rgba(251, 99, 64, 0.14);  color: var(--cm-warning); }
+.cm-badge.cm-badge-danger  { background: rgba(245, 54, 92, 0.14);  color: var(--cm-danger); }
+.cm-badge.cm-badge-info    { background: rgba(17, 205, 239, 0.14); color: var(--cm-info); }
+.cm-badge.cm-badge-muted   { background: var(--cm-surface-alt);    color: var(--cm-text-muted); }
+
+/* ---------- Scrollbar (subtle) ---------- */
+*::-webkit-scrollbar { width: 10px; height: 10px; }
+*::-webkit-scrollbar-track { background: transparent; }
+*::-webkit-scrollbar-thumb {
+    background: var(--cm-border-strong);
+    border-radius: 999px;
+    border: 2px solid transparent;
+    background-clip: padding-box;
+}
+*::-webkit-scrollbar-thumb:hover { background: var(--cm-text-soft); background-clip: padding-box; }
+
+/* ---------- Dark-mode tweaks for legacy chims-* classes that pre-date this layer ---------- */
+.dark-mode .chims-content,
+.dark-mode body {
+    background-color: var(--cm-bg) !important;
+    color: var(--cm-text) !important;
+}
+
+.dark-mode .ui-widget-content,
+.dark-mode .ui-widget {
+    color: var(--cm-text);
+}
+
+/* Apple-checkbox tables stay as defined in jsfcrud.css (issue #356);
+   only adopt our row palette for them when not selected. */
+.apple-checkbox-table.ui-datatable .ui-datatable-data > tr > td {
+    background-color: var(--cm-surface) !important;
+}
+.apple-checkbox-table.ui-datatable .ui-datatable-data > tr.ui-state-highlight > td {
+    background-color: var(--cm-primary-soft) !important;
+}
+
+/* ============================================================
+   Fox Admin–inspired polish — buttons, tables, dashboard, sticky footer
+   ============================================================ */
+
+/* ---------- Sticky-footer hard guarantee ---------- */
+html, body { height: 100%; }
+body { min-height: 100vh !important; }
+
+.chims-page-wrap {
+    min-height: 100vh;
+}
+.chims-content {
+    flex: 1 0 auto !important;
+    min-height: 0;
+}
+.chims-footer {
+    flex-shrink: 0;
+    margin-top: auto !important;
+}
+
+/* ---------- Uniform button sizing + 3D feel ---------- */
+.ui-button,
+.ui-button.ui-state-default,
+.ui-button.ui-widget,
+.btn,
+button.ui-commandlink,
+input[type="button"].ui-button,
+input[type="submit"].ui-button {
+    min-height: 38px !important;
+    padding: 0.5rem 1.1rem !important;
+    border-radius: 10px !important;
+    font-weight: 500 !important;
+    letter-spacing: 0.01em;
+    box-shadow:
+        0 1px 0 rgba(255,255,255,0.15) inset,
+        0 1px 2px rgba(15, 23, 42, 0.08),
+        0 4px 10px rgba(15, 23, 42, 0.06) !important;
+    transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease, border-color 0.15s ease !important;
+}
+
+.ui-button:hover,
+.ui-button.ui-state-hover,
+.btn:hover {
+    transform: translateY(-1px);
+    box-shadow:
+        0 1px 0 rgba(255,255,255,0.18) inset,
+        0 4px 8px rgba(15, 23, 42, 0.12),
+        0 10px 22px rgba(15, 23, 42, 0.10) !important;
+}
+
+.ui-button:active,
+.ui-button.ui-state-active,
+.btn:active {
+    transform: translateY(0);
+    box-shadow:
+        0 1px 2px rgba(15, 23, 42, 0.08) inset !important;
+}
+
+.ui-button.ui-button-icon-only {
+    width: 38px !important;
+    min-width: 38px !important;
+    padding: 0.5rem !important;
+}
+
+/* Bootstrap btn-secondary used for icons (rare) */
+.btn-secondary {
+    background: var(--cm-primary) !important;
+    border-color: var(--cm-primary) !important;
+}
+
+/* CommandLink icon-buttons inside data table — give them proper chrome */
+.ui-datatable td a > i.bi,
+.ui-datatable td .ui-commandlink > i.bi,
+td > h\:commandLink > i.bi,
+.ui-datatable td a.m-1 {
+    color: var(--cm-primary);
+    font-size: 1.05rem;
+    transition: color 0.15s ease, transform 0.15s ease;
+}
+.ui-datatable td a:hover > i.bi {
+    color: var(--cm-primary-hover);
+    transform: translateY(-1px);
+}
+.ui-datatable td a.text-warning > i.bi {
+    color: var(--cm-danger) !important;
+}
+
+/* ---------- Uniform input sizing ---------- */
+.ui-inputfield,
+.ui-inputtext,
+.ui-selectonemenu,
+.ui-spinner-input,
+.ui-password input,
+.form-control,
+.form-select {
+    min-height: 38px !important;
+    padding: 0.5rem 0.75rem !important;
+    border-radius: 10px !important;
+}
+
+.ui-selectonemenu .ui-selectonemenu-label {
+    padding: 0.5rem 0.75rem !important;
+    line-height: 1.3 !important;
+}
+
+/* ---------- Tables: deeper 3D card look ---------- */
+.ui-datatable {
+    border-radius: 14px !important;
+    box-shadow:
+        0 1px 2px rgba(15, 23, 42, 0.05),
+        0 6px 18px rgba(15, 23, 42, 0.06) !important;
+}
+
+.ui-datatable .ui-datatable-data > tr > td,
+.ui-datatable thead th {
+    padding: 0.85rem 1rem !important;
+}
+
+.ui-datatable thead th {
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    font-size: 0.75rem !important;
+    color: var(--cm-text-muted) !important;
+}
+
+/* Subtle muted columns for de-emphasized fields (Role, Institution) */
+.cm-col-muted,
+.ui-datatable .cm-col-muted {
+    color: var(--cm-text-muted) !important;
+    font-size: 0.85rem !important;
+}
+
+.cm-text-muted {
+    color: var(--cm-text-muted) !important;
+}
+
+/* ---------- Cards: deeper 3D + Fox-Admin header strip ---------- */
+.cm-card {
+    border-radius: 14px;
+    box-shadow:
+        0 1px 2px rgba(15, 23, 42, 0.05),
+        0 6px 18px rgba(15, 23, 42, 0.06);
+}
+
+.cm-card-3d {
+    background: var(--cm-surface);
+    border: 1px solid var(--cm-border);
+    border-radius: 14px;
+    box-shadow:
+        0 2px 4px rgba(15, 23, 42, 0.04),
+        0 10px 24px rgba(15, 23, 42, 0.08);
+    overflow: hidden;
+    transition: var(--cm-transition);
+}
+.cm-card-3d:hover {
+    transform: translateY(-2px);
+    box-shadow:
+        0 4px 8px rgba(15, 23, 42, 0.06),
+        0 18px 36px rgba(15, 23, 42, 0.12);
+}
+
+.cm-card-3d .cm-card-head {
+    padding: 0.9rem 1.1rem;
+    border-bottom: 1px solid var(--cm-border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    background: var(--cm-surface-alt);
+}
+
+.cm-card-3d .cm-card-title {
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: var(--cm-text);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+}
+
+.cm-card-3d .cm-card-title i.bi {
+    color: var(--cm-primary);
+    font-size: 1.05rem;
+}
+
+.cm-card-3d .cm-card-body {
+    padding: 1.1rem 1.2rem;
+}
+
+.cm-card-3d .cm-card-foot {
+    padding: 0.7rem 1.1rem;
+    border-top: 1px solid var(--cm-border);
+    background: var(--cm-surface-alt);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    font-size: 0.825rem;
+    color: var(--cm-text-muted);
+}
+
+/* ---------- Page title bar (Fox-Admin style) ---------- */
+.cm-page-title {
+    background: var(--cm-surface);
+    border: 1px solid var(--cm-border);
+    border-radius: 14px;
+    box-shadow: var(--cm-shadow-sm);
+    padding: 1rem 1.25rem;
+    margin-bottom: 1.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.cm-page-title h1,
+.cm-page-title .cm-page-title-text {
+    margin: 0;
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: var(--cm-text);
+}
+
+.cm-page-title .cm-page-sub {
+    color: var(--cm-text-muted);
+    font-size: 0.875rem;
+    margin-top: 0.15rem;
+}
+
+.cm-page-title .cm-crumb {
+    font-size: 0.8125rem;
+    color: var(--cm-text-muted);
+}
+.cm-page-title .cm-crumb i.bi {
+    margin: 0 0.25rem;
+    color: var(--cm-text-soft);
+}
+
+/* ---------- Analysis category cards ---------- */
+.cm-analysis-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.25rem;
+}
+
+.cm-analysis-card {
+    background: var(--cm-surface);
+    border: 1px solid var(--cm-border);
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow:
+        0 2px 4px rgba(15, 23, 42, 0.04),
+        0 10px 24px rgba(15, 23, 42, 0.08);
+    display: flex;
+    flex-direction: column;
+    transition: var(--cm-transition);
+    position: relative;
+}
+
+.cm-analysis-card::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--cm-primary), #8a9bff);
+}
+.cm-analysis-card.cm-an-success::before { background: linear-gradient(90deg, var(--cm-success), #5be3a4); }
+.cm-analysis-card.cm-an-info::before    { background: linear-gradient(90deg, var(--cm-info), #5fdcf3); }
+.cm-analysis-card.cm-an-warning::before { background: linear-gradient(90deg, var(--cm-warning), #ffa07a); }
+
+.cm-analysis-card:hover {
+    transform: translateY(-3px);
+    box-shadow:
+        0 6px 12px rgba(15, 23, 42, 0.07),
+        0 22px 40px rgba(15, 23, 42, 0.14);
+}
+
+.cm-analysis-head {
+    padding: 1.1rem 1.2rem 0.4rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+}
+
+.cm-analysis-head .cm-analysis-title {
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: var(--cm-text);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.cm-analysis-head .cm-analysis-icon {
+    width: 40px; height: 40px;
+    border-radius: 12px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--cm-primary-soft);
+    color: var(--cm-primary);
+    font-size: 1.15rem;
+}
+.cm-analysis-card.cm-an-success .cm-analysis-icon { background: rgba(45, 206, 137, 0.14); color: var(--cm-success); }
+.cm-analysis-card.cm-an-info    .cm-analysis-icon { background: rgba(17, 205, 239, 0.14); color: var(--cm-info); }
+.cm-analysis-card.cm-an-warning .cm-analysis-icon { background: rgba(251, 99, 64, 0.14);  color: var(--cm-warning); }
+
+.cm-analysis-body {
+    padding: 0.4rem 1.2rem 1rem;
+    flex: 1;
+}
+
+.cm-analysis-body .cm-analysis-value {
+    font-size: 1.85rem;
+    font-weight: 700;
+    color: var(--cm-text);
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+}
+
+.cm-analysis-body .cm-analysis-desc {
+    font-size: 0.8125rem;
+    color: var(--cm-text-muted);
+    margin-top: 0.25rem;
+}
+
+.cm-analysis-foot {
+    padding: 0.7rem 1.2rem;
+    border-top: 1px solid var(--cm-border);
+    background: var(--cm-surface-alt);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.cm-analysis-foot a,
+.cm-analysis-foot .ui-commandlink {
+    color: var(--cm-primary) !important;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+.cm-analysis-foot a:hover { color: var(--cm-primary-hover) !important; text-decoration: none; }
+
+.cm-analysis-foot .ui-button {
+    min-height: 32px !important;
+    padding: 0.35rem 0.85rem !important;
+    font-size: 0.8125rem !important;
+    border-radius: 8px !important;
+}
+
+/* Patient-detail stat row inside dashboard — uniform tile heights */
+.cm-stat-row > .cm-stat-tile {
+    min-height: 92px;
+}
+
+/* Soft gradient hero for institution name */
+.cm-hero {
+    background: linear-gradient(135deg, var(--cm-primary), #8a9bff);
+    color: #fff !important;
+    border: none;
+    border-radius: 14px;
+    padding: 1.4rem 1.6rem;
+    margin-bottom: 1.25rem;
+    box-shadow:
+        0 6px 14px rgba(94, 114, 228, 0.25),
+        0 14px 28px rgba(94, 114, 228, 0.18);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+.dark-mode .cm-hero {
+    box-shadow:
+        0 6px 14px rgba(0,0,0,0.45),
+        0 14px 28px rgba(0,0,0,0.4);
+}
+
+.cm-hero-title {
+    font-size: 1.35rem;
+    font-weight: 600;
+    color: #fff !important;
+    margin: 0;
+}
+.cm-hero-sub {
+    color: rgba(255,255,255,0.85);
+    font-size: 0.875rem;
+    margin-top: 0.2rem;
+}
+
+.cm-hero .cm-hero-icon {
+    width: 56px; height: 56px;
+    border-radius: 14px;
+    background: rgba(255,255,255,0.18);
+    color: #fff;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.7rem;
+    flex-shrink: 0;
+}
+
+/* ---------- Section heading ---------- */
+.cm-section-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 0.5rem 0 0.75rem;
+}
+.cm-section-heading h2 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--cm-text);
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
+.cm-section-heading .cm-section-rule {
+    flex: 1;
+    height: 1px;
+    background: var(--cm-border);
+    margin-left: 0.85rem;
+}
+
+/* ---------- Dialog button row uniform ---------- */
+.ui-dialog .ui-dialog-footer .ui-button {
+    margin-left: 0.4rem !important;
+}
+
+/* ---------- Dark-mode hero adjusts ---------- */
+.dark-mode .cm-hero {
+    background: linear-gradient(135deg, #5e72e4, #7c8df0);
+}
