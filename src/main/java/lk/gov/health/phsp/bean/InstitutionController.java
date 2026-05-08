@@ -59,6 +59,7 @@ public class InstitutionController implements Serializable {
     private UserTransactionController userTransactionController;
 
     private List<Institution> items = null;
+    private List<Institution> selectedItems = null;
     private Institution selected;
     private Institution deleting;
     private List<Institution> myClinics;
@@ -653,6 +654,39 @@ public class InstitutionController implements Serializable {
             selected = null; // Remove selection
             items = null;    // Invalidate list of items to trigger re-query.
         }
+    }
+
+    public void selectAllInstitutions() {
+        selectedItems = (items == null) ? new ArrayList<>() : new ArrayList<>(items);
+    }
+
+    public void deselectAllInstitutions() {
+        selectedItems = new ArrayList<>();
+    }
+
+    public void deleteSelectedItems() {
+        if (selectedItems == null || selectedItems.isEmpty()) {
+            JsfUtil.addErrorMessage("No institutions selected");
+            return;
+        }
+        for (Institution i : selectedItems) {
+            i.setRetired(true);
+            i.setRetiredAt(new Date());
+            i.setRetirer(webUserController.getLoggedUser());
+            getFacade().edit(i);
+        }
+        JsfUtil.addSuccessMessage(selectedItems.size() + " institution(s) deleted.");
+        selectedItems = new ArrayList<>();
+        items = null;
+        userTransactionController.recordTransaction("Delete Selected Institutions");
+    }
+
+    public List<Institution> getSelectedItems() {
+        return selectedItems;
+    }
+
+    public void setSelectedItems(List<Institution> selectedItems) {
+        this.selectedItems = selectedItems;
     }
 
     public List<Institution> getItems() {

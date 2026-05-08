@@ -18,22 +18,41 @@
                     <p:dataExporter target="datalist" type="xls" fileName="dictionary" ></p:dataExporter>
                 </p:commandButton>
                 <p:commandButton value="Reload"
-                                 ajax="false" 
+                                 ajax="false"
                                  class="m-1"
                                  action="#{itemController.reloadItems()}" >
                 </p:commandButton>
-                
+
+                <p:commandButton value="Select All" class="m-1"
+                                 action="#{itemController.selectAllDictionaryItems()}"
+                                 update="datalist"
+                                 process="@this"/>
+
+                <p:commandButton value="Deselect All" class="m-1"
+                                 action="#{itemController.deselectAllDictionaryItems()}"
+                                 process="@this"
+                                 oncomplete="PF('itemTable').unselectAllRows();"/>
+
+                <p:commandButton value="Delete Selected" class="m-1"
+                                 action="#{itemController.destroySelected()}"
+                                 update="datalist"
+                                 onclick="return confirm('Are you sure you want to delete the selected items? This cannot be undone.');"/>
+
                 <p:panel header="#{bundleClinical.ListItemTitle}">
-                    <p:dataTable id="datalist" value="#{itemController.items}" var="item"
-                                 selectionMode="single" selection="#{itemController.selected}"
+                    <p:dataTable id="datalist" widgetVar="itemTable" value="#{itemController.items}" var="item"
+                                 selection="#{itemController.selectedItems}"
+                                 styleClass="apple-checkbox-table"
                                  paginator="true"
                                  rowKey="#{item.id}"
                                  rows="10"
                                  rowsPerPageTemplate="10,20,30,40,50"
                                  >
 
-                        <p:ajax event="rowSelect"   update="createButton viewButton editButton deleteButton"/>
-                        <p:ajax event="rowUnselect" update="createButton viewButton editButton deleteButton"/>
+                        <p:ajax event="rowSelectCheckbox"   update="createButton viewButton editButton deleteButton"/>
+                        <p:ajax event="rowUnselectCheckbox" update="createButton viewButton editButton deleteButton"/>
+                        <p:ajax event="toggleSelect"/>
+
+                        <p:column selectionMode="multiple" style="width:2.5rem; text-align:center;" exportable="false"/>
 
                         <p:column rendered="true" filterBy="#{item.id}" filterMatchMode="contains" sortBy="#{item.id}">
                             <f:facet name="header">
