@@ -981,3 +981,40 @@ td > h\:commandLink > i.bi,
 .dark-mode .cm-hero {
     background: linear-gradient(135deg, #5e72e4, #7c8df0);
 }
+
+/* ---------- Coloured menu icons (Fox-Admin accent palette) ---------- */
+.ui-menubar .cm-icon-primary,
+.ui-menu-list  .cm-icon-primary { color: var(--cm-primary)  !important; }
+.ui-menubar .cm-icon-success,
+.ui-menu-list  .cm-icon-success { color: var(--cm-success)  !important; }
+.ui-menubar .cm-icon-info,
+.ui-menu-list  .cm-icon-info    { color: var(--cm-info)     !important; }
+.ui-menubar .cm-icon-warning,
+.ui-menu-list  .cm-icon-warning { color: var(--cm-warning)  !important; }
+.ui-menubar .cm-icon-danger,
+.ui-menu-list  .cm-icon-danger  { color: var(--cm-danger)   !important; }
+
+/* Icon size + spacing inside menu items so coloured chips read clearly */
+.ui-menubar .ui-menuitem-icon,
+.ui-menu-list  .ui-menuitem-icon {
+    font-size: 0.95rem !important;
+    margin-right: 0.55rem !important;
+    width: 1.1rem;
+    text-align: center;
+}
+
+/* Dark-mode override — keep accent colours rather than flat purple */
+.dark-mode .ui-menubar .cm-icon-primary,
+.dark-mode .ui-menu-list  .cm-icon-primary { color: #8a9bff !important; }
+.dark-mode .ui-menubar .cm-icon-success,
+.dark-mode .ui-menu-list  .cm-icon-success { color: #34d399 !important; }
+.dark-mode .ui-menubar .cm-icon-info,
+.dark-mode .ui-menu-list  .cm-icon-info    { color: #38bdf8 !important; }
+.dark-mode .ui-menubar .cm-icon-warning,
+.dark-mode .ui-menu-list  .cm-icon-warning { color: #fb923c !important; }
+
+/* Header brand link when rendered via h:link should look like an anchor row */
+a.chims-brand,
+.chims-brand {
+    text-decoration: none !important;
+}

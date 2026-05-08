@@ -13,14 +13,14 @@
         <!-- GitHub-style top header bar -->
         <div class="chims-header">
             <div class="chims-header-inner">
-                <!-- Brand / Logo -->
-                <a class="chims-brand" href="#{request.contextPath}/app/index.xhtml">
-                    <h:graphicImage library="image" name="himslogo.png"
+                <!-- Brand / Logo — always routes to dashboard via JSF view handler -->
+                <h:link outcome="/index" styleClass="chims-brand">
+                    <h:graphicImage library="image" name="chims_logo_login.png"
                                     styleClass="chims-logo-img" alt="cHIMS" />
                     <span class="chims-brand-text">
                         <span class="chims-brand-c">c</span><span class="chims-brand-hims">HIMS</span>
                     </span>
-                </a>
+                </h:link>
 
                 <!-- Right side actions -->
                 <div class="chims-header-actions">
@@ -94,13 +94,13 @@
                                     icon="pi pi-users"
                                     action="/insAdmin/user_index" ajax="false" />
                         <p:menuitem value="Manage Institutions"
-                                    icon="pi pi-building"
+                                    icon="pi pi-building cm-icon-primary"
                                     action="/insAdmin/institution_index" />
                         <p:menuitem value="Manage Areas"
                                     icon="pi pi-map"
                                     action="/insAdmin/area_index" ajax="false" />
                         <p:menuitem value="Manage Metadata"
-                                    icon="pi pi-database"
+                                    icon="pi pi-tags cm-icon-info"
                                     action="/insAdmin/data_index" ajax="false" />
                     </p:submenu>
 
@@ -110,16 +110,16 @@
                                     icon="pi pi-users"
                                     action="#{webUserController.toManageUserIndexForSystemAdmin()}" ajax="false" />
                         <p:menuitem value="Manage Institutions"
-                                    icon="pi pi-building"
+                                    icon="pi pi-building cm-icon-primary"
                                     action="/institution/index" ajax="false" />
                         <p:menuitem value="Manage Areas"
                                     icon="pi pi-map"
                                     action="/area/index" ajax="false" />
                         <p:menuitem value="Manage Metadata"
-                                    icon="pi pi-database"
+                                    icon="pi pi-tags cm-icon-info"
                                     action="/systemAdmin/manage_metadata_index" ajax="false" />
                         <p:menuitem value="Manage Data"
-                                    icon="pi pi-table"
+                                    icon="pi pi-database cm-icon-success"
                                     action="/systemAdmin/manage_data_index" ajax="false" />
                         <p:menuitem value="Manage Interfaces"
                                     icon="pi pi-sitemap"
@@ -147,23 +147,23 @@
                     <p:submenu label="Help">
                         <p:menuitem value="User Manual (Sinhala)"
                                     icon="pi pi-book"
-                                    action="/wikis" ajax="false" />
+                                    outcome="/wikis" />
                         <p:menuitem value="User Manual (Tamil)"
                                     icon="pi pi-book"
-                                    action="/wikit" ajax="false" />
+                                    outcome="/wikit" />
                         <p:menuitem value="User Manual (English)"
                                     icon="pi pi-book"
-                                    action="/wiki" ajax="false" />
+                                    outcome="/wiki" />
                         <p:menuitem value="Issue Tracker"
                                     icon="pi pi-github"
                                     url="https://github.com/lk-gov-health-hiu/pssp/issues"
                                     ajax="false" target="_blank" />
                         <p:menuitem value="Troubleshooting"
-                                    icon="pi pi-wrench"
-                                    action="/troubleschooter" ajax="false" />
+                                    icon="pi pi-wrench cm-icon-warning"
+                                    outcome="/troubleschooter" />
                         <p:menuitem value="About"
-                                    icon="pi pi-info-circle"
-                                    action="/about_us" ajax="false" />
+                                    icon="pi pi-info-circle cm-icon-info"
+                                    outcome="/about_us" />
                     </p:submenu>
                 </p:menubar>
             </h:form>
