@@ -11,19 +11,38 @@
             <ui:define name="insContents">
                 <h:form id="InstitutionListForm">  
                     
-                    <p:commandButton value="Download" ajax="false" >
+                    <p:commandButton value="Download" ajax="false" class="m-1">
                         <p:dataExporter target="datalist" type="xls" fileName="institutions" ></p:dataExporter>
                     </p:commandButton>
-                    
-                    <p:dataTable id="datalist" value="#{institutionController.items}" var="item"
-                                 selectionMode="single" selection="#{institutionController.selected}"
+
+                    <p:commandButton value="Select All" class="m-1"
+                                     action="#{institutionController.selectAllInstitutions()}"
+                                     update="datalist"
+                                     process="@this"/>
+
+                    <p:commandButton value="Deselect All" class="m-1"
+                                     action="#{institutionController.deselectAllInstitutions()}"
+                                     process="@this"
+                                     oncomplete="PF('institutionTable').unselectAllRows();"/>
+
+                    <p:commandButton value="Delete Selected" class="m-1"
+                                     action="#{institutionController.deleteSelectedItems()}"
+                                     update="datalist"
+                                     onclick="return confirm('Are you sure you want to delete the selected institutions? This cannot be undone.');"/>
+
+                    <p:dataTable id="datalist" widgetVar="institutionTable" value="#{institutionController.items}" var="item"
+                                 selection="#{institutionController.selectedItems}"
+                                 styleClass="apple-checkbox-table"
                                  paginator="true"
                                  rowKey="#{item.id}"
                                  rows="10"
                                  rowsPerPageTemplate="10,20,30,40,50">
 
-                        <p:ajax event="rowSelect"   update="createButton viewButton editButton deleteButton"/>
-                        <p:ajax event="rowUnselect" update="createButton viewButton editButton deleteButton"/>
+                        <p:ajax event="rowSelectCheckbox"   update="createButton viewButton editButton deleteButton"/>
+                        <p:ajax event="rowUnselectCheckbox" update="createButton viewButton editButton deleteButton"/>
+                        <p:ajax event="toggleSelect"/>
+
+                        <p:column selectionMode="multiple" style="width:2.5rem; text-align:center;" exportable="false"/>
 
                         <p:column sortBy="#{item.institutionType.label}" filterBy="#{item.institutionType.label}" filterMatchMode="contains" >
                             <f:facet name="header">

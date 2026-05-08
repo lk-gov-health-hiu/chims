@@ -78,38 +78,49 @@
                                 </p:column>
 
                                 <p:column>
-                                    <p:panelGrid columns="3" >
+                                    <p:panelGrid columns="2" styleClass="cm-form-grid" style="width:100%;">
                                         <f:facet name="header" >
                                             <p:outputLabel value="Add Another Data" ></p:outputLabel>
                                         </f:facet>
-                                        
-                                        <p:outputLabel value="Year" ></p:outputLabel>
-                                        <p:inputText id="year" value="#{relationshipController.adding.yearInt}" >
-                                        </p:inputText>
-                                        <p:spacer ></p:spacer>
-                                        
-                                        <p:outputLabel value="Area" ></p:outputLabel>
+
+                                        <p:outputLabel value="Year" styleClass="cm-form-label"/>
+                                        <p:inputText id="year" styleClass="cm-form-field"
+                                                     value="#{relationshipController.adding.yearInt}" />
+
+                                        <p:outputLabel value="Area" styleClass="cm-form-label"/>
                                         <p:autoComplete id="acGn" value="#{relationshipController.adding.area}"
                                                         completeMethod="#{areaController.completeAreas}"
+                                                        styleClass="cm-form-field"
                                                         var="gn" maxResults="20" forceSelection="true"
                                                         itemValue="#{gn}"
-                                                        itemLabel="#{gn.name}" ></p:autoComplete>
-                                        <p:spacer ></p:spacer>
-                                        
-                                        <p:outputLabel value="Population" ></p:outputLabel>
-                                        <p:inputText id="pop" value="#{relationshipController.adding.longValue1}" >
-                                        </p:inputText>
-                                        <p:spacer ></p:spacer>
-                                        
-                                         <p:outputLabel value="Type" ></p:outputLabel>
-                                         <p:selectOneMenu id="type" value="#{relationshipController.adding.relationshipType}" >
-                                             <f:selectItems value="#{commonController.relationshipTypes}"
-                                                            var="relationshipTypes"
-                                                            itemValue="#{relationshipTypes}"
-                                                            itemLabel="#{relationshipTypes.label}">
-                                             </f:selectItems>
-                                         </p:selectOneMenu>                                                        
-                                        <p:commandButton value="Add" 
+                                                        itemLabel="#{gn.name}" >
+                                            <p:column headerText="Name">
+                                                <p:outputLabel value="#{gn.name}"/>
+                                            </p:column>
+                                            <p:column headerText="Parent">
+                                                <p:outputLabel value="#{gn.parentArea.name}"/>
+                                            </p:column>
+                                            <p:column headerText="Type">
+                                                <p:outputLabel value="#{gn.type}"/>
+                                            </p:column>
+                                        </p:autoComplete>
+
+                                        <p:outputLabel value="Population" styleClass="cm-form-label"/>
+                                        <p:inputText id="pop" styleClass="cm-form-field"
+                                                     value="#{relationshipController.adding.longValue1}" />
+
+                                        <p:outputLabel value="Type" styleClass="cm-form-label"/>
+                                        <p:selectOneMenu id="type" styleClass="cm-form-field"
+                                                         value="#{relationshipController.adding.relationshipType}" >
+                                            <f:selectItems value="#{commonController.relationshipTypes}"
+                                                           var="relationshipTypes"
+                                                           itemValue="#{relationshipTypes}"
+                                                           itemLabel="#{relationshipTypes.label}">
+                                            </f:selectItems>
+                                        </p:selectOneMenu>
+
+                                        <p:outputLabel styleClass="cm-form-label"/>
+                                        <p:commandButton value="Add"
                                                          id="btnAdd"
                                                          process="type acGn btnAdd year pop"
                                                          update="tbl type acGn btnAdd year pop"

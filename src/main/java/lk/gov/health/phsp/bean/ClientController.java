@@ -308,6 +308,18 @@ public class ClientController implements Serializable {
         return "/client/client";
     }
 
+    public String toListOfPatients() {
+        java.util.Calendar cal = java.util.Calendar.getInstance();
+        cal.setTime(new Date());
+        cal.add(java.util.Calendar.YEAR, -1);
+        from = cal.getTime();
+        to = new Date();
+        institution = null;
+        fillRegisterdClientsWithDatesForInstitution();
+        userTransactionController.recordTransaction("to list of patients");
+        return "/client/list_of_patients";
+    }
+
     public String toViewCorrectedDuplicates() {
         String j;
         j = "select c"

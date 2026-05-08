@@ -7,13 +7,13 @@
 
 /* ---------- Theme tokens ---------- */
 :root {
-    --cm-primary: #5e72e4;
-    --cm-primary-hover: #4c5fd0;
-    --cm-primary-soft: #eef0fc;
-    --cm-success: #2dce89;
-    --cm-info: #11cdef;
-    --cm-warning: #fb6340;
-    --cm-danger: #f5365c;
+    --cm-primary: #7367f0;
+    --cm-primary-hover: #6259e0;
+    --cm-primary-soft: #eeecff;
+    --cm-success: #28c76f;
+    --cm-info: #00cfe8;
+    --cm-warning: #ff9f43;
+    --cm-danger: #ea5455;
 
     --cm-bg: #f6f8fb;
     --cm-surface: #ffffff;
@@ -38,13 +38,13 @@
 }
 
 .dark-mode {
-    --cm-primary: #7c8df0;
-    --cm-primary-hover: #5e72e4;
-    --cm-primary-soft: #1f2547;
-    --cm-success: #34d399;
-    --cm-info: #38bdf8;
-    --cm-warning: #fb923c;
-    --cm-danger: #f87171;
+    --cm-primary: #7367f0;
+    --cm-primary-hover: #5d51e0;
+    --cm-primary-soft: #2a2350;
+    --cm-success: #28c76f;
+    --cm-info: #00cfe8;
+    --cm-warning: #ff9f43;
+    --cm-danger: #ea5455;
 
     --cm-bg: #0f172a;
     --cm-surface: #1e293b;
@@ -220,10 +220,12 @@ body {
     background: rgba(15, 23, 42, 0.45) !important;
 }
 
-/* ---------- Buttons ---------- */
-.ui-button,
-.ui-button.ui-state-default,
-.ui-button.ui-widget {
+/* ---------- Buttons — scoped to skip the GitHub-style header chrome
+   (chims-icon-btn, chims-theme-fab) so the top-bar search/logout buttons
+   keep their existing transparent / dark look. ---------- */
+.ui-button:not(.chims-icon-btn):not(.chims-theme-fab),
+.ui-button.ui-state-default:not(.chims-icon-btn):not(.chims-theme-fab),
+.ui-button.ui-widget:not(.chims-icon-btn):not(.chims-theme-fab) {
     background: var(--cm-primary) !important;
     border: 1px solid var(--cm-primary) !important;
     color: #ffffff !important;
@@ -234,25 +236,56 @@ body {
     transition: var(--cm-transition) !important;
 }
 
-.ui-button:hover,
-.ui-button.ui-state-hover {
+.ui-button:not(.chims-icon-btn):not(.chims-theme-fab):hover,
+.ui-button.ui-state-hover:not(.chims-icon-btn):not(.chims-theme-fab) {
     background: var(--cm-primary-hover) !important;
     border-color: var(--cm-primary-hover) !important;
     box-shadow: var(--cm-shadow-sm) !important;
     transform: translateY(-1px);
 }
 
-.ui-button.ui-state-focus,
-.ui-button:focus {
+.ui-button.ui-state-focus:not(.chims-icon-btn):not(.chims-theme-fab),
+.ui-button:focus:not(.chims-icon-btn):not(.chims-theme-fab) {
     outline: none !important;
-    box-shadow: 0 0 0 3px rgba(94, 114, 228, 0.25) !important;
+    box-shadow: 0 0 0 3px rgba(115, 103, 240, 0.25) !important;
 }
 
-.ui-button.ui-state-disabled,
-.ui-button:disabled {
+.ui-button.ui-state-disabled:not(.chims-icon-btn):not(.chims-theme-fab),
+.ui-button:disabled:not(.chims-icon-btn):not(.chims-theme-fab) {
     opacity: 0.55 !important;
     box-shadow: none !important;
     transform: none !important;
+}
+
+/* Header icon buttons stay neutral with a thin outline; override Saga's
+   solid-blue defaults. */
+.chims-icon-btn,
+.chims-icon-btn.ui-button,
+.chims-icon-btn.ui-button.ui-state-default {
+    background: transparent !important;
+    border: 1px solid #484f58 !important;
+    color: #c9d1d9 !important;
+    border-radius: 6px !important;
+    padding: 0.3rem 0.55rem !important;
+    box-shadow: none !important;
+    min-height: 0 !important;
+    width: auto !important;
+    min-width: 0 !important;
+}
+.chims-icon-btn:hover,
+.chims-icon-btn.ui-button:hover,
+.chims-icon-btn.ui-button.ui-state-hover {
+    background: #30363d !important;
+    border-color: #8b949e !important;
+    color: #f0f6fc !important;
+    transform: none !important;
+    box-shadow: none !important;
+}
+.chims-icon-btn .ui-button-text { display: none !important; }
+.chims-icon-btn .ui-icon,
+.chims-icon-btn .pi {
+    color: #c9d1d9 !important;
+    font-size: 0.95rem !important;
 }
 
 /* Secondary / outlined variant */
@@ -333,20 +366,15 @@ body {
     color: var(--cm-primary) !important;
 }
 
-/* ---------- Checkbox / radio (don't break apple-checkbox-table elsewhere) ---------- */
-.ui-chkbox-box:not(.apple-checkbox-table .ui-chkbox-box),
+/* ---------- Radio buttons — purple to match the apple-style checkboxes
+   defined in jsfcrud.css. Checkbox styling lives in jsfcrud.css. ---------- */
 .ui-radiobutton-box {
     border: 2px solid var(--cm-border-strong) !important;
     background: var(--cm-surface) !important;
-    border-radius: var(--cm-radius-sm) !important;
+    border-radius: 50% !important;
     transition: var(--cm-transition) !important;
 }
 
-.ui-radiobutton-box {
-    border-radius: 50% !important;
-}
-
-.ui-chkbox-box.ui-state-active:not(.apple-checkbox-table .ui-chkbox-box),
 .ui-radiobutton-box.ui-state-active {
     background: var(--cm-primary) !important;
     border-color: var(--cm-primary) !important;
@@ -561,14 +589,17 @@ body { min-height: 100vh !important; }
     margin-top: auto !important;
 }
 
-/* ---------- Uniform button sizing + 3D feel ---------- */
-.ui-button,
-.ui-button.ui-state-default,
-.ui-button.ui-widget,
-.btn,
+/* ---------- Uniform button sizing + 3D feel ----------
+   Scoped to skip the GitHub-style header chrome (chims-icon-btn,
+   chims-search-input, chims-theme-fab) so the top-bar buttons keep
+   their existing compact look. */
+.ui-button:not(.chims-icon-btn):not(.chims-theme-fab),
+.ui-button.ui-state-default:not(.chims-icon-btn):not(.chims-theme-fab),
+.ui-button.ui-widget:not(.chims-icon-btn):not(.chims-theme-fab),
+.btn:not(.chims-icon-btn):not(.chims-theme-fab),
 button.ui-commandlink,
-input[type="button"].ui-button,
-input[type="submit"].ui-button {
+input[type="button"].ui-button:not(.chims-icon-btn),
+input[type="submit"].ui-button:not(.chims-icon-btn) {
     min-height: 38px !important;
     padding: 0.5rem 1.1rem !important;
     border-radius: 10px !important;
@@ -581,9 +612,9 @@ input[type="submit"].ui-button {
     transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease, border-color 0.15s ease !important;
 }
 
-.ui-button:hover,
-.ui-button.ui-state-hover,
-.btn:hover {
+.ui-button:not(.chims-icon-btn):not(.chims-theme-fab):hover,
+.ui-button.ui-state-hover:not(.chims-icon-btn):not(.chims-theme-fab),
+.btn:not(.chims-icon-btn):not(.chims-theme-fab):hover {
     transform: translateY(-1px);
     box-shadow:
         0 1px 0 rgba(255,255,255,0.18) inset,
@@ -591,15 +622,15 @@ input[type="submit"].ui-button {
         0 10px 22px rgba(15, 23, 42, 0.10) !important;
 }
 
-.ui-button:active,
-.ui-button.ui-state-active,
-.btn:active {
+.ui-button:not(.chims-icon-btn):not(.chims-theme-fab):active,
+.ui-button.ui-state-active:not(.chims-icon-btn):not(.chims-theme-fab),
+.btn:not(.chims-icon-btn):not(.chims-theme-fab):active {
     transform: translateY(0);
     box-shadow:
         0 1px 2px rgba(15, 23, 42, 0.08) inset !important;
 }
 
-.ui-button.ui-button-icon-only {
+.ui-button.ui-button-icon-only:not(.chims-icon-btn):not(.chims-theme-fab) {
     width: 38px !important;
     min-width: 38px !important;
     padding: 0.5rem !important;
@@ -628,9 +659,9 @@ td > h\:commandLink > i.bi,
     color: var(--cm-danger) !important;
 }
 
-/* ---------- Uniform input sizing ---------- */
-.ui-inputfield,
-.ui-inputtext,
+/* ---------- Uniform input sizing — scoped to skip the dark header search box ---------- */
+.ui-inputfield:not(.chims-search-input),
+.ui-inputtext:not(.chims-search-input),
 .ui-selectonemenu,
 .ui-spinner-input,
 .ui-password input,
@@ -980,4 +1011,369 @@ td > h\:commandLink > i.bi,
 /* ---------- Dark-mode hero adjusts ---------- */
 .dark-mode .cm-hero {
     background: linear-gradient(135deg, #5e72e4, #7c8df0);
+}
+
+/* ============================================================
+   Menu icon polish — uniform purple theme, chip backplate
+   High-specificity selectors so we win against tem1.css and the
+   saga theme without resorting to inline styles.
+   ============================================================ */
+
+/* Default: every menubar / submenu icon uses primary purple */
+.chims-menubar .ui-menuitem .ui-menuitem-icon,
+.ui-menubar    .ui-menuitem .ui-menuitem-icon,
+.ui-menu       .ui-menuitem .ui-menuitem-icon,
+.ui-menu-list  .ui-menuitem .ui-menuitem-icon,
+.ui-menubar    .ui-menuitem-link > .ui-menuitem-icon,
+.ui-menu       .ui-menuitem-link > .ui-menuitem-icon {
+    color: var(--cm-primary) !important;
+    font-size: 0.95rem !important;
+    width: 1.1rem;
+    text-align: center;
+    margin-right: 0.55rem !important;
+    transition: transform 0.15s ease, background 0.15s ease;
+}
+
+.dark-mode .chims-menubar .ui-menuitem .ui-menuitem-icon,
+.dark-mode .ui-menubar    .ui-menuitem .ui-menuitem-icon,
+.dark-mode .ui-menu       .ui-menuitem .ui-menuitem-icon,
+.dark-mode .ui-menu-list  .ui-menuitem .ui-menuitem-icon {
+    color: var(--cm-primary) !important;
+}
+
+/* Chip backplate — applies to a subset of items via cm-icon-chip class.
+   Renders the icon as a small purple-tinted square so it reads like a
+   "logo" rather than a flat glyph. */
+.chims-menubar .ui-menuitem .ui-menuitem-icon.cm-icon-chip,
+.ui-menubar    .ui-menuitem .ui-menuitem-icon.cm-icon-chip,
+.ui-menu       .ui-menuitem .ui-menuitem-icon.cm-icon-chip,
+.ui-menu-list  .ui-menuitem .ui-menuitem-icon.cm-icon-chip {
+    background: #eeecff !important;
+    color: var(--cm-primary) !important;
+    border: 1px solid rgba(115, 103, 240, 0.22) !important;
+    border-radius: 8px !important;
+    width: 28px !important;
+    height: 28px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 0.95rem !important;
+    margin-right: 0.65rem !important;
+    box-shadow: none !important;
+    background-image: none !important;
+    transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease, border-color 0.18s ease;
+}
+
+/* Hover lift on chip-style items so they feel pressable */
+.chims-menubar .ui-menuitem-link:hover .ui-menuitem-icon.cm-icon-chip,
+.ui-menubar    .ui-menuitem-link:hover .ui-menuitem-icon.cm-icon-chip,
+.ui-menu       .ui-menuitem-link:hover .ui-menuitem-icon.cm-icon-chip,
+.ui-menu-list  .ui-menuitem-link:hover .ui-menuitem-icon.cm-icon-chip {
+    background: var(--cm-primary) !important;
+    color: #fff !important;
+    transform: translateY(-1px);
+    box-shadow:
+        0 2px 4px rgba(115, 103, 240, 0.30),
+        0 6px 14px rgba(115, 103, 240, 0.20);
+}
+
+/* Dark-mode chips: solid muted-purple square with a clear border so the
+   chip never reads as a black void over the slate surface. */
+.dark-mode .chims-menubar .ui-menuitem .ui-menuitem-icon.cm-icon-chip,
+.dark-mode .ui-menubar    .ui-menuitem .ui-menuitem-icon.cm-icon-chip,
+.dark-mode .ui-menu       .ui-menuitem .ui-menuitem-icon.cm-icon-chip,
+.dark-mode .ui-menu-list  .ui-menuitem .ui-menuitem-icon.cm-icon-chip {
+    background: #3a345f !important;
+    color: #cfc8ff !important;
+    border: 1px solid #514a8a !important;
+    box-shadow: none !important;
+    background-image: none !important;
+}
+.dark-mode .chims-menubar .ui-menuitem-link:hover .ui-menuitem-icon.cm-icon-chip,
+.dark-mode .ui-menubar    .ui-menuitem-link:hover .ui-menuitem-icon.cm-icon-chip,
+.dark-mode .ui-menu       .ui-menuitem-link:hover .ui-menuitem-icon.cm-icon-chip,
+.dark-mode .ui-menu-list  .ui-menuitem-link:hover .ui-menuitem-icon.cm-icon-chip {
+    background: var(--cm-primary) !important;
+    border-color: var(--cm-primary) !important;
+    color: #fff !important;
+}
+
+/* Bootstrap-icon font fallback metrics inside menuitems
+   (PrimeFaces sizes assume the pi font family — bi glyphs need a touch more) */
+.ui-menuitem .ui-menuitem-icon.bi {
+    line-height: 1 !important;
+    vertical-align: middle;
+}
+
+/* ============================================================
+   Top menubar — more breathing room between root items, and
+   make sure chip icons sit flush against their label text in
+   dropdown menuitems (Help → User Manual etc.).
+   ============================================================ */
+
+/* Root-level menubar items — generous breathing room, slight rounded
+   hover lozenge so the menubar reads as a polished navigation strip. */
+.chims-menubar.ui-menubar > .ui-menubar-root-list > .ui-menuitem > .ui-menuitem-link,
+.ui-menubar > .ui-menubar-root-list > .ui-menuitem > .ui-menuitem-link {
+    padding: 0.75rem 1.4rem !important;
+    gap: 0.6rem;
+    border-radius: 10px !important;
+    border-bottom: none !important;
+    transition: background 0.15s ease, color 0.15s ease !important;
+}
+.chims-menubar.ui-menubar > .ui-menubar-root-list > .ui-menuitem,
+.ui-menubar > .ui-menubar-root-list > .ui-menuitem {
+    margin: 0.2rem 0.25rem !important;
+}
+
+/* Hover lozenge on root items — soft purple wash, no weird border */
+.chims-menubar.ui-menubar > .ui-menubar-root-list > .ui-menuitem > .ui-menuitem-link:hover,
+.ui-menubar > .ui-menubar-root-list > .ui-menuitem > .ui-menuitem-link.ui-state-hover {
+    background: var(--cm-primary-soft) !important;
+    color: var(--cm-primary) !important;
+    border-bottom-color: transparent !important;
+}
+.dark-mode .chims-menubar.ui-menubar > .ui-menubar-root-list > .ui-menuitem > .ui-menuitem-link:hover,
+.dark-mode .ui-menubar > .ui-menubar-root-list > .ui-menuitem > .ui-menuitem-link.ui-state-hover {
+    background: rgba(115, 103, 240, 0.18) !important;
+    color: #cfc8ff !important;
+}
+
+/* Dropdown menuitem links — flex layout so chip + text + caret line up
+   on a single baseline with consistent gaps. */
+.ui-menu.ui-menu-child .ui-menuitem-link,
+.ui-menu-list .ui-menuitem-link {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 0.55rem !important;
+    padding: 0.5rem 0.95rem !important;
+}
+
+/* Reset the right-margin on icons inside the flex link — the gap above
+   already provides the spacing, so the chip sits flush against the text. */
+.ui-menu.ui-menu-child .ui-menuitem-link > .ui-menuitem-icon,
+.ui-menu-list .ui-menuitem-link > .ui-menuitem-icon,
+.chims-menubar > .ui-menubar-root-list > .ui-menuitem > .ui-menuitem-link > .ui-menuitem-icon {
+    margin-right: 0 !important;
+    flex-shrink: 0;
+}
+
+/* Submenu caret spacing inside top-level items */
+.chims-menubar > .ui-menubar-root-list > .ui-menuitem > .ui-menuitem-link > .ui-submenu-icon {
+    margin-left: 0.45rem !important;
+    color: var(--cm-text-soft) !important;
+}
+
+/* Header brand link via h:link should not pick up an underline */
+a.chims-brand,
+.chims-brand,
+a.chims-brand:hover,
+.chims-brand:hover {
+    text-decoration: none !important;
+}
+
+/* ============================================================
+   Inter — system-wide font (requested by user)
+   ============================================================ */
+:root {
+    --cm-font: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+}
+body,
+.ui-widget,
+.ui-widget *,
+.ui-widget input,
+.ui-widget select,
+.ui-widget textarea,
+.ui-widget button,
+.chims-content,
+.chims-header,
+.chims-footer,
+.chims-menubar,
+.cm-card,
+.cm-stat-tile,
+.cm-analysis-card,
+.cm-page-title,
+.cm-hero,
+.btn,
+.form-control,
+.form-select,
+.form-label,
+.login-wrapper,
+.login-card,
+.login-card * {
+    font-family: var(--cm-font) !important;
+}
+.cm-hero-title,
+.cm-page-title-text,
+.cm-stat-value,
+.cm-analysis-value,
+h1, h2, h3, h4, h5, h6 {
+    font-family: var(--cm-font) !important;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+}
+
+/* ============================================================
+   Help submenu — keep every item on one line, no wrapping
+   (e.g. "User Manual (Sinhala)")
+   ============================================================ */
+.ui-menu-list .ui-menuitem-text,
+.ui-menubar  .ui-menuitem-text {
+    white-space: nowrap !important;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.ui-menu.ui-menu-child {
+    min-width: 220px;
+}
+
+/* ============================================================
+   Form grid — uses the previously empty 3rd column for a 2nd
+   label/field pair. Edit/Add User and similar forms share this.
+   ============================================================ */
+.cm-form-panel {
+    border-radius: 14px !important;
+    box-shadow: var(--cm-shadow-md) !important;
+    background: var(--cm-surface) !important;
+    margin: 0.25rem auto !important;
+    max-width: 1100px;
+}
+.cm-form-panel .ui-panel-titlebar,
+.cm-form-panel .ui-panel-content {
+    background: var(--cm-surface) !important;
+}
+
+/* The PrimeFaces panelGrid renders a <table>. We turn the table into a CSS
+   grid by using display:contents on the wrapping rows, and the actual grid
+   columns are declared on the <table> itself. This way the visual order
+   matches the source order regardless of how many cells are in each <tr>,
+   and labels always line up exactly above each field. */
+.cm-form-grid.ui-panelgrid,
+.cm-form-grid.ui-panelgrid > tbody {
+    display: grid !important;
+    grid-template-columns:
+        minmax(140px, max-content) minmax(220px, 1fr)
+        minmax(140px, max-content) minmax(220px, 1fr) !important;
+    gap: 0.55rem 0.85rem !important;
+    border: none !important;
+    width: 100% !important;
+    max-width: 1100px;
+    margin: 0.25rem auto !important;
+}
+.cm-form-grid.ui-panelgrid > tbody > tr {
+    display: contents !important;
+}
+.cm-form-grid.ui-panelgrid > tbody > tr > td,
+.cm-form-grid.ui-panelgrid > tbody > tr > td.ui-panelgrid-cell {
+    display: block !important;
+    border: none !important;
+    padding: 0.15rem 0 !important;
+    vertical-align: middle !important;
+    background: transparent !important;
+    width: auto !important;
+    min-width: 0 !important;
+}
+.cm-form-grid.ui-panelgrid > thead,
+.cm-form-grid.ui-panelgrid > tfoot {
+    grid-column: 1 / -1 !important;
+    display: block !important;
+}
+
+/* Label cells: muted, right-aligned for clean alignment */
+.cm-form-label,
+.cm-form-grid .cm-form-label,
+.ui-outputlabel.cm-form-label {
+    color: var(--cm-text-muted) !important;
+    font-weight: 500 !important;
+    font-size: 0.85rem !important;
+    text-align: right !important;
+    padding: 0.55rem 0.5rem 0.55rem 0 !important;
+    white-space: nowrap;
+    align-self: center;
+}
+
+/* Field cells: each input/dropdown/autocomplete fills its cell width */
+.cm-form-grid .cm-form-field,
+.cm-form-grid .ui-inputfield.cm-form-field,
+.cm-form-grid .ui-selectonemenu.cm-form-field,
+.cm-form-grid .ui-autocomplete.cm-form-field,
+.cm-form-grid .ui-password.cm-form-field {
+    width: 100% !important;
+    min-width: 0 !important;
+}
+.cm-form-grid .ui-inputfield.cm-form-field input,
+.cm-form-grid .ui-password.cm-form-field input,
+.cm-form-grid .ui-autocomplete.cm-form-field input {
+    width: 100% !important;
+}
+.cm-form-grid .ui-selectonemenu.cm-form-field {
+    display: flex !important;
+}
+.cm-form-grid .ui-selectonemenu.cm-form-field .ui-selectonemenu-label {
+    flex: 1 !important;
+    width: auto !important;
+}
+
+/* Span helper for full-width rows like inline error messages.
+   Targets the wrapping <td> when its child carries the cm-form-span4 class. */
+.cm-form-grid .cm-form-span4 {
+    grid-column: 1 / -1 !important;
+}
+.cm-form-grid > tbody > tr > td.ui-panelgrid-cell:has(> .cm-form-span4) {
+    grid-column: 1 / -1 !important;
+    text-align: left !important;
+    color: var(--cm-danger) !important;
+    padding-left: 0.5rem !important;
+}
+
+/* On screens narrower than 900 px collapse to a single label/field column */
+@media (max-width: 900px) {
+    .cm-form-grid.ui-panelgrid,
+    .cm-form-grid.ui-panelgrid > tbody {
+        grid-template-columns: minmax(120px, max-content) minmax(0, 1fr) !important;
+    }
+}
+
+/* ============================================================
+   Generic form panel polish — applies to legacy forms that
+   were rendered with empty width / no styling
+   ============================================================ */
+.ui-panel.ui-widget {
+    background: var(--cm-surface) !important;
+    border-radius: 14px !important;
+}
+.ui-panelgrid > tbody > tr > td {
+    background: transparent !important;
+}
+.cm-fluid {
+    width: 100% !important;
+}
+
+/* ============================================================
+   Global panelGrid relief — covers legacy 3-column layouts that
+   we have not converted to cm-form-grid yet. Empty <p:spacer>
+   cells collapse, and the sibling field cell stretches to use
+   the freed-up space.
+   ============================================================ */
+
+/* Collapse cells that only contain an empty spacer span */
+.ui-panelgrid > tbody > tr > td.ui-panelgrid-cell:has(> .ui-spacer:only-child),
+.ui-panelgrid-cell:has(> .ui-spacer:only-child) {
+    width: 0 !important;
+    padding: 0 !important;
+}
+
+/* Inputs / dropdowns / autocompletes inside any panelGrid cell stretch
+   to fill the cell so the form does not look pinched */
+.ui-panelgrid-cell > .ui-inputfield,
+.ui-panelgrid-cell > .ui-inputtext,
+.ui-panelgrid-cell > .ui-selectonemenu,
+.ui-panelgrid-cell > .ui-autocomplete,
+.ui-panelgrid-cell > .ui-password {
+    width: 100% !important;
+    min-width: 220px;
+}
+.ui-panelgrid-cell > .ui-autocomplete > input,
+.ui-panelgrid-cell > .ui-password > input {
+    width: 100% !important;
 }

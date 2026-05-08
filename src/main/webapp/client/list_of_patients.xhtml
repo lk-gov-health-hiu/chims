@@ -1,0 +1,142 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <h:body>
+
+        <ui:composition template="/template.xhtml">
+
+            <ui:define name="content">
+
+                <div class="cm-page-title">
+                    <div>
+                        <div class="cm-page-title-text">List of Patients</div>
+                        <div class="cm-page-sub">
+                            Patients enrolled by your institution. Search by PHN, NIC, name or phone.
+                        </div>
+                    </div>
+                    <span class="cm-crumb">
+                        <i class="bi bi-house-door"/> Home
+                        <i class="bi bi-chevron-right"/>
+                        Clients
+                        <i class="bi bi-chevron-right"/>
+                        List of Patients
+                    </span>
+                </div>
+
+                <h:form id="lopForm">
+
+                    <div class="cm-card" style="margin-bottom: 1rem;">
+                        <p:panelGrid columns="4" styleClass="cm-form-grid" style="width:100%;">
+                            <p:outputLabel value="From" styleClass="cm-form-label"/>
+                            <p:calendar value="#{clientController.from}" styleClass="cm-form-field"
+                                        pattern="dd MMM yyyy" navigator="true" yearRange="2018:today"/>
+
+                            <p:outputLabel value="To" styleClass="cm-form-label"/>
+                            <p:calendar value="#{clientController.to}" styleClass="cm-form-field"
+                                        pattern="dd MMM yyyy" navigator="true" yearRange="2018:today"/>
+
+                            <p:outputLabel styleClass="cm-form-span4"/>
+                            <p:commandButton value="Refresh List" ajax="false"
+                                             icon="pi pi-refresh"
+                                             action="#{clientController.fillRegisterdClientsWithDatesForInstitution()}"/>
+                        </p:panelGrid>
+                    </div>
+
+                    <p:dataTable id="lopTable"
+                                 value="#{clientController.items}" var="c"
+                                 rowKey="#{c.id}"
+                                 paginator="true" rows="15"
+                                 rowsPerPageTemplate="10,15,25,50,100"
+                                 emptyMessage="No patients found in the selected window. Try widening the date range or click Refresh List.">
+
+                        <f:facet name="header">
+                            <span class="cm-section-heading-inline" style="display:flex; align-items:center; gap:0.5rem; flex-wrap:wrap;">
+                                <i class="bi bi-people-fill" style="color: var(--cm-primary);"/>
+                                Patients (<h:outputText value="#{clientController.items.size()}"/>)
+                            </span>
+                        </f:facet>
+
+                        <p:column headerText="Registered"
+                                  sortBy="#{c.createdAt}">
+                            <h:outputText value="#{c.createdAt}">
+                                <f:convertDateTime pattern="dd MMM yyyy HH:mm" timeZone="Asia/Colombo"/>
+                            </h:outputText>
+                        </p:column>
+
+                        <p:column headerText="PHN"
+                                  sortBy="#{c.phn}"
+                                  filterBy="#{c.phn}"
+                                  filterMatchMode="contains">
+                            <span class="cm-badge cm-badge-info">
+                                <h:outputText value="#{c.phn}"/>
+                            </span>
+                        </p:column>
+
+                        <p:column headerText="Name"
+                                  sortBy="#{c.person.name}"
+                                  filterBy="#{c.person.name}"
+                                  filterMatchMode="contains">
+                            <h:outputText value="#{c.person.name}"/>
+                        </p:column>
+
+                        <p:column headerText="NIC"
+                                  sortBy="#{c.person.nic}"
+                                  filterBy="#{c.person.nic}"
+                                  filterMatchMode="contains">
+                            <h:outputText value="#{c.person.nic}"/>
+                        </p:column>
+
+                        <p:column headerText="Phone"
+                                  filterBy="#{c.person.phone1}"
+                                  filterMatchMode="contains">
+                            <h:outputText value="#{c.person.phone1}"/>
+                        </p:column>
+
+                        <p:column headerText="Sex"
+                                  filterBy="#{c.person.sex.name}"
+                                  filterMatchMode="contains">
+                            <h:outputText value="#{c.person.sex.name}"/>
+                        </p:column>
+
+                        <p:column headerText="Date of Birth"
+                                  sortBy="#{c.person.dateOfBirth}">
+                            <h:outputText value="#{c.person.dateOfBirth}">
+                                <f:convertDateTime pattern="dd MMM yyyy"/>
+                            </h:outputText>
+                        </p:column>
+
+                        <p:column headerText="GN Area"
+                                  sortBy="#{c.person.gnArea.name}"
+                                  filterBy="#{c.person.gnArea.name}"
+                                  filterMatchMode="contains">
+                            <h:outputText value="#{c.person.gnArea.name}"/>
+                        </p:column>
+
+                        <p:column headerText="Registered At"
+                                  sortBy="#{c.createInstitution.name}"
+                                  filterBy="#{c.createInstitution.name}"
+                                  filterMatchMode="contains">
+                            <h:outputText value="#{c.createInstitution.name}"/>
+                        </p:column>
+
+                        <p:column headerText="Open" exportable="false" style="width:6rem; text-align:center;">
+                            <p:commandButton ajax="false"
+                                             icon="pi pi-folder-open"
+                                             title="Open patient profile"
+                                             action="#{clientController.toClientProfile()}">
+                                <f:setPropertyActionListener value="#{c.id}" target="#{clientController.selectedId}"/>
+                            </p:commandButton>
+                        </p:column>
+                    </p:dataTable>
+
+                </h:form>
+
+            </ui:define>
+        </ui:composition>
+    </h:body>
+</html>

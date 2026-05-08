@@ -13,14 +13,14 @@
         <!-- GitHub-style top header bar -->
         <div class="chims-header">
             <div class="chims-header-inner">
-                <!-- Brand / Logo -->
-                <a class="chims-brand" href="#{request.contextPath}/app/index.xhtml">
-                    <h:graphicImage library="image" name="himslogo.png"
+                <!-- Brand / Logo — always routes to dashboard via JSF view handler -->
+                <h:link outcome="/index" styleClass="chims-brand">
+                    <h:graphicImage library="image" name="chims_logo_login.png"
                                     styleClass="chims-logo-img" alt="cHIMS" />
                     <span class="chims-brand-text">
                         <span class="chims-brand-c">c</span><span class="chims-brand-hims">HIMS</span>
                     </span>
-                </a>
+                </h:link>
 
                 <!-- Right side actions -->
                 <div class="chims-header-actions">
@@ -58,112 +58,120 @@
         <div class="chims-navbar-wrap">
             <h:form styleClass="chims-nav-form">
                 <p:menubar rendered="#{webUserController.loggedUser ne null}" autoDisplay="true" styleClass="chims-menubar">
-                    <p:menuitem ajax="false" value="Home" icon="pi pi-home" action="/index" />
+                    <p:menuitem ajax="false" value="Home"
+                                icon="bi bi-house-door-fill cm-icon-chip"
+                                action="/index" />
 
                     <p:submenu label="Clients"
+                               icon="bi bi-heart-pulse-fill cm-icon-chip"
                                rendered="#{webUserController.hasPrivilege('Client_Management')}">
                         <p:menuitem ajax="false" value="Register New"
-                                    icon="pi pi-user-plus"
+                                    icon="bi bi-person-plus-fill cm-icon-chip"
                                     action="#{clientController.toAddNewClient()}" />
                         <p:menuitem ajax="false" value="Reserve PHN"
-                                    icon="pi pi-id-card"
+                                    icon="bi bi-person-vcard-fill cm-icon-chip"
                                     action="#{clientController.toReserverPhn()}" />
-                        <p:menuitem ajax="false" value="Search"
-                                    icon="pi pi-search"
-                                    action="#{clientController.toSearchClientById()}" />
+                        <p:menuitem ajax="false" value="List of Patients"
+                                    icon="bi bi-people-fill cm-icon-chip"
+                                    action="#{clientController.toListOfPatients()}" />
                     </p:submenu>
 
-                    <p:submenu label="Analysis">
+                    <p:submenu label="Analysis"
+                               icon="bi bi-bar-chart-line-fill cm-icon-chip">
                         <p:menuitem ajax="false" value="Queries"
-                                    icon="pi pi-filter"
+                                    icon="bi bi-funnel-fill cm-icon-chip"
                                     action="#{queryComponentController.toQueryIndex()}" />
                         <p:menuitem ajax="false" value="Reports"
-                                    icon="pi pi-chart-bar"
+                                    icon="bi bi-bar-chart-fill cm-icon-chip"
                                     action="#{reportController.toViewReports()}" />
                         <p:menuitem ajax="false" value="Counts"
-                                    icon="pi pi-list"
+                                    icon="bi bi-list-ol cm-icon-chip"
                                     action="#{nationalReportController.toNationalReportsCounts()}" />
                         <p:menuitem ajax="false" value="Indicators"
-                                    icon="pi pi-chart-line"
+                                    icon="bi bi-graph-up-arrow cm-icon-chip"
                                     action="#{indicatorController.toIndicatorIndex}" />
                     </p:submenu>
 
                     <p:submenu label="Institution Admin"
+                               icon="bi bi-bank2 cm-icon-chip"
                                rendered="#{webUserController.hasPrivilege('Institution_Administration')}">
                         <p:menuitem value="Manage Users"
-                                    icon="pi pi-users"
+                                    icon="bi bi-people-fill cm-icon-chip"
                                     action="/insAdmin/user_index" ajax="false" />
                         <p:menuitem value="Manage Institutions"
-                                    icon="pi pi-building"
+                                    icon="bi bi-buildings cm-icon-chip"
                                     action="/insAdmin/institution_index" />
                         <p:menuitem value="Manage Areas"
-                                    icon="pi pi-map"
+                                    icon="bi bi-geo-alt-fill cm-icon-chip"
                                     action="/insAdmin/area_index" ajax="false" />
                         <p:menuitem value="Manage Metadata"
-                                    icon="pi pi-database"
+                                    icon="bi bi-tags-fill cm-icon-chip"
                                     action="/insAdmin/data_index" ajax="false" />
                     </p:submenu>
 
                     <p:submenu label="System Admin"
+                               icon="bi bi-shield-shaded cm-icon-chip"
                                rendered="#{webUserController.hasPrivilege('System_Administration')}">
                         <p:menuitem value="Manage Users"
-                                    icon="pi pi-users"
+                                    icon="bi bi-people-fill cm-icon-chip"
                                     action="#{webUserController.toManageUserIndexForSystemAdmin()}" ajax="false" />
                         <p:menuitem value="Manage Institutions"
-                                    icon="pi pi-building"
+                                    icon="bi bi-buildings cm-icon-chip"
                                     action="/institution/index" ajax="false" />
                         <p:menuitem value="Manage Areas"
-                                    icon="pi pi-map"
+                                    icon="bi bi-geo-alt-fill cm-icon-chip"
                                     action="/area/index" ajax="false" />
                         <p:menuitem value="Manage Metadata"
-                                    icon="pi pi-database"
+                                    icon="bi bi-tags-fill cm-icon-chip"
                                     action="/systemAdmin/manage_metadata_index" ajax="false" />
                         <p:menuitem value="Manage Data"
-                                    icon="pi pi-table"
+                                    icon="bi bi-database-fill-gear cm-icon-chip"
                                     action="/systemAdmin/manage_data_index" ajax="false" />
                         <p:menuitem value="Manage Interfaces"
-                                    icon="pi pi-sitemap"
+                                    icon="bi bi-diagram-3-fill cm-icon-chip"
                                     action="/systemAdmin/integration_index" ajax="false" />
                         <p:menuitem value="Manage Analysis"
-                                    icon="pi pi-chart-bar"
+                                    icon="bi bi-clipboard-data-fill cm-icon-chip"
                                     action="/queryComponent/index" ajax="false" />
                         <p:menuitem value="Preferences"
-                                    icon="pi pi-cog"
+                                    icon="bi bi-sliders2 cm-icon-chip"
                                     action="#{preferenceController.toManagePreferences()}" ajax="false" />
                     </p:submenu>
 
-                    <p:submenu label="Settings">
+                    <p:submenu label="Settings"
+                               icon="bi bi-gear-fill cm-icon-chip">
                         <p:menuitem value="Change Password"
-                                    icon="pi pi-lock"
+                                    icon="bi bi-shield-lock-fill cm-icon-chip"
                                     action="#{webUserController.toChangeMyPassword()}" ajax="false" />
                         <p:menuitem value="My Details"
-                                    icon="pi pi-user-edit"
+                                    icon="bi bi-person-badge-fill cm-icon-chip"
                                     action="#{webUserController.toChangeMyDetails()}" ajax="false" />
                         <p:menuitem value="API Keys"
-                                    icon="pi pi-key"
+                                    icon="bi bi-key-fill cm-icon-chip"
                                     action="#{apiKeyController.toManageMyApiKeys()}" ajax="false" />
                     </p:submenu>
 
-                    <p:submenu label="Help">
+                    <p:submenu label="Help"
+                               icon="bi bi-question-circle-fill cm-icon-chip">
                         <p:menuitem value="User Manual (Sinhala)"
-                                    icon="pi pi-book"
-                                    action="/wikis" ajax="false" />
+                                    icon="bi bi-book-half cm-icon-chip"
+                                    outcome="/wikis" />
                         <p:menuitem value="User Manual (Tamil)"
-                                    icon="pi pi-book"
-                                    action="/wikit" ajax="false" />
+                                    icon="bi bi-book-half cm-icon-chip"
+                                    outcome="/wikit" />
                         <p:menuitem value="User Manual (English)"
-                                    icon="pi pi-book"
-                                    action="/wiki" ajax="false" />
+                                    icon="bi bi-book-half cm-icon-chip"
+                                    outcome="/wiki" />
                         <p:menuitem value="Issue Tracker"
-                                    icon="pi pi-github"
+                                    icon="bi bi-github cm-icon-chip"
                                     url="https://github.com/lk-gov-health-hiu/pssp/issues"
                                     ajax="false" target="_blank" />
                         <p:menuitem value="Troubleshooting"
-                                    icon="pi pi-wrench"
-                                    action="/troubleschooter" ajax="false" />
+                                    icon="bi bi-tools cm-icon-chip"
+                                    outcome="/troubleschooter" />
                         <p:menuitem value="About"
-                                    icon="pi pi-info-circle"
-                                    action="/about_us" ajax="false" />
+                                    icon="bi bi-info-circle-fill cm-icon-chip"
+                                    outcome="/about_us" />
                     </p:submenu>
                 </p:menubar>
             </h:form>

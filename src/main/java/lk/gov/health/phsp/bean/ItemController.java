@@ -64,6 +64,7 @@ public class ItemController implements Serializable {
     RelationshipController relationshipController;
 
     private List<Item> items = null;
+    private List<Item> selectedItems = null;
     private Item selected;
     private Item selectedParent;
     private Item removingItem;
@@ -1092,6 +1093,39 @@ public class ItemController implements Serializable {
             } else {
             }
         }
+    }
+
+    public void selectAllDictionaryItems() {
+        selectedItems = (items == null) ? new ArrayList<>() : new ArrayList<>(items);
+    }
+
+    public void deselectAllDictionaryItems() {
+        selectedItems = new ArrayList<>();
+    }
+
+    public void destroySelected() {
+        if (selectedItems == null || selectedItems.isEmpty()) {
+            JsfUtil.addErrorMessage("No dictionary items selected");
+            return;
+        }
+        for (Item i : selectedItems) {
+            i.setRetired(true);
+            i.setRetiredAt(new Date());
+            i.setRetiredBy(webUserController.getLoggedUser());
+            getFacade().edit(i);
+        }
+        JsfUtil.addSuccessMessage(selectedItems.size() + " item(s) deleted.");
+        selectedItems = new ArrayList<>();
+        items = null;
+        itemApplicationController.invalidateItems();
+    }
+
+    public List<Item> getSelectedItems() {
+        return selectedItems;
+    }
+
+    public void setSelectedItems(List<Item> selectedItems) {
+        this.selectedItems = selectedItems;
     }
 
     public void retireAllDictionaryItems() {
