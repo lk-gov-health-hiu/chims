@@ -1141,7 +1141,7 @@ td > h\:commandLink > i.bi,
 
 /* Dropdown menuitem links — flex layout so chip + text + caret line up
    on a single baseline with consistent gaps. */
-.ui-menu.ui-menu-child .ui-menuitem-link,
+.ui-menu-list.ui-menu-child .ui-menuitem-link,
 .ui-menu-list .ui-menuitem-link {
     display: inline-flex !important;
     align-items: center !important;
@@ -1151,7 +1151,7 @@ td > h\:commandLink > i.bi,
 
 /* Reset the right-margin on icons inside the flex link — the gap above
    already provides the spacing, so the chip sits flush against the text. */
-.ui-menu.ui-menu-child .ui-menuitem-link > .ui-menuitem-icon,
+.ui-menu-list.ui-menu-child .ui-menuitem-link > .ui-menuitem-icon,
 .ui-menu-list .ui-menuitem-link > .ui-menuitem-icon,
 .chims-menubar > .ui-menubar-root-list > .ui-menuitem > .ui-menuitem-link > .ui-menuitem-icon {
     margin-right: 0 !important;
@@ -1234,8 +1234,8 @@ h1, h2, h3, h4, h5, h6 {
    the span would shrink under flex and the long labels ("User Manual
    (Sinhala)", "Manage Institutions") would wrap to a second line at
    the flex-item boundary in spite of `white-space: nowrap`. */
-body .ui-menubar .ui-menu.ui-menu-child .ui-menuitem .ui-menuitem-link .ui-menuitem-text,
-.ui-menu.ui-menu-child .ui-menuitem-text,
+body .ui-menubar .ui-menu-list.ui-menu-child .ui-menuitem .ui-menuitem-link .ui-menuitem-text,
+.ui-menu-list.ui-menu-child .ui-menuitem-text,
 .ui-menubar .ui-menubar-root-list .ui-menuitem-text {
     white-space: nowrap !important;
     overflow: visible !important;
@@ -1251,26 +1251,26 @@ body .ui-menubar .ui-menu.ui-menu-child .ui-menuitem .ui-menuitem-link .ui-menui
    menubar UL with `.ui-menu-list` too, so any unscoped
    `.ui-menu-list .ui-menuitem` rule with `width: 100%` would stack
    the root nav vertically. */
-.ui-menubar .ui-menu.ui-menu-child,
-.ui-menu.ui-menu-child {
+.ui-menubar .ui-menu-list.ui-menu-child,
+.ui-menu-list.ui-menu-child {
     width: max-content !important;
     min-width: 260px !important;
     max-width: none !important;
     overflow: visible !important;
     white-space: nowrap !important;
 }
-.ui-menu.ui-menu-child > .ui-menu-list {
+.ui-menu-list.ui-menu-child > .ui-menu-list {
     width: 100% !important;
     min-width: 100% !important;
     max-width: none !important;
     overflow: visible !important;
 }
-.ui-menu.ui-menu-child .ui-menuitem {
+.ui-menu-list.ui-menu-child .ui-menuitem {
     width: 100% !important;
     max-width: none !important;
 }
-body .ui-menubar .ui-menu.ui-menu-child .ui-menuitem .ui-menuitem-link,
-.ui-menu.ui-menu-child .ui-menuitem-link {
+body .ui-menubar .ui-menu-list.ui-menu-child .ui-menuitem .ui-menuitem-link,
+.ui-menu-list.ui-menu-child .ui-menuitem-link {
     display: flex !important;
     flex-direction: row !important;
     flex-wrap: nowrap !important;
