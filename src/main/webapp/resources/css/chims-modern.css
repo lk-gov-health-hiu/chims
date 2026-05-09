@@ -1214,17 +1214,39 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /* ============================================================
-   Help submenu — keep every item on one line, no wrapping
-   (e.g. "User Manual (Sinhala)")
+   Top menubar dropdowns — show every menuitem label in full.
+   Long entries like "Manage Institutions" or "User Manual (Sinhala)"
+   were getting truncated by `text-overflow: ellipsis` against the
+   220px min-width. Drop the ellipsis, let the dropdown size to its
+   widest item, but keep `white-space: nowrap` so labels never wrap
+   mid-phrase.
    ============================================================ */
 .ui-menu-list .ui-menuitem-text,
 .ui-menubar  .ui-menuitem-text {
     white-space: nowrap !important;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    overflow: visible !important;
+    text-overflow: clip !important;
 }
 .ui-menu.ui-menu-child {
-    min-width: 220px;
+    width: max-content !important;
+    min-width: 240px !important;
+    max-width: 360px;
+}
+.ui-menu.ui-menu-child .ui-menuitem,
+.ui-menu-list .ui-menuitem {
+    width: 100%;
+}
+.ui-menu.ui-menu-child .ui-menuitem-link,
+.ui-menu-list .ui-menuitem-link {
+    width: 100%;
+    padding-right: 1.25rem !important;
+}
+
+/* Slightly more breathing room between root-level items so
+   "Institution Admin" / "System Admin" don't crowd together. */
+.chims-menubar.ui-menubar > .ui-menubar-root-list > .ui-menuitem,
+.ui-menubar > .ui-menubar-root-list > .ui-menuitem {
+    margin: 0.2rem 0.4rem !important;
 }
 
 /* ============================================================
