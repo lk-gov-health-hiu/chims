@@ -1228,12 +1228,17 @@ h1, h2, h3, h4, h5, h6 {
    from PF JS don't win.
    ============================================================ */
 /* Label span — strip the truncation. Scoped to dropdown items + the
-   root menubar's text spans only, never to widths/layout. */
+   root menubar's text spans only, never to widths/layout. The dropdown
+   `.ui-menuitem-link` is a flex container, so the label gets
+   `flex-shrink: 0` too — without it, the long labels ("User Manual
+   (Sinhala)", "Manage Institutions") still wrap to a second line
+   inside the flex link in spite of `white-space: nowrap` on the span. */
 .ui-menu.ui-menu-child .ui-menuitem-text,
 .ui-menubar .ui-menubar-root-list .ui-menuitem-text {
     white-space: nowrap !important;
     overflow: visible !important;
     text-overflow: clip !important;
+    flex-shrink: 0 !important;
 }
 /* Dropdown wrapper sizes to its widest entry. ALL width-forcing rules
    below are scoped to `.ui-menu-child` only — PrimeFaces tags the root
@@ -1244,8 +1249,9 @@ h1, h2, h3, h4, h5, h6 {
 .ui-menu.ui-menu-child {
     width: max-content !important;
     min-width: 260px !important;
-    max-width: 420px !important;
+    max-width: 520px !important;
     overflow: visible !important;
+    white-space: nowrap !important;
 }
 .ui-menu.ui-menu-child > .ui-menu-list {
     width: 100% !important;
@@ -1262,6 +1268,8 @@ h1, h2, h3, h4, h5, h6 {
     max-width: none !important;
     padding-right: 1.4rem !important;
     overflow: visible !important;
+    white-space: nowrap !important;
+    flex-wrap: nowrap !important;
 }
 
 /* Slightly more breathing room between root-level items so
