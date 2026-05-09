@@ -2,7 +2,9 @@ package lk.gov.health.phsp.bean;
 
 import java.io.ByteArrayInputStream;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import javax.ejb.Asynchronous;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -51,6 +53,14 @@ public class AreaImportService {
             int totalRows = Math.max(0, sheet.getRows() - startRow);
             progress[1] = totalRows;
 
+            // Build O(1) lookup set: "TYPE|name_lowercase"
+            Set<String> existingKeys = new HashSet<>();
+            for (Area a : areaApplicationController.getAllAreas()) {
+                if (a.getName() != null && a.getType() != null) {
+                    existingKeys.add(a.getType().name() + "|" + a.getName().toLowerCase());
+                }
+            }
+
             for (int i = startRow; i < sheet.getRows(); i++) {
                 progress[0]++;
 
@@ -79,7 +89,8 @@ public class AreaImportService {
                     continue;
                 }
 
-                if (areaApplicationController.getAreaByName(name, areaType) != null) {
+                String key = areaType.name() + "|" + name.toLowerCase();
+                if (existingKeys.contains(key)) {
                     progress[3]++;
                     continue;
                 }
@@ -111,7 +122,8 @@ public class AreaImportService {
                 area.setCreatedBy(createdBy);
 
                 try {
-                    areaFacade.create(area); // own transaction (REQUIRED on stateless)
+                    areaFacade.create(area);
+                    existingKeys.add(key); // prevent within-file duplicates
                     progress[2]++;
                 } catch (Exception ex) {
                     warnings.add("Row " + i + " (" + name + "): save failed — " + ex.getMessage());
