@@ -1336,18 +1336,24 @@ h1, h2, h3, h4, h5, h6 {
    menuitem text, with `!important` everywhere so the inline widths
    from PF JS don't win.
    ============================================================ */
-/* Label span — strip the truncation. Scoped to dropdown items + the
-   root menubar's text spans only, never to widths/layout. The dropdown
-   `.ui-menuitem-link` is a flex container, so the label gets
-   `flex-shrink: 0` too — without it, the long labels ("User Manual
-   (Sinhala)", "Manage Institutions") still wrap to a second line
-   inside the flex link in spite of `white-space: nowrap` on the span. */
+/* Label span — strip the truncation. Maximum specificity (`body` +
+   four classes) so this beats any Saga rule that ships with PF. The
+   dropdown `.ui-menuitem-link` is a flex container, so the label
+   gets `flex: 0 0 auto` and `min-width: max-content` — without those
+   the span would shrink under flex and the long labels ("User Manual
+   (Sinhala)", "Manage Institutions") would wrap to a second line at
+   the flex-item boundary in spite of `white-space: nowrap`. */
+body .ui-menubar .ui-menu.ui-menu-child .ui-menuitem .ui-menuitem-link .ui-menuitem-text,
 .ui-menu.ui-menu-child .ui-menuitem-text,
 .ui-menubar .ui-menubar-root-list .ui-menuitem-text {
     white-space: nowrap !important;
     overflow: visible !important;
     text-overflow: clip !important;
-    flex-shrink: 0 !important;
+    flex: 0 0 auto !important;
+    min-width: max-content !important;
+    width: auto !important;
+    max-width: none !important;
+    word-break: keep-all !important;
 }
 /* Dropdown wrapper sizes to its widest entry. ALL width-forcing rules
    below are scoped to `.ui-menu-child` only — PrimeFaces tags the root
@@ -1358,7 +1364,7 @@ h1, h2, h3, h4, h5, h6 {
 .ui-menu.ui-menu-child {
     width: max-content !important;
     min-width: 260px !important;
-    max-width: 520px !important;
+    max-width: none !important;
     overflow: visible !important;
     white-space: nowrap !important;
 }
@@ -1372,13 +1378,18 @@ h1, h2, h3, h4, h5, h6 {
     width: 100% !important;
     max-width: none !important;
 }
+body .ui-menubar .ui-menu.ui-menu-child .ui-menuitem .ui-menuitem-link,
 .ui-menu.ui-menu-child .ui-menuitem-link {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    align-items: center !important;
     width: 100% !important;
+    min-width: max-content !important;
     max-width: none !important;
     padding-right: 1.4rem !important;
     overflow: visible !important;
     white-space: nowrap !important;
-    flex-wrap: nowrap !important;
 }
 
 /* Slightly more breathing room between root-level items so
