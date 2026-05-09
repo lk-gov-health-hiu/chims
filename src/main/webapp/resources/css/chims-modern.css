@@ -1216,30 +1216,51 @@ h1, h2, h3, h4, h5, h6 {
 /* ============================================================
    Top menubar dropdowns — show every menuitem label in full.
    Long entries like "Manage Institutions" or "User Manual (Sinhala)"
-   were getting truncated by `text-overflow: ellipsis` against the
-   220px min-width. Drop the ellipsis, let the dropdown size to its
-   widest item, but keep `white-space: nowrap` so labels never wrap
-   mid-phrase.
+   were truncating because of `text-overflow: ellipsis` clamped to a
+   220 px min-width.
+
+   PrimeFaces also injects an inline `style="width:..."` on the
+   dropdown wrapper via JS, and the inner `<ul class="ui-menu-list">`
+   defaults to a fixed width inherited from the Saga theme. The rules
+   below force every level of the dropdown chain — wrapper div,
+   inner UL, list item, link, label span — to size from the widest
+   menuitem text, with `!important` everywhere so the inline widths
+   from PF JS don't win.
    ============================================================ */
 .ui-menu-list .ui-menuitem-text,
 .ui-menubar  .ui-menuitem-text {
     white-space: nowrap !important;
     overflow: visible !important;
     text-overflow: clip !important;
+    width: auto !important;
+    max-width: none !important;
 }
+.ui-menubar .ui-menu.ui-menu-child,
 .ui-menu.ui-menu-child {
     width: max-content !important;
-    min-width: 240px !important;
-    max-width: 360px;
+    min-width: 260px !important;
+    max-width: 420px !important;
+    overflow: visible !important;
+}
+.ui-menubar .ui-menu.ui-menu-child .ui-menu-list,
+.ui-menu.ui-menu-child .ui-menu-list,
+.ui-menubar .ui-menu.ui-menu-child > .ui-menu-list {
+    width: 100% !important;
+    min-width: 100% !important;
+    max-width: none !important;
+    overflow: visible !important;
 }
 .ui-menu.ui-menu-child .ui-menuitem,
 .ui-menu-list .ui-menuitem {
-    width: 100%;
+    width: 100% !important;
+    max-width: none !important;
 }
 .ui-menu.ui-menu-child .ui-menuitem-link,
 .ui-menu-list .ui-menuitem-link {
-    width: 100%;
-    padding-right: 1.25rem !important;
+    width: 100% !important;
+    max-width: none !important;
+    padding-right: 1.4rem !important;
+    overflow: visible !important;
 }
 
 /* Slightly more breathing room between root-level items so
