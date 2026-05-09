@@ -10,6 +10,7 @@
     --cm-primary: #7367f0;
     --cm-primary-hover: #6259e0;
     --cm-primary-soft: #eeecff;
+    --cm-primary-rgb: 115, 103, 240;
     --cm-success: #28c76f;
     --cm-info: #00cfe8;
     --cm-warning: #ff9f43;
@@ -38,9 +39,10 @@
 }
 
 .dark-mode {
-    --cm-primary: #7367f0;
-    --cm-primary-hover: #5d51e0;
-    --cm-primary-soft: #2a2350;
+    --cm-primary: #45aef0;
+    --cm-primary-hover: #2c95d6;
+    --cm-primary-soft: #0f2a40;
+    --cm-primary-rgb: 69, 174, 240;
     --cm-success: #28c76f;
     --cm-info: #00cfe8;
     --cm-warning: #ff9f43;
@@ -291,10 +293,12 @@ body {
 }
 
 /* ============================================================
-   Header action buttons — soft-rounded rectangles with an icon and
-   a label. Calmer than the pill/gradient pair: flat surface, thin
-   border, gentle hover. Matches the reference logout button.
-   --primary  → search (subtle purple-tinted on dark, brick on light)
+   Header action buttons — soft-rounded squares, icon-only.
+   Sit on the dark navy header (`.chims-header` is dark in both
+   light and dark themes), so the base palette stays dark-on-dark.
+   The --primary variant pulls from --cm-primary so it follows
+   the active theme (purple in light, #45aef0 in dark).
+   --primary  → search
    --danger   → sign-out
    ============================================================ */
 .chims-action-btn,
@@ -302,14 +306,15 @@ body {
 .chims-action-btn.ui-button.ui-state-default {
     display: inline-flex !important;
     align-items: center !important;
-    gap: 0.55rem !important;
+    justify-content: center !important;
+    gap: 0.45rem !important;
     background: rgba(255, 255, 255, 0.04) !important;
     border: 1px solid rgba(255, 255, 255, 0.18) !important;
     color: #e5e7eb !important;
     border-radius: 12px !important;
-    padding: 0.5rem 0.95rem !important;
+    padding: 0.5rem 0.7rem !important;
     font-weight: 500 !important;
-    line-height: 1.2 !important;
+    line-height: 1 !important;
     box-shadow: none !important;
     min-height: 0 !important;
     width: auto !important;
@@ -331,13 +336,7 @@ body {
 .chims-action-btn.ui-button:focus,
 .chims-action-btn.ui-button.ui-state-focus {
     outline: none !important;
-    box-shadow: 0 0 0 3px rgba(115, 103, 240, 0.32) !important;
-}
-.chims-action-btn .ui-button-text {
-    display: inline !important;
-    padding: 0 !important;
-    font-size: 0.875rem !important;
-    letter-spacing: 0.01em;
+    box-shadow: 0 0 0 3px rgba(var(--cm-primary-rgb), 0.32) !important;
 }
 .chims-action-btn .ui-icon,
 .chims-action-btn .pi,
@@ -347,32 +346,42 @@ body {
     line-height: 1 !important;
     margin-right: 0 !important;
 }
-/* PrimeFaces puts icon in <span class="ui-button-icon-left"> — neutralize
-   absolute-positioning that the Saga theme bakes in for icon-and-text
-   buttons, so the flex layout above can space the icon + label cleanly. */
+/* PrimeFaces puts the icon in <span class="ui-button-icon-left"> with
+   absolute positioning baked in by the Saga theme — neutralize so the
+   flex layout above actually controls placement. */
 .chims-action-btn .ui-button-icon-left,
 .chims-action-btn .ui-button-icon-right {
     position: static !important;
     margin: 0 !important;
 }
 
-/* --primary: search */
+/* Icon-only variant — square shape, hide the empty text span PF
+   still emits when no value="" is supplied. */
+.chims-action-btn--icon {
+    padding: 0.5rem 0.65rem !important;
+}
+.chims-action-btn--icon .ui-button-text {
+    display: none !important;
+}
+
+/* --primary: search. Token-driven so it shifts purple → #45aef0
+   between light and dark themes. */
 .chims-action-btn--primary,
 .chims-action-btn--primary.ui-button,
 .chims-action-btn--primary.ui-button.ui-state-default {
-    background: rgba(115, 103, 240, 0.14) !important;
-    border-color: rgba(115, 103, 240, 0.45) !important;
-    color: #c8c0ff !important;
+    background: rgba(var(--cm-primary-rgb), 0.14) !important;
+    border-color: rgba(var(--cm-primary-rgb), 0.45) !important;
+    color: var(--cm-primary) !important;
 }
 .chims-action-btn--primary:hover,
 .chims-action-btn--primary.ui-button:hover,
 .chims-action-btn--primary.ui-button.ui-state-hover {
-    background: rgba(115, 103, 240, 0.22) !important;
-    border-color: rgba(115, 103, 240, 0.7) !important;
+    background: rgba(var(--cm-primary-rgb), 0.24) !important;
+    border-color: rgba(var(--cm-primary-rgb), 0.7) !important;
     color: #ffffff !important;
 }
 
-/* --danger: sign-out */
+/* --danger: sign-out. Stays red across themes (it's an exit cue). */
 .chims-action-btn--danger,
 .chims-action-btn--danger.ui-button,
 .chims-action-btn--danger.ui-button.ui-state-default {
@@ -386,32 +395,6 @@ body {
     background: rgba(239, 68, 68, 0.18) !important;
     border-color: rgba(239, 68, 68, 0.55) !important;
     color: #ffffff !important;
-}
-
-/* Light-mode tweaks so the buttons remain readable on the white header */
-body:not(.dark-mode) .chims-action-btn--primary,
-body:not(.dark-mode) .chims-action-btn--primary.ui-button {
-    background: rgba(115, 103, 240, 0.08) !important;
-    border-color: rgba(115, 103, 240, 0.45) !important;
-    color: #5d51e0 !important;
-}
-body:not(.dark-mode) .chims-action-btn--primary:hover,
-body:not(.dark-mode) .chims-action-btn--primary.ui-button:hover {
-    background: rgba(115, 103, 240, 0.16) !important;
-    border-color: rgba(115, 103, 240, 0.7) !important;
-    color: #4b3fd2 !important;
-}
-body:not(.dark-mode) .chims-action-btn--danger,
-body:not(.dark-mode) .chims-action-btn--danger.ui-button {
-    background: rgba(239, 68, 68, 0.06) !important;
-    border-color: rgba(239, 68, 68, 0.4) !important;
-    color: #b91c1c !important;
-}
-body:not(.dark-mode) .chims-action-btn--danger:hover,
-body:not(.dark-mode) .chims-action-btn--danger.ui-button:hover {
-    background: rgba(239, 68, 68, 0.14) !important;
-    border-color: rgba(239, 68, 68, 0.65) !important;
-    color: #991b1b !important;
 }
 
 /* Secondary / outlined variant */
