@@ -1227,14 +1227,19 @@ h1, h2, h3, h4, h5, h6 {
    menuitem text, with `!important` everywhere so the inline widths
    from PF JS don't win.
    ============================================================ */
-.ui-menu-list .ui-menuitem-text,
-.ui-menubar  .ui-menuitem-text {
+/* Label span — strip the truncation. Scoped to dropdown items + the
+   root menubar's text spans only, never to widths/layout. */
+.ui-menu.ui-menu-child .ui-menuitem-text,
+.ui-menubar .ui-menubar-root-list .ui-menuitem-text {
     white-space: nowrap !important;
     overflow: visible !important;
     text-overflow: clip !important;
-    width: auto !important;
-    max-width: none !important;
 }
+/* Dropdown wrapper sizes to its widest entry. ALL width-forcing rules
+   below are scoped to `.ui-menu-child` only — PrimeFaces tags the root
+   menubar UL with `.ui-menu-list` too, so any unscoped
+   `.ui-menu-list .ui-menuitem` rule with `width: 100%` would stack
+   the root nav vertically. */
 .ui-menubar .ui-menu.ui-menu-child,
 .ui-menu.ui-menu-child {
     width: max-content !important;
@@ -1242,21 +1247,17 @@ h1, h2, h3, h4, h5, h6 {
     max-width: 420px !important;
     overflow: visible !important;
 }
-.ui-menubar .ui-menu.ui-menu-child .ui-menu-list,
-.ui-menu.ui-menu-child .ui-menu-list,
-.ui-menubar .ui-menu.ui-menu-child > .ui-menu-list {
+.ui-menu.ui-menu-child > .ui-menu-list {
     width: 100% !important;
     min-width: 100% !important;
     max-width: none !important;
     overflow: visible !important;
 }
-.ui-menu.ui-menu-child .ui-menuitem,
-.ui-menu-list .ui-menuitem {
+.ui-menu.ui-menu-child .ui-menuitem {
     width: 100% !important;
     max-width: none !important;
 }
-.ui-menu.ui-menu-child .ui-menuitem-link,
-.ui-menu-list .ui-menuitem-link {
+.ui-menu.ui-menu-child .ui-menuitem-link {
     width: 100% !important;
     max-width: none !important;
     padding-right: 1.4rem !important;
