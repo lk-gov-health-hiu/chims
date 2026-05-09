@@ -283,9 +283,106 @@ body {
 }
 .chims-icon-btn .ui-button-text { display: none !important; }
 .chims-icon-btn .ui-icon,
-.chims-icon-btn .pi {
+.chims-icon-btn .pi,
+.chims-icon-btn .bi {
     color: #c9d1d9 !important;
     font-size: 0.95rem !important;
+    line-height: 1 !important;
+}
+
+/* ============================================================
+   Header action buttons — pill-shaped, gradient, lift on hover.
+   --primary  → search (purple gradient, sits next to the search input)
+   --danger   → sign-out (red gradient, top-right corner)
+   ============================================================ */
+.chims-icon-btn--primary,
+.chims-icon-btn--primary.ui-button,
+.chims-icon-btn--primary.ui-button.ui-state-default {
+    background: linear-gradient(135deg, #8a7bff 0%, #7367f0 55%, #5d51e0 100%) !important;
+    border: 1px solid rgba(115, 103, 240, 0.65) !important;
+    color: #ffffff !important;
+    border-radius: 999px !important;
+    padding: 0.45rem 0.7rem !important;
+    box-shadow: 0 4px 10px rgba(115, 103, 240, 0.32),
+                inset 0 1px 0 rgba(255, 255, 255, 0.15) !important;
+    transition: transform 0.15s ease,
+                box-shadow 0.15s ease,
+                filter 0.15s ease !important;
+}
+.chims-icon-btn--primary:hover,
+.chims-icon-btn--primary.ui-button:hover,
+.chims-icon-btn--primary.ui-button.ui-state-hover {
+    background: linear-gradient(135deg, #9587ff 0%, #7d6ff5 55%, #6256e8 100%) !important;
+    border-color: rgba(115, 103, 240, 0.85) !important;
+    color: #ffffff !important;
+    transform: translateY(-1px) !important;
+    box-shadow: 0 6px 16px rgba(115, 103, 240, 0.45),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2) !important;
+    filter: brightness(1.04);
+}
+.chims-icon-btn--primary:focus,
+.chims-icon-btn--primary.ui-button:focus,
+.chims-icon-btn--primary.ui-button.ui-state-focus {
+    outline: none !important;
+    box-shadow: 0 0 0 3px rgba(115, 103, 240, 0.35),
+                0 4px 10px rgba(115, 103, 240, 0.32) !important;
+}
+.chims-icon-btn--primary .ui-icon,
+.chims-icon-btn--primary .pi,
+.chims-icon-btn--primary .bi {
+    color: #ffffff !important;
+    font-size: 1rem !important;
+}
+
+.chims-icon-btn--danger,
+.chims-icon-btn--danger.ui-button,
+.chims-icon-btn--danger.ui-button.ui-state-default {
+    background: rgba(248, 113, 113, 0.12) !important;
+    border: 1px solid rgba(248, 113, 113, 0.55) !important;
+    color: #fca5a5 !important;
+    border-radius: 999px !important;
+    padding: 0.45rem 0.7rem !important;
+    box-shadow: none !important;
+    transition: transform 0.15s ease,
+                background 0.2s ease,
+                border-color 0.2s ease,
+                color 0.2s ease,
+                box-shadow 0.2s ease !important;
+}
+.chims-icon-btn--danger:hover,
+.chims-icon-btn--danger.ui-button:hover,
+.chims-icon-btn--danger.ui-button.ui-state-hover {
+    background: linear-gradient(135deg, #ff7676 0%, #ef4444 55%, #dc2626 100%) !important;
+    border-color: #ef4444 !important;
+    color: #ffffff !important;
+    transform: translateY(-1px) !important;
+    box-shadow: 0 6px 16px rgba(239, 68, 68, 0.45),
+                inset 0 1px 0 rgba(255, 255, 255, 0.18) !important;
+}
+.chims-icon-btn--danger:focus,
+.chims-icon-btn--danger.ui-button:focus,
+.chims-icon-btn--danger.ui-button.ui-state-focus {
+    outline: none !important;
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.32) !important;
+}
+.chims-icon-btn--danger .ui-icon,
+.chims-icon-btn--danger .pi,
+.chims-icon-btn--danger .bi {
+    color: inherit !important;
+    font-size: 1rem !important;
+}
+
+/* Light-mode tweak so the danger button reads cleanly on a white header */
+body:not(.dark-mode) .chims-icon-btn--danger,
+body:not(.dark-mode) .chims-icon-btn--danger.ui-button {
+    background: rgba(239, 68, 68, 0.08) !important;
+    border-color: rgba(239, 68, 68, 0.45) !important;
+    color: #b91c1c !important;
+}
+body:not(.dark-mode) .chims-icon-btn--danger:hover,
+body:not(.dark-mode) .chims-icon-btn--danger.ui-button:hover {
+    background: linear-gradient(135deg, #ff7676 0%, #ef4444 55%, #dc2626 100%) !important;
+    color: #ffffff !important;
 }
 
 /* Secondary / outlined variant */
