@@ -30,8 +30,9 @@
                                      styleClass="chims-search-input"
                                      value="#{clientController.searchingId}" />
                         <p:commandButton ajax="false"
+                                         value="Search"
                                          icon="bi bi-search"
-                                         styleClass="chims-icon-btn chims-icon-btn--primary"
+                                         styleClass="chims-action-btn chims-action-btn--primary"
                                          title="Search"
                                          action="#{clientController.searchByAnyId()}" />
                     </h:form>
@@ -46,8 +47,9 @@
                     <h:form styleClass="chims-logout-form">
                         <p:commandButton action="#{webUserController.logOut()}"
                                          ajax="false"
+                                         value="Log Out"
                                          icon="bi bi-box-arrow-right"
-                                         styleClass="chims-icon-btn chims-icon-btn--danger"
+                                         styleClass="chims-action-btn chims-action-btn--danger"
                                          rendered="#{webUserController.loggedUser ne null}"
                                          title="Sign out" />
                     </h:form>

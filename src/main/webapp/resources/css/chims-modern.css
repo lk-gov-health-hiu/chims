@@ -223,9 +223,9 @@ body {
 /* ---------- Buttons — scoped to skip the GitHub-style header chrome
    (chims-icon-btn, chims-theme-fab) so the top-bar search/logout buttons
    keep their existing transparent / dark look. ---------- */
-.ui-button:not(.chims-icon-btn):not(.chims-theme-fab),
-.ui-button.ui-state-default:not(.chims-icon-btn):not(.chims-theme-fab),
-.ui-button.ui-widget:not(.chims-icon-btn):not(.chims-theme-fab) {
+.ui-button:not(.chims-icon-btn):not(.chims-theme-fab):not(.chims-action-btn),
+.ui-button.ui-state-default:not(.chims-icon-btn):not(.chims-theme-fab):not(.chims-action-btn),
+.ui-button.ui-widget:not(.chims-icon-btn):not(.chims-theme-fab):not(.chims-action-btn) {
     background: var(--cm-primary) !important;
     border: 1px solid var(--cm-primary) !important;
     color: #ffffff !important;
@@ -236,22 +236,22 @@ body {
     transition: var(--cm-transition) !important;
 }
 
-.ui-button:not(.chims-icon-btn):not(.chims-theme-fab):hover,
-.ui-button.ui-state-hover:not(.chims-icon-btn):not(.chims-theme-fab) {
+.ui-button:not(.chims-icon-btn):not(.chims-theme-fab):not(.chims-action-btn):hover,
+.ui-button.ui-state-hover:not(.chims-icon-btn):not(.chims-theme-fab):not(.chims-action-btn) {
     background: var(--cm-primary-hover) !important;
     border-color: var(--cm-primary-hover) !important;
     box-shadow: var(--cm-shadow-sm) !important;
     transform: translateY(-1px);
 }
 
-.ui-button.ui-state-focus:not(.chims-icon-btn):not(.chims-theme-fab),
-.ui-button:focus:not(.chims-icon-btn):not(.chims-theme-fab) {
+.ui-button.ui-state-focus:not(.chims-icon-btn):not(.chims-theme-fab):not(.chims-action-btn),
+.ui-button:focus:not(.chims-icon-btn):not(.chims-theme-fab):not(.chims-action-btn) {
     outline: none !important;
     box-shadow: 0 0 0 3px rgba(115, 103, 240, 0.25) !important;
 }
 
-.ui-button.ui-state-disabled:not(.chims-icon-btn):not(.chims-theme-fab),
-.ui-button:disabled:not(.chims-icon-btn):not(.chims-theme-fab) {
+.ui-button.ui-state-disabled:not(.chims-icon-btn):not(.chims-theme-fab):not(.chims-action-btn),
+.ui-button:disabled:not(.chims-icon-btn):not(.chims-theme-fab):not(.chims-action-btn) {
     opacity: 0.55 !important;
     box-shadow: none !important;
     transform: none !important;
@@ -291,98 +291,127 @@ body {
 }
 
 /* ============================================================
-   Header action buttons — pill-shaped, gradient, lift on hover.
-   --primary  → search (purple gradient, sits next to the search input)
-   --danger   → sign-out (red gradient, top-right corner)
+   Header action buttons — soft-rounded rectangles with an icon and
+   a label. Calmer than the pill/gradient pair: flat surface, thin
+   border, gentle hover. Matches the reference logout button.
+   --primary  → search (subtle purple-tinted on dark, brick on light)
+   --danger   → sign-out
    ============================================================ */
-.chims-icon-btn--primary,
-.chims-icon-btn--primary.ui-button,
-.chims-icon-btn--primary.ui-button.ui-state-default {
-    background: linear-gradient(135deg, #8a7bff 0%, #7367f0 55%, #5d51e0 100%) !important;
-    border: 1px solid rgba(115, 103, 240, 0.65) !important;
-    color: #ffffff !important;
-    border-radius: 999px !important;
-    padding: 0.45rem 0.7rem !important;
-    box-shadow: 0 4px 10px rgba(115, 103, 240, 0.32),
-                inset 0 1px 0 rgba(255, 255, 255, 0.15) !important;
-    transition: transform 0.15s ease,
-                box-shadow 0.15s ease,
-                filter 0.15s ease !important;
-}
-.chims-icon-btn--primary:hover,
-.chims-icon-btn--primary.ui-button:hover,
-.chims-icon-btn--primary.ui-button.ui-state-hover {
-    background: linear-gradient(135deg, #9587ff 0%, #7d6ff5 55%, #6256e8 100%) !important;
-    border-color: rgba(115, 103, 240, 0.85) !important;
-    color: #ffffff !important;
-    transform: translateY(-1px) !important;
-    box-shadow: 0 6px 16px rgba(115, 103, 240, 0.45),
-                inset 0 1px 0 rgba(255, 255, 255, 0.2) !important;
-    filter: brightness(1.04);
-}
-.chims-icon-btn--primary:focus,
-.chims-icon-btn--primary.ui-button:focus,
-.chims-icon-btn--primary.ui-button.ui-state-focus {
-    outline: none !important;
-    box-shadow: 0 0 0 3px rgba(115, 103, 240, 0.35),
-                0 4px 10px rgba(115, 103, 240, 0.32) !important;
-}
-.chims-icon-btn--primary .ui-icon,
-.chims-icon-btn--primary .pi,
-.chims-icon-btn--primary .bi {
-    color: #ffffff !important;
-    font-size: 1rem !important;
-}
-
-.chims-icon-btn--danger,
-.chims-icon-btn--danger.ui-button,
-.chims-icon-btn--danger.ui-button.ui-state-default {
-    background: rgba(248, 113, 113, 0.12) !important;
-    border: 1px solid rgba(248, 113, 113, 0.55) !important;
-    color: #fca5a5 !important;
-    border-radius: 999px !important;
-    padding: 0.45rem 0.7rem !important;
+.chims-action-btn,
+.chims-action-btn.ui-button,
+.chims-action-btn.ui-button.ui-state-default {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 0.55rem !important;
+    background: rgba(255, 255, 255, 0.04) !important;
+    border: 1px solid rgba(255, 255, 255, 0.18) !important;
+    color: #e5e7eb !important;
+    border-radius: 12px !important;
+    padding: 0.5rem 0.95rem !important;
+    font-weight: 500 !important;
+    line-height: 1.2 !important;
     box-shadow: none !important;
-    transition: transform 0.15s ease,
-                background 0.2s ease,
-                border-color 0.2s ease,
-                color 0.2s ease,
-                box-shadow 0.2s ease !important;
+    min-height: 0 !important;
+    width: auto !important;
+    min-width: 0 !important;
+    transition: background 0.18s ease,
+                border-color 0.18s ease,
+                color 0.18s ease,
+                box-shadow 0.18s ease !important;
 }
-.chims-icon-btn--danger:hover,
-.chims-icon-btn--danger.ui-button:hover,
-.chims-icon-btn--danger.ui-button.ui-state-hover {
-    background: linear-gradient(135deg, #ff7676 0%, #ef4444 55%, #dc2626 100%) !important;
-    border-color: #ef4444 !important;
+.chims-action-btn:hover,
+.chims-action-btn.ui-button:hover,
+.chims-action-btn.ui-button.ui-state-hover {
+    background: rgba(255, 255, 255, 0.08) !important;
+    border-color: rgba(255, 255, 255, 0.32) !important;
     color: #ffffff !important;
-    transform: translateY(-1px) !important;
-    box-shadow: 0 6px 16px rgba(239, 68, 68, 0.45),
-                inset 0 1px 0 rgba(255, 255, 255, 0.18) !important;
+    transform: none !important;
 }
-.chims-icon-btn--danger:focus,
-.chims-icon-btn--danger.ui-button:focus,
-.chims-icon-btn--danger.ui-button.ui-state-focus {
+.chims-action-btn:focus,
+.chims-action-btn.ui-button:focus,
+.chims-action-btn.ui-button.ui-state-focus {
     outline: none !important;
-    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.32) !important;
+    box-shadow: 0 0 0 3px rgba(115, 103, 240, 0.32) !important;
 }
-.chims-icon-btn--danger .ui-icon,
-.chims-icon-btn--danger .pi,
-.chims-icon-btn--danger .bi {
+.chims-action-btn .ui-button-text {
+    display: inline !important;
+    padding: 0 !important;
+    font-size: 0.875rem !important;
+    letter-spacing: 0.01em;
+}
+.chims-action-btn .ui-icon,
+.chims-action-btn .pi,
+.chims-action-btn .bi {
     color: inherit !important;
     font-size: 1rem !important;
+    line-height: 1 !important;
+    margin-right: 0 !important;
+}
+/* PrimeFaces puts icon in <span class="ui-button-icon-left"> — neutralize
+   absolute-positioning that the Saga theme bakes in for icon-and-text
+   buttons, so the flex layout above can space the icon + label cleanly. */
+.chims-action-btn .ui-button-icon-left,
+.chims-action-btn .ui-button-icon-right {
+    position: static !important;
+    margin: 0 !important;
 }
 
-/* Light-mode tweak so the danger button reads cleanly on a white header */
-body:not(.dark-mode) .chims-icon-btn--danger,
-body:not(.dark-mode) .chims-icon-btn--danger.ui-button {
-    background: rgba(239, 68, 68, 0.08) !important;
-    border-color: rgba(239, 68, 68, 0.45) !important;
+/* --primary: search */
+.chims-action-btn--primary,
+.chims-action-btn--primary.ui-button,
+.chims-action-btn--primary.ui-button.ui-state-default {
+    background: rgba(115, 103, 240, 0.14) !important;
+    border-color: rgba(115, 103, 240, 0.45) !important;
+    color: #c8c0ff !important;
+}
+.chims-action-btn--primary:hover,
+.chims-action-btn--primary.ui-button:hover,
+.chims-action-btn--primary.ui-button.ui-state-hover {
+    background: rgba(115, 103, 240, 0.22) !important;
+    border-color: rgba(115, 103, 240, 0.7) !important;
+    color: #ffffff !important;
+}
+
+/* --danger: sign-out */
+.chims-action-btn--danger,
+.chims-action-btn--danger.ui-button,
+.chims-action-btn--danger.ui-button.ui-state-default {
+    background: rgba(255, 255, 255, 0.04) !important;
+    border-color: rgba(255, 255, 255, 0.18) !important;
+    color: #e5e7eb !important;
+}
+.chims-action-btn--danger:hover,
+.chims-action-btn--danger.ui-button:hover,
+.chims-action-btn--danger.ui-button.ui-state-hover {
+    background: rgba(239, 68, 68, 0.18) !important;
+    border-color: rgba(239, 68, 68, 0.55) !important;
+    color: #ffffff !important;
+}
+
+/* Light-mode tweaks so the buttons remain readable on the white header */
+body:not(.dark-mode) .chims-action-btn--primary,
+body:not(.dark-mode) .chims-action-btn--primary.ui-button {
+    background: rgba(115, 103, 240, 0.08) !important;
+    border-color: rgba(115, 103, 240, 0.45) !important;
+    color: #5d51e0 !important;
+}
+body:not(.dark-mode) .chims-action-btn--primary:hover,
+body:not(.dark-mode) .chims-action-btn--primary.ui-button:hover {
+    background: rgba(115, 103, 240, 0.16) !important;
+    border-color: rgba(115, 103, 240, 0.7) !important;
+    color: #4b3fd2 !important;
+}
+body:not(.dark-mode) .chims-action-btn--danger,
+body:not(.dark-mode) .chims-action-btn--danger.ui-button {
+    background: rgba(239, 68, 68, 0.06) !important;
+    border-color: rgba(239, 68, 68, 0.4) !important;
     color: #b91c1c !important;
 }
-body:not(.dark-mode) .chims-icon-btn--danger:hover,
-body:not(.dark-mode) .chims-icon-btn--danger.ui-button:hover {
-    background: linear-gradient(135deg, #ff7676 0%, #ef4444 55%, #dc2626 100%) !important;
-    color: #ffffff !important;
+body:not(.dark-mode) .chims-action-btn--danger:hover,
+body:not(.dark-mode) .chims-action-btn--danger.ui-button:hover {
+    background: rgba(239, 68, 68, 0.14) !important;
+    border-color: rgba(239, 68, 68, 0.65) !important;
+    color: #991b1b !important;
 }
 
 /* Secondary / outlined variant */
@@ -690,13 +719,13 @@ body { min-height: 100vh !important; }
    Scoped to skip the GitHub-style header chrome (chims-icon-btn,
    chims-search-input, chims-theme-fab) so the top-bar buttons keep
    their existing compact look. */
-.ui-button:not(.chims-icon-btn):not(.chims-theme-fab),
-.ui-button.ui-state-default:not(.chims-icon-btn):not(.chims-theme-fab),
-.ui-button.ui-widget:not(.chims-icon-btn):not(.chims-theme-fab),
-.btn:not(.chims-icon-btn):not(.chims-theme-fab),
+.ui-button:not(.chims-icon-btn):not(.chims-theme-fab):not(.chims-action-btn),
+.ui-button.ui-state-default:not(.chims-icon-btn):not(.chims-theme-fab):not(.chims-action-btn),
+.ui-button.ui-widget:not(.chims-icon-btn):not(.chims-theme-fab):not(.chims-action-btn),
+.btn:not(.chims-icon-btn):not(.chims-theme-fab):not(.chims-action-btn),
 button.ui-commandlink,
-input[type="button"].ui-button:not(.chims-icon-btn),
-input[type="submit"].ui-button:not(.chims-icon-btn) {
+input[type="button"].ui-button:not(.chims-icon-btn):not(.chims-action-btn),
+input[type="submit"].ui-button:not(.chims-icon-btn):not(.chims-action-btn) {
     min-height: 38px !important;
     padding: 0.5rem 1.1rem !important;
     border-radius: 10px !important;
@@ -709,9 +738,9 @@ input[type="submit"].ui-button:not(.chims-icon-btn) {
     transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease, border-color 0.15s ease !important;
 }
 
-.ui-button:not(.chims-icon-btn):not(.chims-theme-fab):hover,
-.ui-button.ui-state-hover:not(.chims-icon-btn):not(.chims-theme-fab),
-.btn:not(.chims-icon-btn):not(.chims-theme-fab):hover {
+.ui-button:not(.chims-icon-btn):not(.chims-theme-fab):not(.chims-action-btn):hover,
+.ui-button.ui-state-hover:not(.chims-icon-btn):not(.chims-theme-fab):not(.chims-action-btn),
+.btn:not(.chims-icon-btn):not(.chims-theme-fab):not(.chims-action-btn):hover {
     transform: translateY(-1px);
     box-shadow:
         0 1px 0 rgba(255,255,255,0.18) inset,
@@ -719,15 +748,15 @@ input[type="submit"].ui-button:not(.chims-icon-btn) {
         0 10px 22px rgba(15, 23, 42, 0.10) !important;
 }
 
-.ui-button:not(.chims-icon-btn):not(.chims-theme-fab):active,
-.ui-button.ui-state-active:not(.chims-icon-btn):not(.chims-theme-fab),
-.btn:not(.chims-icon-btn):not(.chims-theme-fab):active {
+.ui-button:not(.chims-icon-btn):not(.chims-theme-fab):not(.chims-action-btn):active,
+.ui-button.ui-state-active:not(.chims-icon-btn):not(.chims-theme-fab):not(.chims-action-btn),
+.btn:not(.chims-icon-btn):not(.chims-theme-fab):not(.chims-action-btn):active {
     transform: translateY(0);
     box-shadow:
         0 1px 2px rgba(15, 23, 42, 0.08) inset !important;
 }
 
-.ui-button.ui-button-icon-only:not(.chims-icon-btn):not(.chims-theme-fab) {
+.ui-button.ui-button-icon-only:not(.chims-icon-btn):not(.chims-theme-fab):not(.chims-action-btn) {
     width: 38px !important;
     min-width: 38px !important;
     padding: 0.5rem !important;
