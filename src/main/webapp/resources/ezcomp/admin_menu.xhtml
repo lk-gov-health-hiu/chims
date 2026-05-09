@@ -36,20 +36,23 @@
                                          action="#{clientController.searchByAnyId()}" />
                     </h:form>
 
-                    <!-- User greeting -->
-                    <span class="chims-user-chip" rendered="#{webUserController.loggedUser ne null}">
-                        <i class="bi bi-person-circle" />
-                        <h:outputText value="#{webUserController.loggedUser.name}" />
-                    </span>
+                    <!-- User Greeting & Profile Dropdown -->
+                    <h:form id="chimsUserForm" rendered="#{webUserController.loggedUser ne null}">
+                        <p:commandLink id="userMenuTrigger" styleClass="chims-user-chip" style="text-decoration: none;">
+                            <i class="bi bi-person-circle" />
+                            <h:outputText value="#{webUserController.loggedUser.name}" />
+                            <i class="bi bi-chevron-down" style="font-size: 0.7rem; margin-left: 0.2rem;" />
+                        </p:commandLink>
 
-                    <!-- Logout -->
-                    <h:form styleClass="chims-logout-form">
-                        <p:commandButton action="#{webUserController.logOut()}"
-                                         ajax="false"
-                                         icon="bi bi-box-arrow-right"
-                                         styleClass="chims-action-btn chims-action-btn--danger chims-action-btn--icon"
-                                         rendered="#{webUserController.loggedUser ne null}"
-                                         title="Sign out" />
+                        <p:menu overlay="true" trigger="userMenuTrigger" my="right top" at="right bottom" styleClass="chims-profile-dropdown">
+                            <p:menuitem value="My Details" icon="bi bi-person-badge-fill"
+                                        action="#{webUserController.toChangeMyDetails()}" ajax="false" />
+                            <p:menuitem value="Change Password" icon="bi bi-shield-lock-fill"
+                                        action="#{webUserController.toChangeMyPassword()}" ajax="false" />
+                            <p:separator />
+                            <p:menuitem value="Sign Out" icon="bi bi-box-arrow-right"
+                                        action="#{webUserController.logOut()}" ajax="false" />
+                        </p:menu>
                     </h:form>
                 </div>
             </div>
@@ -141,12 +144,6 @@
 
                     <p:submenu label="Settings"
                                icon="bi bi-gear-fill cm-icon-chip">
-                        <p:menuitem value="Change Password"
-                                    icon="bi bi-shield-lock-fill cm-icon-chip"
-                                    action="#{webUserController.toChangeMyPassword()}" ajax="false" />
-                        <p:menuitem value="My Details"
-                                    icon="bi bi-person-badge-fill cm-icon-chip"
-                                    action="#{webUserController.toChangeMyDetails()}" ajax="false" />
                         <p:menuitem value="API Keys"
                                     icon="bi bi-key-fill cm-icon-chip"
                                     action="#{apiKeyController.toManageMyApiKeys()}" ajax="false" />

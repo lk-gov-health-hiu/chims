@@ -171,6 +171,62 @@ body {
     font-size: 0.875rem;
     line-height: 1;
     color: #e5e7eb;
+    transition: all 0.2s ease;
+}
+
+.chims-user-chip:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.3);
+    color: #ffffff;
+    cursor: pointer;
+}
+
+.chims-profile-dropdown {
+    border: none !important;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05) !important;
+    border-radius: 8px !important;
+    padding: 0.5rem 0 !important;
+    min-width: 180px !important;
+    background: #ffffff !important;
+}
+
+.chims-profile-dropdown .ui-menu-list {
+    padding: 0 !important;
+}
+
+.chims-profile-dropdown .ui-menuitem {
+    margin: 0 !important;
+    border: none !important;
+}
+
+.chims-profile-dropdown .ui-menuitem-link {
+    padding: 0.6rem 1rem !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.75rem !important;
+    border-radius: 0 !important;
+    transition: background 0.15s ease !important;
+}
+
+.chims-profile-dropdown .ui-menuitem-link:hover {
+    background: #f3f4f6 !important;
+}
+
+.chims-profile-dropdown .ui-menuitem-text {
+    font-size: 0.9rem !important;
+    color: #374151 !important;
+}
+
+.chims-profile-dropdown .ui-menuitem-icon {
+    font-size: 1.1rem !important;
+    color: #7367f0 !important;
+    margin: 0 !important;
+}
+
+.chims-profile-dropdown .ui-separator {
+    margin: 0.4rem 0 !important;
+    border-top: 1px solid #f3f4f6 !important;
+}
     white-space: nowrap;
 }
 .chims-user-chip .bi {
@@ -960,4 +1016,181 @@ body {
 .req-mark {
     color: #ea5455;
     font-weight: bold;
+}
+
+/* Profile Redesign Styles */
+.profile-container {
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    gap: 1.5rem;
+    align-items: start;
+}
+
+@media (max-width: 992px) {
+    .profile-container {
+        grid-template-columns: 1fr;
+    }
+}
+
+.profile-sidebar {
+    position: sticky;
+    top: 1rem;
+}
+
+.profile-card-static {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px 0 rgba(0,0,0,.05);
+    padding: 2rem;
+    text-align: center;
+}
+
+.profile-avatar-wrap {
+    width: 120px;
+    height: 120px;
+    margin: 0 auto 1.5rem;
+    background: linear-gradient(135deg, #7367f0 0%, #ce9ffc 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 3.5rem;
+    box-shadow: 0 8px 15px rgba(115, 103, 240, 0.3);
+}
+
+.profile-name {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 0.25rem;
+}
+
+.profile-role {
+    font-size: 0.9rem;
+    color: #6e6b7b;
+    margin-bottom: 1.5rem;
+}
+
+.profile-stats {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+    border-top: 1px solid #ebe9f1;
+    padding-top: 1.5rem;
+}
+
+.profile-stat-item {
+    text-align: center;
+}
+
+.profile-stat-value {
+    display: block;
+    font-weight: 600;
+    color: #333;
+}
+
+.profile-stat-label {
+    font-size: 0.75rem;
+    color: #b9b9c3;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.cm-card-modern {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 24px 0 rgba(34, 41, 47, 0.1);
+    border: none;
+    margin-bottom: 1.5rem;
+}
+
+.cm-card-modern .cm-card-head {
+    padding: 1.5rem;
+    border-bottom: 1px solid #ebe9f1;
+}
+
+.cm-card-modern .cm-card-body {
+    padding: 1.5rem;
+}
+
+/* Dark Mode for Profile Components */
+.dark-mode .profile-card-static,
+.dark-mode .cm-card-modern {
+    background: #1e1e27 !important;
+    box-shadow: 0 4px 24px 0 rgba(0, 0, 0, 0.4) !important;
+}
+
+.dark-mode .cm-card-head {
+    border-bottom-color: #32323d !important;
+}
+
+.dark-mode .profile-name,
+.dark-mode .profile-stat-value,
+.dark-mode .cm-card-title {
+    color: #e5e7eb !important;
+}
+
+.dark-mode .profile-role,
+.dark-mode .profile-stat-label,
+.dark-mode .form-label,
+.dark-mode .text-muted {
+    color: #a0aec0 !important;
+}
+
+.dark-mode .profile-stats {
+    border-top-color: #32323d !important;
+}
+
+.dark-mode .form-control-plaintext {
+    color: #ffffff !important;
+}
+
+.dark-mode .chims-profile-dropdown {
+    background: #1e1e27 !important;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5) !important;
+}
+
+.dark-mode .chims-profile-dropdown .ui-menuitem-text {
+    color: #e5e7eb !important;
+}
+
+.dark-mode .chims-profile-dropdown .ui-menuitem-link:hover {
+    background: #2d2d39 !important;
+}
+
+.dark-mode .chims-profile-dropdown .ui-separator {
+    border-top-color: #32323d !important;
+}
+
+/* Password Eye Icon Overlap Fix */
+.ui-password.ui-inputwrapper {
+    display: block !important;
+    position: relative !important;
+}
+
+.ui-password.ui-inputwrapper input.form-control {
+    padding-right: 2.5rem !important;
+}
+
+.ui-password.ui-inputwrapper .ui-password-info {
+    z-index: 1001 !important;
+}
+
+/* PrimeFaces toggleMask icon positioning */
+.ui-password .ui-icon-reveal, 
+.ui-password .ui-icon-hide {
+    position: absolute !important;
+    top: 50% !important;
+    right: 0.75rem !important;
+    transform: translateY(-50%) !important;
+    margin: 0 !important;
+    cursor: pointer !important;
+    color: #7367f0 !important;
+    font-size: 1.1rem !important;
+}
+
+.dark-mode .ui-password .ui-icon-reveal, 
+.dark-mode .ui-password .ui-icon-hide {
+    color: #ce9ffc !important;
 }

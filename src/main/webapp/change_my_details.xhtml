@@ -12,50 +12,149 @@
 
             <ui:define name="content">
 
-                <h:form>
-                    <p:panelGrid columns="2" columnClasses="alignLeft alignLeft" class="pageCenter">
+                <div class="cm-page-title">
+                    <div>
+                        <div class="cm-page-title-text">
+                            User Profile
+                        </div>
+                        <div class="cm-page-sub">
+                            Manage your account settings and personal preferences.
+                        </div>
+                    </div>
+                </div>
 
-                        <f:facet name="header" >
-                            Change My Details
-                        </f:facet>
+                <h:form id="profileForm">
+                    <div class="profile-container">
+                        
+                        <!-- Sidebar: Profile Overview -->
+                        <div class="profile-sidebar">
+                            <div class="profile-card-static">
+                                <div class="profile-avatar-wrap">
+                                    <i class="bi bi-person-fill" />
+                                </div>
+                                <div class="profile-name">
+                                    <h:outputText value="#{webUserController.loggedUser.name}" />
+                                </div>
+                                <div class="profile-role">
+                                    <h:outputText value="#{webUserController.loggedUser.webUserRole}" />
+                                </div>
+                                
+                                <div class="profile-stats">
+                                    <div class="profile-stat-item">
+                                        <span class="profile-stat-value">Active</span>
+                                        <span class="profile-stat-label">Status</span>
+                                    </div>
+                                    <div class="profile-stat-item">
+                                        <span class="profile-stat-value">
+                                            <h:outputText value="#{webUserController.loggedUser.defLocale}">
+                                                <f:converter converterId="javax.faces.Character" rendered="false"/>
+                                            </h:outputText>
+                                        </span>
+                                        <span class="profile-stat-label">Lang</span>
+                                    </div>
+                                </div>
 
+                                <div class="mt-4 text-start">
+                                    <p:button outcome="/change_my_password" 
+                                              value="Security Settings" 
+                                              icon="bi bi-shield-lock"
+                                              styleClass="ui-button-outlined ui-button-secondary w-100" />
+                                </div>
+                            </div>
+                        </div>
 
-                        <h:outputLabel value="Name" for="webUserPerson" />
-                        <p:inputText id="webUserPerson" value="#{webUserController.selected.person.name}" title="#{bundle.EditWebUserTitle_webUserPerson}" >
-                        </p:inputText>
+                        <!-- Main Content: Editable Details -->
+                        <div class="profile-main">
+                            
+                            <!-- Personal Details Card -->
+                            <div class="cm-card-modern">
+                                <div class="cm-card-head">
+                                    <span class="cm-card-title">
+                                        <i class="bi bi-person-lines-fill" style="color: var(--cm-primary); margin-right: 0.5rem;"/> 
+                                        Account Details
+                                    </span>
+                                </div>
+                                <div class="cm-card-body">
+                                    <div class="row g-4">
+                                        <div class="col-md-12">
+                                            <p:outputLabel value="Display Name" for="displayName" class="form-label d-block mb-1" />
+                                            <p:inputText id="displayName" class="form-control"
+                                                         value="#{webUserController.selected.person.name}" 
+                                                         placeholder="Enter your full name" />
+                                        </div>
 
+                                        <div class="col-md-6">
+                                            <p:outputLabel value="Username" for="uname" class="form-label d-block mb-1" />
+                                            <p:inputText id="uname" class="form-control" disabled="true"
+                                                         value="#{webUserController.selected.name}" 
+                                                         style="background: #f8f8f8;" />
+                                            <small class="text-muted">Username cannot be changed.</small>
+                                        </div>
 
-                        <h:outputLabel value="Username" for="name" />
-                        <p:inputText disabled="true" id="name" value="#{webUserController.selected.name}" title="#{bundle.EditWebUserTitle_name}" required="true" requiredMessage="#{bundle.EditWebUserRequiredMessage_name}"/>
+                                        <div class="col-md-6">
+                                            <p:outputLabel value="Email Address" for="email" class="form-label d-block mb-1" />
+                                            <p:inputText id="email" class="form-control"
+                                                         value="#{webUserController.selected.email}" 
+                                                         placeholder="example@email.com" />
+                                        </div>
 
+                                        <div class="col-md-6">
+                                            <p:outputLabel value="Contact Number" for="phone" class="form-label d-block mb-1" />
+                                            <p:inputText id="phone" class="form-control"
+                                                         value="#{webUserController.selected.telNo}" 
+                                                         placeholder="+94 7X XXX XXXX" />
+                                        </div>
 
-                        <h:outputLabel value="Email" for="email" />
-                        <p:inputText id="email" value="#{webUserController.selected.email}" title="#{bundle.EditWebUserTitle_email}" />
+                                        <div class="col-md-6">
+                                            <p:outputLabel value="System Language" for="lang" class="form-label d-block mb-1" />
+                                            <p:selectOneMenu id="lang" value="#{webUserController.selected.defLocale}" class="form-control w-100">
+                                                <f:selectItem itemLabel="English" itemValue="en" />
+                                                <f:selectItem itemLabel="Sinhala" itemValue="si" />
+                                                <f:selectItem itemLabel="Tamil" itemValue="ta" />
+                                            </p:selectOneMenu>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
 
-                        <h:outputLabel value="Phone" for="telNo" />
-                        <p:inputText id="telNo" value="#{webUserController.selected.telNo}" title="#{bundle.EditWebUserTitle_telNo}" />
+                            <!-- Professional Details Card -->
+                            <div class="cm-card-modern">
+                                <div class="cm-card-head">
+                                    <span class="cm-card-title">
+                                        <i class="bi bi-building" style="color: var(--cm-primary); margin-right: 0.5rem;"/> 
+                                        Work Information
+                                    </span>
+                                </div>
+                                <div class="cm-card-body">
+                                    <div class="row g-4">
+                                        <div class="col-md-6">
+                                            <p:outputLabel value="Assigned Institution" class="form-label d-block mb-1" />
+                                            <h:outputText value="#{webUserController.selected.institution.name}" 
+                                                          styleClass="form-control-plaintext fw-bold" />
+                                        </div>
+                                        <div class="col-md-6">
+                                            <p:outputLabel value="Institutional Level" class="form-label d-block mb-1" />
+                                            <h:outputText value="#{webUserController.selected.institution.institutionType}" 
+                                                          styleClass="form-control-plaintext fw-bold" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
 
+                            <!-- Action Bar -->
+                            <div class="d-flex justify-content-end gap-2 mt-4">
+                                <p:button outcome="/index" value="Discard Changes" 
+                                          styleClass="ui-button-flat ui-button-secondary" />
+                                <p:commandButton ajax="false" 
+                                                 action="#{webUserController.updateMyDetails()}" 
+                                                 value="Save Profile Settings" 
+                                                 icon="bi bi-save"
+                                                 styleClass="ui-button-primary shadow-sm" />
+                            </div>
 
-                        <h:outputLabel value="Institution" />
-                        <h:outputText id="institution" value="#{webUserController.selected.institution.name}"
-                                      title="#{bundle.EditWebUserTitle_institution}" >
-                        </h:outputText>
-
-                        <h:outputLabel value="Language"  />
-                        <p:selectOneMenu value="#{webUserController.selected.defLocale}" >
-                            <f:selectItem itemLabel="Sinhala" itemValue="si" ></f:selectItem>
-                            <f:selectItem itemLabel="Tamil" itemValue="ta" ></f:selectItem>
-                            <f:selectItem itemLabel="English" itemValue="en" ></f:selectItem>
-                        </p:selectOneMenu>
-
-
-                        <p:spacer></p:spacer>
-                        <p:commandButton ajax="false" action="#{webUserController.updateMyDetails()}" value="Save" ></p:commandButton>
-
-                    </p:panelGrid>
-
+                        </div>
+                    </div>
                 </h:form>
-
 
             </ui:define>
 

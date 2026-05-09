@@ -7,65 +7,95 @@
                 xmlns="http://www.w3.org/1999/xhtml"
                 xmlns:f="http://xmlns.jcp.org/jsf/core">
 
-
-
     <ui:define name="content">
-        <p:growl />
+        <div class="cm-page-title">
+            <div>
+                <div class="cm-page-title-text">
+                    Manage API Keys
+                </div>
+                <div class="cm-page-sub">
+                    Manage your application interface keys for external integrations.
+                </div>
+            </div>
+        </div>
 
-        <p:panelGrid columns="2" >
-            <f:facet name="header" >
-                <p:outputLabel value="Manage My API Keys" ></p:outputLabel>
-            </f:facet>
+        <div class="row g-4">
+            <!-- Add New Key -->
+            <div class="col-md-4">
+                <h:form>
+                    <div class="cm-card-3d">
+                        <div class="cm-card-head">
+                            <span class="cm-card-title">
+                                <i class="bi bi-plus-circle-fill"/> Add New API Key
+                            </span>
+                        </div>
+                        <div class="cm-card-body">
+                            <div class="row g-3">
+                                <div class="col-md-12">
+                                    <p:outputLabel for="keyname" value="Key Type" class="form-label" />
+                                    <p:selectOneMenu id="keyname" value="#{apiKeyController.current.keyType}" 
+                                                     required="true" requiredMessage="Please select key type" class="form-control">
+                                        <f:selectItems value="#{apiKeyController.apiKeyTypes}" />
+                                    </p:selectOneMenu>
+                                </div>
+                                <div class="col-md-12">
+                                    <p:outputLabel for="keyvalue" value="Key Value" class="form-label" />
+                                    <p:inputText id="keyvalue" value="#{apiKeyController.current.keyValue}" 
+                                                 required="true" requiredMessage="Please enter key value" class="form-control" />
+                                </div>
+                                <div class="col-md-12">
+                                    <p:outputLabel for="doe" value="Date of Expiry" class="form-label" />
+                                    <p:calendar id="doe" value="#{apiKeyController.current.dateOfExpiary}" 
+                                                class="form-control" pattern="dd-MM-yyyy" navigator="true" />
+                                </div>
+                                <div class="col-md-12 pt-2">
+                                    <p:commandButton ajax="false" value="Add Key" icon="bi bi-key"
+                                                     action="#{apiKeyController.saveSelected()}" class="btn btn-primary w-100" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </h:form>
+            </div>
 
-            <h:form >
-                <h:panelGrid columns="2" >
-                    <f:facet name="header" >
-                        <p:outputLabel value="Add New API Key" ></p:outputLabel>
-                    </f:facet>
-                    <p:outputLabel for="keyname" value="Key Name" ></p:outputLabel>
-                    <p:selectOneMenu id="keyname" value="#{apiKeyController.current.keyType}" required="true" requiredMessage="Please select key name" >
-                        <f:selectItems value="#{apiKeyController.apiKeyTypes}" ></f:selectItems>
-                    </p:selectOneMenu>
-                    <p:outputLabel for="keyvalue" value="Key Value" ></p:outputLabel>
-                    <p:inputText id="keyvalue" value="#{apiKeyController.current.keyValue}"  required="true" requiredMessage="Please select key value"></p:inputText>
-                    <p:outputLabel for="doe" value="Date of Expiary" ></p:outputLabel>
-                    <p:calendar id="doe" value="#{apiKeyController.current.dateOfExpiary}" ></p:calendar>
-                    <p:spacer ></p:spacer>
-                    <p:commandButton ajax="false" value="Add Key" action="#{apiKeyController.saveSelected()}" ></p:commandButton>
-                </h:panelGrid>
-            </h:form>
-
-            <h:form >
-                <p:dataTable value="#{apiKeyController.items}" var="i" rowKey="#{i.id}" >
-                     <f:facet name="header" >
-                        <p:outputLabel value="My Active API Keys" ></p:outputLabel>
-                    </f:facet>
-                    <p:column headerText="Key Name" width="150" >
-                        <p:outputLabel value="#{i.keyType}" ></p:outputLabel>
-                    </p:column>
-                    <p:column headerText="Key Value"  >
-                        <p:inputText value="#{i.keyValue}" readonly="true" class="w-100" ></p:inputText>
-                    </p:column>
-                    <p:column headerText="Expiary (dd-MM-yyyy)" width="250" >
-                        <p:outputLabel value="#{i.dateOfExpiary}" >
-                            <f:convertDateTime pattern="dd-MM-yyyy" ></f:convertDateTime>
-                        </p:outputLabel>
-                    </p:column>
-                    <p:column headerText="Actions" width="150" >
-                        <p:commandButton ajax="false" value="Remove" action="#{apiKeyController.delete()}" >
-                            <f:setPropertyActionListener value="#{i}" target="#{apiKeyController.removing}" ></f:setPropertyActionListener>
-                        </p:commandButton>
-                    </p:column>
-
-                </p:dataTable>
-            </h:form>
-
-        </p:panelGrid>
-
-
-
-
+            <!-- Active Keys -->
+            <div class="col-md-8">
+                <h:form>
+                    <div class="cm-card-3d">
+                        <div class="cm-card-head">
+                            <span class="cm-card-title">
+                                <i class="bi bi-key-fill"/> Active API Keys
+                            </span>
+                        </div>
+                        <div class="cm-card-body p-0">
+                            <p:dataTable value="#{apiKeyController.items}" var="i" rowKey="#{i.id}" 
+                                         styleClass="border-0" emptyMessage="No API keys found.">
+                                <p:column headerText="Type" width="120">
+                                    <span class="badge bg-light text-dark">#{i.keyType}</span>
+                                </p:column>
+                                <p:column headerText="Key Value">
+                                    <code>#{i.keyValue}</code>
+                                </p:column>
+                                <p:column headerText="Expiry" width="120">
+                                    <h:outputText value="#{i.dateOfExpiary}">
+                                        <f:convertDateTime pattern="dd-MM-yyyy" />
+                                    </h:outputText>
+                                </p:column>
+                                <p:column headerText="Actions" width="100" style="text-align:center;">
+                                    <p:commandLink action="#{apiKeyController.delete()}" 
+                                                   title="Remove Key"
+                                                   style="color: var(--cm-danger);"
+                                                   ajax="false">
+                                        <i class="bi bi-trash-fill" />
+                                        <f:setPropertyActionListener value="#{i}" target="#{apiKeyController.removing}" />
+                                    </p:commandLink>
+                                </p:column>
+                            </p:dataTable>
+                        </div>
+                    </div>
+                </h:form>
+            </div>
+        </div>
     </ui:define>
-
 
 </ui:composition>
