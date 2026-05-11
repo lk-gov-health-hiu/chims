@@ -1549,3 +1549,235 @@ body .ui-menubar .ui-menu-list.ui-menu-child .ui-menuitem .ui-menuitem-link,
 .ui-panelgrid-cell > .ui-password > input {
     width: 100% !important;
 }
+
+/* ============================================================
+   Menubar / dropdown hover polish
+   - never underline a menu link (Saga + tem1's `a:hover { underline }`
+     leak into dropdown items, mostly visible in dark mode)
+   - LIGHT theme: top menus + submenus render in amber #ff9f4e; the
+     hover text, the hover wash and the hover/active underline all use
+     that same amber.
+   - DARK theme: keeps its own slate text + purple indicator.
+   ============================================================ */
+.ui-menubar .ui-menuitem-link,
+.ui-menubar .ui-menuitem-link:hover,
+.ui-menubar .ui-menuitem-link:focus,
+.ui-menu .ui-menuitem-link,
+.ui-menu .ui-menuitem-link:hover,
+.ui-menu .ui-menuitem-link:focus,
+.ui-menu-list .ui-menuitem-link,
+.ui-menu-list .ui-menuitem-link:hover,
+.ui-menu-list .ui-menuitem-link:focus,
+.dark-mode .ui-menubar .ui-menuitem-link:hover,
+.dark-mode .ui-menu .ui-menuitem-link:hover,
+.dark-mode .ui-menu-list .ui-menuitem-link:hover {
+    text-decoration: none !important;
+}
+
+/* --- LIGHT theme --------------------------------------------------- */
+/* Top-level (root) items only — amber label + amber caret. The root
+   list is `.ui-menubar-root-list`; the dropdown panels are
+   `.ui-menu-child`, handled separately below. */
+body:not(.dark-mode) .ui-menubar > .ui-menubar-root-list > .ui-menuitem > .ui-menuitem-link,
+body:not(.dark-mode) .ui-menubar > .ui-menubar-root-list > .ui-menuitem > .ui-menuitem-link > .ui-menuitem-text,
+body:not(.dark-mode) .ui-menubar > .ui-menubar-root-list > .ui-menuitem > .ui-menuitem-link > .ui-submenu-icon {
+    color: #ff9f4e !important;
+}
+
+/* Dropdown (submenu) entries — black text, as before. Hover keeps a
+   soft amber wash but the label stays black. */
+body:not(.dark-mode) .ui-menu-list.ui-menu-child .ui-menuitem-link,
+body:not(.dark-mode) .ui-menu-list.ui-menu-child .ui-menuitem-text,
+body:not(.dark-mode) .ui-menu.ui-menu-child .ui-menuitem-link,
+body:not(.dark-mode) .ui-menu.ui-menu-child .ui-menuitem-text,
+body:not(.dark-mode) .ui-menu-list.ui-menu-child .ui-menuitem-link:hover,
+body:not(.dark-mode) .ui-menu-list.ui-menu-child .ui-menuitem-link:hover .ui-menuitem-text,
+body:not(.dark-mode) .ui-menu.ui-menu-child .ui-menuitem-link:hover,
+body:not(.dark-mode) .ui-menu.ui-menu-child .ui-menuitem-link:hover .ui-menuitem-text {
+    color: #1f2328 !important;
+}
+body:not(.dark-mode) .ui-menu-list.ui-menu-child .ui-menuitem-link:hover,
+body:not(.dark-mode) .ui-menu.ui-menu-child .ui-menuitem-link:hover {
+    background: #eeecff !important;
+}
+
+/* Hover on a top-level item — amber text, light-purple wash, amber bar. */
+body:not(.dark-mode) .chims-menubar.ui-menubar > .ui-menubar-root-list > .ui-menuitem > .ui-menuitem-link:hover,
+body:not(.dark-mode) .ui-menubar > .ui-menubar-root-list > .ui-menuitem > .ui-menuitem-link:hover,
+body:not(.dark-mode) .ui-menubar > .ui-menubar-root-list > .ui-menuitem > .ui-menuitem-link:hover > .ui-menuitem-text,
+body:not(.dark-mode) .ui-menubar > .ui-menubar-root-list > .ui-menuitem > .ui-menuitem-link.ui-state-hover {
+    color: #ff9f4e !important;
+    background: #eeecff !important;
+    border-bottom: 2px solid #ff9f4e !important;
+}
+
+/* Active / open top-level item — amber text, light-purple wash, amber bar. */
+body:not(.dark-mode) .chims-menubar.ui-menubar > .ui-menubar-root-list > .ui-menuitem.ui-menuitem-active > .ui-menuitem-link,
+body:not(.dark-mode) .ui-menubar > .ui-menubar-root-list > .ui-menuitem.ui-menuitem-active > .ui-menuitem-link,
+body:not(.dark-mode) .ui-menubar > .ui-menubar-root-list > .ui-menuitem.ui-menuitem-active > .ui-menuitem-link > .ui-menuitem-text {
+    color: #ff9f4e !important;
+    background: #eeecff !important;
+    border-bottom: 2px solid #ff9f4e !important;
+}
+
+/* (Icon chips keep the default purple treatment — see the .cm-icon-chip
+   rules earlier in this file. No amber override here on purpose.) */
+
+/* --- DARK theme: active/open root item — amber bar over the purple wash */
+.dark-mode .chims-menubar.ui-menubar > .ui-menubar-root-list > .ui-menuitem.ui-menuitem-active > .ui-menuitem-link,
+.dark-mode .ui-menubar > .ui-menubar-root-list > .ui-menuitem.ui-menuitem-active > .ui-menuitem-link {
+    background: rgba(115, 103, 240, 0.18) !important;
+    color: #cfc8ff !important;
+    border-bottom: 2px solid #ff9f4e !important;
+}
+
+/* ============================================================
+   Growl toasts — redesigned to match the reference: a rounded card,
+   a soft severity-tinted body, a coloured rounded-square icon chip
+   with a white glyph on the left, a bold title, and a small round
+   close button. Light + dark.
+
+   NOTE: the app raises its "success" notices with SEVERITY_INFO
+   (JsfUtil.addSuccessMessage), so the INFO variant gets the same
+   green treatment as SUCCESS.
+   ============================================================ */
+
+/* ---- card shell ---- */
+.ui-growl-item-container {
+    border: none !important;
+    border-radius: 14px !important;
+    box-shadow: 0 12px 32px rgba(15, 23, 42, 0.18) !important;
+    overflow: hidden !important;
+    background: #ffffff !important;
+    margin-bottom: 0.85rem !important;
+}
+.dark-mode .ui-growl-item-container {
+    background: #283046 !important;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45) !important;
+}
+
+/* ---- row layout ---- */
+.ui-growl-item {
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.85rem !important;
+    padding: 0.8rem 2.3rem 0.8rem 0.8rem !important;   /* right pad clears the close btn */
+    position: relative !important;
+    background: transparent !important;
+}
+
+/* ---- icon chip ---- */
+.ui-growl-item .ui-growl-image,
+.ui-growl-item span[class*="ui-growl-image"] {
+    position: static !important;
+    float: none !important;
+    flex: 0 0 auto !important;
+    width: 40px !important;
+    height: 40px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    margin: 0 !important;
+    border-radius: 11px !important;
+    background-image: none !important;
+}
+.ui-growl-item .ui-growl-image::before {
+    color: #ffffff !important;
+    font-size: 1.15rem !important;
+    line-height: 1 !important;
+}
+/* Success / info toasts get a check-mark glyph (the app raises success
+   notices with SEVERITY_INFO). */
+.ui-growl-item .ui-growl-image-info::before,
+.ui-growl-item .ui-growl-image-success::before {
+    font-family: "primeicons" !important;
+    content: "\e909" !important;   /* pi-check */
+}
+
+/* ---- text ---- */
+.ui-growl-item .ui-growl-message {
+    flex: 1 1 auto !important;
+    margin: 0 !important;
+    min-width: 0;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+}
+.ui-growl-item .ui-growl-title {
+    display: block !important;
+    font-weight: 700 !important;
+    font-size: 0.95rem !important;
+    line-height: 1.3 !important;
+    color: #1f2328 !important;
+}
+/* The detail line always duplicates the summary (JsfUtil sets them
+   equal), so hide it — keeps the toast a single line that lines up
+   with the front icon. */
+.ui-growl-item .ui-growl-message p {
+    display: none !important;
+}
+.dark-mode .ui-growl-item .ui-growl-title { color: #ffffff !important; }
+
+/* ---- close button ---- */
+.ui-growl-item .ui-growl-icon-close {
+    position: absolute !important;
+    top: 50% !important;
+    right: 0.7rem !important;
+    transform: translateY(-50%) !important;
+    width: 22px !important;
+    height: 22px !important;
+    border-radius: 50% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    opacity: 0.7;
+    transition: opacity 0.15s ease, background 0.15s ease;
+}
+.ui-growl-item .ui-growl-icon-close:hover { opacity: 1; }
+
+/* ---- per-severity colour ---- */
+/* SUCCESS + INFO → green */
+.ui-growl-item-container:has(.ui-growl-image-info),
+.ui-growl-item-container:has(.ui-growl-image-success),
+.ui-growl-info,
+.ui-growl-success { background: #e8f6ef !important; }
+.dark-mode .ui-growl-item-container:has(.ui-growl-image-info),
+.dark-mode .ui-growl-item-container:has(.ui-growl-image-success),
+.dark-mode .ui-growl-info,
+.dark-mode .ui-growl-success { background: #1d3a2d !important; }
+.ui-growl-item:has(.ui-growl-image-info) .ui-growl-image,
+.ui-growl-item:has(.ui-growl-image-success) .ui-growl-image,
+.ui-growl-info .ui-growl-image,
+.ui-growl-success .ui-growl-image { background: #2fa86e !important; }
+.ui-growl-item:has(.ui-growl-image-info) .ui-growl-icon-close,
+.ui-growl-item:has(.ui-growl-image-success) .ui-growl-icon-close { background: rgba(47, 168, 110, 0.18) !important; }
+
+/* ERROR + FATAL → red */
+.ui-growl-item-container:has(.ui-growl-image-error),
+.ui-growl-item-container:has(.ui-growl-image-fatal),
+.ui-growl-error,
+.ui-growl-fatal { background: #fbeae7 !important; }
+.dark-mode .ui-growl-item-container:has(.ui-growl-image-error),
+.dark-mode .ui-growl-item-container:has(.ui-growl-image-fatal),
+.dark-mode .ui-growl-error,
+.dark-mode .ui-growl-fatal { background: #3b2320 !important; }
+.ui-growl-item:has(.ui-growl-image-error) .ui-growl-image,
+.ui-growl-item:has(.ui-growl-image-fatal) .ui-growl-image,
+.ui-growl-error .ui-growl-image,
+.ui-growl-fatal .ui-growl-image { background: #d6442f !important; }
+.ui-growl-item:has(.ui-growl-image-error) .ui-growl-icon-close,
+.ui-growl-item:has(.ui-growl-image-fatal) .ui-growl-icon-close { background: rgba(214, 68, 47, 0.18) !important; }
+
+/* WARN → amber */
+.ui-growl-item-container:has(.ui-growl-image-warn),
+.ui-growl-warn { background: #fdf4dd !important; }
+.dark-mode .ui-growl-item-container:has(.ui-growl-image-warn),
+.dark-mode .ui-growl-warn { background: #3b3420 !important; }
+.ui-growl-item:has(.ui-growl-image-warn) .ui-growl-image,
+.ui-growl-warn .ui-growl-image { background: #e6a417 !important; }
+.ui-growl-item:has(.ui-growl-image-warn) .ui-growl-icon-close { background: rgba(230, 164, 23, 0.18) !important; }
+
+/* Fallback when :has() is unavailable — neutral but still rounded. */
+@supports not (selector(:has(*))) {
+    .ui-growl-item .ui-growl-image { background: var(--cm-primary, #7367f0) !important; }
+}

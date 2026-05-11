@@ -170,14 +170,21 @@ body {
     padding: 0.5rem 0.85rem;
     font-size: 0.875rem;
     line-height: 1;
-    color: #e5e7eb;
+    color: #ffffff !important;
     transition: all 0.2s ease;
+}
+
+.chims-user-chip,
+.chims-user-chip .ui-menuitem-text,
+.chims-user-chip span,
+.chims-user-chip .bi {
+    color: #ffffff !important;
 }
 
 .chims-user-chip:hover {
     background: rgba(255, 255, 255, 0.08);
     border-color: rgba(255, 255, 255, 0.3);
-    color: #ffffff;
+    color: #ffffff !important;
     cursor: pointer;
 }
 
@@ -272,13 +279,13 @@ body {
 .ui-menubar .ui-menuitem-link.ui-state-hover {
     background: transparent !important;
     color: #1f2328 !important;
-    border-bottom-color: #fd8c73 !important;
+    border-bottom-color: #ff9f4e !important;
 }
 
 .ui-menubar .ui-menuitem.ui-menuitem-active > .ui-menuitem-link {
     color: #1f2328 !important;
     font-weight: 600 !important;
-    border-bottom-color: #fd8c73 !important;
+    border-bottom-color: #ff9f4e !important;
 }
 
 /* Dropdown sub-menus */
@@ -298,9 +305,10 @@ body {
 }
 
 .ui-menu.ui-menu-child .ui-menuitem-link:hover {
-    background: #f6f8fa !important;
+    background: #eeecff !important;
     border-bottom: none !important;
-    color: #0969da !important;
+    color: #7367f0 !important;
+    text-decoration: none !important;
 }
 
 .ui-menubar .ui-widget {
@@ -662,7 +670,8 @@ body {
 .dark-mode .ui-menu-list .ui-menuitem-link:hover {
     background: #3b4253 !important;
     color: #f0f0f0 !important;
-    border-bottom-color: #7367f0 !important;
+    border-bottom-color: #ff9f4e !important;
+    text-decoration: none !important;
 }
 
 .dark-mode .menuText {

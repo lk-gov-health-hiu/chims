@@ -11,34 +11,44 @@
  <ui:composition template="/webUser/index.xhtml">
 
             <ui:define name="webUserContents">
+                <div class="cm-page-title">
+                    <div>
+                        <div class="cm-page-title-text">
+                            Manage Privileges
+                        </div>
+                        <div class="cm-page-sub">
+                            Assign or revoke system privileges for <strong>#{webUserController.selected.name}</strong>.
+                        </div>
+                    </div>
+                </div>
 
                 <h:form>
-                    <p:panel header="Manage Privileges" >
-
+                    <p:panel id="WebUserPrivilegesDlg" header="System Privileges" styleClass="cm-form-panel">
                         <f:facet name="header" >
                             <p:commandButton id="btnUpdate" 
-                                            ajax="false" 
+                                             ajax="false" 
+                                             icon="bi bi-save"
                                              action="#{webUserController.updateUserPrivileges()}" 
-                                             value="#{bundleClinical.Save}" />
-                            <p:commandButton ajax="false" value="Back" action="#{webUserController.toManageUserIndexForSystemAdmin()}"/>
+                                             value="#{bundleClinical.Save}"
+                                             styleClass="m-1" />
+                            <p:commandButton ajax="false" value="Back" 
+                                             icon="bi bi-arrow-left"
+                                             action="#{webUserController.toManageUserIndexForSystemAdmin()}"
+                                             styleClass="m-1 ui-button-flat ui-button-secondary" />
                         </f:facet>
 
-                        <p:tree id="tree"  value="#{webUserController.allPrivilegeRoot}" var="node"  
-                                selectionMode="checkbox" 
-                                selection="#{webUserController.selectedNodes}">  
-                            <p:treeNode>  
-                                <h:outputText value="#{node}" />  
-                            </p:treeNode> 
-                        </p:tree>  
-
-
+                        <div class="p-3">
+                            <p:tree id="tree" value="#{webUserController.allPrivilegeRoot}" var="node"  
+                                    selectionMode="checkbox" 
+                                    selection="#{webUserController.selectedNodes}"
+                                    style="width: 100%; border: none;">  
+                                <p:treeNode icon="bi bi-shield-lock">  
+                                    <h:outputText value="#{node}" />  
+                                </p:treeNode> 
+                            </p:tree>  
+                        </div>
                     </p:panel>
-
                 </h:form>
-
-         
-
-
             </ui:define>
 
         </ui:composition>

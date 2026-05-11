@@ -23,9 +23,8 @@
                                      styleClass="cm-form-grid"
                                      style="margin: auto; text-align: left; width: 100%;">
                             <f:facet name="header" >
-                                <p:commandButton ajax="false" action="#{webUserController.saveNewWebUserBySysAdmin()}" value="#{bundleClinical.Save}" />
-                                <p:commandButton ajax="false" value="Back" action="index" process="@this" update="@all">
-                                </p:commandButton>
+                                <p:commandButton ajax="false" action="#{webUserController.saveNewWebUserBySysAdmin()}" value="#{bundleClinical.Save}" styleClass="m-1" />
+                                <p:commandButton ajax="false" value="Back" action="index" process="@this" update="@all" styleClass="m-1" />
                             </f:facet>
 
                             <p:outputLabel value="Title" for="title" styleClass="cm-form-label"/>

@@ -774,7 +774,7 @@ public class WebUserController implements Serializable {
         } else {
             passwordChangingUser = null;
             prepareDashboards();
-            JsfUtil.addSuccessMessage("Successfully Logged");
+            JsfUtil.addSuccessMessage("Login Success");
             return "/index";
         }
     }

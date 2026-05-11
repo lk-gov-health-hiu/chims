@@ -11,50 +11,53 @@
  <ui:composition template="/webUser/index.xhtml">
 
             <ui:define name="webUserContents">
-                <p:panel id="WebUserEditDlg" header="Edit User Detais" style="text-align: center; height: 100%;">
+                <p:panel id="WebUserEditDlg" header="Edit User Details" styleClass="cm-form-panel">
                     <h:form id="WebUserEditForm">
 
-                        <p:panelGrid columns="2" rendered="#{webUserController.selected != null}" style="margin: auto; text-align: left;">
+                        <p:panelGrid columns="4" rendered="#{webUserController.selected != null}" styleClass="cm-form-grid" style="width: 100%;">
                             <f:facet name="header" >
-                                <p:commandButton action="#{webUserController.update}" value="#{bundleClinical.Save}" ajax="false" />
-                                <p:commandButton value="Back" action="#{webUserController.toManageUserIndexForSystemAdmin()}" ajax="false"/>
+                                <p:commandButton action="#{webUserController.update}" value="#{bundleClinical.Save}" ajax="false" styleClass="m-1" />
+                                <p:commandButton value="Back" action="#{webUserController.toManageUserIndexForSystemAdmin()}" ajax="false" styleClass="m-1" />
                             </f:facet>
 
-                            <p:outputLabel value="Username" for="username" />
+                            <p:outputLabel value="Username" for="username" styleClass="cm-form-label" />
                             <p:inputText  id="username" value="#{webUserController.selected.name}" title="#{bundleClinical.EditWebUserTitle_name}"
-                                          readonly="true" required="true" requiredMessage="#{bundleClinical.EditWebUserRequiredMessage_name}"/>
+                                          readonly="true" required="true" requiredMessage="#{bundleClinical.EditWebUserRequiredMessage_name}"
+                                          styleClass="cm-form-field" />
 
 
-                            <p:outputLabel value="Title" for="title" />
-                            <p:selectOneMenu id="title"  value="#{webUserController.selected.person.title}"  >
+                            <p:outputLabel value="Title" for="title" styleClass="cm-form-label" />
+                            <p:selectOneMenu id="title"  value="#{webUserController.selected.person.title}" styleClass="cm-form-field" >
                                 <f:selectItems value="#{itemController.titles}" var="t" itemLabel="#{t.name}"
                                                itemValue="#{t}" ></f:selectItems>
                             </p:selectOneMenu>
 
-                            <p:outputLabel value="Name" for="name" />
+                            <p:outputLabel value="Name" for="name" styleClass="cm-form-label" />
                             <p:inputText 
                                 autocomplete="off" 
                                 id="name" 
                                 value="#{webUserController.selected.person.name}"
-                                title="Name" />
+                                title="Name" 
+                                styleClass="cm-form-field" />
 
 
-                            <p:outputLabel value="Institution" for="institution" />
+                            <p:outputLabel value="Institution" for="institution" styleClass="cm-form-label" />
                             <p:autoComplete  id="institution" value="#{webUserController.selected.institution}" 
                                              completeMethod="#{institutionController.completeInstitutions}"
                                      var="i" itemLabel="#{i.name}" itemValue="#{i}"
-                                     forceSelection="true" maxResults="15" minQueryLength="3">
+                                     forceSelection="true" maxResults="15" minQueryLength="3"
+                                     styleClass="cm-form-field">
                             </p:autoComplete >
 
-                            <p:outputLabel value="Email" for="email" />
-                            <p:inputText id="email" value="#{webUserController.selected.email}" title="#{bundleClinical.EditWebUserTitle_email}" />
+                            <p:outputLabel value="Email" for="email" styleClass="cm-form-label" />
+                            <p:inputText id="email" value="#{webUserController.selected.email}" title="#{bundleClinical.EditWebUserTitle_email}" styleClass="cm-form-field" />
 
-                            <p:outputLabel value="Telephone No." for="telNo" />
-                            <p:inputText id="telNo" value="#{webUserController.selected.telNo}" title="#{bundleClinical.EditWebUserTitle_telNo}" />
+                            <p:outputLabel value="Telephone No." for="telNo" styleClass="cm-form-label" />
+                            <p:inputText id="telNo" value="#{webUserController.selected.telNo}" title="#{bundleClinical.EditWebUserTitle_telNo}" styleClass="cm-form-field" />
 
 
-                            <p:outputLabel value="Role" for="webUserRole" />
-                            <p:selectOneMenu  id="webUserRole" value="#{webUserController.selected.webUserRole}"  >
+                            <p:outputLabel value="Role" for="webUserRole" styleClass="cm-form-label" />
+                            <p:selectOneMenu  id="webUserRole" value="#{webUserController.selected.webUserRole}" styleClass="cm-form-field" >
                         <f:selectItems value="#{applicationController.webUserRoles}" 
                                        var="webUserRoles" 
                                        itemLabel="#{webUserRoles.label}" 

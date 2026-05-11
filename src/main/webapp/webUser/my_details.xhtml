@@ -11,41 +11,43 @@
         <ui:composition template="/template.xhtml">
 
             <ui:define name="content">
-                <p:panel id="WebUserEditDlg" header="Edit My Detais" style="text-align: center; height: 100%;">
+                <p:panel id="WebUserEditDlg" header="Edit My Details" styleClass="cm-form-panel">
                     <h:form id="WebUserEditForm">
 
-                        <p:panelGrid columns="2" rendered="#{webUserController.loggedUser != null}" style="margin: auto; text-align: left;">
+                        <p:panelGrid columns="4" rendered="#{webUserController.loggedUser != null}" styleClass="cm-form-grid" style="width: 100%;">
                             <f:facet name="header" >
-                                <p:commandButton actionListener="#{webUserController.updateMyDetails()}" value="#{bundleClinical.Save}" />
-                                <p:commandButton value="Back" action="index"/>
+                                <p:commandButton actionListener="#{webUserController.updateMyDetails()}" value="#{bundleClinical.Save}" styleClass="m-1" />
+                                <p:commandButton value="Back" action="index" styleClass="m-1" />
                             </f:facet>
 
 
-                            <p:outputLabel value="Username" for="username" />
+                            <p:outputLabel value="Username" for="username" styleClass="cm-form-label" />
                             <p:inputText  id="username" value="#{webUserController.loggedUser.name}" title="#{bundleClinical.EditWebUserTitle_name}"
-                                          readonly="true" required="true" requiredMessage="#{bundleClinical.EditWebUserRequiredMessage_name}"/>
+                                          readonly="true" required="true" requiredMessage="#{bundleClinical.EditWebUserRequiredMessage_name}"
+                                          styleClass="cm-form-field" />
 
 
-                            <p:outputLabel value="Title" for="title" />
-                            <p:selectOneMenu id="title"  value="#{webUserController.loggedUser.person.title}"  >
+                            <p:outputLabel value="Title" for="title" styleClass="cm-form-label" />
+                            <p:selectOneMenu id="title"  value="#{webUserController.loggedUser.person.title}" styleClass="cm-form-field" >
                                 <f:selectItems value="#{itemController.titles}" var="t" itemLabel="#{t.name}"
                                                itemValue="#{t}" ></f:selectItems>
                             </p:selectOneMenu>
 
-                            <p:outputLabel value="Name" for="name" />
+                            <p:outputLabel value="Name" for="name" styleClass="cm-form-label" />
                             <p:inputText 
                                 autocomplete="off" 
                                 id="name" 
                                 value="#{webUserController.loggedUser.person.name}"
-                                title="Name" />
+                                title="Name" 
+                                styleClass="cm-form-field" />
 
 
 
-                            <p:outputLabel value="#{bundleClinical.EditWebUserLabel_email}" for="email" />
-                            <p:inputText id="email" value="#{webUserController.loggedUser.email}" title="#{bundleClinical.EditWebUserTitle_email}" />
+                            <p:outputLabel value="#{bundleClinical.EditWebUserLabel_email}" for="email" styleClass="cm-form-label" />
+                            <p:inputText id="email" value="#{webUserController.loggedUser.email}" title="#{bundleClinical.EditWebUserTitle_email}" styleClass="cm-form-field" />
 
-                            <p:outputLabel value="#{bundleClinical.EditWebUserLabel_telNo}" for="telNo" />
-                            <p:inputText id="telNo" value="#{webUserController.loggedUser.telNo}" title="#{bundleClinical.EditWebUserTitle_telNo}" />
+                            <p:outputLabel value="#{bundleClinical.EditWebUserLabel_telNo}" for="telNo" styleClass="cm-form-label" />
+                            <p:inputText id="telNo" value="#{webUserController.loggedUser.telNo}" title="#{bundleClinical.EditWebUserTitle_telNo}" styleClass="cm-form-field" />
 
 
 

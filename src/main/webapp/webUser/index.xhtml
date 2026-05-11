@@ -19,49 +19,39 @@
                     <h1>You are NOT authorized</h1>
                 </p:panel>
 
-                <p:panelGrid style="width: 100%;" columns="2" styleClass="alignTop" columnClasses="width85percent width15percent">
-
-                         <f:facet name="header" >
-                            <p:outputLabel value="Manage Users" ></p:outputLabel>
-                        </f:facet>                    
-
-                    <h:form>
-
-                        <p:panelGrid columns="1" style="width: 15%;" >
-
-                            <p:commandButton icon="fa fa-user-plus"  ajax="false"
-                                             value="Add New User" styleClass="btn300"
-                                             action="#{webUserController.toCreateNewUserBySysAdmin()}">
-                            </p:commandButton>
-
-                            <p:commandButton  icon="fa fa-users" ajax="false"
-                                              value="View Users"  styleClass="btn300"
-                                              action="#{webUserController.toManageAllUsers()}">
-                            </p:commandButton>
-                            
-                            <p:commandButton  icon="fa fa-users"  ajax="false"
-                                              value="View Transactions"  styleClass="btn300"
-                                              action="#{userTransactionController.toSearchUserTransactions()}">
-                            </p:commandButton>
-
-                            <p:commandButton   icon="fa fa-id-card"  
-                                               styleClass="btn300" ajax="false" action="/demoAccount/List" value="Demo Accounts" ></p:commandButton>
-                            <p:commandButton  icon="fa fa-users"  ajax="false"
-                                              value="Suspicious Login Attempts"  styleClass="btn300"
-                                              action="#{userTransactionController.toSuspiciousLoginAttempts()}">
-                            </p:commandButton>
-
-                            <!--<p:graphicImage library="image" name="user-mx.png" ></p:graphicImage>-->
-
-                        </p:panelGrid>
-
-                    </h:form>
-
-                    <ui:insert name="webUserContents" >
-
-                    </ui:insert>                      
-
-                </p:panelGrid>
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <h:form>
+                                <div class="cm-card-modern shadow-sm border-0">
+                                    <div class="cm-card-head py-3 px-3">
+                                        <span class="cm-card-title fs-6 fw-bold">
+                                            <i class="bi bi-gear-fill me-2" style="color: var(--cm-primary);"/> 
+                                            User Management
+                                        </span>
+                                    </div>
+                                    <div class="cm-card-body p-0">
+                                        <p:menu toggleable="true" style="width: 100%; border: none; background: transparent;">
+                                            <p:menuitem value="Add New User" icon="bi bi-person-plus" 
+                                                        action="#{webUserController.toCreateNewUserBySysAdmin()}" ajax="false" />
+                                            <p:menuitem value="View Users" icon="bi bi-people" 
+                                                        action="#{webUserController.toManageAllUsers()}" ajax="false" />
+                                            <p:menuitem value="View Transactions" icon="bi bi-clock-history" 
+                                                        action="#{userTransactionController.toSearchUserTransactions()}" ajax="false" />
+                                            <p:menuitem value="Demo Accounts" icon="bi bi-person-badge" 
+                                                        action="/demoAccount/List" ajax="false" />
+                                            <p:menuitem value="Suspicious Logins" icon="bi bi-exclamation-triangle" 
+                                                        action="#{userTransactionController.toSuspiciousLoginAttempts()}" ajax="false" />
+                                        </p:menu>
+                                    </div>
+                                </div>
+                            </h:form>
+                        </div>
+                        <div class="col-md-9 mt-4 mt-md-0">
+                            <ui:insert name="webUserContents" />
+                        </div>
+                    </div>
+                </div>
 
             </ui:define>
 
