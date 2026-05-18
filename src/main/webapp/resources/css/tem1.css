@@ -158,18 +158,24 @@ body {
     border: 1px solid #484f58;
 }
 
-/* User chip */
+/* User chip — sized to match the .chims-action-btn buttons next to it
+   (same border-radius, padding height, font-size). */
 .chims-user-chip {
     display: inline-flex;
     align-items: center;
-    gap: 0.35rem;
-    background: #30363d;
-    border: 1px solid #484f58;
-    border-radius: 2rem;
-    padding: 0.2rem 0.65rem;
-    font-size: 0.8rem;
-    color: #c9d1d9;
+    gap: 0.5rem;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 12px;
+    padding: 0.5rem 0.85rem;
+    font-size: 0.875rem;
+    line-height: 1;
+    color: #e5e7eb;
     white-space: nowrap;
+}
+.chims-user-chip .bi {
+    font-size: 1rem;
+    line-height: 1;
 }
 
 /* -- Secondary navigation menubar -- */

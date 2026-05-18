@@ -10,6 +10,7 @@
     --cm-primary: #7367f0;
     --cm-primary-hover: #6259e0;
     --cm-primary-soft: #eeecff;
+    --cm-primary-rgb: 115, 103, 240;
     --cm-success: #28c76f;
     --cm-info: #00cfe8;
     --cm-warning: #ff9f43;
@@ -38,9 +39,10 @@
 }
 
 .dark-mode {
-    --cm-primary: #7367f0;
-    --cm-primary-hover: #5d51e0;
-    --cm-primary-soft: #2a2350;
+    --cm-primary: #45aef0;
+    --cm-primary-hover: #2c95d6;
+    --cm-primary-soft: #0f2a40;
+    --cm-primary-rgb: 69, 174, 240;
     --cm-success: #28c76f;
     --cm-info: #00cfe8;
     --cm-warning: #ff9f43;
@@ -223,9 +225,9 @@ body {
 /* ---------- Buttons — scoped to skip the GitHub-style header chrome
    (chims-icon-btn, chims-theme-fab) so the top-bar search/logout buttons
    keep their existing transparent / dark look. ---------- */
-.ui-button:not(.chims-icon-btn):not(.chims-theme-fab),
-.ui-button.ui-state-default:not(.chims-icon-btn):not(.chims-theme-fab),
-.ui-button.ui-widget:not(.chims-icon-btn):not(.chims-theme-fab) {
+.ui-button:not(.chims-icon-btn):not(.chims-theme-fab):not(.chims-action-btn),
+.ui-button.ui-state-default:not(.chims-icon-btn):not(.chims-theme-fab):not(.chims-action-btn),
+.ui-button.ui-widget:not(.chims-icon-btn):not(.chims-theme-fab):not(.chims-action-btn) {
     background: var(--cm-primary) !important;
     border: 1px solid var(--cm-primary) !important;
     color: #ffffff !important;
@@ -236,22 +238,22 @@ body {
     transition: var(--cm-transition) !important;
 }
 
-.ui-button:not(.chims-icon-btn):not(.chims-theme-fab):hover,
-.ui-button.ui-state-hover:not(.chims-icon-btn):not(.chims-theme-fab) {
+.ui-button:not(.chims-icon-btn):not(.chims-theme-fab):not(.chims-action-btn):hover,
+.ui-button.ui-state-hover:not(.chims-icon-btn):not(.chims-theme-fab):not(.chims-action-btn) {
     background: var(--cm-primary-hover) !important;
     border-color: var(--cm-primary-hover) !important;
     box-shadow: var(--cm-shadow-sm) !important;
     transform: translateY(-1px);
 }
 
-.ui-button.ui-state-focus:not(.chims-icon-btn):not(.chims-theme-fab),
-.ui-button:focus:not(.chims-icon-btn):not(.chims-theme-fab) {
+.ui-button.ui-state-focus:not(.chims-icon-btn):not(.chims-theme-fab):not(.chims-action-btn),
+.ui-button:focus:not(.chims-icon-btn):not(.chims-theme-fab):not(.chims-action-btn) {
     outline: none !important;
     box-shadow: 0 0 0 3px rgba(115, 103, 240, 0.25) !important;
 }
 
-.ui-button.ui-state-disabled:not(.chims-icon-btn):not(.chims-theme-fab),
-.ui-button:disabled:not(.chims-icon-btn):not(.chims-theme-fab) {
+.ui-button.ui-state-disabled:not(.chims-icon-btn):not(.chims-theme-fab):not(.chims-action-btn),
+.ui-button:disabled:not(.chims-icon-btn):not(.chims-theme-fab):not(.chims-action-btn) {
     opacity: 0.55 !important;
     box-shadow: none !important;
     transform: none !important;
@@ -283,9 +285,116 @@ body {
 }
 .chims-icon-btn .ui-button-text { display: none !important; }
 .chims-icon-btn .ui-icon,
-.chims-icon-btn .pi {
+.chims-icon-btn .pi,
+.chims-icon-btn .bi {
     color: #c9d1d9 !important;
     font-size: 0.95rem !important;
+    line-height: 1 !important;
+}
+
+/* ============================================================
+   Header action buttons — soft-rounded squares, icon-only.
+   Sit on the dark navy header (`.chims-header` is dark in both
+   light and dark themes), so the base palette stays dark-on-dark.
+   The --primary variant pulls from --cm-primary so it follows
+   the active theme (purple in light, #45aef0 in dark).
+   --primary  → search
+   --danger   → sign-out
+   ============================================================ */
+.chims-action-btn,
+.chims-action-btn.ui-button,
+.chims-action-btn.ui-button.ui-state-default {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 0.45rem !important;
+    background: rgba(255, 255, 255, 0.04) !important;
+    border: 1px solid rgba(255, 255, 255, 0.18) !important;
+    color: #e5e7eb !important;
+    border-radius: 12px !important;
+    padding: 0.5rem 0.7rem !important;
+    font-weight: 500 !important;
+    line-height: 1 !important;
+    box-shadow: none !important;
+    min-height: 0 !important;
+    width: auto !important;
+    min-width: 0 !important;
+    transition: background 0.18s ease,
+                border-color 0.18s ease,
+                color 0.18s ease,
+                box-shadow 0.18s ease !important;
+}
+.chims-action-btn:hover,
+.chims-action-btn.ui-button:hover,
+.chims-action-btn.ui-button.ui-state-hover {
+    background: rgba(255, 255, 255, 0.08) !important;
+    border-color: rgba(255, 255, 255, 0.32) !important;
+    color: #ffffff !important;
+    transform: none !important;
+}
+.chims-action-btn:focus,
+.chims-action-btn.ui-button:focus,
+.chims-action-btn.ui-button.ui-state-focus {
+    outline: none !important;
+    box-shadow: 0 0 0 3px rgba(var(--cm-primary-rgb), 0.32) !important;
+}
+.chims-action-btn .ui-icon,
+.chims-action-btn .pi,
+.chims-action-btn .bi {
+    color: inherit !important;
+    font-size: 1rem !important;
+    line-height: 1 !important;
+    margin-right: 0 !important;
+}
+/* PrimeFaces puts the icon in <span class="ui-button-icon-left"> with
+   absolute positioning baked in by the Saga theme — neutralize so the
+   flex layout above actually controls placement. */
+.chims-action-btn .ui-button-icon-left,
+.chims-action-btn .ui-button-icon-right {
+    position: static !important;
+    margin: 0 !important;
+}
+
+/* Icon-only variant — square shape, hide the empty text span PF
+   still emits when no value="" is supplied. */
+.chims-action-btn--icon {
+    padding: 0.5rem 0.65rem !important;
+}
+.chims-action-btn--icon .ui-button-text {
+    display: none !important;
+}
+
+/* --primary: search. Token-driven so it shifts purple → #45aef0
+   between light and dark themes. */
+.chims-action-btn--primary,
+.chims-action-btn--primary.ui-button,
+.chims-action-btn--primary.ui-button.ui-state-default {
+    background: rgba(var(--cm-primary-rgb), 0.14) !important;
+    border-color: rgba(var(--cm-primary-rgb), 0.45) !important;
+    color: var(--cm-primary) !important;
+}
+.chims-action-btn--primary:hover,
+.chims-action-btn--primary.ui-button:hover,
+.chims-action-btn--primary.ui-button.ui-state-hover {
+    background: rgba(var(--cm-primary-rgb), 0.24) !important;
+    border-color: rgba(var(--cm-primary-rgb), 0.7) !important;
+    color: #ffffff !important;
+}
+
+/* --danger: sign-out. Stays red across themes (it's an exit cue). */
+.chims-action-btn--danger,
+.chims-action-btn--danger.ui-button,
+.chims-action-btn--danger.ui-button.ui-state-default {
+    background: rgba(255, 255, 255, 0.04) !important;
+    border-color: rgba(255, 255, 255, 0.18) !important;
+    color: #e5e7eb !important;
+}
+.chims-action-btn--danger:hover,
+.chims-action-btn--danger.ui-button:hover,
+.chims-action-btn--danger.ui-button.ui-state-hover {
+    background: rgba(239, 68, 68, 0.18) !important;
+    border-color: rgba(239, 68, 68, 0.55) !important;
+    color: #ffffff !important;
 }
 
 /* Secondary / outlined variant */
@@ -593,13 +702,13 @@ body { min-height: 100vh !important; }
    Scoped to skip the GitHub-style header chrome (chims-icon-btn,
    chims-search-input, chims-theme-fab) so the top-bar buttons keep
    their existing compact look. */
-.ui-button:not(.chims-icon-btn):not(.chims-theme-fab),
-.ui-button.ui-state-default:not(.chims-icon-btn):not(.chims-theme-fab),
-.ui-button.ui-widget:not(.chims-icon-btn):not(.chims-theme-fab),
-.btn:not(.chims-icon-btn):not(.chims-theme-fab),
+.ui-button:not(.chims-icon-btn):not(.chims-theme-fab):not(.chims-action-btn),
+.ui-button.ui-state-default:not(.chims-icon-btn):not(.chims-theme-fab):not(.chims-action-btn),
+.ui-button.ui-widget:not(.chims-icon-btn):not(.chims-theme-fab):not(.chims-action-btn),
+.btn:not(.chims-icon-btn):not(.chims-theme-fab):not(.chims-action-btn),
 button.ui-commandlink,
-input[type="button"].ui-button:not(.chims-icon-btn),
-input[type="submit"].ui-button:not(.chims-icon-btn) {
+input[type="button"].ui-button:not(.chims-icon-btn):not(.chims-action-btn),
+input[type="submit"].ui-button:not(.chims-icon-btn):not(.chims-action-btn) {
     min-height: 38px !important;
     padding: 0.5rem 1.1rem !important;
     border-radius: 10px !important;
@@ -612,9 +721,9 @@ input[type="submit"].ui-button:not(.chims-icon-btn) {
     transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease, border-color 0.15s ease !important;
 }
 
-.ui-button:not(.chims-icon-btn):not(.chims-theme-fab):hover,
-.ui-button.ui-state-hover:not(.chims-icon-btn):not(.chims-theme-fab),
-.btn:not(.chims-icon-btn):not(.chims-theme-fab):hover {
+.ui-button:not(.chims-icon-btn):not(.chims-theme-fab):not(.chims-action-btn):hover,
+.ui-button.ui-state-hover:not(.chims-icon-btn):not(.chims-theme-fab):not(.chims-action-btn),
+.btn:not(.chims-icon-btn):not(.chims-theme-fab):not(.chims-action-btn):hover {
     transform: translateY(-1px);
     box-shadow:
         0 1px 0 rgba(255,255,255,0.18) inset,
@@ -622,15 +731,15 @@ input[type="submit"].ui-button:not(.chims-icon-btn) {
         0 10px 22px rgba(15, 23, 42, 0.10) !important;
 }
 
-.ui-button:not(.chims-icon-btn):not(.chims-theme-fab):active,
-.ui-button.ui-state-active:not(.chims-icon-btn):not(.chims-theme-fab),
-.btn:not(.chims-icon-btn):not(.chims-theme-fab):active {
+.ui-button:not(.chims-icon-btn):not(.chims-theme-fab):not(.chims-action-btn):active,
+.ui-button.ui-state-active:not(.chims-icon-btn):not(.chims-theme-fab):not(.chims-action-btn),
+.btn:not(.chims-icon-btn):not(.chims-theme-fab):not(.chims-action-btn):active {
     transform: translateY(0);
     box-shadow:
         0 1px 2px rgba(15, 23, 42, 0.08) inset !important;
 }
 
-.ui-button.ui-button-icon-only:not(.chims-icon-btn):not(.chims-theme-fab) {
+.ui-button.ui-button-icon-only:not(.chims-icon-btn):not(.chims-theme-fab):not(.chims-action-btn) {
     width: 38px !important;
     min-width: 38px !important;
     padding: 0.5rem !important;
@@ -1141,7 +1250,7 @@ td > h\:commandLink > i.bi,
 
 /* Dropdown menuitem links — flex layout so chip + text + caret line up
    on a single baseline with consistent gaps. */
-.ui-menu.ui-menu-child .ui-menuitem-link,
+.ui-menu-list.ui-menu-child .ui-menuitem-link,
 .ui-menu-list .ui-menuitem-link {
     display: inline-flex !important;
     align-items: center !important;
@@ -1151,7 +1260,7 @@ td > h\:commandLink > i.bi,
 
 /* Reset the right-margin on icons inside the flex link — the gap above
    already provides the spacing, so the chip sits flush against the text. */
-.ui-menu.ui-menu-child .ui-menuitem-link > .ui-menuitem-icon,
+.ui-menu-list.ui-menu-child .ui-menuitem-link > .ui-menuitem-icon,
 .ui-menu-list .ui-menuitem-link > .ui-menuitem-icon,
 .chims-menubar > .ui-menubar-root-list > .ui-menuitem > .ui-menuitem-link > .ui-menuitem-icon {
     margin-right: 0 !important;
@@ -1214,17 +1323,80 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /* ============================================================
-   Help submenu — keep every item on one line, no wrapping
-   (e.g. "User Manual (Sinhala)")
+   Top menubar dropdowns — show every menuitem label in full.
+   Long entries like "Manage Institutions" or "User Manual (Sinhala)"
+   were truncating because of `text-overflow: ellipsis` clamped to a
+   220 px min-width.
+
+   PrimeFaces also injects an inline `style="width:..."` on the
+   dropdown wrapper via JS, and the inner `<ul class="ui-menu-list">`
+   defaults to a fixed width inherited from the Saga theme. The rules
+   below force every level of the dropdown chain — wrapper div,
+   inner UL, list item, link, label span — to size from the widest
+   menuitem text, with `!important` everywhere so the inline widths
+   from PF JS don't win.
    ============================================================ */
-.ui-menu-list .ui-menuitem-text,
-.ui-menubar  .ui-menuitem-text {
+/* Label span — strip the truncation. Maximum specificity (`body` +
+   four classes) so this beats any Saga rule that ships with PF. The
+   dropdown `.ui-menuitem-link` is a flex container, so the label
+   gets `flex: 0 0 auto` and `min-width: max-content` — without those
+   the span would shrink under flex and the long labels ("User Manual
+   (Sinhala)", "Manage Institutions") would wrap to a second line at
+   the flex-item boundary in spite of `white-space: nowrap`. */
+body .ui-menubar .ui-menu-list.ui-menu-child .ui-menuitem .ui-menuitem-link .ui-menuitem-text,
+.ui-menu-list.ui-menu-child .ui-menuitem-text,
+.ui-menubar .ui-menubar-root-list .ui-menuitem-text {
     white-space: nowrap !important;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    overflow: visible !important;
+    text-overflow: clip !important;
+    flex: 0 0 auto !important;
+    min-width: max-content !important;
+    width: auto !important;
+    max-width: none !important;
+    word-break: keep-all !important;
 }
-.ui-menu.ui-menu-child {
-    min-width: 220px;
+/* Dropdown wrapper sizes to its widest entry. ALL width-forcing rules
+   below are scoped to `.ui-menu-child` only — PrimeFaces tags the root
+   menubar UL with `.ui-menu-list` too, so any unscoped
+   `.ui-menu-list .ui-menuitem` rule with `width: 100%` would stack
+   the root nav vertically. */
+.ui-menubar .ui-menu-list.ui-menu-child,
+.ui-menu-list.ui-menu-child {
+    width: max-content !important;
+    min-width: 260px !important;
+    max-width: none !important;
+    overflow: visible !important;
+    white-space: nowrap !important;
+}
+.ui-menu-list.ui-menu-child > .ui-menu-list {
+    width: 100% !important;
+    min-width: 100% !important;
+    max-width: none !important;
+    overflow: visible !important;
+}
+.ui-menu-list.ui-menu-child .ui-menuitem {
+    width: 100% !important;
+    max-width: none !important;
+}
+body .ui-menubar .ui-menu-list.ui-menu-child .ui-menuitem .ui-menuitem-link,
+.ui-menu-list.ui-menu-child .ui-menuitem-link {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    align-items: center !important;
+    width: 100% !important;
+    min-width: max-content !important;
+    max-width: none !important;
+    padding-right: 1.4rem !important;
+    overflow: visible !important;
+    white-space: nowrap !important;
+}
+
+/* Slightly more breathing room between root-level items so
+   "Institution Admin" / "System Admin" don't crowd together. */
+.chims-menubar.ui-menubar > .ui-menubar-root-list > .ui-menuitem,
+.ui-menubar > .ui-menubar-root-list > .ui-menuitem {
+    margin: 0.2rem 0.4rem !important;
 }
 
 /* ============================================================
